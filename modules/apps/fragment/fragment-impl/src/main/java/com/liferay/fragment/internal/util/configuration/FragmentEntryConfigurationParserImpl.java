@@ -199,10 +199,23 @@ public class FragmentEntryConfigurationParserImpl
 					fragmentConfigurationField.getType(),
 					"collectionSelector")) {
 
+				ServiceContext serviceContext =
+					ServiceContextThreadLocal.getServiceContext();
+
+				if (serviceContext == null) {
+					return null;
+				}
+
+				ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+				if (themeDisplay == null) {
+					return null;
+				}
+
 				Object contextListObject = _getInfoListObjectEntry(
-					configurationValuesJSONObject.getString(name),
-					segmentsEntryIds,
-					fragmentConfigurationField.getTypeOptionsJSONObject());
+					themeDisplay.getScopeGroupId(), segmentsEntryIds,
+					fragmentConfigurationField.getTypeOptionsJSONObject(),
+					configurationValuesJSONObject.getString(name));
 
 				if (contextListObject != null) {
 					contextObjects.put(
@@ -662,8 +675,8 @@ public class FragmentEntryConfigurationParserImpl
 	}
 
 	private Object _getInfoListObjectEntry(
-		String value, long[] segmentsEntryIds,
-		JSONObject typeOptionsJSONObject) {
+		long scopeGroupId, long[] segmentsEntryIds,
+		JSONObject typeOptionsJSONObject, String value) {
 
 		if (Validator.isNull(value)) {
 			return Collections.emptyList();
@@ -708,6 +721,7 @@ public class FragmentEntryConfigurationParserImpl
 				}
 			}
 
+			defaultLayoutListRetrieverContext.setScopeGroupId(scopeGroupId);
 			defaultLayoutListRetrieverContext.setSegmentsEntryIds(
 				segmentsEntryIds);
 
@@ -752,7 +766,9 @@ public class FragmentEntryConfigurationParserImpl
 
 		FragmentEntryMenuDisplayConfiguration
 			fragmentEntryMenuDisplayConfiguration =
-				new FragmentEntryMenuDisplayConfiguration(value);
+				new FragmentEntryMenuDisplayConfiguration(
+					serviceContext.getCompanyId(), value,
+					serviceContext.getScopeGroupId());
 
 		return NavItemUtil.getNavigationMenuContext(
 			1, "auto", serviceContext.getRequest(),
@@ -760,8 +776,7 @@ public class FragmentEntryConfigurationParserImpl
 			false, fragmentEntryMenuDisplayConfiguration.getRootItemId(),
 			fragmentEntryMenuDisplayConfiguration.getRootItemLevel(),
 			fragmentEntryMenuDisplayConfiguration.getRootItemType(),
-			fragmentEntryMenuDisplayConfiguration.getSiteNavigationMenuId(
-				serviceContext.getScopeGroupId()));
+			fragmentEntryMenuDisplayConfiguration.getSiteNavigationMenuId());
 	}
 
 	private Object _getURLValue(String value) {

@@ -117,11 +117,11 @@ import com.liferay.object.web.internal.object.entries.application.list.ObjectEnt
 import com.liferay.object.web.internal.object.entries.frontend.data.set.filter.factory.ObjectFieldFDSFilterFactoryRegistry;
 import com.liferay.object.web.internal.object.entries.frontend.data.set.view.table.ObjectEntriesTableFDSView;
 import com.liferay.object.web.internal.object.entries.portlet.ObjectEntriesPortlet;
+import com.liferay.object.web.internal.object.entries.portlet.action.AutocompleteAssigneeMVCResourceCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.DeleteAttachmentMVCActionCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.EditObjectEntryMVCActionCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.EditObjectEntryMVCRenderCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.EditObjectEntryRelatedModelMVCActionCommand;
-import com.liferay.object.web.internal.object.entries.portlet.action.ExpireObjectEntryMVCActionCommand;
 import com.liferay.object.web.internal.object.entries.portlet.action.UploadAttachmentMVCActionCommand;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -138,6 +138,7 @@ import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -159,6 +160,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.search.query.Queries;
+import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
+import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.template.info.item.capability.TemplateInfoItemCapability;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 import com.liferay.translation.info.item.provider.InfoItemLanguagesProvider;
@@ -560,15 +564,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				).build()),
 			_bundleContext.registerService(
 				MVCActionCommand.class,
-				new ExpireObjectEntryMVCActionCommand(
-					_objectEntryLocalService, _objectEntryService),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"jakarta.portlet.name", objectDefinition.getPortletId()
-				).put(
-					"mvc.command.name", "/object_entries/expire_object_entry"
-				).build()),
-			_bundleContext.registerService(
-				MVCActionCommand.class,
 				new UploadAttachmentMVCActionCommand(
 					_attachmentUploadFileEntryHandler,
 					_attachmentUploadResponseHandler, _uploadHandler),
@@ -585,6 +580,16 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					"jakarta.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name", "/object_entries/edit_object_entry"
+				).build()),
+			_bundleContext.registerService(
+				MVCResourceCommand.class,
+				new AutocompleteAssigneeMVCResourceCommand(
+					_queries, _roleLocalService, _searcher,
+					_searchRequestBuilderFactory, _userLocalService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"jakarta.portlet.name", objectDefinition.getPortletId()
+				).put(
+					"mvc.command.name", "/object_entries/autocomplete_assignee"
 				).build()),
 			_bundleContext.registerService(
 				RelatedInfoItemProvider.class,
@@ -884,6 +889,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private PortletLocalService _portletLocalService;
 
 	@Reference
+	private Queries _queries;
+
+	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Reference
@@ -891,6 +899,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Reference
 	private RoleLocalService _roleLocalService;
+
+	@Reference
+	private Searcher _searcher;
+
+	@Reference
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.object.web)")
 	private ServletContext _servletContext;

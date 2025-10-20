@@ -246,6 +246,8 @@
 	<model name="com.liferay.portal.tools.service.builder.test.model.PermissionCheckFinderEntry">
 		<field name="permissionCheckFinderEntryId" type="long" />
 		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
 		<field name="integer" type="int" />
 		<field name="name" type="String" />
 		<field name="type" type="String" />

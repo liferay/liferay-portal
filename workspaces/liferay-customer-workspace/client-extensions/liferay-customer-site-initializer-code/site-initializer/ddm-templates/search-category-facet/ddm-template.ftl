@@ -41,6 +41,10 @@
 		panelId = stringUtil.replace(title, ' ', '')
 	/>
 
+	<#if displayableCategories?size == 0>
+		<#return>
+	</#if>
+
 	<@liferay_ui["panel-container"]
 		extended=true
 		id="${namespace}_${panelId}_facetAssetCategoriesPanelContainer"

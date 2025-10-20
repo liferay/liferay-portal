@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {BalloonEditor as BaseBalloonEditor, EventInfo} from 'ckeditor5';
+import {EventInfo} from 'ckeditor5';
 import React from 'react';
 
+import {BaseCKEditor5BalloonEditor} from '../index';
 import BaseEditor from './BaseEditor';
 import getDefaultEditorConfig from './utils/getDefaultEditorConfig';
 import {
@@ -39,7 +40,7 @@ const BalloonEditor = ({
 				...config,
 			}}
 			data={data}
-			editor={BaseBalloonEditor}
+			editor={BaseCKEditor5BalloonEditor}
 			onChange={onChange}
 			onReady={onReady}
 		/>

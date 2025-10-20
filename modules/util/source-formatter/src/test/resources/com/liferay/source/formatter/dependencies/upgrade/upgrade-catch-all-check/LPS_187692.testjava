@@ -11,7 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_187692 {
 
 	public void method() {
-		FDSTableSchemaBuilder fDSTableSchemaBuilder = _fDSTableSchemaBuilderFactory.create();
+		FDSTableSchemaBuilder fDSTableSchemaBuilder =
+			_fDSTableSchemaBuilderFactory.create();
 
 		fDSTableSchemaBuilder.addFDSTableSchemaField("test123", "test123");
 	}

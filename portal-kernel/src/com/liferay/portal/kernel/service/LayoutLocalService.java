@@ -1414,7 +1414,8 @@ public interface LayoutLocalService
 	 String)}.
 	 * @param hasIconImage whether the icon image will be updated
 	 * @param iconBytes the byte array of the layout's new icon image
-	 * @param styleBookEntryId the primary key of the style book entrys
+	 * @param styleBookEntryERC the external reference code of the style book
+	 entry
 	 * @param faviconFileEntryId the file entry ID of the layout's new favicon
 	 * @param masterLayoutPlid the primary key of the master layout
 	 * @param serviceContext the service context to be applied. Can set the
@@ -1435,7 +1436,7 @@ public interface LayoutLocalService
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
 			Map<Locale, String> keywordsMap, Map<Locale, String> robotsMap,
 			String type, boolean hidden, Map<Locale, String> friendlyURLMap,
-			boolean hasIconImage, byte[] iconBytes, long styleBookEntryId,
+			boolean hasIconImage, byte[] iconBytes, String styleBookEntryERC,
 			long faviconFileEntryId, long masterLayoutPlid,
 			ServiceContext serviceContext)
 		throws PortalException;
@@ -1459,7 +1460,7 @@ public interface LayoutLocalService
 	public Layout updateLayout(
 			long groupId, boolean privateLayout, long layoutId,
 			String typeSettings, byte[] iconBytes, String themeId,
-			String colorSchemeId, long styleBookEntryId, String css,
+			String colorSchemeId, String styleBookEntryERC, String css,
 			long faviconFileEntryId, long masterLayoutPlid)
 		throws PortalException;
 
@@ -1662,13 +1663,14 @@ public interface LayoutLocalService
 	 * @param groupId the primary key of the group
 	 * @param privateLayout whether the layout is private to the group
 	 * @param layoutId the layout ID of the layout
-	 * @param styleBookEntryId the primary key of the style book entry
+	 * @param styleBookEntryERC the external reference code of the style book
+	 entry
 	 * @return the updated layout
 	 * @throws PortalException if a portal exception occurred
 	 */
-	public Layout updateStyleBookEntryId(
+	public Layout updateStyleBookEntryERC(
 			long groupId, boolean privateLayout, long layoutId,
-			long styleBookEntryId)
+			String styleBookEntryERC)
 		throws PortalException;
 
 	public Layout updateType(long plid, String type) throws PortalException;

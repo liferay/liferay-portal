@@ -73,8 +73,8 @@ public class WebsiteExternalReferenceCodeUpgradeProcessTest
 		return new BaseExternalReferenceCodeUpgradeProcess() {
 
 			@Override
-			protected String[][] getTableAndPrimaryKeyColumnNames() {
-				return new String[][] {{"Website", "websiteId"}};
+			protected String[] getTableNames() {
+				return new String[] {"Website"};
 			}
 
 		};

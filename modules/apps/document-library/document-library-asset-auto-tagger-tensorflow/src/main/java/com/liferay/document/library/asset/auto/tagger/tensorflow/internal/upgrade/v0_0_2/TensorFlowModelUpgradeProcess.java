@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.util.JarUtil;
+import com.liferay.portal.kernel.util.URLUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,7 +101,7 @@ public class TensorFlowModelUpgradeProcess extends UpgradeProcess {
 
 		File tempFile = FileUtil.createTempFile();
 
-		JarUtil.downloadAndInstallJar(new URL(url), tempFile.toPath(), sha1);
+		URLUtil.download(new URL(url), tempFile.toPath(), sha1);
 
 		_store.addFile(
 			0, CompanyConstants.SYSTEM,

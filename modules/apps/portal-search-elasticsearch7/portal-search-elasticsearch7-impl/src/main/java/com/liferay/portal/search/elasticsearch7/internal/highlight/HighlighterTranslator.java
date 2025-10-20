@@ -18,7 +18,7 @@ public class HighlighterTranslator {
 	public void translate(
 		SearchSourceBuilder searchSourceBuilder, String[] highlightFieldNames,
 		boolean highlightRequireFieldMatch, int highlightFragmentSize,
-		int highlightSnippetSize, boolean luceneSyntax) {
+		int highlightSnippetSize) {
 
 		HighlightBuilder highlightBuilder = new HighlightBuilder();
 
@@ -30,10 +30,6 @@ public class HighlighterTranslator {
 
 		highlightBuilder.postTags(HighlightUtil.HIGHLIGHT_TAG_CLOSE);
 		highlightBuilder.preTags(HighlightUtil.HIGHLIGHT_TAG_OPEN);
-
-		if (luceneSyntax) {
-			highlightRequireFieldMatch = false;
-		}
 
 		highlightBuilder.requireFieldMatch(highlightRequireFieldMatch);
 

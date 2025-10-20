@@ -493,7 +493,8 @@ public interface LayoutPageTemplateEntryLocalService
 		throws PortalException;
 
 	public LayoutPageTemplateEntry updateLayoutPageTemplateEntry(
-			long layoutPageTemplateEntryId, long classNameId, long classTypeId)
+			long userId, long layoutPageTemplateEntryId, long classNameId,
+			long classTypeId)
 		throws PortalException;
 
 	public LayoutPageTemplateEntry updateLayoutPageTemplateEntry(

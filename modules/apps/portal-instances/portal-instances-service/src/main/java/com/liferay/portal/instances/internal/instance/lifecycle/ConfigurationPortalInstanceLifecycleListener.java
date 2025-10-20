@@ -10,10 +10,10 @@ import com.liferay.portal.configuration.persistence.ReloadablePersistenceManager
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.util.PortalInstances;
 
 import java.util.Dictionary;
@@ -39,7 +39,7 @@ public class ConfigurationPortalInstanceLifecycleListener
 	public void portalInstancePreunregistered(Company company)
 		throws Exception {
 
-		if (!DBPartition.isPartitionEnabled()) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			return;
 		}
 
@@ -53,7 +53,7 @@ public class ConfigurationPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
-		if (!DBPartition.isPartitionEnabled() ||
+		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
 			(!PortalInstances.isCompanyInCopyProcess() &&
 			 !PortalInstances.isCompanyInInsertionProcess())) {
 
@@ -100,7 +100,7 @@ public class ConfigurationPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceUnregistered(Company company) throws Exception {
-		if (!DBPartition.isPartitionEnabled() ||
+		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
 			MapUtil.isEmpty(_configurationMap)) {
 
 			return;

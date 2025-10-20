@@ -14,8 +14,10 @@ public class LPS_193473 {
 		long userId, String className, long classPK, String number,
 		String extension, long listTypeId, boolean primary) {
 
-		PhoneLocalServiceUtil.addPhone(123, className, classPK, number, extension, listTypeId, primary);
-		PhoneLocalServiceUtil.addPhone(userId, className, classPK, number, extension, listTypeId, primary);
+		PhoneLocalServiceUtil.addPhone(
+			123, className, classPK, number, extension, listTypeId, primary);
+		PhoneLocalServiceUtil.addPhone(
+			userId, className, classPK, number, extension, listTypeId, primary);
 	}
 
 }

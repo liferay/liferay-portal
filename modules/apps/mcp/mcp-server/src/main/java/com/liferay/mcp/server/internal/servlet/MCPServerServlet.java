@@ -209,6 +209,11 @@ public class MCPServerServlet extends HttpServlet {
 
 					return String.valueOf(authorization);
 				}
+			).put(
+				"Content-Type",
+				() ->
+					Validator.isNotNull(body) ? ContentTypes.APPLICATION_JSON :
+						null
 			).build());
 
 		options.setLocation(location);

@@ -29,7 +29,8 @@ public class LPD_34771 {
 		String keywords) {
 
 		AccountEntryLocalServiceUtil.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null);
-		AccountEntryServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, 123, "test123");
+		AccountEntryServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, 123, "test123");
 		AccountEntryServiceUtil.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null);
 		_accountEntryLocalService.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null);
 		_accountEntryService.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null);
@@ -40,7 +41,8 @@ public class LPD_34771 {
 		String keywords, Boolean active) {
 
 		AccountEntryLocalServiceUtil.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null, null);
-		AccountEntryServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, 123, "test123", active);
+		AccountEntryServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, 123, "test123", active);
 		AccountEntryServiceUtil.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null, null);
 		_accountEntryLocalService.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null, null);
 		_accountEntryService.getUserAccountEntriesCount(userId, parentCommerceAccountId, keywords, null, null);
@@ -51,7 +53,9 @@ public class LPD_34771 {
 		String keywords, Boolean active, int start, int end) {
 
 		AccountEntryLocalServiceUtil.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, null, start, end);
-		AccountEntryServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, 123, "test123", active, start, end);
+		AccountEntryServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, 123, "test123", active, start,
+			end);
 		AccountEntryServiceUtil.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, null, start, end);
 		_accountEntryLocalService.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, null, start, end);
 		_accountEntryService.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, null, start, end);
@@ -62,7 +66,8 @@ public class LPD_34771 {
 		String keywords, int start, int end) {
 
 		AccountEntryLocalServiceUtil.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, start, end);
-		AccountEntryServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, 123, "test123", start, end);
+		AccountEntryServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, 123, "test123", start, end);
 		AccountEntryServiceUtil.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, start, end);
 		_accountEntryLocalService.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, start, end);
 		_accountEntryService.getUserAccountEntries(userId, parentCommerceAccountId, keywords, null, start, end);
@@ -75,7 +80,9 @@ public class LPD_34771 {
 		ServiceContext serviceContext) {
 
 		AccountEntryLocalServiceUtil.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
-		AccountEntryServiceUtil.updateAccountEntry(123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, serviceContext);
+		AccountEntryServiceUtil.updateAccountEntry(
+			123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active,
+			defaultBillingAddressId, defaultShippingAddressId, serviceContext);
 		AccountEntryServiceUtil.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
 		_accountEntryLocalService.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
 		_accountEntryService.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
@@ -88,7 +95,10 @@ public class LPD_34771 {
 		String externalReferenceCode, ServiceContext serviceContext) {
 
 		AccountEntryLocalServiceUtil.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
-		AccountEntryServiceUtil.updateAccountEntry(123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, externalReferenceCode, serviceContext);
+		AccountEntryServiceUtil.updateAccountEntry(
+			123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active,
+			defaultBillingAddressId, defaultShippingAddressId,
+			externalReferenceCode, serviceContext);
 		AccountEntryServiceUtil.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
 		_accountEntryLocalService.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);
 		_accountEntryService.updateAccountEntry(commerceAccountId, null, name, null, !logo, null, emailAddress, logoBytes, taxIdNumber, null, serviceContext);

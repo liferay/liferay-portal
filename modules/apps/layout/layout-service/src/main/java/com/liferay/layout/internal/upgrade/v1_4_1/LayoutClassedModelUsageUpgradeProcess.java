@@ -61,10 +61,10 @@ public class LayoutClassedModelUsageUpgradeProcess extends UpgradeProcess {
 				StringBundler.concat(
 					"insert into LayoutClassedModelUsage (ctCollectionId, ",
 					"uuid_, layoutClassedModelUsageId, groupId, companyId, ",
-					"createDate, modifiedDate, classExternalReferenceCode, ",
-					"classNameId, classPK, containerKey, containerType, plid, ",
-					"type_ ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?",
-					")"),
+					"createDate, modifiedDate, classNameId, classPK, ",
+					"cmExternalReferenceCode, containerKey, containerType, ",
+					"plid, type_ ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ",
+					"?, ?, ?)"),
 				resultSet -> new Object[] {
 					resultSet.getLong("ctCollectionId"),
 					resultSet.getLong("groupId"),
@@ -139,8 +139,8 @@ public class LayoutClassedModelUsageUpgradeProcess extends UpgradeProcess {
 						long ctCollectionId = (Long)values[0];
 
 						_addLayoutClassedModelUsage(
-							groupId, companyId, externalReferenceCode,
-							classNameId, classPK,
+							groupId, companyId, classNameId, classPK,
+							externalReferenceCode,
 							String.valueOf(fragmentEntryLinkId),
 							_classNameLocalService.getClassNameId(
 								FragmentEntryLink.class.getName()),
@@ -153,8 +153,8 @@ public class LayoutClassedModelUsageUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _addLayoutClassedModelUsage(
-			long groupId, long companyId, String classExternalReferenceCode,
-			long classNameId, long classPK, String containerKey,
+			long groupId, long companyId, long classNameId, long classPK,
+			String classExternalReferenceCode, String containerKey,
 			long containerType, long ctCollectionId, long plid,
 			Map<Long, Integer> layoutClassedModelUsageTypes,
 			PreparedStatement preparedStatement)
@@ -171,9 +171,9 @@ public class LayoutClassedModelUsageUpgradeProcess extends UpgradeProcess {
 		preparedStatement.setTimestamp(6, timestamp);
 		preparedStatement.setTimestamp(7, timestamp);
 
-		preparedStatement.setString(8, classExternalReferenceCode);
-		preparedStatement.setLong(9, classNameId);
-		preparedStatement.setLong(10, classPK);
+		preparedStatement.setLong(8, classNameId);
+		preparedStatement.setLong(9, classPK);
+		preparedStatement.setString(10, classExternalReferenceCode);
 		preparedStatement.setString(11, containerKey);
 		preparedStatement.setLong(12, containerType);
 		preparedStatement.setLong(13, plid);

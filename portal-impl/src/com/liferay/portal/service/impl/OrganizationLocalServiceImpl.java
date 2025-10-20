@@ -354,11 +354,12 @@ public class OrganizationLocalServiceImpl
 		}
 
 		Group group = _groupLocalService.addGroup(
-			userId, parentGroupId, Organization.class.getName(), organizationId,
+			StringPool.BLANK, userId, parentGroupId,
+			Organization.class.getName(), organizationId,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, getLocalizationMap(name),
-			null, GroupConstants.TYPE_SITE_PRIVATE, false,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, site, true,
-			null);
+			null, GroupConstants.TYPE_SITE_PRIVATE, null, false,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, site, false,
+			true, null);
 
 		// Role
 
@@ -2224,7 +2225,7 @@ public class OrganizationLocalServiceImpl
 		if (createSite || !oldName.equals(name) || organizationGroup) {
 			_groupLocalService.updateGroup(
 				group.getGroupId(), parentGroupId, getLocalizationMap(name),
-				group.getDescriptionMap(), group.getType(),
+				group.getDescriptionMap(), group.getType(), null,
 				group.isManualMembership(), group.getMembershipRestriction(),
 				group.getFriendlyURL(), group.isInheritContent(),
 				group.isActive(), null);

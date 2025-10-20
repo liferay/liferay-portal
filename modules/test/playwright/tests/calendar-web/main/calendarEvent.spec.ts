@@ -497,7 +497,7 @@ test('event ending at midnight does not render on the next day', async ({
 		})
 	);
 
-	const title = getRandomInt().toString();
+	const title = 'midnightEvent' + getRandomInt();
 
 	await calendarWidgetPage.addEvent({
 		allDay: false,

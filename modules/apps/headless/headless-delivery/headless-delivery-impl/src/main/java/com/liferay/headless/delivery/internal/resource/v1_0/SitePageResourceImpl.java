@@ -362,30 +362,30 @@ public class SitePageResourceImpl
 					Boolean include = siteMapSettings.getInclude();
 
 					if (include != null) {
-						String siteMapInclude = "0";
+						String sitemapInclude = "0";
 
 						if (include) {
-							siteMapInclude = "1";
+							sitemapInclude = "1";
 						}
 
 						typeSettingsUnicodeProperties.setProperty(
 							LayoutTypePortletConstants.SITEMAP_INCLUDE,
-							siteMapInclude);
+							sitemapInclude);
 					}
 
 					Boolean includeChildSitePages =
 						siteMapSettings.getIncludeChildSitePages();
 
 					if (includeChildSitePages != null) {
-						String siteMapIncludeChildLayouts = "false";
+						String sitemapIncludeChildLayouts = "false";
 
 						if (includeChildSitePages) {
-							siteMapIncludeChildLayouts = "true";
+							sitemapIncludeChildLayouts = "true";
 						}
 
 						typeSettingsUnicodeProperties.setProperty(
 							"sitemap-include-child-layouts",
-							siteMapIncludeChildLayouts);
+							sitemapIncludeChildLayouts);
 					}
 
 					Double pagePriority = siteMapSettings.getPagePriority();

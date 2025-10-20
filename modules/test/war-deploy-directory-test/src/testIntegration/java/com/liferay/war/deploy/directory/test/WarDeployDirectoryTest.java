@@ -7,11 +7,11 @@ package com.liferay.war.deploy.directory.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.File;
@@ -48,7 +48,7 @@ public class WarDeployDirectoryTest {
 			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
 
 	public static void assume() {
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 	}
 
 	@Test

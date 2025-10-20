@@ -226,6 +226,10 @@ public class DLFileEntryServiceTest {
 		DLFileEntry dlFileEntry = addDLFileEntry(
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, false);
 
+		updateStatus(
+			dlFileEntry.getFileVersion(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
 		StreamUtil.cleanUp(
 			DLFileEntryServiceUtil.getFileAsStream(
 				dlFileEntry.getFileEntryId(), dlFileEntry.getVersion()));

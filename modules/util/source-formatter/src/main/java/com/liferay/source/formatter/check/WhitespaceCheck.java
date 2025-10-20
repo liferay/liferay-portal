@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.ToolsUtil;
+import com.liferay.source.formatter.check.util.XMLSourceUtil;
 
 import java.io.IOException;
 
@@ -47,7 +48,17 @@ public class WhitespaceCheck extends BaseFileCheck {
 	protected String formatClosingTag(String content) {
 		Matcher matcher = _closingTagPattern.matcher(content);
 
-		return matcher.replaceAll("$1 $2");
+		while (matcher.find()) {
+			if (XMLSourceUtil.isInsideCDATAMarkup(content, matcher.start())) {
+				continue;
+			}
+
+			return StringUtil.replaceFirst(
+				content, matcher.group(),
+				matcher.group(1) + " " + matcher.group(2), matcher.start());
+		}
+
+		return content;
 	}
 
 	protected String formatDoubleSpace(String line) {

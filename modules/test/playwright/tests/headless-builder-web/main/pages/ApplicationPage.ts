@@ -10,6 +10,7 @@ export class ApplicationPage {
 	readonly addSchemaButton: Locator;
 	readonly applicationTitleTextBox: Locator;
 	readonly createButton: Locator;
+	readonly endpointConfigurationSchemaSelector: Locator;
 	readonly endpointPathTextBox: Locator;
 	readonly httpMethodButton: Locator;
 	readonly page: Page;
@@ -25,6 +26,10 @@ export class ApplicationPage {
 			name: 'Enter title.',
 		});
 		this.createButton = page.getByRole('button', {name: 'Create'});
+		this.endpointConfigurationSchemaSelector = page.getByLabel(
+			'Response Body Schema',
+			{exact: true}
+		);
 		this.endpointPathTextBox = page.getByPlaceholder('Enter Path');
 		this.httpMethodButton = page.getByLabel('Method');
 		this.page = page;
@@ -35,6 +40,11 @@ export class ApplicationPage {
 			'Select an Object Definition',
 			{exact: true}
 		);
+	}
+
+	async configureSchemaOfEndpoint(name: string) {
+		await this.endpointConfigurationSchemaSelector.click();
+		await this.page.getByRole('menuitem', {name}).click();
 	}
 
 	async goToDetailsTab() {

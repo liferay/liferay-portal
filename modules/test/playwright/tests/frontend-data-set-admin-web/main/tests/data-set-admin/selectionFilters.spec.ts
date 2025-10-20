@@ -330,7 +330,7 @@ test(
 	'Can create and edit a selection filter with API Headless source using composed/complex fields',
 	{tag: '@LPD-25905'},
 	async ({filtersPage, page}) => {
-		const composedFieldName = 'dataSetToDataSetTableSections.description';
+		const composedFieldName = 'removedBy.name';
 
 		await test.step('Create a selection filter from API Headless source', async () => {
 			await filtersPage.createSelectionFilterApiHeadless({

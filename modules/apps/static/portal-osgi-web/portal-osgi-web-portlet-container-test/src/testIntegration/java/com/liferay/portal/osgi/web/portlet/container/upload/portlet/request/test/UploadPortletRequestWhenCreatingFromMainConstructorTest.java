@@ -51,12 +51,12 @@ public class UploadPortletRequestWhenCreatingFromMainConstructorTest {
 			PortletContainerTestUtil.getMultipartRequest(
 				_portletNamespace, _BYTES);
 
-		HttpServletRequest mockHttpServletRequest =
+		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)liferayServletRequest.getRequest();
 
 		UploadPortletRequest uploadPortletRequest =
 			UploadTestUtil.createUploadPortletRequest(
-				_portal.getUploadServletRequest(mockHttpServletRequest), null,
+				_portal.getUploadServletRequest(httpServletRequest), null,
 				_portletNamespace);
 
 		Map<String, FileItem[]> multipartParameterMap =

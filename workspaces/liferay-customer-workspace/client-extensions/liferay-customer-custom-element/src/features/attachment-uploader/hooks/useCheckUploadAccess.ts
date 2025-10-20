@@ -10,10 +10,10 @@ import {Liferay} from '~/services/liferay';
 type ErrorCode =
 	| 'FORBIDDEN_ACCESS'
 	| 'INVALID_TICKET_NUMBER'
+	| 'JIRA_ORGANIZATION_ERROR'
 	| 'TICKET_IS_CLOSED'
 	| 'UNEXPECTED_ERROR'
-	| 'UNKNOWN'
-	| 'ZENDESK_ORGANIZATION_ERROR';
+	| 'UNKNOWN';
 
 interface IResponse {
 	errorCode: ErrorCode | null;
@@ -67,9 +67,9 @@ export default function useCheckUploadAccess(): IResponse {
 				if (!controller.signal.aborted) {
 					switch (errorCode) {
 						case 'FORBIDDEN_ACCESS':
-						case 'TICKET_IS_CLOSED':
 						case 'INVALID_TICKET_NUMBER':
-						case 'ZENDESK_ORGANIZATION_ERROR':
+						case 'JIRA_ORGANIZATION_ERROR':
+						case 'TICKET_IS_CLOSED':
 						case 'UNEXPECTED_ERROR':
 							setErrorCode(errorCode);
 							break;

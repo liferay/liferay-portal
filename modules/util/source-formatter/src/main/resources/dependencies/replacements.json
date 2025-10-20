@@ -2988,6 +2988,19 @@
 	},
 	{
 		"classNames": [
+			"UserLocalServiceWrapper"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-28357",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\\s+public void (?<methodName>addGroupUser|addGroupUsers)(?<methodDeclaration>[^{]+?)\\{(?<methodContent>[\\s\\S]*?)(?<methodReturn>(?<!return\\s)super\\.\\1\\s*\\([^)]*\\);)",
+				"to": "@Override\n\tpublic boolean ${methodName}${methodDeclaration}{${methodContent}return ${methodReturn}"
+			}
+		]
+	},
+	{
+		"classNames": [
 			"StrutsAction"
 		],
 		"classStructurePattern": true,
@@ -3378,6 +3391,19 @@
 	},
 	{
 		"classNames": [
+			"PDFProcessor"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-30560",
+		"newImports": [
+			"com.liferay.document.library.kernel.processor.PDFProcessorUtil"
+		],
+		"newMethods": [
+			"@Override\n\tpublic void generatePreviews() {\n\t\treturn PDFProcessorUtil.getPDFProcessor().generatePreviews();\n\t}"
+		]
+	},
+	{
+		"classNames": [
 			"UserLocalService",
 			"UserLocalServiceUtil",
 			"UserService",
@@ -3678,6 +3704,18 @@
 	},
 	{
 		"classNames": [
+			"Address",
+			"EmailAddress",
+			"OrgLabor",
+			"Phone",
+			"Website"
+		],
+		"from": "regex:(?<variableName>\\w+)\\.(?<prefixMethodName>get|set)Type(?<suffix>Id)?",
+		"issueKey": "LPD-36750",
+		"to": "${variableName}.${prefixMethodName}ListType${suffix}"
+	},
+	{
+		"classNames": [
 			"Contact"
 		],
 		"from": "regex:(?<variableName>\\w+)\\.(?<prefixMethodName>getPrefix|getSuffix|setPrefix|setSuffix)Id",
@@ -3689,18 +3727,6 @@
 			"Organization"
 		],
 		"from": "regex:(?<variableName>\\w+)\\.(?<prefixMethodName>getStatus|setStatus)Id",
-		"issueKey": "LPD-36750",
-		"to": "${variableName}.${prefixMethodName}ListTypeId"
-	},
-	{
-		"classNames": [
-			"Address",
-			"EmailAddress",
-			"OrgLabor",
-			"Phone",
-			"Website"
-		],
-		"from": "regex:(?<variableName>\\w+)\\.(?<prefixMethodName>get|set)TypeId",
 		"issueKey": "LPD-36750",
 		"to": "${variableName}.${prefixMethodName}ListTypeId"
 	},
@@ -4902,6 +4928,15 @@
 		"from": "setWithSafeCloseable",
 		"issueKey": "LPD-58435",
 		"to": "setCompanyIdWithSafeCloseable"
+	},
+	{
+		"classNames": [
+			"LayoutPageTemplateStructureLocalService",
+			"LayoutPageTemplateStructureLocalServiceUtil"
+		],
+		"from": "fetchLayoutPageTemplateStructure(long paramName, long paramName, boolean paramName)",
+		"issueKey": "LPD-58976",
+		"to": "fetchLayoutPageTemplateStructure(param#0#, param#1#)"
 	},
 	{
 		"from": "PropsValues.XML_SITEMAP_INDEX_ENABLED",

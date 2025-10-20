@@ -13,14 +13,20 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_36311 {
 
 	public void method(
-		long userId, long repositoryId, long folderId,
-		String sourceFileName, String mimeType, byte[] bytes,
-		ServiceContext serviceContext) {
+		long userId, long repositoryId, long folderId, String sourceFileName,
+		String mimeType, byte[] bytes, ServiceContext serviceContext) {
 
-		_dlAppLocalService.addFileEntry(123, repositoryId, folderId, sourceFileName, mimeType, bytes, serviceContext);
-		_dlAppLocalService.addFileEntry(userId, repositoryId, folderId, sourceFileName, mimeType, bytes, serviceContext);
-		_dlAppService.addFileEntry(123, folderId, sourceFileName, mimeType, bytes, serviceContext);
-		_dlAppService.addFileEntry(repositoryId, folderId, sourceFileName, mimeType, bytes, serviceContext);
+		_dlAppLocalService.addFileEntry(
+			123, repositoryId, folderId, sourceFileName, mimeType, bytes,
+			serviceContext);
+		_dlAppLocalService.addFileEntry(
+			userId, repositoryId, folderId, sourceFileName, mimeType, bytes,
+			serviceContext);
+		_dlAppService.addFileEntry(
+			123, folderId, sourceFileName, mimeType, bytes, serviceContext);
+		_dlAppService.addFileEntry(
+			repositoryId, folderId, sourceFileName, mimeType, bytes,
+			serviceContext);
 	}
 
 	@Reference

@@ -12,6 +12,7 @@ export class DefaultPermissionsPage {
 	readonly permissionsModal: Locator;
 	readonly permissionsModalCancelButton: Locator;
 	readonly permissionsModalSaveButton: Locator;
+	readonly propagateCheckbox: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -20,11 +21,15 @@ export class DefaultPermissionsPage {
 			this.permissionsModal.getByTestId('button-cancel');
 		this.permissionsModalSaveButton =
 			this.permissionsModal.getByTestId('button-save');
+		this.propagateCheckbox = this.permissionsModal.getByLabel(
+			'I understand that these changes will also affect existing entities.'
+		);
 	}
 
 	async checkPermissionsAndSave(
 		permissions: Array<{action: string; role: string}>,
-		bulk = false
+		bulk = false,
+		propagate = false
 	) {
 		await expect(this.permissionsModal).toBeVisible();
 
@@ -36,12 +41,25 @@ export class DefaultPermissionsPage {
 				.check();
 		}
 
+		if (propagate) {
+			await expect(this.permissionsModalSaveButton).toBeDisabled();
+
+			await this.propagateCheckbox.check();
+		}
+
 		await this.permissionsModalSaveButton.click();
 
 		if (bulk) {
 			await waitForAlert(
 				this.page,
 				'Info:Default permissions update action started for 2 assets. Check the Task Report for details.',
+				{type: 'info'}
+			);
+		}
+		else if (propagate) {
+			await waitForAlert(
+				this.page,
+				'Info:Default permissions update action started for all assets. Check the Task Report for details.',
 				{type: 'info'}
 			);
 		}
@@ -71,5 +89,7 @@ export class DefaultPermissionsPage {
 				).not.toBeChecked();
 			}
 		}
+
+		await this.permissionsModalCancelButton.click();
 	}
 }

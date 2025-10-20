@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Object Admin REST API
 Bundle-SymbolicName: com.liferay.object.admin.rest.api
-Bundle-Version: 22.4.1
+Bundle-Version: 22.5.0
 Export-Package:\
 	com.liferay.object.admin.rest.dto.v1_0,\
 	com.liferay.object.admin.rest.dto.v1_0.util,\

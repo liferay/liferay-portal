@@ -26,10 +26,10 @@ public class ValidatorIsNullCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "Validator", new String[] {"isNotNull", "isNull"});
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 

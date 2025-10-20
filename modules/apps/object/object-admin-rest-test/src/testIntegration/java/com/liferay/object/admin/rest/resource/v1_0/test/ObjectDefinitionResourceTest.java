@@ -1483,6 +1483,8 @@ public class ObjectDefinitionResourceTest
 		Assert.assertEquals(
 			"titleObjectFieldName",
 			randomObjectDefinition.getTitleObjectFieldName());
+
+		_testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField();
 	}
 
 	@Override
@@ -1916,6 +1918,55 @@ public class ObjectDefinitionResourceTest
 		return objectDefinition;
 	}
 
+	private void _setSystemAggregationObjectField(
+		String objectFieldName, ObjectDefinition objectDefinition,
+		String objectRelationshipName) {
+
+		objectDefinition.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.AGGREGATION;
+						DBType = ObjectField.DBType.create("String");
+						defaultValue = null;
+						externalReferenceCode = RandomTestUtil.randomString();
+						indexed = false;
+						indexedAsKeyword = false;
+						indexedLanguageId = StringPool.BLANK;
+						label = Collections.singletonMap(
+							"en-US", RandomTestUtil.randomString());
+						localized = false;
+						name = objectFieldName;
+						objectFieldSettings = new ObjectFieldSetting[] {
+							new ObjectFieldSetting() {
+								{
+									name =
+										ObjectFieldSettingConstants.
+											NAME_FUNCTION;
+									value =
+										ObjectFieldSettingConstants.VALUE_COUNT;
+								}
+							},
+							new ObjectFieldSetting() {
+								{
+									name =
+										ObjectFieldSettingConstants.
+											NAME_OBJECT_RELATIONSHIP_NAME;
+									value = objectRelationshipName;
+								}
+							}
+						};
+						readOnly = ReadOnly.TRUE;
+						readOnlyConditionExpression = StringPool.BLANK;
+						required = false;
+						state = false;
+						system = true;
+						unique = false;
+					}
+				}
+			});
+	}
+
 	private void _testGetObjectDefinition() throws Exception {
 		super.testGetObjectDefinition();
 
@@ -2174,73 +2225,16 @@ public class ObjectDefinitionResourceTest
 
 		String aggregationObjectFieldName = "c" + RandomTestUtil.randomString();
 
-		randomModifiableSystemObjectDefinition.setObjectFields(
-			new ObjectField[] {
-				new ObjectField() {
-					{
-						businessType = BusinessType.AGGREGATION;
-						DBType = ObjectField.DBType.create("String");
-						defaultValue = null;
-						externalReferenceCode = RandomTestUtil.randomString();
-						indexed = false;
-						indexedAsKeyword = false;
-						indexedLanguageId = StringPool.BLANK;
-						label = Collections.singletonMap(
-							"en-US", RandomTestUtil.randomString());
-						localized = false;
-						name = aggregationObjectFieldName;
-						objectFieldSettings = new ObjectFieldSetting[] {
-							new ObjectFieldSetting() {
-								{
-									name =
-										ObjectFieldSettingConstants.
-											NAME_FUNCTION;
-									value =
-										ObjectFieldSettingConstants.VALUE_COUNT;
-								}
-							},
-							new ObjectFieldSetting() {
-								{
-									name =
-										ObjectFieldSettingConstants.
-											NAME_OBJECT_RELATIONSHIP_NAME;
-									value = objectRelationship.getName();
-								}
-							}
-						};
-						readOnly = ReadOnly.TRUE;
-						readOnlyConditionExpression = StringPool.BLANK;
-						required = false;
-						state = false;
-						system = true;
-						unique = false;
-					}
-				},
-				new ObjectField() {
-					{
-						businessType = BusinessType.TEXT;
-						DBType = ObjectField.DBType.create("String");
-						label = Collections.singletonMap("en_US", "Column");
-						localized = false;
-						name = StringUtil.randomId();
-					}
-				}
-			});
+		_setSystemAggregationObjectField(
+			aggregationObjectFieldName, randomModifiableSystemObjectDefinition,
+			objectRelationship.getName());
 
-		_addObjectDefinition(randomModifiableSystemObjectDefinition);
-
-		com.liferay.object.model.ObjectDefinition
-			serviceBuilderObjectDefinition1 =
-				_objectDefinitionLocalService.
-					getObjectDefinitionByExternalReferenceCode(
-						randomModifiableSystemObjectDefinition.
-							getExternalReferenceCode(),
-						TestPropsValues.getCompanyId());
+		ObjectDefinition postObjectDefinition = _addObjectDefinition(
+			randomModifiableSystemObjectDefinition);
 
 		Assert.assertNotNull(
 			_objectFieldLocalService.getObjectField(
-				serviceBuilderObjectDefinition1.getObjectDefinitionId(),
-				aggregationObjectFieldName));
+				postObjectDefinition.getId(), aggregationObjectFieldName));
 	}
 
 	@TestInfo("LPD-63539")
@@ -2350,6 +2344,36 @@ public class ObjectDefinitionResourceTest
 
 		_assertWorkflowDefinitionLinks(
 			_addObjectDefinition(objectDefinition), workflowDefinitionLinks);
+	}
+
+	private void _testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField()
+		throws Exception {
+
+		ObjectDefinition randomModifiableSystemObjectDefinition =
+			_randomModifiableSystemObjectDefinition();
+
+		ObjectRelationship objectRelationship = _createObjectRelationship(
+			randomModifiableSystemObjectDefinition, randomObjectDefinition(),
+			ObjectRelationship.Type.ONE_TO_MANY);
+
+		randomModifiableSystemObjectDefinition.setObjectRelationships(
+			new ObjectRelationship[] {objectRelationship});
+
+		String aggregationObjectFieldName = "c" + RandomTestUtil.randomString();
+
+		_setSystemAggregationObjectField(
+			aggregationObjectFieldName, randomModifiableSystemObjectDefinition,
+			objectRelationship.getName());
+
+		ObjectDefinition putObjectDefinition =
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				randomModifiableSystemObjectDefinition.
+					getExternalReferenceCode(),
+				randomModifiableSystemObjectDefinition);
+
+		Assert.assertNotNull(
+			_objectFieldLocalService.getObjectField(
+				putObjectDefinition.getId(), aggregationObjectFieldName));
 	}
 
 	private JSONObject _waitForFinish(

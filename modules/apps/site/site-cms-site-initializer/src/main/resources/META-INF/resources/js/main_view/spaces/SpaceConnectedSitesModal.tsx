@@ -9,6 +9,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayModal from '@clayui/modal';
 import ClaySticker from '@clayui/sticker';
 import {openToast} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useId, useState} from 'react';
 
 import ConnectedSiteService from '../../common/services/ConnectedSiteService';
@@ -18,6 +19,13 @@ const showErrorMessage = (message: string) => {
 	openToast({
 		message,
 		type: 'danger',
+	});
+};
+
+const showSuccessMessage = (message: string) => {
+	openToast({
+		message,
+		type: 'success',
 	});
 };
 
@@ -47,6 +55,14 @@ const ConnectedSiteActions = ({
 		}
 
 		onSiteDisconnected?.(site);
+		showSuccessMessage(
+			sub(
+				Liferay.Language.get(
+					'site-x-was-successfully-disconnected-from-the-space'
+				),
+				`<strong>${site.name}</strong>`
+			)
+		);
 	};
 
 	const changeSearchable = async () => {
@@ -122,6 +138,14 @@ const SitesSelector = ({
 
 			if (data) {
 				onSiteConnected(data);
+				showSuccessMessage(
+					sub(
+						Liferay.Language.get(
+							'site-x-was-successfully-connected-to-the-space'
+						),
+						`<strong>${siteSelected.name}</strong>`
+					)
+				);
 			}
 			else if (error) {
 				showErrorMessage(

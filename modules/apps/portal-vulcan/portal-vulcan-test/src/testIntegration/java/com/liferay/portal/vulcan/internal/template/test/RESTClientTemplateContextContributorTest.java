@@ -6,24 +6,18 @@
 package com.liferay.portal.vulcan.internal.template.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
-
-import java.net.URL;
-
-import java.util.Enumeration;
 
 import org.hamcrest.CoreMatchers;
 
@@ -90,40 +84,15 @@ public class RESTClientTemplateContextContributorTest {
 	}
 
 	private InputStream _toInputStream() throws Exception {
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
-
 		String basePath =
 			"com/liferay/portal/vulcan/internal/template/test/dependencies" +
 				"/site-initializer/";
 
-		Bundle bundle = FrameworkUtil.getBundle(
-			RESTClientTemplateContextContributorTest.class);
-
-		Enumeration<URL> enumeration = bundle.findEntries(basePath, "*", true);
-
-		if (enumeration != null) {
-			while (enumeration.hasMoreElements()) {
-				URL url = enumeration.nextElement();
-
-				String urlPath = url.getPath();
-
-				if (urlPath.endsWith(StringPool.SLASH)) {
-					continue;
-				}
-
-				String zipPath = urlPath.substring(basePath.length());
-
-				if (zipPath.startsWith(StringPool.SLASH)) {
-					zipPath = zipPath.substring(1);
-				}
-
-				try (InputStream inputStream = url.openStream()) {
-					zipWriter.addEntry(zipPath, inputStream);
-				}
-			}
-		}
-
-		return new FileInputStream(zipWriter.getFile());
+		return ZipFileTestUtil.toInputStream(
+			basePath,
+			FrameworkUtil.getBundle(
+				RESTClientTemplateContextContributorTest.class),
+			_zipWriterFactory.getZipWriter());
 	}
 
 	@Inject

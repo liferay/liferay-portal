@@ -490,6 +490,29 @@ public abstract class BaseTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/test/v1.0/test-entities/multipart/image'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostTestEntityMultipartImageRequestBody.class)))
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "TestEntity")}
+	)
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path("/test-entities/multipart/image")
+	@jakarta.ws.rs.POST
+	@Override
+	public Response postTestEntityMultipartImage(MultipartBody multipartBody)
+		throws Exception {
+
+		Response.ResponseBuilder responseBuilder = Response.ok();
+
+		return responseBuilder.build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/test/v1.0/test-entities/{testEntityId}' -d $'{"dateCreated": ___, "dateModified": ___, "description": ___, "documentId": ___, "jsonProperty": ___, "name": ___, "nestedTestEntity": ___, "self": ___, "stringTestEntities": ___, "stringTestEntity": ___, "testEntities": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -1369,6 +1392,17 @@ public abstract class BaseTestEntityResourceImpl
 	private class PostTestEntityMultipartBulkRequestBody {
 
 		public TestEntity[] testEntities;
+
+	}
+
+	private class PostTestEntityMultipartImageRequestBody {
+
+		@io.swagger.v3.oas.annotations.media.Schema(
+			description = "File", format = "binary", type = "string"
+		)
+		public String file;
+
+		public String imageName;
 
 	}
 

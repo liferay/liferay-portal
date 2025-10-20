@@ -16,6 +16,6 @@ Role role = (Role)row.getObject();
 <clay:dropdown-actions
 	aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
 	dropdownItems="<%= roleDisplayContext.getActionDropdownItems(role) %>"
-	message='<%= LanguageUtil.format(request, "show-actions-for-x", role.getTitle(locale)) %>'
+	message='<%= LanguageUtil.format(request, "show-actions-for-x", HtmlUtil.escape(role.getTitle(locale))) %>'
 	propsTransformer="{RoleActionPropsTransformer} from roles-admin-web"
 />

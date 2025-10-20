@@ -92,6 +92,17 @@ const assertErrorToast = async () => {
 	});
 };
 
+const assertSuccessToast = async (message: string) => {
+	await waitFor(() => {
+		expect(mockedOpenToast).toHaveBeenCalledTimes(1);
+
+		expect(mockedOpenToast).toHaveBeenCalledWith({
+			message,
+			type: 'success',
+		});
+	});
+};
+
 const waitForComponentRendering = async () => {
 	const connectedSite = await screen.findByText('Connected Site 1');
 
@@ -214,6 +225,10 @@ describe('SpaceConnectedSitesModal', () => {
 				);
 			});
 
+			await assertSuccessToast(
+				'site-x-was-successfully-connected-to-the-space'
+			);
+
 			expect(
 				screen.getByText(mockUnconnectedSite.name)
 			).toBeInTheDocument();
@@ -268,6 +283,10 @@ describe('SpaceConnectedSitesModal', () => {
 					'1'
 				);
 			});
+
+			await assertSuccessToast(
+				'site-x-was-successfully-disconnected-from-the-space'
+			);
 
 			expect(
 				screen.queryByText('Connected Site 1')

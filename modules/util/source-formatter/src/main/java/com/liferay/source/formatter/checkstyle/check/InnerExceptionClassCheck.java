@@ -48,11 +48,11 @@ public class InnerExceptionClassCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> constructorDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> constructorDefinitionDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.CTOR_DEF);
 
 		for (DetailAST constructorDefinitionDetailAST :
-				constructorDefinitionDetailASTList) {
+				constructorDefinitionDetailASTs) {
 
 			DetailAST modifiersDetailAST =
 				constructorDefinitionDetailAST.findFirstToken(
@@ -70,12 +70,10 @@ public class InnerExceptionClassCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> classDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> classDefinitionDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.CLASS_DEF);
 
-		for (DetailAST classDefinitionDetailAST :
-				classDefinitionDetailASTList) {
-
+		for (DetailAST classDefinitionDetailAST : classDefinitionDetailASTs) {
 			DetailAST modifiersDetailAST =
 				classDefinitionDetailAST.findFirstToken(TokenTypes.MODIFIERS);
 

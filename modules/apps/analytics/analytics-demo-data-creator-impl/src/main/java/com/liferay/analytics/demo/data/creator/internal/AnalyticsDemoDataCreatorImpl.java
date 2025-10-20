@@ -280,12 +280,13 @@ public class AnalyticsDemoDataCreatorImpl implements AnalyticsDemoDataCreator {
 
 			try {
 				group = _groupLocalService.addGroup(
-					_guestUserId, GroupConstants.DEFAULT_PARENT_GROUP_ID, null,
-					0, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
-					new HashMap<>(), GroupConstants.TYPE_SITE_OPEN, true,
+					StringPool.BLANK, _guestUserId,
+					GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+					GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
+					new HashMap<>(), GroupConstants.TYPE_SITE_OPEN, null, true,
 					GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 					StringPool.SLASH + _friendlyURLNormalizer.normalize(name),
-					true, true, null);
+					true, false, true, null);
 			}
 			catch (DuplicateGroupException duplicateGroupException) {
 				if (_log.isDebugEnabled()) {

@@ -33,13 +33,13 @@ public class MarketplaceUtil {
 				).put(
 					"orderItemId", orderItem.getId()
 				).put(
-					"sku", orderItem.getSku()
-				).put(
-					"shippedQuantity", 0
-				).put(
 					"quantity",
 					orderItem.getQuantity(
 					).intValue()
+				).put(
+					"shippedQuantity", 0
+				).put(
+					"sku", orderItem.getSku()
 				));
 		}
 

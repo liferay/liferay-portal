@@ -20,7 +20,7 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 <liferay-util:html-top
 	outputKey="com.liferay.segments.web#/segments_configuration.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/configuration.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="segments-web/css/configuration.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <clay:sheet

@@ -187,13 +187,11 @@ public class AssetCategoriesSelectorTagTest {
 	private HttpServletRequest _getMockHttpServletRequest(
 		ThemeDisplay themeDisplay) {
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
+		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
-		return mockHttpServletRequest;
+		return httpServletRequest;
 	}
 
 	@Inject

@@ -27,8 +27,8 @@ const ProductPurchaseFooter: React.FC<ProductPurchaseFooterProps> = ({
 	const {productPurchaseCart} = useProductPurchaseOutletContext();
 
 	return (
-		<div className="d-flex flex-column mt-6 w-100">
-			<div className="align-items-center d-flex justify-content-between mt-6 w-100">
+		<div className="d-flex flex-column mt-3 w-100">
+			<div className="align-items-center d-flex justify-content-between mt-3 w-100">
 				<ClayButton
 					className="font-weight-bold"
 					displayType="unstyled"

@@ -217,7 +217,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 					})
 				).toBeVisible();
 
-				const button = await tableRow.getByRole('button', {
+				const button = tableRow.getByRole('button', {
 					exact: true,
 					name: 'Actions',
 				});
@@ -241,7 +241,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 			});
 
 		await test.step('Click the modal item action opens a modal window', async () => {
-			const button = await datasetRow.getByRole('button', {
+			const button = datasetRow.getByRole('button', {
 				exact: true,
 				name: 'Actions',
 			});
@@ -277,7 +277,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 		});
 
 		await test.step('Click the side panel item action opens a side panel', async () => {
-			const button = await datasetRow.getByRole('button', {
+			const button = datasetRow.getByRole('button', {
 				exact: true,
 				name: 'Actions',
 			});
@@ -422,7 +422,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				.locator('.list-group-title')
 				.allInnerTexts();
 
-			const listActionLink = await firstListItem.getByLabel(
+			const listActionLink = firstListItem.getByLabel(
 				LINK_ITEM_ACTION_NAME
 			);
 
@@ -450,7 +450,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				.first()
 				.allInnerTexts();
 
-			const tableActionLink = await itemActionsCell.getByLabel(
+			const tableActionLink = itemActionsCell.getByLabel(
 				LINK_ITEM_ACTION_NAME
 			);
 
@@ -467,7 +467,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 		page,
 	}) => {
 		const asyncItemActionName = 'Async item action';
-		const asyncItemActionUrl = `/o${API_ENDPOINT_PATH}/table-sections/{id}`;
+		const asyncItemActionUrl = `/o${API_ENDPOINT_PATH}/{dataSetId}/dataSetToDataSetTableSections/{dataSetTableSectionId}`;
 		const headlessItemActionName = 'Headless item action';
 		const headlessItemActionPermissionKey = 'delete';
 		const nonAvailableHeadlessItemActionName =

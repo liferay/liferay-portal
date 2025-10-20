@@ -13,6 +13,7 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.HashSet;
@@ -119,6 +120,11 @@ public class FormRelationshipLayoutStructureItemImporter
 		if (definitionMap.containsKey("name")) {
 			formRelationshipStyledLayoutStructureItem.setName(
 				String.valueOf(definitionMap.get("name")));
+		}
+
+		if (definitionMap.containsKey("repeatable")) {
+			formRelationshipStyledLayoutStructureItem.setRepeatable(
+				GetterUtil.getBoolean(definitionMap.get("repeatable")));
 		}
 
 		return formRelationshipStyledLayoutStructureItem;

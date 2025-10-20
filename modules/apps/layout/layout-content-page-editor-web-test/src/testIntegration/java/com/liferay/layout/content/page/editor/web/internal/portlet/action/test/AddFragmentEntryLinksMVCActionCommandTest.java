@@ -136,22 +136,29 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPD-61879")
+	@TestInfo({"LPD-61879", "LPD-65377"})
 	public void testAddFragmentCompositionWithNamespaceInEditableID()
 		throws Exception {
 
-		FragmentComposition fragmentComposition = _addFragmentComposition(
+		JSONObject editableValuesJSONObject1 = JSONUtil.put(
+			FragmentEntryProcessorConstants.
+				KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
 			JSONUtil.put(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				"[$NAMESPACE$]-element-text",
 				JSONUtil.put(
-					"[$NAMESPACE$]-element-text",
-					JSONUtil.put(
-						LocaleUtil.toLanguageId(
-							_portal.getSiteDefaultLocale(_group)),
-						RandomTestUtil.randomString()))
-			).toString(),
-			null, FragmentConstants.TYPE_COMPONENT,
+					LocaleUtil.toLanguageId(
+						_portal.getSiteDefaultLocale(_group)),
+					RandomTestUtil.randomString()))
+		).put(
+			FragmentEntryProcessorConstants.
+				KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+			JSONUtil.put(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString())
+		);
+
+		FragmentComposition fragmentComposition = _addFragmentComposition(
+			editableValuesJSONObject1.toString(), null,
+			FragmentConstants.TYPE_COMPONENT,
 			"<div> data-lfr-editable-id=\"${fragmentEntryLinkNamespace}-" +
 				"element-text\"\n\tdata-lfr-editable-type=\"text\">\n" +
 					"\tHeading Example</div>",
@@ -183,6 +190,23 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 			Assert.assertTrue(
 				editableValues.contains(
 					fragmentEntryLink.getNamespace() + "-element-text"));
+
+			JSONObject editableProcessorJSONObject1 =
+				editableValuesJSONObject1.getJSONObject(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+			JSONObject editableValuesJSONObject2 =
+				fragmentEntryLink.getEditableValuesJSONObject();
+
+			JSONObject editableProcessorJSONObject2 =
+				editableValuesJSONObject2.getJSONObject(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+			Assert.assertEquals(
+				editableProcessorJSONObject1.length(),
+				editableProcessorJSONObject2.length());
 		}
 	}
 

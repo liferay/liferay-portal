@@ -11,7 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_198401 {
 
 	public void method(long[] segmentsExperienceIds) {
-		DefaultFragmentRendererContext defaultFragmentRendererContext = new DefaultFragmentRendererContext(null);
+		DefaultFragmentRendererContext defaultFragmentRendererContext =
+			new DefaultFragmentRendererContext(null);
 
 		defaultFragmentRendererContext.setSegmentsExperienceIds(new long[0]);
 	}

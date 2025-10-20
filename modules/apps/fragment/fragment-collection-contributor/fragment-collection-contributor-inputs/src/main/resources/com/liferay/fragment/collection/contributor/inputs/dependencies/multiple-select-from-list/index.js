@@ -244,14 +244,14 @@ else {
 updateInputStatus();
 
 if (numberOfOptions < options.length) {
-	const missionOptions = options.slice(numberOfOptions);
+	const missingOptions = options.slice(numberOfOptions);
 
 	const template = fragmentElement.querySelector(
 		'.multiselect-list-option-template'
 	);
 
 	button.addEventListener('click', () => {
-		missionOptions.forEach((option) => {
+		missingOptions.forEach((option) => {
 			const node = template.content.cloneNode(true);
 
 			const input = node.querySelector('input');
@@ -289,3 +289,7 @@ if (numberOfOptions < options.length) {
 		updateInputStatus();
 	});
 }
+
+fieldSet.addEventListener('change', () => {
+	updateInputStatus();
+});

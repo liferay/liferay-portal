@@ -61,7 +61,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.model.SegmentsExperience;
@@ -70,6 +69,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -447,59 +447,35 @@ public class FragmentLayoutStructureItemImporter
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
+		String namespace = StringUtil.randomId();
+
+		JSONObject editableJSONObject = jsonObject.getJSONObject(
+			FragmentEntryProcessorConstants.
+				KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (editableJSONObject != null) {
+			List<String> namespaceKeys = new ArrayList<>();
+
+			for (String key : editableJSONObject.keySet()) {
+				if (key.contains(_NAMESPACE_PLACEHOLDER)) {
+					namespaceKeys.add(key);
+				}
+			}
+
+			for (String key : namespaceKeys) {
+				editableJSONObject.put(
+					StringUtil.replace(key, _NAMESPACE_PLACEHOLDER, namespace),
+					editableJSONObject.get(key));
+				editableJSONObject.remove(key);
+			}
+		}
+
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, serviceContext.getUserId(), layout.getGroupId(), 0,
 				fragmentEntryId, segmentsExperienceId, layout.getPlid(), css,
-				html, js, configuration, jsonObject.toString(),
-				StringUtil.randomId(), position, fragmentKey, type,
-				serviceContext);
-
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLink.getEditableValuesJSONObject();
-
-		JSONObject restoredEditableValuesJSONObject =
-			JSONFactoryUtil.createJSONObject();
-
-		String editableValues = fragmentEntryLink.getEditableValues();
-
-		if (editableValues.contains(_NAMESPACE_PLACEHOLDER)) {
-			String fragmentEntryLinkNamespace =
-				fragmentEntryLink.getNamespace();
-
-			JSONObject restoredJSONObject = JSONFactoryUtil.createJSONObject();
-
-			for (String key : editableValuesJSONObject.keySet()) {
-				Object value = editableValuesJSONObject.get(key);
-
-				if (!(value instanceof JSONObject valueJSONObject)) {
-					restoredEditableValuesJSONObject.put(key, value);
-
-					continue;
-				}
-
-				for (String curKey : valueJSONObject.keySet()) {
-					restoredJSONObject.put(
-						StringUtil.replace(
-							curKey, _NAMESPACE_PLACEHOLDER,
-							fragmentEntryLinkNamespace),
-						valueJSONObject.get(curKey));
-				}
-
-				restoredEditableValuesJSONObject.put(key, restoredJSONObject);
-			}
-		}
-
-		if (SetUtil.isEmpty(restoredEditableValuesJSONObject.keySet())) {
-			restoredEditableValuesJSONObject = editableValuesJSONObject;
-		}
-
-		fragmentEntryLink.setEditableValues(
-			String.valueOf(restoredEditableValuesJSONObject));
-
-		fragmentEntryLink =
-			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
-				fragmentEntryLink);
+				html, js, configuration, jsonObject.toString(), namespace,
+				position, fragmentKey, type, serviceContext);
 
 		List<Object> widgetInstances = (List<Object>)definitionMap.get(
 			"widgetInstances");

@@ -47,7 +47,7 @@ describe('NewSpaceFormSection', () => {
 			screen.getByText(props.children!.toString())
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('link', {name: /Test Message/})
+			screen.getByRole('link', {name: 'x-opens-new-window'})
 		).toHaveAttribute('href', 'https://learn.liferay.com/test-url');
 	});
 

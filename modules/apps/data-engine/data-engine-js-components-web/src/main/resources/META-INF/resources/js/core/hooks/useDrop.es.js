@@ -53,6 +53,45 @@ const isDroppingFieldsetIntoNestedField = ({sourceField, targetField}) =>
 	targetField &&
 	'nestedFieldIndex' in targetField;
 
+const isDroppingFieldsetIntoNestedPlaceholder = ({
+	origin,
+	sourceField,
+	targetParentField,
+}) => {
+	if (
+		origin !== DND_ORIGIN_TYPE.EMPTY ||
+		!targetParentField ||
+		sourceField?.type !== 'fieldset'
+	) {
+		return false;
+	}
+
+	if (sourceField.fieldName === targetParentField.fieldName) {
+		return true;
+	}
+
+	for (const field of sourceField.nestedFields) {
+		if (field.fieldName === targetParentField.fieldName) {
+			return true;
+		}
+
+		if (field.type === 'fieldset') {
+			const isDroppingFieldsetIntoDeepNested =
+				isDroppingFieldsetIntoNestedPlaceholder({
+					origin,
+					sourceField: field,
+					targetParentField,
+				});
+
+			if (isDroppingFieldsetIntoDeepNested) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+};
+
 const isElementsSetOverTarget = (target, source) => {
 	if (target) {
 		return (
@@ -155,6 +194,11 @@ export function useDrop({
 			!isDroppingFieldsetIntoNestedField({
 				sourceField: item.data,
 				targetField: field,
+			}) &&
+			!isDroppingFieldsetIntoNestedPlaceholder({
+				origin,
+				sourceField: item.data,
+				targetParentField: parentField ?? field,
 			}) &&
 			!isElementsSetOverTarget(field, item.data) &&
 			!isElementsSetOverTarget(parentField, item.data) &&

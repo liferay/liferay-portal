@@ -50,11 +50,11 @@ public class ClassNameIdCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> variableDefDetailASTList = getAllChildTokens(
+		List<DetailAST> variableDefDetailASTs = getAllChildTokens(
 			detailAST.findFirstToken(TokenTypes.OBJBLOCK), false,
 			TokenTypes.VARIABLE_DEF);
 
-		for (DetailAST variableDefDetailAST : variableDefDetailASTList) {
+		for (DetailAST variableDefDetailAST : variableDefDetailASTs) {
 			if (!StringUtil.equalsIgnoreCase(
 					getTypeName(variableDefDetailAST, false, false, false),
 					"long")) {
@@ -70,12 +70,12 @@ public class ClassNameIdCheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> variableCallerDetailASTList =
-				getVariableCallerDetailASTList(variableDefDetailAST);
+			List<DetailAST> variableCallerDetailASTs =
+				getVariableCallerDetailASTs(variableDefDetailAST);
 
-			if (_isAssignedInsideConstructor(variableCallerDetailASTList) ||
+			if (_isAssignedInsideConstructor(variableCallerDetailASTs) ||
 				_isInsideGetterAndSetter(
-					variableCallerDetailASTList, variableName)) {
+					variableCallerDetailASTs, variableName)) {
 
 				continue;
 			}
@@ -85,9 +85,9 @@ public class ClassNameIdCheck extends BaseCheck {
 	}
 
 	private boolean _isAssignedInsideConstructor(
-		List<DetailAST> variableCallerDetailASTList) {
+		List<DetailAST> variableCallerDetailASTs) {
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			if (hasParentWithTokenType(
 					variableCallerDetailAST, TokenTypes.CTOR_DEF)) {
 
@@ -99,7 +99,7 @@ public class ClassNameIdCheck extends BaseCheck {
 	}
 
 	private boolean _isInsideGetterAndSetter(
-		List<DetailAST> variableCallerDetailASTList, String variableName) {
+		List<DetailAST> variableCallerDetailASTs, String variableName) {
 
 		String trimmedVariableName = variableName;
 
@@ -107,7 +107,7 @@ public class ClassNameIdCheck extends BaseCheck {
 			trimmedVariableName = variableName.substring(1);
 		}
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			DetailAST methodDefDetailAST = getParentWithTokenType(
 				variableCallerDetailAST, TokenTypes.METHOD_DEF);
 

@@ -181,7 +181,7 @@ public class FriendlyUrlHistoryResourceImpl
 		};
 	}
 
-	private final FriendlyURLEntryLocalizationComparator
+	private static final FriendlyURLEntryLocalizationComparator
 		_friendlyURLEntryLocalizationComparator =
 			FriendlyURLEntryLocalizationComparator.getInstance(false);
 

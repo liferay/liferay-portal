@@ -10,12 +10,10 @@ import com.liferay.commerce.fragment.internal.display.context.AccountsDataSetDis
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alessio Antonio Rendina
@@ -37,7 +35,8 @@ public class AccountsDataSetFragmentRenderer
 
 	@Override
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
-		return FeatureFlagManagerUtil.isEnabled("LPD-58472");
+		return FeatureFlagManagerUtil.isEnabled(
+			portal.getCompanyId(httpServletRequest), "LPD-58472");
 	}
 
 	@Override
@@ -52,15 +51,12 @@ public class AccountsDataSetFragmentRenderer
 
 		return new AccountsDataSetDisplayContext(
 			getConfigurationValuesMap(fragmentRendererContext),
-			httpServletRequest, language, _portal);
+			httpServletRequest, language, portal);
 	}
 
 	@Override
 	protected String getLabelKey() {
 		return "accounts-data-set";
 	}
-
-	@Reference
-	private Portal _portal;
 
 }

@@ -26,7 +26,7 @@ DepotAdminRolesDisplayContext depotAdminRolesDisplayContext = (DepotAdminRolesDi
 	<c:if test="<%= depotAdminRolesDisplayContext.isSelectable() %>">
 		<clay:content-col>
 			<clay:button
-				aria-label='<%= LanguageUtil.format(request, "select-x", "asset-library-roles") %>'
+				aria-label='<%= LanguageUtil.format(request, "select-x", depotAdminRolesDisplayContext.getLabelKey()) %>'
 				cssClass="heading-end modify-link"
 				displayType="secondary"
 				id='<%= liferayPortletResponse.getNamespace() + "selectDepotRoleLink" %>'
@@ -56,8 +56,8 @@ DepotAdminRolesDisplayContext depotAdminRolesDisplayContext = (DepotAdminRolesDi
 	compactEmptyResultsMessage="<%= true %>"
 	cssClass="lfr-search-container-depot-roles"
 	curParam="depotRolesCur"
-	emptyResultsMessage="this-user-is-not-assigned-any-asset-library-roles"
-	headerNames="title,asset-library,null"
+	emptyResultsMessage="<%= depotAdminRolesDisplayContext.getEmptyResultsMessageKey() %>"
+	headerNames="<%= depotAdminRolesDisplayContext.getHeaderNames() %>"
 	id="depotRolesSearchContainer"
 	iteratorURL="<%= currentURLObj %>"
 	total="<%= depotAdminRolesDisplayContext.getUserGroupRolesCount() %>"
@@ -90,7 +90,7 @@ DepotAdminRolesDisplayContext depotAdminRolesDisplayContext = (DepotAdminRolesDi
 
 		<liferay-ui:search-container-column-text
 			cssClass="table-cell-expand"
-			name="<%= depotAdminRolesDisplayContext.getAssetLibraryLabel() %>"
+			name="<%= depotAdminRolesDisplayContext.getAssetLibraryLabelKey() %>"
 		>
 			<liferay-staging:descriptive-name
 				group="<%= userGroupRole.getGroup() %>"

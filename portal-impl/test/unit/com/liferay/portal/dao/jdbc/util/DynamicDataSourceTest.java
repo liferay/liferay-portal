@@ -7,9 +7,8 @@ package com.liferay.portal.dao.jdbc.util;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.dao.jdbc.DataSourceFactoryImpl;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.jdbc.DataSourceFactory;
+import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
 import com.liferay.portal.kernel.servlet.PortalSessionContext;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -84,13 +83,11 @@ public class DynamicDataSourceTest {
 
 		_tempDir = FileUtil.createTempFolder();
 
-		DataSourceFactory dataSourceFactory = new DataSourceFactoryImpl();
-
-		DataSource readDataSource = dataSourceFactory.initDataSource(
+		DataSource readDataSource = DataSourceFactoryUtil.initDataSource(
 			"org.hsqldb.jdbc.JDBCDriver",
 			"jdbc:hsqldb:" + _tempDir.getAbsolutePath() + "/lportal-read;",
 			"sa", StringPool.BLANK, StringPool.BLANK);
-		DataSource writeDataSource = dataSourceFactory.initDataSource(
+		DataSource writeDataSource = DataSourceFactoryUtil.initDataSource(
 			"org.hsqldb.jdbc.JDBCDriver",
 			"jdbc:hsqldb:" + _tempDir.getAbsolutePath() + "/lportal-write;",
 			"sa", StringPool.BLANK, StringPool.BLANK);

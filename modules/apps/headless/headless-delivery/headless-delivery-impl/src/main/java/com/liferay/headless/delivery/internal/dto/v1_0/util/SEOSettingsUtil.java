@@ -83,26 +83,26 @@ public class SEOSettingsUtil {
 						dtoConverterContext.isAcceptAllLanguages(),
 						layout.getKeywordsMap()));
 				setSiteMapSettings(
-					() -> _toSiteMapSettings(
+					() -> _toSitemapSettings(
 						layout.getTypeSettingsProperties()));
 			}
 		};
 	}
 
-	private static SiteMapSettings _toSiteMapSettings(
+	private static SiteMapSettings _toSitemapSettings(
 		UnicodeProperties unicodeProperties) {
 
-		String siteMapChangeFreq = unicodeProperties.getProperty(
+		String sitemapChangeFreq = unicodeProperties.getProperty(
 			"sitemap-changefreq");
-		String siteMapInclude = unicodeProperties.getProperty(
+		String sitemapInclude = unicodeProperties.getProperty(
 			"sitemap-include");
-		String siteMapIncludeChildLayouts = unicodeProperties.getProperty(
+		String sitemapIncludeChildLayouts = unicodeProperties.getProperty(
 			"sitemap-include-child-layouts");
-		String siteMapPriority = unicodeProperties.getProperty(
+		String sitemapPriority = unicodeProperties.getProperty(
 			"sitemap-priority");
 
-		if ((siteMapChangeFreq == null) && (siteMapInclude == null) &&
-			(siteMapIncludeChildLayouts == null) && (siteMapPriority == null)) {
+		if ((sitemapChangeFreq == null) && (sitemapInclude == null) &&
+			(sitemapIncludeChildLayouts == null) && (sitemapPriority == null)) {
 
 			return null;
 		}
@@ -111,25 +111,25 @@ public class SEOSettingsUtil {
 			{
 				setChangeFrequency(
 					() -> {
-						if (siteMapChangeFreq == null) {
+						if (sitemapChangeFreq == null) {
 							return null;
 						}
 
 						return ChangeFrequency.create(
-							StringUtil.upperCaseFirstLetter(siteMapChangeFreq));
+							StringUtil.upperCaseFirstLetter(sitemapChangeFreq));
 					});
 
 				setInclude(
 					() -> {
-						if (siteMapInclude == null) {
+						if (sitemapInclude == null) {
 							return null;
 						}
 
-						if (siteMapInclude.equals("0")) {
+						if (sitemapInclude.equals("0")) {
 							return false;
 						}
 
-						if (siteMapInclude.equals("1")) {
+						if (sitemapInclude.equals("1")) {
 							return true;
 						}
 
@@ -138,15 +138,15 @@ public class SEOSettingsUtil {
 
 				setIncludeChildSitePages(
 					() -> {
-						if (siteMapIncludeChildLayouts == null) {
+						if (sitemapIncludeChildLayouts == null) {
 							return null;
 						}
 
-						if (siteMapIncludeChildLayouts.equals("false")) {
+						if (sitemapIncludeChildLayouts.equals("false")) {
 							return false;
 						}
 
-						if (siteMapIncludeChildLayouts.equals("true")) {
+						if (sitemapIncludeChildLayouts.equals("true")) {
 							return true;
 						}
 
@@ -155,12 +155,12 @@ public class SEOSettingsUtil {
 
 				setPagePriority(
 					() -> {
-						if (siteMapPriority == null) {
+						if (sitemapPriority == null) {
 							return null;
 						}
 
 						try {
-							return Double.parseDouble(siteMapPriority);
+							return Double.parseDouble(sitemapPriority);
 						}
 						catch (NumberFormatException numberFormatException) {
 							if (_log.isWarnEnabled()) {

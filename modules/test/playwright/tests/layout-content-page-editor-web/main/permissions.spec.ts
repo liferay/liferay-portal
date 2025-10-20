@@ -12,9 +12,9 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
-import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
+import {performLogout, performUserSwitch} from '../../../utils/performLogin';
 import getContainerDefinition from './utils/getContainerDefinition';
 import getFragmentDefinition from './utils/getFragmentDefinition';
 import getPageDefinition from './utils/getPageDefinition';
@@ -76,7 +76,9 @@ test(
 
 		// Go to edit mode
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user.id);
+		await performUserSwitch(page, user.alternateName);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		// Assert configuration is present in general tab
 
@@ -102,6 +104,8 @@ test(
 		await expect(
 			page.getByLabel('Custom CSS', {exact: true})
 		).not.toBeAttached();
+
+		await performLogout(page);
 	}
 );
 
@@ -119,8 +123,8 @@ test(
 				'liferay.com'
 			);
 
-		const role = await apiHelpers.headlessAdminUser.postRole({
-			name: 'role' + getRandomInt(),
+		const user = await createUserWithPermissions({
+			apiHelpers,
 			rolePermissions: [
 				{
 					actionIds: ['UPDATE_LAYOUT_LIMITED'],
@@ -130,13 +134,6 @@ test(
 				},
 			],
 		});
-
-		const user = await apiHelpers.headlessAdminUser.postUserAccount();
-
-		await apiHelpers.headlessAdminUser.assignUserToRole(
-			role.externalReferenceCode,
-			user.id
-		);
 
 		// Create page
 
@@ -152,7 +149,9 @@ test(
 
 		// Go to edit mode
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user.id);
+		await performUserSwitch(page, user.alternateName);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		// Assert configuration is present in general tab
 
@@ -175,6 +174,8 @@ test(
 		await expect(
 			page.getByRole('tab', {exact: true, name: 'Advanced'})
 		).not.toBeAttached();
+
+		await performLogout(page);
 	}
 );
 
@@ -219,11 +220,9 @@ test(
 			title: getRandomString(),
 		});
 
-		await pageEditorPage.goto(
-			layout,
-			pageManagementSite.friendlyUrlPath,
-			user.id
-		);
+		await performUserSwitch(page, user.alternateName);
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
 
 		// Map the editable
 
@@ -275,10 +274,14 @@ test(
 
 		await pageEditorPage.publishPage();
 
+		await performUserSwitch(page, 'test');
+
 		// Do it as user with permissions
 
 		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
 
 		await checkWebContentEdition(true);
+
+		await performLogout(page);
 	}
 );

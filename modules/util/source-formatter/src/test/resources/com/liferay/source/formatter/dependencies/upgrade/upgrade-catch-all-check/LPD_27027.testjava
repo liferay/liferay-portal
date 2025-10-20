@@ -39,18 +39,22 @@ public class LPD_27027 {
 
 	public void method(boolean showHiddenPages) {
 		new CommerceCurrencyPriorityComparator(showHiddenPages);
-		new CommerceDiscountCommerceAccountGroupRelCreateDateComparator(showHiddenPages);
+		new CommerceDiscountCommerceAccountGroupRelCreateDateComparator(
+			showHiddenPages);
 		new CommerceDiscountCreateDateComparator(showHiddenPages);
 		new CommerceDiscountRelCreateDateComparator(showHiddenPages);
 		new CommerceDiscountRuleCreateDateComparator(showHiddenPages);
-		new CommerceInventoryReplenishmentItemAvailabilityDateComparator(showHiddenPages);
+		new CommerceInventoryReplenishmentItemAvailabilityDateComparator(
+			showHiddenPages);
 		new CommerceInventoryWarehouseCityComparator(showHiddenPages);
 		new CommerceInventoryWarehouseItemQuantityComparator(showHiddenPages);
-		new CommerceInventoryWarehouseItemWarehouseNameComparator(showHiddenPages);
+		new CommerceInventoryWarehouseItemWarehouseNameComparator(
+			showHiddenPages);
 		new CommerceInventoryWarehouseNameComparator(showHiddenPages);
 		new CommerceNotificationAttachmentCreateDateComparator(showHiddenPages);
 		new CommerceNotificationQueueEntryPriorityComparator(showHiddenPages);
-		new CommerceNotificationTemplateCommerceAccountGroupRelCreateDateComparator(showHiddenPages);
+		new CommerceNotificationTemplateCommerceAccountGroupRelCreateDateComparator(
+			showHiddenPages);
 		new CommerceNotificationTemplateModifiedDateComparator(showHiddenPages);
 		new CommerceNotificationTemplateNameComparator(showHiddenPages);
 		new CommerceTaxFixedRateAddressRelCreateDateComparator(showHiddenPages);

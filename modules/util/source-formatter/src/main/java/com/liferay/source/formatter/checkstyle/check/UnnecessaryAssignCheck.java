@@ -74,11 +74,10 @@ public class UnnecessaryAssignCheck extends BaseUnnecessaryStatementCheck {
 		DetailAST variableDefinitionDetailAST =
 			variableTypeDetailAST.getParent();
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(
-				variableDefinitionDetailAST, variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			variableDefinitionDetailAST, variableName);
 
-		if (variableCallerDetailASTList.isEmpty()) {
+		if (variableCallerDetailASTs.isEmpty()) {
 			return;
 		}
 
@@ -89,9 +88,8 @@ public class UnnecessaryAssignCheck extends BaseUnnecessaryStatementCheck {
 
 		int endLineNumber = getEndLineNumber(detailAST);
 
-		for (int i = 0; i < variableCallerDetailASTList.size(); i++) {
-			DetailAST variableCallerDetailAST = variableCallerDetailASTList.get(
-				i);
+		for (int i = 0; i < variableCallerDetailASTs.size(); i++) {
+			DetailAST variableCallerDetailAST = variableCallerDetailASTs.get(i);
 
 			if (variableCallerDetailAST.getLineNo() <= endLineNumber) {
 				continue;
@@ -99,9 +97,9 @@ public class UnnecessaryAssignCheck extends BaseUnnecessaryStatementCheck {
 
 			firstNextVariableCallerDetailAST = variableCallerDetailAST;
 
-			if (i < (variableCallerDetailASTList.size() - 1)) {
+			if (i < (variableCallerDetailASTs.size() - 1)) {
 				secondNextVariableCallerDetailAST =
-					variableCallerDetailASTList.get(i + 1);
+					variableCallerDetailASTs.get(i + 1);
 			}
 
 			break;

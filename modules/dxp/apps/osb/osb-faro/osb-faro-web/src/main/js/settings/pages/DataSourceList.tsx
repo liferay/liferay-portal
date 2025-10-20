@@ -1,17 +1,21 @@
 import * as API from 'shared/api';
 import BasePage from 'settings/components/BasePage';
 import Card from 'shared/components/Card';
+import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
 import Label from 'shared/components/Label';
 import ListComponent from 'shared/hoc/ListComponent';
-import Nav from 'shared/components/Nav';
 import NoResultsDisplay, {
 	getFormattedTitle
 } from 'shared/components/NoResultsDisplay';
 import React, {useEffect, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
+import {close, modalTypes, open} from 'shared/actions/modals';
+import {compose} from 'shared/hoc';
+import {connect, ConnectedProps} from 'react-redux';
 import {
 	CREATE_DATE,
 	createOrderIOMap,
@@ -33,7 +37,7 @@ import {
 	validAnalyticsConfig,
 	validContactsConfig
 } from 'shared/util/data-sources';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useHistory, useParams} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -45,7 +49,7 @@ interface ICellProps {
 	data: {[key: string]: any};
 }
 
-const AnalyticsCell: React.FC<ICellProps> = ({data}) => (
+const AnalyticsDataCell: React.FC<ICellProps> = ({data}) => (
 	<td>
 		{validAnalyticsConfig(new DataSource(fromJS(data))) && (
 			<ClayIcon className='icon-root' symbol='check' />
@@ -53,7 +57,7 @@ const AnalyticsCell: React.FC<ICellProps> = ({data}) => (
 	</td>
 );
 
-const ContactsCell: React.FC<ICellProps> = ({data}) => (
+const IndividualsDataCell: React.FC<ICellProps> = ({data}) => (
 	<td>
 		{validContactsConfig(new DataSource(fromJS(data))) &&
 			data.status === DataSourceStatuses.Active && (
@@ -165,8 +169,21 @@ const typeFormatter = (type: DataSourceTypes): string => {
 	}
 };
 
-const DataSourceList = ({className}) => {
+const connector = connect(null, {close, open});
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface IDataSourceListProps
+	extends PropsFromRedux,
+		React.HTMLAttributes<HTMLElement> {}
+
+const DataSourceList: React.FC<IDataSourceListProps> = ({
+	className,
+	close,
+	open
+}) => {
 	const currentUser = useCurrentUser();
+	const history = useHistory();
 	const {groupId} = useParams();
 	const [alerts, setAlerts] = useState([]);
 	const {timeZoneId} = useTimeZone();
@@ -220,22 +237,41 @@ const DataSourceList = ({className}) => {
 		}
 	});
 
-	const renderNav = () => (
-		<Nav>
-			<Nav.Item>
-				<ClayLink
-					button
-					className='button-root'
-					displayType='primary'
-					href={toRoute(Routes.SETTINGS_ADD_DATA_SOURCE, {
-						groupId
-					})}
-					small
-				>
+	const renderDataSourcesDropdown = () => (
+		<ClayDropDownWithItems
+			items={[
+				{
+					label: Liferay.Language.get('liferay-dxp'),
+
+					onClick: () => {
+						open(modalTypes.CONNECT_DXP_MODAL, {
+							groupId,
+							onClose: close
+						});
+					}
+				},
+				{
+					label: Liferay.Language.get('salesforce'),
+
+					onClick: () => {
+						// TODO: create salesforce connection page to be loaded in the route below
+
+						history.push(
+							toRoute(Routes.SETTINGS_SALESFORCE_ADD, {
+								groupId
+							})
+						);
+					}
+				}
+			]}
+			trigger={
+				<ClayButton displayType='primary'>
 					{Liferay.Language.get('add-data-source')}
-				</ClayLink>
-			</Nav.Item>
-		</Nav>
+
+					<ClayIcon className='ml-2' symbol='caret-bottom' />
+				</ClayButton>
+			}
+		/>
 	);
 
 	const renderNoResults = () => {
@@ -313,21 +349,26 @@ const DataSourceList = ({className}) => {
 										id: dataSource.id
 									})
 							},
-							label: Liferay.Language.get('name')
+							label: Liferay.Language.get('data-source-name')
 						},
 						{
 							accessor: PROVIDER_TYPE,
 							dataFormatter: typeFormatter,
-							label: Liferay.Language.get('source')
+							label: Liferay.Language.get('type')
 						},
 						{
-							cellRenderer: ContactsCell,
-							label: Liferay.Language.get('contacts'),
+							cellRenderer: StatusRenderer,
+							label: Liferay.Language.get('status'),
 							sortable: false
 						},
 						{
-							cellRenderer: AnalyticsCell,
-							label: Liferay.Language.get('analytics'),
+							cellRenderer: IndividualsDataCell,
+							label: Liferay.Language.get('individuals-data'),
+							sortable: false
+						},
+						{
+							cellRenderer: AnalyticsDataCell,
+							label: Liferay.Language.get('analytics-data'),
 							sortable: false
 						},
 						{
@@ -335,11 +376,6 @@ const DataSourceList = ({className}) => {
 							dataFormatter: date =>
 								dateFormatter(date, timeZoneId),
 							label: Liferay.Language.get('date-added')
-						},
-						{
-							cellRenderer: StatusRenderer,
-							label: Liferay.Language.get('status'),
-							sortable: false
 						}
 					]}
 					delta={delta}
@@ -365,7 +401,9 @@ const DataSourceList = ({className}) => {
 					orderIOMap={orderIOMap}
 					page={page}
 					query={query}
-					renderNav={currentUser.isAdmin() ? renderNav : null}
+					renderNav={
+						currentUser.isAdmin() ? renderDataSourcesDropdown : null
+					}
 					rowIdentifier='id'
 					showCheckbox={false}
 					total={data?.total}
@@ -375,4 +413,4 @@ const DataSourceList = ({className}) => {
 	);
 };
 
-export default DataSourceList;
+export default compose<any>(connector)(DataSourceList);

@@ -5,7 +5,6 @@
 
 package com.liferay.portal.kernel.test.util;
 
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.exception.LoggedExceptionInInitializerError;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -18,6 +17,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -62,7 +62,7 @@ public class TestPropsValues {
 		String companyWebId = TestPropsUtil.get("company.web.id");
 
 		try {
-			if (DBPartition.isPartitionEnabled()) {
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
 				companyWebId = TestPropsUtil.get(
 					"database.partition.company.web.id");
 			}

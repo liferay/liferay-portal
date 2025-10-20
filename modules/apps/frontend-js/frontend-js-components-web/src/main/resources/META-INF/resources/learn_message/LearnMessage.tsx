@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import getCN from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useContext} from 'react';
 
 export const LearnResourcesContext = React.createContext<
@@ -117,6 +119,10 @@ export default function LearnMessage({
 	if (learnMessageObject.url) {
 		return (
 			<ClayLink
+				aria-label={sub(
+					Liferay.Language.get('x-opens-new-window'),
+					learnMessageObject.message
+				)}
 				className={getCN('learn-message', className)}
 				href={learnMessageObject.url}
 				rel="noopener noreferrer"
@@ -124,6 +130,8 @@ export default function LearnMessage({
 				{...otherProps}
 			>
 				{learnMessageObject.message}
+
+				<ClayIcon className="ml-1" fontSize={14} symbol="shortcut" />
 			</ClayLink>
 		);
 	}

@@ -12,6 +12,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.io.BigEndianCodec;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.portlet.PortletModeFactory;
 import com.liferay.portal.kernel.portlet.PortletQName;
 import com.liferay.portal.kernel.portlet.PortletQNameUtil;
 import com.liferay.portal.kernel.portlet.WindowStateFactory;
+import com.liferay.portal.kernel.security.ChecksumUtil;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -1017,9 +1021,27 @@ public class PortletURLImpl
 			});
 
 		if (_doAsUserId > 0) {
-			sb.append("doAsUserId=");
-			sb.append(processValue(key, _doAsUserId));
-			sb.append(StringPool.AMPERSAND);
+			try {
+				Company company = PortalUtil.getCompany(_httpServletRequest);
+
+				byte[] doAsUserIdBytes = new byte[Long.BYTES];
+
+				BigEndianCodec.putLong(doAsUserIdBytes, 0, _doAsUserId);
+
+				String doAsUserIdString = StringUtil.bytesToHexString(
+					ChecksumUtil.appendChecksum(
+						EncryptorUtil.encryptUnencoded(
+							company.getKeyObj(), doAsUserIdBytes)));
+
+				sb.append("doAsUserId=");
+				sb.append(processValue(key, doAsUserIdString));
+				sb.append(StringPool.AMPERSAND);
+			}
+			catch (EncryptorException | PortalException exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
+			}
 		}
 		else {
 			String doAsUserId = themeDisplay.getDoAsUserId();

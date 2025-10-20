@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayButton from '@clayui/button';
 import {openModal} from 'frontend-js-components-web';
 import {navigate, sub} from 'frontend-js-web';
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
+import Toolbar from '../../../common/components/Toolbar';
+import VerticalNavLayout from '../../../common/components/VerticalNavLayout';
 import {IPermissionItem} from '../../../common/components/forms/PermissionsTable';
 import CategorizationPermissionService from '../../../common/services/CategorizationPermissionService';
 import CategoryService from '../../../common/services/CategoryService';
@@ -16,8 +19,6 @@ import {
 	displayNameInUseErrorToast,
 	displaySystemErrorToast,
 } from '../../../common/utils/toastUtil';
-import CategorizationContentContainer from '../components/CategorizationContentContainer';
-import CategorizationManagementToolbar from '../components/CategorizationManagementToolbar';
 import {DEFAULT_PERMISSIONS} from '../utils/CategorizationPermissionsUtil';
 import EditCategoryGeneralInfoTab from './components/EditCategoryGeneralInfoTab';
 import EditCategoryPropertiesTab from './components/EditCategoryPropertiesTab';
@@ -298,44 +299,41 @@ const EditCategoryPage = ({
 		displayCreateSuccessToast(category.name);
 	}
 
-	const createMainContentMap = () => {
-		const NAVIGATION_TABS = {
-			GENERAL: 'general',
-			IMAGES: 'images',
-			PROPERTIES: 'properties',
-		};
-
-		const mainContentMap = new Map<string, ReactElement>();
-
-		mainContentMap.set(
-			NAVIGATION_TABS.GENERAL,
-			<EditCategoryGeneralInfoTab
-				category={category}
-				defaultLanguageId={defaultLanguageId}
-				locales={locales}
-				nameInputError={nameInputError}
-				setCategory={setCategory}
-				setCategoryPermissions={setCategoryPermissions}
-				setNameInputError={setNameInputError}
-				showPermissions={isCreateNew}
-				spritemap={spritemap}
-			/>
-		);
-		mainContentMap.set(
-			NAVIGATION_TABS.IMAGES,
-			<div>Images Tab Placeholder Content</div>
-		);
-		mainContentMap.set(
-			NAVIGATION_TABS.PROPERTIES,
-			<EditCategoryPropertiesTab
-				category={category}
-				setCategory={setCategory}
-				spritemap={spritemap}
-			/>
-		);
-
-		return mainContentMap;
-	};
+	const verticalNavItems = [
+		{
+			component: (
+				<EditCategoryGeneralInfoTab
+					category={category}
+					defaultLanguageId={defaultLanguageId}
+					locales={locales}
+					nameInputError={nameInputError}
+					setCategory={setCategory}
+					setCategoryPermissions={setCategoryPermissions}
+					setNameInputError={setNameInputError}
+					showPermissions={isCreateNew}
+					spritemap={spritemap}
+				/>
+			),
+			id: 'general',
+			label: Liferay.Language.get('general'),
+		},
+		{
+			component: <div>Images Tab Placeholder Content</div>,
+			id: 'images',
+			label: Liferay.Language.get('images'),
+		},
+		{
+			component: (
+				<EditCategoryPropertiesTab
+					category={category}
+					setCategory={setCategory}
+					spritemap={spritemap}
+				/>
+			),
+			id: 'properties',
+			label: Liferay.Language.get('properties'),
+		},
+	];
 
 	const getTitle = () => {
 		if (isCreateNew) {
@@ -354,19 +352,43 @@ const EditCategoryPage = ({
 	return (
 		<div className="categorization-section">
 			<div className="edit-page">
-				<CategorizationManagementToolbar
-					backURL={backURL}
-					handleSave={handleSave}
-					handleSaveAndAddAnother={
-						isCreateNew ? handleSaveAndAddAnother : undefined
-					}
-					showSaveAndAddAnotherButton={isCreateNew}
-					title={getTitle()}
-				/>
+				<Toolbar backURL={backURL.toString()} title={getTitle()}>
+					<Toolbar.Item>
+						<ClayButton
+							aria-label={Liferay.Language.get('back')}
+							borderless
+							displayType="secondary"
+							onClick={() => navigate(backURL)}
+							outline
+							size="sm"
+						>
+							{Liferay.Language.get('cancel')}
+						</ClayButton>
 
-				<CategorizationContentContainer
-					mainContentMap={createMainContentMap()}
-				/>
+						{isCreateNew && (
+							<ClayButton
+								data-testid="save-and-add-another-button"
+								onClick={handleSaveAndAddAnother}
+								outline={true}
+								size="sm"
+							>
+								{Liferay.Language.get('save-and-add-another')}
+							</ClayButton>
+						)}
+
+						<ClayButton
+							className="inline-item-after"
+							data-testid="save-button"
+							displayType="primary"
+							onClick={handleSave}
+							size="sm"
+						>
+							{Liferay.Language.get('save')}
+						</ClayButton>
+					</Toolbar.Item>
+				</Toolbar>
+
+				<VerticalNavLayout items={verticalNavItems} />
 			</div>
 		</div>
 	);

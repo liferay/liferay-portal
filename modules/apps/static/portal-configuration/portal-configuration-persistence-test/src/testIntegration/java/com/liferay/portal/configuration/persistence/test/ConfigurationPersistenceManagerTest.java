@@ -6,10 +6,10 @@
 package com.liferay.portal.configuration.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
 import com.liferay.portal.configuration.persistence.InMemoryOnlyConfigurationThreadLocal;
-import com.liferay.portal.configuration.persistence.ReloadablePersistenceManager;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -26,7 +26,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -210,28 +209,17 @@ public class ConfigurationPersistenceManagerTest {
 	}
 
 	@Test
-	public void testEphemeralConfiguration() throws Exception {
-		_assertConfiguration(
-			Collections.singletonMap(
-				ReloadablePersistenceManager.STORAGE_POLICY_KEY,
-				ReloadablePersistenceManager.STORAGE_POLICY_VALUE_EPHEMERAL),
-			false, false);
-	}
-
-	@Test
 	public void testGetConfiguration() throws Exception {
 		_assertConfiguration(false, true);
 	}
 
 	@Test
 	public void testMemoryOnlyConfiguration() throws Exception {
-		InMemoryOnlyConfigurationThreadLocal.setInMemoryOnly(true);
+		try (SafeCloseable safeCloseable =
+				InMemoryOnlyConfigurationThreadLocal.
+					setInMemoryOnlyWithSafeCloseable(true)) {
 
-		try {
 			_assertConfiguration(false, false);
-		}
-		finally {
-			InMemoryOnlyConfigurationThreadLocal.setInMemoryOnly(false);
 		}
 	}
 

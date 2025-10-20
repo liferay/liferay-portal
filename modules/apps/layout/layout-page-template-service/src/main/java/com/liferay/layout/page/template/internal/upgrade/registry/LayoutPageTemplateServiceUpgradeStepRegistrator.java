@@ -227,13 +227,8 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{
-							"LayoutPageTemplateCollection",
-							"layoutPageTemplateCollectionId"
-						}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"LayoutPageTemplateCollection"};
 				}
 
 			});
@@ -243,10 +238,8 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"LayoutPageTemplateEntry", "layoutPageTemplateEntryId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"LayoutPageTemplateEntry"};
 				}
 
 			});

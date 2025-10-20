@@ -58,6 +58,10 @@ public interface PermissionCheckFinderEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.portal.tools.service.builder.test.service.impl.PermissionCheckFinderEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the permission check finder entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PermissionCheckFinderEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public PermissionCheckFinderEntry addPermissionCheckFinderEntry(
+			long companyId, long groupId, int integer, String name, String type,
+			long userId)
+		throws PortalException;
 
 	/**
 	 * Adds the permission check finder entry to the database. Also notifies the appropriate model listeners.
@@ -201,6 +205,11 @@ public interface PermissionCheckFinderEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PermissionCheckFinderEntry fetchPermissionCheckFinderEntry(
 		long permissionCheckFinderEntryId);
+
+	public List<PermissionCheckFinderEntry> filterFindByGroupId(long groupId);
+
+	public List<PermissionCheckFinderEntry> filterFindByGroupId(
+		long[] groupIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

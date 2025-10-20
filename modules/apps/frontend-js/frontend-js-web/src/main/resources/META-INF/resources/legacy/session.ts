@@ -28,14 +28,11 @@ export class Session {
 
 	private _alertClosed: any;
 	private _banner: any;
-	private _cookieKey: string;
-	private _cookieOptions: {path: string; secure: boolean};
+	private _timestampKey: string;
 	private _expiredText: string;
 	private _initPageTitle: string;
-	private _initTimestamp?: string;
 	private _intervalId?: number | NodeJS.Timeout;
 	private _pageTitle: string;
-	private _timestamp: string;
 	private _warningLength: number;
 	private _warningText: string;
 	private sessionState: TSessionState;
@@ -49,19 +46,14 @@ export class Session {
 
 		this._alertClosed = '';
 		this._banner = null;
-		this._cookieKey =
+		this._timestampKey =
 			'LFR_SESSION_STATE_' + Liferay.ThemeDisplay.getRealUserId();
-		this._cookieOptions = {
-			path: Liferay.ThemeDisplay.getPathContext() || '/',
-			secure: window.location.protocol === 'https:',
-		};
 		this._expiredText = Liferay.Language.get(
 			'due-to-inactivity-your-session-has-expired'
 		);
 		this._initPageTitle = document.title;
-		this._initTimestamp = Date.now().toString();
 		this._pageTitle = document.title;
-		this._timestamp = this._initTimestamp;
+		this._setTimestamp();
 		this._warningLength = config.warningLength * 1000 || this.sessionLength;
 		this._warningText = Liferay.Util.sub(
 			Liferay.Language.get('due-to-inactivity-your-session-will-expire'),
@@ -238,27 +230,28 @@ export class Session {
 		return banner;
 	}
 
+	private _getTimestamp() {
+		return parseInt(
+			Liferay.Util.LocalStorage.getItem(
+				this._timestampKey,
+				Liferay.Util.LocalStorage.TYPES.NECESSARY
+			)!,
+			10
+		);
+	}
+
 	private _setTimestamp() {
-		this._timestamp = Date.now().toString();
-
-		this._initTimestamp = this._timestamp;
-
-		if (navigator.cookieEnabled) {
-			Liferay.Util.Cookie.set(
-				this._cookieKey,
-				this._timestamp,
-				Liferay.Util.Cookie.TYPES.NECESSARY,
-				this._cookieOptions
-			);
-		}
+		Liferay.Util.LocalStorage.setItem(
+			this._timestampKey,
+			Date.now().toString(),
+			Liferay.Util.LocalStorage.TYPES.NECESSARY
+		);
 	}
 
 	private _startTimer() {
 		this._intervalId = setInterval(() => {
 			const elapsed =
-				Math.floor(
-					(Date.now() - parseInt(this._timestamp, 10)) / 1000
-				) * 1000;
+				Math.floor((Date.now() - this._getTimestamp()) / 1000) * 1000;
 
 			const shouldExpire = elapsed >= this.sessionLength;
 			const shouldWarn =
@@ -341,7 +334,7 @@ export class Session {
 
 	private _uiSetWarned() {
 		const sessionLength = this.sessionLength;
-		const timestamp = parseInt(this._timestamp, 10);
+		const timestamp = this._getTimestamp();
 		const warningLength = this._warningLength;
 
 		let elapsed = sessionLength;

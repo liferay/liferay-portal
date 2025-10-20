@@ -109,7 +109,7 @@ Checks are configured in the following files:
    - [.css or .scss](src/main/resources/documentation/css_source_processor_checks.md#checks-for-css-or-scss)
    - [.dtd](src/main/resources/documentation/dtd_source_processor_checks.md#checks-for-dtd)
    - [.eslintignore, .prettierignore, or .properties](src/main/resources/documentation/properties_source_processor_checks.md#checks-for-eslintignore-prettierignore-or-properties)
-   - [.expect or .sh](src/main/resources/documentation/sh_source_processor_checks.md#checks-for-expect-or-sh)
+   - [.expect, .sh, or .tpl](src/main/resources/documentation/sh_source_processor_checks.md#checks-for-expect-sh-or-tpl)
    - [.ftl](src/main/resources/documentation/ftl_source_processor_checks.md#checks-for-ftl)
    - [.ftl, .html, .jsp, .jspf, .jspx, or .vm](src/main/resources/documentation/csp_source_processor_checks.md#checks-for-ftl-html-jsp-jspf-jspx-or-vm)
    - [.function, .jar, .lar, .macro, .path, .testcase, .war, or .zip](src/main/resources/documentation/poshi_source_processor_checks.md#checks-for-function-jar-lar-macro-path-testcase-war-or-zip)

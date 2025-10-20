@@ -42,12 +42,10 @@ public class ModifiedMethodCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> methodDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.METHOD_DEF);
 
-		for (DetailAST methodDefinitionDetailAST :
-				methodDefinitionDetailASTList) {
-
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			if (!StringUtil.equals(
 					getName(methodDefinitionDetailAST), "modified")) {
 
@@ -70,14 +68,14 @@ public class ModifiedMethodCheck extends BaseCheck {
 			DetailAST slistDetailAST = methodDefinitionDetailAST.findFirstToken(
 				TokenTypes.SLIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				slistDetailAST, false, TokenTypes.EXPR);
 
-			if (exprDetailASTList.size() != 2) {
+			if (exprDetailASTs.size() != 2) {
 				continue;
 			}
 
-			DetailAST exprDetailAST = exprDetailASTList.get(0);
+			DetailAST exprDetailAST = exprDetailASTs.get(0);
 
 			DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 
@@ -88,7 +86,7 @@ public class ModifiedMethodCheck extends BaseCheck {
 				continue;
 			}
 
-			exprDetailAST = exprDetailASTList.get(1);
+			exprDetailAST = exprDetailASTs.get(1);
 
 			firstChildDetailAST = exprDetailAST.getFirstChild();
 

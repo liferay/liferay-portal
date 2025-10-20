@@ -9,6 +9,4 @@
 
 <%@ taglib uri="http://liferay.com/tld/react" prefix="react" %>
 
-<%@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
-
 <%@ page import="java.util.Map" %>

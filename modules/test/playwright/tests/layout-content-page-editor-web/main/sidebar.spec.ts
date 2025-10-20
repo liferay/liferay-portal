@@ -26,7 +26,7 @@ import createUserWithPermissions from '../../../utils/createUserWithPermissions'
 import {expandSection} from '../../../utils/expandSection';
 import getRandomString from '../../../utils/getRandomString';
 import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
-import {performUserSwitch} from '../../../utils/performLogin';
+import {performLogout, performUserSwitch} from '../../../utils/performLogin';
 import {closeProductMenu, openProductMenu} from '../../../utils/productMenu';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -683,9 +683,24 @@ test.describe('Fragments Panel', () => {
 			],
 		});
 
-		apiHelpers.data.push({id: user1.id, type: 'userAccount'});
+		const user2 = await createUserWithPermissions({
+			apiHelpers,
+			rolePermissions: [
+				{
+					actionIds: ['UPDATE'],
+					primaryKey: company.companyId,
+					resourceName: 'com.liferay.portal.kernel.model.Layout',
+					scope: 1,
+				},
+			],
+		});
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user1.id);
+		apiHelpers.data.push({id: user1.id, type: 'userAccount'});
+		apiHelpers.data.push({id: user2.id, type: 'userAccount'});
+
+		await performUserSwitch(page, user1.alternateName);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		// Open the "Components" and get the first set of fragments
 
@@ -747,13 +762,16 @@ test.describe('Fragments Panel', () => {
 
 		// Go back to the Fragments tab and check that the position of the first fragment has changed
 
-		await page.getByRole('tab', {exact: true, name: 'Fragments'}).click();
+		await page
+			.getByLabel('Components Panel')
+			.getByRole('tab', {exact: true, name: 'Fragments'})
+			.click();
 
 		await expect(fragmentSets.nth(2)).toContainText(firstFragmentSet);
 
 		// Refresh the page and check that order is maintained
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user1.id);
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		await expect(fragmentSets.nth(2)).toContainText(firstFragmentSet);
 
@@ -763,12 +781,16 @@ test.describe('Fragments Panel', () => {
 
 		// Create a Widget page and check that the order is maintained on the widget page
 
+		await performUserSwitch(page, 'test');
+
 		const widgetLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
 			title: getRandomString(),
 		});
 
-		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath, user1.id);
+		await performUserSwitch(page, user1.alternateName);
+
+		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
 		await widgetPagePage.openAddPanel();
 
@@ -780,25 +802,15 @@ test.describe('Fragments Panel', () => {
 
 		// Check that a new user with update permissions cannot see the changes
 
-		const user2 = await createUserWithPermissions({
-			apiHelpers,
-			rolePermissions: [
-				{
-					actionIds: ['UPDATE'],
-					primaryKey: company.companyId,
-					resourceName: 'com.liferay.portal.kernel.model.Layout',
-					scope: 1,
-				},
-			],
-		});
+		await performUserSwitch(page, user2.alternateName);
 
-		apiHelpers.data.push({id: user2.id, type: 'userAccount'});
-
-		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath, user2.id);
+		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
 		await widgetPagePage.openAddPanel();
 
 		await expect(widgetSets.nth(0)).toContainText(firstWidgetSet);
+
+		await performLogout(page);
 	});
 
 	test(
@@ -2815,18 +2827,6 @@ test(
 	},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
 
-		// Create a new user with admin role
-
-		const user = await apiHelpers.headlessAdminUser.postUserAccount();
-
-		const role =
-			await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
-
-		await apiHelpers.headlessAdminUser.assignUserToRole(
-			role.externalReferenceCode,
-			user.id
-		);
-
 		// Create a page
 
 		const layout = await apiHelpers.headlessDelivery.createSitePage({
@@ -2837,7 +2837,7 @@ test(
 
 		// Go to edit layout and look for the badge in the marketplace button
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user.id);
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		const panel = page.getByLabel('Components Panel');
 

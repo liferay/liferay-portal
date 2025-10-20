@@ -8,18 +8,26 @@ import React from 'react';
 
 export function LoadingMessage() {
 	return (
-		<div className="text-center text-secondary" role="alert">
-			<ClayLoadingIndicator displayType="secondary" size="sm" />
+		<div className="align-items-center bg-white d-flex justify-content-center loading-message position-absolute">
+			<div className="text-center text-secondary" role="alert">
+				<ClayLoadingIndicator
+					className="position-relative"
+					displayType="secondary"
+					size="sm"
+				/>
 
-			<p className="c-mb-0">
-				{Liferay.Language.get('the-upload-process-may-take-some-time')}
-			</p>
+				<p className="c-mb-0">
+					{Liferay.Language.get(
+						'the-upload-process-may-take-some-time'
+					)}
+				</p>
 
-			<p>
-				{Liferay.Language.get(
-					'closing-the-window-will-cancel-the-upload-process'
-				)}
-			</p>
+				<p>
+					{Liferay.Language.get(
+						'closing-the-window-will-cancel-the-upload-process'
+					)}
+				</p>
+			</div>
 		</div>
 	);
 }

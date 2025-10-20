@@ -186,10 +186,10 @@ public class JSONUtilCheck extends BaseChainedMethodCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			firstChildDetailAST, true, TokenTypes.METHOD_CALL);
 
-		if (methodCallDetailASTList.isEmpty()) {
+		if (methodCallDetailASTs.isEmpty()) {
 			firstChildDetailAST = firstChildDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.DOT) {
@@ -209,16 +209,15 @@ public class JSONUtilCheck extends BaseChainedMethodCheck {
 
 		List<String> chainedMethodNames = new ArrayList<>();
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST dotDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.DOT);
 
 			if (dotDetailAST != null) {
-				List<DetailAST> childMethodCallDetailASTList =
-					getAllChildTokens(
-						dotDetailAST, false, TokenTypes.METHOD_CALL);
+				List<DetailAST> childMethodCallDetailASTs = getAllChildTokens(
+					dotDetailAST, false, TokenTypes.METHOD_CALL);
 
-				if (!childMethodCallDetailASTList.isEmpty()) {
+				if (!childMethodCallDetailASTs.isEmpty()) {
 					continue;
 				}
 			}
@@ -237,8 +236,8 @@ public class JSONUtilCheck extends BaseChainedMethodCheck {
 			}
 		}
 
-		DetailAST methodCallDetailAST = methodCallDetailASTList.get(
-			methodCallDetailASTList.size() - 1);
+		DetailAST methodCallDetailAST = methodCallDetailASTs.get(
+			methodCallDetailASTs.size() - 1);
 
 		firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
@@ -260,11 +259,11 @@ public class JSONUtilCheck extends BaseChainedMethodCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_CALL);
 
-		if (methodCallDetailASTList.size() == 1) {
-			DetailAST methodCallDetailAST = methodCallDetailASTList.get(0);
+		if (methodCallDetailASTs.size() == 1) {
+			DetailAST methodCallDetailAST = methodCallDetailASTs.get(0);
 
 			DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
@@ -322,10 +321,10 @@ public class JSONUtilCheck extends BaseChainedMethodCheck {
 		DetailAST parentDetailAST = getParentWithTokenType(
 			detailAST, TokenTypes.OBJBLOCK);
 
-		List<DetailAST> childDetailASTList = getAllChildTokens(
+		List<DetailAST> childDetailASTs = getAllChildTokens(
 			parentDetailAST, false, TokenTypes.METHOD_DEF);
 
-		for (DetailAST childDetailAST : childDetailASTList) {
+		for (DetailAST childDetailAST : childDetailASTs) {
 			if (StringUtil.equals(getName(childDetailAST), methodName) &&
 				ArrayUtil.contains(
 					_VARIABLE_TYPE_NAMES, getTypeName(childDetailAST, false))) {

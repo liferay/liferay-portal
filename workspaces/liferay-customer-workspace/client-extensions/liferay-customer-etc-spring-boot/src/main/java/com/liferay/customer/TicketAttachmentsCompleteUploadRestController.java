@@ -7,6 +7,7 @@ package com.liferay.customer;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2AccessTokenManager;
+import com.liferay.customer.exception.TicketAttachmentAlreadyApprovedException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.customer.service.JiraService;
 import com.liferay.customer.service.NotificationQueueEntryService;
@@ -57,6 +58,7 @@ public class TicketAttachmentsCompleteUploadRestController
 			TicketAttachment ticketAttachment =
 				_ticketAttachmentService.approveTicketAttachment(
 					"Bearer " + jwt.getTokenValue(), ticketAttachmentId);
+
 			JSONObject jsonObject = new JSONObject(json);
 
 			String jiraIssueCommentBody = _buildJiraIssueCommentBody(
@@ -86,6 +88,16 @@ public class TicketAttachmentsCompleteUploadRestController
 
 			return new ResponseEntity<>(
 				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (TicketAttachmentAlreadyApprovedException
+					ticketAttachmentAlreadyApprovedException) {
+
+			_log.error(
+				ticketAttachmentAlreadyApprovedException,
+				ticketAttachmentAlreadyApprovedException);
+
+			return new ResponseEntity<>(
+				"ATTACHMENT_ALREADY_EXISTS", HttpStatus.CONFLICT);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
@@ -151,20 +163,20 @@ public class TicketAttachmentsCompleteUploadRestController
 				).put(
 					new JSONObject(
 					).put(
-						"type", "paragraph"
-					).put(
 						"content",
 						new JSONArray(
 						).put(
 							new JSONObject(
 							).put(
-								"type", "text"
-							).put(
 								"text",
 								_getCommentAuthorInfo(
 									jwt, ticketAttachment.getUserId())
+							).put(
+								"type", "text"
 							)
 						)
+					).put(
+						"type", "paragraph"
 					)
 				).put(
 					new JSONObject(
@@ -174,13 +186,13 @@ public class TicketAttachmentsCompleteUploadRestController
 						).put(
 							new JSONObject(
 							).put(
-								"type", "paragraph"
-							).put(
 								"content",
 								new JSONArray(
 								).putAll(
 									_getCommentBodyJSONArray(commentBody)
 								)
+							).put(
+								"type", "paragraph"
 							)
 						)
 					).put(
@@ -189,33 +201,33 @@ public class TicketAttachmentsCompleteUploadRestController
 				).put(
 					new JSONObject(
 					).put(
-						"type", "paragraph"
-					).put(
 						"content",
 						new JSONArray(
 						).put(
 							new JSONObject(
-							).put(
-								"type", "text"
-							).put(
-								"text", ticketAttachment.getFileName()
 							).put(
 								"marks",
 								new JSONArray(
 								).put(
 									new JSONObject(
 									).put(
-										"type", "link"
-									).put(
 										"attrs",
 										new JSONObject(
 										).put(
 											"href", sb.toString()
 										)
+									).put(
+										"type", "link"
 									)
 								)
+							).put(
+								"text", ticketAttachment.getFileName()
+							).put(
+								"type", "text"
 							)
 						)
+					).put(
+						"type", "paragraph"
 					)
 				)
 			).put(
@@ -290,24 +302,24 @@ public class TicketAttachmentsCompleteUploadRestController
 				jsonArray.put(
 					new JSONObject(
 					).put(
-						"type", "text"
-					).put(
-						"text", link
-					).put(
 						"marks",
 						new JSONArray(
 						).put(
 							new JSONObject(
-							).put(
-								"type", "link"
 							).put(
 								"attrs",
 								new JSONObject(
 								).put(
 									"href", link
 								)
+							).put(
+								"type", "link"
 							)
 						)
+					).put(
+						"text", link
+					).put(
+						"type", "text"
 					));
 			}
 		}

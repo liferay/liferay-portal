@@ -168,13 +168,13 @@ public class ResourceTypesResourceImpl extends BaseResourceTypesResourceImpl {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ResourceTypesResourceImpl.class);
 
+	private static final Map<String, String> _resourceTypeFileNames = Map.of(
+		"Group", "group.json", "User", "user.json");
+
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private final Map<String, String> _resourceTypeFileNames = Map.of(
-		"Group", "group.json", "User", "user.json");
 
 }

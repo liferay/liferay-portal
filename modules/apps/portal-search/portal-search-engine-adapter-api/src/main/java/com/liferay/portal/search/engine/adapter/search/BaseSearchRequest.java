@@ -147,6 +147,10 @@ public abstract class BaseSearchRequest extends CrossClusterRequest {
 		return _trackTotalHits;
 	}
 
+	public Integer getTrackTotalHitsLimit() {
+		return _trackTotalHitsLimit;
+	}
+
 	public String[] getTypes() {
 		return _types;
 	}
@@ -264,6 +268,10 @@ public abstract class BaseSearchRequest extends CrossClusterRequest {
 		_trackTotalHits = trackTotalHits;
 	}
 
+	public void setTrackTotalHitsLimit(Integer trackTotalHitsLimit) {
+		_trackTotalHitsLimit = trackTotalHitsLimit;
+	}
+
 	public void setTypes(String... types) {
 		_types = types;
 	}
@@ -294,6 +302,7 @@ public abstract class BaseSearchRequest extends CrossClusterRequest {
 	private List<StatsRequest> _statsRequests = Collections.emptyList();
 	private Long _timeoutInMilliseconds;
 	private Boolean _trackTotalHits;
+	private Integer _trackTotalHitsLimit;
 	private String[] _types;
 
 }

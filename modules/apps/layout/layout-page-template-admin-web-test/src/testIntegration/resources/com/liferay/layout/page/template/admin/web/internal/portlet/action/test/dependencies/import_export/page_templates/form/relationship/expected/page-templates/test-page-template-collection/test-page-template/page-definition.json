@@ -62,7 +62,8 @@
 								"shadow": "shadow-none",
 								"textAlign": "none",
 								"width": "w-auto"
-							}
+							},
+							"repeatable": false
 						},
 						"id": "77df4dca-ee9e-b7eb-b71e-d6c8a7e02575",
 						"type": "FormRelationship"

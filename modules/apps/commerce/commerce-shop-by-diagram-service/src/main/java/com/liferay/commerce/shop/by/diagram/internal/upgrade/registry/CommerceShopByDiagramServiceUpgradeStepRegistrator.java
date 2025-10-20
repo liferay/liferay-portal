@@ -69,10 +69,8 @@ public class CommerceShopByDiagramServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CSDiagramEntry", "csDiagramEntryId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CSDiagramEntry"};
 				}
 
 			});

@@ -112,10 +112,8 @@ public class CommerceDiscountServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CommerceDiscount", "commerceDiscountId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CommerceDiscount"};
 				}
 
 			});

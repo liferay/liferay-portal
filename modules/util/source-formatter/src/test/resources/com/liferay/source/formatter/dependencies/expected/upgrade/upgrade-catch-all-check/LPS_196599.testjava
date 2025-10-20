@@ -17,7 +17,6 @@ public class LPS_196599 implements CommerceOrderValidator {
 			Locale locale, CommerceOrder commerceOrder, CPInstance cpInstance,
 			String json, BigDecimal quantity, boolean child)
 		throws PortalException {
-
 	}
 
 }

@@ -32,9 +32,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly orderItemsTableRowLink: (productName: string) => Promise<Locator>;
 	readonly orderType: Locator;
-
 	readonly orderId: Locator;
-
 	readonly page: Page;
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;

@@ -397,43 +397,36 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 						playwrightSegmentTestClassGroup.addAxisTestClassGroup(
 							axisTestClassGroup);
 
-						synchronized (_loadedProjectNames) {
-							if (!_loadedProjectNames.contains(projectName) &&
-								(axisCount > 1)) {
+						if (axisCount > 1) {
+							StringBuilder sb = new StringBuilder();
 
-								_loadedProjectNames.add(projectName);
+							sb.append("npx playwright test --project=");
+							sb.append(projectName);
+							sb.append(" --shard=");
+							sb.append(axisIndex + 1);
+							sb.append("/");
+							sb.append(axisCount);
+							sb.append(" --list");
 
-								StringBuilder sb = new StringBuilder();
+							String result = _callNPMCommand(
+								getPlaywrightBaseDir(), sb.toString());
 
-								sb.append("npx playwright test --project=");
-								sb.append(projectName);
-								sb.append(" --shard=");
-								sb.append(axisIndex + 1);
-								sb.append("/");
-								sb.append(axisCount);
-								sb.append(" --list");
-
-								String result = _callNPMCommand(
-									getPlaywrightBaseDir(), sb.toString());
-
-								for (TestClass testClass : testClasses) {
-									if (result.contains(testClass.getName())) {
-										axisTestClassGroup.addTestClass(
-											testClass);
-									}
-								}
-							}
-							else {
-								for (TestClass testClass : testClasses) {
+							for (TestClass testClass : testClasses) {
+								if (result.contains(testClass.getName())) {
 									axisTestClassGroup.addTestClass(testClass);
 								}
 							}
-
-							addAxisTestClassGroup(axisTestClassGroup);
-
-							playwrightSegmentTestClassGroup.setSlaveLabel(
-								axisTestClassGroup.getSlaveLabel());
 						}
+						else {
+							for (TestClass testClass : testClasses) {
+								axisTestClassGroup.addTestClass(testClass);
+							}
+						}
+
+						addAxisTestClassGroup(axisTestClassGroup);
+
+						playwrightSegmentTestClassGroup.setSlaveLabel(
+							axisTestClassGroup.getSlaveLabel());
 					}
 				}
 
@@ -884,8 +877,6 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 			"Playwright batch creation failure", "Liferay Playwright");
 	}
 
-	private static final Set<String> _loadedProjectNames =
-		Collections.synchronizedSet(new HashSet<>());
 	private static final Pattern _playwrightFileNamePattern = Pattern.compile(
 		"tests/(?<filePath>(?<projectName>.+)/[^/]*.spec.ts)");
 	private static JSONObject _playwrightJSONObject;

@@ -38,7 +38,7 @@ export default function SpacesDisplay(props: SpaceDisplayProps) {
 				<SpaceSticker
 					displayType={firstSpace.settings?.logoColor}
 					name={firstSpace.name}
-					size="sm"
+					size="xs"
 				/>
 			</span>
 

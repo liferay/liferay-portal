@@ -173,20 +173,11 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 			() -> _getCustomMetaTags(layout, _layoutSEOEntryLocalService));
 		pageSettings.setHiddenFromNavigation(layout::isHidden);
 		pageSettings.setNavigationSettings(
-			() -> NavigationSettingsUtil.toNavigationSettings(
+			() -> NavigationSettingsUtil.toSitePageNavigationSettings(
 				layout.getTypeSettingsProperties()));
 		pageSettings.setOpenGraphSettings(
 			() -> OpenGraphSettingsUtil.getOpenGraphSettings(
 				_dlAppService, _layoutSEOEntryLocalService, layout));
-		pageSettings.setQueryString(
-			() -> {
-				UnicodeProperties unicodeProperties =
-					layout.getTypeSettingsProperties();
-
-				return unicodeProperties.getProperty(
-					com.liferay.layout.admin.kernel.model.
-						LayoutTypePortletConstants.QUERY_STRING);
-			});
 		pageSettings.setPriority(layout::getPriority);
 		pageSettings.setSeoSettings(
 			() -> SEOSettingsUtil.getSeoSettings(

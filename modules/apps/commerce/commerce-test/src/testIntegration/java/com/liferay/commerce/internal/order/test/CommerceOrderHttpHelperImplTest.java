@@ -184,6 +184,24 @@ public class CommerceOrderHttpHelperImplTest {
 		Assert.assertEquals(
 			expectedCommerceOrder.getCommerceOrderId(),
 			actualCommerceOrder.getCommerceOrderId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		actualCommerceOrder = _commerceOrderHttpHelper.getCurrentCommerceOrder(
+			_httpServletRequest);
+
+		Assert.assertEquals(
+			expectedCommerceOrder.getCommerceOrderId(),
+			actualCommerceOrder.getCommerceOrderId());
+		Assert.assertNotEquals(
+			commerceOrder.getCommerceOrderId(),
+			actualCommerceOrder.getCommerceOrderId());
 	}
 
 	@Test

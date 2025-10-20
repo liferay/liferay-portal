@@ -177,7 +177,7 @@ public class LayoutPersistenceTest {
 
 		newLayout.setColorSchemeId(RandomTestUtil.randomString());
 
-		newLayout.setStyleBookEntryId(RandomTestUtil.nextLong());
+		newLayout.setStyleBookEntryERC(RandomTestUtil.randomString());
 
 		newLayout.setCss(RandomTestUtil.randomString());
 
@@ -265,8 +265,8 @@ public class LayoutPersistenceTest {
 		Assert.assertEquals(
 			existingLayout.getColorSchemeId(), newLayout.getColorSchemeId());
 		Assert.assertEquals(
-			existingLayout.getStyleBookEntryId(),
-			newLayout.getStyleBookEntryId());
+			existingLayout.getStyleBookEntryERC(),
+			newLayout.getStyleBookEntryERC());
 		Assert.assertEquals(existingLayout.getCss(), newLayout.getCss());
 		Assert.assertEquals(
 			existingLayout.getPriority(), newLayout.getPriority());
@@ -652,7 +652,7 @@ public class LayoutPersistenceTest {
 			"classPK", true, "name", true, "keywords", true, "robots", true,
 			"type", true, "hidden", true, "system", true, "friendlyURL", true,
 			"iconImageId", true, "themeId", true, "colorSchemeId", true,
-			"styleBookEntryId", true, "priority", true, "faviconFileEntryId",
+			"styleBookEntryERC", true, "priority", true, "faviconFileEntryId",
 			true, "masterLayoutPlid", true, "layoutPrototypeUuid", true,
 			"layoutPrototypeLinkEnabled", true, "layoutSetPrototypeLayoutERC",
 			true, "publishDate", true, "lastPublishDate", true, "status", true,
@@ -1032,7 +1032,7 @@ public class LayoutPersistenceTest {
 
 		layout.setColorSchemeId(RandomTestUtil.randomString());
 
-		layout.setStyleBookEntryId(RandomTestUtil.nextLong());
+		layout.setStyleBookEntryERC(RandomTestUtil.randomString());
 
 		layout.setCss(RandomTestUtil.randomString());
 

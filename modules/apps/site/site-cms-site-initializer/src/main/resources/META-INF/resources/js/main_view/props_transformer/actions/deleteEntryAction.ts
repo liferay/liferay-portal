@@ -16,7 +16,7 @@ export default function deleteStructureAction({
 }: {
 	bodyHTML: string;
 	deleteAction: {href: string; method: string};
-	loadData: () => {};
+	loadData: () => void;
 	successMessage: string;
 	title: string;
 }) {

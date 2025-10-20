@@ -9,6 +9,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.test.util.BaseDDMFormFieldTypeSettingsTestCase;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -40,6 +41,15 @@ public class NumericDDMFormFieldTypeUtilTest
 		ddmFormField.setProperty(
 			"numericInputMask",
 			DDMFormValuesTestUtil.createLocalizedValue(
+				StringPool.BLANK, LocaleUtil.US));
+
+		_assertInputMaskParametersDouble(
+			NumericDDMFormFieldTypeUtil.getParameters(
+				"double", ddmFormField, new DDMFormFieldRenderingContext()));
+
+		ddmFormField.setProperty(
+			"numericInputMask",
+			DDMFormValuesTestUtil.createLocalizedValue(
 				JSONUtil.put(
 					"append", "$"
 				).put(
@@ -56,17 +66,9 @@ public class NumericDDMFormFieldTypeUtilTest
 				).toString(),
 				LocaleUtil.US));
 
-		Map<String, Object> parameters =
+		_assertInputMaskParametersDouble(
 			NumericDDMFormFieldTypeUtil.getParameters(
-				"double", ddmFormField, new DDMFormFieldRenderingContext());
-
-		Assert.assertEquals(parameters.toString(), 6, parameters.size());
-		Assert.assertTrue(parameters.containsKey("append"));
-		Assert.assertTrue(parameters.containsKey("appendType"));
-		Assert.assertTrue(parameters.containsKey("decimalPlaces"));
-		Assert.assertTrue(parameters.containsKey("inputMask"));
-		Assert.assertTrue(parameters.containsKey("numericInputMask"));
-		Assert.assertTrue(parameters.containsKey("symbols"));
+				"double", ddmFormField, new DDMFormFieldRenderingContext()));
 	}
 
 	@Test
@@ -131,6 +133,19 @@ public class NumericDDMFormFieldTypeUtilTest
 				new DDMFormFieldRenderingContext());
 
 		Assert.assertTrue(parameters.isEmpty());
+	}
+
+	private void _assertInputMaskParametersDouble(
+		Map<String, Object> parameters) {
+
+		Assert.assertEquals(parameters.toString(), 6, parameters.size());
+
+		Assert.assertTrue(parameters.containsKey("append"));
+		Assert.assertTrue(parameters.containsKey("appendType"));
+		Assert.assertTrue(parameters.containsKey("decimalPlaces"));
+		Assert.assertTrue(parameters.containsKey("inputMask"));
+		Assert.assertTrue(parameters.containsKey("numericInputMask"));
+		Assert.assertTrue(parameters.containsKey("symbols"));
 	}
 
 }

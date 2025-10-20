@@ -33,7 +33,7 @@ export class WorkspacesBasePage extends React.Component {
 
 	getUserMenuItems() {
 		const {
-			currentUser: {emailAddress, languageId, screenName}
+			currentUser: {emailAddress, languageId}
 		} = this.props;
 
 		return {
@@ -48,7 +48,7 @@ export class WorkspacesBasePage extends React.Component {
 						{
 							externalLink: true,
 							label: Liferay.Language.get('account'),
-							url: `https://web.liferay.com/web/${screenName}/account-settings`
+							url: 'https://login.liferay.com/enduser/settings'
 						},
 						{
 							externalLink: true,

@@ -2693,7 +2693,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					pageJSONObject.getString("robots_i18n")),
 				type, pageJSONObject.getBoolean("hidden"),
 				layout.getFriendlyURLMap(), layout.getIconImage(), null,
-				layout.getStyleBookEntryId(),
+				layout.getStyleBookEntryERC(),
 				pageJSONObject.getLong("faviconFileEntryId"),
 				layout.getMasterLayoutPlid(), serviceContext);
 			_layoutLocalService.updateLayout(

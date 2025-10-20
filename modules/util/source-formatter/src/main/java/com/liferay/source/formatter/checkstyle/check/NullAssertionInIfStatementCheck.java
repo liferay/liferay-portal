@@ -26,10 +26,10 @@ public class NullAssertionInIfStatementCheck extends BaseCheck {
 
 		DetailAST exprDetailAST = firstChildDetailAST.getNextSibling();
 
-		List<DetailAST> compareDetailASTList = getAllChildTokens(
+		List<DetailAST> compareDetailASTs = getAllChildTokens(
 			exprDetailAST, true, TokenTypes.EQUAL, TokenTypes.NOT_EQUAL);
 
-		for (DetailAST compareDetailAST : compareDetailASTList) {
+		for (DetailAST compareDetailAST : compareDetailASTs) {
 			DetailAST identDetailAST = compareDetailAST.getFirstChild();
 
 			if ((identDetailAST == null) ||
@@ -46,10 +46,10 @@ public class NullAssertionInIfStatementCheck extends BaseCheck {
 
 			DetailAST parentDetailAST = compareDetailAST.getParent();
 
-			List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+			List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 				parentDetailAST, true, TokenTypes.METHOD_CALL);
 
-			if (methodCallDetailASTList.isEmpty()) {
+			if (methodCallDetailASTs.isEmpty()) {
 				continue;
 			}
 
@@ -58,7 +58,7 @@ public class NullAssertionInIfStatementCheck extends BaseCheck {
 
 			String variableName = identDetailAST.getText();
 
-			for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+			for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 				if (!variableName.equals(
 						getVariableName(methodCallDetailAST))) {
 

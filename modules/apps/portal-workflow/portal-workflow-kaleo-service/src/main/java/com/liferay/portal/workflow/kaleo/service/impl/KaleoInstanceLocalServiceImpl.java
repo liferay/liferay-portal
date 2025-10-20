@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ExceptionRetryAcceptor;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.spring.aop.Property;
 import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -195,7 +196,9 @@ public class KaleoInstanceLocalServiceImpl
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public KaleoInstance deleteKaleoInstance(long kaleoInstanceId) {
+	public KaleoInstance deleteKaleoInstance(long kaleoInstanceId)
+		throws PortalException {
+
 		KaleoInstance kaleoInstance = null;
 
 		try {
@@ -227,6 +230,11 @@ public class KaleoInstanceLocalServiceImpl
 
 		_kaleoTimerInstanceTokenLocalService.deleteKaleoTimerInstanceTokens(
 			kaleoInstanceId);
+
+		// Workflow instance link
+
+		_workflowInstanceLinkLocalService.
+			deleteWorkflowInstanceLinkByWorkflowInstanceId(kaleoInstanceId);
 
 		return kaleoInstance;
 	}
@@ -657,5 +665,8 @@ public class KaleoInstanceLocalServiceImpl
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private WorkflowInstanceLinkLocalService _workflowInstanceLinkLocalService;
 
 }

@@ -39,9 +39,11 @@ export default function SimpleActionLinkRenderer({
 	value: string;
 }) {
 	const {actionId} = options;
+	const title =
+		value && value !== '' ? value : Liferay.Language.get('untitled-asset');
 
 	if (!actions.length || !actionId) {
-		return value ? <>{value}</> : null;
+		return <>{title}</>;
 	}
 
 	const isFolder =
@@ -54,7 +56,7 @@ export default function SimpleActionLinkRenderer({
 	);
 
 	if (!selectedAction?.href) {
-		return value ? <>{value}</> : null;
+		return <>{title}</>;
 	}
 
 	const formattedHref = formatActionURL(itemData, selectedAction.href);
@@ -89,8 +91,8 @@ export default function SimpleActionLinkRenderer({
 				/>
 			</ClaySticker>
 
-			<ClayLink data-senna-off href={formattedHref}>
-				{value}
+			<ClayLink aria-label={title} data-senna-off href={formattedHref}>
+				{title}
 			</ClayLink>
 		</div>
 	);

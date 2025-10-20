@@ -182,7 +182,7 @@ public class GroupByTranslator {
 			builder.highlight(
 				_highlightTranslator.translate(
 					highlightFieldNames, highlightFragmentSize,
-					highlightRequireFieldMatch, false, highlightSnippetSize));
+					highlightRequireFieldMatch, highlightSnippetSize));
 		}
 
 		if (ArrayUtil.isEmpty(selectedFieldNames)) {

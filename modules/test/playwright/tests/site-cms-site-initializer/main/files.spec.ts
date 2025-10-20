@@ -108,6 +108,15 @@ test(
 
 			await expect(spaceSpan).toContainText('Default');
 		});
+
+		await test.step('Remove draft file created', async () => {
+			await assetsPage.gotoFiles();
+
+			await assetsPage.execItemAction({
+				action: 'Delete',
+				filter: 'Untitled Asset',
+			});
+		});
 	}
 );
 
@@ -365,6 +374,9 @@ test(
 					page.getByRole('tab', {name: 'More'})
 				).toBeInViewport();
 				await expect(page.getByText('Metadata')).toBeVisible();
+				await expect(page.getByLabel('Show Details')).toHaveClass(
+					/active/
+				);
 			});
 
 			await test.step('Can add a comment', async () => {
@@ -373,6 +385,14 @@ test(
 				await expect(
 					page.getByRole('tab', {name: 'Details'})
 				).not.toBeVisible();
+
+				await expect(page.getByLabel('Show Details')).not.toHaveClass(
+					/active/
+				);
+
+				await expect(page.getByLabel('Show Comments')).toHaveClass(
+					/active/
+				);
 
 				const commentText = getRandomString();
 				await page.getByRole('paragraph').fill(commentText);
@@ -393,6 +413,53 @@ test(
 			await apiHelpers.objectFolder.deleteObjectEntryFolder(
 				folderData.id
 			);
+		}
+	}
+);
+
+test(
+	'Can click on title in Cards View',
+	{tag: '@LPD-67612'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-documents';
+		const fileTitle = `title ${getRandomString()}`;
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64: 'R0lGODlhAQABAAAAACw=',
+					name: `file_${getRandomString()}.png`,
+				},
+				objectEntryFolderExternalReferenceCode: 'L_FILES',
+				title: fileTitle,
+			},
+			applicationName,
+			'Default'
+		);
+
+		try {
+			apiHelpers.data.push({
+				id: objectEntry.file.id,
+				type: 'document',
+			});
+
+			await assetsPage.gotoFiles();
+			await assetsPage.changeVisualizationMode('Cards');
+
+			await page.getByRole('link', {name: fileTitle}).click();
+
+			await expect(
+				page.getByRole('heading', {name: `Edit ${fileTitle}`})
+			).toBeVisible();
+		}
+		finally {
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				applicationName,
+				String(objectEntry.id)
+			);
+
+			await page.getByLabel('Back').click();
+			await assetsPage.changeVisualizationMode('Table');
 		}
 	}
 );

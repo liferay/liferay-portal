@@ -1,0 +1,20 @@
+{
+	"com.liferay.client.extension.type.configuration.CETConfiguration~charlie": {
+		":configurator:policy": "force",
+		"baseURL": "${portalURL}/o/charlie",
+		"description": "",
+		"dxp.lxc.liferay.com.virtualInstanceId": "default",
+		"name": "Charlie Global CSS",
+		"projectId": "charlie",
+		"projectName": "charlie",
+		"properties": [
+		],
+		"sourceCodeURL": "",
+		"type": "globalCSS",
+		"typeSettings": [
+			"url=global.css",
+			"scope=company"
+		],
+		"webContextPath": "/charlie"
+	}
+}

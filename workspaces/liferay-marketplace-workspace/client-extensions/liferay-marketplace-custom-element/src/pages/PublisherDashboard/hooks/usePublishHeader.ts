@@ -13,7 +13,6 @@ const usePublishHeader = () => {
 		);
 
 		if (marketplaceHeader) {
-			marketplaceHeader.classList.remove('d-flex');
 			marketplaceHeader.classList.add('d-none');
 		}
 
@@ -25,7 +24,6 @@ const usePublishHeader = () => {
 
 		return () => {
 			marketplaceHeader?.classList?.remove('d-none');
-			marketplaceHeader?.classList?.add('d-flex');
 			marketplacePublisherContainer?.classList?.remove(
 				'marketplace-publisher-header'
 			);

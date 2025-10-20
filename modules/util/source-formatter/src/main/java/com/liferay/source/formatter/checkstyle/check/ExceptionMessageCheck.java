@@ -33,10 +33,10 @@ public class ExceptionMessageCheck extends BaseMessageCheck {
 		DetailAST elistDetailAST = firstChildDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST exprDetailAST : exprDetailASTList) {
+		for (DetailAST exprDetailAST : exprDetailASTs) {
 			checkMessage(
 				getLiteralStringValue(exprDetailAST),
 				exprDetailAST.getLineNo());

@@ -19,7 +19,7 @@ const orgUrl = new URL(
 
 export default function AccountCreationModalBody({
 	accountData,
-	accountTypes,
+	accountEntryAllowedTypes,
 	quickCreate = false,
 	setAccountData,
 }) {
@@ -149,7 +149,7 @@ export default function AccountCreationModalBody({
 				</label>
 
 				<ClaySelect name="accountType">
-					{accountTypes.map((type) => (
+					{accountEntryAllowedTypes.map((type) => (
 						<ClaySelect.Option
 							key={type}
 							label={`${type[0].toUpperCase()}${type

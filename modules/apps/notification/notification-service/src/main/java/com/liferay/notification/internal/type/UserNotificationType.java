@@ -26,7 +26,6 @@ import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
@@ -47,7 +46,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -120,14 +118,6 @@ public class UserNotificationType extends BaseNotificationType {
 
 		NotificationTemplate notificationTemplate =
 			notificationContext.getNotificationTemplate();
-
-		if (Objects.equals(
-				notificationTemplate.getRecipientType(),
-				NotificationRecipientConstants.TYPE_USER_GROUP) &&
-			!FeatureFlagManagerUtil.isEnabled("LPD-50091")) {
-
-			return;
-		}
 
 		boolean enqueue = false;
 		List<Map<String, String>> notificationRecipientSettings =

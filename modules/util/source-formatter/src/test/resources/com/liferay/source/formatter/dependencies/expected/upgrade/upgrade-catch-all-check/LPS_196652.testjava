@@ -16,7 +16,8 @@ public class LPS_196652 {
 		String className, long classPK, long accountGroupId,
 		ServiceContext serviceContext) {
 
-		AccountGroupRelLocalServiceUtil.addAccountGroupRel("test123", classPK, 123, serviceContext);
+		AccountGroupRelLocalServiceUtil.addAccountGroupRel(
+			"test123", classPK, 123, serviceContext);
 		AccountGroupRelLocalServiceUtil.addAccountGroupRel(accountGroupId, className, classPK);
 		AccountGroupRelServiceUtil.addAccountGroupRel(accountGroupId, className, classPK);
 		_accountGroupRelLocalService.addAccountGroupRel(accountGroupId, className, classPK);

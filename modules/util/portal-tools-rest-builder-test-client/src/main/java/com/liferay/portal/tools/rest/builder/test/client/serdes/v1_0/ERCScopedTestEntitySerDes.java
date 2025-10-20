@@ -131,6 +131,16 @@ public class ERCScopedTestEntitySerDes {
 			sb.append("\"");
 		}
 
+		if (ercScopedTestEntity.getId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(ercScopedTestEntity.getId());
+		}
+
 		if (ercScopedTestEntity.getPermissions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -243,6 +253,13 @@ public class ERCScopedTestEntitySerDes {
 				String.valueOf(ercScopedTestEntity.getExternalReferenceCode()));
 		}
 
+		if (ercScopedTestEntity.getId() == null) {
+			map.put("id", null);
+		}
+		else {
+			map.put("id", String.valueOf(ercScopedTestEntity.getId()));
+		}
+
 		if (ercScopedTestEntity.getPermissions() == null) {
 			map.put("permissions", null);
 		}
@@ -299,6 +316,9 @@ public class ERCScopedTestEntitySerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
@@ -348,6 +368,12 @@ public class ERCScopedTestEntitySerDes {
 				if (jsonParserFieldValue != null) {
 					ercScopedTestEntity.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
+				if (jsonParserFieldValue != null) {
+					ercScopedTestEntity.setId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {

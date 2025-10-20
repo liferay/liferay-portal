@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.servlet.filters.threadlocal.ThreadLocalFilterThreadLocal;
@@ -488,7 +489,9 @@ public class FinderCacheImpl
 			PropsUtil.get(
 				PropsKeys.VALUE_OBJECT_FINDER_THREAD_LOCAL_CACHE_MAX_SIZE));
 
-		if (!DBPartition.isPartitionEnabled() && (localCacheMaxSize > 0)) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED &&
+			(localCacheMaxSize > 0)) {
+
 			_localCache = new CentralizedThreadLocal<>(
 				FinderCacheImpl.class + "._localCache",
 				() -> new LRUMap<>(localCacheMaxSize));
@@ -663,7 +666,7 @@ public class FinderCacheImpl
 		}
 
 		boolean ctAware = false;
-		boolean sharded = DBPartition.isPartitionEnabled();
+		boolean sharded = PropsValues.DATABASE_PARTITION_ENABLED;
 
 		ArgumentsResolverHolder argumentsResolverHolder =
 			_serviceTrackerMap.getService(modelImplClassName);
@@ -684,7 +687,7 @@ public class FinderCacheImpl
 					Class<?> modelImplClass = classLoader.loadClass(
 						argumentsResolver.getClassName());
 
-					if (DBPartition.isPartitionEnabled()) {
+					if (PropsValues.DATABASE_PARTITION_ENABLED) {
 						sharded = DBPartition.isPartitionedModel(
 							modelImplClass);
 					}
@@ -729,7 +732,7 @@ public class FinderCacheImpl
 
 					ctAware = CTModel.class.isAssignableFrom(modelImplClass);
 
-					if (DBPartition.isPartitionEnabled()) {
+					if (PropsValues.DATABASE_PARTITION_ENABLED) {
 						sharded = DBPartition.isPartitionedModel(
 							modelImplClass);
 					}

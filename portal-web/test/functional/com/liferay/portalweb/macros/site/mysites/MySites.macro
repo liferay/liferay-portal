@@ -1,19 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro gotoPagesPG(item = null, siteName = null, pageName = null) {
-		LexiconList.clickEllipsisItem(
-			item = ${item},
-			listEntry = ${siteName});
-
-		SelectWindow.selectPopUp(value1 = "null");
-
-		Navigator._gotoPage(pageName = ${pageName});
-
-		Close.closeWindow(locator1 = "null");
-	}
-
-	@summary = "Default summary"
 	macro viewMembershipRequested(siteName = null, userRole = null) {
 		LexiconList.clickEllipsis(
 			listEntry = ${siteName},
@@ -22,25 +9,6 @@ definition {
 		MenuItem.viewPresent(menuItem = "Membership Requested");
 
 		MenuItem.viewVisible(menuItem = "Membership Requested");
-	}
-
-	@summary = "Default summary"
-	macro viewNoOptions(navItem = null, siteName = null) {
-		Navigator.gotoNavItem(navItem = ${navItem});
-
-		AssertElementNotPresent(
-			key_listEntry = ${siteName},
-			locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
-	}
-
-	@summary = "Default summary"
-	macro viewTags(tagNameList = null) {
-		for (var tagName : list ${tagNameList}) {
-			AssertTextEquals(
-				key_tagName = ${tagName},
-				locator1 = "Tags#VIEW_TAGS_VIA_MY_SITES",
-				value1 = ${tagName});
-		}
 	}
 
 }

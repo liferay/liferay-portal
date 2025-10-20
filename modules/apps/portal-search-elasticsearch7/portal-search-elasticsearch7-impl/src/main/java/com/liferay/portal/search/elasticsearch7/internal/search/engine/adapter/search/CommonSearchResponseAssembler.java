@@ -9,7 +9,6 @@ import com.liferay.portal.search.engine.adapter.search.BaseSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.BaseSearchResponse;
 
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 /**
  * @author Michael C. Han
@@ -17,8 +16,8 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 public interface CommonSearchResponseAssembler {
 
 	public void assemble(
-		SearchSourceBuilder searchSourceBuilder, SearchResponse searchResponse,
 		BaseSearchRequest baseSearchRequest,
-		BaseSearchResponse baseSearchResponse);
+		BaseSearchResponse baseSearchResponse, String searchRequestString,
+		SearchResponse searchResponse);
 
 }

@@ -20,10 +20,10 @@ public abstract class BaseChainedMethodCheck extends BaseCheck {
 	protected boolean containsVariableName(
 		DetailAST detailAST, String variableName, boolean allowGetters) {
 
-		List<DetailAST> identDetailASTList = getAllChildTokens(
+		List<DetailAST> identDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.IDENT);
 
-		for (DetailAST identDetailAST : identDetailASTList) {
+		for (DetailAST identDetailAST : identDetailASTs) {
 			if (!variableName.equals(identDetailAST.getText())) {
 				continue;
 			}

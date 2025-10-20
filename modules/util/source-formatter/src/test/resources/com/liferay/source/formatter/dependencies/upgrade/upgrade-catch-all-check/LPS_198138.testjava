@@ -26,9 +26,33 @@ public class LPS_198138 {
 		BigDecimal total, BigDecimal totalWithTaxAmount,
 		ServiceContext serviceContext) {
 
-		CommerceOrderLocalServiceUtil.addCommerceOrder(123, groupId, billingAddressId, commerceAccountId, commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, "test123", shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
-		CommerceOrderLocalServiceUtil.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
-		_commerceOrderLocalService.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+		CommerceOrderLocalServiceUtil.addCommerceOrder(
+			123, groupId, billingAddressId, commerceAccountId,
+			commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId,
+			shippingAddressId, commercePaymentMethodKey, orderDateMonth,
+			orderDateDay, orderDateYear, orderDateHour, orderDateMinute,
+			orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, shippingWithTaxAmount, subtotal,
+			subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount,
+			serviceContext);
+		CommerceOrderLocalServiceUtil.addCommerceOrder(
+			userId, groupId, billingAddressId, commerceAccountId,
+			commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId,
+			shippingAddressId, commercePaymentMethodKey, orderDateMonth,
+			orderDateDay, orderDateYear, orderDateHour, orderDateMinute,
+			orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, shippingWithTaxAmount, subtotal,
+			subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount,
+			serviceContext);
+		_commerceOrderLocalService.addCommerceOrder(
+			userId, groupId, billingAddressId, commerceAccountId,
+			commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId,
+			shippingAddressId, commercePaymentMethodKey, orderDateMonth,
+			orderDateDay, orderDateYear, orderDateHour, orderDateMinute,
+			orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, shippingWithTaxAmount, subtotal,
+			subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount,
+			serviceContext);
 	}
 
 	@Reference

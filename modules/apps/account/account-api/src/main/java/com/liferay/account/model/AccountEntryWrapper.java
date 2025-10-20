@@ -372,8 +372,7 @@ public class AccountEntryWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.EmailAddress>
-			getEmailAddresses()
-		throws com.liferay.portal.kernel.exception.PortalException {
+		getEmailAddresses() {
 
 		return model.getEmailAddresses();
 	}
@@ -390,8 +389,7 @@ public class AccountEntryWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.Address>
-			getListTypeAddresses(long[] listTypeIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		getListTypeAddresses(long[] listTypeIds) {
 
 		return model.getListTypeAddresses(listTypeIds);
 	}
@@ -447,9 +445,7 @@ public class AccountEntryWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.portal.kernel.model.Phone> getPhones()
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public java.util.List<com.liferay.portal.kernel.model.Phone> getPhones() {
 		return model.getPhones();
 	}
 
@@ -594,8 +590,8 @@ public class AccountEntryWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.portal.kernel.model.Website> getWebsites()
-		throws com.liferay.portal.kernel.exception.PortalException {
+	public java.util.List<com.liferay.portal.kernel.model.Website>
+		getWebsites() {
 
 		return model.getWebsites();
 	}

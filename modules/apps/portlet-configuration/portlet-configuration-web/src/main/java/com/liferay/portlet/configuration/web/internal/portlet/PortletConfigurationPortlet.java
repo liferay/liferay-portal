@@ -855,7 +855,7 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 
 			if (!scopeLayout.hasScopeGroup()) {
 				_groupLocalService.addGroup(
-					themeDisplay.getUserId(),
+					StringPool.BLANK, themeDisplay.getUserId(),
 					GroupConstants.DEFAULT_PARENT_GROUP_ID,
 					Layout.class.getName(), scopeLayout.getPlid(),
 					GroupConstants.DEFAULT_LIVE_GROUP_ID,
@@ -863,9 +863,9 @@ public class PortletConfigurationPortlet extends MVCPortlet {
 						LocaleUtil.getDefault(),
 						String.valueOf(scopeLayout.getPlid())
 					).build(),
-					null, 0, true,
+					null, 0, null, true,
 					GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
-					true, null);
+					false, true, null);
 			}
 
 			scopeGroupId = scopeLayout.getGroupId();

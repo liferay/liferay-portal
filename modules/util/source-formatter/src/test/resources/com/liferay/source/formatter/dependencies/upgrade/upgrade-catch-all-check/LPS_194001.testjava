@@ -16,9 +16,15 @@ public class LPS_194001 {
 		long userId, long groupId, boolean mountPoint, long parentFolderId,
 		String name, String description, ServiceContext serviceContext) {
 
-		DLFolderServiceUtil.addFolder(123, groupId, mountPoint, parentFolderId, name, description, serviceContext);
-		DLFolderServiceUtil.addFolder(userId, groupId, mountPoint, parentFolderId, name, description, serviceContext);
-		_dlFolderService.addFolder(userId, groupId, mountPoint, parentFolderId, name, description, serviceContext);
+		DLFolderServiceUtil.addFolder(
+			123, groupId, mountPoint, parentFolderId, name, description,
+			serviceContext);
+		DLFolderServiceUtil.addFolder(
+			userId, groupId, mountPoint, parentFolderId, name, description,
+			serviceContext);
+		_dlFolderService.addFolder(
+			userId, groupId, mountPoint, parentFolderId, name, description,
+			serviceContext);
 	}
 
 	public void method(
@@ -26,9 +32,15 @@ public class LPS_194001 {
 		long parentFolderId, String name, String description, boolean hidden,
 		ServiceContext serviceContext) {
 
-		DLFolderLocalServiceUtil.addFolder(123, groupId, repositoryId, mountPoint, parentFolderId, name, description, hidden, serviceContext);
-		DLFolderLocalServiceUtil.addFolder(userId, groupId, repositoryId, mountPoint, parentFolderId, name, description, hidden, serviceContext);
-		_dlFolderLocalService.addFolder(userId, groupId, repositoryId, mountPoint, parentFolderId, name, description, hidden, serviceContext);
+		DLFolderLocalServiceUtil.addFolder(
+			123, groupId, repositoryId, mountPoint, parentFolderId, name,
+			description, hidden, serviceContext);
+		DLFolderLocalServiceUtil.addFolder(
+			userId, groupId, repositoryId, mountPoint, parentFolderId, name,
+			description, hidden, serviceContext);
+		_dlFolderLocalService.addFolder(
+			userId, groupId, repositoryId, mountPoint, parentFolderId, name,
+			description, hidden, serviceContext);
 	}
 
 	@Reference

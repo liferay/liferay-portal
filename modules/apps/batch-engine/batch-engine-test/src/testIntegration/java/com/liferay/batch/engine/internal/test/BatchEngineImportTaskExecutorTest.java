@@ -18,6 +18,8 @@ import com.liferay.batch.engine.model.BatchEngineImportTaskError;
 import com.liferay.batch.engine.service.BatchEngineImportTaskErrorLocalService;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
 import com.liferay.headless.admin.user.client.http.HttpInvoker;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
@@ -122,6 +124,12 @@ public class BatchEngineImportTaskExecutorTest
 
 	@Test
 	public void testCreateBlogPostingsFromInvalidJSONFile() throws Exception {
+		ExportImportThreadLocal.setLayoutImportInProcess(true);
+
+		int exportImportReportEntriesCount =
+			_exportImportReportEntryLocalService.
+				getExportImportReportEntriesCount();
+
 		StringBundler sb = new StringBundler();
 
 		sb.append(StringPool.OPEN_BRACKET);
@@ -149,11 +157,25 @@ public class BatchEngineImportTaskExecutorTest
 				"JSON", null);
 
 			_assertInvalidFileImportWithOnErrorFailStrategy(1, 1, logCapture);
+
+			Assert.assertEquals(
+				exportImportReportEntriesCount + 1,
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntriesCount());
+		}
+		finally {
+			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 	}
 
 	@Test
 	public void testCreateBlogPostingsFromInvalidJSONLFile() throws Exception {
+		ExportImportThreadLocal.setLayoutImportInProcess(true);
+
+		int exportImportReportEntriesCount =
+			_exportImportReportEntryLocalService.
+				getExportImportReportEntriesCount();
+
 		StringBundler sb = new StringBundler();
 
 		_createJSONRow(
@@ -177,11 +199,25 @@ public class BatchEngineImportTaskExecutorTest
 				"JSONL", null);
 
 			_assertInvalidFileImportWithOnErrorFailStrategy(1, 1, logCapture);
+
+			Assert.assertEquals(
+				exportImportReportEntriesCount + 1,
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntriesCount());
+		}
+		finally {
+			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 	}
 
 	@Test
 	public void testCreateBlogPostingsFromInvalidXLSFile() throws Exception {
+		ExportImportThreadLocal.setLayoutImportInProcess(true);
+
+		int exportImportReportEntriesCount =
+			_exportImportReportEntryLocalService.
+				getExportImportReportEntriesCount();
+
 		XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
 
 		Sheet sheet = xssfWorkbook.createSheet();
@@ -204,6 +240,14 @@ public class BatchEngineImportTaskExecutorTest
 				"XLS", null);
 
 			_assertInvalidFileImportWithOnErrorFailStrategy(1, 1, logCapture);
+
+			Assert.assertEquals(
+				exportImportReportEntriesCount + 1,
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntriesCount());
+		}
+		finally {
+			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 	}
 
@@ -283,6 +327,12 @@ public class BatchEngineImportTaskExecutorTest
 	public void testCreateBlogPostingsWithInvalidCSVFileAndOnErrorContinue()
 		throws Exception {
 
+		ExportImportThreadLocal.setLayoutImportInProcess(true);
+
+		int exportImportReportEntriesCount =
+			_exportImportReportEntryLocalService.
+				getExportImportReportEntriesCount();
+
 		StringBundler sb = new StringBundler();
 
 		_createCSVRow(sb, FIELD_NAMES);
@@ -332,6 +382,14 @@ public class BatchEngineImportTaskExecutorTest
 				"CSV", null,
 				BatchEngineImportTaskConstants.
 					IMPORT_STRATEGY_ON_ERROR_CONTINUE);
+
+			Assert.assertEquals(
+				exportImportReportEntriesCount + 1,
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntriesCount());
+		}
+		finally {
+			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 
 		_assertInvalidFileImportWithOnErrorContinueStrategy(
@@ -1356,6 +1414,10 @@ public class BatchEngineImportTaskExecutorTest
 	@Inject
 	private BatchEngineImportTaskLocalService
 		_batchEngineImportTaskLocalService;
+
+	@Inject
+	private ExportImportReportEntryLocalService
+		_exportImportReportEntryLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

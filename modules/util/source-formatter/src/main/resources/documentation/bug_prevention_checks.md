@@ -2,7 +2,6 @@
 
 Check | File Extensions | Description
 ----- | --------------- | -----------
-AccessModifierCheck | .java | Checks for cases where visibility of methods can be decreased. |
 [AnonymousClassCheck](check/anonymous_class_check.md#anonymousclasscheck) | .java | Checks for serialization issue when using anonymous class. |
 ArquillianCheck | .java | Checks for correct use of `com.liferay.arquillian.extension.junit.bridge.junit.Arquillian`. |
 AssertFailCheck | .java | Checks that calls to `Assert.fail` can be only used inside a try block as the last statement. |
@@ -208,11 +207,14 @@ PropertiesVerifyPropertiesCheck | .eslintignore, .prettierignore, or .properties
 ReferenceAnnotationCheck | .java | Performs several checks on classes with @Reference annotation. |
 [RequireThisCheck](https://checkstyle.sourceforge.io/checks/coding/requirethis.html) | .java | Checks that references to instance variables and methods of the present object are explicitly of the form 'this.varName' or 'this.methodName(args)' and that those references don't rely on the default behavior when 'this.' is absent. |
 [ResourceBundleCheck](check/resource_bundle_check.md#resourcebundlecheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `java.util.ResourceBundle.getBundle`. |
-ResourceImplCheck | .java | Performs several checks on `*ResourceImpl` classes (except `Base*ResourceImpl` classes). |
+ResourceImplCheck | .java | Performs several checks on `*ResourceImpl` classes. |
 ResourcePermissionCheck | .java | Performs several checks on `*ResourcePermission` classes. |
+ResourceTestInjectionCheck | .java | Checks that if any `*ResourceTest` class injects another resource that is not a `client`. |
+ResultSetGetCallCheck | .java | Finds incorrect use of `ResultSet.get*` calls. |
 [SQLLongNamesCheck](check/sql_long_names_check.md#sqllongnamescheck) | .sql | Checks for table and column names that exceed 30 characters. |
 SelfReferenceCheck | .java | Finds cases of unnecessary reference to its own class. |
 [ServiceComponentRuntimeCheck](check/service_component_runtime_check.md#servicecomponentruntimecheck) | .java | Checks `ServiceComponentRuntime` usage in test classes. |
+ServiceImplAccessModifierCheck | .java | Checks for cases where visibility of methods can be decreased. |
 [ServiceProxyFactoryCheck](check/service_proxy_factory_check.md#serviceproxyfactorycheck) | .java | Finds incorrect parameter in method call. |
 ServiceUpdateCheck | .java | Checks that there are no stale references in service code from service updates. |
 [StaticBlockCheck](check/static_block_check.md#staticblockcheck) | .java | Performs several checks on static blocks. |

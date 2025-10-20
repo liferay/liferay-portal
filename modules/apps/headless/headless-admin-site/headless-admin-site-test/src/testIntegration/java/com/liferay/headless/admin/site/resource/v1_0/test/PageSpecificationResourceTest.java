@@ -740,16 +740,16 @@ public class PageSpecificationResourceTest
 		return null;
 	}
 
-	private long _getStyleBookEntryId(ServiceContext serviceContext)
+	private String _getStyleBookEntryERC(ServiceContext serviceContext)
 		throws Exception {
 
 		if (RandomTestUtil.randomBoolean()) {
-			return 0;
+			return null;
 		}
 
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(serviceContext);
 
-		return styleBookEntry.getStyleBookEntryId();
+		return styleBookEntry.getExternalReferenceCode();
 	}
 
 	private String _getTypeSettings() throws Exception {
@@ -1151,7 +1151,7 @@ public class PageSpecificationResourceTest
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), layout.getFriendlyURLMap(),
-			layout.getIconImage(), null, _getStyleBookEntryId(serviceContext),
+			layout.getIconImage(), null, _getStyleBookEntryERC(serviceContext),
 			0, layout.getMasterLayoutPlid(), serviceContext);
 	}
 

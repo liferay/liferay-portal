@@ -64,7 +64,7 @@ public class LayoutWrapper
 		attributes.put("iconImageId", getIconImageId());
 		attributes.put("themeId", getThemeId());
 		attributes.put("colorSchemeId", getColorSchemeId());
-		attributes.put("styleBookEntryId", getStyleBookEntryId());
+		attributes.put("styleBookEntryERC", getStyleBookEntryERC());
 		attributes.put("css", getCss());
 		attributes.put("priority", getPriority());
 		attributes.put("faviconFileEntryId", getFaviconFileEntryId());
@@ -267,10 +267,10 @@ public class LayoutWrapper
 			setColorSchemeId(colorSchemeId);
 		}
 
-		Long styleBookEntryId = (Long)attributes.get("styleBookEntryId");
+		String styleBookEntryERC = (String)attributes.get("styleBookEntryERC");
 
-		if (styleBookEntryId != null) {
-			setStyleBookEntryId(styleBookEntryId);
+		if (styleBookEntryERC != null) {
+			setStyleBookEntryERC(styleBookEntryERC);
 		}
 
 		String css = (String)attributes.get("css");
@@ -1316,13 +1316,13 @@ public class LayoutWrapper
 	}
 
 	/**
-	 * Returns the style book entry ID of this layout.
+	 * Returns the style book entry erc of this layout.
 	 *
-	 * @return the style book entry ID of this layout
+	 * @return the style book entry erc of this layout
 	 */
 	@Override
-	public long getStyleBookEntryId() {
-		return model.getStyleBookEntryId();
+	public String getStyleBookEntryERC() {
+		return model.getStyleBookEntryERC();
 	}
 
 	/**
@@ -2553,13 +2553,13 @@ public class LayoutWrapper
 	}
 
 	/**
-	 * Sets the style book entry ID of this layout.
+	 * Sets the style book entry erc of this layout.
 	 *
-	 * @param styleBookEntryId the style book entry ID of this layout
+	 * @param styleBookEntryERC the style book entry erc of this layout
 	 */
 	@Override
-	public void setStyleBookEntryId(long styleBookEntryId) {
-		model.setStyleBookEntryId(styleBookEntryId);
+	public void setStyleBookEntryERC(String styleBookEntryERC) {
+		model.setStyleBookEntryERC(styleBookEntryERC);
 	}
 
 	/**

@@ -1,0 +1,23 @@
+{
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"devDependencies": {
+		"@types/react": "^18.2.6",
+		"@types/react-dom": "^18.0.9",
+		"@vitejs/plugin-react-swc": "^4.1.0",
+		"typescript": "5.7.2",
+		"vite": "4.0.0"
+	},
+	"name": "liferay-sample-custom-element-6",
+	"private": true,
+	"scripts": {
+		"build": "tsc -b && vite build",
+		"dev": "vite",
+		"lint": "eslint .",
+		"preview": "vite preview"
+	},
+	"type": "module",
+	"version": "1.0.0"
+}

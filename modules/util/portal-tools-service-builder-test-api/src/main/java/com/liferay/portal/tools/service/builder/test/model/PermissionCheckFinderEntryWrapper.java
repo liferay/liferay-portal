@@ -38,6 +38,8 @@ public class PermissionCheckFinderEntryWrapper
 		attributes.put(
 			"permissionCheckFinderEntryId", getPermissionCheckFinderEntryId());
 		attributes.put("groupId", getGroupId());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("userId", getUserId());
 		attributes.put("integer", getInteger());
 		attributes.put("name", getName());
 		attributes.put("type", getType());
@@ -58,6 +60,18 @@ public class PermissionCheckFinderEntryWrapper
 
 		if (groupId != null) {
 			setGroupId(groupId);
+		}
+
+		Long companyId = (Long)attributes.get("companyId");
+
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Long userId = (Long)attributes.get("userId");
+
+		if (userId != null) {
+			setUserId(userId);
 		}
 
 		Integer integer = (Integer)attributes.get("integer");
@@ -82,6 +96,16 @@ public class PermissionCheckFinderEntryWrapper
 	@Override
 	public PermissionCheckFinderEntry cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
+	}
+
+	/**
+	 * Returns the company ID of this permission check finder entry.
+	 *
+	 * @return the company ID of this permission check finder entry
+	 */
+	@Override
+	public long getCompanyId() {
+		return model.getCompanyId();
 	}
 
 	/**
@@ -144,9 +168,39 @@ public class PermissionCheckFinderEntryWrapper
 		return model.getType();
 	}
 
+	/**
+	 * Returns the user ID of this permission check finder entry.
+	 *
+	 * @return the user ID of this permission check finder entry
+	 */
+	@Override
+	public long getUserId() {
+		return model.getUserId();
+	}
+
+	/**
+	 * Returns the user uuid of this permission check finder entry.
+	 *
+	 * @return the user uuid of this permission check finder entry
+	 */
+	@Override
+	public String getUserUuid() {
+		return model.getUserUuid();
+	}
+
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the company ID of this permission check finder entry.
+	 *
+	 * @param companyId the company ID of this permission check finder entry
+	 */
+	@Override
+	public void setCompanyId(long companyId) {
+		model.setCompanyId(companyId);
 	}
 
 	/**
@@ -209,6 +263,26 @@ public class PermissionCheckFinderEntryWrapper
 	@Override
 	public void setType(String type) {
 		model.setType(type);
+	}
+
+	/**
+	 * Sets the user ID of this permission check finder entry.
+	 *
+	 * @param userId the user ID of this permission check finder entry
+	 */
+	@Override
+	public void setUserId(long userId) {
+		model.setUserId(userId);
+	}
+
+	/**
+	 * Sets the user uuid of this permission check finder entry.
+	 *
+	 * @param userUuid the user uuid of this permission check finder entry
+	 */
+	@Override
+	public void setUserUuid(String userUuid) {
+		model.setUserUuid(userUuid);
 	}
 
 	@Override

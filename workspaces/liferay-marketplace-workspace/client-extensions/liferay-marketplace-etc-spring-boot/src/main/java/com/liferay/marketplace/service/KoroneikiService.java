@@ -5,8 +5,8 @@
 
 package com.liferay.marketplace.service;
 
+import com.liferay.headless.admin.user.client.custom.field.CustomField;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
-import com.liferay.headless.admin.user.client.dto.v1_0.CustomField;
 import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;

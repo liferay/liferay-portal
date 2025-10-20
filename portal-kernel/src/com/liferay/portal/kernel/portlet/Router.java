@@ -5,10 +5,9 @@
 
 package com.liferay.portal.kernel.portlet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Contains a list of the available routes and handles conversion of URLs to
@@ -34,8 +33,15 @@ import org.osgi.annotation.versioning.ProviderType;
  * @see    Route
  * @see    DefaultFriendlyURLMapper
  */
-@ProviderType
-public interface Router {
+public class Router {
+
+	public Router() {
+		_routes = new ArrayList<>();
+	}
+
+	public Router(int size) {
+		_routes = new ArrayList<>(size);
+	}
 
 	/**
 	 * Generates a new route from its pattern string.
@@ -43,9 +49,17 @@ public interface Router {
 	 * @param  pattern the route pattern string
 	 * @return the generated route
 	 */
-	public Route addRoute(String pattern);
+	public Route addRoute(String pattern) {
+		Route route = new Route(pattern);
 
-	public List<Route> getRoutes();
+		_routes.add(route);
+
+		return route;
+	}
+
+	public List<Route> getRoutes() {
+		return new ArrayList<>(_routes);
+	}
 
 	/**
 	 * Generates a URL from the parameter map using the available routes.
@@ -54,7 +68,17 @@ public interface Router {
 	 * @return the URL path, or <code>null</code> if an applicable route was not
 	 *         found
 	 */
-	public String parametersToUrl(Map<String, String> parameters);
+	public String parametersToUrl(Map<String, String> parameters) {
+		for (Route route : _routes) {
+			String url = route.parametersToUrl(parameters);
+
+			if (url != null) {
+				return url;
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Parses a URL into a parameter map using the available routes.
@@ -65,6 +89,16 @@ public interface Router {
 	 *         <code>parameters</code> was populated; <code>false</code>
 	 *         otherwise
 	 */
-	public boolean urlToParameters(String url, Map<String, String> parameters);
+	public boolean urlToParameters(String url, Map<String, String> parameters) {
+		for (Route route : _routes) {
+			if (route.urlToParameters(url, parameters)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private final List<Route> _routes;
 
 }

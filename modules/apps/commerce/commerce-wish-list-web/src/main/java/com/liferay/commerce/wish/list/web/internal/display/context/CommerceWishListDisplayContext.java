@@ -336,6 +336,23 @@ public class CommerceWishListDisplayContext {
 		return _searchContainer;
 	}
 
+	public boolean hasCommerceChannel() throws PortalException {
+		CommerceContext commerceContext =
+			_commerceWishListRequestHelper.getCommerceContext();
+
+		if (commerceContext == null) {
+			return false;
+		}
+
+		long commerceChannelId = commerceContext.getCommerceChannelId();
+
+		if (commerceChannelId > 0) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean isProductVisibleToAccount(long cpDefinitionId)
 		throws PortalException {
 

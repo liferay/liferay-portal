@@ -16,7 +16,7 @@
 			"name"?: {[key: string]: string;};
 			"objectLayoutRows"?: Array<ObjectLayoutRow>;
 			"priority"?: number;
-			"type"?: 'categorization' | 'regular';
+			"type"?: 'categorization' | 'regular' | 'seo';
 
 		static "discriminator": string | undefined = undefined;
 
@@ -53,7 +53,7 @@
 		{
 			baseName: "type",
 			name: "type",
-			type: "'categorization' | 'regular'",
+			type: "'categorization' | 'regular' | 'seo'",
 		},
 		];
 

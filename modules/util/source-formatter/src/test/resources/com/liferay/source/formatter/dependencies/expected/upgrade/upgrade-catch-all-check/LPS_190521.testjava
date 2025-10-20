@@ -16,7 +16,8 @@ public class LPS_190521 {
 		CPDefinitionLocalServiceUtil.fetchCPDefinitionByCProductExternalReferenceCode(externalReferenceCode, companyId);
 		CPDefinitionServiceUtil.fetchCPDefinitionByCProductExternalReferenceCode(externalReferenceCode, companyId);
 		_cpDefinitionLocalService.fetchCPDefinitionByCProductExternalReferenceCode(externalReferenceCode, companyId);
-		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(123, "test123");
+		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(
+			123, "test123");
 		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(externalReferenceCode, companyId);
 	}
 

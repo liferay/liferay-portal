@@ -13,8 +13,9 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_196611 {
 
 	public void method(long companyId, String externalReferenceCode) {
+		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode(
+			123, externalReferenceCode);
 		CommercePriceListLocalServiceUtil.fetchCommercePriceListByExternalReferenceCode(externalReferenceCode, companyId);
-		_commercePriceListLocalService.fetchByExternalReferenceCode(123, "test123");
 		_commercePriceListLocalService.fetchCommercePriceListByExternalReferenceCode(externalReferenceCode, companyId);
 	}
 

@@ -300,7 +300,7 @@ export const List: React.FC<IListProps> = ({
 		{
 			displayType: 'primary',
 			href: setUriQueryValues(
-				{type: SegmentTypes.Dynamic},
+				{type: SegmentTypes.Batch},
 				toRoute(Routes.CONTACTS_SEGMENT_CREATE, {
 					channelId,
 					groupId

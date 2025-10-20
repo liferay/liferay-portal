@@ -16,7 +16,7 @@ UnicodeProperties layoutTypeSettingsUnicodeProperties = selLayout.getTypeSetting
 %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="layout-seo-web/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <portlet:actionURL copyCurrentRenderParameters="<%= true %>" name="/layout/edit_seo" var="editSEOURL">

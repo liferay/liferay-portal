@@ -124,14 +124,6 @@ public class PageSettingsSerDes {
 			map.put("priority", String.valueOf(pageSettings.getPriority()));
 		}
 
-		if (pageSettings.getQueryString() == null) {
-			map.put("queryString", null);
-		}
-		else {
-			map.put(
-				"queryString", String.valueOf(pageSettings.getQueryString()));
-		}
-
 		if (pageSettings.getSeoSettings() == null) {
 			map.put("seoSettings", null);
 		}
@@ -182,9 +174,6 @@ public class PageSettingsSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "priority")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "queryString")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "seoSettings")) {
@@ -256,7 +245,7 @@ public class PageSettingsSerDes {
 
 				if (jsonParserFieldValue != null) {
 					pageSettings.setNavigationSettings(
-						NavigationSettingsSerDes.toDTO(
+						SitePageNavigationSettingsSerDes.toDTO(
 							(String)jsonParserFieldValue));
 				}
 			}
@@ -271,11 +260,6 @@ public class PageSettingsSerDes {
 				if (jsonParserFieldValue != null) {
 					pageSettings.setPriority(
 						Integer.valueOf((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "queryString")) {
-				if (jsonParserFieldValue != null) {
-					pageSettings.setQueryString((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "seoSettings")) {

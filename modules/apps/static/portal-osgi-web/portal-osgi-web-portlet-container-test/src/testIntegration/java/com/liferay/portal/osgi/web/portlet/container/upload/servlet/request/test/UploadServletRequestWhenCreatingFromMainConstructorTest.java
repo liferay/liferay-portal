@@ -52,12 +52,12 @@ public class UploadServletRequestWhenCreatingFromMainConstructorTest {
 			PortletContainerTestUtil.getMultipartRequest(
 				_fileNameParameter, _BYTES);
 
-		HttpServletRequest mockHttpServletRequest =
+		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)liferayServletRequest.getRequest();
 
-		_portal.getUploadServletRequest(mockHttpServletRequest);
+		_portal.getUploadServletRequest(httpServletRequest);
 
-		HttpSession mockHttpSession = mockHttpServletRequest.getSession();
+		HttpSession mockHttpSession = httpServletRequest.getSession();
 
 		Assert.assertNotNull(
 			mockHttpSession.getAttribute(ProgressTracker.PERCENT));
@@ -69,11 +69,11 @@ public class UploadServletRequestWhenCreatingFromMainConstructorTest {
 			PortletContainerTestUtil.getMultipartRequest(
 				_fileNameParameter, _BYTES);
 
-		HttpServletRequest mockHttpServletRequest =
+		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)liferayServletRequest.getRequest();
 
 		UploadServletRequest uploadServletRequest =
-			_portal.getUploadServletRequest(mockHttpServletRequest);
+			_portal.getUploadServletRequest(httpServletRequest);
 
 		Map<String, FileItem[]> multipartParameterMap =
 			uploadServletRequest.getMultipartParameterMap();

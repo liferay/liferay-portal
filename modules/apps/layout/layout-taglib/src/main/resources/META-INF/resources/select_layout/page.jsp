@@ -8,7 +8,7 @@
 <%@ include file="/select_layout/init.jsp" %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/select_layout/css/tree.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="layout-taglib/select_layout/css/tree.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div>

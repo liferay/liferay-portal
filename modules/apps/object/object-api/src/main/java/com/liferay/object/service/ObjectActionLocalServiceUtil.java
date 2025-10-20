@@ -255,6 +255,12 @@ public class ObjectActionLocalServiceUtil {
 	}
 
 	public static ObjectAction fetchObjectAction(
+		long objectDefinitionId, String name) {
+
+		return getService().fetchObjectAction(objectDefinitionId, name);
+	}
+
+	public static ObjectAction fetchObjectAction(
 		String externalReferenceCode, long objectDefinitionId) {
 
 		return getService().fetchObjectAction(

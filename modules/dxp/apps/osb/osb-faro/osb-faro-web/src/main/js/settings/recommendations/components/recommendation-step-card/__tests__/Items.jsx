@@ -28,9 +28,9 @@ describe('Items', () => {
 						initialValues={{
 							itemFilters: [
 								{
-									id: 'includeFilter - url ~ .*documents',
+									id: 'includeFilter - url ~ .*custom-assets',
 									name: 'includeFilter',
-									value: 'url ~ .*documentss'
+									value: 'url ~ .*custom-assets'
 								}
 							]
 						}}

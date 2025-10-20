@@ -12,7 +12,6 @@ import com.liferay.layout.list.retriever.ClassedModelListObjectReference;
 import com.liferay.layout.list.retriever.ListObjectReference;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import org.osgi.service.component.annotations.Component;
@@ -28,13 +27,10 @@ public class AssetEntryListListObjectReferenceFactory
 	@Override
 	public ListObjectReference getListObjectReference(JSONObject jsonObject) {
 		String classPK = jsonObject.getString("classPK");
+		String itemType = jsonObject.getString("itemType");
 
 		return new ClassedModelListObjectReference(
-			JSONUtil.put(
-				"className", jsonObject.getLong("className")
-			).put(
-				"classPK", classPK
-			).put(
+			jsonObject.put(
 				"itemType",
 				() -> {
 					AssetListEntry assetListEntry =
@@ -42,14 +38,11 @@ public class AssetEntryListListObjectReferenceFactory
 							GetterUtil.getLong(classPK));
 
 					if (assetListEntry == null) {
-						return jsonObject.getString("itemType");
+						return itemType;
 					}
 
 					return assetListEntry.getAssetEntryType();
-				}
-			).put(
-				"title", jsonObject.getString("title")
-			));
+				}));
 	}
 
 	@Reference

@@ -1216,13 +1216,24 @@ public class AssetPublisherDisplayContext {
 		LiferayPortletResponse liferayPortletResponse =
 			_portal.getLiferayPortletResponse(_portletResponse);
 
+		long[] classTypeIds = getClassTypeIds();
+
+		AssetListEntry assetListEntry = fetchAssetListEntry();
+
+		if ((assetListEntry != null) &&
+			(GetterUtil.getLong(assetListEntry.getAssetEntrySubtype()) != 0)) {
+
+			classTypeIds = ArrayUtil.append(
+				classTypeIds,
+				GetterUtil.getLong(assetListEntry.getAssetEntrySubtype()));
+		}
+
 		for (long groupId : groupIds) {
 			List<AssetPublisherAddItemHolder> assetPublisherAddItemHolders =
 				_assetHelper.getAssetPublisherAddItemHolders(
 					liferayPortletRequest, liferayPortletResponse, groupId,
-					getClassNameIds(), getClassTypeIds(),
-					getAllAssetCategoryIds(), getAllAssetTagNames(),
-					_themeDisplay.getURLCurrent());
+					getClassNameIds(), classTypeIds, getAllAssetCategoryIds(),
+					getAllAssetTagNames(), _themeDisplay.getURLCurrent());
 
 			if (ListUtil.isNotEmpty(assetPublisherAddItemHolders)) {
 				scopeAssetPublisherAddItemHolders.put(

@@ -74,24 +74,24 @@ public class NestedFieldAnnotationCheck extends BaseCheck {
 			return null;
 		}
 
-		List<DetailAST> expressionDetailASTList = new ArrayList<>();
+		List<DetailAST> expressionDetailASTs = new ArrayList<>();
 
 		DetailAST annotationArrayInitDetailAST =
 			annotationMemberValuePairDetailAST.findFirstToken(
 				TokenTypes.ANNOTATION_ARRAY_INIT);
 
 		if (annotationArrayInitDetailAST != null) {
-			expressionDetailASTList.addAll(
+			expressionDetailASTs.addAll(
 				getAllChildTokens(
 					annotationArrayInitDetailAST, false, TokenTypes.EXPR));
 		}
 		else {
-			expressionDetailASTList.add(
+			expressionDetailASTs.add(
 				annotationMemberValuePairDetailAST.findFirstToken(
 					TokenTypes.EXPR));
 		}
 
-		for (DetailAST expressionDetailAST : expressionDetailASTList) {
+		for (DetailAST expressionDetailAST : expressionDetailASTs) {
 			DetailAST firstChildDetailAST = expressionDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.STRING_LITERAL) {
@@ -110,8 +110,8 @@ public class NestedFieldAnnotationCheck extends BaseCheck {
 		return null;
 	}
 
-	private boolean _hasNestedFieldAnnotation(List<DetailAST> detailASTList) {
-		for (DetailAST detailAST : detailASTList) {
+	private boolean _hasNestedFieldAnnotation(List<DetailAST> detailASTs) {
+		for (DetailAST detailAST : detailASTs) {
 			DetailAST annotationDetailAST = AnnotationUtil.getAnnotation(
 				detailAST, "NestedField");
 

@@ -54,13 +54,13 @@ public class UpgradeProcessCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodDefDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefDetailASTs = getAllChildTokens(
 			detailAST.findFirstToken(TokenTypes.OBJBLOCK), false,
 			TokenTypes.METHOD_DEF);
 
 		DetailAST doUpgradeMethodDefDetailAST = null;
 
-		for (DetailAST methodDefDetailAST : methodDefDetailASTList) {
+		for (DetailAST methodDefDetailAST : methodDefDetailASTs) {
 			if (StringUtil.equals(getName(methodDefDetailAST), "doUpgrade") &&
 				AnnotationUtil.containsAnnotation(
 					methodDefDetailAST, "Override")) {
@@ -82,7 +82,7 @@ public class UpgradeProcessCheck extends BaseCheck {
 			return;
 		}
 
-		if ((methodDefDetailASTList.size() == 1) &&
+		if ((methodDefDetailASTs.size() == 1) &&
 			_isUnnecessaryUpgradeProcessClass(slistDetailAST)) {
 
 			log(
@@ -342,15 +342,15 @@ public class UpgradeProcessCheck extends BaseCheck {
 		DetailAST elistDetailAST = firstChildDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() < 2) {
+		if (exprDetailASTs.size() < 2) {
 			return false;
 		}
 
-		String columnName = _getParameterName(exprDetailASTList.get(1));
-		String tableName = _getParameterName(exprDetailASTList.get(0));
+		String columnName = _getParameterName(exprDetailASTs.get(1));
+		String tableName = _getParameterName(exprDetailASTs.get(0));
 
 		if (Validator.isNull(columnName) || Validator.isNull(tableName)) {
 			return false;

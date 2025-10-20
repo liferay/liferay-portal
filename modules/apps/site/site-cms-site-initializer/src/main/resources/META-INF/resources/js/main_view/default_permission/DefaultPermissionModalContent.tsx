@@ -25,6 +25,7 @@ import {
 
 export default function DefaultPermissionModalContent({
 	actions,
+	allowPropagate = false,
 	apiURL,
 	classExternalReferenceCode,
 	className,
@@ -37,6 +38,7 @@ export default function DefaultPermissionModalContent({
 		useState<AssetRoleSelectedActions>({});
 	const [loading, setLoading] = useState(false);
 	const [propagate, setPropagate] = useState(false);
+	const saveActive = !allowPropagate || propagate;
 
 	const saveHandler = useCallback(
 		async (event: any) => {
@@ -168,35 +170,39 @@ export default function DefaultPermissionModalContent({
 
 			<ClayModal.Footer
 				first={
-					<div className="d-flex">
-						<ClayCheckbox
-							checked={propagate}
-							data-testid="checkbox-propagate"
-							disabled={loading}
-							inline
-							label={Liferay.Language.get(
-								'propagate-default-permissions-to-new-and-existing-subfolders'
-							)}
-							onChange={() => {
-								setPropagate(!propagate);
-							}}
-						/>
-
-						<ClayTooltipProvider>
-							<span
-								className="pl-2"
-								data-tooltip-align="top"
-								title={Liferay.Language.get(
-									'enabling-this-setting-will-apply-the-permissions-configuration-to-all-current-subfolders'
+					allowPropagate ? (
+						<div className="d-flex">
+							<ClayCheckbox
+								checked={propagate}
+								data-testid="checkbox-propagate"
+								disabled={loading}
+								inline
+								label={Liferay.Language.get(
+									'i-understand-that-these-changes-will-also-affect-existing-entities'
 								)}
-							>
-								<ClayIcon
-									aria-label="Info"
-									symbol="info-circle"
-								/>
-							</span>
-						</ClayTooltipProvider>
-					</div>
+								onChange={() => {
+									setPropagate(!propagate);
+								}}
+							/>
+
+							<ClayTooltipProvider>
+								<span
+									className="pl-2"
+									data-tooltip-align="top"
+									title={Liferay.Language.get(
+										'enabling-this-setting-will-apply-the-permissions-configuration-to-all-current-subfolders'
+									)}
+								>
+									<ClayIcon
+										aria-label="Info"
+										symbol="question-circle-full"
+									/>
+								</span>
+							</ClayTooltipProvider>
+						</div>
+					) : (
+						<></>
+					)
 				}
 				last={
 					<ClayButton.Group spaced>
@@ -211,10 +217,12 @@ export default function DefaultPermissionModalContent({
 
 						<ClayButton
 							data-testid="button-save"
-							disabled={loading}
+							disabled={loading || !saveActive}
 							onClick={saveHandler}
 						>
-							{Liferay.Language.get('save')}
+							{allowPropagate
+								? Liferay.Language.get('save-and-propagate')
+								: Liferay.Language.get('save')}
 						</ClayButton>
 					</ClayButton.Group>
 				}

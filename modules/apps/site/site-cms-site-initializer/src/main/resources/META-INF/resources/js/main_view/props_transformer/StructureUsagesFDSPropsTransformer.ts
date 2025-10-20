@@ -6,7 +6,6 @@
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
-import NameRenderer from './cell_renderers/NameRenderer';
 import SpaceRenderer from './cell_renderers/SpaceRenderer';
 import TypeRenderer from './cell_renderers/TypeRenderer';
 
@@ -22,11 +21,6 @@ export default function StructureUsagesFDSPropsTransformer({
 				{
 					component: AuthorRenderer,
 					name: 'authorTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-				{
-					component: NameRenderer,
-					name: 'nameTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{

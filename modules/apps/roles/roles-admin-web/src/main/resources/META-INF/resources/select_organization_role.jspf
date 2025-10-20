@@ -258,7 +258,7 @@ else {
 							Map<String, Object> data = HashMapBuilder.<String, Object>put(
 								"entityid", role.getRoleId()
 							).put(
-								"entityname", role.getTitle(locale)
+								"entityname", HtmlUtil.escape(role.getTitle(locale))
 							).put(
 								"groupdescriptivename", selectedOrganizationGroup.getDescriptiveName(locale)
 							).put(

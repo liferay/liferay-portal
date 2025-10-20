@@ -650,8 +650,8 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static void updateClassedModel(long plid) {
-		getService().updateClassedModel(plid);
+	public static void updateClassedModel(long userId, long plid) {
+		getService().updateClassedModel(userId, plid);
 	}
 
 	public static FragmentEntryLink updateDeleted(

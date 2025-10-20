@@ -20,7 +20,9 @@ public class LPS_193462 {
 		long countryId, long typeId, boolean mailing, boolean primary) {
 
 		AddressLocalServiceUtil.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, ServiceContextThreadLocal.getServiceContext());
-		AddressServiceUtil.addAddress(123, "test123", classPK, street1, street2, street3, city, zip,regionId, countryId, typeId, mailing, primary);
+		AddressServiceUtil.addAddress(
+			123, "test123", classPK, street1, street2, street3, city, zip,
+			regionId, countryId, typeId, mailing, primary);
 		AddressServiceUtil.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, ServiceContextThreadLocal.getServiceContext());
 		_addressLocalService.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, ServiceContextThreadLocal.getServiceContext());
 		_addressService.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, ServiceContextThreadLocal.getServiceContext());
@@ -33,7 +35,9 @@ public class LPS_193462 {
 		ServiceContext serviceContext) {
 
 		AddressLocalServiceUtil.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, serviceContext);
-		AddressServiceUtil.addAddress(userId, "test123", 123, street1, street2, street3, city, zip,regionId, countryId, typeId, mailing, primary, serviceContext);
+		AddressServiceUtil.addAddress(
+			userId, "test123", 123, street1, street2, street3, city, zip,
+			regionId, countryId, typeId, mailing, primary, serviceContext);
 		AddressServiceUtil.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, serviceContext);
 		_addressLocalService.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, serviceContext);
 		_addressService.addAddress(null, userId, className, classPK, null, null, street1, street2, street3, city, zip, regionId, countryId, typeId, mailing, primary, null, serviceContext);

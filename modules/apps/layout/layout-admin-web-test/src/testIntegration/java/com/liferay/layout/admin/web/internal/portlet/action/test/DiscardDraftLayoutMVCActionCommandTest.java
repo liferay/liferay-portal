@@ -259,16 +259,14 @@ public class DiscardDraftLayoutMVCActionCommandTest {
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
+		httpServletRequest.setAttribute(
 			WebKeys.USER_ID, TestPropsValues.getUserId());
 
 		mockLiferayPortletActionRequest.setAttribute(
-			PortletServlet.PORTLET_SERVLET_REQUEST, mockHttpServletRequest);
+			PortletServlet.PORTLET_SERVLET_REQUEST, httpServletRequest);
 
 		mockLiferayPortletActionRequest.setParameter(
 			"name", RandomTestUtil.randomString());

@@ -47,7 +47,7 @@ if (uploadURL != null) {
 <liferay-util:html-top
 	outputKey="com.liferay.item.selector.taglib#/repository_entry_browser/page.jsp"
 >
-	<aui:link href='<%= PortalUtil.getPathProxy() + ServletContextUtil.getContextPath() + "/repository_entry_browser/css/main.css" %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="item-selector-taglib/repository_entry_browser/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <%

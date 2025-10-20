@@ -417,71 +417,11 @@ public class ObjectDefinitionResourceImpl
 			objectDefinition.getObjectValidationRules(),
 			objectDefinition.getObjectViews());
 
-		for (com.liferay.object.model.ObjectField
-				aggregationServiceBuilderObjectField :
-					transformToList(
-						ArrayUtil.filter(
-							objectDefinition.getObjectFields(),
-							objectField -> StringUtil.equals(
-								objectField.getBusinessTypeAsString(),
-								ObjectFieldConstants.
-									BUSINESS_TYPE_AGGREGATION)),
-						objectField -> ObjectFieldUtil.toObjectField(
-							objectDefinition.getDefaultLanguageId(),
-							_listTypeDefinitionLocalService, objectField,
-							_objectFieldLocalService,
-							_objectFieldSettingLocalService,
-							_objectFilterLocalService))) {
-
-			if (aggregationServiceBuilderObjectField.isSystem()) {
-				_objectFieldLocalService.addOrUpdateSystemObjectField(
-					aggregationServiceBuilderObjectField.
-						getExternalReferenceCode(),
-					GuestOrUserUtil.getUserId(),
-					aggregationServiceBuilderObjectField.
-						getListTypeDefinitionId(),
-					serviceBuilderObjectDefinition.getObjectDefinitionId(),
-					aggregationServiceBuilderObjectField.getBusinessType(),
-					aggregationServiceBuilderObjectField.getDBColumnName(),
-					serviceBuilderObjectDefinition.getDBTableName(),
-					aggregationServiceBuilderObjectField.getDBType(),
-					aggregationServiceBuilderObjectField.isIndexed(),
-					aggregationServiceBuilderObjectField.isIndexedAsKeyword(),
-					aggregationServiceBuilderObjectField.getIndexedLanguageId(),
-					aggregationServiceBuilderObjectField.getLabelMap(),
-					aggregationServiceBuilderObjectField.isLocalized(),
-					aggregationServiceBuilderObjectField.getName(),
-					aggregationServiceBuilderObjectField.getReadOnly(),
-					aggregationServiceBuilderObjectField.
-						getReadOnlyConditionExpression(),
-					aggregationServiceBuilderObjectField.isRequired(),
-					aggregationServiceBuilderObjectField.isState(),
-					aggregationServiceBuilderObjectField.
-						getObjectFieldSettings());
-
-				continue;
-			}
-
-			_objectFieldLocalService.addCustomObjectField(
-				aggregationServiceBuilderObjectField.getExternalReferenceCode(),
-				GuestOrUserUtil.getUserId(),
-				aggregationServiceBuilderObjectField.getListTypeDefinitionId(),
-				serviceBuilderObjectDefinition.getObjectDefinitionId(),
-				aggregationServiceBuilderObjectField.getBusinessType(),
-				aggregationServiceBuilderObjectField.getDBType(),
-				aggregationServiceBuilderObjectField.isIndexed(),
-				aggregationServiceBuilderObjectField.isIndexedAsKeyword(),
-				aggregationServiceBuilderObjectField.getIndexedLanguageId(),
-				aggregationServiceBuilderObjectField.getLabelMap(),
-				aggregationServiceBuilderObjectField.isLocalized(),
-				aggregationServiceBuilderObjectField.getName(),
-				aggregationServiceBuilderObjectField.getReadOnly(),
-				aggregationServiceBuilderObjectField.
-					getReadOnlyConditionExpression(),
-				aggregationServiceBuilderObjectField.isRequired(),
-				aggregationServiceBuilderObjectField.isState(),
-				aggregationServiceBuilderObjectField.getObjectFieldSettings());
-		}
+		_updateAggregationObjectFields(
+			serviceBuilderObjectDefinition.getDBTableName(),
+			objectDefinition.getDefaultLanguageId(),
+			serviceBuilderObjectDefinition.getObjectDefinitionId(),
+			objectDefinition.getObjectFields());
 
 		Status status = objectDefinition.getStatus();
 
@@ -767,6 +707,17 @@ public class ObjectDefinitionResourceImpl
 				}
 			}
 
+			serviceBuilderObjectFields.removeIf(
+				serviceBuilderObjectField -> Objects.equals(
+					serviceBuilderObjectField.getName(),
+					objectField.getName()));
+
+			if (objectField.getBusinessType() ==
+					ObjectField.BusinessType.AGGREGATION) {
+
+				continue;
+			}
+
 			_objectFieldLocalService.updateObjectField(
 				objectField.getExternalReferenceCode(),
 				GetterUtil.getLong(objectField.getId()),
@@ -789,11 +740,6 @@ public class ObjectDefinitionResourceImpl
 					listTypeDefinitionId, objectField,
 					_objectFieldSettingLocalService,
 					_objectFilterLocalService));
-
-			serviceBuilderObjectFields.removeIf(
-				serviceBuilderObjectField -> Objects.equals(
-					serviceBuilderObjectField.getName(),
-					objectField.getName()));
 		}
 
 		for (com.liferay.object.model.ObjectField serviceBuilderObjectField :
@@ -895,6 +841,12 @@ public class ObjectDefinitionResourceImpl
 			objectRelationships.toArray(new ObjectRelationship[0]),
 			objectValidationRules.toArray(new ObjectValidationRule[0]),
 			objectViews);
+
+		_updateAggregationObjectFields(
+			serviceBuilderObjectDefinition.getDBTableName(),
+			objectDefinition.getDefaultLanguageId(),
+			serviceBuilderObjectDefinition.getObjectDefinitionId(),
+			objectDefinition.getObjectFields());
 
 		if ((statusInt != WorkflowConstants.STATUS_APPROVED) ||
 			serviceBuilderObjectDefinition.isApproved()) {
@@ -1392,6 +1344,46 @@ public class ObjectDefinitionResourceImpl
 				null, null, contextAcceptLanguage.getPreferredLocale(), null,
 				null),
 			serviceBuilderObjectDefinition);
+	}
+
+	private void _updateAggregationObjectFields(
+			String dbTableName, String defaultLanguageId,
+			long objectDefinitionId, ObjectField[] objectFields)
+		throws Exception {
+
+		for (com.liferay.object.model.ObjectField serviceBuilderObjectField :
+				transformToList(
+					ArrayUtil.filter(
+						objectFields,
+						objectField -> StringUtil.equals(
+							objectField.getBusinessTypeAsString(),
+							ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION)),
+					objectField -> ObjectFieldUtil.toObjectField(
+						defaultLanguageId, _listTypeDefinitionLocalService,
+						objectField, _objectFieldLocalService,
+						_objectFieldSettingLocalService,
+						_objectFilterLocalService))) {
+
+			_objectFieldLocalService.updateObjectField(
+				serviceBuilderObjectField.getExternalReferenceCode(),
+				serviceBuilderObjectField.getObjectFieldId(),
+				GuestOrUserUtil.getUserId(),
+				serviceBuilderObjectField.getListTypeDefinitionId(),
+				objectDefinitionId, serviceBuilderObjectField.getBusinessType(),
+				null, dbTableName, serviceBuilderObjectField.getDBType(),
+				serviceBuilderObjectField.isIndexed(),
+				serviceBuilderObjectField.isIndexedAsKeyword(),
+				serviceBuilderObjectField.getIndexedLanguageId(),
+				serviceBuilderObjectField.getLabelMap(),
+				serviceBuilderObjectField.isLocalized(),
+				serviceBuilderObjectField.getName(),
+				serviceBuilderObjectField.getReadOnly(),
+				serviceBuilderObjectField.getReadOnlyConditionExpression(),
+				serviceBuilderObjectField.isRequired(),
+				serviceBuilderObjectField.isState(),
+				serviceBuilderObjectField.isSystem(),
+				serviceBuilderObjectField.getObjectFieldSettings());
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

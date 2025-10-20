@@ -577,7 +577,7 @@ public class LayoutTestUtil {
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), friendlyURLMap, layout.getIconImage(), null,
-			layout.getStyleBookEntryId(), layout.getFaviconFileEntryId(),
+			layout.getStyleBookEntryERC(), layout.getFaviconFileEntryId(),
 			layout.getMasterLayoutPlid(),
 			ServiceContextTestUtil.getServiceContext(
 				layout.getGroupId(), TestPropsValues.getUserId()));

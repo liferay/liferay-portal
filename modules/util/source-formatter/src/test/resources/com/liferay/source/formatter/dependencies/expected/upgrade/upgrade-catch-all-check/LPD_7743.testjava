@@ -13,7 +13,8 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_7743 {
 
 	public void method(String className, long classPK) {
-		AccountGroupRelLocalServiceUtil.deleteCommerceAccountGroupRels(123, classPK);
+		AccountGroupRelLocalServiceUtil.deleteCommerceAccountGroupRels(
+			123, classPK);
 		AccountGroupRelLocalServiceUtil.deleteAccountGroupRels(className, new long[] {classPKs});
 		AccountGroupRelServiceUtil.deleteAccountGroupRels(className, new long[] {classPKs});
 		_accountGroupRelLocalService.deleteAccountGroupRels(className, new long[] {classPKs});

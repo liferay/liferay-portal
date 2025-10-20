@@ -8,16 +8,20 @@ package com.liferay.portal.upgrade.data.cleanup.util.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -28,6 +32,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -51,6 +56,31 @@ public class OrphanReferencesDataCleanupUtilTest {
 		_db = DBManagerUtil.getDB();
 
 		_dbInspector = new DBInspector(_connection);
+	}
+
+	@Test
+	public void testCleanUpTableDoesNotAffectControlTablesWithDatabasePartitionEnabled()
+		throws Exception {
+
+		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
+
+			_testCleanUpTable(
+				logCapture -> {
+					List<LogEntry> logEntries = logCapture.getLogEntries();
+
+					Assert.assertTrue(
+						logEntries.toString(), logEntries.isEmpty());
+				},
+				() -> {
+				},
+				() -> {
+				},
+				null, "companyId", "VirtualHost", "companyId", "Company");
+		}
 	}
 
 	@Test
@@ -178,6 +208,52 @@ public class OrphanReferencesDataCleanupUtilTest {
 			},
 			"ownerType = " + ownerType1, "ownerId", "PortletPreferences",
 			"companyId", "Company");
+	}
+
+	@Test
+	public void testCleanUpTableWrongCompanyWithDatabasePartitionEnabled()
+		throws Exception {
+
+		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
+
+		long companyId = RandomTestUtil.nextLong();
+
+		_testCleanUpTable(
+			logCapture -> {
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(
+					_getCleanUpTableExpectedMessage(
+						1, _dbInspector.normalizeName("companyId"),
+						_dbInspector.normalizeName("DLFileEntry"),
+						_dbInspector.normalizeName("companyId"),
+						_dbInspector.normalizeName("Company"), companyId),
+					logEntry.getMessage());
+			},
+			() -> {
+				_db.runSQL(
+					"delete from Company where companyId = " + companyId);
+				_db.runSQL(
+					_connection,
+					"delete from DLFileEntry where companyId = " + companyId);
+			},
+			() -> {
+				_db.runSQL(
+					StringBundler.concat(
+						"insert into Company (mvccVersion, companyId) values ",
+						"(0 ,", companyId, ")"));
+				_db.runSQL(
+					StringBundler.concat(
+						"insert into DLFileEntry (mvccVersion, ",
+						"ctCollectionId, fileEntryId, companyId) values (0, ",
+						"0,", RandomTestUtil.nextLong(), ", ", companyId, ")"));
+			},
+			null, "companyId", "DLFileEntry", "companyId", "Company");
 	}
 
 	private String _getCleanUpTableExpectedMessage(

@@ -139,6 +139,9 @@ public class MailServiceTestUtil {
 
 		mailService = aopInvocationHandler.getTarget();
 
+		_originalSessions = ReflectionTestUtil.getFieldValue(
+			mailService, "_sessions");
+
 		Class<?> clazz = mailService.getClass();
 
 		ReflectionTestUtil.setFieldValue(
@@ -215,6 +218,21 @@ public class MailServiceTestUtil {
 		_smtpServer.stop();
 
 		_smtpServer = null;
+
+		if (_originalSessions != null) {
+			Object mailService = MailServiceUtil.getService();
+
+			AopInvocationHandler aopInvocationHandler =
+				ProxyUtil.fetchInvocationHandler(
+					mailService, AopInvocationHandler.class);
+
+			mailService = aopInvocationHandler.getTarget();
+
+			ReflectionTestUtil.setFieldValue(
+				mailService, "_sessions", _originalSessions);
+
+			_originalSessions = null;
+		}
 	}
 
 	private static int _getFreePort() throws Exception {
@@ -247,6 +265,7 @@ public class MailServiceTestUtil {
 
 	private static final int _START_PORT = 3241;
 
+	private static Map<Long, Session> _originalSessions;
 	private static SmtpServer _smtpServer;
 
 }

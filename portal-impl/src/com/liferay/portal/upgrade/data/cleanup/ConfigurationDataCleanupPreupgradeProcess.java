@@ -11,10 +11,12 @@ import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.DataCleanupLoggingUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,7 +63,10 @@ public class ConfigurationDataCleanupPreupgradeProcess
 				String configurationId = resultSet.getString("configurationId");
 
 				if (companyId > 0) {
-					if (!ArrayUtil.contains(companyIds, companyId)) {
+					if (!ArrayUtil.contains(companyIds, companyId) ||
+						(PropsValues.DATABASE_PARTITION_ENABLED &&
+						 (CompanyThreadLocal.getCompanyId() != companyId))) {
+
 						_deleteConfiguration(
 							configurationId, dbInspector, "companyId",
 							"Company", companyId, preparedStatement2);

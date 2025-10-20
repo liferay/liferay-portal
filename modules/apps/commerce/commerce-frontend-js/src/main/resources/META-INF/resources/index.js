@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import * as commerceTypes from './types/types';
 import * as commerceEvents from './utilities/eventsDefinitions';
 
 export {default as CommerceServiceProvider} from './ServiceProvider/index';
@@ -11,7 +12,9 @@ export * as MiniCartUtils from './components/mini_cart/util';
 export {default as PriceRenderer} from './components/data_renderers/PriceRenderer';
 export {default as ProductOptionsDataRenderer} from './components/data_renderers/ProductOptionsDataRenderer';
 export {
+	AccountCreationModal,
 	accountSelector,
+	AccountSelectionModal,
 	AddToCart,
 	AddToCartButtonComponent,
 	AddToCartComponent,
@@ -20,8 +23,6 @@ export {
 	AutocompleteComponent,
 	CurrencySelector,
 	compareCheckbox,
-	CreateAccount,
-	CreateOrder,
 	DropdownMenu,
 	DropdownMenuComponent,
 	Gallery,
@@ -57,7 +58,7 @@ export {
 
 export const CommerceContext = Liferay.CommerceContext;
 
-export {commerceEvents};
+export {commerceEvents, commerceTypes};
 
 export {default as MiniCompare} from './components/mini_compare/entry';
 export {default as PriceComponent} from './components/price/Price';
@@ -84,7 +85,9 @@ export {
 } from './utilities/index';
 export {default as CommerceFrontendUtils} from './utilities/interface/index';
 export * as CommerceConstants from './utilities/constants';
+export * as AccountUtils from './components/account_selector/util';
 export * as CurrencyUtils from './components/currency_selector/util';
+export * as CommerceNotificationUtils from './utilities/notifications';
 export * as modalUtils from './utilities/modals/index';
 
 export {

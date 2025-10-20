@@ -526,10 +526,7 @@ test(
 		await page.locator('[data-testid="fdsCreationActionButton"]').click();
 		await page.getByLabel('textField').fill('testText');
 		await page.getByRole('button', {name: 'Save'}).click();
-		await waitForAlert(
-			page,
-			'Success:Your request completed successfully.'
-		);
+		await waitForAlert(page);
 
 		await applicationsMenuPage.goToObjectDefinition(objectDefinition.name);
 

@@ -113,7 +113,7 @@ public class EditDetailsMVCActionCommand
 		}
 
 		_groupService.updateGroup(
-			liveGroupId, parentGroupId, nameMap, descriptionMap, type,
+			liveGroupId, parentGroupId, nameMap, descriptionMap, type, null,
 			manualMembership, membershipRestriction, liveGroup.getFriendlyURL(),
 			inheritContent, active, serviceContext);
 

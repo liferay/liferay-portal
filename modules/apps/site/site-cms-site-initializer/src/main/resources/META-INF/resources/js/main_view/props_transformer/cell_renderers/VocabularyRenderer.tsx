@@ -16,11 +16,18 @@ const VocabularyRenderer = ({value}: {value: AssetType[]}) => {
 		let types: string = '';
 
 		for (const assetType of assetTypes) {
+			const type = assetType.type;
+
 			if (types === '') {
-				types = assetType.type;
+				if (type === 'AllAssetTypes') {
+					return Liferay.Language.get('all-asset-types');
+				}
+				else {
+					types = Liferay.Language.get(type);
+				}
 			}
 			else {
-				types = types + ', ' + assetType.type;
+				types = types + ', ' + Liferay.Language.get(type);
 			}
 		}
 

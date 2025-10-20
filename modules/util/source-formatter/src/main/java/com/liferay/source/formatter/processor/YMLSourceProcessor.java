@@ -24,7 +24,8 @@ public class YMLSourceProcessor extends BaseSourceProcessor {
 
 	@Override
 	protected List<String> doGetFileNames() throws IOException {
-		return getFileNames(new String[0], getIncludes());
+		return getFileNames(
+			new String[] {"**/templates/_scripts.tpl"}, getIncludes());
 	}
 
 	@Override

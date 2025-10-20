@@ -687,6 +687,18 @@ public class BuildHistoryProcessor {
 				weekday = true;
 			}
 
+			if (jobName.contains("maintenance") ||
+				jobName.contains("verification")) {
+
+				if (weekday) {
+					return Category.MAINTENANCE_AND_VERIFICATION_WEEKDAYS.
+						toString();
+				}
+
+				return Category.MAINTENANCE_AND_VERIFICATION_WEEKENDS.
+					toString();
+			}
+
 			if (jobName.contains("test-portal-acceptance-pullrequest")) {
 				if (weekday) {
 					return Category.PORTAL_PULLREQUEST_WEEKDAYS.toString();
@@ -695,7 +707,9 @@ public class BuildHistoryProcessor {
 				return Category.PORTAL_PULLREQUEST_WEEKENDS.toString();
 			}
 
-			if (jobName.contains("release") || jobName.contains("upstream")) {
+			if (jobName.contains("portal") &&
+				(jobName.contains("release") || jobName.contains("upstream"))) {
+
 				if (weekday) {
 					return Category.PORTAL_RELEASE_AND_UPSTREAM_WEEKDAYS.
 						toString();
@@ -713,6 +727,10 @@ public class BuildHistoryProcessor {
 
 		private enum Category {
 
+			MAINTENANCE_AND_VERIFICATION_WEEKDAYS(
+				"Maintenance & Verification (Weekdays)"),
+			MAINTENANCE_AND_VERIFICATION_WEEKENDS(
+				"Maintenance & Verification (Weekends)"),
 			OTHER_WEEKDAYS("Other (Weekdays)"),
 			OTHER_WEEKENDS("Other (Weekends)"),
 			PORTAL_PULLREQUEST_WEEKDAYS("Portal Pull Requests (Weekdays)"),

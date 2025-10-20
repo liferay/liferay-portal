@@ -19,11 +19,26 @@ public class LPS_202779 {
 		int[] statuses, int start, int end,
 		OrderByComparator<CalendarBooking> orderByComparator) {
 
-		CalendarBookingLocalServiceUtil.search(companyId, groupIds, calendarIds, calendarResourceIds, parentCalendarBookingId, keywords, startTime, endTime, recurring, statuses, start, end, orderByComparator);
-		CalendarBookingServiceUtil.search(123, groupIds, calendarIds, calendarResourceIds, parentCalendarBookingId, keywords, startTime, endTime, recurring, statuses, start, end, orderByComparator);
-		CalendarBookingServiceUtil.search(companyId, groupIds, calendarIds, calendarResourceIds, parentCalendarBookingId, keywords, startTime, endTime, recurring, statuses, start, end, orderByComparator);
-		_calendarBookingLocalService.search(companyId, groupIds, calendarIds, calendarResourceIds, parentCalendarBookingId, keywords, startTime, endTime, recurring, statuses, start, end, orderByComparator);
-		_calendarBookingService.search(companyId, groupIds, calendarIds, calendarResourceIds, parentCalendarBookingId, keywords, startTime, endTime, recurring, statuses, start, end, orderByComparator);
+		CalendarBookingLocalServiceUtil.search(
+			companyId, groupIds, calendarIds, calendarResourceIds,
+			parentCalendarBookingId, keywords, startTime, endTime, recurring,
+			statuses, start, end, orderByComparator);
+		CalendarBookingServiceUtil.search(
+			123, groupIds, calendarIds, calendarResourceIds,
+			parentCalendarBookingId, keywords, startTime, endTime, recurring,
+			statuses, start, end, orderByComparator);
+		CalendarBookingServiceUtil.search(
+			companyId, groupIds, calendarIds, calendarResourceIds,
+			parentCalendarBookingId, keywords, startTime, endTime, recurring,
+			statuses, start, end, orderByComparator);
+		_calendarBookingLocalService.search(
+			companyId, groupIds, calendarIds, calendarResourceIds,
+			parentCalendarBookingId, keywords, startTime, endTime, recurring,
+			statuses, start, end, orderByComparator);
+		_calendarBookingService.search(
+			companyId, groupIds, calendarIds, calendarResourceIds,
+			parentCalendarBookingId, keywords, startTime, endTime, recurring,
+			statuses, start, end, orderByComparator);
 	}
 
 	@Reference

@@ -252,17 +252,17 @@ public class ImportFragmentEntriesStrutsActionTest {
 	}
 
 	private void _processEvents(
-			HttpServletRequest mockHttpServletRequest,
+			HttpServletRequest httpServletRequest,
 			MockHttpServletResponse mockHttpServletResponse, User user)
 		throws Exception {
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.CURRENT_URL, "/portal/fragment/import_fragment_entries");
-		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+		httpServletRequest.setAttribute(WebKeys.USER, user);
 
 		EventsProcessorUtil.process(
 			PropsKeys.SERVLET_SERVICE_EVENTS_PRE,
-			PropsValues.SERVLET_SERVICE_EVENTS_PRE, mockHttpServletRequest,
+			PropsValues.SERVLET_SERVICE_EVENTS_PRE, httpServletRequest,
 			mockHttpServletResponse);
 	}
 

@@ -611,7 +611,7 @@
 		<column name="iconImageId" type="long" />
 		<column name="themeId" type="String" />
 		<column name="colorSchemeId" type="String" />
-		<column name="styleBookEntryId" type="long" />
+		<column name="styleBookEntryERC" type="String" />
 		<column name="css" type="String" />
 		<column name="priority" type="int" />
 		<column name="faviconFileEntryId" type="long" />
@@ -3200,6 +3200,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="WorkflowInstanceId" return-type="WorkflowInstanceLink" unique="true">
+			<finder-column name="workflowInstanceId" />
+		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />

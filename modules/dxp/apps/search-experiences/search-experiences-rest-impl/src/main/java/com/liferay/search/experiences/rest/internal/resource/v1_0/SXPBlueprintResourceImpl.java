@@ -396,11 +396,11 @@ public class SXPBlueprintResourceImpl extends BaseSXPBlueprintResourceImpl {
 		}
 	}
 
+	private static final SXPBlueprintEntityModel _entityEntityModel =
+		new SXPBlueprintEntityModel();
+
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
-
-	private final SXPBlueprintEntityModel _entityEntityModel =
-		new SXPBlueprintEntityModel();
 
 	@Reference
 	private JSONFactory _jsonFactory;

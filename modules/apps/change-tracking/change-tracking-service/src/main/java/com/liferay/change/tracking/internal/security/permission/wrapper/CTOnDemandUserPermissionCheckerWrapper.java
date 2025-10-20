@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * @author Pei-Jung Lan
@@ -45,36 +44,46 @@ public class CTOnDemandUserPermissionCheckerWrapper
 	public boolean hasPermission(
 		Group group, String name, long primKey, String actionId) {
 
-		return _hasPermission(
-			name, primKey, actionId,
-			() -> super.hasPermission(group, name, primKey, actionId));
+		if (_hasPermission(name, primKey, actionId)) {
+			return true;
+		}
+
+		return permissionChecker.hasPermission(group, name, primKey, actionId);
 	}
 
 	@Override
 	public boolean hasPermission(
 		Group group, String name, String primKey, String actionId) {
 
-		return _hasPermission(
-			name, GetterUtil.getLong(primKey), actionId,
-			() -> super.hasPermission(group, name, primKey, actionId));
+		if (_hasPermission(name, GetterUtil.getLong(primKey), actionId)) {
+			return true;
+		}
+
+		return permissionChecker.hasPermission(group, name, primKey, actionId);
 	}
 
 	@Override
 	public boolean hasPermission(
 		long groupId, String name, long primKey, String actionId) {
 
-		return _hasPermission(
-			name, primKey, actionId,
-			() -> super.hasPermission(groupId, name, primKey, actionId));
+		if (_hasPermission(name, primKey, actionId)) {
+			return true;
+		}
+
+		return permissionChecker.hasPermission(
+			groupId, name, primKey, actionId);
 	}
 
 	@Override
 	public boolean hasPermission(
 		long groupId, String name, String primKey, String actionId) {
 
-		return _hasPermission(
-			name, GetterUtil.getLong(primKey), actionId,
-			() -> super.hasPermission(groupId, name, primKey, actionId));
+		if (_hasPermission(name, GetterUtil.getLong(primKey), actionId)) {
+			return true;
+		}
+
+		return permissionChecker.hasPermission(
+			groupId, name, primKey, actionId);
 	}
 
 	private long _getCTCollectionId() {
@@ -95,27 +104,23 @@ public class CTOnDemandUserPermissionCheckerWrapper
 		return ctCollectionIds.get(0);
 	}
 
-	private boolean _hasPermission(
-		String name, long primKey, String actionId,
-		Supplier<Boolean> hasPermissionSupplier) {
+	private boolean _hasPermission(String name, long primKey, String actionId) {
+		if (StringUtil.equals(name, Layout.class.getName()) &&
+			StringUtil.equals(actionId, ActionKeys.VIEW)) {
 
-		if (!StringUtil.equals(name, Layout.class.getName()) ||
-			!StringUtil.equals(actionId, ActionKeys.VIEW)) {
+			long ctCollectionId = _getCTCollectionId();
 
-			return hasPermissionSupplier.get();
+			if ((ctCollectionId > 0) &&
+				_ctEntryLocalService.hasCTEntry(
+					ctCollectionId,
+					_classNameLocalService.getClassNameId(Layout.class),
+					primKey)) {
+
+				return true;
+			}
 		}
 
-		long ctCollectionId = _getCTCollectionId();
-
-		if ((ctCollectionId > 0) &&
-			_ctEntryLocalService.hasCTEntry(
-				ctCollectionId,
-				_classNameLocalService.getClassNameId(Layout.class), primKey)) {
-
-			return true;
-		}
-
-		return hasPermissionSupplier.get();
+		return false;
 	}
 
 	private final ClassNameLocalService _classNameLocalService;

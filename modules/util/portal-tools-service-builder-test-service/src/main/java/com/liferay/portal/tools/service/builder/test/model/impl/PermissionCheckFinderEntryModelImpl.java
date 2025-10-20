@@ -9,10 +9,13 @@ import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -59,7 +62,8 @@ public class PermissionCheckFinderEntryModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"permissionCheckFinderEntryId", Types.BIGINT},
-		{"groupId", Types.BIGINT}, {"integer_", Types.INTEGER},
+		{"groupId", Types.BIGINT}, {"companyId", Types.BIGINT},
+		{"userId", Types.BIGINT}, {"integer_", Types.INTEGER},
 		{"name", Types.VARCHAR}, {"type_", Types.VARCHAR}
 	};
 
@@ -69,13 +73,15 @@ public class PermissionCheckFinderEntryModelImpl
 	static {
 		TABLE_COLUMNS_MAP.put("permissionCheckFinderEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("integer_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PermissionCheckFinderEntry (permissionCheckFinderEntryId LONG not null primary key,groupId LONG,integer_ INTEGER,name VARCHAR(75) null,type_ VARCHAR(75) null)";
+		"create table PermissionCheckFinderEntry (permissionCheckFinderEntryId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,integer_ INTEGER,name VARCHAR(75) null,type_ VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table PermissionCheckFinderEntry";
@@ -244,6 +250,10 @@ public class PermissionCheckFinderEntryModelImpl
 			attributeGetterFunctions.put(
 				"groupId", PermissionCheckFinderEntry::getGroupId);
 			attributeGetterFunctions.put(
+				"companyId", PermissionCheckFinderEntry::getCompanyId);
+			attributeGetterFunctions.put(
+				"userId", PermissionCheckFinderEntry::getUserId);
+			attributeGetterFunctions.put(
 				"integer", PermissionCheckFinderEntry::getInteger);
 			attributeGetterFunctions.put(
 				"name", PermissionCheckFinderEntry::getName);
@@ -277,6 +287,14 @@ public class PermissionCheckFinderEntryModelImpl
 				"groupId",
 				(BiConsumer<PermissionCheckFinderEntry, Long>)
 					PermissionCheckFinderEntry::setGroupId);
+			attributeSetterBiConsumers.put(
+				"companyId",
+				(BiConsumer<PermissionCheckFinderEntry, Long>)
+					PermissionCheckFinderEntry::setCompanyId);
+			attributeSetterBiConsumers.put(
+				"userId",
+				(BiConsumer<PermissionCheckFinderEntry, Long>)
+					PermissionCheckFinderEntry::setUserId);
 			attributeSetterBiConsumers.put(
 				"integer",
 				(BiConsumer<PermissionCheckFinderEntry, Integer>)
@@ -333,6 +351,50 @@ public class PermissionCheckFinderEntryModelImpl
 	@Deprecated
 	public long getOriginalGroupId() {
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("groupId"));
+	}
+
+	@Override
+	public long getCompanyId() {
+		return _companyId;
+	}
+
+	@Override
+	public void setCompanyId(long companyId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_companyId = companyId;
+	}
+
+	@Override
+	public long getUserId() {
+		return _userId;
+	}
+
+	@Override
+	public void setUserId(long userId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_userId = userId;
+	}
+
+	@Override
+	public String getUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(getUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException portalException) {
+			return "";
+		}
+	}
+
+	@Override
+	public void setUserUuid(String userUuid) {
 	}
 
 	@Override
@@ -414,7 +476,8 @@ public class PermissionCheckFinderEntryModelImpl
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return ExpandoBridgeFactoryUtil.getExpandoBridge(
-			0, PermissionCheckFinderEntry.class.getName(), getPrimaryKey());
+			getCompanyId(), PermissionCheckFinderEntry.class.getName(),
+			getPrimaryKey());
 	}
 
 	@Override
@@ -447,6 +510,8 @@ public class PermissionCheckFinderEntryModelImpl
 		permissionCheckFinderEntryImpl.setPermissionCheckFinderEntryId(
 			getPermissionCheckFinderEntryId());
 		permissionCheckFinderEntryImpl.setGroupId(getGroupId());
+		permissionCheckFinderEntryImpl.setCompanyId(getCompanyId());
+		permissionCheckFinderEntryImpl.setUserId(getUserId());
 		permissionCheckFinderEntryImpl.setInteger(getInteger());
 		permissionCheckFinderEntryImpl.setName(getName());
 		permissionCheckFinderEntryImpl.setType(getType());
@@ -465,6 +530,10 @@ public class PermissionCheckFinderEntryModelImpl
 			this.<Long>getColumnOriginalValue("permissionCheckFinderEntryId"));
 		permissionCheckFinderEntryImpl.setGroupId(
 			this.<Long>getColumnOriginalValue("groupId"));
+		permissionCheckFinderEntryImpl.setCompanyId(
+			this.<Long>getColumnOriginalValue("companyId"));
+		permissionCheckFinderEntryImpl.setUserId(
+			this.<Long>getColumnOriginalValue("userId"));
 		permissionCheckFinderEntryImpl.setInteger(
 			this.<Integer>getColumnOriginalValue("integer_"));
 		permissionCheckFinderEntryImpl.setName(
@@ -568,6 +637,10 @@ public class PermissionCheckFinderEntryModelImpl
 
 		permissionCheckFinderEntryCacheModel.groupId = getGroupId();
 
+		permissionCheckFinderEntryCacheModel.companyId = getCompanyId();
+
+		permissionCheckFinderEntryCacheModel.userId = getUserId();
+
 		permissionCheckFinderEntryCacheModel.integer = getInteger();
 
 		permissionCheckFinderEntryCacheModel.name = getName();
@@ -651,6 +724,8 @@ public class PermissionCheckFinderEntryModelImpl
 
 	private long _permissionCheckFinderEntryId;
 	private long _groupId;
+	private long _companyId;
+	private long _userId;
 	private int _integer;
 	private String _name;
 	private String _type;
@@ -688,6 +763,8 @@ public class PermissionCheckFinderEntryModelImpl
 		_columnOriginalValues.put(
 			"permissionCheckFinderEntryId", _permissionCheckFinderEntryId);
 		_columnOriginalValues.put("groupId", _groupId);
+		_columnOriginalValues.put("companyId", _companyId);
+		_columnOriginalValues.put("userId", _userId);
 		_columnOriginalValues.put("integer_", _integer);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("type_", _type);
@@ -719,11 +796,15 @@ public class PermissionCheckFinderEntryModelImpl
 
 		columnBitmasks.put("groupId", 2L);
 
-		columnBitmasks.put("integer_", 4L);
+		columnBitmasks.put("companyId", 4L);
 
-		columnBitmasks.put("name", 8L);
+		columnBitmasks.put("userId", 8L);
 
-		columnBitmasks.put("type_", 16L);
+		columnBitmasks.put("integer_", 16L);
+
+		columnBitmasks.put("name", 32L);
+
+		columnBitmasks.put("type_", 64L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

@@ -209,6 +209,14 @@ public class CommerceOrderSystemObjectDefinitionManager
 			).system(
 				true
 			).build(),
+			new TextObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("payment-method-key")
+			).name(
+				"paymentMethodKey"
+			).system(
+				true
+			).build(),
 			new PrecisionDecimalObjectFieldBuilder(
 			).labelMap(
 				createLabelMap("shipping-amount")
@@ -293,7 +301,7 @@ public class CommerceOrderSystemObjectDefinitionManager
 
 	@Override
 	public int getVersion() {
-		return 5;
+		return 6;
 	}
 
 	@Override
@@ -346,6 +354,8 @@ public class CommerceOrderSystemObjectDefinitionManager
 						values.get("orderTypeExternalReferenceCode")));
 				setOrderTypeId(
 					() -> GetterUtil.getLong(values.get("orderTypeId")));
+				setPaymentMethod(
+					() -> GetterUtil.getString(values.get("paymentMethodKey")));
 				setPaymentStatus(
 					() -> GetterUtil.getInteger(values.get("paymentStatus")));
 				setShippingAmount(

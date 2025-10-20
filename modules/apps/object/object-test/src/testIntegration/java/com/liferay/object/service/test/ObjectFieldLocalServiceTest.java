@@ -11,6 +11,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.list.type.entry.util.ListTypeEntryUtil;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.object.constants.ObjectActionNameConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -56,6 +57,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.model.ObjectFilter;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -796,6 +798,7 @@ public class ObjectFieldLocalServiceTest {
 		_testAddCustomObjectFieldReadOnly();
 	}
 
+	@FeatureFlag("LPD-6233")
 	@Test
 	public void testAddOrUpdateCustomObjectField() throws Exception {
 		ObjectFieldBuilder objectFieldBuilder =
@@ -927,6 +930,34 @@ public class ObjectFieldLocalServiceTest {
 			LocalizedMapUtil.getLocalizedMap("charlie"));
 		Assert.assertEquals("baker", objectField1.getName());
 		Assert.assertTrue(objectField1.isRequired());
+
+		// Object field business type assignee
+
+		objectField1 = ObjectFieldUtil.addCustomObjectField(
+			new AssigneeObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"assignee"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		Assert.assertNotNull(
+			_objectActionLocalService.fetchObjectAction(
+				objectDefinition.getObjectDefinitionId(),
+				ObjectActionNameConstants.NAME_ASSIGN_TO_ME));
+
+		objectField1.setBusinessType(ObjectFieldConstants.BUSINESS_TYPE_TEXT);
+
+		_objectFieldLocalService.updateObjectField(objectField1);
+
+		Assert.assertNull(
+			_objectActionLocalService.fetchObjectAction(
+				objectDefinition.getObjectDefinitionId(),
+				ObjectActionNameConstants.NAME_ASSIGN_TO_ME));
 
 		// Object field indexed language id
 
@@ -1395,6 +1426,7 @@ public class ObjectFieldLocalServiceTest {
 			modifiableSystemObjectDefinition);
 	}
 
+	@FeatureFlag("LPD-6233")
 	@Test
 	public void testDeleteObjectField() throws Exception {
 
@@ -1480,6 +1512,28 @@ public class ObjectFieldLocalServiceTest {
 			).build());
 
 		_assertDeleteObjectField(true, customObjectDefinition, "charlie");
+
+		// Delete object field business type assignee
+
+		ObjectField assigneeObjectField = ObjectFieldUtil.addCustomObjectField(
+			new AssigneeObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"assignee"
+			).objectDefinitionId(
+				customObjectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		_objectFieldLocalService.deleteObjectField(
+			assigneeObjectField.getObjectFieldId());
+
+		Assert.assertNull(
+			_objectActionLocalService.fetchObjectAction(
+				customObjectDefinition.getObjectDefinitionId(),
+				ObjectActionNameConstants.NAME_ASSIGN_TO_ME));
 
 		// Delete object field business type attachment
 
@@ -2927,6 +2981,9 @@ public class ObjectFieldLocalServiceTest {
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
 
 	private String _listTypeEntryKey;
+
+	@Inject
+	private ObjectActionLocalService _objectActionLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

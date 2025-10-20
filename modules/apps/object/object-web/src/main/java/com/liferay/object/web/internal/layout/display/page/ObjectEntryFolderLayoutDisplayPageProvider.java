@@ -7,7 +7,7 @@ package com.liferay.object.web.internal.layout.display.page;
 
 import com.liferay.friendly.url.info.item.provider.InfoItemFriendlyURLProvider;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
-import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.BaseLayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
@@ -16,6 +16,8 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import org.osgi.service.component.annotations.Component;
@@ -33,27 +35,27 @@ public class ObjectEntryFolderLayoutDisplayPageProvider
 		doGetLayoutDisplayPageObjectProvider(
 			long groupId, InfoItemReference infoItemReference) {
 
-		InfoItemIdentifier infoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
+		if (infoItemReference.getInfoItemIdentifier() instanceof
+				ClassPKInfoItemIdentifier classPKInfoItemIdentifier) {
 
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
-			return null;
+			return _getObjectEntryFolderLayoutDisplayPageObjectProvider(
+				_objectEntryFolderLocalService.fetchObjectEntryFolder(
+					classPKInfoItemIdentifier.getClassPK()));
+		}
+		else if (infoItemReference.getInfoItemIdentifier() instanceof
+					ERCInfoItemIdentifier ercInfoItemIdentifier) {
+
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			return _getObjectEntryFolderLayoutDisplayPageObjectProvider(
+				_objectEntryFolderLocalService.
+					fetchObjectEntryFolderByExternalReferenceCode(
+						ercInfoItemIdentifier.getExternalReferenceCode(),
+						groupId, serviceContext.getCompanyId()));
 		}
 
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)
-				infoItemReference.getInfoItemIdentifier();
-
-		ObjectEntryFolder objectEntryFolder =
-			_objectEntryFolderLocalService.fetchObjectEntryFolder(
-				classPKInfoItemIdentifier.getClassPK());
-
-		if (objectEntryFolder == null) {
-			return null;
-		}
-
-		return new ObjectEntryFolderLayoutDisplayPageObjectProvider(
-			_infoItemFriendlyURLProvider, _language, objectEntryFolder);
+		return null;
 	}
 
 	@Override
@@ -81,6 +83,34 @@ public class ObjectEntryFolderLayoutDisplayPageProvider
 	@Override
 	public LayoutDisplayPageObjectProvider<ObjectEntryFolder>
 		getLayoutDisplayPageObjectProvider(
+			ObjectEntryFolder objectEntryFolder) {
+
+		if (objectEntryFolder == null) {
+			return null;
+		}
+
+		return new ObjectEntryFolderLayoutDisplayPageObjectProvider(
+			_infoItemFriendlyURLProvider, _language, objectEntryFolder);
+	}
+
+	@Override
+	public LayoutDisplayPageObjectProvider<ObjectEntryFolder>
+		getParentLayoutDisplayPageObjectProvider(
+			InfoItemReference infoItemReference) {
+
+		if (infoItemReference.getInfoItemIdentifier() instanceof
+				ClassPKInfoItemIdentifier classPKInfoItemIdentifier) {
+
+			return _getObjectEntryFolderLayoutDisplayPageObjectProvider(
+				_objectEntryFolderLocalService.fetchObjectEntryFolder(
+					classPKInfoItemIdentifier.getClassPK()));
+		}
+
+		return null;
+	}
+
+	private ObjectEntryFolderLayoutDisplayPageObjectProvider
+		_getObjectEntryFolderLayoutDisplayPageObjectProvider(
 			ObjectEntryFolder objectEntryFolder) {
 
 		if (objectEntryFolder == null) {

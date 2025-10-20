@@ -22,11 +22,36 @@ public class LPS_192661 {
 		long[] organizationIds, long[] roleIds, long[] userGroupIds,
 		boolean sendEmail, ServiceContext serviceContext) {
 
-		UserLocalServiceUtil.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
-		UserServiceUtil.addUser(123, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
-		UserServiceUtil.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
-		_userLocalService.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
-		_userService.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
+		UserLocalServiceUtil.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, sendEmail, serviceContext);
+		UserServiceUtil.addUser(
+			123, autoPassword, password1, password2, autoScreenName, screenName,
+			emailAddress, facebookId, openId, locale, firstName, middleName,
+			lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay,
+			birthdayYear, jobTitle, groupIds, organizationIds, roleIds,
+			userGroupIds, sendEmail, serviceContext);
+		UserServiceUtil.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, sendEmail, serviceContext);
+		_userLocalService.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, sendEmail, serviceContext);
+		_userService.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, sendEmail, serviceContext);
 	}
 
 	public void method(
@@ -42,11 +67,41 @@ public class LPS_192661 {
 		List<AnnouncementsDelivery> announcementsDelivers, boolean sendEmail,
 		ServiceContext serviceContext) {
 
-		UserLocalServiceUtil.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, addresses, emailAddresses, phones, websites, announcementsDelivers, sendEmail, serviceContext);
-		UserServiceUtil.addUser(123, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, addresses, emailAddresses, phones, websites, announcementsDelivers, sendEmail, serviceContext);
-		UserServiceUtil.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, addresses, emailAddresses, phones, websites, announcementsDelivers, sendEmail, serviceContext);
-		_userLocalService.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, addresses, emailAddresses, phones, websites, announcementsDelivers, sendEmail, serviceContext);
-		_userService.addUser(companyId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, facebookId, openId, locale, firstName, middleName, lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds, roleIds, userGroupIds, addresses, emailAddresses, phones, websites, announcementsDelivers, sendEmail, serviceContext);
+		UserLocalServiceUtil.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, addresses, emailAddresses, phones, websites,
+			announcementsDelivers, sendEmail, serviceContext);
+		UserServiceUtil.addUser(
+			123, autoPassword, password1, password2, autoScreenName, screenName,
+			emailAddress, facebookId, openId, locale, firstName, middleName,
+			lastName, prefixId, suffixId, male, birthdayMonth, birthdayDay,
+			birthdayYear, jobTitle, groupIds, organizationIds, roleIds,
+			userGroupIds, addresses, emailAddresses, phones, websites,
+			announcementsDelivers, sendEmail, serviceContext);
+		UserServiceUtil.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, addresses, emailAddresses, phones, websites,
+			announcementsDelivers, sendEmail, serviceContext);
+		_userLocalService.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, addresses, emailAddresses, phones, websites,
+			announcementsDelivers, sendEmail, serviceContext);
+		_userService.addUser(
+			companyId, autoPassword, password1, password2, autoScreenName,
+			screenName, emailAddress, facebookId, openId, locale, firstName,
+			middleName, lastName, prefixId, suffixId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, groupIds, organizationIds,
+			roleIds, userGroupIds, addresses, emailAddresses, phones, websites,
+			announcementsDelivers, sendEmail, serviceContext);
 	}
 
 	public void method(long userId, int status) {

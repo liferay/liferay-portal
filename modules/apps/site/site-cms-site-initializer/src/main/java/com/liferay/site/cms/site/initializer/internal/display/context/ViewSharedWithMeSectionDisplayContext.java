@@ -196,7 +196,7 @@ public class ViewSharedWithMeSectionDisplayContext {
 				StringPool.BLANK, "view", "view-file",
 				LanguageUtil.get(_httpServletRequest, "view"), null, null, null,
 				HashMapBuilder.<String, Object>put(
-					"className", _getBasicDocumentClassName()
+					"className", _getCMSBasicDocumentClassName()
 				).build()),
 			new FDSActionDropdownItem(
 				StringBundler.concat(
@@ -267,15 +267,15 @@ public class ViewSharedWithMeSectionDisplayContext {
 			));
 	}
 
-	private String _getBasicDocumentClassName() {
+	private String _getCMSBasicDocumentClassName() {
 		try {
-			ObjectDefinition basicDocumentObjectDefinition =
+			ObjectDefinition objectDefinition =
 				_objectDefinitionService.
 					fetchObjectDefinitionByExternalReferenceCode(
-						"L_BASIC_DOCUMENT", _themeDisplay.getCompanyId());
+						"L_CMS_BASIC_DOCUMENT", _themeDisplay.getCompanyId());
 
-			if (basicDocumentObjectDefinition != null) {
-				return basicDocumentObjectDefinition.getClassName();
+			if (objectDefinition != null) {
+				return objectDefinition.getClassName();
 			}
 		}
 		catch (PortalException portalException) {

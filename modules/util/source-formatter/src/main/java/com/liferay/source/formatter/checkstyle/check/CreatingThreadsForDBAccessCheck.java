@@ -45,10 +45,10 @@ public class CreatingThreadsForDBAccessCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			firstChildDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST dotDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.DOT);
 

@@ -19,13 +19,7 @@
 		<liferay-frontend:component
 			context='<%=
 				HashMapBuilder.<String, Object>put(
-					"accountEntryAllowedTypes", accountEntryAllowedTypes
-				).put(
 					"accountSelectorId", accountSelectorId
-				).put(
-					"checkoutURL", checkoutURL
-				).put(
-					"commerceChannelId", commerceChannelId
 				).put(
 					"createNewOrderURL", createNewOrderURL
 				).put(

@@ -195,12 +195,12 @@ public class MissingEmptyLineCheck extends BaseCheck {
 				return;
 			}
 
-			List<DetailAST> assignDetailASTList = getAllChildTokens(
+			List<DetailAST> assignDetailASTs = getAllChildTokens(
 				nextSiblingDetailAST, false, TokenTypes.ASSIGN);
 
-			if (assignDetailASTList.size() == 1) {
+			if (assignDetailASTs.size() == 1) {
 				lastAssignedVariableName = _getVariableName(
-					assignDetailASTList.get(0));
+					assignDetailASTs.get(0));
 			}
 
 			referenced = true;
@@ -285,30 +285,30 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> adjacentAssignDetailASTList =
-			_getAdjacentAssignDetailASTList(assignDetailAST);
+		List<DetailAST> adjacentAssignDetailASTs = _getAdjacentAssignDetailASTs(
+			assignDetailAST);
 
-		if (adjacentAssignDetailASTList.size() <= 1) {
+		if (adjacentAssignDetailASTs.size() <= 1) {
 			return;
 		}
 
-		DetailAST lastAssignDetailAST = adjacentAssignDetailASTList.get(
-			adjacentAssignDetailASTList.size() - 1);
+		DetailAST lastAssignDetailAST = adjacentAssignDetailASTs.get(
+			adjacentAssignDetailASTs.size() - 1);
 
-		List<DetailAST> identDetailASTList =
-			_getFollowingStatementsIdentDetailASTList(
+		List<DetailAST> identDetailASTs =
+			_getFollowingStatementsIdentDetailASTs(
 				lastAssignDetailAST.getParent());
 
-		if (_containsVariableName(identDetailASTList, assignDetailAST)) {
+		if (_containsVariableName(identDetailASTs, assignDetailAST)) {
 			return;
 		}
 
 		DetailAST firstReferencedAssignDetailAST = null;
 
-		for (int i = 1; i < adjacentAssignDetailASTList.size(); i++) {
-			DetailAST curAssignDetailAST = adjacentAssignDetailASTList.get(i);
+		for (int i = 1; i < adjacentAssignDetailASTs.size(); i++) {
+			DetailAST curAssignDetailAST = adjacentAssignDetailASTs.get(i);
 
-			if (_containsVariableName(identDetailASTList, curAssignDetailAST)) {
+			if (_containsVariableName(identDetailASTs, curAssignDetailAST)) {
 				if (firstReferencedAssignDetailAST == null) {
 					firstReferencedAssignDetailAST = curAssignDetailAST;
 				}
@@ -363,11 +363,11 @@ public class MissingEmptyLineCheck extends BaseCheck {
 						_ENFORCE_EMPTY_LINE_BEFORE_METHOD_NAMES_KEY);
 
 				String methodName = getMethodName(detailAST);
-				List<DetailAST> parameterExprDetailASTList =
-					getParameterExprDetailASTList(detailAST);
+				List<DetailAST> parameterExprDetailASTs =
+					getParameterExprDetailASTs(detailAST);
 
 				if (enforceEmptyLineBeforeMethodNames.contains(methodName) &&
-					parameterExprDetailASTList.isEmpty()) {
+					parameterExprDetailASTs.isEmpty()) {
 
 					log(
 						startLineNumber,
@@ -459,12 +459,12 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> identDetailASTList = getAllChildTokens(
+		List<DetailAST> identDetailASTs = getAllChildTokens(
 			nextSiblingDetailAST, true, TokenTypes.IDENT);
 
 		boolean nextVariableUsesVariable = false;
 
-		for (DetailAST identDetailAST : identDetailASTList) {
+		for (DetailAST identDetailAST : identDetailASTs) {
 			String identName = identDetailAST.getText();
 
 			if (!identName.equals(name)) {
@@ -506,16 +506,16 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			firstChildDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() < 2) {
+		if (exprDetailASTs.size() < 2) {
 			return;
 		}
 
 		DetailAST previousExprDetailAST = null;
 
-		for (DetailAST exprDetailAST : exprDetailASTList) {
+		for (DetailAST exprDetailAST : exprDetailASTs) {
 			if (previousExprDetailAST == null) {
 				previousExprDetailAST = exprDetailAST;
 
@@ -552,10 +552,10 @@ public class MissingEmptyLineCheck extends BaseCheck {
 		DetailAST dotDetailAST = detailAST.findFirstToken(TokenTypes.DOT);
 
 		if (dotDetailAST != null) {
-			List<DetailAST> childMethodCallDetailASTList = getAllChildTokens(
+			List<DetailAST> childMethodCallDetailASTs = getAllChildTokens(
 				dotDetailAST, false, TokenTypes.METHOD_CALL);
 
-			if (!childMethodCallDetailASTList.isEmpty()) {
+			if (!childMethodCallDetailASTs.isEmpty()) {
 				return;
 			}
 		}
@@ -659,7 +659,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 	}
 
 	private boolean _containsVariableName(
-		List<DetailAST> identDetailASTList, DetailAST assignDetailAST) {
+		List<DetailAST> identDetailASTs, DetailAST assignDetailAST) {
 
 		String variableName = _getVariableName(assignDetailAST);
 
@@ -667,32 +667,32 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			return false;
 		}
 
-		return containsVariableName(identDetailASTList, variableName);
+		return containsVariableName(identDetailASTs, variableName);
 	}
 
-	private List<DetailAST> _getAdjacentAssignDetailASTList(
+	private List<DetailAST> _getAdjacentAssignDetailASTs(
 		DetailAST assignDetailAST) {
 
-		List<DetailAST> assignDetailASTList = new ArrayList<>();
+		List<DetailAST> assignDetailASTs = new ArrayList<>();
 
-		assignDetailASTList.add(assignDetailAST);
+		assignDetailASTs.add(assignDetailAST);
 
 		DetailAST followingStatementDetailAST = _getFollowingStatementDetailAST(
 			assignDetailAST.getParent(), false);
 
 		while (true) {
 			if (followingStatementDetailAST == null) {
-				return assignDetailASTList;
+				return assignDetailASTs;
 			}
 
 			DetailAST followingAssignDetailAST =
 				followingStatementDetailAST.findFirstToken(TokenTypes.ASSIGN);
 
 			if (followingAssignDetailAST == null) {
-				return assignDetailASTList;
+				return assignDetailASTs;
 			}
 
-			assignDetailASTList.add(followingAssignDetailAST);
+			assignDetailASTs.add(followingAssignDetailAST);
 
 			followingStatementDetailAST = _getFollowingStatementDetailAST(
 				followingStatementDetailAST, false);
@@ -735,16 +735,16 @@ public class MissingEmptyLineCheck extends BaseCheck {
 		}
 	}
 
-	private List<DetailAST> _getFollowingStatementsIdentDetailASTList(
+	private List<DetailAST> _getFollowingStatementsIdentDetailASTs(
 		DetailAST detailAST) {
 
-		List<DetailAST> identDetailASTList = new ArrayList<>();
+		List<DetailAST> identDetailASTs = new ArrayList<>();
 
 		DetailAST followingStatementDetailAST = _getFollowingStatementDetailAST(
 			detailAST, true);
 
 		while (followingStatementDetailAST != null) {
-			identDetailASTList.addAll(
+			identDetailASTs.addAll(
 				getAllChildTokens(
 					followingStatementDetailAST, true, TokenTypes.IDENT));
 
@@ -752,7 +752,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 				followingStatementDetailAST, false);
 		}
 
-		return identDetailASTList;
+		return identDetailASTs;
 	}
 
 	private String _getVariableName(DetailAST assignDetailAST) {

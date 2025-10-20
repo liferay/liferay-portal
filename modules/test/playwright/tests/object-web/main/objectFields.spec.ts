@@ -302,7 +302,9 @@ test.describe('Manage object fields through Model Builder', () => {
 			modelBuilderDiagramPage.objectDefinitionNodes
 		);
 
-		await page.getByText('Picklist', {exact: true}).click();
+		await page
+			.getByText(objectFields[0].label['en_US'], {exact: true})
+			.click();
 
 		const picklistFieldName = 'picklistField' + getRandomInt();
 
@@ -365,7 +367,9 @@ test.describe('Manage object fields through Model Builder', () => {
 			modelBuilderDiagramPage.objectDefinitionNodes
 		);
 
-		await page.getByText('Picklist', {exact: true}).click();
+		await page
+			.getByText(objectFields[0].label['en_US'], {exact: true})
+			.click();
 
 		const newTabPagePromise = new Promise<Page>((resolve) =>
 			page.once('popup', resolve)

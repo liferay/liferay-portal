@@ -11,9 +11,11 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_198402 {
 
 	public void method(Map<String, Object> fieldValues) {
-		DefaultFragmentRendererContext defaultFragmentRendererContext = new DefaultFragmentRendererContext(null);
+		DefaultFragmentRendererContext defaultFragmentRendererContext =
+			new DefaultFragmentRendererContext(null);
 
-		defaultFragmentRendererContext.setFieldValues(new HashMap<String, Object>());
+		defaultFragmentRendererContext.setFieldValues(
+			new HashMap<String, Object>());
 	}
 
 }

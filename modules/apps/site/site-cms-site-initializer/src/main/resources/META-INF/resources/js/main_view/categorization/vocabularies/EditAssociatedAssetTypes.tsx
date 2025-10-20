@@ -122,23 +122,25 @@ export default function EditAssociatedAssetTypes({
 		return !!selectedItems.find((val) => val.value === item.value);
 	};
 
-	const _handleChangeAllAssetTypes = () => {
-		setAllAssetTypesSelected(!allAssetTypesSelected);
+	const _handleToggleAllAssetTypes = () => {
+		setAllAssetTypesSelected((allAssetTypesSelected) => {
+			if (allAssetTypesSelected) {
+				setSelectedItems(() => []);
+				onChangeVocabulary(() => ({
+					...vocabulary,
+					assetTypes: [],
+				}));
+			}
+			else {
+				setSelectedItems(() => ALL_STRUCTURES);
+				onChangeVocabulary(() => ({
+					...vocabulary,
+					assetTypes: ALL_ASSET_TYPES,
+				}));
+			}
 
-		if (allAssetTypesSelected) {
-			setSelectedItems([]);
-			onChangeVocabulary(() => ({
-				...vocabulary,
-				assetTypes: [],
-			}));
-		}
-		else {
-			setSelectedItems(ALL_STRUCTURES);
-			onChangeVocabulary(() => ({
-				...vocabulary,
-				assetTypes: [ALL_ASSET_TYPES],
-			}));
-		}
+			return !allAssetTypesSelected;
+		});
 	};
 
 	const _handleChangeAssetTypes = (newSelectedItems: Structure[]) => {
@@ -287,7 +289,7 @@ export default function EditAssociatedAssetTypes({
 						label={Liferay.Language.get(
 							'make-this-vocabulary-available-in-all-asset-types'
 						)}
-						onChange={_handleChangeAllAssetTypes}
+						onChange={_handleToggleAllAssetTypes}
 					/>
 
 					{!!selectedItems.length && (

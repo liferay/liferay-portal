@@ -193,14 +193,6 @@ public class OptionsRestController extends BaseRestController {
 							"Width", String.valueOf(width)
 						)
 					).put(
-						"PackagingType",
-						new JSONObject(
-						).put(
-							"Code",
-							typeSettingsJSONObject.getString(
-								"packagingTypeCode")
-						)
-					).put(
 						"PackageWeight",
 						new JSONObject(
 						).put(
@@ -215,6 +207,14 @@ public class OptionsRestController extends BaseRestController {
 							"Weight", String.valueOf(weight)
 						)
 					).put(
+						"PackagingType",
+						new JSONObject(
+						).put(
+							"Code",
+							typeSettingsJSONObject.getString(
+								"packagingTypeCode")
+						)
+					).put(
 						"SimpleRate",
 						new JSONObject(
 						).put(
@@ -227,6 +227,35 @@ public class OptionsRestController extends BaseRestController {
 					new JSONObject(
 					).put(
 						"Code", code
+					)
+				).put(
+					"Shipper",
+					new JSONObject(
+					).put(
+						"Address",
+						new JSONObject(
+						).put(
+							"AddressLine",
+							new JSONArray(
+							).put(
+								typeSettingsJSONObject.getString(
+									"shipperAddressLine1")
+							).put(
+								typeSettingsJSONObject.getString(
+									"shipperAddressLine2")
+							).put(
+								typeSettingsJSONObject.getString(
+									"shipperAddressLine3")
+							)
+						).put(
+							"CountryCode",
+							typeSettingsJSONObject.getString(
+								"shipperCountryCode")
+						).put(
+							"PostalCode",
+							typeSettingsJSONObject.getString(
+								"shipperPostalCode")
+						)
 					)
 				).put(
 					"ShipTo",
@@ -256,35 +285,6 @@ public class OptionsRestController extends BaseRestController {
 						).put(
 							"StateProvinceCode",
 							shippingAddressJSONObject.getString("regionISOCode")
-						)
-					)
-				).put(
-					"Shipper",
-					new JSONObject(
-					).put(
-						"Address",
-						new JSONObject(
-						).put(
-							"AddressLine",
-							new JSONArray(
-							).put(
-								typeSettingsJSONObject.getString(
-									"shipperAddressLine1")
-							).put(
-								typeSettingsJSONObject.getString(
-									"shipperAddressLine2")
-							).put(
-								typeSettingsJSONObject.getString(
-									"shipperAddressLine3")
-							)
-						).put(
-							"CountryCode",
-							typeSettingsJSONObject.getString(
-								"shipperCountryCode")
-						).put(
-							"PostalCode",
-							typeSettingsJSONObject.getString(
-								"shipperPostalCode")
 						)
 					)
 				)

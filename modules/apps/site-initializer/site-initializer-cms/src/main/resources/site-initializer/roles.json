@@ -157,6 +157,16 @@
 				"scope": 1
 			},
 			{
+				"actionId": "ADD_OBJECT_DEFINITION",
+				"resource": "com.liferay.object",
+				"scope": 1
+			},
+			{
+				"actionId": "PUBLISH_OBJECT_DEFINITION",
+				"resource": "com.liferay.object",
+				"scope": 1
+			},
+			{
 				"actionId": "DELETE",
 				"resource": "com.liferay.object.model.ObjectDefinition",
 				"scope": 1

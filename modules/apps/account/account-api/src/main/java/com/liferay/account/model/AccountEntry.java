@@ -66,18 +66,15 @@ public interface AccountEntry extends AccountEntryModel, PersistedModel {
 	public String[] getDomainsArray();
 
 	public java.util.List<com.liferay.portal.kernel.model.EmailAddress>
-			getEmailAddresses()
-		throws com.liferay.portal.kernel.exception.PortalException;
+		getEmailAddresses();
 
 	public java.util.List<com.liferay.portal.kernel.model.Address>
-			getListTypeAddresses(long[] listTypeIds)
-		throws com.liferay.portal.kernel.exception.PortalException;
+		getListTypeAddresses(long[] listTypeIds);
 
-	public java.util.List<com.liferay.portal.kernel.model.Phone> getPhones()
-		throws com.liferay.portal.kernel.exception.PortalException;
+	public java.util.List<com.liferay.portal.kernel.model.Phone> getPhones();
 
-	public java.util.List<com.liferay.portal.kernel.model.Website> getWebsites()
-		throws com.liferay.portal.kernel.exception.PortalException;
+	public java.util.List<com.liferay.portal.kernel.model.Website>
+		getWebsites();
 
 	public boolean isBusinessAccount();
 

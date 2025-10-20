@@ -43,10 +43,10 @@ public class EmptyConstructorCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> constructorDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> constructorDefinitionDetailASTs = getAllChildTokens(
 			parentDetailAST, false, TokenTypes.CTOR_DEF);
 
-		if (constructorDefinitionDetailASTList.size() > 1) {
+		if (constructorDefinitionDetailASTs.size() > 1) {
 			return;
 		}
 

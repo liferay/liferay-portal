@@ -24,6 +24,5 @@
 		<suppress checks="IllegalImportsCheck" files="fragment-entry-processor/fragment-entry-processor-editable/src/main/java/com/liferay/fragment/entry/processor/editable/internal/parser/ActionEditableElementParser.java" />
 		<suppress checks="IllegalImportsCheck" files="fragment-impl/src/main/java/com/liferay/fragment/internal/processor/FragmentEntryProcessorRegistryImpl.java" />
 		<suppress checks="JavaCompanyScopedIdsCheck" files="fragment-service/src/main/java/com/liferay/fragment/internal/upgrade/v1_1_0/PortletPreferencesUpgradeProcess\.java" />
-		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="fragment-service/src/main/java/com/liferay/fragment/service/impl/FragmentEntryLinkLocalServiceImpl\.java" />
 	</source-check>
 </suppressions>

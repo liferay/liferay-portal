@@ -30,7 +30,7 @@ if (Validator.isNotNull(namespace)) {
 	<liferay-util:html-top
 		outputKey="com.liferay.item.selector.upload.web#/upload.jsp"
 	>
-		<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/item-selector-taglib/repository_entry_browser/css/main.css") %>' rel="stylesheet" />
+		<aui:link hashedFile="<%= true %>" href="item-selector-taglib/repository_entry_browser/css/main.css" rel="stylesheet" />
 	</liferay-util:html-top>
 
 	<div class="dropzone-wrapper dropzone-wrapper-search-container-empty">

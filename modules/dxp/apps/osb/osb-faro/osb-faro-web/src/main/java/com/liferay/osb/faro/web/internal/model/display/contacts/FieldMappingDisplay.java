@@ -7,6 +7,7 @@ package com.liferay.osb.faro.web.internal.model.display.contacts;
 
 import com.liferay.osb.faro.engine.client.model.FieldMapping;
 import com.liferay.osb.faro.web.internal.model.display.main.EntityDisplay;
+import com.liferay.osb.faro.web.internal.util.FieldMappingUtil;
 import com.liferay.osb.faro.web.internal.util.SchemaOrgUtil;
 
 import java.util.Map;
@@ -25,7 +26,7 @@ public class FieldMappingDisplay extends EntityDisplay {
 
 		_context = fieldMapping.getContext();
 		_dataSourceFieldNames = fieldMapping.getDataSourceFieldNames();
-		_displayName = fieldMapping.getDisplayName();
+		_displayName = FieldMappingUtil.getDisplayName(fieldMapping);
 		_displayType = fieldMapping.getDisplayType();
 		_name = fieldMapping.getDisplayName();
 		_ownerType = fieldMapping.getOwnerType();

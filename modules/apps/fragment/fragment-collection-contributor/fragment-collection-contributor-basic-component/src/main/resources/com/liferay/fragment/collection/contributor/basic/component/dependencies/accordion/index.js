@@ -3,21 +3,35 @@ const panel = fragmentElement.querySelector('.panel-collapse');
 
 function main() {
 	if (layoutMode !== 'edit') {
-		panel.style.maxHeight = panel.scrollHeight + 'px';
+		panel.style.maxHeight = 'fit-content';
 
 		button.addEventListener('click', () => {
 			panel.classList.add('collapsed');
 
 			button.classList.toggle('collapsed');
 
-			button.setAttribute(
-				'aria-expanded',
-				!button.classList.contains('collapsed')
-			);
+			const isExpanded = !button.classList.contains('collapsed');
 
-			panel.style.maxHeight = panel.style.maxHeight
-				? null
-				: panel.scrollHeight + 'px';
+			button.setAttribute('aria-expanded', isExpanded);
+
+			if (isExpanded) {
+				panel.style.maxHeight = panel.scrollHeight + 'px';
+
+				panel.addEventListener(
+					'transitionend',
+					() => {
+						panel.style.maxHeight = 'fit-content';
+					},
+					{once: true}
+				);
+			}
+			else {
+				panel.style.maxHeight = panel.scrollHeight + 'px';
+
+				requestAnimationFrame(() => {
+					panel.style.maxHeight = '0';
+				});
+			}
 		});
 	}
 }

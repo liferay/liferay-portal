@@ -78,6 +78,7 @@ export default function ConfirmChangesModal({
 								</ClayButton>
 
 								<ClayButton
+									className="btn btn-warning"
 									onClick={async () => {
 										onOpenChange(false);
 

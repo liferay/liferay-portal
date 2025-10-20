@@ -76,6 +76,7 @@ export class WorkflowTaskDetailsPage {
 		await this.commentsButton.click();
 		await this.commentsTextbox.fill(comment);
 		await this.replyButton.click();
+		await this.page.waitForLoadState('networkidle');
 	}
 
 	async clickDoneButton() {

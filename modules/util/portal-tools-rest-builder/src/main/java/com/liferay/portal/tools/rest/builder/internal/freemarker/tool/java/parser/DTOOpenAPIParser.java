@@ -79,7 +79,7 @@ public class DTOOpenAPIParser {
 			properties.put(
 				_getPropertyName(
 					configYAML, propertySchema, propertySchemaName),
-				_getPropertyType(
+				getPropertyType(
 					configYAML, javaDataTypeMap, openAPIYAML, propertySchema,
 					propertySchemaName));
 		}
@@ -115,6 +115,96 @@ public class DTOOpenAPIParser {
 		}
 
 		return null;
+	}
+
+	public static String getPropertyType(
+		ConfigYAML configYAML, Map<String, String> javaDataTypeMap,
+		OpenAPIYAML openAPIYAML, Schema propertySchema,
+		String propertySchemaName) {
+
+		List<String> enumValues = propertySchema.getEnumValues();
+
+		if ((enumValues != null) && !enumValues.isEmpty()) {
+			return _getEnumName(configYAML, openAPIYAML, propertySchemaName);
+		}
+
+		Items items = propertySchema.getItems();
+		String type = propertySchema.getType();
+
+		if (StringUtil.equals(type, "array") && (items != null) &&
+			StringUtil.equalsIgnoreCase(items.getType(), "object")) {
+
+			String name = OpenAPIUtil.formatSingular(
+				configYAML,
+				StringUtil.upperCaseFirstLetter(propertySchemaName));
+
+			if (javaDataTypeMap.containsKey(name)) {
+				return name + "[]";
+			}
+		}
+
+		if (StringUtil.equalsIgnoreCase(type, "object") &&
+			((propertySchema.getAdditionalPropertySchema() == null) ||
+			 _isEmpty(propertySchema.getAdditionalPropertySchema()))) {
+
+			String name = StringUtil.upperCaseFirstLetter(propertySchemaName);
+
+			if (items != null) {
+				name = OpenAPIUtil.formatSingular(configYAML, name);
+			}
+
+			if (javaDataTypeMap.containsKey(name)) {
+				return name;
+			}
+		}
+
+		String javaDataType = OpenAPIParserUtil.getJavaDataType(
+			javaDataTypeMap, propertySchema);
+
+		if (javaDataType.startsWith("[")) {
+			String name = OpenAPIParserUtil.getElementClassName(javaDataType);
+
+			if ((name.lastIndexOf('.') != -1) &&
+				!StringUtil.equals(
+					name,
+					"com.liferay.portal.vulcan.custom.field.CustomField") &&
+				!StringUtil.equals(
+					name, "com.liferay.portal.vulcan.permission.Permission")) {
+
+				name = name.substring(name.lastIndexOf(".") + 1);
+			}
+
+			return name + "[]";
+		}
+
+		if (javaDataType.startsWith("Map")) {
+			int index = javaDataType.lastIndexOf(".");
+
+			if (index != -1) {
+				String mapType = javaDataType.substring(
+					0, javaDataType.lastIndexOf(" "));
+
+				return mapType + javaDataType.substring(index + 1);
+			}
+
+			return "Map<String, ?>";
+		}
+
+		String propertyType = javaDataType;
+
+		if ((propertyType.lastIndexOf('.') != -1) &&
+			!StringUtil.equals(
+				propertyType,
+				"com.liferay.portal.vulcan.custom.field.CustomField") &&
+			!StringUtil.equals(
+				propertyType,
+				"com.liferay.portal.vulcan.permission.Permission")) {
+
+			propertyType = propertyType.substring(
+				propertyType.lastIndexOf(".") + 1);
+		}
+
+		return propertyType;
 	}
 
 	public static boolean isSchemaProperty(
@@ -213,96 +303,6 @@ public class DTOOpenAPIParser {
 			});
 
 		return propertySchemas;
-	}
-
-	private static String _getPropertyType(
-		ConfigYAML configYAML, Map<String, String> javaDataTypeMap,
-		OpenAPIYAML openAPIYAML, Schema propertySchema,
-		String propertySchemaName) {
-
-		List<String> enumValues = propertySchema.getEnumValues();
-
-		if ((enumValues != null) && !enumValues.isEmpty()) {
-			return _getEnumName(configYAML, openAPIYAML, propertySchemaName);
-		}
-
-		Items items = propertySchema.getItems();
-		String type = propertySchema.getType();
-
-		if (StringUtil.equals(type, "array") && (items != null) &&
-			StringUtil.equalsIgnoreCase(items.getType(), "object")) {
-
-			String name = OpenAPIUtil.formatSingular(
-				configYAML,
-				StringUtil.upperCaseFirstLetter(propertySchemaName));
-
-			if (javaDataTypeMap.containsKey(name)) {
-				return name + "[]";
-			}
-		}
-
-		if (StringUtil.equalsIgnoreCase(type, "object") &&
-			((propertySchema.getAdditionalPropertySchema() == null) ||
-			 _isEmpty(propertySchema.getAdditionalPropertySchema()))) {
-
-			String name = StringUtil.upperCaseFirstLetter(propertySchemaName);
-
-			if (items != null) {
-				name = OpenAPIUtil.formatSingular(configYAML, name);
-			}
-
-			if (javaDataTypeMap.containsKey(name)) {
-				return name;
-			}
-		}
-
-		String javaDataType = OpenAPIParserUtil.getJavaDataType(
-			javaDataTypeMap, propertySchema);
-
-		if (javaDataType.startsWith("[")) {
-			String name = OpenAPIParserUtil.getElementClassName(javaDataType);
-
-			if ((name.lastIndexOf('.') != -1) &&
-				!StringUtil.equals(
-					name,
-					"com.liferay.portal.vulcan.custom.field.CustomField") &&
-				!StringUtil.equals(
-					name, "com.liferay.portal.vulcan.permission.Permission")) {
-
-				name = name.substring(name.lastIndexOf(".") + 1);
-			}
-
-			return name + "[]";
-		}
-
-		if (javaDataType.startsWith("Map")) {
-			int index = javaDataType.lastIndexOf(".");
-
-			if (index != -1) {
-				String mapType = javaDataType.substring(
-					0, javaDataType.lastIndexOf(" "));
-
-				return mapType + javaDataType.substring(index + 1);
-			}
-
-			return "Map<String, ?>";
-		}
-
-		String propertyType = javaDataType;
-
-		if ((propertyType.lastIndexOf('.') != -1) &&
-			!StringUtil.equals(
-				propertyType,
-				"com.liferay.portal.vulcan.custom.field.CustomField") &&
-			!StringUtil.equals(
-				propertyType,
-				"com.liferay.portal.vulcan.permission.Permission")) {
-
-			propertyType = propertyType.substring(
-				propertyType.lastIndexOf(".") + 1);
-		}
-
-		return propertyType;
 	}
 
 	private static boolean _isEmpty(Schema schema) {

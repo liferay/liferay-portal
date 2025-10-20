@@ -6,8 +6,6 @@ task patch(type: PatchTask)
 
 dependencies {
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.configurator", transitive: false, version: "1.0.18"
-	compileOnly group: "org.osgi", name: "org.osgi.service.cm", transitive: false, version: "1.6.0"
-	compileOnly group: "org.osgi", name: "osgi.core", transitive: false, version: "6.0.0"
 }
 
 jarSources {
@@ -19,7 +17,6 @@ patch {
 		autoClean = false
 	}
 
-	fileNames "org/apache/felix/configurator/impl/Configurator.java"
 	fileNames "org/apache/felix/configurator/impl/WorkerQueue.java"
 	fileNames "org/apache/felix/configurator/impl/model/ConfigList.java"
 	fileNames "org/apache/felix/configurator/impl/model/State.java"

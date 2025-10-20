@@ -8,6 +8,7 @@ package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.engine.adapter.search.CountSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.CountSearchResponse;
@@ -51,6 +52,26 @@ public class CountSearchRequestExecutorImpl
 		searchSourceBuilder.trackScores(false);
 		searchSourceBuilder.trackTotalHits(true);
 
+		String indexNames = ArrayUtil.toString(
+			countSearchRequest.getIndexNames(), "");
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				StringBundler.concat(
+					"Stack trace for [", indexNames, "]: ",
+					DebugStringsUtil.getStackTraceString()));
+		}
+
+		String searchRequestString = DebugStringsUtil.getSearchRequestString(
+			searchSourceBuilder);
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				StringBundler.concat(
+					"Search request string for [", indexNames, "]: ",
+					searchRequestString));
+		}
+
 		SearchResponse searchResponse = getSearchResponse(
 			searchRequest, countSearchRequest);
 
@@ -63,14 +84,13 @@ public class CountSearchRequestExecutorImpl
 		countSearchResponse.setCount(totalHits.value);
 
 		_commonSearchResponseAssembler.assemble(
-			searchSourceBuilder, searchResponse, countSearchRequest,
-			countSearchResponse);
+			countSearchRequest, countSearchResponse, searchRequestString,
+			searchResponse);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				StringBundler.concat(
-					"The search engine processed ",
-					countSearchResponse.getSearchRequestString(), " in ",
+					"The search engine processed the request in ",
 					countSearchResponse.getExecutionTime(), " ms"));
 		}
 

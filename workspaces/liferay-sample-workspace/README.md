@@ -66,6 +66,10 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 	Build a custom element that uses `@clayui/badge`, `react`, and `react-dom` packages that Liferay makes publicly available through import maps.
 
+- *liferay-sample-custom-element-6*
+
+	Build a custom element that uses `react`, `react-dom`, and `vite`.
+
 - *liferay-sample-editor-config-contributor*
 
 	Build a JavaScript function to configure WYSIWYG editors.

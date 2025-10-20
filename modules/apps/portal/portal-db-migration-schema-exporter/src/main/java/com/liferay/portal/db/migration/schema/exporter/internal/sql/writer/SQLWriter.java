@@ -8,10 +8,10 @@ package com.liferay.portal.db.migration.schema.exporter.internal.sql.writer;
 import com.liferay.portal.db.migration.schema.exporter.internal.sql.provider.DBPartitionSQLProvider;
 import com.liferay.portal.db.migration.schema.exporter.internal.sql.provider.PortalSQLProvider;
 import com.liferay.portal.db.migration.schema.exporter.internal.sql.provider.SQLProvider;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.File;
 
@@ -21,7 +21,7 @@ import java.io.File;
 public class SQLWriter {
 
 	public void writeFiles(File directory) throws Exception {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			_writeDBPartitionFiles(directory);
 		}
 		else {

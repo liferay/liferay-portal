@@ -18,9 +18,15 @@ public class LPS_192320 {
 		long vocabularyId, String[] categoryProperties,
 		ServiceContext serviceContext) {
 
-		AssetCategoryLocalServiceUtil.addCategory(123, groupId, parentCategoryId, titleMap, descriptionMap, vocabularyId, categoryProperties, serviceContext);
-		AssetCategoryLocalServiceUtil.addCategory(userId, groupId, parentCategoryId, titleMap, descriptionMap, vocabularyId, categoryProperties, serviceContext);
-		_assetCategoryLocalService.addCategory(userId, groupId, parentCategoryId, titleMap, descriptionMap, vocabularyId, categoryProperties, serviceContext);
+		AssetCategoryLocalServiceUtil.addCategory(
+			123, groupId, parentCategoryId, titleMap, descriptionMap,
+			vocabularyId, categoryProperties, serviceContext);
+		AssetCategoryLocalServiceUtil.addCategory(
+			userId, groupId, parentCategoryId, titleMap, descriptionMap,
+			vocabularyId, categoryProperties, serviceContext);
+		_assetCategoryLocalService.addCategory(
+			userId, groupId, parentCategoryId, titleMap, descriptionMap,
+			vocabularyId, categoryProperties, serviceContext);
 	}
 
 	@Reference

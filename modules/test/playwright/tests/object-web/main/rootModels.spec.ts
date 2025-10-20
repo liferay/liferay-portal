@@ -119,7 +119,10 @@ test.describe('Manage root model elements through View Object Entries', () => {
 				.getByRole('link', {name: objectDefinition2.name})
 				.click();
 
-			await viewObjectEntriesPage.addObjectEntryButton.click();
+			await page
+				.getByRole('button', {name: 'Create New'})
+				.first()
+				.click();
 
 			await page.getByRole('textbox', {name: 'textField'}).fill('b1');
 
@@ -341,7 +344,7 @@ test.describe('Manage root model elements through View Object Entries', () => {
 			);
 
 			await editObjectDetailsPage.enableAccountRestriction(
-				objectRelationship.label['en_us']
+				objectRelationship.label['en_US']
 			);
 
 			await page.getByRole('button', {name: 'Save'}).click();
@@ -376,7 +379,10 @@ test.describe('Manage root model elements through View Object Entries', () => {
 				.getByRole('link', {name: objectDefinition2.name})
 				.click();
 
-			await viewObjectEntriesPage.addObjectEntryButton.click();
+			await page
+				.getByRole('button', {name: 'Create New'})
+				.first()
+				.click();
 
 			await page.getByRole('textbox', {name: 'textField'}).fill('b1');
 
@@ -386,7 +392,9 @@ test.describe('Manage root model elements through View Object Entries', () => {
 
 			await viewObjectEntriesPage.goto(objectDefinition1.className);
 
-			await viewObjectEntriesPage.addObjectEntryButton.click();
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition1.label['en_US']
+			);
 
 			await viewObjectEntriesPage.selectDropdownItemWithSearch(
 				account2.name
@@ -406,7 +414,10 @@ test.describe('Manage root model elements through View Object Entries', () => {
 				.getByRole('link', {name: objectDefinition2.name})
 				.click();
 
-			await viewObjectEntriesPage.addObjectEntryButton.click();
+			await page
+				.getByRole('button', {name: 'Create New'})
+				.first()
+				.click();
 
 			await page.getByRole('textbox', {name: 'textField'}).fill('b2');
 

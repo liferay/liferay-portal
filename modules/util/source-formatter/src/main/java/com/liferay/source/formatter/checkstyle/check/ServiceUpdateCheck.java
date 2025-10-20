@@ -85,13 +85,12 @@ public class ServiceUpdateCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(
-				typeDetailAST.getParent(), variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			typeDetailAST.getParent(), variableName);
 
-		int size = variableCallerDetailASTList.size();
+		int size = variableCallerDetailASTs.size();
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			if (hasParentWithTokenType(
 					variableCallerDetailAST, TokenTypes.LAMBDA)) {
 
@@ -100,7 +99,7 @@ public class ServiceUpdateCheck extends BaseCheck {
 		}
 
 		for (int i = 0; i < size; i++) {
-			if (!equals(variableCallerDetailASTList.get(i), nameDetailAST)) {
+			if (!equals(variableCallerDetailASTs.get(i), nameDetailAST)) {
 				continue;
 			}
 
@@ -109,7 +108,7 @@ public class ServiceUpdateCheck extends BaseCheck {
 			}
 
 			DetailAST firstNextVariableCallerDetailAST =
-				variableCallerDetailASTList.get(i + 1);
+				variableCallerDetailASTs.get(i + 1);
 
 			if (firstNextVariableCallerDetailAST.getPreviousSibling() != null) {
 				break;
@@ -131,7 +130,7 @@ public class ServiceUpdateCheck extends BaseCheck {
 
 			if (i <= (size - 2)) {
 				DetailAST secondNextVariableCallerDetailAST =
-					variableCallerDetailASTList.get(i + 2);
+					variableCallerDetailASTs.get(i + 2);
 
 				if (secondNextVariableCallerDetailAST.getLineNo() >
 						getEndLineNumber(parentDetailAST)) {

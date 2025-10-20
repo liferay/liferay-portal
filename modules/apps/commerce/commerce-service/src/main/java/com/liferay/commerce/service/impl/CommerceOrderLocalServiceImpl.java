@@ -1285,6 +1285,7 @@ public class CommerceOrderLocalServiceImpl
 		return indexer.searchCount(searchContext);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceOrder updateAccount(
 			long commerceOrderId, long userId, long commerceAccountId)

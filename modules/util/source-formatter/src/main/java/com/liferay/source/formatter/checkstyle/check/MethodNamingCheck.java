@@ -102,11 +102,11 @@ public class MethodNamingCheck extends BaseCheck {
 
 			DetailAST parentDetailAST = detailAST.getParent();
 
-			List<DetailAST> methodDefinitionDetailASTList = getAllChildTokens(
+			List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
 				parentDetailAST, false, TokenTypes.METHOD_DEF);
 
 			for (DetailAST methodDefinitionDetailAST :
-					methodDefinitionDetailASTList) {
+					methodDefinitionDetailASTs) {
 
 				String curMethodName = getName(methodDefinitionDetailAST);
 

@@ -6,6 +6,7 @@
 package com.liferay.customer.service;
 
 import com.liferay.client.extension.util.spring.boot3.service.BaseService;
+import com.liferay.customer.exception.TicketAttachmentAlreadyApprovedException;
 import com.liferay.customer.exception.TicketAttachmentNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.petra.string.StringBundler;
@@ -84,6 +85,13 @@ public class TicketAttachmentService extends BaseService {
 	public TicketAttachment approveTicketAttachment(
 			String authorization, long ticketAttachmentId)
 		throws Exception {
+
+		TicketAttachment ticketAttachment = getTicketAttachment(
+			authorization, ticketAttachmentId);
+
+		if (ticketAttachment.isApproved()) {
+			throw new TicketAttachmentAlreadyApprovedException();
+		}
 
 		JSONObject requestJSONObject = new JSONObject();
 

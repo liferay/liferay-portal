@@ -10,7 +10,9 @@ package com.liferay.source.formatter.dependencies.upgrade;
  */
 public class LPD_40549 {
 
-	public void method(CommercePaymentMethodGroupRel commercePaymentMethodGroupRel) {
+	public void method(
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel) {
+
 		commercePaymentMethodGroupRel.getEngineKey();
 	}
 

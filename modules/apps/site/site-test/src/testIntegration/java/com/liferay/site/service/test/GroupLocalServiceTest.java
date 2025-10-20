@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -89,6 +91,24 @@ public class GroupLocalServiceTest {
 		_assertDescendantGroups(group2, group3);
 		_assertDescendantGroups(group3);
 		_assertDescendantGroups(group4);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.setProperty(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()
+			).setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_INHERIT_LOCALES, "false"
+			).build();
+
+		group1 = _addGroup(
+			externalReferenceCode, RandomTestUtil.randomString(),
+			typeSettingsUnicodeProperties.toString());
+
+		Assert.assertEquals(
+			externalReferenceCode, group1.getExternalReferenceCode());
+		Assert.assertEquals(
+			typeSettingsUnicodeProperties, group1.getTypeSettingsProperties());
 	}
 
 	@Test
@@ -131,19 +151,27 @@ public class GroupLocalServiceTest {
 	}
 
 	private Group _addGroup(String name) throws Exception {
+		return _addGroup(StringPool.BLANK, name, null);
+	}
+
+	private Group _addGroup(
+			String externalReferenceCode, String name, String typeSettings)
+		throws Exception {
+
 		return _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			null, 0, GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			externalReferenceCode, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), name
 			).build(),
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			GroupConstants.TYPE_SITE_OPEN, true,
+			GroupConstants.TYPE_SITE_OPEN, typeSettings, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			StringPool.SLASH + FriendlyURLNormalizerUtil.normalize(name), true,
-			true, ServiceContextTestUtil.getServiceContext());
+			false, true, ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _assertDescendantGroups(

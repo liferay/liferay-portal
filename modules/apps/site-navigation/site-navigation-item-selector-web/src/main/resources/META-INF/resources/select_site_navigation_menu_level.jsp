@@ -28,6 +28,7 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 			data-private-layout="<%= selectSiteNavigationMenuDisplayContext.isPrivateLayout() %>"
 			data-site-navigation-menu-external-reference-code="<%= selectSiteNavigationMenuDisplayContext.getSiteNavigationMenuExternalReferenceCode() %>"
 			data-site-navigation-menu-id="<%= selectSiteNavigationMenuDisplayContext.getSiteNavigationMenuId() %>"
+			data-site-navigation-menu-scope-external-reference-code="<%= selectSiteNavigationMenuDisplayContext.getSiteNavigationMenuExternalReferenceCode() %>"
 			data-title="<%= selectSiteNavigationMenuDisplayContext.getCurrentLevelTitle() %>"
 			displayType="primary"
 			label="select-this-level"

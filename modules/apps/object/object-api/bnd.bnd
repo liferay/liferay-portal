@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Object API
 Bundle-SymbolicName: com.liferay.object.api
-Bundle-Version: 113.0.1
+Bundle-Version: 114.0.0
 Export-Package:\
 	com.liferay.object.action.engine,\
 	com.liferay.object.action.executor,\
@@ -37,6 +37,7 @@ Export-Package:\
 	com.liferay.object.field.util,\
 	com.liferay.object.filter.util,\
 	com.liferay.object.jaxrs.exception.mapper.util,\
+	com.liferay.object.label.key.provider,\
 	com.liferay.object.model,\
 	com.liferay.object.model.listener,\
 	com.liferay.object.odata.filter.expression.field.predicate.provider,\

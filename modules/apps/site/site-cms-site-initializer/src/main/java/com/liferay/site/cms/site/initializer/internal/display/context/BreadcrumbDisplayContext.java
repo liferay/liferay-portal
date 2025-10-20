@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSpaceConstants;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
+import com.liferay.site.cms.site.initializer.internal.util.PermissionUtil;
 import com.liferay.taglib.security.PermissionsURLTag;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,8 +46,14 @@ public class BreadcrumbDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
+	public String getAPIURL() {
+		return "/o/headless-asset-library/v1.0/asset-libraries?filter=type " +
+			"eq 'Space'&nestedFields=numberOfConnectedSites" +
+				",numberOfUserAccounts,numberOfUserGroups";
+	}
+
 	public Map<String, Object> getProps() throws Exception {
-		Group group = _groupLocalService.getGroup(_groupId);
+		Group group = _getGroup();
 
 		return HashMapBuilder.<String, Object>put(
 			"actionItems",
@@ -79,10 +86,35 @@ public class BreadcrumbDisplayContext {
 					"target", "modal"
 				),
 				JSONUtil.put(
+					"defaultPermissionAdditionalProps",
+					HashMapBuilder.putAll(
+						PermissionUtil.getDefaultPermissionAdditionalProps(
+							_httpServletRequest, _themeDisplay)
+					).put(
+						"classExternalReferenceCode",
+						group.getExternalReferenceCode()
+					).put(
+						"className", DepotEntry.class.getName()
+					).build()
+				).put(
+					"href", StringPool.BLANK
+				).put(
+					"label",
+					LanguageUtil.get(_httpServletRequest, "default-permissions")
+				).put(
+					"symbolLeft", "password-policies"
+				).put(
+					"target", "defaultPermissionsModal"
+				),
+				JSONUtil.put(
 					"confirmationMessage",
 					LanguageUtil.get(
-						_httpServletRequest,
-						"are-you-sure-you-want-to-delete-this-entry")
+						_httpServletRequest, "delete-space-confirmation-body")
+				).put(
+					"confirmationTitle",
+					LanguageUtil.format(
+						_httpServletRequest, "delete-space-confirmation-title",
+						group.getDescriptiveName())
 				).put(
 					"href",
 					"/o/headless-asset-library/v1.0/asset-libraries" +
@@ -95,6 +127,11 @@ public class BreadcrumbDisplayContext {
 					StringBundler.concat(
 						_themeDisplay.getPathFriendlyURLPublic(),
 						GroupConstants.CMS_FRIENDLY_URL, "/all-spaces")
+				).put(
+					"successMessage",
+					LanguageUtil.format(
+						_httpServletRequest, "x-was-successfully-deleted",
+						group.getDescriptiveName())
 				).put(
 					"symbolLeft", "trash"
 				).put(
@@ -122,6 +159,10 @@ public class BreadcrumbDisplayContext {
 		).put(
 			"size", _size
 		).build();
+	}
+
+	private Group _getGroup() throws Exception {
+		return _groupLocalService.getGroup(_groupId);
 	}
 
 	private final long _groupId;

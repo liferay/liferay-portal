@@ -690,7 +690,7 @@ create table Layout (
 	iconImageId LONG,
 	themeId VARCHAR(75) null,
 	colorSchemeId VARCHAR(75) null,
-	styleBookEntryId LONG,
+	styleBookEntryERC VARCHAR(75) null,
 	css TEXT null,
 	priority INTEGER,
 	faviconFileEntryId LONG,

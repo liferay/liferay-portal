@@ -20,9 +20,11 @@ import com.liferay.notification.util.NotificationRecipientSettingUtil;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
+import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -66,7 +68,9 @@ import java.time.Month;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -218,14 +222,24 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
-			addObjectDefinitionWithNotificationTemplateObjectAction(
+			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
-					NotificationRecipientSettingUtil.
-						createNotificationRecipientSetting(
-							NotificationRecipientConstants.TYPE_TERM,
-							"[%OBJECT_ENTRY_ASSIGNEE%]")),
-				"[%OBJECT_ENTRY_ASSIGNEE%]",
-				NotificationConstants.TYPE_USER_NOTIFICATION);
+					new AssigneeObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"assignee"
+					).build()));
+
+		addNotificationTemplateObjectAction(
+			Collections.singletonList(
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientConstants.TYPE_TERM,
+						getObjectFieldTermName(objectDefinition, "assignee"))),
+			objectDefinition,
+			getObjectFieldTermName(objectDefinition, "assignee"),
+			NotificationConstants.TYPE_USER_NOTIFICATION);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -300,8 +314,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			Arrays.asList(
 				NotificationRecipientSettingUtil.
 					createNotificationRecipientSetting(
-						"term", getTermName("AUTHOR_ID"))),
-			NotificationRecipientConstants.TYPE_TERM);
+						"term", getTermName("AUTHOR_ID"))));
 	}
 
 	@Test
@@ -392,8 +405,33 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			Arrays.asList(
 				NotificationRecipientSettingUtil.
 					createNotificationRecipientSetting(
-						"term", "[%CURRENT_USER_ID%]")),
-			NotificationRecipientConstants.TYPE_TERM);
+						"term", "[%CURRENT_USER_ID%]")));
+	}
+
+	@Test
+	public void testSendNotificationRecipientTypeTermDynamicUserMultiple()
+		throws Exception {
+
+		_testSendNotificationRecipientTypeTerm(
+			Arrays.asList(
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						"term",
+						getTermName(
+							true, "multipleRecipientsLongTextObjectField"))),
+			user1, user2);
+	}
+
+	@Test
+	public void testSendNotificationRecipientTypeTermDynamicUserSingle()
+		throws Exception {
+
+		_testSendNotificationRecipientTypeTerm(
+			Arrays.asList(
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						"term",
+						getTermName(true, "singleRecipientTextObjectField"))));
 	}
 
 	@Test
@@ -404,8 +442,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			Arrays.asList(
 				NotificationRecipientSettingUtil.
 					createNotificationRecipientSetting(
-						"term", getTermName(true, "AUTHOR_ID"))),
-			NotificationRecipientConstants.TYPE_TERM);
+						"term", getTermName(true, "AUTHOR_ID"))));
 	}
 
 	@Test
@@ -436,7 +473,6 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			NotificationRecipientConstants.TYPE_USER);
 	}
 
-	@FeatureFlag("LPD-50091")
 	@Test
 	public void testSendNotificationRecipientTypeUserGroup() throws Exception {
 		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
@@ -580,6 +616,41 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			userFullName, notificationRecipientSetting.getValue());
 	}
 
+	private void _assertNotificationRecipientSettings(User... users) {
+		NotificationRecipient notificationRecipient =
+			notificationQueueEntry.getNotificationRecipient();
+
+		List<NotificationRecipientSetting> notificationRecipientSettings =
+			notificationRecipient.getNotificationRecipientSettings();
+
+		Assert.assertEquals(
+			notificationRecipientSettings.toString(), users.length,
+			notificationRecipientSettings.size());
+
+		Map<String, User> usersMap = new HashMap<>();
+
+		for (User user : users) {
+			usersMap.put(user.getFullName(), user);
+		}
+
+		for (NotificationRecipientSetting notificationRecipientSetting :
+				notificationRecipientSettings) {
+
+			Assert.assertEquals(
+				"userFullName", notificationRecipientSetting.getName());
+
+			String value = notificationRecipientSetting.getValue();
+
+			User user = usersMap.get(value);
+
+			Assert.assertNotNull(value, user);
+			Assert.assertEquals(
+				1,
+				_userNotificationEventLocalService.
+					getUserNotificationEventsCount(user.getUserId()));
+		}
+	}
+
 	private NotificationContext _createNotificationContext(
 		List<NotificationRecipientSetting> notificationRecipientSettings,
 		String recipientType) {
@@ -701,29 +772,20 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			ListUtil.fromString(
 				notificationQueueEntry.getSubject(), StringPool.SEMICOLON));
 
-		NotificationRecipient notificationRecipient =
-			notificationQueueEntry.getNotificationRecipient();
+		_assertNotificationRecipientSettings(user1, user2);
+	}
 
-		notificationRecipientSettings =
-			notificationRecipient.getNotificationRecipientSettings();
+	private void _testSendNotificationRecipientTypeTerm(
+			List<NotificationRecipientSetting> notificationRecipientSettings)
+		throws Exception {
 
-		Assert.assertEquals(
-			notificationRecipientSettings.toString(), 2,
-			notificationRecipientSettings.size());
-		_assertNotificationRecipientSetting(
-			notificationRecipientSettings.get(0), user1.getFullName());
-		_assertNotificationRecipientSetting(
-			notificationRecipientSettings.get(1), user2.getFullName());
-
-		Assert.assertEquals(
-			1,
-			_userNotificationEventLocalService.getUserNotificationEventsCount(
-				user1.getUserId()));
+		_testSendNotificationRecipientTypeTerm(
+			notificationRecipientSettings, user2);
 	}
 
 	private void _testSendNotificationRecipientTypeTerm(
 			List<NotificationRecipientSetting> notificationRecipientSettings,
-			String recipientType)
+			User... users)
 		throws Exception {
 
 		List<NotificationQueueEntry> notificationQueueEntries =
@@ -743,7 +805,8 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			0,
 			notificationTemplateLocalService.addNotificationTemplate(
 				_createNotificationContext(
-					notificationRecipientSettings, recipientType)));
+					notificationRecipientSettings,
+					NotificationRecipientConstants.TYPE_TERM)));
 
 		notificationQueueEntries =
 			notificationQueueEntryLocalService.getNotificationQueueEntries(
@@ -760,22 +823,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			ListUtil.fromString(
 				notificationQueueEntry.getSubject(), StringPool.SEMICOLON));
 
-		NotificationRecipient notificationRecipient =
-			notificationQueueEntry.getNotificationRecipient();
-
-		notificationRecipientSettings =
-			notificationRecipient.getNotificationRecipientSettings();
-
-		Assert.assertEquals(
-			notificationRecipientSettings.toString(), 1,
-			notificationRecipientSettings.size());
-		_assertNotificationRecipientSetting(
-			notificationRecipientSettings.get(0), user2.getFullName());
-
-		Assert.assertEquals(
-			1,
-			_userNotificationEventLocalService.getUserNotificationEventsCount(
-				user2.getUserId()));
+		_assertNotificationRecipientSettings(users);
 	}
 
 	@Inject

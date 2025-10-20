@@ -156,7 +156,9 @@ public abstract class Base${schemaName}ResourceImpl
 			parentSchemaName = javaMethodSignature.parentSchemaName!
 		/>
 
-		<#if freeMarkerTool.isExternalReferenceCodeMethod("get", javaMethodSignature)>
+		<#if freeMarkerTool.isExternalReferenceCodeMethod("delete", javaMethodSignature) && !parentSchemaName?has_content>
+			<#assign deleteByExternalReferenceCodeBatchJavaMethodSignature = javaMethodSignature />
+		<#elseif freeMarkerTool.isExternalReferenceCodeMethod("get", javaMethodSignature)>
 			<#if parentSchemaName?has_content>
 				<#assign getParentByExternalReferenceCodeBatchJavaMethodSignatures = getParentByExternalReferenceCodeBatchJavaMethodSignatures + [javaMethodSignature] />
 			<#else>
@@ -172,9 +174,7 @@ public abstract class Base${schemaName}ResourceImpl
 			</#if>
 		<#elseif stringUtil.equals(javaMethodSignature.methodName, "deleteAssetLibrary" + schemaName)>
 			<#assign deleteAssetLibraryBatchJavaMethodSignature = javaMethodSignature />
-		<#elseif stringUtil.equals(javaMethodSignature.methodName, "deleteByExternalReferenceCode") || stringUtil.equals(javaMethodSignature.methodName, "delete" + schemaName + "ByExternalReferenceCode")>
-			<#assign deleteByExternalReferenceCodeBatchJavaMethodSignature = javaMethodSignature />
-		<#elseif stringUtil.equals(javaMethodSignature.methodName, "delete" + schemaName)>
+		<#elseif stringUtil.equals(javaMethodSignature.methodName, "delete" + schemaName) && !freeMarkerTool.isExternalReferenceCodeMethod("delete", javaMethodSignature)>
 			<#assign deleteByIdBatchJavaMethodSignature = javaMethodSignature />
 		<#elseif stringUtil.equals(javaMethodSignature.methodName, "deleteSite" + schemaName)>
 			<#assign deleteSiteBatchJavaMethodSignature = javaMethodSignature />
@@ -186,7 +186,7 @@ public abstract class Base${schemaName}ResourceImpl
 			<#else>
 				<#assign getBatchJavaMethodSignature = javaMethodSignature />
 			</#if>
-		<#elseif stringUtil.equals(javaMethodSignature.methodName, "patch" + schemaName)>
+		<#elseif stringUtil.equals(javaMethodSignature.methodName, "patch" + schemaName) && !freeMarkerTool.isExternalReferenceCodeMethod("patch", javaMethodSignature)>
 			<#assign patchBatchJavaMethodSignature = javaMethodSignature />
 		<#elseif stringUtil.equals(javaMethodSignature.methodName, "post" + parentSchemaName + schemaName)>
 			<#if parentSchemaName?has_content>
@@ -250,12 +250,16 @@ public abstract class Base${schemaName}ResourceImpl
 										Page<Permission> permissionsPage =
 											<#if getPermissionsPageJavaMethodSignature?has_content>
 												${getPermissionsPageJavaMethodSignature.methodName}(
-													<#if properties?keys?seq_contains("id")>
-														${schemaVarName}.getId()
-													<#elseif properties?keys?seq_contains(schemaVarName + "Id")>
-														${schemaVarName}.get${schemaVarName}Id()
+													<#if freeMarkerTool.hasPathParameter(getPermissionsPageJavaMethodSignature, schemaVarName + "ExternalReferenceCode")>
+														${schemaVarName}.getExternalReferenceCode()
 													<#else>
-														${schemaVarName}Id
+														<#if properties?keys?seq_contains("id")>
+															${schemaVarName}.getId()
+														<#elseif properties?keys?seq_contains(schemaVarName + "Id")>
+															${schemaVarName}.get${schemaVarName}Id()
+														<#else>
+															${schemaVarName}Id
+														</#if>
 													</#if>
 											<#elseif getParentPermissionsPageJavaMethodSignature?has_content>
 												${getParentPermissionsPageJavaMethodSignature.methodName}(${parentSchemaName?uncap_first}ExternalReferenceCode, ${schemaVarName}.getExternalReferenceCode()
@@ -278,12 +282,16 @@ public abstract class Base${schemaName}ResourceImpl
 									Page<Permission> permissionsPage =
 										<#if getPermissionsPageJavaMethodSignature?has_content>
 											${getPermissionsPageJavaMethodSignature.methodName}(
-												<#if properties?keys?seq_contains("id")>
-													${httpMethod}${schemaName}.getId()
-												<#elseif properties?keys?seq_contains(schemaVarName + "Id")>
-													${httpMethod}${schemaName}.get${schemaVarName}Id()
+												<#if freeMarkerTool.hasPathParameter(getPermissionsPageJavaMethodSignature, schemaVarName + "ExternalReferenceCode")>
+													${httpMethod}${schemaName}.getExternalReferenceCode()
 												<#else>
-													${schemaVarName}Id
+													<#if properties?keys?seq_contains("id")>
+														${httpMethod}${schemaName}.getId()
+													<#elseif properties?keys?seq_contains(schemaVarName + "Id")>
+														${httpMethod}${schemaName}.get${schemaVarName}Id()
+													<#else>
+														${schemaVarName}Id
+													</#if>
 												</#if>
 										<#elseif getParentPermissionsPageJavaMethodSignature?has_content>
 											${getParentPermissionsPageJavaMethodSignature.methodName}(${parentSchemaName?uncap_first}ExternalReferenceCode, ${httpMethod}${schemaName}.getExternalReferenceCode()
@@ -317,12 +325,16 @@ public abstract class Base${schemaName}ResourceImpl
 						Page<Permission> permissionsPage =
 							<#if putPermissionsPageJavaMethodSignature?has_content>
 								${putPermissionsPageJavaMethodSignature.methodName}(
-									<#if properties?keys?seq_contains("id")>
-										${httpMethod}${schemaName}.getId()
-									<#elseif properties?keys?seq_contains(schemaVarName + "Id")>
-										${httpMethod}${schemaName}.get${schemaVarName}Id()
+									<#if freeMarkerTool.hasPathParameter(putPermissionsPageJavaMethodSignature, schemaVarName + "ExternalReferenceCode")>
+										${httpMethod}${schemaName}.getExternalReferenceCode()
 									<#else>
-										${schemaVarName}Id
+										<#if properties?keys?seq_contains("id")>
+											${httpMethod}${schemaName}.getId()
+										<#elseif properties?keys?seq_contains(schemaVarName + "Id")>
+											${httpMethod}${schemaName}.get${schemaVarName}Id()
+										<#else>
+											${schemaVarName}Id
+										</#if>
 									</#if>
 							<#elseif putParentPermissionsPageJavaMethodSignature?has_content>
 								${putParentPermissionsPageJavaMethodSignature.methodName}(${parentSchemaName?uncap_first}ExternalReferenceCode, ${httpMethod}${schemaName}.getExternalReferenceCode()
@@ -1926,10 +1938,8 @@ public abstract class Base${schemaName}ResourceImpl
 							description = "${stringUtil.upperCaseFirstLetter(schemaName)}", format = "binary", type = "string"
 						)
 						public String ${schemaName};
-				   <#elseif stringUtil.equals(propertySchema.type, "array") && propertySchema.items.reference??>
-						public ${freeMarkerTool.getReferenceName(propertySchema.items.reference)}[] ${schemaName};
 					<#else>
-						public ${stringUtil.upperCaseFirstLetter(schemaName)} ${schemaName};
+						public ${freeMarkerTool.getPropertyType(configYAML, openAPIYAML, propertySchema, schemaName)} ${schemaName};
 					</#if>
 				</#list>
 

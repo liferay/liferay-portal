@@ -5300,10 +5300,9 @@ public class ObjectEntryLocalServiceImpl
 		Map<String, Serializable> values) {
 
 		values.put(columnName + "i18n", (Serializable)localizedValues);
-		values.putIfAbsent(
+		values.put(
 			StringUtil.removeLast(columnName, StringPool.UNDERLINE),
-			GetterUtil.get(
-				localizedValues.get(defaultLanguageId), StringPool.BLANK));
+			localizedValues.getOrDefault(defaultLanguageId, StringPool.BLANK));
 	}
 
 	private void _putObjectFilterParser(

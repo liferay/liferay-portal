@@ -520,3 +520,4 @@ create unique index IX_6D62D29A on WorkflowDefinitionLink (groupId, uuid_[$COLUM
 create index IX_336A4F02 on WorkflowDefinitionLink (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_AC22B613 on WorkflowInstanceLink (companyId, classNameId, groupId, classPK);
+create unique index IX_BA3974B5 on WorkflowInstanceLink (workflowInstanceId, ctCollectionId);

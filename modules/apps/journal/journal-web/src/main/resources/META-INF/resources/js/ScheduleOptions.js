@@ -86,7 +86,7 @@ export default function ScheduleOptions({
 						`${Liferay.Language.get('december')}`,
 					]}
 					onChange={setDisplayDate}
-					placeholder="YYYY-MM-DD HH:mm"
+					placeholder={Liferay.Language.get('yyyy-mm-dd-hh-mm')}
 					required
 					time
 					timezone={timeZone.name}

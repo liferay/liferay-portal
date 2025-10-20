@@ -18,6 +18,7 @@ import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.definition.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.exception.DuplicateObjectActionExternalReferenceCodeException;
 import com.liferay.object.exception.LockedObjectActionException;
@@ -43,6 +44,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.base.ObjectActionLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -332,12 +334,24 @@ public class ObjectActionLocalServiceImpl
 	public void deleteObjectActions(long objectDefinitionId)
 		throws PortalException {
 
-		for (ObjectAction objectAction :
-				objectActionPersistence.findByObjectDefinitionId(
-					objectDefinitionId)) {
+		try (SafeCloseable safeCloseable =
+				ObjectDefinitionThreadLocal.
+					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
 
-			objectActionLocalService.deleteObjectAction(objectAction);
+			for (ObjectAction objectAction :
+					objectActionPersistence.findByObjectDefinitionId(
+						objectDefinitionId)) {
+
+				objectActionLocalService.deleteObjectAction(objectAction);
+			}
 		}
+	}
+
+	@Override
+	public ObjectAction fetchObjectAction(
+		long objectDefinitionId, String name) {
+
+		return objectActionPersistence.fetchByODI_N(objectDefinitionId, name);
 	}
 
 	@Override

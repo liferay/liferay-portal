@@ -153,7 +153,7 @@ info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
         'com.liferay.exportimport.report.rest', and version '1.0.0'.. A Java client JAR is available for use with the
-        group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.2'."
+        group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.3'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

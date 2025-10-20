@@ -165,11 +165,11 @@ public class ObjectEntryRelatedObjectsResourceImpl
 					_objectDefinition.getStorageType()));
 
 		return defaultObjectEntryManager.getRelatedObjectEntry(
-			_getDTOConverterContext(null), currentExternalReferenceCode,
+			_getDTOConverterContext(null), relatedExternalReferenceCode,
 			_objectRelationshipLocalService.getObjectRelationship(
 				_objectDefinition.getObjectDefinitionId(),
 				objectRelationshipName),
-			relatedExternalReferenceCode, null);
+			currentExternalReferenceCode, null);
 	}
 
 	@Override
@@ -274,11 +274,11 @@ public class ObjectEntryRelatedObjectsResourceImpl
 					_objectDefinition.getStorageType()));
 
 		return defaultObjectEntryManager.getRelatedObjectEntry(
-			_getDTOConverterContext(null), currentExternalReferenceCode,
+			_getDTOConverterContext(null), relatedExternalReferenceCode,
 			_objectRelationshipLocalService.getObjectRelationship(
 				_objectDefinition.getObjectDefinitionId(),
 				objectRelationshipName),
-			relatedExternalReferenceCode, scopeKey);
+			currentExternalReferenceCode, scopeKey);
 	}
 
 	@Override

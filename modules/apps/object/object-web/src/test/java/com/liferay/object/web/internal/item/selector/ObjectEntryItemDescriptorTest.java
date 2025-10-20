@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -191,7 +192,7 @@ public class ObjectEntryItemDescriptorTest {
 		);
 
 		Mockito.when(
-			_objectEntry.getTitleValue()
+			_objectEntry.getTitleValue("en_US", true)
 		).thenReturn(
 			title
 		);
@@ -206,6 +207,12 @@ public class ObjectEntryItemDescriptorTest {
 	}
 
 	private void _setUpThemeDisplay(long groupId) throws Exception {
+		Mockito.when(
+			_themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
 		Mockito.when(
 			_themeDisplay.getScopeGroupId()
 		).thenReturn(

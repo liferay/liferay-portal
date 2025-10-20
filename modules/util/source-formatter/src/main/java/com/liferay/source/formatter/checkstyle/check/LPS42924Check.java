@@ -28,10 +28,10 @@ public class LPS42924Check extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "PortalUtil", "getClassNameId");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			log(methodCallDetailAST, _MSG_LPS_42924);
 		}
 	}

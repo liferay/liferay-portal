@@ -63,7 +63,7 @@ export function PrimaryRecipient({
 				<ClayForm.Group className="ml-1 row">
 					<div className="mr-2">
 						<ClayCheckbox
-							checked={recipient.singleRecipient}
+							checked={recipient.singleRecipient ?? true}
 							disabled={values.system}
 							label={Liferay.Language.get(
 								'send-emails-separately'

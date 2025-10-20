@@ -15,7 +15,6 @@ public class LPS_196599 implements CommerceOrderValidator {
 			Locale locale, CommerceOrder commerceOrder, CPInstance cpInstance,
 			int quantity)
 		throws PortalException {
-
 	}
 
 }

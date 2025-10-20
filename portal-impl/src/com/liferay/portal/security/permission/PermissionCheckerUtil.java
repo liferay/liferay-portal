@@ -36,11 +36,11 @@ public class PermissionCheckerUtil {
 				PermissionThreadLocal.getPermissionChecker();
 
 			if (permissionChecker == null) {
-				permissionChecker = new AdvancedPermissionChecker();
+				permissionChecker = new AdvancedPermissionChecker(
+					_roleContributors);
 			}
 
-			permissionChecker.init(
-				user, _roleContributors.toArray(new RoleContributor[0]));
+			permissionChecker.init(user);
 
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 		}

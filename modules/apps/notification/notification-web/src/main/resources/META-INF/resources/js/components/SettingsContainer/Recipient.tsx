@@ -81,7 +81,6 @@ export function Recipient({
 			type: 'role',
 		},
 		{
-			featureFlag: 'LPD-50091',
 			label: Liferay.Language.get('user-group'),
 			name: 'userGroupName',
 			options: userGroupsList,
@@ -164,7 +163,7 @@ export function Recipient({
 								Liferay.Language.get(
 									'use-terms-to-configure-recipients-x'
 								),
-								'[%OBJECT_ENTRY_ASSIGNEE%]'
+								'[%CURRENT_USER_EMAIL_ADDRESS%]'
 							)}
 							id={id}
 							label={label}
@@ -226,7 +225,6 @@ export function Recipient({
 
 				{RECIPIENT_TYPE_DETAILS.map(
 					({
-						featureFlag,
 						name,
 						options,
 						placeholder,
@@ -234,8 +232,7 @@ export function Recipient({
 						setOptions,
 						type,
 					}) =>
-						recipientType === type &&
-						(!featureFlag || Liferay.FeatureFlags[featureFlag]) && (
+						recipientType === type && (
 							<RecipientMultipleSelect
 								disabled={disabled}
 								error={error}

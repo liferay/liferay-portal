@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import com.liferay.batch.engine.BatchEngineTaskContentType;
 import com.liferay.batch.engine.action.ItemReaderPostAction;
+import com.liferay.batch.engine.exception.BatchEngineImportTaskExecutorException;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -52,7 +53,113 @@ public class BatchEngineImportTaskItemReaderUtil {
 			BatchEngineImportTask batchEngineImportTask, Class<T> itemClass,
 			Map<String, Object> fieldNameValueMap,
 			List<ItemReaderPostAction> itemReaderPostActions)
-		throws ReflectiveOperationException {
+		throws BatchEngineImportTaskExecutorException {
+
+		T item = null;
+
+		try {
+			item = _convertValue(
+				batchEngineImportTask, itemClass, fieldNameValueMap,
+				itemReaderPostActions);
+		}
+		catch (Exception exception) {
+			throw new BatchEngineImportTaskExecutorException(item, exception);
+		}
+
+		return item;
+	}
+
+	public static Map<String, Object> mapFieldNames(
+		Map<String, ? extends Serializable> fieldNameMappingMap,
+		Map<String, Object> fieldNameValueMap) {
+
+		if ((fieldNameMappingMap == null) || fieldNameMappingMap.isEmpty()) {
+			return fieldNameValueMap;
+		}
+
+		Map<String, Object> targetFieldNameValueMap = new HashMap<>();
+
+		for (Map.Entry<String, Object> entry : fieldNameValueMap.entrySet()) {
+			String targetFieldName = (String)fieldNameMappingMap.get(
+				entry.getKey());
+
+			if (Validator.isNotNull(targetFieldName)) {
+				Object object = targetFieldNameValueMap.get(targetFieldName);
+
+				if ((object != null) && (object instanceof Map)) {
+					Map<?, ?> map = (Map)object;
+
+					map.putAll((Map)entry.getValue());
+				}
+				else {
+					targetFieldNameValueMap.put(
+						targetFieldName, entry.getValue());
+				}
+
+				continue;
+			}
+
+			String[] fieldNameParts = StringUtil.split(
+				entry.getKey(), StringPool.PERIOD);
+
+			targetFieldName = (String)fieldNameMappingMap.get(
+				fieldNameParts[0]);
+
+			if (Validator.isNull(targetFieldName)) {
+				continue;
+			}
+
+			Matcher multiselectPicklistMatcher =
+				_multiselectPicklistPattern.matcher(fieldNameParts[1]);
+
+			if (multiselectPicklistMatcher.matches()) {
+				if (fieldNameParts[1].startsWith("name_")) {
+					continue;
+				}
+
+				List<Object> list =
+					(List<Object>)targetFieldNameValueMap.computeIfAbsent(
+						targetFieldName, key -> new ArrayList<>());
+
+				list.add(entry.getValue());
+
+				continue;
+			}
+
+			Map<String, Object> map =
+				(Map<String, Object>)targetFieldNameValueMap.computeIfAbsent(
+					targetFieldName, key -> new HashMap<>());
+
+			for (int i = 1; i < fieldNameParts.length; i++) {
+				if ((fieldNameParts.length - 1) > i) {
+					map = (Map<String, Object>)map.computeIfAbsent(
+						fieldNameParts[i], key -> new HashMap<>());
+
+					continue;
+				}
+
+				map.put(fieldNameParts[i], entry.getValue());
+			}
+		}
+
+		return targetFieldNameValueMap;
+	}
+
+	public abstract static class CreatorMixin {
+
+		@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+		public String externalReferenceCode;
+
+		@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+		public Long id;
+
+	}
+
+	private static <T> T _convertValue(
+			BatchEngineImportTask batchEngineImportTask, Class<T> itemClass,
+			Map<String, Object> fieldNameValueMap,
+			List<ItemReaderPostAction> itemReaderPostActions)
+		throws Exception {
 
 		Map<String, Serializable> extendedProperties = new HashMap<>();
 
@@ -156,92 +263,6 @@ public class BatchEngineImportTaskItemReaderUtil {
 		return item;
 	}
 
-	public static Map<String, Object> mapFieldNames(
-		Map<String, ? extends Serializable> fieldNameMappingMap,
-		Map<String, Object> fieldNameValueMap) {
-
-		if ((fieldNameMappingMap == null) || fieldNameMappingMap.isEmpty()) {
-			return fieldNameValueMap;
-		}
-
-		Map<String, Object> targetFieldNameValueMap = new HashMap<>();
-
-		for (Map.Entry<String, Object> entry : fieldNameValueMap.entrySet()) {
-			String targetFieldName = (String)fieldNameMappingMap.get(
-				entry.getKey());
-
-			if (Validator.isNotNull(targetFieldName)) {
-				Object object = targetFieldNameValueMap.get(targetFieldName);
-
-				if ((object != null) && (object instanceof Map)) {
-					Map<?, ?> map = (Map)object;
-
-					map.putAll((Map)entry.getValue());
-				}
-				else {
-					targetFieldNameValueMap.put(
-						targetFieldName, entry.getValue());
-				}
-
-				continue;
-			}
-
-			String[] fieldNameParts = StringUtil.split(
-				entry.getKey(), StringPool.PERIOD);
-
-			targetFieldName = (String)fieldNameMappingMap.get(
-				fieldNameParts[0]);
-
-			if (Validator.isNull(targetFieldName)) {
-				continue;
-			}
-
-			Matcher multiselectPicklistMatcher =
-				_multiselectPicklistPattern.matcher(fieldNameParts[1]);
-
-			if (multiselectPicklistMatcher.matches()) {
-				if (fieldNameParts[1].startsWith("name_")) {
-					continue;
-				}
-
-				List<Object> list =
-					(List<Object>)targetFieldNameValueMap.computeIfAbsent(
-						targetFieldName, key -> new ArrayList<>());
-
-				list.add(entry.getValue());
-
-				continue;
-			}
-
-			Map<String, Object> map =
-				(Map<String, Object>)targetFieldNameValueMap.computeIfAbsent(
-					targetFieldName, key -> new HashMap<>());
-
-			for (int i = 1; i < fieldNameParts.length; i++) {
-				if ((fieldNameParts.length - 1) > i) {
-					map = (Map<String, Object>)map.computeIfAbsent(
-						fieldNameParts[i], key -> new HashMap<>());
-
-					continue;
-				}
-
-				map.put(fieldNameParts[i], entry.getValue());
-			}
-		}
-
-		return targetFieldNameValueMap;
-	}
-
-	public abstract static class CreatorMixin {
-
-		@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-		public String externalReferenceCode;
-
-		@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-		public Long id;
-
-	}
-
 	private static Set<String> _getBatchRestrictFields(
 		BatchEngineImportTask batchEngineImportTask) {
 
@@ -265,7 +286,7 @@ public class BatchEngineImportTaskItemReaderUtil {
 	private static ObjectMapper _getObjectMapper(
 			BatchEngineImportTask batchEngineImportTask, Field field,
 			Object value)
-		throws IllegalAccessException, InstantiationException {
+		throws Exception {
 
 		if (StringUtil.equals(
 				batchEngineImportTask.getParameterValue(

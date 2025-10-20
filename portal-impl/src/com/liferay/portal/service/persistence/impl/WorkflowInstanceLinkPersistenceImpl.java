@@ -84,6 +84,189 @@ public class WorkflowInstanceLinkPersistenceImpl
 	private FinderPath _finderPathWithPaginationFindAll;
 	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathFetchByWorkflowInstanceId;
+
+	/**
+	 * Returns the workflow instance link where workflowInstanceId = &#63; or throws a <code>NoSuchWorkflowInstanceLinkException</code> if it could not be found.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the matching workflow instance link
+	 * @throws NoSuchWorkflowInstanceLinkException if a matching workflow instance link could not be found
+	 */
+	@Override
+	public WorkflowInstanceLink findByWorkflowInstanceId(
+			long workflowInstanceId)
+		throws NoSuchWorkflowInstanceLinkException {
+
+		WorkflowInstanceLink workflowInstanceLink = fetchByWorkflowInstanceId(
+			workflowInstanceId);
+
+		if (workflowInstanceLink == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("workflowInstanceId=");
+			sb.append(workflowInstanceId);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchWorkflowInstanceLinkException(sb.toString());
+		}
+
+		return workflowInstanceLink;
+	}
+
+	/**
+	 * Returns the workflow instance link where workflowInstanceId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the matching workflow instance link, or <code>null</code> if a matching workflow instance link could not be found
+	 */
+	@Override
+	public WorkflowInstanceLink fetchByWorkflowInstanceId(
+		long workflowInstanceId) {
+
+		return fetchByWorkflowInstanceId(workflowInstanceId, true);
+	}
+
+	/**
+	 * Returns the workflow instance link where workflowInstanceId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching workflow instance link, or <code>null</code> if a matching workflow instance link could not be found
+	 */
+	@Override
+	public WorkflowInstanceLink fetchByWorkflowInstanceId(
+		long workflowInstanceId, boolean useFinderCache) {
+
+		try (SafeCloseable safeCloseable =
+				CTPersistenceHelperUtil.setCTCollectionIdWithSafeCloseable(
+					WorkflowInstanceLink.class)) {
+
+			Object[] finderArgs = null;
+
+			if (useFinderCache) {
+				finderArgs = new Object[] {workflowInstanceId};
+			}
+
+			Object result = null;
+
+			if (useFinderCache) {
+				result = FinderCacheUtil.getResult(
+					_finderPathFetchByWorkflowInstanceId, finderArgs, this);
+			}
+
+			if (result instanceof WorkflowInstanceLink) {
+				WorkflowInstanceLink workflowInstanceLink =
+					(WorkflowInstanceLink)result;
+
+				if (workflowInstanceId !=
+						workflowInstanceLink.getWorkflowInstanceId()) {
+
+					result = null;
+				}
+			}
+
+			if (result == null) {
+				StringBundler sb = new StringBundler(3);
+
+				sb.append(_SQL_SELECT_WORKFLOWINSTANCELINK_WHERE);
+
+				sb.append(
+					_FINDER_COLUMN_WORKFLOWINSTANCEID_WORKFLOWINSTANCEID_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					queryPos.add(workflowInstanceId);
+
+					List<WorkflowInstanceLink> list = query.list();
+
+					if (list.isEmpty()) {
+						if (useFinderCache) {
+							FinderCacheUtil.putResult(
+								_finderPathFetchByWorkflowInstanceId,
+								finderArgs, list);
+						}
+					}
+					else {
+						WorkflowInstanceLink workflowInstanceLink = list.get(0);
+
+						result = workflowInstanceLink;
+
+						cacheResult(workflowInstanceLink);
+					}
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			if (result instanceof List<?>) {
+				return null;
+			}
+			else {
+				return (WorkflowInstanceLink)result;
+			}
+		}
+	}
+
+	/**
+	 * Removes the workflow instance link where workflowInstanceId = &#63; from the database.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the workflow instance link that was removed
+	 */
+	@Override
+	public WorkflowInstanceLink removeByWorkflowInstanceId(
+			long workflowInstanceId)
+		throws NoSuchWorkflowInstanceLinkException {
+
+		WorkflowInstanceLink workflowInstanceLink = findByWorkflowInstanceId(
+			workflowInstanceId);
+
+		return remove(workflowInstanceLink);
+	}
+
+	/**
+	 * Returns the number of workflow instance links where workflowInstanceId = &#63;.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the number of matching workflow instance links
+	 */
+	@Override
+	public int countByWorkflowInstanceId(long workflowInstanceId) {
+		WorkflowInstanceLink workflowInstanceLink = fetchByWorkflowInstanceId(
+			workflowInstanceId);
+
+		if (workflowInstanceLink == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String
+		_FINDER_COLUMN_WORKFLOWINSTANCEID_WORKFLOWINSTANCEID_2 =
+			"workflowInstanceLink.workflowInstanceId = ?";
+
 	private FinderPath _finderPathWithPaginationFindByC_C;
 	private FinderPath _finderPathWithoutPaginationFindByC_C;
 	private FinderPath _finderPathCountByC_C;
@@ -1899,6 +2082,11 @@ public class WorkflowInstanceLinkPersistenceImpl
 			EntityCacheUtil.putResult(
 				WorkflowInstanceLinkImpl.class,
 				workflowInstanceLink.getPrimaryKey(), workflowInstanceLink);
+
+			FinderCacheUtil.putResult(
+				_finderPathFetchByWorkflowInstanceId,
+				new Object[] {workflowInstanceLink.getWorkflowInstanceId()},
+				workflowInstanceLink);
 		}
 	}
 
@@ -1980,6 +2168,23 @@ public class WorkflowInstanceLinkPersistenceImpl
 		for (Serializable primaryKey : primaryKeys) {
 			EntityCacheUtil.removeResult(
 				WorkflowInstanceLinkImpl.class, primaryKey);
+		}
+	}
+
+	protected void cacheUniqueFindersCache(
+		WorkflowInstanceLinkModelImpl workflowInstanceLinkModelImpl) {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					workflowInstanceLinkModelImpl.getCtCollectionId())) {
+
+			Object[] args = new Object[] {
+				workflowInstanceLinkModelImpl.getWorkflowInstanceId()
+			};
+
+			FinderCacheUtil.putResult(
+				_finderPathFetchByWorkflowInstanceId, args,
+				workflowInstanceLinkModelImpl);
 		}
 	}
 
@@ -2173,6 +2378,8 @@ public class WorkflowInstanceLinkPersistenceImpl
 		EntityCacheUtil.putResult(
 			WorkflowInstanceLinkImpl.class, workflowInstanceLinkModelImpl,
 			false, true);
+
+		cacheUniqueFindersCache(workflowInstanceLinkModelImpl);
 
 		if (isNew) {
 			workflowInstanceLink.setNew(false);
@@ -2686,6 +2893,8 @@ public class WorkflowInstanceLinkPersistenceImpl
 			Collections.singleton("workflowInstanceLinkId"));
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.STRICT, ctStrictColumnNames);
+
+		_uniqueIndexColumnNames.add(new String[] {"workflowInstanceId"});
 	}
 
 	/**
@@ -2706,6 +2915,11 @@ public class WorkflowInstanceLinkPersistenceImpl
 		_finderPathCountAll = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0], new String[0], false);
+
+		_finderPathFetchByWorkflowInstanceId = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByWorkflowInstanceId",
+			new String[] {Long.class.getName()},
+			new String[] {"workflowInstanceId"}, true);
 
 		_finderPathWithPaginationFindByC_C = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_C",

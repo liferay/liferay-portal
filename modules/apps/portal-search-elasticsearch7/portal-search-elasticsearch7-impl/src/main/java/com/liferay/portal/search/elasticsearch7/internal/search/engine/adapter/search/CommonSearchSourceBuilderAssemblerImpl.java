@@ -502,7 +502,11 @@ public class CommonSearchSourceBuilderAssemblerImpl
 		SearchSourceBuilder searchSourceBuilder,
 		BaseSearchRequest baseSearchRequest) {
 
-		if (baseSearchRequest.getTrackTotalHits() != null) {
+		if (baseSearchRequest.getTrackTotalHitsLimit() != null) {
+			searchSourceBuilder.trackTotalHitsUpTo(
+				baseSearchRequest.getTrackTotalHitsLimit());
+		}
+		else if (baseSearchRequest.getTrackTotalHits() != null) {
 			searchSourceBuilder.trackTotalHits(
 				baseSearchRequest.getTrackTotalHits());
 		}

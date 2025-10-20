@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Project Templates
 Bundle-SymbolicName: com.liferay.project.templates
-Bundle-Version: 6.0.10
+Bundle-Version: 6.0.11
 Export-Package: com.liferay.project.templates
 Main-Class: com.liferay.project.templates.ProjectTemplates
 Private-Package:\

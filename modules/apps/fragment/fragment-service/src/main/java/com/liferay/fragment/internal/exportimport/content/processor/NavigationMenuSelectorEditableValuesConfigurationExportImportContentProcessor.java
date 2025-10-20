@@ -10,9 +10,12 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
@@ -54,21 +57,8 @@ public class
 			boolean exportReferencedContent)
 		throws Exception {
 
-		long siteNavigationMenuId = configurationValueJSONObject.getLong(
-			"siteNavigationMenuId");
-
-		StagedModel stagedModel = null;
-
-		if (siteNavigationMenuId > 0) {
-			stagedModel =
-				_siteNavigationMenuLocalService.fetchSiteNavigationMenu(
-					siteNavigationMenuId);
-		}
-		else {
-			stagedModel = _layoutLocalService.fetchLayout(
-				configurationValueJSONObject.getLong(
-					"parentSiteNavigationMenuItemId"));
-		}
+		StagedModel stagedModel = _getStagedModel(
+			configurationValueJSONObject, portletDataContext);
 
 		if (stagedModel == null) {
 			return;
@@ -132,8 +122,78 @@ public class
 		}
 	}
 
+	private Layout _fetchLayout(
+		String externalReferenceCode, long groupId, long plid) {
+
+		if (Validator.isNull(externalReferenceCode) && (plid == 0)) {
+			return null;
+		}
+
+		if (plid > 0) {
+			return _layoutLocalService.fetchLayout(plid);
+		}
+
+		return _layoutLocalService.fetchLayoutByExternalReferenceCode(
+			externalReferenceCode, groupId);
+	}
+
+	private long _getGroupId(
+		String externalReferenceCode, PortletDataContext portletDataContext) {
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return portletDataContext.getScopeGroupId();
+		}
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, portletDataContext.getCompanyId());
+
+		if (group == null) {
+			return portletDataContext.getScopeGroupId();
+		}
+
+		return group.getGroupId();
+	}
+
+	private StagedModel _getStagedModel(
+		JSONObject jsonObject, PortletDataContext portletDataContext) {
+
+		String siteNavigationMenuExternalReferenceCode = jsonObject.getString(
+			"siteNavigationMenuExternalReferenceCode");
+		long siteNavigationMenuId = jsonObject.getLong("siteNavigationMenuId");
+
+		if (Validator.isNull(siteNavigationMenuExternalReferenceCode) &&
+			(siteNavigationMenuId == 0)) {
+
+			return _fetchLayout(
+				jsonObject.getString(
+					"parentSiteNavigationMenuItemExternalReferenceCode"),
+				portletDataContext.getScopeGroupId(),
+				jsonObject.getLong("parentSiteNavigationMenuItemId"));
+		}
+
+		if (siteNavigationMenuId > 0) {
+			return _siteNavigationMenuLocalService.fetchSiteNavigationMenu(
+				siteNavigationMenuId);
+		}
+
+		if (Validator.isNotNull(siteNavigationMenuExternalReferenceCode)) {
+			return _siteNavigationMenuLocalService.
+				fetchSiteNavigationMenuByExternalReferenceCode(
+					siteNavigationMenuExternalReferenceCode,
+					_getGroupId(
+						jsonObject.getString(
+							"siteNavigationMenuScopeExternalReferenceCode"),
+						portletDataContext));
+		}
+
+		return null;
+	}
+
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

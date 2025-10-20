@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<suppressions>
+	<checkstyle>
+		<suppress checks="ResourceTestInjectionCheck" files="headless-admin-site/headless-admin-site-test/src/testIntegration/java/com/liferay/headless/admin/site/resource/v1_0/test/DisplayPageTemplateFolderResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="headless-admin-site/headless-admin-site-test/src/testIntegration/java/com/liferay/headless/admin/site/resource/v1_0/test/DisplayPageTemplateResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="headless-admin-site/headless-admin-site-test/src/testIntegration/java/com/liferay/headless/admin/site/resource/v1_0/test/PageTemplateResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="headless-object/headless-object-test/src/testIntegration/java/com/liferay/headless/object/resource/v1_0/test/ObjectEntryFolderResourceTest\.java" />
+	</checkstyle>
+</suppressions>

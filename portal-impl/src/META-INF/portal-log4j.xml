@@ -49,7 +49,6 @@
 		<Logger level="INFO" name="com.liferay.portal.dao.db" />
 		<Logger level="INFO" name="com.liferay.portal.dao.db.BaseDB" />
 		<Logger level="INFO" name="com.liferay.portal.dao.init.DBInitUtil" />
-		<Logger level="INFO" name="com.liferay.portal.dao.jdbc.DataSourceFactoryImpl" />
 		<Logger level="ERROR" name="com.liferay.portal.dao.orm.common.SQLTransformer" />
 		<Logger level="ERROR" name="com.liferay.portal.dao.orm.hibernate.SessionFactoryImpl" />
 		<Logger level="FATAL" name="com.liferay.portal.dao.orm.hibernate.VerifySessionFactoryWrapper" />
@@ -79,6 +78,7 @@
 		<Logger level="WARN" name="com.liferay.portal.kernel.cluster" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.dao.db.BaseDBProcess" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.dao.db.DuplicateUniqueFinderRowsCleaner" />
+		<Logger level="INFO" name="com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.dao.orm.QueryUtil" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.deploy" />
@@ -174,7 +174,6 @@
 		<Logger level="ERROR" name="com.liferay.portal.util" />
 		<Logger level="ERROR" name="com.liferay.portal.util.EntityResolver" />
 		<Logger level="WARN" name="com.liferay.portal.util.FileImpl" />
-		<Logger level="INFO" name="com.liferay.portal.util.JarUtil" />
 		<Logger level="DEBUG" name="com.liferay.portal.util.MaintenanceUtil" />
 		<Logger level="INFO" name="com.liferay.portal.util.PortalImpl" />
 		<Logger level="ERROR" name="com.liferay.portal.util.PortalInstances" />

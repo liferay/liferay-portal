@@ -78,6 +78,7 @@ const AccountSelection: React.FC<AccountSelectionProps> = ({
 							selectedAccount?.externalReferenceCode ===
 							accountInfo.externalReferenceCode,
 						title: accountInfo.name,
+						type: accountInfo.type,
 						value: accountInfo,
 					};
 				})
@@ -116,7 +117,14 @@ const AccountSelection: React.FC<AccountSelectionProps> = ({
 					contentList={accounts.map((account) => ({
 						...account,
 						selected: selectedAccount?.id === account?.id,
-						title: <span className="h5">{account.title}</span>,
+						title: (
+							<div className="pt-2">
+								<p className="h5 mb-1">{account.title}</p>
+								<p className="h5 mb-0 text-capitalize text-muted">
+									{account.type}
+								</p>
+							</div>
+						),
 					}))}
 					leftRadio
 					onSelect={handleSelectAccount}

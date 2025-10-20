@@ -876,6 +876,38 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro assignAssetLibraryRoleCMS(roleTitle = null, userScreenName = null) {
+		UserNavigator.gotoUser(userScreenName = ${userScreenName});
+
+		UserNavigator.gotoRoles();
+
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_DEPOT_ROLE",
+			value1 = "This user is not assigned any asset library or space roles.");
+
+		AssertClick(
+			key_roleType = "DepotRole",
+			locator1 = "UsersAndOrganizationsEditUser#ROLES_SELECT_LINK",
+			value1 = "SELECT");
+
+		SelectFrame(locator1 = "IFrame#SELECT_DEPOT_ROLE");
+
+		AssertClick(
+			locator1 = "UsersAndOrganizationsEditUser#DEPOT_ROLES_SELECT_BUTTON",
+			roleTitle = ${roleTitle},
+			value1 = "Choose");
+
+		SelectFrame(value1 = "relative=top");
+
+		AssertTextEquals(
+			key_roleTitle = ${roleTitle},
+			locator1 = "UsersAndOrganizationsEditUser#DEPOT_ROLES_TITLE",
+			value1 = ${roleTitle});
+
+		PortletEntry.save();
+	}
+
+	@summary = "Default summary"
 	macro assignOrgRoleCP(roleTitle = null, userScreenName = null) {
 		UserNavigator.gotoUser(userScreenName = ${userScreenName});
 

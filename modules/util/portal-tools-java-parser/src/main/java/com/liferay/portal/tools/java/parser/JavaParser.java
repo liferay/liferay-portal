@@ -1172,32 +1172,32 @@ public class JavaParser {
 			}
 		}
 		else if (detailAST.getType() == TokenTypes.LITERAL_SWITCH) {
-			List<DetailAST> caseGroupDetailASTList =
+			List<DetailAST> caseGroupDetailASTs =
 				DetailASTUtil.getAllChildTokens(
 					detailAST, false, TokenTypes.CASE_GROUP);
 
-			for (DetailAST caseGroupDetailAST : caseGroupDetailASTList) {
+			for (DetailAST caseGroupDetailAST : caseGroupDetailASTs) {
 				parsedJavaClass = _parseDetailAST(
 					parsedJavaClass, caseGroupDetailAST, fileContents,
 					maxLineLength);
 			}
 
-			List<DetailAST> switchRuleDetailASTList =
+			List<DetailAST> switchRuleDetailASTs =
 				DetailASTUtil.getAllChildTokens(
 					detailAST, false, TokenTypes.SWITCH_RULE);
 
-			for (DetailAST switchRuleDetailAST : switchRuleDetailASTList) {
+			for (DetailAST switchRuleDetailAST : switchRuleDetailASTs) {
 				parsedJavaClass = _parseDetailAST(
 					parsedJavaClass, switchRuleDetailAST, fileContents,
 					maxLineLength);
 			}
 		}
 		else if (detailAST.getType() == TokenTypes.LITERAL_TRY) {
-			List<DetailAST> literalCatchDetailASTList =
+			List<DetailAST> literalCatchDetailASTs =
 				DetailASTUtil.getAllChildTokens(
 					detailAST, false, TokenTypes.LITERAL_CATCH);
 
-			for (DetailAST literalCatchDetailAST : literalCatchDetailASTList) {
+			for (DetailAST literalCatchDetailAST : literalCatchDetailASTs) {
 				parsedJavaClass = _parseDetailAST(
 					parsedJavaClass, literalCatchDetailAST, fileContents,
 					maxLineLength);

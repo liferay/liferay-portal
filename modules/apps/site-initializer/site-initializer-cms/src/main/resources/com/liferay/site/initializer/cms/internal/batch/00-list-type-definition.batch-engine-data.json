@@ -13,7 +13,7 @@
 	},
 	"items": [
 		{
-			"externalReferenceCode": "L_BULK_ACTION_EXECUTION_STATUSES",
+			"externalReferenceCode": "L_CMS_BULK_ACTION_EXECUTION_STATUSES",
 			"listTypeEntries": [
 				{
 					"externalReferenceCode": "COMPLETED",

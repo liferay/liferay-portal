@@ -35,9 +35,9 @@ public class AuthorizeRestController extends BaseRestController {
 		return new ResponseEntity<>(
 			new JSONObject(
 			).put(
-				"redirectURL", ""
-			).put(
 				"paymentStatus", 2
+			).put(
+				"redirectURL", ""
 			).toString(),
 			HttpStatus.OK);
 	}

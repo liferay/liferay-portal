@@ -68,16 +68,18 @@ public abstract class PageSettings implements Cloneable, Serializable {
 
 	protected Boolean hiddenFromNavigation;
 
-	public NavigationSettings getNavigationSettings() {
+	public SitePageNavigationSettings getNavigationSettings() {
 		return navigationSettings;
 	}
 
-	public void setNavigationSettings(NavigationSettings navigationSettings) {
+	public void setNavigationSettings(
+		SitePageNavigationSettings navigationSettings) {
+
 		this.navigationSettings = navigationSettings;
 	}
 
 	public void setNavigationSettings(
-		UnsafeSupplier<NavigationSettings, Exception>
+		UnsafeSupplier<SitePageNavigationSettings, Exception>
 			navigationSettingsUnsafeSupplier) {
 
 		try {
@@ -88,7 +90,7 @@ public abstract class PageSettings implements Cloneable, Serializable {
 		}
 	}
 
-	protected NavigationSettings navigationSettings;
+	protected SitePageNavigationSettings navigationSettings;
 
 	public OpenGraphSettings getOpenGraphSettings() {
 		return openGraphSettings;
@@ -132,27 +134,6 @@ public abstract class PageSettings implements Cloneable, Serializable {
 	}
 
 	protected Integer priority;
-
-	public String getQueryString() {
-		return queryString;
-	}
-
-	public void setQueryString(String queryString) {
-		this.queryString = queryString;
-	}
-
-	public void setQueryString(
-		UnsafeSupplier<String, Exception> queryStringUnsafeSupplier) {
-
-		try {
-			queryString = queryStringUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String queryString;
 
 	public SEOSettings getSeoSettings() {
 		return seoSettings;

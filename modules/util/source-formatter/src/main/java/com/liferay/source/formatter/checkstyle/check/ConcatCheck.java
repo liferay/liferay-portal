@@ -25,10 +25,10 @@ public class ConcatCheck extends BaseStringConcatenationCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "StringBundler", "concat");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			_checkConcatMethodCall(methodCallDetailAST);
 		}
 	}
@@ -37,11 +37,11 @@ public class ConcatCheck extends BaseStringConcatenationCheck {
 		DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		for (int i = 0; i < exprDetailASTList.size(); i++) {
-			DetailAST exprDetailAST = exprDetailASTList.get(i);
+		for (int i = 0; i < exprDetailASTs.size(); i++) {
+			DetailAST exprDetailAST = exprDetailASTs.get(i);
 
 			DetailAST childDetailAST = exprDetailAST.getFirstChild();
 
@@ -55,8 +55,7 @@ public class ConcatCheck extends BaseStringConcatenationCheck {
 			}
 			else if (childDetailAST.getType() == TokenTypes.STRING_LITERAL) {
 				if (i > 0) {
-					DetailAST previousExprDetailAST = exprDetailASTList.get(
-						i - 1);
+					DetailAST previousExprDetailAST = exprDetailASTs.get(i - 1);
 
 					DetailAST previousChildDetailAST =
 						previousExprDetailAST.getFirstChild();
@@ -73,8 +72,8 @@ public class ConcatCheck extends BaseStringConcatenationCheck {
 					}
 				}
 
-				if (i < (exprDetailASTList.size() - 1)) {
-					DetailAST nextExprDetailAST = exprDetailASTList.get(i + 1);
+				if (i < (exprDetailASTs.size() - 1)) {
+					DetailAST nextExprDetailAST = exprDetailASTs.get(i + 1);
 
 					checkCombineOperand(
 						childDetailAST, nextExprDetailAST.getFirstChild());

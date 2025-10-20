@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.dao.jdbc.util.CallableStatementWrapper;
 import com.liferay.portal.kernel.dao.jdbc.util.ConnectionWrapper;
 import com.liferay.portal.kernel.dao.jdbc.util.PreparedStatementWrapper;
 import com.liferay.portal.kernel.dao.jdbc.util.StatementWrapper;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -339,7 +338,7 @@ public class UpgradeSQLRecorder {
 		if (Validator.isBlank(_upgradeProcessClassName)) {
 			_runningSQLs.add(new RunningSQL(duration, sql));
 		}
-		else if (DBPartition.isPartitionEnabled()) {
+		else if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			_runningSQLs.add(
 				new RunningSQL(
 					duration, sql,

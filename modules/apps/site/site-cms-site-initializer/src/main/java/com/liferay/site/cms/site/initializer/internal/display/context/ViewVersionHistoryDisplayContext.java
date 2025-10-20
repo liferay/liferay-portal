@@ -77,8 +77,8 @@ public class ViewVersionHistoryDisplayContext {
 				_language.get(_httpServletRequest, "view"), null, null, null),
 			new FDSActionDropdownItem(
 				"{actions.restore.href}", "restore", "restore",
-				_language.get(_httpServletRequest, "restore"), "put", "restore",
-				null),
+				_language.get(_httpServletRequest, "restore-version"), "put",
+				"restore", null),
 			new FDSActionDropdownItem(
 				"{actions.expire.href}", "time", "expire",
 				_language.get(_httpServletRequest, "expire"), "post", "expire",

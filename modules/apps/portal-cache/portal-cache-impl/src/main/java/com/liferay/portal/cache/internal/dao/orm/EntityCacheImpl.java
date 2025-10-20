@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.servlet.filters.threadlocal.ThreadLocalFilterThreadLocal;
 
 import java.io.Serializable;
@@ -296,7 +297,9 @@ public class EntityCacheImpl
 			PropsUtil.get(
 				PropsKeys.VALUE_OBJECT_ENTITY_THREAD_LOCAL_CACHE_MAX_SIZE));
 
-		if (!DBPartition.isPartitionEnabled() && (localCacheMaxSize > 0)) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED &&
+			(localCacheMaxSize > 0)) {
+
 			_localCache = new CentralizedThreadLocal<>(
 				EntityCacheImpl.class + "._localCache",
 				() -> new LRUMap<>(localCacheMaxSize));

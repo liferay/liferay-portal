@@ -80,6 +80,10 @@ definition {
 
 		WaitForConsoleTextPresent(value1 = "Enabling huggingFaceInferenceAPI");
 
+		// This pause allows the semantic search form to render after LPD-68429.
+
+		Pause(value1 = 60000);
+
 		Refresh();
 
 		AssertElementPresent(

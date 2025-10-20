@@ -166,11 +166,8 @@ public class ObjectServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"ObjectEntry", "objectEntryId"},
-						{"ObjectField", "objectFieldId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"ObjectEntry", "ObjectField"};
 				}
 
 			});
@@ -230,10 +227,8 @@ public class ObjectServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"ObjectDefinition", "objectDefinitionId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"ObjectDefinition"};
 				}
 
 			});
@@ -280,8 +275,8 @@ public class ObjectServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"ObjectAction", "objectActionId"}};
+				protected String[] getTableNames() {
+					return new String[] {"ObjectAction"};
 				}
 
 			});
@@ -394,10 +389,8 @@ public class ObjectServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"ObjectValidationRule", "objectValidationRuleId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"ObjectValidationRule"};
 				}
 
 			});
@@ -425,10 +418,8 @@ public class ObjectServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"ObjectRelationship", "objectRelationshipId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"ObjectRelationship"};
 				}
 
 			});

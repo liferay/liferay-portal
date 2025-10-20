@@ -37,7 +37,7 @@ public class CKEditor5JSImportMapsContributor
 
 		ESModuleAbsolutePortalURLBuilder esModuleAbsolutePortalURLBuilder =
 			absolutePortalURLBuilder.forESModule(
-				"frontend-editor-ckeditor-web", "exports/ckeditor5.js");
+				"frontend-editor-ckeditor-web", "index.js");
 
 		writer.write("\"ckeditor5\" : \"");
 		writer.write(esModuleAbsolutePortalURLBuilder.build());

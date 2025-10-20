@@ -16,7 +16,6 @@ import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -59,7 +58,6 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerFactory;
 import com.liferay.site.initializer.SiteInitializerRegistry;
-import com.liferay.site.initializer.SiteInitializerSerializer;
 import com.liferay.sites.kernel.util.Sites;
 
 import jakarta.ws.rs.core.Response;
@@ -77,12 +75,14 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Rubén Pulido
+ * @deprecated As of Cavanaugh (7.4.x)
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/site.properties",
 	scope = ServiceScope.PROTOTYPE, service = SiteResource.class
 )
 @CTAware
+@Deprecated
 public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 	@Override
@@ -128,29 +128,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-19870")) {
-			throw new UnsupportedOperationException();
-		}
-
-		Group group = _groupLocalService.getGroupByExternalReferenceCode(
-			externalReferenceCode, contextCompany.getCompanyId());
-
-		File file = _siteInitializerSerializer.serialize(group.getGroupId());
-
-		try {
-			return Response.ok(
-				file
-			).header(
-				"Content-Disposition",
-				"attachment; filename=\"" + file.getName() + "\""
-			).build();
-		}
-		finally {
-
-			// TODO LPD-19870
-
-			//file.delete();
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -401,28 +379,18 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		throws Exception {
 
 		Group group = _groupService.addGroup(
+			externalReferenceCode,
 			_getParentGroupId(
 				null, site.getParentSiteExternalReferenceCode(),
 				site.getParentSiteKey()),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, _getNameMap(site),
 			_getLocalizationMap(site.getDescription()),
 			_getType(site.getMembershipType()),
+			_getTypeSettings(site.getTypeSettings(), null),
 			_isManualMembership(site.getManualMembership()),
 			_getMembershipRestriction(site.getMembershipRestriction()),
 			site.getFriendlyUrlPath(), true, false, _isActive(site.getActive()),
 			serviceContext);
-
-		if (Validator.isNotNull(externalReferenceCode)) {
-			group.setExternalReferenceCode(externalReferenceCode);
-
-			group = _groupLocalService.updateGroup(group);
-		}
-
-		if (Validator.isNotNull(site.getTypeSettings())) {
-			group = _groupService.updateGroup(
-				group.getGroupId(),
-				_getTypeSettings(site.getTypeSettings(), null));
-		}
 
 		LiveUsers.joinGroup(
 			contextCompany.getCompanyId(), group.getGroupId(),
@@ -579,6 +547,10 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			UnicodeProperties oldUnicodeProperties)
 		throws Exception {
 
+		if (typeSettings == null) {
+			return null;
+		}
+
 		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.putAll(
 			typeSettings
 		).build();
@@ -727,18 +699,12 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 					site.getParentSiteKey()),
 				_getNameMap(site), _getLocalizationMap(site.getDescription()),
 				_getType(site.getMembershipType()),
+				_getTypeSettings(
+					site.getTypeSettings(), group.getTypeSettingsProperties()),
 				_isManualMembership(site.getManualMembership()),
 				_getMembershipRestriction(site.getMembershipRestriction()),
 				site.getFriendlyUrlPath(), false, _isActive(site.getActive()),
 				_getServiceContext());
-
-			if (Validator.isNotNull(site.getTypeSettings())) {
-				updatedGroup = _groupService.updateGroup(
-					updatedGroup.getGroupId(),
-					_getTypeSettings(
-						site.getTypeSettings(),
-						group.getTypeSettingsProperties()));
-			}
 
 			LiveUsers.joinGroup(
 				contextCompany.getCompanyId(), updatedGroup.getGroupId(),
@@ -784,9 +750,6 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 	@Reference
 	private SiteInitializerRegistry _siteInitializerRegistry;
-
-	@Reference
-	private SiteInitializerSerializer _siteInitializerSerializer;
 
 	@Reference
 	private Sites _sites;

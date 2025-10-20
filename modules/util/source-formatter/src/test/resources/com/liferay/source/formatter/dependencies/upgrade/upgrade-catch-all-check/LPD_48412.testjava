@@ -12,10 +12,10 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
  */
 public class LPD_48412 {
 
-    public void method() {
-        CommerceOrderConstants.COMMERCE_ORDER;
-        CommerceOrderConstants.getPaymentLabelStyle(123);
-        CommerceOrderConstants.getPaymentStatusLabel(123);
-    }
+	public void method() {
+		CommerceOrderConstants.COMMERCE_ORDER;
+		CommerceOrderConstants.getPaymentLabelStyle(123);
+		CommerceOrderConstants.getPaymentStatusLabel(123);
+	}
 
 }

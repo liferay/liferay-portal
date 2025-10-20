@@ -191,12 +191,12 @@ public class KoroneikiRestController extends BaseRestController {
 				).put(
 					"productPurchasedKey", productPurchase.getKey()
 				).put(
+					"productVersion",
+					_marketplaceService.getProductVersion(orderItem.getSkuId())
+				).put(
 					"provisionedCount", provisionedCount
 				).put(
 					"purchasedCount", orderItem.getQuantity()
-				).put(
-					"productVersion",
-					_marketplaceService.getProductVersion(orderItem.getSkuId())
 				).put(
 					"startDate",
 					ZonedDateTime.ofInstant(

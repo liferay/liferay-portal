@@ -67,10 +67,10 @@ public class SystemEventCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> methodDefDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.METHOD_DEF);
 
-		for (DetailAST methodDefDetailAST : methodDefDetailASTList) {
+		for (DetailAST methodDefDetailAST : methodDefDetailASTs) {
 			DetailAST modifiersDetailAST = methodDefDetailAST.findFirstToken(
 				TokenTypes.MODIFIERS);
 
@@ -109,7 +109,7 @@ public class SystemEventCheck extends BaseCheck {
 
 			if (!methodName.startsWith("delete") ||
 				!_hasDeleteFromPersistence(
-					methodDefDetailASTList, methodDefDetailAST, entityName,
+					methodDefDetailASTs, methodDefDetailAST, entityName,
 					methodName) ||
 				!entityName.equals(
 					_getFirstParameterTypeName(methodDefDetailAST))) {
@@ -131,11 +131,11 @@ public class SystemEventCheck extends BaseCheck {
 
 	private DetailAST _getCalledMethodDefDetailAST(
 		DetailAST methodDefDetailAST, String methodName,
-		List<DetailAST> methodDefDetailASTList) {
+		List<DetailAST> methodDefDetailASTs) {
 
 		DetailAST matchingMethodDefDetailAST = null;
 
-		for (DetailAST curMethodDefDetailAST : methodDefDetailASTList) {
+		for (DetailAST curMethodDefDetailAST : methodDefDetailASTs) {
 			if (methodDefDetailAST.getLineNo() ==
 					curMethodDefDetailAST.getLineNo()) {
 
@@ -152,10 +152,10 @@ public class SystemEventCheck extends BaseCheck {
 			DetailAST parametersDetailAST =
 				curMethodDefDetailAST.findFirstToken(TokenTypes.PARAMETERS);
 
-			List<DetailAST> parameterDefDetailASTList = getAllChildTokens(
+			List<DetailAST> parameterDefDetailASTs = getAllChildTokens(
 				parametersDetailAST, false, TokenTypes.PARAMETER_DEF);
 
-			if (parameterDefDetailASTList.size() != 1) {
+			if (parameterDefDetailASTs.size() != 1) {
 				continue;
 			}
 
@@ -221,14 +221,14 @@ public class SystemEventCheck extends BaseCheck {
 		DetailAST parametersDetailAST = methodDefDetailAST.findFirstToken(
 			TokenTypes.PARAMETERS);
 
-		List<DetailAST> parameterDefDetailASTList = getAllChildTokens(
+		List<DetailAST> parameterDefDetailASTs = getAllChildTokens(
 			parametersDetailAST, false, TokenTypes.PARAMETER_DEF);
 
-		if (parameterDefDetailASTList.isEmpty()) {
+		if (parameterDefDetailASTs.isEmpty()) {
 			return null;
 		}
 
-		DetailAST firstParameterDefDetailAST = parameterDefDetailASTList.get(0);
+		DetailAST firstParameterDefDetailAST = parameterDefDetailASTs.get(0);
 
 		DetailAST typeDetailAST = firstParameterDefDetailAST.findFirstToken(
 			TokenTypes.TYPE);
@@ -298,17 +298,17 @@ public class SystemEventCheck extends BaseCheck {
 	}
 
 	private boolean _hasDeleteFromPersistence(
-		List<DetailAST> methodDefDetailASTList, DetailAST methodDefDetailAST,
+		List<DetailAST> methodDefDetailASTs, DetailAST methodDefDetailAST,
 		String entityName, String methodName) {
 
 		if (methodDefDetailAST == null) {
 			return false;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			methodDefDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() == TokenTypes.DOT) {
@@ -330,17 +330,17 @@ public class SystemEventCheck extends BaseCheck {
 				DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 					TokenTypes.ELIST);
 
-				List<DetailAST> exprDetailASTList = getAllChildTokens(
+				List<DetailAST> exprDetailASTs = getAllChildTokens(
 					elistDetailAST, false, TokenTypes.EXPR);
 
-				if (exprDetailASTList.size() == 1) {
+				if (exprDetailASTs.size() == 1) {
 					DetailAST calledMethodDefDetailAST =
 						_getCalledMethodDefDetailAST(
 							methodDefDetailAST, methodName,
-							methodDefDetailASTList);
+							methodDefDetailASTs);
 
 					if (_hasDeleteFromPersistence(
-							methodDefDetailASTList, calledMethodDefDetailAST,
+							methodDefDetailASTs, calledMethodDefDetailAST,
 							methodName, entityName)) {
 
 						return true;
@@ -362,13 +362,12 @@ public class SystemEventCheck extends BaseCheck {
 			return false;
 		}
 
-		List<DetailAST> annotationMemberValuePairDetailASTList =
-			getAllChildTokens(
-				annotationDetailAST, false,
-				TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR);
+		List<DetailAST> annotationMemberValuePairDetailASTs = getAllChildTokens(
+			annotationDetailAST, false,
+			TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR);
 
 		for (DetailAST annotationMemberValuePairDetailAST :
-				annotationMemberValuePairDetailASTList) {
+				annotationMemberValuePairDetailASTs) {
 
 			DetailAST identDetailAST =
 				annotationMemberValuePairDetailAST.findFirstToken(

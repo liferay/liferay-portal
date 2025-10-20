@@ -137,7 +137,7 @@ public class ObjectEntryInfoItemObjectProvider
 			if (objectEntry != null) {
 				ObjectEntry serviceBuilderObjectEntry =
 					ObjectEntryUtil.toObjectEntry(
-						_objectDefinition.getObjectDefinitionId(), objectEntry);
+						_objectDefinition, objectEntry);
 
 				objectEntries.put(
 					ercInfoItemIdentifier, serviceBuilderObjectEntry);

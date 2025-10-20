@@ -67,6 +67,18 @@ public class FreeMarkerTool {
 		return _freeMarkerTool;
 	}
 
+	public static String getPropertyType(
+		ConfigYAML configYAML, OpenAPIYAML openAPIYAML, Schema propertySchema,
+		String propertySchemaName) {
+
+		Map<String, String> javaDataTypeMap =
+			OpenAPIParserUtil.getJavaDataTypeMap(configYAML, openAPIYAML);
+
+		return DTOOpenAPIParser.getPropertyType(
+			configYAML, javaDataTypeMap, openAPIYAML, propertySchema,
+			propertySchemaName);
+	}
+
 	public boolean containsJavaMethodSignature(
 		List<JavaMethodSignature> javaMethodSignatures, String text) {
 

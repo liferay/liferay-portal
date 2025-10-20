@@ -381,6 +381,9 @@ public class PropsValues {
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.COMPANY_LOGIN_PREPOPULATE_DOMAIN));
 
+	public static final boolean COMPANY_MX_UPDATE = GetterUtil.getBoolean(
+		PropsUtil.get(PropsKeys.COMPANY_MX_UPDATE));
+
 	public static final boolean COMPANY_PREDICTABLE_COMPANY_IDS_ENABLED =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.COMPANY_PREDICTABLE_COMPANY_IDS_ENABLED));
@@ -1247,9 +1250,6 @@ public class PropsValues {
 
 	public static final String[] LOGOUT_EVENTS_PRE = PropsUtil.getArray(
 		PropsKeys.LOGOUT_EVENTS_PRE);
-
-	public static final boolean MAIL_MX_UPDATE = GetterUtil.getBoolean(
-		PropsUtil.get(PropsKeys.MAIL_MX_UPDATE));
 
 	public static final String MARKETPLACE_CLIENT_ID = PropsUtil.get(
 		PropsKeys.MARKETPLACE_CLIENT_ID);

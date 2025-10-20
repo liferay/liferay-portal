@@ -573,15 +573,16 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		Layout layout = _layoutLocalService.fetchLayout(
 			layoutPageTemplateEntry.getPlid());
 
-		_layoutLocalService.updateStyleBookEntryId(
+		_layoutLocalService.updateStyleBookEntryERC(
 			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			styleBookEntry.getStyleBookEntryId());
+			styleBookEntry.getExternalReferenceCode());
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		_layoutLocalService.updateStyleBookEntryId(
+		_layoutLocalService.updateStyleBookEntryERC(
 			draftLayout.getGroupId(), draftLayout.isPrivateLayout(),
-			draftLayout.getLayoutId(), styleBookEntry.getStyleBookEntryId());
+			draftLayout.getLayoutId(),
+			styleBookEntry.getExternalReferenceCode());
 
 		layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
@@ -595,7 +596,8 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			masterLayoutPageTemplateEntry.getPlid(),
 			layout.getMasterLayoutPlid());
 		Assert.assertEquals(
-			styleBookEntry.getStyleBookEntryId(), layout.getStyleBookEntryId());
+			styleBookEntry.getExternalReferenceCode(),
+			layout.getStyleBookEntryERC());
 
 		draftLayout = layout.fetchDraftLayout();
 
@@ -603,8 +605,8 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			masterLayoutPageTemplateEntry.getPlid(),
 			draftLayout.getMasterLayoutPlid());
 		Assert.assertEquals(
-			styleBookEntry.getStyleBookEntryId(),
-			draftLayout.getStyleBookEntryId());
+			styleBookEntry.getExternalReferenceCode(),
+			draftLayout.getStyleBookEntryERC());
 	}
 
 	private void _assertLayoutPageTemplateEntry(

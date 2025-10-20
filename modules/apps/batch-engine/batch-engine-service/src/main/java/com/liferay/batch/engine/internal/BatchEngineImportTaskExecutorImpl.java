@@ -17,6 +17,7 @@ import com.liferay.batch.engine.action.ImportTaskPreAction;
 import com.liferay.batch.engine.action.ItemReaderPostAction;
 import com.liferay.batch.engine.configuration.BatchEngineTaskCompanyConfiguration;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
+import com.liferay.batch.engine.exception.BatchEngineImportTaskExecutorException;
 import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskExceptionHandler;
 import com.liferay.batch.engine.internal.item.BatchEngineTaskItemDelegateExecutor;
 import com.liferay.batch.engine.internal.item.BatchEngineTaskItemDelegateExecutorFactory;
@@ -25,6 +26,7 @@ import com.liferay.batch.engine.internal.reader.BatchEngineImportTaskItemReaderB
 import com.liferay.batch.engine.internal.reader.BatchEngineImportTaskItemReaderUtil;
 import com.liferay.batch.engine.internal.strategy.OnErrorContinueBatchEngineImportStrategy;
 import com.liferay.batch.engine.internal.strategy.OnErrorFailBatchEngineImportStrategy;
+import com.liferay.batch.engine.internal.strategy.TransactionalOnErrorContinueBatchEngineImportStrategy;
 import com.liferay.batch.engine.internal.task.progress.BatchEngineTaskProgress;
 import com.liferay.batch.engine.internal.task.progress.BatchEngineTaskProgressFactory;
 import com.liferay.batch.engine.internal.util.ErrorMessageUtil;
@@ -245,6 +247,16 @@ public class BatchEngineImportTaskExecutorImpl
 				_importTaskPostActions.toList(),
 				_importTaskPreActions.toList());
 		}
+		else if (batchEngineImportTask.getImportStrategy() ==
+					BatchEngineImportTaskConstants.
+						IMPORT_STRATEGY_TRANSACTIONAL_ON_ERROR_CONTINUE) {
+
+			return new TransactionalOnErrorContinueBatchEngineImportStrategy(
+				batchEngineImportTask,
+				_batchEngineImportTaskExceptionHandlers.toList(),
+				_importTaskPostActions.toList(),
+				_importTaskPreActions.toList());
+		}
 
 		return new OnErrorFailBatchEngineImportStrategy(
 			batchEngineImportTask,
@@ -306,9 +318,27 @@ public class BatchEngineImportTaskExecutorImpl
 	}
 
 	private void _handleException(
-			BatchEngineImportTask batchEngineImportTask, Exception exception,
-			int processedItemsCount)
+			BatchEngineImportTask batchEngineImportTask,
+			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
+			Exception exception1, int processedItemsCount)
 		throws Exception {
+
+		if (exception1 instanceof
+				BatchEngineImportTaskExecutorException
+					batchEngineImportTaskExecutorException) {
+
+			Exception exception2 =
+				_unwrapBatchEngineImportTaskExecutorException(
+					batchEngineImportTaskExecutorException);
+
+			Object item = batchEngineImportTaskExecutorException.getItem();
+
+			_batchEngineImportTaskExceptionHandlers.forEach(
+				batchEngineImportTaskExceptionHandler ->
+					batchEngineImportTaskExceptionHandler.handle(
+						batchEngineImportTask, batchEngineTaskItemDelegate,
+						exception2, item));
+		}
 
 		_batchEngineImportTaskErrorLocalService.addBatchEngineImportTaskError(
 			batchEngineImportTask.getCompanyId(),
@@ -316,19 +346,19 @@ public class BatchEngineImportTaskExecutorImpl
 			batchEngineImportTask.getBatchEngineImportTaskId(), null,
 			processedItemsCount,
 			ErrorMessageUtil.getErrorMessage(
-				exception, batchEngineImportTask.getUserId()));
+				exception1, batchEngineImportTask.getUserId()));
 
 		if (batchEngineImportTask.getImportStrategy() ==
 				BatchEngineImportTaskConstants.
 					IMPORT_STRATEGY_ON_ERROR_CONTINUE) {
 
-			_log.error(exception);
+			_log.error(exception1);
 		}
 		else if (batchEngineImportTask.getImportStrategy() ==
 					BatchEngineImportTaskConstants.
 						IMPORT_STRATEGY_ON_ERROR_FAIL) {
 
-			throw exception;
+			throw exception1;
 		}
 	}
 
@@ -387,7 +417,8 @@ public class BatchEngineImportTaskExecutorImpl
 					processedItemsCount++;
 
 					_handleException(
-						batchEngineImportTask, exception, processedItemsCount);
+						batchEngineImportTask, batchEngineTaskItemDelegate,
+						exception, processedItemsCount);
 				}
 
 				if (items.size() == batchEngineImportTask.getBatchSize()) {
@@ -430,6 +461,19 @@ public class BatchEngineImportTaskExecutorImpl
 			BatchEngineImportTaskItemReaderUtil.mapFieldNames(
 				fieldNameMapping, fieldNameValueMap),
 			_itemReaderPostActions.toList());
+	}
+
+	private Exception _unwrapBatchEngineImportTaskExecutorException(
+		BatchEngineImportTaskExecutorException
+			batchEngineImportTaskExecutorException) {
+
+		Throwable throwable = batchEngineImportTaskExecutorException.getCause();
+
+		if (throwable instanceof Exception) {
+			return (Exception)throwable;
+		}
+
+		return batchEngineImportTaskExecutorException;
 	}
 
 	private void _updateBatchEngineImportTask(

@@ -1398,7 +1398,7 @@ public class FileSystemImporter extends BaseImporter {
 					parentLayoutId, nameMap, titleMap,
 					layout.getDescriptionMap(), layout.getKeywordsMap(),
 					layout.getRobotsMap(), type, hidden, friendlyURLMap,
-					layout.getIconImage(), null, 0, 0, 0, serviceContext);
+					layout.getIconImage(), null, null, 0, 0, serviceContext);
 			}
 
 			if (Validator.isNotNull(themeId) ||

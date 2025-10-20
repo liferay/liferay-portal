@@ -99,6 +99,8 @@ export default {
 	'billing-email': 'Billing Email',
 	'blank-site': 'Blank Site',
 	'build': 'Build',
+	'business': 'Business',
+	'business-account': 'Business Account',
 	'business-address': 'Business Address',
 	'by-requesting-a-publisher-account-you-agree-to-the':
 		'By requesting a Publisher account, you agree to the',
@@ -200,6 +202,8 @@ export default {
 		'Design the storefront for your solution. This will set the information displayed on the solution’s page. This section is dedicated to creating the solution’s detail content.',
 	'design-the-storefront-for-your-solution-this-will-set-the-information-displayed-on-the-solutions-page-this-section-is-dedicated-to-creating-the-solutions-header':
 		'Design the storefront for your solution. This will set the information displayed on the solution’s page. This section is dedicated to creating the solution’s header.',
+	'designed-for-companies-with-a-tax-vat-number-this-account-type-also-lets-you-manage-multiple-users-under-one-profile-click-the-button-below-to-create-your-first-business-account-today':
+		'Designed for companies with a Tax/VAT number, this account type also lets you manage multiple users under one profile. Click the button below to create your first Business Account today!',
 	'details': 'Details',
 	'developer-license-prices': 'Developer License Prices',
 	'developer-licenses-are-limited-to-5-unique-addresses-and-should-not-be-used-for-full-scale-production-deployments':
@@ -271,6 +275,10 @@ export default {
 	'file-not-available-for-download': 'File not available for download.',
 	'filter': 'Filter',
 	'first-name': 'First Name',
+	'for-businesses-with-a-vat-tax-number-this-account-type-support-multiple-users-it-also-possible-to-join-an-already-existing-business-account':
+		'For businesses with a VAT/Tax number; this account type support multiple users. It also possible to join an already existing business account',
+	'for-individuals-without-a-vat-tax-number-this-account-support-single-user-only':
+		'For individuals without a VAT/Tax number; this account support single user only.',
 	'form': 'Form',
 	'fragment': 'Fragment',
 	'fragment-collection-of-fragments': 'Fragment/Collection of Fragments',
@@ -389,6 +397,7 @@ export default {
 	'name': 'Name',
 	'net-price': 'Net Price',
 	'never-expires': 'Never Expires',
+	'new-account': 'New Account',
 	'new-address': 'New Address',
 	'new-app': 'New App',
 	'new-potential-expiration-date': 'New Potential Expiration Date',
@@ -440,6 +449,8 @@ export default {
 	'payment-summary': 'Payment Summary',
 	'paypal-account': 'PayPal Account',
 	'pending': 'Pending',
+	'personal': 'Personal',
+	'personal-account': 'Personal Account',
 	'phone': 'Phone',
 	'phone-number': 'Phone Number',
 	'please-be-aware-that-since-you-are-adding-a-new-version-of-the-app-the-only-section-visible-is-the-build':
@@ -677,6 +688,8 @@ export default {
 		'Unable to download your license file.  Please try again and/or contact support via the manage menu on the dashboard.',
 	'under-review': 'Under Review',
 	'uninstall': 'Uninstall',
+	'unlock-exclusive-benefits-with-a-business-account':
+		'Unlock exclusive benefits with a Business Account!',
 	'unpaid': 'Unpaid',
 	'upload-at-least-one-image-or-add-a-video-url':
 		'Upload at least one image, or add a video URL',

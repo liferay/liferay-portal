@@ -10,13 +10,13 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.Serializable;
 
@@ -139,7 +139,7 @@ public class ConfigurationDBPartitionUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected boolean isSkipUpgradeProcess() {
-		return !DBPartition.isPartitionEnabled();
+		return !PropsValues.DATABASE_PARTITION_ENABLED;
 	}
 
 	private ScopeConfiguration _getScopeConfiguration(

@@ -36,10 +36,10 @@ public class AssertFailCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "Assert", "fail");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			if (hasParentWithTokenType(
 					methodCallDetailAST, TokenTypes.LAMBDA,
 					TokenTypes.LITERAL_NEW)) {

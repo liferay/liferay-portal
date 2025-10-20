@@ -54,9 +54,6 @@ public class PageElementDefinitionTypeUtil {
 			PageElementDefinition.Type.COLLECTION_ITEM,
 			LayoutDataItemTypeConstants.TYPE_COLLECTION_ITEM
 		).put(
-			PageElementDefinition.Type.COLUMN,
-			LayoutDataItemTypeConstants.TYPE_COLUMN
-		).put(
 			PageElementDefinition.Type.CONTAINER,
 			LayoutDataItemTypeConstants.TYPE_CONTAINER
 		).put(
@@ -78,7 +75,11 @@ public class PageElementDefinitionTypeUtil {
 			PageElementDefinition.Type.FRAGMENT_DROP_ZONE,
 			LayoutDataItemTypeConstants.TYPE_FRAGMENT_DROP_ZONE
 		).put(
-			PageElementDefinition.Type.ROW, LayoutDataItemTypeConstants.TYPE_ROW
+			PageElementDefinition.Type.GRID,
+			LayoutDataItemTypeConstants.TYPE_ROW
+		).put(
+			PageElementDefinition.Type.MODULE,
+			LayoutDataItemTypeConstants.TYPE_COLUMN
 		).build();
 
 }

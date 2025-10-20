@@ -1,78 +1,80 @@
-[@liferay_aui.style]
-	#${fragmentEntryLinkNamespace}-account-selector-dropdown-menu {
-		margin: 0;
-		max-height: unset;
-		max-width: unset;
-		min-height: unset;
-		min-width: unset;
-		overflow: unset;
-		padding: 0;
-	}
+[#if themeDisplay.isSignedIn()]
+	[@liferay_aui.style]
+		#${fragmentEntryLinkNamespace}-account-selector-dropdown-menu {
+			margin: 0;
+			max-height: unset;
+			max-width: unset;
+			min-height: unset;
+			min-width: unset;
+			overflow: unset;
+			padding: 0;
+		}
 
-	#${fragmentEntryLinkNamespace}-account-selector-dropdown-menu .dropdown-divider {
-		margin: 0;
-	}
+		#${fragmentEntryLinkNamespace}-account-selector-dropdown-menu .dropdown-divider {
+			margin: 0;
+		}
 
-	#${fragmentEntryLinkNamespace}-account-selector-dropdown-menu .account-selector-dropdown-panel {
-		display: flex;
-		flex-direction: column;
-		max-height: ${configuration.dropdownMaxHeight}px;
-		max-width: ${configuration.dropdownWidth}px;
-		min-width: ${configuration.dropdownWidth}px;
-	}
+		#${fragmentEntryLinkNamespace}-account-selector-dropdown-menu .account-selector-dropdown-panel {
+			display: flex;
+			flex-direction: column;
+			max-height: ${configuration.dropdownMaxHeight}px;
+			max-width: ${configuration.dropdownWidth}px;
+			min-width: ${configuration.dropdownWidth}px;
+		}
 
-	#${fragmentEntryLinkNamespace}-account-selector-panel-slider {
-		display: flex;
-		transition: transform ${configuration.panelAnimationDuration}s linear;
-	}
+		#${fragmentEntryLinkNamespace}-account-selector-panel-slider {
+			display: flex;
+			transition: transform ${configuration.panelAnimationDuration}s linear;
+		}
 
-	#${fragmentEntryLinkNamespace}-account-selector-panel-slider .account-selector-panel-content {
-		width: ${configuration.dropdownWidth}px;
-	}
+		#${fragmentEntryLinkNamespace}-account-selector-panel-slider .account-selector-panel-content {
+			width: ${configuration.dropdownWidth}px;
+		}
 
-	#${fragmentEntryLinkNamespace}-account-selector-panel-wrapper {
-		overflow-x: hidden;
-	}
-[/@]
+		#${fragmentEntryLinkNamespace}-account-selector-panel-wrapper {
+			overflow-x: hidden;
+		}
+	[/@]
 
-<div class="account-selector-container" id="${fragmentEntryLinkNamespace}-account-selector-container">
-	<div class="account-selector-cta-container"[#if layoutMode != 'edit'] data-toggle="liferay-dropdown"[/#if] id="${fragmentEntryLinkNamespace}-account-selector-cta-container">
-		<lfr-drop-zone data-lfr-drop-zone-id="1" data-lfr-priority="1"></lfr-drop-zone>
-	</div>
+	<div class="account-selector-container" id="${fragmentEntryLinkNamespace}-account-selector-container">
+		<div class="account-selector-cta-container"[#if layoutMode != 'edit'] data-toggle="liferay-dropdown"[/#if] id="${fragmentEntryLinkNamespace}-account-selector-cta-container">
+			<lfr-drop-zone data-lfr-drop-zone-id="1" data-lfr-priority="1"></lfr-drop-zone>
+		</div>
 
-	<div class="[#if layoutMode != 'edit']dropdown-menu[/#if]" id="${fragmentEntryLinkNamespace}-account-selector-dropdown-menu">
-		<div class="account-selector-dropdown-panel">
-			<div class="align-items-center d-flex dropdown-section item-list-head justify-content-between" data-active-panel-key="${configuration.defaultPanelKey}"[#if layoutMode == 'edit'] data-step="0"[/#if] id="${fragmentEntryLinkNamespace}-account-selector-dropdown-header">
-				<button class="btn btn-monospaced btn-unstyled" id="${fragmentEntryLinkNamespace}-account-selector-dropdown-prev-button" type="button">
-					<svg class="lexicon-icon lexicon-icon-angle-left-small" focusable="false" role="presentation">
-						<use href="/o/admin-theme/images/clay/icons.svg#angle-left-small"></use>
-					</svg>
-				</button>
+		<div class="[#if layoutMode != 'edit']dropdown-menu[/#if]" id="${fragmentEntryLinkNamespace}-account-selector-dropdown-menu">
+			<div class="account-selector-dropdown-panel">
+				<div class="align-items-center d-flex dropdown-section item-list-head justify-content-between" data-active-panel-key="${configuration.defaultPanelKey}"[#if layoutMode == 'edit'] data-step="0"[/#if] id="${fragmentEntryLinkNamespace}-account-selector-dropdown-header">
+					<button class="btn btn-monospaced btn-unstyled" id="${fragmentEntryLinkNamespace}-account-selector-dropdown-prev-button" type="button">
+						<svg class="lexicon-icon lexicon-icon-angle-left-small" focusable="false" role="presentation">
+							<use href="/o/admin-theme/images/clay/icons.svg#angle-left-small"></use>
+						</svg>
+					</button>
 
-				<span class="text-truncate-inline">
-					<span class="text-truncate" id="${fragmentEntryLinkNamespace}-account-selector-panel-title">
-						[@liferay.language key="placeholder" /]
+					<span class="text-truncate-inline">
+						<span class="text-truncate" id="${fragmentEntryLinkNamespace}-account-selector-panel-title">
+							[@liferay.language key="placeholder" /]
+						</span>
 					</span>
-				</span>
 
-				<button class="btn btn-monospaced btn-unstyled" id="${fragmentEntryLinkNamespace}-account-selector-dropdown-next-button" type="button">
-					<svg class="lexicon-icon lexicon-icon-angle-right-small" focusable="false" role="presentation">
-						<use href="/o/admin-theme/images/clay/icons.svg#angle-right-small"></use>
-					</svg>
-				</button>
-			</div>
+					<button class="btn btn-monospaced btn-unstyled" id="${fragmentEntryLinkNamespace}-account-selector-dropdown-next-button" type="button">
+						<svg class="lexicon-icon lexicon-icon-angle-right-small" focusable="false" role="presentation">
+							<use href="/o/admin-theme/images/clay/icons.svg#angle-right-small"></use>
+						</svg>
+					</button>
+				</div>
 
-			<div class="dropdown-divider"></div>
+				<div class="dropdown-divider"></div>
 
-			<div id="${fragmentEntryLinkNamespace}-account-selector-panel-wrapper">
-				<div id="${fragmentEntryLinkNamespace}-account-selector-panel-slider">
-					[#list 1..configuration.numberOfPanels as i]
-						<div class="account-selector-panel-content">
-							<lfr-drop-zone data-lfr-drop-zone-id="${i + 1}" data-lfr-priority="${i + 1}"></lfr-drop-zone>
-						</div>
-					[/#list]
+				<div id="${fragmentEntryLinkNamespace}-account-selector-panel-wrapper">
+					<div id="${fragmentEntryLinkNamespace}-account-selector-panel-slider">
+						[#list 1..configuration.numberOfPanels as i]
+							<div class="account-selector-panel-content">
+								<lfr-drop-zone data-lfr-drop-zone-id="${i + 1}" data-lfr-priority="${i + 1}"></lfr-drop-zone>
+							</div>
+						[/#list]
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+[/#if]

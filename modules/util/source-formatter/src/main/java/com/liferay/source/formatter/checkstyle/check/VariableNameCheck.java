@@ -131,10 +131,10 @@ public class VariableNameCheck extends BaseCheck {
 
 		String className = StringUtil.removeChar(match, CharPool.UNDERLINE);
 
-		List<DetailAST> valueDetailASTList = getAllChildTokens(
+		List<DetailAST> valueDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.IDENT, TokenTypes.STRING_LITERAL);
 
-		for (DetailAST valueDetailAST : valueDetailASTList) {
+		for (DetailAST valueDetailAST : valueDetailASTs) {
 			String value = StringUtil.removeChar(
 				valueDetailAST.getText(), CharPool.QUOTE);
 
@@ -366,12 +366,11 @@ public class VariableNameCheck extends BaseCheck {
 			String expectedVariableName = _getExpectedVariableName(
 				typeName, "_", "");
 
-			List<DetailAST> variableDeclarationDetailASTList =
-				getAllChildTokens(
-					parentDetailAST, true, TokenTypes.VARIABLE_DEF);
+			List<DetailAST> variableDeclarationDetailASTs = getAllChildTokens(
+				parentDetailAST, true, TokenTypes.VARIABLE_DEF);
 
 			for (DetailAST variableDeclarationDetailAST :
-					variableDeclarationDetailASTList) {
+					variableDeclarationDetailASTs) {
 
 				identDetailAST = variableDeclarationDetailAST.findFirstToken(
 					TokenTypes.IDENT);
@@ -438,15 +437,15 @@ public class VariableNameCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> variableDeclarationDetailASTList = new ArrayList<>();
+		List<DetailAST> variableDeclarationDetailASTs = new ArrayList<>();
 
-		variableDeclarationDetailASTList.addAll(
+		variableDeclarationDetailASTs.addAll(
 			getAllChildTokens(parentDetailAST, false, TokenTypes.VARIABLE_DEF));
 
 		int count = 0;
 
 		for (DetailAST variableDeclarationDetailAST :
-				variableDeclarationDetailASTList) {
+				variableDeclarationDetailASTs) {
 
 			DetailAST typeDetailAST =
 				variableDeclarationDetailAST.findFirstToken(TokenTypes.TYPE);
@@ -575,10 +574,10 @@ public class VariableNameCheck extends BaseCheck {
 	}
 
 	private void _checkTypo(DetailAST detailAST, String variableName) {
-		List<DetailAST> stringLiteralDetailASTList = getAllChildTokens(
+		List<DetailAST> stringLiteralDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.STRING_LITERAL);
 
-		for (DetailAST stringLiteralDetailAST : stringLiteralDetailASTList) {
+		for (DetailAST stringLiteralDetailAST : stringLiteralDetailASTs) {
 			String expectedVariableName = _getExpectedVariableName(
 				stringLiteralDetailAST.getText());
 
@@ -722,10 +721,10 @@ public class VariableNameCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> assignDetailASTList = getAllChildTokens(
+		List<DetailAST> assignDetailASTs = getAllChildTokens(
 			parentDetailAST, true, TokenTypes.ASSIGN);
 
-		for (DetailAST assignDetailAST : assignDetailASTList) {
+		for (DetailAST assignDetailAST : assignDetailASTs) {
 			DetailAST firstChildDetailAST = assignDetailAST.getFirstChild();
 
 			if (firstChildDetailAST == null) {
@@ -819,14 +818,14 @@ public class VariableNameCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> parameterExprDetailASTList =
-			getParameterExprDetailASTList(firstChildDetailAST.getParent());
+		List<DetailAST> parameterExprDetailASTs = getParameterExprDetailASTs(
+			firstChildDetailAST.getParent());
 
-		if (parameterExprDetailASTList.size() < 2) {
+		if (parameterExprDetailASTs.size() < 2) {
 			return;
 		}
 
-		DetailAST exprDetailAST = parameterExprDetailASTList.get(1);
+		DetailAST exprDetailAST = parameterExprDetailASTs.get(1);
 
 		firstChildDetailAST = exprDetailAST.getFirstChild();
 
@@ -849,7 +848,7 @@ public class VariableNameCheck extends BaseCheck {
 
 		DetailAST parentDetailAST = detailAST.getParent();
 
-		List<DetailAST> definitionDetailASTList = new ArrayList<>();
+		List<DetailAST> definitionDetailASTs = new ArrayList<>();
 
 		while (true) {
 			if (parentDetailAST == null) {
@@ -857,7 +856,7 @@ public class VariableNameCheck extends BaseCheck {
 			}
 
 			if (parentDetailAST.getType() == TokenTypes.METHOD_DEF) {
-				definitionDetailASTList.addAll(
+				definitionDetailASTs.addAll(
 					getAllChildTokens(
 						parentDetailAST, true, TokenTypes.PARAMETER_DEF,
 						TokenTypes.VARIABLE_DEF));
@@ -867,7 +866,7 @@ public class VariableNameCheck extends BaseCheck {
 				DetailAST objBlockDetailAST = parentDetailAST.findFirstToken(
 					TokenTypes.OBJBLOCK);
 
-				definitionDetailASTList.addAll(
+				definitionDetailASTs.addAll(
 					getAllChildTokens(
 						objBlockDetailAST, false, TokenTypes.VARIABLE_DEF));
 			}
@@ -875,7 +874,7 @@ public class VariableNameCheck extends BaseCheck {
 			parentDetailAST = parentDetailAST.getParent();
 		}
 
-		for (DetailAST definitionDetailAST : definitionDetailASTList) {
+		for (DetailAST definitionDetailAST : definitionDetailASTs) {
 			if (variableName.equals(getName(definitionDetailAST))) {
 				return true;
 			}

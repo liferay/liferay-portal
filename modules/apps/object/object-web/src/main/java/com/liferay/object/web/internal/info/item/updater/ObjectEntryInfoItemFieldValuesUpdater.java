@@ -176,7 +176,7 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 			}
 
 			return ObjectEntryUtil.toObjectEntry(
-				objectEntry.getObjectDefinitionId(), dtoObjectEntry);
+				_objectDefinition, dtoObjectEntry);
 		}
 		catch (Exception exception) {
 			ObjectEntryInfoItemExceptionRequestHandler.handleInfoFormException(
@@ -194,6 +194,10 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 
 		InfoFieldValue<Object> deletedItemIdentifiersInfoFieldValue =
 			infoItemFieldValues.getInfoFieldValue("deletedItemIdentifiers");
+
+		if (deletedItemIdentifiersInfoFieldValue == null) {
+			return;
+		}
 
 		String[] deletedItemIdentifiers = GetterUtil.getStringValues(
 			deletedItemIdentifiersInfoFieldValue.getValue());
@@ -233,7 +237,7 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 		ThemeDisplay themeDisplay) {
 
 		if (FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getScopeGroupId(), "LPD-50377")) {
+				themeDisplay.getCompanyId(), "LPD-50377")) {
 
 			return ObjectEntryUtil.toProperties(
 				infoItemFieldValues, _objectDefinition,

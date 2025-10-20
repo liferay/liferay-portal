@@ -522,7 +522,7 @@ public class DBTest {
 				"typeDate2 DATE null, typeDouble2 DOUBLE, typeInteger2 ",
 				"INTEGER, typeLong2 LONG null, typeSBlob2 SBLOB, typeString2 ",
 				"STRING null, typeText2 TEXT null, typeVarchar2 VARCHAR(75) ",
-				"null);"));
+				"null)"));
 
 		db.runSQL(
 			StringBundler.concat(
@@ -768,7 +768,7 @@ public class DBTest {
 				"10 not null, typeSBlob2 SBLOB, typeString2 STRING null, ",
 				"typeText2 TEXT null, typeVarchar2 VARCHAR(75) null,",
 				"typeVarcharDefault2 VARCHAR(10) default 'testValue' not ",
-				"null);"));
+				"null)"));
 
 		db.runSQL(
 			StringBundler.concat(
@@ -942,7 +942,7 @@ public class DBTest {
 				"null, typeLongDefault LONG default 10 not null, typeSBlob ",
 				"SBLOB, typeString STRING null, typeText TEXT null, ",
 				"typeVarchar VARCHAR(75) null, typeVarcharDefault VARCHAR(10) ",
-				"default 'testValue' not null);"));
+				"default 'testValue' not null)"));
 	}
 
 	private List<IndexMetadata> _getIndexMetadatas(

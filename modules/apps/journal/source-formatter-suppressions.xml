@@ -2,7 +2,7 @@
 
 <suppressions>
 	<checkstyle>
-		<suppress checks="AccessModifierCheck" files="journal-service/src/main/java/com/liferay/journal/service/impl/JournalArticleLocalServiceImpl\.java" />
+		<suppress checks="ServiceImplAccessModifierCheck" files="journal-service/src/main/java/com/liferay/journal/service/impl/JournalArticleLocalServiceImpl\.java" />
 		<suppress checks="UpgradeProcessCheck" files="journal-service/src/main/java/com/liferay/journal/internal/upgrade/v6_1_0/JournalArticleSmallImageSourceUpgradeProcess\.java" />
 	</checkstyle>
 	<source-check>

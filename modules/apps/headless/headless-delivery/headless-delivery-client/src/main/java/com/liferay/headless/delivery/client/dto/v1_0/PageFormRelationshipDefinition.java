@@ -194,6 +194,27 @@ public class PageFormRelationshipDefinition implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Boolean getRepeatable() {
+		return repeatable;
+	}
+
+	public void setRepeatable(Boolean repeatable) {
+		this.repeatable = repeatable;
+	}
+
+	public void setRepeatable(
+		UnsafeSupplier<Boolean, Exception> repeatableUnsafeSupplier) {
+
+		try {
+			repeatable = repeatableUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean repeatable;
+
 	@Override
 	public PageFormRelationshipDefinition clone()
 		throws CloneNotSupportedException {

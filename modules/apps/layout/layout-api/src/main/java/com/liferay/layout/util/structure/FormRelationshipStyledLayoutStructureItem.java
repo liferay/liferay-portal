@@ -75,6 +75,8 @@ public class FormRelationshipStyledLayoutStructureItem
 
 				return _contentType;
 			}
+		).put(
+			"repeatable", _repeatable
 		);
 	}
 
@@ -88,12 +90,20 @@ public class FormRelationshipStyledLayoutStructureItem
 		return HashUtil.hash(0, getItemId());
 	}
 
+	public boolean isRepeatable() {
+		return _repeatable;
+	}
+
 	public void setButtonLabelJSONObject(JSONObject buttonLabelJSONObject) {
 		_buttonLabelJSONObject = buttonLabelJSONObject;
 	}
 
 	public void setContentType(String contentType) {
 		_contentType = contentType;
+	}
+
+	public void setRepeatable(boolean repeatable) {
+		_repeatable = repeatable;
 	}
 
 	@Override
@@ -108,9 +118,14 @@ public class FormRelationshipStyledLayoutStructureItem
 		if (itemConfigJSONObject.has("contentType")) {
 			setContentType(itemConfigJSONObject.getString("contentType"));
 		}
+
+		if (itemConfigJSONObject.has("repeatable")) {
+			setRepeatable(itemConfigJSONObject.getBoolean("repeatable"));
+		}
 	}
 
 	private JSONObject _buttonLabelJSONObject;
 	private String _contentType = "";
+	private boolean _repeatable = true;
 
 }

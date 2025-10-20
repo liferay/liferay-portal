@@ -55,7 +55,7 @@ export class EditCategoryPage {
 			'save-and-add-another-button'
 		);
 		this.saveButton = page.getByTestId('save-button');
-		this.sidebar = page.getByTestId('categorization-sidebar');
+		this.sidebar = page.getByTestId('cms-vertical-nav');
 	}
 
 	async addPropertyRow(key?: string, value?: string) {

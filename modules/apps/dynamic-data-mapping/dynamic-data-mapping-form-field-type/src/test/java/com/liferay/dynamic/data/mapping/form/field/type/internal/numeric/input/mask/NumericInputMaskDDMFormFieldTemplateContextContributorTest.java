@@ -61,13 +61,26 @@ public class NumericInputMaskDDMFormFieldTemplateContextContributorTest
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
 			createDDMFormFieldRenderingContext();
 
+		Map<String, Object> parameters =
+			_numericInputMaskDDMFormFieldTemplateContextContributor.
+				getParameters(
+					new DDMFormField(
+						"field", DDMFormFieldTypeConstants.NUMERIC),
+					ddmFormFieldRenderingContext);
+
+		Assert.assertEquals("", parameters.get("append"));
+		Assert.assertEquals("prefix", parameters.get("appendType"));
+		Assert.assertEquals(2, parameters.get("decimalPlaces"));
+		Assert.assertEquals(".", parameters.get("decimalSymbol"));
+		Assert.assertEquals("none", parameters.get("thousandsSeparator"));
+
 		ddmFormFieldRenderingContext.setValue(
 			JSONUtil.put(
-				"append", "$"
+				"append", "%"
 			).put(
-				"appendType", "prefix"
+				"appendType", "suffix"
 			).put(
-				"decimalPlaces", 2
+				"decimalPlaces", 3
 			).put(
 				"symbols",
 				JSONUtil.put(
@@ -77,17 +90,18 @@ public class NumericInputMaskDDMFormFieldTemplateContextContributorTest
 				)
 			).toString());
 
-		Map<String, Object> parameters =
+		parameters =
 			_numericInputMaskDDMFormFieldTemplateContextContributor.
 				getParameters(
 					new DDMFormField(
 						"field", DDMFormFieldTypeConstants.NUMERIC),
 					ddmFormFieldRenderingContext);
 
-		Assert.assertEquals("$", parameters.get("append"));
-		Assert.assertEquals("prefix", parameters.get("appendType"));
-		Assert.assertEquals(2, parameters.get("decimalPlaces"));
+		Assert.assertEquals("%", parameters.get("append"));
+		Assert.assertEquals("suffix", parameters.get("appendType"));
+		Assert.assertEquals(3, parameters.get("decimalPlaces"));
 		Assert.assertEquals(",", parameters.get("decimalSymbol"));
+		Assert.assertEquals("\'", parameters.get("thousandsSeparator"));
 
 		List<Object> decimalSymbols = (List<Object>)parameters.get(
 			"decimalSymbols");

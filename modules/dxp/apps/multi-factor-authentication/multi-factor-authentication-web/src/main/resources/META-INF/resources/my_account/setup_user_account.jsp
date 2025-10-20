@@ -30,7 +30,7 @@ SetupMFAChecker setupMFAChecker = (SetupMFAChecker)request.getAttribute(SetupMFA
 		<liferay-ui:error key="setupUserAccountFailed" message="user-account-setup-failed" />
 
 		<%
-		setupMFAChecker.includeSetup(request, response, selectedUser.getUserId());
+		setupMFAChecker.includeSetup(request, PipingServletResponseFactory.createPipingServletResponse(pageContext), selectedUser.getUserId());
 		%>
 
 	</div>

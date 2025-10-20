@@ -33,10 +33,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletRequestWrapper;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -174,31 +171,8 @@ public class JSPEngineShieldedContainerInitializer
 							FilterChain filterChain)
 						throws IOException, ServletException {
 
-						if (servletRequest instanceof HttpServletRequest) {
-							portalJSPServlet.service(
-								new HttpServletRequestWrapper(
-									(HttpServletRequest)servletRequest) {
-
-									@Override
-									public ServletContext getServletContext() {
-										return servletContext;
-									}
-
-								},
-								servletResponse);
-						}
-						else {
-							portalJSPServlet.service(
-								new ServletRequestWrapper(servletRequest) {
-
-									@Override
-									public ServletContext getServletContext() {
-										return servletContext;
-									}
-
-								},
-								servletResponse);
-						}
+						portalJSPServlet.service(
+							servletRequest, servletResponse);
 					}
 
 					@Override

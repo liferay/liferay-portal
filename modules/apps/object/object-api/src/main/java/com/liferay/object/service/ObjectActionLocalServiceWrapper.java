@@ -285,6 +285,14 @@ public class ObjectActionLocalServiceWrapper
 
 	@Override
 	public com.liferay.object.model.ObjectAction fetchObjectAction(
+		long objectDefinitionId, String name) {
+
+		return _objectActionLocalService.fetchObjectAction(
+			objectDefinitionId, name);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectAction fetchObjectAction(
 		String externalReferenceCode, long objectDefinitionId) {
 
 		return _objectActionLocalService.fetchObjectAction(

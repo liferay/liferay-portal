@@ -13,9 +13,14 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_7751 {
 
 	public void method(long companyId, String externalReferenceCode) {
-		CommerceCatalogLocalServiceUtil.fetchCommerceCatalogByExternalReferenceCode(companyId, externalReferenceCode);
-		_commerceCatalogLocalService.fetchCommerceCatalogByExternalReferenceCode(123, "test123");
-		_commerceCatalogLocalService.fetchCommerceCatalogByExternalReferenceCode(companyId, externalReferenceCode);
+		CommerceCatalogLocalServiceUtil.
+			fetchCommerceCatalogByExternalReferenceCode(
+				companyId, externalReferenceCode);
+		_commerceCatalogLocalService.
+			fetchCommerceCatalogByExternalReferenceCode(123, "test123");
+		_commerceCatalogLocalService.
+			fetchCommerceCatalogByExternalReferenceCode(
+				companyId, externalReferenceCode);
 	}
 
 	@Reference

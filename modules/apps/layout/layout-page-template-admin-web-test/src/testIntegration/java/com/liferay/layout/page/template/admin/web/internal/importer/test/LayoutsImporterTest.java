@@ -726,8 +726,8 @@ public class LayoutsImporterTest {
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(
 			_serviceContext1, RandomTestUtil.randomString());
 
-		_updateLayoutStyleBookEntryId(
-			layoutPageTemplateEntry, styleBookEntry.getStyleBookEntryId());
+		_updateLayoutStyleBookEntryERC(
+			layoutPageTemplateEntry, styleBookEntry.getExternalReferenceCode());
 
 		File file = _layoutsExporter.exportLayoutPageTemplateEntries(
 			new long[] {layoutPageTemplateEntry.getLayoutPageTemplateEntryId()},
@@ -766,9 +766,9 @@ public class LayoutsImporterTest {
 
 		_assertFragmentEntryLink(fragmentEntry, curLayoutPageTemplateEntry);
 
-		_assertStyleBookEntryId(
+		_assertStyleBookEntryERC(
 			curLayoutPageTemplateEntry,
-			curStyleBookEntry.getStyleBookEntryId());
+			curStyleBookEntry.getExternalReferenceCode());
 	}
 
 	@Test
@@ -1880,20 +1880,20 @@ public class LayoutsImporterTest {
 			curFragmentStyledLayoutStructureItem);
 	}
 
-	private void _assertStyleBookEntryId(
+	private void _assertStyleBookEntryERC(
 			LayoutPageTemplateEntry layoutPageTemplateEntry,
-			long styleBookEntryId)
+			String styleBookEntryERC)
 		throws Exception {
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
 
-		Assert.assertEquals(styleBookEntryId, layout.getStyleBookEntryId());
+		Assert.assertEquals(styleBookEntryERC, layout.getStyleBookEntryERC());
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
 		Assert.assertEquals(
-			styleBookEntryId, draftLayout.getStyleBookEntryId());
+			styleBookEntryERC, draftLayout.getStyleBookEntryERC());
 	}
 
 	private ContainerStyledLayoutStructureItem _getContainerLayoutStructureItem(
@@ -2089,9 +2089,9 @@ public class LayoutsImporterTest {
 			_getLayoutPageTemplateEntryKey(layoutsImporterResultEntries));
 	}
 
-	private void _updateLayoutStyleBookEntryId(
+	private void _updateLayoutStyleBookEntryERC(
 			LayoutPageTemplateEntry layoutPageTemplateEntry,
-			long styleBookEntryId)
+			String styleBookEntryERC)
 		throws Exception {
 
 		Layout layout = _layoutLocalService.getLayout(
@@ -2100,12 +2100,12 @@ public class LayoutsImporterTest {
 		Layout draftLayout = layout.fetchDraftLayout();
 
 		ContentLayoutTestUtil.publishLayout(
-			_layoutLocalService.updateStyleBookEntryId(
+			_layoutLocalService.updateStyleBookEntryERC(
 				draftLayout.getGroupId(), draftLayout.isPrivateLayout(),
-				draftLayout.getLayoutId(), styleBookEntryId),
+				draftLayout.getLayoutId(), styleBookEntryERC),
 			layout);
 
-		_assertStyleBookEntryId(layoutPageTemplateEntry, styleBookEntryId);
+		_assertStyleBookEntryERC(layoutPageTemplateEntry, styleBookEntryERC);
 	}
 
 	private void _validateColumnLayoutStructureItem(

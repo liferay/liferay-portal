@@ -27,7 +27,6 @@ import com.liferay.object.web.internal.object.definitions.display.context.util.O
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -241,11 +240,8 @@ public class ObjectDefinitionsActionsDisplayContext
 			if ((StringUtil.equals(
 					objectActionTrigger.getKey(),
 					ObjectActionTriggerConstants.KEY_ON_AFTER_LOGIN) &&
-				 (!FeatureFlagManagerUtil.isEnabled(
-					 objectDefinition.getCompanyId(), "LPD-59081") ||
-				  !StringUtil.equals(
-					  objectDefinition.getClassName(),
-					  User.class.getName()))) ||
+				 !StringUtil.equals(
+					 objectDefinition.getClassName(), User.class.getName())) ||
 				(StringUtil.equals(
 					objectActionTrigger.getKey(),
 					ObjectActionTriggerConstants.KEY_ON_AFTER_ROOT_UPDATE) &&

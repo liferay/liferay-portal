@@ -103,6 +103,13 @@ public class ValidatorTest {
 	}
 
 	@Test
+	public void testIsHex() {
+		testValidHex(
+			new String[] {"BAADF00D", "cafebabe", "0123456789abcdefABCDEF"},
+			true);
+	}
+
+	@Test
 	public void testIsInvalidEmailAddress() throws Exception {
 		testValidEmailAddreses(
 			new String[] {
@@ -150,6 +157,16 @@ public class ValidatorTest {
 	public void testIsInvalidFilePathWithParentDirectories() throws Exception {
 		testValidFilePaths(
 			new String[] {null, "", "\u0000", "a\u0000/../a"}, true, false);
+	}
+
+	@Test
+	public void testIsInvalidHex() {
+		testValidHex(
+			new String[] {
+				null, "", "BAADBED", "BAADF00D  ", "\n\rcafebabe", "//", "::",
+				"@@", "GG", "``", "gg"
+			},
+			false);
 	}
 
 	@Test
@@ -661,6 +678,10 @@ public class ValidatorTest {
 
 			Assert.assertEquals(valid, isFilePath);
 		}
+	}
+
+	protected void testValidHex(String[] hexStrings, boolean valid) {
+		testIsValidByMethodName("isHex", hexStrings, valid);
 	}
 
 	protected void testValidHostNames(String[] hostNames, boolean valid) {

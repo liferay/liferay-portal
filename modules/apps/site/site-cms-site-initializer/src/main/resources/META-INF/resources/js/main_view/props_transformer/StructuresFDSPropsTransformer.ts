@@ -9,7 +9,6 @@ import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import deleteStructureAction from './actions/deleteStructureAction';
 import importStructureAction from './actions/importStructureAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
-import NameRenderer from './cell_renderers/NameRenderer';
 import StructureScopeRenderer from './cell_renderers/StructureScopeRenderer';
 import TypeRenderer from './cell_renderers/TypeRenderer';
 
@@ -25,11 +24,6 @@ export default function StructuresFDSPropsTransformer({
 				{
 					component: AuthorRenderer,
 					name: 'authorTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-				{
-					component: NameRenderer,
-					name: 'nameTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{

@@ -48,6 +48,7 @@ export default async function bundleJavaScriptMain(
 			})),
 			{in: path.resolve(mainEntryPoint), out: 'index'},
 		],
+		external: ['ckeditor5'],
 		format: 'esm',
 		loader: {
 			'.js': 'jsx',

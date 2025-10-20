@@ -33,6 +33,12 @@ export class HeadlessBuilderPage {
 			.click();
 	}
 
+	async openApplicationAndEdit(title: string) {
+		await this.goto();
+		await this.openApplicationActions(title);
+		await this.page.getByRole('menuitem', {name: 'Edit'}).click();
+	}
+
 	async deleteApplication(title: string) {
 		await this.openApplicationActions(title);
 		await this.page.getByRole('menuitem', {name: 'Delete'}).click();

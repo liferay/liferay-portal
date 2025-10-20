@@ -14,8 +14,8 @@ public class EmailAddressExternalReferenceCodeUpgradeProcess
 	extends BaseExternalReferenceCodeUpgradeProcess {
 
 	@Override
-	protected String[][] getTableAndPrimaryKeyColumnNames() {
-		return new String[][] {{"EmailAddress", "emailAddressId"}};
+	protected String[] getTableNames() {
+		return new String[] {"EmailAddress"};
 	}
 
 }

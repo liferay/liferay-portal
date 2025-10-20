@@ -143,13 +143,12 @@ public class SharingDLViewFileVersionDisplayContextTest {
 			FileEntry fileEntry, boolean signedIn)
 		throws PortalException {
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_REQUEST,
 			new MockLiferayPortletRenderRequest());
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_RESPONSE,
 			new MockLiferayPortletRenderResponse());
 
@@ -165,13 +164,12 @@ public class SharingDLViewFileVersionDisplayContextTest {
 		themeDisplay.setSignedIn(signedIn);
 		themeDisplay.setSiteGroupId(_group.getGroupId());
 
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
+		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext =
 			_dlDisplayContextFactory.getDLViewFileVersionDisplayContext(
 				new TestParentDLViewFileVersionDisplayContext(),
-				mockHttpServletRequest, new MockHttpServletResponse(),
+				httpServletRequest, new MockHttpServletResponse(),
 				fileEntry.getFileVersion());
 
 		return dlViewFileVersionDisplayContext.getActionDropdownItems();

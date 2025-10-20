@@ -65,10 +65,8 @@ public class SiteNavigationServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"SiteNavigationMenuItem", "siteNavigationMenuItemId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"SiteNavigationMenuItem"};
 				}
 
 			});
@@ -78,10 +76,8 @@ public class SiteNavigationServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"SiteNavigationMenu", "siteNavigationMenuId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"SiteNavigationMenu"};
 				}
 
 			});

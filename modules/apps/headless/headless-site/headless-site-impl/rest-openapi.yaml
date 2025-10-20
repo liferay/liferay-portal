@@ -66,7 +66,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.site.client', and version '1.0.25'."
+        'com.liferay.headless.site.client', and version '1.0.26'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -76,6 +76,7 @@ openapi: 3.0.1
 paths:
     "/sites/{siteId}":
         delete:
+            deprecated: true
             description:
                 Deletes a site and all of its associated content.
             operationId: deleteSite
@@ -93,6 +94,7 @@ paths:
                         application/xml: {}
             tags: ["Site"]
         get:
+            deprecated: true
             operationId: getSite
             parameters:
                 -   in: path
@@ -113,6 +115,7 @@ paths:
             tags: ["Site"]
     /sites:
         get:
+            deprecated: true
             description:
                 Retrieves the sites. Results can be paginated, filtered, searched, and sorted.
             operationId: getSitesPage
@@ -150,6 +153,7 @@ paths:
                         default response
             tags: ["Site"]
         post:
+            deprecated: true
             description:
                 Adds a new site
             operationId: postSite
@@ -174,6 +178,7 @@ paths:
                         default response
             tags: ["Site"]
         put:
+            deprecated: true
             description:
                 Updates a site and all of its associated content.
             operationId: putSite
@@ -197,6 +202,7 @@ paths:
             tags: ["Site"]
     /sites/by-external-reference-code/{externalReferenceCode}:
         delete:
+            deprecated: true
             description:
                 Deletes a site and all of its associated content.
             operationId: deleteSiteByExternalReferenceCode
@@ -213,6 +219,7 @@ paths:
                         application/xml: {}
             tags: ["Site"]
         get:
+            deprecated: true
             operationId: getSiteByExternalReferenceCode
             parameters:
                 -   in: path
@@ -233,6 +240,7 @@ paths:
                         default response
             tags: ["Site"]
         put:
+            deprecated: true
             description:
                 Adds or update a new site
             operationId: putSiteByExternalReferenceCode
@@ -265,6 +273,7 @@ paths:
             tags: ["Site"]
     /sites/by-external-reference-code/{externalReferenceCode}/site-initializer:
         get:
+            deprecated: true
             operationId: getSiteByExternalReferenceCodeSiteInitializer
             parameters:
                 -   in: path
@@ -282,6 +291,7 @@ paths:
             tags: ["Site"]
     /sites/site-initializer:
         post:
+            deprecated: true
             description:
                 Adds a new site based on a multipart/form-data
             operationId: postSiteSiteInitializer

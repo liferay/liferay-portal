@@ -102,7 +102,7 @@ const Overview: React.FC<IOverviewProps> = ({
 					knownIndividualCount={knownIndividualCount}
 				/>
 
-				{segmentType === SegmentTypes.Dynamic && (
+				{segmentType === SegmentTypes.Batch && (
 					<CriteriaCard
 						criteriaString={criteriaString}
 						includeAnonymousUsers={includeAnonymousUsers}

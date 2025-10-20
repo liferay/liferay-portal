@@ -12,6 +12,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
@@ -321,15 +322,15 @@ public class DepotEntryGroupRelLocalServiceTest {
 			DepotConstants.TYPE_ASSET_LIBRARY);
 
 		Group group = _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			null, 0, 0,
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0, 0,
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			GroupConstants.TYPE_SITE_OPEN, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, true,
-			ServiceContextTestUtil.getServiceContext());
+			GroupConstants.TYPE_SITE_OPEN, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
+			true, ServiceContextTestUtil.getServiceContext());
 
 		int depotEntryGroupRelsCount =
 			_depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount();

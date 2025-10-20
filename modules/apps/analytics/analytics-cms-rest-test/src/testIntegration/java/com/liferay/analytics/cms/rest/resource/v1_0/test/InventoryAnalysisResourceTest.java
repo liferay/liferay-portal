@@ -176,7 +176,7 @@ public class InventoryAnalysisResourceTest
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_WEB_CONTENT", testCompany.getCompanyId());
+					"L_CMS_BASIC_WEB_CONTENT", testCompany.getCompanyId());
 
 		_objectEntries.add(
 			ObjectEntryTestUtil.addObjectEntry(

@@ -1,0 +1,50 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.petra.string.StringBundler;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author Alan Huang
+ */
+public class ResultSetGetCall {
+
+	protected List<Long> method(Connection connection) throws Exception {
+		List<Long> plids = new ArrayList<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select LayoutPageTemplateStructure.ctCollectionId, ",
+					"LayoutPageTemplateStructure.",
+					"layoutPageTemplateStructureId, ",
+					"LayoutPageTemplateStructure.classPK from ",
+					"LayoutPageTemplateStructure inner join Layout on ",
+					"LayoutPageTemplateStructure.ctCollectionId = ",
+					"Layout.ctCollectionId and ",
+					"LayoutPageTemplateStructure.classPK = Layout.plid and ",
+					"Layout.type_ = ?"))) {
+
+			preparedStatement.setString(1, "portlet");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				plids.add(
+					resultSet.getLong("LayoutPageTemplateStructure.classPK"));
+			}
+
+			return plids;
+		}
+	}
+
+}

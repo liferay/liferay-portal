@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnectionUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
@@ -66,7 +65,7 @@ public abstract class BaseDBPartitionTestCase {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	public static void assume() {
-		Assume.assumeTrue(DBPartition.isPartitionEnabled());
+		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		if (db == null) {
 			db = DBManagerUtil.getDB();

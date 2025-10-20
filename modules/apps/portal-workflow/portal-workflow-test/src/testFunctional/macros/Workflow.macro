@@ -271,8 +271,6 @@ definition {
 		Button.clickDone();
 
 		Alert.viewSuccessMessage();
-
-		WaitForLiferayEvent.initializeLiferayEventLog();
 	}
 
 	@summary = "Default summary"

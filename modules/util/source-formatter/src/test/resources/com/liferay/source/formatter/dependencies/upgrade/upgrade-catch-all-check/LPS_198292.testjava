@@ -13,9 +13,15 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_198292 {
 
 	public void method(long companyId, String externalReferenceCode) {
-		AssetVocabularyLocalServiceUtil.fetchAssetVocabularyByExternalReferenceCode(123, externalReferenceCode);
-		AssetVocabularyLocalServiceUtil.fetchAssetVocabularyByExternalReferenceCode(companyId, externalReferenceCode);
-		_assetVocabularyLocalService.fetchAssetVocabularyByExternalReferenceCode(companyId, externalReferenceCode);
+		AssetVocabularyLocalServiceUtil.
+			fetchAssetVocabularyByExternalReferenceCode(
+				123, externalReferenceCode);
+		AssetVocabularyLocalServiceUtil.
+			fetchAssetVocabularyByExternalReferenceCode(
+				companyId, externalReferenceCode);
+		_assetVocabularyLocalService.
+			fetchAssetVocabularyByExternalReferenceCode(
+				companyId, externalReferenceCode);
 	}
 
 	@Reference

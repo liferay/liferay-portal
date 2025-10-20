@@ -108,7 +108,6 @@ AUI.add(
 			user: Liferay.Language.get('user'),
 			userId: Liferay.Language.get('user-id'),
 			userNotification: Liferay.Language.get('user-notification'),
-			velocity: Liferay.Language.get('velocity'),
 			week: Liferay.Language.get('week'),
 			year: Liferay.Language.get('year'),
 		};

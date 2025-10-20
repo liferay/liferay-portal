@@ -143,22 +143,27 @@ exports[`DataSourceList should render 1`] = `
                   </div>
                 </div>
               </div>
-              <ul
-                class="nav-root navbar-nav"
-                role="tablist"
+              <div
+                class="dropdown"
               >
-                <li
-                  class="nav-item"
-                  role="presentation"
+                <button
+                  aria-controls="clay-dropdown-menu-2"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  class="dropdown-toggle btn btn-primary"
+                  type="button"
                 >
-                  <a
-                    class="button-root btn btn-sm btn-primary"
-                    href="/workspace/23/settings/data-source/add"
+                  Add Data Source
+                  <svg
+                    class="lexicon-icon lexicon-icon-caret-bottom ml-2"
+                    role="presentation"
                   >
-                    Add Data Source
-                  </a>
-                </li>
-              </ul>
+                    <use
+                      href="#caret-bottom"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </nav>
         </div>
@@ -180,7 +185,7 @@ exports[`DataSourceList should render 1`] = `
                     <span
                       class="text-truncate"
                     >
-                      Name
+                      Data Source Name
                     </span>
                     <span
                       class="inline-item inline-item-after"
@@ -206,19 +211,24 @@ exports[`DataSourceList should render 1`] = `
                     <span
                       class="text-truncate"
                     >
-                      Source
+                      Type
                     </span>
                   </a>
                 </th>
                 <th
                   class="table-head-title"
                 >
-                  Contacts
+                  Status
                 </th>
                 <th
                   class="table-head-title"
                 >
-                  Analytics
+                  Individuals Data
+                </th>
+                <th
+                  class="table-head-title"
+                >
+                  Analytics Data
                 </th>
                 <th
                   class="table-head-title"
@@ -233,11 +243,6 @@ exports[`DataSourceList should render 1`] = `
                       Date Added
                     </span>
                   </a>
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Status
                 </th>
               </tr>
             </thead>
@@ -263,6 +268,17 @@ exports[`DataSourceList should render 1`] = `
                   .CSV
                 </td>
                 <td>
+                  <div
+                    class="label label-root label-success label-uppercase"
+                  >
+                    <span
+                      class="label-item"
+                    >
+                      Active
+                    </span>
+                  </div>
+                </td>
+                <td>
                   <svg
                     class="lexicon-icon lexicon-icon-check icon-root"
                     role="presentation"
@@ -275,17 +291,6 @@ exports[`DataSourceList should render 1`] = `
                 <td />
                 <td>
                   Jul 8, 2018
-                </td>
-                <td>
-                  <div
-                    class="label label-root label-success label-uppercase"
-                  >
-                    <span
-                      class="label-item"
-                    >
-                      Active
-                    </span>
-                  </div>
                 </td>
               </tr>
             </tbody>
@@ -301,7 +306,7 @@ exports[`DataSourceList should render 1`] = `
               class="dropdown dropdown-root pagination-items-per-page"
             >
               <button
-                aria-controls="clay-dropdown-menu-2"
+                aria-controls="clay-dropdown-menu-3"
                 aria-expanded="false"
                 aria-haspopup="true"
                 class="dropdown-toggle button-root btn btn-sm btn-secondary"

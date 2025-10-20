@@ -16,7 +16,7 @@ ContentPageEditorDisplayContext contentPageEditorDisplayContext = (ContentPageEd
 />
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/layout-content-page-editor-web/page_editor/app/components/App.css") %>' rel="stylesheet" />
+	<aui:link hashedFile="<%= true %>" href="layout-content-page-editor-web/page_editor/app/components/App.css" rel="stylesheet" />
 </liferay-util:html-top>
 
 <div id="<portlet:namespace />pageEditor">

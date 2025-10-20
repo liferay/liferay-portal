@@ -7,6 +7,7 @@ import {IInternalRenderer, IView} from '@liferay/frontend-data-set-web';
 import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
+import StatusLabel from '../../common/components/StatusLabel';
 import {openAssetUsageListModal} from '../../common/components/asset_usage/utils';
 import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
 import formatActionURL from '../../common/utils/formatActionURL';
@@ -14,6 +15,7 @@ import CategoriesAndTagsModalContent from '../categorization/modal/CategoriesAnd
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
 import {permissionsBulkAction} from '../default_permission/BulkPermissionModalContent';
 import DefaultPermissionModalContent from '../default_permission/DefaultPermissionModalContent';
+import openResetAssetPermissionModal from '../default_permission/ResetPermissionModalContent';
 import AssetTypeInfoPanel from '../info_panel/AssetTypeInfoPanelContent';
 import AssetNavigationModalContent from '../modal/asset_navigation_view/AssetNavigationModalContent';
 import createAssetAction from './actions/createAssetAction';
@@ -26,7 +28,6 @@ import multipleFilesUploadAction from './actions/multipleFilesUploadAction';
 import shareAction from './actions/shareAction';
 import {triggerAssetBulkAction} from './actions/triggerAssetBulkAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
-import NameRenderer from './cell_renderers/NameRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import SpaceRenderer from './cell_renderers/SpaceRenderer';
 import TypeRenderer from './cell_renderers/TypeRenderer';
@@ -87,11 +88,6 @@ export default function AssetsFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: NameRenderer,
-					name: 'nameTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-				{
 					component: ({actions, itemData, options, value}) =>
 						SimpleActionLinkRenderer({
 							actions,
@@ -113,6 +109,11 @@ export default function AssetsFDSPropsTransformer({
 					name: 'typeTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
+				{
+					component: ({value}) => StatusLabel(value),
+					name: 'statusTableCellRenderer',
+					type: 'internal',
+				} as IInternalRenderer,
 			],
 		},
 		infoPanelComponent: (items: {items: ISearchAssetObjectEntry[]}) => (
@@ -122,7 +123,10 @@ export default function AssetsFDSPropsTransformer({
 			/>
 		),
 		itemsActions: itemsActions.map((action) => {
-			if (action?.data?.id === 'default-permissions') {
+			if (
+				action?.data?.id === 'default-permissions' ||
+				action?.data?.id === 'edit-and-propagate-default-permissions'
+			) {
 				return {
 					...action,
 					isVisible: (item: any) =>
@@ -192,7 +196,10 @@ export default function AssetsFDSPropsTransformer({
 			items: any;
 			loadData: () => {};
 		}) {
-			if (action?.data?.id === 'default-permissions') {
+			if (
+				action?.data?.id === 'default-permissions' ||
+				action?.data?.id === 'edit-and-propagate-default-permissions'
+			) {
 				openModal({
 					containerProps: {
 						className: '',
@@ -205,6 +212,9 @@ export default function AssetsFDSPropsTransformer({
 						DefaultPermissionModalContent({
 							...(additionalProps.defaultPermissionAdditionalProps ||
 								{}),
+							allowPropagate:
+								action.data.id ===
+								'edit-and-propagate-default-permissions',
 							apiURL: otherProps.apiURL,
 							classExternalReferenceCode:
 								itemData.embedded.externalReferenceCode,
@@ -238,6 +248,13 @@ export default function AssetsFDSPropsTransformer({
 					size: 'full-screen',
 					title: action.label,
 					url: formatActionURL(itemData, action.href),
+				});
+			}
+			else if (action?.data?.id === 'reset-to-default-permissions') {
+				openResetAssetPermissionModal({
+					className: itemData.entryClassName,
+					classPK: itemData.embedded.id,
+					loadData,
 				});
 			}
 			else if (action?.data?.id === 'share') {

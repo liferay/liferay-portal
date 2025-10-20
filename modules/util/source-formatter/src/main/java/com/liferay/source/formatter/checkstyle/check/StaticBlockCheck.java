@@ -32,10 +32,10 @@ public class StaticBlockCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_CALL);
 
-		if (methodCallDetailASTList.isEmpty()) {
+		if (methodCallDetailASTs.isEmpty()) {
 			return;
 		}
 
@@ -45,7 +45,7 @@ public class StaticBlockCheck extends BaseCheck {
 		Map<String, DetailAST[]> variableDefMap = _getVariableDefMap(
 			detailAST, identDetailASTMap);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			_checkMethodCall(
 				methodCallDetailAST, classObjectNames, identDetailASTMap,
 				variableDefMap);
@@ -65,10 +65,10 @@ public class StaticBlockCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> variableDetailASTList = identDetailASTMap.get(
+		List<DetailAST> variableDetailASTs = identDetailASTMap.get(
 			variableName);
 
-		DetailAST firstUseVariableDetailAST = variableDetailASTList.get(0);
+		DetailAST firstUseVariableDetailAST = variableDetailASTs.get(0);
 
 		DetailAST parentDetailAST = firstUseVariableDetailAST.getParent();
 
@@ -145,10 +145,10 @@ public class StaticBlockCheck extends BaseCheck {
 
 		Map<String, List<DetailAST>> identDetailASTMap = new HashMap<>();
 
-		List<DetailAST> identDetailASTList = getAllChildTokens(
+		List<DetailAST> identDetailASTs = getAllChildTokens(
 			staticInitDetailAST, true, TokenTypes.IDENT);
 
-		for (DetailAST identDetailAST : identDetailASTList) {
+		for (DetailAST identDetailAST : identDetailASTs) {
 			List<DetailAST> list = identDetailASTMap.get(
 				identDetailAST.getText());
 
@@ -190,19 +190,19 @@ public class StaticBlockCheck extends BaseCheck {
 
 		Map<String, DetailAST[]> variableDefMap = new HashMap<>();
 
-		List<DetailAST> variableDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> variableDefinitionDetailASTs = getAllChildTokens(
 			staticInitDetailAST, true, TokenTypes.VARIABLE_DEF);
 
 		for (DetailAST variableDefinitionDetailAST :
-				variableDefinitionDetailASTList) {
+				variableDefinitionDetailASTs) {
 
 			String name = getName(variableDefinitionDetailAST);
 
-			List<DetailAST> identDetailASTList = identDetailASTMap.get(name);
+			List<DetailAST> identDetailASTs = identDetailASTMap.get(name);
 
-			DetailAST firstIdentDetailAST = identDetailASTList.get(0);
-			DetailAST lastIdentDetailAST = identDetailASTList.get(
-				identDetailASTList.size() - 1);
+			DetailAST firstIdentDetailAST = identDetailASTs.get(0);
+			DetailAST lastIdentDetailAST = identDetailASTs.get(
+				identDetailASTs.size() - 1);
 
 			variableDefMap.put(
 				name,

@@ -984,18 +984,19 @@ public interface LayoutModel
 	public void setColorSchemeId(String colorSchemeId);
 
 	/**
-	 * Returns the style book entry ID of this layout.
+	 * Returns the style book entry erc of this layout.
 	 *
-	 * @return the style book entry ID of this layout
+	 * @return the style book entry erc of this layout
 	 */
-	public long getStyleBookEntryId();
+	@AutoEscape
+	public String getStyleBookEntryERC();
 
 	/**
-	 * Sets the style book entry ID of this layout.
+	 * Sets the style book entry erc of this layout.
 	 *
-	 * @param styleBookEntryId the style book entry ID of this layout
+	 * @param styleBookEntryERC the style book entry erc of this layout
 	 */
-	public void setStyleBookEntryId(long styleBookEntryId);
+	public void setStyleBookEntryERC(String styleBookEntryERC);
 
 	/**
 	 * Returns the css of this layout.

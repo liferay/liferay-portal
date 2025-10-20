@@ -51,7 +51,7 @@ public class EditCategorizationMVCActionCommand
 
 		_groupService.updateGroup(
 			liveGroupId, liveGroup.getParentGroupId(), liveGroup.getNameMap(),
-			liveGroup.getDescriptionMap(), liveGroup.getType(),
+			liveGroup.getDescriptionMap(), liveGroup.getType(), null,
 			liveGroup.isManualMembership(),
 			liveGroup.getMembershipRestriction(), liveGroup.getFriendlyURL(),
 			liveGroup.isInheritContent(), liveGroup.isActive(), serviceContext);

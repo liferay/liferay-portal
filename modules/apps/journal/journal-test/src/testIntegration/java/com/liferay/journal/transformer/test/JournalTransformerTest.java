@@ -378,7 +378,7 @@ public class JournalTransformerTest {
 				Constants.VIEW));
 
 		Assert.assertEquals(
-			"2022-11-26",
+			"",
 			_transformMethod.invoke(
 				_journalTransformer, _journalArticle, null, _journalHelper,
 				LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
@@ -393,7 +393,7 @@ public class JournalTransformerTest {
 	@Test
 	public void testLocalTransformerWithPartialTranslation() throws Exception {
 		Assert.assertEquals(
-			"2022-11-26",
+			"",
 			_transformMethod.invoke(
 				_journalTransformer, _journalArticle, null, _journalHelper,
 				LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
@@ -953,7 +953,7 @@ public class JournalTransformerTest {
 	private ThemeLocalService _themeLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.journal.internal.transformer.RegexTransformerListener"
+		filter = "component.name=com.liferay.journal.internal.template.parser.RegexTransformerListener"
 	)
 	private TransformerListener _transformerListener;
 

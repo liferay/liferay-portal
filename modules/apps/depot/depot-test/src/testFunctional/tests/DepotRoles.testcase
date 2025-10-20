@@ -23,6 +23,10 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
+			User.logoutAndLoginPG(
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@liferay.com");
+
 			JSONDepot.deleteDepot(depotName = "Test Depot Name");
 
 			Site.tearDownCP();
@@ -125,7 +129,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanAddSiteMemberWithPermissionsAfterConnectingSite {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPD-17564=false${line.separator}jsonws.web.service.paths.excludes=";
 
 		HeadlessSite.addSite(siteName = "Site Name");
 
@@ -178,6 +182,152 @@ definition {
 
 		AssertTextEquals(
 			key_itemName = "Asset Library Connected Site Member",
+			locator1 = "ListGroupItem#ITEM_SUB_INFO",
+			value1 = "This role is automatically assigned.");
+
+		JSONWebcontent.addWebContent(
+			content = "WC WebContent Depot",
+			groupName = "Test Depot Name",
+			site = "false",
+			title = "WC WebContent Title");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Site Name",
+			layoutName = "Test Page Name",
+			widgetName = "Web Content Display");
+
+		Navigator.openSitePage(
+			pageName = "Test Page Name",
+			siteName = "Site Name");
+
+		WebContentDisplayPortlet.selectWebContent(
+			depotName = "Test Depot Name",
+			webContentTitle = "WC WebContent Title");
+
+		Navigator.openSitePage(
+			pageName = "Test Page Name",
+			siteName = "Site Name");
+
+		WebContentDisplayPortlet.gotoPermissions(webContentTitle = "WC WebContent Title");
+
+		Role.removePermissionPG(
+			permissionDefinitionKey = "CONTENT_PERMISSIONS_VIEW_CHECKBOX",
+			roleTitle = "Guest");
+
+		Navigator.openSitePage(
+			pageName = "Test Page Name",
+			siteName = "Site Name");
+
+		WebContentDisplayPortlet.gotoPermissions(webContentTitle = "WC WebContent Title");
+
+		Role.removePermissionPG(
+			permissionDefinitionKey = "INLINE_PERMISSIONS_VIEW_CHECKBOX",
+			roleTitle = "User");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Navigator.openSitePage(
+			pageName = "Test Page Name",
+			siteName = "Site Name");
+
+		AssertElementNotPresent(
+			key_content = "[normalize-space(text())='WC WebContent Depot']",
+			locator1 = "WCD#WEB_CONTENT_CONTENT_ANY");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		DepotNavigator.openDepotAdmin();
+
+		DepotNavigator.gotoDepotPortlet(
+			depotName = "Test Depot Name",
+			portlet = "Web Content");
+
+		PermissionsInline.gotoWCArticle(webContentTitle = "WC WebContent Title");
+
+		for (var permissionDefinitionKey : list "INLINE_PERMISSIONS_UPDATE_CHECKBOX,INLINE_PERMISSIONS_VIEW_CHECKBOX") {
+			Role.definePermissionPG(
+				permissionDefinitionKey = ${permissionDefinitionKey},
+				roleTitle = "asset-library-connected-site-member");
+		}
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Navigator.openSitePage(
+			pageName = "Test Page Name",
+			siteName = "Site Name");
+
+		WebContentDisplayPortlet.viewContent(
+			webContentContent = "WC WebContent Depot",
+			webContentTitle = "WC WebContent Title");
+
+		WebContentDisplayPortletNavigator.gotoArticleEllipsisMenu(webContentTitle = "WC WebContent Title");
+
+		MenuItem.viewPresent(menuItem = "Edit Web Content");
+	}
+
+	@description = "This ensures that the Asset Library Connected Site Members role does not appear in user roles even after it is automatically assigned to a connected site member. This test also covers permissions and makes sure the library asset can be updated by the role."
+	@priority = 5
+	@refactordone
+	test CanAddSiteMemberWithPermissionsAfterConnectingSiteWithCMSEnabled {
+		property custom.properties = "feature.flag.LPD-17564=true${line.separator}jsonws.web.service.paths.excludes=";
+
+		HeadlessSite.addSite(siteName = "Site Name");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Site Name",
+			layoutName = "Test Page Name");
+
+		JSONDepot.connectSite(
+			depotName = "Test Depot Name",
+			groupName = "Site Name");
+
+		JSONUser.addUser(
+			userEmailAddress = "user1@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "user1@liferay.com");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		Site.openSiteSettingsAdmin(siteURLKey = "site-name");
+
+		Site.manageMembershipOptions(allowManualMembershipManagement = "true");
+
+		User.openUsersAdmin();
+
+		User.editUserSiteCP(
+			siteName = "Site Name",
+			userScreenName = "usersn");
+
+		User.openUsersAdmin();
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoRoles();
+
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_DEPOT_ROLE",
+			value1 = "This user is not assigned any asset library or space roles.");
+
+		Role.openRolesAdmin();
+
+		RoleNavigator.gotoRoleType(roleType = "Space");
+
+		AssertTextEquals(
+			key_itemName = "Space Connected Site Member",
 			locator1 = "ListGroupItem#ITEM_SUB_INFO",
 			value1 = "This role is automatically assigned.");
 
@@ -583,7 +733,7 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanViewExistingSiteMemberAfterConnectingSite {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPD-17564=false${line.separator}jsonws.web.service.paths.excludes=";
 
 		JSONUser.addUser(
 			userEmailAddress = "user1@liferay.com",
@@ -648,6 +798,78 @@ definition {
 
 		AssertElementNotPresent(
 			key_roleTitle = "Asset Library Connected Site Member",
+			locator1 = "UsersAndOrganizationsEditUser#DEPOT_ROLES_TITLE");
+	}
+
+	@description = "This ensures that the Asset Library Connected Site Members role does not appear in user roles even it is automatically assigned to an existing site member after connecting site."
+	@priority = 4
+	@refactordone
+	test CanViewExistingSiteMemberAfterConnectingSiteWithCMSEnabled {
+		property custom.properties = "feature.flag.LPD-17564=true${line.separator}jsonws.web.service.paths.excludes=";
+
+		JSONUser.addUser(
+			userEmailAddress = "user1@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "user1@liferay.com");
+
+		HeadlessSite.addSite(siteName = "Site Name");
+
+		JSONUser.addUserToSite(
+			groupName = "Site Name",
+			userEmailAddress = "user1@liferay.com");
+
+		JSONDepot.connectSite(
+			depotName = "Test Depot Name",
+			groupName = "Site Name");
+
+		User.openUsersAdmin();
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoRoles();
+
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_DEPOT_ROLE",
+			value1 = "This user is not assigned any asset library or space roles.");
+
+		AssertClick(
+			key_roleType = "DepotRole",
+			locator1 = "UsersAndOrganizationsEditUser#ROLES_SELECT_LINK",
+			value1 = "SELECT");
+
+		SelectFrame(locator1 = "IFrame#SELECT_DEPOT_ROLE");
+
+		AssertTextEquals(
+			locator1 = "Message#EMPTY_INFO_TAGLIB",
+			value1 = "No asset libraries or spaces were found.");
+
+		User.openUsersAdmin();
+
+		User.editUserAssetLibraryCP(
+			depotName = "Test Depot Name",
+			userScreenName = "usersn");
+
+		User.openUsersAdmin();
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		UserNavigator.gotoRoles();
+
+		AssertClick(
+			key_roleType = "DepotRole",
+			locator1 = "UsersAndOrganizationsEditUser#ROLES_SELECT_LINK",
+			value1 = "SELECT");
+
+		SelectFrame(locator1 = "IFrame#SELECT_DEPOT_ROLE");
+
+		AssertElementNotPresent(
+			key_roleTitle = "Space Connected Site Member",
 			locator1 = "UsersAndOrganizationsEditUser#DEPOT_ROLES_TITLE");
 	}
 

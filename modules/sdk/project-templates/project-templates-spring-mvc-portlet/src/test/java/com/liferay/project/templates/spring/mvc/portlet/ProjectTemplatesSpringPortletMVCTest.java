@@ -49,6 +49,7 @@ public class ProjectTemplatesSpringPortletMVCTest
 				{"springportletmvc", "embedded", "jsp", "dxp", "2024.q1.1"},
 				{"springportletmvc", "embedded", "jsp", "portal", "7.3.7"},
 				{"springportletmvc", "embedded", "jsp", "portal", "7.4.3.56"},
+				{"springportletmvc", "embedded", "jsp", "dxp", "2025.q3.1"},
 				{"portletmvc4spring", "embedded", "jsp", "dxp", "7.1.10.7"},
 				{"portletmvc4spring", "embedded", "jsp", "dxp", "7.2.10.7"},
 				{"portletmvc4spring", "embedded", "jsp", "dxp", "2024.q1.1"},
@@ -126,6 +127,18 @@ public class ProjectTemplatesSpringPortletMVCTest
 
 		File gradleWorkspaceModulesDir = new File(
 			gradleWorkspaceDir, "modules");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion) &&
+			_framework.equals("springportletmvc")) {
+
+			Assert.assertThrows(
+				IllegalArgumentException.class,
+				() -> _buildSpringMVCTemplate(
+					gradleWorkspaceModulesDir, "gradle", _framework,
+					_frameworkDependencies, _viewType, _liferayVersion));
+
+			return;
+		}
 
 		File gradleProjectDir = _buildSpringMVCTemplate(
 			gradleWorkspaceModulesDir, "gradle", _framework,

@@ -25,10 +25,10 @@ public class StringIndexOfCallCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "indexOf");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			_checkMethodCall(methodCallDetailAST);
 		}
 	}
@@ -92,14 +92,14 @@ public class StringIndexOfCallCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> parameterExprDetailASTList =
-			getParameterExprDetailASTList(methodCallDetailAST);
+		List<DetailAST> parameterExprDetailASTs = getParameterExprDetailASTs(
+			methodCallDetailAST);
 
-		if (parameterExprDetailASTList.size() != 1) {
+		if (parameterExprDetailASTs.size() != 1) {
 			return;
 		}
 
-		DetailAST exprDetailAST = parameterExprDetailASTList.get(0);
+		DetailAST exprDetailAST = parameterExprDetailASTs.get(0);
 
 		DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 

@@ -133,12 +133,10 @@ public class ExceptionVariableNameCheck extends VariableNameCheck {
 		Map<String, Set<ExceptionDefinition>> exceptionDefinitionsMap =
 			new HashMap<>();
 
-		List<DetailAST> definitionDetailASTList =
-			DetailASTUtil.getAllChildTokens(
-				detailAST, true, TokenTypes.PARAMETER_DEF,
-				TokenTypes.VARIABLE_DEF);
+		List<DetailAST> definitionDetailASTs = DetailASTUtil.getAllChildTokens(
+			detailAST, true, TokenTypes.PARAMETER_DEF, TokenTypes.VARIABLE_DEF);
 
-		for (DetailAST definitionDetailAST : definitionDetailASTList) {
+		for (DetailAST definitionDetailAST : definitionDetailASTs) {
 			DetailAST parentDetailAST = definitionDetailAST.getParent();
 
 			if (parentDetailAST.getType() == TokenTypes.OBJBLOCK) {

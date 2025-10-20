@@ -142,6 +142,8 @@ public class MailServiceTest {
 			Assert.assertEquals(
 				mailSettingCompanyConfiguration.outgoingSMTPServer(),
 				session.getProperty("mail.smtp.host"));
+
+			_mailService.clearSession();
 		}
 	}
 

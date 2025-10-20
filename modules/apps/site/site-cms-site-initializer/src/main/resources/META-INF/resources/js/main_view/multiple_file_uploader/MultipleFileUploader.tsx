@@ -162,11 +162,7 @@ export default function MultipleFileUploader({
 					<FailedFiles failedFiles={failedFiles} />
 				) : (
 					<>
-						{isLoading && (
-							<div className="loading-message">
-								<LoadingMessage />
-							</div>
-						)}
+						{isLoading && <LoadingMessage />}
 
 						<div
 							{...getRootProps({
@@ -239,7 +235,7 @@ export default function MultipleFileUploader({
 										>
 											<ClayLayout.ContentCol>
 												<ClaySticker
-													className="sticker-border-secondary"
+													className="border border-secondary"
 													displayType="secondary"
 													size="lg"
 												>

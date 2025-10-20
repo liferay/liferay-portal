@@ -13,6 +13,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -115,22 +116,24 @@ public class CommerceCatalogUpgradeProcess extends UpgradeProcess {
 				preparedStatement2.addBatch();
 
 				Group catalogGroup = _groupLocalService.addGroup(
-					userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+					StringPool.BLANK, userId,
+					GroupConstants.DEFAULT_PARENT_GROUP_ID,
 					CommerceCatalog.class.getName(), commerceCatalogId,
 					GroupConstants.DEFAULT_LIVE_GROUP_ID,
 					siteGroup.getNameMap(), null,
-					GroupConstants.TYPE_SITE_PRIVATE, false,
+					GroupConstants.TYPE_SITE_PRIVATE, null, false,
 					GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
-					true, null);
+					false, true, null);
 
 				Group channelGroup = _groupLocalService.addGroup(
-					userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+					StringPool.BLANK, userId,
+					GroupConstants.DEFAULT_PARENT_GROUP_ID,
 					CommerceChannel.class.getName(), commerceChannelId,
 					GroupConstants.DEFAULT_LIVE_GROUP_ID,
 					siteGroup.getNameMap(), null,
-					GroupConstants.TYPE_SITE_PRIVATE, false,
+					GroupConstants.TYPE_SITE_PRIVATE, null, false,
 					GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
-					true, null);
+					false, true, null);
 
 				String updateTableGroupIdSQL =
 					"update %s set groupId = %s where groupId = %s";

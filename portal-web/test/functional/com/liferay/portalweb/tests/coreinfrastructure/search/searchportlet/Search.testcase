@@ -238,8 +238,7 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-195388"
-	@ignore = "true"
+	@description = "This is a use case for LPD-1490"
 	@priority = 3
 	test AssertHighlightedSearchResultsWhenAdvancedSearchSyntaxIsEnabled {
 		SearchPage.configureEmbeddedSearchBar(useAdvancedSearchSyntax = "true");

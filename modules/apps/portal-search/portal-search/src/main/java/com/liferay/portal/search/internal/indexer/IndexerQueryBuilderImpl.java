@@ -128,14 +128,14 @@ public class IndexerQueryBuilderImpl<T extends BaseModel<?>>
 		if (searchContext.isIncludeAttachments() ||
 			searchContext.isIncludeDiscussions()) {
 
-			_contributeFilters(booleanQuery, searchContext);
+			_contributeClauses(booleanQuery, searchContext);
 
 			return;
 		}
 
 		BooleanQuery keywordsBooleanQuery = new BooleanQueryImpl();
 
-		_contributeFilters(keywordsBooleanQuery, searchContext);
+		_contributeClauses(keywordsBooleanQuery, searchContext);
 
 		if (!keywordsBooleanQuery.hasClauses()) {
 			return;
@@ -250,7 +250,7 @@ public class IndexerQueryBuilderImpl<T extends BaseModel<?>>
 			});
 	}
 
-	private void _contributeFilters(
+	private void _contributeClauses(
 		BooleanQuery booleanQuery, SearchContext searchContext) {
 
 		contribute(

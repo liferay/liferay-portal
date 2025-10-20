@@ -7,12 +7,15 @@ package com.liferay.site.navigation.menu.item.display.page.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
+import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
+import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -186,6 +189,34 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 	}
 
 	@Test
+	public void testHasAssetDisplayPage() throws Exception {
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(),
+			_portal.getClassNameId(AssetCategory.class.getName()), 0, true,
+			WorkflowConstants.STATUS_APPROVED);
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.put(
+				"className", AssetCategory.class.getName()
+			).put(
+				"externalReferenceCode",
+				_assetCategory.getExternalReferenceCode()
+			).build();
+
+		InfoItemIdentifier infoItemIdentifier = new ERCInfoItemIdentifier(
+			GetterUtil.getString(
+				typeSettingsUnicodeProperties.get("externalReferenceCode")));
+
+		Assert.assertTrue(
+			AssetDisplayPageUtil.hasAssetDisplayPage(
+				_group.getGroupId(),
+				new InfoItemReference(
+					GetterUtil.getString(
+						typeSettingsUnicodeProperties.get("className")),
+					infoItemIdentifier)));
+	}
+
+	@Test
 	public void testHasPermission() throws Exception {
 		SiteNavigationMenuItemType siteNavigationMenuItemType =
 			_siteNavigationMenuItemTypeRegistry.getSiteNavigationMenuItemType(
@@ -329,11 +360,16 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			UnicodePropertiesBuilder.put(
+				"className", AssetCategory.class.getName()
+			).put(
 				"classNameId",
 				String.valueOf(
 					_portal.getClassNameId(AssetCategory.class.getName()))
 			).put(
 				"classPK", String.valueOf(_assetCategory.getCategoryId())
+			).put(
+				"externalReferenceCode",
+				_assetCategory.getExternalReferenceCode()
 			).build();
 
 		SiteNavigationMenuItem siteNavigationMenuItem =

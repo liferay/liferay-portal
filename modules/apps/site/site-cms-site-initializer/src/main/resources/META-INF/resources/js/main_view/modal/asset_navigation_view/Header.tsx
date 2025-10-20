@@ -6,16 +6,20 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import classNames from 'classnames';
 import React from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../common/types/AssetType';
+import {PANELS} from './AssetNavigationModalContent';
 
 export default function Header({
+	activePanel,
 	handleClickComments,
 	handleClickInfo,
 	item,
 	showInfoPanel,
 }: {
+	activePanel?: keyof typeof PANELS | null;
 	handleClickComments: () => void;
 	handleClickInfo: () => void;
 	item: ISearchAssetObjectEntry;
@@ -36,6 +40,10 @@ export default function Header({
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('show-comments')}
 					borderless
+					className={classNames({
+						active:
+							activePanel && activePanel === PANELS.commentPanel,
+					})}
 					displayType="secondary"
 					onClick={handleClickComments}
 					symbol="message"
@@ -45,6 +53,10 @@ export default function Header({
 					<ClayButtonWithIcon
 						aria-label={Liferay.Language.get('show-details')}
 						borderless
+						className={classNames({
+							active:
+								activePanel && activePanel === PANELS.infoPanel,
+						})}
 						displayType="secondary"
 						onClick={handleClickInfo}
 						symbol="info-circle-open"

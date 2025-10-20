@@ -6,11 +6,17 @@
 import '@testing-library/jest-dom/extend-expect';
 import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
 import Breadcrumb, {
+	ActionDropdownItemProps,
 	BreadcrumbItem,
 } from '../../../../src/main/resources/META-INF/resources/js/common/components/Breadcrumb';
+
+jest.mock('frontend-js-components-web', () => ({
+	openModal: jest.fn(),
+}));
 
 const testBreadcrumbItemsLong = [
 	{
@@ -89,6 +95,10 @@ function expectBreadcrumbItemSticker(breadcrumbItem: BreadcrumbItem) {
 }
 
 describe('Breadcrumb', () => {
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it('renders all elements of a short breadcrumb', () => {
 		render(<Breadcrumb breadcrumbItems={testBreadcrumbItemsShort} />);
 
@@ -146,5 +156,45 @@ describe('Breadcrumb', () => {
 				screen.getByRole('menuitem', {name: 'Space Settings'})
 			).toBeInTheDocument();
 		});
+
+		expect(screen.getByLabelText('more-actions')).toHaveAttribute(
+			'aria-expanded',
+			'true'
+		);
+	});
+
+	it('renders custom confirm modal when delete action is clicked', async () => {
+		const confirmationMessage =
+			'Are you sure you want to delete this space?';
+		const confirmationTitle = 'Delete space My Space';
+
+		render(
+			<Breadcrumb
+				actionItems={[
+					{
+						confirmationMessage,
+						confirmationTitle,
+						label: 'Delete',
+						target: 'asyncDelete',
+					} as ActionDropdownItemProps,
+				]}
+				breadcrumbItems={testBreadcrumbItemsSingle}
+			/>
+		);
+
+		await userEvent.click(screen.getByLabelText('more-actions'));
+
+		const deleteItem = await screen.getByRole('menuitem', {name: 'Delete'});
+		await userEvent.click(deleteItem);
+
+		expect(openModal).toHaveBeenCalledTimes(1);
+
+		expect(openModal).toHaveBeenCalledWith(
+			expect.objectContaining({
+				bodyHTML: confirmationMessage,
+				status: 'danger',
+				title: confirmationTitle,
+			})
+		);
 	});
 });

@@ -6,11 +6,11 @@
 package com.liferay.portal.test.rule;
 
 import com.liferay.petra.string.CharPool;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PortalInstances;
 
@@ -28,7 +28,7 @@ public class DBPartitionTestRule implements TestRule {
 
 	@Override
 	public Statement apply(Statement statement, Description description) {
-		if (!DBPartition.isPartitionEnabled()) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			return statement;
 		}
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
 
 import {IVocabulary} from '../../common/types/IVocabulary';
 import {openGenericFDSDeleteConfirmationModal} from '../../common/utils/genericOpenModalUtil';
@@ -11,8 +11,10 @@ import MultipleSpacesRenderer from './cell_renderers/MultipleSpacesRenderer';
 import VocabularyRenderer from './cell_renderers/VocabularyRenderer';
 
 export default function VocabularyFDSPropsTransformer({
+	itemsActions,
 	...otherProps
 }: {
+	itemsActions: IItemsActions[];
 	otherProps: any;
 }) {
 	return {
@@ -31,6 +33,16 @@ export default function VocabularyFDSPropsTransformer({
 				} as IInternalRenderer,
 			],
 		},
+		itemsActions: itemsActions.map((action) => {
+			if (action?.data?.id === 'delete') {
+				return {
+					...action,
+					className: 'text-danger',
+				};
+			}
+
+			return action;
+		}),
 		onActionDropdownItemClick({
 			action,
 			itemData,

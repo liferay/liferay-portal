@@ -215,7 +215,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanApproveWCArticleByContentReviewer {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPD-17564=false${line.separator}jsonws.web.service.paths.excludes=";
 
 		JSONUser.addUser(
 			userEmailAddress = "user1@liferay.com",
@@ -236,6 +236,97 @@ definition {
 
 		User.assignAssetLibraryRole(
 			roleTitle = "Asset Library Content Reviewer",
+			userScreenName = "usersn");
+
+		DepotNavigator.openDepotAdmin();
+
+		DepotNavigator.gotoDepotPortlet(
+			depotName = "Test Depot Name",
+			portlet = "Workflow");
+
+		Workflow.configureWorkflow(
+			workflowDefinition = "Single Approver",
+			workflowResourceValue = "Web Content Article");
+
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+
+		WebContentNavigator.gotoAddCP();
+
+		WebContent.addWithWorkflowCP(
+			webContentContent = "Depot WebContent Content",
+			webContentTitle = "Depot WebContent Title");
+
+		WebContentNavigator.gotoViewStatus(
+			webContentStatus = "Pending",
+			webContentTitle = "Depot WebContent Title");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		WorkflowAsset.gotoViaNotification(
+			assetType = "Web Content Article",
+			user = "Test Test");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		WorkflowAsset.gotoViaNotification(
+			assetType = "Web Content Article",
+			user = "Test Test");
+
+		Workflow.assignByDetails(user = "usersn (userfn userln)");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
+
+		Navigator.gotoNavTab(navTab = "Assigned to Me");
+
+		Workflow.approveTaskByActions(
+			workflowAssetTitle = "Depot WebContent Title",
+			workflowAssetType = "Web Content Article",
+			workflowTask = "Review");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+
+		WebContentNavigator.gotoViewStatus(
+			webContentStatus = "Approved",
+			webContentTitle = "Depot WebContent Title");
+	}
+
+	@description = "This test covers LPS-113392. It ensures that an asset library WC article can be approved by the content reviewer."
+	@priority = 5
+	@refactordone
+	test CanApproveWCArticleByContentReviewerWithCMSEnabled {
+		property custom.properties = "feature.flag.LPD-17564=true${line.separator}jsonws.web.service.paths.excludes=";
+
+		JSONUser.addUser(
+			userEmailAddress = "user1@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "user1@liferay.com");
+
+		JSONUser.addUserToDepot(
+			depotName = "Test Depot Name",
+			userEmailAddress = "user1@liferay.com");
+
+		User.openUsersAdmin();
+
+		User.assignAssetLibraryRoleCMS(
+			roleTitle = "Space Content Reviewer",
 			userScreenName = "usersn");
 
 		DepotNavigator.openDepotAdmin();
@@ -775,7 +866,7 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanRejectWCArticleByContentReviewer {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "feature.flag.LPD-17564=false${line.separator}jsonws.web.service.paths.excludes=";
 
 		JSONUser.addUser(
 			userEmailAddress = "user1@liferay.com",
@@ -796,6 +887,85 @@ definition {
 
 		User.assignAssetLibraryRole(
 			roleTitle = "Asset Library Content Reviewer",
+			userScreenName = "usersn");
+
+		DepotNavigator.openDepotWorkflowAdmin(depotName = "Test Depot Name");
+
+		Workflow.configureWorkflow(
+			workflowDefinition = "Single Approver",
+			workflowResourceValue = "Web Content Article");
+
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+
+		WebContentNavigator.gotoAddCP();
+
+		WebContent.addCP(
+			webContentContent = "Depot WebContent Content",
+			webContentTitle = "Depot WebContent Title");
+
+		WebContent.submitForWorkflowWithPermission();
+
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+
+		LexiconList.viewListEntryLabel(
+			listEntry = "Depot WebContent Title",
+			listEntryLabel = "Pending");
+
+		WorkflowAsset.gotoViaNotification(
+			assetType = "Web Content Article",
+			user = "Test Test");
+
+		Workflow.assignByDetails(user = "usersn (userfn userln)");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "user1@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
+
+		Navigator.gotoNavTab(navTab = "Assigned to Me");
+
+		Workflow.rejectTaskByActions(
+			workflowAssetTitle = "Depot WebContent Title",
+			workflowAssetType = "Web Content Article",
+			workflowTask = "Review");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
+
+		WebContentNavigator.gotoViewStatus(
+			webContentStatus = "Pending",
+			webContentTitle = "Depot WebContent Title");
+	}
+
+	@description = "This ensures that an asset library WC article can be rejected by the content reviewer."
+	@priority = 5
+	@refactordone
+	test CanRejectWCArticleByContentReviewerWithCMSEnabled {
+		property custom.properties = "feature.flag.LPD-17564=true${line.separator}jsonws.web.service.paths.excludes=";
+
+		JSONUser.addUser(
+			userEmailAddress = "user1@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "user1@liferay.com");
+
+		JSONUser.addUserToDepot(
+			depotName = "Test Depot Name",
+			userEmailAddress = "user1@liferay.com");
+
+		User.openUsersAdmin();
+
+		User.assignAssetLibraryRoleCMS(
+			roleTitle = "Space Content Reviewer",
 			userScreenName = "usersn");
 
 		DepotNavigator.openDepotWorkflowAdmin(depotName = "Test Depot Name");

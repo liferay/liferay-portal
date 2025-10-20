@@ -6,6 +6,10 @@
 package com.liferay.portal.template.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -15,6 +19,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.template.ServiceLocator;
 import com.liferay.portal.template.engine.TemplateContextHelper;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -44,6 +49,38 @@ public class TemplateContextHelperTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testExpandoServicesAccessibleOnlyThroughServiceLocator() {
+		TemplateContextHelper templateContextHelper =
+			new TemplateContextHelper();
+
+		Map<String, Object> helperUtilities =
+			templateContextHelper.getHelperUtilities(false);
+
+		Assert.assertFalse(
+			helperUtilities.containsKey("expandoColumnLocalService"));
+		Assert.assertFalse(
+			helperUtilities.containsKey("expandoRowLocalService"));
+		Assert.assertFalse(
+			helperUtilities.containsKey("expandoTableLocalService"));
+		Assert.assertFalse(
+			helperUtilities.containsKey("expandoValueLocalService"));
+
+		ServiceLocator serviceLocator = ServiceLocator.getInstance();
+
+		Assert.assertNotNull(
+			serviceLocator.findService(
+				ExpandoColumnLocalService.class.getName()));
+		Assert.assertNotNull(
+			serviceLocator.findService(ExpandoRowLocalService.class.getName()));
+		Assert.assertNotNull(
+			serviceLocator.findService(
+				ExpandoTableLocalService.class.getName()));
+		Assert.assertNotNull(
+			serviceLocator.findService(
+				ExpandoValueLocalService.class.getName()));
+	}
 
 	@Test
 	public void testFollowRedirectDisabled() throws Exception {

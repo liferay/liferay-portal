@@ -25,18 +25,20 @@ public class CMSGroupLocalServiceWrapper extends GroupLocalServiceWrapper {
 
 	@Override
 	public Group addGroup(
-			long userId, long parentGroupId, String className, long classPK,
-			long liveGroupId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, int type,
-			boolean manualMembership, int membershipRestriction,
-			String friendlyURL, boolean site, boolean inheritContent,
-			boolean active, ServiceContext serviceContext)
+			String externalReferenceCode, long userId, long parentGroupId,
+			String className, long classPK, long liveGroupId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			int type, String typeSettings, boolean manualMembership,
+			int membershipRestriction, String friendlyURL, boolean site,
+			boolean inheritContent, boolean active,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		Group group = super.addGroup(
-			userId, parentGroupId, className, classPK, liveGroupId, nameMap,
-			descriptionMap, type, manualMembership, membershipRestriction,
-			friendlyURL, site, inheritContent, active, serviceContext);
+			externalReferenceCode, userId, parentGroupId, className, classPK,
+			liveGroupId, nameMap, descriptionMap, type, typeSettings,
+			manualMembership, membershipRestriction, friendlyURL, site,
+			inheritContent, active, serviceContext);
 
 		if (group.isDepot()) {
 			ObjectEntryFolderUtil.addObjectEntryFolders(group.getGroupId());

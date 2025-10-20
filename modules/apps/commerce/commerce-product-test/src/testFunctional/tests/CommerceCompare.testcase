@@ -238,6 +238,7 @@ definition {
 	}
 
 	@description = "COMMERCE-5915. Verify buyers can only see the max number of comparison items allowed in the Compare page."
+	@ignore = "true"
 	@priority = 3
 	test EditMaxNumberOfComparisonItemsInComparePage {
 		property portal.acceptance = "false";

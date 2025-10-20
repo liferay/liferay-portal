@@ -28,6 +28,8 @@ public interface LayoutListRetrieverContext {
 
 	public Pagination getPagination();
 
+	public long getScopeGroupId();
+
 	public long[] getSegmentsEntryIds();
 
 }

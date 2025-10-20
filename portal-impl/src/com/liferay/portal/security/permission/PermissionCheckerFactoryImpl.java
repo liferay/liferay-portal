@@ -34,12 +34,10 @@ public class PermissionCheckerFactoryImpl implements PermissionCheckerFactory {
 
 	@Override
 	public PermissionChecker create(User user) {
-		PermissionChecker permissionChecker = _permissionChecker.clone();
+		PermissionChecker permissionChecker = new AdvancedPermissionChecker(
+			_roleContributors);
 
-		permissionChecker.init(
-			user, _roleContributors.toArray(new RoleContributor[0]));
-
-		permissionChecker = new StagingPermissionChecker(permissionChecker);
+		permissionChecker.init(user);
 
 		for (PermissionCheckerWrapperFactory permissionCheckerWrapperFactory :
 				_permissionCheckerWrapperFactories) {
@@ -56,9 +54,6 @@ public class PermissionCheckerFactoryImpl implements PermissionCheckerFactory {
 		_permissionCheckerWrapperFactories.close();
 		_roleContributors.close();
 	}
-
-	private static final PermissionChecker _permissionChecker =
-		new AdvancedPermissionChecker();
 
 	private ServiceTrackerList<PermissionCheckerWrapperFactory>
 		_permissionCheckerWrapperFactories;

@@ -11,10 +11,12 @@ import com.liferay.commerce.currency.model.CommerceMoneyFactory;
 import com.liferay.commerce.internal.notification.term.evaluator.CommerceOrderAccountNotificationTermEvaluator;
 import com.liferay.commerce.internal.notification.term.evaluator.CommerceOrderAddressNotificationTermEvaluator;
 import com.liferay.commerce.internal.notification.term.evaluator.CommerceOrderItemsNotificationTermEvaluator;
+import com.liferay.commerce.internal.notification.term.evaluator.CommerceOrderPaymentMethodNotificationTermEvaluator;
 import com.liferay.commerce.internal.notification.term.evaluator.SalesAgentNotificationTermEvaluator;
 import com.liferay.commerce.internal.notification.term.provider.CommerceOrderAccountNotificationTermProvider;
 import com.liferay.commerce.internal.notification.term.provider.CommerceOrderAddressNotificationTermProvider;
 import com.liferay.commerce.internal.notification.term.provider.CommerceOrderItemsNotificationTermProvider;
+import com.liferay.commerce.internal.notification.term.provider.CommerceOrderPaymentMethodNotificationTermProvider;
 import com.liferay.commerce.internal.notification.term.provider.SalesAgentNotificationTermProvider;
 import com.liferay.commerce.internal.notification.type.ObjectDefinitionCommerceNotificationType;
 import com.liferay.commerce.internal.order.term.contributor.ObjectCommerceDefinitionTermContributor;
@@ -22,6 +24,7 @@ import com.liferay.commerce.internal.order.term.contributor.ObjectRecipientComme
 import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.notification.type.CommerceNotificationType;
 import com.liferay.commerce.order.CommerceDefinitionTermContributor;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.product.helper.CPInstanceHelper;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
@@ -100,6 +103,15 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					).build()),
 				_bundleContext.registerService(
 					NotificationTermEvaluator.class,
+					new CommerceOrderPaymentMethodNotificationTermEvaluator(
+						_commerceOrderLocalService,
+						_commercePaymentMethodGroupRelLocalService,
+						objectDefinition, _userLocalService),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"class.name", objectDefinition.getClassName()
+					).build()),
+				_bundleContext.registerService(
+					NotificationTermEvaluator.class,
 					new SalesAgentNotificationTermEvaluator(
 						_accountEntryModelResourcePermission,
 						_commerceOrderLocalService, objectDefinition,
@@ -123,6 +135,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				_bundleContext.registerService(
 					NotificationTermProvider.class,
 					new CommerceOrderItemsNotificationTermProvider(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"class.name", objectDefinition.getClassName()
+					).build()),
+				_bundleContext.registerService(
+					NotificationTermProvider.class,
+					new CommerceOrderPaymentMethodNotificationTermProvider(),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"class.name", objectDefinition.getClassName()
 					).build()),
@@ -237,6 +255,10 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Reference
 	private CommerceOrderPriceCalculation _commerceOrderPriceCalculation;
+
+	@Reference
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;

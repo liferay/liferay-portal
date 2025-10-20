@@ -127,13 +127,13 @@ public class ViewFilesSectionDisplayContextTest
 		throws PortalException {
 
 		return LinkedHashMapBuilder.put(
-			"single-file", getRedirect("L_BASIC_DOCUMENT")
+			"single-file", getRedirect("L_CMS_BASIC_DOCUMENT")
 		).put(
 			"multiple-files", StringPool.BLANK
 		).put(
 			"folder", StringPool.BLANK
 		).put(
-			"external-video-shortcut", getRedirect("L_EXTERNAL_VIDEO")
+			"external-video-shortcut", getRedirect("L_CMS_EXTERNAL_VIDEO")
 		).build();
 	}
 

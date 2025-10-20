@@ -90,6 +90,7 @@ import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
@@ -688,6 +689,13 @@ public class DocumentResourceImpl extends BaseDocumentResourceImpl {
 			CustomFieldsUtil.toMap(
 				DLFileEntry.class.getName(), contextCompany.getCompanyId(),
 				customFields, contextAcceptLanguage.getPreferredLocale())
+		).permissions(
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(), document.getPermissions(),
+				getPermissionCheckerResourceId(document.getId()),
+				getPermissionCheckerResourceName(document.getId()),
+				resourceActionLocalService, resourcePermissionLocalService,
+				roleLocalService)
 		).build();
 
 		serviceContext.setCommand(command);

@@ -216,14 +216,14 @@ public class SharedAssetDTOConverter
 	private FileEntry _getFileEntry(
 		String className, long classPK, long companyId) {
 
-		ObjectDefinition basicDocumentObjectDefinition =
+		ObjectDefinition cmsBasicDocumentObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_DOCUMENT", companyId);
+					"L_CMS_BASIC_DOCUMENT", companyId);
 
-		if ((basicDocumentObjectDefinition == null) ||
+		if ((cmsBasicDocumentObjectDefinition == null) ||
 			!Objects.equals(
-				className, basicDocumentObjectDefinition.getClassName())) {
+				className, cmsBasicDocumentObjectDefinition.getClassName())) {
 
 			return null;
 		}

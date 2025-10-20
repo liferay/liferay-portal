@@ -16,7 +16,7 @@ const DeliveryCatalogAPIServiceProvider =
 	ServiceProvider.DeliveryCatalogAPI('v1');
 
 export default function AccountCreationModal({
-	accountTypes,
+	accountEntryAllowedTypes,
 	closeModal,
 	commerceChannelId,
 	handleAccountChange,
@@ -28,7 +28,7 @@ export default function AccountCreationModal({
 		name: '',
 		organizations: [],
 		taxId: '',
-		type: accountTypes[0],
+		type: accountEntryAllowedTypes[0],
 	});
 
 	const apiUrl = new URL(
@@ -103,7 +103,7 @@ export default function AccountCreationModal({
 				<ClayModal.Body>
 					<AccountCreationModalBody
 						accountData={accountData}
-						accountTypes={accountTypes}
+						accountEntryAllowedTypes={accountEntryAllowedTypes}
 						setAccountData={setAccountData}
 					/>
 				</ClayModal.Body>

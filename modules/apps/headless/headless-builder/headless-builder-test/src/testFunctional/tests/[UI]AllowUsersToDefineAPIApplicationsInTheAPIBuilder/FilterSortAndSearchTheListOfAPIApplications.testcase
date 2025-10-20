@@ -86,7 +86,7 @@ definition {
 		task ("Then I can see no API Application Found") {
 			AssertTextEquals(
 				locator1 = "Message#EMPTY_STATE_INFO",
-				value1 = "No API Application Found");
+				value1 = "No Results Found");
 		}
 	}
 
@@ -143,7 +143,7 @@ definition {
 		task ("Then no API application were found") {
 			AssertTextEquals(
 				locator1 = "Message#EMPTY_STATE_INFO",
-				value1 = "No API Application Found");
+				value1 = "No Results Found");
 		}
 	}
 

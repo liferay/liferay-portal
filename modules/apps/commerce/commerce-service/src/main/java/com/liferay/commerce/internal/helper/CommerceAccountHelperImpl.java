@@ -28,6 +28,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.util.CommerceGroupThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -498,9 +499,20 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 			long commerceAccountId)
 		throws PortalException {
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(
+				commerceChannelGroupId);
+
 		if ((commerceAccountId > 0) &&
 			(commerceAccountId !=
 				AccountRolePermissionThreadLocal.getAccountEntryId())) {
+
+			Group group = CommerceGroupThreadLocal.get();
+
+			if (group == null) {
+				CommerceGroupThreadLocal.setCommerceGroupWithSafeCloseable(
+					commerceChannel.getGroupId());
+			}
 
 			AccountEntry accountEntry = _accountEntryService.getAccountEntry(
 				commerceAccountId);
@@ -516,10 +528,6 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 			PortalSessionThreadLocal.setHttpSession(
 				httpServletRequest.getSession());
 		}
-
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannelByGroupId(
-				commerceChannelGroupId);
 
 		long userId = _portal.getUserId(httpServletRequest);
 

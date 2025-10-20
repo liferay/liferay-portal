@@ -150,11 +150,18 @@ definition {
 				en_US_plural_label = "students",
 				scopeKey = "true");
 
-			var actualValue = JSONUtil.getWithJSONPath(${response}, "$.items[1].name");
+			var firstName = JSONUtil.getWithJSONPath(${response}, "$.items[0].name");
+			var secondName = JSONUtil.getWithJSONPath(${response}, "$.items[1].name");
 
-			TestUtils.assertEquals(
-				actual = ${actualValue},
+			var actual = StringUtil.concat(${firstName}, ",", ${secondName});
+
+			TestUtils.assertContain(
+				actual = ${actual},
 				expected = "Jack");
+
+			TestUtils.assertContain(
+				actual = ${actual},
+				expected = "Jane");
 		}
 	}
 

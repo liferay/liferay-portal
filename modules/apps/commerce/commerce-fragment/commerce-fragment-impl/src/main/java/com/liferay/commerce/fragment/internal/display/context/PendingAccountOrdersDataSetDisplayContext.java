@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.fragment.internal.display.context;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
@@ -56,9 +57,18 @@ public class PendingAccountOrdersDataSetDisplayContext
 	}
 
 	public String getAPIURL() throws PortalException {
+		long accountEntryId = 0;
+
+		AccountEntry accountEntry = _commerceContext.getAccountEntry();
+
+		if (accountEntry != null) {
+			accountEntryId = accountEntry.getAccountEntryId();
+		}
+
 		return StringBundler.concat(
 			"/o/headless-commerce-delivery-cart/v1.0/channels/",
-			_commerceContext.getCommerceChannelId(), "/carts");
+			_commerceContext.getCommerceChannelId(), "/account/",
+			accountEntryId, "/carts");
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
@@ -73,7 +83,10 @@ public class PendingAccountOrdersDataSetDisplayContext
 			_portal.getScopeGroupId(httpServletRequest),
 			CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
 
-		if ((plid > 0) || FeatureFlagManagerUtil.isEnabled("LPD-20379")) {
+		if ((plid > 0) ||
+			FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-20379")) {
+
 			return PortletURLBuilder.create(
 				_getPortletURL()
 			).setActionName(

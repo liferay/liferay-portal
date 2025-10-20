@@ -6,16 +6,14 @@
 package com.liferay.commerce.fragment.internal.renderer;
 
 import com.liferay.account.constants.AccountActionKeys;
-import com.liferay.commerce.constants.CommerceWebKeys;
-import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.fragment.internal.constants.CommerceFragmentCollectionKeys;
+import com.liferay.commerce.fragment.internal.util.CommerceFragmentUtil;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -45,7 +43,8 @@ public class CreateAccountButtonFragmentRenderer
 
 	@Override
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
-		return FeatureFlagManagerUtil.isEnabled("LPD-58472");
+		return FeatureFlagManagerUtil.isEnabled(
+			portal.getCompanyId(httpServletRequest), "LPD-58472");
 	}
 
 	@Override
@@ -60,7 +59,7 @@ public class CreateAccountButtonFragmentRenderer
 
 	@Override
 	protected String getModule() {
-		return "{CreateAccount} from commerce-frontend-js";
+		return "{CreateAccountButton} from commerce-fragment-impl";
 	}
 
 	@Override
@@ -69,22 +68,11 @@ public class CreateAccountButtonFragmentRenderer
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		CommerceContext commerceContext =
-			(CommerceContext)httpServletRequest.getAttribute(
-				CommerceWebKeys.COMMERCE_CONTEXT);
-
-		return HashMapBuilder.<String, Object>putAll(
-			getConfigurationValuesMap(fragmentRendererContext)
+		return HashMapBuilder.<String, Object>put(
+			"configuration", getConfigurationValuesMap(fragmentRendererContext)
 		).put(
-			"accountEntryAllowedTypes",
-			commerceContext.getAccountEntryAllowedTypes()
-		).put(
-			"commerceChannelId", commerceContext.getCommerceChannelId()
-		).put(
-			"currentAccountURL",
-			PortalUtil.getPortalURL(httpServletRequest) +
-				PortalUtil.getPathContext() +
-					"/o/commerce-ui/set-current-account"
+			"currentAccountPostURL",
+			CommerceFragmentUtil.getCurrentAccountPostURL(httpServletRequest)
 		).put(
 			"hasAddAccountsPermission",
 			PortalPermissionUtil.contains(

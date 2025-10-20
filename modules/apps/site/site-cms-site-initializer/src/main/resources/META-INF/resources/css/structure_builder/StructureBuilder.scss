@@ -3,37 +3,13 @@
 $structureFieldsWidth: 448px;
 
 .structure-builder {
-	&__empty-state {
-		.aspect-ratio-item {
-			position: relative;
-		}
-
-		.c-empty-state-aspect-ratio {
-			padding: 0;
-		}
-
-		.c-empty-state-image {
-			margin: 0;
-			max-width: 190px;
-		}
-
-		.c-empty-state-title {
-			margin-top: 1.5rem;
-		}
-	}
-
 	&__sidebar {
 		background-color: $cadmin-light-l1;
-		border-radius: 8px;
 		width: $structureFieldsWidth;
-
-		& .management-bar {
-			min-height: 3rem;
-		}
 	}
 
 	&__title-input {
-		font-size: 28px;
+		font-size: 1.75rem;
 	}
 
 	&__tree {

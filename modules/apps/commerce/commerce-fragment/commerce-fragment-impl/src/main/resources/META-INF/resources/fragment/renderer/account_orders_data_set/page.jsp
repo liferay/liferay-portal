@@ -25,8 +25,8 @@ PendingAccountOrdersDataSetDisplayContext pendingAccountOrdersDataSetDisplayCont
 
 <c:if test='<%= (boolean)pendingAccountOrdersDataSetDisplayContext.getConfigurationValue("hideActionsColumn") %>'>
 	<aui:style type="text/css">
-		.lfr-layout-structure-item-com-liferay-commerce-fragment-internal-renderer-accountsdatasetfragmentrenderer table th:last-of-type,
-		.lfr-layout-structure-item-com-liferay-commerce-fragment-internal-renderer-accountsdatasetfragmentrenderer table td:last-of-type {
+		.lfr-layout-structure-item-com-liferay-commerce-fragment-internal-renderer-pendingaccountordersdatasetfragmentrenderer table th:last-of-type,
+		.lfr-layout-structure-item-com-liferay-commerce-fragment-internal-renderer-pendingaccountordersdatasetfragmentrenderer table td:last-of-type {
 			display: none;
 		}
 	</aui:style>

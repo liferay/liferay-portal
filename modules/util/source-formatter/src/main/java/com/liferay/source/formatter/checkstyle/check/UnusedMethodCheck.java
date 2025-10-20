@@ -35,10 +35,10 @@ public class UnusedMethodCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_DEF);
 
-		if (methodDefinitionDetailASTList.isEmpty()) {
+		if (methodDefinitionDetailASTs.isEmpty()) {
 			return;
 		}
 
@@ -49,9 +49,7 @@ public class UnusedMethodCheck extends BaseCheck {
 			_getReferencedMethodNamesMap(detailAST);
 
 		outerLoop:
-		for (DetailAST methodDefinitionDetailAST :
-				methodDefinitionDetailASTList) {
-
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			DetailAST modifiersDetailAST =
 				methodDefinitionDetailAST.findFirstToken(TokenTypes.MODIFIERS);
 
@@ -85,18 +83,17 @@ public class UnusedMethodCheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> parameterDefinitionDetailASTList =
-				getAllChildTokens(
-					parametersDetailAST, false, TokenTypes.PARAMETER_DEF);
+			List<DetailAST> parameterDefinitionDetailASTs = getAllChildTokens(
+				parametersDetailAST, false, TokenTypes.PARAMETER_DEF);
 
-			int parameterCount = parameterDefinitionDetailASTList.size();
+			int parameterCount = parameterDefinitionDetailASTs.size();
 
 			boolean varArgs = false;
 
 			if (parameterCount > 0) {
 				DetailAST lastParameterDefinitionDetailAST =
-					parameterDefinitionDetailASTList.get(
-						parameterDefinitionDetailASTList.size() - 1);
+					parameterDefinitionDetailASTs.get(
+						parameterDefinitionDetailASTs.size() - 1);
 
 				if (lastParameterDefinitionDetailAST.branchContains(
 						TokenTypes.ELLIPSIS)) {
@@ -141,10 +138,10 @@ public class UnusedMethodCheck extends BaseCheck {
 
 		Map<String, Set<Integer>> referencedMethodNamesMap = new HashMap<>();
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST nameDetailAST = methodCallDetailAST.getFirstChild();
 
 			if (nameDetailAST.getType() == TokenTypes.DOT) {
@@ -167,12 +164,10 @@ public class UnusedMethodCheck extends BaseCheck {
 				parameterCount);
 		}
 
-		List<DetailAST> methodReferenceDetailASTList = getAllChildTokens(
+		List<DetailAST> methodReferenceDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.METHOD_REF);
 
-		for (DetailAST methodReferenceDetailAST :
-				methodReferenceDetailASTList) {
-
+		for (DetailAST methodReferenceDetailAST : methodReferenceDetailASTs) {
 			DetailAST lastChildDetailAST =
 				methodReferenceDetailAST.getLastChild();
 
@@ -180,10 +175,10 @@ public class UnusedMethodCheck extends BaseCheck {
 				referencedMethodNamesMap, lastChildDetailAST.getText(), -1);
 		}
 
-		List<DetailAST> literalNewDetailASTList = getAllChildTokens(
+		List<DetailAST> literalNewDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.LITERAL_NEW);
 
-		for (DetailAST literalNewDetailAST : literalNewDetailASTList) {
+		for (DetailAST literalNewDetailAST : literalNewDetailASTs) {
 			DetailAST firstChildDetailAST = literalNewDetailAST.getFirstChild();
 
 			if ((firstChildDetailAST == null) ||
@@ -196,14 +191,14 @@ public class UnusedMethodCheck extends BaseCheck {
 			DetailAST elistDetailAST = literalNewDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			if (exprDetailASTList.size() < 2) {
+			if (exprDetailASTs.size() < 2) {
 				continue;
 			}
 
-			DetailAST exprDetailAST = exprDetailASTList.get(1);
+			DetailAST exprDetailAST = exprDetailASTs.get(1);
 
 			firstChildDetailAST = exprDetailAST.getFirstChild();
 
@@ -213,14 +208,14 @@ public class UnusedMethodCheck extends BaseCheck {
 				referencedMethodNamesMap = _addMapEntry(
 					referencedMethodNamesMap,
 					text.substring(1, text.length() - 1),
-					exprDetailASTList.size() - 2);
+					exprDetailASTs.size() - 2);
 			}
 		}
 
-		List<DetailAST> annotationDetailASTList = getAllChildTokens(
+		List<DetailAST> annotationDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.ANNOTATION);
 
-		for (DetailAST annotationDetailAST : annotationDetailASTList) {
+		for (DetailAST annotationDetailAST : annotationDetailASTs) {
 			DetailAST atDetailAST = annotationDetailAST.findFirstToken(
 				TokenTypes.AT);
 
@@ -233,13 +228,13 @@ public class UnusedMethodCheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> annotationMemberValuePairDetailASTList =
+			List<DetailAST> annotationMemberValuePairDetailASTs =
 				getAllChildTokens(
 					annotationDetailAST, false,
 					TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR);
 
 			for (DetailAST annotationMemberValuePairDetailAST :
-					annotationMemberValuePairDetailASTList) {
+					annotationMemberValuePairDetailASTs) {
 
 				DetailAST firstChildDetailAST =
 					annotationMemberValuePairDetailAST.getFirstChild();
@@ -281,10 +276,10 @@ public class UnusedMethodCheck extends BaseCheck {
 			return false;
 		}
 
-		List<DetailAST> literalStringDetailASTList = getAllChildTokens(
+		List<DetailAST> literalStringDetailASTs = getAllChildTokens(
 			annotationDetailAST, true, TokenTypes.STRING_LITERAL);
 
-		for (DetailAST literalStringDetailAST : literalStringDetailASTList) {
+		for (DetailAST literalStringDetailAST : literalStringDetailASTs) {
 			String s = literalStringDetailAST.getText();
 
 			if (s.equals("\"unused\"")) {

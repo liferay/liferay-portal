@@ -213,7 +213,7 @@ public class EditLayoutDesignMVCActionCommandTest {
 			draftLayout.getDescriptionMap(), draftLayout.getKeywordsMap(),
 			draftLayout.getRobotsMap(), draftLayout.getType(),
 			draftLayout.isHidden(), draftLayout.getFriendlyURLMap(), false,
-			null, styleBookEntry.getStyleBookEntryId(),
+			null, styleBookEntry.getExternalReferenceCode(),
 			fileEntry.getFileEntryId(), masterLayoutPageTemplateEntry.getPlid(),
 			serviceContext);
 
@@ -245,8 +245,8 @@ public class EditLayoutDesignMVCActionCommandTest {
 			draftLayout.getMasterLayoutPlid(),
 			updatedDraftLayout.getMasterLayoutPlid());
 		Assert.assertEquals(
-			draftLayout.getStyleBookEntryId(),
-			updatedDraftLayout.getStyleBookEntryId());
+			draftLayout.getStyleBookEntryERC(),
+			updatedDraftLayout.getStyleBookEntryERC());
 	}
 
 	@Test

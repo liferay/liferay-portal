@@ -174,7 +174,10 @@
 											"fragmentLink": {
 												"href": {
 													"value_i18n": {
-														"en_US": "https://learn.liferay.com"
+														"en_US": "https://learn.liferay.com",
+														"es_ES": "https://learn.liferay.com",
+														"ja_JP": "https://learn.liferay.com",
+														"pt_BR": "https://learn.liferay.com"
 													}
 												}
 											},
@@ -303,6 +306,29 @@
 												"card",
 												"card-flat"
 											],
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"itemReference": {
+															"className": "com.liferay.portal.kernel.model.Layout",
+															"fields": [
+																{
+																	"fieldName": "friendlyURL",
+																	"fieldValue": "/security-vulnerabilities"
+																},
+																{
+																	"fieldName": "privatePage",
+																	"fieldValue": "false"
+																},
+																{
+																	"fieldName": "siteKey",
+																	"fieldValue": "Customer Portal"
+																}
+															]
+														}
+													}
+												}
+											},
 											"fragmentStyle": {
 												"backgroundColor": "colorBrandPrimaryLighten5",
 												"borderRadius": "borderRadiusLg",
@@ -431,6 +457,29 @@
 												"card",
 												"card-flat"
 											],
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"itemReference": {
+															"className": "com.liferay.portal.kernel.model.Layout",
+															"fields": [
+																{
+																	"fieldName": "friendlyURL",
+																	"fieldValue": "/release-notes"
+																},
+																{
+																	"fieldName": "privatePage",
+																	"fieldValue": "false"
+																},
+																{
+																	"fieldName": "siteKey",
+																	"fieldValue": "Customer Portal"
+																}
+															]
+														}
+													}
+												}
+											},
 											"fragmentStyle": {
 												"backgroundColor": "colorBrandPrimaryLighten5",
 												"borderRadius": "borderRadiusLg",
@@ -559,6 +608,16 @@
 												"card",
 												"card-flat"
 											],
+											"fragmentLink": {
+												"href": {
+													"value_i18n": {
+														"en_US": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/user/requests?page=1&reporter=all",
+														"es_ES": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/user/requests?page=1&reporter=all",
+														"ja_JP": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/user/requests?page=1&reporter=all",
+														"pt_BR": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/user/requests?page=1&reporter=all"
+													}
+												}
+											},
 											"fragmentStyle": {
 												"backgroundColor": "colorBrandPrimaryLighten5",
 												"borderRadius": "borderRadiusLg",
@@ -687,6 +746,16 @@
 												"card",
 												"card-flat"
 											],
+											"fragmentLink": {
+												"href": {
+													"value_i18n": {
+														"en_US": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/portals",
+														"es_ES": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/portals",
+														"ja_JP": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/portals",
+														"pt_BR": "https://liferay-sandbox-424.atlassian.net/servicedesk/customer/portals"
+													}
+												}
+											},
 											"fragmentStyle": {
 												"backgroundColor": "colorBrandPrimaryLighten5",
 												"borderRadius": "borderRadiusLg",

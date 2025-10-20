@@ -63,7 +63,7 @@ public class SiteNavigationSiteMapDisplayContext {
 	public String buildSiteMap() throws Exception {
 		StringBundler sb = new StringBundler();
 
-		_buildSiteMap(
+		_buildSitemap(
 			_themeDisplay.getLayout(), getRootLayouts(), getRootLayout(),
 			isIncludeRootInTree(),
 			_siteNavigationSiteMapPortletInstanceConfiguration.displayDepth(),
@@ -257,7 +257,7 @@ public class SiteNavigationSiteMapDisplayContext {
 		sb.append("</a>");
 	}
 
-	private void _buildSiteMap(
+	private void _buildSitemap(
 			Layout layout, List<Layout> layouts, Layout rootLayout,
 			boolean includeRootInTree, int displayDepth,
 			boolean showCurrentPage, boolean useHtmlTitle,
@@ -288,7 +288,7 @@ public class SiteNavigationSiteMapDisplayContext {
 			_buildLayoutView(
 				rootLayout, cssClass, useHtmlTitle, themeDisplay, sb);
 
-			_buildSiteMap(
+			_buildSitemap(
 				layout, layouts, rootLayout, includeRootInTree, displayDepth,
 				showCurrentPage, useHtmlTitle, showHiddenPages, curDepth + 1,
 				themeDisplay, sb);
@@ -315,14 +315,14 @@ public class SiteNavigationSiteMapDisplayContext {
 
 					if ((displayDepth == 0) || (displayDepth > curDepth)) {
 						if (showHiddenPages) {
-							_buildSiteMap(
+							_buildSitemap(
 								layout, curLayout.getChildren(), rootLayout,
 								includeRootInTree, displayDepth,
 								showCurrentPage, useHtmlTitle, showHiddenPages,
 								curDepth + 1, themeDisplay, sb);
 						}
 						else {
-							_buildSiteMap(
+							_buildSitemap(
 								layout,
 								curLayout.getChildren(
 									themeDisplay.getPermissionChecker()),

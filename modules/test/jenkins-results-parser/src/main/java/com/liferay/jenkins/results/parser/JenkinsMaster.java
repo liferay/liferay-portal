@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -397,7 +398,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public JenkinsSlave getJenkinsSlave(String jenkinsSlaveName) {
-		if (_jenkinsSlavesMap.isEmpty()) {
+		if (_jenkinsSlavesMap.isEmpty() ||
+			JenkinsResultsParserUtil.isCloudCINode()) {
+
 			update();
 		}
 
@@ -417,7 +420,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public List<JenkinsSlave> getJenkinsSlaves() {
-		if (_jenkinsSlavesMap.isEmpty()) {
+		if (_jenkinsSlavesMap.isEmpty() ||
+			JenkinsResultsParserUtil.isCloudCINode()) {
+
 			update();
 		}
 
@@ -593,6 +598,69 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	public Integer getSlavesPerHost() {
 		return _slavesPerHost;
+	}
+
+	public int getStartedBuildCountAfter(Date date, boolean topLevelBuilds) {
+		if (_buildCountJSONObject == null) {
+			try {
+				_buildCountJSONObject = JenkinsResultsParserUtil.toJSONObject(
+					getURL() + "api/json?tree=jobs[name,allBuilds[timestamp]]");
+			}
+			catch (IOException ioException) {
+				return 0;
+			}
+		}
+
+		JSONArray jobsJSONArray = _buildCountJSONObject.optJSONArray("jobs");
+
+		if (jobsJSONArray == null) {
+			return 0;
+		}
+
+		int buildCount = 0;
+
+		for (int i = 0; i < jobsJSONArray.length(); i++) {
+			JSONObject jobJSONObject = jobsJSONArray.optJSONObject(i);
+
+			if (jobJSONObject == null) {
+				continue;
+			}
+
+			String jobName = jobJSONObject.getString("name");
+
+			if (topLevelBuilds) {
+				if (!_isTopLevelJobName(jobName)) {
+					continue;
+				}
+			}
+			else {
+				if (_isTopLevelJobName(jobName)) {
+					continue;
+				}
+			}
+
+			JSONArray buildsJSONArray = jobJSONObject.optJSONArray("allBuilds");
+
+			if (buildsJSONArray == null) {
+				continue;
+			}
+
+			for (int j = 0; j < buildsJSONArray.length(); j++) {
+				JSONObject buildJSONObject = buildsJSONArray.optJSONObject(j);
+
+				if (buildJSONObject == null) {
+					continue;
+				}
+
+				Date buildDate = new Date(buildJSONObject.getLong("timestamp"));
+
+				if (buildDate.after(date)) {
+					buildCount++;
+				}
+			}
+		}
+
+		return buildCount;
 	}
 
 	public String getURL() {
@@ -1357,6 +1425,41 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return usableNodeCount;
 	}
 
+	private boolean _isTopLevelJobName(String jobName) {
+		if (_topLevelJobNames != null) {
+			return _topLevelJobNames.contains(jobName);
+		}
+
+		_topLevelJobNames = new ArrayList<>();
+
+		try {
+			JSONObject topLevelBuildsJSONObject =
+				JenkinsResultsParserUtil.toJSONObject(
+					getURL() + "/view/Top%20Level/api/json?tree=jobs[name]");
+
+			JSONArray jobsJSONArray = topLevelBuildsJSONObject.optJSONArray(
+				"jobs");
+
+			if (jobsJSONArray == null) {
+				return false;
+			}
+
+			for (int i = 0; i < jobsJSONArray.length(); i++) {
+				JSONObject jobJSONObject = jobsJSONArray.optJSONObject(i);
+
+				if (jobJSONObject == null) {
+					continue;
+				}
+
+				_topLevelJobNames.add(jobJSONObject.getString("name"));
+			}
+		}
+		catch (IOException ioException) {
+		}
+
+		return _topLevelJobNames.contains(jobName);
+	}
+
 	private synchronized boolean _isUpdated() {
 		if ((_updateTimestamp == -1) ||
 			((System.currentTimeMillis() - _updateTimestamp) >
@@ -1451,6 +1554,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private long _awsFleetCloudLastUpdateTimestamp;
 	private List<AWSFleetCloud> _awsFleetClouds;
 	private boolean _blacklisted;
+	private JSONObject _buildCountJSONObject;
 	private final Map<String, List<JSONObject>> _buildJSONObjectsMap =
 		new HashMap<>();
 	private final Map<String, Long> _buildsUpdateTimes = new HashMap<>();
@@ -1473,6 +1577,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private Long _queueUpdateTime;
 	private final Integer _slaveRAM;
 	private final Integer _slavesPerHost;
+	private List<String> _topLevelJobNames;
 	private long _updateTimestamp = -1;
 
 }

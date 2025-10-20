@@ -67,7 +67,7 @@ const MOCK_SEGMENT = (id: string, name: string) => ({
 	name,
 	properties: {},
 	referencedObjects: {},
-	segmentType: 'DYNAMIC',
+	segmentType: 'BATCH',
 	state: 'READY',
 	status: 'ACTIVE',
 	type: 4,

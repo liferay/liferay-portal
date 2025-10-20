@@ -201,10 +201,10 @@ public class CamelCaseNameCheck extends BaseCheck {
 		DetailAST parametersDetailAST = detailAST.findFirstToken(
 			TokenTypes.PARAMETERS);
 
-		List<DetailAST> parameterDetailASTList = getAllChildTokens(
+		List<DetailAST> parameterDetailASTs = getAllChildTokens(
 			parametersDetailAST, false, TokenTypes.PARAMETER_DEF);
 
-		for (DetailAST parameterDetailAST : parameterDetailASTList) {
+		for (DetailAST parameterDetailAST : parameterDetailASTs) {
 			Matcher matcher = pattern.matcher(
 				getTypeName(parameterDetailAST, false));
 
@@ -232,10 +232,10 @@ public class CamelCaseNameCheck extends BaseCheck {
 		String upperCaseCamelCaseFormatName = TextFormatter.format(
 			lowerCaseCamelCaseFormatName, TextFormatter.G);
 
-		List<DetailAST> stringLiteralDetailASTlist = getAllChildTokens(
+		List<DetailAST> stringLiteralDetailASTs = getAllChildTokens(
 			assignDetailAST, true, TokenTypes.STRING_LITERAL);
 
-		if (!stringLiteralDetailASTlist.isEmpty()) {
+		if (!stringLiteralDetailASTs.isEmpty()) {
 			if (lowerCaseCamelCaseFormatName == null) {
 				return false;
 			}
@@ -243,9 +243,7 @@ public class CamelCaseNameCheck extends BaseCheck {
 			String propertyFormatName = _getPropertyFormatName(
 				lowerCaseCamelCaseFormatName);
 
-			for (DetailAST stringLiteralDetailAST :
-					stringLiteralDetailASTlist) {
-
+			for (DetailAST stringLiteralDetailAST : stringLiteralDetailASTs) {
 				String text = stringLiteralDetailAST.getText();
 
 				if (text.contains(constantFormatName) ||

@@ -88,9 +88,9 @@ public class AuthorizeRestController extends BaseRestController {
 			).put(
 				"errorMessages", errorMessages
 			).put(
-				"redirectURL", redirectURL
-			).put(
 				"paymentStatus", paymentStatus
+			).put(
+				"redirectURL", redirectURL
 			).put(
 				"transactionCode", transactionCode
 			).toString(),

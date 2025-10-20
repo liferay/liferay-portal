@@ -1,6 +1,4 @@
 dependencies {
-	compileInclude 	group: "io.projectreactor.netty", name: "reactor-netty-core", version: "1.0.45"
-	compileInclude 	group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 	compileInclude group: "com.azure", name: "azure-core", version: "1.50.0"
 	compileInclude group: "com.azure", name: "azure-core-http-netty", version: "1.15.2"
 	compileInclude group: "com.azure", name: "azure-identity", version: "1.13.1"
@@ -13,7 +11,9 @@ dependencies {
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-xml", version: "2.18.2"
 	compileInclude group: "com.fasterxml.jackson.datatype", name: "jackson-datatype-jsr310", version: "2.18.2"
 	compileInclude group: "io.projectreactor", name: "reactor-core", version: "3.4.38"
+	compileInclude group: "io.projectreactor.netty", name: "reactor-netty-core", version: "1.2.10"
 	compileInclude group: "io.projectreactor.netty", name: "reactor-netty-http", version: "1.2.10"
+	compileInclude group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.2"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"

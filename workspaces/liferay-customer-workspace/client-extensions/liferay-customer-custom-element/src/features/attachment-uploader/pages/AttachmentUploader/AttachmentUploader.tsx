@@ -51,6 +51,7 @@ const AttachmentUploader = ({setUploadStateData, uploadStateData}: IProps) => {
 	const {deleteAttachment} = useTicketAttachmentsDelete();
 
 	const {
+		abort: abortInitiateUpload,
 		gcsSessionURL: initiatedGCSSessionURL,
 		initiateUpload,
 		loading: ticketAttachmentInitiateUploadLoading,
@@ -131,6 +132,7 @@ const AttachmentUploader = ({setUploadStateData, uploadStateData}: IProps) => {
 			accountKey: initiationResult.uploadProperties?.accountKey ?? '',
 			comment,
 			file,
+			fileMd5: calculatedMd5.hash,
 			gcsSessionURL:
 				initiationResult.uploadProperties?.gcsSessionURL ?? '',
 			ticketAttachmentId:
@@ -166,6 +168,7 @@ const AttachmentUploader = ({setUploadStateData, uploadStateData}: IProps) => {
 	const _handleCancelUpload = useCallback(async () => {
 		abortGCSUpload();
 		abortGenerateMd5();
+		abortInitiateUpload();
 
 		if (initiatedGCSSessionURL && initiatedTicketAttachmentId) {
 			await deleteAttachment({
@@ -180,6 +183,7 @@ const AttachmentUploader = ({setUploadStateData, uploadStateData}: IProps) => {
 	}, [
 		abortGCSUpload,
 		abortGenerateMd5,
+		abortInitiateUpload,
 		deleteAttachment,
 		initiatedGCSSessionURL,
 		initiatedTicketAttachmentId,

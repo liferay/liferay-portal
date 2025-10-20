@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLTrashLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -270,15 +271,15 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
 
 		return GroupLocalServiceUtil.addGroup(
-			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			Layout.class.getName(), layout.getPlid(),
-			GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			StringPool.BLANK, user.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, Layout.class.getName(),
+			layout.getPlid(), GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), String.valueOf(layout.getPlid())
 			).build(),
-			(Map<Locale, String>)null, 0, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, true,
-			null);
+			(Map<Locale, String>)null, 0, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, false,
+			true, null);
 	}
 
 	protected void createTrashEntries(Group group) throws Exception {

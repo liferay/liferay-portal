@@ -17,6 +17,7 @@ import {liferayConfig} from '../../../liferay.config';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {performLogout, performUserSwitch} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import getFormContainerDefinition from '../../layout-content-page-editor-web/main/utils/getFormContainerDefinition';
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
@@ -656,23 +657,23 @@ test(
 			).toBeVisible();
 		};
 
-		await page.goto(
-			`/web/${site.name}/${layout.friendlyUrlPath}?doAsUserId=${userWithLimited.id}`
-		);
+		await performUserSwitch(page, userWithLimited.alternateName);
+
+		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
 		await checkOptionsAvailable();
 
-		await page.goto(
-			`/web/${site.name}/${layout.friendlyUrlPath}?doAsUserId=${userWithBasic.id}`
-		);
+		await performUserSwitch(page, userWithBasic.alternateName);
+
+		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
 		await checkOptionsAvailable();
 
 		// Go as user without permissions and check options are not available
 
-		await page.goto(
-			`/web/${site.name}/${layout.friendlyUrlPath}?doAsUserId=${userWithoutPermissions.id}`
-		);
+		await performUserSwitch(page, userWithoutPermissions.alternateName);
+
+		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
 		await expect(
 			page.locator('.control-menu-nav').getByTitle('Edit')
@@ -693,6 +694,8 @@ test(
 		await expect(
 			page.locator('.control-menu-nav').getByLabel('Page Audit')
 		).not.toBeVisible();
+
+		await performLogout(page);
 	}
 );
 
@@ -772,11 +775,9 @@ test(
 
 		// Go to edit mode as user and check options are available
 
-		await pageEditorPage.goto(
-			layout,
-			site.friendlyUrlPath,
-			userWithLimited.id
-		);
+		await performUserSwitch(page, userWithLimited.alternateName);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		await expect(
 			page.locator('.page-editor__no-fragments-state')
@@ -792,5 +793,7 @@ test(
 		await expect(
 			page.getByRole('menuitem', {name: 'Preview'})
 		).toBeVisible();
+
+		await performLogout(page);
 	}
 );

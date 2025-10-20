@@ -41,8 +41,6 @@
 }
 
 .data-set-wrapper {
-	border: 2px solid transparent;
-
 	&.drop-target {
 		&
 			*:not(.btn-primary):not(.lexicon-icon-plus):not(
@@ -53,5 +51,6 @@
 
 		@include common-drop-target;
 		border: 2px solid $info;
+		margin: -2px;
 	}
 }

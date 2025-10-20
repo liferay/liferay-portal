@@ -249,22 +249,21 @@ public class ExpiredAssetResourceImpl extends BaseExpiredAssetResourceImpl {
 		return usagesCount;
 	}
 
+	private static final ObjectDefinitionTable _objectDefinitionTable =
+		ObjectDefinitionTable.INSTANCE;
+	private static final ObjectEntryTable _objectEntryTable =
+		ObjectEntryTable.INSTANCE;
+	private static final ObjectEntryVersionTable _objectEntryVersionTable =
+		ObjectEntryVersionTable.INSTANCE;
+	private static final ObjectFolderTable _objectFolderTable =
+		ObjectFolderTable.INSTANCE;
+
 	@Reference
 	private LayoutClassedModelUsageLocalService
 		_layoutClassedModelUsageLocalService;
 
-	private final ObjectDefinitionTable _objectDefinitionTable =
-		ObjectDefinitionTable.INSTANCE;
-
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	private final ObjectEntryTable _objectEntryTable =
-		ObjectEntryTable.INSTANCE;
-	private final ObjectEntryVersionTable _objectEntryVersionTable =
-		ObjectEntryVersionTable.INSTANCE;
-	private final ObjectFolderTable _objectFolderTable =
-		ObjectFolderTable.INSTANCE;
 
 	@Reference
 	private ObjectRelatedModelsProviderRegistry

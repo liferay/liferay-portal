@@ -11,7 +11,9 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_197931 {
 
 	public void method() {
-		for (CommerceOrderItem commerceOrderItem : commerceOrder.getCommerceOrderItems()) {
+		for (CommerceOrderItem commerceOrderItem :
+				commerceOrder.getCommerceOrderItems()) {
+
 			commerceOrderItem.getQuantity();
 		}
 	}

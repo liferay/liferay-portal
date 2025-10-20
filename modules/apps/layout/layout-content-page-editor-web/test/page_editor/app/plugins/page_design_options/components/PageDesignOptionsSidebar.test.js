@@ -42,7 +42,7 @@ const DEFAULT_CONFIG = {
 	styleBooks: [
 		{
 			name: 'Pablo Style',
-			styleBookEntryId: '3',
+			styleBookEntryERC: '3',
 		},
 	],
 	themeName: 'Test Theme',
@@ -127,7 +127,7 @@ describe('PageDesignOptionsSidebar', () => {
 		expect(LayoutService.changeStyleBookEntry).toHaveBeenCalledTimes(1);
 		expect(LayoutService.changeStyleBookEntry).toHaveBeenCalledWith(
 			expect.objectContaining({
-				styleBookEntryId: '3',
+				styleBookEntryERC: '3',
 			})
 		);
 	});

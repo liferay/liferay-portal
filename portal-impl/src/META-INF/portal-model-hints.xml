@@ -805,7 +805,7 @@
 		<field name="iconImageId" type="long" />
 		<field name="themeId" type="String" />
 		<field name="colorSchemeId" type="String" />
-		<field name="styleBookEntryId" type="long" />
+		<field name="styleBookEntryERC" type="String" />
 		<field name="css" type="String">
 			<hint-collection name="CLOB" />
 		</field>

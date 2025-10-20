@@ -39,13 +39,11 @@ test(
 
 		await structureBuilderPage.goToCreateStructure();
 
-		// Add a Text field
-
-		await structureBuilderPage.addField('Text');
-
 		// Try to save and check we can't publish without spaces
 
 		await expect(async () => {
+			await structureBuilderPage.selectSpaces([]);
+
 			await structureBuilderPage.saveButton.click();
 
 			await expect(
@@ -57,7 +55,13 @@ test(
 
 		await structureBuilderPage.enableForAllSpaces();
 
+		// Add a Text field
+
+		await structureBuilderPage.addField('Text');
+
 		// Set label and empty name
+
+		await structureBuilderPage.selectStructure();
 
 		const label = `Structure${getRandomInt()}`;
 

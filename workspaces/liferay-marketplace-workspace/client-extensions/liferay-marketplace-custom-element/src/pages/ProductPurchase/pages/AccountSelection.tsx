@@ -11,6 +11,7 @@ import ProductPurchaseFooter from '../../../components/ProductPurchase/Footer';
 import {useMarketplaceContext} from '../../../context/MarketplaceContext';
 import i18n from '../../../i18n';
 import {useProductPurchaseOutletContext} from '../ProductPurchaseOutlet';
+import CreateNewAccount from './CreateNewAccount';
 
 type ProductPurchaseAccountSelectionProps = {
 	children?: ReactNode;
@@ -57,11 +58,15 @@ const ProductPurchaseAccountSelection: React.FC<
 			}}
 			title={i18n.translate('account-selection')}
 		>
-			<AccountSelection
-				onSelectAccount={setSelectedAccount}
-				selectedAccount={selectedAccount}
-				userAccount={myUserAccount}
-			/>
+			{!!accounts.length && (
+				<AccountSelection
+					onSelectAccount={setSelectedAccount}
+					selectedAccount={selectedAccount}
+					userAccount={myUserAccount}
+				/>
+			)}
+
+			<CreateNewAccount accounts={accounts} />
 
 			{children}
 		</ProductPurchase.Shell>

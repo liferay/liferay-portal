@@ -27,14 +27,14 @@ public class LocalPatternCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "Pattern", "compile");
 
-		if (methodCallDetailASTList.isEmpty()) {
+		if (methodCallDetailASTs.isEmpty()) {
 			return;
 		}
 
-		DetailAST methodCallDetailAST = methodCallDetailASTList.get(0);
+		DetailAST methodCallDetailAST = methodCallDetailASTs.get(0);
 
 		DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 			TokenTypes.ELIST);
@@ -42,10 +42,10 @@ public class LocalPatternCheck extends BaseCheck {
 		DetailAST expressionDetailAST = elistDetailAST.findFirstToken(
 			TokenTypes.EXPR);
 
-		List<DetailAST> childDetailASTList = getAllChildTokens(
+		List<DetailAST> childDetailASTs = getAllChildTokens(
 			expressionDetailAST, true, ALL_TYPES);
 
-		for (DetailAST childDetailAST : childDetailASTList) {
+		for (DetailAST childDetailAST : childDetailASTs) {
 			if ((childDetailAST.getType() != TokenTypes.PLUS) &&
 				(childDetailAST.getType() != TokenTypes.STRING_LITERAL)) {
 

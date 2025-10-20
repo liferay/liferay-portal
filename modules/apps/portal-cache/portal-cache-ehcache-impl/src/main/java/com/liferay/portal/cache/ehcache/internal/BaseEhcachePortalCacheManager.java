@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.cache.PortalCacheListener;
 import com.liferay.portal.kernel.cache.PortalCacheListenerScope;
 import com.liferay.portal.kernel.cache.PortalCacheManager;
 import com.liferay.portal.kernel.cache.PortalCacheManagerListener;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -36,6 +35,7 @@ import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -153,7 +153,7 @@ public abstract class BaseEhcachePortalCacheManager<K extends Serializable, V>
 		throws PortalCacheException {
 
 		return getPortalCache(
-			portalCacheName, mvcc, DBPartition.isPartitionEnabled());
+			portalCacheName, mvcc, PropsValues.DATABASE_PARTITION_ENABLED);
 	}
 
 	@Override

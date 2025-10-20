@@ -281,7 +281,7 @@ export interface IFrontendDataSetProps {
 	apiURL?: string;
 	appURL?: string;
 	bulkActions?: any[];
-	configInURLSettings?: EConfigInURLBehavior;
+	configInURLBehavior?: EConfigInURLBehavior;
 	creationMenu?: {
 		loadData?: Function;
 		primaryItems: Array<ICreationActionItem>;
@@ -334,6 +334,7 @@ export interface IFrontendDataSetProps {
 	showBulkActionsManagementBar?: boolean;
 	showBulkActionsManagementBarActions?: boolean;
 	showManagementBar?: boolean;
+	showManagementBarInEmptyState?: boolean;
 	showNavBarWhenSelected?: boolean;
 	showPagination?: boolean;
 	showSearch?: boolean;

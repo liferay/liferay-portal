@@ -66,7 +66,7 @@ const RECIPIENT_TYPE_OPTIONS = [
 		label: Liferay.Language.get('user'),
 		value: 'user',
 	},
-	Liferay.FeatureFlags['LPD-50091'] && {
+	{
 		label: Liferay.Language.get('user-group'),
 		value: 'user-group',
 	},
@@ -84,7 +84,7 @@ export function UserNotificationSettings({
 	const showMultipleSelect =
 		recipientType === 'role' ||
 		recipientType === 'user' ||
-		(recipientType === 'user-group' && Liferay.FeatureFlags['LPD-50091']);
+		recipientType === 'user-group';
 
 	const getUserRoles = async () => {
 		const roles = getUserNotificationRoles(

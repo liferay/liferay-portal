@@ -16,6 +16,7 @@ import deleteFragmentEntryLinkComment from '../actions/deleteFragmentEntryLinkCo
 import deleteItem from '../actions/deleteItem';
 import duplicateItem from '../actions/duplicateItem';
 import editFragmentEntryLinkComment from '../actions/editFragmentEntryLinkComment';
+import moveItems from '../actions/moveItems';
 import moveStepper from '../actions/moveStepper';
 import pasteItems from '../actions/pasteItems';
 import removeFormStep from '../actions/removeFormStep';
@@ -29,6 +30,7 @@ import {
 	DELETE_ITEM,
 	DUPLICATE_ITEM,
 	EDIT_FRAGMENT_ENTRY_LINK_COMMENT,
+	MOVE_ITEM,
 	MOVE_STEPPER,
 	PASTE_ITEM,
 	REMOVE_FORM_STEP,
@@ -63,6 +65,7 @@ export default function fragmentEntryLinksReducer(
 		| typeof duplicateItem
 		| typeof pasteItems
 		| typeof editFragmentEntryLinkComment
+		| typeof moveItems
 		| typeof moveStepper
 		| typeof removeFormStep
 		| typeof updateCollectionDisplayCollection
@@ -95,7 +98,8 @@ export default function fragmentEntryLinksReducer(
 			return fragmentEntryLinks;
 		}
 
-		case ADD_FRAGMENT_ENTRY_LINKS: {
+		case ADD_FRAGMENT_ENTRY_LINKS:
+		case MOVE_ITEM: {
 			const newFragmentEntryLinks: FragmentEntryLinkMap = {};
 
 			action.fragmentEntryLinks.forEach((fragmentEntryLink) => {

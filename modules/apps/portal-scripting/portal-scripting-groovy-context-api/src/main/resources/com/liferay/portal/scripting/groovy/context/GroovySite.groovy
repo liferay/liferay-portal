@@ -5,6 +5,7 @@
 
 package com.liferay.portal.scripting.groovy.context;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchTeamException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -126,11 +127,11 @@ class GroovySite {
 		}
 
 		group = GroupLocalServiceUtil.addGroup(
-			groovyScriptingContext.guestUserId,
+			StringPool.BLANK, groovyScriptingContext.guestUserId,
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0, 0, name,
-			description, type, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, true,
-			groovyScriptingContext.serviceContext);
+			description, type, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
+			true, groovyScriptingContext.serviceContext);
 	}
 
 	String description;

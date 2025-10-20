@@ -314,12 +314,12 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		// Group
 
 		_groupLocalService.addGroup(
-			userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			StringPool.BLANK, userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			UserGroup.class.getName(), userGroup.getUserGroupId(),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
-			getLocalizationMap(String.valueOf(userGroupId)), null, 0, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, true,
-			null);
+			getLocalizationMap(String.valueOf(userGroupId)), null, 0, null,
+			true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
+			false, true, null);
 
 		// Resources
 

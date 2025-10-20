@@ -13,9 +13,11 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_197459 {
 
 	public void method(long commerceOrderId) {
-		CommerceOrderItemLocalServiceUtil.deleteCommerceOrderItems(commerceOrderId);
-		_commerceOrderItemLocalService.deleteCommerceOrderItems(123);
-		_commerceOrderItemLocalService.deleteCommerceOrderItems(commerceOrderId);
+		CommerceOrderItemLocalServiceUtil.deleteCommerceOrderItems(123);
+		CommerceOrderItemLocalServiceUtil.deleteCommerceOrderItems(
+			commerceOrderId);
+		_commerceOrderItemLocalService.deleteCommerceOrderItems(
+			commerceOrderId);
 	}
 
 	public void method(
@@ -23,13 +25,25 @@ public class LPS_197459 {
 		int shippedQuantity, String json, CommerceContext commerceContext,
 		ServiceContext serviceContext) {
 
-		_commerceOrderItemLocalService.addCommerceOrderItem(commerceOrderId, cpInstanceId, quantity, shippedQuantity, json, commerceContext, serviceContext);
-		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(commerceOrderId, cpInstanceId, quantity, shippedQuantity, json, commerceContext, serviceContext);
-		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(123, cpInstanceId, 123, shippedQuantity, "test", commerceContext, serviceContext);
+		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(
+			123, cpInstanceId, quantity, shippedQuantity, json, commerceContext,
+			serviceContext);
+		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(
+			commerceOrderId, cpInstanceId, quantity, shippedQuantity, json,
+			commerceContext, serviceContext);
+		_commerceOrderItemLocalService.addCommerceOrderItem(
+			commerceOrderId, cpInstanceId, quantity, shippedQuantity, json,
+			commerceContext, serviceContext);
 
-		CommerceOrderItemServiceUtil.addCommerceOrderItem(commerceOrderId, cpInstanceId, quantity, shippedQuantity, json, commerceContext, serviceContext);
-		_commerceOrderItemService.addCommerceOrderItem(commerceOrderId, cpInstanceId, quantity, shippedQuantity, json, commerceContext, serviceContext);
-		_commerceOrderItemService.addCommerceOrderItem(123, cpInstanceId, 123, shippedQuantity, "test", commerceContext, serviceContext);
+		CommerceOrderItemServiceUtil.addCommerceOrderItem(
+			123, cpInstanceId, quantity, shippedQuantity, json, commerceContext,
+			serviceContext);
+		CommerceOrderItemServiceUtil.addCommerceOrderItem(
+			commerceOrderId, cpInstanceId, quantity, shippedQuantity, json,
+			commerceContext, serviceContext);
+		_commerceOrderItemService.addCommerceOrderItem(
+			commerceOrderId, cpInstanceId, quantity, shippedQuantity, json,
+			commerceContext, serviceContext);
 	}
 
 	@Reference

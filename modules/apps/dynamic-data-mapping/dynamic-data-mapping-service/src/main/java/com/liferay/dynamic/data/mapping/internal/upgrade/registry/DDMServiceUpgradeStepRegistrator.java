@@ -642,8 +642,8 @@ public class DDMServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"DDMTemplate", "templateId"}};
+				protected String[] getTableNames() {
+					return new String[] {"DDMTemplate"};
 				}
 
 			});
@@ -665,8 +665,8 @@ public class DDMServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"DDMStructure", "structureId"}};
+				protected String[] getTableNames() {
+					return new String[] {"DDMStructure"};
 				}
 
 			});

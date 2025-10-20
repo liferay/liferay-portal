@@ -7,6 +7,7 @@ package com.liferay.object.rest.internal.manager.v1_0.test;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.constants.AccountRoleConstants;
+import com.liferay.account.exception.NoSuchGroupException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
 import com.liferay.account.service.AccountEntryLocalService;
@@ -414,15 +415,7 @@ public class DefaultObjectEntryManagerImplTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_depotEntry = _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			DepotConstants.TYPE_ASSET_LIBRARY,
-			ServiceContextTestUtil.getServiceContext());
+		_depotEntry = _addDepotEntry();
 
 		listTypeDefinition =
 			listTypeDefinitionLocalService.addListTypeDefinition(
@@ -1421,6 +1414,20 @@ public class DefaultObjectEntryManagerImplTest
 
 			Assert.assertEquals(name, role.getName());
 		}
+
+		Role guestRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.InvalidValue.class,
+			"The value is invalid for object field \"assignee\"",
+			() -> _addObjectEntryWithAssigneeObjectField(
+				HashMapBuilder.put(
+					"externalReferenceCode",
+					guestRole.getExternalReferenceCode()
+				).put(
+					"type", "Role"
+				).build()));
 
 		AssertUtils.assertFailure(
 			ObjectEntryValuesException.InvalidValue.class,
@@ -3044,6 +3051,17 @@ public class DefaultObjectEntryManagerImplTest
 
 		Assert.assertEquals("test-url", objectEntry.getFriendlyUrlPath());
 
+		objectEntry = _defaultObjectEntryManager.updateObjectEntry(
+			_simpleDTOConverterContext, objectDefinition, objectEntry.getId(),
+			new ObjectEntry() {
+				{
+					setFriendlyUrlPath("Accès aux crédits");
+				}
+			});
+
+		Assert.assertEquals(
+			"accès-aux-crédits", objectEntry.getFriendlyUrlPath());
+
 		objectEntry = _defaultObjectEntryManager.addObjectEntry(
 			_simpleDTOConverterContext, objectDefinition,
 			new ObjectEntry() {
@@ -3053,6 +3071,8 @@ public class DefaultObjectEntryManagerImplTest
 							"en_US", "Test URL"
 						).put(
 							"es_ES", "Test URL Spanish"
+						).put(
+							"fr_FR", "Accès aux crédits"
 						).put(
 							"pt_BR", ""
 						).build());
@@ -3065,6 +3085,8 @@ public class DefaultObjectEntryManagerImplTest
 				"en_US", "test-url-1"
 			).put(
 				"es_ES", "test-url-spanish"
+			).put(
+				"fr_FR", "accès-aux-crédits-1"
 			).build(),
 			objectEntry.getFriendlyUrlPath_i18n());
 
@@ -6062,28 +6084,39 @@ public class DefaultObjectEntryManagerImplTest
 
 	@Test
 	public void testGetObjectEntriesWithScopeDepot() throws Exception {
-		Group group = _groupLocalService.getGroup(
-			companyId, GroupConstants.GUEST);
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			Collections.singletonList(
+				new TextObjectFieldBuilder(
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"textObjectFieldName"
+				).build()),
+			ObjectDefinitionConstants.SCOPE_DEPOT);
 
-		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			_depotEntry.getDepotEntryId(), group.getGroupId());
+		DepotEntry depotEntry1 = _addDepotEntry();
+		DepotEntry depotEntry2 = _addDepotEntry();
 
-		_defaultObjectEntryManager.addObjectEntry(
-			_simpleDTOConverterContext, _objectDefinition1,
+		_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS,
+			StringUtil.merge(
+				Arrays.asList(
+					depotEntry1.getGroupId(), depotEntry2.getGroupId())));
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			objectDefinition,
 			new ObjectEntry() {
 				{
 					properties = HashMapBuilder.<String, Object>put(
 						"textObjectFieldName", RandomTestUtil.randomString()
-					).put(
-						"textObjectFieldNameExtension",
-						RandomTestUtil.randomString()
 					).build();
 				}
 			},
-			ObjectDefinitionConstants.SCOPE_COMPANY);
-
-		ObjectEntry objectEntry = _defaultObjectEntryManager.addObjectEntry(
-			_simpleDTOConverterContext, _objectDefinition6,
+			String.valueOf(depotEntry1.getGroupId()));
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			objectDefinition,
 			new ObjectEntry() {
 				{
 					properties = HashMapBuilder.<String, Object>put(
@@ -6091,15 +6124,33 @@ public class DefaultObjectEntryManagerImplTest
 					).build();
 				}
 			},
-			String.valueOf(_depotEntry.getGroupId()));
-
-		Page<ObjectEntry> page = _defaultObjectEntryManager.getObjectEntries(
-			companyId, _objectDefinition6, group.getGroupKey(), null,
-			dtoConverterContext, StringPool.BLANK, null, StringPool.BLANK,
-			new Sort[] {SortFactoryUtil.create("createDate", false)});
+			String.valueOf(depotEntry2.getGroupId()));
 
 		assertEquals(
-			Arrays.asList(objectEntry), (List<ObjectEntry>)page.getItems());
+			_getObjectEntries(
+				objectDefinition, String.valueOf(depotEntry1.getGroupId())),
+			Collections.singletonList(objectEntry1));
+		assertEquals(
+			_getObjectEntries(
+				objectDefinition, String.valueOf(depotEntry2.getGroupId())),
+			Collections.singletonList(objectEntry2));
+
+		Group group = GroupTestUtil.addGroup();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry1.getDepotEntryId(), group.getGroupId());
+
+		assertEquals(
+			_getObjectEntries(objectDefinition, group.getGroupKey()),
+			Collections.singletonList(objectEntry1));
+
+		AssertUtils.assertFailure(
+			NoSuchGroupException.class, null,
+			() -> {
+				Group invalidGroup = GroupTestUtil.addGroup();
+
+				_getObjectEntries(objectDefinition, invalidGroup.getGroupKey());
+			});
 	}
 
 	@FeatureFlag("LPD-17564")
@@ -9165,6 +9216,18 @@ public class DefaultObjectEntryManagerImplTest
 			objectField.getObjectFieldSettings());
 	}
 
+	private DepotEntry _addDepotEntry() throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	private String _addListTypeEntry() throws Exception {
 		ListTypeEntry listTypeEntry =
 			_listTypeEntryLocalService.addListTypeEntry(
@@ -9964,6 +10027,18 @@ public class DefaultObjectEntryManagerImplTest
 				objectFieldName + "_i18n");
 
 		return localizedValues.get(languageId);
+	}
+
+	private List<ObjectEntry> _getObjectEntries(
+			ObjectDefinition objectDefinition, String scopeKey)
+		throws Exception {
+
+		Page<ObjectEntry> page = _defaultObjectEntryManager.getObjectEntries(
+			companyId, objectDefinition, scopeKey, null, dtoConverterContext,
+			StringPool.BLANK, null, StringPool.BLANK,
+			new Sort[] {SortFactoryUtil.create("createDate", false)});
+
+		return (List<ObjectEntry>)page.getItems();
 	}
 
 	private String _getObjectRelationshipERCObjectFieldName(

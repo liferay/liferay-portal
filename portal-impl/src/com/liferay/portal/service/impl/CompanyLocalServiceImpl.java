@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.CompanyMxException;
@@ -366,7 +365,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		FeatureFlagManagerUtil.checkEnabled("LPD-11342");
 
-		if (!DBPartition.isPartitionEnabled()) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			throw new UnsupportedOperationException(
 				"Database partitioning must be enabled");
 		}
@@ -501,7 +500,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 			// Resource actions
 
-			if (DBPartition.isPartitionEnabled()) {
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
 				_resourceActionLocalService.checkResourceActions();
 			}
 
@@ -600,7 +599,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		FeatureFlagManagerUtil.checkEnabled("LPD-11342");
 
-		if (!DBPartition.isPartitionEnabled()) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			throw new UnsupportedOperationException(
 				"Database partitioning must be enabled");
 		}
@@ -783,7 +782,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		Company company = companyPersistence.findByPrimaryKey(companyId);
 
 		try {
-			if (!DBPartition.isPartitionEnabled()) {
+			if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 				DBPartitionUtil.exportCompany(companyId);
 
 				return company;
@@ -1147,7 +1146,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		validateVirtualHost(company.getWebId(), virtualHostname);
 
-		if (PropsValues.MAIL_MX_UPDATE) {
+		if (PropsValues.COMPANY_MX_UPDATE) {
 			validateMx(companyId, mx);
 
 			company.setMx(mx);
@@ -1206,13 +1205,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		validateVirtualHost(company.getWebId(), virtualHostname);
 
-		if (PropsValues.MAIL_MX_UPDATE) {
+		if (PropsValues.COMPANY_MX_UPDATE) {
 			validateMx(companyId, mx);
 		}
 
 		validateName(companyId, name);
 
-		if (PropsValues.MAIL_MX_UPDATE) {
+		if (PropsValues.COMPANY_MX_UPDATE) {
 			company.setMx(mx);
 		}
 
@@ -1607,7 +1606,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		preunregisterCompany(company);
 
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			TransactionCommitCallbackUtil.registerCallback(
 				() -> {
 					_clearCache(companyId);
@@ -2500,7 +2499,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			if (DBPartition.isPartitionEnabled()) {
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
 				return TransactionInvokerUtil.invoke(
 					_transactionConfig, callable);
 			}

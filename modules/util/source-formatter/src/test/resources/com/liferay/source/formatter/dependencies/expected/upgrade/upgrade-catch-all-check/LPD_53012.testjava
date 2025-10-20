@@ -14,13 +14,16 @@ public class LPD_53012 {
 
 	public void method(long companyId, String externalReferenceCode) {
 		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntryByExternalReferenceCode(123, externalReferenceCode);
+		CommercePriceEntryLocalServiceUtil.
+			fetchCommercePriceEntryByExternalReferenceCode(
+				123, externalReferenceCode);
 		CommercePriceEntryServiceUtil.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
 		_commercePriceEntryLocalService.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
 		_commercePriceEntryService.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
 
 		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntryByReferenceCode(123, externalReferenceCode);
+		CommercePriceEntryLocalServiceUtil.
+			fetchCommercePriceEntryByReferenceCode(123, externalReferenceCode);
 		CommercePriceEntryServiceUtil.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
 		_commercePriceEntryLocalService.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);
 		_commercePriceEntryService.fetchCommercePriceEntryByExternalReferenceCode(externalReferenceCode, companyId);

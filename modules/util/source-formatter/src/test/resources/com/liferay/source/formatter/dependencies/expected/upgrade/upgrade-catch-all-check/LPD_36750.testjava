@@ -11,6 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPD_36750 {
 
 	public void method(Address address) {
+		address.getListType(null);
+		address.setListType(null);
 		address.getListTypeId(null);
 		address.setListTypeId(null);
 	}
@@ -23,6 +25,8 @@ public class LPD_36750 {
 	}
 
 	public void method(EmailAddress emailAddress) {
+		emailAddress.getListType(null);
+		emailAddress.setListType(null);
 		emailAddress.getListTypeId(null);
 		emailAddress.setListTypeId(null);
 	}
@@ -33,16 +37,22 @@ public class LPD_36750 {
 	}
 
 	public void method(OrgLabor orgLabor) {
+		orgLabor.getListType(null);
+		orgLabor.setListType(null);
 		orgLabor.getListTypeId(null);
 		orgLabor.setListTypeId(null);
 	}
 
 	public void method(Phone phone) {
+		phone.getListType(null);
+		phone.setListType(null);
 		phone.getListTypeId(null);
 		phone.setListTypeId(null);
 	}
 
 	public void method(Website website) {
+		website.getListType(null);
+		website.setListType(null);
 		website.getListTypeId(null);
 		website.setListTypeId(null);
 	}

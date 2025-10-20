@@ -23,7 +23,7 @@
 
 		<liferay-ui:error exception="<%= CompanyMxException.class %>" message="please-enter-a-valid-mail-domain" />
 
-		<aui:input disabled="<%= !PropsValues.MAIL_MX_UPDATE %>" label="mail-domain" name="mx" />
+		<aui:input disabled="<%= !PropsValues.COMPANY_MX_UPDATE %>" label="mail-domain" name="mx" />
 
 		<liferay-ui:error exception="<%= CompanyVirtualHostException.class %>" message="please-enter-a-valid-virtual-host" />
 

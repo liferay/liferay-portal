@@ -242,7 +242,8 @@ private String _filterDefaultSanitizer(String line) {
 	if (line.contains('<directives>')) {
 		line = """\
 			|${line}
-			|		<directive name="noopenerAndNoreferrerAnchors" value="true" />""".stripMargin()
+			|		<directive name="noopenerAndNoreferrerAnchors" value="true" />
+			|		<directive name="preserveSpace" value="true" />""".stripMargin()
 	}
 
 	if (line.contains('<directive name="maxInputSize" value="20000"/>')) {

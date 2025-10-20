@@ -13,6 +13,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -71,16 +72,17 @@ public class AssetPublisherUserNotificationTest {
 		_user = UserTestUtil.addOmniadminUser();
 
 		_group = _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			null, 0, GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), "Test Site"
 			).put(
 				LocaleUtil.SPAIN, "Sitio de Pruebas"
 			).build(),
-			null, GroupConstants.TYPE_SITE_OPEN, true,
+			null, GroupConstants.TYPE_SITE_OPEN, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, "/test-site", true,
-			true, ServiceContextTestUtil.getServiceContext());
+			false, true, ServiceContextTestUtil.getServiceContext());
 
 		_layout = LayoutTestUtil.addTypePortletLayout(_group);
 

@@ -20,9 +20,9 @@ CommerceWishList commerceWishList = (CommerceWishList)row.getObject();
 		<portlet:param name="commerceWishListId" value="<%= String.valueOf(commerceWishList.getCommerceWishListId()) %>" />
 	</portlet:actionURL>
 
-	<liferay-ui:icon
+	<clay:link
+		aria-label='<%= LanguageUtil.get(request, "delete") %>'
+		href="<%= deleteURL.toString() %>"
 		icon="times"
-		markupView="lexicon"
-		url="<%= deleteURL %>"
 	/>
 </c:if>

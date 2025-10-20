@@ -53,10 +53,10 @@ public class GenericTypeCheck extends BaseCheck {
 		if ((detailAST.getType() == TokenTypes.EXTENDS_CLAUSE) ||
 			(detailAST.getType() == TokenTypes.IMPLEMENTS_CLAUSE)) {
 
-			List<DetailAST> childDetailASTList = getAllChildTokens(
+			List<DetailAST> childDetailASTs = getAllChildTokens(
 				detailAST, false, TokenTypes.DOT, TokenTypes.IDENT);
 
-			for (DetailAST childDetailAST : childDetailASTList) {
+			for (DetailAST childDetailAST : childDetailASTs) {
 				_checkType(detailAST, childDetailAST);
 			}
 		}
@@ -75,15 +75,15 @@ public class GenericTypeCheck extends BaseCheck {
 			childDetailAST);
 
 		if (typeArgumentsDetailAST != null) {
-			List<DetailAST> typeArgumentDetailASTList = getAllChildTokens(
+			List<DetailAST> typeArgumentDetailASTs = getAllChildTokens(
 				typeArgumentsDetailAST, false, TokenTypes.TYPE_ARGUMENT);
 
 			if (isAttributeValue(_POPULATE_TYPE_NAMES_KEY)) {
 				_populateGenericTypeNames(
-					childDetailAST, typeArgumentDetailASTList);
+					childDetailAST, typeArgumentDetailASTs);
 			}
 
-			for (DetailAST typeArgumentDetailAST : typeArgumentDetailASTList) {
+			for (DetailAST typeArgumentDetailAST : typeArgumentDetailASTs) {
 				_checkType(detailAST, typeArgumentDetailAST);
 			}
 
@@ -252,10 +252,10 @@ public class GenericTypeCheck extends BaseCheck {
 			return false;
 		}
 
-		List<DetailAST> literalStringDetailASTList = getAllChildTokens(
+		List<DetailAST> literalStringDetailASTs = getAllChildTokens(
 			annotationDetailAST, true, TokenTypes.STRING_LITERAL);
 
-		for (DetailAST literalStringDetailAST : literalStringDetailASTList) {
+		for (DetailAST literalStringDetailAST : literalStringDetailASTs) {
 			String s = literalStringDetailAST.getText();
 
 			if (s.equals("\"" + warning + "\"")) {
@@ -332,7 +332,7 @@ public class GenericTypeCheck extends BaseCheck {
 	}
 
 	private void _populateGenericTypeNames(
-		DetailAST childDetailAST, List<DetailAST> typeArgumentDetailASTList) {
+		DetailAST childDetailAST, List<DetailAST> typeArgumentDetailASTs) {
 
 		Tuple genericTypeNamesTuple = _getGenericTypeNamesTuple();
 
@@ -342,7 +342,7 @@ public class GenericTypeCheck extends BaseCheck {
 			return;
 		}
 
-		for (DetailAST typeArgumentDetailAST : typeArgumentDetailASTList) {
+		for (DetailAST typeArgumentDetailAST : typeArgumentDetailASTs) {
 			DetailAST firstChildDetailAST =
 				typeArgumentDetailAST.getFirstChild();
 
@@ -371,7 +371,7 @@ public class GenericTypeCheck extends BaseCheck {
 		}
 
 		genericTypeNamesMap.put(
-			fullyQualifiedTypeName, typeArgumentDetailASTList.size());
+			fullyQualifiedTypeName, typeArgumentDetailASTs.size());
 
 		try {
 			JSONObject jsonObject = new JSONObjectImpl();

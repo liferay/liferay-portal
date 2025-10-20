@@ -83,7 +83,7 @@ const INITIAL_STATE: State = {
 				DEFAULT_STRUCTURE_LABEL,
 		},
 		name: normalizeName(DEFAULT_STRUCTURE_LABEL),
-		spaces: [],
+		spaces: 'all',
 		status: 'new',
 		uuid: getUuid(),
 		workflows: {},

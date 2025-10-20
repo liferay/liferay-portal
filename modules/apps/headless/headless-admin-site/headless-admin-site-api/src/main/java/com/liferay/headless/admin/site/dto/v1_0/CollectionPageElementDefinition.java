@@ -383,7 +383,7 @@ public class CollectionPageElementDefinition
 		description = "the collection page element's layout."
 	)
 	@Valid
-	public Layout getLayout() {
+	public BasicLayout getLayout() {
 		if (_layoutSupplier != null) {
 			layout = _layoutSupplier.get();
 
@@ -393,7 +393,7 @@ public class CollectionPageElementDefinition
 		return layout;
 	}
 
-	public void setLayout(Layout layout) {
+	public void setLayout(BasicLayout layout) {
 		this.layout = layout;
 
 		_layoutSupplier = null;
@@ -401,7 +401,7 @@ public class CollectionPageElementDefinition
 
 	@JsonIgnore
 	public void setLayout(
-		UnsafeSupplier<Layout, Exception> layoutUnsafeSupplier) {
+		UnsafeSupplier<BasicLayout, Exception> layoutUnsafeSupplier) {
 
 		_layoutSupplier = () -> {
 			try {
@@ -418,10 +418,10 @@ public class CollectionPageElementDefinition
 
 	@GraphQLField(description = "the collection page element's layout.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Layout layout;
+	protected BasicLayout layout;
 
 	@JsonIgnore
-	private Supplier<Layout> _layoutSupplier;
+	private Supplier<BasicLayout> _layoutSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The style of a list of items in the collection page element."
@@ -968,7 +968,7 @@ public class CollectionPageElementDefinition
 			sb.append("]");
 		}
 
-		Layout layout = getLayout();
+		BasicLayout layout = getLayout();
 
 		if (layout != null) {
 			if (sb.length() > 1) {

@@ -98,7 +98,7 @@ public class WidgetPageTemplateSettings
 	private Supplier<String> _layoutTemplateIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The widget page template's site navigation settings."
+		description = "The widget page template's navigation settings."
 	)
 	@Valid
 	public NavigationSettings getNavigationSettings() {
@@ -136,7 +136,7 @@ public class WidgetPageTemplateSettings
 	}
 
 	@GraphQLField(
-		description = "The widget page template's site navigation settings."
+		description = "The widget page template's navigation settings."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected NavigationSettings navigationSettings;

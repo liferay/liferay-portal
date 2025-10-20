@@ -42,10 +42,10 @@ public class ModelSetCallWithCompanyIdCheck extends BaseCheck {
 
 		String variableName = getName(detailAST);
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(detailAST, variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			detailAST, variableName);
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			DetailAST parentDetailAST = variableCallerDetailAST.getParent();
 
 			if (parentDetailAST.getType() != TokenTypes.DOT) {
@@ -71,12 +71,10 @@ public class ModelSetCallWithCompanyIdCheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> parameterExprDetailASTList =
-				getParameterExprDetailASTList(parentDetailAST);
+			List<DetailAST> parameterExprDetailASTs =
+				getParameterExprDetailASTs(parentDetailAST);
 
-			for (DetailAST parameterExprDetailAST :
-					parameterExprDetailASTList) {
-
+			for (DetailAST parameterExprDetailAST : parameterExprDetailASTs) {
 				DetailAST firstChildDetailAST =
 					parameterExprDetailAST.getFirstChild();
 

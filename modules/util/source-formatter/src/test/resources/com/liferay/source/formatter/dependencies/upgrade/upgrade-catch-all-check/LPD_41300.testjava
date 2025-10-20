@@ -15,115 +15,530 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_41300 {
 
 	public void method(
-		long groupId, long userId, long commerceCurrencyId, String commerceCurrencyCode,
-		boolean netPrice, String type, long parentCommercePriceListId, long commercePriceListId,
-		boolean catalogBasePriceList, String name, double priority, long parentCommercePriceListId,
-		int displayDateMonth, int displayDateDay, int displayDateYear,
-		int displayDateHour, int displayDateMinute, int expirationDateMonth,
-		int expirationDateDay, int expirationDateYear,
-		int expirationDateHour, int expirationDateMinute,
-		String externalReferenceCode, boolean neverExpire,
-		ServiceContext serviceContext) {
+		long groupId, long userId, long commerceCurrencyId,
+		String commerceCurrencyCode, boolean netPrice, String type,
+		long parentCommercePriceListId, long commercePriceListId,
+		boolean catalogBasePriceList, String name, double priority,
+		long parentCommercePriceListId, int displayDateMonth,
+		int displayDateDay, int displayDateYear, int displayDateHour,
+		int displayDateMinute, int expirationDateMonth, int expirationDateDay,
+		int expirationDateYear, int expirationDateHour,
+		int expirationDateMinute, String externalReferenceCode,
+		boolean neverExpire, ServiceContext serviceContext) {
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, "test123", neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, "test123", neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, parentCommercePriceListId, name,
+			priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, externalReferenceCode, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, parentCommercePriceListId, name,
+			priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, externalReferenceCode, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, externalReferenceCode, neverExpire,
+			serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, type, parentCommercePriceListId,
+			catalogBasePriceList, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, type, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, type, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, type, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, type,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, type, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, type,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 
-		CommercePriceListLocalServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, type, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(123, userId, commerceCurrencyId, type, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.addCommercePriceList(groupId, userId, commerceCurrencyId, type, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, type, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			123, userId, commerceCurrencyId, type, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, type, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(123, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			123, commerceCurrencyId, netPrice, parentCommercePriceListId, name,
+			priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 
-		CommercePriceListLocalServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(123, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			123, commerceCurrencyId, parentCommercePriceListId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(123, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			123, commerceCurrencyId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(123, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			123, commerceCurrencyId, netPrice, type, parentCommercePriceListId,
+			catalogBasePriceList, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListLocalServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(123, commerceCurrencyId, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListLocalService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListLocalServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			123, commerceCurrencyId, type, parentCommercePriceListId,
+			catalogBasePriceList, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListLocalService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, parentCommercePriceListId, name,
+			priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, externalReferenceCode, neverExpire,
+			serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, parentCommercePriceListId, name,
+			priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, externalReferenceCode, neverExpire,
+			serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, externalReferenceCode, neverExpire,
+			serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(123, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
-		_commercePriceListService.addCommercePriceList(groupId, userId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, externalReferenceCode, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			123, userId, commerceCurrencyId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, externalReferenceCode,
+			neverExpire, serviceContext);
+		_commercePriceListService.addCommercePriceList(
+			groupId, userId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			externalReferenceCode, neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(123, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			123, commerceCurrencyId, netPrice, parentCommercePriceListId, name,
+			priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice,
+			parentCommercePriceListId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 
-		CommercePriceListServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(123, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, parentCommercePriceListId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			123, commerceCurrencyId, parentCommercePriceListId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, parentCommercePriceListId,
+			name, priority, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(123, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			123, commerceCurrencyId, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 
-		CommercePriceListServiceUtil.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(123, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
-		_commercePriceListService.updateCommercePriceList(commercePriceListId, commerceCurrencyId, netPrice, type, parentCommercePriceListId, catalogBasePriceList, name, priority, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
+		CommercePriceListServiceUtil.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			123, commerceCurrencyId, netPrice, type, parentCommercePriceListId,
+			catalogBasePriceList, name, priority, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+		_commercePriceListService.updateCommercePriceList(
+			commercePriceListId, commerceCurrencyId, netPrice, type,
+			parentCommercePriceListId, catalogBasePriceList, name, priority,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 	}
 
 	@Reference

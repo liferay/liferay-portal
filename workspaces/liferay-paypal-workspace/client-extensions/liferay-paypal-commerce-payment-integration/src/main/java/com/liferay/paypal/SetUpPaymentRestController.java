@@ -83,24 +83,24 @@ public class SetUpPaymentRestController extends BaseRestController {
 					).put(
 						"label", "Subtotal"
 					).put(
-						"type", "SUBTOTAL"
-					).put(
 						"price",
 						BigDecimal.valueOf(
 							orderJSONObject.getDouble("subtotalAmount")
 						).toString()
+					).put(
+						"type", "SUBTOTAL"
 					)
 				).put(
 					new JSONObject(
 					).put(
 						"label", "Tax"
 					).put(
-						"type", "TAX"
-					).put(
 						"price",
 						BigDecimal.valueOf(
 							orderJSONObject.getDouble("taxAmount")
 						).toString()
+					).put(
+						"type", "TAX"
 					)
 				)
 			).put(
@@ -245,12 +245,12 @@ public class SetUpPaymentRestController extends BaseRestController {
 				"Bearer " + jwt.getTokenValue(),
 				new JSONObject(
 				).put(
-					"externalReferenceCode", transactionCode
-				).put(
 					"clientId", typeSettingsJSONObject.getString("clientId")
 				).put(
 					"clientSecret",
 					typeSettingsJSONObject.getString("clientSecret")
+				).put(
+					"externalReferenceCode", transactionCode
 				).put(
 					"mode", typeSettingsJSONObject.getString("mode")
 				).put(
@@ -276,9 +276,9 @@ public class SetUpPaymentRestController extends BaseRestController {
 			).put(
 				"errorMessages", errorMessages
 			).put(
-				"paymentStatus", paymentStatus
-			).put(
 				"payload", payload
+			).put(
+				"paymentStatus", paymentStatus
 			).put(
 				"transactionCode", transactionCode
 			).toString(),
@@ -542,12 +542,6 @@ public class SetUpPaymentRestController extends BaseRestController {
 
 		return new JSONObject(
 		).put(
-			"name",
-			new JSONObject(
-			).put(
-				"full_name", shippingAddressJSONObject.getString("name")
-			)
-		).put(
 			"address",
 			new JSONObject(
 			).put(
@@ -564,6 +558,12 @@ public class SetUpPaymentRestController extends BaseRestController {
 				shippingAddressJSONObject.getString("countryISOCode")
 			).put(
 				"postal_code", shippingAddressJSONObject.getString("zip")
+			)
+		).put(
+			"name",
+			new JSONObject(
+			).put(
+				"full_name", shippingAddressJSONObject.getString("name")
 			)
 		);
 	}

@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	EVENT_INPUT_REGISTERED,
+	EVENT_TRANSLATION_STATUS,
+	getSelectedLanguageId,
+} from './LocalizationSelect';
 import {getTranslationInput} from './getTranslationInput';
 
 type Args = {
@@ -63,7 +68,7 @@ export function registerLocalizedInput({
 		});
 	}
 
-	let currentLanguageId = defaultLanguageId;
+	let currentLanguageId = getSelectedLanguageId() || defaultLanguageId;
 
 	if (changeTextDirection) {
 		inputElement?.setAttribute(
@@ -130,7 +135,7 @@ export function registerLocalizedInput({
 				});
 			}
 
-			Liferay.fire('localizationSelect:updateTranslationStatus', {
+			Liferay.fire(EVENT_TRANSLATION_STATUS, {
 				languageId,
 			});
 		}
@@ -276,7 +281,7 @@ export function registerLocalizedInput({
 				});
 			}
 
-			Liferay.fire('localizationSelect:updateTranslationStatus', {
+			Liferay.fire(EVENT_TRANSLATION_STATUS, {
 				languageId: currentLanguageId,
 			});
 		}
@@ -338,11 +343,13 @@ export function registerLocalizedInput({
 				});
 			}
 
-			Liferay.fire('localizationSelect:updateTranslationStatus', {
+			Liferay.fire(EVENT_TRANSLATION_STATUS, {
 				languageId: currentLanguageId,
 			});
 		}
 	);
+
+	Liferay.fire(EVENT_INPUT_REGISTERED);
 
 	return {
 		onChange: (value = null) => {
@@ -358,7 +365,7 @@ export function registerLocalizedInput({
 				translationInput.value = value;
 			}
 
-			Liferay.fire('localizationSelect:updateTranslationStatus', {
+			Liferay.fire(EVENT_TRANSLATION_STATUS, {
 				languageId: currentLanguageId,
 			});
 		},

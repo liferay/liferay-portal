@@ -15,7 +15,6 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.document.library.preview.audio.internal.constants.DLPreviewAudioWebKeys" %><%@
-page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.PropsValues" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
 

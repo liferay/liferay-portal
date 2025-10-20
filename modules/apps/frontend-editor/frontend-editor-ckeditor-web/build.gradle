@@ -38,7 +38,9 @@ buildCKEditor {
 	duplicatesStrategy = "exclude"
 
 	eachFile new StripPathSegmentsAction(2)
-	filter removeBOM
+	filesMatching(["**/*.js"]) {
+		filter removeBOM
+	}
 	from npmInstall.nodeModulesDir
 	include "liferay-ckeditor/ckeditor/"
 	includeEmptyDirs = false
@@ -66,7 +68,9 @@ buildCKEditorPlugins {
 	dependsOn buildCKEditor, packageRunBuild
 
 	from new File(packageRunBuild.destinationDir, "_diffs")
-	filter removeBOM
+	filesMatching(["**/*.js"]) {
+		filter removeBOM
+	}
 	includeEmptyDirs = false
 	into ckEditorDestinationDir
 }

@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -195,16 +196,10 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		String name = _getValue(
 			() -> group.getName(contextAcceptLanguage.getPreferredLocale()),
 			assetLibrary::getName);
-		Map<String, String> nameMap = _getValue(
-			() -> LocalizedMapUtil.getI18nMap(group.getNameMap()),
-			assetLibrary::getName_i18n);
 		String description = _getValue(
 			() -> group.getDescription(
 				contextAcceptLanguage.getPreferredLocale()),
 			assetLibrary::getDescription);
-		Map<String, String> descriptionMap = _getValue(
-			() -> LocalizedMapUtil.getI18nMap(group.getDescriptionMap()),
-			assetLibrary::getDescription_i18n);
 
 		if (assetLibrary.getSettings() == null) {
 			assetLibrary.setSettings(Settings::new);
@@ -219,12 +214,15 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		AssetLibrary updatedAssetLibrary = _toAssetLibrary(
 			_addOrUpdateDepotEntry(
 				assetLibrary,
-				LocalizedMapUtil.getLocalizedMap(
+				LocalizedMapUtil.patchLocalizedMap(
+					group.getDescriptionMap(),
 					contextAcceptLanguage.getPreferredLocale(), description,
-					descriptionMap),
+					assetLibrary.getDescription_i18n()),
 				group.getExternalReferenceCode(),
-				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(), name, nameMap),
+				LocalizedMapUtil.patchLocalizedMap(
+					group.getNameMap(),
+					contextAcceptLanguage.getPreferredLocale(), name,
+					assetLibrary.getName_i18n()),
 				_getServiceContext(), unicodeProperties,
 				_dlSizeLimitConfigurationProvider.getGroupMimeTypeSizeLimit(
 					group.getGroupId())));
@@ -373,13 +371,11 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		return _toAssetLibrary(
 			_addOrUpdateDepotEntry(
 				assetLibrary,
-				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
+				_getLocalizedMap(
 					assetLibrary.getDescription(),
 					assetLibrary.getDescription_i18n()),
 				StringPool.BLANK,
-				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
+				_getLocalizedMap(
 					assetLibrary.getName(), assetLibrary.getName_i18n()),
 				_getServiceContext(),
 				_putUnicodeProperties(assetLibrary.getSettings()),
@@ -398,13 +394,11 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		return _toAssetLibrary(
 			_addOrUpdateDepotEntry(
 				assetLibrary,
-				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
+				_getLocalizedMap(
 					assetLibrary.getDescription(),
 					assetLibrary.getDescription_i18n()),
 				externalReferenceCode,
-				LocalizedMapUtil.getLocalizedMap(
-					contextAcceptLanguage.getPreferredLocale(),
+				_getLocalizedMap(
 					assetLibrary.getName(), assetLibrary.getName_i18n()),
 				_getServiceContext(),
 				_putUnicodeProperties(assetLibrary.getSettings()),
@@ -571,6 +565,20 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			externalReferenceCode, contextCompany.getCompanyId());
 
 		return group.getGroupId();
+	}
+
+	private Map<Locale, String> _getLocalizedMap(
+		String defaultValue, Map<String, String> i18nMap) {
+
+		Map<Locale, String> localizedMap = LocalizedMapUtil.getLocalizedMap(
+			contextAcceptLanguage.getPreferredLocale(), defaultValue, i18nMap);
+
+		if (!localizedMap.containsKey(LocaleUtil.getDefault())) {
+			localizedMap = LocalizedMapUtil.patchLocalizedMap(
+				localizedMap, LocaleUtil.getDefault(), defaultValue, i18nMap);
+		}
+
+		return localizedMap;
 	}
 
 	private ServiceContext _getServiceContext() throws Exception {

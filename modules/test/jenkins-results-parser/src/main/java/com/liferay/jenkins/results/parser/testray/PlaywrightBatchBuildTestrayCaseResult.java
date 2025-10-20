@@ -115,6 +115,10 @@ public class PlaywrightBatchBuildTestrayCaseResult
 		}
 
 		if (testReport.isSkipped()) {
+			if (_playwrightTestClassMethod.isIgnored()) {
+				return "Test run skipped on CI";
+			}
+
 			return "Failed to run test on CI";
 		}
 

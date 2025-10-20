@@ -49,12 +49,12 @@ public class LegacyPropertiesUtil {
 				continue;
 			}
 
-			List<DetailAST> variableDefinitionDetailASTList =
+			List<DetailAST> variableDefinitionDetailASTs =
 				DetailASTUtil.getAllChildTokens(
 					nextSiblingDetailAST, true, TokenTypes.VARIABLE_DEF);
 
 			for (DetailAST variableDefinitionDetailAST :
-					variableDefinitionDetailASTList) {
+					variableDefinitionDetailASTs) {
 
 				legacyProperties = _addLegacyProperties(
 					legacyProperties, variableDefinitionDetailAST);
@@ -92,14 +92,14 @@ public class LegacyPropertiesUtil {
 			return legacyProperties;
 		}
 
-		List<DetailAST> arrayValueDetailASTList = _getArrayValueDetailASTList(
+		List<DetailAST> arrayValueDetailASTs = _getArrayValueDetailASTs(
 			firstChildDetailAST);
 
-		for (DetailAST arrayValueDetailAST : arrayValueDetailASTList) {
+		for (DetailAST arrayValueDetailAST : arrayValueDetailASTs) {
 			if (arrayValueDetailAST.getType() == TokenTypes.ARRAY_INIT) {
 				legacyProperties = _addLegacyProperty(
 					legacyProperties, variableName,
-					_getArrayValueDetailASTList(arrayValueDetailAST));
+					_getArrayValueDetailASTs(arrayValueDetailAST));
 			}
 			else {
 				legacyProperties = _addLegacyProperty(
@@ -113,13 +113,13 @@ public class LegacyPropertiesUtil {
 
 	private static List<LegacyProperty> _addLegacyProperty(
 		List<LegacyProperty> legacyProperties, String variableName,
-		List<DetailAST> detailASTList) {
+		List<DetailAST> detailASTs) {
 
-		if (detailASTList.isEmpty()) {
+		if (detailASTs.isEmpty()) {
 			return legacyProperties;
 		}
 
-		String legacyPropertyName = _getStringValue(detailASTList.get(0));
+		String legacyPropertyName = _getStringValue(detailASTs.get(0));
 
 		if (legacyPropertyName == null) {
 			return legacyProperties;
@@ -128,11 +128,11 @@ public class LegacyPropertiesUtil {
 		String moduleName = null;
 		String newPropertyName = null;
 
-		if (detailASTList.size() > 1) {
-			newPropertyName = _getStringValue(detailASTList.get(1));
+		if (detailASTs.size() > 1) {
+			newPropertyName = _getStringValue(detailASTs.get(1));
 
-			if (detailASTList.size() > 2) {
-				moduleName = _getStringValue(detailASTList.get(2));
+			if (detailASTs.size() > 2) {
+				moduleName = _getStringValue(detailASTs.get(2));
 			}
 		}
 
@@ -143,22 +143,22 @@ public class LegacyPropertiesUtil {
 		return legacyProperties;
 	}
 
-	private static List<DetailAST> _getArrayValueDetailASTList(
+	private static List<DetailAST> _getArrayValueDetailASTs(
 		DetailAST arrayInitDetailAST) {
 
-		List<DetailAST> arrayValueDetailASTList = new ArrayList<>();
+		List<DetailAST> arrayValueDetailASTs = new ArrayList<>();
 
 		DetailAST childDetailAST = arrayInitDetailAST.getFirstChild();
 
 		while (true) {
 			if (childDetailAST == null) {
-				return arrayValueDetailASTList;
+				return arrayValueDetailASTs;
 			}
 
 			if ((childDetailAST.getType() != TokenTypes.COMMA) &&
 				(childDetailAST.getType() != TokenTypes.RCURLY)) {
 
-				arrayValueDetailASTList.add(childDetailAST);
+				arrayValueDetailASTs.add(childDetailAST);
 			}
 
 			childDetailAST = childDetailAST.getNextSibling();

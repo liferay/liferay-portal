@@ -1,0 +1,49 @@
+@import 'atlas-variables';
+
+.cms-fds-fluid {
+	.container-fluid {
+		padding: 0;
+	}
+
+	.table-list {
+		border: 0;
+		margin-bottom: 0;
+
+		.cell-item-actions {
+			width: 10% !important;
+		}
+
+		thead {
+			display: none;
+		}
+	}
+
+	.table-responsive {
+		margin-bottom: 0;
+	}
+
+	.visualization-mode-table {
+		border: 0 !important;
+		margin-inline: -1rem;
+	}
+}
+
+.cms-tabs-fluid {
+	.nav-tabs {
+		margin-inline: -1rem;
+
+		& + .tab-content .tab-pane {
+			margin-top: -0.5rem;
+			padding: 0;
+		}
+	}
+
+	.table-list td {
+		background-color: $white !important;
+		border: 0;
+	}
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}

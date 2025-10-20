@@ -66,20 +66,30 @@ public class ElasticsearchIndexSearcherLoggingTest
 
 	@ExpectedLog(
 		expectedClass = SearchSearchRequestExecutorImpl.class,
-		expectedLevel = ExpectedLog.Level.FINEST, expectedLog = "Search query:"
+		expectedLevel = ExpectedLog.Level.FINE,
+		expectedLog = "The search engine processed the request in"
 	)
 	@Test
-	public void testSearchSearchRequestExecutorLogsPrettyPrintedString() {
+	public void testSearchSearchRequestExecutorLogsExecutionTime() {
 		search(createSearchContext());
 	}
 
 	@ExpectedLog(
 		expectedClass = SearchSearchRequestExecutorImpl.class,
 		expectedLevel = ExpectedLog.Level.FINE,
-		expectedLog = "The search engine processed"
+		expectedLog = "Search request string for"
 	)
 	@Test
-	public void testSearchSearchRequestExecutorLogsViaIndexer() {
+	public void testSearchSearchRequestExecutorLogsRequestString() {
+		search(createSearchContext());
+	}
+
+	@ExpectedLog(
+		expectedClass = SearchSearchRequestExecutorImpl.class,
+		expectedLevel = ExpectedLog.Level.INFO, expectedLog = "Stack trace for"
+	)
+	@Test
+	public void testSearchSearchRequestExecutorLogsStackTraceInfo() {
 		search(createSearchContext());
 	}
 

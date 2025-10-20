@@ -1,5 +1,20 @@
 components:
     schemas:
+        AssetPermissionAction:
+            discriminator:
+                mapping:
+                    ResetAssetPermissionAction: "#/components/schemas/ResetAssetPermissionAction"
+                propertyName: type
+            properties:
+                className:
+                    type: string
+                classPK:
+                    format: int64
+                    type: integer
+                type:
+                    enum:
+                        -   ResetAssetPermissionAction
+                    type: string
         AssetUsage:
             properties:
                 name:
@@ -116,6 +131,9 @@ components:
                             items:
                                 type: permission
                             type: array
+        ResetAssetPermissionAction:
+            allOf:
+                -   $ref: "#/components/schemas/AssetPermissionAction"
         StatusBulkAction:
             allOf:
                 -   $ref: "#/components/schemas/BulkAction"
@@ -140,6 +158,29 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/asset-permission":
+        post:
+            description:
+                Perform an action on the asset's permissions
+            operationId: postAssetPermission
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AssetPermissionAction"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AssetPermissionAction"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AssetPermissionAction"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AssetPermissionAction"
+            tags: ["AssetPermissionAction"]
     "/asset-usages/{assetId}":
         get:
             operationId: getAssetUsagesAssetPage

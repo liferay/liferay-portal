@@ -114,8 +114,6 @@ definition {
 			locator1 = "Notifications#NOTIFICATIONS_WORKFLOW_TITLE",
 			value1 = "Test Test has invited you to work on Publication Name 2 as a Editor.");
 
-		PublicationsNavigator.openPublicationsAdmin();
-
 		PublicationsPermissions.assertViewerPermissions(publicationName = "Publication Name 1");
 
 		PublicationsNavigator.openPublicationsAdmin();
@@ -628,8 +626,6 @@ definition {
 		AssertElementPresent(
 			locator1 = "Notifications#NOTIFICATIONS_WORKFLOW_TITLE",
 			value1 = "Test Test has invited you to work on Publication Name as a Viewer.");
-
-		PublicationsNavigator.openPublicationsAdmin();
 
 		PublicationsPermissions.assertViewerPermissions(publicationName = "Publication Name");
 	}

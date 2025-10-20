@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DuplicateUniqueFinderRowsCleaner;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -860,7 +859,7 @@ public abstract class BaseUpgradeLogAppenderTestCase {
 
 		DBPartitionUtil.forEachCompanyId(
 			companyId -> {
-				if (DBPartition.isPartitionEnabled()) {
+				if (PropsValues.DATABASE_PARTITION_ENABLED) {
 					upgradeProcess1ClassNames.add(
 						upgradeProcess1Class.getName() + StringPool.AT +
 							CompanyThreadLocal.getCompanyId());

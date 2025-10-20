@@ -124,7 +124,7 @@ export class ${className} {
 						const formData = new FormData();
 						<#list operationData.bodyParameters[firstRequestBodyContentType] as bodyParameter>
 							<#if stringUtil.equals(bodyParameter.dataType, "File")>
-								formData.append("${bodyParameter.name}", requestBody.parameters.${bodyParameter.name});
+								formData.append("${bodyParameter.name}", ${bodyParameter.name});
 							<#else>
 								formData.append("${bodyParameter.name}", JSON.stringify(ObjectSerializer.serialize(${bodyParameter.name}, "${bodyParameter.dataType}")));
 							</#if>

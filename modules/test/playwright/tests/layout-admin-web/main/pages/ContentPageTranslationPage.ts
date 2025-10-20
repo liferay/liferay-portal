@@ -46,15 +46,13 @@ export class ContentPageTranslationPage {
 	}
 
 	async goto({
-		doAsUserId,
 		pageName,
 		siteUrl,
 	}: {
-		doAsUserId?: string;
 		pageName: string;
 		siteUrl?: Site['friendlyUrlPath'];
 	}) {
-		await this.pagesAdminPage.goto(siteUrl, doAsUserId);
+		await this.pagesAdminPage.goto(siteUrl);
 
 		await this.pagesAdminPage.clickOnAction('Translate', pageName);
 

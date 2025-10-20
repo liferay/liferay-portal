@@ -114,6 +114,71 @@ public class WorkflowInstanceLinkUtil {
 	}
 
 	/**
+	 * Returns the workflow instance link where workflowInstanceId = &#63; or throws a <code>NoSuchWorkflowInstanceLinkException</code> if it could not be found.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the matching workflow instance link
+	 * @throws NoSuchWorkflowInstanceLinkException if a matching workflow instance link could not be found
+	 */
+	public static WorkflowInstanceLink findByWorkflowInstanceId(
+			long workflowInstanceId)
+		throws com.liferay.portal.kernel.exception.
+			NoSuchWorkflowInstanceLinkException {
+
+		return getPersistence().findByWorkflowInstanceId(workflowInstanceId);
+	}
+
+	/**
+	 * Returns the workflow instance link where workflowInstanceId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the matching workflow instance link, or <code>null</code> if a matching workflow instance link could not be found
+	 */
+	public static WorkflowInstanceLink fetchByWorkflowInstanceId(
+		long workflowInstanceId) {
+
+		return getPersistence().fetchByWorkflowInstanceId(workflowInstanceId);
+	}
+
+	/**
+	 * Returns the workflow instance link where workflowInstanceId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching workflow instance link, or <code>null</code> if a matching workflow instance link could not be found
+	 */
+	public static WorkflowInstanceLink fetchByWorkflowInstanceId(
+		long workflowInstanceId, boolean useFinderCache) {
+
+		return getPersistence().fetchByWorkflowInstanceId(
+			workflowInstanceId, useFinderCache);
+	}
+
+	/**
+	 * Removes the workflow instance link where workflowInstanceId = &#63; from the database.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the workflow instance link that was removed
+	 */
+	public static WorkflowInstanceLink removeByWorkflowInstanceId(
+			long workflowInstanceId)
+		throws com.liferay.portal.kernel.exception.
+			NoSuchWorkflowInstanceLinkException {
+
+		return getPersistence().removeByWorkflowInstanceId(workflowInstanceId);
+	}
+
+	/**
+	 * Returns the number of workflow instance links where workflowInstanceId = &#63;.
+	 *
+	 * @param workflowInstanceId the workflow instance ID
+	 * @return the number of matching workflow instance links
+	 */
+	public static int countByWorkflowInstanceId(long workflowInstanceId) {
+		return getPersistence().countByWorkflowInstanceId(workflowInstanceId);
+	}
+
+	/**
 	 * Returns all the workflow instance links where companyId = &#63; and classNameId = &#63;.
 	 *
 	 * @param companyId the company ID

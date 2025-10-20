@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -22,6 +21,7 @@ import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -67,7 +67,7 @@ public class PreupgradeVerifyDatabaseStateTest
 				connection, _TEST_SCHEMA_VERSION);
 		}
 
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 				PortalInstancePool.getDefaultCompanyId());
 		}
@@ -121,7 +121,7 @@ public class PreupgradeVerifyDatabaseStateTest
 
 	@Test
 	public void testVerifyPreupgradeMissingView() throws Exception {
-		Assume.assumeTrue(DBPartition.isPartitionEnabled());
+		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_renameView("Release_", "Release_backup");
 

@@ -159,8 +159,8 @@
 												"marginBottom": "3",
 												"marginRight": "3",
 												"marginTop": "3",
-												"paddingLeft": "1",
-												"paddingRight": "1",
+												"paddingLeft": "3",
+												"paddingRight": "3",
 												"paddingTop": "3"
 											},
 											"indexed": true

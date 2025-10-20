@@ -32,6 +32,10 @@ export default function SharedItemRenderer({
 	value: string;
 }) {
 	const {assetType, fileTypeIcon, fileTypeIconColor, siteName} = itemData;
+	const title =
+		value && value !== '' && value !== 'null'
+			? value
+			: Liferay.Language.get('untitled-asset');
 
 	let icon;
 	let iconColor;
@@ -87,11 +91,11 @@ export default function SharedItemRenderer({
 			</ClaySticker>
 
 			{linkHref ? (
-				<ClayLink aria-label={value} data-senna-off href={linkHref}>
-					{value}
+				<ClayLink aria-label={title} data-senna-off href={linkHref}>
+					{title}
 				</ClayLink>
 			) : (
-				<span>{value}</span>
+				<span>{title}</span>
 			)}
 
 			{siteName && (

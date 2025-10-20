@@ -32,9 +32,9 @@ public class SegmentConstants {
 			"ready", IndividualSegment.State.READY.name()
 		).build();
 	private static final Map<String, String> _segmentTypes = HashMapBuilder.put(
-		"dynamic", IndividualSegment.Type.DYNAMIC.name()
+		"batch", IndividualSegment.Type.BATCH.name()
 	).put(
-		"static", IndividualSegment.Type.STATIC.name()
+		"realTime", IndividualSegment.Type.REAL_TIME.name()
 	).build();
 
 }

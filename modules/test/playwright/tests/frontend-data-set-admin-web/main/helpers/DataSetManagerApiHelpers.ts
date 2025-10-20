@@ -29,8 +29,8 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		erc = 'sampleDataSetERC',
 		label = DEFAULT_LABEL.DATA_SET,
 		listOfItemsPerPage = '4, 8, 20, 40, 60',
-		restApplication = `${API_ENDPOINT_PATH}/table-sections`,
-		restEndpoint = '/',
+		restApplication = API_ENDPOINT_PATH,
+		restEndpoint = `/by-external-reference-code/${erc}/dataSetToDataSetTableSections`,
 		restSchema = 'DataSetTableSection',
 	}: {
 		additionalAPIURLParameters?: string;

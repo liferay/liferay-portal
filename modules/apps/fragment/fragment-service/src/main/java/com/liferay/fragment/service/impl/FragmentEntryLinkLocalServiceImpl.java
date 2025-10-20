@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.model.LayoutTable;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -645,12 +644,11 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
-	public void updateClassedModel(long plid) {
+	public void updateClassedModel(long userId, long plid) {
 		if (UpdateLayoutStatusThreadLocal.isUpdateLayoutStatus()) {
 			try {
 				_layoutLocalService.updateStatus(
-					PrincipalThreadLocal.getUserId(), plid,
-					WorkflowConstants.STATUS_DRAFT,
+					userId, plid, WorkflowConstants.STATUS_DRAFT,
 					ServiceContextThreadLocal.getServiceContext());
 			}
 			catch (PortalException portalException) {
@@ -756,7 +754,7 @@ public class FragmentEntryLinkLocalServiceImpl
 		fragmentEntryLink.setEditableValues(editableValues);
 
 		if (updateClassedModel) {
-			updateClassedModel(fragmentEntryLink.getPlid());
+			updateClassedModel(userId, fragmentEntryLink.getPlid());
 		}
 
 		return fragmentEntryLinkPersistence.update(fragmentEntryLink);

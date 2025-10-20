@@ -52,6 +52,12 @@ class PermissionsOptionsContent extends React.Component {
 			inputs.forEach((input) => {
 				input.setAttribute('form', this.props.formId);
 			});
+
+			const selects = this._ref.current.querySelectorAll('select');
+
+			selects.forEach((select) => {
+				select.setAttribute('form', this.props.formId);
+			});
 		}
 	}
 

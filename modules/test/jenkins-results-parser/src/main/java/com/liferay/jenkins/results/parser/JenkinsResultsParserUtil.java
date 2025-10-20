@@ -1459,6 +1459,14 @@ public class JenkinsResultsParserUtil {
 				_buildPropertiesURLs = URLS_BUILD_PROPERTIES_DEFAULT;
 			}
 
+			Map<String, String> map = System.getenv();
+
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				properties.setProperty(entry.getKey(), entry.getValue());
+				properties.setProperty(
+					"env." + entry.getKey(), entry.getValue());
+			}
+
 			for (String url : _buildPropertiesURLs) {
 				if (url.startsWith("file://")) {
 					properties.putAll(new EnvironmentBuildProperties(url));
@@ -1468,6 +1476,13 @@ public class JenkinsResultsParserUtil {
 
 				properties.putAll(
 					new EnvironmentBuildProperties(getLocalURL(url)));
+			}
+
+			String s3BucketName = System.getenv("S3_BUCKET_NAME");
+
+			if (!isNullOrEmpty(s3BucketName)) {
+				properties.setProperty(
+					"env.S3_BUCKET_NAME", System.getenv("S3_BUCKET_NAME"));
 			}
 
 			if (!properties.containsKey("user.home")) {
@@ -5149,6 +5164,9 @@ public class JenkinsResultsParserUtil {
 
 					if (isCINode()) {
 						url = getLocalURL(url);
+					}
+					else {
+						url = getRemoteURL(url);
 					}
 
 					httpAuthorization = _getJenkinsHTTPAuthorization();

@@ -160,16 +160,16 @@ public class CTOnDemandUserTicketGeneratorImpl
 
 		if (group == null) {
 			group = _groupLocalService.addGroup(
-				ctCollection.getUserId(),
+				StringPool.BLANK, ctCollection.getUserId(),
 				GroupConstants.DEFAULT_PARENT_GROUP_ID,
 				CTCollection.class.getName(), ctCollection.getCtCollectionId(),
 				GroupConstants.DEFAULT_LIVE_GROUP_ID,
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), ctCollection.getName()
 				).build(),
-				null, GroupConstants.TYPE_SITE_PRIVATE, false,
+				null, GroupConstants.TYPE_SITE_PRIVATE, null, false,
 				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
-				true, null);
+				false, true, null);
 		}
 
 		_userGroupRoleLocalService.addUserGroupRole(

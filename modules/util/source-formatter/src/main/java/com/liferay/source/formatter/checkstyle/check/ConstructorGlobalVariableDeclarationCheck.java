@@ -41,17 +41,17 @@ public class ConstructorGlobalVariableDeclarationCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> constructorDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> constructorDefinitionDetailASTs = getAllChildTokens(
 			parentDetailAST, false, TokenTypes.CTOR_DEF);
 
-		if (constructorDefinitionDetailASTList.size() > 1) {
+		if (constructorDefinitionDetailASTs.size() > 1) {
 			return;
 		}
 
-		List<DetailAST> expressionDetailASTList = getAllChildTokens(
+		List<DetailAST> expressionDetailASTs = getAllChildTokens(
 			lastChildDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST expressionDetailAST : expressionDetailASTList) {
+		for (DetailAST expressionDetailAST : expressionDetailASTs) {
 			DetailAST firstChildDetailAST = expressionDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.ASSIGN) {
@@ -99,10 +99,10 @@ public class ConstructorGlobalVariableDeclarationCheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> variableDefDetailASTList = getAllChildTokens(
+			List<DetailAST> variableDefDetailASTs = getAllChildTokens(
 				parentDetailAST, false, TokenTypes.VARIABLE_DEF);
 
-			for (DetailAST variableDefDetailAST : variableDefDetailASTList) {
+			for (DetailAST variableDefDetailAST : variableDefDetailASTs) {
 				DetailAST identDetailAST = variableDefDetailAST.findFirstToken(
 					TokenTypes.IDENT);
 

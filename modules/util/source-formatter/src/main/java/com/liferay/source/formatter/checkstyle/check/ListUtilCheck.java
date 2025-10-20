@@ -77,14 +77,14 @@ public class ListUtilCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> identDetailASTList = _getIdentDetailASTList(
+		List<DetailAST> identDetailASTs = _getIdentDetailASTs(
 			nextStatementDetailAST, variableName);
 
-		if (identDetailASTList.size() != 1) {
+		if (identDetailASTs.size() != 1) {
 			return;
 		}
 
-		DetailAST identDetailAST = identDetailASTList.get(0);
+		DetailAST identDetailAST = identDetailASTs.get(0);
 
 		DetailAST parentDetailAST = identDetailAST.getParent();
 
@@ -100,10 +100,10 @@ public class ListUtilCheck extends BaseCheck {
 				break;
 			}
 
-			identDetailASTList = _getIdentDetailASTList(
+			identDetailASTs = _getIdentDetailASTs(
 				nextStatementDetailAST, variableName);
 
-			if (!identDetailASTList.isEmpty()) {
+			if (!identDetailASTs.isEmpty()) {
 				return;
 			}
 		}
@@ -139,14 +139,14 @@ public class ListUtilCheck extends BaseCheck {
 		DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() != 1) {
+		if (exprDetailASTs.size() != 1) {
 			return;
 		}
 
-		DetailAST exprDetailAST = exprDetailASTList.get(0);
+		DetailAST exprDetailAST = exprDetailASTs.get(0);
 
 		firstChildDetailAST = exprDetailAST.getFirstChild();
 
@@ -277,7 +277,7 @@ public class ListUtilCheck extends BaseCheck {
 		}
 	}
 
-	private List<DetailAST> _getIdentDetailASTList(
+	private List<DetailAST> _getIdentDetailASTs(
 		DetailAST detailAST, String name) {
 
 		return ListUtil.filter(

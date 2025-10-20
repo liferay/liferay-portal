@@ -121,6 +121,23 @@ public class JUnitTestClass extends BaseTestClass {
 	}
 
 	@Override
+	public String getTestTaskName() {
+		String taskName = _getTaskName();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(taskName)) {
+			return super.getTestTaskName();
+		}
+
+		String testClassFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			getTestClassFile());
+
+		String testTaskName = testClassFilePath.replaceAll(
+			".*/modules(/.+)/src/" + taskName + "/.+", "$1");
+
+		return testTaskName.replaceAll("/", ":") + ":" + taskName;
+	}
+
+	@Override
 	public boolean isIgnored() {
 		return _classIgnored;
 	}
@@ -413,6 +430,21 @@ public class JUnitTestClass extends BaseTestClass {
 
 		return new File(
 			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
+	}
+
+	private String _getTaskName() {
+		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
+
+		String batchName = batchTestClassGroup.getBatchName();
+
+		if (batchName.startsWith("modules-integration")) {
+			return "testIntegration";
+		}
+		else if (batchName.startsWith("modules-unit")) {
+			return "test";
+		}
+
+		return null;
 	}
 
 	private void _initTestClassMethods(String fileContent) {

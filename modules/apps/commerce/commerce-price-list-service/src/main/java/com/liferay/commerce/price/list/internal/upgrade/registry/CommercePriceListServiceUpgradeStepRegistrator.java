@@ -136,13 +136,11 @@ public class CommercePriceListServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CommercePriceEntry", "commercePriceEntryId"},
-						{"CommercePriceList", "commercePriceListId"},
-						{"CommercePriceModifier", "commercePriceModifierId"},
-						{"CommercePricingClass", "commercePricingClassId"},
-						{"CommerceTierPriceEntry", "commerceTierPriceEntryId"}
+				protected String[] getTableNames() {
+					return new String[] {
+						"CommercePriceEntry", "CommercePriceList",
+						"CommercePriceModifier", "CommercePricingClass",
+						"CommerceTierPriceEntry"
 					};
 				}
 

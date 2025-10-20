@@ -8,7 +8,6 @@ package com.liferay.portal.security.script.management.web.internal.portlet.actio
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -16,6 +15,7 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.script.management.groovy.script.use.GroovyScriptUse;
 import com.liferay.portal.security.script.management.groovy.script.uses.factory.GroovyScriptUsesFactory;
@@ -67,7 +67,7 @@ public class GetGroovyScriptUsesMVCResourceCommand
 
 		List<GroovyScriptUse> groovyScriptUses = new ArrayList<>();
 
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			_companyLocalService.forEachCompanyId(
 				companyId -> _addGroovyScriptUses(
 					groovyScriptUses, resourceRequest));

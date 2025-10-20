@@ -116,11 +116,12 @@ function Actions({
 		});
 	};
 
-	const quickActions =
-		formattedActions[0]?.type === EItemActionsType.GROUP
+	const quickActions = formattedActions.length
+		? formattedActions[0].type === EItemActionsType.GROUP
 			? formattedActions[0].items?.slice(0, QUICK_ACTIONS_MAX_NUMBER) ||
 				[]
-			: formattedActions.slice(0, QUICK_ACTIONS_MAX_NUMBER);
+			: formattedActions.slice(0, QUICK_ACTIONS_MAX_NUMBER)
+		: [];
 
 	return (
 		<>

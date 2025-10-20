@@ -78,7 +78,7 @@ public class DBUpgradeClient {
 				jvmOpts.add("-Duser.country=US");
 				jvmOpts.add("-Duser.language=en");
 				jvmOpts.add("-Duser.timezone=GMT");
-				jvmOpts.add("-Xmx2048m");
+				jvmOpts.add("-Xmx4096m");
 			}
 
 			if (commandLine.hasOption("debug")) {

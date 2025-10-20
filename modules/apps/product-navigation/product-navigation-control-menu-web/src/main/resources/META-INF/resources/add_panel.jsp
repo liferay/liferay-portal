@@ -11,7 +11,7 @@
 	<c:when test="<%= themeDisplay.isSignedIn() %>">
 		<c:if test="<%= layout != null %>">
 			<liferay-util:html-top>
-				<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/product-navigation-control-menu-web/css/App.css") %>' rel="stylesheet" />
+				<aui:link hashedFile="<%= true %>" href="product-navigation-control-menu-web/css/App.css" rel="stylesheet" />
 			</liferay-util:html-top>
 
 			<%

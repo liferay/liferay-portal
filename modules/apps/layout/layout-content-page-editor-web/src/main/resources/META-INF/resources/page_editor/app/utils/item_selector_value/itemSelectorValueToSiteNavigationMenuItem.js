@@ -13,6 +13,7 @@ export default function itemSelectorValueToSiteNavigationMenuItem(
 		returnType,
 		siteNavigationMenuExternalReferenceCode,
 		siteNavigationMenuId,
+		siteNavigationMenuScopeExternalReferenceCode,
 		title,
 	} = siteNavigationMenuItem;
 
@@ -22,6 +23,7 @@ export default function itemSelectorValueToSiteNavigationMenuItem(
 		privateLayout,
 		siteNavigationMenuExternalReferenceCode,
 		siteNavigationMenuId,
+		siteNavigationMenuScopeExternalReferenceCode,
 		title,
 		type: returnType,
 	};

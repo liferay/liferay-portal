@@ -28,12 +28,10 @@ public class ReturnVariableDeclarationAsUsedCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> methodDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.METHOD_DEF);
 
-		for (DetailAST methodDefinitionDetailAST :
-				methodDefinitionDetailASTList) {
-
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			DetailAST modifiersDetailAST =
 				methodDefinitionDetailAST.findFirstToken(TokenTypes.MODIFIERS);
 
@@ -148,11 +146,11 @@ public class ReturnVariableDeclarationAsUsedCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> childDetailASTList = getAllChildTokens(
+		List<DetailAST> childDetailASTs = getAllChildTokens(
 			slistDetailAST, true, TokenTypes.LITERAL_RETURN,
 			TokenTypes.LITERAL_THROW);
 
-		for (DetailAST childDetailAST : childDetailASTList) {
+		for (DetailAST childDetailAST : childDetailASTs) {
 			if (childDetailAST.getLineNo() <
 					returnVariableDefinitionDetailAST.getLineNo()) {
 
@@ -249,11 +247,11 @@ public class ReturnVariableDeclarationAsUsedCheck extends BaseCheck {
 	private boolean _containsMethodCalls(
 		DetailAST slistDetailAST, int lineNumber) {
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			slistDetailAST, true, TokenTypes.METHOD_CALL);
 
-		methodCallDetailASTList = ListUtil.filter(
-			methodCallDetailASTList,
+		methodCallDetailASTs = ListUtil.filter(
+			methodCallDetailASTs,
 			methodCallDetailAST -> {
 				if (methodCallDetailAST.getLineNo() > lineNumber) {
 					return false;
@@ -291,21 +289,21 @@ public class ReturnVariableDeclarationAsUsedCheck extends BaseCheck {
 				return false;
 			});
 
-		return !methodCallDetailASTList.isEmpty();
+		return !methodCallDetailASTs.isEmpty();
 	}
 
 	private boolean _containsSynchronizedBlocks(
 		DetailAST slistDetailAST, int lineNumber) {
 
-		List<DetailAST> literalSynchronizedDetailASTList = getAllChildTokens(
+		List<DetailAST> literalSynchronizedDetailASTs = getAllChildTokens(
 			slistDetailAST, false, TokenTypes.LITERAL_SYNCHRONIZED);
 
-		if (literalSynchronizedDetailASTList.isEmpty()) {
+		if (literalSynchronizedDetailASTs.isEmpty()) {
 			return false;
 		}
 
 		DetailAST literalSynchronizedDetailAST =
-			literalSynchronizedDetailASTList.get(0);
+			literalSynchronizedDetailASTs.get(0);
 
 		if (literalSynchronizedDetailAST.getLineNo() < lineNumber) {
 			return true;
@@ -317,11 +315,11 @@ public class ReturnVariableDeclarationAsUsedCheck extends BaseCheck {
 	private boolean _containsUnusedVariableNames(
 		DetailAST slistDetailAST, int lineNumber) {
 
-		List<DetailAST> assignDetailASTList = getAllChildTokens(
+		List<DetailAST> assignDetailASTs = getAllChildTokens(
 			slistDetailAST, true, TokenTypes.ASSIGN);
 
-		assignDetailASTList = ListUtil.filter(
-			assignDetailASTList,
+		assignDetailASTs = ListUtil.filter(
+			assignDetailASTs,
 			assignDetailAST -> {
 				if (assignDetailAST.getLineNo() > lineNumber) {
 					return false;
@@ -336,22 +334,22 @@ public class ReturnVariableDeclarationAsUsedCheck extends BaseCheck {
 				return false;
 			});
 
-		if (assignDetailASTList.isEmpty()) {
+		if (assignDetailASTs.isEmpty()) {
 			return false;
 		}
 
-		List<DetailAST> identDetailASTList = getAllChildTokens(
+		List<DetailAST> identDetailASTs = getAllChildTokens(
 			slistDetailAST, true, TokenTypes.IDENT);
 
 		outerLoop:
-		for (DetailAST assignDetailAST : assignDetailASTList) {
+		for (DetailAST assignDetailAST : assignDetailASTs) {
 			DetailAST nameDetailAST = assignDetailAST.getFirstChild();
 
 			if (nameDetailAST.getType() != TokenTypes.IDENT) {
 				continue;
 			}
 
-			for (DetailAST identDetailAST : identDetailASTList) {
+			for (DetailAST identDetailAST : identDetailASTs) {
 				if (equals(nameDetailAST, identDetailAST) ||
 					isMethodNameDetailAST(identDetailAST)) {
 

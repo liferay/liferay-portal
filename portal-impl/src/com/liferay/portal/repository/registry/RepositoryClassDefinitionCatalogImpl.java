@@ -6,7 +6,6 @@
 package com.liferay.portal.repository.registry;
 
 import com.liferay.portal.kernel.cache.CacheRegistryItem;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.RepositoryFactory;
@@ -14,6 +13,7 @@ import com.liferay.portal.kernel.repository.registry.RepositoryDefiner;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -117,7 +117,7 @@ public class RepositoryClassDefinitionCatalogImpl
 		Collection<Map<String, RepositoryClassDefinition>>
 			repositoryClassDefinitions = null;
 
-		if (DBPartition.isPartitionEnabled() &&
+		if (PropsValues.DATABASE_PARTITION_ENABLED &&
 			(CompanyThreadLocal.getCompanyId() != CompanyConstants.SYSTEM)) {
 
 			Map<String, RepositoryClassDefinition>

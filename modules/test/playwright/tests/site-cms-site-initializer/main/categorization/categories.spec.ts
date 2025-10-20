@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
@@ -25,20 +24,32 @@ const test = mergeTests(
 		'LPD-17564': {enabled: true},
 		'LPS-179669': {enabled: true},
 	}),
-	loginTest(),
-	isolatedSiteTest
+	loginTest()
 );
 
 let vocabularyName: string;
 let vocabularyId: number;
 
-test.beforeEach('Create Vocabulary via API', async ({apiHelpers, site}) => {
+test.beforeEach('Create Vocabulary via API', async ({apiHelpers}) => {
 	vocabularyName = getRandomString();
+
+	const siteId = await apiHelpers.headlessAdminUser
+		.getSiteByFriendlyUrlPath('cms')
+		.then((response) => response.id);
 
 	vocabularyId = await apiHelpers.headlessAdminTaxonomy
 		.postSiteTaxonomyVocabulary({
+			assetLibraries: [{id: -1}],
+			assetTypes: [
+				{
+					required: true,
+					subtype: 'AllAssetSubtypes',
+					type: 'AllAssetTypes',
+				},
+			],
 			name: vocabularyName,
-			siteId: site.id,
+			siteId,
+			visibilityType: 'PUBLIC',
 		})
 		.then((response) => response.id);
 });

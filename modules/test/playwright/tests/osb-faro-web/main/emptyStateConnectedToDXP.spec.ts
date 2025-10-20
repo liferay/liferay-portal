@@ -219,6 +219,37 @@ test(
 			await newPage.close();
 		});
 
+		await test.step('Go Custom Tab, check empty state message', async () => {
+			await navigateTo({
+				page,
+				pageName: 'Custom',
+			});
+
+			await expect(
+				page.getByText('There are no visitors data found.')
+			).toBeVisible();
+			await expect(
+				page.getByText(
+					'Check back later to verify if data has been received from your data sources, or you can try a different date range.'
+				)
+			).toBeVisible();
+
+			await page
+				.getByRole('link', {name: 'Learn more about custom assets.'})
+				.click();
+
+			const newPage = await page.waitForEvent('popup');
+
+			const href = newPage.url();
+
+			await expect(href).toContain('learn.liferay.com');
+			await expect(href).toContain(
+				'/assets-analytics/tracking-custom-assets'
+			);
+
+			await newPage.close();
+		});
+
 		await test.step('Go to Event Analysis, check empty state message', async () => {
 			await navigateToACPageViaURL({
 				acPage: ACPage.eventAnalysisPage,

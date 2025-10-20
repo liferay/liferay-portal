@@ -55,12 +55,16 @@ public class PermissionCheckFinderEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(15);
 
 		sb.append("{permissionCheckFinderEntryId=");
 		sb.append(permissionCheckFinderEntryId);
 		sb.append(", groupId=");
 		sb.append(groupId);
+		sb.append(", companyId=");
+		sb.append(companyId);
+		sb.append(", userId=");
+		sb.append(userId);
 		sb.append(", integer=");
 		sb.append(integer);
 		sb.append(", name=");
@@ -80,6 +84,8 @@ public class PermissionCheckFinderEntryCacheModel
 		permissionCheckFinderEntryImpl.setPermissionCheckFinderEntryId(
 			permissionCheckFinderEntryId);
 		permissionCheckFinderEntryImpl.setGroupId(groupId);
+		permissionCheckFinderEntryImpl.setCompanyId(companyId);
+		permissionCheckFinderEntryImpl.setUserId(userId);
 		permissionCheckFinderEntryImpl.setInteger(integer);
 
 		if (name == null) {
@@ -107,6 +113,10 @@ public class PermissionCheckFinderEntryCacheModel
 
 		groupId = objectInput.readLong();
 
+		companyId = objectInput.readLong();
+
+		userId = objectInput.readLong();
+
 		integer = objectInput.readInt();
 		name = objectInput.readUTF();
 		type = objectInput.readUTF();
@@ -117,6 +127,10 @@ public class PermissionCheckFinderEntryCacheModel
 		objectOutput.writeLong(permissionCheckFinderEntryId);
 
 		objectOutput.writeLong(groupId);
+
+		objectOutput.writeLong(companyId);
+
+		objectOutput.writeLong(userId);
 
 		objectOutput.writeInt(integer);
 
@@ -137,6 +151,8 @@ public class PermissionCheckFinderEntryCacheModel
 
 	public long permissionCheckFinderEntryId;
 	public long groupId;
+	public long companyId;
+	public long userId;
 	public int integer;
 	public String name;
 	public String type;

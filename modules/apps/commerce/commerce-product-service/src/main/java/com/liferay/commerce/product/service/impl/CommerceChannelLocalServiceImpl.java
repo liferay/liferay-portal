@@ -126,17 +126,20 @@ public class CommerceChannelLocalServiceImpl
 		Map<Locale, String> nameMap = Collections.singletonMap(
 			serviceContext.getLocale(), name);
 
-		Group group = _groupLocalService.addGroup(
-			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			CommerceChannel.class.getName(), commerceChannelId,
-			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null,
-			GroupConstants.TYPE_SITE_PRIVATE, false,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, true,
-			null);
+		String typeSettings = null;
 
 		if (CommerceChannelConstants.CHANNEL_TYPE_SITE.equals(type)) {
-			_updateGroupTypeSettings(group, siteGroupId);
+			typeSettings = _getGroupTypeSettings(null, siteGroupId);
 		}
+
+		_groupLocalService.addGroup(
+			StringPool.BLANK, user.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			CommerceChannel.class.getName(), commerceChannelId,
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null,
+			GroupConstants.TYPE_SITE_PRIVATE, typeSettings, false,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, false,
+			true, null);
 
 		// Repository
 
@@ -476,7 +479,10 @@ public class CommerceChannelLocalServiceImpl
 		if (CommerceChannelConstants.CHANNEL_TYPE_SITE.equals(type) &&
 			(siteGroupId != oldSiteGroupId)) {
 
-			_updateGroupTypeSettings(commerceChannel.getGroup(), siteGroupId);
+			Group group = commerceChannel.getGroup();
+
+			_groupLocalService.updateGroup(
+				group.getGroupId(), _getGroupTypeSettings(group, siteGroupId));
 		}
 
 		return commerceChannel;
@@ -575,6 +581,18 @@ public class CommerceChannelLocalServiceImpl
 			));
 	}
 
+	private String _getGroupTypeSettings(Group group, long siteGroupId) {
+		UnicodeProperties unicodeProperties = new UnicodeProperties(true);
+
+		if (group != null) {
+			unicodeProperties = group.getTypeSettingsProperties();
+		}
+
+		unicodeProperties.put("siteGroupId", String.valueOf(siteGroupId));
+
+		return unicodeProperties.toString();
+	}
+
 	private List<CommerceChannel> _search(SearchContext searchContext)
 		throws PortalException {
 
@@ -602,19 +620,6 @@ public class CommerceChannelLocalServiceImpl
 			IndexerRegistryUtil.nullSafeGetIndexer(CommerceChannel.class);
 
 		return GetterUtil.getInteger(indexer.searchCount(searchContext));
-	}
-
-	private void _updateGroupTypeSettings(Group group, long siteGroupId)
-		throws PortalException {
-
-		UnicodeProperties typeSettingsUnicodeProperties =
-			group.getTypeSettingsProperties();
-
-		typeSettingsUnicodeProperties.put(
-			"siteGroupId", String.valueOf(siteGroupId));
-
-		_groupLocalService.updateGroup(
-			group.getGroupId(), typeSettingsUnicodeProperties.toString());
 	}
 
 	private void _validateAccountEntry(

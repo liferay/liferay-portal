@@ -1375,11 +1375,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		// Group
 
 		_groupLocalService.addGroup(
-			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			User.class.getName(), user.getUserId(),
-			GroupConstants.DEFAULT_LIVE_GROUP_ID, (Map<Locale, String>)null,
-			null, 0, true, GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
-			StringPool.SLASH + screenName, false, true, null);
+			StringPool.BLANK, user.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, User.class.getName(),
+			user.getUserId(), GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			(Map<Locale, String>)null, null, 0, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
+			StringPool.SLASH + screenName, false, false, true, null);
 
 		// Groups
 
@@ -6112,9 +6113,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			try {
 				user = _checkPasswordPolicy(user);
 
-				if (FeatureFlagManagerUtil.isEnabled("LPD-59081")) {
-					sendUserLoginMessage(companyId, user.getUserId());
-				}
+				sendUserLoginMessage(companyId, user.getUserId());
 			}
 			catch (PortalException portalException) {
 				handleAuthenticationFailure(

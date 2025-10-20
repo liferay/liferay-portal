@@ -30,7 +30,7 @@
 		[/#if]
 
 		[#assign
-			publisherdetailsesPage = restClient.get("/c/publisherdetailses?pageSize=4")
+			publisherdetailsesPage = restClient.get("/c/publisherdetailses?filter=showOnHomePage eq true&pageSize=4")
 			publishers = publisherdetailsesPage.items![]
 		/]
 

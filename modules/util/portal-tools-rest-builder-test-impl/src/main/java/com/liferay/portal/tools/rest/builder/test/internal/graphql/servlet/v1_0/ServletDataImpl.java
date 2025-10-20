@@ -295,6 +295,11 @@ public class ServletDataImpl implements ServletData {
 							ERCScopedTestEntityResourceImpl.class,
 							"postAssetLibraryERCScopedTestEntityBatch"));
 					put(
+						"mutation#createERCScopedTestEntitiesPageExportBatch",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"postERCScopedTestEntitiesPageExportBatch"));
+					put(
 						"mutation#createSiteERCScopedTestEntitiesPageExportBatch",
 						new ObjectValuePair<>(
 							ERCScopedTestEntityResourceImpl.class,
@@ -315,10 +320,25 @@ public class ServletDataImpl implements ServletData {
 							ERCScopedTestEntityResourceImpl.class,
 							"putAssetLibraryERCScopedTestEntity"));
 					put(
+						"mutation#updateAssetLibraryERCScopedTestEntityPermissionsPage",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"putAssetLibraryERCScopedTestEntityPermissionsPage"));
+					put(
+						"mutation#updateERCScopedTestEntityPermissionsPage",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"putERCScopedTestEntityPermissionsPage"));
+					put(
 						"mutation#updateSiteERCScopedTestEntity",
 						new ObjectValuePair<>(
 							ERCScopedTestEntityResourceImpl.class,
 							"putSiteERCScopedTestEntity"));
+					put(
+						"mutation#updateSiteERCScopedTestEntityPermissionsPage",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"putSiteERCScopedTestEntityPermissionsPage"));
 					put(
 						"mutation#deleteSiteERCSiteTestEntity",
 						new ObjectValuePair<>(
@@ -536,6 +556,11 @@ public class ServletDataImpl implements ServletData {
 							TestEntityResourceImpl.class,
 							"postTestEntityMultipartBulk"));
 					put(
+						"mutation#createTestEntityMultipartImage",
+						new ObjectValuePair<>(
+							TestEntityResourceImpl.class,
+							"postTestEntityMultipartImage"));
+					put(
 						"mutation#updateTestEntity",
 						new ObjectValuePair<>(
 							TestEntityResourceImpl.class, "putTestEntity"));
@@ -616,7 +641,22 @@ public class ServletDataImpl implements ServletData {
 							ERCScopedTestEntityResourceImpl.class,
 							"getAssetLibraryERCScopedTestEntity"));
 					put(
+						"query#assetLibraryERCScopedTestEntityPermissions",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"getAssetLibraryERCScopedTestEntityPermissionsPage"));
+					put(
 						"query#eRCScopedTestEntities",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"getERCScopedTestEntitiesPage"));
+					put(
+						"query#eRCScopedTestEntityPermissions",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"getERCScopedTestEntityPermissionsPage"));
+					put(
+						"query#siteERCScopedTestEntities",
 						new ObjectValuePair<>(
 							ERCScopedTestEntityResourceImpl.class,
 							"getSiteERCScopedTestEntitiesPage"));
@@ -625,6 +665,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ERCScopedTestEntityResourceImpl.class,
 							"getSiteERCScopedTestEntity"));
+					put(
+						"query#siteERCScopedTestEntityPermissions",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"getSiteERCScopedTestEntityPermissionsPage"));
 					put(
 						"query#eRCSiteTestEntities",
 						new ObjectValuePair<>(

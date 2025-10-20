@@ -78,17 +78,17 @@ public class ParsePrimitiveTypeCheck extends BaseCheck {
 		DetailAST detailAST, String className, String methodName,
 		String getterUtilMethodName) {
 
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, className, methodName);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			if ((exprDetailASTList.size() == 1) &&
+			if ((exprDetailASTs.size() == 1) &&
 				!_catchesException(
 					methodCallDetailAST, "Exception",
 					"NumberFormatException")) {

@@ -1,0 +1,163 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddReport should render a form AddReport 1`] = `
+<div>
+  <div
+    class="card card-root analytics-add-report"
+  >
+    <div
+      class="card-header"
+    >
+      <div
+        class="card-title"
+      >
+        Add Report
+      </div>
+    </div>
+    <div
+      class="card-body"
+    >
+      <div
+        class="w-100"
+      >
+        <div
+          class="row"
+        >
+          <div
+            class="col-sm-4"
+          >
+            <div
+              class="form-group"
+            >
+              <label
+                for="reportNameInput"
+              >
+                Report Name
+              </label>
+              <input
+                class="form-control"
+                id="reportNameInput"
+                maxlength="90"
+                placeholder="Enter a name for this report."
+                type="text"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="row"
+        >
+          <div
+            class="col-sm-4"
+          >
+            <div
+              class="form-group"
+            >
+              <label
+                for="metricSelector"
+              >
+                Metric
+              </label>
+              <select
+                class="form-control"
+                id="metricSelector"
+              >
+                <option
+                  value=""
+                >
+                  Select a Metric
+                </option>
+                <option
+                  value="clicksMetric"
+                >
+                  Asset Clicks (sum)
+                </option>
+                <option
+                  value="downloadsMetric"
+                >
+                  Asset Downloads (sum)
+                </option>
+                <option
+                  value="readingTimeMetric"
+                >
+                  Asset Interaction Time (average)
+                </option>
+                <option
+                  value="viewsMetric"
+                >
+                  Asset Views (sum)
+                </option>
+                <option
+                  value="abandonmentsMetric"
+                >
+                  Form Abandonment (ratio)
+                </option>
+                <option
+                  value="completionTimeMetric"
+                >
+                  Form Completion Time (average)
+                </option>
+                <option
+                  value="submissionsMetric"
+                >
+                  Form Submissions (sum)
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div
+          class="row"
+        >
+          <div
+            class="col-sm-12"
+          >
+            <div
+              class="form-group"
+            >
+              <label>
+                Visualization
+              </label>
+              <div
+                class="analytics-add-report-thumbs"
+              >
+                <button
+                  class="selected"
+                  data-tooltip="true"
+                  title="At this moment, it is not possible to change the visualization type for the reports. We are constantly adding more visualizations over time, so check back here later for more options."
+                >
+                  <svg
+                    class="cerebro_thumb_line_chart"
+                    viewBox=""
+                  >
+                    <use
+                      xlink:href="/o/osb-faro-web/dist/sprite.svg#cerebro_thumb_line_chart"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="card-footer"
+    >
+      <button
+        class="button-root mr-4 btn btn-primary"
+        disabled=""
+        type="button"
+      >
+        Save
+      </button>
+      <button
+        class="button-root btn btn-secondary"
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+`;

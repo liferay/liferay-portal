@@ -75,32 +75,6 @@ public class TestHistoryMap {
 			}
 		}
 
-		for (BatchHistory batchHistory : _batchHistoryMap.values()) {
-			TestrayCaseType testrayCaseType = batchHistory.getTestrayCaseType();
-			TestrayRun testrayRun = batchHistory.getTestrayRun();
-
-			if ((testrayCaseType == null) || (testrayRun == null)) {
-				continue;
-			}
-
-			List<TestrayCaseResult> testrayCaseResults =
-				_latestTestrayBuild.getTestrayCaseResults(
-					testrayCaseType, testrayRun, false);
-
-			for (TestrayCaseResult testrayCaseResult : testrayCaseResults) {
-				String testClassName = testrayCaseResult.getName();
-
-				TestClassHistory testClassHistory =
-					batchHistory.getTestClassHistory(testClassName);
-
-				if (testClassHistory == null) {
-					continue;
-				}
-
-				testClassHistory.setTestrayCaseResult(testrayCaseResult);
-			}
-		}
-
 		System.out.println(
 			JenkinsResultsParserUtil.combine(
 				"Test history map populated in ",

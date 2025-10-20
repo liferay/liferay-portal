@@ -22,8 +22,6 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 <liferay-theme:defineObjects />
 
 <%
-String[] accountEntryAllowedTypes = (String[])request.getAttribute("liferay-commerce:account-selector:accountEntryAllowedTypes");
-String checkoutURL = (String)request.getAttribute("liferay-commerce:account-selector:checkoutURL");
 long commerceChannelId = (long)request.getAttribute("liferay-commerce:account-selector:commerceChannelId");
 String createNewOrderURL = (String)request.getAttribute("liferay-commerce:account-selector:createNewOrderURL");
 String cssClasses = (String)request.getAttribute("liferay-commerce:account-selector:cssClasses");

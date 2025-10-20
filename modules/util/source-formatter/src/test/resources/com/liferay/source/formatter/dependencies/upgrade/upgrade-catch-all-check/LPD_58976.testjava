@@ -1,0 +1,28 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Regisson Aguiar
+ */
+public class LPD_58976 {
+
+	public void method(long groupId, long plid, boolean rebuildStructure) {
+		LayoutPageTemplateStructureLocalServiceUtil.
+			fetchLayoutPageTemplateStructure(123, plid, rebuildStructure);
+		LayoutPageTemplateStructureLocalServiceUtil.
+			fetchLayoutPageTemplateStructure(groupId, plid, rebuildStructure);
+		_layoutPageTemplateStructureLocalService.
+			fetchLayoutPageTemplateStructure(groupId, plid, rebuildStructure);
+	}
+
+	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+}

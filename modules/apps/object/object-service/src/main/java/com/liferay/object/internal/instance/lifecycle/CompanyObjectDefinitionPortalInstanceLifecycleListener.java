@@ -9,8 +9,8 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.util.PortalInstances;
 
@@ -30,7 +30,7 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 	public void portalInstancePreunregistered(Company company)
 		throws Exception {
 
-		if (!DBPartition.isPartitionEnabled()) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			return;
 		}
 
@@ -46,7 +46,7 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
-		if (!DBPartition.isPartitionEnabled() ||
+		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
 			!PortalInstances.isCompanyInCopyProcess()) {
 
 			return;

@@ -13,9 +13,11 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_197965 {
 
 	public void method(long companyId, String externalReferenceCode) {
-		CPInstanceLocalServiceUtil.fetchByExternalReferenceCode(123, "test123");
+		CPInstanceLocalServiceUtil.fetchByExternalReferenceCode(
+			123, externalReferenceCode);
 		CPInstanceLocalServiceUtil.fetchCPInstanceByExternalReferenceCode(externalReferenceCode, companyId);
-		CPInstanceLocalServiceUtil.fetchCPInstanceByExternalReferenceCode(123, "test123");
+		CPInstanceLocalServiceUtil.fetchCPInstanceByExternalReferenceCode(
+			123, externalReferenceCode);
 		CPInstanceLocalServiceUtil.fetchCPInstanceByExternalReferenceCode(externalReferenceCode, companyId);
 		CPInstanceServiceUtil.fetchCPInstanceByExternalReferenceCode(externalReferenceCode, companyId);
 		_cpInstanceLocalService.fetchCPInstanceByExternalReferenceCode(externalReferenceCode, companyId);

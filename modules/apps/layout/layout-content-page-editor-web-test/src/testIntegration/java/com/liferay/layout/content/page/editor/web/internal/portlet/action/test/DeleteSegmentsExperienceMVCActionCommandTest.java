@@ -214,18 +214,17 @@ public class DeleteSegmentsExperienceMVCActionCommandTest {
 			ContentLayoutTestUtil.getMockLiferayPortletActionRequest(
 				company, _group, draftLayout);
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY,
 			ContentLayoutTestUtil.getThemeDisplay(
 				company, _group, draftLayout));
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.USER_ID, TestPropsValues.getUserId());
 
 		mockActionRequest.setAttribute(
-			PortletServlet.PORTLET_SERVLET_REQUEST, mockHttpServletRequest);
+			PortletServlet.PORTLET_SERVLET_REQUEST, httpServletRequest);
 
 		mockActionRequest.setAttribute(
 			WebKeys.PORTLET_ID,

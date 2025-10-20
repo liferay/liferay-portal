@@ -14,13 +14,13 @@ String type = GetterUtil.getString((String)request.getAttribute("liferay-ratings
 <c:choose>
 	<c:when test="<%= themeDisplay.isIsolated() %>">
 		<div class="ratings-edit-page">
-			<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+			<aui:link hashedFile="<%= true %>" href="/css/main.css" rel="stylesheet" type="text/css" />
 	</c:when>
 	<c:otherwise>
 		<liferay-util:html-top
 			outputKey="com.liferay.ratings.taglib#/page.jsp"
 		>
-			<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+			<aui:link hashedFile="<%= true %>" href="ratings-taglib/css/main.css" rel="stylesheet" type="text/css" />
 		</liferay-util:html-top>
 	</c:otherwise>
 </c:choose>

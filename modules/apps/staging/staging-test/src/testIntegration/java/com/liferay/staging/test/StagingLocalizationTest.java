@@ -246,11 +246,11 @@ public class StagingLocalizationTest {
 		throws Exception {
 
 		return GroupLocalServiceUtil.addGroup(
-			TestPropsValues.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
-			Group.class.getName(), 0, GroupConstants.DEFAULT_LIVE_GROUP_ID,
-			nameMap, null, 0, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, true,
-			serviceContext);
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, Group.class.getName(), 0,
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null, 0, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
+			true, serviceContext);
 	}
 
 	private void _enableDisableLocalizedStaging(

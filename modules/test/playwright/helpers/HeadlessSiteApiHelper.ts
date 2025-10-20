@@ -9,8 +9,10 @@ import {zipFolder} from '../utils/zip';
 import {ApiHelpers} from './ApiHelpers';
 
 type TSite = {
+	active?: boolean;
 	externalReferenceCode?: string;
 	id?: number;
+	membershipType?: string;
 	name: string;
 	parentSiteKey?: string;
 	templateKey?: string;

@@ -16,7 +16,6 @@ import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
@@ -78,7 +77,10 @@ public class LayoutWarningMessageHelperImpl
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		int totalCount = _getTotalCount(collectionStyledLayoutStructureItem);
+		int totalCount = _getTotalCount(
+			collectionStyledLayoutStructureItem,
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY));
 
 		if (!Objects.equals(
 				collectionStyledLayoutStructureItem.getPaginationType(),
@@ -287,9 +289,8 @@ public class LayoutWarningMessageHelperImpl
 	}
 
 	private long _getFileEntryId(
-			String fieldId, InfoItemDetails infoItemDetails,
-			ThemeDisplay themeDisplay)
-		throws Exception {
+		String fieldId, InfoItemDetails infoItemDetails,
+		ThemeDisplay themeDisplay) {
 
 		if (infoItemDetails == null) {
 			return 0;
@@ -302,20 +303,8 @@ public class LayoutWarningMessageHelperImpl
 			return 0;
 		}
 
-		InfoItemIdentifier infoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
-
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
-			return 0;
-		}
-
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)infoItemIdentifier;
-
 		return _fragmentEntryProcessorHelper.getFileEntryId(
-			_portal.getClassNameId(infoItemReference.getClassName()),
-			classPKInfoItemIdentifier.getClassPK(), fieldId,
-			themeDisplay.getLocale());
+			infoItemReference, fieldId, themeDisplay.getLocale());
 	}
 
 	private Object _getInfoItem(JSONObject layoutObjectReferenceJSONObject) {
@@ -352,7 +341,8 @@ public class LayoutWarningMessageHelperImpl
 
 	private int _getTotalCount(
 			CollectionStyledLayoutStructureItem
-				collectionStyledLayoutStructureItem)
+				collectionStyledLayoutStructureItem,
+			ThemeDisplay themeDisplay)
 		throws Exception {
 
 		JSONObject layoutObjectReferenceJSONObject =
@@ -387,6 +377,11 @@ public class LayoutWarningMessageHelperImpl
 
 		if (infoItem != null) {
 			defaultLayoutListRetrieverContext.setContextObject(infoItem);
+		}
+
+		if (themeDisplay != null) {
+			defaultLayoutListRetrieverContext.setScopeGroupId(
+				themeDisplay.getScopeGroupId());
 		}
 
 		InfoPage<?> infoPage = layoutListRetriever.getInfoPage(

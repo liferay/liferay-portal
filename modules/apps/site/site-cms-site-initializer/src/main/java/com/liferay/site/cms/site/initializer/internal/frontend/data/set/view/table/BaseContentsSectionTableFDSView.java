@@ -55,7 +55,7 @@ public abstract class BaseContentsSectionTableFDSView extends BaseTableFDSView {
 		).add(
 			"embedded.status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"status")
+				"statusTableCellRenderer")
 		).build();
 	}
 

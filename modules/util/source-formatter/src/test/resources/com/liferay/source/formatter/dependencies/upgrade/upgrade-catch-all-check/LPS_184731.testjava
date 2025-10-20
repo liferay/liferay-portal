@@ -16,8 +16,11 @@ public class LPS_184731 {
 		long userId, long groupId, long parentFolderId, String name,
 		String description, ServiceContext serviceContext) {
 
-		JournalFolderLocalServiceUtil.addFolder(123, groupId, parentFolderId, "test123", description, serviceContext);
-		_journalFolderLocalService.addFolder(userId, groupId, parentFolderId, name, description, serviceContext);
+		JournalFolderLocalServiceUtil.addFolder(
+			123, groupId, parentFolderId, "test123", description,
+			serviceContext);
+		_journalFolderLocalService.addFolder(
+			userId, groupId, parentFolderId, name, description, serviceContext);
 	}
 
 	@Reference

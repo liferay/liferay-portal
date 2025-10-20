@@ -1,5 +1,5 @@
 {
-	"@generated": "89004fbbec41ccd2355d9a453791e11466949f46",
+	"@generated": "b0fdfa25bcec462a72283afd624e5b8f762ca582",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,12 @@
 		"paths": {
 			"@liferay/fragment-impl/api": [
 				"./js/api/api.ts"
+			],
+			"@liferay/frontend-js-state-web": [
+				"../../../../../../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/main/index.ts"
+			],
+			"@liferay/frontend-js-state-web/react": [
+				"../../../../../../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/react/index.ts"
 			],
 			"@liferay/layout-js-components-web": [
 				"../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
@@ -46,6 +52,9 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
+		{
+			"path": "../../../../../../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
 		{
 			"path": "../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},

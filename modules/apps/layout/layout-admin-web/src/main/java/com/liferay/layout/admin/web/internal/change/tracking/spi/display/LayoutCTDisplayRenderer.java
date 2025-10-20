@@ -221,15 +221,14 @@ public class LayoutCTDisplayRenderer extends BaseCTDisplayRenderer<Layout> {
 		).display(
 			"style-book",
 			() -> {
-				long styleBookEntryId = layout.getStyleBookEntryId();
-
-				if (styleBookEntryId <= 0) {
+				if (Validator.isNull(layout.getStyleBookEntryERC())) {
 					return null;
 				}
 
 				StyleBookEntry styleBookEntry =
-					_styleBookEntryLocalService.fetchStyleBookEntry(
-						layout.getStyleBookEntryId());
+					_styleBookEntryLocalService.
+						fetchStyleBookEntryByExternalReferenceCode(
+							layout.getStyleBookEntryERC(), layout.getGroupId());
 
 				if (styleBookEntry == null) {
 					return null;

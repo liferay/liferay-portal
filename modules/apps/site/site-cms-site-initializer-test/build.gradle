@@ -2,6 +2,7 @@ dependencies {
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-api")
 	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib-clay")
@@ -13,8 +14,10 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-rest-api")
+	testIntegrationImplementation project(":apps:object:object-rest-test-util")
 	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal:portal-instance-lifecycle-api")
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-personal-menu-api")

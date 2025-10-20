@@ -44,7 +44,7 @@ const item1 = {
 			externalReferenceCode: '7468ba44-4db5-760b-cac4-1c56b9041a86',
 			id: 36530,
 			link: {
-				href: '/documents/36523/36525/liferay+icon.png/7468ba44-4db5-760b-cac4-1c56b9041a86?version=1.0&t=1757930508059&download=true&groupExternalReferenceCode=5e059871-285a-5a19-46a7-27127417ad9f&objectDefinitionExternalReferenceCode=L_BASIC_DOCUMENT&objectEntryExternalReferenceCode=cd9c3564-80ad-8d3f-300f-76659955e96d',
+				href: '/documents/36523/36525/liferay+icon.png/7468ba44-4db5-760b-cac4-1c56b9041a86?version=1.0&t=1757930508059&download=true&groupExternalReferenceCode=5e059871-285a-5a19-46a7-27127417ad9f&objectDefinitionExternalReferenceCode=L_CMS_BASIC_DOCUMENT&objectEntryExternalReferenceCode=cd9c3564-80ad-8d3f-300f-76659955e96d',
 				label: 'liferay icon.png',
 			},
 			mimeType: 'image/png',

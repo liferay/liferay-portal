@@ -24,8 +24,8 @@ public class SharingServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"SharingEntry", "sharingEntryId"}};
+				protected String[] getTableNames() {
+					return new String[] {"SharingEntry"};
 				}
 
 			});

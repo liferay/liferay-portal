@@ -54,6 +54,11 @@ public class DefaultLayoutListRetrieverContext
 	}
 
 	@Override
+	public long getScopeGroupId() {
+		return _scopeGroupId;
+	}
+
+	@Override
 	public long[] getSegmentsEntryIds() {
 		return _segmentsEntryIds;
 	}
@@ -74,6 +79,10 @@ public class DefaultLayoutListRetrieverContext
 		_pagination = pagination;
 	}
 
+	public void setScopeGroupId(long scopeGroupId) {
+		_scopeGroupId = scopeGroupId;
+	}
+
 	public void setSegmentsEntryIds(long[] segmentsEntryIds) {
 		_segmentsEntryIds = segmentsEntryIds;
 	}
@@ -82,6 +91,7 @@ public class DefaultLayoutListRetrieverContext
 	private Object _contextObject;
 	private Map<String, InfoFilter> _infoFilters;
 	private Pagination _pagination;
+	private long _scopeGroupId;
 	private long[] _segmentsEntryIds;
 
 }

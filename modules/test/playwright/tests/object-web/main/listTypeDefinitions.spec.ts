@@ -295,7 +295,14 @@ test.describe('ensure picklist translation', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className, 'pt');
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await page
+			.getByLabel('Adicionar ' + objectDefinition.label['en_US'])
+			.first()
+			.click();
+
+		await viewObjectEntriesPage.editObjectEntryForm.waitFor({
+			state: 'visible',
+		});
 
 		const [{name_i18n: listTypeEntry_i18n}] = listTypeEntries;
 

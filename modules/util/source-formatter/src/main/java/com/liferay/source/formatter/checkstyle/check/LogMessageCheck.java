@@ -22,17 +22,17 @@ public class LogMessageCheck extends BaseMessageCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "_log", _LOG_METHOD_NAMES);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			for (DetailAST exprDetailAST : exprDetailASTList) {
+			for (DetailAST exprDetailAST : exprDetailASTs) {
 				checkMessage(
 					getLiteralStringValue(exprDetailAST),
 					exprDetailAST.getLineNo());

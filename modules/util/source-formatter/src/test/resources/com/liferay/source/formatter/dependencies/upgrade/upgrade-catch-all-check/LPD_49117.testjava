@@ -18,9 +18,18 @@ public class LPD_49117 {
 		String unitOfMeasureKey, CommerceContext commerceContext,
 		ServiceContext serviceContext) {
 
-		CommerceOrderItemLocalServiceUtil.addOrUpdateCommerceOrderItem(userId, commerceOrderId, cpInstanceId, json, quantity, replacedCPInstanceId, shippedQuantity, unitOfMeasureKey, commerceContext, serviceContext);
-		_commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(123, commerceOrderId, cpInstanceId, json, quantity, replacedCPInstanceId, shippedQuantity, unitOfMeasureKey, commerceContext, serviceContext);
-		_commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(userId, commerceOrderId, cpInstanceId, json, quantity, replacedCPInstanceId, shippedQuantity, unitOfMeasureKey, commerceContext, serviceContext);
+		CommerceOrderItemLocalServiceUtil.addOrUpdateCommerceOrderItem(
+			userId, commerceOrderId, cpInstanceId, json, quantity,
+			replacedCPInstanceId, shippedQuantity, unitOfMeasureKey,
+			commerceContext, serviceContext);
+		_commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(
+			123, commerceOrderId, cpInstanceId, json, quantity,
+			replacedCPInstanceId, shippedQuantity, unitOfMeasureKey,
+			commerceContext, serviceContext);
+		_commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(
+			userId, commerceOrderId, cpInstanceId, json, quantity,
+			replacedCPInstanceId, shippedQuantity, unitOfMeasureKey,
+			commerceContext, serviceContext);
 	}
 
 	@Reference

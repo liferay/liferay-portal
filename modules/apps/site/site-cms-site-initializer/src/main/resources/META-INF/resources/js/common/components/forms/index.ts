@@ -5,4 +5,5 @@
 
 export {default as FieldFile} from './FieldFile';
 export {default as FieldPicker} from './FieldPicker';
+export {default as FieldSelect} from './FieldSelect';
 export {default as FieldText} from './FieldText';

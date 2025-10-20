@@ -53,6 +53,7 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
@@ -399,7 +400,8 @@ public class DocumentFolderResourceImpl extends BaseDocumentFolderResourceImpl {
 	}
 
 	private ServiceContext _createServiceContext(
-		long groupId, DocumentFolder documentFolder, String viewableBy) {
+			long groupId, DocumentFolder documentFolder, String viewableBy)
+		throws Exception {
 
 		return ServiceContextBuilder.create(
 			groupId, contextHttpServletRequest, viewableBy
@@ -408,6 +410,13 @@ public class DocumentFolderResourceImpl extends BaseDocumentFolderResourceImpl {
 				DLFolder.class.getName(), contextCompany.getCompanyId(),
 				documentFolder.getCustomFields(),
 				contextAcceptLanguage.getPreferredLocale())
+		).permissions(
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(), documentFolder.getPermissions(),
+				getPermissionCheckerResourceId(documentFolder.getId()),
+				getPermissionCheckerResourceName(documentFolder.getId()),
+				resourceActionLocalService, resourcePermissionLocalService,
+				roleLocalService)
 		).build();
 	}
 

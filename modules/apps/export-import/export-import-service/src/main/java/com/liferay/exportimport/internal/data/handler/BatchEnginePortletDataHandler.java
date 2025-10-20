@@ -258,7 +258,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					"JSON", BatchEngineTaskExecuteStatus.INITIAL.name(),
 					Collections.emptyMap(),
 					BatchEngineImportTaskConstants.
-						IMPORT_STRATEGY_ON_ERROR_CONTINUE,
+						IMPORT_STRATEGY_TRANSACTIONAL_ON_ERROR_CONTINUE,
 					BatchEngineTaskOperation.DELETE.name(),
 					HashMapBuilder.<String, Serializable>put(
 						"createStrategy", CreateStrategy.UPSERT.getDBOperation()
@@ -370,7 +370,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					BatchEngineTaskExecuteStatus.INITIAL.name(),
 					Collections.emptyMap(),
 					BatchEngineImportTaskConstants.
-						IMPORT_STRATEGY_ON_ERROR_CONTINUE,
+						IMPORT_STRATEGY_TRANSACTIONAL_ON_ERROR_CONTINUE,
 					BatchEngineTaskOperation.CREATE.name(),
 					BatchEnginePortletDataHandlerUtil.buildImportParameters(
 						registration.getExportImportDescriptor(),

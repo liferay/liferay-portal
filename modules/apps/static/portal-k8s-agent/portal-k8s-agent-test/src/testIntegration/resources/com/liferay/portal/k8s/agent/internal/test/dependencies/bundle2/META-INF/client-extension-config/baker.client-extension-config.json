@@ -1,0 +1,20 @@
+{
+	"com.liferay.client.extension.type.configuration.CETConfiguration~baker": {
+		":configurator:policy": "force",
+		"baseURL": "${portalURL}/o/baker",
+		"description": "",
+		"dxp.lxc.liferay.com.virtualInstanceId": "default",
+		"name": "Baker Global CSS",
+		"projectId": "baker",
+		"projectName": "baker",
+		"properties": [
+		],
+		"sourceCodeURL": "",
+		"type": "globalCSS",
+		"typeSettings": [
+			"url=global.css",
+			"scope=company"
+		],
+		"webContextPath": "/baker"
+	}
+}

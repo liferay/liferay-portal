@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Definition API
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.definition.api
-Bundle-Version: 14.0.2
+Bundle-Version: 15.0.0
 Export-Package:\
 	com.liferay.portal.workflow.kaleo.definition,\
 	com.liferay.portal.workflow.kaleo.definition.deployment,\

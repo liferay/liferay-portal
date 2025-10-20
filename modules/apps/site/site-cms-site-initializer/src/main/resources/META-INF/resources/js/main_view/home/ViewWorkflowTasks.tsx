@@ -327,42 +327,46 @@ export default function ViewWorkflowTasks({
 	return (
 		<div className="container-fluid">
 			<div className="align-items-center d-flex justify-content-between mb-4">
-				<h3 className="font-weight-semi-bold ml-3 mr-auto text-4">
-					{Liferay.Language.get('my-workflow-tasks')}
-				</h3>
+				<div className="align-items-xl-center d-flex flex-column flex-xl-row justify-content-between">
+					<span className="font-weight-semi-bold mr-3 text-4">
+						{Liferay.Language.get('my-workflow-tasks')}
+					</span>
 
-				<ClayDropdown
-					className="filter-dropdown"
-					closeOnClick
-					hasLeftSymbols
-					trigger={
-						<ClayButton displayType="secondary" size="sm">
-							<span>
-								{selectedItem.label}
+					<ClayDropdown
+						className="filter-dropdown"
+						closeOnClick
+						hasLeftSymbols
+						trigger={
+							<ClayButton displayType="secondary" size="sm">
+								<span>
+									{selectedItem.label}
 
-								<ClayIcon
-									className="ml-2"
-									symbol="caret-bottom"
-								/>
-							</span>
-						</ClayButton>
-					}
-				>
-					{filterItems.map((item) => (
-						<ClayDropdown.Item
-							active={item.value === selectedItem.value}
-							key={item.value}
-							onClick={() => {
-								setSelectedItem(item);
-							}}
-							symbolLeft={
-								item.value === selectedItem.value ? 'check' : ''
-							}
-						>
-							{item.label}
-						</ClayDropdown.Item>
-					))}
-				</ClayDropdown>
+									<ClayIcon
+										className="ml-2"
+										symbol="caret-bottom"
+									/>
+								</span>
+							</ClayButton>
+						}
+					>
+						{filterItems.map((item) => (
+							<ClayDropdown.Item
+								active={item.value === selectedItem.value}
+								key={item.value}
+								onClick={() => {
+									setSelectedItem(item);
+								}}
+								symbolLeft={
+									item.value === selectedItem.value
+										? 'check'
+										: ''
+								}
+							>
+								{item.label}
+							</ClayDropdown.Item>
+						))}
+					</ClayDropdown>
+				</div>
 
 				<ClayTooltipProvider>
 					<ClayButton

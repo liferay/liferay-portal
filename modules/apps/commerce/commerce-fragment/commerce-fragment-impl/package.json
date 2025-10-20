@@ -9,6 +9,7 @@
 		"@clayui/label": "3.144.1",
 		"@clayui/layout": "3.144.1",
 		"@clayui/link": "3.144.1",
+		"@clayui/modal": "3.148.0",
 		"@clayui/sticker": "3.147.0",
 		"@liferay/frontend-data-set-web": "*",
 		"classnames": "2.3.1",
@@ -19,7 +20,7 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},
-	"main": "js/index.js",
+	"main": "js/index.ts",
 	"name": "@liferay/commerce-fragment-impl",
 	"private": true,
 	"scripts": {

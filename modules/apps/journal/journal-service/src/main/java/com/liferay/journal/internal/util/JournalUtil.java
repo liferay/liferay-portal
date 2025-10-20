@@ -126,8 +126,6 @@ public class JournalUtil {
 		).put(
 			"article_resource_pk", String.valueOf(article.getResourcePrimKey())
 		).put(
-			"ct_collection_id", String.valueOf(article.getCtCollectionId())
-		).put(
 			"ddm_structure_id", String.valueOf(ddmStructure.getStructureId())
 		).put(
 			"ddm_structure_key", ddmStructure.getStructureKey()

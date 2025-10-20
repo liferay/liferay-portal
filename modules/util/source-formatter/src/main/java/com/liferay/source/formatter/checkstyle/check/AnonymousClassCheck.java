@@ -22,11 +22,11 @@ public class AnonymousClassCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> addBackgroundTaskMethodCallDetailASTList =
-			getMethodCalls(detailAST, "addBackgroundTask");
+		List<DetailAST> addBackgroundTaskMethodCallDetailASTs = getMethodCalls(
+			detailAST, "addBackgroundTask");
 
 		for (DetailAST addBackgroundTaskMethodCallDetailAST :
-				addBackgroundTaskMethodCallDetailASTList) {
+				addBackgroundTaskMethodCallDetailASTs) {
 
 			_checkAddBackgroundTaskMethodCall(
 				addBackgroundTaskMethodCallDetailAST);
@@ -60,14 +60,14 @@ public class AnonymousClassCheck extends BaseCheck {
 		DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() != 6) {
+		if (exprDetailASTs.size() != 6) {
 			return;
 		}
 
-		DetailAST exprDetailAST = exprDetailASTList.get(4);
+		DetailAST exprDetailAST = exprDetailASTs.get(4);
 
 		firstChildDetailAST = exprDetailAST.getFirstChild();
 

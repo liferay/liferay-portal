@@ -59,10 +59,8 @@ public class AssetCategoryPropertyServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"AssetCategoryProperty", "categoryPropertyId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"AssetCategoryProperty"};
 				}
 
 			});

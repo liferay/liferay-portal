@@ -22,6 +22,7 @@ import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.expando.test.util.ExpandoTestUtil;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
@@ -53,6 +54,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.cache.MultiVMPool;
@@ -1020,6 +1022,101 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 				"lfr-theme:regular:show-header"));
 	}
 
+	@Test
+	@TestInfo("LPD-67914")
+	public void testUpdateLayoutContent() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-heading");
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				_group.getGroupId(), 0, fragmentEntry.getFragmentEntryId(),
+				segmentsExperienceId, draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"element-text",
+						JSONUtil.put(
+							LocaleUtil.toLanguageId(
+								_portal.getSiteDefaultLocale(_group)),
+							RandomTestUtil.randomString()))
+				).toString(),
+				RandomTestUtil.randomString(), 0, StringPool.BLANK,
+				FragmentConstants.TYPE_PORTLET, _serviceContext);
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			fragmentEntryLink.getExternalReferenceCode());
+
+		LayoutStructure layoutStructure = new LayoutStructure();
+
+		String itemId = RandomTestUtil.randomString();
+
+		LayoutStructureItem layoutStructureItem =
+			layoutStructure.addFragmentStyledLayoutStructureItem(
+				fragmentEntryLink.getFragmentEntryLinkId(), itemId,
+				layoutStructure.getMainItemId(), 0);
+
+		Assert.assertEquals(itemId, layoutStructureItem.getItemId());
+
+		String data = layoutStructure.toString();
+
+		Assert.assertTrue(
+			data,
+			data.contains(
+				StringBundler.concat(
+					"\"fragmentEntryLinkId\":\"",
+					fragmentEntryLink.getFragmentEntryLinkId(), "\"")));
+		Assert.assertTrue(data, data.contains(itemId));
+
+		_layoutLocalService.updateLayoutContent(
+			data, draftLayout, segmentsExperienceId);
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					_group.getGroupId(), draftLayout.getPlid());
+
+		Assert.assertEquals(
+			layoutStructure.toString(),
+			layoutPageTemplateStructure.getData(segmentsExperienceId));
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+				_group.getGroupId(), draftLayout.getPlid());
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		FragmentEntryLink actualFragmentEntryLink = fragmentEntryLinks.get(0);
+
+		Assert.assertEquals(
+			fragmentEntryLink.getUuid(), actualFragmentEntryLink.getUuid());
+		Assert.assertEquals(
+			fragmentEntryLink.getExternalReferenceCode(),
+			actualFragmentEntryLink.getExternalReferenceCode());
+		Assert.assertEquals(
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			actualFragmentEntryLink.getFragmentEntryLinkId());
+
+		_assertFragmentEntryLink(fragmentEntryLink, actualFragmentEntryLink);
+	}
+
 	private Map<Long, String> _addContentLayouts() throws Exception {
 		return _addContentLayouts(0);
 	}
@@ -1216,6 +1313,27 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			editableValuesJSONObject.getString("instanceId"));
 	}
 
+	private void _assertFragmentEntryLink(
+		FragmentEntryLink expectedFragmentEntryLink,
+		FragmentEntryLink fragmentEntryLink) {
+
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getCss(), fragmentEntryLink.getCss());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getHtml(), fragmentEntryLink.getHtml());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getJs(), fragmentEntryLink.getJs());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getConfiguration(),
+			fragmentEntryLink.getConfiguration());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getEditableValues(),
+			fragmentEntryLink.getEditableValues());
+		Assert.assertEquals(
+			expectedFragmentEntryLink.getLastPropagationDate(),
+			fragmentEntryLink.getLastPropagationDate());
+	}
+
 	private long[] _assertFragmentEntryLinksAndGetOriginalFragmentEntryLinkIds(
 		List<FragmentEntryLink> copiedFragmentEntryLinks,
 		List<FragmentEntryLink> sourceFragmentEntryLinks) {
@@ -1256,24 +1374,9 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 					sourceFragmentEntryLink.getFragmentEntryLinkId());
 
 			Assert.assertNotNull(copiedFragmentEntryLink);
-			Assert.assertEquals(
-				sourceFragmentEntryLink.getConfiguration(),
-				copiedFragmentEntryLink.getConfiguration());
-			Assert.assertEquals(
-				sourceFragmentEntryLink.getCss(),
-				copiedFragmentEntryLink.getCss());
-			Assert.assertEquals(
-				sourceFragmentEntryLink.getEditableValues(),
-				copiedFragmentEntryLink.getEditableValues());
-			Assert.assertEquals(
-				sourceFragmentEntryLink.getHtml(),
-				copiedFragmentEntryLink.getHtml());
-			Assert.assertEquals(
-				sourceFragmentEntryLink.getJs(),
-				copiedFragmentEntryLink.getJs());
-			Assert.assertEquals(
-				sourceFragmentEntryLink.getLastPropagationDate(),
-				copiedFragmentEntryLink.getLastPropagationDate());
+
+			_assertFragmentEntryLink(
+				sourceFragmentEntryLink, copiedFragmentEntryLink);
 		}
 
 		return originalFragmentEntryLinkIds;
@@ -1412,6 +1515,10 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 	@Inject
 	private ExpandoValueLocalService _expandoValueLocalService;
+
+	@Inject
+	private FragmentCollectionContributorRegistry
+		_fragmentCollectionContributorRegistry;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;

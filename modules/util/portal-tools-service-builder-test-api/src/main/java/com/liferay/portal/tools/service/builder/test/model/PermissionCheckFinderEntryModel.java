@@ -7,6 +7,7 @@ package com.liferay.portal.tools.service.builder.test.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ShardedModel;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -23,7 +24,7 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface PermissionCheckFinderEntryModel
-	extends BaseModel<PermissionCheckFinderEntry> {
+	extends BaseModel<PermissionCheckFinderEntry>, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -73,6 +74,50 @@ public interface PermissionCheckFinderEntryModel
 	 * @param groupId the group ID of this permission check finder entry
 	 */
 	public void setGroupId(long groupId);
+
+	/**
+	 * Returns the company ID of this permission check finder entry.
+	 *
+	 * @return the company ID of this permission check finder entry
+	 */
+	@Override
+	public long getCompanyId();
+
+	/**
+	 * Sets the company ID of this permission check finder entry.
+	 *
+	 * @param companyId the company ID of this permission check finder entry
+	 */
+	@Override
+	public void setCompanyId(long companyId);
+
+	/**
+	 * Returns the user ID of this permission check finder entry.
+	 *
+	 * @return the user ID of this permission check finder entry
+	 */
+	public long getUserId();
+
+	/**
+	 * Sets the user ID of this permission check finder entry.
+	 *
+	 * @param userId the user ID of this permission check finder entry
+	 */
+	public void setUserId(long userId);
+
+	/**
+	 * Returns the user uuid of this permission check finder entry.
+	 *
+	 * @return the user uuid of this permission check finder entry
+	 */
+	public String getUserUuid();
+
+	/**
+	 * Sets the user uuid of this permission check finder entry.
+	 *
+	 * @param userUuid the user uuid of this permission check finder entry
+	 */
+	public void setUserUuid(String userUuid);
 
 	/**
 	 * Returns the integer of this permission check finder entry.

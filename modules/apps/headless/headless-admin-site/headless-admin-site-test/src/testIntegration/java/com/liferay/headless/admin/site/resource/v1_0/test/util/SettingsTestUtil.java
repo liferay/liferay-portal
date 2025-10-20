@@ -161,16 +161,12 @@ public class SettingsTestUtil {
 		ItemExternalReference styleBookItemExternalReference =
 			settings.getStyleBookItemExternalReference();
 
-		if (layout.getStyleBookEntryId() == 0) {
+		if (Validator.isNull(layout.getStyleBookEntryERC())) {
 			Assert.assertNull(styleBookItemExternalReference);
 		}
 		else {
-			StyleBookEntry styleBookEntry =
-				StyleBookEntryLocalServiceUtil.getStyleBookEntry(
-					layout.getStyleBookEntryId());
-
 			Assert.assertEquals(
-				styleBookEntry.getExternalReferenceCode(),
+				layout.getStyleBookEntryERC(),
 				styleBookItemExternalReference.getExternalReferenceCode());
 		}
 

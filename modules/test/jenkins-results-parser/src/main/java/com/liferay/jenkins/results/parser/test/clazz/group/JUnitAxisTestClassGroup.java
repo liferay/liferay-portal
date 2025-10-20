@@ -54,21 +54,17 @@ public class JUnitAxisTestClassGroup extends AxisTestClassGroup {
 			return null;
 		}
 
-		List<DownstreamBuildReport> cachedDownstreamBuildReports =
-			new ArrayList<>();
+		Set<DownstreamBuildReport> cachedDownstreamBuildReports =
+			new HashSet<>();
 
 		for (JUnitTestClass jUnitTestClass : getJUnitTestClasses()) {
 			DownstreamBuildReport downstreamBuildReport =
 				jUnitTestClass.getCachedDownstreamBuildReport();
 
-			if (cachedDownstreamBuildReports.contains(downstreamBuildReport)) {
-				continue;
-			}
-
 			cachedDownstreamBuildReports.add(downstreamBuildReport);
 		}
 
-		return cachedDownstreamBuildReports;
+		return new ArrayList<>(cachedDownstreamBuildReports);
 	}
 
 	public List<JUnitTestClass> getJUnitTestClasses() {

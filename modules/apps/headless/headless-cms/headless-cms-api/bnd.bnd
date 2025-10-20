@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless CMS API
 Bundle-SymbolicName: com.liferay.headless.cms.api
-Bundle-Version: 1.2.1
+Bundle-Version: 1.3.0
 Export-Package:\
 	com.liferay.headless.cms.dto.v1_0,\
 	com.liferay.headless.cms.resource.v1_0

@@ -26,7 +26,7 @@ export default function FailedFiles({failedFiles}: {failedFiles: FileData[]}) {
 			{failedFiles.map((fileData) => (
 				<>
 					<ClayLayout.ContentRow
-						className="align-items-center form-control has-error mt-2"
+						className="align-items-center border-left-0 border-right-0 border-top-0 form-control mt-2 rounded-0"
 						key={fileData.name}
 						padded
 					>

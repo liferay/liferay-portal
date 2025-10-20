@@ -406,7 +406,16 @@ public class ResourceOpenAPIParser {
 
 		for (JavaMethodSignature javaMethodSignature : javaMethodSignatures) {
 			String methodName = javaMethodSignature.getMethodName();
+
 			String schemaName = javaMethodSignature.getSchemaName();
+
+			if (hasPathParameter(
+					javaMethodSignature,
+					OpenAPIParserUtil.getSchemaVarName(schemaName) +
+						"ExternalReferenceCode")) {
+
+				continue;
+			}
 
 			if (methodName.equals("patch" + schemaName)) {
 				updateStrategies.add("PARTIAL_UPDATE");
@@ -1604,6 +1613,7 @@ public class ResourceOpenAPIParser {
 			StringUtil.equals(name, "pagination") ||
 			StringUtil.equals(name, "restrictFields") ||
 			StringUtil.equals(name, schemaVarName) ||
+			StringUtil.equals(name, schemaVarName + "ExternalReferenceCode") ||
 			StringUtil.equals(name, schemaVarName + "Id")) {
 
 			return false;

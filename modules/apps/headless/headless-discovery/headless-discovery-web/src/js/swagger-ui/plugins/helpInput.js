@@ -26,40 +26,43 @@ function FilterableFieldsHelp({filterableFields, messageDetails}) {
 				</ClayLink>
 			)}
 
-			{filterableFields && (
-				<>
-					<hr />
-					<ul className="c-mb-0 c-pl-0">
-						{filterableFields.map((filterableField) => (
-							<ClayLayout.ContentRow
-								className="c-mr-2 c-my-2"
-								containerElement="li"
-								key={filterableField}
-							>
-								<ClayLayout.ContentCol expand>
-									{filterableField}
-								</ClayLayout.ContentCol>
+			{filterableFields && <hr />}
 
-								<ClayLayout.ContentCol>
-									<ClayButton
-										aria-label="Copy to Clipboard"
-										displayType="secondary"
-										monospaced
-										onClick={() => {
-											navigator.clipboard.writeText(
-												filterableField
-											);
-										}}
-										size="xs"
-										title="Copy to Clipboard"
-									>
-										<Icon symbol="copy" />
-									</ClayButton>
-								</ClayLayout.ContentCol>
-							</ClayLayout.ContentRow>
-						))}
-					</ul>
-				</>
+			{filterableFields && (
+				<ul className="c-mb-0 c-pl-0">
+					{Object.keys(filterableFields).map((filterableField) => (
+						<ClayLayout.ContentRow
+							className="c-mr-2 c-my-2"
+							containerElement="li"
+							key={filterableField}
+						>
+							<ClayLayout.ContentCol expand>
+								{filterableField}{' '}
+
+								<small>
+									({filterableFields[filterableField].type})
+								</small>
+							</ClayLayout.ContentCol>
+
+							<ClayLayout.ContentCol>
+								<ClayButton
+									aria-label="Copy to Clipboard"
+									displayType="secondary"
+									monospaced
+									onClick={() => {
+										navigator.clipboard.writeText(
+											filterableField
+										);
+									}}
+									size="xs"
+									title="Copy to Clipboard"
+								>
+									<Icon symbol="copy" />
+								</ClayButton>
+							</ClayLayout.ContentCol>
+						</ClayLayout.ContentRow>
+					))}
+				</ul>
 			)}
 		</>
 	);
@@ -119,7 +122,7 @@ export default function helpSwaggerUIPlugin() {
 					) {
 						filterableFields = props.schema
 							.get('x-filterable')
-							.toArray();
+							.toJS();
 					}
 
 					return (

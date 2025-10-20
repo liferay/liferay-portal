@@ -98,7 +98,7 @@ public class ChangeMasterLayoutMVCActionCommand
 
 		if (masterLayoutPlid == 0) {
 			return JSONUtil.put(
-				"styleBookEntryId", _getStyleBookEntryId(updatedLayout)
+				"styleBookEntryERC", _getStyleBookEntryERC(updatedLayout)
 			).put(
 				"styleBooks",
 				_getStyleBooksJSONArray(updatedLayout, themeDisplay)
@@ -137,7 +137,7 @@ public class ChangeMasterLayoutMVCActionCommand
 		).put(
 			"masterLayoutData", layoutStructure.toJSONObject()
 		).put(
-			"styleBookEntryId", _getStyleBookEntryId(updatedLayout)
+			"styleBookEntryERC", _getStyleBookEntryERC(updatedLayout)
 		).put(
 			"styleBooks", _getStyleBooksJSONArray(updatedLayout, themeDisplay)
 		);
@@ -148,15 +148,15 @@ public class ChangeMasterLayoutMVCActionCommand
 		return false;
 	}
 
-	private String _getStyleBookEntryId(Layout layout) {
+	private String _getStyleBookEntryERC(Layout layout) {
 		StyleBookEntry styleBookEntry =
 			DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(layout);
 
 		if (styleBookEntry != null) {
-			return String.valueOf(styleBookEntry.getStyleBookEntryId());
+			return styleBookEntry.getExternalReferenceCode();
 		}
 
-		return "0";
+		return StringPool.BLANK;
 	}
 
 	private JSONArray _getStyleBooksJSONArray(
@@ -214,7 +214,7 @@ public class ChangeMasterLayoutMVCActionCommand
 						StyleBookUtil.getStyleFromThemeStyleBookEntry(
 							layout, themeDisplay.getLocale()))
 				).put(
-					"styleBookEntryId", "0"
+					"styleBookEntryERC", StringPool.BLANK
 				).put(
 					"subtitle",
 					() -> {
@@ -240,8 +240,8 @@ public class ChangeMasterLayoutMVCActionCommand
 				).put(
 					"name", styleBookEntry.getName()
 				).put(
-					"styleBookEntryId",
-					String.valueOf(styleBookEntry.getStyleBookEntryId())
+					"styleBookEntryERC",
+					styleBookEntry.getExternalReferenceCode()
 				).put(
 					"tokenValues",
 					StyleBookEntryUtil.getFrontendTokensValues(

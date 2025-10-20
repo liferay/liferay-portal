@@ -406,7 +406,7 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 	}) => {
 		const sampleScalarField = 'id';
 		const sampleScalarFieldName = 'label';
-		const sampleObjectField = 'dataSetToDataSetTableSections';
+		const sampleObjectField = 'removedBy';
 		const sampleObjectChildField = 'id';
 
 		await test.step('Navigate to table visualization mode page', async () => {
@@ -544,7 +544,7 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 	}) => {
 		const SAMPLE_FIELD = 'fieldName';
 		const sampleScalarField = 'id';
-		const sampleObjectField = 'dataSetToDataSetTableSections';
+		const sampleObjectField = 'removedBy';
 		const sampleObjectChildField = 'id';
 
 		await test.step('Navigate to table visualization mode page', async () => {
@@ -668,10 +668,6 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 		const SAMPLE_COMPLEX_ARRAY_FIELD = 'auditEvents[]*';
 		const SAMPLE_COMPLEX_ARRAY_CHILD_FIELD = 'auditEvents[]creator.name';
 		const SAMPLE_SCALAR_ARRAY_FIELD = 'keywords';
-		const SAMPLE_FULL_COMPLEX_FIELD =
-			'dataSetToDataSetTableSections.auditEvents[]creator.*';
-		const SAMPLE_COMPLEX_OBJECT_CHILD_FIELD =
-			'dataSetToDataSetTableSections.auditEvents[]creator.givenName';
 
 		await test.step('Navigate to table visualization mode page', async () => {
 			await visualizationModesPage.goto({
@@ -696,12 +692,6 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 			);
 			await visualizationModesPage.searchAndSelectField(
 				SAMPLE_COMPLEX_ARRAY_CHILD_FIELD
-			);
-			await visualizationModesPage.searchAndSelectField(
-				SAMPLE_COMPLEX_OBJECT_CHILD_FIELD
-			);
-			await visualizationModesPage.searchAndSelectField(
-				SAMPLE_FULL_COMPLEX_FIELD
 			);
 
 			await saveFromModal({
@@ -737,20 +727,6 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 					.locator('td')
 					.nth(visualizationModesPage.SORTABLE_COLUMN_INDEX)
 			).toHaveText('false');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_COMPLEX_OBJECT_CHILD_FIELD)
-					.locator('td')
-					.nth(visualizationModesPage.TYPE_COLUMN_INDEX)
-			).toHaveText('string');
-
-			await expect(
-				visualizationModesPage
-					.getRowByText(SAMPLE_FULL_COMPLEX_FIELD)
-					.locator('td')
-					.nth(visualizationModesPage.TYPE_COLUMN_INDEX)
-			).toHaveText('object');
 		});
 	});
 
@@ -759,7 +735,7 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 		visualizationModesPage,
 	}) => {
 		const sampleScalarField = 'id';
-		const sampleObjectField = 'dataSetToDataSetTableSections';
+		const sampleObjectField = 'removedBy';
 
 		await test.step('Navigate to table visualization mode page', async () => {
 			await visualizationModesPage.goto({
@@ -1138,7 +1114,7 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 		visualizationModesPage,
 	}) => {
 		const sampleScalarField = 'id';
-		const sampleObjectField = 'dataSetToDataSetTableSections';
+		const sampleObjectField = 'removedBy';
 		const sampleObjectChildField = 'id';
 
 		await test.step('Navigate to table visualization mode page', async () => {
@@ -1219,7 +1195,7 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 			const SAMPLE_FIELD_EN_US = 'Name';
 			const SAMPLE_FIELD_FR_FR = 'Nom';
 			const SAMPLE_FIELD_PT_BR = 'Nome';
-			let dataSetPageUrl;
+			let dataSetPageUrl: string;
 
 			await test.step('Navigate to table visualization mode page', async () => {
 				await visualizationModesPage.goto({
@@ -1300,35 +1276,36 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 
 				const localizationButton = page
 					.locator('.input-localized')
-					.getByRole('button');
+					.getByLabel('Open Localizations');
+
+				await localizationButton.click();
+
 				const languageDropdownId =
 					await localizationButton.getAttribute('aria-controls');
 				const languageDropdown = page.locator(`#${languageDropdownId}`);
-
-				await localizationButton.click();
 
 				await languageDropdown.waitFor();
 
 				await expect(
 					languageDropdown
-						.getByRole('menuitem', {name: 'en_US'})
+						.getByRole('option', {name: 'en_US'})
 						.locator('.label-item')
 				).toContainText('Default');
 
 				await expect(
 					languageDropdown
-						.getByRole('menuitem', {name: 'fr_FR'})
+						.getByRole('option', {name: 'fr_FR'})
 						.locator('.label-item')
 				).toContainText('Untranslated');
 
 				await expect(
 					languageDropdown
-						.getByRole('menuitem', {name: 'pt_BR'})
+						.getByRole('option', {name: 'pt_BR'})
 						.locator('.label-item')
 				).toContainText('Untranslated');
 
 				await languageDropdown
-					.getByRole('menuitem', {name: 'pt_BR'})
+					.getByRole('option', {name: 'pt_BR'})
 					.click();
 
 				await labelInput.fill(SAMPLE_FIELD_PT_BR);
@@ -1337,7 +1314,7 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 
 				await languageDropdown.waitFor();
 				await languageDropdown
-					.getByRole('menuitem', {name: 'fr_FR'})
+					.getByRole('option', {name: 'fr_FR'})
 					.click();
 
 				await labelInput.fill(SAMPLE_FIELD_FR_FR);
@@ -1354,38 +1331,38 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 
 				const localizationButton = page
 					.locator('.input-localized')
-					.getByRole('button');
+					.getByLabel('Open Localizations');
+
+				await localizationButton.click();
+
 				const languageDropdownId =
 					await localizationButton.getAttribute('aria-controls');
 				const languageDropdown = page.locator(`#${languageDropdownId}`);
-
-				await localizationButton.click();
 
 				await languageDropdown.waitFor();
 
 				await expect(
 					languageDropdown
-						.getByRole('menuitem', {name: 'en_US'})
+						.getByRole('option', {name: 'en_US'})
 						.locator('.label-item')
 				).toContainText('Default');
 
 				await expect(
 					languageDropdown
-						.getByRole('menuitem', {name: 'fr_FR'})
+						.getByRole('option', {name: 'fr_FR'})
 						.locator('.label-item')
 				).toContainText('Translated');
 
 				await expect(
 					languageDropdown
-						.getByRole('menuitem', {name: 'pt_BR'})
+						.getByRole('option', {name: 'pt_BR'})
 						.locator('.label-item')
 				).toContainText('Translated');
 
 				await languageDropdown
-					.getByRole('menuitem', {name: 'pt_BR'})
+					.getByRole('option', {name: 'pt_BR'})
 					.click();
 
-				await page.keyboard.press('Escape');
 				await visualizationModesPage.cancelAddFieldsModal();
 			});
 

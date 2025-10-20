@@ -62,10 +62,11 @@ public class SiteDemoDataCreatorImpl implements SiteDemoDataCreator {
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION;
 
 		Group group = _groupLocalService.addGroup(
-			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+			StringPool.BLANK, user.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, type,
-			manualMembership, membershipRestriction, friendlyURL, site, active,
-			null);
+			null, manualMembership, membershipRestriction, friendlyURL, site,
+			false, active, null);
 
 		_groupIds.add(group.getGroupId());
 

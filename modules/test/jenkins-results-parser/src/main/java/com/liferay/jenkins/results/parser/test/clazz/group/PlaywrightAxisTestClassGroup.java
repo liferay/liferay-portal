@@ -13,7 +13,9 @@ import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -28,8 +30,8 @@ public class PlaywrightAxisTestClassGroup extends AxisTestClassGroup {
 			return null;
 		}
 
-		List<DownstreamBuildReport> cachedDownstreamBuildReports =
-			new ArrayList<>();
+		Set<DownstreamBuildReport> cachedDownstreamBuildReports =
+			new HashSet<>();
 
 		for (PlaywrightTestClassMethod playwrightTestClassMethod :
 				getPlaywrightTestClassMethods()) {
@@ -37,14 +39,10 @@ public class PlaywrightAxisTestClassGroup extends AxisTestClassGroup {
 			DownstreamBuildReport downstreamBuildReport =
 				playwrightTestClassMethod.getCachedDownstreamBuildReport();
 
-			if (cachedDownstreamBuildReports.contains(downstreamBuildReport)) {
-				continue;
-			}
-
 			cachedDownstreamBuildReports.add(downstreamBuildReport);
 		}
 
-		return cachedDownstreamBuildReports;
+		return new ArrayList<>(cachedDownstreamBuildReports);
 	}
 
 	@Override

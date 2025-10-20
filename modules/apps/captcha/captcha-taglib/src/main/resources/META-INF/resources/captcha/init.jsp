@@ -19,6 +19,7 @@ page import="com.liferay.captcha.util.CaptchaUtil" %><%@
 page import="com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.HttpComponentsUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
 
 <%

@@ -275,7 +275,7 @@ const Space = ({current, logoColor, name, url}) => {
 
 const SpacesPanel = ({cms}) => {
 	return (
-		<div className="applications-menu-spaces c-p-3 c-px-md-4">
+		<div className="applications-menu-spaces c-p-3 c-px-md-4 h-100 w-100">
 			<div className="c-mt-2">
 				{cms && (
 					<a
@@ -484,22 +484,36 @@ const AppsPanel = ({
 						</ClayLayout.Col>
 
 						<ClayLayout.Col
-							className="px-0"
-							md={Liferay.FeatureFlags['LPD-17564'] ? '2' : '3'}
-							xl={Liferay.FeatureFlags['LPD-17564'] ? '2' : '4'}
+							className="d-flex px-0"
+							md={Liferay.FeatureFlags['LPD-17564'] ? '4' : '3'}
+							xl="4"
 						>
-							<SitesPanel
-								portletNamespace={portletNamespace}
-								sites={sites}
-								virtualInstance={virtualInstance}
-							/>
-						</ClayLayout.Col>
+							<ClayLayout.ContainerFluid size={false}>
+								<ClayLayout.Row>
+									<ClayLayout.Col
+										className="c-px-0"
+										md="12"
+										xl="6"
+									>
+										<SitesPanel
+											portletNamespace={portletNamespace}
+											sites={sites}
+											virtualInstance={virtualInstance}
+										/>
+									</ClayLayout.Col>
 
-						{Liferay.FeatureFlags['LPD-17564'] && (
-							<ClayLayout.Col className="px-0" md="2" xl="2">
-								<SpacesPanel cms={cms} />
-							</ClayLayout.Col>
-						)}
+									<ClayLayout.Col
+										className="c-px-0"
+										md="12"
+										xl="6"
+									>
+										{Liferay.FeatureFlags['LPD-17564'] && (
+											<SpacesPanel cms={cms} />
+										)}
+									</ClayLayout.Col>
+								</ClayLayout.Row>
+							</ClayLayout.ContainerFluid>
+						</ClayLayout.Col>
 					</ClayLayout.Row>
 				</ClayLayout.ContainerFluid>
 			</div>
@@ -507,7 +521,11 @@ const AppsPanel = ({
 			<div className="applications-menu-bg applications-menu-footer">
 				<ClayLayout.ContainerFluid size={false}>
 					<ClayLayout.Row>
-						<ClayLayout.Col className="pr-3" md="9" xl="8">
+						<ClayLayout.Col
+							className="pr-3"
+							md={Liferay.FeatureFlags['LPD-17564'] ? '8' : '9'}
+							xl="8"
+						>
 							<ClayLayout.ContentRow
 								className="applications-menu-border-top bg-white c-py-3"
 								verticalAlign="center"

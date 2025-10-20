@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.pop.MessageListener;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.ControlPanelEntry;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
-import com.liferay.portal.kernel.portlet.FriendlyURLMapperTracker;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletConfigurationListener;
@@ -63,7 +62,6 @@ import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.kernel.xmlrpc.Method;
 import com.liferay.portal.notifications.UserNotificationHandlerImpl;
 import com.liferay.portal.util.JavaFieldsParser;
-import com.liferay.portlet.internal.FriendlyURLMapperTrackerImpl;
 import com.liferay.portlet.internal.PortletBagImpl;
 import com.liferay.social.kernel.model.SocialActivityInterpreter;
 import com.liferay.social.kernel.model.SocialRequestInterpreter;
@@ -130,8 +128,8 @@ public class PortletBagFactory {
 		_registerSchedulerJobConfigurations(
 			bundleContext, portlet, properties, serviceRegistrations);
 
-		FriendlyURLMapperTracker friendlyURLMapperTracker =
-			_registerFriendlyURLMappers(portlet);
+		_registerFriendlyURLMappers(
+			bundleContext, portlet, serviceRegistrations);
 
 		_registerURLEncoders(
 			bundleContext, portlet, properties, serviceRegistrations);
@@ -194,8 +192,7 @@ public class PortletBagFactory {
 
 		PortletBag portletBag = new PortletBagImpl(
 			portlet.getPortletName(), _servletContext, portletInstance,
-			portlet.getResourceBundle(), friendlyURLMapperTracker,
-			serviceRegistrations);
+			portlet.getResourceBundle(), serviceRegistrations);
 
 		PortletBagPool.put(portlet.getRootPortletId(), portletBag);
 
@@ -222,9 +219,6 @@ public class PortletBagFactory {
 		_warFile = warFile;
 	}
 
-	/**
-	 * @see FriendlyURLMapperTrackerImpl#getContent(ClassLoader, String)
-	 */
 	private String _getContent(String fileName) throws Exception {
 		String queryString = HttpComponentsUtil.getQueryString(fileName);
 
@@ -413,21 +407,21 @@ public class PortletBagFactory {
 		}
 	}
 
-	private FriendlyURLMapperTracker _registerFriendlyURLMappers(
-			Portlet portlet)
+	private void _registerFriendlyURLMappers(
+			BundleContext bundleContext, Portlet portlet,
+			List<ServiceRegistration<?>> serviceRegistrations)
 		throws Exception {
-
-		FriendlyURLMapperTracker friendlyURLMapperTracker =
-			new FriendlyURLMapperTrackerImpl(portlet);
 
 		if (Validator.isNotNull(portlet.getFriendlyURLMapperClass())) {
 			FriendlyURLMapper friendlyURLMapper = _newInstance(
 				FriendlyURLMapper.class, portlet.getFriendlyURLMapperClass());
 
-			friendlyURLMapperTracker.register(friendlyURLMapper);
+			serviceRegistrations.add(
+				bundleContext.registerService(
+					FriendlyURLMapper.class, friendlyURLMapper,
+					MapUtil.singletonDictionary(
+						"jakarta.portlet.name", portlet.getPortletId())));
 		}
-
-		return friendlyURLMapperTracker;
 	}
 
 	private void _registerIndexers(

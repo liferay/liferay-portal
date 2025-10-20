@@ -678,7 +678,11 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 
 		if (!_hasValidMethodCall(
 				fileName, from, javaMethodContent, jsonObject, newContent,
-				parameterNames, lineNumber, to)) {
+				parameterNames,
+				getLineNumber(
+					newContent,
+					newContent.indexOf(javaMethodContent) + matcher.start()),
+				to)) {
 
 			return newContent;
 		}

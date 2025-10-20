@@ -416,14 +416,7 @@ function computeDrop({
 	}
 
 	if (dragSource && dropTarget) {
-		const targetItem = layoutDataRef.current.items[targetId];
-		const formParent = getFormParent(targetItem, layoutDataRef.current);
-
-		if (
-			formParent &&
-			sources.some((item) => isStepper(item)) &&
-			!isMultistepForm(formParent)
-		) {
+		if (isFormConversion(layoutDataRef.current, sources, targetId)) {
 			openFormConversionModal({
 				onContinue: async () => onDragEnd(targetId, position),
 			});
@@ -434,4 +427,19 @@ function computeDrop({
 	}
 
 	dispatch(initialDragDrop.state);
+}
+
+function isFormConversion(layoutData, sources, targetId) {
+	const targetItem = layoutData.items[targetId];
+	const formParent = getFormParent(targetItem, layoutData);
+
+	if (
+		formParent &&
+		sources.some((item) => isStepper(item)) &&
+		!isMultistepForm(formParent)
+	) {
+		return true;
+	}
+
+	return false;
 }

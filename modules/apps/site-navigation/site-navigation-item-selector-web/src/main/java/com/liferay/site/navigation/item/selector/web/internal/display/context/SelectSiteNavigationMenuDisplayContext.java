@@ -6,6 +6,7 @@
 package com.liferay.site.navigation.item.selector.web.internal.display.context;
 
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -15,6 +16,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -213,6 +215,36 @@ public class SelectSiteNavigationMenuDisplayContext {
 			() -> siteNavigationMenuItems, siteNavigationMenuItems.size());
 
 		return searchContainer;
+	}
+
+	public String getSiteNavigationMenuScopeExternalReferenceCode()
+		throws PortalException {
+
+		if (_siteNavigationMenuScopeExternalReferenceCode != null) {
+			return _siteNavigationMenuScopeExternalReferenceCode;
+		}
+
+		String siteNavigationMenuScopeExternalReferenceCode = StringPool.BLANK;
+
+		SiteNavigationMenu siteNavigationMenu =
+			SiteNavigationMenuLocalServiceUtil.fetchSiteNavigationMenu(
+				getSiteNavigationMenuId());
+
+		if ((siteNavigationMenu != null) &&
+			(siteNavigationMenu.getGroupId() !=
+				_themeDisplay.getScopeGroupId())) {
+
+			Group group = GroupLocalServiceUtil.getGroup(
+				siteNavigationMenu.getGroupId());
+
+			siteNavigationMenuScopeExternalReferenceCode =
+				group.getExternalReferenceCode();
+		}
+
+		_siteNavigationMenuScopeExternalReferenceCode =
+			siteNavigationMenuScopeExternalReferenceCode;
+
+		return _siteNavigationMenuScopeExternalReferenceCode;
 	}
 
 	public SearchContainer<SiteNavigationMenu>
@@ -556,6 +588,7 @@ public class SelectSiteNavigationMenuDisplayContext {
 	private Long _siteNavigationMenuId;
 	private final SiteNavigationMenuItemTypeRegistry
 		_siteNavigationMenuItemTypeRegistry;
+	private String _siteNavigationMenuScopeExternalReferenceCode;
 	private final ThemeDisplay _themeDisplay;
 
 }

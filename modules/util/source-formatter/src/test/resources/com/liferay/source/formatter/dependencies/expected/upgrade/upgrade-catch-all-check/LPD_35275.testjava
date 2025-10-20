@@ -16,7 +16,8 @@ public class LPD_35275 {
 		String searchEngineId, long companyId, String className,
 		boolean commitImmediately) {
 
-		IndexWriterHelperUtil.deleteEntityDocuments("test123", companyId, className, commitImmediately);
+		IndexWriterHelperUtil.deleteEntityDocuments(
+			"test123", companyId, className, commitImmediately);
 		IndexWriterHelperUtil.deleteEntityDocuments(companyId, className, commitImmediately);
 		_indexWriterHelper.deleteEntityDocuments(companyId, className, commitImmediately);
 	}

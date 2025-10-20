@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
@@ -291,7 +290,7 @@ public class CompanyLocalServiceTest {
 	public void testAddAndDeleteCompanyWithCompanyGroupStaging()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		Group companyGroup = null;
@@ -321,7 +320,7 @@ public class CompanyLocalServiceTest {
 
 	@Test
 	public void testAddAndDeleteCompanyWithDLFileEntryTypes() throws Exception {
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		DDMStructure ddmStructure = null;
@@ -391,7 +390,7 @@ public class CompanyLocalServiceTest {
 	public void testAddAndDeleteCompanyWithLayoutSetPrototype()
 		throws Throwable {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		LayoutSetPrototype layoutSetPrototype = null;
@@ -435,7 +434,7 @@ public class CompanyLocalServiceTest {
 	public void testAddAndDeleteCompanyWithLayoutSetPrototypeLinkedUserGroup()
 		throws Throwable {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		long layoutSetPrototypeId = 0;
@@ -485,7 +484,7 @@ public class CompanyLocalServiceTest {
 
 	@Test
 	public void testAddAndDeleteCompanyWithParentGroup() throws Exception {
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		Group group = null;
@@ -590,7 +589,7 @@ public class CompanyLocalServiceTest {
 	public void testAddAndDeleteCompanyWithStagedOrganizationSite()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		Organization companyOrganization = null;
@@ -626,7 +625,7 @@ public class CompanyLocalServiceTest {
 
 	@Test
 	public void testAddAndDeleteCompanyWithUserGroup() throws Exception {
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		User user = null;
@@ -665,7 +664,7 @@ public class CompanyLocalServiceTest {
 	public void testAddAndDeleteCompanyWithUserGroupAndUserGroupRole()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Company company = _addCompany();
 		Group group = null;
@@ -830,7 +829,7 @@ public class CompanyLocalServiceTest {
 	public void testDeleteCompanyDeletesUserGroupRoleBeforeRole()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Assert.assertEquals(
 			UserGroupRole.class.getName(), _modelListeners.get(0));
@@ -1573,7 +1572,7 @@ public class CompanyLocalServiceTest {
 
 		try (SafeCloseable safeCloseable1 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
-					"MAIL_MX_UPDATE", mailMxUpdate);
+					"COMPANY_MX_UPDATE", mailMxUpdate);
 			SafeCloseable safeCloseable2 =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					_company.getCompanyId())) {

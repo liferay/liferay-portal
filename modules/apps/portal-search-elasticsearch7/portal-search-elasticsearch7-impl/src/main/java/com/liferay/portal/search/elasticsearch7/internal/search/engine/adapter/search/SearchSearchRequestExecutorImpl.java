@@ -8,8 +8,8 @@ package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
-import com.liferay.portal.search.elasticsearch7.internal.util.JSONUtil;
 import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.SearchSearchResponse;
 
@@ -52,11 +52,24 @@ public class SearchSearchRequestExecutorImpl
 		_searchSearchRequestAssembler.assemble(
 			searchSourceBuilder, searchSearchRequest, searchRequest);
 
-		if (_log.isTraceEnabled()) {
-			String prettyPrintedRequestString = _getPrettyPrintedRequestString(
-				searchSourceBuilder);
+		String indexNames = ArrayUtil.toString(
+			searchSearchRequest.getIndexNames(), "");
 
-			_log.trace("Search query: " + prettyPrintedRequestString);
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				StringBundler.concat(
+					"Stack trace for [", indexNames, "]: ",
+					DebugStringsUtil.getStackTraceString()));
+		}
+
+		String searchRequestString = DebugStringsUtil.getSearchRequestString(
+			searchSourceBuilder);
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				StringBundler.concat(
+					"Search request string for [", indexNames, "]: ",
+					searchRequestString));
 		}
 
 		SearchResponse searchResponse = null;
@@ -72,29 +85,17 @@ public class SearchSearchRequestExecutorImpl
 		SearchSearchResponse searchSearchResponse = new SearchSearchResponse();
 
 		_searchSearchResponseAssembler.assemble(
-			searchSourceBuilder, searchResponse, searchSearchRequest,
+			searchRequestString, searchResponse, searchSearchRequest,
 			searchSearchResponse);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				StringBundler.concat(
-					"The search engine processed ",
-					searchSearchResponse.getSearchRequestString(), " in ",
+					"The search engine processed the request in ",
 					searchSearchResponse.getExecutionTime(), " ms"));
 		}
 
 		return searchSearchResponse;
-	}
-
-	private String _getPrettyPrintedRequestString(
-		SearchSourceBuilder searchSourceBuilder) {
-
-		try {
-			return JSONUtil.getPrettyPrintedJSONString(searchSourceBuilder);
-		}
-		catch (Exception exception) {
-			return exception.getMessage();
-		}
 	}
 
 	private SearchResponse _getScrollSearchResponse(

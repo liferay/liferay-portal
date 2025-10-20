@@ -38,37 +38,31 @@ public class ExpandoColumnModelListener
 
 	@Override
 	public void onAfterRemove(ExpandoColumn expandoColumn) {
-		if (!FeatureFlagManagerUtil.isEnabled("LRAC-10757")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				expandoColumn.getCompanyId(), "LRAC-10757")) {
+
 			try {
 				AnalyticsConfiguration analyticsConfiguration =
 					_analyticsSettingsManager.getAnalyticsConfiguration(
 						expandoColumn.getCompanyId());
 
-				String[] syncedUserFieldNames1 =
+				String[] syncedUserFieldNames =
 					analyticsConfiguration.syncedUserFieldNames();
 
-				if (syncedUserFieldNames1.length == 0) {
+				if (syncedUserFieldNames.length == 0) {
 					return;
-				}
-
-				String[] syncedUserFieldNames2 =
-					new String[syncedUserFieldNames1.length - 1];
-
-				int i = 0;
-
-				for (String syncedUserFieldName : syncedUserFieldNames1) {
-					if (!syncedUserFieldName.equals(expandoColumn.getName())) {
-						syncedUserFieldNames2[i] = syncedUserFieldName;
-						i++;
-					}
 				}
 
 				_analyticsSettingsManager.updateCompanyConfiguration(
 					expandoColumn.getCompanyId(),
-					new HashMapBuilder<>().<String, Object>put(
-						"previousSyncedUserFieldNames", syncedUserFieldNames1
+					HashMapBuilder.<String, Object>put(
+						"previousSyncedUserFieldNames", syncedUserFieldNames
 					).<String, Serializable>put(
-						"syncedUserFieldNames", syncedUserFieldNames2
+						"syncedUserFieldNames",
+						ArrayUtil.filter(
+							syncedUserFieldNames,
+							syncedUserFieldName -> !Objects.equals(
+								syncedUserFieldName, expandoColumn.getName()))
 					).build());
 			}
 			catch (Exception exception) {

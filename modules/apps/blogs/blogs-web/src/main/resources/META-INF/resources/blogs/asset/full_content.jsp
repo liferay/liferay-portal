@@ -10,7 +10,7 @@
 <liferay-util:html-top
 	outputKey="com.liferay.blogs.web#/blogs/asset/full_content.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/blogs/css/common_main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="blogs-web/blogs/css/common_main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <liferay-util:dynamic-include key="com.liferay.blogs.web#/blogs/asset/full_content.jsp#pre" />

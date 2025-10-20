@@ -12,7 +12,6 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Portlet;
@@ -30,6 +29,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -90,7 +90,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 				PortalInstancePool.getDefaultCompanyId());
 		}
@@ -112,7 +112,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		if (!DBPartition.isPartitionEnabled()) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			super.setUp();
 		}
 	}
@@ -308,7 +308,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 	@Test
 	public void testPortletTrackerBundleStopCleanup() throws Exception {
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		Bundle bundle = FrameworkUtil.getBundle(PortletTrackerTest.class);
 
@@ -379,7 +379,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletClassName()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPortletTrackerRegistration(
 			"com_liferay_portal_osgi_web_portlet_container_test_" +
@@ -390,7 +390,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithDollar()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPortletTrackerRegistration("dollar$portlet", "dollar_portlet");
 	}
@@ -399,7 +399,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithDot()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPortletTrackerRegistration("dot.portlet", "dot_portlet");
 	}
@@ -408,7 +408,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithHyphen()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPortletTrackerRegistration("hyphen-portlet", "hyphenportlet");
 	}
@@ -417,7 +417,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithSpace()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPortletTrackerRegistration("space portlet", "spaceportlet");
 	}
@@ -426,7 +426,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingSimpleName()
 		throws Exception {
 
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		_testPortletTrackerRegistration("simplename", "simplename");
 	}
@@ -481,7 +481,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			Assert.assertFalse(
 				portlets.toString(), portlets.containsKey(portletId));
 
-			if (DBPartition.isPartitionEnabled()) {
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
 				Assert.assertNull(
 					_portletLocalService.getPortletById(portletId));
 			}

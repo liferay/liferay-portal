@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ObjectValidationRuleAPI} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
@@ -108,6 +109,97 @@ test.describe('FormView when form storage type is object', () => {
 			page.getByRole('button', {
 				name: 'Submit for Workflow',
 			})
+		).toBeVisible();
+	});
+
+	test('make sure the custom object validation error is displayed in the form', async ({
+		apiHelpers,
+		formBuilderPage,
+		formBuilderSidePanelPage,
+		formSettingsModalPage,
+		page,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const objectValidationRuleAPIClient = await apiHelpers.buildRestClient(
+			ObjectValidationRuleAPI
+		);
+
+		await objectValidationRuleAPIClient.postObjectDefinitionByExternalReferenceCodeObjectValidationRule(
+			objectDefinition.externalReferenceCode,
+			{
+				active: true,
+				engine: 'ddm',
+				errorLabel: {
+					en_US: 'Error',
+				},
+				name: {
+					en_US: 'Validation',
+				},
+				objectValidationRuleSettings: [],
+				script: 'contains(textField, "test")',
+				system: false,
+			}
+		);
+
+		await formBuilderPage.goToNew();
+
+		await expect(formBuilderPage.newFormHeading).toBeVisible();
+
+		await formBuilderPage.fillFormTitle('Form' + getRandomInt());
+
+		await formBuilderPage.formSettingsButton.click();
+
+		await formSettingsModalPage.selectStorageType('Object');
+
+		await formSettingsModalPage.selectObject(
+			objectDefinition.label['en_US']
+		);
+
+		await formSettingsModalPage.clickDoneButton();
+
+		await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
+
+		await formBuilderSidePanelPage.clickAdvancedTab();
+
+		await formBuilderSidePanelPage.selectObjectField('textField');
+
+		await expect(formBuilderSidePanelPage.objectFieldSelect).toBeVisible();
+
+		await apiHelpers.dynamicDataMapping.waitForDDMEvaluate(page);
+
+		await formBuilderPage.clickPublishFormButton();
+
+		const formSubmissionURL = await formBuilderPage.getFormSubmissionURL();
+
+		await page.goto(formSubmissionURL, {waitUntil: 'networkidle'});
+
+		await page.getByLabel('Text').fill('text');
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		const dangerToast = page.locator('.alert-danger');
+
+		await expect(dangerToast.getByText('Error')).toBeVisible();
+
+		await page.getByLabel('Text').fill('test');
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await expect(dangerToast.getByText('Error')).not.toBeVisible();
+
+		await expect(
+			page.getByText(
+				'Your information was successfully received. Thank you for filling out the form.'
+			)
 		).toBeVisible();
 	});
 });

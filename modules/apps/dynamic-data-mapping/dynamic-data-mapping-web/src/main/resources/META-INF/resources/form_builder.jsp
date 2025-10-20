@@ -29,7 +29,7 @@ Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(),
 %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css", portlet.getTimestamp()) %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="dynamic-data-mapping-web/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <%@ include file="/form_builder.jspf" %>

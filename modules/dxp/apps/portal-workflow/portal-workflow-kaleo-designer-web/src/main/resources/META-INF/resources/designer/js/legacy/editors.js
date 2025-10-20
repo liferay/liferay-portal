@@ -1488,10 +1488,6 @@ AUI.add(
 								label: strings.text,
 								value: 'text',
 							},
-							{
-								label: strings.velocity,
-								value: 'velocity',
-							},
 						];
 					},
 				},

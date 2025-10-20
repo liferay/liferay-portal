@@ -279,7 +279,7 @@ public class LayoutLocalServiceTest {
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), friendlyURLMap, layout.isIconImage(), null,
-			layout.getStyleBookEntryId(), layout.getFaviconFileEntryId(),
+			layout.getStyleBookEntryERC(), layout.getFaviconFileEntryId(),
 			layout.getMasterLayoutPlid(), _serviceContext);
 
 		friendlyURLMap = layout.getFriendlyURLMap();
@@ -344,7 +344,7 @@ public class LayoutLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.US, "/friendly-url-2"
 			).build(),
-			false, null, layout1.getStyleBookEntryId(),
+			false, null, layout1.getStyleBookEntryERC(),
 			layout1.getFaviconFileEntryId(), layout1.getMasterLayoutPlid(),
 			_serviceContext);
 
@@ -643,7 +643,7 @@ public class LayoutLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.US, "/friendly-url-2"
 			).build(),
-			false, null, layout.getStyleBookEntryId(),
+			false, null, layout.getStyleBookEntryERC(),
 			layout.getFaviconFileEntryId(), layout.getMasterLayoutPlid(),
 			_serviceContext);
 
@@ -656,7 +656,7 @@ public class LayoutLocalServiceTest {
 			draftLayout.getDescriptionMap(), draftLayout.getKeywordsMap(),
 			draftLayout.getRobotsMap(), draftLayout.getType(),
 			draftLayout.isHidden(), draftLayout.getFriendlyURLMap(), false,
-			null, draftLayout.getStyleBookEntryId(),
+			null, draftLayout.getStyleBookEntryERC(),
 			draftLayout.getFaviconFileEntryId(),
 			draftLayout.getMasterLayoutPlid(), _serviceContext);
 	}
@@ -687,8 +687,8 @@ public class LayoutLocalServiceTest {
 			layout.getParentLayoutId(), layout.getNameMap(),
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
-			layout.isHidden(), friendlyURLMap, layout.getIconImage(), null, 0,
-			0, 0, serviceContext);
+			layout.isHidden(), friendlyURLMap, layout.getIconImage(), null,
+			null, 0, 0, serviceContext);
 
 		Assert.assertEquals(
 			friendlyURL, layout.getFriendlyURL(LocaleUtil.GERMANY));
@@ -715,7 +715,7 @@ public class LayoutLocalServiceTest {
 			).put(
 				LocaleUtil.US, ""
 			).build(),
-			false, null, layout.getStyleBookEntryId(),
+			false, null, layout.getStyleBookEntryERC(),
 			layout.getFaviconFileEntryId(), layout.getMasterLayoutPlid(),
 			serviceContext);
 
@@ -764,7 +764,7 @@ public class LayoutLocalServiceTest {
 					layout.getDescriptionMap(), layout.getKeywordsMap(),
 					layout.getRobotsMap(), layout.getType(), false,
 					layout.getFriendlyURLMap(), layout.isIconImage(), null,
-					layout.getStyleBookEntryId(),
+					layout.getStyleBookEntryERC(),
 					layout.getFaviconFileEntryId(),
 					layout.getMasterLayoutPlid(), _serviceContext);
 
@@ -781,7 +781,7 @@ public class LayoutLocalServiceTest {
 				layout.getDescriptionMap(), layout.getKeywordsMap(),
 				layout.getRobotsMap(), LayoutConstants.TYPE_CONTENT, false,
 				layout.getFriendlyURLMap(), layout.isIconImage(), null,
-				layout.getStyleBookEntryId(), layout.getFaviconFileEntryId(),
+				layout.getStyleBookEntryERC(), layout.getFaviconFileEntryId(),
 				layout.getMasterLayoutPlid(), _serviceContext);
 
 			Assert.assertEquals(
@@ -840,7 +840,7 @@ public class LayoutLocalServiceTest {
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), layout.getFriendlyURLMap(),
-			layout.getIconImage(), null, layout.getStyleBookEntryId(),
+			layout.getIconImage(), null, layout.getStyleBookEntryERC(),
 			layout.getFaviconFileEntryId(), layout.getPlid(), _serviceContext);
 	}
 
@@ -954,7 +954,7 @@ public class LayoutLocalServiceTest {
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
 			layout.isHidden(), layout.getFriendlyURLMap(),
-			layout.getIconImage(), null, 0, 0, 0, serviceContext);
+			layout.getIconImage(), null, null, 0, 0, serviceContext);
 
 		Layout updatedLayout = _layoutLocalService.getLayout(layout.getPlid());
 

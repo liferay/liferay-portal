@@ -138,6 +138,7 @@
 										"siteKey": "CMS"
 									},
 									"fragmentConfig": {
+										"ariaLabel": "CMS Primary Navigation",
 										"displayStyle": "stacked",
 										"hoveredItemColor": "",
 										"selectedItemColor": "",
@@ -168,6 +169,27 @@
 									"indexed": true
 								},
 								"id": "4f273db5-b9c7-6ff3-7c79-653b88a42fc3",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"fragment": {
+										"key": "vertical-navigation",
+										"siteKey": "CMS"
+									},
+									"fragmentConfig": {
+										"ariaLabel": "CMS Secondary Navigation",
+										"displayStyle": "stacked",
+										"hoveredItemColor": "",
+										"selectedItemColor": "",
+										"source": "{\"parentSiteNavigationMenuItemId\": \"0\", \"privateLayout\": \"false\", \"siteNavigationMenuExternalReferenceCode\": \"CMSSECONDARYNAVIGATION\", \"title\": \"CMS Secondary Navigation\", \"type\": \"class com.liferay.site.navigation.item.selector.SiteNavigationMenuItemSelectorReturnType\"}",
+										"sublevels": "-1"
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"id": "339a84e4-b200-a686-2e8e-724ca1458355",
 								"type": "Fragment"
 							}
 						],

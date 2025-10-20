@@ -18,7 +18,8 @@ public class LPS_189866 {
 		long companyId, long groupId, String title, int start, int end) {
 
 		_assetVocabularyLocalService.searchVocabularies(companyId, new long[] {groupId}, title, new int[0], start, end, new Sort());
-		_assetVocabularyService.searchVocabularies(companyId, 123, "test123", start, end);
+		_assetVocabularyService.searchVocabularies(
+			companyId, 123, "test123", start, end);
 		_assetVocabularyService.searchVocabularies(companyId, new long[] {groupId}, title, new int[0], start, end, new Sort());
 	}
 

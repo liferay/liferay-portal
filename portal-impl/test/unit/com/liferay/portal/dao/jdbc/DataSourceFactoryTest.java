@@ -5,18 +5,12 @@
 
 package com.liferay.portal.dao.jdbc;
 
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
-import com.liferay.portal.kernel.dao.jdbc.DataSourceFactory;
-import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.spring.hibernate.DialectDetector;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -26,10 +20,7 @@ import com.liferay.portal.util.FileImpl;
 import java.io.File;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -46,9 +37,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 /**
  * @author Tina Tian
@@ -73,132 +61,12 @@ public class DataSourceFactoryTest {
 
 		fileUtil.setFile(new FileImpl());
 
-		_dbManagerUtilMockedStatic.when(
-			() -> DBManagerUtil.getDBType(Mockito.any())
-		).thenReturn(
-			null
-		);
-
-		_dbManagerUtilMockedStatic.when(
-			() -> DBManagerUtil.getDBType(Mockito.<Object>any())
-		).thenReturn(
-			null
-		);
-
-		_dbManagerUtilMockedStatic.when(
-			() -> DBManagerUtil.getDBType(Mockito.<Object>isNull())
-		).thenReturn(
-			null
-		);
-
 		_tempDir = FileUtil.createTempFolder();
 	}
 
 	@After
 	public void tearDown() {
-		_dbManagerUtilMockedStatic.close();
-		_dialectDetectorMockedStatic.close();
-
 		FileUtil.deltree(_tempDir);
-	}
-
-	@Test
-	public void testCheckSQLServer() throws Exception {
-		_dbManagerUtilMockedStatic.when(
-			() -> DBManagerUtil.getDBType(Mockito.<Object>any())
-		).thenReturn(
-			DBType.SQLSERVER
-		);
-
-		_dbManagerUtilMockedStatic.when(
-			() -> DBManagerUtil.getDBType(Mockito.<Object>isNull())
-		).thenReturn(
-			DBType.SQLSERVER
-		);
-
-		Connection connection = Mockito.mock(Connection.class);
-
-		DataSource dataSource = Mockito.mock(DataSource.class);
-
-		Mockito.when(
-			dataSource.getConnection()
-		).thenReturn(
-			connection
-		);
-
-		PreparedStatement preparedStatement = Mockito.mock(
-			PreparedStatement.class);
-
-		Mockito.when(
-			connection.prepareStatement(Mockito.anyString())
-		).thenReturn(
-			preparedStatement
-		);
-
-		ResultSet resultSet = Mockito.mock(ResultSet.class);
-
-		Mockito.when(
-			preparedStatement.executeQuery()
-		).thenReturn(
-			resultSet
-		);
-
-		Mockito.when(
-			resultSet.next()
-		).thenReturn(
-			true
-		);
-
-		Mockito.when(
-			resultSet.getBoolean("is_read_committed_snapshot_on")
-		).thenReturn(
-			false
-		);
-
-		Mockito.when(
-			resultSet.getString("name")
-		).thenReturn(
-			"lportal"
-		);
-
-		DataSourceFactoryImpl dataSourceFactoryImpl =
-			new DataSourceFactoryImpl() {
-
-				@Override
-				protected DataSource initDataSourceHikariCP(
-					Properties properties) {
-
-					return dataSource;
-				}
-
-				@Override
-				protected void testDatabaseClass(String driverClassName) {
-				}
-
-			};
-
-		Properties properties = new Properties();
-
-		properties.setProperty("driverClassName", "java.lang.String");
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				DataSourceFactoryImpl.class.getName(), LoggerTestUtil.WARN);
-			SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"RETRY_JDBC_ON_STARTUP_MAX_RETRIES", 0)) {
-
-			dataSourceFactoryImpl.initDataSource(properties);
-
-			List<String> messages = logCapture.getMessages();
-
-			Assert.assertTrue(
-				messages.contains(
-					StringBundler.concat(
-						"SQL Server may have deadlocks because ",
-						"\"read_committed_snapshot\" is disabled for database ",
-						"\"lportal\". To enable, execute: alter database ",
-						"lportal set read_committed_snapshot on")));
-		}
 	}
 
 	@Test
@@ -206,7 +74,7 @@ public class DataSourceFactoryTest {
 
 		// Destroy JDNI data source
 
-		DataSource dataSource1 = _dataSourceFactory.initDataSource(
+		DataSource dataSource1 = DataSourceFactoryUtil.initDataSource(
 			"org.hsqldb.jdbc.JDBCDriver",
 			"jdbc:hsqldb:" + _tempDir.getAbsolutePath() + "/lportal;", "sa",
 			StringPool.BLANK, StringPool.BLANK);
@@ -221,7 +89,7 @@ public class DataSourceFactoryTest {
 
 			});
 
-		DataSource dataSource2 = _dataSourceFactory.initDataSource(
+		DataSource dataSource2 = DataSourceFactoryUtil.initDataSource(
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			StringPool.BLANK, "jdbc/test");
 
@@ -229,7 +97,7 @@ public class DataSourceFactoryTest {
 			Assert.assertFalse(connection.isClosed());
 		}
 
-		_dataSourceFactory.destroyDataSource(dataSource2);
+		DataSourceFactoryUtil.destroyDataSource(dataSource2);
 
 		try (Connection connection = dataSource2.getConnection()) {
 			Assert.assertFalse(connection.isClosed());
@@ -237,7 +105,7 @@ public class DataSourceFactoryTest {
 
 		// Destroy other data source
 
-		_dataSourceFactory.destroyDataSource(dataSource1);
+		DataSourceFactoryUtil.destroyDataSource(dataSource1);
 
 		try (Connection connection = dataSource1.getConnection()) {
 			Assert.fail();
@@ -263,9 +131,9 @@ public class DataSourceFactoryTest {
 		properties.setProperty("jndi.name", jndiName);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				DataSourceFactoryImpl.class.getName(), LoggerTestUtil.ERROR)) {
+				DataSourceFactoryUtil.class.getName(), LoggerTestUtil.ERROR)) {
 
-			_dataSourceFactory.initDataSource(properties);
+			DataSourceFactoryUtil.initDataSource(properties);
 
 			Assert.fail();
 		}
@@ -281,12 +149,6 @@ public class DataSourceFactoryTest {
 		}
 	}
 
-	private final DataSourceFactory _dataSourceFactory =
-		new DataSourceFactoryImpl();
-	private final MockedStatic<DBManagerUtil> _dbManagerUtilMockedStatic =
-		Mockito.mockStatic(DBManagerUtil.class);
-	private final MockedStatic<DialectDetector> _dialectDetectorMockedStatic =
-		Mockito.mockStatic(DialectDetector.class);
 	private File _tempDir;
 
 }

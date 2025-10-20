@@ -122,7 +122,7 @@ public class LayoutLocalServiceStagingAdvice {
 			Map<Locale, String> descriptionMap, Map<Locale, String> keywordsMap,
 			Map<Locale, String> robotsMap, String type, boolean hidden,
 			Map<Locale, String> friendlyURLMap, boolean hasIconImage,
-			byte[] iconBytes, long styleBookEntryId, long faviconFileEntryId,
+			byte[] iconBytes, String styleBookEntryERC, long faviconFileEntryId,
 			long masterLayoutPlid, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -180,7 +180,7 @@ public class LayoutLocalServiceStagingAdvice {
 			return layoutLocalService.updateLayout(
 				groupId, privateLayout, layoutId, parentLayoutId, nameMap,
 				titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden,
-				friendlyURLMap, hasIconImage, iconBytes, styleBookEntryId,
+				friendlyURLMap, hasIconImage, iconBytes, styleBookEntryERC,
 				faviconFileEntryId, masterLayoutPlid, serviceContext);
 		}
 
@@ -809,7 +809,7 @@ public class LayoutLocalServiceStagingAdvice {
 					friendlyURLMap = (Map<Locale, String>)arguments[11];
 				}
 
-				long styleBookEntryId = 0;
+				String styleBookEntryERC = null;
 				long faviconFileEntryId = 0;
 				long masterLayoutPlid = 0;
 
@@ -824,7 +824,7 @@ public class LayoutLocalServiceStagingAdvice {
 					serviceContext = (ServiceContext)arguments[15];
 				}
 				else if (arguments.length == 18) {
-					styleBookEntryId = (Long)arguments[14];
+					styleBookEntryERC = (String)arguments[14];
 					faviconFileEntryId = (Long)arguments[15];
 					masterLayoutPlid = (Long)arguments[16];
 
@@ -841,7 +841,7 @@ public class LayoutLocalServiceStagingAdvice {
 					(Map<Locale, String>)arguments[8], (String)arguments[9],
 					(Boolean)arguments[10], friendlyURLMap,
 					(Boolean)arguments[12], (byte[])arguments[13],
-					styleBookEntryId, faviconFileEntryId, masterLayoutPlid,
+					styleBookEntryERC, faviconFileEntryId, masterLayoutPlid,
 					serviceContext);
 			}
 			else {

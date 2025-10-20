@@ -589,6 +589,7 @@ public interface BaseProjectTemplatesTestCase {
 		completeArgs.add("-DgroupId=" + groupId);
 		completeArgs.add("-Dversion=1.0.0");
 
+		String liferayVersion = "";
 		boolean liferayVersionSet = false;
 		boolean projectTypeSet = false;
 
@@ -596,6 +597,7 @@ public interface BaseProjectTemplatesTestCase {
 			completeArgs.add(arg);
 
 			if (arg.startsWith("-DliferayVersion=")) {
+				liferayVersion = arg.substring("-DliferayVersion=".length());
 				liferayVersionSet = true;
 			}
 			else if (arg.startsWith("-DprojectType=")) {
@@ -604,11 +606,20 @@ public interface BaseProjectTemplatesTestCase {
 		}
 
 		if (!liferayVersionSet) {
-			completeArgs.add("-DliferayVersion=" + getDefaultLiferayVersion());
+			liferayVersion = getDefaultLiferayVersion();
+
+			completeArgs.add("-DliferayVersion=" + liferayVersion);
 		}
 
 		if (!projectTypeSet) {
 			completeArgs.add("-DprojectType=standalone");
+		}
+
+		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+			completeArgs.add("-DjakartaCompatible=true");
+		}
+		else {
+			completeArgs.add("-DjakartaCompatible=false");
 		}
 
 		executeMaven(

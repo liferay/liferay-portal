@@ -25,6 +25,10 @@ import com.liferay.layout.list.retriever.SegmentsEntryLayoutListRetriever;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 
@@ -58,9 +62,26 @@ public class AssetEntryListLayoutListRetriever
 		ClassedModelListObjectReference classedModelListObjectReference,
 		LayoutListRetrieverContext layoutListRetrieverContext) {
 
-		AssetListEntry assetListEntry =
-			_assetListEntryLocalService.fetchAssetListEntry(
+		AssetListEntry assetListEntry = null;
+
+		if (classedModelListObjectReference.getClassPK() > 0) {
+			assetListEntry = _assetListEntryLocalService.fetchAssetListEntry(
 				classedModelListObjectReference.getClassPK());
+		}
+		else if (Validator.isNotNull(
+					classedModelListObjectReference.
+						getExternalReferenceCode())) {
+
+			assetListEntry =
+				_assetListEntryLocalService.
+					fetchAssetListEntryByExternalReferenceCode(
+						classedModelListObjectReference.
+							getExternalReferenceCode(),
+						_getGroupId(
+							classedModelListObjectReference.
+								getScopeExternalReferenceCode(),
+							layoutListRetrieverContext.getScopeGroupId()));
+		}
 
 		if (assetListEntry == null) {
 			return InfoPage.of(
@@ -158,6 +179,30 @@ public class AssetEntryListLayoutListRetriever
 		return tagsInfoFilter.getTagNames();
 	}
 
+	private long _getGroupId(
+		String scopeExternalReferenceCode, long scopeGroupId) {
+
+		if (Validator.isNull(scopeExternalReferenceCode)) {
+			return scopeGroupId;
+		}
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext == null) {
+			return scopeGroupId;
+		}
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			scopeExternalReferenceCode, serviceContext.getCompanyId());
+
+		if (group == null) {
+			return scopeGroupId;
+		}
+
+		return group.getGroupId();
+	}
+
 	private String _getKeywords(
 		LayoutListRetrieverContext layoutListRetrieverContext) {
 
@@ -194,5 +239,8 @@ public class AssetEntryListLayoutListRetriever
 	@Reference
 	private AssetListEntrySegmentsEntryRelLocalService
 		_assetListEntrySegmentsEntryRelLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }

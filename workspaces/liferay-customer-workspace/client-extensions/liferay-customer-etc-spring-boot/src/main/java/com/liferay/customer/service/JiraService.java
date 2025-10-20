@@ -11,12 +11,12 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -467,8 +467,6 @@ public class JiraService extends BaseService {
 			).put(
 				new JSONObject(
 				).put(
-					"objectTypeAttributeId", businessEventsAttributeId
-				).put(
 					"objectAttributeValues",
 					new JSONArray(
 					).put(
@@ -477,6 +475,8 @@ public class JiraService extends BaseService {
 							"value", businessEvents
 						)
 					)
+				).put(
+					"objectTypeAttributeId", businessEventsAttributeId
 				)
 			)
 		);
@@ -587,10 +587,13 @@ public class JiraService extends BaseService {
 	}
 
 	private String _getCredentials() {
+		Base64.Encoder encoder = Base64.getEncoder();
+
 		String jiraUserNameAndJiraApiToken =
 			_jiraAPIEmailAddress + StringPool.COLON + _jiraAPIToken;
 
-		return "Basic " + Base64.encode(jiraUserNameAndJiraApiToken.getBytes());
+		return "Basic " +
+			encoder.encodeToString(jiraUserNameAndJiraApiToken.getBytes());
 	}
 
 	private String _getJQLCustomField(String customField) {
@@ -695,16 +698,10 @@ public class JiraService extends BaseService {
 				"set",
 				new JSONObject(
 				).put(
-					"type", "doc"
-				).put(
-					"version", 1
-				).put(
 					"content",
 					new JSONArray(
 					).put(
 						new JSONObject(
-						).put(
-							"type", "paragraph"
 						).put(
 							"content",
 							new JSONArray(
@@ -716,8 +713,14 @@ public class JiraService extends BaseService {
 									"type", "text"
 								)
 							)
+						).put(
+							"type", "paragraph"
 						)
 					)
+				).put(
+					"type", "doc"
+				).put(
+					"version", 1
 				)
 			)
 		);

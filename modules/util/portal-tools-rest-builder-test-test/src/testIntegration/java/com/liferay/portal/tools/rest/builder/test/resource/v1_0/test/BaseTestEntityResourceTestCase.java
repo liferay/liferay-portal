@@ -995,6 +995,11 @@ public abstract class BaseTestEntityResourceTestCase {
 	}
 
 	@Test
+	public void testPostTestEntityMultipartImage() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
 	public void testPutTestEntity() throws Exception {
 		TestEntity postTestEntity = testPutTestEntity_addTestEntity();
 

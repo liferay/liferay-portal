@@ -206,12 +206,6 @@
 
 		<!-- Custom checks -->
 
-		<module name="com.liferay.source.formatter.checkstyle.check.AccessModifierCheck">
-			<property name="category" value="Bug Prevention" />
-			<property name="description" value="Checks for cases where visibility of methods can be decreased." />
-			<message key="access.modifier.incorrect" value="Access modifier of method &quot;{0}&quot; should be private" />
-			<property name="enabled" value="false" />
-		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.AnonymousClassCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Checks for serialization issue when using anonymous class." />
@@ -782,7 +776,8 @@
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ResourceImplCheck">
 			<property name="category" value="Bug Prevention" />
-			<property name="description" value="Performs several checks on `*ResourceImpl` classes (except `Base*ResourceImpl` classes)." />
+			<property name="description" value="Performs several checks on `*ResourceImpl` classes." />
+			<message key="access.modifier.incorrect" value="Incorrect modifier of method &quot;{0}&quot;. All the &quot;doGet*&quot; methods in &quot;*ResourceImpl.java&quot; should be &quot;protected&quot;" />
 			<message key="method.parameter.annotation.invalid" value="Remove annotation &quot;{0}&quot; from method parameter &quot;{1}&quot;" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ResourcePermissionCheck">
@@ -800,12 +795,23 @@
 			<property name="enabled" value="false" />
 			<message key="deprecated.get.instance.usage" value="Do not use &quot;{0}&quot;. Use @Reference instead" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ResourceTestInjectionCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks that if any `*ResourceTest` class injects another resource that is not a `client`." />
+			<message key="resource.injection.incorrect" value="Incorrect injection for &quot;{0}&quot;. Do not inject another resource that is not a &quot;client&quot;" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.RESTDTOSetCallCheck">
 			<property name="category" value="Performance" />
 			<property name="description" value="Ensures using set calls with `UnsafeSupplier` parameter for REST DTO." />
 			<property name="enabled" value="false" />
 			<message key="if.statement.inline" value="Use &quot;{0}(UnsafeSupplier)&quot; with inlined if-statement" />
 			<message key="set.method.use.instead" value="Use &quot;{0}(UnsafeSupplier)&quot; instead" />
+		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ResultSetGetCallCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Finds incorrect use of `ResultSet.get*` calls." />
+			<property name="enabled" value="false" />
+			<message key="set.call.parameter.incorrect" value="Do not use &quot;TableName.ColumnName&quot; as the parameter when calling method &quot;{0}&quot;, use column index or column name instead" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ReturnVariableDeclarationAsUsedCheck">
 			<property name="category" value="Miscellaneous" />
@@ -834,6 +840,12 @@
 			<property name="description" value="Checks `ServiceComponentRuntime` usage in test classes." />
 			<property name="enabled" value="false" />
 			<message key="promise.get.value" value="Must wait for &quot;Promise&quot; from &quot;{0}&quot; to complete. Assign the promise to a variable and call its &quot;getValue()&quot; method" />
+		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ServiceImplAccessModifierCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks for cases where visibility of methods can be decreased." />
+			<message key="access.modifier.incorrect" value="Access modifier of method &quot;{0}&quot; should be private" />
+			<property name="enabled" value="false" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ServiceProxyFactoryCheck">
 			<property name="category" value="Bug Prevention" />

@@ -2120,9 +2120,9 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<IndividualSegment> getIndividualSegments(
 		FaroProject faroProject, String channelId, String dataSourceId,
-		String query, List<String> fields, String name, String segmentType,
-		String state, String status, int cur, int delta,
-		List<OrderByField> orderByFields) {
+		String query, List<String> fields, String name,
+		List<String> segmentTypes, String state, String status, int cur,
+		int delta, List<OrderByField> orderByFields) {
 
 		PagedModel<?, IndividualSegment> pagedModel = null;
 
@@ -2146,11 +2146,18 @@ public class ContactsEngineClientImpl
 		}
 
 		filterBuilder.addFilter(
-			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS, segmentType);
-		filterBuilder.addFilter(
 			"state", FilterConstants.COMPARISON_OPERATOR_EQUALS, state);
 		filterBuilder.addFilter(
 			"status", FilterConstants.COMPARISON_OPERATOR_EQUALS, status);
+
+		if (segmentTypes != null) {
+			for (String segmentType : segmentTypes) {
+				filterBuilder.addFilter(
+					"type", FilterConstants.COMPARISON_OPERATOR_EQUALS,
+					segmentType, false);
+			}
+		}
+
 		filterBuilder.addSearchFilter(query, fields, null);
 
 		uriVariables.put("filter", filterBuilder.build());

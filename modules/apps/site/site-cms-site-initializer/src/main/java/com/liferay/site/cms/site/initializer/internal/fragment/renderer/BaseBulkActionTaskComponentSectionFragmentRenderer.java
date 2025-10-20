@@ -40,11 +40,11 @@ public abstract class BaseBulkActionTaskComponentSectionFragmentRenderer
 			String executionStatus, HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		ObjectEntry bulkActionTaskObjectEntry =
+		ObjectEntry cmsBulkActionTaskObjectEntry =
 			(ObjectEntry)httpServletRequest.getAttribute(
 				InfoDisplayWebKeys.INFO_ITEM);
 
-		if (bulkActionTaskObjectEntry == null) {
+		if (cmsBulkActionTaskObjectEntry == null) {
 			return -1;
 		}
 
@@ -52,29 +52,28 @@ public abstract class BaseBulkActionTaskComponentSectionFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		ObjectDefinition bulkActionTaskObjectDefinition =
+		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BULK_ACTION_TASK", themeDisplay.getCompanyId());
+					"L_CMS_BULK_ACTION_TASK", themeDisplay.getCompanyId());
 
 		List<ObjectEntry> objectEntries = ListUtil.filter(
 			objectEntryLocalService.getOneToManyObjectEntries(
-				bulkActionTaskObjectEntry.getGroupId(),
+				cmsBulkActionTaskObjectEntry.getGroupId(),
 				objectRelationshipLocalService.getObjectRelationship(
-					bulkActionTaskObjectDefinition.getObjectDefinitionId(),
-					"bulkActionTaskToBulkActionTaskItems"
+					objectDefinition.getObjectDefinitionId(),
+					"cmsBATaskToCMSBATaskItems"
 				).getObjectRelationshipId(),
-				null, false, bulkActionTaskObjectEntry.getObjectEntryId(), true,
-				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+				null, false, cmsBulkActionTaskObjectEntry.getObjectEntryId(),
+				true, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
 			objectEntry ->
 				Objects.equals(
 					GetterUtil.getLong(
 						objectEntry.getValues(
 						).get(
-							"r_bulkActionTaskToBulkActionTaskItems_c_" +
-								"bulkActionTaskId"
+							"r_cmsBATaskToCMSBATaskItems_c_cmsBulkActionTaskId"
 						)),
-					bulkActionTaskObjectEntry.getObjectEntryId()) &&
+					cmsBulkActionTaskObjectEntry.getObjectEntryId()) &&
 				Objects.equals(
 					GetterUtil.getString(
 						objectEntry.getValues(

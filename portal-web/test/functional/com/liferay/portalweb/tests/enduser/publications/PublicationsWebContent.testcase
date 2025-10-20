@@ -27,8 +27,6 @@ definition {
 	@description = "This is a use case for LPS-184580 - StaleObjectExcpetion when changing a web content portlet's displayed article in a publication."
 	@priority = 4
 	test CanChangeWebContentWidgetDisplayedArticleInPublication {
-		property test.assert.warning.exceptions = "true";
-
 		task ("Create two Web Contents and two Content Pages") {
 			for (var order : list "1,2") {
 				JSONWebcontent.addWebContent(

@@ -17,25 +17,32 @@
 				"type": "layout"
 			},
 			{
+				"displayIcon": "users",
 				"externalReferenceCode": "CMSPRIMARYNAVIGATION3",
+				"friendlyURL": "/shared-with-me",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION4",
 				"menuItems": [
 					{
 						"displayIcon": "sheets",
-						"externalReferenceCode": "CMSPRIMARYNAVIGATION4",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION5",
 						"friendlyURL": "/all",
 						"privateLayout": false,
 						"type": "layout"
 					},
 					{
 						"displayIcon": "catalog",
-						"externalReferenceCode": "CMSPRIMARYNAVIGATION5",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION6",
 						"friendlyURL": "/contents",
 						"privateLayout": false,
 						"type": "layout"
 					},
 					{
 						"displayIcon": "documents-and-media",
-						"externalReferenceCode": "CMSPRIMARYNAVIGATION6",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION7",
 						"friendlyURL": "/files",
 						"privateLayout": false,
 						"type": "layout"
@@ -45,13 +52,6 @@
 					"en_US": "Assets"
 				},
 				"type": "node"
-			},
-			{
-				"displayIcon": "users",
-				"externalReferenceCode": "CMSPRIMARYNAVIGATION7",
-				"friendlyURL": "/shared-with-me",
-				"privateLayout": false,
-				"type": "layout"
 			},
 			{
 				"externalReferenceCode": "CMSPRIMARYNAVIGATION8",
@@ -69,13 +69,6 @@
 						"friendlyURL": "/categorization",
 						"privateLayout": false,
 						"type": "layout"
-					},
-					{
-						"displayIcon": "trash",
-						"externalReferenceCode": "CMSPRIMARYNAVIGATION11",
-						"friendlyURL": "/recycle-bin",
-						"privateLayout": false,
-						"type": "layout"
 					}
 				],
 				"name_i18n": {
@@ -85,5 +78,18 @@
 			}
 		],
 		"name": "CMS Primary Navigation"
+	},
+	{
+		"externalReferenceCode": "CMSSECONDARYNAVIGATION",
+		"menuItems": [
+			{
+				"displayIcon": "trash",
+				"externalReferenceCode": "CMSSECONDARYNAVIGATION1",
+				"friendlyURL": "/recycle-bin",
+				"privateLayout": false,
+				"type": "layout"
+			}
+		],
+		"name": "CMS Secondary Navigation"
 	}
 ]

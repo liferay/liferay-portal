@@ -138,10 +138,6 @@ const BaseNotificationsInfo = ({
 			label: Liferay.Language.get('text'),
 			value: 'text',
 		},
-		{
-			label: Liferay.Language.get('velocity'),
-			value: 'velocity',
-		},
 	];
 
 	const getRecipientTypeOptions = () => {

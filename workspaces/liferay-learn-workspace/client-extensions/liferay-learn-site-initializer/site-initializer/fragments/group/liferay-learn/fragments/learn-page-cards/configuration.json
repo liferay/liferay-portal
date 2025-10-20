@@ -1,0 +1,51 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "URL",
+					"name": "url",
+					"type": "url"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "bg-gradient-blue",
+					"label": "Gradient Background (Icon)",
+					"name": "iconBackgroundGradient",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Blue",
+								"value": "bg-gradient-blue"
+							},
+							{
+								"label": "Green",
+								"value": "bg-gradient-green"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "homeCard",
+					"label": "Card Type",
+					"name": "cardType",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "Documentation Card",
+								"value": "documentationCard"
+							},
+							{
+								"label": "Home Card",
+								"value": "homeCard"
+							}
+						]
+					}
+				}
+			]
+		}
+	]
+}

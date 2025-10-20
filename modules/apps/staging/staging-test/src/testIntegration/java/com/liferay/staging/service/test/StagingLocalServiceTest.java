@@ -95,7 +95,7 @@ public class StagingLocalServiceTest {
 				stagingLayout.getKeywordsMap(), stagingLayout.getRobotsMap(),
 				stagingLayout.getType(), stagingLayout.isHidden(),
 				stagingLayout.getFriendlyURLMap(), false, null,
-				stagingLayout.getStyleBookEntryId(),
+				stagingLayout.getStyleBookEntryERC(),
 				stagingLayout.getFaviconFileEntryId(),
 				stagingLayout.getMasterLayoutPlid(), new ServiceContext());
 
@@ -110,7 +110,7 @@ public class StagingLocalServiceTest {
 				stagingLayout.getKeywordsMap(), stagingLayout.getRobotsMap(),
 				stagingLayout.getType(), stagingLayout.isHidden(),
 				stagingLayout.getFriendlyURLMap(), false, null,
-				stagingLayout.getStyleBookEntryId(),
+				stagingLayout.getStyleBookEntryERC(),
 				stagingLayout.getFaviconFileEntryId(),
 				stagingLayout.getMasterLayoutPlid(), new ServiceContext());
 

@@ -25,6 +25,19 @@ const COMMERCE_DELIVERY_CATALOG_HEADLESS_API_ENDPOINT =
 	'/headless-commerce-delivery-catalog/v1.0/channels/24324/accounts';
 
 describe('AccountSelector', () => {
+	const {Liferay: originalLiferayObject} = global.window;
+
+	beforeAll(() => {
+		global.window.Liferay = {
+			...originalLiferayObject,
+			CommerceContext: {
+				...global.window.Liferay.CommerceContext,
+				accountEntryAllowedTypes: ['business', 'person'],
+				commerceChannelId: 24324,
+			},
+		};
+	});
+
 	beforeEach(() => {
 		const accountsEndpointRegexp = new RegExp(
 			ACCOUNTS_HEADLESS_API_ENDPOINT
@@ -45,6 +58,10 @@ describe('AccountSelector', () => {
 		fetchMock.mock(usersEndpointRegexp, () => Promise.resolve());
 	});
 
+	afterAll(() => {
+		global.window.Liferay = {...originalLiferayObject};
+	});
+
 	afterEach(() => {
 		fetchMock.restore();
 
@@ -57,8 +74,6 @@ describe('AccountSelector', () => {
 		beforeEach(() => {
 			renderedComponent = render(
 				<AccountSelector
-					accountEntryAllowedTypes={['business', 'person']}
-					commerceChannelId={24324}
 					createNewOrderURL="/order-link"
 					selectOrderURL="/test-url/{id}"
 					setCurrentAccountURL="/account-selector/setCurrentAccounts"
@@ -156,8 +171,6 @@ describe('AccountSelector', () => {
 		beforeEach(() => {
 			renderedComponent = render(
 				<AccountSelector
-					accountEntryAllowedTypes={['business', 'person']}
-					commerceChannelId={24324}
 					createNewOrderURL="/order-link"
 					currentCommerceAccount={{
 						id: 42332,
@@ -230,8 +243,6 @@ describe('AccountSelector', () => {
 		beforeEach(() => {
 			renderedComponent = render(
 				<AccountSelector
-					accountEntryAllowedTypes={['business', 'person']}
-					commerceChannelId={24324}
 					createNewOrderURL="/order-link"
 					currentCommerceAccount={{
 						id: 42332,
@@ -271,8 +282,6 @@ describe('AccountSelector', () => {
 		it('displays the current account name, order ID and order status localized label, but the orders list and button to change view are hidden', () => {
 			const renderedComponent = render(
 				<AccountSelector
-					accountEntryAllowedTypes={['business', 'person']}
-					commerceChannelId={24324}
 					createNewOrderURL="/order-link"
 					currentCommerceAccount={{
 						id: 42332,
@@ -320,8 +329,6 @@ describe('AccountSelector', () => {
 		it('displays the current account name, order ID and order status localized label, the orders list and button to change view', () => {
 			const renderedComponent = render(
 				<AccountSelector
-					accountEntryAllowedTypes={['business', 'person']}
-					commerceChannelId={24324}
 					createNewOrderURL="/order-link"
 					currentCommerceAccount={{
 						id: 42332,

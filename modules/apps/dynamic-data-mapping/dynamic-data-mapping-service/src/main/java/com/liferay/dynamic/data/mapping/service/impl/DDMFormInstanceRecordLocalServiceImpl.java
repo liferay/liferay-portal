@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.dynamic.data.mapping.constants.DDMFormInstanceReportConstants;
+import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.exception.FormInstanceRecordGroupIdException;
 import com.liferay.dynamic.data.mapping.exception.NoSuchFormInstanceRecordException;
 import com.liferay.dynamic.data.mapping.exception.StorageException;
@@ -43,6 +44,7 @@ import com.liferay.dynamic.data.mapping.storage.StorageType;
 import com.liferay.dynamic.data.mapping.util.DDMFormUtil;
 import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidator;
 import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -70,6 +72,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -78,6 +81,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 
@@ -216,20 +220,9 @@ public class DDMFormInstanceRecordLocalServiceImpl
 			serviceContext.getAssetTagNames(), serviceContext.getLocale(),
 			serviceContext.getAssetPriority());
 
-		if (serviceContext.getWorkflowAction() ==
-				WorkflowConstants.ACTION_PUBLISH) {
-
-			WorkflowHandlerRegistryUtil.startWorkflowInstance(
-				user.getCompanyId(), groupId, userId,
-				DDMFormInstanceRecord.class.getName(),
-				ddmFormInstanceRecordVersion.getFormInstanceRecordVersionId(),
-				ddmFormInstanceRecordVersion, serviceContext);
-
-			if (_isEmailNotificationEnabled(ddmFormInstance)) {
-				_ddmFormEmailNotificationSender.sendEmailNotification(
-					ddmFormInstanceRecord, serviceContext);
-			}
-		}
+		_startWorkflowInstance(
+			user.getCompanyId(), ddmFormInstance, ddmFormInstanceRecord,
+			ddmFormInstanceRecordVersion, groupId, serviceContext, userId);
 
 		return ddmFormInstanceRecord;
 	}
@@ -529,20 +522,10 @@ public class DDMFormInstanceRecordLocalServiceImpl
 			return ddmFormInstanceRecord;
 		}
 
-		if (serviceContext.getWorkflowAction() ==
-				WorkflowConstants.ACTION_PUBLISH) {
-
-			WorkflowHandlerRegistryUtil.startWorkflowInstance(
-				user.getCompanyId(), ddmFormInstanceRecord.getGroupId(), userId,
-				DDMFormInstanceRecord.class.getName(),
-				ddmFormInstanceRecordVersion.getFormInstanceRecordVersionId(),
-				ddmFormInstanceRecordVersion, serviceContext);
-
-			if (_isEmailNotificationEnabled(ddmFormInstance)) {
-				_ddmFormEmailNotificationSender.sendEmailNotification(
-					ddmFormInstanceRecord, serviceContext);
-			}
-		}
+		_startWorkflowInstance(
+			user.getCompanyId(), ddmFormInstance, ddmFormInstanceRecord,
+			ddmFormInstanceRecordVersion, ddmFormInstanceRecord.getGroupId(),
+			serviceContext, userId);
 
 		return ddmFormInstanceRecord;
 	}
@@ -782,6 +765,34 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		return ddmFormInstanceRecord;
 	}
 
+	private String _getContextURL(
+		DDMFormInstanceRecord ddmFormInstanceRecord,
+		ServiceContext serviceContext) {
+
+		HttpServletRequest httpServletRequest = serviceContext.getRequest();
+
+		if (httpServletRequest == null) {
+			return null;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay == null) {
+			return null;
+		}
+
+		return StringBundler.concat(
+			themeDisplay.getPortalURL(),
+			themeDisplay.getPathFriendlyURLPublic(), "/forms/shared/-/form/",
+			ddmFormInstanceRecord.getFormInstanceId(), "?",
+			_portal.getPortletNamespace(
+				DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM),
+			"formInstanceRecordId=",
+			ddmFormInstanceRecord.getFormInstanceRecordId());
+	}
+
 	private Indexer<DDMFormInstanceRecord> _getDDMFormInstanceRecordIndexer() {
 		return _indexerRegistry.nullSafeGetIndexer(DDMFormInstanceRecord.class);
 	}
@@ -907,6 +918,39 @@ public class DDMFormInstanceRecordLocalServiceImpl
 			latestExpandoBridge.getAttributes();
 
 		return lastAttributes.equals(latestAttributes);
+	}
+
+	private void _startWorkflowInstance(
+			long companyId, DDMFormInstance ddmFormInstance,
+			DDMFormInstanceRecord ddmFormInstanceRecord,
+			DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion,
+			long groupId, ServiceContext serviceContext, long userId)
+		throws PortalException {
+
+		if (serviceContext.getWorkflowAction() !=
+				WorkflowConstants.ACTION_PUBLISH) {
+
+			return;
+		}
+
+		WorkflowHandlerRegistryUtil.startWorkflowInstance(
+			companyId, groupId, userId, DDMFormInstanceRecord.class.getName(),
+			ddmFormInstanceRecordVersion.getFormInstanceRecordVersionId(),
+			ddmFormInstanceRecordVersion, serviceContext,
+			HashMapBuilder.<String, Serializable>put(
+				WorkflowConstants.CONTEXT_URL,
+				_getContextURL(ddmFormInstanceRecord, serviceContext)
+			).put(
+				"entryTitle",
+				ddmFormInstance.getName(serviceContext.getLocale())
+			).put(
+				"entryTitleXML", ddmFormInstance.getName()
+			).build());
+
+		if (_isEmailNotificationEnabled(ddmFormInstance)) {
+			_ddmFormEmailNotificationSender.sendEmailNotification(
+				ddmFormInstanceRecord, serviceContext);
+		}
 	}
 
 	private void _updateAsset(

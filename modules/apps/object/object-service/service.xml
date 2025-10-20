@@ -1290,7 +1290,7 @@
 		<exception>ObjectFolderItemObjectDefinitionId</exception>
 		<exception>ObjectFolderLabel</exception>
 		<exception>ObjectFolderName</exception>
-		<exception>ObjectLayoutBoxCategorizationType</exception>
+		<exception>ObjectLayoutBoxType</exception>
 		<exception>ObjectLayoutColumnSize</exception>
 		<exception>ObjectRelationshipDeletionType</exception>
 		<exception>ObjectRelationshipEdge</exception>

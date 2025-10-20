@@ -38,9 +38,7 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName(
-	description = "the container page element's layout.", value = "Layout"
-)
+@GraphQLName("Layout")
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Layout")
 public class Layout implements Serializable {
@@ -268,7 +266,9 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<Justify> _justifySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The width's type (fixed or fluid)."
+	)
 	@JsonGetter("widthType")
 	@Valid
 	public WidthType getWidthType() {
@@ -315,7 +315,7 @@ public class Layout implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "The width's type (fixed or fluid).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected WidthType widthType;
 

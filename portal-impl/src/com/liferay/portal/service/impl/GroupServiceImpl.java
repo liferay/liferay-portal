@@ -84,11 +84,12 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 
 	@Override
 	public Group addGroup(
-			long parentGroupId, long liveGroupId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, int type,
-			boolean manualMembership, int membershipRestriction,
-			String friendlyURL, boolean site, boolean inheritContent,
-			boolean active, ServiceContext serviceContext)
+			String externalReferenceCode, long parentGroupId, long liveGroupId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			int type, String typeSettings, boolean manualMembership,
+			int membershipRestriction, String friendlyURL, boolean site,
+			boolean inheritContent, boolean active,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		if (parentGroupId == GroupConstants.DEFAULT_PARENT_GROUP_ID) {
@@ -102,30 +103,16 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 		}
 
 		Group group = groupLocalService.addGroup(
-			getUserId(), parentGroupId, null, 0, liveGroupId, nameMap,
-			descriptionMap, type, manualMembership, membershipRestriction,
-			friendlyURL, site, inheritContent, active, serviceContext);
+			externalReferenceCode, getUserId(), parentGroupId, null, 0,
+			liveGroupId, nameMap, descriptionMap, type, typeSettings,
+			manualMembership, membershipRestriction, friendlyURL, site,
+			inheritContent, active, serviceContext);
 
 		if (site) {
 			SiteMembershipPolicyUtil.verifyPolicy(group);
 		}
 
 		return group;
-	}
-
-	@Override
-	public Group addGroup(
-			long parentGroupId, long liveGroupId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, int type,
-			boolean manualMembership, int membershipRestriction,
-			String friendlyURL, boolean site, boolean active,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return addGroup(
-			parentGroupId, liveGroupId, nameMap, descriptionMap, type,
-			manualMembership, membershipRestriction, friendlyURL, site, false,
-			active, serviceContext);
 	}
 
 	@Override
@@ -144,19 +131,16 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 
 		if (group == null) {
 			group = addGroup(
-				parentGroupId, liveGroupId, nameMap, descriptionMap, type,
-				manualMembership, membershipRestriction, friendlyURL, site,
-				inheritContent, active, serviceContext);
-
-			group.setExternalReferenceCode(externalReferenceCode);
-
-			group = groupPersistence.update(group);
+				externalReferenceCode, parentGroupId, liveGroupId, nameMap,
+				descriptionMap, type, null, manualMembership,
+				membershipRestriction, friendlyURL, site, inheritContent,
+				active, serviceContext);
 		}
 		else {
 			group = updateGroup(
 				group.getGroupId(), parentGroupId, nameMap, descriptionMap,
-				type, manualMembership, membershipRestriction, friendlyURL,
-				inheritContent, active, serviceContext);
+				type, null, manualMembership, membershipRestriction,
+				friendlyURL, inheritContent, active, serviceContext);
 		}
 
 		return group;
@@ -1044,7 +1028,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 	@Override
 	public Group updateGroup(
 			long groupId, long parentGroupId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, int type,
+			Map<Locale, String> descriptionMap, int type, String typeSettings,
 			boolean manualMembership, int membershipRestriction,
 			String friendlyURL, boolean inheritContent, boolean active,
 			ServiceContext serviceContext)
@@ -1084,8 +1068,8 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 
 			group = groupLocalService.updateGroup(
 				groupId, parentGroupId, nameMap, descriptionMap, type,
-				manualMembership, membershipRestriction, friendlyURL,
-				inheritContent, active, serviceContext);
+				typeSettings, manualMembership, membershipRestriction,
+				friendlyURL, inheritContent, active, serviceContext);
 
 			SiteMembershipPolicyUtil.verifyPolicy(
 				group, oldGroup, oldAssetCategories, oldAssetTags,
@@ -1095,7 +1079,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 		}
 
 		return groupLocalService.updateGroup(
-			groupId, parentGroupId, nameMap, descriptionMap, type,
+			groupId, parentGroupId, nameMap, descriptionMap, type, typeSettings,
 			manualMembership, membershipRestriction, friendlyURL,
 			inheritContent, active, serviceContext);
 	}

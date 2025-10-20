@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import Label from '@clayui/label';
 import List from '@clayui/list';
 import {dateUtils, sub} from 'frontend-js-web';
 import React from 'react';
 
+import StatusLabel from '../../../common/components/StatusLabel';
 import {IAssetObjectEntry} from '../../../common/types/AssetType';
 
 const AssetVersionsListItem = ({items}: {items: IAssetObjectEntry[]}) => {
@@ -36,9 +36,7 @@ const AssetVersionsListItem = ({items}: {items: IAssetObjectEntry[]}) => {
 						</List.ItemText>
 
 						<List.ItemText>
-							<Label displayType="success">
-								{item.status.label_i18n}
-							</Label>
+							<StatusLabel label={item.status.label} />
 						</List.ItemText>
 					</List.ItemField>
 				</List.Item>

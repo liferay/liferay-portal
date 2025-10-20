@@ -6,6 +6,7 @@
 import {
 	findFieldByFieldName,
 	removeEmptyRows,
+	removeNestedEmptyRows,
 } from '../../utils/FormSupport.es';
 import {FIELD_TYPE_FIELDSET} from '../../utils/constants';
 import {addFieldToPage, getParentField} from '../../utils/fieldSupport';
@@ -184,7 +185,7 @@ export default function dragAndDropReducer(state, action, config) {
 				return field;
 			});
 
-			updatedPages[sourceFieldPage].rows = removeEmptyRows(
+			updatedPages[sourceFieldPage].rows = removeNestedEmptyRows(
 				updatedPages,
 				sourceFieldPage
 			);

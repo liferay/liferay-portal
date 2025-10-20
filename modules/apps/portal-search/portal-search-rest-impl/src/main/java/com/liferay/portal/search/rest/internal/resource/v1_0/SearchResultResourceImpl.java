@@ -47,11 +47,11 @@ import com.liferay.portal.search.rest.dto.v1_0.SearchResult;
 import com.liferay.portal.search.rest.internal.facet.FacetRequestContributor;
 import com.liferay.portal.search.rest.internal.facet.FacetResponseProcessor;
 import com.liferay.portal.search.rest.internal.odata.entity.v1_0.SearchResultEntityModel;
-import com.liferay.portal.search.rest.internal.util.FilterUtil;
 import com.liferay.portal.search.rest.internal.util.ScopeUtil;
 import com.liferay.portal.search.rest.internal.util.ValueUtil;
 import com.liferay.portal.search.rest.pagination.SearchPage;
 import com.liferay.portal.search.rest.resource.v1_0.SearchResultResource;
+import com.liferay.portal.search.rest.util.FilterUtil;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -670,6 +670,9 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SearchResultResourceImpl.class);
 
+	private static final SearchResultEntityModel _searchResultEntityModel =
+		new SearchResultEntityModel();
+
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
 
@@ -690,9 +693,6 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 
 	@Reference
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
-
-	private final SearchResultEntityModel _searchResultEntityModel =
-		new SearchResultEntityModel();
 
 	@Reference
 	private VulcanCRUDItemDelegateBuilderRegistry

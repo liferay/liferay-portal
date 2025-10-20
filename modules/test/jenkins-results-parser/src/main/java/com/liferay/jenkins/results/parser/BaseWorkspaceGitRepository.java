@@ -795,8 +795,9 @@ public abstract class BaseWorkspaceGitRepository
 			CloudBucketUtil.downloadS3File(
 				archiveFile,
 				JenkinsResultsParserUtil.combine(
-					CloudBucketUtil.S3_BUCKET_PATH_FILE_PROPAGATOR,
-					"/git-shallow-clone-archives/", fileName));
+					JenkinsResultsParserUtil.getBuildProperty(
+						"cloud.ci.s3.bucket.git.shallow.clone.archives.path"),
+					"/", fileName));
 
 			File directory = getDirectory();
 

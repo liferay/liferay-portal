@@ -81,7 +81,7 @@ describe('Edit', () => {
 		);
 
 		const {container, getByText} = render(
-			<DefaultComponent type={SegmentTypes.Dynamic} />
+			<DefaultComponent type={SegmentTypes.Batch} />
 		);
 
 		jest.runAllTimers();

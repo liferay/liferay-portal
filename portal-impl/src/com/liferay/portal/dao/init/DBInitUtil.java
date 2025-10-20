@@ -6,11 +6,13 @@
 package com.liferay.portal.dao.init;
 
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.dao.jdbc.util.DynamicDataSource;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -25,12 +27,16 @@ import com.liferay.portal.spring.hibernate.DialectDetector;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import java.util.Date;
 import java.util.Objects;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.hibernate.dialect.Dialect;
 
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
@@ -95,6 +101,34 @@ public class DBInitUtil {
 		}
 
 		return false;
+	}
+
+	private static void _checkSQLServer(DataSource dataSource) {
+		try (Connection connection = dataSource.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select name, is_read_committed_snapshot_on from " +
+					"sys.databases where name = db_name()");
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			if (!resultSet.next() ||
+				resultSet.getBoolean("is_read_committed_snapshot_on") ||
+				!_log.isWarnEnabled()) {
+
+				return;
+			}
+
+			String name = resultSet.getString("name");
+
+			_log.warn(
+				StringBundler.concat(
+					"SQL Server may have deadlocks because ",
+					"\"read_committed_snapshot\" is disabled for database \"",
+					name, "\". To enable, execute: alter database ", name,
+					" set read_committed_snapshot on"));
+		}
+		catch (Exception exception) {
+			_log.error("Unable to check SQL Server", exception);
+		}
 	}
 
 	private static void _createTablesAndPopulate(DB db, Connection connection)
@@ -203,7 +237,15 @@ public class DBInitUtil {
 		DataSource dataSource = DataSourceFactoryUtil.initDataSource(
 			properties);
 
-		DBManagerUtil.setDB(DialectDetector.getDialect(dataSource), dataSource);
+		Dialect dialect = DialectDetector.getDialect(dataSource);
+
+		DBType dbType = DBManagerUtil.getDBType(dialect);
+
+		if (dbType == DBType.SQLSERVER) {
+			_checkSQLServer(dataSource);
+		}
+
+		DBManagerUtil.setDB(dialect, dataSource);
 
 		return dataSource;
 	}

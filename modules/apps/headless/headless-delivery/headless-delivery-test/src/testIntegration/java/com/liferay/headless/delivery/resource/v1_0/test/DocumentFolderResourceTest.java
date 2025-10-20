@@ -10,11 +10,20 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.headless.delivery.client.dto.v1_0.Creator;
 import com.liferay.headless.delivery.client.dto.v1_0.DocumentFolder;
+import com.liferay.headless.delivery.client.permission.Permission;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
 
@@ -70,6 +79,14 @@ public class DocumentFolderResourceTest
 		throws Exception {
 
 		super.testGraphQLGetDocumentFolderDocumentFoldersPage();
+	}
+
+	@Override
+	@Test
+	public void testPostDocumentFolderDocumentFolder() throws Exception {
+		super.testPostDocumentFolderDocumentFolder();
+
+		_testPostDocumentFolderDocumentFolderWithPermission();
 	}
 
 	@Override
@@ -207,7 +224,53 @@ public class DocumentFolderResourceTest
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 	}
 
+	private void _testPostDocumentFolderDocumentFolderWithPermission()
+		throws Exception {
+
+		DocumentFolder documentFolder = randomDocumentFolder();
+
+		Role userRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.USER);
+
+		documentFolder.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(
+							new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+						setRoleExternalReferenceCode(
+							userRole.getExternalReferenceCode());
+						setRoleName(userRole.getName());
+						setRoleType(userRole.getTypeLabel());
+					}
+				}
+			});
+
+		documentFolder.setViewableBy(DocumentFolder.ViewableBy.OWNER);
+
+		DocumentFolder postDocumentFolder =
+			testPostDocumentFolderDocumentFolder_addDocumentFolder(
+				documentFolder);
+
+		ResourcePermission resourcePermission =
+			_resourcePermissionLocalService.getResourcePermission(
+				TestPropsValues.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(postDocumentFolder.getId()),
+				userRole.getRoleId());
+
+		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.DELETE));
+		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.UPDATE));
+		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
+	}
+
 	@Inject
 	private RatingsEntryLocalService _ratingsEntryLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }

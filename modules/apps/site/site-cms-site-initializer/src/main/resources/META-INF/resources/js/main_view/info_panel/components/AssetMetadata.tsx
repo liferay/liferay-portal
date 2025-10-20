@@ -72,7 +72,7 @@ const AssetMetadata = () => {
 			<ClayPanel.Body>
 				{type === ASSET_TYPE.FILES && (
 					<div className="asset-metadata-section mt-0">
-						<p className="asset-metadata-section-title">
+						<p className="d-block font-weight-bold mb-0">
 							{Liferay.Language.get('url')}
 						</p>
 
@@ -99,20 +99,20 @@ const AssetMetadata = () => {
 					</div>
 				)}
 
-				<div className="asset-metadata-section">
-					<p className="asset-metadata-section-title">
+				<div className="asset-metadata-section mt-3">
+					<p className="d-block font-weight-bold mb-0">
 						{Liferay.Language.get('author')}
 					</p>
 
-					<p>{objectEntry?.creator?.name}</p>
+					<p className="d-block">{objectEntry?.creator?.name}</p>
 				</div>
 
-				<div className="asset-metadata-section">
-					<p className="asset-metadata-section-title">
+				<div className="asset-metadata-section mt-3">
+					<p className="d-block font-weight-bold mb-0">
 						{Liferay.Language.get('created')}
 					</p>
 
-					<p>
+					<p className="d-block">
 						{sub(Liferay.Language.get('x-by-x'), [
 							formatDate(objectEntry.dateCreated as string),
 							objectEntry.creator?.name,
@@ -120,34 +120,36 @@ const AssetMetadata = () => {
 					</p>
 				</div>
 
-				<div className="asset-metadata-section">
-					<p className="asset-metadata-section-title">
+				<div className="asset-metadata-section mt-3">
+					<p className="d-block font-weight-bold mb-0">
 						{Liferay.Language.get('modified')}
 					</p>
 
-					<p>{formatDate(objectEntry.dateModified as string)}</p>
+					<p className="d-block">
+						{formatDate(objectEntry.dateModified as string)}
+					</p>
 				</div>
 
 				{type !== ASSET_TYPE.FOLDER && (
 					<>
-						<div className="asset-metadata-section">
-							<p className="asset-metadata-section-title">
+						<div className="asset-metadata-section mt-3">
+							<p className="d-block font-weight-bold mb-0">
 								{Liferay.Language.get('expiration-date')}
 							</p>
 
-							<p>
+							<p className="d-block">
 								{objectEntry?.expirationDate
 									? formatDate(objectEntry?.expirationDate)
 									: Liferay.Language.get('never-expire')}
 							</p>
 						</div>
 
-						<div className="asset-metadata-section">
-							<p className="asset-metadata-section-title">
+						<div className="asset-metadata-section mt-3">
+							<p className="d-block font-weight-bold mb-0">
 								{Liferay.Language.get('review-date')}
 							</p>
 
-							<p>
+							<p className="d-block">
 								{objectEntry?.reviewDate
 									? formatDate(objectEntry?.reviewDate)
 									: Liferay.Language.get('never-review')}
@@ -155,8 +157,8 @@ const AssetMetadata = () => {
 						</div>
 
 						{assetLanguages.length ? (
-							<div className="asset-metadata-section">
-								<p className="asset-metadata-section-title">
+							<div className="asset-metadata-section mt-3">
+								<p className="d-block font-weight-bold mb-0">
 									{Liferay.Language.get(
 										'languages-translated-into'
 									)}

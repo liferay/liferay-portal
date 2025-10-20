@@ -15,13 +15,9 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
-import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -38,7 +34,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -53,13 +48,11 @@ import com.liferay.segments.test.util.SegmentsTestUtil;
 
 import java.sql.Connection;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -78,11 +71,6 @@ public class SegmentsExperienceUpgradeProcessTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		_db = DBManagerUtil.getDB();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -144,24 +132,15 @@ public class SegmentsExperienceUpgradeProcessTest
 	public void testUpgradeWithClassPKColumns() throws Exception {
 		_deleteSegmentsExperiences();
 
-		List<IndexMetadata> indexMetadataList = new ArrayList<>();
-
 		try {
-			indexMetadataList.addAll(
-				_renameColumn(
-					"plid", "classPK", "LayoutPageTemplateStructure"));
-			indexMetadataList.addAll(
-				_renameColumn("plid", "plid2", "FragmentEntryLink"));
+			_renameColumn("plid", "classPK", "LayoutPageTemplateStructure");
+			_renameColumn("plid", "plid2", "FragmentEntryLink");
 
 			runUpgrade();
 		}
 		finally {
 			_renameColumn("classPK", "plid", "LayoutPageTemplateStructure");
 			_renameColumn("plid2", "plid", "FragmentEntryLink");
-
-			if (ListUtil.isNotEmpty(indexMetadataList)) {
-				_db.addIndexes(DataAccess.getConnection(), indexMetadataList);
-			}
 		}
 
 		_assertSegmentsExperiences();
@@ -173,20 +152,13 @@ public class SegmentsExperienceUpgradeProcessTest
 
 		_deleteSegmentsExperiences();
 
-		List<IndexMetadata> indexMetadataList = new ArrayList<>();
-
 		try {
-			indexMetadataList.addAll(
-				_renameColumn("plid", "plid2", "FragmentEntryLink"));
+			_renameColumn("plid", "plid2", "FragmentEntryLink");
 
 			runUpgrade();
 		}
 		finally {
 			_renameColumn("plid2", "plid", "FragmentEntryLink");
-
-			if (ListUtil.isNotEmpty(indexMetadataList)) {
-				_db.addIndexes(DataAccess.getConnection(), indexMetadataList);
-			}
 		}
 
 		_assertSegmentsExperiences();
@@ -198,21 +170,13 @@ public class SegmentsExperienceUpgradeProcessTest
 
 		_deleteSegmentsExperiences();
 
-		List<IndexMetadata> indexMetadataList = new ArrayList<>();
-
 		try {
-			indexMetadataList.addAll(
-				_renameColumn(
-					"plid", "classPK", "LayoutPageTemplateStructure"));
+			_renameColumn("plid", "classPK", "LayoutPageTemplateStructure");
 
 			runUpgrade();
 		}
 		finally {
 			_renameColumn("classPK", "plid", "LayoutPageTemplateStructure");
-
-			if (ListUtil.isNotEmpty(indexMetadataList)) {
-				_db.addIndexes(DataAccess.getConnection(), indexMetadataList);
-			}
 		}
 
 		_assertSegmentsExperiences();
@@ -360,40 +324,15 @@ public class SegmentsExperienceUpgradeProcessTest
 		return publishedSegmentsExperience.getSegmentsExperienceId();
 	}
 
-	private List<IndexMetadata> _renameColumn(
+	private void _renameColumn(
 			String columnName, String newColumnName, String tableName)
 		throws Exception {
 
 		try (Connection connection = DataAccess.getConnection()) {
-			DBInspector dbInspector = new DBInspector(connection);
+			DB db = DBManagerUtil.getDB();
 
-			List<IndexMetadata> indexMetadataList = new ArrayList<>();
-
-			if (dbInspector.hasColumn(tableName, newColumnName) ||
-				!dbInspector.hasColumn(tableName, columnName)) {
-
-				return indexMetadataList;
-			}
-
-			indexMetadataList.addAll(
-				_db.dropIndexes(connection, tableName, columnName));
-
-			// Special alter for reserved words like SYSTEM in MySQL
-
-			if (DBManagerUtil.getDBType() == DBType.MYSQL) {
-				_db.runSQLTemplate(
-					StringBundler.concat(
-						"alter table ", tableName, " change `", columnName,
-						"` ", newColumnName, " LONG"),
-					true);
-
-				return indexMetadataList;
-			}
-
-			_db.alterColumnName(
+			db.alterColumnName(
 				connection, tableName, columnName, newColumnName + " LONG");
-
-			return indexMetadataList;
 		}
 	}
 
@@ -438,8 +377,6 @@ public class SegmentsExperienceUpgradeProcessTest
 	private static final String _CLASS_NAME =
 		"com.liferay.segments.internal.upgrade.v3_2_0." +
 			"SegmentsExperienceUpgradeProcess";
-
-	private static DB _db;
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.segments.internal.upgrade.registry.SegmentsServiceUpgradeStepRegistrator))"

@@ -6,14 +6,17 @@
 package com.liferay.portal.upgrade.data.cleanup.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -83,6 +86,24 @@ public class ConfigurationDataCleanupPreupgradeProcessTest
 		_test(
 			TestPropsValues.getGroupId(), _getNonexistentGroupId(), "groupId",
 			"Group_");
+
+		long companyId = _getNonexistentCompanyId();
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_ENABLED", true)) {
+
+			runSQL(
+				"insert into Company (mvccVersion, companyId) values (0 ," +
+					companyId + ")");
+
+			_test(
+				TestPropsValues.getCompanyId(), companyId, "companyId",
+				"Company");
+		}
+		finally {
+			runSQL("delete from Company where companyId = " + companyId);
+		}
 	}
 
 	private long _getNonexistentCompanyId() throws Exception {
@@ -142,6 +163,7 @@ public class ConfigurationDataCleanupPreupgradeProcessTest
 			List<String> messages = logCapture.getMessages();
 
 			Assert.assertFalse(
+				messages.toString() + CompanyThreadLocal.getCompanyId(),
 				messages.contains(
 					StringBundler.concat(
 						"Table Configuration_, 1 row deleted because ",
@@ -152,6 +174,7 @@ public class ConfigurationDataCleanupPreupgradeProcessTest
 						_dbInspector.normalizeName(primaryKeyColumnName))));
 
 			Assert.assertTrue(
+				messages.toString() + CompanyThreadLocal.getCompanyId(),
 				messages.contains(
 					StringBundler.concat(
 						"Table Configuration_, 1 row deleted because ",

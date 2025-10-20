@@ -84,6 +84,9 @@ public interface TestEntityResource {
 	public Response postTestEntityMultipartBulk(MultipartBody multipartBody)
 		throws Exception;
 
+	public Response postTestEntityMultipartImage(MultipartBody multipartBody)
+		throws Exception;
+
 	public TestEntity putTestEntity(
 			Long testEntityId, Long optionalParameter, TestEntity testEntity)
 		throws Exception;

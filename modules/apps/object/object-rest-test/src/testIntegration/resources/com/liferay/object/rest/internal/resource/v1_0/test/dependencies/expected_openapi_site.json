@@ -30,8 +30,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "AuditEvent"
 				}
@@ -54,8 +54,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "AuditFieldChange"
 				}
@@ -128,8 +128,8 @@
 					"type"
 				],
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Collaborator"
 				}
@@ -196,8 +196,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Creator"
 				}
@@ -215,8 +215,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"FacetValue": {
 				"properties": {
@@ -229,8 +229,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"Object8": {
 				"properties": {
@@ -397,19 +397,43 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-					"creator",
-					"creatorId",
-					"dateCreated",
-					"dateModified",
-					"externalReferenceCode",
-					"field",
-					"id",
-					"keywords",
-					"status",
-					"taxonomyCategoryIds",
-					"userId"
-				],
+				"x-filterable": {
+					"creator": {
+						"type": "string"
+					},
+					"creatorId": {
+						"type": "integer"
+					},
+					"dateCreated": {
+						"type": "date_time"
+					},
+					"dateModified": {
+						"type": "date_time"
+					},
+					"externalReferenceCode": {
+						"type": "string"
+					},
+					"field": {
+						"type": "string"
+					},
+					"id": {
+						"type": "id"
+					},
+					"keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"status": {
+						"type": "integer"
+					},
+					"taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"userId": {
+						"type": "integer"
+					}
+				},
 				"xml": {
 					"name": "ObjectEntry"
 				}
@@ -438,8 +462,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ObjectDefinitionBrief"
 				}
@@ -485,8 +509,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"PageObject8": {
 				"properties": {
@@ -534,8 +558,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"PagePermission": {
 				"properties": {
@@ -578,8 +602,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"ParentTaxonomyCategory": {
 				"properties": {
@@ -594,8 +618,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ParentTaxonomyCategory"
 				}
@@ -613,8 +637,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ParentTaxonomyVocabulary"
 				}
@@ -638,8 +662,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Permission"
 				}
@@ -664,8 +688,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Scope"
 				}
@@ -692,8 +716,8 @@
 					"code"
 				],
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Status"
 				}
@@ -746,8 +770,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "TaxonomyCategoryBrief"
 				}
@@ -773,8 +797,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "UserGroupBrief"
 				}
@@ -797,8 +821,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ValidationError"
 				}
@@ -821,8 +845,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ValidationRequest"
 				}
@@ -842,8 +866,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ValidationResponse"
 				}
@@ -862,8 +886,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Version"
 				}

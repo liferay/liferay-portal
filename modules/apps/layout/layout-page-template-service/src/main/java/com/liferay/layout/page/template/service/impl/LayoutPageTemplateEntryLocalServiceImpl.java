@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -770,7 +769,8 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 	@Override
 	public LayoutPageTemplateEntry updateLayoutPageTemplateEntry(
-			long layoutPageTemplateEntryId, long classNameId, long classTypeId)
+			long userId, long layoutPageTemplateEntryId, long classNameId,
+			long classTypeId)
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -781,8 +781,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			layoutPageTemplateEntry.getPlid());
 
 		if ((draftLayout != null) &&
-			!draftLayout.isUnlocked(
-				Constants.EDIT, GuestOrUserUtil.getUserId())) {
+			!draftLayout.isUnlocked(Constants.EDIT, userId)) {
 
 			throw new LockedLayoutException();
 		}
@@ -881,7 +880,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			draftLayout.getKeywordsMap(), draftLayout.getRobotsMap(),
 			draftLayout.getType(), draftLayout.isHidden(),
 			draftLayout.getFriendlyURLMap(), draftLayout.getIconImage(), null,
-			draftLayout.getStyleBookEntryId(),
+			draftLayout.getStyleBookEntryERC(),
 			draftLayout.getFaviconFileEntryId(),
 			draftLayout.getMasterLayoutPlid(), serviceContext);
 
@@ -894,7 +893,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			layout.getDescriptionMap(), layout.getKeywordsMap(),
 			layout.getRobotsMap(), layout.getType(), layout.isHidden(),
 			layout.getFriendlyURLMap(), layout.getIconImage(), null,
-			layout.getStyleBookEntryId(), layout.getFaviconFileEntryId(),
+			layout.getStyleBookEntryERC(), layout.getFaviconFileEntryId(),
 			layout.getMasterLayoutPlid(), serviceContext);
 
 		return layoutPageTemplateEntry;

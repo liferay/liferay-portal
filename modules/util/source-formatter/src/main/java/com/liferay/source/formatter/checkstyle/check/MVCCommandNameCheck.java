@@ -140,10 +140,10 @@ public class MVCCommandNameCheck extends BaseCheck {
 
 		Map<String, Integer> mvcCommandNamesMap = new HashMap<>();
 
-		List<DetailAST> expressionDetailASTList = getAllChildTokens(
+		List<DetailAST> expressionDetailASTs = getAllChildTokens(
 			annotationArrayInitDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST expressionDetailAST : expressionDetailASTList) {
+		for (DetailAST expressionDetailAST : expressionDetailASTs) {
 			DetailAST firstChildDetailAST = expressionDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.STRING_LITERAL) {
@@ -238,10 +238,10 @@ public class MVCCommandNameCheck extends BaseCheck {
 			return true;
 		}
 
-		List<DetailAST> annotationDetailASTList = getAllChildTokens(
+		List<DetailAST> annotationDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.ANNOTATION);
 
-		for (DetailAST annotationDetailAST : annotationDetailASTList) {
+		for (DetailAST annotationDetailAST : annotationDetailASTs) {
 			if (!Objects.equals(getName(annotationDetailAST), "Reference")) {
 				continue;
 			}
@@ -287,10 +287,10 @@ public class MVCCommandNameCheck extends BaseCheck {
 			return true;
 		}
 
-		List<DetailAST> stringLiteralDetailASTList = getAllChildTokens(
+		List<DetailAST> stringLiteralDetailASTs = getAllChildTokens(
 			annotationArrayInitDetailAST, true, TokenTypes.STRING_LITERAL);
 
-		for (DetailAST stringLiteralDetailAST : stringLiteralDetailASTList) {
+		for (DetailAST stringLiteralDetailAST : stringLiteralDetailASTs) {
 			if (!Objects.equals(
 					stringLiteralDetailAST.getText(),
 					"\"jakarta.portlet.name=\"")) {

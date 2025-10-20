@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,9 +49,8 @@ public class CourseProgressDownloadRestController extends BaseRestController {
 	@ResponseBody
 	public ResponseEntity<StreamingResponseBody> get(
 			@AuthenticationPrincipal Jwt jwt,
-			@RequestParam(required = false, value = "endDate") String endDate,
-			@RequestParam(required = false, value = "startDate") String
-				startDate)
+			@RequestParam("endDate") String endDate,
+			@RequestParam("startDate") String startDate)
 		throws IOException {
 
 		return ResponseEntity.ok(
@@ -78,35 +74,6 @@ public class CourseProgressDownloadRestController extends BaseRestController {
 	private String _getAuthorization() {
 		return _liferayOAuth2AccessTokenManager.getAuthorization(
 			"liferay-learn-etc-spring-boot-oahs");
-	}
-
-	private boolean _isBetween(
-		String dateString, String endDateString, String startDateString) {
-
-		if ((dateString == null) ||
-			((startDateString == null) && (endDateString == null))) {
-
-			return true;
-		}
-
-		LocalDate localDate = LocalDate.parse(
-			dateString, DateTimeFormatter.ISO_DATE_TIME);
-
-		if (startDateString != null) {
-			LocalDate startLocalDate = LocalDate.parse(startDateString);
-
-			if (localDate.isBefore(startLocalDate)) {
-				return false;
-			}
-		}
-
-		if (endDateString != null) {
-			LocalDate endLocalDate = LocalDate.parse(endDateString);
-
-			return !localDate.isAfter(endLocalDate);
-		}
-
-		return true;
 	}
 
 	private void _loadCourseQuizzes() {
@@ -178,13 +145,18 @@ public class CourseProgressDownloadRestController extends BaseRestController {
 						UriComponentsBuilder.fromUriString(
 							"/o/c/enrollments/"
 						).queryParam(
+							"filter",
+							"active eq true and dateModified lt {endDate} " +
+								"and dateModified gt {startDate}"
+						).queryParam(
 							"nestedFields", "course,user"
 						).queryParam(
 							"page", i
 						).queryParam(
 							"pageSize", 500
 						).build(
-						).toUri()));
+							endDate, startDate
+						)));
 
 				lastPage = jsonObject.optInt("lastPage", 1);
 
@@ -204,13 +176,6 @@ public class CourseProgressDownloadRestController extends BaseRestController {
 					if ((courseJSONObject == null) ||
 						(userJSONObject == null)) {
 
-						continue;
-					}
-
-					String modifiedDate = enrollmentJSONObject.optString(
-						"dateModified", null);
-
-					if (!_isBetween(modifiedDate, endDate, startDate)) {
 						continue;
 					}
 

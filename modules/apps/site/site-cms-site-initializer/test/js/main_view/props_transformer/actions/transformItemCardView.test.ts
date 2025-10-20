@@ -37,11 +37,11 @@ describe('transformItemCardView', () => {
 		'video': 'document-multimedia',
 	};
 	const mockObjectDefinitionCssClasses = {
-		L_BASIC_WEB_CONTENT: 'content-icon-basic-content',
+		L_CMS_BASIC_WEB_CONTENT: 'content-icon-basic-content',
 		default: 'content-icon-custom-structure',
 	};
 	const mockObjectDefinitionIcons = {
-		L_BASIC_WEB_CONTENT: 'forms',
+		L_CMS_BASIC_WEB_CONTENT: 'forms',
 		default: 'web-content',
 	};
 
@@ -72,7 +72,8 @@ describe('transformItemCardView', () => {
 					embedded: {
 						systemProperties: {
 							objectDefinitionBrief: {
-								externalReferenceCode: 'L_BASIC_WEB_CONTENT',
+								externalReferenceCode:
+									'L_CMS_BASIC_WEB_CONTENT',
 							},
 						},
 					},
@@ -121,7 +122,7 @@ describe('transformItemCardView', () => {
 						},
 						systemProperties: {
 							objectDefinitionBrief: {
-								externalReferenceCode: 'L_BASIC_DOCUMENT',
+								externalReferenceCode: 'L_CMS_BASIC_DOCUMENT',
 							},
 						},
 					},
@@ -147,7 +148,7 @@ describe('transformItemCardView', () => {
 						},
 						systemProperties: {
 							objectDefinitionBrief: {
-								externalReferenceCode: 'L_BASIC_DOCUMENT',
+								externalReferenceCode: 'L_CMS_BASIC_DOCUMENT',
 							},
 						},
 					},
@@ -173,7 +174,7 @@ describe('transformItemCardView', () => {
 						},
 						systemProperties: {
 							objectDefinitionBrief: {
-								externalReferenceCode: 'L_BASIC_DOCUMENT',
+								externalReferenceCode: 'L_CMS_BASIC_DOCUMENT',
 							},
 						},
 					},
@@ -199,7 +200,7 @@ describe('transformItemCardView', () => {
 						},
 						systemProperties: {
 							objectDefinitionBrief: {
-								externalReferenceCode: 'L_BASIC_DOCUMENT',
+								externalReferenceCode: 'L_CMS_BASIC_DOCUMENT',
 							},
 						},
 					},

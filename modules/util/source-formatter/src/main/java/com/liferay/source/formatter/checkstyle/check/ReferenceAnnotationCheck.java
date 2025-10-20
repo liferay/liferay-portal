@@ -43,10 +43,10 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> detailASTList = getAllChildTokens(
+		List<DetailAST> detailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_DEF, TokenTypes.VARIABLE_DEF);
 
-		for (DetailAST curDetailAST : detailASTList) {
+		for (DetailAST curDetailAST : detailASTs) {
 			_checkReferenceAnnotation(curDetailAST);
 		}
 	}
@@ -82,11 +82,11 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 
 		String variableName = matcher.group(1);
 
-		List<DetailAST> variableDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> variableDefinitionDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.VARIABLE_DEF);
 
 		for (DetailAST variableDefinitionDetailAST :
-				variableDefinitionDetailASTList) {
+				variableDefinitionDetailASTs) {
 
 			if (!variableName.equals(getName(variableDefinitionDetailAST))) {
 				continue;
@@ -259,12 +259,10 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 	private boolean _containsMethod(
 		DetailAST classDefinitionDetailAST, String methodName) {
 
-		List<DetailAST> methodDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.METHOD_DEF);
 
-		for (DetailAST methodDefinitionDetailAST :
-				methodDefinitionDetailASTList) {
-
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			if (methodName.equals(getName(methodDefinitionDetailAST))) {
 				return true;
 			}
@@ -276,13 +274,12 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 	private String _getAnnotationMemberValue(
 		DetailAST anontationDetailAST, String name, String defaultValue) {
 
-		List<DetailAST> annotationMemberValuePairDetailASTList =
-			getAllChildTokens(
-				anontationDetailAST, false,
-				TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR);
+		List<DetailAST> annotationMemberValuePairDetailASTs = getAllChildTokens(
+			anontationDetailAST, false,
+			TokenTypes.ANNOTATION_MEMBER_VALUE_PAIR);
 
 		for (DetailAST annotationMemberValuePairDetailAST :
-				annotationMemberValuePairDetailASTList) {
+				annotationMemberValuePairDetailASTs) {
 
 			String annotationMemberName = getName(
 				annotationMemberValuePairDetailAST);

@@ -33,6 +33,7 @@
 										"key": "localization-select"
 									},
 									"fragmentConfig": {
+										"allowLocalizationManagement": true,
 										"hideLanguageLabel": false,
 										"size": "small"
 									},

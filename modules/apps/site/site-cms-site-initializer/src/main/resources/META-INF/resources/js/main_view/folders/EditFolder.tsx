@@ -12,7 +12,7 @@ import {openToast} from 'frontend-js-components-web';
 import {navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {FieldPicker, FieldText} from '../../common/components/forms';
+import {FieldSelect, FieldText} from '../../common/components/forms';
 import {required, validate} from '../../common/components/forms/validations';
 import FolderService, {TFolder} from '../../common/services/FolderService';
 
@@ -187,13 +187,13 @@ const EditFolder: React.FC<EditFolderProps> = ({backURL, folderId}) => {
 						value={values.folderName}
 					/>
 
-					<FieldPicker
-						disabled
+					<FieldSelect
+						aria-readonly
+						defaultValue={values.folderSpace}
 						items={spaceItems}
 						label={Liferay.Language.get('space')}
 						name="folderSpace"
 						required
-						selectedKey={values.folderSpace}
 					/>
 
 					<FieldText

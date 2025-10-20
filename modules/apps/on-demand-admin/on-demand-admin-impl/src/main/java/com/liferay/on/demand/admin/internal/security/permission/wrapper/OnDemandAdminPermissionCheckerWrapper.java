@@ -14,8 +14,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.function.Supplier;
-
 /**
  * @author Pei-Jung Lan
  */
@@ -37,52 +35,60 @@ public class OnDemandAdminPermissionCheckerWrapper
 	public boolean hasPermission(
 		Group group, String name, long primKey, String actionId) {
 
-		return _hasPermission(
-			name, primKey,
-			() -> super.hasPermission(group, name, primKey, actionId));
+		if (!_hasPermission(name, primKey)) {
+			return false;
+		}
+
+		return permissionChecker.hasPermission(group, name, primKey, actionId);
 	}
 
 	@Override
 	public boolean hasPermission(
 		Group group, String name, String primKey, String actionId) {
 
-		return _hasPermission(
-			name, GetterUtil.getLong(primKey),
-			() -> super.hasPermission(group, name, primKey, actionId));
+		if (!_hasPermission(name, GetterUtil.getLong(primKey))) {
+			return false;
+		}
+
+		return permissionChecker.hasPermission(group, name, primKey, actionId);
 	}
 
 	@Override
 	public boolean hasPermission(
 		long groupId, String name, long primKey, String actionId) {
 
-		return _hasPermission(
-			name, primKey,
-			() -> super.hasPermission(groupId, name, primKey, actionId));
+		if (!_hasPermission(name, primKey)) {
+			return false;
+		}
+
+		return permissionChecker.hasPermission(
+			groupId, name, primKey, actionId);
 	}
 
 	@Override
 	public boolean hasPermission(
 		long groupId, String name, String primKey, String actionId) {
 
-		return _hasPermission(
-			name, GetterUtil.getLong(primKey),
-			() -> super.hasPermission(groupId, name, primKey, actionId));
-	}
-
-	private boolean _hasPermission(
-		String name, long primKey, Supplier<Boolean> hasPermissionSupplier) {
-
-		if (!StringUtil.equals(name, User.class.getName())) {
-			return hasPermissionSupplier.get();
-		}
-
-		User user = _userLocalService.fetchUser(primKey);
-
-		if ((user != null) && _onDemandAdminManager.isOnDemandAdminUser(user)) {
+		if (!_hasPermission(name, GetterUtil.getLong(primKey))) {
 			return false;
 		}
 
-		return hasPermissionSupplier.get();
+		return permissionChecker.hasPermission(
+			groupId, name, primKey, actionId);
+	}
+
+	private boolean _hasPermission(String name, long primKey) {
+		if (StringUtil.equals(name, User.class.getName())) {
+			User user = _userLocalService.fetchUser(primKey);
+
+			if ((user != null) &&
+				_onDemandAdminManager.isOnDemandAdminUser(user)) {
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private final OnDemandAdminManager _onDemandAdminManager;

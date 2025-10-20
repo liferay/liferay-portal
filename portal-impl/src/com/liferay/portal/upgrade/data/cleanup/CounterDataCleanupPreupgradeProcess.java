@@ -10,6 +10,7 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
+import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
@@ -27,6 +28,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +41,15 @@ public class CounterDataCleanupPreupgradeProcess
 
 	@Override
 	protected void doUpgrade() throws Exception {
+		_liferayTableNames.addAll(
+			DBResourceUtil.getServiceComponentModuleTableNames(connection));
+		_liferayTableNames.addAll(
+			DBResourceUtil.getServiceComponentPortalTableNames(connection));
+		_liferayTableNames.addAll(
+			DBResourceUtil.getModuleTableNames(connection));
+		_liferayTableNames.addAll(
+			DBResourceUtil.getPortalTableNames(connection));
+
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select name, currentId from Counter");
 			ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -109,7 +121,9 @@ public class CounterDataCleanupPreupgradeProcess
 					tableName = StringUtil.extractLast(counterName, '.');
 				}
 
-				if (!dbInspector.hasTable(tableName)) {
+				if (!dbInspector.hasTable(tableName) ||
+					!_isLiferayTable(dbInspector, tableName)) {
+
 					continue;
 				}
 
@@ -143,6 +157,12 @@ public class CounterDataCleanupPreupgradeProcess
 		String maxValueTableName = null;
 
 		for (String tableName : tableNames) {
+			if (!dbInspector.isObjectTable(tableName) &&
+				!_isLiferayTable(dbInspector, tableName)) {
+
+				continue;
+			}
+
 			String columnName = _getPrimaryKeyColumnName(
 				dbInspector, tableName);
 
@@ -326,10 +346,25 @@ public class CounterDataCleanupPreupgradeProcess
 		return primaryKeyColumnNames.get(0);
 	}
 
+	private boolean _isLiferayTable(DBInspector dbInspector, String tableName)
+		throws Exception {
+
+		if (dbInspector.isObjectTable(tableName) ||
+			_liferayTableNames.contains(tableName)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CounterDataCleanupPreupgradeProcess.class);
 
 	private static final Pattern _layoutSpecificCounterNamePattern =
 		Pattern.compile("^([a-zA-Z0-9_.]+)#(\\d+)#(true|false)$");
+
+	private final Set<String> _liferayTableNames = new TreeSet<>(
+		String.CASE_INSENSITIVE_ORDER);
 
 }

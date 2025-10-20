@@ -36,7 +36,7 @@ export default function propsTransformer({
 
 	return {
 		...otherProps,
-		configInURLSettings: EConfigInURLBehavior.REPLACE,
+		configInURLBehavior: EConfigInURLBehavior.REPLACE,
 		customRenderers: {
 			views: [carouselViewRenderer],
 		},

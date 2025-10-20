@@ -49,6 +49,7 @@ dependencies {
 	compileOnly project(":apps:object:object-info-api")
 	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-security:portal-security-script-management-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")

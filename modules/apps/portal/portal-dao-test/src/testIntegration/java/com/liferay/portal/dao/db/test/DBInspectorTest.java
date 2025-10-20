@@ -56,7 +56,7 @@ public class DBInspectorTest {
 				"LONG default 10 not null, typeSBlob SBLOB, typeString STRING ",
 				"null, typeText TEXT null, typeVarchar VARCHAR(75) null, ",
 				"typeVarcharDefault VARCHAR(10) default 'testValue' not ",
-				"null);"));
+				"null)"));
 	}
 
 	@AfterClass

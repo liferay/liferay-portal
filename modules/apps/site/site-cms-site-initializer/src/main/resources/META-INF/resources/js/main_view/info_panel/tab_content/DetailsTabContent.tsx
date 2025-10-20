@@ -22,7 +22,7 @@ const DetailsTabContent = () => {
 				<ClayCard>
 					<img
 						alt="thumbnail"
-						className="card-image"
+						className="card-image w-100"
 						src={objectEntry.file?.thumbnailURL}
 					/>
 				</ClayCard>

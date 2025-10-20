@@ -99,6 +99,9 @@ describe('DefaultPermissionModalContent', () => {
 		expect(screen.getByTestId('button-cancel')).toBeInTheDocument();
 		expect(screen.getByTestId('button-save')).toBeInTheDocument();
 		expect(
+			screen.queryByTestId('checkbox-propagate')
+		).not.toBeInTheDocument();
+		expect(
 			screen.getByTestId(`row-checkbox-admin_UPDATE3`)
 		).toBeInTheDocument();
 		expect(
@@ -315,6 +318,7 @@ describe('DefaultPermissionModalContent', () => {
 					{key: 'VIEW3', label: 'View3'},
 				],
 			},
+			allowPropagate: true,
 			apiURL: '',
 			classExternalReferenceCode: 'ERC1',
 			className: 'com.liferay.depot.model.DepotEntry',
@@ -357,6 +361,7 @@ describe('DefaultPermissionModalContent', () => {
 		});
 
 		expect(screen.getByTestId(`row-checkbox-guest_UPDATE3`)).toBeChecked();
+		expect(screen.getByTestId('button-save')).toBeDisabled();
 
 		await waitFor(() => {
 			screen.getByTestId('checkbox-propagate').click();

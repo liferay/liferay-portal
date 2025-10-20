@@ -9,6 +9,9 @@ import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvide
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
+import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
@@ -449,13 +452,16 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 				siteNavigationMenuItem.getTypeSettings()
 			).build();
 
+		InfoItemIdentifier infoItemIdentifier = new ERCInfoItemIdentifier(
+			GetterUtil.getString(
+				typeSettingsUnicodeProperties.get("externalReferenceCode")));
+
 		return AssetDisplayPageUtil.hasAssetDisplayPage(
 			siteNavigationMenuItem.getGroupId(),
-			GetterUtil.getLong(
-				typeSettingsUnicodeProperties.get("classNameId")),
-			GetterUtil.getLong(typeSettingsUnicodeProperties.get("classPK")),
-			GetterUtil.getLong(
-				typeSettingsUnicodeProperties.get("classTypeId")));
+			new InfoItemReference(
+				GetterUtil.getString(
+					typeSettingsUnicodeProperties.get("className")),
+				infoItemIdentifier));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

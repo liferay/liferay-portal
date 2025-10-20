@@ -38,14 +38,16 @@ export default function Toolbar({
 					<ClayToolbar.Item>
 						<ClayToolbar.Section>
 							<ClayButton.Group spaced>
-								<ClayLink
-									button
-									displayType="secondary"
-									href={cancelURL}
-									small
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayLink>
+								{cancelURL && (
+									<ClayLink
+										button
+										displayType="secondary"
+										href={cancelURL}
+										small
+									>
+										{Liferay.Language.get('cancel')}
+									</ClayLink>
+								)}
 
 								<ClayButton
 									disabled={saveButtonDisabled}

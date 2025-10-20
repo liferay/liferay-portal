@@ -43,7 +43,7 @@ const RECIPIENT_OPTIONS = [
 		label: Liferay.Language.get('definition-of-terms'),
 		value: 'term',
 	},
-	Liferay.FeatureFlags['LPD-50091'] && {
+	{
 		label: Liferay.Language.get('user-groups'),
 		value: 'user-group',
 	},

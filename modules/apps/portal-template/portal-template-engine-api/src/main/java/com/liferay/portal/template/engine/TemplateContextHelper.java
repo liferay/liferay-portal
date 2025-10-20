@@ -5,10 +5,6 @@
 
 package com.liferay.portal.template.engine;
 
-import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
-import com.liferay.expando.kernel.service.ExpandoRowLocalService;
-import com.liferay.expando.kernel.service.ExpandoTableLocalService;
-import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.string.StringBundler;
@@ -434,65 +430,6 @@ public class TemplateContextHelper {
 
 		variables.put("dateUtil", DateUtil_IW.getInstance());
 
-		// Expando column service
-
-		try {
-			ServiceLocator serviceLocator = ServiceLocator.getInstance();
-
-			// Service locator
-
-			variables.put("serviceLocator", serviceLocator);
-
-			try {
-				variables.put(
-					"expandoColumnLocalService",
-					serviceLocator.findService(
-						ExpandoColumnLocalService.class.getName()));
-			}
-			catch (SecurityException securityException) {
-				_log.error(securityException);
-			}
-
-			// Expando row service
-
-			try {
-				variables.put(
-					"expandoRowLocalService",
-					serviceLocator.findService(
-						ExpandoRowLocalService.class.getName()));
-			}
-			catch (SecurityException securityException) {
-				_log.error(securityException);
-			}
-
-			// Expando table service
-
-			try {
-				variables.put(
-					"expandoTableLocalService",
-					serviceLocator.findService(
-						ExpandoTableLocalService.class.getName()));
-			}
-			catch (SecurityException securityException) {
-				_log.error(securityException);
-			}
-
-			// Expando value service
-
-			try {
-				variables.put(
-					"expandoValueLocalService",
-					serviceLocator.findService(
-						ExpandoValueLocalService.class.getName()));
-			}
-			catch (SecurityException securityException) {
-				_log.error(securityException);
-			}
-		}
-		catch (SecurityException securityException) {
-			_log.error(securityException);
-		}
-
 		// Getter util
 
 		variables.put("getterUtil", GetterUtil_IW.getInstance());
@@ -628,6 +565,15 @@ public class TemplateContextHelper {
 		// SAX reader util
 
 		variables.put("saxReaderUtil", SAXReaderUtil.getSAXReader());
+
+		// Service locator
+
+		try {
+			variables.put("serviceLocator", ServiceLocator.getInstance());
+		}
+		catch (SecurityException securityException) {
+			_log.error(securityException);
+		}
 
 		// Session clicks
 

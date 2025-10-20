@@ -17,8 +17,10 @@ public class LPD_35137 {
 		boolean commitImmediately) {
 
 		IndexWriterHelperUtil.updateDocuments("test123", 123, null, null);
-		IndexWriterHelperUtil.updateDocuments(searchEngineId, companyId, documents, commitImmediately);
-		_indexWriterHelper.updateDocuments(searchEngineId, companyId, documents, commitImmediately);
+		IndexWriterHelperUtil.updateDocuments(
+			searchEngineId, companyId, documents, commitImmediately);
+		_indexWriterHelper.updateDocuments(
+			searchEngineId, companyId, documents, commitImmediately);
 	}
 
 	@Reference

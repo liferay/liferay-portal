@@ -5,6 +5,7 @@
 
 package com.liferay.portal.workflow.kaleo.internal.upgrade.registry;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseUuidUpgradeProcess;
@@ -198,10 +199,8 @@ public class KaleoServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"KaleoDefinition", "kaleoDefinitionId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"KaleoDefinition"};
 				}
 
 			});
@@ -211,10 +210,8 @@ public class KaleoServiceUpgradeStepRegistrator
 			new BaseUuidUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"KaleoDefinition", "kaleoDefinitionId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"KaleoDefinition"};
 				}
 
 			});
@@ -237,6 +234,15 @@ public class KaleoServiceUpgradeStepRegistrator
 			"4.3.1", "4.4.0",
 			new com.liferay.portal.workflow.kaleo.internal.upgrade.v4_4_0.
 				KaleoDefinitionUpgradeProcess());
+
+		registry.register(
+			"4.4.0", "4.5.0",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"delete from WorkflowInstanceLink where not exists ",
+					"(select 1 from KaleoInstance where ",
+					"KaleoInstance.kaleoInstanceId = ",
+					"WorkflowInstanceLink.workflowInstanceId)")));
 	}
 
 }

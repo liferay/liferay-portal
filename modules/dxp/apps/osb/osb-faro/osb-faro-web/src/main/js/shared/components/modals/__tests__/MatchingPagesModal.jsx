@@ -20,7 +20,7 @@ describe('MatchingPagesModal', () => {
 							itemFilters={[
 								{
 									name: 'includeFilter',
-									value: '.*documents'
+									value: '.*custom-assets'
 								}
 							]}
 						/>

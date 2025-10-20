@@ -101,54 +101,6 @@ definition {
 	}
 
 	@priority = 4
-	test CanEditSchemaNameAndDescriptionInUnpublishedAPIApplication {
-		task ("When I save changed name and description") {
-			APIBuilderUI.updateSchemaNameAndDescription(
-				entity = "Schemas",
-				name = "testSchema",
-				schemaDescription = "Description edited",
-				schemaName = "testSchema edited",
-				tabEntity = "Info",
-				title = "My-app2");
-
-			Button.clickSave();
-		}
-
-		task ("Then I can see success alert message about API schema changes were saved") {
-			Alert.viewSuccessMessageText(successMessage = "API schema changes were saved.");
-		}
-
-		task ("And Then I can see updated name and description in Info tab") {
-			AssertElementPresent(
-				locator1 = "TextInput#NAME",
-				value1 = "testSchema edited");
-
-			AssertElementPresent(
-				key_fieldId = "Description",
-				locator1 = "TextArea#ANY_ID",
-				value1 = "Description edited");
-		}
-	}
-
-	@priority = 4
-	test CannotEditSchemaRelatedObject {
-		task ("When I edit the schema in Edit API Application > Schemas") {
-			APIBuilderUI.goToEditRelatedEntryInEditApplication(
-				entity = "Schemas",
-				name = "testSchema",
-				tabEntity = "Info",
-				title = "My-app2");
-		}
-
-		task ("Then I can see the value for Object is disabled with the correct value") {
-			AssertTextEquals(
-				key_text = "APIApplication",
-				locator1 = "Button#ANY_DISABLED",
-				value1 = "APIApplication");
-		}
-	}
-
-	@priority = 4
 	test CanSeeUpdatedSchemaInAPIExplorer {
 		task ("And Given I update the schema Name and description") {
 			APIBuilderUI.updateSchemaNameAndDescription(

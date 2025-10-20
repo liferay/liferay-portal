@@ -14,7 +14,9 @@ import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import java.io.File;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -29,8 +31,8 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 			return null;
 		}
 
-		List<DownstreamBuildReport> cachedDownstreamBuildReports =
-			new ArrayList<>();
+		Set<DownstreamBuildReport> cachedDownstreamBuildReports =
+			new HashSet<>();
 
 		for (JSUnitModulesTestClass jsUnitModulesTestClass :
 				getJSUnitModulesTestClasses()) {
@@ -38,14 +40,10 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 			DownstreamBuildReport downstreamBuildReport =
 				jsUnitModulesTestClass.getCachedDownstreamBuildReport();
 
-			if (cachedDownstreamBuildReports.contains(downstreamBuildReport)) {
-				continue;
-			}
-
 			cachedDownstreamBuildReports.add(downstreamBuildReport);
 		}
 
-		return cachedDownstreamBuildReports;
+		return new ArrayList<>(cachedDownstreamBuildReports);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
 import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
+import com.liferay.object.field.render.ObjectFieldRenderingContext;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.Assignee;
@@ -49,7 +50,7 @@ import org.osgi.service.component.annotations.Reference;
 	service = ObjectFieldBusinessType.class
 )
 public class AssigneeObjectFieldBusinessType
-	implements ObjectFieldBusinessType {
+	extends BaseObjectFieldBusinessType {
 
 	@Override
 	public String getDBType() {
@@ -91,6 +92,19 @@ public class AssigneeObjectFieldBusinessType
 	}
 
 	@Override
+	public Map<String, Object> getProperties(
+			ObjectField objectField,
+			ObjectFieldRenderingContext objectFieldRenderingContext)
+		throws PortalException {
+
+		return HashMapBuilder.<String, Object>put(
+			"portletId", objectFieldRenderingContext.getPortletId()
+		).putAll(
+			super.getProperties(objectField, objectFieldRenderingContext)
+		).build();
+	}
+
+	@Override
 	public PropertyDefinition.PropertyType getPropertyType() {
 		return PropertyDefinition.PropertyType.LONG;
 	}
@@ -112,18 +126,16 @@ public class AssigneeObjectFieldBusinessType
 				Assignee assignee = (Assignee)value;
 
 				return _getValue(
-					objectField.getCompanyId(),
 					assignee.getExternalReferenceCode(), assignee.getName(),
-					assignee.getTypeAsString());
+					objectField, assignee.getTypeAsString());
 			}
 			else if (value instanceof Map) {
 				Map<String, Serializable> valueMap =
 					(Map<String, Serializable>)value;
 
 				return _getValue(
-					objectField.getCompanyId(),
 					MapUtil.getString(valueMap, "externalReferenceCode"),
-					MapUtil.getString(valueMap, "name"),
+					MapUtil.getString(valueMap, "name"), objectField,
 					MapUtil.getString(valueMap, "type"));
 			}
 		}
@@ -151,7 +163,7 @@ public class AssigneeObjectFieldBusinessType
 	}
 
 	private Object _getValue(
-			long companyId, String externalReferenceCode, String name,
+			String externalReferenceCode, String name, ObjectField objectField,
 			String type)
 		throws Exception {
 
@@ -170,7 +182,14 @@ public class AssigneeObjectFieldBusinessType
 					}
 					else {
 						role = _roleLocalService.getRoleByExternalReferenceCode(
-							externalReferenceCode, companyId);
+							externalReferenceCode, objectField.getCompanyId());
+					}
+
+					if (StringUtil.equals(
+							role.getName(), RoleConstants.GUEST)) {
+
+						throw new ObjectEntryValuesException.InvalidValue(
+							objectField.getName());
 					}
 
 					return role.getRoleId();
@@ -185,7 +204,7 @@ public class AssigneeObjectFieldBusinessType
 				() -> {
 					User user =
 						_userLocalService.getUserByExternalReferenceCode(
-							externalReferenceCode, companyId);
+							externalReferenceCode, objectField.getCompanyId());
 
 					return user.getUserId();
 				}

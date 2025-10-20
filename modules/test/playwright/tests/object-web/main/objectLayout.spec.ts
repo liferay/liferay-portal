@@ -118,7 +118,9 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 		await test.step('add object entry and assert that blockname is visible', async () => {
 			await viewObjectEntriesPage.goto(objectDefinition.className);
 
-			await viewObjectEntriesPage.clickAddObjectEntry();
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
 
 			await viewObjectEntriesPage.fillObjectEntry({
 				objectFieldBusinessType: 'Text',
@@ -314,7 +316,7 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 			.filter({hasText: objectLayoutRelTabName})
 			.click();
 
-		await page.getByTestId('fdsCreationActionButton').first().click();
+		await page.getByRole('button', {name: 'New'}).first().click();
 
 		await page.getByRole('menuitem', {name: 'Create New'}).click();
 

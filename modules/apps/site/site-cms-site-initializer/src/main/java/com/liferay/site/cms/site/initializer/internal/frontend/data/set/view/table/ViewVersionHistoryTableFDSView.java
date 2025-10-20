@@ -34,7 +34,7 @@ public class ViewVersionHistoryTableFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"title", "title",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"title"
+				"assetVersionTableCellRenderer"
 			).setSortable(
 				true
 			)

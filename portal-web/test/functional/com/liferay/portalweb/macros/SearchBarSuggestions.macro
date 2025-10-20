@@ -13,7 +13,7 @@ definition {
 		}
 
 		if (${addContributor} == "true") {
-			Click.javaScriptClick(locator1 = "SearchBarSuggestions#ADD_SUGGESTIONS_BUTTON");
+			Click(locator1 = "SearchBarSuggestions#ADD_SUGGESTIONS_BUTTON");
 		}
 
 		if (${deleteBasicContributor} == "true") {

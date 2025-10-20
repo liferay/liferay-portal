@@ -207,7 +207,7 @@ public class ViewHomeQuickActionsDisplayContext {
 				depotEntriesJSONArray, _ICONS[_ICONS.length - 2],
 				_objectDefinitionService.
 					getObjectDefinitionByExternalReferenceCode(
-						"L_BASIC_DOCUMENT", _themeDisplay.getCompanyId())));
+						"L_CMS_BASIC_DOCUMENT", _themeDisplay.getCompanyId())));
 		quickActions.add(
 			HashMapBuilder.<String, Object>put(
 				"action", "createVocabulary"

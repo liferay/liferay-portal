@@ -9,12 +9,14 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.Map;
 
+import org.json.JSONObject;
+
 /**
  * @author Qi Zhang
  */
 public class SortChainedMethodCalls {
 
-	public Map<String, Object> method(
+	public Map<String, Object> method1(
 		Map<String, Object> params1, Map<String, Object> params2) {
 
 		return HashMapBuilder.<String, Object>putAll(
@@ -26,6 +28,15 @@ public class SortChainedMethodCalls {
 		).put(
 			"b", "a"
 		).build();
+	}
+
+	public JSONObject method2(String status, String subject) {
+		return new JSONObject(
+		).put(
+			"status", status
+		).put(
+			"subject", subject
+		);
 	}
 
 }

@@ -7,7 +7,6 @@ package com.liferay.portal.kernel.security.permission;
 
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.contributor.RoleContributor;
 
 import java.util.Map;
 
@@ -140,10 +139,6 @@ public interface PermissionChecker extends Cloneable {
 	 * @param user the current user
 	 */
 	public void init(User user);
-
-	public default void init(User user, RoleContributor[] roleContributors) {
-		init(user);
-	}
 
 	/**
 	 * Returns <code>true</code> if guest permissions will be used in permission

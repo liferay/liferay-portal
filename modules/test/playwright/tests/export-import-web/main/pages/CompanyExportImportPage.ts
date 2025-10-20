@@ -7,6 +7,7 @@ import {Locator, Page, expect} from '@playwright/test';
 import path from 'path';
 
 import {ApplicationsMenuPage} from '../../../../pages/product-navigation-applications-menu/ApplicationsMenuPage';
+import {openFieldset} from '../../../../utils/openFieldset';
 import {DateOptions} from '../types/dateOptions';
 import {ExportImportPage} from './ExportImportPage';
 
@@ -143,21 +144,11 @@ export class CompanyExportImportPage {
 		await this.exportImportPage.continueButton.click();
 
 		if (includePermissions) {
-			await this.exportImportPage.importPermissionsButton.click();
+			await this.exportImportPage.importPermissionsCheckbox.check();
 		}
 
 		if (useCurrentUser) {
-			if (
-				!(await this.exportImportPage.useCurrentUserAsAuthorCheckbox.isVisible())
-			) {
-				await this.page
-					.getByRole('button', {name: 'Authorship of the Content'})
-					.click();
-
-				await this.exportImportPage.useCurrentUserAsAuthorCheckbox.waitFor(
-					{state: 'visible'}
-				);
-			}
+			openFieldset(this.page, 'Authorship of the Content');
 
 			await this.exportImportPage.useCurrentUserAsAuthorCheckbox.check();
 		}
@@ -165,10 +156,6 @@ export class CompanyExportImportPage {
 		await this.exportImportPage.importButton.click();
 
 		const fileName = path.basename(filePath);
-		await this.page
-			.getByText(fileName)
-			.locator('../../../..')
-			.getByText('Successful')
-			.waitFor();
+		await this.exportImportPage.taskSuccessLabel(fileName).waitFor();
 	}
 }

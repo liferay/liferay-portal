@@ -42,10 +42,10 @@ public class ThreadNameCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST exprDetailAST : exprDetailASTList) {
+		for (DetailAST exprDetailAST : exprDetailASTs) {
 			firstChildDetailAST = exprDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.STRING_LITERAL) {

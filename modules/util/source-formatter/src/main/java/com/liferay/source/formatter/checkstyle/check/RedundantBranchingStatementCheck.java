@@ -52,11 +52,10 @@ public class RedundantBranchingStatementCheck extends BaseCheck {
 	private void _checkRedundantBranchingStatements(
 		DetailAST detailAST, int branchingStatementType) {
 
-		List<DetailAST> lastStatementDetailASTList =
-			_getLastStatementDetailASTList(
-				detailAST.findFirstToken(TokenTypes.SLIST));
+		List<DetailAST> lastStatementDetailASTs = _getLastStatementDetailASTs(
+			detailAST.findFirstToken(TokenTypes.SLIST));
 
-		for (DetailAST lastStatementDetailAST : lastStatementDetailASTList) {
+		for (DetailAST lastStatementDetailAST : lastStatementDetailASTs) {
 			if (lastStatementDetailAST.getType() != branchingStatementType) {
 				continue;
 			}
@@ -74,15 +73,15 @@ public class RedundantBranchingStatementCheck extends BaseCheck {
 		}
 	}
 
-	private List<DetailAST> _getLastStatementDetailASTList(
+	private List<DetailAST> _getLastStatementDetailASTs(
 		DetailAST slistDetailAST) {
 
-		List<DetailAST> lastStatementDetailASTList = new ArrayList<>();
+		List<DetailAST> lastStatementDetailASTs = new ArrayList<>();
 
 		if ((slistDetailAST == null) ||
 			(slistDetailAST.getType() != TokenTypes.SLIST)) {
 
-			return lastStatementDetailASTList;
+			return lastStatementDetailASTs;
 		}
 
 		DetailAST nextSiblingDetailAST = slistDetailAST.getNextSibling();
@@ -93,8 +92,8 @@ public class RedundantBranchingStatementCheck extends BaseCheck {
 			}
 
 			if (nextSiblingDetailAST.getType() == TokenTypes.LITERAL_CATCH) {
-				lastStatementDetailASTList.addAll(
-					_getLastStatementDetailASTList(
+				lastStatementDetailASTs.addAll(
+					_getLastStatementDetailASTs(
 						nextSiblingDetailAST.findFirstToken(TokenTypes.SLIST)));
 
 				nextSiblingDetailAST = nextSiblingDetailAST.getNextSibling();
@@ -107,14 +106,14 @@ public class RedundantBranchingStatementCheck extends BaseCheck {
 					nextSiblingDetailAST.getFirstChild();
 
 				if (firstChildDetailAST.getType() == TokenTypes.LITERAL_IF) {
-					lastStatementDetailASTList.addAll(
-						_getLastStatementDetailASTList(
+					lastStatementDetailASTs.addAll(
+						_getLastStatementDetailASTs(
 							firstChildDetailAST.findFirstToken(
 								TokenTypes.SLIST)));
 				}
 				else {
-					lastStatementDetailASTList.addAll(
-						_getLastStatementDetailASTList(firstChildDetailAST));
+					lastStatementDetailASTs.addAll(
+						_getLastStatementDetailASTs(firstChildDetailAST));
 				}
 			}
 
@@ -127,21 +126,21 @@ public class RedundantBranchingStatementCheck extends BaseCheck {
 			lastChildDetailAST.getPreviousSibling();
 
 		if (previousSiblingDetailAST == null) {
-			return lastStatementDetailASTList;
+			return lastStatementDetailASTs;
 		}
 
 		if ((previousSiblingDetailAST.getType() == TokenTypes.LITERAL_IF) ||
 			(previousSiblingDetailAST.getType() == TokenTypes.LITERAL_TRY)) {
 
-			lastStatementDetailASTList.addAll(
-				_getLastStatementDetailASTList(
+			lastStatementDetailASTs.addAll(
+				_getLastStatementDetailASTs(
 					previousSiblingDetailAST.findFirstToken(TokenTypes.SLIST)));
 		}
 		else {
-			lastStatementDetailASTList.add(previousSiblingDetailAST);
+			lastStatementDetailASTs.add(previousSiblingDetailAST);
 		}
 
-		return lastStatementDetailASTList;
+		return lastStatementDetailASTs;
 	}
 
 	private static final String _MSG_REDUNDANT_BRANCHING_STATEMENT =

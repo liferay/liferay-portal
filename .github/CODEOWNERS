@@ -411,7 +411,7 @@ modules/dxp/apps/commerce-punchout/    @liferay-commerce
 modules/dxp/apps/document-library-opener/    @liferay-content-management
 modules/dxp/apps/enterprise-product-notification/
 modules/dxp/apps/frontend-theme/    @liferay-platform-experience
-modules/dxp/apps/multi-factor-authentication/
+modules/dxp/apps/multi-factor-authentication/    @liferay-appsec
 modules/dxp/apps/osb/osb-faro/    @liferay-ac
 modules/dxp/apps/osb/osb-site-initializer/    @liferay-site-management
 modules/dxp/apps/osb/osb-spring-boot/

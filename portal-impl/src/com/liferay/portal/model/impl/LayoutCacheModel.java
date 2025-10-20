@@ -129,8 +129,8 @@ public class LayoutCacheModel
 		sb.append(themeId);
 		sb.append(", colorSchemeId=");
 		sb.append(colorSchemeId);
-		sb.append(", styleBookEntryId=");
-		sb.append(styleBookEntryId);
+		sb.append(", styleBookEntryERC=");
+		sb.append(styleBookEntryERC);
 		sb.append(", css=");
 		sb.append(css);
 		sb.append(", priority=");
@@ -291,7 +291,12 @@ public class LayoutCacheModel
 			layoutImpl.setColorSchemeId(colorSchemeId);
 		}
 
-		layoutImpl.setStyleBookEntryId(styleBookEntryId);
+		if (styleBookEntryERC == null) {
+			layoutImpl.setStyleBookEntryERC("");
+		}
+		else {
+			layoutImpl.setStyleBookEntryERC(styleBookEntryERC);
+		}
 
 		if (css == null) {
 			layoutImpl.setCss("");
@@ -405,8 +410,7 @@ public class LayoutCacheModel
 		iconImageId = objectInput.readLong();
 		themeId = objectInput.readUTF();
 		colorSchemeId = objectInput.readUTF();
-
-		styleBookEntryId = objectInput.readLong();
+		styleBookEntryERC = objectInput.readUTF();
 		css = (String)objectInput.readObject();
 
 		priority = objectInput.readInt();
@@ -554,7 +558,12 @@ public class LayoutCacheModel
 			objectOutput.writeUTF(colorSchemeId);
 		}
 
-		objectOutput.writeLong(styleBookEntryId);
+		if (styleBookEntryERC == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(styleBookEntryERC);
+		}
 
 		if (css == null) {
 			objectOutput.writeObject("");
@@ -632,7 +641,7 @@ public class LayoutCacheModel
 	public long iconImageId;
 	public String themeId;
 	public String colorSchemeId;
-	public long styleBookEntryId;
+	public String styleBookEntryERC;
 	public String css;
 	public int priority;
 	public long faviconFileEntryId;

@@ -17,12 +17,24 @@ public class LPD_47117 {
 		Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
 		int type, String subtype, ServiceContext serviceContext) {
 
-		RoleLocalServiceUtil.addRole(123, className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
-		RoleLocalServiceUtil.addRole(userId, className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
-		RoleServiceUtil.addRole("test123", classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
-		RoleServiceUtil.addRole(className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
-		_roleLocalService.addRole(userId, className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
-		_roleService.addRole(className, classPK, name, titleMap, descriptionMap, type, subtype, serviceContext);
+		RoleLocalServiceUtil.addRole(
+			123, className, classPK, name, titleMap, descriptionMap, type,
+			subtype, serviceContext);
+		RoleLocalServiceUtil.addRole(
+			userId, className, classPK, name, titleMap, descriptionMap, type,
+			subtype, serviceContext);
+		RoleServiceUtil.addRole(
+			"test123", classPK, name, titleMap, descriptionMap, type, subtype,
+			serviceContext);
+		RoleServiceUtil.addRole(
+			className, classPK, name, titleMap, descriptionMap, type, subtype,
+			serviceContext);
+		_roleLocalService.addRole(
+			userId, className, classPK, name, titleMap, descriptionMap, type,
+			subtype, serviceContext);
+		_roleService.addRole(
+			className, classPK, name, titleMap, descriptionMap, type, subtype,
+			serviceContext);
 	}
 
 	@Reference

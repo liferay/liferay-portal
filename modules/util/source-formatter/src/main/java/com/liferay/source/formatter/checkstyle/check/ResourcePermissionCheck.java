@@ -70,22 +70,22 @@ public class ResourcePermissionCheck extends BaseCheck {
 			propertyAnnotationMemberValuePairDetailAST.findFirstToken(
 				TokenTypes.ANNOTATION_ARRAY_INIT);
 
-		List<DetailAST> expressionDetailASTList = new ArrayList<>();
+		List<DetailAST> expressionDetailASTs = new ArrayList<>();
 
 		if (annotationArrayInitDetailAST != null) {
-			expressionDetailASTList.addAll(
+			expressionDetailASTs.addAll(
 				getAllChildTokens(
 					annotationArrayInitDetailAST, false, TokenTypes.EXPR));
 		}
 		else {
-			expressionDetailASTList.add(
+			expressionDetailASTs.add(
 				propertyAnnotationMemberValuePairDetailAST.findFirstToken(
 					TokenTypes.EXPR));
 		}
 
 		boolean hasModelClassName = false;
 
-		for (DetailAST expressionDetailAST : expressionDetailASTList) {
+		for (DetailAST expressionDetailAST : expressionDetailASTs) {
 			DetailAST firstChildDetailAST = expressionDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.STRING_LITERAL) {

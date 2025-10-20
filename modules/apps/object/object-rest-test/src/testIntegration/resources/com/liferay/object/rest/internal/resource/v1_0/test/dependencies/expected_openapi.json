@@ -30,8 +30,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "AuditEvent"
 				}
@@ -54,8 +54,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "AuditFieldChange"
 				}
@@ -128,8 +128,8 @@
 					"type"
 				],
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Collaborator"
 				}
@@ -196,8 +196,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Creator"
 				}
@@ -215,8 +215,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"FacetValue": {
 				"properties": {
@@ -229,8 +229,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"FileEntry": {
 				"properties": {
@@ -295,8 +295,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "FileEntry"
 				}
@@ -317,8 +317,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Folder"
 				}
@@ -338,8 +338,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Link"
 				}
@@ -366,8 +366,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ListEntry"
 				}
@@ -554,168 +554,519 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-					"creator",
-					"creatorId",
-					"dateCreated",
-					"dateModified",
-					"externalReferenceCode",
-					"field2",
-					"id",
-					"keywords",
-					"relationship1/creator",
-					"relationship1/creatorId",
-					"relationship1/dateCreated",
-					"relationship1/dateModified",
-					"relationship1/externalReferenceCode",
-					"relationship1/field1",
-					"relationship1/id",
-					"relationship1/keywords",
-					"relationship1/multiselectPicklistField",
-					"relationship1/object1Id",
-					"relationship1/r_relationship2_c_object1ERC",
-					"relationship1/r_relationship2_c_object1Id",
-					"relationship1/status",
-					"relationship1/taxonomyCategoryIds",
-					"relationship1/userId",
-					"relationship2/creator",
-					"relationship2/creatorId",
-					"relationship2/dateCreated",
-					"relationship2/dateModified",
-					"relationship2/externalReferenceCode",
-					"relationship2/field1",
-					"relationship2/id",
-					"relationship2/keywords",
-					"relationship2/multiselectPicklistField",
-					"relationship2/object1Id",
-					"relationship2/r_relationship2_c_object1ERC",
-					"relationship2/r_relationship2_c_object1Id",
-					"relationship2/relationship1/creator",
-					"relationship2/relationship1/creatorId",
-					"relationship2/relationship1/dateCreated",
-					"relationship2/relationship1/dateModified",
-					"relationship2/relationship1/externalReferenceCode",
-					"relationship2/relationship1/field2",
-					"relationship2/relationship1/id",
-					"relationship2/relationship1/keywords",
-					"relationship2/relationship1/status",
-					"relationship2/relationship1/taxonomyCategoryIds",
-					"relationship2/relationship1/userId",
-					"relationship2/relationship2/creator",
-					"relationship2/relationship2/creatorId",
-					"relationship2/relationship2/dateCreated",
-					"relationship2/relationship2/dateModified",
-					"relationship2/relationship2/externalReferenceCode",
-					"relationship2/relationship2/field2",
-					"relationship2/relationship2/id",
-					"relationship2/relationship2/keywords",
-					"relationship2/relationship2/status",
-					"relationship2/relationship2/taxonomyCategoryIds",
-					"relationship2/relationship2/userId",
-					"relationship2/relationship3/creator",
-					"relationship2/relationship3/creatorId",
-					"relationship2/relationship3/dateCreated",
-					"relationship2/relationship3/dateModified",
-					"relationship2/relationship3/externalReferenceCode",
-					"relationship2/relationship3/field1",
-					"relationship2/relationship3/id",
-					"relationship2/relationship3/keywords",
-					"relationship2/relationship3/multiselectPicklistField",
-					"relationship2/relationship3/object2Id",
-					"relationship2/relationship3/r_relationship4_c_object2ERC",
-					"relationship2/relationship3/r_relationship4_c_object2Id",
-					"relationship2/relationship3/relationship3/creator",
-					"relationship2/relationship3/relationship3/creatorId",
-					"relationship2/relationship3/relationship3/dateCreated",
-					"relationship2/relationship3/relationship3/dateModified",
-					"relationship2/relationship3/relationship3/externalReferenceCode",
-					"relationship2/relationship3/relationship3/field1",
-					"relationship2/relationship3/relationship3/id",
-					"relationship2/relationship3/relationship3/keywords",
-					"relationship2/relationship3/relationship3/multiselectPicklistField",
-					"relationship2/relationship3/relationship3/object1Id",
-					"relationship2/relationship3/relationship3/r_relationship2_c_object1ERC",
-					"relationship2/relationship3/relationship3/r_relationship2_c_object1Id",
-					"relationship2/relationship3/relationship3/status",
-					"relationship2/relationship3/relationship3/taxonomyCategoryIds",
-					"relationship2/relationship3/relationship3/userId",
-					"relationship2/relationship3/relationship4/creator",
-					"relationship2/relationship3/relationship4/creatorId",
-					"relationship2/relationship3/relationship4/dateCreated",
-					"relationship2/relationship3/relationship4/dateModified",
-					"relationship2/relationship3/relationship4/externalReferenceCode",
-					"relationship2/relationship3/relationship4/field1",
-					"relationship2/relationship3/relationship4/id",
-					"relationship2/relationship3/relationship4/keywords",
-					"relationship2/relationship3/relationship4/multiselectPicklistField",
-					"relationship2/relationship3/relationship4/object1Id",
-					"relationship2/relationship3/relationship4/r_relationship2_c_object1ERC",
-					"relationship2/relationship3/relationship4/r_relationship2_c_object1Id",
-					"relationship2/relationship3/relationship4/status",
-					"relationship2/relationship3/relationship4/taxonomyCategoryIds",
-					"relationship2/relationship3/relationship4/userId",
-					"relationship2/relationship3/relationship5/creator",
-					"relationship2/relationship3/relationship5/creatorId",
-					"relationship2/relationship3/relationship5/dateCreated",
-					"relationship2/relationship3/relationship5/dateModified",
-					"relationship2/relationship3/relationship5/externalReferenceCode",
-					"relationship2/relationship3/relationship5/field1",
-					"relationship2/relationship3/relationship5/id",
-					"relationship2/relationship3/relationship5/keywords",
-					"relationship2/relationship3/relationship5/relationship5/creator",
-					"relationship2/relationship3/relationship5/relationship5/creatorId",
-					"relationship2/relationship3/relationship5/relationship5/dateCreated",
-					"relationship2/relationship3/relationship5/relationship5/dateModified",
-					"relationship2/relationship3/relationship5/relationship5/externalReferenceCode",
-					"relationship2/relationship3/relationship5/relationship5/field1",
-					"relationship2/relationship3/relationship5/relationship5/id",
-					"relationship2/relationship3/relationship5/relationship5/keywords",
-					"relationship2/relationship3/relationship5/relationship5/multiselectPicklistField",
-					"relationship2/relationship3/relationship5/relationship5/object2Id",
-					"relationship2/relationship3/relationship5/relationship5/r_relationship4_c_object2ERC",
-					"relationship2/relationship3/relationship5/relationship5/r_relationship4_c_object2Id",
-					"relationship2/relationship3/relationship5/relationship5/status",
-					"relationship2/relationship3/relationship5/relationship5/taxonomyCategoryIds",
-					"relationship2/relationship3/relationship5/relationship5/userId",
-					"relationship2/relationship3/relationship5/relationship6/creator",
-					"relationship2/relationship3/relationship5/relationship6/creatorId",
-					"relationship2/relationship3/relationship5/relationship6/dateCreated",
-					"relationship2/relationship3/relationship5/relationship6/dateModified",
-					"relationship2/relationship3/relationship5/relationship6/externalReferenceCode",
-					"relationship2/relationship3/relationship5/relationship6/field1",
-					"relationship2/relationship3/relationship5/relationship6/id",
-					"relationship2/relationship3/relationship5/relationship6/keywords",
-					"relationship2/relationship3/relationship5/relationship6/status",
-					"relationship2/relationship3/relationship5/relationship6/taxonomyCategoryIds",
-					"relationship2/relationship3/relationship5/relationship6/userId",
-					"relationship2/relationship3/relationship5/status",
-					"relationship2/relationship3/relationship5/taxonomyCategoryIds",
-					"relationship2/relationship3/relationship5/userId",
-					"relationship2/relationship3/status",
-					"relationship2/relationship3/taxonomyCategoryIds",
-					"relationship2/relationship3/userId",
-					"relationship2/relationship4/creator",
-					"relationship2/relationship4/creatorId",
-					"relationship2/relationship4/dateCreated",
-					"relationship2/relationship4/dateModified",
-					"relationship2/relationship4/externalReferenceCode",
-					"relationship2/relationship4/field1",
-					"relationship2/relationship4/id",
-					"relationship2/relationship4/keywords",
-					"relationship2/relationship4/multiselectPicklistField",
-					"relationship2/relationship4/object2Id",
-					"relationship2/relationship4/r_relationship4_c_object2ERC",
-					"relationship2/relationship4/r_relationship4_c_object2Id",
-					"relationship2/relationship4/status",
-					"relationship2/relationship4/taxonomyCategoryIds",
-					"relationship2/relationship4/userId",
-					"relationship2/status",
-					"relationship2/taxonomyCategoryIds",
-					"relationship2/userId",
-					"status",
-					"taxonomyCategoryIds",
-					"userId"
-				],
+				"x-filterable": {
+					"creator": {
+						"type": "string"
+					},
+					"creatorId": {
+						"type": "integer"
+					},
+					"dateCreated": {
+						"type": "date_time"
+					},
+					"dateModified": {
+						"type": "date_time"
+					},
+					"externalReferenceCode": {
+						"type": "string"
+					},
+					"field2": {
+						"type": "string"
+					},
+					"id": {
+						"type": "id"
+					},
+					"keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship1/creator": {
+						"type": "string"
+					},
+					"relationship1/creatorId": {
+						"type": "integer"
+					},
+					"relationship1/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship1/dateModified": {
+						"type": "date_time"
+					},
+					"relationship1/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship1/field1": {
+						"type": "string"
+					},
+					"relationship1/id": {
+						"type": "id"
+					},
+					"relationship1/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship1/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship1/object1Id": {
+						"type": "id"
+					},
+					"relationship1/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship1/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship1/status": {
+						"type": "integer"
+					},
+					"relationship1/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship1/userId": {
+						"type": "integer"
+					},
+					"relationship2/creator": {
+						"type": "string"
+					},
+					"relationship2/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/field1": {
+						"type": "string"
+					},
+					"relationship2/id": {
+						"type": "id"
+					},
+					"relationship2/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/object1Id": {
+						"type": "id"
+					},
+					"relationship2/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship2/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship1/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship1/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship1/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship1/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship1/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship1/field2": {
+						"type": "string"
+					},
+					"relationship2/relationship1/id": {
+						"type": "id"
+					},
+					"relationship2/relationship1/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship1/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship1/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship1/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship2/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship2/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship2/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship2/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship2/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship2/field2": {
+						"type": "string"
+					},
+					"relationship2/relationship2/id": {
+						"type": "id"
+					},
+					"relationship2/relationship2/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship2/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship2/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship2/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship3/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship3/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship3/id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/object2Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/r_relationship4_c_object2ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship3/r_relationship4_c_object2Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship3/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship3/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship3/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship3/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship3/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship3/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship3/id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship3/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship3/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship3/object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship3/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship3/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship3/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship3/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship3/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship4/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship4/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship4/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship4/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship4/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship4/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship4/id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship4/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship4/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship4/object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship4/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship4/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship4/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship4/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship4/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship5/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship5/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship5/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/relationship5/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship5/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/relationship5/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship5/relationship5/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship5/relationship5/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship5/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship5/id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship5/relationship5/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/relationship5/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/relationship5/object2Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship5/relationship5/r_relationship4_c_object2ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship5/r_relationship4_c_object2Id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship5/relationship5/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/relationship5/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/relationship5/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/relationship6/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship6/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/relationship6/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship5/relationship6/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship3/relationship5/relationship6/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship6/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship3/relationship5/relationship6/id": {
+						"type": "id"
+					},
+					"relationship2/relationship3/relationship5/relationship6/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/relationship6/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/relationship6/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/relationship6/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/relationship5/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship3/relationship5/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship3/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship3/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship4/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship4/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship4/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship4/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship4/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship4/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship4/id": {
+						"type": "id"
+					},
+					"relationship2/relationship4/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship4/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship4/object2Id": {
+						"type": "id"
+					},
+					"relationship2/relationship4/r_relationship4_c_object2ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship4/r_relationship4_c_object2Id": {
+						"type": "id"
+					},
+					"relationship2/relationship4/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship4/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship4/userId": {
+						"type": "integer"
+					},
+					"relationship2/status": {
+						"type": "integer"
+					},
+					"relationship2/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/userId": {
+						"type": "integer"
+					},
+					"status": {
+						"type": "integer"
+					},
+					"taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"userId": {
+						"type": "integer"
+					}
+				},
 				"xml": {
 					"name": "ObjectEntry"
 				}
@@ -933,194 +1284,602 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-					"creator",
-					"creatorId",
-					"dateCreated",
-					"dateModified",
-					"externalReferenceCode",
-					"field1",
-					"id",
-					"keywords",
-					"multiselectPicklistField",
-					"object1Id",
-					"r_relationship2_c_object1ERC",
-					"r_relationship2_c_object1Id",
-					"relationship1/creator",
-					"relationship1/creatorId",
-					"relationship1/dateCreated",
-					"relationship1/dateModified",
-					"relationship1/externalReferenceCode",
-					"relationship1/field2",
-					"relationship1/id",
-					"relationship1/keywords",
-					"relationship1/status",
-					"relationship1/taxonomyCategoryIds",
-					"relationship1/userId",
-					"relationship2/creator",
-					"relationship2/creatorId",
-					"relationship2/dateCreated",
-					"relationship2/dateModified",
-					"relationship2/externalReferenceCode",
-					"relationship2/field2",
-					"relationship2/id",
-					"relationship2/keywords",
-					"relationship2/relationship1/creator",
-					"relationship2/relationship1/creatorId",
-					"relationship2/relationship1/dateCreated",
-					"relationship2/relationship1/dateModified",
-					"relationship2/relationship1/externalReferenceCode",
-					"relationship2/relationship1/field1",
-					"relationship2/relationship1/id",
-					"relationship2/relationship1/keywords",
-					"relationship2/relationship1/multiselectPicklistField",
-					"relationship2/relationship1/object1Id",
-					"relationship2/relationship1/r_relationship2_c_object1ERC",
-					"relationship2/relationship1/r_relationship2_c_object1Id",
-					"relationship2/relationship1/status",
-					"relationship2/relationship1/taxonomyCategoryIds",
-					"relationship2/relationship1/userId",
-					"relationship2/relationship2/creator",
-					"relationship2/relationship2/creatorId",
-					"relationship2/relationship2/dateCreated",
-					"relationship2/relationship2/dateModified",
-					"relationship2/relationship2/externalReferenceCode",
-					"relationship2/relationship2/field1",
-					"relationship2/relationship2/id",
-					"relationship2/relationship2/keywords",
-					"relationship2/relationship2/multiselectPicklistField",
-					"relationship2/relationship2/object1Id",
-					"relationship2/relationship2/r_relationship2_c_object1ERC",
-					"relationship2/relationship2/r_relationship2_c_object1Id",
-					"relationship2/relationship2/status",
-					"relationship2/relationship2/taxonomyCategoryIds",
-					"relationship2/relationship2/userId",
-					"relationship2/status",
-					"relationship2/taxonomyCategoryIds",
-					"relationship2/userId",
-					"relationship3/creator",
-					"relationship3/creatorId",
-					"relationship3/dateCreated",
-					"relationship3/dateModified",
-					"relationship3/externalReferenceCode",
-					"relationship3/field1",
-					"relationship3/id",
-					"relationship3/keywords",
-					"relationship3/multiselectPicklistField",
-					"relationship3/object2Id",
-					"relationship3/r_relationship4_c_object2ERC",
-					"relationship3/r_relationship4_c_object2Id",
-					"relationship3/relationship3/creator",
-					"relationship3/relationship3/creatorId",
-					"relationship3/relationship3/dateCreated",
-					"relationship3/relationship3/dateModified",
-					"relationship3/relationship3/externalReferenceCode",
-					"relationship3/relationship3/field1",
-					"relationship3/relationship3/id",
-					"relationship3/relationship3/keywords",
-					"relationship3/relationship3/multiselectPicklistField",
-					"relationship3/relationship3/object1Id",
-					"relationship3/relationship3/r_relationship2_c_object1ERC",
-					"relationship3/relationship3/r_relationship2_c_object1Id",
-					"relationship3/relationship3/status",
-					"relationship3/relationship3/taxonomyCategoryIds",
-					"relationship3/relationship3/userId",
-					"relationship3/relationship4/creator",
-					"relationship3/relationship4/creatorId",
-					"relationship3/relationship4/dateCreated",
-					"relationship3/relationship4/dateModified",
-					"relationship3/relationship4/externalReferenceCode",
-					"relationship3/relationship4/field1",
-					"relationship3/relationship4/id",
-					"relationship3/relationship4/keywords",
-					"relationship3/relationship4/multiselectPicklistField",
-					"relationship3/relationship4/object1Id",
-					"relationship3/relationship4/r_relationship2_c_object1ERC",
-					"relationship3/relationship4/r_relationship2_c_object1Id",
-					"relationship3/relationship4/status",
-					"relationship3/relationship4/taxonomyCategoryIds",
-					"relationship3/relationship4/userId",
-					"relationship3/relationship5/creator",
-					"relationship3/relationship5/creatorId",
-					"relationship3/relationship5/dateCreated",
-					"relationship3/relationship5/dateModified",
-					"relationship3/relationship5/externalReferenceCode",
-					"relationship3/relationship5/field1",
-					"relationship3/relationship5/id",
-					"relationship3/relationship5/keywords",
-					"relationship3/relationship5/relationship5/creator",
-					"relationship3/relationship5/relationship5/creatorId",
-					"relationship3/relationship5/relationship5/dateCreated",
-					"relationship3/relationship5/relationship5/dateModified",
-					"relationship3/relationship5/relationship5/externalReferenceCode",
-					"relationship3/relationship5/relationship5/field1",
-					"relationship3/relationship5/relationship5/id",
-					"relationship3/relationship5/relationship5/keywords",
-					"relationship3/relationship5/relationship5/multiselectPicklistField",
-					"relationship3/relationship5/relationship5/object2Id",
-					"relationship3/relationship5/relationship5/r_relationship4_c_object2ERC",
-					"relationship3/relationship5/relationship5/r_relationship4_c_object2Id",
-					"relationship3/relationship5/relationship5/status",
-					"relationship3/relationship5/relationship5/taxonomyCategoryIds",
-					"relationship3/relationship5/relationship5/userId",
-					"relationship3/relationship5/relationship6/creator",
-					"relationship3/relationship5/relationship6/creatorId",
-					"relationship3/relationship5/relationship6/dateCreated",
-					"relationship3/relationship5/relationship6/dateModified",
-					"relationship3/relationship5/relationship6/externalReferenceCode",
-					"relationship3/relationship5/relationship6/field1",
-					"relationship3/relationship5/relationship6/id",
-					"relationship3/relationship5/relationship6/keywords",
-					"relationship3/relationship5/relationship6/relationship6/creator",
-					"relationship3/relationship5/relationship6/relationship6/creatorId",
-					"relationship3/relationship5/relationship6/relationship6/dateCreated",
-					"relationship3/relationship5/relationship6/relationship6/dateModified",
-					"relationship3/relationship5/relationship6/relationship6/externalReferenceCode",
-					"relationship3/relationship5/relationship6/relationship6/field1",
-					"relationship3/relationship5/relationship6/relationship6/id",
-					"relationship3/relationship5/relationship6/relationship6/keywords",
-					"relationship3/relationship5/relationship6/relationship6/status",
-					"relationship3/relationship5/relationship6/relationship6/taxonomyCategoryIds",
-					"relationship3/relationship5/relationship6/relationship6/userId",
-					"relationship3/relationship5/relationship6/relationship7/creator",
-					"relationship3/relationship5/relationship6/relationship7/creatorId",
-					"relationship3/relationship5/relationship6/relationship7/dateCreated",
-					"relationship3/relationship5/relationship6/relationship7/dateModified",
-					"relationship3/relationship5/relationship6/relationship7/externalReferenceCode",
-					"relationship3/relationship5/relationship6/relationship7/field1",
-					"relationship3/relationship5/relationship6/relationship7/id",
-					"relationship3/relationship5/relationship6/relationship7/keywords",
-					"relationship3/relationship5/relationship6/relationship7/status",
-					"relationship3/relationship5/relationship6/relationship7/taxonomyCategoryIds",
-					"relationship3/relationship5/relationship6/relationship7/userId",
-					"relationship3/relationship5/relationship6/status",
-					"relationship3/relationship5/relationship6/taxonomyCategoryIds",
-					"relationship3/relationship5/relationship6/userId",
-					"relationship3/relationship5/status",
-					"relationship3/relationship5/taxonomyCategoryIds",
-					"relationship3/relationship5/userId",
-					"relationship3/status",
-					"relationship3/taxonomyCategoryIds",
-					"relationship3/userId",
-					"relationship4/creator",
-					"relationship4/creatorId",
-					"relationship4/dateCreated",
-					"relationship4/dateModified",
-					"relationship4/externalReferenceCode",
-					"relationship4/field1",
-					"relationship4/id",
-					"relationship4/keywords",
-					"relationship4/multiselectPicklistField",
-					"relationship4/object2Id",
-					"relationship4/r_relationship4_c_object2ERC",
-					"relationship4/r_relationship4_c_object2Id",
-					"relationship4/status",
-					"relationship4/taxonomyCategoryIds",
-					"relationship4/userId",
-					"status",
-					"taxonomyCategoryIds",
-					"userId"
-				],
+				"x-filterable": {
+					"creator": {
+						"type": "string"
+					},
+					"creatorId": {
+						"type": "integer"
+					},
+					"dateCreated": {
+						"type": "date_time"
+					},
+					"dateModified": {
+						"type": "date_time"
+					},
+					"externalReferenceCode": {
+						"type": "string"
+					},
+					"field1": {
+						"type": "string"
+					},
+					"id": {
+						"type": "id"
+					},
+					"keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"object1Id": {
+						"type": "id"
+					},
+					"r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship1/creator": {
+						"type": "string"
+					},
+					"relationship1/creatorId": {
+						"type": "integer"
+					},
+					"relationship1/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship1/dateModified": {
+						"type": "date_time"
+					},
+					"relationship1/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship1/field2": {
+						"type": "string"
+					},
+					"relationship1/id": {
+						"type": "id"
+					},
+					"relationship1/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship1/status": {
+						"type": "integer"
+					},
+					"relationship1/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship1/userId": {
+						"type": "integer"
+					},
+					"relationship2/creator": {
+						"type": "string"
+					},
+					"relationship2/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/field2": {
+						"type": "string"
+					},
+					"relationship2/id": {
+						"type": "id"
+					},
+					"relationship2/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship1/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship1/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship1/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship1/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship1/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship1/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship1/id": {
+						"type": "id"
+					},
+					"relationship2/relationship1/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship1/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship1/object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship1/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship1/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship1/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship1/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship1/userId": {
+						"type": "integer"
+					},
+					"relationship2/relationship2/creator": {
+						"type": "string"
+					},
+					"relationship2/relationship2/creatorId": {
+						"type": "integer"
+					},
+					"relationship2/relationship2/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship2/relationship2/dateModified": {
+						"type": "date_time"
+					},
+					"relationship2/relationship2/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship2/relationship2/field1": {
+						"type": "string"
+					},
+					"relationship2/relationship2/id": {
+						"type": "id"
+					},
+					"relationship2/relationship2/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship2/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship2/relationship2/object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship2/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship2/relationship2/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship2/relationship2/status": {
+						"type": "integer"
+					},
+					"relationship2/relationship2/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/relationship2/userId": {
+						"type": "integer"
+					},
+					"relationship2/status": {
+						"type": "integer"
+					},
+					"relationship2/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship2/userId": {
+						"type": "integer"
+					},
+					"relationship3/creator": {
+						"type": "string"
+					},
+					"relationship3/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/field1": {
+						"type": "string"
+					},
+					"relationship3/id": {
+						"type": "id"
+					},
+					"relationship3/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/object2Id": {
+						"type": "id"
+					},
+					"relationship3/r_relationship4_c_object2ERC": {
+						"type": "string"
+					},
+					"relationship3/r_relationship4_c_object2Id": {
+						"type": "id"
+					},
+					"relationship3/relationship3/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship3/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship3/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship3/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship3/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship3/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship3/id": {
+						"type": "id"
+					},
+					"relationship3/relationship3/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship3/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship3/object1Id": {
+						"type": "id"
+					},
+					"relationship3/relationship3/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship3/relationship3/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship3/relationship3/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship3/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship3/userId": {
+						"type": "integer"
+					},
+					"relationship3/relationship4/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship4/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship4/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship4/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship4/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship4/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship4/id": {
+						"type": "id"
+					},
+					"relationship3/relationship4/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship4/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship4/object1Id": {
+						"type": "id"
+					},
+					"relationship3/relationship4/r_relationship2_c_object1ERC": {
+						"type": "string"
+					},
+					"relationship3/relationship4/r_relationship2_c_object1Id": {
+						"type": "id"
+					},
+					"relationship3/relationship4/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship4/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship4/userId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship5/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship5/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship5/id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship5/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship5/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship5/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship5/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship5/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship5/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship5/id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/relationship5/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship5/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship5/object2Id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/relationship5/r_relationship4_c_object2ERC": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship5/r_relationship4_c_object2Id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/relationship5/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship5/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship5/userId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship6/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship6/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/relationship6/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship6/relationship6/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/relationship6/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/relationship6/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship6/relationship6/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship6/relationship6/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/relationship6/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/relationship6/id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/relationship6/relationship6/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship6/relationship6/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/relationship6/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship6/relationship6/userId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/relationship7/creator": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/relationship7/creatorId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/relationship7/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship6/relationship7/dateModified": {
+						"type": "date_time"
+					},
+					"relationship3/relationship5/relationship6/relationship7/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/relationship7/field1": {
+						"type": "string"
+					},
+					"relationship3/relationship5/relationship6/relationship7/id": {
+						"type": "id"
+					},
+					"relationship3/relationship5/relationship6/relationship7/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship6/relationship7/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/relationship7/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship6/relationship7/userId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/relationship6/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship5/relationship6/userId": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/status": {
+						"type": "integer"
+					},
+					"relationship3/relationship5/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/relationship5/userId": {
+						"type": "integer"
+					},
+					"relationship3/status": {
+						"type": "integer"
+					},
+					"relationship3/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship3/userId": {
+						"type": "integer"
+					},
+					"relationship4/creator": {
+						"type": "string"
+					},
+					"relationship4/creatorId": {
+						"type": "integer"
+					},
+					"relationship4/dateCreated": {
+						"type": "date_time"
+					},
+					"relationship4/dateModified": {
+						"type": "date_time"
+					},
+					"relationship4/externalReferenceCode": {
+						"type": "string"
+					},
+					"relationship4/field1": {
+						"type": "string"
+					},
+					"relationship4/id": {
+						"type": "id"
+					},
+					"relationship4/keywords": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship4/multiselectPicklistField": {
+						"items": "string",
+						"type": "array"
+					},
+					"relationship4/object2Id": {
+						"type": "id"
+					},
+					"relationship4/r_relationship4_c_object2ERC": {
+						"type": "string"
+					},
+					"relationship4/r_relationship4_c_object2Id": {
+						"type": "id"
+					},
+					"relationship4/status": {
+						"type": "integer"
+					},
+					"relationship4/taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"relationship4/userId": {
+						"type": "integer"
+					},
+					"status": {
+						"type": "integer"
+					},
+					"taxonomyCategoryIds": {
+						"items": "integer",
+						"type": "array"
+					},
+					"userId": {
+						"type": "integer"
+					}
+				},
 				"xml": {
 					"name": "ObjectEntry"
 				}
@@ -1149,8 +1908,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ObjectDefinitionBrief"
 				}
@@ -1196,8 +1955,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"PageObject1": {
 				"properties": {
@@ -1245,8 +2004,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"PageObject2": {
 				"properties": {
@@ -1294,8 +2053,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"PagePermission": {
 				"properties": {
@@ -1338,8 +2097,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				]
+				"x-filterable": {
+				}
 			},
 			"ParentTaxonomyCategory": {
 				"properties": {
@@ -1354,8 +2113,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ParentTaxonomyCategory"
 				}
@@ -1373,8 +2132,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ParentTaxonomyVocabulary"
 				}
@@ -1398,8 +2157,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Permission"
 				}
@@ -1424,8 +2183,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Scope"
 				}
@@ -1452,8 +2211,8 @@
 					"code"
 				],
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Status"
 				}
@@ -1506,8 +2265,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "TaxonomyCategoryBrief"
 				}
@@ -1533,8 +2292,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "UserGroupBrief"
 				}
@@ -1557,8 +2316,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ValidationError"
 				}
@@ -1581,8 +2340,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ValidationRequest"
 				}
@@ -1602,8 +2361,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "ValidationResponse"
 				}
@@ -1622,8 +2381,8 @@
 					}
 				},
 				"type": "object",
-				"x-filterable": [
-				],
+				"x-filterable": {
+				},
 				"xml": {
 					"name": "Version"
 				}

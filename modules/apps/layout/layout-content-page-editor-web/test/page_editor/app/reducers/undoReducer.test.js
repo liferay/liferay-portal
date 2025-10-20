@@ -267,6 +267,7 @@ describe('undoReducer', () => {
 		};
 
 		const action = {
+			fragmentEntryLinks: [],
 			itemIds: [ITEM_ID],
 			layoutData: {items: []},
 		};

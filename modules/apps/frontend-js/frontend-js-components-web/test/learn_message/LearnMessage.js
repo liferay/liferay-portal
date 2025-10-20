@@ -49,6 +49,25 @@ describe('LearnMessage', () => {
 		expect(element.href).toEqual(URL);
 	});
 
+	it('displays aria label and shortcut icon', () => {
+		const {getByLabelText} = render(
+			<LearnMessageWithContext
+				resource="portal-search-web"
+				resourceKey="search-bar-suggestions"
+			/>
+		);
+
+		const element = getByLabelText('x-opens-new-window');
+
+		expect(element).not.toBeNull();
+
+		expect(
+			element
+				.querySelector('svg')
+				.classList.contains('lexicon-icon-shortcut')
+		).toBe(true);
+	});
+
 	it('displays nothing if LearnResourcesContext is missing', () => {
 		const {container} = render(
 			<LearnMessage

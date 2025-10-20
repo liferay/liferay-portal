@@ -90,14 +90,13 @@ public class PersistenceUpdateCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(
-				typeDetailAST.getParent(), variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			typeDetailAST.getParent(), variableName);
 
-		int size = variableCallerDetailASTList.size();
+		int size = variableCallerDetailASTs.size();
 
 		for (int i = 0; i < size; i++) {
-			if (!equals(variableCallerDetailASTList.get(i), nameDetailAST)) {
+			if (!equals(variableCallerDetailASTs.get(i), nameDetailAST)) {
 				continue;
 			}
 
@@ -106,7 +105,7 @@ public class PersistenceUpdateCheck extends BaseCheck {
 			}
 
 			DetailAST firstNextVariableCallerDetailAST =
-				variableCallerDetailASTList.get(i + 1);
+				variableCallerDetailASTs.get(i + 1);
 
 			if (firstNextVariableCallerDetailAST.getPreviousSibling() != null) {
 				break;
@@ -128,7 +127,7 @@ public class PersistenceUpdateCheck extends BaseCheck {
 
 			if (i <= (size - 2)) {
 				DetailAST secondNextVariableCallerDetailAST =
-					variableCallerDetailASTList.get(i + 2);
+					variableCallerDetailASTs.get(i + 2);
 
 				if (secondNextVariableCallerDetailAST.getLineNo() >
 						getEndLineNumber(parentDetailAST)) {

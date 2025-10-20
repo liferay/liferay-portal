@@ -431,56 +431,56 @@
 			</library>
 			<library>
 				<file-name>com.liferay.commerce.report.impl.jar!lucene-analyzers-common.jar</file-name>
-				<version>7.1.0</version>
+				<version>8.10.0</version>
 				<project-name>Lucene Common Analyzers</project-name>
 				<licenses>
 					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</license-name>
+						<license-url>https://opensource.org/licenses/CDDL-1.0</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.commerce.report.impl.jar!lucene-core.jar</file-name>
-				<version>7.1.0</version>
+				<version>8.10.0</version>
 				<project-name>Lucene Core</project-name>
 				<licenses>
 					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</license-name>
+						<license-url>https://opensource.org/licenses/CDDL-1.0</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.commerce.report.impl.jar!lucene-queries.jar</file-name>
-				<version>7.1.0</version>
+				<version>8.10.0</version>
 				<project-name>Lucene Queries</project-name>
 				<licenses>
 					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</license-name>
+						<license-url>https://opensource.org/licenses/CDDL-1.0</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.commerce.report.impl.jar!lucene-queryparser.jar</file-name>
-				<version>7.1.0</version>
+				<version>8.10.0</version>
 				<project-name>Lucene QueryParsers</project-name>
 				<licenses>
 					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</license-name>
+						<license-url>https://opensource.org/licenses/CDDL-1.0</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.commerce.report.impl.jar!lucene-sandbox.jar</file-name>
-				<version>7.1.0</version>
+				<version>8.10.0</version>
 				<project-name>Lucene Sandbox</project-name>
 				<licenses>
 					<license>
-						<license-name>The Apache Software License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0</license-name>
+						<license-url>https://opensource.org/licenses/CDDL-1.0</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -1561,9 +1561,45 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.mcp.server.jar!mcp.jar</file-name>
-				<version>0.10.0</version>
-				<project-name>Bundle io.modelcontextprotocol.sdk : mcp</project-name>
+				<file-name>com.liferay.mcp.server.jar!jackson-dataformat-yaml.jar</file-name>
+				<version>2.18.2</version>
+				<project-name>Jackson-dataformat-YAML</project-name>
+				<project-url>https://github.com/FasterXML/jackson-dataformats-text</project-url>
+				<licenses>
+					<license>
+						<license-name>The Apache Software License, Version 2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.mcp.server.jar!json-schema-validator.jar</file-name>
+				<version>1.5.5</version>
+				<project-name>JsonSchemaValidator</project-name>
+				<project-url>https://github.com/networknt/json-schema-validator</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License Version 2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.mcp.server.jar!mcp-core.jar</file-name>
+				<version>0.13.1</version>
+				<project-name>Bundle io.modelcontextprotocol.sdk : mcp-core</project-name>
+				<project-url>https://github.com/modelcontextprotocol/java-sdk</project-url>
+				<licenses>
+					<license>
+						<license-name>MIT License</license-name>
+						<license-url>http://www.opensource.org/licenses/mit-license.php</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.mcp.server.jar!mcp-json-jackson2.jar</file-name>
+				<version>0.13.1</version>
+				<project-name>Java MCP SDK JSON Jackson</project-name>
 				<project-url>https://github.com/modelcontextprotocol/java-sdk</project-url>
 				<licenses>
 					<license>
@@ -1581,6 +1617,18 @@
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.mcp.server.jar!snakeyaml.jar</file-name>
+				<version>2.3</version>
+				<project-name>SnakeYAML</project-name>
+				<project-url>https://bitbucket.org/snakeyaml/snakeyaml</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -2964,7 +3012,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.store.azure.jar!reactor-netty-core.jar</file-name>
-				<version>1.0.45</version>
+				<version>1.2.10</version>
 				<project-name>Core functionality for the Reactor Netty library</project-name>
 				<project-url>https://github.com/reactor/reactor-netty</project-url>
 				<licenses>
@@ -3922,18 +3970,6 @@
 					<license>
 						<license-name>LGPL 2.1</license-name>
 						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.vulcan.impl.jar!reflections.jar</file-name>
-				<version>0.10.2</version>
-				<project-name>Reflections</project-name>
-				<project-url>http://github.com/ronmamo/reflections</project-url>
-				<licenses>
-					<license>
-						<license-name>WTFPL</license-name>
-						<license-url>http://www.wtfpl.net/</license-url>
 					</license>
 				</licenses>
 			</library>

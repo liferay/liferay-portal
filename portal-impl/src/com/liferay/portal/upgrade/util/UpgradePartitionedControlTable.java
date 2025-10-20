@@ -6,10 +6,10 @@
 package com.liferay.portal.upgrade.util;
 
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.PropsValues;
 
 /**
  * @author Sofía Mendoza Gutiérrez
@@ -36,7 +36,7 @@ public class UpgradePartitionedControlTable extends UpgradeProcess {
 
 	@Override
 	protected boolean isSkipUpgradeProcess() {
-		return !DBPartition.isPartitionEnabled();
+		return !PropsValues.DATABASE_PARTITION_ENABLED;
 	}
 
 	private final String _tableName;

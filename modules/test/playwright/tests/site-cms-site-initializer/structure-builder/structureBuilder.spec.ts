@@ -35,7 +35,11 @@ test(
 
 		await structureBuilderPage.goToCreateStructure();
 
-		await structureBuilderPage.enableForAllSpaces();
+		// Check it's enabled for all spaces by default
+
+		await expect(structureBuilderPage.spaceCheckbox).toBeChecked();
+
+		await expect(structureBuilderPage.spaceSelector).toBeDisabled();
 
 		// Change label and name
 

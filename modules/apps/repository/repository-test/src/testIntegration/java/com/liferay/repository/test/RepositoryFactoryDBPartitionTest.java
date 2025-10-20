@@ -104,7 +104,8 @@ public class RepositoryFactoryDBPartitionTest extends BaseDBPartitionTestCase {
 		String name = RandomTestUtil.randomString();
 
 		Group group = _groupLocalService.addGroup(
-			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
+			StringPool.BLANK, user.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), name
@@ -112,10 +113,10 @@ public class RepositoryFactoryDBPartitionTest extends BaseDBPartitionTestCase {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			GroupConstants.TYPE_SITE_OPEN, true,
+			GroupConstants.TYPE_SITE_OPEN, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			StringPool.SLASH + FriendlyURLNormalizerUtil.normalize(name), true,
-			true, new ServiceContext());
+			false, true, new ServiceContext());
 
 		Assert.assertEquals(groupId, group.getGroupId());
 

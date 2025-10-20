@@ -6,10 +6,10 @@
 package com.liferay.object.internal.upgrade.v9_2_2;
 
 import com.liferay.portal.kernel.dao.db.DBInspector;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.sql.DatabaseMetaData;
@@ -25,7 +25,7 @@ public class SchemaUpgradeProcess extends UpgradeProcess {
 		long companyId = CompanyThreadLocal.getCompanyId();
 		long defaultCompanyId = PortalInstancePool.getDefaultCompanyId();
 
-		if (!DBPartition.isPartitionEnabled() ||
+		if (!PropsValues.DATABASE_PARTITION_ENABLED ||
 			(companyId == defaultCompanyId)) {
 
 			return;

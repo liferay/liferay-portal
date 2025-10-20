@@ -11,7 +11,7 @@ const item = {
 	id: 1235,
 	name: '#test_item_name',
 	urls: {
-		path: '/documents/34879/34881/%23small_pexels-photo-1000498.jpeg/2d193f5d-5b3f-1f7a-c221-8392333f56ba?version=1.0&t=1744616121055&download=true&objectDefinitionExternalReferenceCode=L_BASIC_DOCUMENT&objectEntryExternalReferenceCode=07dd3433-04b4-eec7-2d21-be307eb0a06c',
+		path: '/documents/34879/34881/%23small_pexels-photo-1000498.jpeg/2d193f5d-5b3f-1f7a-c221-8392333f56ba?version=1.0&t=1744616121055&download=true&objectDefinitionExternalReferenceCode=L_CMS_BASIC_DOCUMENT&objectEntryExternalReferenceCode=07dd3433-04b4-eec7-2d21-be307eb0a06c',
 		simple: 'https://www.liferay.com',
 		specialChars,
 		specialCharsEncoded: encodeURI(specialChars),

@@ -266,7 +266,7 @@ public class UpdateBulkActionTaskSchedulerJobConfiguration
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BULK_ACTION_TASK", companyId);
+					"L_CMS_BULK_ACTION_TASK", companyId);
 
 		List<Long> primaryKeys = _objectEntryLocalService.getPrimaryKeys(
 			new Long[0], companyId, 0, objectDefinition.getObjectDefinitionId(),
@@ -285,7 +285,7 @@ public class UpdateBulkActionTaskSchedulerJobConfiguration
 		ObjectRelationship objectRelationship =
 			_objectRelationshipLocalService.getObjectRelationship(
 				objectDefinition.getObjectDefinitionId(),
-				"bulkActionTaskToBulkActionTaskItems");
+				"cmsBATaskToCMSBATaskItems");
 
 		for (Long primaryKey : primaryKeys) {
 			_partialUpdateObjectEntry(objectRelationship, primaryKey);

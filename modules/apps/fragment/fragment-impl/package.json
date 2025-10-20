@@ -7,6 +7,7 @@
 		"@clayui/label": "3.144.1",
 		"@clayui/layout": "3.144.1",
 		"@clayui/loading-indicator": "3.144.1",
+		"@liferay/frontend-js-state-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
 		"document-library-video": "*",

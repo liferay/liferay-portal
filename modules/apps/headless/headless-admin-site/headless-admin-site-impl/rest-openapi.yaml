@@ -20,6 +20,17 @@ components:
                         -   $ref: "#/components/schemas/SitePageActionExecutionResult"
                         -   $ref: "#/components/schemas/URLActionExecutionResult"
             type: object
+        BasicLayout:
+            properties:
+                align:
+                    enum: [Baseline, Center, End, None, Start, Stretch]
+                    type: string
+                flexWrap:
+                    enum: [NoWrap, Wrap, WrapReverse]
+                    type: string
+                justify:
+                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
+                    type: string
         ClassNameReference:
             allOf:
                 -   $ref: "#/components/schemas/CollectionReference"
@@ -122,20 +133,10 @@ components:
                                 $ref: "#/components/schemas/FragmentViewport"
                             type: array
                         layout:
+                            $ref: "#/components/schemas/BasicLayout"
                             # @review
                             description:
                                 the collection page element's layout.
-                            properties:
-                                align:
-                                    enum: [Baseline, Center, End, None, Start, Stretch]
-                                    type: string
-                                flexWrap:
-                                    enum: [NoWrap, Wrap, WrapReverse]
-                                    type: string
-                                justify:
-                                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
-                                    type: string
-                            type: object
                         listItemStyle:
                             # @review
                             description:
@@ -233,46 +234,6 @@ components:
                 -   id
                 -   collectionViewportDefinition
             type: object
-        ColumnPageElementDefinition:
-            allOf:
-                -   $ref: "#/components/schemas/PageElementDefinition"
-                -   properties:
-                        columnViewports:
-                            # @review
-                            description:
-                                A list of column viewports of the column page element.
-                            items:
-                                $ref: "#/components/schemas/ColumnViewport"
-                            type: array
-                        size:
-                            # @review
-                            description:
-                                The page column's size.
-                            maximum: 12
-                            minimum: 1
-                            type: integer
-            # @review
-            description:
-                The page element definition of a Column.
-            type: object
-        ColumnViewport:
-            # @review
-            description:
-                A column in a viewport.
-            properties:
-                columnViewportDefinition:
-                    properties:
-                        size:
-                            maximum: 12
-                            minimum: 1
-                            type: integer
-                    type: object
-                id:
-                    type: string
-            required:
-                -   columnViewportDefinition
-                -   id
-            type: object
         ContainerPageElementDefinition:
             allOf:
                 -   $ref: "#/components/schemas/PageElementDefinition"
@@ -320,26 +281,10 @@ components:
                                 A flag that indicates whether the container page element is indexed or not.
                             type: boolean
                         layout:
+                            $ref: "#/components/schemas/Layout"
                             # @review
                             description:
                                 the container page element's layout.
-                            properties:
-                                align:
-                                    enum: [Baseline, Center, End, None, Start, Stretch]
-                                    type: string
-                                contentDisplay:
-                                    enum: [Block, FlexColumn, FlexRow]
-                                    type: string
-                                flexWrap:
-                                    enum: [NoWrap, Wrap, WrapReverse]
-                                    type: string
-                                justify:
-                                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
-                                    type: string
-                                widthType:
-                                    enum: [Fixed, Fluid]
-                                    type: string
-                            type: object
                         name:
                             # @review
                             description:
@@ -834,29 +779,10 @@ components:
                                 A flag that indicates whether the page fragment instance is indexed or not.
                             type: boolean
                         layout:
+                            $ref: "#/components/schemas/Layout"
                             # @review
                             description:
                                 The form page element's layout.
-                            properties:
-                                align:
-                                    enum: [Baseline, Center, End, None, Start, Stretch]
-                                    type: string
-                                contentDisplay:
-                                    enum: [Block, FlexColumn, FlexRow]
-                                    type: string
-                                flexWrap:
-                                    enum: [NoWrap, Wrap, WrapReverse]
-                                    type: string
-                                justify:
-                                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
-                                    type: string
-                                widthType:
-                                    # @review
-                                    description:
-                                        The width's type (fixed or fluid).
-                                    enum: [Fixed, Fluid]
-                                    type: string
-                            type: object
                         name:
                             # @review
                             description:
@@ -902,29 +828,10 @@ components:
                                 $ref: "#/components/schemas/FragmentViewport"
                             type: array
                         layout:
+                            $ref: "#/components/schemas/Layout"
                             # @review
                             description:
                                 The form step container page element's layout.
-                            properties:
-                                align:
-                                    enum: [Baseline, Center, End, None, Start, Stretch]
-                                    type: string
-                                contentDisplay:
-                                    enum: [Block, FlexColumn, FlexRow]
-                                    type: string
-                                flexWrap:
-                                    enum: [NoWrap, Wrap, WrapReverse]
-                                    type: string
-                                justify:
-                                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
-                                    type: string
-                                widthType:
-                                    # @review
-                                    description:
-                                        The width's type (fixed or fluid).
-                                    enum: [Fixed, Fluid]
-                                    type: string
-                            type: object
                         name:
                             # @review
                             description:
@@ -1643,146 +1550,10 @@ components:
                         Custom CSS that is applied to the fragment viewport.
                     type: string
                 fragmentViewportStyle:
+                    $ref: "#/components/schemas/FragmentViewportStyle"
                     # @review
                     description:
                         The fragment's viewport style.
-                    properties:
-                        backgroundColor:
-                            # @review
-                            description:
-                                The fragment viewport's background color.
-                            type: string
-                        borderColor:
-                            # @review
-                            description:
-                                The fragment viewport's border color.
-                            type: string
-                        borderRadius:
-                            # @review
-                            description:
-                                The fragment viewport's background radius.
-                            type: string
-                        borderWidth:
-                            # @review
-                            description:
-                                The fragment viewport's border width.
-                            type: string
-                        fontFamily:
-                            # @review
-                            description:
-                                The fragment viewport's font family.
-                            type: string
-                        fontSize:
-                            # @review
-                            description:
-                                The fragment viewport's font size.
-                            type: string
-                        fontWeight:
-                            # @review
-                            description:
-                                The fragment viewport's font weight.
-                            type: string
-                        height:
-                            # @review
-                            description:
-                                The fragment viewport's height.
-                            type: string
-                        hidden:
-                            # @review
-                            description:
-                                Specifies if the fragment's viewport is hidden to the user.
-                            type: boolean
-                        marginBottom:
-                            # @review
-                            description:
-                                The fragment viewport's margin bottom.
-                            type: string
-                        marginLeft:
-                            # @review
-                            description:
-                                The fragment viewport's margin left.
-                            type: string
-                        marginRight:
-                            # @review
-                            description:
-                                The fragment viewport's margin right.
-                            type: string
-                        marginTop:
-                            # @review
-                            description:
-                                The fragment viewport's margin top.
-                            type: string
-                        maxHeight:
-                            # @review
-                            description:
-                                The fragment viewport's max height.
-                            type: string
-                        maxWidth:
-                            # @review
-                            description:
-                                The fragment viewport's max width.
-                            type: string
-                        minHeight:
-                            # @review
-                            description:
-                                The fragment viewport's min height.
-                            type: string
-                        minWidth:
-                            # @review
-                            description:
-                                The fragment viewport's min width.
-                            type: string
-                        opacity:
-                            # @review
-                            description:
-                                The fragment viewport's opacity.
-                            type: string
-                        overflow:
-                            # @review
-                            description:
-                                The fragment viewport's overflow behavior.
-                            type: string
-                        paddingBottom:
-                            # @review
-                            description:
-                                The fragment viewport's padding bottom.
-                            type: string
-                        paddingLeft:
-                            # @review
-                            description:
-                                The fragment viewport's padding left.
-                            type: string
-                        paddingRight:
-                            # @review
-                            description:
-                                The fragment viewport's padding right.
-                            type: string
-                        paddingTop:
-                            # @review
-                            description:
-                                The fragment viewport's padding top.
-                            type: string
-                        shadow:
-                            # @review
-                            description:
-                                The fragment viewport's shadow effect.
-                            type: string
-                        textAlign:
-                            # @review
-                            description:
-                                The fragment viewport's text align.
-                            type: string
-                        textColor:
-                            # @review
-                            description:
-                                The fragment viewport's text color.
-                            type: string
-                        width:
-                            # @review
-                            description:
-                                The fragment viewport's width.
-                            type: string
-                    type: object
                 id:
                     # @review
                     description:
@@ -1790,6 +1561,147 @@ components:
                     type: string
             required:
                 -   id
+            type: object
+        FragmentViewportStyle:
+            # @review
+            description:
+                The fragment's viewport style.
+            properties:
+                backgroundColor:
+                    # @review
+                    description:
+                        The fragment viewport's background color.
+                    type: string
+                borderColor:
+                    # @review
+                    description:
+                        The fragment viewport's border color.
+                    type: string
+                borderRadius:
+                    # @review
+                    description:
+                        The fragment viewport's background radius.
+                    type: string
+                borderWidth:
+                    # @review
+                    description:
+                        The fragment viewport's border width.
+                    type: string
+                fontFamily:
+                    # @review
+                    description:
+                        The fragment viewport's font family.
+                    type: string
+                fontSize:
+                    # @review
+                    description:
+                        The fragment viewport's font size.
+                    type: string
+                fontWeight:
+                    # @review
+                    description:
+                        The fragment viewport's font weight.
+                    type: string
+                height:
+                    # @review
+                    description:
+                        The fragment viewport's height.
+                    type: string
+                hidden:
+                    # @review
+                    description:
+                        Specifies if the fragment's viewport is hidden to the user.
+                    type: boolean
+                marginBottom:
+                    # @review
+                    description:
+                        The fragment viewport's margin bottom.
+                    type: string
+                marginLeft:
+                    # @review
+                    description:
+                        The fragment viewport's margin left.
+                    type: string
+                marginRight:
+                    # @review
+                    description:
+                        The fragment viewport's margin right.
+                    type: string
+                marginTop:
+                    # @review
+                    description:
+                        The fragment viewport's margin top.
+                    type: string
+                maxHeight:
+                    # @review
+                    description:
+                        The fragment viewport's max height.
+                    type: string
+                maxWidth:
+                    # @review
+                    description:
+                        The fragment viewport's max width.
+                    type: string
+                minHeight:
+                    # @review
+                    description:
+                        The fragment viewport's min height.
+                    type: string
+                minWidth:
+                    # @review
+                    description:
+                        The fragment viewport's min width.
+                    type: string
+                opacity:
+                    # @review
+                    description:
+                        The fragment viewport's opacity.
+                    type: string
+                overflow:
+                    # @review
+                    description:
+                        The fragment viewport's overflow behavior.
+                    type: string
+                paddingBottom:
+                    # @review
+                    description:
+                        The fragment viewport's padding bottom.
+                    type: string
+                paddingLeft:
+                    # @review
+                    description:
+                        The fragment viewport's padding left.
+                    type: string
+                paddingRight:
+                    # @review
+                    description:
+                        The fragment viewport's padding right.
+                    type: string
+                paddingTop:
+                    # @review
+                    description:
+                        The fragment viewport's padding top.
+                    type: string
+                shadow:
+                    # @review
+                    description:
+                        The fragment viewport's shadow effect.
+                    type: string
+                textAlign:
+                    # @review
+                    description:
+                        The fragment viewport's text align.
+                    type: string
+                textColor:
+                    # @review
+                    description:
+                        The fragment viewport's text color.
+                    type: string
+                width:
+                    # @review
+                    description:
+                        The fragment viewport's width.
+                    type: string
             type: object
         FriendlyUrlHistory:
             # @review
@@ -1806,6 +1718,114 @@ components:
                     description:
                         The old localized relative URLs to the page's rendered content.
                     type: object
+            type: object
+        GridPageElementDefinition:
+            allOf:
+                -   $ref: "#/components/schemas/PageElementDefinition"
+                -   properties:
+                        cssClasses:
+                            # @review
+                            description:
+                                A list of CSS classes that are applied to the row page element.
+                            items:
+                                type: string
+                            type: array
+                        customCSS:
+                            # @review
+                            description:
+                                Custom CSS that is applied on the row page element.
+                            type: string
+                        fragmentStyle:
+                            $ref: "#/components/schemas/FragmentStyle"
+                            # @review
+                            description:
+                                The fragment style of the row page element.
+                        gridViewports:
+                            # @review
+                            description:
+                                A list of viewports configuration of the grid page element.
+                            items:
+                                $ref: "#/components/schemas/GridViewport"
+                            type: array
+                        gutters:
+                            # @review
+                            description:
+                                A flag that indicates whether the row page element has gutters.
+                            type: boolean
+                        indexed:
+                            # @review
+                            description:
+                                A flag that indicates whether the row page element is indexed or not.
+                            type: boolean
+                        modulesPerRow:
+                            # @review
+                            description:
+                                The row page element's modules per row.
+                            type: integer
+                        name:
+                            # @review
+                            description:
+                                The custom name of a row page element.
+                            type: string
+                        numberOfModules:
+                            # @review
+                            description:
+                                The row page element's number of modules.
+                            type: integer
+                        reverseOrder:
+                            # @review
+                            description:
+                                A flag that indicates whether the row page element has reverse order.
+                            type: boolean
+                        verticalAlignment:
+                            description:
+                                The vertical alignment property of the row page element.
+                            enum: [Bottom, Middle, Top]
+                            type: string
+            # @review
+            description:
+                The page element definition of a row.
+            type: object
+        GridViewport:
+            # @review
+            description:
+                A grid viewport.
+            properties:
+                customCSS:
+                    description:
+                        Custom CSS that is applied on the container viewport's page element.
+                    type: string
+                fragmentViewportStyle:
+                    $ref: "#/components/schemas/FragmentViewportStyle"
+                    # @review
+                    description:
+                        The fragment's viewport style.
+                gridViewportDefinition:
+                    # @review
+                    description:
+                        The definition of the grid viewport.
+                    properties:
+                        modulesPerRow:
+                            # @review
+                            description:
+                                The number of modules per grid.
+                            type: integer
+                        verticalAlignment:
+                            # @review
+                            description:
+                                The vertical alignment property of the grid viewport.
+                            enum: [Bottom, Middle, Top]
+                            type: string
+                    type: object
+                id:
+                    # @review
+                    description:
+                        The grid viewport's ID.
+                    enum: [LandscapeMobile, PortraitMobile, Tablet]
+                    type: string
+            required:
+                -   gridViewportDefinition
+                -   id
             type: object
         HtmlProperties:
             properties:
@@ -1836,6 +1856,18 @@ components:
             required:
                 -   externalReferenceCode
             type: object
+        Layout:
+            allOf:
+                -   $ref: "#/components/schemas/BasicLayout"
+                -   properties:
+                        contentDisplay:
+                            enum: [Block, FlexColumn, FlexRow]
+                            type: string
+                        widthType:
+                            description:
+                                The width's type (fixed or fluid).
+                            enum: [Fixed, Fluid]
+                            type: string
         MasterPage:
             # @review
             description:
@@ -1940,10 +1972,49 @@ components:
                 showNotification:
                     type: boolean
             type: object
+        ModulePageElementDefinition:
+            allOf:
+                -   $ref: "#/components/schemas/PageElementDefinition"
+                -   properties:
+                        moduleViewports:
+                            description:
+                                A list of module viewports of the module page element.
+                            items:
+                                $ref: "#/components/schemas/ModuleViewport"
+                            type: array
+                        size:
+                            description:
+                                The module's size.
+                            maximum: 12
+                            minimum: 1
+                            type: integer
+            # @review
+            description:
+                The page element definition of a Column.
+            type: object
+        ModuleViewport:
+            # @review
+            description:
+                A module in a viewport.
+            properties:
+                id:
+                    enum: [LandscapeMobile, PortraitMobile, Tablet]
+                    type: string
+                moduleViewportDefinition:
+                    properties:
+                        size:
+                            maximum: 12
+                            minimum: 1
+                            type: integer
+                    type: object
+            required:
+                -   id
+                -   moduleViewportDefinition
+            type: object
         NavigationSettings:
             # @review
             description:
-                Represents settings related with the site navigation of a page.
+                Represents the common navigation settings that can apply to a site page or to a widget page template.
             properties:
                 target:
                     # @review
@@ -2056,7 +2127,6 @@ components:
                 mapping:
                     Collection: "#/components/schemas/CollectionPageElementDefinition"
                     CollectionItem: "#/components/schemas/CollectionItemPageElementDefinition"
-                    Column: "#/components/schemas/ColumnPageElementDefinition"
                     Container: "#/components/schemas/ContainerPageElementDefinition"
                     DropZone: "#/components/schemas/DropZonePageElementDefinition"
                     Form: "#/components/schemas/FormPageElementDefinition"
@@ -2065,20 +2135,20 @@ components:
                     Fragment: "#/components/schemas/FragmentInstancePageElementDefinition"
                     FragmentComposition: "#/components/schemas/FragmentCompositionInstancePageElementDefinition"
                     FragmentDropZone: "#/components/schemas/FragmentDropZonePageElementDefinition"
-                    Row: "#/components/schemas/RowPageElementDefinition"
+                    Grid: "#/components/schemas/GridPageElementDefinition"
+                    Module: "#/components/schemas/ModulePageElementDefinition"
                     Widget: "#/components/schemas/WidgetInstancePageElementDefinition"
                 propertyName: type
             properties:
                 type:
                     # @review
                     description:
-                        The page element definition's type (collection, collection item, column, container, drop zone,
-                        form, form step, form step container, fragment, fragment composition, fragment drop zone, row or
-                        widget).
+                        The page element definition's type (collection, collection item, container, drop zone, form,
+                        form step, form step container, fragment, fragment composition, fragment drop zone, grid, 
+                        module or widget).
                     enum:
                         -   Collection
                         -   CollectionItem
-                        -   Column
                         -   Container
                         -   DropZone
                         -   Form
@@ -2087,7 +2157,8 @@ components:
                         -   Fragment
                         -   FragmentComposition
                         -   FragmentDropZone
-                        -   Row
+                        -   Grid
+                        -   Module
                         -   Widget
                     type: string
             type: object
@@ -2252,10 +2323,10 @@ components:
                         A flag that indicates whether the page is hidden from navigation.
                     type: boolean
                 navigationSettings:
-                    $ref: "#/components/schemas/NavigationSettings"
+                    $ref: "#/components/schemas/SitePageNavigationSettings"
                     # @review
                     description:
-                        The page's site navigation settings.
+                        The page's navigation settings.
                 openGraphSettings:
                     $ref: "#/components/schemas/OpenGraphSettings"
                     # @review
@@ -2270,11 +2341,6 @@ components:
                     maximum: 2147483647
                     minimum: 0
                     type: integer
-                queryString:
-                    # @review
-                    description:
-                        The default parameter for a page.
-                    type: string
                 seoSettings:
                     $ref: "#/components/schemas/SEOSettings"
                     # @review
@@ -2500,122 +2566,6 @@ components:
                         -   WidgetPageTemplateSettings
                     type: string
             type: object
-        RowPageElementDefinition:
-            allOf:
-                -   $ref: "#/components/schemas/PageElementDefinition"
-                -   properties:
-                        cssClasses:
-                            # @review
-                            description:
-                                A list of CSS classes that are applied to the row page element.
-                            items:
-                                type: string
-                            type: array
-                        customCSS:
-                            # @review
-                            description:
-                                Custom CSS that is applied on the row page element.
-                            type: string
-                        customCSSViewports:
-                            # @review
-                            description:
-                                The custom CSS viewports of the row page element.
-                            items:
-                                $ref: "#/components/schemas/CustomCSSViewport"
-                            type: array
-                        fragmentStyle:
-                            $ref: "#/components/schemas/FragmentStyle"
-                            # @review
-                            description:
-                                The fragment style of the row page element.
-                        fragmentViewports:
-                            # @review
-                            description:
-                                A list of fragment viewports of a row page element.
-                            items:
-                                $ref: "#/components/schemas/FragmentViewport"
-                            type: array
-                        gutters:
-                            # @review
-                            description:
-                                A flag that indicates whether the row page element has gutters.
-                            type: boolean
-                        indexed:
-                            # @review
-                            description:
-                                A flag that indicates whether the row page element is indexed or not.
-                            type: boolean
-                        modulesPerRow:
-                            # @review
-                            description:
-                                The row page element's modules per row.
-                            type: integer
-                        name:
-                            # @review
-                            description:
-                                The custom name of a row page element.
-                            type: string
-                        numberOfColumns:
-                            # @review
-                            description:
-                                The row page element's number of columns.
-                            type: integer
-                        reverseOrder:
-                            # @review
-                            description:
-                                A flag that indicates whether the row page element has reverse order.
-                            type: boolean
-                        rowViewports:
-                            # @review
-                            description:
-                                A list of viewports of the row page element.
-                            items:
-                                $ref: "#/components/schemas/RowViewport"
-                            type: array
-                        verticalAlignment:
-                            # @review
-                            description:
-                                The vertical alignment property of the row page element.
-                            type: string
-            # @review
-            description:
-                The page element definition of a row.
-            type: object
-        RowViewport:
-            # @review
-            description:
-                A row viewport.
-            properties:
-                id:
-                    # @review
-                    description:
-                        The row viewport's ID.
-                    type: string
-                rowViewportDefinition:
-                    # @review
-                    description:
-                        The definition of the row viewport.
-                    properties:
-                        modulesPerRow:
-                            # @review
-                            description:
-                                The number of modules per row.
-                            type: integer
-                        reverseOrder:
-                            # @review
-                            description:
-                                A flag that indicates whether the row viewport has reverse order.
-                            type: boolean
-                        verticalAlignment:
-                            # @review
-                            description:
-                                The vertical alignment property of the row viewport.
-                            type: string
-                    type: object
-            required:
-                -   id
-                -   rowViewportDefinition
-            type: object
         SEOSettings:
             # @review
             description:
@@ -2732,6 +2682,69 @@ components:
                     # @review
                     description:
                         The client extension for the theme spritemap of a page specification.
+            type: object
+        Site:
+            description:
+                Represents the site being created.
+            properties:
+                active:
+                    type: boolean
+                description:
+                    additionalProperties:
+                        type: string
+                    type: object
+                externalReferenceCode:
+                    description:
+                        The site's external reference code.
+                    type: string
+                friendlyUrlPath:
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                key:
+                    readOnly: true
+                    type: string
+                manualMembership:
+                    type: boolean
+                membershipRestriction:
+                    format: int32
+                    type: integer
+                membershipType:
+                    description:
+                        The default value is open.
+                    enum:
+                        -   open
+                        -   private
+                        -   restricted
+                    type: string
+                name:
+                    type: string
+                name_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                parentSiteExternalReferenceCode:
+                    type: string
+                parentSiteKey:
+                    type: string
+                    writeOnly: true
+                templateKey:
+                    type: string
+                    writeOnly: true
+                templateType:
+                    enum:
+                        -   site-initializer
+                        -   site-template
+                    type: string
+                    writeOnly: true
+                typeSettings:
+                    additionalProperties:
+                        type: string
+                    type: object
+            required:
+                -   name
             type: object
         SitePage:
             # @review
@@ -2872,6 +2885,19 @@ components:
                     # @review
                     description:
                         The localized submission of page type.
+            type: object
+        SitePageNavigationSettings:
+            allOf:
+                -   $ref: "#/components/schemas/NavigationSettings"
+                -   properties:
+                        queryString:
+                            # @review
+                            description:
+                                The default parameter for a page.
+                            type: string
+            # @review
+            description:
+                The navigation settings of a site page.
             type: object
         SitemapSettings:
             # @review
@@ -3555,7 +3581,7 @@ components:
                             $ref: "#/components/schemas/NavigationSettings"
                             # @review
                             description:
-                                The widget page template's site navigation settings.
+                                The widget page template's navigation settings.
             # @review
             description:
                 The settings of a widget page template.
@@ -3597,7 +3623,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.site.client', and version '1.0.16'."
+        'com.liferay.headless.admin.site.client', and version '1.0.17'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -8683,3 +8709,237 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["UtilityPage"]
+    "/sites/{siteId}":
+        delete:
+            description:
+                Deletes a site and all of its associated content.
+            operationId: deleteSite
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["Site"]
+        get:
+            operationId: getSite
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+            tags: ["Site"]
+    /sites:
+        get:
+            description:
+                Retrieves the sites. Results can be paginated, filtered, searched, and sorted.
+            operationId: getSitesPage
+            parameters:
+                -   in: query
+                    name: active
+                    schema:
+                        type: boolean
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                    description:
+                        default response
+            tags: ["Site"]
+        post:
+            description:
+                Adds a new site
+            operationId: postSite
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Site"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Site"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            tags: ["Site"]
+        put:
+            description:
+                Updates a site and all of its associated content.
+            operationId: putSite
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Site"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Site"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+            tags: ["Site"]
+    /sites/by-external-reference-code/{externalReferenceCode}:
+        delete:
+            description:
+                Deletes a site and all of its associated content.
+            operationId: deleteSiteByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["Site"]
+        get:
+            operationId: getSiteByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            tags: ["Site"]
+        put:
+            description:
+                Adds or update a new site
+            operationId: putSiteByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                file:
+                                    format: binary
+                                    type: string
+                            type: object
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            tags: ["Site"]
+    /sites/by-external-reference-code/{externalReferenceCode}/site-initializer:
+        get:
+            operationId: getSiteByExternalReferenceCodeSiteInitializer
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/zip:
+                            schema:
+                                format: binary
+                                type: string
+            tags: ["Site"]
+    /sites/site-initializer:
+        post:
+            description:
+                Adds a new site based on a multipart/form-data
+            operationId: postSiteSiteInitializer
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                file:
+                                    format: binary
+                                    type: string
+                                site:
+                                    $ref: "#/components/schemas/Site"
+                            type: object
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            tags: ["Site"]

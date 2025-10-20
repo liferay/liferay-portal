@@ -6,7 +6,6 @@
 package com.liferay.portal.osgi.web.portlet.container.test;
 
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -16,6 +15,7 @@ import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.portlet.Portlet;
@@ -49,7 +49,7 @@ public abstract class BasePortletContainerTestCase {
 			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
 
 	public static void assume() {
-		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
 	}
 
 	@Before

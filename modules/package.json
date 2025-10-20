@@ -29,9 +29,9 @@
 	},
 	"scripts": {
 		"checkFormat": "node-scripts check:ci",
-		"format": "node-scripts format",
-		"formatCurrentBranch": "node-scripts format --current-branch",
-		"formatLocalChanges": "node-scripts format --local-changes",
+		"format": "node-scripts format:ci --all",
+		"formatCurrentBranch": "node-scripts format:ci --current-branch",
+		"formatLocalChanges": "node-scripts format:ci --local-changes",
 		"test:all": "node-scripts test"
 	},
 	"workspaces": {

@@ -203,6 +203,15 @@ public class RowStyledLayoutStructureItem extends StyledLayoutStructureItem {
 			_viewportConfigurationJSONObjects.getOrDefault(
 				viewportSizeId, JSONFactoryUtil.createJSONObject()
 			).put(
+				"customCSS",
+				() -> {
+					if (configurationJSONObject.has("customCSS")) {
+						return configurationJSONObject.getString("customCSS");
+					}
+
+					return null;
+				}
+			).put(
 				"modulesPerRow",
 				() -> {
 					if (configurationJSONObject.has("modulesPerRow")) {

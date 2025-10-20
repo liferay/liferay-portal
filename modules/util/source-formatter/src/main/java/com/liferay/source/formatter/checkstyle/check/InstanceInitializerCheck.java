@@ -42,19 +42,19 @@ public class InstanceInitializerCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			firstChildDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() >= 2) {
-			_checkAttributeOrder(exprDetailASTList);
+		if (exprDetailASTs.size() >= 2) {
+			_checkAttributeOrder(exprDetailASTs);
 		}
 	}
 
-	private void _checkAttributeOrder(List<DetailAST> exprDetailASTList) {
+	private void _checkAttributeOrder(List<DetailAST> exprDetailASTs) {
 		String previousVariableName = null;
 		String previousMethodName = null;
 
-		for (DetailAST exprDetailAST : exprDetailASTList) {
+		for (DetailAST exprDetailAST : exprDetailASTs) {
 			DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() == TokenTypes.ASSIGN) {

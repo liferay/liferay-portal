@@ -2174,3 +2174,85 @@ test(
 		await copyRole('Site Member', 'Site');
 	}
 );
+
+test(
+	'Escape role name to avoid XSS injections',
+	{tag: '@LPD-67812'},
+	async ({apiHelpers, page, rolePage, rolesPage}) => {
+		const name = '"><img src=x onerror=alert(origin)></img>';
+
+		await rolesPage.goto();
+
+		await expect(rolesPage.rolesTable.searchInput).toBeEditable();
+
+		await expect(async () => {
+			await rolesPage.rolesTable.newButton.click();
+
+			await expect(rolePage.keyInput).toBeVisible();
+		}).toPass();
+
+		await rolePage.addRole(apiHelpers, {name, title: name});
+
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS detected');
+			}
+		});
+
+		await rolePage.backButton.click();
+
+		await expect(rolesPage.rolesTable.cell(name)).toHaveCount(1);
+	}
+);
+
+test(
+	'Escape role name to avoid XSS injection on role selection',
+	{tag: ['@LPD-67812']},
+	async ({
+		apiHelpers,
+		editUserPage,
+		page,
+		rolePage,
+		rolesPage,
+		usersAndOrganizationsPage,
+	}) => {
+		const name = '"><img src=x onerror=alert(origin)></img>';
+
+		await rolesPage.goto();
+
+		await expect(rolesPage.rolesTable.searchInput).toBeEditable();
+
+		await expect(async () => {
+			await rolesPage.rolesTable.newButton.click();
+
+			await expect(rolePage.keyInput).toBeVisible();
+		}).toPass();
+
+		await rolePage.addRole(apiHelpers, {name, title: name});
+
+		await rolePage.backButton.click();
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goToUsers();
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await expect(editUserPage.rolesLink).toBeVisible();
+
+		await editUserPage.rolesLink.click();
+
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS detected');
+			}
+		});
+
+		await editUserPage.selectRegularRolesButton.click();
+
+		await expect(editUserPage.selectRegularRolesSearchInput).toBeEnabled();
+	}
+);

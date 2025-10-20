@@ -311,17 +311,16 @@ public class FragmentEntryFragmentRendererTest {
 
 		defaultFragmentRendererContext.setLocale(LocaleUtil.US);
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
+		httpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(httpServletRequest));
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
 		_fragmentRenderer.render(
-			defaultFragmentRendererContext, mockHttpServletRequest,
+			defaultFragmentRendererContext, httpServletRequest,
 			mockHttpServletResponse);
 
 		String content = mockHttpServletResponse.getContentAsString();
@@ -340,7 +339,7 @@ public class FragmentEntryFragmentRendererTest {
 			mockHttpServletResponse = new MockHttpServletResponse();
 
 			_fragmentRenderer.render(
-				defaultFragmentRendererContext, mockHttpServletRequest,
+				defaultFragmentRendererContext, httpServletRequest,
 				mockHttpServletResponse);
 
 			content = mockHttpServletResponse.getContentAsString();
@@ -732,16 +731,15 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	private HttpServletRequest _getHttpServletRequest() throws Exception {
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			TilesUtil.DEFINITION,
 			new Definition(StringPool.BLANK, new HashMap<>()));
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
+		httpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(httpServletRequest));
 
-		return mockHttpServletRequest;
+		return httpServletRequest;
 	}
 
 	private ThemeDisplay _getThemeDisplay(HttpServletRequest httpServletRequest)

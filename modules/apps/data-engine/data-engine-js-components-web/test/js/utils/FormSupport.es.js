@@ -5,6 +5,7 @@
 
 import * as FormSupport from '../../../src/main/resources/META-INF/resources/js/utils/FormSupport.es';
 import createElement from '../__mock__/createElement.es';
+import mockPageWithNested from '../__mock__/mockPageWithNested.es';
 import mockPages from '../__mock__/mockPages.es';
 
 let pages = null;
@@ -16,54 +17,6 @@ describe('FormSupport', () => {
 
 	afterEach(() => {
 		pages = null;
-	});
-
-	it('add a new row to the pages and reorder', () => {
-		const indexToAddRow = 0;
-		const newRow = FormSupport.implAddRow(12, [
-			{
-				type: 'newRow',
-			},
-		]);
-		const pageIndex = 0;
-
-		expect(
-			FormSupport.addRow(pages, indexToAddRow, pageIndex, newRow)
-		).toMatchSnapshot();
-	});
-
-	it('returns an implementation of a row for the pages', () => {
-		const row = [
-			{
-				spritemap: 'icons.svg',
-				type: 'text',
-			},
-		];
-		const size = 12;
-
-		expect(FormSupport.implAddRow(size, row)).toEqual({
-			columns: [
-				{
-					fields: [
-						{
-							spritemap: 'icons.svg',
-							type: 'text',
-						},
-					],
-					size: 12,
-				},
-			],
-		});
-	});
-
-	it('gets a specific field through the pages', () => {
-		const indexColumn = 0;
-		const indexPage = 0;
-		const indexRow = 0;
-
-		expect(
-			FormSupport.getField(pages, indexPage, indexRow, indexColumn)
-		).toMatchSnapshot();
 	});
 
 	it('add a new field to column to the pages', () => {
@@ -108,74 +61,18 @@ describe('FormSupport', () => {
 		).toMatchSnapshot();
 	});
 
-	it('removes a column from pages and reorder', () => {
-		const columnIndex = 1;
+	it('add a new row to the pages and reorder', () => {
+		const indexToAddRow = 0;
+		const newRow = FormSupport.implAddRow(12, [
+			{
+				type: 'newRow',
+			},
+		]);
 		const pageIndex = 0;
-		const rowIndex = 1;
 
 		expect(
-			FormSupport.removeColumn(pages, pageIndex, rowIndex, columnIndex)
+			FormSupport.addRow(pages, indexToAddRow, pageIndex, newRow)
 		).toMatchSnapshot();
-	});
-
-	it('removes a fields to column from pages', () => {
-		const columnIndex = 1;
-		const pageIndex = 0;
-		const rowIndex = 1;
-
-		expect(
-			FormSupport.removeFields(pages, pageIndex, rowIndex, columnIndex)
-		).toMatchSnapshot();
-	});
-
-	it('removes a row from pages and reorder', () => {
-		const pageIndex = 0;
-		const rowIndex = 1;
-
-		expect(
-			FormSupport.removeRow(pages, pageIndex, rowIndex)
-		).toMatchSnapshot();
-	});
-
-	it('gets a column from pages', () => {
-		const columnIndex = 1;
-		const pageIndex = 0;
-		const rowIndex = 1;
-
-		expect(
-			FormSupport.getColumn(pages, pageIndex, rowIndex, columnIndex)
-		).toMatchSnapshot();
-	});
-
-	it('gets a row from pages', () => {
-		const pageIndex = 0;
-		const rowIndex = 1;
-
-		expect(
-			FormSupport.getRow(pages, pageIndex, rowIndex)
-		).toMatchSnapshot();
-	});
-
-	it('returns true if there are fields in a row', () => {
-		const pageIndex = 0;
-		const rowIndex = 0;
-
-		expect(
-			FormSupport.rowHasFields(pages, pageIndex, rowIndex)
-		).toBeTruthy();
-	});
-
-	it('returns false if there are fields in a row', () => {
-		const pageIndex = 0;
-		const rowIndex = 0;
-
-		expect(
-			FormSupport.rowHasFields(
-				FormSupport.removeFields(pages, pageIndex, rowIndex, 0),
-				pageIndex,
-				rowIndex
-			)
-		).toBeFalsy();
 	});
 
 	it('extracts the location of the field through the element', () => {
@@ -228,6 +125,146 @@ describe('FormSupport', () => {
 			pageIndex: 2,
 			rowIndex: 1,
 		});
+	});
+
+	it('gets a column from pages', () => {
+		const columnIndex = 1;
+		const pageIndex = 0;
+		const rowIndex = 1;
+
+		expect(
+			FormSupport.getColumn(pages, pageIndex, rowIndex, columnIndex)
+		).toMatchSnapshot();
+	});
+
+	it('gets a row from pages', () => {
+		const pageIndex = 0;
+		const rowIndex = 1;
+
+		expect(
+			FormSupport.getRow(pages, pageIndex, rowIndex)
+		).toMatchSnapshot();
+	});
+
+	it('gets a specific field through the pages', () => {
+		const indexColumn = 0;
+		const indexPage = 0;
+		const indexRow = 0;
+
+		expect(
+			FormSupport.getField(pages, indexPage, indexRow, indexColumn)
+		).toMatchSnapshot();
+	});
+
+	it('removes a column from pages and reorder', () => {
+		const columnIndex = 1;
+		const pageIndex = 0;
+		const rowIndex = 1;
+
+		expect(
+			FormSupport.removeColumn(pages, pageIndex, rowIndex, columnIndex)
+		).toMatchSnapshot();
+	});
+
+	it('removes a fields to column from pages', () => {
+		const columnIndex = 1;
+		const pageIndex = 0;
+		const rowIndex = 1;
+
+		expect(
+			FormSupport.removeFields(pages, pageIndex, rowIndex, columnIndex)
+		).toMatchSnapshot();
+	});
+
+	it('removes a row from pages and reorder', () => {
+		const pageIndex = 0;
+		const rowIndex = 1;
+
+		expect(
+			FormSupport.removeRow(pages, pageIndex, rowIndex)
+		).toMatchSnapshot();
+	});
+
+	it('removes an empty column from nested fieldsets', () => {
+		pages = JSON.parse(JSON.stringify(mockPageWithNested));
+
+		const nestedFieldset =
+			pages[0].rows[0].columns[0].fields[0].nestedFields[0];
+
+		expect(nestedFieldset.rows).toEqual([
+			expect.objectContaining({
+				columns: [
+					expect.objectContaining({
+						fields: [],
+					}),
+				],
+			}),
+			expect.objectContaining({
+				columns: [
+					expect.objectContaining({
+						fields: ['Text67163348'],
+					}),
+				],
+			}),
+		]);
+
+		FormSupport.removeNestedEmptyRows(pages, 0);
+
+		expect(nestedFieldset.rows).toEqual([
+			expect.objectContaining({
+				columns: [
+					expect.objectContaining({
+						fields: ['Text67163348'],
+					}),
+				],
+			}),
+		]);
+	});
+
+	it('returns an implementation of a row for the pages', () => {
+		const row = [
+			{
+				spritemap: 'icons.svg',
+				type: 'text',
+			},
+		];
+		const size = 12;
+
+		expect(FormSupport.implAddRow(size, row)).toEqual({
+			columns: [
+				{
+					fields: [
+						{
+							spritemap: 'icons.svg',
+							type: 'text',
+						},
+					],
+					size: 12,
+				},
+			],
+		});
+	});
+
+	it('returns false if there are fields in a row', () => {
+		const pageIndex = 0;
+		const rowIndex = 0;
+
+		expect(
+			FormSupport.rowHasFields(
+				FormSupport.removeFields(pages, pageIndex, rowIndex, 0),
+				pageIndex,
+				rowIndex
+			)
+		).toBeFalsy();
+	});
+
+	it('returns true if there are fields in a row', () => {
+		const pageIndex = 0;
+		const rowIndex = 0;
+
+		expect(
+			FormSupport.rowHasFields(pages, pageIndex, rowIndex)
+		).toBeTruthy();
 	});
 
 	it('updates a field', () => {

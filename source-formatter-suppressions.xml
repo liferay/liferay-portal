@@ -174,10 +174,6 @@
 		<suppress checks="XMLServiceEntityNameCheck" files="portal-impl/src/com/liferay/portal/service\.xml" />
 		<suppress checks="XMLServiceEntityNameCheck" files="portal-impl/src/com/liferay/portlet/exportimport/service\.xml" />
 		<suppress checks="XMLSpringFileCheck" files="portal-impl/src/META-INF/portal-spring\.xml" />
-		<suppress checks="YMLDefinitionOrderCheck" files="cloud/helm/aws/charts/backup-restore/templates/_scripts\.tpl" />
-		<suppress checks="YMLEmptyLinesCheck" files="cloud/helm/aws/charts/backup-restore/templates/_scripts\.tpl" />
-		<suppress checks="YMLIndentationCheck" files="cloud/helm/aws/charts/backup-restore/templates/_scripts\.tpl" />
-		<suppress checks="YMLWhitespaceCheck" files="cloud/helm/aws/charts/backup-restore/templates/_scripts\.tpl" />
 
 		<!-- Temporary suppressions for deprecated apps (LPS-100170) -->
 

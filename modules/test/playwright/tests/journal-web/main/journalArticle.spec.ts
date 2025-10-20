@@ -14,6 +14,7 @@ import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
+import {createCategories} from '../../../helpers/CreateCategories';
 import {SystemSettingsPage} from '../../../pages/configuration-admin-web/SystemSettingsPage';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
@@ -101,6 +102,51 @@ const translationAndAutosaveTest = mergeTests(
 );
 
 const privateContentIconTest = mergeTests(baseTest);
+
+baseTest(
+	'Check permissions when only Owner was given permissions',
+	{
+		tag: '@LPD-68086',
+	},
+	async ({journalEditArticlePage, journalPage, page, site}) => {
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		const title = getRandomString();
+
+		await journalEditArticlePage.fillTitle(title);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				name: /publish with permissions/i,
+			}),
+			trigger: journalEditArticlePage.publishDropdown,
+		});
+
+		await journalEditArticlePage.inputPermissionsViewRole.selectOption(
+			'Owner'
+		);
+
+		await page
+			.locator(
+				'#_com_liferay_journal_web_portlet_JournalPortlet_guestPermissions_ADD_DISCUSSION'
+			)
+			.uncheck();
+
+		await page
+			.locator(
+				'#_com_liferay_journal_web_portlet_JournalPortlet_groupPermissions_ADD_DISCUSSION'
+			)
+			.uncheck();
+
+		await page.getByRole('button', {exact: true, name: 'Publish'}).click();
+
+		await journalPage.assertJournalArticlePermissions(title, [
+			{enabled: false, locator: '#guest_ACTION_ADD_DISCUSSION'},
+			{enabled: false, locator: '#site-member_ACTION_ADD_DISCUSSION'},
+		]);
+	}
+);
 
 baseTest(
 	'Check alert message of duplicated friendly URL in french',
@@ -1193,6 +1239,7 @@ bulkTest(
 		});
 
 		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.changeView('list');
 
 		const article1 = page
 			.locator(
@@ -2161,5 +2208,48 @@ baseTest(
 		const displayDateText = await spanInsideTd.textContent();
 
 		expect(displayDateText).not.toBe('1 Minute ago');
+	}
+);
+
+baseTest(
+	'Can add and remove all categories from a Web Content',
+	{
+		tag: '@LPD-67395',
+	},
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const category1 = getRandomString();
+		const vocabularyName = getRandomString();
+
+		await baseTest.step('create vocabulary and category', async () => {
+			await createCategories({
+				apiHelpers,
+				categoryNames: [{name: category1}],
+				siteId: site.id,
+				vocabularyName,
+			});
+		});
+
+		await baseTest.step('select category in web content', async () => {
+			await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+			await journalEditArticlePage.selectCategories(vocabularyName, [
+				category1,
+			]);
+
+			await expect(
+				page.getByRole('gridcell', {exact: true, name: category1})
+			).toBeVisible();
+		});
+
+		await baseTest.step(
+			'can remove categories via Clear All button',
+			async () => {
+				await journalEditArticlePage.clearAllCategories(vocabularyName);
+
+				await expect(
+					page.getByRole('gridcell', {exact: true, name: category1})
+				).not.toBeVisible();
+			}
+		);
 	}
 );

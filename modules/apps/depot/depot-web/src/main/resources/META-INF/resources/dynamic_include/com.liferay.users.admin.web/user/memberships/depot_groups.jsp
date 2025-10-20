@@ -140,7 +140,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						const itemValue = JSON.parse(selectedItem.value);
 						const label = Liferay.Util.sub(
 							'<liferay-ui:message key="remove-x" />',
-							itemValue.title
+							Liferay.Util.escapeHTML(itemValue.title)
 						);
 						const rowColumns = [];
 
@@ -152,7 +152,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 							.replace('TOKEN_DATA_ROW_ID', itemValue.classPK)
 							.replace('TOKEN_TITLE', label);
 
-						rowColumns.push(itemValue.title);
+						rowColumns.push(Liferay.Util.escapeHTML(itemValue.title));
 						rowColumns.push('');
 						rowColumns.push(removeButton);
 

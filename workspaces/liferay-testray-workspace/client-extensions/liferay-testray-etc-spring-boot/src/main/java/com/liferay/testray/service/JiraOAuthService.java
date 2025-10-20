@@ -33,11 +33,11 @@ public class JiraOAuthService extends BaseService {
 					"",
 					new JSONObject(
 					).put(
+						type, code
+					).put(
 						"client_id", _liferayTestrayJiraOAuthClientId
 					).put(
 						"client_secret", _liferayTestrayJiraOAuthClientSecret
-					).put(
-						type, code
 					).put(
 						"grant_type",
 						StringUtil.equals(type, "refresh_token") ? type :

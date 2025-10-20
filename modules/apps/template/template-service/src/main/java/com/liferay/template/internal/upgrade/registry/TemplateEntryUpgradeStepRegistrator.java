@@ -27,10 +27,8 @@ public class TemplateEntryUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"TemplateEntry", "templateEntryId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"TemplateEntry"};
 				}
 
 			});

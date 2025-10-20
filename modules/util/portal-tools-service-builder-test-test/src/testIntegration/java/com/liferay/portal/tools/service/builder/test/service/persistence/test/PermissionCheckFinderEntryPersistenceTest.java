@@ -124,6 +124,10 @@ public class PermissionCheckFinderEntryPersistenceTest {
 
 		newPermissionCheckFinderEntry.setGroupId(RandomTestUtil.nextLong());
 
+		newPermissionCheckFinderEntry.setCompanyId(RandomTestUtil.nextLong());
+
+		newPermissionCheckFinderEntry.setUserId(RandomTestUtil.nextLong());
+
 		newPermissionCheckFinderEntry.setInteger(RandomTestUtil.nextInt());
 
 		newPermissionCheckFinderEntry.setName(RandomTestUtil.randomString());
@@ -145,6 +149,12 @@ public class PermissionCheckFinderEntryPersistenceTest {
 			existingPermissionCheckFinderEntry.getGroupId(),
 			newPermissionCheckFinderEntry.getGroupId());
 		Assert.assertEquals(
+			existingPermissionCheckFinderEntry.getCompanyId(),
+			newPermissionCheckFinderEntry.getCompanyId());
+		Assert.assertEquals(
+			existingPermissionCheckFinderEntry.getUserId(),
+			newPermissionCheckFinderEntry.getUserId());
+		Assert.assertEquals(
 			existingPermissionCheckFinderEntry.getInteger(),
 			newPermissionCheckFinderEntry.getInteger());
 		Assert.assertEquals(
@@ -160,6 +170,11 @@ public class PermissionCheckFinderEntryPersistenceTest {
 		_persistence.countByGroupId(RandomTestUtil.nextLong());
 
 		_persistence.countByGroupId(0L);
+	}
+
+	@Test
+	public void testCountByGroupIdArrayable() throws Exception {
+		_persistence.countByGroupId(new long[] {RandomTestUtil.nextLong(), 0L});
 	}
 
 	@Test
@@ -217,7 +232,8 @@ public class PermissionCheckFinderEntryPersistenceTest {
 
 		return OrderByComparatorFactoryUtil.create(
 			"PermissionCheckFinderEntry", "permissionCheckFinderEntryId", true,
-			"groupId", true, "integer", true, "name", true, "type", true);
+			"groupId", true, "companyId", true, "userId", true, "integer", true,
+			"name", true, "type", true);
 	}
 
 	@Test
@@ -474,6 +490,10 @@ public class PermissionCheckFinderEntryPersistenceTest {
 			_persistence.create(pk);
 
 		permissionCheckFinderEntry.setGroupId(RandomTestUtil.nextLong());
+
+		permissionCheckFinderEntry.setCompanyId(RandomTestUtil.nextLong());
+
+		permissionCheckFinderEntry.setUserId(RandomTestUtil.nextLong());
 
 		permissionCheckFinderEntry.setInteger(RandomTestUtil.nextInt());
 

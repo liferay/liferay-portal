@@ -72,17 +72,161 @@ definition {
 				configurationName = "Mail Settings",
 				configurationScope = "Virtual Instance Scope");
 
-			FormFields.editText(
-				fieldName = "pop3Port",
-				fieldValue = 995);
+			SystemSettings.editTextAreaSetting(
+				settingName = "Incoming Port",
+				settingValue = 995);
 
-			PortletEntry.save();
+			SystemSettings.saveConfiguration();
 		}
 
 		task ("Then the new configuration should now be displayed") {
-			FormFields.viewTextValue(
-				fieldName = "pop3Port",
+			SystemSettings.viewInputText(
+				fieldLabel = "Incoming Port",
 				fieldValue = 995);
+		}
+	}
+
+	@description = "This test asserts that a user can update the general informations. Including update the default site name, default mail domain and so."
+	@ignore = "true"
+	@priority = 4
+	test CanUpdateGeneralInfos {
+		property portal.acceptance = "true";
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Instance Configuration",
+			configurationName = "General",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.editText(
+			fieldName = "name",
+			fieldValue = "EditedLiferay");
+
+		FormFields.editText(
+			fieldName = "mx",
+			fieldValue = "newliferay.com");
+
+		FormFields.editText(
+			fieldName = "virtualHostname",
+			fieldValue = "www.able.com");
+
+		PortletEntry.save();
+
+		ApplicationsMenu.gotoSite(site = "EditedLiferay");
+
+		Navigator.openSpecificURL(url = "http://www.able.com:8080");
+
+		AssertElementPresent(
+			key_pageName = "Home",
+			locator1 = "Home#PAGE");
+
+		Navigator.gotoLoginPage();
+
+		AssertTextEquals(
+			locator1 = "TextInput#EMAIL_ADDRESS",
+			value1 = "@newliferay.com");
+
+		User.firstLoginUI(specificURL = "http://www.able.com:8080");
+
+		PortalSettings.gotoConfiguration(
+			baseURL = "http://www.able.com:8080",
+			configurationCategory = "Instance Configuration",
+			configurationName = "General",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.editText(
+			fieldName = "cdn-host-http",
+			fieldValue = "http://localhost:8080");
+
+		FormFields.editText(
+			fieldName = "cdn-host-https",
+			fieldValue = "https://localhost:8080");
+
+		for (var fieldName : list "legalName,tickerSymbol,legalId,industry,legalType,type,sicCode") {
+			FormFields.editText(
+				fieldName = ${fieldName},
+				fieldValue = ${fieldName});
+		}
+
+		Button.clickSave();
+
+		PortalSettings.gotoConfiguration(
+			baseURL = "http://www.able.com:8080",
+			configurationCategory = "Instance Configuration",
+			configurationName = "General",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.viewTextValue(
+			fieldName = "cdn-host-http",
+			fieldValue = "http://localhost:8080");
+
+		FormFields.viewTextValue(
+			fieldName = "cdn-host-https",
+			fieldValue = "https://localhost:8080");
+
+		for (var fieldName : list "legalName,tickerSymbol,legalId,industry,legalType,type,sicCode") {
+			FormFields.viewTextValue(
+				fieldName = ${fieldName},
+				fieldValue = ${fieldName});
+		}
+	}
+
+	@description = "Verify the default company can be set to a virtual instance via property."
+	@priority = 3
+	test ChangeDefaultCompanyToDifferentInstance {
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+
+		task ("Given a virtual instance") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+		}
+
+		task ("And given the virtual instance is not the default company") {
+			User.firstLoginPG(
+				password = PropsUtil.get("default.admin.password"),
+				userEmailAddress = "test@www.able.com",
+				virtualHostsURL = "http://www.able.com:8080");
+
+			ApplicationsMenuHelper.openApplicationsMenu();
+
+			ApplicationsMenu.gotoPanel(panel = "Control Panel");
+
+			AssertElementNotPresent(
+				key_category = "Configuration",
+				key_portlet = "System Settings",
+				locator1 = "ApplicationsMenu#PORTLET");
+		}
+
+		task ("When the portal is shutdown") {
+			Portlet.shutdownServer();
+		}
+
+		task ("And the portal is restarted with the virtual instance set as the default company via property company.default.web.id") {
+			AntCommands.runCommand("build-test.xml", "portal-ext-properties-update -Dadd.new.properties=true -Dupdate.properties=company.default.web.id=www.able.com");
+
+			Portlet.startServer(deleteLiferayHome = "false");
+		}
+
+		task ("Then system settings can now be accessed from the instance") {
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
+		}
+
+		task ("And the original default instance can be removed") {
+			PortalInstances.openVirtualInstancesAdmin(baseURL = "http://www.able.com:8080");
+
+			PortalInstances.deleteCP(virtualHost = "liferay.com");
 		}
 	}
 

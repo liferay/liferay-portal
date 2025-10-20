@@ -9,12 +9,24 @@ import {openGenericFDSDeleteConfirmationModal} from '../../common/utils/genericO
 import MoveCategoryModalContent from '../categorization/categories/components/MoveCategoryModalContent';
 
 export default function CategoryFDSPropsTransformer({
+	itemsActions = [],
 	...otherProps
 }: {
+	itemsActions?: any[];
 	otherProps: any;
 }) {
 	return {
 		...otherProps,
+		itemsActions: itemsActions.map((action) => {
+			if (action?.data?.id === 'delete') {
+				return {
+					...action,
+					className: 'text-danger',
+				};
+			}
+
+			return action;
+		}),
 		onActionDropdownItemClick({
 			action,
 			itemData,

@@ -25,7 +25,7 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 
 	protected void checkInline(
 		DetailAST assignDetailAST, String variableName,
-		DetailAST identDetailAST, List<DetailAST> dependentIdentDetailASTList) {
+		DetailAST identDetailAST, List<DetailAST> dependentIdentDetailASTs) {
 
 		if (!variableName.equals(identDetailAST.getText())) {
 			return;
@@ -88,20 +88,20 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 				return;
 			}
 
-			List<DetailAST> typeArgumentsDetailASTList = null;
+			List<DetailAST> typeArgumentsDetailASTs = null;
 
 			DetailAST parentDetailAST = assignDetailAST.getParent();
 
 			if (parentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
-				typeArgumentsDetailASTList = getAllChildTokens(
+				typeArgumentsDetailASTs = getAllChildTokens(
 					parentDetailAST, true, TokenTypes.TYPE_ARGUMENTS);
 			}
 			else {
-				typeArgumentsDetailASTList = getAllChildTokens(
+				typeArgumentsDetailASTs = getAllChildTokens(
 					assignDetailAST, true, TokenTypes.TYPE_ARGUMENTS);
 			}
 
-			if (!typeArgumentsDetailASTList.isEmpty()) {
+			if (!typeArgumentsDetailASTs.isEmpty()) {
 				return;
 			}
 
@@ -149,7 +149,7 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 
 		int endLineNumber = getEndLineNumber(assignDetailAST);
 
-		for (DetailAST dependentIdentDetailAST : dependentIdentDetailASTList) {
+		for (DetailAST dependentIdentDetailAST : dependentIdentDetailASTs) {
 			if (variableName.equals(dependentIdentDetailAST.getText()) &&
 				!equals(dependentIdentDetailAST, identDetailAST) &&
 				(dependentIdentDetailAST.getLineNo() > endLineNumber)) {
@@ -329,11 +329,10 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 			return -1;
 		}
 
-		List<DetailAST> dependentIdentDetailASTList =
-			getDependentIdentDetailASTList(
-				detailAST, detailAST.getLineNo(), true);
+		List<DetailAST> dependentIdentDetailASTs = getDependentIdentDetailASTs(
+			detailAST, detailAST.getLineNo(), true);
 
-		for (DetailAST dependentIdentDetailAST : dependentIdentDetailASTList) {
+		for (DetailAST dependentIdentDetailAST : dependentIdentDetailASTs) {
 			DetailAST elistDetailAST = getParentWithTokenType(
 				dependentIdentDetailAST, TokenTypes.ELIST);
 
@@ -358,10 +357,10 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 	private boolean _containsMethodName(
 		DetailAST variableDefinitionDetailAST, String... methodNameRegexArray) {
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			variableDefinitionDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			String methodName = getMethodName(methodCallDetailAST);
 
 			for (String methodNameRegex : methodNameRegexArray) {
@@ -377,10 +376,10 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 	private boolean _containsVariableType(
 		DetailAST variableDefinitionDetailAST, String... variableTypeNames) {
 
-		List<DetailAST> identDetailASTList = getAllChildTokens(
+		List<DetailAST> identDetailASTs = getAllChildTokens(
 			variableDefinitionDetailAST, true, TokenTypes.IDENT);
 
-		for (DetailAST identDetailAST : identDetailASTList) {
+		for (DetailAST identDetailAST : identDetailASTs) {
 			if (ArrayUtil.contains(
 					variableTypeNames,
 					getVariableTypeName(
@@ -462,13 +461,13 @@ public abstract class BaseAsUsedCheck extends BaseCheck {
 
 		DetailAST lastBranchingStatementDetailAST = null;
 
-		List<DetailAST> branchingStatementDetailASTList = getAllChildTokens(
+		List<DetailAST> branchingStatementDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.LITERAL_BREAK,
 			TokenTypes.LITERAL_CONTINUE, TokenTypes.LITERAL_RETURN,
 			TokenTypes.LITERAL_THROW);
 
 		for (DetailAST branchingStatementDetailAST :
-				branchingStatementDetailASTList) {
+				branchingStatementDetailASTs) {
 
 			int lineNumber = getEndLineNumber(branchingStatementDetailAST);
 

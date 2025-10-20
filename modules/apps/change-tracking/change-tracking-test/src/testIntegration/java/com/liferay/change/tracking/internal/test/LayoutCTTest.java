@@ -1351,7 +1351,7 @@ public class LayoutCTTest {
 					layout.getDescriptionMap(), layout.getKeywordsMap(),
 					layout.getRobotsMap(), layout.getType(), layout.isHidden(),
 					layout.getFriendlyURLMap(), false, null,
-					layout.getStyleBookEntryId(),
+					layout.getStyleBookEntryERC(),
 					layout.getFaviconFileEntryId(),
 					layout.getMasterLayoutPlid(), serviceContext);
 			}

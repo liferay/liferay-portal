@@ -8,9 +8,9 @@
 <%@ include file="/data_layout_builder/init.jsp" %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/dynamic-data-mapping-form-builder/css/main.css") %>' rel="stylesheet" />
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/data-engine-js-components-web/css/main.css") %>' rel="stylesheet" />
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/data-engine-taglib/css/main.css") %>' rel="stylesheet" />
+	<aui:link hashedFile="<%= true %>" href="dynamic-data-mapping-form-builder/css/main.css" rel="stylesheet" />
+	<aui:link hashedFile="<%= true %>" href="data-engine-js-components-web/css/main.css" rel="stylesheet" />
+	<aui:link hashedFile="<%= true %>" href="data-engine-taglib/css/main.css" rel="stylesheet" />
 </liferay-util:html-top>
 
 <liferay-util:dynamic-include key="com.liferay.data.engine.taglib#/data_layout_builder/start.jsp#pre" />

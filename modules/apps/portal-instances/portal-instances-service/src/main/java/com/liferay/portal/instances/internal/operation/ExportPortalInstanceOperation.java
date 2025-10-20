@@ -11,7 +11,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.instances.internal.configuration.ExportPortalInstanceConfiguration;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -21,6 +20,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.Serializable;
 
@@ -85,7 +85,7 @@ public class ExportPortalInstanceOperation extends BasePortalInstanceOperation {
 	}
 
 	private void _exportConfigurations(long companyId) throws Exception {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			return;
 		}
 

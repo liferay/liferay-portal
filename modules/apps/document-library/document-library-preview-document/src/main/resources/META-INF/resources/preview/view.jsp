@@ -32,7 +32,7 @@ String previewFileURL = previewFileURLs[0];
 <liferay-util:html-top
 	outputKey="com.liferay.document.library.preview.document#/preview/view.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/preview/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="document-library-preview-css/css/main.css" rel="stylesheet" />
 </liferay-util:html-top>
 
 <clay:stripe

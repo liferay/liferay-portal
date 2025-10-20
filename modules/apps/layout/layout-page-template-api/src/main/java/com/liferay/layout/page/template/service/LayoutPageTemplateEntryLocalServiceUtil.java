@@ -649,11 +649,12 @@ public class LayoutPageTemplateEntryLocalServiceUtil {
 	}
 
 	public static LayoutPageTemplateEntry updateLayoutPageTemplateEntry(
-			long layoutPageTemplateEntryId, long classNameId, long classTypeId)
+			long userId, long layoutPageTemplateEntryId, long classNameId,
+			long classTypeId)
 		throws PortalException {
 
 		return getService().updateLayoutPageTemplateEntry(
-			layoutPageTemplateEntryId, classNameId, classTypeId);
+			userId, layoutPageTemplateEntryId, classNameId, classTypeId);
 	}
 
 	public static LayoutPageTemplateEntry updateLayoutPageTemplateEntry(

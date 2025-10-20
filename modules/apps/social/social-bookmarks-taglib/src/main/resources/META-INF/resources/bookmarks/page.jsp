@@ -10,7 +10,7 @@
 <liferay-util:html-top
 	outputKey="com.liferay.social.bookmarks.taglib#/bookmarks/page.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="social-bookmarks-taglib/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div class="taglib-social-bookmarks" id="<%= PortalUtil.generateRandomKey(request, "taglib_ui_social_bookmarks_page") + StringPool.UNDERLINE %>socialBookmarks">

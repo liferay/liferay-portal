@@ -7,12 +7,15 @@ package com.liferay.portal.kernel.upgrade.data.cleanup.util;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -112,11 +115,11 @@ public class OrphanReferencesDataCleanupUtil {
 		}
 
 		StringBundler sb = new StringBundler(
-			(8 * targetColumnNames.length) + 4);
+			(8 * targetColumnNames.length) + 5);
 
 		sb.append("not exists (select 1 from ");
 		sb.append(targetTableName);
-		sb.append(" where ");
+		sb.append(" where (");
 
 		for (String targetColumnName : targetColumnNames) {
 			sb.append(targetTableName);
@@ -130,6 +133,15 @@ public class OrphanReferencesDataCleanupUtil {
 		}
 
 		sb.setIndex(sb.index() - 1);
+		sb.append(")");
+
+		if (StringUtil.equalsIgnoreCase("Company", targetTableName) &&
+			PropsValues.DATABASE_PARTITION_ENABLED &&
+			!dbInspector.isControlTable(sourceTableName)) {
+
+			sb.append(" and companyId = ");
+			sb.append(CompanyThreadLocal.getCompanyId());
+		}
 
 		sb.append(")");
 

@@ -60,20 +60,20 @@ public class UnnecessaryVariableDeclarationCheck
 			detailAST.findFirstToken(TokenTypes.ASSIGN),
 			_MSG_UNNECESSARY_VARIABLE_DECLARATION_TO_STRING);
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(detailAST, variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			detailAST, variableName);
 
-		if (variableCallerDetailASTList.isEmpty()) {
+		if (variableCallerDetailASTs.isEmpty()) {
 			return;
 		}
 
-		DetailAST firstVariableCallerDetailAST =
-			variableCallerDetailASTList.get(0);
+		DetailAST firstVariableCallerDetailAST = variableCallerDetailASTs.get(
+			0);
 
 		DetailAST secondVariableCallerDetailAST = null;
 
-		if (variableCallerDetailASTList.size() > 1) {
-			secondVariableCallerDetailAST = variableCallerDetailASTList.get(1);
+		if (variableCallerDetailASTs.size() > 1) {
+			secondVariableCallerDetailAST = variableCallerDetailASTs.get(1);
 		}
 
 		checkUnnecessaryStatementBeforeReassign(

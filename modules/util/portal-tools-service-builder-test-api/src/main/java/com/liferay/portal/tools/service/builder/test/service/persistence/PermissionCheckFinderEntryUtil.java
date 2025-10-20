@@ -341,6 +341,135 @@ public class PermissionCheckFinderEntryUtil {
 	}
 
 	/**
+	 * Returns all the permission check finder entries that the user has permission to view where groupId = any &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @return the matching permission check finder entries that the user has permission to view
+	 */
+	public static List<PermissionCheckFinderEntry> filterFindByGroupId(
+		long[] groupIds) {
+
+		return getPersistence().filterFindByGroupId(groupIds);
+	}
+
+	/**
+	 * Returns a range of all the permission check finder entries that the user has permission to view where groupId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PermissionCheckFinderEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param start the lower bound of the range of permission check finder entries
+	 * @param end the upper bound of the range of permission check finder entries (not inclusive)
+	 * @return the range of matching permission check finder entries that the user has permission to view
+	 */
+	public static List<PermissionCheckFinderEntry> filterFindByGroupId(
+		long[] groupIds, int start, int end) {
+
+		return getPersistence().filterFindByGroupId(groupIds, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the permission check finder entries that the user has permission to view where groupId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PermissionCheckFinderEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param start the lower bound of the range of permission check finder entries
+	 * @param end the upper bound of the range of permission check finder entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching permission check finder entries that the user has permission to view
+	 */
+	public static List<PermissionCheckFinderEntry> filterFindByGroupId(
+		long[] groupIds, int start, int end,
+		OrderByComparator<PermissionCheckFinderEntry> orderByComparator) {
+
+		return getPersistence().filterFindByGroupId(
+			groupIds, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns all the permission check finder entries where groupId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PermissionCheckFinderEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @return the matching permission check finder entries
+	 */
+	public static List<PermissionCheckFinderEntry> findByGroupId(
+		long[] groupIds) {
+
+		return getPersistence().findByGroupId(groupIds);
+	}
+
+	/**
+	 * Returns a range of all the permission check finder entries where groupId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PermissionCheckFinderEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param start the lower bound of the range of permission check finder entries
+	 * @param end the upper bound of the range of permission check finder entries (not inclusive)
+	 * @return the range of matching permission check finder entries
+	 */
+	public static List<PermissionCheckFinderEntry> findByGroupId(
+		long[] groupIds, int start, int end) {
+
+		return getPersistence().findByGroupId(groupIds, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the permission check finder entries where groupId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PermissionCheckFinderEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param start the lower bound of the range of permission check finder entries
+	 * @param end the upper bound of the range of permission check finder entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching permission check finder entries
+	 */
+	public static List<PermissionCheckFinderEntry> findByGroupId(
+		long[] groupIds, int start, int end,
+		OrderByComparator<PermissionCheckFinderEntry> orderByComparator) {
+
+		return getPersistence().findByGroupId(
+			groupIds, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the permission check finder entries where groupId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PermissionCheckFinderEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param start the lower bound of the range of permission check finder entries
+	 * @param end the upper bound of the range of permission check finder entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching permission check finder entries
+	 */
+	public static List<PermissionCheckFinderEntry> findByGroupId(
+		long[] groupIds, int start, int end,
+		OrderByComparator<PermissionCheckFinderEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByGroupId(
+			groupIds, start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
 	 * Removes all the permission check finder entries where groupId = &#63; from the database.
 	 *
 	 * @param groupId the group ID
@@ -360,6 +489,16 @@ public class PermissionCheckFinderEntryUtil {
 	}
 
 	/**
+	 * Returns the number of permission check finder entries where groupId = any &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @return the number of matching permission check finder entries
+	 */
+	public static int countByGroupId(long[] groupIds) {
+		return getPersistence().countByGroupId(groupIds);
+	}
+
+	/**
 	 * Returns the number of permission check finder entries that the user has permission to view where groupId = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -367,6 +506,16 @@ public class PermissionCheckFinderEntryUtil {
 	 */
 	public static int filterCountByGroupId(long groupId) {
 		return getPersistence().filterCountByGroupId(groupId);
+	}
+
+	/**
+	 * Returns the number of permission check finder entries that the user has permission to view where groupId = any &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @return the number of matching permission check finder entries that the user has permission to view
+	 */
+	public static int filterCountByGroupId(long[] groupIds) {
+		return getPersistence().filterCountByGroupId(groupIds);
 	}
 
 	/**

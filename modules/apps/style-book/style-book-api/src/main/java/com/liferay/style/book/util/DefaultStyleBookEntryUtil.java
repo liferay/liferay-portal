@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
 
@@ -47,12 +48,7 @@ public class DefaultStyleBookEntryUtil {
 	}
 
 	public static StyleBookEntry getDefaultStyleBookEntry(Layout layout) {
-		StyleBookEntry styleBookEntry = null;
-
-		if (layout.getStyleBookEntryId() > 0) {
-			styleBookEntry = StyleBookEntryLocalServiceUtil.fetchStyleBookEntry(
-				layout.getStyleBookEntryId());
-		}
+		StyleBookEntry styleBookEntry = _getStyleBookEntry(layout);
 
 		if ((styleBookEntry == null) ||
 			!_isStyleBookEntryApplicable(layout, styleBookEntry)) {
@@ -107,13 +103,21 @@ public class DefaultStyleBookEntryUtil {
 				layout.getMasterLayoutPlid());
 
 			if (masterLayout != null) {
-				styleBookEntry =
-					StyleBookEntryLocalServiceUtil.fetchStyleBookEntry(
-						masterLayout.getStyleBookEntryId());
+				styleBookEntry = _getStyleBookEntry(masterLayout);
 			}
 		}
 
 		return styleBookEntry;
+	}
+
+	private static StyleBookEntry _getStyleBookEntry(Layout layout) {
+		if (Validator.isNull(layout.getStyleBookEntryERC())) {
+			return null;
+		}
+
+		return StyleBookEntryLocalServiceUtil.
+			fetchStyleBookEntryByExternalReferenceCode(
+				layout.getStyleBookEntryERC(), layout.getGroupId());
 	}
 
 	private static boolean _isStyleBookEntryApplicable(

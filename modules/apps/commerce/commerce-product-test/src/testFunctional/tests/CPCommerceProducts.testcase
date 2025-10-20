@@ -239,54 +239,6 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	@description = "This is a test for COMMERCE-6912. Bulk delete Products"
-	@priority = 5
-	test BulkDeleteProducts {
-		property portal.acceptance = "true";
-
-		task ("Given a Minium Site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-		}
-
-		task ("And the admin goes into the Product and verifies if the Trash icon is not present in the header") {
-			CommerceProducts.openProductsAdmin();
-
-			AssertElementNotPresent(locator1 = "Button#TRASH_ENABLED");
-		}
-
-		task ("When the admin selects one product using the checkbox and verifies if the Trash icon is now present in the header") {
-			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
-
-			Click.clickNoMouseOverNoWaitForVisible(
-				key_productName = "ABS Sensor",
-				locator1 = "CommerceEntry#PRODUCT_ENTRY_CHECKBOX");
-
-			AssertElementPresent(locator1 = "Button#TRASH_ENABLED");
-		}
-
-		task ("Then the admin can remove the product by clicking on the Trash icon") {
-			ClickNoError(locator1 = "Button#TRASH_ENABLED");
-
-			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
-
-			AssertElementNotPresent(
-				key_entryName = "ABS Sensor",
-				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
-
-		task ("And the admin can delete all the products with one click by using the select all checkbox") {
-			CommerceNavigator.searchEntry(entryName = "");
-
-			Pagination.changePagination(itemsPerPage = "60 Items");
-
-			while (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
-				CommerceProducts.deleteEntries();
-			}
-
-			AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-6301. AddVirtualProduct"
 	@priority = 3
 	test CanAddVirtualProductAndCheckNoShippingOverride {

@@ -407,13 +407,22 @@ public class ObjectEntryInfoItemFormProviderUtil {
 
 						Locale locale = entry.getKey();
 
-						fieldSetLabelMap.put(
-							locale,
-							StringBundler.concat(
+						String fieldSetLabel = StringPool.BLANK;
+
+						if (Objects.equals(
+								objectRelationship.getLabel(locale),
+								entry.getValue())) {
+
+							fieldSetLabel = objectRelationship.getLabel(locale);
+						}
+						else {
+							fieldSetLabel = StringBundler.concat(
 								objectRelationship.getLabel(locale),
 								StringPool.SPACE, StringPool.OPEN_PARENTHESIS,
-								entry.getValue(),
-								StringPool.CLOSE_PARENTHESIS));
+								entry.getValue(), StringPool.CLOSE_PARENTHESIS);
+						}
+
+						fieldSetLabelMap.put(locale, fieldSetLabel);
 					}
 
 					unsafeConsumer.accept(

@@ -20,7 +20,8 @@
 							"indexed": true,
 							"layout": {
 								"paddingBottom": 1
-							}
+							},
+							"name": "Header Container"
 						},
 						"pageElements": [
 							{
@@ -45,10 +46,7 @@
 								"pageElements": [
 									{
 										"definition": {
-											"cssClasses": [
-												"place-content-center"
-											],
-											"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
+											"customCSS": ".[$FRAGMENT_CLASS$] {\n  * {\n    place-content: center;\n  }\n}",
 											"fragment": {
 												"key": "dialect-text",
 												"siteKey": "Guest"
@@ -65,42 +63,7 @@
 														},
 														"text": {
 															"value_i18n": {
-																"en_US": "Welcome to Liferay Learn"
-															}
-														}
-													}
-												}
-											],
-											"fragmentStyle": {
-												"marginBottom": "4"
-											},
-											"indexed": true
-										},
-										"type": "Fragment"
-									},
-									{
-										"definition": {
-											"cssClasses": [
-												"place-content-center"
-											],
-											"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-											"fragment": {
-												"key": "dialect-text",
-												"siteKey": "Guest"
-											},
-											"fragmentConfig": {
-												"textType": "text-paragraph-lg",
-												"truncateText": false
-											},
-											"fragmentFields": [
-												{
-													"id": "element-text",
-													"value": {
-														"fragmentLink": {
-														},
-														"text": {
-															"value_i18n": {
-																"en_US": "Practical resources for learning Liferay"
+																"en_US": "DXP Capabilities"
 															}
 														}
 													}
@@ -152,2820 +115,1597 @@
 					},
 					{
 						"definition": {
-							"fragmentStyle": {
-								"maxWidth": "var(--container-max-lg)",
-								"paddingBottom": "4",
-								"paddingLeft": "4",
-								"paddingRight": "4",
-								"paddingTop": "4"
+							"fragment": {
+								"key": "documentation-page-main-container",
+								"siteKey": "Guest"
 							},
-							"indexed": true,
-							"layout": {
-								"paddingBottom": 2,
-								"paddingLeft": 2,
-								"paddingRight": 2,
-								"paddingTop": 2,
-								"widthType": "Fixed"
-							}
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+							],
+							"indexed": true
 						},
 						"pageElements": [
 							{
 								"definition": {
-									"cssClasses": [
-										"page-tabs"
-									],
-									"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-									"fragment": {
-										"key": "dialect-tabs",
-										"siteKey": "Guest"
-									},
-									"fragmentConfig": {
-										"defaultShowPanel": true,
-										"iconAlignment": "none",
-										"iconName": "check-circle",
-										"numberOfTabs": 2,
-										"offClickHidePanel": false,
-										"tabActiveBarPosition": "nav-active-bar-top",
-										"tabDirection": "",
-										"tabStyle": "segment"
-									},
-									"fragmentFields": [
-										{
-											"id": "mobile-title",
-											"value": {
-												"fragmentLink": {
-												},
-												"text": {
-													"value_i18n": {
-														"en_US": "Browse By"
-													}
-												}
-											}
-										},
-										{
-											"id": "title1",
-											"value": {
-												"fragmentLink": {
-												},
-												"text": {
-													"value_i18n": {
-														"en_US": "Browse By Capability"
-													}
-												}
-											}
-										},
-										{
-											"id": "title2",
-											"value": {
-												"fragmentLink": {
-												},
-												"text": {
-													"value_i18n": {
-														"en_US": "Browse By Product"
-													}
-												}
-											}
-										}
-									],
-									"fragmentViewports": [
-										{
-											"fragmentViewportStyle": {
-												"marginLeft": "3",
-												"marginRight": "3"
-											},
-											"id": "tablet"
-										}
-									],
-									"indexed": true
 								},
 								"pageElements": [
 									{
 										"definition": {
-											"fragmentDropZoneId": "1"
+											"fragmentStyle": {
+												"marginBottom": "4",
+												"maxWidth": "1600px",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4"
+											},
+											"fragmentViewports": [
+												{
+													"fragmentViewportStyle": {
+														"paddingTop": "0"
+													},
+													"id": "tablet"
+												}
+											],
+											"indexed": true,
+											"layout": {
+												"marginBottom": 2,
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2,
+												"widthType": "Fixed"
+											}
 										},
 										"pageElements": [
 											{
 												"definition": {
 													"cssClasses": [
-														"page-tabs__panel"
+														"capabilities-container"
 													],
-													"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-													"fragmentStyle": {
-														"marginTop": "4"
-													},
 													"indexed": true,
 													"layout": {
 														"contentDisplay": "FlexRow",
 														"flexWrap": "Wrap",
-														"justify": "Center",
-														"marginTop": 2
-													}
+														"justify": "Center"
+													},
+													"name": "Capabilities Container"
 												},
 												"pageElements": [
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/cloud.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/ai"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderColor": "",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"description": {
-																						"value_i18n": {
-																							"en_US": ""
-																						}
-																					},
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_cloud.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_ai.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Cloud"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontFamily": "\"Source Sans Pro\", system-ui",
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Use Liferay's Cloud infrastructure to launch your solutions more quickly and securely."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "AI"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Boost your content workflow with smart AI-powered integrations."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on AI"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Boost your content workflow with smart AI-powered integrations."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "AI"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on AI"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/commerce.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/content-management-system"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_commerce.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_cms.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Commerce"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontFamily": "\"Source Sans Pro\", system-ui",
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Increase orders with enriching product information, easy ordering tools, and product recommendations."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "CMS"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Lear how too create, publish, and manage content faster."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on CMS"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn how to create, publish, and manage content faster."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "CMS"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on CMS"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/content-management-system.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/digital-asset-management"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_content_ms.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_dam.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Content Management System"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Create, publish, and manage content, pages, and multimedia across different channels faster."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "DAM"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Discover how to organize and deliver assets securely in the cloud."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on DAM"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Discover how to organize and deliver assets securely in the&nbsp; cloud."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "DAM"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on DAM"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/development-and-tooling.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/commerce"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_development_t.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_commerce.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Development and Tooling"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontFamily": "\"Source Sans Pro\", system-ui",
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Use out-of-the-box features and development tools to deliver solutions to users faster."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Commerce"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Explore how to enhance online sales with smarter product tools."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Commerce"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Explore how to enhance online sales with smarter product tools."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Commerce"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Commerce"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/digital-asset-management.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/personalization"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_digital_ams.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_personalization.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Digital Asset Management"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontFamily": "\"Source Sans Pro\"",
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "216px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Use Liferay's Cloud infrastructure to launch your solutions more quickly and securely."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Personalization"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn how to tailor content and experiences using AI-driven insights."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Personalization"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn to tailor content and experiences using AI-driven insights."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Personalization"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Personalization"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/dxp-self-hosted-installation-maintenance-and-administration.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/search"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_dxp_shima.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_search.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "DXP Self-Hosted Installation, Maintenance, and Administration"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Deploy, configure, and maintain Liferay DXP on your own infrastructure."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Search"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Master how to deliver fast, relevant search experiences."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Search"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Master how to deliver fast, relevant search experiences."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Search"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Search"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/integration.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/sites"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_integration.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_personalization.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Integration"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Unify systems, applications, and data with a single platform."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Sites"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "See how to build and scale engaging, high-performing sites."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Sites"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "See how to build and scale engaging, high-performing sites."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Sites"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Sites"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/personalization.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/integration"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_personalization.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_integration.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Personalization"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Deliver more personalized and relevant content through enhanced segmentation, AI-generated recommendations, and A/B testing."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Integration"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn how to connect systems and streamline data effortlessly."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Integration"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn how to connect systems and streamline data effortlessly."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Integration"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Integration"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/platform.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/security-and-administration"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_platform.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_security.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Platform"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Send email notifications, test content updates, deliver solutions across multiple channels, and more with out-of-the-box platform features."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Security"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Understand how to protect your platform with enterprise-grade security."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Security"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Understand how to protect your platform with enterprise-grade security."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Security"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Security"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/search.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/cloud"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_search.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_cloud.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Search"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Save users time with personalized, integrated, and organized search results."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Cloud"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Explore how to deploy, scale, and manage solutions in the cloud."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Cloud"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Explore how to deploy, scale, and manage solutions in the cloud."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Cloud"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Cloud"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/security.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/self-hosted-installation-and-upgrades"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_security.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"description": {
+																				"value_i18n": {
+																					"en_US": ""
+																				}
+																			},
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_cms.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Security"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Protect users, data, and solutions with a platform designed with security in mind."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Self-Hosted Installation"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn how to install and manage Liferay on your own servers."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Self-Hosted Installation"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Learn how to install and manage Liferay on your own servers."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Self-Hosted Installation"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Self-Hosted Installation"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													},
 													{
 														"definition": {
-															"cssClasses": [
-																"page-tabs__panel-item"
-															],
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"fragmentLink": {
-																"href": {
-																	"mapping": {
-																		"fieldKey": "LayoutPageTemplateEntry_35624",
-																		"itemReference": {
-																			"className": "com.liferay.asset.kernel.model.AssetCategory",
-																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/capability/sites.json$]"
+															"fragment": {
+																"key": "home-page-cards",
+																"siteKey": "Guest"
+															},
+															"fragmentConfig": {
+																"cardType": "documentationCard",
+																"iconBackgroundGradient": "bg-gradient-blue",
+																"url": {
+																	"_jsonObject": {
+																		"empty": false,
+																		"map": {
+																			"href": "/w/dxp/low-code"
 																		}
 																	}
 																}
 															},
-															"fragmentStyle": {
-																"backgroundColor": "#FBFCFE",
-																"borderRadius": "borderRadiusLg",
-																"borderWidth": "1px",
-																"height": "100%",
-																"maxWidth": "300px",
-																"paddingBottom": "3",
-																"paddingLeft": "3",
-																"paddingRight": "3",
-																"paddingTop": "3"
-															},
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"paddingBottom": 1,
-																"paddingLeft": 1,
-																"paddingRight": 1,
-																"paddingTop": 1
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"fragment": {
-																		"key": "BASIC_COMPONENT-image"
-																	},
-																	"fragmentConfig": {
-																		"imageSize": "w-0"
-																	},
-																	"fragmentFields": [
-																		{
-																			"id": "image-square",
-																			"value": {
-																				"fragmentImage": {
-																					"url": {
-																						"value_i18n": {
-																							"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_sites.svg$]"
-																						}
-																					}
-																				},
-																				"fragmentLink": {
+															"fragmentFields": [
+																{
+																	"id": "image",
+																	"value": {
+																		"fragmentImage": {
+																			"description": {
+																				"value_i18n": {
+																					"en_US": ""
+																				}
+																			},
+																			"url": {
+																				"value_i18n": {
+																					"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_low_code.svg$]"
 																				}
 																			}
+																		},
+																		"fragmentLink": {
 																		}
-																	],
-																	"fragmentStyle": {
-																		"marginRight": "3"
-																	},
-																	"indexed": true
-																},
-																"type": "Fragment"
-															},
-															{
-																"definition": {
-																	"indexed": true,
-																	"layout": {
-																		"align": "Start",
-																		"contentDisplay": "FlexColumn"
 																	}
 																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "h1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Sites"
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "18px",
-																				"fontWeight": "600",
-																				"maxWidth": "285px",
-																				"textColor": "#282934"
-																			},
-																			"indexed": true
+																{
+																	"id": "documentation-title",
+																	"value": {
+																		"fragmentLink": {
 																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																			"fragment": {
-																				"key": "dialect-text",
-																				"siteKey": "Guest"
-																			},
-																			"fragmentConfig": {
-																				"textType": "display-1",
-																				"truncateText": false
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "element-text",
-																					"value": {
-																						"fragmentLink": {
-																						},
-																						"text": {
-																							"value_i18n": {
-																								"en_US": "Deliver customized pages and sites on any device or channel."
-																							}
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"fontSize": "14px",
-																				"fontWeight": "400",
-																				"marginBottom": "3",
-																				"marginTop": "2",
-																				"maxWidth": "285px",
-																				"textColor": "#54555F"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Low-Code"
+																			}
+																		}
 																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
+																},
+																{
+																	"id": "documentation-description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Empower your team to innovate without coding."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-icon",
+																	"value": {
+																		"fragmentLink": {
+																		}
+																	}
+																},
+																{
+																	"id": "cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Low-Code"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "description",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Empower your team to innovate without coding."
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "title",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "Low-Code"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "documentation-cta-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"value_i18n": {
+																				"en_US": "More on Low-Code"
+																			}
+																		}
+																	}
+																},
+																{
+																	"id": "cta-icon",
+																	"value": {
+																		"html": {
+																			"value_i18n": {
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													}
 												],
 												"type": "Section"
 											}
 										],
-										"type": "FragmentDropZone"
-									},
-									{
-										"definition": {
-											"fragmentDropZoneId": "2"
-										},
-										"pageElements": [
-											{
-												"definition": {
-													"cssClasses": [
-														"page-tabs__panel"
-													],
-													"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-													"fragmentStyle": {
-														"marginTop": "4",
-														"textAlign": "center"
-													},
-													"indexed": true,
-													"layout": {
-														"contentDisplay": "FlexRow",
-														"flexWrap": "Wrap",
-														"justify": "Center",
-														"marginTop": 2
-													}
-												},
-												"pageElements": [
-													{
-														"definition": {
-															"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-															"indexed": true,
-															"layout": {
-																"contentDisplay": "FlexRow",
-																"flexWrap": "Wrap",
-																"justify": "Center",
-																"widthType": "Fixed"
-															}
-														},
-														"pageElements": [
-															{
-																"definition": {
-																	"cssClasses": [
-																		"page-tabs__panel-item"
-																	],
-																	"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																	"fragmentLink": {
-																		"href": {
-																			"value_i18n": {
-																				"en_US": "/w/analytics-cloud/index",
-																				"ja_JP": "/w/analytics-cloud/index"
-																			}
-																		}
-																	},
-																	"fragmentStyle": {
-																		"backgroundColor": "#FBFCFE",
-																		"borderRadius": "borderRadiusLg",
-																		"borderWidth": "1px",
-																		"height": "100%",
-																		"maxWidth": "300px",
-																		"paddingBottom": "3",
-																		"paddingLeft": "3",
-																		"paddingRight": "3",
-																		"paddingTop": "3"
-																	},
-																	"indexed": true,
-																	"layout": {
-																		"contentDisplay": "FlexRow",
-																		"paddingBottom": 1,
-																		"paddingLeft": 1,
-																		"paddingRight": 1,
-																		"paddingTop": 1
-																	}
-																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"fragment": {
-																				"key": "BASIC_COMPONENT-image"
-																			},
-																			"fragmentConfig": {
-																				"imageSize": "w-0"
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "image-square",
-																					"value": {
-																						"fragmentImage": {
-																							"url": {
-																								"value_i18n": {
-																									"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_analytics_c.svg$]"
-																								}
-																							}
-																						},
-																						"fragmentLink": {
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"marginRight": "3"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"indexed": true,
-																			"layout": {
-																				"align": "Start",
-																				"contentDisplay": "FlexColumn"
-																			}
-																		},
-																		"pageElements": [
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "h1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Analytics Cloud"
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "18px",
-																						"fontWeight": "600",
-																						"maxWidth": "285px",
-																						"textColor": "#282934"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			},
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "display-1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Understand your audience with integrated analytics for Liferay DXP."
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "14px",
-																						"fontWeight": "400",
-																						"marginBottom": "3",
-																						"marginTop": "2",
-																						"maxWidth": "285px",
-																						"textColor": "#54555F"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			}
-																		],
-																		"type": "Section"
-																	}
-																],
-																"type": "Section"
-															},
-															{
-																"definition": {
-																	"cssClasses": [
-																		"page-tabs__panel-item"
-																	],
-																	"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																	"fragmentLink": {
-																		"href": {
-																			"value_i18n": {
-																				"en_US": "/w/commerce/index",
-																				"ja_JP": "/w/commerce/index"
-																			}
-																		}
-																	},
-																	"fragmentStyle": {
-																		"backgroundColor": "#FBFCFE",
-																		"borderRadius": "borderRadiusLg",
-																		"borderWidth": "1px",
-																		"height": "100%",
-																		"maxWidth": "300px",
-																		"paddingBottom": "3",
-																		"paddingLeft": "3",
-																		"paddingRight": "3",
-																		"paddingTop": "3"
-																	},
-																	"indexed": true,
-																	"layout": {
-																		"contentDisplay": "FlexRow",
-																		"paddingBottom": 1,
-																		"paddingLeft": 1,
-																		"paddingRight": 1,
-																		"paddingTop": 1
-																	}
-																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"fragment": {
-																				"key": "BASIC_COMPONENT-image"
-																			},
-																			"fragmentConfig": {
-																				"imageSize": "w-0"
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "image-square",
-																					"value": {
-																						"fragmentImage": {
-																							"url": {
-																								"value_i18n": {
-																									"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_commerce_product.svg$]"
-																								}
-																							}
-																						},
-																						"fragmentLink": {
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"marginRight": "3"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"indexed": true,
-																			"layout": {
-																				"align": "Start",
-																				"contentDisplay": "FlexColumn"
-																			}
-																		},
-																		"pageElements": [
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "h1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Commerce"
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "18px",
-																						"fontWeight": "600",
-																						"maxWidth": "285px",
-																						"textColor": "#282934"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			},
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "display-1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Launch modern B2B commerce experiences on Liferay DXP."
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "14px",
-																						"fontWeight": "400",
-																						"marginBottom": "3",
-																						"marginTop": "2",
-																						"maxWidth": "285px",
-																						"textColor": "#54555F"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			}
-																		],
-																		"type": "Section"
-																	}
-																],
-																"type": "Section"
-															},
-															{
-																"definition": {
-																	"cssClasses": [
-																		"page-tabs__panel-item"
-																	],
-																	"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																	"fragmentLink": {
-																		"href": {
-																			"value_i18n": {
-																				"en_US": "/w/dxp/index",
-																				"ja_JP": "/w/dxp/index"
-																			}
-																		}
-																	},
-																	"fragmentStyle": {
-																		"backgroundColor": "#FBFCFE",
-																		"borderRadius": "borderRadiusLg",
-																		"borderWidth": "1px",
-																		"height": "100%",
-																		"maxWidth": "300px",
-																		"paddingBottom": "3",
-																		"paddingLeft": "3",
-																		"paddingRight": "3",
-																		"paddingTop": "3",
-																		"textColor": ""
-																	},
-																	"indexed": true,
-																	"layout": {
-																		"contentDisplay": "FlexRow",
-																		"paddingBottom": 1,
-																		"paddingLeft": 1,
-																		"paddingRight": 1,
-																		"paddingTop": 1
-																	}
-																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"fragment": {
-																				"key": "BASIC_COMPONENT-image"
-																			},
-																			"fragmentConfig": {
-																				"imageSize": "w-0"
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "image-square",
-																					"value": {
-																						"fragmentImage": {
-																							"url": {
-																								"value_i18n": {
-																									"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_dxp_p.svg$]"
-																								}
-																							}
-																						},
-																						"fragmentLink": {
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"marginRight": "3"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"indexed": true,
-																			"layout": {
-																				"align": "Start",
-																				"contentDisplay": "FlexColumn"
-																			}
-																		},
-																		"pageElements": [
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "h1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "DXP"
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "18px",
-																						"fontWeight": "600",
-																						"maxWidth": "285px",
-																						"textColor": "#282934"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			},
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "display-1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Transition from legacy systems and build digital experiences on a single powerful platform."
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "14px",
-																						"fontWeight": "400",
-																						"marginBottom": "3",
-																						"marginTop": "2",
-																						"maxWidth": "285px",
-																						"textColor": "#54555F"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			}
-																		],
-																		"type": "Section"
-																	}
-																],
-																"type": "Section"
-															},
-															{
-																"definition": {
-																	"cssClasses": [
-																		"page-tabs__panel-item"
-																	],
-																	"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																	"fragmentLink": {
-																		"href": {
-																			"value_i18n": {
-																				"en_US": "/w/liferay-cloud/index",
-																				"ja_JP": "/w/liferay-cloud/index"
-																			}
-																		}
-																	},
-																	"fragmentStyle": {
-																		"backgroundColor": "#FBFCFE",
-																		"borderRadius": "borderRadiusLg",
-																		"borderWidth": "1px",
-																		"height": "100%",
-																		"maxWidth": "300px",
-																		"paddingBottom": "3",
-																		"paddingLeft": "3",
-																		"paddingRight": "3",
-																		"paddingTop": "3"
-																	},
-																	"indexed": true,
-																	"layout": {
-																		"contentDisplay": "FlexRow",
-																		"paddingBottom": 1,
-																		"paddingLeft": 1,
-																		"paddingRight": 1,
-																		"paddingTop": 1
-																	}
-																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"fragment": {
-																				"key": "BASIC_COMPONENT-image"
-																			},
-																			"fragmentConfig": {
-																				"imageSize": "w-0"
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "image-square",
-																					"value": {
-																						"fragmentImage": {
-																							"url": {
-																								"value_i18n": {
-																									"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_dxp_c.svg$]"
-																								}
-																							}
-																						},
-																						"fragmentLink": {
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"marginRight": "3"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"indexed": true,
-																			"layout": {
-																				"align": "Start",
-																				"contentDisplay": "FlexColumn"
-																			}
-																		},
-																		"pageElements": [
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "h1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Liferay Cloud"
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "18px",
-																						"fontWeight": "600",
-																						"maxWidth": "285px",
-																						"textColor": "#282934"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			},
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "display-1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Enterprise PaaS tailored for Liferay Digital Experience Platform."
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "14px",
-																						"fontWeight": "400",
-																						"marginBottom": "3",
-																						"marginTop": "2",
-																						"maxWidth": "285px",
-																						"textColor": "#54555F"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			}
-																		],
-																		"type": "Section"
-																	}
-																],
-																"type": "Section"
-															},
-															{
-																"definition": {
-																	"cssClasses": [
-																		"page-tabs__panel-item"
-																	],
-																	"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																	"fragmentLink": {
-																		"href": {
-																			"value_i18n": {
-																				"en_US": "/w/reference/index",
-																				"ja_JP": "/w/reference/index"
-																			}
-																		}
-																	},
-																	"fragmentStyle": {
-																		"backgroundColor": "#FBFCFE",
-																		"borderRadius": "borderRadiusLg",
-																		"borderWidth": "1px",
-																		"height": "100%",
-																		"maxWidth": "300px",
-																		"paddingBottom": "3",
-																		"paddingLeft": "3",
-																		"paddingRight": "3",
-																		"paddingTop": "3"
-																	},
-																	"indexed": true,
-																	"layout": {
-																		"contentDisplay": "FlexRow",
-																		"paddingBottom": 1,
-																		"paddingLeft": 1,
-																		"paddingRight": 1,
-																		"paddingTop": 1
-																	}
-																},
-																"pageElements": [
-																	{
-																		"definition": {
-																			"fragment": {
-																				"key": "BASIC_COMPONENT-image"
-																			},
-																			"fragmentConfig": {
-																				"imageSize": "w-0"
-																			},
-																			"fragmentFields": [
-																				{
-																					"id": "image-square",
-																					"value": {
-																						"fragmentImage": {
-																							"url": {
-																								"value_i18n": {
-																									"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/icons/documentation_reference.svg$]"
-																								}
-																							}
-																						},
-																						"fragmentLink": {
-																						}
-																					}
-																				}
-																			],
-																			"fragmentStyle": {
-																				"marginRight": "3"
-																			},
-																			"indexed": true
-																		},
-																		"type": "Fragment"
-																	},
-																	{
-																		"definition": {
-																			"indexed": true,
-																			"layout": {
-																				"align": "Start",
-																				"contentDisplay": "FlexColumn"
-																			}
-																		},
-																		"pageElements": [
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "h1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Reference"
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "18px",
-																						"fontWeight": "600",
-																						"maxWidth": "285px",
-																						"textColor": "#282934"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			},
-																			{
-																				"definition": {
-																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
-																					"fragment": {
-																						"key": "dialect-text",
-																						"siteKey": "Guest"
-																					},
-																					"fragmentConfig": {
-																						"textType": "display-1",
-																						"truncateText": false
-																					},
-																					"fragmentFields": [
-																						{
-																							"id": "element-text",
-																							"value": {
-																								"fragmentLink": {
-																								},
-																								"text": {
-																									"value_i18n": {
-																										"en_US": "Documents and resources to further help implementation."
-																									}
-																								}
-																							}
-																						}
-																					],
-																					"fragmentStyle": {
-																						"fontSize": "14px",
-																						"fontWeight": "400",
-																						"marginBottom": "3",
-																						"marginTop": "2",
-																						"maxWidth": "285px",
-																						"textColor": "#54555F"
-																					},
-																					"indexed": true
-																				},
-																				"type": "Fragment"
-																			}
-																		],
-																		"type": "Section"
-																	}
-																],
-																"type": "Section"
-															}
-														],
-														"type": "Section"
-													}
-												],
-												"type": "Section"
-											}
-										],
-										"type": "FragmentDropZone"
+										"type": "Section"
 									}
 								],
-								"type": "Fragment"
+								"type": "FragmentDropZone"
 							}
 						],
-						"type": "Section"
+						"type": "Fragment"
 					}
 				],
 				"type": "Section"

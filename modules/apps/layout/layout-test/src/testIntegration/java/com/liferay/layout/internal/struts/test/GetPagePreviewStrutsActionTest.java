@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -22,7 +23,9 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -210,7 +213,8 @@ public class GetPagePreviewStrutsActionTest {
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+			new MockHttpServletRequest(
+				ServletContextPool.get(StringPool.BLANK));
 
 		mockHttpServletRequest.addParameter(
 			"segmentsExperienceId",
@@ -221,8 +225,11 @@ public class GetPagePreviewStrutsActionTest {
 		mockHttpServletRequest.addParameter(
 			"selPlid", String.valueOf(_fragmentEntryLink.getPlid()));
 		mockHttpServletRequest.setAttribute(
+			WebKeys.CURRENT_URL, RandomTestUtil.randomString());
+		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);
 		mockHttpServletRequest.setMethod(HttpMethods.GET);
+		mockHttpServletRequest.setServerName("www.liferay.com");
 
 		_serviceContext.setRequest(mockHttpServletRequest);
 
@@ -242,8 +249,14 @@ public class GetPagePreviewStrutsActionTest {
 			content, CoreMatchers.containsString(_fragmentEntryLink.getHtml()));
 		Assert.assertThat(
 			content, CoreMatchers.containsString(_fragmentEntryLink.getJs()));
+
+		Theme theme = _themeLocalService.fetchTheme(
+			TestPropsValues.getCompanyId(), expectedThemeId);
+
 		Assert.assertThat(
-			content, CoreMatchers.containsString("themeId=" + expectedThemeId));
+			content,
+			CoreMatchers.containsString(
+				"href=\"/o/" + theme.getServletContextName() + "/css/"));
 	}
 
 	private void _setUpThemeDisplay() throws Exception {
@@ -266,6 +279,7 @@ public class GetPagePreviewStrutsActionTest {
 		_themeDisplay.setPlid(layout.getPlid());
 		_themeDisplay.setRealUser(TestPropsValues.getUser());
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
+		_themeDisplay.setServerName("localhost");
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(TestPropsValues.getUser());
 	}
@@ -297,5 +311,8 @@ public class GetPagePreviewStrutsActionTest {
 
 	private ServiceContext _serviceContext;
 	private ThemeDisplay _themeDisplay;
+
+	@Inject
+	private ThemeLocalService _themeLocalService;
 
 }

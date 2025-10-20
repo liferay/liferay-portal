@@ -44,12 +44,12 @@ export default function PageDesignOptionsSidebar() {
 				changeMasterLayout({
 					masterLayoutPlid: masterLayout.masterLayoutPlid,
 				})
-			).then(({styleBookEntryId, styleBooks = []}) => {
+			).then(({styleBookEntryERC, styleBooks = []}) => {
 				setStyleBooks(styleBooks);
 
 				if (!styleBooks.length) {
 					setSelectedStyleBook({
-						styleBookEntryId: '0',
+						styleBookEntryERC: '',
 						tokenValues: {},
 					});
 
@@ -59,7 +59,7 @@ export default function PageDesignOptionsSidebar() {
 				if (Liferay.FeatureFlags['LPD-30204']) {
 					const selectedStyleBook = styleBooks.find(
 						(styleBook) =>
-							styleBook.styleBookEntryId === styleBookEntryId
+							styleBook.styleBookEntryERC === styleBookEntryERC
 					);
 
 					if (selectedStyleBook) {
@@ -72,25 +72,25 @@ export default function PageDesignOptionsSidebar() {
 				else {
 
 					// Changing the master layout should only affect the
-					// selected stylebook if the styleBookEntryId is equal to 0
+					// selected stylebook if the styleBookEntryERC is equal to 0
 					// which means that the stylebook is inherited
 
-					if (selectedStyleBook.styleBookEntryId === '0') {
+					if (selectedStyleBook.styleBookEntryERC === '') {
 						setSelectedStyleBook({...styleBooks[0]});
 					}
 				}
 			});
 		},
-		[dispatch, selectedStyleBook.styleBookEntryId, setSelectedStyleBook]
+		[dispatch, selectedStyleBook.styleBookEntryERC, setSelectedStyleBook]
 	);
 
 	const onSelectStyleBook = useCallback(
-		(styleBookEntryId) => {
+		(styleBookEntryERC) => {
 			LayoutService.changeStyleBookEntry({
 				onNetworkStatus: dispatch,
-				styleBookEntryId,
+				styleBookEntryERC,
 			}).then(({tokenValues}) => {
-				setSelectedStyleBook({styleBookEntryId, tokenValues});
+				setSelectedStyleBook({styleBookEntryERC, tokenValues});
 			});
 		},
 		[setSelectedStyleBook, dispatch]
@@ -346,9 +346,9 @@ function getTabs(
 		options: styleBooks.map((styleBook) => ({
 			...styleBook,
 			isActive:
-				selectedStyleBook.styleBookEntryId ===
-				styleBook.styleBookEntryId,
-			onClick: () => onSelectStyleBook(styleBook.styleBookEntryId),
+				selectedStyleBook.styleBookEntryERC ===
+				styleBook.styleBookEntryERC,
+			onClick: () => onSelectStyleBook(styleBook.styleBookEntryERC),
 		})),
 		type: OPTIONS_TYPES.styleBook,
 	});

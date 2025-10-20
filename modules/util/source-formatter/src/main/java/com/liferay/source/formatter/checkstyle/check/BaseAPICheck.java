@@ -47,10 +47,10 @@ public abstract class BaseAPICheck extends BaseCheck {
 
 		List<ConstructorCall> constructorCalls = new ArrayList<>();
 
-		List<DetailAST> literalNewDetailASTList = getAllChildTokens(
+		List<DetailAST> literalNewDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.LITERAL_NEW);
 
-		for (DetailAST literalNewDetailAST : literalNewDetailASTList) {
+		for (DetailAST literalNewDetailAST : literalNewDetailASTs) {
 			if (skipDeprecated &&
 				(hasDeprecatedParent(literalNewDetailAST) ||
 				 hasSuppressDeprecationWarningsAnnotation(
@@ -188,10 +188,10 @@ public abstract class BaseAPICheck extends BaseCheck {
 
 		List<MethodCall> methodCalls = new ArrayList<>();
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			if (skipDeprecated &&
 				(hasDeprecatedParent(methodCallDetailAST) ||
 				 hasSuppressDeprecationWarningsAnnotation(
@@ -340,11 +340,11 @@ public abstract class BaseAPICheck extends BaseCheck {
 
 		Map<String, Set<Integer>> typeNamesMap = new HashMap<>();
 
-		List<DetailAST> clauseDetailASTList = getAllChildTokens(
+		List<DetailAST> clauseDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.EXTENDS_CLAUSE,
 			TokenTypes.IMPLEMENTS_CLAUSE);
 
-		for (DetailAST clauseDetailAST : clauseDetailASTList) {
+		for (DetailAST clauseDetailAST : clauseDetailASTs) {
 			if (skipDeprecated &&
 				(hasDeprecatedParent(clauseDetailAST) ||
 				 hasSuppressDeprecationWarningsAnnotation(clauseDetailAST))) {
@@ -352,10 +352,10 @@ public abstract class BaseAPICheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> childDetailASTList = getAllChildTokens(
+			List<DetailAST> childDetailASTs = getAllChildTokens(
 				clauseDetailAST, false, TokenTypes.DOT, TokenTypes.IDENT);
 
-			for (DetailAST childDetailAST : childDetailASTList) {
+			for (DetailAST childDetailAST : childDetailASTs) {
 				if (childDetailAST.getType() == TokenTypes.IDENT) {
 					typeNamesMap = _addTypeName(
 						typeNamesMap,
@@ -388,10 +388,10 @@ public abstract class BaseAPICheck extends BaseCheck {
 			}
 		}
 
-		List<DetailAST> typeDetailASTList = getAllChildTokens(
+		List<DetailAST> typeDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.TYPE);
 
-		for (DetailAST typeDetailAST : typeDetailASTList) {
+		for (DetailAST typeDetailAST : typeDetailASTs) {
 			if (!skipDeprecated ||
 				(!hasDeprecatedParent(typeDetailAST) &&
 				 !hasSuppressDeprecationWarningsAnnotation(typeDetailAST))) {
@@ -412,10 +412,10 @@ public abstract class BaseAPICheck extends BaseCheck {
 
 		List<VariableCall> variableCalls = new ArrayList<>();
 
-		List<DetailAST> dotDetailASTList = getAllChildTokens(
+		List<DetailAST> dotDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.DOT);
 
-		for (DetailAST dotDetailAST : dotDetailASTList) {
+		for (DetailAST dotDetailAST : dotDetailASTs) {
 			if (skipDeprecated &&
 				(hasDeprecatedParent(dotDetailAST) ||
 				 hasSuppressDeprecationWarningsAnnotation(dotDetailAST))) {
@@ -520,13 +520,11 @@ public abstract class BaseAPICheck extends BaseCheck {
 					parentDetailAST, "SuppressWarnings");
 
 				if (annotationDetailAST != null) {
-					List<DetailAST> literalStringDetailASTList =
-						getAllChildTokens(
-							annotationDetailAST, true,
-							TokenTypes.STRING_LITERAL);
+					List<DetailAST> literalStringDetailASTs = getAllChildTokens(
+						annotationDetailAST, true, TokenTypes.STRING_LITERAL);
 
 					for (DetailAST literalStringDetailAST :
-							literalStringDetailASTList) {
+							literalStringDetailASTs) {
 
 						String s = literalStringDetailAST.getText();
 
@@ -832,10 +830,10 @@ public abstract class BaseAPICheck extends BaseCheck {
 
 		DetailAST elistDetailAST = detailAST.findFirstToken(TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST exprDetailAST : exprDetailASTList) {
+		for (DetailAST exprDetailAST : exprDetailASTs) {
 			parameterTypeNames.add(
 				_getParameterTypeName(exprDetailAST.getFirstChild()));
 		}

@@ -7,11 +7,11 @@ package com.liferay.portal.security.audit.storage.internal;
 
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.audit.AuditEvent;
 import com.liferay.portal.security.audit.AuditEventManager;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
@@ -40,7 +40,7 @@ public class AuditEventManagerImpl implements AuditEventManager {
 
 	@Override
 	public void addAuditEvents(List<AuditMessage> auditMessages) {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			Map<Long, List<AuditMessage>> auditMessagesMap = new HashMap<>();
 
 			for (AuditMessage auditMessage : auditMessages) {

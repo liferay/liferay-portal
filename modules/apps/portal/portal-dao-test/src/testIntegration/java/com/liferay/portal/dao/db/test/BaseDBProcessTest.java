@@ -83,7 +83,7 @@ public class BaseDBProcessTest extends BaseDBProcess {
 				"typeLong LONG null, typeLongDefault LONG default 10 not null,",
 				"typeSBlob SBLOB, typeString STRING null, typeText TEXT null, ",
 				"typeVarchar VARCHAR(75) null, typeVarcharDefault VARCHAR(10) ",
-				"default 'testValue' not null);"));
+				"default 'testValue' not null)"));
 	}
 
 	@After

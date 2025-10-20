@@ -12,7 +12,7 @@ const items = [
 	mockIndividual(2, {total: 123})
 ];
 
-const segments = [mockSegment(1, {segmentType: 'DYNAMIC'})];
+const segments = [mockSegment(1, {segmentType: 'BATCH'})];
 
 const WrappedComponent = withStaticRouter(EntityList);
 

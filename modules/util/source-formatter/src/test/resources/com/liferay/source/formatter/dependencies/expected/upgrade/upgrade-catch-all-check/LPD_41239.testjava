@@ -20,7 +20,9 @@ public class LPD_41239 {
 		DLVersionNumberIncrease dlVersionNumberIncrease, byte[] bytes,
 		ServiceContext serviceContext) {
 
-		DLAppServiceUtil.updateFileEntry(fileEntryId, "test123", mimeType, title, description, changeLog, dlVersionNumberIncrease, bytes, serviceContext);
+		DLAppServiceUtil.updateFileEntry(
+			fileEntryId, "test123", mimeType, title, description, changeLog,
+			dlVersionNumberIncrease, bytes, serviceContext);
 		DLAppServiceUtil.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, bytes, null, null, null, serviceContext);
 		_dlAppService.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, bytes, null, null, null, serviceContext);
 	}

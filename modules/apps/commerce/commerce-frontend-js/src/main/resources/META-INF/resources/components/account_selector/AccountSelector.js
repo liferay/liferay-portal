@@ -5,7 +5,7 @@
 
 import ClayDropDown from '@clayui/drop-down';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import './account_selector.scss';
 import ServiceProvider from '../../ServiceProvider/index';
@@ -25,10 +25,7 @@ import OrdersListView from './views/OrdersListView';
 const DeliveryCatalogResource = ServiceProvider.DeliveryCatalogAPI('v1');
 
 function AccountSelector({
-	accountEntryAllowedTypes,
 	alignmentPosition,
-	checkoutURL,
-	commerceChannelId,
 	createNewOrderURL,
 	currencyCode,
 	currentCommerceAccount: account,
@@ -40,6 +37,15 @@ function AccountSelector({
 	selectOrderURL,
 	setCurrentAccountURL: selectAccountURL,
 }) {
+	const accountEntryAllowedTypes = useMemo(
+		() => Liferay.CommerceContext?.accountEntryAllowedTypes,
+		[]
+	);
+	const commerceChannelId = useMemo(
+		() => Liferay.CommerceContext?.commerceChannelId,
+		[]
+	);
+
 	const [active, setActive] = useState(false);
 	const [availableAccounts, setAvailableAccounts] = useState([]);
 	const [currentAccount, setCurrentAccount] = useState({
@@ -69,19 +75,10 @@ function AccountSelector({
 			.catch((error) => showErrorNotification(error.message));
 	}, [commerceChannelId]);
 
-	useEffect(() => {
-		if (!!checkoutURL && currentAccount.id && currentOrder.id) {
-			window.location.href = checkoutURL;
-		}
-	}, [checkoutURL, currentAccount, currentOrder]);
-
-	const changeAccount = (account, doCheckout = false) => {
+	const changeAccount = (account) => {
 		selectAccount(account.id, selectAccountURL)
 			.then(() => {
-				if (doCheckout) {
-					window.location.href = checkoutURL;
-				}
-				else if (forceRefresh) {
+				if (forceRefresh) {
 					window.location.reload();
 				}
 				else {
@@ -169,7 +166,6 @@ function AccountSelector({
 					accountEntryAllowedTypes={accountEntryAllowedTypes}
 					availableAccounts={availableAccounts}
 					changeAccount={changeAccount}
-					checkoutURL={checkoutURL}
 					commerceChannelId={commerceChannelId}
 					hasCreatePermission={!!currentUser.actions?.create}
 					hasManagePermission={hasManageAccountsPermission}
@@ -180,12 +176,7 @@ function AccountSelector({
 }
 
 AccountSelector.propTypes = {
-	accountEntryAllowedTypes: PropTypes.array.isRequired,
 	alignmentPosition: PropTypes.number,
-	commerceChannelId: PropTypes.oneOfType([
-		PropTypes.number,
-		PropTypes.string,
-	]),
 	createNewOrderURL: PropTypes.string.isRequired,
 	currencyCode: PropTypes.string.isRequired,
 	currentCommerceAccount: PropTypes.shape({

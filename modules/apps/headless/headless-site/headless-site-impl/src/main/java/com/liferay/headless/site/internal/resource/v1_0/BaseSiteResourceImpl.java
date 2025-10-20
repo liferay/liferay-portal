@@ -76,7 +76,9 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-site/v1.0/sites/{siteId}'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
+		deprecated = true,
 		description = "Deletes a site and all of its associated content."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -107,6 +109,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-site/v1.0/sites/batch'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -151,7 +155,9 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-site/v1.0/sites/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
+		deprecated = true,
 		description = "Deletes a site and all of its associated content."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -184,6 +190,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites/{siteId}'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -214,6 +222,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -246,6 +256,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites/by-external-reference-code/{externalReferenceCode}/site-initializer'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -280,7 +292,9 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-site/v1.0/sites'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
+		deprecated = true,
 		description = "Retrieves the sites. Results can be paginated, filtered, searched, and sorted."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -328,7 +342,10 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites' -d $'{"active": ___, "description": ___, "externalReferenceCode": ___, "friendlyUrlPath": ___, "manualMembership": ___, "membershipRestriction": ___, "membershipType": ___, "name": ___, "name_i18n": ___, "parentSiteExternalReferenceCode": ___, "parentSiteKey": ___, "templateKey": ___, "templateType": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
-	@io.swagger.v3.oas.annotations.Operation(description = "Adds a new site")
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(
+		deprecated = true, description = "Adds a new site"
+	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
@@ -346,6 +363,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites/batch'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -390,7 +409,9 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites/site-initializer'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
+		deprecated = true,
 		description = "Adds a new site based on a multipart/form-data",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostSiteSiteInitializerRequestBody.class)))
 	)
@@ -413,6 +434,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites/export-batch'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -487,7 +510,9 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-site/v1.0/sites' -d $'{"active": ___, "description": ___, "externalReferenceCode": ___, "friendlyUrlPath": ___, "manualMembership": ___, "membershipRestriction": ___, "membershipType": ___, "name": ___, "name_i18n": ___, "parentSiteExternalReferenceCode": ___, "parentSiteKey": ___, "templateKey": ___, "templateType": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
+		deprecated = true,
 		description = "Updates a site and all of its associated content."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
@@ -507,6 +532,8 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-site/v1.0/sites/batch'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
+	@io.swagger.v3.oas.annotations.Operation(deprecated = true)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -551,8 +578,9 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-site/v1.0/sites/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Adds or update a new site",
+		deprecated = true, description = "Adds or update a new site",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PutSiteByExternalReferenceCodeRequestBody.class)))
 	)
 	@io.swagger.v3.oas.annotations.Parameters(

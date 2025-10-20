@@ -22,11 +22,11 @@ public class NotRequireThisCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> thisDetailASTList = getAllChildTokens(
+		List<DetailAST> thisDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.LITERAL_THIS);
 
 		outerLoop:
-		for (DetailAST thisDetailAST : thisDetailASTList) {
+		for (DetailAST thisDetailAST : thisDetailASTs) {
 			if (thisDetailAST.getPreviousSibling() != null) {
 				continue;
 			}
@@ -39,11 +39,11 @@ public class NotRequireThisCheck extends BaseCheck {
 
 			String name = getName(parentDetailAST);
 
-			List<DetailAST> definitionDetailASTList = getAllChildTokens(
+			List<DetailAST> definitionDetailASTs = getAllChildTokens(
 				detailAST, true, TokenTypes.PARAMETER_DEF, TokenTypes.RESOURCE,
 				TokenTypes.VARIABLE_DEF);
 
-			for (DetailAST definitionDetailAST : definitionDetailASTList) {
+			for (DetailAST definitionDetailAST : definitionDetailASTs) {
 				if (name.equals(getName(definitionDetailAST))) {
 					continue outerLoop;
 				}

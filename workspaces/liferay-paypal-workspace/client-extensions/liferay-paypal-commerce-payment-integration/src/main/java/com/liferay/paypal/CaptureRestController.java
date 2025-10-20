@@ -108,12 +108,12 @@ public class CaptureRestController extends BaseRestController {
 					"Bearer " + jwt.getTokenValue(),
 					new JSONObject(
 					).put(
-						"externalReferenceCode", transactionCode
-					).put(
 						"clientId", typeSettingsJSONObject.getString("clientId")
 					).put(
 						"clientSecret",
 						typeSettingsJSONObject.getString("clientSecret")
+					).put(
+						"externalReferenceCode", transactionCode
 					).put(
 						"mode", typeSettingsJSONObject.getString("mode")
 					).put(

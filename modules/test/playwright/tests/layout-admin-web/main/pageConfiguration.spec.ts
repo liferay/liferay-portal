@@ -8,6 +8,7 @@ import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {instanceSettingsPagesTest} from '../../../fixtures/instanceSettingsPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
@@ -29,6 +30,7 @@ const test = mergeTests(
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	}),
+	instanceSettingsPagesTest,
 	isolatedSiteTest,
 	loginTest(),
 	masterPagesPagesTest,
@@ -1035,6 +1037,50 @@ test.describe('Design configuration', () => {
 			).toBeVisible();
 		}
 	);
+
+	test('Logo section is not visible when disabled from instance settings', async ({
+		instanceSettingsPage,
+		page,
+		pagesAdminPage,
+		site,
+	}) => {
+
+		// Don't allow site administrators to use their own logo
+
+		await instanceSettingsPage.goToInstanceSetting(
+			'Instance Configuration',
+			'Appearance'
+		);
+
+		await page
+			.getByLabel('Allow site administrators to use their own logo?')
+			.uncheck();
+
+		await instanceSettingsPage.saveAndWaitForAlert();
+
+		// Assert logo section is not visible
+
+		await pagesAdminPage.gotoPagesConfiguration(site.friendlyUrlPath);
+
+		await expect(
+			page.getByText(
+				'Upload a logo for pages that is used instead of the default enterprise logo.'
+			)
+		).not.toBeVisible();
+
+		await instanceSettingsPage.goToInstanceSetting(
+			'Instance Configuration',
+			'Appearance'
+		);
+
+		// Revert change in instance settings
+
+		await page
+			.getByLabel('Allow site administrators to use their own logo?')
+			.check();
+
+		await instanceSettingsPage.saveAndWaitForAlert();
+	});
 });
 
 test.describe('SEO configuration', () => {

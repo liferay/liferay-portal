@@ -78,7 +78,7 @@ public class CommerceOrderAccountNotificationTermTest {
 			content,
 			new NotificationContextBuilder(
 			).className(
-				"com.liferay.commerce.model.CommerceOrder"
+				CommerceOrder.class.getName()
 			).classPK(
 				GetterUtil.getLong(termValues.get("id"))
 			).externalReferenceCode(

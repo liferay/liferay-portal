@@ -338,8 +338,8 @@ public class JournalServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"JournalFolder", "folderId"}};
+				protected String[] getTableNames() {
+					return new String[] {"JournalFolder"};
 				}
 
 			});

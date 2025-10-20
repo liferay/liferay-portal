@@ -3,5 +3,9 @@
 <suppressions>
 	<checkstyle>
 		<suppress checks="PersistenceCallCheck" files="analytics-batch-export-import-impl/src/main/java/com/liferay/analytics/batch/exportimport/internal/dto/v1_0/converter/DXPEntityDTOConverterImpl\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-cms-rest-test/src/testIntegration/java/com/liferay/analytics/cms/rest/resource/v1_0/test/ObjectEntryAcquisitionChannelResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-cms-rest-test/src/testIntegration/java/com/liferay/analytics/cms/rest/resource/v1_0/test/ObjectEntryHistogramMetricResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-cms-rest-test/src/testIntegration/java/com/liferay/analytics/cms/rest/resource/v1_0/test/ObjectEntryMetricResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-cms-rest-test/src/testIntegration/java/com/liferay/analytics/cms/rest/resource/v1_0/test/ObjectEntryTopPagesResourceTest\.java" />
 	</checkstyle>
 </suppressions>

@@ -7,13 +7,13 @@ package com.liferay.portal.db.partition.internal.messaging;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.db.partition.internal.configuration.DBPartitionConfiguration;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageBusInterceptor;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.util.PortalInstances;
 
@@ -40,7 +40,7 @@ public class DBPartitionMessageBusInterceptor implements MessageBusInterceptor {
 	public boolean intercept(
 		MessageBus messageBus, String destinationName, Message message) {
 
-		if (DBPartition.isPartitionEnabled() &&
+		if (PropsValues.DATABASE_PARTITION_ENABLED &&
 			(message.getLong("companyId") == CompanyConstants.SYSTEM) &&
 			!_excludedMessageBusDestinationNames.contains(destinationName) &&
 			!_excludedSchedulerJobNames.contains(

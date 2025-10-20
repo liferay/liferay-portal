@@ -154,6 +154,12 @@ public class EditStructureDisplayPageStrutsActionTest {
 			ContentLayoutTestUtil.getMockHttpServletRequest(
 				_company, _group, _layout);
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setUser(_user);
+
 		mockHttpServletRequest.setParameter(
 			"objectDefinitionExternalReferenceCode",
 			String.valueOf(_objectDefinition.getExternalReferenceCode()));

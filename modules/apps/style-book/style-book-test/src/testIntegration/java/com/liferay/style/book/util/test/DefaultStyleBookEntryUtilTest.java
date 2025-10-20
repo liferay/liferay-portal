@@ -77,7 +77,8 @@ public class DefaultStyleBookEntryUtilTest {
 
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(false);
 
-		masterLayout.setStyleBookEntryId(styleBookEntry.getStyleBookEntryId());
+		masterLayout.setStyleBookEntryERC(
+			styleBookEntry.getExternalReferenceCode());
 
 		_layoutLocalService.updateLayout(masterLayout);
 
@@ -99,7 +100,8 @@ public class DefaultStyleBookEntryUtilTest {
 
 		StyleBookEntry styleBookEntry1 = _addStyleBookEntry(false);
 
-		masterLayout.setStyleBookEntryId(styleBookEntry1.getStyleBookEntryId());
+		masterLayout.setStyleBookEntryERC(
+			styleBookEntry1.getExternalReferenceCode());
 
 		_layoutLocalService.updateLayout(masterLayout);
 
@@ -113,8 +115,8 @@ public class DefaultStyleBookEntryUtilTest {
 
 		StyleBookEntry styleBookEntry2 = _addStyleBookEntry(false);
 
-		masterLayoutBasedLayout.setStyleBookEntryId(
-			styleBookEntry2.getStyleBookEntryId());
+		masterLayoutBasedLayout.setStyleBookEntryERC(
+			styleBookEntry2.getExternalReferenceCode());
 
 		masterLayoutBasedLayout = _layoutLocalService.updateLayout(
 			masterLayoutBasedLayout);
@@ -133,7 +135,8 @@ public class DefaultStyleBookEntryUtilTest {
 	public void testGetDefaultStyleBookEntry2() throws Exception {
 		StyleBookEntry styleBookEntry1 = _addStyleBookEntry(false);
 
-		_layout.setStyleBookEntryId(styleBookEntry1.getStyleBookEntryId());
+		_layout.setStyleBookEntryERC(
+			styleBookEntry1.getExternalReferenceCode());
 
 		_layout = _layoutLocalService.updateLayout(_layout);
 
@@ -164,7 +167,7 @@ public class DefaultStyleBookEntryUtilTest {
 
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(false);
 
-		_layout.setStyleBookEntryId(styleBookEntry.getStyleBookEntryId());
+		_layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
 
 		_layout = _layoutLocalService.updateLayout(_layout);
 
@@ -241,7 +244,8 @@ public class DefaultStyleBookEntryUtilTest {
 
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(false);
 
-		masterLayout.setStyleBookEntryId(styleBookEntry.getStyleBookEntryId());
+		masterLayout.setStyleBookEntryERC(
+			styleBookEntry.getExternalReferenceCode());
 
 		_layoutLocalService.updateLayout(masterLayout);
 

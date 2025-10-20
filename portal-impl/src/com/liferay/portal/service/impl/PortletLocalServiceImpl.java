@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.cluster.Clusterable;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.PortletIdException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -3066,7 +3065,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		public Portlet get(Object key) {
 			Portlet portlet = super.get(key);
 
-			if (!DBPartition.isPartitionEnabled() ||
+			if (!PropsValues.DATABASE_PARTITION_ENABLED ||
 				((portlet != null) &&
 				 (portlet.getCompanyId() == CompanyConstants.SYSTEM))) {
 
@@ -3088,7 +3087,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 		@Override
 		public Portlet remove(Object key) {
-			if (DBPartition.isPartitionEnabled()) {
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
 				Portlet portlet = super.remove(
 					DBPartitionUtil.getPartitionKey(key));
 

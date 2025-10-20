@@ -217,11 +217,11 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 		_assertListResponse(
 			groupResource.getV2Groups(5, null, 0, null), 2, 2, group1, group2);
 
-		_assertListResponse(groupResource.getV2Groups(-1, null, 1, null), 3, 0);
+		_assertListResponse(groupResource.getV2Groups(-1, null, 1, null), 2, 0);
 		_assertListResponse(
-			groupResource.getV2Groups(1, null, 2, null), 3, 1, group2);
+			groupResource.getV2Groups(1, null, 2, null), 2, 1, group2);
 		_assertListResponse(
-			groupResource.getV2Groups(1, null, null, null), 3, 1, group1);
+			groupResource.getV2Groups(1, null, null, null), 2, 1, group1);
 
 		Group group3 = testDeleteV2Group_addGroup();
 

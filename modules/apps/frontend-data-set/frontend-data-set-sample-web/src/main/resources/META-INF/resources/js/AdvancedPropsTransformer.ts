@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	DEFAULT_FETCH_HEADERS,
-	EConfigInURLBehavior,
-} from '@liferay/frontend-data-set-web';
+import {DEFAULT_FETCH_HEADERS} from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
 import {openModal} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
@@ -125,7 +122,6 @@ export default function propsTransformer({
 
 	return {
 		...otherProps,
-		configInURLSettings: EConfigInURLBehavior.PUSH,
 		customRenderers: {
 			tableCell: [customAuthorTableCellRenderer],
 		},

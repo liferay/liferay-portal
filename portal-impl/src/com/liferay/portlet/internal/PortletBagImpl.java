@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.pop.MessageListener;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.ControlPanelEntry;
-import com.liferay.portal.kernel.portlet.FriendlyURLMapperTracker;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletConfigurationListener;
 import com.liferay.portal.kernel.portlet.PortletLayoutListener;
@@ -66,14 +65,12 @@ public class PortletBagImpl implements PortletBag {
 	public PortletBagImpl(
 		String portletName, ServletContext servletContext,
 		Portlet portletInstance, String resourceBundleBaseName,
-		FriendlyURLMapperTracker friendlyURLMapperTracker,
 		List<ServiceRegistration<?>> serviceRegistrations) {
 
 		_portletName = portletName;
 		_servletContext = servletContext;
 		_portletInstance = portletInstance;
 		_resourceBundleBaseName = resourceBundleBaseName;
-		_friendlyURLMapperTracker = friendlyURLMapperTracker;
 		_serviceRegistrations = serviceRegistrations;
 
 		_filterString =
@@ -125,7 +122,7 @@ public class PortletBagImpl implements PortletBag {
 	public Object clone() {
 		return new PortletBagImpl(
 			getPortletName(), getServletContext(), getPortletInstance(),
-			getResourceBundleBaseName(), getFriendlyURLMapperTracker(), null);
+			getResourceBundleBaseName(), null);
 	}
 
 	@Override
@@ -133,8 +130,6 @@ public class PortletBagImpl implements PortletBag {
 		if (_serviceRegistrations == null) {
 			return;
 		}
-
-		_friendlyURLMapperTracker.close();
 
 		for (ServiceRegistration<?> serviceRegistration :
 				_serviceRegistrations) {
@@ -184,11 +179,6 @@ public class PortletBagImpl implements PortletBag {
 	@Override
 	public List<CustomAttributesDisplay> getCustomAttributesDisplayInstances() {
 		return _getList(CustomAttributesDisplay.class);
-	}
-
-	@Override
-	public FriendlyURLMapperTracker getFriendlyURLMapperTracker() {
-		return _friendlyURLMapperTracker;
 	}
 
 	@Override
@@ -498,7 +488,6 @@ public class PortletBagImpl implements PortletBag {
 	private final Snapshot<ConfigurationAction> _configurationActionSnapshot;
 	private final Snapshot<ControlPanelEntry> _controlPanelEntrySnapshot;
 	private final String _filterString;
-	private final FriendlyURLMapperTracker _friendlyURLMapperTracker;
 	private final Snapshot<MessageListener> _messageListenerSnapshot;
 	private final Snapshot<Method> _methodSnapshot;
 	private final Snapshot<OpenSearch> _openSearchSnapshot;

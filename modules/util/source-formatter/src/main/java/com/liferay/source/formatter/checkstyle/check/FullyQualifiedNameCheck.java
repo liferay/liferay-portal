@@ -31,10 +31,10 @@ public class FullyQualifiedNameCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> nameDetailASTList = getAllChildTokens(
+		List<DetailAST> nameDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.IDENT);
 
-		for (DetailAST nameDetailAST : nameDetailASTList) {
+		for (DetailAST nameDetailAST : nameDetailASTs) {
 			String name = nameDetailAST.getText();
 
 			String fullyQualifiedName = _getFullyQualifiedName(
@@ -47,7 +47,7 @@ public class FullyQualifiedNameCheck extends BaseCheck {
 			}
 
 			if (!_isFullyQualifiedNameRequired(
-					detailAST, fullyQualifiedName, name, nameDetailASTList)) {
+					detailAST, fullyQualifiedName, name, nameDetailASTs)) {
 
 				log(
 					nameDetailAST, _MSG_USE_IMPORT_STATEMENT,
@@ -119,13 +119,13 @@ public class FullyQualifiedNameCheck extends BaseCheck {
 
 	private boolean _isFullyQualifiedNameRequired(
 		DetailAST rootDetailAST, String fullyQualifiedName, String className,
-		List<DetailAST> nameDetailASTList) {
+		List<DetailAST> nameDetailASTs) {
 
 		if (_containsImport(rootDetailAST, className)) {
 			return true;
 		}
 
-		for (DetailAST nameDetailAST : nameDetailASTList) {
+		for (DetailAST nameDetailAST : nameDetailASTs) {
 			String name = nameDetailAST.getText();
 
 			if (!name.equals(className)) {

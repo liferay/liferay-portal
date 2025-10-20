@@ -219,6 +219,15 @@
 		}
 	},
 	{
+		"key": "learn-more-about-our-release-and-fix-delivery-process",
+		"value": {
+			"en-US": "Learn more about our release and fix delivery process.",
+			"es-ES": "Información sobre la liberación de versiones y parches.",
+			"ja-JP": "リリースおよび修正の提供プロセスの詳細をご確認ください。",
+			"pt-BR": "Saiba mais sobre nosso processo de entrega de versões e correções."
+		}
+	},
+	{
 		"key": "liferay-learn",
 		"value": {
 			"en-US": "Liferay Learn"

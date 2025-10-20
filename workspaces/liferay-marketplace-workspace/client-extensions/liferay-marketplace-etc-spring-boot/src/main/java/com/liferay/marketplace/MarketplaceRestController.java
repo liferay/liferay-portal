@@ -7,7 +7,13 @@ package com.liferay.marketplace;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
+import com.liferay.headless.admin.user.client.dto.v1_0.AccountRole;
+import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
+import com.liferay.headless.admin.user.client.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.AccountRoleResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.PostalAddressResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.UserAccountResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Catalog;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.BillingAddress;
@@ -15,12 +21,14 @@ import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;
 import com.liferay.headless.commerce.admin.order.client.pagination.Page;
 import com.liferay.headless.commerce.admin.order.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.order.client.resource.v1_0.OrderItemResource;
 import com.liferay.headless.commerce.admin.order.client.resource.v1_0.OrderResource;
 import com.liferay.marketplace.constants.MarketplaceConstants;
 import com.liferay.marketplace.service.KoroneikiService;
 import com.liferay.marketplace.service.MarketplaceService;
 import com.liferay.marketplace.util.MarketplaceUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.io.BufferedWriter;
@@ -35,6 +43,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -48,6 +57,7 @@ import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -58,7 +68,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
@@ -134,6 +147,93 @@ public class MarketplaceRestController extends BaseRestController {
 		).body(
 			streamingResponseBody
 		);
+	}
+
+	@PostMapping("/account")
+	public ResponseEntity<Account> postAccount(
+			@RequestPart("account") String accountJSON,
+			@RequestPart("file") MultipartFile file,
+			@AuthenticationPrincipal Jwt jwt)
+		throws Exception {
+
+		if (_log.isInfoEnabled()) {
+			_log.info("POST account " + accountJSON);
+		}
+
+		Account account = Account.toDTO(accountJSON);
+
+		if (file != null) {
+			Base64.Encoder encoder = Base64.getEncoder();
+
+			account.setLogoBase64(
+				() -> encoder.encodeToString(file.getBytes()));
+		}
+
+		AccountResource accountResource =
+			_marketplaceService.getAccountResource();
+
+		com.liferay.headless.admin.user.client.pagination.Page<Account>
+			accountPage = accountResource.getAccountsPage(
+				"", "name eq '" + account.getName() + "'",
+				com.liferay.headless.admin.user.client.pagination.Pagination.of(
+					1, 1),
+				"");
+
+		if (accountPage.getTotalCount() > 0) {
+			throw new ResponseStatusException(
+				HttpStatus.CONFLICT, "Account already exists");
+		}
+
+		account = accountResource.postAccount(account);
+
+		PostalAddressResource postalAddressesResource =
+			_marketplaceService.getPostalAddressResource();
+
+		PostalAddress postalAddress =
+			postalAddressesResource.getAccountPostalAddressesPage(
+				account.getId()
+			).fetchFirstItem();
+
+		if (postalAddress != null) {
+			accountResource.patchAccount(
+				account.getId(),
+				new Account() {
+					{
+						setDefaultBillingAddressId(postalAddress::getId);
+					}
+				});
+		}
+
+		UserAccountResource userAccountResource =
+			_marketplaceService.getUserAccountResource();
+
+		UserAccount userAccount = userAccountResource.getMyUserAccount();
+
+		String emailAddress = userAccount.getEmailAddress();
+
+		userAccountResource.postAccountUserAccountByEmailAddress(
+			account.getId(), emailAddress);
+
+		Long accountRoleId = _getAccountAdministratorRoleId(account.getId());
+
+		if (accountRoleId != null) {
+			AccountRoleResource accountRoleResource =
+				_marketplaceService.getAccountRoleResource();
+
+			accountRoleResource.
+				postAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress(
+					account.getExternalReferenceCode(), accountRoleId,
+					emailAddress);
+		}
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				StringBundler.concat(
+					"User ", emailAddress, " associated with account ",
+					account.getName()));
+		}
+
+		return ResponseEntity.ok(account);
 	}
 
 	@PostMapping("product/purchase")
@@ -298,6 +398,8 @@ public class MarketplaceRestController extends BaseRestController {
 			return;
 		}
 
+		OrderItemResource orderItemResource =
+			_marketplaceService.getOrderItemResource();
 		OrderResource orderResource = _marketplaceService.getOrderResource();
 
 		com.liferay.headless.commerce.admin.order.client.dto.v1_0.Account
@@ -311,10 +413,10 @@ public class MarketplaceRestController extends BaseRestController {
 		BigDecimal total = subtotalAmount.add(taxAmount);
 
 		if ((Objects.equals(account.getType(), _ACCOUNT_TYPE_BUSINESS) &&
-			 _europeanCountriesISOCode.contains(
-				 billingAddress.getCountryISOCode())) ||
+			 Objects.equals(billingAddress.getCountryISOCode(), "IE")) ||
 			(Objects.equals(account.getType(), _ACCOUNT_TYPE_PERSON) &&
-			 Objects.equals(billingAddress.getCountryISOCode(), "IE"))) {
+			 _europeanCountriesISOCode.contains(
+				 billingAddress.getCountryISOCode()))) {
 
 			taxAmount = subtotalAmount.multiply(
 				BigDecimal.valueOf(_MARKETPLACE_TAX_PERCENTAGE));
@@ -325,6 +427,26 @@ public class MarketplaceRestController extends BaseRestController {
 		BigDecimal finalTaxAmount = taxAmount;
 		BigDecimal finalTotal = total;
 
+		for (OrderItem orderItem : order.getOrderItems()) {
+			orderItemResource.patchOrderItem(
+				orderItem.getId(),
+				new OrderItem() {
+					{
+						setFinalPrice(orderItem::getFinalPrice);
+						setFinalPriceWithTaxAmount(
+							() -> orderItem.getFinalPrice(
+							).add(
+								orderItem.getFinalPrice(
+								).multiply(
+									BigDecimal.valueOf(
+										_MARKETPLACE_TAX_PERCENTAGE)
+								)
+							));
+						setPriceManuallyAdjusted(() -> true);
+					}
+				});
+		}
+
 		orderResource.patchOrder(
 			orderId,
 			new Order() {
@@ -333,6 +455,34 @@ public class MarketplaceRestController extends BaseRestController {
 					setTotal(() -> finalTotal);
 				}
 			});
+	}
+
+	private Long _getAccountAdministratorRoleId(long accountId)
+		throws Exception {
+
+		if (_accountAdministratorRoleId != null) {
+			return _accountAdministratorRoleId;
+		}
+
+		AccountRoleResource accountRoleResource =
+			_marketplaceService.getAccountRoleResource();
+
+		com.liferay.headless.admin.user.client.pagination.Page<AccountRole>
+			accountRolesPage = accountRoleResource.getAccountAccountRolesPage(
+				accountId, null, "name eq 'Account Administrator'",
+				com.liferay.headless.admin.user.client.pagination.Pagination.of(
+					1, 1),
+				null);
+
+		AccountRole accountRole = accountRolesPage.fetchFirstItem();
+
+		if (accountRole == null) {
+			return null;
+		}
+
+		_accountAdministratorRoleId = accountRole.getId();
+
+		return _accountAdministratorRoleId;
 	}
 
 	private void _sendOrderPurchasedNotification(Order order) throws Exception {
@@ -525,6 +675,9 @@ public class MarketplaceRestController extends BaseRestController {
 
 	private static final Log _log = LogFactory.getLog(
 		MarketplaceRestController.class);
+
+	private static Long _accountAdministratorRoleId = GetterUtil.getLong(
+		System.getenv("THISISATERRIBLEENVNAME"));
 
 	private final Set<String> _europeanCountriesISOCode = Set.of(
 		"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR",

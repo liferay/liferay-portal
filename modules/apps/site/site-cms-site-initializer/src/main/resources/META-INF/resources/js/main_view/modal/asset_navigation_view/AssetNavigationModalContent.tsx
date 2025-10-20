@@ -73,7 +73,9 @@ export default function AssetNavigationModalContent({
 }: AssetNavigationModalContentProps) {
 	const [currentItemIndex, setCurrentItemIndex] = useState(currentIndex);
 	const [openSidePanel, setOpenSidePanel] = useState(false);
-	const [currentPanel, setCurrentPanel] = useState<String>();
+	const [currentPanel, setCurrentPanel] = useState<
+		keyof typeof PANELS | null
+	>(null);
 	const containerRef = useRef(null);
 	const currentItem = items[currentItemIndex];
 
@@ -122,7 +124,7 @@ export default function AssetNavigationModalContent({
 			return;
 		}
 
-		setCurrentPanel(PANELS.commentPanel);
+		setCurrentPanel(PANELS.commentPanel as keyof typeof PANELS);
 		setOpenSidePanel(true);
 	};
 
@@ -133,7 +135,7 @@ export default function AssetNavigationModalContent({
 			return;
 		}
 
-		setCurrentPanel(PANELS.infoPanel);
+		setCurrentPanel(PANELS.infoPanel as keyof typeof PANELS);
 		setOpenSidePanel(true);
 	};
 
@@ -148,10 +150,13 @@ export default function AssetNavigationModalContent({
 		};
 	}, [handleOnKeyDown]);
 
+	const activePanel = openSidePanel ? currentPanel : null;
+
 	return (
 		<>
 			<ClayModal.Header>
 				<Header
+					activePanel={activePanel}
 					handleClickComments={handleClickComments}
 					handleClickInfo={handleClickInfo}
 					item={currentItem}
@@ -206,3 +211,5 @@ export default function AssetNavigationModalContent({
 		</>
 	);
 }
+
+export {PANELS};

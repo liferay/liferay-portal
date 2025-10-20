@@ -6,7 +6,6 @@
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.configuration.DLConfiguration;
@@ -15,12 +14,10 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
-import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntryFolder;
-import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalServiceUtil;
@@ -28,7 +25,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -43,15 +39,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -65,6 +58,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
+import com.liferay.site.cms.site.initializer.internal.util.PermissionUtil;
 import com.liferay.translation.constants.TranslationPortletKeys;
 
 import jakarta.portlet.ActionRequest;
@@ -228,7 +222,8 @@ public abstract class BaseSectionDisplayContext {
 				themeDisplay.getURLCurrent(), "&objectEntryId={embedded.id}")
 		).put(
 			"defaultPermissionAdditionalProps",
-			_getDefaultPermissionAdditionalProps()
+			PermissionUtil.getDefaultPermissionAdditionalProps(
+				httpServletRequest, themeDisplay)
 		).put(
 			"fileMimeTypeCssClasses",
 			() -> {
@@ -252,18 +247,18 @@ public abstract class BaseSectionDisplayContext {
 			HashMapBuilder.put(
 				"default", "content-icon-custom-structure"
 			).put(
-				"L_BASIC_WEB_CONTENT", "content-icon-basic-content"
+				"L_CMS_BASIC_WEB_CONTENT", "content-icon-basic-content"
 			).put(
-				"L_BLOG", "content-icon-blog"
+				"L_CMS_BLOG", "content-icon-blog"
 			).build()
 		).put(
 			"objectDefinitionIcons",
 			HashMapBuilder.put(
 				"default", "web-content"
 			).put(
-				"L_BASIC_WEB_CONTENT", "forms"
+				"L_CMS_BASIC_WEB_CONTENT", "forms"
 			).put(
-				"L_BLOG", "blogs"
+				"L_CMS_BLOG", "blogs"
 			).build()
 		).put(
 			"parentObjectEntryFolderExternalReferenceCode",
@@ -493,6 +488,19 @@ public abstract class BaseSectionDisplayContext {
 				LanguageUtil.get(httpServletRequest, "default-permissions"),
 				null, "permissions", null),
 			new FDSActionDropdownItem(
+				StringPool.BLANK, "password-policies",
+				"edit-and-propagate-default-permissions",
+				LanguageUtil.get(
+					httpServletRequest,
+					"edit-and-propagate-default-permissions"),
+				null, "permissions", null),
+			new FDSActionDropdownItem(
+				StringPool.BLANK, "password-policies",
+				"reset-to-default-permissions",
+				LanguageUtil.get(
+					httpServletRequest, "reset-to-default-permissions"),
+				null, "permissions", null),
+			new FDSActionDropdownItem(
 				null, "trash", "delete",
 				language.get(httpServletRequest, "delete"), null, "delete",
 				null));
@@ -558,112 +566,6 @@ public abstract class BaseSectionDisplayContext {
 		}
 
 		return acceptedGroupIds;
-	}
-
-	private Map<String, Object> _getDefaultPermissionAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"actions",
-			() -> HashMapBuilder.put(
-				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
-				() -> {
-					ObjectDefinition objectDefinition =
-						ObjectDefinitionLocalServiceUtil.
-							getObjectDefinitionByExternalReferenceCode(
-								"L_BASIC_WEB_CONTENT",
-								themeDisplay.getCompanyId());
-
-					List<String> guestUnsupportedActions =
-						ResourceActionsUtil.getResourceGuestUnsupportedActions(
-							null, objectDefinition.getClassName());
-
-					return TransformUtil.transformToArray(
-						ResourceActionsUtil.getResourceActions(
-							objectDefinition.getClassName()),
-						resourceAction -> HashMapBuilder.<String, Object>put(
-							"guestUnsupported",
-							guestUnsupportedActions.contains(resourceAction)
-						).put(
-							"key", resourceAction
-						).put(
-							"label",
-							ResourceActionsUtil.getAction(
-								httpServletRequest, resourceAction)
-						).build(),
-						Map.class);
-				}
-			).put(
-				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
-				() -> {
-					ObjectDefinition objectDefinition =
-						ObjectDefinitionLocalServiceUtil.
-							getObjectDefinitionByExternalReferenceCode(
-								"L_BASIC_DOCUMENT",
-								themeDisplay.getCompanyId());
-
-					List<String> guestUnsupportedActions =
-						ResourceActionsUtil.getResourceGuestUnsupportedActions(
-							null, objectDefinition.getClassName());
-
-					return TransformUtil.transformToArray(
-						ResourceActionsUtil.getResourceActions(
-							objectDefinition.getClassName()),
-						resourceAction -> HashMapBuilder.<String, Object>put(
-							"guestUnsupported",
-							guestUnsupportedActions.contains(resourceAction)
-						).put(
-							"key", resourceAction
-						).put(
-							"label",
-							ResourceActionsUtil.getAction(
-								httpServletRequest, resourceAction)
-						).build(),
-						Map.class);
-				}
-			).put(
-				"OBJECT_ENTRY_FOLDERS",
-				() -> {
-					List<String> guestUnsupportedActions =
-						ResourceActionsUtil.getResourceGuestUnsupportedActions(
-							null, ObjectEntryFolder.class.getName());
-
-					return TransformUtil.transformToArray(
-						ResourceActionsUtil.getResourceActions(
-							ObjectEntryFolder.class.getName()),
-						resourceAction -> HashMapBuilder.<String, Object>put(
-							"guestUnsupported",
-							guestUnsupportedActions.contains(resourceAction)
-						).put(
-							"key", resourceAction
-						).put(
-							"label",
-							ResourceActionsUtil.getAction(
-								httpServletRequest, resourceAction)
-						).build(),
-						Map.class);
-				}
-			).build()
-		).put(
-			"roles",
-			() -> TransformUtil.transformToArray(
-				RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
-					themeDisplay.getCompanyId(), null,
-					Arrays.asList(
-						RoleConstants.ADMINISTRATOR,
-						DepotRolesConstants.ASSET_LIBRARY_OWNER),
-					null, null,
-					new int[] {
-						RoleConstants.TYPE_REGULAR, RoleConstants.TYPE_DEPOT
-					},
-					0, 0, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				role -> HashMapBuilder.put(
-					"key", role.getName()
-				).put(
-					"name", role.getTitle(themeDisplay.getLocale())
-				).put(
-					"type", String.valueOf(role.getType())
-				).build(),
-				Map.class)
-		).build();
 	}
 
 	private JSONArray _getDepotEntriesJSONArray() {
@@ -929,7 +831,8 @@ public abstract class BaseSectionDisplayContext {
 
 	private static final List<Integer> _statuses = Arrays.asList(
 		WorkflowConstants.STATUS_APPROVED, WorkflowConstants.STATUS_DRAFT,
-		WorkflowConstants.STATUS_EXPIRED);
+		WorkflowConstants.STATUS_EXPIRED, WorkflowConstants.STATUS_PENDING,
+		WorkflowConstants.STATUS_SCHEDULED);
 
 	private final DLConfiguration _dlConfiguration;
 	private final ObjectDefinitionService _objectDefinitionService;

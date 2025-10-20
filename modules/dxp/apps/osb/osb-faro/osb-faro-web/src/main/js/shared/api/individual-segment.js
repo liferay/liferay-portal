@@ -51,7 +51,7 @@ export function create({
 	segmentType
 }) {
 	const data =
-		segmentType === SegmentTypes.Dynamic
+		segmentType === SegmentTypes.Batch
 			? {
 					channelId,
 					filter: criteriaString,
@@ -83,7 +83,7 @@ export function update({
 	segmentType
 }) {
 	const data =
-		segmentType === SegmentTypes.Dynamic
+		segmentType === SegmentTypes.Batch
 			? {
 					channelId,
 					filter: criteriaString,

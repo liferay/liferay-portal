@@ -8,8 +8,12 @@
 	},
 	"taxonomyCategoryProperties": [
 		{
-			"key": "visible",
-			"value": "false"
+			"key": "subtitle",
+			"value": "learn-more-about-our-release-and-fix-delivery-process"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/patching-and-release.svg$]"
 		}
 	],
 	"viewableBy": "Anyone"

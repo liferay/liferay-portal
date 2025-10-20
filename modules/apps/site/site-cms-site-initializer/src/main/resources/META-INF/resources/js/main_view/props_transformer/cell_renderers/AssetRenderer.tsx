@@ -41,15 +41,17 @@ export default function AssetRenderer({
 	value: string;
 }) {
 	const {actionId} = options;
+	const title =
+		value && value !== '' ? value : Liferay.Language.get('untitled-asset');
 
 	if (!actions.length || !actionId) {
-		return value ? <>{value}</> : null;
+		return <>{title}</>;
 	}
 
 	const selectedAction = actions.find(({data}) => data?.id === actionId);
 
 	if (!selectedAction?.href) {
-		return value ? <>{value}</> : null;
+		return <>{title}</>;
 	}
 
 	const formattedHref = formatActionURL(itemData, selectedAction.href);
@@ -81,11 +83,12 @@ export default function AssetRenderer({
 			<div>
 				<div className="table-list-title">
 					<ClayLink
+						aria-label={title}
 						className="text-decoration-underline"
 						data-senna-off
 						href={formattedHref}
 					>
-						<div>{value}</div>
+						<div>{title}</div>
 					</ClayLink>
 				</div>
 

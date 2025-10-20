@@ -1843,6 +1843,10 @@
 				"name": {
 					"title": "The name Schema",
 					"type": "string"
+				},
+				"repeatable": {
+					"title": "The repeatable Schema",
+					"type": "boolean"
 				}
 			},
 			"title": "The PageFormRelationshipDefinition Schema",

@@ -68,6 +68,23 @@ public interface ERCScopedTestEntityResource {
 			String ercScopedTestEntityExternalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getAssetLibraryERCScopedTestEntityPermissionsPage(
+				String assetLibraryExternalReferenceCode,
+				String ercScopedTestEntityExternalReferenceCode,
+				String roleNames)
+		throws Exception;
+
+	public Page<ERCScopedTestEntity> getERCScopedTestEntitiesPage(
+			String roleNames)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getERCScopedTestEntityPermissionsPage(
+				String ercScopedTestEntityExternalReferenceCode,
+				String roleNames)
+		throws Exception;
+
 	public Page<ERCScopedTestEntity> getSiteERCScopedTestEntitiesPage(
 			String siteExternalReferenceCode)
 		throws Exception;
@@ -75,6 +92,13 @@ public interface ERCScopedTestEntityResource {
 	public ERCScopedTestEntity getSiteERCScopedTestEntity(
 			String siteExternalReferenceCode,
 			String ercScopedTestEntityExternalReferenceCode)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getSiteERCScopedTestEntityPermissionsPage(
+				String siteExternalReferenceCode,
+				String ercScopedTestEntityExternalReferenceCode,
+				String roleNames)
 		throws Exception;
 
 	public Response postAssetLibraryERCScopedTestEntitiesPageExportBatch(
@@ -90,6 +114,11 @@ public interface ERCScopedTestEntityResource {
 	public Response postAssetLibraryERCScopedTestEntityBatch(
 			String assetLibraryExternalReferenceCode, String callbackURL,
 			Object object)
+		throws Exception;
+
+	public Response postERCScopedTestEntitiesPageExportBatch(
+			String roleNames, String callbackURL, String contentType,
+			String fieldNames)
 		throws Exception;
 
 	public Response postSiteERCScopedTestEntitiesPageExportBatch(
@@ -112,10 +141,30 @@ public interface ERCScopedTestEntityResource {
 			ERCScopedTestEntity ercScopedTestEntity)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putAssetLibraryERCScopedTestEntityPermissionsPage(
+				String assetLibraryExternalReferenceCode,
+				String ercScopedTestEntityExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putERCScopedTestEntityPermissionsPage(
+				String ercScopedTestEntityExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
+		throws Exception;
+
 	public ERCScopedTestEntity putSiteERCScopedTestEntity(
 			String siteExternalReferenceCode,
 			String ercScopedTestEntityExternalReferenceCode,
 			ERCScopedTestEntity ercScopedTestEntity)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putSiteERCScopedTestEntityPermissionsPage(
+				String siteExternalReferenceCode,
+				String ercScopedTestEntityExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

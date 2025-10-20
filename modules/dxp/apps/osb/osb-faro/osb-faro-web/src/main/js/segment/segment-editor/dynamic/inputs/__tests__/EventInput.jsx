@@ -40,7 +40,7 @@ describe('EventInput', () => {
 			>
 				<MemoryRouter
 					initialEntries={[
-						'/workspace/23/123123/contacts/segments/create?type=DYNAMIC'
+						'/workspace/23/123123/contacts/segments/create?type=BATCH'
 					]}
 				>
 					<Route path={Routes.CONTACTS_SEGMENT_CREATE}>

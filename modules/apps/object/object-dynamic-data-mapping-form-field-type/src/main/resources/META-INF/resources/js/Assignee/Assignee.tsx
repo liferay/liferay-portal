@@ -5,31 +5,13 @@
 
 import Autocomplete from '@clayui/autocomplete';
 import {FetchPolicy, useResource} from '@clayui/data-provider';
+import {useConfig} from 'data-engine-js-components-web';
 import {ReactFieldBase as FieldBase} from 'dynamic-data-mapping-form-field-type/api';
 import React, {useState} from 'react';
 
 import Option from './Option';
 
 import './Assignee.scss';
-
-const searchURL = new URL(`${window.location.origin}/o/search/v1.0/search`);
-
-const searchParams = {
-	emptySearch: 'true',
-	entryClassNames: [
-		'com.liferay.portal.kernel.model.User',
-		'com.liferay.portal.kernel.model.Role',
-	].join(','),
-	fields: [
-		'entryClassName',
-		'embedded.externalReferenceCode',
-		'embedded.image',
-		'embedded.name',
-	].join(','),
-	nestedFields: 'embedded',
-};
-
-searchURL.search = new URLSearchParams(searchParams).toString();
 
 interface AssigneeValue {
 	externalReferenceCode: string;
@@ -42,6 +24,7 @@ interface Assignee {
 	name: string;
 	onChange: (event: {target: {value: any}}) => void;
 	readOnly?: boolean;
+	searchURL: string;
 	value?: AssigneeValue;
 }
 
@@ -50,22 +33,40 @@ export default function Assignee({
 	name,
 	onChange,
 	readOnly,
+	searchURL,
 	value,
 	...otherProps
 }: Assignee) {
-	const [search, setSearch] = useState(value?.name ?? '');
-	const [networkStatus, setNetworkStatus] = useState(4);
+	const {portletNamespace} = useConfig();
 
-	const {resource} = useResource({
+	const [networkStatus, setNetworkStatus] = useState(4);
+	const [search, setSearch] = useState(value?.name ?? '');
+
+	const {
+		resource,
+	}: {
+		resource: {
+			items: {
+				embedded: {
+					externalReferenceCode: string;
+					image?: string;
+					name: string;
+				};
+				entryClassName: string;
+			}[];
+		};
+	} = useResource({
 		fetchOptions: {
 			credentials: 'include',
 			headers: new Headers({'x-csrf-token': Liferay.authToken}),
 			method: 'GET',
 		},
 		fetchPolicy: FetchPolicy.CacheFirst,
-		link: searchURL.href,
+		link: searchURL,
 		onNetworkStatusChange: setNetworkStatus,
-		variables: {search},
+		variables: {
+			[`${portletNamespace}search`]: search,
+		},
 	});
 
 	return (
@@ -79,9 +80,17 @@ export default function Assignee({
 				aria-label={label}
 				defaultValue={value?.name ?? ''}
 				disabled={readOnly}
+				filterKey="name"
 				items={
 					resource
-						? resource.items.filter((item: any) => !!item.embedded)
+						? resource.items
+								.filter((item) => !!item.embedded)
+								.map((item) => {
+									return {
+										...item.embedded,
+										entryClassName: item.entryClassName,
+									};
+								})
 						: []
 				}
 				loadingState={networkStatus}
@@ -91,41 +100,38 @@ export default function Assignee({
 					notFound: Liferay.Language.get('no-results-found'),
 				}}
 				onChange={(item: string) => {
+					if (!item) {
+						onChange({
+							target: {
+								value: null,
+							},
+						});
+					}
+
 					setSearch(item);
 				}}
 				onItemsChange={() => {}}
 				value={search}
 			>
-				{(item: {
-					embedded: {
-						externalReferenceCode: string;
-						image?: string;
-						name: string;
-					};
-					entryClassName: string;
-				}) => (
+				{({entryClassName, externalReferenceCode, image, name}) => (
 					<Autocomplete.Item
-						key={item.embedded.name}
+						key={name}
 						onClick={() => {
+							const newValue = {
+								externalReferenceCode,
+								name,
+								type: entryClassName.split('.').pop(),
+							};
+
 							onChange({
 								target: {
-									value: {
-										externalReferenceCode:
-											item.embedded.externalReferenceCode,
-										name: item.embedded.name,
-										type: item.entryClassName
-											.split('.')
-											.pop(),
-									},
+									value: newValue,
 								},
 							});
 						}}
-						textValue={item.embedded.name}
+						textValue={name}
 					>
-						<Option
-							image={item.embedded.image}
-							name={item.embedded.name}
-						/>
+						<Option image={image} name={name} />
 					</Autocomplete.Item>
 				)}
 			</Autocomplete>

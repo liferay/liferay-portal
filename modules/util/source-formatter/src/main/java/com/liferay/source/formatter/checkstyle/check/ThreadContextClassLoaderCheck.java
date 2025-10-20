@@ -51,7 +51,7 @@ public class ThreadContextClassLoaderCheck extends BaseCheck {
 		String contextClassLoaderVariableName = null;
 
 		for (DetailAST variableCallerDetailAST :
-				getVariableCallerDetailASTList(variableDefDetailAST)) {
+				getVariableCallerDetailASTs(variableDefDetailAST)) {
 
 			DetailAST parentDetailAST = variableCallerDetailAST.getParent();
 

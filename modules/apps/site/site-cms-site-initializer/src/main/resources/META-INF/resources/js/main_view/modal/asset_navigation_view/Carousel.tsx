@@ -71,7 +71,7 @@ export default function Carousel({
 				</>
 			)}
 
-			<div className="h-100 mx-6 preview-container py-4 w-100">
+			<div className="h-100 justify-content-center mx-6 preview-container py-4 w-100">
 				{currentItem.embedded?.file ? (
 					<FilePreview file={currentItem.embedded.file} />
 				) : (

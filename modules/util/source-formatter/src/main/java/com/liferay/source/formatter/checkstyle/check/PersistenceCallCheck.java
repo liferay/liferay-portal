@@ -82,10 +82,10 @@ public class PersistenceCallCheck extends BaseCheck {
 		variablesMap.putAll(
 			_getVariablesMap(_getExtendedJavaClass(absolutePath, content)));
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			_checkMethodCall(
 				methodCallDetailAST, javaClass.getImportNames(), variablesMap,
 				javaClass.getPackageName());

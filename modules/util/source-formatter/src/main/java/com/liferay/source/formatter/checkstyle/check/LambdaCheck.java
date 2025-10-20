@@ -56,10 +56,10 @@ public class LambdaCheck extends BaseCheck {
 				return;
 			}
 
-			List<DetailAST> parameterExprDetailASTList =
-				getParameterExprDetailASTList(firstChildDetailAST);
+			List<DetailAST> parameterExprDetailASTs =
+				getParameterExprDetailASTs(firstChildDetailAST);
 
-			if (!parameterExprDetailASTList.isEmpty()) {
+			if (!parameterExprDetailASTs.isEmpty()) {
 				return;
 			}
 

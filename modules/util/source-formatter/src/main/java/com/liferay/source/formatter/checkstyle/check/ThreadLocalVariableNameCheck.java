@@ -33,11 +33,11 @@ public class ThreadLocalVariableNameCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> variableDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> variableDefinitionDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.VARIABLE_DEF);
 
 		for (DetailAST variableDefinitionDetailAST :
-				variableDefinitionDetailASTList) {
+				variableDefinitionDetailASTs) {
 
 			_checkVariableDefinition(variableDefinitionDetailAST);
 		}
@@ -99,10 +99,10 @@ public class ThreadLocalVariableNameCheck extends BaseCheck {
 	private void _checkVariableAssign(
 		DetailAST detailAST, String variableName) {
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(detailAST, variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			detailAST, variableName);
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			DetailAST parentDetailAST = variableCallerDetailAST.getParent();
 
 			if (parentDetailAST.getType() != TokenTypes.ASSIGN) {

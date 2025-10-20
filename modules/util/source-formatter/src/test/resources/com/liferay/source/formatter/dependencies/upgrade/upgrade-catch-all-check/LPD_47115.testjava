@@ -17,16 +17,31 @@ public class LPD_47115 {
 		long parentSiteNavigationMenuItemId, String type, int order,
 		String typeSettings, ServiceContext serviceContext) {
 
-		SiteNavigationMenuItemLocalServiceUtil.addSiteNavigationMenuItem(123, groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type, order, typeSettings, serviceContext);
-		SiteNavigationMenuItemLocalServiceUtil.addSiteNavigationMenuItem(userId, groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type, order, typeSettings, serviceContext);
-		SiteNavigationMenuItemServiceUtil.addSiteNavigationMenuItem(123, siteNavigationMenuId, parentSiteNavigationMenuItemId, type, typeSettings, serviceContext);
-		SiteNavigationMenuItemServiceUtil.addSiteNavigationMenuItem(groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type, typeSettings, serviceContext);
-		_siteNavigationMenuItemLocalService.addSiteNavigationMenuItem(userId, groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type, order, typeSettings, serviceContext);
-		_siteNavigationMenuItemService.addSiteNavigationMenuItem(groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type, typeSettings, serviceContext);
+		SiteNavigationMenuItemLocalServiceUtil.addSiteNavigationMenuItem(
+			123, groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId,
+			type, order, typeSettings, serviceContext);
+		SiteNavigationMenuItemLocalServiceUtil.addSiteNavigationMenuItem(
+			userId, groupId, siteNavigationMenuId,
+			parentSiteNavigationMenuItemId, type, order, typeSettings,
+			serviceContext);
+		SiteNavigationMenuItemServiceUtil.addSiteNavigationMenuItem(
+			123, siteNavigationMenuId, parentSiteNavigationMenuItemId, type,
+			typeSettings, serviceContext);
+		SiteNavigationMenuItemServiceUtil.addSiteNavigationMenuItem(
+			groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type,
+			typeSettings, serviceContext);
+		_siteNavigationMenuItemLocalService.addSiteNavigationMenuItem(
+			userId, groupId, siteNavigationMenuId,
+			parentSiteNavigationMenuItemId, type, order, typeSettings,
+			serviceContext);
+		_siteNavigationMenuItemService.addSiteNavigationMenuItem(
+			groupId, siteNavigationMenuId, parentSiteNavigationMenuItemId, type,
+			typeSettings, serviceContext);
 	}
 
 	@Reference
-	private SiteNavigationMenuItemLocalService _siteNavigationMenuItemLocalService;
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
 
 	@Reference
 	private SiteNavigationMenuItemService _siteNavigationMenuItemService;

@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,11 @@ public abstract class BaseAllTablesOrphanReferencesDataCleanupPreupgradeProcess
 
 		String targetTableName = dbInspector.normalizeName(_targetTableName);
 
-		if (!dbInspector.hasTable(targetTableName)) {
+		if (!dbInspector.hasTable(targetTableName) &&
+			!(PropsValues.DATABASE_PARTITION_ENABLED &&
+			  dbInspector.isControlTable(targetTableName) &&
+			  dbInspector.hasView(targetTableName))) {
+
 			if (_log.isDebugEnabled()) {
 				_log.debug("Table " + targetTableName + " does not exist");
 			}

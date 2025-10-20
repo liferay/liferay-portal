@@ -1,0 +1,28 @@
+.create-new-account {
+	&-button {
+		background-color: #fff;
+		border: 1px solid #0053f0 !important;
+		color: #0053f0 !important;
+	}
+
+	&-button:hover {
+		background-color: #edf3fe !important;
+	}
+
+	&-card {
+		border-radius: 24px;
+		padding: 16px;
+
+		&-description {
+			color: #282934;
+		}
+	}
+
+	&-container {
+		gap: 24px;
+	}
+}
+
+.divider {
+	color: #999aa3;
+}

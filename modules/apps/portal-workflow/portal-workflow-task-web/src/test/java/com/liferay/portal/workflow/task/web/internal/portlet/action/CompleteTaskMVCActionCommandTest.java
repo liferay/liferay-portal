@@ -48,10 +48,9 @@ public class CompleteTaskMVCActionCommandTest {
 	public void testGetHttpServletRequest() {
 		ActionRequest mockActionRequest = new MockActionRequest();
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_RESPONSE, new MockPortletResponse());
 
 		Portal portal = Mockito.mock(Portal.class);
@@ -59,13 +58,13 @@ public class CompleteTaskMVCActionCommandTest {
 		Mockito.when(
 			portal.getHttpServletRequest(mockActionRequest)
 		).thenReturn(
-			mockHttpServletRequest
+			httpServletRequest
 		);
 
 		ReflectionTestUtil.setFieldValue(
 			_completeTaskMVCActionCommand, "_portal", portal);
 
-		HttpServletRequest httpServletRequest = ReflectionTestUtil.invoke(
+		httpServletRequest = ReflectionTestUtil.invoke(
 			_completeTaskMVCActionCommand, "_getHttpServletRequest",
 			new Class<?>[] {ActionRequest.class, ActionResponse.class},
 			mockActionRequest, new MockActionResponse());

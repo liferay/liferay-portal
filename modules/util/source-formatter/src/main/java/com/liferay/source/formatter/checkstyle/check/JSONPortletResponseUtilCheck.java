@@ -36,21 +36,21 @@ public class JSONPortletResponseUtilCheck extends BaseCheck {
 	}
 
 	private void _checkWriteJSONMethodCall(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "JSONPortletResponseUtil", "writeJSON");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			if (exprDetailASTList.size() != 3) {
+			if (exprDetailASTs.size() != 3) {
 				continue;
 			}
 
-			DetailAST exprDetailAST = exprDetailASTList.get(2);
+			DetailAST exprDetailAST = exprDetailASTs.get(2);
 
 			DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 

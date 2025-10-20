@@ -14,8 +14,8 @@ public class DLFileShortcutExternalReferenceCodeUpgradeProcess
 	extends BaseExternalReferenceCodeUpgradeProcess {
 
 	@Override
-	protected String[][] getTableAndPrimaryKeyColumnNames() {
-		return new String[][] {{"DLFileShortcut", "fileShortcutId"}};
+	protected String[] getTableNames() {
+		return new String[] {"DLFileShortcut"};
 	}
 
 }

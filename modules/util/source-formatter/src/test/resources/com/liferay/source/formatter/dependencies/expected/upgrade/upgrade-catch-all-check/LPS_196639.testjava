@@ -13,8 +13,10 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_196639 {
 
 	public void method(long companyId, String externalReferenceCode) {
+		AccountGroupLocalServiceUtil.
+			fetchCommerceAccountGroupByExternalReferenceCode(
+				123, externalReferenceCode);
 		AccountGroupLocalServiceUtil.fetchAccountGroupByExternalReferenceCode(externalReferenceCode, companyId);
-		_accountGroupLocalService.fetchCommerceAccountGroupByExternalReferenceCode(123, "test123");
 		_accountGroupLocalService.fetchAccountGroupByExternalReferenceCode(externalReferenceCode, companyId);
 	}
 

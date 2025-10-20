@@ -239,7 +239,8 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 	private BulkActionTask _addBulkActionTask(String type) throws Exception {
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			0, contextUser.getUserId(), _getBulkActionTaskObjectDefinitionId(),
+			0, contextUser.getUserId(),
+			_getCMSBulkActionTaskObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -277,7 +278,7 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		for (BulkActionItem bulkActionItem : entry.getValue()) {
 			_objectEntryLocalService.addObjectEntry(
 				0, contextUser.getUserId(),
-				_getBulkActionTaskItemObjectDefinitionId(),
+				_getCMSBulkActionTaskItemObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
@@ -295,7 +296,7 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 				).put(
 					"name", bulkActionItem.getName()
 				).put(
-					"r_bulkActionTaskToBulkActionTaskItems_c_bulkActionTaskId",
+					"r_cmsBATaskToCMSBATaskItems_c_cmsBulkActionTaskId",
 					bulkActionTask.getId()
 				).put(
 					"type",
@@ -746,32 +747,6 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		return bulkActionItemsMap;
 	}
 
-	private long _getBulkActionTaskItemObjectDefinitionId() throws Exception {
-		if (_bulkActionTaskItemObjectDefinition != null) {
-			return _bulkActionTaskItemObjectDefinition.getObjectDefinitionId();
-		}
-
-		_bulkActionTaskItemObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_BULK_ACTION_TASK_ITEM", contextCompany.getCompanyId());
-
-		return _bulkActionTaskItemObjectDefinition.getObjectDefinitionId();
-	}
-
-	private long _getBulkActionTaskObjectDefinitionId() throws Exception {
-		if (_bulkActionTaskObjectDefinition != null) {
-			return _bulkActionTaskObjectDefinition.getObjectDefinitionId();
-		}
-
-		_bulkActionTaskObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_BULK_ACTION_TASK", contextCompany.getCompanyId());
-
-		return _bulkActionTaskObjectDefinition.getObjectDefinitionId();
-	}
-
 	private String _getClassName(String key) {
 		if (StringUtil.equals(key, DepotEntry.class.getName())) {
 			return "com.liferay.headless.asset.library.dto.v1_0.AssetLibrary";
@@ -781,6 +756,36 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		}
 
 		return "com.liferay.object.rest.dto.v1_0.ObjectEntry";
+	}
+
+	private long _getCMSBulkActionTaskItemObjectDefinitionId()
+		throws Exception {
+
+		if (_cmsBulkActionTaskItemObjectDefinition != null) {
+			return _cmsBulkActionTaskItemObjectDefinition.
+				getObjectDefinitionId();
+		}
+
+		_cmsBulkActionTaskItemObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BULK_ACTION_TASK_ITEM",
+					contextCompany.getCompanyId());
+
+		return _cmsBulkActionTaskItemObjectDefinition.getObjectDefinitionId();
+	}
+
+	private long _getCMSBulkActionTaskObjectDefinitionId() throws Exception {
+		if (_cmsBulkActionTaskObjectDefinition != null) {
+			return _cmsBulkActionTaskObjectDefinition.getObjectDefinitionId();
+		}
+
+		_cmsBulkActionTaskObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BULK_ACTION_TASK", contextCompany.getCompanyId());
+
+		return _cmsBulkActionTaskObjectDefinition.getObjectDefinitionId();
 	}
 
 	private Map<String, List<BulkActionItem>>
@@ -849,20 +854,15 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 		if (Objects.equals(
 				objectDefinition.getExternalReferenceCode(),
-				"L_BASIC_WEB_CONTENT")) {
+				"L_CMS_BASIC_WEB_CONTENT")) {
 
 			return "basic-web-content";
 		}
 		else if (Objects.equals(
-					objectDefinition.getExternalReferenceCode(), "L_BLOG")) {
+					objectDefinition.getExternalReferenceCode(),
+					"L_CMS_BLOG")) {
 
 			return "blog";
-		}
-		else if (Objects.equals(
-					objectDefinition.getExternalReferenceCode(),
-					"L_KNOWLEDGE_BASE")) {
-
-			return "knowledge-base";
 		}
 
 		ObjectEntryVersion objectEntryVersion =
@@ -1235,8 +1235,8 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 	private static final EntityModel _entityModel = new BulkActionEntityModel();
 
-	private ObjectDefinition _bulkActionTaskItemObjectDefinition;
-	private ObjectDefinition _bulkActionTaskObjectDefinition;
+	private ObjectDefinition _cmsBulkActionTaskItemObjectDefinition;
+	private ObjectDefinition _cmsBulkActionTaskObjectDefinition;
 
 	@Reference
 	private DLMimeTypeDisplayContext _dlMimeTypeDisplayContext;

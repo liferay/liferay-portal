@@ -54,7 +54,7 @@ public class DepotEntryModelListener extends BaseModelListener<DepotEntry> {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_DOCUMENT", depotEntry.getCompanyId());
+					"L_CMS_BASIC_DOCUMENT", depotEntry.getCompanyId());
 
 		if (objectDefinition == null) {
 			return;

@@ -21,6 +21,7 @@ const DropDownWithState = ({
 	return (
 		<DropDown
 			alignmentPosition={Align.BottomLeft}
+			closeOnClick={true}
 			hasRightSymbols
 			trigger={trigger}
 			{...others}

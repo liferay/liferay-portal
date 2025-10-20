@@ -19,18 +19,20 @@ public class LPD_7996 {
 		ThemeDisplay themeDisplay) {
 
 		_assetDisplayPageFriendlyURLProvider.getFriendlyURL(new InfoItemReference(className, classPK), locale, themeDisplay);
-		_assetDisplayPageFriendlyURLProvider.getFriendlyURL("test123", 123, locale, themeDisplay);
+		_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+			"test123", 123, locale, themeDisplay);
 	}
 
 	public void method(
 		String className, long classPK, ThemeDisplay themeDisplay) {
 
 		_assetDisplayPageFriendlyURLProvider.getFriendlyURL(new InfoItemReference(className, classPK), themeDisplay);
-		_assetDisplayPageFriendlyURLProvider.getFriendlyURL("test123", 123, themeDisplay);
+		_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+			"test123", 123, themeDisplay);
 	}
 
 	@Reference
-	private AssetDisplayPageFriendlyURLProvider _assetDisplayPageFriendlyURLProvider;
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 
 }
-

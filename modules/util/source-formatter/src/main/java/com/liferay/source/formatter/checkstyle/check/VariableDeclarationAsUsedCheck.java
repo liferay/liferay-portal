@@ -22,11 +22,11 @@ public class VariableDeclarationAsUsedCheck extends BaseAsUsedCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> variableDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> variableDefinitionDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.VARIABLE_DEF);
 
 		for (DetailAST variableDefinitionDetailAST :
-				variableDefinitionDetailASTList) {
+				variableDefinitionDetailASTs) {
 
 			_checkVariableDefinition(detailAST, variableDefinitionDetailAST);
 		}
@@ -52,19 +52,18 @@ public class VariableDeclarationAsUsedCheck extends BaseAsUsedCheck {
 		DetailAST nameDetailAST = variableDefinitionDetailAST.findFirstToken(
 			TokenTypes.IDENT);
 
-		List<DetailAST> dependentIdentDetailASTList =
-			getDependentIdentDetailASTList(
-				variableDefinitionDetailAST,
-				variableDefinitionDetailAST.getLineNo());
+		List<DetailAST> dependentIdentDetailASTs = getDependentIdentDetailASTs(
+			variableDefinitionDetailAST,
+			variableDefinitionDetailAST.getLineNo());
 
-		if (dependentIdentDetailASTList.isEmpty()) {
+		if (dependentIdentDetailASTs.isEmpty()) {
 			return;
 		}
 
 		String variableName = nameDetailAST.getText();
 
-		DetailAST firstDependentIdentDetailAST =
-			dependentIdentDetailASTList.get(0);
+		DetailAST firstDependentIdentDetailAST = dependentIdentDetailASTs.get(
+			0);
 
 		int actionLineNumber = getActionLineNumber(variableDefinitionDetailAST);
 
@@ -75,8 +74,8 @@ public class VariableDeclarationAsUsedCheck extends BaseAsUsedCheck {
 			checkMoveInsideIfStatement(
 				assignDetailAST, nameDetailAST, variableName,
 				firstDependentIdentDetailAST,
-				dependentIdentDetailASTList.get(
-					dependentIdentDetailASTList.size() - 1),
+				dependentIdentDetailASTs.get(
+					dependentIdentDetailASTs.size() - 1),
 				actionLineNumber);
 		}
 
@@ -86,7 +85,7 @@ public class VariableDeclarationAsUsedCheck extends BaseAsUsedCheck {
 		if (!modifiersDetailAST.branchContains(TokenTypes.ANNOTATION)) {
 			checkInline(
 				assignDetailAST, variableName, firstDependentIdentDetailAST,
-				dependentIdentDetailASTList);
+				dependentIdentDetailASTs);
 		}
 	}
 

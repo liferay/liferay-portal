@@ -16,6 +16,8 @@ public class FDSEntityFieldTypes {
 
 	public static final String DATE_TIME = "date-time";
 
+	public static final String INTEGER = "integer";
+
 	public static final String STRING = "string";
 
 }

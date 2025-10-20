@@ -312,11 +312,9 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new BaseUuidUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CommerceCatalog", "commerceCatalogId"},
-						{"CommerceChannel", "commerceChannelId"},
-						{"CPTaxCategory", "CPTaxCategoryId"}
+				protected String[] getTableNames() {
+					return new String[] {
+						"CommerceCatalog", "CommerceChannel", "CPTaxCategory"
 					};
 				}
 
@@ -327,16 +325,11 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CommerceCatalog", "commerceCatalogId"},
-						{"CommerceChannel", "commerceChannelId"},
-						{"CPAttachmentFileEntry", "CPAttachmentFileEntryId"},
-						{"CPInstance", "CPInstanceId"},
-						{"CPOption", "CPOptionId"},
-						{"CPOptionValue", "CPOptionValueId"},
-						{"CProduct", "CProductId"},
-						{"CPTaxCategory", "CPTaxCategoryId"}
+				protected String[] getTableNames() {
+					return new String[] {
+						"CommerceCatalog", "CommerceChannel",
+						"CPAttachmentFileEntry", "CPInstance", "CPOption",
+						"CPOptionValue", "CProduct", "CPTaxCategory"
 					};
 				}
 
@@ -459,10 +452,8 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CPMeasurementUnit", "CPMeasurementUnitId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CPMeasurementUnit"};
 				}
 
 			});
@@ -486,10 +477,8 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CPOptionCategory", "CPOptionCategoryId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CPOptionCategory"};
 				}
 
 			});
@@ -499,10 +488,8 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CPSpecificationOption", "CPSpecificationOptionId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CPSpecificationOption"};
 				}
 
 			});
@@ -517,13 +504,8 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{
-							"CPDSpecificationOptionValue",
-							"CPDSpecificationOptionValueId"
-						}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CPDSpecificationOptionValue"};
 				}
 
 			});

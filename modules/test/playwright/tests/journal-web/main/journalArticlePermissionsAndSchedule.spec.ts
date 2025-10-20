@@ -43,6 +43,8 @@ scheduleTest(
 
 		await waitForAlert(page, `Success:${title} was created successfully.`);
 
+		await journalPage.changeView('list');
+
 		await page.getByLabel(`Actions for ${title}`).waitFor();
 
 		await clickAndExpectToBeVisible({

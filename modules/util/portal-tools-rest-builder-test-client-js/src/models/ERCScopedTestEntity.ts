@@ -16,6 +16,7 @@
 			"dateModified"?: Date;
 			"description"?: string;
 			"externalReferenceCode"?: string;
+			"id"?: number;
 			"permissions"?: Array<Permission>;
 			"siteExternalReferenceCode"?: string;
 
@@ -50,6 +51,11 @@
 			baseName: "externalReferenceCode",
 			name: "externalReferenceCode",
 			type: "string",
+		},
+		{
+			baseName: "id",
+			name: "id",
+			type: "number",
 		},
 		{
 			baseName: "permissions",

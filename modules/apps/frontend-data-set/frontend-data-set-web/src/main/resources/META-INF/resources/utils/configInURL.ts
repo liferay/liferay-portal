@@ -37,11 +37,11 @@ export function readConfigFromURL(id: string): Partial<IConfigInURL> | null {
 export function writeConfigInURL(
 	id: string,
 	config: Partial<IConfigInURL>,
-	settings: EConfigInURLBehavior
+	configInURLBehavior: EConfigInURLBehavior
 ) {
 	if (
 		!config ||
-		settings === EConfigInURLBehavior.OFF ||
+		configInURLBehavior === EConfigInURLBehavior.OFF ||
 		!Liferay.FeatureFlags['LPD-22473']
 	) {
 		return;
@@ -75,7 +75,7 @@ export function writeConfigInURL(
 	const path = `${window.location.pathname}?${params.toString()}`;
 
 	const replaceState =
-		settings === EConfigInURLBehavior.REPLACE || !currentConfig;
+		configInURLBehavior === EConfigInURLBehavior.REPLACE || !currentConfig;
 
 	if (Liferay.SPA && Liferay.SPA.app) {
 		Liferay.SPA.app.browserPathBeforeNavigate = path;

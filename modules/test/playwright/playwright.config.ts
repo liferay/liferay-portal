@@ -144,6 +144,7 @@ import {config as siteAdminWebConfig} from './tests/site-admin-web/main/config';
 import {config as siteCmsSiteInitializerConfig} from './tests/site-cms-site-initializer/main/config';
 import {config as siteCmsSiteInitializerPermissionsConfig} from './tests/site-cms-site-initializer/permissions/config';
 import {config as siteCmsSiteInitializerStructureBuilderConfig} from './tests/site-cms-site-initializer/structure-builder/config';
+import {config as siteMySitesWebConfig} from './tests/site-my-sites-web/main/config';
 import {config as siteNavigationAdminWebConfig} from './tests/site-navigation-admin-web/main/config';
 import {config as siteNavigationBreadcrumbWebConfig} from './tests/site-navigation-breadcrumb-web/main/config';
 import {config as siteNavigationDirectoryWebConfig} from './tests/site-navigation-directory-web/main/config';
@@ -317,6 +318,7 @@ export default defineConfig({
 		siteCmsSiteInitializerConfig,
 		siteCmsSiteInitializerPermissionsConfig,
 		siteCmsSiteInitializerStructureBuilderConfig,
+		siteMySitesWebConfig,
 		siteNavigationAdminWebConfig,
 		siteNavigationBreadcrumbWebConfig,
 		siteNavigationDirectoryWebConfig,

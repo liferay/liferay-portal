@@ -110,6 +110,22 @@ public class WorkflowInstanceLinkLocalServiceImpl
 	}
 
 	@Override
+	public void deleteWorkflowInstanceLinkByWorkflowInstanceId(
+			long workflowInstanceId)
+		throws PortalException {
+
+		WorkflowInstanceLink workflowInstanceLink =
+			workflowInstanceLinkPersistence.fetchByWorkflowInstanceId(
+				workflowInstanceId);
+
+		if (workflowInstanceLink == null) {
+			return;
+		}
+
+		workflowInstanceLinkPersistence.remove(workflowInstanceLink);
+	}
+
+	@Override
 	public void deleteWorkflowInstanceLinks(
 			long companyId, long groupId, String className, long classPK)
 		throws PortalException {

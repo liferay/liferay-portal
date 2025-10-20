@@ -13,7 +13,9 @@ import java.math.BigDecimal;
 public class LPS_197931 {
 
 	public void method() {
-		for (CommerceOrderItem commerceOrderItem : commerceOrder.getCommerceOrderItems()) {
+		for (CommerceOrderItem commerceOrderItem :
+				commerceOrder.getCommerceOrderItems()) {
+
 			BigDecimal.valueOf(commerceOrderItem.getQuantity());
 		}
 	}

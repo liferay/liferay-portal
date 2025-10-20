@@ -18,6 +18,8 @@ import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
@@ -41,9 +43,6 @@ public class CloudBucketUtil {
 	public static final String GCP_BUCKET_PATH_TESTRAY_RESULTS =
 		"gs://testray-results";
 
-	public static final String S3_BUCKET_PATH_FILE_PROPAGATOR =
-		"s3://liferayci-file-propagator";
-
 	public static void copyGCPFile(String destination, String source)
 		throws IOException {
 
@@ -58,7 +57,7 @@ public class CloudBucketUtil {
 		String replacedS3DestinationPath = _replaceS3ObjectPath(
 			s3DestinationPath);
 
-		_executeCommands(
+		_executeAWSCommands(
 			_getFileTransferCommand(
 				"aws s3 cp --no-progress", replacedS3DestinationPath,
 				s3SourcePath));
@@ -212,7 +211,7 @@ public class CloudBucketUtil {
 
 		long start = System.currentTimeMillis();
 
-		_executeCommands(
+		_executeAWSCommands(
 			_getFileTransferCommand(
 				"aws s3 cp --no-progress", destinationFile.getCanonicalPath(),
 				s3SourcePath));
@@ -342,7 +341,7 @@ public class CloudBucketUtil {
 	public static void syncS3Files(String destination, String source)
 		throws IOException, TimeoutException {
 
-		_executeCommands(
+		_executeAWSCommands(
 			_getFileTransferCommand(
 				"aws s3 sync --no-progress", destination, source));
 
@@ -401,7 +400,7 @@ public class CloudBucketUtil {
 
 		long start = System.currentTimeMillis();
 
-		_executeCommands(
+		_executeAWSCommands(
 			_getFileTransferCommand(
 				"aws s3 cp --no-progress", replacedS3DestinationPath,
 				sourceFile.getCanonicalPath()));
@@ -452,6 +451,107 @@ public class CloudBucketUtil {
 		s = s.replace(")", "\\)");
 
 		return s;
+	}
+
+	private static void _executeAWSCommands(String... commands) {
+		List<String> awsCommands = new ArrayList<>();
+
+		Retryable retryable = new Retryable(3, 30, true) {
+
+			@Override
+			public Object execute() {
+				String[] awsCommands = _getAWSCommands(commands);
+
+				try {
+					_executeCommands(awsCommands);
+				}
+				catch (Exception exception) {
+					for (String awsCommand : awsCommands) {
+						if (awsCommand.contains(_CHECKSUM_FILE_EXTENSION)) {
+							return null;
+						}
+					}
+
+					_firstExecution = false;
+
+					throw exception;
+				}
+
+				return null;
+			}
+
+			private String[] _getAWSCommands(String[] commands) {
+				awsCommands.clear();
+
+				for (String command : commands) {
+					Matcher awsCommandMatcher = _awsCommandPattern.matcher(
+						command);
+
+					if (!awsCommandMatcher.find()) {
+						awsCommands.add(command);
+					}
+
+					StringBuilder sb = new StringBuilder();
+
+					sb.append("aws s3 ");
+					sb.append(awsCommandMatcher.group("command"));
+					sb.append(" ");
+
+					if (!_firstExecution) {
+						sb.append("--debug ");
+					}
+
+					sb.append(awsCommandMatcher.group("options"));
+
+					if (!_firstExecution) {
+						sb.append(" 2> ");
+
+						File awsLogDir = new File(
+							JenkinsResultsParserUtil.getBuildDirPath(), "aws");
+
+						awsLogDir.mkdirs();
+
+						String awsLogDirPath =
+							JenkinsResultsParserUtil.getCanonicalPath(
+								awsLogDir);
+
+						awsLogDirPath = awsLogDirPath.replaceAll(
+							"\\(", "\\\\(");
+						awsLogDirPath = awsLogDirPath.replaceAll(
+							"\\)", "\\\\)");
+
+						sb.append(awsLogDirPath);
+
+						sb.append("/aws-");
+						sb.append(
+							JenkinsResultsParserUtil.getDistinctTimeStamp());
+						sb.append(".log");
+					}
+
+					awsCommands.add(sb.toString());
+				}
+
+				return awsCommands.toArray(new String[0]);
+			}
+
+			private boolean _firstExecution = true;
+
+		};
+
+		try {
+			retryable.executeWithRetries();
+		}
+		catch (Exception exception) {
+			NotificationUtil.sendSlackNotification(
+				JenkinsResultsParserUtil.combine(
+					"Build URL: ", System.getenv("BUILD_URL"), "\n\n",
+					exception.getMessage()),
+				"ci-aws-notifications", ":aws:",
+				JenkinsResultsParserUtil.combine(
+					"Failed to run commands: ",
+					JenkinsResultsParserUtil.join(" ; ", awsCommands)),
+				"AWS CI Commands");
+		}
 	}
 
 	private static void _executeCommands(String... commands) {
@@ -654,6 +754,10 @@ public class CloudBucketUtil {
 			File destinationFile, String s3SourcePath)
 		throws IOException {
 
+		if (!_VALIDATE_CHECKSUM) {
+			return;
+		}
+
 		File destinationChecksumFile = new File(
 			destinationFile.getParentFile(),
 			destinationFile.getName() + _CHECKSUM_FILE_EXTENSION);
@@ -703,6 +807,10 @@ public class CloudBucketUtil {
 
 	private static final String _CHECKSUM_FILE_EXTENSION = ".sha512";
 
+	private static final boolean _VALIDATE_CHECKSUM;
+
+	private static final Pattern _awsCommandPattern = Pattern.compile(
+		"aws s3 (?<command>[^\\s]+)\\s+(?<options>.+)");
 	private static final Properties _buildProperties;
 	private static final Pattern _listS3FilesPattern = Pattern.compile(
 		"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} +\\d+ (?<fileName>.+)");
@@ -722,6 +830,10 @@ public class CloudBucketUtil {
 				}
 			}
 		};
+
+		_VALIDATE_CHECKSUM = Boolean.parseBoolean(
+			_buildProperties.getProperty(
+				"cloud.ci.s3.bucket.validate.checksum.enabled"));
 	}
 
 }

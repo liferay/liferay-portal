@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Spring MVC portlet as a WAR project.
 Bundle-Name: Liferay Project Templates Spring MVC Portlet
 Bundle-SymbolicName: com.liferay.project.templates.spring.mvc.portlet
-Bundle-Version: 1.0.199
+Bundle-Version: 1.0.200
 Liferay-Versions: [7,9999.0)
 -removeheaders:\
 	Import-Package,\

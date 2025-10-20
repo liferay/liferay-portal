@@ -92,8 +92,8 @@ public class DLFileEntryTypeExternalReferenceCodeUpgradeProcessTest
 		return new BaseExternalReferenceCodeUpgradeProcess() {
 
 			@Override
-			protected String[][] getTableAndPrimaryKeyColumnNames() {
-				return new String[][] {{"DLFileEntryType", "fileEntryTypeId"}};
+			protected String[] getTableNames() {
+				return new String[] {"DLFileEntryType"};
 			}
 
 		};

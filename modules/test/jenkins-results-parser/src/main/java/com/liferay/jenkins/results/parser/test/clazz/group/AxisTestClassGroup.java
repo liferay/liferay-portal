@@ -127,15 +127,10 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 			return null;
 		}
 
-		List<DownstreamBuildReport> cachedDownstreamBuildReports =
-			new ArrayList<>();
-
 		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
 
-		cachedDownstreamBuildReports.add(
-			batchTestClassGroup.getCachedDownstreamBuildReport(getAxisName()));
-
-		return cachedDownstreamBuildReports;
+		return new ArrayList<>(
+			batchTestClassGroup.getCachedDownstreamBuildReports(getAxisName()));
 	}
 
 	public String getDownstreamJobName() {
@@ -230,10 +225,12 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 
 		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
 
-		DownstreamBuildReport cachedDownstreamBuildReport =
-			batchTestClassGroup.getCachedDownstreamBuildReport(getAxisName());
+		List<DownstreamBuildReport> cachedDownstreamBuildReports =
+			batchTestClassGroup.getCachedDownstreamBuildReports(getAxisName());
 
-		if (cachedDownstreamBuildReport != null) {
+		if ((cachedDownstreamBuildReports != null) &&
+			!cachedDownstreamBuildReports.isEmpty()) {
+
 			return true;
 		}
 

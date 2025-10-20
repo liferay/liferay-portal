@@ -438,14 +438,12 @@ public class BlogsEntryContentDashboardItemTest {
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 			AssetDisplayPageConstants.TYPE_DEFAULT, _serviceContext);
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
-		Assert.assertTrue(
-			contentDashboardItem.isViewable(mockHttpServletRequest));
+		Assert.assertTrue(contentDashboardItem.isViewable(httpServletRequest));
 	}
 
 	@Test
@@ -457,14 +455,12 @@ public class BlogsEntryContentDashboardItemTest {
 		ContentDashboardItem contentDashboardItem =
 			_contentDashboardItemFactory.create(blogsEntry.getEntryId());
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
-		Assert.assertFalse(
-			contentDashboardItem.isViewable(mockHttpServletRequest));
+		Assert.assertFalse(contentDashboardItem.isViewable(httpServletRequest));
 	}
 
 	private ThemeDisplay _getThemeDisplay(Locale locale) throws Exception {

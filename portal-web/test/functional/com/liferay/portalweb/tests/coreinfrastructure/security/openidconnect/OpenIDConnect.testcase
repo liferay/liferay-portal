@@ -2,6 +2,7 @@
 definition {
 
 	property ci.retries.disabled = "true";
+	property custom.properties = "feature.flag.LPD-57332=true";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "OpenID Connect";

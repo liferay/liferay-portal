@@ -26,6 +26,7 @@ export const test = mergeTests(
 	featureFlagsTest({
 		'LPD-10562': {enabled: true},
 		'LPD-20379': {enabled: true},
+		'LPD-58472': {enabled: true},
 	}),
 	loginTest()
 );
@@ -89,100 +90,104 @@ test('LPD-35678 Guest can directly checkout a new order in B2B channel site', as
 	}
 });
 
-test('LPD-35678 Guest can checkout a new order on sign-in in B2B channel site', async ({
-	apiHelpers,
-	checkoutPage,
-	commerceAdminChannelDetailsPage,
-	commerceAdminChannelsPage,
-	commerceMiniCartPage,
-	commerceThemeClassicCatalogPage,
-	page,
-}) => {
-	test.setTimeout(90000);
-
-	const {channel, site} = await classicCommerceSetUp(
+test(
+	'Guest can checkout a new order on sign-in in B2B channel site',
+	{tag: '@LPD-35678'},
+	async ({
 		apiHelpers,
-		`B2B_${getRandomString()}`
-	);
-
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: getRandomString(),
-		type: 'business',
-	});
-
-	await guestCheckoutSetUp(
-		channel,
+		checkoutPage,
 		commerceAdminChannelDetailsPage,
 		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		commerceThemeClassicCatalogPage,
 		page,
-		site
-	);
+	}) => {
+		test.setTimeout(90000);
 
-	try {
-		await commerceThemeClassicCatalogPage
-			.productCardAddToCartButton('Wear Sensors')
-			.click();
-
-		await page.waitForLoadState('networkidle');
-
-		await commerceMiniCartPage.miniCartButton.click();
-
-		await commerceMiniCartPage.signInToCheckoutButton.click();
-
-		const signInToCheckoutModal = page.locator('#guest-sign-in-modal');
-
-		await expect(signInToCheckoutModal).toBeVisible();
-
-		const emailAddressInput = signInToCheckoutModal.locator(
-			'input[id*="LoginPortlet_login"]'
+		const {channel, site} = await classicCommerceSetUp(
+			apiHelpers,
+			`B2B_${getRandomString()}`
 		);
-		const passInput = signInToCheckoutModal.locator(
-			'input[id*="LoginPortlet_pass"]'
-		);
-		const signInButton = signInToCheckoutModal.getByRole('button', {
-			name: 'Sign In',
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
 		});
 
-		await emailAddressInput.fill('test@liferay.com');
-		await passInput.fill('test');
+		await guestCheckoutSetUp(
+			channel,
+			commerceAdminChannelDetailsPage,
+			commerceAdminChannelsPage,
+			page,
+			site
+		);
 
-		await signInButton.click();
+		try {
+			await commerceThemeClassicCatalogPage
+				.productCardAddToCartButton('Wear Sensors')
+				.click();
 
-		await expect(
-			page.locator('.btn-account-selector', {hasText: account.name})
-		).toBeVisible();
+			await page.waitForLoadState('networkidle');
 
-		await commerceMiniCartPage.miniCartButton.click();
+			await commerceMiniCartPage.miniCartButton.click();
 
-		await expect(
-			commerceMiniCartPage.miniCartItem('Wear Sensors')
-		).toBeVisible();
+			await commerceMiniCartPage.signInToCheckoutButton.click();
 
-		await commerceMiniCartPage.miniCartButtonClose.click();
+			const signInToCheckoutModal = page.locator('#guest-sign-in-modal');
 
-		await checkoutPage.performCheckout({
-			shippingAddress: {
-				city: 'testCity',
-				countryLabel: 'United States',
-				name: `Guest to ${account.name}`,
-				regionLabel: 'Florida',
-				street: 'testStreet',
-				zip: '12345',
-			},
-		});
-	}
-	finally {
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'test'});
+			await expect(signInToCheckoutModal).toBeVisible();
 
-		const orders =
-			await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
+			const emailAddressInput = signInToCheckoutModal.locator(
+				'input[id*="LoginPortlet_login"]'
+			);
+			const passInput = signInToCheckoutModal.locator(
+				'input[id*="LoginPortlet_pass"]'
+			);
+			const signInButton = signInToCheckoutModal.getByRole('button', {
+				name: 'Sign In',
+			});
 
-		if (orders.items[0]) {
-			apiHelpers.data.push({id: orders.items[0].id, type: 'order'});
+			await emailAddressInput.fill('test@liferay.com');
+			await passInput.fill('test');
+
+			await signInButton.click();
+
+			await expect(
+				page.locator('.btn-account-selector', {hasText: account.name})
+			).toBeVisible();
+
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItem('Wear Sensors')
+			).toBeVisible();
+
+			await commerceMiniCartPage.miniCartButtonClose.click();
+
+			await checkoutPage.performCheckout({
+				shippingAddress: {
+					city: 'testCity',
+					countryLabel: 'United States',
+					name: `Guest to ${account.name}`,
+					regionLabel: 'Florida',
+					street: 'testStreet',
+					zip: '12345',
+				},
+			});
+		}
+		finally {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
+
+			if (orders.items[0]) {
+				apiHelpers.data.push({id: orders.items[0].id, type: 'order'});
+			}
 		}
 	}
-});
+);
 
 test('LPD-35678 Guest can checkout a new order on sign-in with multiple accounts in B2B channel site', async ({
 	apiHelpers,

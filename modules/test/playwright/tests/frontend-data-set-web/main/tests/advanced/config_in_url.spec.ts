@@ -441,6 +441,8 @@ for (const spaConfiguration of spaConfigurations) {
 						page
 					);
 
+					await checkFilter(true, 'color', 'Color: Blue, Yellow');
+
 					await changeFilterSelections(
 						['Green'],
 						'Color: Blue, Yellow',
@@ -448,12 +450,16 @@ for (const spaConfiguration of spaConfigurations) {
 						['Blue']
 					);
 
+					await checkFilter(true, 'color', 'Color: Yellow, Green');
+
 					await changeFilterSelections(
 						['Red'],
 						'Color: Yellow, Green',
 						page,
 						['Yellow']
 					);
+
+					await checkFilter(true, 'color', 'Color: Green, Red');
 				});
 
 				await test.step('Check back navigation', async () => {

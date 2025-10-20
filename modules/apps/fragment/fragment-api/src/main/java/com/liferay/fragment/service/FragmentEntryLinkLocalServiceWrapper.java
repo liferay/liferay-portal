@@ -751,8 +751,8 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public void updateClassedModel(long plid) {
-		_fragmentEntryLinkLocalService.updateClassedModel(plid);
+	public void updateClassedModel(long userId, long plid) {
+		_fragmentEntryLinkLocalService.updateClassedModel(userId, plid);
 	}
 
 	@Override

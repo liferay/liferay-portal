@@ -37,8 +37,8 @@ public class CommerceOrderRuleServiceUpgradeStepRegistrator
 			new BaseUuidUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"COREntry", "COREntryId"}};
+				protected String[] getTableNames() {
+					return new String[] {"COREntry"};
 				}
 
 			});
@@ -48,8 +48,8 @@ public class CommerceOrderRuleServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"COREntry", "COREntryId"}};
+				protected String[] getTableNames() {
+					return new String[] {"COREntry"};
 				}
 
 			});

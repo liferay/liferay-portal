@@ -27,6 +27,7 @@ const test = mergeTests(
 	openIdSettingsPagesTest,
 	featureFlagsTest({
 		'LPD-6378': {enabled: true},
+		'LPD-57332': {enabled: true},
 	}),
 	loginTest(),
 	utilityPagesPage,

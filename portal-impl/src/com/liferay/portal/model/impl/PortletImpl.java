@@ -8,6 +8,8 @@ package com.liferay.portal.model.impl;
 import com.liferay.expando.kernel.model.CustomAttributesDisplay;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -32,7 +34,6 @@ import com.liferay.portal.kernel.portlet.BaseControlPanelEntry;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.ControlPanelEntry;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
-import com.liferay.portal.kernel.portlet.FriendlyURLMapperTracker;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletConfigurationListener;
@@ -92,7 +93,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Brian Wing Shun Chan
@@ -902,10 +905,24 @@ public class PortletImpl extends PortletBaseImpl {
 			return null;
 		}
 
-		FriendlyURLMapperTracker friendlyURLMapperTracker =
-			portletBag.getFriendlyURLMapperTracker();
+		String portletId = getPortletId();
 
-		return friendlyURLMapperTracker.getFriendlyURLMapper();
+		FriendlyURLMapper friendlyURLMapper = _serviceTrackerMap.getService(
+			portletId);
+
+		if (friendlyURLMapper == null) {
+			String portletName = getPortletName();
+
+			if (!Objects.equals(portletId, portletName)) {
+				friendlyURLMapper = _serviceTrackerMap.getService(portletName);
+			}
+		}
+
+		if (friendlyURLMapper != null) {
+			friendlyURLMapper.init(_rootPortlet);
+		}
+
+		return friendlyURLMapper;
 	}
 
 	/**
@@ -4246,6 +4263,8 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	private static final Log _log = LogFactoryUtil.getLog(PortletImpl.class);
 
+	private static final BundleContext _bundleContext =
+		SystemBundleUtil.getBundleContext();
 	private static final Snapshot<ControlPanelEntry>
 		_controlPanelEntrySnapshot = new Snapshot<>(
 			PortletImpl.class, ControlPanelEntry.class,
@@ -4261,6 +4280,42 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	private static final ConcurrentMap<String, Readiness> _readinessMap =
 		new ConcurrentHashMap<>();
+
+	private static final ServiceTrackerMap<String, FriendlyURLMapper>
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			_bundleContext, FriendlyURLMapper.class, "jakarta.portlet.name",
+			new ServiceTrackerCustomizer
+				<FriendlyURLMapper, FriendlyURLMapper>() {
+
+				@Override
+				public FriendlyURLMapper addingService(
+					ServiceReference<FriendlyURLMapper> serviceReference) {
+
+					FriendlyURLMapper friendlyURLMapper =
+						_bundleContext.getService(serviceReference);
+
+					friendlyURLMapper.setFriendlyURLRoutes(
+						(String)serviceReference.getProperty(
+							"com.liferay.portlet.friendly-url-routes"));
+
+					return friendlyURLMapper;
+				}
+
+				@Override
+				public void modifiedService(
+					ServiceReference<FriendlyURLMapper> serviceReference,
+					FriendlyURLMapper friendlyURLMapper) {
+				}
+
+				@Override
+				public void removedService(
+					ServiceReference<FriendlyURLMapper> serviceReference,
+					FriendlyURLMapper friendlyURLMapper) {
+
+					_bundleContext.ungetService(serviceReference);
+				}
+
+			});
 
 	/**
 	 * The action timeout of the portlet.

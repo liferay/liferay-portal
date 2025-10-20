@@ -19,7 +19,7 @@ export class DetailsPage {
 		this.cancelButton = page.getByRole('button', {name: 'Cancel'});
 		this.dataSetPage = new DataSetPage(page);
 		this.page = page;
-		this.parametersInput = page.getByLabel('Parameters');
+		this.parametersInput = page.getByLabel('Parameters', {exact: true});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.urlPreviewInput = page.getByLabel('URL Preview');
 	}

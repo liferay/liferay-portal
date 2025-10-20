@@ -62,8 +62,8 @@ public class BaseUuidUpgradeProcessTest extends BaseUuidUpgradeProcess {
 		Assert.assertEquals(5000, _getDistinctUuidCount("TestTable2"));
 	}
 
-	protected String[][] getTableAndPrimaryKeyColumnNames() {
-		return new String[][] {{"TestTable1", "id_"}, {"TestTable2", "id_"}};
+	protected String[] getTableNames() {
+		return new String[] {"TestTable1", "TestTable2"};
 	}
 
 	private int _getDistinctUuidCount(String tableName) throws Exception {

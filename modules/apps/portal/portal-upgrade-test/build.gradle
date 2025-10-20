@@ -34,5 +34,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":apps:style-book:style-book-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

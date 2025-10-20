@@ -348,13 +348,15 @@ public class PageDefinitionDTOConverter
 					});
 				setStyleBook(
 					() -> {
-						StyleBookEntry styleBookEntry =
-							_styleBookEntryLocalService.fetchStyleBookEntry(
-								layout.getStyleBookEntryId());
-
-						if (styleBookEntry == null) {
+						if (Validator.isNull(layout.getStyleBookEntryERC())) {
 							return null;
 						}
+
+						StyleBookEntry styleBookEntry =
+							_styleBookEntryLocalService.
+								fetchStyleBookEntryByExternalReferenceCode(
+									layout.getStyleBookEntryERC(),
+									layout.getGroupId());
 
 						return new StyleBook() {
 							{

@@ -46,7 +46,7 @@ public class ViewBulkActionTaskReportDisplayContext {
 			ObjectDefinition objectDefinition =
 				_objectDefinitionLocalService.getObjectDefinition(
 					PortalUtil.getCompanyId(_httpServletRequest),
-					"BulkActionTask");
+					"CMSBulkActionTask");
 
 			String baseBulkActionTaskReportURL =
 				ActionUtil.getBaseBulkActionTaskReportURL(

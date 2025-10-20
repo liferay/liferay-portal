@@ -25,8 +25,7 @@ page import="com.liferay.layout.content.page.editor.web.internal.display.context
 page import="com.liferay.layout.content.page.editor.web.internal.display.context.EditCollectionConfigurationDisplayContext" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
-page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
-page import="com.liferay.portal.kernel.util.PortalUtil" %>
+page import="com.liferay.portal.kernel.util.ParamUtil" %>
 
 <liferay-frontend:defineObjects />
 

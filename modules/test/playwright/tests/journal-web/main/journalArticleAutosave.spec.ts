@@ -524,6 +524,8 @@ autoSaveTest(
 
 		await page.getByRole('button', {exact: true, name: 'Publish'}).click();
 
+		await journalPage.changeView('list');
+
 		await expect(page.getByTitle(title)).toBeVisible();
 
 		await journalPage.assertJournalArticlePermissions(title, [
@@ -537,7 +539,7 @@ autoSaveTest(
 	{
 		tag: '@LPD-32874',
 	},
-	async ({journalEditArticlePage, page, site}) => {
+	async ({journalEditArticlePage, journalPage, page, site}) => {
 		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 
 		const title = getRandomString();
@@ -555,6 +557,8 @@ autoSaveTest(
 		await expect(page.getByText('ID', {exact: true})).toBeVisible();
 
 		await journalEditArticlePage.publishArticle();
+
+		await journalPage.changeView('list');
 
 		await page.getByLabel(`Actions for ${title}`).waitFor();
 
@@ -689,12 +693,14 @@ autosaveWithoutPermissionsTest(
 	{
 		tag: '@LPD-37606',
 	},
-	async ({journalEditArticlePage, page, site}) => {
+	async ({journalEditArticlePage, journalPage, page, site}) => {
 		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 
 		const articleTitle = 'Web Content Title';
 
-		journalEditArticlePage.createAndPublishBasicArticle(articleTitle);
+		await journalEditArticlePage.createAndPublishBasicArticle(articleTitle);
+
+		await journalPage.changeView('list');
 
 		await expect(page.getByTitle(articleTitle)).toBeVisible();
 	}
@@ -705,7 +711,7 @@ autosaveWithoutPermissionsTest(
 	{
 		tag: '@LPD-40531',
 	},
-	async ({journalEditArticlePage, page, site}) => {
+	async ({journalEditArticlePage, journalPage, page, site}) => {
 		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 
 		const articleTitle = 'Web Content Title';
@@ -728,6 +734,8 @@ autosaveWithoutPermissionsTest(
 		await journalEditArticlePage.fillTitle(articleTitle);
 
 		await journalEditArticlePage.publishArticle();
+
+		await journalPage.changeView('list');
 
 		await expect(page.getByTitle(articleTitle)).toBeVisible();
 	}

@@ -45,6 +45,7 @@ export default function SearchBar({
 							/>
 
 							<button
+								aria-label={Liferay.Language.get('search')}
 								className="btn btn-unstyled position-absolute search-button"
 								type="submit"
 							>

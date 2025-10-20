@@ -103,7 +103,7 @@ const FrontendDataSetContent = ({
 	apiURL,
 	appURL,
 	bulkActions = [],
-	configInURLSettings = EConfigInURLBehavior.OFF,
+	configInURLBehavior = EConfigInURLBehavior.PUSH,
 	creationMenu: initialCreationMenu,
 	currentURL,
 	customDataRenderers,
@@ -137,6 +137,7 @@ const FrontendDataSetContent = ({
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
 	showManagementBar = true,
+	showManagementBarInEmptyState = true,
 	showNavBarWhenSelected = false,
 	showPagination = true,
 	showSearch = true,
@@ -151,7 +152,7 @@ const FrontendDataSetContent = ({
 	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
 
 	const [getActiveSorts, updateActiveSorts] = useConfigInURL({
-		configInURLSettings,
+		configInURLBehavior,
 		configReader: (sorts: Array<TSort> | undefined) => {
 			return sorts;
 		},
@@ -179,7 +180,7 @@ const FrontendDataSetContent = ({
 	});
 
 	const [getFilters, updateFilters] = useConfigInURL({
-		configInURLSettings,
+		configInURLBehavior,
 		configReader: (filters: Array<any> | undefined) => {
 			return filters;
 		},
@@ -234,7 +235,7 @@ const FrontendDataSetContent = ({
 				value: 1,
 			},
 		],
-		configInURLSettings,
+		configInURLBehavior,
 		configReader: (delta: number | undefined) => {
 			if (!delta || isNaN(delta) || delta < 1) {
 				return undefined;
@@ -250,7 +251,7 @@ const FrontendDataSetContent = ({
 	});
 
 	const [getPageNumber, updatePageNumber] = useConfigInURL({
-		configInURLSettings,
+		configInURLBehavior,
 		configReader: (pageNumber: number | undefined) => {
 			if (!pageNumber || isNaN(pageNumber) || pageNumber < 1) {
 				return 1;
@@ -266,7 +267,7 @@ const FrontendDataSetContent = ({
 	});
 
 	const [getSearchParam, updateSearchParam] = useConfigInURL({
-		configInURLSettings,
+		configInURLBehavior,
 
 		configReader: (searchParam: string | undefined) => {
 			if (!searchParam) {
@@ -290,7 +291,7 @@ const FrontendDataSetContent = ({
 	});
 
 	const [getView, updateView] = useConfigInURL({
-		configInURLSettings,
+		configInURLBehavior,
 		configReader: (viewName: string | undefined) => {
 			const view = views.find(({name}) => name === viewName);
 
@@ -308,7 +309,7 @@ const FrontendDataSetContent = ({
 	});
 
 	const [getVisibleFields, updateVisibleFields] = useConfigInURL({
-		configInURLSettings,
+		configInURLBehavior,
 		configReader: (visibleFieldNames: VisibleFieldNames | undefined) => {
 			const view = views.find(
 				({name}) => name && name.toLowerCase().includes('table')
@@ -351,7 +352,7 @@ const FrontendDataSetContent = ({
 	});
 
 	const updateConfig = useUpdateConfig({
-		configInURLSettings,
+		configInURLBehavior,
 		id,
 	});
 
@@ -1291,7 +1292,7 @@ const FrontendDataSetContent = ({
 		Liferay.on(EVENTS.UPDATE_DISPLAY, handleRefreshFromTheOutside);
 
 		const registerPopstateEvent =
-			configInURLSettings === EConfigInURLBehavior.PUSH &&
+			configInURLBehavior === EConfigInURLBehavior.PUSH &&
 			(!Liferay.SPA || !Liferay.SPA.app);
 
 		if (registerPopstateEvent) {
@@ -1308,9 +1309,19 @@ const FrontendDataSetContent = ({
 				window.removeEventListener('popstate', handlePopState);
 			}
 		};
-	}, [configInURLSettings, handlePopState, id, refreshData]);
+	}, [configInURLBehavior, handlePopState, id, refreshData]);
 
-	const managementBar = showManagementBar ? (
+	const hasSearch = !!searchParam;
+	const hasActiveFilters = filters.some((filter: any) => filter.active);
+
+	const showManagementToolbar =
+		showManagementBar &&
+		(!!items.length ||
+			hasSearch ||
+			hasActiveFilters ||
+			showManagementBarInEmptyState);
+
+	const managementBar = showManagementToolbar ? (
 		<div className="management-bar-wrapper">
 			<ManagementBar
 				bulkActions={bulkActions}
@@ -1741,6 +1752,7 @@ const FrontendDataSetContent = ({
 				showBulkActionsManagementBar,
 				showBulkActionsManagementBarActions,
 				showInfoPanel: infoPanelComponent ? true : false,
+				showManagementBarInEmptyState,
 				sidePanelId: dataSetSupportSidePanelIdRef.current,
 				sorts,
 				style,

@@ -196,7 +196,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 				// triggered twice when the user clicks on anything other
 				// than the checkbox/radio in a selectable card
 
-				if (target.tagName !== 'INPUT') {
+				if (target.tagName !== 'INPUT' && target.tagName !== 'A') {
 					event.preventDefault();
 
 					onItemSelectionChange?.(item, true);

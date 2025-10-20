@@ -342,6 +342,119 @@ definition {
 			searchTerm = "Organization");
 	}
 
+	@description = "This test asserts that a user can add additional mail host name."
+	@priority = 3
+	test CanAddAdditionalMailHostName {
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Email",
+			configurationName = "Mail Host Names",
+			configurationScope = "Virtual Instance Scope");
+
+		AssertElementPresent(
+			key_fieldLabel = "Enter one mail host name",
+			locator1 = "FormFields#LABEL");
+
+		FormFields.editTextArea(
+			fieldName = "admin.mail.host.names",
+			fieldValue = "newhostname.com");
+
+		PortletEntry.save();
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Email",
+			configurationName = "Mail Host Names",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.viewTextAreaValue(
+			fieldName = "admin.mail.host.names",
+			fieldValue = "newhostname.com");
+	}
+
+	@description = "This test add the contact information via appearance in Instance Configuration."
+	@priority = 3
+	test CanAddContactInformationInInstanceConfiguration {
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Instance Configuration",
+			configurationName = "Contact Information",
+			configurationScope = "Virtual Instance Scope");
+
+		for (var text : list "Street 1,Street 2,Street 3,City") {
+			var value1 = StringUtil.replace(${text}, " ", "");
+
+			Type(
+				key_text = ${text},
+				locator1 = "TextInput#ANY",
+				value1 = ${value1});
+		}
+
+		Type(
+			key_text = "Postal Code",
+			locator1 = "TextInput#ANY",
+			value1 = 116023);
+
+		Type(
+			key_text = "Number",
+			locator1 = "TextInput#ANY",
+			value1 = 041188120855);
+
+		Type(
+			key_text = "Extension",
+			locator1 = "TextInput#ANY",
+			value1 = 86);
+
+		Type(
+			key_text = "Email Address",
+			locator1 = "TextInput#ANY",
+			value1 = "testsample@liferay.com");
+
+		Type(
+			key_text = "URL",
+			locator1 = "TextInput#ANY",
+			value1 = "http://liferay.com");
+
+		Select(
+			locator1 = "Select#COUNTRY",
+			value1 = "China");
+
+		Select(
+			locator1 = "Select#REGION",
+			value1 = "Liaoning Sheng");
+
+		Select(
+			locator1 = "Select#ADDRESS_TYPE",
+			value1 = "Shipping");
+
+		PortletEntry.save();
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Instance Configuration",
+			configurationName = "Contact Information",
+			configurationScope = "Virtual Instance Scope");
+
+		for (var text : list "Street 1,Street 2,Street 3,City") {
+			var value1 = StringUtil.replace(${text}, " ", "");
+
+			AssertTextEquals(
+				key_text = ${text},
+				locator1 = "TextInput#ANY",
+				value1 = ${value1});
+		}
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "Select#COUNTRY",
+			value1 = "China");
+
+		AssertTextEquals(
+			key_text = "Email Address",
+			locator1 = "TextInput#ANY",
+			value1 = "testsample@liferay.com");
+
+		AssertTextEquals(
+			key_text = "URL",
+			locator1 = "TextInput#ANY",
+			value1 = "http://liferay.com");
+	}
+
 	@description = "Resolved bug automation for LPS-140712. This test asserts that a user can be added to an organization through the UI and displays a success message"
 	@priority = 4
 	test CanAddOrganizationUser {
@@ -418,6 +531,193 @@ definition {
 		}
 	}
 
+	@description = "This test disable the Terms of Use via UI and assert the Terms of Use not required when a new user login."
+	@priority = 3
+	test CanChangeTheTermsOfUseNotRequired {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Instance Configuration",
+			configurationName = "Terms of Use",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.viewCheckboxChecked(fieldName = "terms-of-use-required");
+
+		FormFields.disableCheckbox(fieldName = "terms-of-use-required");
+
+		PortletEntry.save();
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		User.logoutPG();
+
+		AssertClick(
+			locator1 = "UserBar#USER_SIGN_IN",
+			value1 = "Sign In");
+
+		Type.typePause(
+			locator1 = "TextInput#EMAIL_ADDRESS",
+			value1 = "userea@liferay.com");
+
+		TestCase.typePassword(password = PropsUtil.get("default.admin.password"));
+
+		User._clickSignInButton(localization = ${localization});
+
+		AssertElementNotPresent(locator1 = "Button#SIGN_IN");
+
+		AssertElementNotPresent(locator1 = "Button#I_AGREE");
+
+		User.answerPasswordReminder();
+
+		AssertElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE");
+	}
+
+	@description = "This test asserts that a user can change the general authentication. Like user can change the authentication way to user ID and so."
+	@priority = 4
+	test CanChangeUserGeneralAuthentication {
+		var userId = JSONUserSetter.setUserId(userEmailAddress = "test@liferay.com");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "User Authentication",
+			configurationName = "General",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.editConfigurationAuthenticationGeneral(authenticationMethod = "By User ID");
+
+		Uncheck(
+			checkboxName = "Allow strangers to create accounts with a company email address?",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
+		Button.clickSave();
+
+		User.logoutPG();
+
+		Navigator.openURL();
+
+		AssertClick(
+			locator1 = "UserBar#USER_SIGN_IN",
+			value1 = "Sign In");
+
+		AssertElementPresent(
+			key_text = "ID",
+			locator1 = "TextInput#ANY");
+
+		SignInNavigator.gotoCreateAccount();
+
+		for (var text : list "Screen Name,First Name,Last Name,Password,Reenter Password") {
+			var value1 = StringUtil.replace(${text}, " ", "");
+
+			Type(
+				key_text = ${text},
+				locator1 = "TextInput#ANY",
+				value1 = ${value1});
+		}
+
+		Type(
+			key_text = "Reenter Password",
+			locator1 = "TextInput#ANY",
+			value1 = "Password");
+
+		Type(
+			key_text = "Email Address",
+			locator1 = "TextInput#ANY",
+			value1 = "userEmailAddress@liferay.com");
+
+		Button.clickSave();
+
+		Alert.viewErrorMessage(errorMessage = "Error:The email address you requested is not valid because its domain is reserved.");
+
+		Navigator.openURL();
+
+		User.firstLoginUI(
+			authenticationMethod = "By User ID",
+			password = PropsUtil.get("default.admin.password"),
+			userId = ${userId});
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "User Authentication",
+			configurationName = "General",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.editConfigurationAuthenticationGeneral(authenticationMethod = "By Email Address");
+
+		Uncheck(
+			checkboxName = "Allow users to automatically log in?",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
+		Uncheck(
+			checkboxName = "Allow users to request password reset links?",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
+		Uncheck(
+			checkboxName = "Allow strangers to create accounts?",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
+		Button.clickSave();
+
+		User.logoutPG();
+
+		Navigator.openURL();
+
+		AssertClick(
+			locator1 = "UserBar#USER_SIGN_IN",
+			value1 = "Sign In");
+
+		AssertElementPresent(
+			key_text = "Email Address",
+			locator1 = "TextInput#ANY");
+
+		AssertElementNotPresent(locator1 = "Checkbox#REMEMBER_ME");
+
+		AssertElementNotPresent(locator1 = "Link#FORGOT_PASSWORD");
+
+		AssertElementNotPresent(locator1 = "Link#CREATE_ACCOUNT");
+	}
+
+	@description = "This test asserts that a user can disable the account created notification. No email would send to user when the account created notification is disabled."
+	@priority = 3
+	test CanDisabledAccountCreatedNotification {
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
+		property test.smtp.server.enabled = "true";
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Email",
+			configurationName = "Email Sender",
+			configurationScope = "Virtual Instance Scope");
+
+		PortalSettings.configureEmailSender(
+			emailAddress = "test@liferay.com",
+			emailSenderName = "Joe Bloggs");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Email",
+			configurationName = "Account Created Notification",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.disableCheckbox(fieldName = "enabled");
+
+		PortletEntry.save();
+
+		User.openUsersAdmin();
+
+		User.addCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		MockMock.viewNoMail();
+	}
+
 	@description = "This test asserts that an organization cannot be deleted if there is a suborganization associated with it."
 	@priority = 4
 	test CannotDeleteAnOrganizationWithSuborganization {
@@ -483,6 +783,75 @@ definition {
 		for (var organizationNumber : list "5,6,7,8") {
 			LexiconEntry.viewNoEntry(rowEntry = "Organization ${organizationNumber}");
 		}
+	}
+
+	@description = "This test specify the Terms of Use content by web content posted in a new site and assert the Terms of Use content updated when a new user login."
+	@priority = 3
+	test CanSpecifyTheTermsofUseWebContent {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		HeadlessSite.addSite(siteName = "Terms of Use Site");
+
+		JSONWebcontent.addWebContent(
+			content = "This is a new terms of use items posted in Terms of Use Site.",
+			groupName = "Terms of Use Site",
+			title = "Terms of Use WC Title");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Instance Configuration",
+			configurationName = "Terms of Use",
+			configurationScope = "Virtual Instance Scope");
+
+		var articleId = JSONWebcontentSetter.setArticleId(
+			groupName = "Terms of Use Site",
+			title = "Terms of Use WC Title");
+		var groupId = JSONGroupSetter.setGroupId(groupName = "Terms of Use Site");
+
+		FormFields.viewCheckboxChecked(fieldName = "terms-of-use-required");
+
+		FormFields.editText(
+			fieldName = "group-id",
+			fieldValue = ${groupId});
+
+		FormFields.editText(
+			fieldName = "article-id",
+			fieldValue = ${articleId});
+
+		PortletEntry.save();
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		User.logoutPG();
+
+		AssertClick(
+			locator1 = "UserBar#USER_SIGN_IN",
+			value1 = "Sign In");
+
+		Type.typePause(
+			locator1 = "TextInput#EMAIL_ADDRESS",
+			value1 = "userea@liferay.com");
+
+		TestCase.typePassword(password = PropsUtil.get("default.admin.password"));
+
+		User._clickSignInButton(localization = ${localization});
+
+		AssertElementNotPresent(locator1 = "Button#SIGN_IN");
+
+		Portlet.viewPortletPresentPG(portletContent = "This is a new terms of use items posted in Terms of Use Site.");
+
+		User.acceptEndUserLicenseAgreement();
+
+		User.answerPasswordReminder();
+
+		AssertElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE");
 	}
 
 	@description = "Use case for LPS-198960.Organization users and sub organizations are not mixed across pages using the interactor button. Ignored because of LPD-51577."
@@ -625,6 +994,75 @@ definition {
 		Site.deleteCP(siteName = "Organization Name");
 	}
 
+	@priority = 5
+	test EditDefaultUserAssociationsOrganizationSites {
+		JSONOrganization.addOrganization(organizationName = "Organization Name");
+
+		Organization.openOrganizationsAdmin();
+
+		Organization.addSiteCP(orgName = "Organization Name");
+
+		PortalSettings.editConfigurationUsersDefaultUserAssociationsCP(orgName = "Organization Name");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		User.openUsersAdmin();
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		User.viewMemberships(
+			assetType = "Sites",
+			assigneeName = "Organization Name");
+	}
+
+	@priority = 4
+	test EditDefaultUserAssociationsRoles {
+		Role.openRolesAdmin();
+
+		Role.add(roleTitle = "Roles Regrole Name");
+
+		PortalSettings.editConfigurationUsersDefaultUserAssociationsCP(roleTitle = "Roles Regrole Name");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		User.openUsersAdmin();
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		User.viewUserInformationRolesCP(roleTitle = "Roles Regrole Name");
+	}
+
+	@priority = 4
+	test EditDefaultUserAssociationsSites {
+		Site.openSitesAdmin();
+
+		Site.addBlankCP(siteName = "Site Name");
+
+		PortalSettings.editConfigurationUsersDefaultUserAssociationsCP(siteName = "Site Name");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		User.openUsersAdmin();
+
+		UserNavigator.gotoUser(userScreenName = "usersn");
+
+		User.viewMemberships(
+			assetType = "Sites",
+			assigneeName = "Site Name");
+	}
+
 	@priority = 4
 	test EditOrganizationSite {
 		property portal.acceptance = "true";
@@ -661,6 +1099,21 @@ definition {
 		Organization.viewCP(
 			orgName = "Organization Name Edit",
 			orgType = "Organization");
+	}
+
+	@priority = 5
+	test EnterReservedEmailAddress {
+		property portal.acceptance = "true";
+
+		PortalSettings.enterReservedEmailAddressCP(userEmailAddress = "userea@liferay.com");
+
+		User.openUsersAdmin();
+
+		User.addReservedEmailAddressCP(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
 	}
 
 	@description = "A new user can add an organization with localized country name."
@@ -990,6 +1443,73 @@ definition {
 			searchTerm = 2);
 	}
 
+	@description = "This test asserts that some of the fields in user creation can be diasabled."
+	@priority = 4
+	test UserFieldsCanBeDisabled {
+		User.openUsersAdmin();
+
+		LexiconEntry.gotoAdd();
+
+		AssertElementPresent(locator1 = "UsersAndOrganizationsEditUser#DETAILS_SCREEN_NAME_FIELD");
+
+		AssertElementNotPresent(locator1 = "UsersAndOrganizationsEditUser#DETAILS_GENDER_SELECT");
+
+		AssertElementPresent(locator1 = "UsersAndOrganizationsEditUser#DETAILS_BIRTHDAY_FIELD");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Users",
+			configurationName = "Fields",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.enableCheckbox(fieldName = "autogenerate");
+
+		FormFields.disableCheckbox(fieldName = "birthday");
+
+		FormFields.enableCheckbox(fieldName = "male");
+
+		PortletEntry.save();
+
+		User.openUsersAdmin();
+
+		LexiconEntry.gotoAdd();
+
+		AssertElementNotPresent(locator1 = "UsersAndOrganizationsEditUser#DETAILS_SCREEN_NAME_FIELD");
+
+		AssertNotVisible(locator1 = "UsersAndOrganizationsEditUser#DETAILS_BIRTHDAY_FIELD");
+
+		AssertElementPresent(locator1 = "UsersAndOrganizationsEditUser#DETAILS_GENDER_SELECT");
+
+		User.openUsersAdmin();
+
+		LexiconEntry.gotoAdd();
+
+		for (var text : list "First Name,Last Name") {
+			var value1 = StringUtil.replace(${text}, " ", "");
+
+			Type(
+				key_text = ${text},
+				locator1 = "TextInput#ANY",
+				value1 = ${value1});
+		}
+
+		Type(
+			key_text = "Email Address",
+			locator1 = "TextInput#ANY",
+			value1 = "userEmailAddress@liferay.com");
+
+		PortletEntry.save();
+
+		User.openUsersAdmin();
+
+		LexiconEntry.gotoEntry(rowEntry = "FirstName LastName");
+
+		AssertNotEditable(locator1 = "UsersAndOrganizationsEditUser#DETAILS_SCREEN_NAME_FIELD");
+
+		AssertNotVisible(locator1 = "UsersAndOrganizationsEditUser#DETAILS_BIRTHDAY_FIELD");
+
+		AssertElementPresent(locator1 = "UsersAndOrganizationsEditUser#DETAILS_GENDER_SELECT");
+	}
+
 	@priority = 4
 	test ViewBack {
 		Organization.openOrganizationsAdmin();
@@ -1172,6 +1692,27 @@ definition {
 		MessageboardsThread.viewDoNotHaveRequiredPermissionsPG(threadSubject = "Canada Message Subject");
 	}
 
+	@priority = 3
+	test ViewDefaultUserAssociations {
+		Navigator.openURL();
+
+		PortalSettings.viewDefaultUserAssociationsCP();
+	}
+
+	@priority = 3
+	test ViewEmailNotificationsAccountCreatedNotification {
+		Navigator.openURL();
+
+		PortalSettings.viewEmailNotificationsAccountCreatedNotificationCP();
+	}
+
+	@priority = 3
+	test ViewEmailNotificationsSender {
+		Navigator.openURL();
+
+		PortalSettings.viewEmailNotificationsSenderCP();
+	}
+
 	@priority = 4
 	test ViewOrganizationSiteViaSitesDirectory {
 		ProductMenu.gotoPortlet(
@@ -1241,6 +1782,178 @@ definition {
 		Breadcrumb.viewPG(
 			breadcrumbListVisible = "Test Page",
 			pathLocator = "PAGE");
+	}
+
+	@description = "This is a use case for LRQA-68315 and LPS-176074 TC-3. This test asserts that a user can update the password changed notification subject and body. The notification also send when set password via json."
+	@priority = 3
+	test ViewPasswordChangedNotificationTemplateUpdated {
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+		property test.smtp.server.enabled = "true";
+
+		task ("Given: Add the user's first name in the password changed notification template") {
+			var portalURL = PropsUtil.get("portal.url");
+
+			Navigator.openURL();
+
+			PortalSettings.viewEmailNotificationsPasswordChangedNotificationCP();
+
+			PortalSettings.gotoConfiguration(
+				configurationCategory = "Email",
+				configurationName = "Email Sender",
+				configurationScope = "Virtual Instance Scope");
+
+			PortalSettings.configureEmailSender(
+				emailAddress = "test@liferay.com",
+				emailSenderName = "Joe Bloggs");
+
+			PortalSettings.editConfigurationUsersEmailNotificationsCP(
+				configurationName = "Password Changed Notification",
+				notificationsBody = '''
+					Dear [$TO_FIRST_NAME$]/[$TO_NAME$],<br /><br />
+
+					This is a new template for [$TO_FIRST_NAME$] password change test.<br /><br />
+
+					Your([$TO_FIRST_NAME$]) password for [$PORTAL_URL$] has been changed.<br /><br />
+
+					The request from [$TO_FIRST_NAME$] for a new password was made from [$REMOTE_ADDRESS$] / [$REMOTE_HOST$].<br /><br />
+
+					Sincerely,<br />
+					[$FROM_NAME$]<br />
+					[$FROM_ADDRESS$]<br />
+					[$PORTAL_URL$]
+				''',
+				notificationsSubject = "[$PORTAL_URL$]: Dear [$TO_FIRST_NAME$], your Password Has Been Changed");
+		}
+
+		task ("When: Add a new user and change password") {
+			User.openUsersAdmin();
+
+			User.addCP(
+				userEmailAddress = "userea@liferay.com",
+				userFirstName = "userfn",
+				userLastName = "userln",
+				userScreenName = "usersn");
+
+			User.openUsersAdmin();
+
+			User.editPasswordCP(
+				userEmailAddress = "userea@liferay.com",
+				userScreenName = "usersn");
+		}
+
+		task ("Then: Assert the subject, salutation and each paragraph in the body of the Password Changed Notification are include user's first name") {
+			MockMock.viewMail(
+				asset = "${portalURL}: Dear userfn, your Password Has Been Changed",
+				content = "This is a new template for userfn password change test.",
+				recipient = "userfn userln",
+				sender = "Joe Bloggs",
+				subject = "${portalURL}: Dear userfn, your Password Has Been Changed");
+
+			MockMock._gotoMailMessage(
+				asset = "${portalURL}: Dear userfn, your Password Has Been Changed",
+				recipient = "userfn userln");
+
+			AssertTextEquals.assertPartialText(
+				key_asset = "${portalURL}: Dear userfn, your Password Has Been Changed",
+				locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
+				value1 = "Dear userfn/userfn userln,");
+
+			AssertTextEquals.assertPartialText(
+				key_asset = "${portalURL}: Dear userfn, your Password Has Been Changed",
+				locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
+				value1 = "Your(userfn) password for ${portalURL} has been changed.");
+
+			AssertTextEquals.assertPartialText(
+				key_asset = "${portalURL}: Dear userfn, your Password Has Been Changed",
+				locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
+				value1 = "The request from userfn for a new password");
+		}
+	}
+
+	@description = "This is a use case for LRQA-68316 and LPS-176074 TC-4. This test asserts that a user can update the password reset notification subject and body. The notification also send when set password via json."
+	@priority = 3
+	test ViewPasswordResetNotificationTemplateUpdated {
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+		property test.smtp.server.enabled = "true";
+
+		task ("Given: Add a new user and add the user's first name in the password reset notification template") {
+			var portalURL = PropsUtil.get("portal.url");
+
+			PortalSettings.gotoConfiguration(
+				configurationCategory = "Email",
+				configurationName = "Email Sender",
+				configurationScope = "Virtual Instance Scope");
+
+			PortalSettings.configureEmailSender(
+				emailAddress = "test@liferay.com",
+				emailSenderName = "Joe Bloggs");
+
+			PortalSettings.editConfigurationUsersEmailNotificationsCP(
+				configurationName = "Password Reset Notification",
+				notificationsBody = '''
+					Dear [$TO_FIRST_NAME$]/[$TO_NAME$],<br /><br />
+
+					This is a new template for [$TO_FIRST_NAME$] password reset test.<br /><br />
+
+					You([$TO_FIRST_NAME$]) can reset your password for [$PORTAL_URL$] at [$PASSWORD_RESET_URL$].<br /><br />
+
+					The request from [$TO_FIRST_NAME$] for a new password was made from [$REMOTE_ADDRESS$] / [$REMOTE_HOST$].<br /><br />
+
+					Sincerely,<br />
+					[$FROM_NAME$]<br />
+					[$FROM_ADDRESS$]<br />
+					[$PORTAL_URL$]<br />
+				''',
+				notificationsSubject = "[$PORTAL_URL$]: Dear [$TO_FIRST_NAME$], please reset Your Password");
+
+			User.openUsersAdmin();
+
+			User.addCP(
+				userEmailAddress = "userea@liferay.com",
+				userFirstName = "userfn",
+				userLastName = "userln",
+				userScreenName = "usersn");
+
+			User.logoutPG();
+		}
+
+		task ("When: Navigate to the forget password screen") {
+			User.forgotPasswordSendResetLink(userEmailAddress = "userea@liferay.com");
+		}
+
+		task ("Then: Assert the subject, salutation and each paragraph in the body of the Password Reset Notification are include user's first name") {
+			MockMock.viewMail(
+				asset = "${portalURL}: Dear userfn, please reset Your Password",
+				content = "This is a new template for userfn password reset test.",
+				recipient = "userfn userln",
+				sender = "Joe Bloggs",
+				subject = "${portalURL}: Dear userfn, please reset Your Password");
+
+			MockMock._gotoMailMessage(
+				asset = "${portalURL}: Dear userfn, please reset Your Password",
+				recipient = "userfn userln");
+
+			AssertTextEquals.assertPartialText(
+				key_asset = "${portalURL}: Dear userfn, please reset Your Password",
+				locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
+				value1 = "Dear userfn/userfn userln,");
+
+			AssertTextEquals.assertPartialText(
+				key_asset = "${portalURL}: Dear userfn, please reset Your Password",
+				locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
+				value1 = "You(userfn) can reset your password for");
+
+			AssertTextEquals.assertPartialText(
+				key_asset = "${portalURL}: Dear userfn, please reset Your Password",
+				locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
+				value1 = "The request from userfn for a new password");
+		}
 	}
 
 }

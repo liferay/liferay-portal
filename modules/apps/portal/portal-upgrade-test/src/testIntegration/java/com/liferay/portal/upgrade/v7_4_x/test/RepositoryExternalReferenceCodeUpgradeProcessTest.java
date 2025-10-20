@@ -70,8 +70,8 @@ public class RepositoryExternalReferenceCodeUpgradeProcessTest
 		return new BaseExternalReferenceCodeUpgradeProcess() {
 
 			@Override
-			protected String[][] getTableAndPrimaryKeyColumnNames() {
-				return new String[][] {{"Repository", "repositoryId"}};
+			protected String[] getTableNames() {
+				return new String[] {"Repository"};
 			}
 
 		};

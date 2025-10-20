@@ -3,7 +3,7 @@
 <Configuration strict="true">
 	<Loggers>
 		<Logger level="ERROR" name="com.liferay.journal" />
-		<Logger level="INFO" name="com.liferay.journal.internal.transformer.RegexTransformerListener" />
+		<Logger level="INFO" name="com.liferay.journal.internal.template.parser.RegexTransformerListener" />
 		<Logger level="WARN" name="com.liferay.journal.internal.upgrade.helper.JournalArticleImageUpgradeHelper" />
 		<Logger level="INFO" name="com.liferay.journal.internal.upgrade.v0_0_5.JournalUpgradeProcess" />
 		<Logger level="WARN" name="com.liferay.journal.internal.upgrade.v5_1_0.JournalArticleDDMStructureIdUpgradeProcess" />

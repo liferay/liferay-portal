@@ -215,7 +215,7 @@ public class IndividualSegment {
 
 	public enum Type {
 
-		DYNAMIC, STATIC
+		BATCH, REAL_TIME
 
 	}
 
@@ -236,7 +236,7 @@ public class IndividualSegment {
 	private Date _lastActivityDate;
 	private String _name;
 	private String _scope = Scope.PROJECT.name();
-	private String _segmentType = Type.STATIC.name();
+	private String _segmentType = Type.BATCH.name();
 	private String _state = State.READY.name();
 	private String _status = Status.ACTIVE.name();
 

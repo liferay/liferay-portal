@@ -10,7 +10,7 @@
 <liferay-util:html-top
 	outputKey="com.liferay.sharing.taglib#/collaborators/page.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/collaborators/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="sharing-taglib/collaborators/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div class="collaborators" id="<portlet:namespace />collaborators-root">

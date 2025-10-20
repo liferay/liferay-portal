@@ -186,8 +186,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 			options.addPart("channelId", channelId);
 			options.addPart("filter", individualSegment.getValue());
 			options.addPart("name", individualSegment.getKey());
-			options.addPart(
-				"segmentType", IndividualSegment.Type.DYNAMIC.name());
+			options.addPart("segmentType", IndividualSegment.Type.BATCH.name());
 			options.setHeaders(headers);
 			options.setLocation(
 				"http://localhost:8080/o/faro/contacts/" +

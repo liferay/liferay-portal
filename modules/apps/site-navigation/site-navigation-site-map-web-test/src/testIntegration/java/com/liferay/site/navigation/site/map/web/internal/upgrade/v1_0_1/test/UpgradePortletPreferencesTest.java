@@ -39,7 +39,7 @@ public class UpgradePortletPreferencesTest
 	private static final Version _VERSION = new Version(1, 0, 1);
 
 	@Inject(
-		filter = "(&(component.name=com.liferay.site.navigation.site.map.web.internal.upgrade.registry.SiteNavigationSiteMapWebUpgradeStepRegistrator))"
+		filter = "(&(component.name=com.liferay.site.navigation.site.map.web.internal.upgrade.registry.SiteNavigationSitemapWebUpgradeStepRegistrator))"
 	)
 	private static UpgradeStepRegistrator _upgradeStepRegistrator;
 

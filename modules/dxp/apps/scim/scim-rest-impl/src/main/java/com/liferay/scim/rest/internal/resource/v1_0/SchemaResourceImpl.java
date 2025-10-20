@@ -161,16 +161,16 @@ public class SchemaResourceImpl extends BaseSchemaResourceImpl {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SchemaResourceImpl.class);
 
+	private static final Map<String, String> _schemaFileNames = Map.of(
+		"urn:ietf:params:scim:schemas:core:2.0:Group", "group.json",
+		"urn:ietf:params:scim:schemas:core:2.0:User", "user.json",
+		"urn:ietf:params:scim:schemas:extension:liferay:2.0:User",
+		"user-extension.json");
+
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private final Map<String, String> _schemaFileNames = Map.of(
-		"urn:ietf:params:scim:schemas:core:2.0:Group", "group.json",
-		"urn:ietf:params:scim:schemas:core:2.0:User", "user.json",
-		"urn:ietf:params:scim:schemas:extension:liferay:2.0:User",
-		"user-extension.json");
 
 }

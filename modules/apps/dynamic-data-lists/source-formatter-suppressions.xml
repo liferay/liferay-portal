@@ -2,6 +2,6 @@
 
 <suppressions>
 	<checkstyle>
-		<suppress checks="AccessModifierCheck" files="dynamic-data-lists-service/src/main/java/com/liferay/dynamic/data/lists/service/impl/DDLRecordLocalServiceImpl\.java" />
+		<suppress checks="ServiceImplAccessModifierCheck" files="dynamic-data-lists-service/src/main/java/com/liferay/dynamic/data/lists/service/impl/DDLRecordLocalServiceImpl\.java" />
 	</checkstyle>
 </suppressions>

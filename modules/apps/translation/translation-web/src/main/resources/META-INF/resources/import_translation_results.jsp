@@ -28,17 +28,24 @@ renderResponse.setTitle(LanguageUtil.get(resourceBundle, "import-translation"));
 							</div>
 						</div>
 					</li>
-					<li class="tbar-item">
-						<div class="tbar-section text-right">
-							<clay:link
-								displayType="primary"
-								href="<%= importTranslationResultsDisplayContext.getRedirect(request) %>"
-								label="done"
-								small="<%= true %>"
-								type="button"
-							/>
-						</div>
-					</li>
+
+					<%
+					String redirectURL = importTranslationResultsDisplayContext.getRedirect(request);
+					%>
+
+					<c:if test="<%= Validator.isNotNull(redirectURL) %>">
+						<li class="tbar-item">
+							<div class="tbar-section text-right">
+								<clay:link
+									displayType="primary"
+									href="<%= redirectURL %>"
+									label="done"
+									small="<%= true %>"
+									type="button"
+								/>
+							</div>
+						</li>
+					</c:if>
 				</ul>
 			</clay:container-fluid>
 		</nav>

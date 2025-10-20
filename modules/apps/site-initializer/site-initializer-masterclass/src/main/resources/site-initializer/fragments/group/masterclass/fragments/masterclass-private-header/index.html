@@ -5,7 +5,7 @@
 	privateUserFriendlyURL = themeDisplay.getPathFriendlyURLPrivateUser() + "/" + themeDisplay.getUser().getFirstName()
 	publicFriendlyURL = themeDisplay.getPathFriendlyURLPublic() + themeDisplay.getSiteGroup().getFriendlyURL()
 	publicSiteNavbarClass =""
-	userName = themeDisplay.getUser().getFirstName()
+	userName = htmlUtil.escape(themeDisplay.getUser().getFirstName())
 /]
 
 [#if !themeDisplay.isSignedIn()]

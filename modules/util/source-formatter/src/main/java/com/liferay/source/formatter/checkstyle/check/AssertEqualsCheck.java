@@ -24,21 +24,21 @@ public class AssertEqualsCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "Assert", "assertEquals");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			if (exprDetailASTList.size() != 2) {
+			if (exprDetailASTs.size() != 2) {
 				continue;
 			}
 
-			DetailAST firstExprDetailAST = exprDetailASTList.get(0);
+			DetailAST firstExprDetailAST = exprDetailASTs.get(0);
 
 			DetailAST firstChildDetailAST = firstExprDetailAST.getFirstChild();
 
@@ -51,7 +51,7 @@ public class AssertEqualsCheck extends BaseCheck {
 						firstChildDetailAST.getText()));
 			}
 
-			DetailAST secondExprDetailAST = exprDetailASTList.get(1);
+			DetailAST secondExprDetailAST = exprDetailASTs.get(1);
 
 			firstChildDetailAST = secondExprDetailAST.getFirstChild();
 

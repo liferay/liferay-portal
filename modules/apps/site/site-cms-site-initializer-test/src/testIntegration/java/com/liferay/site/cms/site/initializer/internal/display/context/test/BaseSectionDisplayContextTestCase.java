@@ -214,18 +214,18 @@ public abstract class BaseSectionDisplayContextTestCase
 			HashMapBuilder.put(
 				"default", "content-icon-custom-structure"
 			).put(
-				"L_BASIC_WEB_CONTENT", "content-icon-basic-content"
+				"L_CMS_BASIC_WEB_CONTENT", "content-icon-basic-content"
 			).put(
-				"L_BLOG", "content-icon-blog"
+				"L_CMS_BLOG", "content-icon-blog"
 			).build()
 		).put(
 			"objectDefinitionIcons",
 			HashMapBuilder.put(
 				"default", "web-content"
 			).put(
-				"L_BASIC_WEB_CONTENT", "forms"
+				"L_CMS_BASIC_WEB_CONTENT", "forms"
 			).put(
-				"L_BLOG", "blogs"
+				"L_CMS_BLOG", "blogs"
 			).build()
 		).put(
 			"parentObjectEntryFolderExternalReferenceCode",
@@ -687,7 +687,7 @@ public abstract class BaseSectionDisplayContextTestCase
 					ObjectDefinition objectDefinition =
 						ObjectDefinitionLocalServiceUtil.
 							getObjectDefinitionByExternalReferenceCode(
-								"L_BASIC_WEB_CONTENT",
+								"L_CMS_BASIC_WEB_CONTENT",
 								TestPropsValues.getCompanyId());
 
 					List<String> guestUnsupportedActions =
@@ -715,7 +715,7 @@ public abstract class BaseSectionDisplayContextTestCase
 					ObjectDefinition objectDefinition =
 						ObjectDefinitionLocalServiceUtil.
 							getObjectDefinitionByExternalReferenceCode(
-								"L_BASIC_DOCUMENT",
+								"L_CMS_BASIC_DOCUMENT",
 								TestPropsValues.getCompanyId());
 
 					List<String> guestUnsupportedActions =

@@ -10,7 +10,6 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.configuration.CommerceOrderConfiguration;
 import com.liferay.commerce.configuration.CommerceOrderFieldsConfiguration;
-import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -35,15 +34,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
-import com.liferay.portal.kernel.portlet.PortletProvider;
-import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
@@ -54,7 +50,6 @@ import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.PageContext;
 
@@ -87,12 +82,9 @@ public class AccountSelectorTag extends IncludeTag {
 			}
 
 			_accountEntry = commerceContext.getAccountEntry();
-			_accountEntryAllowedTypes =
-				commerceContext.getAccountEntryAllowedTypes();
 			_addCommerceOrderURL =
 				_commerceOrderHttpHelper.getCommerceCartBaseURL(
 					httpServletRequest);
-			_checkoutURL = _getCheckoutURL(httpServletRequest);
 			_commerceOrder = commerceContext.getCommerceOrder();
 
 			CommerceCurrency commerceCurrency =
@@ -116,7 +108,6 @@ public class AccountSelectorTag extends IncludeTag {
 			_log.error(exception);
 
 			_accountEntry = null;
-			_accountEntryAllowedTypes = new String[0];
 			_addCommerceOrderURL = StringPool.BLANK;
 			_commerceChannelGroupId = 0;
 			_commerceChannelId = 0;
@@ -169,9 +160,7 @@ public class AccountSelectorTag extends IncludeTag {
 		super.cleanUp();
 
 		_accountEntry = null;
-		_accountEntryAllowedTypes = null;
 		_addCommerceOrderURL = StringPool.BLANK;
-		_checkoutURL = StringPool.BLANK;
 		_commerceChannelGroupId = 0;
 		_commerceChannelId = 0;
 		_commerceOrder = null;
@@ -195,9 +184,6 @@ public class AccountSelectorTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
-		httpServletRequest.setAttribute(
-			"liferay-commerce:account-selector:accountEntryAllowedTypes",
-			_accountEntryAllowedTypes);
 		httpServletRequest.setAttribute(
 			"liferay-commerce:account-selector:commerceChannelId",
 			_commerceChannelId);
@@ -247,8 +233,6 @@ public class AccountSelectorTag extends IncludeTag {
 		}
 
 		httpServletRequest.setAttribute(
-			"liferay-commerce:account-selector:checkoutURL", _checkoutURL);
-		httpServletRequest.setAttribute(
 			"liferay-commerce:account-selector:createNewOrderURL",
 			_addCommerceOrderURL);
 		httpServletRequest.setAttribute(
@@ -271,41 +255,6 @@ public class AccountSelectorTag extends IncludeTag {
 			_setCurrentAccountURL);
 		httpServletRequest.setAttribute(
 			"liferay-commerce:account-selector:spritemap", _spritemap);
-	}
-
-	private String _getCheckoutURL(HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		HttpServletRequest originalHttpServletRequest =
-			PortalUtil.getOriginalServletRequest(httpServletRequest);
-
-		HttpSession httpSession = originalHttpServletRequest.getSession();
-
-		boolean immediateCheckout = GetterUtil.getBoolean(
-			httpSession.getAttribute(
-				CommerceCheckoutWebKeys.SUFFIX_IMMEDIATE_CHECKOUT));
-
-		if (!immediateCheckout) {
-			return StringPool.BLANK;
-		}
-
-		httpSession.removeAttribute(
-			CommerceCheckoutWebKeys.SUFFIX_IMMEDIATE_CHECKOUT);
-
-		PortletURL commerceCheckoutPortletURL =
-			PortletProviderUtil.getPortletURL(
-				httpServletRequest, CommercePortletKeys.COMMERCE_CHECKOUT,
-				PortletProvider.Action.VIEW);
-
-		if (commerceCheckoutPortletURL == null) {
-			return StringPool.BLANK;
-		}
-
-		return PortletURLBuilder.create(
-			commerceCheckoutPortletURL
-		).setMVCRenderCommandName(
-			"/commerce_checkout/checkout_redirect"
-		).buildString();
 	}
 
 	private String _getEditOrderURL(HttpServletRequest httpServletRequest)
@@ -450,9 +399,7 @@ public class AccountSelectorTag extends IncludeTag {
 			"(model.class.name=com.liferay.portal.kernel.model.User)");
 
 	private AccountEntry _accountEntry;
-	private String[] _accountEntryAllowedTypes;
 	private String _addCommerceOrderURL = StringPool.BLANK;
-	private String _checkoutURL = StringPool.BLANK;
 	private long _commerceChannelGroupId;
 	private long _commerceChannelId;
 	private CommerceOrder _commerceOrder;

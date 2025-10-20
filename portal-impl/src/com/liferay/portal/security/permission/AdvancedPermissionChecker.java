@@ -5,6 +5,10 @@
 
 package com.liferay.portal.security.permission;
 
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -23,10 +27,10 @@ import com.liferay.portal.kernel.model.PortletConstants;
 import com.liferay.portal.kernel.model.Resource;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupGroupRole;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
@@ -56,6 +60,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.time.StopWatch;
@@ -69,9 +74,15 @@ import org.apache.commons.lang.time.StopWatch;
  */
 public class AdvancedPermissionChecker extends BasePermissionChecker {
 
+	public AdvancedPermissionChecker(
+		ServiceTrackerList<RoleContributor> roleContributors) {
+
+		_roleContributors = roleContributors;
+	}
+
 	@Override
 	public AdvancedPermissionChecker clone() {
-		return new AdvancedPermissionChecker();
+		return new AdvancedPermissionChecker(_roleContributors);
 	}
 
 	@Override
@@ -108,6 +119,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 	@Override
 	public long[] getRoleIds(long userId, long groupId) {
+		groupId = StagingUtil.getLiveGroupId(groupId);
+
 		try {
 			return _applyRoleContributors(
 				doGetRoleIds(userId, groupId), groupId);
@@ -191,6 +204,20 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		stopWatch.start();
 
+		if (_isStagingFolder(name, actionId)) {
+			return true;
+		}
+
+		Group liveGroup = StagingUtil.getLiveGroup(group);
+
+		if ((liveGroup != group) &&
+			primKey.equals(String.valueOf(group.getGroupId()))) {
+
+			primKey = String.valueOf(liveGroup.getGroupId());
+		}
+
+		group = liveGroup;
+
 		long groupId = 0;
 
 		try {
@@ -250,13 +277,6 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	}
 
 	@Override
-	public void init(User user, RoleContributor[] roleContributors) {
-		init(user);
-
-		_roleContributors = roleContributors;
-	}
-
-	@Override
 	public boolean isCompanyAdmin() {
 		try {
 			return isCompanyAdminImpl(user.getCompanyId());
@@ -283,7 +303,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	@Override
 	public boolean isContentReviewer(long companyId, long groupId) {
 		try {
-			return isContentReviewerImpl(companyId, groupId);
+			return isContentReviewerImpl(
+				companyId, StagingUtil.getLiveGroupId(groupId));
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -294,6 +315,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 	@Override
 	public boolean isGroupAdmin(long groupId) {
+		groupId = StagingUtil.getLiveGroupId(groupId);
+
 		try {
 			Group group = null;
 
@@ -313,7 +336,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	@Override
 	public boolean isGroupMember(long groupId) {
 		try {
-			return isGroupMemberImpl(groupId);
+			return isGroupMemberImpl(StagingUtil.getLiveGroupId(groupId));
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -325,7 +348,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	@Override
 	public boolean isGroupOwner(long groupId) {
 		try {
-			return isGroupOwnerImpl(groupId);
+			return isGroupOwnerImpl(StagingUtil.getLiveGroupId(groupId));
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -1146,7 +1169,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	}
 
 	private long[] _applyRoleContributors(long[] roleIds, long groupId) {
-		if (_roleContributors.length == 0) {
+		if (_roleContributors.size() == 0) {
 			return roleIds;
 		}
 
@@ -1162,9 +1185,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 						new RoleCollectionImpl(
 							user, getUserBag(), roleIds, groupId, this);
 
-					for (RoleContributor roleContributor : _roleContributors) {
-						roleContributor.contribute(roleCollectionImpl);
-					}
+					_roleContributors.forEach(
+						roleContributor -> roleContributor.contribute(
+							roleCollectionImpl));
 
 					return roleCollectionImpl.getRoleIds();
 				}
@@ -1400,10 +1423,23 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		return value;
 	}
 
+	private boolean _isStagingFolder(String name, String actionId) {
+		if (ExportImportThreadLocal.isStagingInProcessOnRemoteLive() &&
+			actionId.equals("VIEW") &&
+			(name.equals(Folder.class.getName()) ||
+			 name.equals(DLFolder.class.getName()) ||
+			 Objects.equals(name, "com.liferay.document.library"))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		AdvancedPermissionChecker.class);
 
 	private Map<Long, long[]> _contributedRoleIds;
-	private RoleContributor[] _roleContributors;
+	private final ServiceTrackerList<RoleContributor> _roleContributors;
 
 }

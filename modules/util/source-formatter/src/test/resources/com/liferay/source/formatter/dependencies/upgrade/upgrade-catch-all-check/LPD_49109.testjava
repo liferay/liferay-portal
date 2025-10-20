@@ -19,9 +19,18 @@ public class LPD_49109 {
 		Map<String, DDMFormValues> ddmFormValuesMap, File file,
 		InputStream inputStream, long size, ServiceContext serviceContext) {
 
-		DLFileEntryLocalServiceUtil.addFileEntry(123, groupId, repositoryId, folderId, sourceFileName, mimeType, title, description, changeLog, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, serviceContext);
-		DLFileEntryLocalServiceUtil.addFileEntry(userId, groupId, repositoryId, folderId, sourceFileName, mimeType, title, description, changeLog, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, serviceContext);
-		_dlFileEntryLocalService.addFileEntry(userId, groupId, repositoryId, folderId, sourceFileName, mimeType, title, description, changeLog, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, serviceContext);
+		DLFileEntryLocalServiceUtil.addFileEntry(
+			123, groupId, repositoryId, folderId, sourceFileName, mimeType,
+			title, description, changeLog, fileEntryTypeId, ddmFormValuesMap,
+			file, inputStream, size, serviceContext);
+		DLFileEntryLocalServiceUtil.addFileEntry(
+			userId, groupId, repositoryId, folderId, sourceFileName, mimeType,
+			title, description, changeLog, fileEntryTypeId, ddmFormValuesMap,
+			file, inputStream, size, serviceContext);
+		_dlFileEntryLocalService.addFileEntry(
+			userId, groupId, repositoryId, folderId, sourceFileName, mimeType,
+			title, description, changeLog, fileEntryTypeId, ddmFormValuesMap,
+			file, inputStream, size, serviceContext);
 	}
 
 	public void method(
@@ -31,9 +40,18 @@ public class LPD_49109 {
 		File file, InputStream inputStream, long size,
 		ServiceContext serviceContext) {
 
-		DLFileEntryServiceUtil.addFileEntry(123, repositoryId, folderId, sourceFileName, mimeType, title, description, changeLog, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, serviceContext);
-		DLFileEntryServiceUtil.addFileEntry(groupId, repositoryId, folderId, sourceFileName, mimeType, title, description, changeLog, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, serviceContext);
-		_dlFileEntryService.addFileEntry(groupId, repositoryId, folderId, sourceFileName, mimeType, title, description, changeLog, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, serviceContext);
+		DLFileEntryServiceUtil.addFileEntry(
+			123, repositoryId, folderId, sourceFileName, mimeType, title,
+			description, changeLog, fileEntryTypeId, ddmFormValuesMap, file,
+			inputStream, size, serviceContext);
+		DLFileEntryServiceUtil.addFileEntry(
+			groupId, repositoryId, folderId, sourceFileName, mimeType, title,
+			description, changeLog, fileEntryTypeId, ddmFormValuesMap, file,
+			inputStream, size, serviceContext);
+		_dlFileEntryService.addFileEntry(
+			groupId, repositoryId, folderId, sourceFileName, mimeType, title,
+			description, changeLog, fileEntryTypeId, ddmFormValuesMap, file,
+			inputStream, size, serviceContext);
 	}
 
 	@Reference

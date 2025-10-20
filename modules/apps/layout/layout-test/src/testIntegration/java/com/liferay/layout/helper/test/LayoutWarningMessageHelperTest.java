@@ -13,6 +13,7 @@ import com.liferay.info.pagination.InfoPage;
 import com.liferay.layout.helper.LayoutWarningMessageHelper;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.CollectionPaginationUtil;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
@@ -21,12 +22,15 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -68,7 +72,14 @@ public class LayoutWarningMessageHelperTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
 		_group = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_layout = layout.fetchDraftLayout();
 
 		_collectionStyledLayoutStructureItem =
 			_addCollectionStyledLayoutStructureItem(_group);
@@ -83,15 +94,12 @@ public class LayoutWarningMessageHelperTest {
 	}
 
 	private CollectionStyledLayoutStructureItem
-			_addCollectionStyledLayoutStructureItem(Group group)
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+		_addCollectionStyledLayoutStructureItem(Group group) {
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
 			_layoutPageTemplateStructureLocalService.
 				fetchLayoutPageTemplateStructure(
-					group.getGroupId(), layout.getPlid());
+					group.getGroupId(), _layout.getPlid());
 
 		LayoutStructure layoutStructure = LayoutStructure.of(
 			layoutPageTemplateStructure.getDefaultSegmentsExperienceData());
@@ -214,7 +222,8 @@ public class LayoutWarningMessageHelperTest {
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+			ContentLayoutTestUtil.getMockHttpServletRequest(
+				_company, _group, _layout);
 
 		mockHttpServletRequest.setParameter("p_l_mode", mode);
 
@@ -254,12 +263,18 @@ public class LayoutWarningMessageHelperTest {
 
 	private CollectionStyledLayoutStructureItem
 		_collectionStyledLayoutStructureItem;
+	private Company _company;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject
 	private Language _language;
+
+	private Layout _layout;
 
 	@Inject
 	private LayoutPageTemplateStructureLocalService

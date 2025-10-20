@@ -5,6 +5,8 @@
  */
 --%>
 
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
@@ -12,6 +14,7 @@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <%@ page import="com.liferay.expando.kernel.model.ExpandoColumn" %><%@
+page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.security.sso.openid.connect.web.internal.constants.OpenIdConnectWebKeys" %><%@
 page import="com.liferay.portal.security.sso.openid.connect.web.internal.display.context.OpenIdConnectProviderConfigurationDisplayContext" %>

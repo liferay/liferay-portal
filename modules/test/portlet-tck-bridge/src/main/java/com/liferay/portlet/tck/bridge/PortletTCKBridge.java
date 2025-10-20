@@ -6,6 +6,7 @@
 package com.liferay.portlet.tck.bridge;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.cookies.CookiesManager;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
@@ -124,9 +125,9 @@ public class PortletTCKBridge {
 			LocaleUtil.US, _TCK_SITE_GROUP_NAME);
 
 		Group group = _groupLocalService.addGroup(
-			userId, GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0L,
-			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, nameMap,
-			GroupConstants.TYPE_SITE_OPEN, false,
+			StringPool.BLANK, userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			null, 0L, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, nameMap,
+			GroupConstants.TYPE_SITE_OPEN, null, false,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, "/portlet-tck", true,
 			false, true, new ServiceContext());
 

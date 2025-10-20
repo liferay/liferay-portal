@@ -385,14 +385,14 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "BASIC_COMPONENT-image"
+								"key": "conditional-image-container",
+								"siteKey": "Customer Portal"
 							},
 							"fragmentConfig": {
-								"imageSize": "w-100"
 							},
 							"fragmentFields": [
 								{
-									"id": "image-square",
+									"id": "imageCondition",
 									"value": {
 										"fragmentImage": {
 											"url": {
@@ -409,12 +409,54 @@
 									}
 								}
 							],
-							"fragmentStyle": {
-								"marginBottom": "3"
-							},
 							"indexed": true
 						},
-						"id": "5054a7cc-5efc-9361-4509-82e3d5265963",
+						"id": "dc04b466-cefc-658e-4ca2-ac601ba9723f",
+						"pageElements": [
+							{
+								"definition": {
+								},
+								"id": "bf5bbf9b-da78-8f40-9fe8-0d7d0e6aa0d8",
+								"pageElements": [
+									{
+										"definition": {
+											"fragment": {
+												"key": "BASIC_COMPONENT-image"
+											},
+											"fragmentConfig": {
+												"imageSize": "w-100"
+											},
+											"fragmentFields": [
+												{
+													"id": "image-square",
+													"value": {
+														"fragmentImage": {
+															"url": {
+																"mapping": {
+																	"fieldKey": "JournalArticle_smallImage",
+																	"itemReference": {
+																		"contextSource": "DisplayPageItem"
+																	}
+																}
+															}
+														},
+														"fragmentLink": {
+														}
+													}
+												}
+											],
+											"fragmentStyle": {
+												"marginBottom": "3"
+											},
+											"indexed": true
+										},
+										"id": "5054a7cc-5efc-9361-4509-82e3d5265963",
+										"type": "Fragment"
+									}
+								],
+								"type": "FragmentDropZone"
+							}
+						],
 						"type": "Fragment"
 					},
 					{

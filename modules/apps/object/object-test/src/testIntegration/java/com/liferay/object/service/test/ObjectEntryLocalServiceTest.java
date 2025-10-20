@@ -2976,9 +2976,9 @@ public class ObjectEntryLocalServiceTest {
 			HashMapBuilder.<String, Serializable>put(
 				localizedObjectField.getI18nObjectFieldName(),
 				HashMapBuilder.put(
-					"en_US", RandomTestUtil.randomString()
+					"ar_SA", RandomTestUtil.randomString()
 				).put(
-					"pt_BR", RandomTestUtil.randomString()
+					"en_US", RandomTestUtil.randomString()
 				).build()
 			).put(
 				"date", tomorrowLocalDate.toString()
@@ -2997,9 +2997,9 @@ public class ObjectEntryLocalServiceTest {
 				HashMapBuilder.<String, Serializable>put(
 					localizedObjectField.getI18nObjectFieldName(),
 					HashMapBuilder.put(
-						"en_US", StringPool.BLANK
+						"ar_SA", StringPool.BLANK
 					).put(
-						"pt_BR", StringPool.BLANK
+						"en_US", StringPool.BLANK
 					).build()
 				).put(
 					"emailAddressRequired", RandomTestUtil.randomString()

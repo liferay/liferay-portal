@@ -438,12 +438,12 @@ public class AnalyticsSettingsManagerTest {
 
 	private Group _addCommerceChannelGroup() throws Exception {
 		return _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), 0,
+			StringPool.BLANK, TestPropsValues.getUserId(), 0,
 			"com.liferay.commerce.product.model.CommerceChannel",
 			RandomTestUtil.randomLong(), 0,
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
-			GroupConstants.TYPE_SITE_OPEN, false,
+			GroupConstants.TYPE_SITE_OPEN, null, false,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			"/" + RandomTestUtil.randomString(6), false, false, true,
 			ServiceContextTestUtil.getServiceContext());

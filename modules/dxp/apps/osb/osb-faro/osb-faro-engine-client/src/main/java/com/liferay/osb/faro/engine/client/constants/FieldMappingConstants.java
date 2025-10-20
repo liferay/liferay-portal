@@ -60,6 +60,12 @@ public class FieldMappingConstants {
 		return _defaultFieldMappingMaps;
 	}
 
+	public static String getDemographicsFieldMappingLanguageKey(
+		String fieldName) {
+
+		return _demographicsFieldMappingLanguageKeys.get(fieldName);
+	}
+
 	public static Map<String, String> getFieldTypes() {
 		return _fieldTypes;
 	}
@@ -117,6 +123,26 @@ public class FieldMappingConstants {
 			new FieldMappingMap(null, "image", TYPE_TEXT),
 			new FieldMappingMap(null, "jobTitle", TYPE_TEXT),
 			new FieldMappingMap(null, "worksFor", TYPE_TEXT));
+	private static final Map<String, String>
+		_demographicsFieldMappingLanguageKeys = HashMapBuilder.put(
+			"birthday", "field.birth-date"
+		).put(
+			"emailAddress", "field.email-address"
+		).put(
+			"firstName", "field.first-name"
+		).put(
+			"jobTitle", "field.job-title"
+		).put(
+			"languageId", "selected-language"
+		).put(
+			"lastName", "field.last-name"
+		).put(
+			"middleName", "middle-name"
+		).put(
+			"modifiedDate", "field.date-modified"
+		).put(
+			"screenName", "field.screen-name"
+		).build();
 	private static final Map<String, String> _fieldTypes = HashMapBuilder.put(
 		"boolean", TYPE_BOOLEAN
 	).put(

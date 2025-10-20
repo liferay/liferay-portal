@@ -248,8 +248,7 @@ module.exports = {
 				ready: 'READY'
 			},
 			segmentTypes: {
-				dynamic: 'DYNAMIC',
-				static: 'STATIC'
+				dynamic: 'BATCH'
 			},
 			subscriptionPlans: {
 				['Liferay Analytics Cloud Basic']: {

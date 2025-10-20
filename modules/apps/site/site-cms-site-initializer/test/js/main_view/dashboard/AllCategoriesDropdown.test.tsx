@@ -314,10 +314,6 @@ describe('[CMS Dashboard] Components: AllCategoriesDropdown', () => {
 		expect(onSelectItem).toHaveBeenCalledTimes(0);
 
 		await waitFor(() => {
-			expect(
-				screen.queryByText('filter-by-category')
-			).not.toBeInTheDocument();
-
 			expect(screen.getAllByRole('menuitem').length).toBe(2);
 
 			expect(
@@ -338,8 +334,6 @@ describe('[CMS Dashboard] Components: AllCategoriesDropdown', () => {
 		expect(onSelectItem).toHaveBeenCalledTimes(0);
 
 		expect(screen.getAllByRole('menuitem').length).toBe(2);
-
-		expect(screen.queryByText('filter-by-category')).toBeInTheDocument();
 
 		expect(
 			screen.getByRole('menuitem', {name: 'vocabulary 01'})

@@ -93,34 +93,15 @@ test(
 			{label: 'Numeric', value: '3'},
 		]);
 
-		// Check localization actions are not present by default
-
-		await localizationSelectPage.switchLanguage('es-ES');
-
-		await expect(page.getByLabel('Localization Actions')).not.toBeVisible();
-
 		// Save the content
 
 		await contentsPage.saveContent();
 
-		// Edit the experience for the structure and enable localization management
+		// Edit the experience for the structure and remove Friendly URL input
 
 		await structureBuilderPage.editStructure(structureERC);
 
 		await structureBuilderPage.customizeExperience();
-
-		const localizationSelectId = await pageEditorPage.getFragmentId(
-			'Localization Select'
-		);
-
-		await pageEditorPage.changeFragmentConfiguration({
-			fieldLabel: 'Allow Localization Management',
-			fragmentId: localizationSelectId,
-			tab: 'General',
-			value: true,
-		});
-
-		// Also remove Friendly URL input
 
 		await pageEditorPage.deleteFragment(
 			await pageEditorPage.getFragmentId('Friendly URL')

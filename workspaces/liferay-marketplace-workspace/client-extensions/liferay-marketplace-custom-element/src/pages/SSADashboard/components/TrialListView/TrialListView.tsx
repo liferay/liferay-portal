@@ -66,7 +66,16 @@ export default function TrialListView({
 	const {ssaAccount, ssaTrialExtend} = useSSADashboardOutlet();
 	const {myUserAccount} = useMarketplaceContext();
 
-	const author = myUserAccount?.name;
+	const {properties} = useMarketplaceContext();
+
+	const isFilterByAuthorIdEnabled =
+		properties.featureFlags.includes('LPD-63837');
+
+	const authorFilter = isFilterByAuthorIdEnabled ? 'authorId' : 'author';
+
+	const authorFilterValue = isFilterByAuthorIdEnabled
+		? myUserAccount?.id
+		: myUserAccount?.name;
 
 	const searchBuilder = useMemo(() => {
 		const searchBuilder = new SearchBuilder().eq(
@@ -75,11 +84,18 @@ export default function TrialListView({
 		);
 
 		if (authorOnlyTrials) {
-			searchBuilder.and().eq('author', author);
+			searchBuilder.and().eq(authorFilter, authorFilterValue, {
+				unquote: isFilterByAuthorIdEnabled,
+			});
 		}
 
 		return searchBuilder;
-	}, [author, authorOnlyTrials]);
+	}, [
+		authorFilter,
+		authorFilterValue,
+		authorOnlyTrials,
+		isFilterByAuthorIdEnabled,
+	]);
 
 	return (
 		<>

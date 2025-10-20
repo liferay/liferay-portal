@@ -95,11 +95,11 @@ public class OSGiCommandsCheck extends BaseCheck {
 
 		_checkClassName(detailAST, osgiCommandScopes.get(0));
 
-		List<DetailAST> methodDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
 			objBlockDetailAST, false, TokenTypes.METHOD_DEF);
 
-		methodDefinitionDetailASTList = ListUtil.filter(
-			methodDefinitionDetailASTList,
+		methodDefinitionDetailASTs = ListUtil.filter(
+			methodDefinitionDetailASTs,
 			methodDefinitionDetailAST -> {
 				DetailAST modifiersDetailAST =
 					methodDefinitionDetailAST.findFirstToken(
@@ -113,9 +113,9 @@ public class OSGiCommandsCheck extends BaseCheck {
 			annotationArrayInitDetailAST, "osgi.command.function");
 
 		_checkIncorrectPublicMethodName(
-			methodDefinitionDetailASTList, osgiCommandFunctions);
+			methodDefinitionDetailASTs, osgiCommandFunctions);
 		_checkMissingUnimplementedMethod(
-			detailAST, methodDefinitionDetailASTList, osgiCommandFunctions);
+			detailAST, methodDefinitionDetailASTs, osgiCommandFunctions);
 
 		if (importNames.contains(
 				"org.osgi.service.component.annotations.Reference")) {
@@ -135,12 +135,10 @@ public class OSGiCommandsCheck extends BaseCheck {
 	}
 
 	private void _checkIncorrectPublicMethodName(
-		List<DetailAST> methodDefinitionDetailASTList,
+		List<DetailAST> methodDefinitionDetailASTs,
 		List<String> osgiCommandFunctions) {
 
-		for (DetailAST methodDefinitionDetailAST :
-				methodDefinitionDetailASTList) {
-
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			String methodName = getName(methodDefinitionDetailAST);
 
 			if (osgiCommandFunctions.contains(methodName)) {
@@ -152,14 +150,12 @@ public class OSGiCommandsCheck extends BaseCheck {
 	}
 
 	private void _checkMissingUnimplementedMethod(
-		DetailAST detailAST, List<DetailAST> methodDefinitionDetailASTList,
+		DetailAST detailAST, List<DetailAST> methodDefinitionDetailASTs,
 		List<String> osgiCommandFunctions) {
 
 		List<String> methodNames = new ArrayList<>();
 
-		for (DetailAST methodDefinitionDetailAST :
-				methodDefinitionDetailASTList) {
-
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			String methodName = getName(methodDefinitionDetailAST);
 
 			if (methodNames.contains(methodName)) {
@@ -181,11 +177,11 @@ public class OSGiCommandsCheck extends BaseCheck {
 	}
 
 	private void _checkVariableDeclaration(DetailAST detailAST) {
-		List<DetailAST> variableDefinitionDetailASTList = getAllChildTokens(
+		List<DetailAST> variableDefinitionDetailASTs = getAllChildTokens(
 			detailAST, false, TokenTypes.VARIABLE_DEF);
 
 		for (DetailAST variableDefinitionDetailAST :
-				variableDefinitionDetailASTList) {
+				variableDefinitionDetailASTs) {
 
 			if (!AnnotationUtil.containsAnnotation(
 					variableDefinitionDetailAST, "Reference")) {

@@ -213,7 +213,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		return batchName;
 	}
 
-	public DownstreamBuildReport getCachedDownstreamBuildReport(
+	public List<DownstreamBuildReport> getCachedDownstreamBuildReports(
 		String axisName) {
 
 		if (!isBuildCachingEnabled() ||
@@ -222,7 +222,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return null;
 		}
 
-		if (!_cachedReportsInitialized) {
+		if (!_cachedReportsInitialized.get()) {
 			_initializeCachedReports();
 		}
 
@@ -240,7 +240,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return null;
 		}
 
-		if (!_cachedReportsInitialized) {
+		if (!_cachedReportsInitialized.get()) {
 			_initializeCachedReports();
 		}
 
@@ -254,8 +254,8 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 	public List<TestClassReport> getCachedTestClassReportByPrefix(
 		String testClassName) {
 
-		TreeMap<String, TestClassReport> testClassReportsMap =
-			(TreeMap)_cachedTestClassReportsMap;
+		SortedMap<String, TestClassReport> testClassReportsMap =
+			(SortedMap)_cachedTestClassReportsMap;
 
 		SortedMap<String, TestClassReport> prefixedTestClassReportsMap =
 			testClassReportsMap.subMap(
@@ -271,7 +271,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			return null;
 		}
 
-		if (!_cachedReportsInitialized) {
+		if (!_cachedReportsInitialized.get()) {
 			_initializeCachedReports();
 		}
 
@@ -1444,8 +1444,8 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		return _testTaskHistories.get(testName);
 	}
 
-	private void _initializeCachedReports() {
-		if (_cachedReportsInitialized) {
+	private synchronized void _initializeCachedReports() {
+		if (_cachedReportsInitialized.get()) {
 			return;
 		}
 
@@ -1456,7 +1456,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		List<Workspace> workspaces = buildDatabase.getWorkspaces();
 
 		if (workspaces.isEmpty()) {
-			_cachedReportsInitialized = true;
+			_cachedReportsInitialized.set(true);
 
 			return;
 		}
@@ -1476,7 +1476,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			"cached-build-report-files/" + path);
 
 		if (!baseDir.exists()) {
-			_cachedReportsInitialized = true;
+			_cachedReportsInitialized.set(true);
 
 			return;
 		}
@@ -1484,7 +1484,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		File[] buildReportFiles = baseDir.listFiles();
 
 		if (buildReportFiles == null) {
-			_cachedReportsInitialized = true;
+			_cachedReportsInitialized.set(true);
 
 			return;
 		}
@@ -1511,8 +1511,12 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 						getBatchName(), new JSONObject(buildReportFileContent),
 						null);
 
-				_cachedDownstreamBuildReportsMap.put(
-					downstreamBuildReport.getAxisName(), downstreamBuildReport);
+				List<DownstreamBuildReport> cachedDownstreamBuildReports =
+					_cachedDownstreamBuildReportsMap.computeIfAbsent(
+						downstreamBuildReport.getAxisName(),
+						k -> new ArrayList<>());
+
+				cachedDownstreamBuildReports.add(downstreamBuildReport);
 
 				for (TestReport testReport :
 						downstreamBuildReport.getTestReports()) {
@@ -1546,7 +1550,7 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			}
 		}
 
-		_cachedReportsInitialized = true;
+		_cachedReportsInitialized.set(true);
 	}
 
 	private boolean _isIgnoreTargetAxisDuration() {
@@ -1749,9 +1753,9 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 	private final Map<String, Long> _averageTestOverheadDurations =
 		new HashMap<>();
 	private BatchHistory _batchHistory;
-	private final Map<String, DownstreamBuildReport>
+	private final Map<String, List<DownstreamBuildReport>>
 		_cachedDownstreamBuildReportsMap = new TreeMap<>();
-	private boolean _cachedReportsInitialized;
+	private final AtomicBoolean _cachedReportsInitialized = new AtomicBoolean();
 	private final Map<String, TestClassReport> _cachedTestClassReportsMap =
 		new TreeMap<>();
 	private final Map<String, TestReport> _cachedTestReportsMap =

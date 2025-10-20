@@ -8,24 +8,22 @@ import {Liferay} from '~/services/liferay';
 
 interface IParams {
 	comment: string;
+	fileMd5: string;
 	ticketAttachmentId: string;
 }
 
 interface IProps {
 	completeUpload: (params: IParams) => Promise<void>;
-	error: Error | null;
 	loading: boolean;
 }
 
 const useTicketAttachmentsCompleteUpload = (): IProps => {
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<Error | null>(null);
 
 	const completeUpload = useCallback(async (params: IParams) => {
 		setLoading(true);
-		setError(null);
 
-		const {comment, ticketAttachmentId} = params;
+		const {comment, fileMd5, ticketAttachmentId} = params;
 
 		try {
 			const response: Response =
@@ -47,22 +45,19 @@ const useTicketAttachmentsCompleteUpload = (): IProps => {
 				);
 			}
 
-			sessionStorage.removeItem('gcsSessionURL');
+			sessionStorage.removeItem(`gcsSessionURL:${fileMd5}`);
 		}
 		catch (uploadError) {
 			console.error('Complete upload error:', uploadError);
-			setError(
-				uploadError instanceof Error
-					? uploadError
-					: new Error(String(uploadError))
-			);
+
+			throw uploadError;
 		}
 		finally {
 			setLoading(false);
 		}
 	}, []);
 
-	return {completeUpload, error, loading};
+	return {completeUpload, loading};
 };
 
 export default useTicketAttachmentsCompleteUpload;

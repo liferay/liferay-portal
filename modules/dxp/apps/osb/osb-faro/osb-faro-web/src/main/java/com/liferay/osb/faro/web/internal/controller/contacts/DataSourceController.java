@@ -195,45 +195,6 @@ public class DataSourceController extends BaseFaroController {
 		).build();
 	}
 
-	@Path("/csv")
-	@POST
-	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
-	public DataSourceDisplay createTypeCSV(
-			@PathParam("groupId") long groupId,
-			@FormParam("channelId") String channelId,
-			@FormParam("name") String name,
-			@FormParam("fileVersionId") long fileVersionId,
-			@FormParam("staticIndividualSegmentId") String
-				staticIndividualSegmentId,
-			@FormParam("event") Event event,
-			@DefaultValue(StringPool.BLANK) @FormParam("fieldMappingMaps")
-				FaroParam<List<FieldMappingMap>> fieldMappingMapsFaroParam)
-		throws Exception {
-
-		DataSourceDisplay dataSourceDisplay = create(
-			groupId, null, new CSVProvider(), name, null, event,
-			DataSource.Status.ACTIVE.name());
-
-		createFieldMappings(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			dataSourceDisplay.getId(),
-			FieldMappingConstants.CONTEXT_DEMOGRAPHICS,
-			FieldMappingConstants.OWNER_TYPE_INDIVIDUAL,
-			fieldMappingMapsFaroParam.getValue());
-
-		List<String> individualSegmentIds = new ArrayList<>();
-
-		if (Validator.isNotNull(staticIndividualSegmentId)) {
-			individualSegmentIds.add(staticIndividualSegmentId);
-		}
-
-		addCSVIndividuals(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId), channelId,
-			dataSourceDisplay.getId(), fileVersionId, individualSegmentIds);
-
-		return dataSourceDisplay;
-	}
-
 	@Path("/liferay")
 	@POST
 	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
@@ -1248,29 +1209,6 @@ public class DataSourceController extends BaseFaroController {
 			id, groupId, getUserId(), fileName, file);
 	}
 
-	protected void addCSVIndividuals(
-			FaroProject faroProject, String channelId, String dataSourceId,
-			long fileVersionId, List<String> individualSegmentIds)
-		throws Exception {
-
-		IndividualSegment individualSegment =
-			contactsEngineClient.addIndividualSegment(
-				faroProject, getUserId(), channelId, null, false,
-				String.valueOf(fileVersionId),
-				IndividualSegment.Type.STATIC.name(),
-				IndividualSegment.Status.INACTIVE.name());
-
-		individualSegmentIds.add(individualSegment.getId());
-
-		contactsEngineClient.addCSVIndividuals(
-			faroProject,
-			_contactsCSVHelper.getIndividualFieldsMaps(fileVersionId),
-			dataSourceId, individualSegmentIds);
-
-		_contactsCSVHelper.updateFileEntry(
-			getUserId(), fileVersionId, dataSourceId);
-	}
-
 	protected DataSourceDisplay create(
 			long groupId, Credentials credentials, Provider provider,
 			String name, String url, Event event, String status)
@@ -1435,21 +1373,6 @@ public class DataSourceController extends BaseFaroController {
 			dataSource = contactsEngineClient.updateDataSource(
 				faroProject, id, credentials, getUserId(), name, url, provider,
 				event, status);
-		}
-
-		if (fileVersionId > 0) {
-			Results<IndividualSegment> results =
-				contactsEngineClient.getIndividualSegments(
-					faroProject, null, null, null, null,
-					String.valueOf(fileVersionId),
-					IndividualSegment.Type.STATIC.name(), null,
-					IndividualSegment.Status.INACTIVE.name(), 1, 1, null);
-
-			if (results.getTotal() == 0) {
-				addCSVIndividuals(
-					faroProject, null, id, fileVersionId,
-					Collections.emptyList());
-			}
 		}
 
 		return new DataSourceDisplay(groupId, dataSource);

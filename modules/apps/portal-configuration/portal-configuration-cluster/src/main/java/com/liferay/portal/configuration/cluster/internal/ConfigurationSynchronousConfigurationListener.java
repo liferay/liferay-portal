@@ -40,9 +40,7 @@ public class ConfigurationSynchronousConfigurationListener
 	public void configurationEvent(ConfigurationEvent configurationEvent) {
 		try {
 			if (ConfigurationThreadLocal.isLocalUpdate() ||
-				InMemoryOnlyConfigurationThreadLocal.isInMemoryOnly() ||
-				_reloadablePersistenceManager.isEphemeral(
-					configurationEvent.getPid())) {
+				InMemoryOnlyConfigurationThreadLocal.isInMemoryOnly()) {
 
 				return;
 			}

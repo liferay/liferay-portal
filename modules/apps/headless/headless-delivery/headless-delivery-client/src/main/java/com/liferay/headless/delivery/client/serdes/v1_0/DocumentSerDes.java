@@ -385,6 +385,26 @@ public class DocumentSerDes {
 			sb.append(document.getNumberOfComments());
 		}
 
+		if (document.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < document.getPermissions().length; i++) {
+				sb.append(document.getPermissions()[i]);
+
+				if ((i + 1) < document.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (document.getRelatedContents() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -731,6 +751,13 @@ public class DocumentSerDes {
 				String.valueOf(document.getNumberOfComments()));
 		}
 
+		if (document.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put("permissions", String.valueOf(document.getPermissions()));
+		}
+
 		if (document.getRelatedContents() == null) {
 			map.put("relatedContents", null);
 		}
@@ -887,6 +914,9 @@ public class DocumentSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "numberOfComments")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "relatedContents")) {
@@ -1089,6 +1119,26 @@ public class DocumentSerDes {
 				if (jsonParserFieldValue != null) {
 					document.setNumberOfComments(
 						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.delivery.client.permission.Permission[]
+						permissionsArray = new
+						com.liferay.headless.delivery.client.permission.
+							Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.delivery.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					document.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "relatedContents")) {

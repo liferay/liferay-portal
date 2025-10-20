@@ -17,8 +17,10 @@ public class LPS_196627 {
 		long commercePriceListId, BigDecimal price, BigDecimal promoPrice,
 		ServiceContext serviceContext) {
 
+		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
+			"test123", cProductId, cpInstanceUuid, commercePriceListId, price,
+			promoPrice, serviceContext);
 		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(externalReferenceCode, cProductId, cpInstanceUuid, commercePriceListId, price, false, promoPrice, null, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry("test123", cProductId, cpInstanceUuid, commercePriceListId, price, promoPrice, serviceContext);
 		_commercePriceEntryLocalService.addCommercePriceEntry(externalReferenceCode, cProductId, cpInstanceUuid, commercePriceListId, price, false, promoPrice, null, serviceContext);
 	}
 

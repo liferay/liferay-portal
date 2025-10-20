@@ -96,7 +96,7 @@ public class ObjectEntryInfoItemPermissionProvider
 				hasPermission(
 					permissionChecker,
 					ObjectEntryUtil.toObjectEntry(
-						_objectDefinition.getObjectDefinitionId(), objectEntry),
+						_objectDefinition, objectEntry),
 					actionId);
 			}
 		}

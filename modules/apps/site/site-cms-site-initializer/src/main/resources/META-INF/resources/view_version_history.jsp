@@ -28,6 +28,9 @@ ViewVersionHistoryDisplayContext viewVersionHistoryDisplayContext = (ViewVersion
 		id="<%= CMSSiteInitializerFDSNames.VIEW_HISTORY %>"
 		itemsPerPage="<%= 20 %>"
 		propsTransformer="{ViewVersionHistoryFDSPropsTransformer} from site-cms-site-initializer"
+		selectedItemsKey="systemProperties.version.number"
+		selectionType="multiple"
+		showSelectAll="<%= true %>"
 		style="fluid"
 	/>
 </div>

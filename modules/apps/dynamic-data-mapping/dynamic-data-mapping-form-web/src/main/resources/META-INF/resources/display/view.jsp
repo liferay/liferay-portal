@@ -198,6 +198,15 @@ boolean limitToOneSubmissionPerUser = DDMFormInstanceSubmissionLimitStatusUtil.i
 							<liferay-ui:message arguments="<%= new String[] {String.valueOf(etml.getMaxLength()), etml.getObjectFieldName()} %>" key="the-entry-value-exceeds-the-maximum-length-of-x-characters-for-object-field-x" translateArguments="<%= false %>" />
 						</liferay-ui:error>
 
+						<liferay-ui:error exception="<%= ObjectValidationRuleEngineException.class %>">
+
+							<%
+							ObjectValidationRuleEngineException objectValidationRuleEngineException = (ObjectValidationRuleEngineException)errorException;
+							%>
+
+							<liferay-ui:message key="<%= objectValidationRuleEngineException.getMessage() %>" />
+						</liferay-ui:error>
+
 						<liferay-ui:error exception="<%= StorageException.class %>" message="there-was-an-error-when-accessing-the-data-storage" />
 
 						<liferay-ui:error-principal />

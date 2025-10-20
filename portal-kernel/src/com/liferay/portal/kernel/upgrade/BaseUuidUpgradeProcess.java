@@ -7,8 +7,10 @@ package com.liferay.portal.kernel.upgrade;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 /**
@@ -19,21 +21,40 @@ public abstract class BaseUuidUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		for (String[] tableAndPrimaryKeyColumnName :
-				getTableAndPrimaryKeyColumnNames()) {
+		String[] tableNames = getTableNames();
 
-			String tableName = tableAndPrimaryKeyColumnName[0];
-			String primKeyColumnName = tableAndPrimaryKeyColumnName[1];
-
-			upgradeUuid(tableName, primKeyColumnName);
+		for (String tableName : tableNames) {
+			upgradeUuid(tableName);
 		}
 	}
 
-	protected abstract String[][] getTableAndPrimaryKeyColumnNames();
-
-	protected void upgradeUuid(String tableName, String primKeyColumnName)
+	protected String getPrimaryKeyColumnName(String tableName)
 		throws Exception {
 
+		String[] primaryKeyColumnNames = getPrimaryKeyColumnNames(
+			connection, tableName);
+
+		if (primaryKeyColumnNames.length == 0) {
+			throw new Exception("Table " + tableName + " has no primary key");
+		}
+
+		if (primaryKeyColumnNames.length > 1) {
+			primaryKeyColumnNames = ArrayUtil.filter(
+				primaryKeyColumnNames,
+				name -> !StringUtil.equalsIgnoreCase(name, "ctCollectionId"));
+		}
+
+		if (primaryKeyColumnNames.length > 1) {
+			throw new Exception(
+				"Table " + tableName + " has too many primary key columns");
+		}
+
+		return primaryKeyColumnNames[0];
+	}
+
+	protected abstract String[] getTableNames();
+
+	protected void upgradeUuid(String tableName) throws Exception {
 		if (!hasTable(tableName)) {
 			_log.error("Skip nonexistent table " + tableName);
 
@@ -48,16 +69,18 @@ public abstract class BaseUuidUpgradeProcess extends UpgradeProcess {
 			alterTableAddColumn(tableName, "uuid_", "VARCHAR(75) null");
 		}
 
+		String primaryKeyColumnName = getPrimaryKeyColumnName(tableName);
+
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			processConcurrently(
 				StringBundler.concat(
-					"select ", primKeyColumnName, " from ", tableName,
-					" where uuid_ is null or uuid_ = ''"),
+					"select distinct ", primaryKeyColumnName, " from ",
+					tableName, " where uuid_ is null or uuid_ = ''"),
 				StringBundler.concat(
 					"update ", tableName, " set uuid_ = ? where ",
-					primKeyColumnName, " = ?"),
+					primaryKeyColumnName, " = ?"),
 				resultSet -> new Object[] {
-					resultSet.getLong(primKeyColumnName)
+					resultSet.getLong(primaryKeyColumnName)
 				},
 				(values, preparedStatement) -> {
 					preparedStatement.setString(1, PortalUUIDUtil.generate());

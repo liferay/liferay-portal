@@ -52,10 +52,8 @@ public class CommerceCurrencyServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CommerceCurrency", "commerceCurrencyId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CommerceCurrency"};
 				}
 
 			});

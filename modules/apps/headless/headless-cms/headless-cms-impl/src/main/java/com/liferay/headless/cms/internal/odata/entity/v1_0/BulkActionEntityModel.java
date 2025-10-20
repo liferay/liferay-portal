@@ -17,10 +17,18 @@ import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Luca Pellizzon
  */
+@Component(
+	property = "entity.model.name=" + BulkActionEntityModel.NAME,
+	service = EntityModel.class
+)
 public class BulkActionEntityModel implements EntityModel {
+
+	public static final String NAME = "BulkAction";
 
 	public BulkActionEntityModel() {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(

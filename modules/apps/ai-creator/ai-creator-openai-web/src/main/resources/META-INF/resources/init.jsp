@@ -23,8 +23,7 @@ page import="com.liferay.ai.creator.openai.web.internal.display.context.AICreato
 page import="com.liferay.ai.creator.openai.web.internal.exception.AICreatorOpenAIClientException" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.MultiSessionErrors" %><%@
-page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
-page import="com.liferay.portal.kernel.util.PortalUtil" %>
+page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
 <liferay-frontend:defineObjects />
 

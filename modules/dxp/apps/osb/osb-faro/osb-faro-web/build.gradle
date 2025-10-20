@@ -55,6 +55,7 @@ dependencies {
 	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-contacts-api")
 	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-engine-client")
 	compileOnly project(":dxp:apps:osb:osb-faro:osb-faro-provisioning-client")
+	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
 }
 
 generateJSPJava {

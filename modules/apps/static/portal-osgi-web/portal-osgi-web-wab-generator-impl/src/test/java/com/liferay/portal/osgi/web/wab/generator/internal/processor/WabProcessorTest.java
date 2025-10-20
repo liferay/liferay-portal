@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
-import com.liferay.portal.kernel.zip.ZipFileUtil;
 import com.liferay.portal.security.xml.SecureXMLFactoryProviderImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
@@ -373,39 +372,6 @@ public class WabProcessorTest {
 
 				Assert.assertFalse(filter.matchMap(arguments));
 			}
-		}
-	}
-
-	@Test
-	public void testLiferayConfigurationPolicyBundleHeaderExists()
-		throws Exception {
-
-		File file = ZipFileUtil.toZipFile(
-			WabProcessorTest.class, "dependencies/cx.zip/");
-
-		WabProcessor wabProcessor = new TestWabProcessor(
-			file,
-			HashMapBuilder.put(
-				Constants.BUNDLE_SYMBOLICNAME, new String[] {"cx"}
-			).put(
-				Constants.BUNDLE_VERSION, new String[] {"7.4.13"}
-			).put(
-				"fileExtension", new String[] {"zip"}
-			).put(
-				"Web-ContextPath", new String[] {"/cx"}
-			).build());
-
-		File processedFile = wabProcessor.getProcessedFile();
-
-		Assert.assertNotNull(processedFile);
-
-		try (Jar jar = new Jar(processedFile)) {
-			Manifest manifest = jar.getManifest();
-
-			Attributes attributes = manifest.getMainAttributes();
-
-			Assert.assertEquals(
-				"always", attributes.getValue("Liferay-Configurator-Policy"));
 		}
 	}
 

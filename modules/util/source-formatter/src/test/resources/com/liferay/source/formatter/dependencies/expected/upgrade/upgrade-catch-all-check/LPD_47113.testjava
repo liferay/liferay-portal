@@ -1,24 +1,26 @@
 /**
-* SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
-* SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
-*/
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
 import org.osgi.service.component.annotations.Reference;
 
 /**
-* @author Mateus Xavier
-*/
+ * @author Mateus Xavier
+ */
 public class LPD_47113 {
 
 	public void method(
 		long userId, long groupId, String name, int type, boolean auto,
 		ServiceContext serviceContext) {
 
-		SiteNavigationMenuLocalServiceUtil.addSiteNavigationMenu(123, groupId, name, type, auto, serviceContext);
+		SiteNavigationMenuLocalServiceUtil.addSiteNavigationMenu(
+			123, groupId, name, type, auto, serviceContext);
 		SiteNavigationMenuLocalServiceUtil.addSiteNavigationMenu(null, userId, groupId, name, type, auto, serviceContext);
-		SiteNavigationMenuServiceUtil.addSiteNavigationMenu(123, name, type, auto, serviceContext);
+		SiteNavigationMenuServiceUtil.addSiteNavigationMenu(
+			123, name, type, auto, serviceContext);
 		SiteNavigationMenuServiceUtil.addSiteNavigationMenu(null, groupId, name, type, auto, serviceContext);
 		_siteNavigationMenuLocalService.addSiteNavigationMenu(null, userId, groupId, name, type, auto, serviceContext);
 		_siteNavigationMenuService.addSiteNavigationMenu(null, groupId, name, type, auto, serviceContext);

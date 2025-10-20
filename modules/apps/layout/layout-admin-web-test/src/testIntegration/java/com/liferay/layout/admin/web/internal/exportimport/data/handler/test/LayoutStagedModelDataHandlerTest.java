@@ -27,7 +27,6 @@ import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
@@ -42,7 +41,6 @@ import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManagerUti
 import com.liferay.exportimport.kernel.lifecycle.constants.ExportImportLifecycleConstants;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
-import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportServiceUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
@@ -97,7 +95,6 @@ import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -113,7 +110,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -1250,9 +1246,9 @@ public class LayoutStagedModelDataHandlerTest
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(stagingGroup);
 
-		layout = _layoutLocalService.updateStyleBookEntryId(
+		layout = _layoutLocalService.updateStyleBookEntryERC(
 			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			styleBookEntry.getStyleBookEntryId());
+			styleBookEntry.getExternalReferenceCode());
 
 		StagedModelDataHandlerUtil.exportStagedModel(
 			portletDataContext, layout);
@@ -1283,11 +1279,14 @@ public class LayoutStagedModelDataHandlerTest
 		Layout importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
 			layout.getUuid(), liveGroup.getGroupId(), layout.isPrivateLayout());
 
-		Assert.assertNotEquals(
-			layout.getStyleBookEntryId(), importedLayout.getStyleBookEntryId());
+		Assert.assertEquals(
+			layout.getStyleBookEntryERC(),
+			importedLayout.getStyleBookEntryERC());
 		Assert.assertNotNull(
-			_styleBookEntryLocalService.fetchStyleBookEntry(
-				importedLayout.getStyleBookEntryId()));
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					importedLayout.getStyleBookEntryERC(),
+					importedLayout.getGroupId()));
 	}
 
 	@Test
@@ -2582,16 +2581,10 @@ public class LayoutStagedModelDataHandlerTest
 	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
-	private DLAppService _dlAppService;
-
-	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 	@Inject
 	private DLURLHelper _dlURLHelper;
-
-	@Inject
-	private ExportImportLocalService _exportImportLocalService;
 
 	@Inject
 	private FragmentCollectionContributorRegistry
@@ -2613,16 +2606,10 @@ public class LayoutStagedModelDataHandlerTest
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Inject
-	private GroupLocalService _groupLocalService;
-
-	@Inject
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
-
-	@Inject
-	private JSONFactory _jsonFactory;
 
 	@Inject
 	private LayoutFriendlyURLLocalService _layoutFriendlyURLLocalService;

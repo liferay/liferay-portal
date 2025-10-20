@@ -2,7 +2,6 @@
 
 Check | Category | File Extensions | Description
 ----- | -------- | --------------- | -----------
-AccessModifierCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks for cases where visibility of methods can be decreased. |
 [AnnotationUseStyleCheck](https://checkstyle.sourceforge.io/checks/annotation/annotationusestyle.html) | [Styling](styling_checks.md#styling-checks) | .java | Checks the style of elements in annotations. |
 [AnonymousClassCheck](check/anonymous_class_check.md#anonymousclasscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks for serialization issue when using anonymous class. |
 AppendCheck | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks instances where literal Strings are appended. |
@@ -469,9 +468,11 @@ RedundantBranchingStatementCheck | [Performance](performance_checks.md#performan
 ReferenceAnnotationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on classes with @Reference annotation. |
 [RequireThisCheck](https://checkstyle.sourceforge.io/checks/coding/requirethis.html) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that references to instance variables and methods of the present object are explicitly of the form 'this.varName' or 'this.methodName(args)' and that those references don't rely on the default behavior when 'this.' is absent. |
 [ResourceBundleCheck](check/resource_bundle_check.md#resourcebundlecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `java.util.ResourceBundle.getBundle`. |
-ResourceImplCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on `*ResourceImpl` classes (except `Base*ResourceImpl` classes). |
+ResourceImplCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on `*ResourceImpl` classes. |
 ResourcePermissionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on `*ResourcePermission` classes. |
 [ResourcePermissionFactoryCheck](check/resource_permission_factory_check.md#resourcepermissionfactorycheck) | [Performance](performance_checks.md#performance-checks) | .java | Checks usage of `*ResourcePermissionFactory` classes. |
+ResourceTestInjectionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that if any `*ResourceTest` class injects another resource that is not a `client`. |
+ResultSetGetCallCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds incorrect use of `ResultSet.get*` calls. |
 ReturnVariableDeclarationAsUsedCheck | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | .java | Finds cases where a variable declaration should be moved. |
 SQLEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | .sql | Finds missing and unnecessary empty lines. |
 [SQLLongNamesCheck](check/sql_long_names_check.md#sqllongnamescheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .sql | Checks for table and column names that exceed 30 characters. |
@@ -480,6 +481,7 @@ SealedAndNonsealedModifierCheck | [Performance](performance_checks.md#performanc
 SelfReferenceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds cases of unnecessary reference to its own class. |
 SemiColonCheck | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases of unnecessary semicolon. |
 [ServiceComponentRuntimeCheck](check/service_component_runtime_check.md#servicecomponentruntimecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks `ServiceComponentRuntime` usage in test classes. |
+ServiceImplAccessModifierCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks for cases where visibility of methods can be decreased. |
 [ServiceProxyFactoryCheck](check/service_proxy_factory_check.md#serviceproxyfactorycheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds incorrect parameter in method call. |
 ServiceUpdateCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that there are no stale references in service code from service updates. |
 SessionKeysCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java | Checks that messages send to `SessionsErrors` or `SessionMessages` follow naming conventions. |
@@ -584,7 +586,7 @@ VariableDeclarationAsUsedCheck | [Performance](performance_checks.md#performance
 VariableNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that variable names follow naming conventions. |
 [WhitespaceAfterCheck](https://checkstyle.sourceforge.io/checks/whitespace/whitespaceafter.html) | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that a token is followed by whitespace, with the exception that it does not check for whitespace after the semicolon of an empty for iterator. |
 [WhitespaceAroundCheck](https://checkstyle.sourceforge.io/checks/whitespace/whitespacearound.html) | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that a token is surrounded by whitespace. |
-WhitespaceCheck | [Styling](styling_checks.md#styling-checks) | .cql, .css, .dtd, .expect, .gradle, .groovy, .scss, .sh, .soy, .sql, .tld, .ts, .tsx, Dockerfile, or packageinfo | Finds missing and unnecessary whitespace. |
+WhitespaceCheck | [Styling](styling_checks.md#styling-checks) | .cql, .css, .dtd, .expect, .gradle, .groovy, .scss, .sh, .soy, .sql, .tld, .tpl, .ts, .tsx, Dockerfile, or packageinfo | Finds missing and unnecessary whitespace. |
 XMLBuildFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd | Performs several checks on `build.xml`. |
 XMLCDATACheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd | Performs several checks on `CDATA` inside `xml`. |
 XMLCheckstyleFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd | Performs several checks on `checkstyle.xml` file. |

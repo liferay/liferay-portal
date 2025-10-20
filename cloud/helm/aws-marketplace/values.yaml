@@ -3,5 +3,5 @@ liferay-aws:
         customLabels:
             origin: liferay-aws-marketplace
         image:
-            repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/liferay/containers
-            tag: 0.0.0
+            repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/liferay/dxp
+            tag: 2025.q1.17-lts-slim

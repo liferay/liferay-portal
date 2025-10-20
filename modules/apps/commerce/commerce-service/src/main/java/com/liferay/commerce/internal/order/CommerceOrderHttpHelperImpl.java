@@ -489,10 +489,16 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
+		if (GetterUtil.getBoolean(_initialized.get())) {
+			return _commerceOrder.get();
+		}
+
 		CommerceContext commerceContext = _getCommerceContext(
 			httpServletRequest);
 
 		if (commerceContext == null) {
+			_setCurrentCommerceOrder(null);
+
 			return null;
 		}
 
@@ -505,12 +511,16 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			CommerceCheckoutWebKeys.COMMERCE_ORDER_ON_ACCOUNT_SELECTION);
 
 		if (commerceOrder != null) {
+			_setCurrentCommerceOrder(commerceOrder);
+
 			return commerceOrder;
 		}
 
 		AccountEntry accountEntry = commerceContext.getAccountEntry();
 
 		if (accountEntry == null) {
+			_setCurrentCommerceOrder(null);
+
 			return null;
 		}
 
@@ -565,6 +575,8 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 						CommerceOrder.class.getName() + StringPool.POUND +
 							commerceOrder.getGroupId());
 
+					_setCurrentCommerceOrder(null);
+
 					return null;
 				}
 			}
@@ -576,8 +588,12 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 				 PermissionThreadLocal.getPermissionChecker(), commerceOrder,
 				 ActionKeys.UPDATE))) {
 
+			_setCurrentCommerceOrder(null);
+
 			return null;
 		}
+
+		_setCurrentCommerceOrder(commerceOrder);
 
 		return commerceOrder;
 	}
@@ -753,6 +769,8 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		if ((themeDisplay != null) && !themeDisplay.isSignedIn()) {
 			_setGuestCommerceOrder(commerceOrder, themeDisplay);
 
+			_setCurrentCommerceOrder(commerceOrder);
+
 			return;
 		}
 
@@ -766,6 +784,8 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 
 		httpSession.setAttribute(
 			getCookieName(commerceOrder.getGroupId()), commerceOrder.getUuid());
+
+		_setCurrentCommerceOrder(commerceOrder);
 	}
 
 	@Reference
@@ -818,7 +838,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 
 			httpSession.removeAttribute(cookieName);
 
-			_commerceOrder.remove();
+			_unsetCurrentCommerceOrder();
 		}
 
 		CommerceOrder userCommerceOrder =
@@ -848,7 +868,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			httpServletRequest);
 
-		_commerceOrder.set(userCommerceOrder);
+		_setCurrentCommerceOrder(userCommerceOrder);
 
 		try {
 			httpSession.setAttribute(cookieName, userCommerceOrder.getUuid());
@@ -859,7 +879,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 				_getCommerceContext(httpServletRequest), serviceContext);
 		}
 		finally {
-			_commerceOrder.remove();
+			_unsetCurrentCommerceOrder();
 		}
 
 		httpSession.removeAttribute(cookieName);
@@ -923,7 +943,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			if (persistedCommerceOrder != null) {
 				commerceOrder = persistedCommerceOrder;
 
-				_commerceOrder.set(persistedCommerceOrder);
+				_setCurrentCommerceOrder(commerceOrder);
 			}
 
 			if ((accountEntry == null) ||
@@ -965,7 +985,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 				_validateCommerceOrderItemVersions(
 					commerceOrder, _portal.getLocale(httpServletRequest));
 
-				_commerceOrder.set(commerceOrder);
+				_setCurrentCommerceOrder(commerceOrder);
 
 				return commerceOrder;
 			}
@@ -977,7 +997,7 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 					commerceOrderUuid, commerceChannel.getGroupId());
 
 			if (commerceOrder != null) {
-				_commerceOrder.set(commerceOrder);
+				_setCurrentCommerceOrder(commerceOrder);
 			}
 		}
 
@@ -1041,6 +1061,11 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		return portletURL;
 	}
 
+	private void _setCurrentCommerceOrder(CommerceOrder commerceOrder) {
+		_commerceOrder.set(commerceOrder);
+		_initialized.set(Boolean.TRUE);
+	}
+
 	private void _setGuestCommerceOrder(
 			CommerceOrder commerceOrder, ThemeDisplay themeDisplay)
 		throws PortalException {
@@ -1071,6 +1096,11 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			themeDisplay.getRequest(), themeDisplay.getResponse());
 	}
 
+	private void _unsetCurrentCommerceOrder() {
+		_commerceOrder.remove();
+		_initialized.set(Boolean.FALSE);
+	}
+
 	private void _validateCommerceOrderItemVersions(
 			CommerceOrder commerceOrder, Locale locale)
 		throws PortalException {
@@ -1096,11 +1126,15 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 
 	private static final ThreadLocal<CommerceOrder> _commerceOrder =
 		new CentralizedThreadLocal<>(
-			CommerceOrderHttpHelperImpl.class.getName());
+			CommerceOrderHttpHelperImpl.class.getName() + "._commerceOrder");
 	private static final Snapshot<FriendlyURLSeparatorProvider>
 		_friendlyURLSeparatorProviderSnapshot = new Snapshot<>(
 			CommerceOrderHttpHelperImpl.class,
 			FriendlyURLSeparatorProvider.class);
+	private static final ThreadLocal<Boolean> _initialized =
+		new CentralizedThreadLocal<>(
+			CommerceOrderHttpHelperImpl.class.getName() + "._initialized",
+			() -> false);
 
 	@Reference
 	private AccountEntryService _accountEntryService;

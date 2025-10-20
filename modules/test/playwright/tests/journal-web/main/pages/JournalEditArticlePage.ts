@@ -26,6 +26,7 @@ export class JournalEditArticlePage {
 	readonly friendlyURLInput: Locator;
 	readonly friendlyUrlToggle: Locator;
 	readonly historyButton: Locator;
+	readonly inputPermissionsViewRole: Locator;
 	readonly journalPage: JournalPage;
 	readonly propertiesTab: Locator;
 	readonly publishDropdown: Locator;
@@ -60,6 +61,9 @@ export class JournalEditArticlePage {
 		);
 		this.friendlyUrlToggle = page.locator('a[href="#friendlyUrlContent"]');
 		this.historyButton = page.getByLabel('History');
+		this.inputPermissionsViewRole = page.locator(
+			'#_com_liferay_journal_web_portlet_JournalPortlet_inputPermissionsViewRole'
+		);
 		this.journalPage = new JournalPage(page);
 		this.propertiesTab = page.getByRole('tab', {
 			name: /properties|propriétés/i,
@@ -167,6 +171,24 @@ export class JournalEditArticlePage {
 			.frameLocator(`iframe[title="Select ${assetType}"]`)
 			.getByRole('menuitem', {name: viewType})
 			.click();
+	}
+
+	async clearAllCategories(vocabulary: string) {
+		await this.openFieldSet('Categories', 'categorization');
+
+		await this.page
+			.getByRole('button', {name: `Select ${vocabulary}`})
+			.click();
+
+		const selectVocabularyIframe = this.page.frameLocator(
+			`iframe[title="Select ${vocabulary}"]`
+		);
+
+		await selectVocabularyIframe
+			.getByRole('button', {name: 'Clear All'})
+			.click();
+
+		await this.page.getByRole('button', {name: 'Done'}).click();
 	}
 
 	async createAndPublishBasicArticle(title?: string) {
@@ -506,6 +528,27 @@ export class JournalEditArticlePage {
 		).toBeEnabled();
 
 		await selectDocumentIframe.getByText(fileName).dblclick();
+	}
+
+	async selectCategories(vocabulary: string, categories: string[]) {
+		await this.openFieldSet('Categories', 'categorization');
+
+		await this.page
+			.getByRole('button', {name: `Select ${vocabulary}`})
+			.click();
+
+		const selectVocabularyIframe = this.page.frameLocator(
+			`iframe[title="Select ${vocabulary}"]`
+		);
+
+		categories.forEach((category) => {
+			selectVocabularyIframe
+				.locator('li')
+				.filter({hasText: category})
+				.click();
+		});
+
+		await this.page.getByRole('button', {name: 'Done'}).click();
 	}
 
 	async selectSpecificDisplayPage(displayPageName: string) {

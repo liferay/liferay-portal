@@ -22,10 +22,10 @@ public class AssignAsUsedCheck extends BaseAsUsedCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> assignDetailASTList = getAllChildTokens(
+		List<DetailAST> assignDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.ASSIGN);
 
-		for (DetailAST assignDetailAST : assignDetailASTList) {
+		for (DetailAST assignDetailAST : assignDetailASTs) {
 			DetailAST parentDetailAST = assignDetailAST.getParent();
 
 			if (parentDetailAST.getType() != TokenTypes.EXPR) {
@@ -73,17 +73,16 @@ public class AssignAsUsedCheck extends BaseAsUsedCheck {
 			return;
 		}
 
-		List<DetailAST> dependentIdentDetailASTList =
-			getDependentIdentDetailASTList(
-				parentDetailAST, parentDetailAST.getLineNo());
+		List<DetailAST> dependentIdentDetailASTs = getDependentIdentDetailASTs(
+			parentDetailAST, parentDetailAST.getLineNo());
 
-		if (dependentIdentDetailASTList.isEmpty()) {
+		if (dependentIdentDetailASTs.isEmpty()) {
 			return;
 		}
 
 		int endLineNumber = getEndLineNumber(assignDetailAST);
 
-		for (DetailAST dependentIdentDetailAST : dependentIdentDetailASTList) {
+		for (DetailAST dependentIdentDetailAST : dependentIdentDetailASTs) {
 			int lineNumber = dependentIdentDetailAST.getLineNo();
 
 			if (lineNumber <= endLineNumber) {
@@ -107,8 +106,8 @@ public class AssignAsUsedCheck extends BaseAsUsedCheck {
 					checkMoveInsideIfStatement(
 						assignDetailAST, nameDetailAST, variableName,
 						dependentIdentDetailAST,
-						dependentIdentDetailASTList.get(
-							dependentIdentDetailASTList.size() - 1),
+						dependentIdentDetailASTs.get(
+							dependentIdentDetailASTs.size() - 1),
 						actionLineNumber);
 				}
 			}
@@ -123,7 +122,7 @@ public class AssignAsUsedCheck extends BaseAsUsedCheck {
 				if (!names.contains(variableName)) {
 					checkInline(
 						assignDetailAST, variableName, dependentIdentDetailAST,
-						dependentIdentDetailASTList);
+						dependentIdentDetailASTs);
 				}
 			}
 

@@ -2198,6 +2198,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 			"journal.template.velocity.restricted.variables",
 			"velocity.engine.restricted.variables"
 		},
+		{"mail.mx.update", "company.mx.update"},
 		{
 			"module.framework.properties.dependency.manager.sync.timeout",
 			"dependency.manager.sync.timeout"

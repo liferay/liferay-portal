@@ -22,7 +22,6 @@ type RadioCardContent<T = any> = {
 
 type RadioCardListProps<T> = {
 	contentList: RadioCardContent<T>[];
-	customization?: boolean;
 	leftRadio?: boolean;
 	onSelect: (value: RadioOption<T>) => void;
 	showImage?: boolean;

@@ -193,7 +193,7 @@ public class ObjectEntryLayoutDisplayPageProvider
 					_assetHelper, _infoItemFriendlyURLProvider,
 					_objectDefinition, _objectDefinitionLocalService,
 					ObjectEntryUtil.toObjectEntry(
-						_objectDefinition.getObjectDefinitionId(), objectEntry),
+						_objectDefinition, objectEntry),
 					_objectEntryLocalService, _objectRelationshipLocalService);
 			}
 		}

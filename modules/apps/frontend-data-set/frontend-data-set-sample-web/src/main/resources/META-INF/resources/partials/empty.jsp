@@ -15,4 +15,5 @@ EmptyFDSDisplayContext emptyFDSDisplayContext = new EmptyFDSDisplayContext(reque
 	apiURL="<%= emptyFDSDisplayContext.getAPIURL() %>"
 	emptyState="<%= emptyFDSDisplayContext.getEmptyState() %>"
 	id="<%= FDSSampleFDSNames.EMPTY %>"
+	propsTransformer="{EmptyPropsTransformer} from frontend-data-set-sample-web"
 />

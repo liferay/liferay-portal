@@ -16,94 +16,68 @@
 	</ul>
 </nav>
 
-<div class="d-flex page-container">
-	<div class="main-container my-3">
-		<div class="header">
-			<div class="asset-info d-flex">
-				<p class="title">
-					<@liferay_ui["message"] key="announcement" />
-				</p>
+<div class="main-container my-3">
+	<div class="header">
+		<div class="asset-info d-flex">
+			<p class="title">
+				<@liferay_ui["message"] key="announcement" />
+			</p>
 
-				<p class="date">
-					<#if (ObjectEntry_createDate.getData())??>
-						<#assign rawDate = ObjectEntry_createDate.getData()?datetime("M/d/yy h:mm a") />
-							<@liferay_ui["message"] key="published" /> ${rawDate?string("MMM. d, yyyy")}
-					</#if>
-				</p>
-			</div>
+			<p class="date">
+				<#if (ObjectEntry_createDate.getData())??>
+					<@liferay_ui["message"] key="published" />
 
-			<div class="content-info mt-2">
-				<h1>
-					<#if (ObjectField_title.getData())??>
-						${ObjectField_title.getData()}
-					</#if>
-				</h1>
+					<#assign
+						dt = ""
+						rawDate = ObjectEntry_createDate.getData()
+					/>
 
-				<div>
-					<#if (ObjectField_description.getData())??>
-						<p class="description">
-							${ObjectField_description.getData()}
-						</p>
+					<#attempt>
+						<#assign dt = rawDate?datetime("M/d/yy h:mm a") />
+					<#recover>
+						<#attempt>
+							<#assign dt = rawDate?datetime("yy/MM/dd H:mm") />
+
+							<#recover>
+								<#assign dt = rawDate />
+							</#recover>
+					</#attempt>
+
+					<#if dt?is_date>
+						<span>${dt?string("MMM. d, yyyy")}</span>
+					<#else>
+						<span>${dt}</span>
 					</#if>
-				</div>
-			</div>
+				</#if>
+			</p>
 		</div>
 
-		<div class="content mt-3" id="content">
-			<#if (ObjectField_content.getData())??>
-				${ObjectField_content.getData()}
-			</#if>
+		<div class="content-info mt-2">
+			<h1>
+				<#if (ObjectField_title.getData())??>
+					${ObjectField_title.getData()}
+				</#if>
+			</h1>
 
-			<#if (.data_model["ObjectField_35642960#previewURL"].getData())?? && .data_model["ObjectField_35642960#previewURL"].getData() !="">
-				<img alt="Image Preview" src="${.data_model["ObjectField_35642960#previewURL"].getData()}" />
-			</#if>
+			<div>
+				<#if (ObjectField_description.getData())??>
+					<p class="description">
+						${ObjectField_description.getData()}
+					</p>
+				</#if>
+			</div>
 		</div>
 	</div>
 
-	<div class="side-container">
-		<div class="table-of-contents"></div>
+	<div class="content mt-3" id="content">
+		<#if (ObjectField_content.getData())??>
+			${ObjectField_content.getData()}
+		</#if>
+		<#if (.data_model["ObjectField_35642960#previewURL"].getData())?? && .data_model["ObjectField_35642960#previewURL"].getData() !="">
+			<img alt="Image Preview" src="${.data_model['ObjectField_35642960#previewURL'].getData()}" />
+		</#if>
 	</div>
 </div>
-
-<script>
-	document.addEventListener("DOMContentLoaded", function() {
-		const contentContainer = document.getElementById("content");
-		const tocContainer = document.querySelector(".table-of-contents");
-
-		if (!contentContainer || !tocContainer) {
-			return;
-		}
-
-		const headings = contentContainer.querySelectorAll("h3");
-
-		if (headings.length === 0) {
-			return;
-		}
-
-		const tocList = document.createElement("ul");
-
-		headings.forEach((heading, index) => {
-			const headingId = "heading-" + index;
-			const link = document.createElement("a");
-			const listItem = document.createElement("li");
-
-			heading.id = headingId;
-
-			link.href = "#" + headingId;
-			link.textContent = heading.textContent;
-
-			link.addEventListener("click", function() {
-				tocList.querySelectorAll("li").forEach((li) => li.classList.remove("active"));
-				listItem.classList.add("active");
-			});
-
-			listItem.appendChild(link);
-			tocList.appendChild(listItem);
-		});
-
-		tocContainer.appendChild(tocList);
-	});
-</script>
 
 <style>
 	.admonion-container {
@@ -132,10 +106,10 @@
 	}
 
 	.admonion-type-info {
-	   background-color: #EFF2FA;
+		background-color: #EFF2FA;
 
-		admonion-title {
-		  color: #4F6FB8;
+		.admonion-title {
+			color: #4F6FB8;
 		}
 	}
 
@@ -202,8 +176,7 @@
 		margin: 0;
 		padding: 0;
 
-		a,
-		li {
+		a, li {
 			color: var(--color-state-neutral-darken-1, #6c6c75);
 			font-size: 0.8125rem;
 			text-decoration: none;
@@ -219,66 +192,8 @@
 		max-width: 1136px;
 	}
 
-	.side-container {
-		align-self: flex-start;
-		margin-left: 1rem;
-		margin-top: 4rem;
-		position: sticky;
-		top: 12.5rem;
-		min-width: 256px;
-	}
-
-	.table-of-contents {
-		color: #333;
-		font-size: 14px;
-		max-width: 17.5rem;
-		padding: 1rem;
-	}
-
-	.table-of-contents a {
-		color: var(--color-neutral-6, #82828c);
-		text-decoration: none;
-		transition: color 0.3s ease;
-	}
-
-	.table-of-contents a:hover {
-		color: var(--color-neutral-10, #282934);
-	}
-
-	.table-of-contents li {
-		color: var(--color-neutral-10, #282934);
-		height: 2rem;
-		padding: 0.375rem 1rem;
-		text-align: start;
-	}
-
-	.table-of-contents li.active {
-		font-weight: bold;
-		position: relative;
-	}
-
-	.table-of-contents li.active::before {
-		background-color: var(--color-brand-primary, #0b5fff);
-		border-radius: 0.125rem;
-		content: '';
-		height: 1.5rem;
-		left: 0;
-		position: absolute;
-		top: 0.125rem;
-		width: 0.25rem;
-	}
-
-	.table-of-contents ul {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		list-style: none;
-		margin: 0;
-		padding-left: 0;
-	}
-
 	h1, h2, h3 {
-	  color: var(--color-neutral-10, #282934);
+		color: var(--color-neutral-10, #282934);
 	}
 
 	html {
@@ -294,10 +209,6 @@
 
 		.asset-info .title {
 			margin-bottom: 0;
-		}
-
-		.side-container {
-			display: none;
 		}
 	}
 </style>

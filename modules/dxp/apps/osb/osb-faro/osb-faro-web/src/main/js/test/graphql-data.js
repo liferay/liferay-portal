@@ -1622,7 +1622,7 @@ export function mockRecommendationActivitiesReq(items, mockVariables = {}) {
 			variables: {
 				applicationId: 'Page',
 				eventContextPropertyFilters: [
-					{filter: '.*documents', negate: false}
+					{filter: '.*custom-assets', negate: false}
 				],
 				eventId: 'pageUnloaded',
 				rangeKey: '30',
@@ -1672,7 +1672,7 @@ export function mockRecommendationPageAssetsReq(items, mockVariables = {}) {
 		request: {
 			query: RecommendationPageAssetsQuery,
 			variables: {
-				propertyFilters: [{filter: '.*documents', negate: false}],
+				propertyFilters: [{filter: '.*custom-assets', negate: false}],
 				size: 5,
 				sort: {column: 'title', type: 'DESC'},
 				start: 0,

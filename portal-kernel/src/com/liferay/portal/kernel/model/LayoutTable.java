@@ -86,8 +86,8 @@ public class LayoutTable extends BaseTable<LayoutTable> {
 		"themeId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<LayoutTable, String> colorSchemeId = createColumn(
 		"colorSchemeId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<LayoutTable, Long> styleBookEntryId = createColumn(
-		"styleBookEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<LayoutTable, String> styleBookEntryERC = createColumn(
+		"styleBookEntryERC", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<LayoutTable, Clob> css = createColumn(
 		"css", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<LayoutTable, Integer> priority = createColumn(

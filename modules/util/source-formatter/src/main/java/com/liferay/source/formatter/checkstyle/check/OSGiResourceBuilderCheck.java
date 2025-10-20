@@ -32,10 +32,10 @@ public class OSGiResourceBuilderCheck extends BaseCheck {
 
 		List<String> importNames = null;
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			String methodName = getMethodName(methodCallDetailAST);
 
 			if (!methodName.equals("builder")) {

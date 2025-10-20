@@ -112,6 +112,18 @@
 			"name": "showContactForm",
 			"required": false,
 			"type": "Boolean"
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Show on Home Page"
+			},
+			"name": "showOnHomePage",
+			"required": false,
+			"type": "Boolean"
 		}
 	],
 	"objectFolderExternalReferenceCode": "MARKETPLACE",

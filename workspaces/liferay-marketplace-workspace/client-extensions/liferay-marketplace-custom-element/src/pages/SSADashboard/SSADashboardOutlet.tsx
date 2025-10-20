@@ -27,10 +27,21 @@ const SSADashboardOutlet = () => {
 			)
 	);
 
+	const isFilterByAuthorIdEnabled =
+		properties.featureFlags.includes('LPD-63837');
+
+	const authorFilter = isFilterByAuthorIdEnabled ? 'authorId' : 'author';
+
+	const authorFilterValue = isFilterByAuthorIdEnabled
+		? myUserAccount?.id
+		: myUserAccount?.name;
+
 	const {data: inProgressTrialResponse = {totalCount: 0}} = usePlacedOrders({
 		accountId: ssaAccount?.id as number,
 		filter: new SearchBuilder()
-			.eq('author', myUserAccount?.name)
+			.eq(authorFilter, authorFilterValue, {
+				unquote: isFilterByAuthorIdEnabled,
+			})
 			.and()
 			.eq('orderTypeExternalReferenceCode', OrderTypes.SSA_SAAS)
 			.and()

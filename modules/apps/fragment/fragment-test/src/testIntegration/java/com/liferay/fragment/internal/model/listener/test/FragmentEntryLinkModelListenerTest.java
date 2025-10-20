@@ -48,6 +48,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -244,15 +246,21 @@ public class FragmentEntryLinkModelListenerTest {
 	public void testAddFragmentEntryLinkWithRichTextField() throws Exception {
 		String editableFieldValue = "<script>alert('xss');</script>Example";
 
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-paragraph"),
-			_createEditableValues("element-text", editableFieldValue),
-			_serviceContext);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.antisamy.internal." +
+					"AntiSamySanitizerImpl",
+				LoggerTestUtil.WARN)) {
 
-		Assert.assertEquals(
-			_createEditableValues("element-text", "Example"),
-			fragmentEntryLink.getEditableValues());
+			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+				_fragmentCollectionContributorRegistry.getFragmentEntry(
+					"BASIC_COMPONENT-paragraph"),
+				_createEditableValues("element-text", editableFieldValue),
+				_serviceContext);
+
+			Assert.assertEquals(
+				_createEditableValues("element-text", "Example"),
+				fragmentEntryLink.getEditableValues());
+		}
 	}
 
 	@Test
@@ -363,14 +371,20 @@ public class FragmentEntryLinkModelListenerTest {
 	public void testUpdateFragmentEntryLinkWithRichTextField()
 		throws Exception {
 
-		FragmentEntryLink fragmentEntryLink = _updateFragmentEntryLink(
-			"BASIC_COMPONENT-paragraph",
-			_createEditableValues(
-				"element-text", "<script>alert('xss');</script>Example"));
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.antisamy.internal." +
+					"AntiSamySanitizerImpl",
+				LoggerTestUtil.WARN)) {
 
-		Assert.assertEquals(
-			_createEditableValues("element-text", "Example"),
-			fragmentEntryLink.getEditableValues());
+			FragmentEntryLink fragmentEntryLink = _updateFragmentEntryLink(
+				"BASIC_COMPONENT-paragraph",
+				_createEditableValues(
+					"element-text", "<script>alert('xss');</script>Example"));
+
+			Assert.assertEquals(
+				_createEditableValues("element-text", "Example"),
+				fragmentEntryLink.getEditableValues());
+		}
 	}
 
 	@Test

@@ -17,7 +17,6 @@ import useDelete from './hooks/useDeleteTicketAttachment';
 import useDownload from './hooks/useDownloadTicketAttachment';
 import usePagination from './hooks/usePaginationTicketAttachments';
 import useSort from './hooks/useSortTicketAttachments';
-import getAttachmentDownloadUrl from './utils/getAttachmentDownloadUrl';
 import getAttachmentFormattedDateTime from './utils/getAttachmentFormattedDateTime';
 import {getColumns} from './utils/getColumns';
 
@@ -46,6 +45,7 @@ const TicketAttachmentsTable = ({
 	const {onDownload} = useDownload();
 	const {isDeleting, onDelete} = useDelete();
 	const {observer, onOpenChange, open} = useModal();
+	const siteURL = Liferay.ThemeDisplay.getLayoutURL().split('/project')[0];
 
 	useEffect(() => {
 		const fetchTicketAttachments = async () => {
@@ -54,13 +54,13 @@ const TicketAttachmentsTable = ({
 			);
 
 			const ticketAttachments = ticketAttachmentsResponse.items.map(
-				async (ticketAttachment) => {
+				(ticketAttachment) => {
 					return {
 						accountKey: ticketAttachment.accountKey,
 						creatorId: ticketAttachment.creator.id,
 						creatorName: ticketAttachment.creator.name,
 						dateCreated: ticketAttachment.dateCreated,
-						downloadUrl: await getAttachmentDownloadUrl(ticketAttachment.id),
+						downloadUrl: `${siteURL}/ticket-attachments/#/id/${ticketAttachment.id}`,
 						fileName: ticketAttachment.fileName,
 						fileSize: ticketAttachment.fileSize,
 						storageBucket: ticketAttachment.storageBucket,
@@ -70,7 +70,7 @@ const TicketAttachmentsTable = ({
 				}
 			);
 
-			setTicketAttachments(await Promise.all(ticketAttachments));
+			setTicketAttachments(ticketAttachments);
 		};
 		fetchTicketAttachments();
 	}, [

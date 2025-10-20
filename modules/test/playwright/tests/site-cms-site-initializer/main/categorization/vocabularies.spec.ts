@@ -134,7 +134,7 @@ test(
 
 test(
 	'Can create and update vocabulary',
-	{tag: '@LPD-32750'},
+	{tag: ['@LPD-32750', '@LPD-66358']},
 	async ({editVocabularyPage, page, vocabulariesPage}) => {
 		editVocabularyPage.goto();
 
@@ -156,6 +156,21 @@ test(
 		await editVocabularyPage.changeVisibility('Private');
 
 		await editVocabularyPage.assetTypesButton.click();
+
+		// Verify that All Asset Types checkbox retains correct state when ticked repeatedly to test LPD-66358
+
+		await editVocabularyPage.assetTypeCheckbox.uncheck();
+
+		await expect(
+			page.getByText('The Asset Types field is required.')
+		).toBeVisible();
+
+		await editVocabularyPage.assetTypeCheckbox.check();
+
+		await expect(editVocabularyPage.assetTypeSelector).toHaveAttribute(
+			'placeholder',
+			'All Asset Types'
+		);
 
 		await editVocabularyPage.selectAssetTypes('Blog');
 
@@ -204,11 +219,9 @@ test(
 
 		await editVocabularyPage.assetTypesButton.click();
 
-		const assetTypesInputLocator = page
-			.locator('.input-group-item span')
-			.nth(1);
+		const assetTypesInputLocator = page.locator('div[role="grid"] > span');
 
-		await expect(assetTypesInputLocator).toContainText('Blog');
+		await expect(assetTypesInputLocator).toContainText(['Blog']);
 
 		await clickAndExpectToBeVisible({
 			target: page.getByText(

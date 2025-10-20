@@ -60,7 +60,7 @@ public class UpgradeClassNamesTest {
 				"create table ResourceBlock (mvccVersion LONG default 0 not ",
 				"null, resourceBlockId LONG not null primary key, companyId ",
 				"LONG, groupId LONG, name VARCHAR(75) null, permissionsHash ",
-				"VARCHAR(75) null, referenceCount LONG);"));
+				"VARCHAR(75) null, referenceCount LONG)"));
 
 		setUpUpgradeCalendarResource();
 	}

@@ -72,8 +72,7 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 
 			'timestamp',
 
-			// An official plugin not in advanced preset. In addition to code here,
-			// there must be a matching symbol in `frontend-editor-ckeditor-web/node-scripts.config.js`.
+			// An official plugin not in advanced preset.
 
 			'fullscreen',
 

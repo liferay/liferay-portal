@@ -5,6 +5,7 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredLayoutSetPrototypeException;
@@ -93,13 +94,13 @@ public class LayoutSetPrototypeLocalServiceImpl
 			"/template-" + layoutSetPrototype.getLayoutSetPrototypeId();
 
 		_groupLocalService.addGroup(
-			userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			StringPool.BLANK, userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			LayoutSetPrototype.class.getName(),
 			layoutSetPrototype.getLayoutSetPrototypeId(),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
-			layoutSetPrototype.getNameMap(), null, 0, true,
+			layoutSetPrototype.getNameMap(), null, 0, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, false,
-			true, serviceContext);
+			false, true, serviceContext);
 
 		return layoutSetPrototype;
 	}

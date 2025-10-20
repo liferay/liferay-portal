@@ -19,7 +19,11 @@ public class LPD_28759 {
 		String defaultAdminFirstName, String defaultAdminMiddleName,
 		String defaultAdminLastName) {
 
-		CompanyLocalServiceUtil.addCompany(123, webId, virtualHostname, mx, maxUsers, active, defaultAdminPassword, defaultAdminScreenName, defaultAdminEmailAddress, defaultAdminFirstName, defaultAdminMiddleName, defaultAdminLastName);
+		CompanyLocalServiceUtil.addCompany(
+			123, webId, virtualHostname, mx, maxUsers, active,
+			defaultAdminPassword, defaultAdminScreenName,
+			defaultAdminEmailAddress, defaultAdminFirstName,
+			defaultAdminMiddleName, defaultAdminLastName);
 		CompanyLocalServiceUtil.addCompany(companyId, webId, virtualHostname, mx, maxUsers, active, true, defaultAdminPassword, defaultAdminScreenName, defaultAdminEmailAddress, defaultAdminFirstName, defaultAdminMiddleName, defaultAdminLastName);
 		_companyLocalService.addCompany(companyId, webId, virtualHostname, mx, maxUsers, active, true, defaultAdminPassword, defaultAdminScreenName, defaultAdminEmailAddress, defaultAdminFirstName, defaultAdminMiddleName, defaultAdminLastName);
 	}

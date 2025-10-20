@@ -10,13 +10,13 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.ParseException;
-import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.query.QueryHelper;
+import com.liferay.portal.search.spi.model.query.contributor.HighlightFieldNamesQueryConfigContributor;
 import com.liferay.portal.search.spi.model.query.contributor.KeywordQueryContributor;
 import com.liferay.portal.search.spi.model.query.contributor.helper.KeywordQueryContributorHelper;
 
@@ -40,7 +40,8 @@ public class UserKeywordQueryContributor implements KeywordQueryContributor {
 		SearchContext searchContext =
 			keywordQueryContributorHelper.getSearchContext();
 
-		_addHighlightFieldNames(searchContext);
+		_highlightFieldNamesQueryConfigContributor.
+			contributeHighlightFieldNames(searchContext);
 
 		queryHelper.addSearchTerm(booleanQuery, searchContext, "city", false);
 		queryHelper.addSearchTerm(
@@ -96,20 +97,16 @@ public class UserKeywordQueryContributor implements KeywordQueryContributor {
 	@Reference
 	protected QueryHelper queryHelper;
 
-	private void _addHighlightFieldNames(SearchContext searchContext) {
-		QueryConfig queryConfig = searchContext.getQueryConfig();
-
-		if (!queryConfig.isHighlightEnabled()) {
-			return;
-		}
-
-		queryConfig.addHighlightFieldNames("fullName");
-	}
-
 	private WildcardQuery _getTrailingWildcardQuery(
 		String field, String value) {
 
 		return new WildcardQueryImpl(field, value + StringPool.STAR);
 	}
+
+	@Reference(
+		target = "(indexer.class.name=com.liferay.portal.kernel.model.User)"
+	)
+	private HighlightFieldNamesQueryConfigContributor
+		_highlightFieldNamesQueryConfigContributor;
 
 }

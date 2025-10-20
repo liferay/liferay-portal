@@ -160,10 +160,10 @@ public abstract class PageSettings implements Serializable {
 	private Supplier<Boolean> _hiddenFromNavigationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The page's site navigation settings."
+		description = "The page's navigation settings."
 	)
 	@Valid
-	public NavigationSettings getNavigationSettings() {
+	public SitePageNavigationSettings getNavigationSettings() {
 		if (_navigationSettingsSupplier != null) {
 			navigationSettings = _navigationSettingsSupplier.get();
 
@@ -173,7 +173,9 @@ public abstract class PageSettings implements Serializable {
 		return navigationSettings;
 	}
 
-	public void setNavigationSettings(NavigationSettings navigationSettings) {
+	public void setNavigationSettings(
+		SitePageNavigationSettings navigationSettings) {
+
 		this.navigationSettings = navigationSettings;
 
 		_navigationSettingsSupplier = null;
@@ -181,7 +183,7 @@ public abstract class PageSettings implements Serializable {
 
 	@JsonIgnore
 	public void setNavigationSettings(
-		UnsafeSupplier<NavigationSettings, Exception>
+		UnsafeSupplier<SitePageNavigationSettings, Exception>
 			navigationSettingsUnsafeSupplier) {
 
 		_navigationSettingsSupplier = () -> {
@@ -197,12 +199,12 @@ public abstract class PageSettings implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The page's site navigation settings.")
+	@GraphQLField(description = "The page's navigation settings.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected NavigationSettings navigationSettings;
+	protected SitePageNavigationSettings navigationSettings;
 
 	@JsonIgnore
-	private Supplier<NavigationSettings> _navigationSettingsSupplier;
+	private Supplier<SitePageNavigationSettings> _navigationSettingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page's Open Graph settings."
@@ -295,49 +297,6 @@ public abstract class PageSettings implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Integer> _prioritySupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The default parameter for a page."
-	)
-	public String getQueryString() {
-		if (_queryStringSupplier != null) {
-			queryString = _queryStringSupplier.get();
-
-			_queryStringSupplier = null;
-		}
-
-		return queryString;
-	}
-
-	public void setQueryString(String queryString) {
-		this.queryString = queryString;
-
-		_queryStringSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setQueryString(
-		UnsafeSupplier<String, Exception> queryStringUnsafeSupplier) {
-
-		_queryStringSupplier = () -> {
-			try {
-				return queryStringUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(description = "The default parameter for a page.")
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String queryString;
-
-	@JsonIgnore
-	private Supplier<String> _queryStringSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page's SEO settings."
@@ -496,7 +455,7 @@ public abstract class PageSettings implements Serializable {
 			sb.append(hiddenFromNavigation);
 		}
 
-		NavigationSettings navigationSettings = getNavigationSettings();
+		SitePageNavigationSettings navigationSettings = getNavigationSettings();
 
 		if (navigationSettings != null) {
 			if (sb.length() > 1) {
@@ -530,22 +489,6 @@ public abstract class PageSettings implements Serializable {
 			sb.append("\"priority\": ");
 
 			sb.append(priority);
-		}
-
-		String queryString = getQueryString();
-
-		if (queryString != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"queryString\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(queryString));
-
-			sb.append("\"");
 		}
 
 		SEOSettings seoSettings = getSeoSettings();

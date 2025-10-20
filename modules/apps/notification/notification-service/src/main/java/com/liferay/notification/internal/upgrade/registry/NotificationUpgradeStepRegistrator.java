@@ -71,10 +71,8 @@ public class NotificationUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"NotificationTemplate", "notificationTemplateId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"NotificationTemplate"};
 				}
 
 			});

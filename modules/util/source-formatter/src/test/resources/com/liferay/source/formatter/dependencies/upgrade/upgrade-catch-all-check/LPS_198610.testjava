@@ -16,9 +16,12 @@ public class LPS_198610 {
 		long cpDefinitionId, long cProductId, double priority, String type,
 		ServiceContext serviceContext) {
 
-		CPDefinitionLinkLocalServiceUtil.addCPDefinitionLinkByCProductId(123, cProductId, priority, type, serviceContext);
-		CPDefinitionLinkLocalServiceUtil.addCPDefinitionLinkByCProductId(cpDefinitionId, cProductId, priority, type, serviceContext);
-		_cpDefinitionLinkLocalService.addCPDefinitionLinkByCProductId(cpDefinitionId, cProductId, priority, type, serviceContext);
+		CPDefinitionLinkLocalServiceUtil.addCPDefinitionLinkByCProductId(
+			123, cProductId, priority, type, serviceContext);
+		CPDefinitionLinkLocalServiceUtil.addCPDefinitionLinkByCProductId(
+			cpDefinitionId, cProductId, priority, type, serviceContext);
+		_cpDefinitionLinkLocalService.addCPDefinitionLinkByCProductId(
+			cpDefinitionId, cProductId, priority, type, serviceContext);
 	}
 
 	@Reference

@@ -152,7 +152,8 @@ public class GetCollectionFieldMVCResourceCommand
 				layoutObjectReference, listStyle, listItemStyle,
 				resourceResponse.getNamespace(), numberOfItems,
 				numberOfItemsPerPage, numberOfPages, paginationType,
-				segmentsExperienceId, templateKey);
+				themeDisplay.getScopeGroupId(), segmentsExperienceId,
+				templateKey);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get collection field", exception);
@@ -221,7 +222,7 @@ public class GetCollectionFieldMVCResourceCommand
 			String layoutObjectReference, String listStyle,
 			String listItemStyle, String namespace, int numberOfItems,
 			int numberOfItemsPerPage, int numberOfPages, String paginationType,
-			long segmentsExperienceId, String templateKey)
+			long scopeGroupId, long segmentsExperienceId, String templateKey)
 		throws PortalException {
 
 		JSONObject layoutObjectReferenceJSONObject =
@@ -312,6 +313,7 @@ public class GetCollectionFieldMVCResourceCommand
 			CollectionPaginationUtil.getPagination(
 				activePage, displayAllItems, numberOfItems,
 				numberOfItemsPerPage, paginationType));
+		defaultLayoutListRetrieverContext.setScopeGroupId(scopeGroupId);
 		defaultLayoutListRetrieverContext.setSegmentsEntryIds(
 			_filterSegmentsEntryIds(
 				layoutListRetriever, listObjectReference,

@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
-import com.liferay.portal.kernel.portlet.url.builder.ActionURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -79,8 +78,9 @@ public class ViewObjectEntriesDisplayContext {
 		_objectScopeProvider = objectScopeProvider;
 		_objectViewLocalService = objectViewLocalService;
 		_portletResourcePermission = portletResourcePermission;
+		_restContextPath = restContextPath;
 
-		_apiURL = _getAPIURL(restContextPath);
+		_apiURL = _getAPIURL();
 		_objectRequestHelper = new ObjectRequestHelper(httpServletRequest);
 	}
 
@@ -140,16 +140,9 @@ public class ViewObjectEntriesDisplayContext {
 				LanguageUtil.get(_objectRequestHelper.getRequest(), "view"),
 				"get", null, null),
 			new FDSActionDropdownItem(
-				ActionURLBuilder.createActionURL(
-					_objectRequestHelper.getLiferayPortletResponse()
-				).setActionName(
-					"/object_entries/expire_object_entry"
-				).setParameter(
-					"objectEntryId", "{id}"
-				).buildString(),
-				"time", "expire",
+				_getRESTContextPathURL() + "/{id}/expire", "time", "expire",
 				LanguageUtil.get(_objectRequestHelper.getRequest(), "expire"),
-				"get", "expire", null),
+				"post", "expire", "async"),
 			new FDSActionDropdownItem(
 				null, "trash", "deleteObjectEntry",
 				LanguageUtil.get(_objectRequestHelper.getRequest(), "delete"),
@@ -284,8 +277,8 @@ public class ViewObjectEntriesDisplayContext {
 			_objectRequestHelper.getLiferayPortletResponse());
 	}
 
-	private String _getAPIURL(String restContextPath) {
-		String apiURL = "/o" + restContextPath;
+	private String _getAPIURL() {
+		String apiURL = _getRESTContextPathURL();
 
 		try {
 			long groupId = _objectScopeProvider.getGroupId(_httpServletRequest);
@@ -388,6 +381,10 @@ public class ViewObjectEntriesDisplayContext {
 			StringUtil.merge(queryStrings, StringPool.AMPERSAND);
 	}
 
+	private String _getRESTContextPathURL() {
+		return "/o" + _restContextPath;
+	}
+
 	private String _getSearchByObjectViewQueryString() {
 		ObjectView objectView = _objectViewLocalService.fetchDefaultObjectView(
 			_objectDefinition.getObjectDefinitionId());
@@ -413,5 +410,6 @@ public class ViewObjectEntriesDisplayContext {
 	private final ObjectScopeProvider _objectScopeProvider;
 	private final ObjectViewLocalService _objectViewLocalService;
 	private final PortletResourcePermission _portletResourcePermission;
+	private final String _restContextPath;
 
 }

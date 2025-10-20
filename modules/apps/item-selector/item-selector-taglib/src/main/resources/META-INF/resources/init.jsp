@@ -26,7 +26,6 @@ page import="com.liferay.document.library.kernel.util.DLUtil" %><%@
 page import="com.liferay.item.selector.ItemSelectorReturnTypeResolver" %><%@
 page import="com.liferay.item.selector.taglib.internal.dao.search.RepositoryEntryResultRowSplitter" %><%@
 page import="com.liferay.item.selector.taglib.internal.display.context.GroupSelectorDisplayContext" %><%@
-page import="com.liferay.item.selector.taglib.internal.servlet.ServletContextUtil" %><%@
 page import="com.liferay.item.selector.taglib.internal.servlet.item.selector.GroupNavigationCard" %><%@
 page import="com.liferay.item.selector.taglib.internal.util.ItemSelectorRepositoryEntryBrowserUtil" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@

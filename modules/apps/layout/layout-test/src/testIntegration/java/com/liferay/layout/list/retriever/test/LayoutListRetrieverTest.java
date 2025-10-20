@@ -8,6 +8,9 @@ package com.liferay.layout.list.retriever.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.info.collection.provider.CollectionQuery;
@@ -15,22 +18,36 @@ import com.liferay.info.collection.provider.InfoCollectionProvider;
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.info.pagination.InfoPage;
+import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
+import com.liferay.journal.constants.JournalArticleConstants;
+import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.list.retriever.ClassedModelListObjectReference;
 import com.liferay.layout.list.retriever.DefaultLayoutListRetrieverContext;
 import com.liferay.layout.list.retriever.KeyListObjectReference;
 import com.liferay.layout.list.retriever.LayoutListRetriever;
+import com.liferay.layout.list.retriever.LayoutListRetrieverContext;
 import com.liferay.layout.list.retriever.LayoutListRetrieverRegistry;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -79,6 +96,97 @@ public class LayoutListRetrieverTest {
 	}
 
 	@Test
+	@TestInfo("LPD-64102")
+	public void testAssetEntryListLayoutListRetriever() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+		long classNameId = _portal.getClassNameId(JournalArticle.class);
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"anyAssetType", String.valueOf(classNameId)
+				).buildString(),
+				serviceContext);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), _portal.getSiteDefaultLocale(_group),
+			true, true, serviceContext);
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ServiceContext companyGroupServiceContext =
+			ServiceContextTestUtil.getServiceContext(
+				companyGroup.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry companyGroupAssetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				companyGroup.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"anyAssetType", String.valueOf(classNameId)
+				).buildString(),
+				companyGroupServiceContext);
+
+		JournalArticle companyGroupJournalArticle = JournalTestUtil.addArticle(
+			companyGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			_portal.getSiteDefaultLocale(companyGroup), true, true,
+			companyGroupServiceContext);
+
+		DefaultLayoutListRetrieverContext layoutListRetrieverContext =
+			new DefaultLayoutListRetrieverContext();
+
+		layoutListRetrieverContext.setScopeGroupId(_group.getGroupId());
+
+		_testAssetEntryListLayoutListRetriever(
+			JSONUtil.put("classPK", assetListEntry.getAssetListEntryId()),
+			layoutListRetrieverContext, journalArticle.getResourcePrimKey());
+		_testAssetEntryListLayoutListRetriever(
+			JSONUtil.put(
+				"classPK", companyGroupAssetListEntry.getAssetListEntryId()),
+			layoutListRetrieverContext,
+			companyGroupJournalArticle.getResourcePrimKey());
+		_testAssetEntryListLayoutListRetriever(
+			JSONUtil.put("externalReferenceCode", externalReferenceCode),
+			layoutListRetrieverContext, journalArticle.getResourcePrimKey());
+		_testAssetEntryListLayoutListRetriever(
+			JSONUtil.put(
+				"classPK", RandomTestUtil.randomLong()
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			),
+			layoutListRetrieverContext);
+		_testAssetEntryListLayoutListRetriever(
+			JSONUtil.put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"scopeExternalReferenceCode",
+				companyGroup.getExternalReferenceCode()
+			),
+			layoutListRetrieverContext,
+			companyGroupJournalArticle.getResourcePrimKey());
+	}
+
+	@Test
 	public void testAssetRelatedInfoItemCollectionProviderLayoutListRetriever()
 		throws Exception {
 
@@ -117,6 +225,7 @@ public class LayoutListRetrieverTest {
 			new DefaultLayoutListRetrieverContext();
 
 		layoutListRetrieverContext.setContextObject(fileEntry);
+		layoutListRetrieverContext.setScopeGroupId(_group.getGroupId());
 
 		InfoPage<?> infoPage = layoutListRetriever.getInfoPage(
 			keyListObjectReference, layoutListRetrieverContext);
@@ -170,11 +279,48 @@ public class LayoutListRetrieverTest {
 		serviceRegistration.unregister();
 	}
 
+	private void _testAssetEntryListLayoutListRetriever(
+		JSONObject jsonObject,
+		LayoutListRetrieverContext layoutListRetrieverContext,
+		long... resourcePrimKeys) {
+
+		LayoutListRetriever<?, ClassedModelListObjectReference>
+			layoutListRetriever =
+				(LayoutListRetriever<?, ClassedModelListObjectReference>)
+					_layoutListRetrieverRegistry.getLayoutListRetriever(
+						InfoListItemSelectorReturnType.class.getName());
+
+		InfoPage<?> infoPage = layoutListRetriever.getInfoPage(
+			new ClassedModelListObjectReference(jsonObject),
+			layoutListRetrieverContext);
+
+		List<Object> list = (List<Object>)infoPage.getPageItems();
+
+		Assert.assertEquals(
+			list.toString(), resourcePrimKeys.length, list.size());
+
+		for (int i = 0; i < resourcePrimKeys.length; i++) {
+			JournalArticle journalArticle = (JournalArticle)list.get(i);
+
+			Assert.assertEquals(
+				resourcePrimKeys[i], journalArticle.getResourcePrimKey());
+		}
+	}
+
+	@Inject
+	private AssetListEntryLocalService _assetListEntryLocalService;
+
 	@DeleteAfterTestRun
 	private Group _group;
 
 	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
 	private LayoutListRetrieverRegistry _layoutListRetrieverRegistry;
+
+	@Inject
+	private Portal _portal;
 
 	private static class AssetEntryRelatedInfoItemCollectionProvider
 		implements RelatedInfoItemCollectionProvider<AssetEntry, AssetTag> {

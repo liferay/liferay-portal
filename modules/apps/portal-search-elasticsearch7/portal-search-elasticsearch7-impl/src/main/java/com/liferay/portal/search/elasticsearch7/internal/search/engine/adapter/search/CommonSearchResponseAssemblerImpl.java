@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.elasticsearch7.internal.stats.StatsTranslator;
 import com.liferay.portal.search.engine.adapter.search.BaseSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.BaseSearchResponse;
@@ -22,16 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.search.FuzzyQuery;
-
-import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.core.TimeValue;
-import org.elasticsearch.index.search.MatchQueryParser;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.profile.SearchProfileShardResult;
 import org.elasticsearch.search.profile.query.QueryProfileShardResult;
 import org.elasticsearch.xcontent.ToXContent;
@@ -51,15 +45,15 @@ public class CommonSearchResponseAssemblerImpl
 
 	@Override
 	public void assemble(
-		SearchSourceBuilder searchSourceBuilder, SearchResponse searchResponse,
 		BaseSearchRequest baseSearchRequest,
-		BaseSearchResponse baseSearchResponse) {
+		BaseSearchResponse baseSearchResponse, String searchRequestString,
+		SearchResponse searchResponse) {
 
 		_setExecutionProfile(searchResponse, baseSearchResponse);
 		_setExecutionTime(searchResponse, baseSearchResponse);
 		_setPointInTimeId(searchResponse, baseSearchResponse);
 		_setScrollId(searchResponse, baseSearchResponse);
-		_setSearchRequestString(searchSourceBuilder, baseSearchResponse);
+		_setSearchRequestString(baseSearchResponse, searchRequestString);
 		setSearchResponseString(
 			searchResponse, baseSearchRequest, baseSearchResponse);
 		_setTerminatedEarly(searchResponse, baseSearchResponse);
@@ -79,48 +73,6 @@ public class CommonSearchResponseAssemblerImpl
 				searchResponse.toString());
 		}
 	}
-
-	protected String toString(SearchSourceBuilder searchSourceBuilder) {
-		try {
-			return searchSourceBuilder.toString();
-		}
-		catch (ElasticsearchException elasticsearchException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(elasticsearchException);
-			}
-
-			return elasticsearchException.getMessage();
-		}
-	}
-
-	protected static final String ADJUST_PURE_NEGATIVE_STRING =
-		",\"adjust_pure_negative\":true";
-
-	protected static final String AUTO_GENERATE_SYNONYMS_PHRASE_QUERY_STRING =
-		",\"auto_generate_synonyms_phrase_query\":true";
-
-	protected static final String BOOST_STRING = ",\"boost\":1.0";
-
-	protected static final String FUZZY_TRANSPOSITIONS_STRING =
-		",\"fuzzy_transpositions\":" + FuzzyQuery.defaultTranspositions;
-
-	protected static final String LENIENT_STRING =
-		",\"lenient\":" + MatchQueryParser.DEFAULT_LENIENCY;
-
-	protected static final String MAX_EXPANSIONS_STRING =
-		",\"max_expansions\":" + FuzzyQuery.defaultMaxExpansions;
-
-	protected static final String OPERATOR_STRING = ",\"operator\":\"OR\"";
-
-	protected static final String PREFIX_LENGTH_STRING =
-		",\"prefix_length\":" + FuzzyQuery.defaultPrefixLength;
-
-	protected static final String SLOP_STRING =
-		",\"slop\":" + MatchQueryParser.DEFAULT_PHRASE_SLOP;
-
-	protected static final String ZERO_TERMS_QUERY_STRING =
-		",\"zero_terms_query\":\"" + MatchQueryParser.DEFAULT_ZERO_TERMS_QUERY +
-			"\"";
 
 	private String _getSearchProfileShardResultString(
 			SearchProfileShardResult searchProfileShardResult)
@@ -207,16 +159,9 @@ public class CommonSearchResponseAssemblerImpl
 	}
 
 	private void _setSearchRequestString(
-		SearchSourceBuilder searchSourceBuilder,
-		BaseSearchResponse baseSearchResponse) {
+		BaseSearchResponse baseSearchResponse, String searchRequestString) {
 
-		baseSearchResponse.setSearchRequestString(
-			StringUtil.removeSubstrings(
-				toString(searchSourceBuilder), ADJUST_PURE_NEGATIVE_STRING,
-				AUTO_GENERATE_SYNONYMS_PHRASE_QUERY_STRING, BOOST_STRING,
-				FUZZY_TRANSPOSITIONS_STRING, LENIENT_STRING,
-				MAX_EXPANSIONS_STRING, OPERATOR_STRING, PREFIX_LENGTH_STRING,
-				SLOP_STRING, ZERO_TERMS_QUERY_STRING));
+		baseSearchResponse.setSearchRequestString(searchRequestString);
 	}
 
 	private void _setTerminatedEarly(

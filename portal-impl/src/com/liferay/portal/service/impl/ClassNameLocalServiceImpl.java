@@ -8,7 +8,6 @@ package com.liferay.portal.service.impl;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.cache.CacheRegistryItem;
 import com.liferay.portal.kernel.change.tracking.CTAware;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
@@ -18,6 +17,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.impl.ClassNameImpl;
 import com.liferay.portal.service.base.ClassNameLocalServiceBaseImpl;
@@ -178,7 +178,7 @@ public class ClassNameLocalServiceImpl
 
 	@Override
 	public void invalidate() {
-		if (DBPartition.isPartitionEnabled() &&
+		if (PropsValues.DATABASE_PARTITION_ENABLED &&
 			(CompanyThreadLocal.getCompanyId() != CompanyConstants.SYSTEM)) {
 
 			ClassNamePool.invalidate(CompanyThreadLocal.getCompanyId());
@@ -190,7 +190,7 @@ public class ClassNameLocalServiceImpl
 	}
 
 	private static long _getCompanyId() {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			return CompanyThreadLocal.getNonsystemCompanyId();
 		}
 

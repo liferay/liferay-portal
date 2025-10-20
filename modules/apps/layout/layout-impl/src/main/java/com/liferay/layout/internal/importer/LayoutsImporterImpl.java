@@ -2228,8 +2228,8 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 					layout.getGroupId(), styleBook.getKey());
 
 			if (styleBookEntry != null) {
-				layout.setStyleBookEntryId(
-					styleBookEntry.getStyleBookEntryId());
+				layout.setStyleBookEntryERC(
+					styleBookEntry.getExternalReferenceCode());
 			}
 		}
 

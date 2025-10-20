@@ -149,10 +149,10 @@ public class ComponentAnnotationCheck extends BaseCheck {
 	}
 
 	private String _getOSGiJaxrsName(DetailAST annotationArrayInitDetailAST) {
-		List<DetailAST> expressionDetailASTList = getAllChildTokens(
+		List<DetailAST> expressionDetailASTs = getAllChildTokens(
 			annotationArrayInitDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST expressionDetailAST : expressionDetailASTList) {
+		for (DetailAST expressionDetailAST : expressionDetailASTs) {
 			DetailAST firstChildDetailAST = expressionDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.STRING_LITERAL) {

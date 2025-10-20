@@ -19,7 +19,9 @@ public class LPS_194134 {
 		String title, String description, String changeLog,
 		boolean majorVersion, byte[] bytes, ServiceContext serviceContext) {
 
-		DLAppLocalServiceUtil.updateFileEntry(123, fileEntryId, "test123", mimeType, title, description, changeLog, majorVersion, bytes, serviceContext);
+		DLAppLocalServiceUtil.updateFileEntry(
+			123, fileEntryId, "test123", mimeType, title, description,
+			changeLog, majorVersion, bytes, serviceContext);
 		DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, DLVersionNumberIncrease.fromMajorVersion(majorVersion), bytes, null, null, null, serviceContext);
 		_dlAppLocalService.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, DLVersionNumberIncrease.fromMajorVersion(majorVersion), bytes, null, null, null, serviceContext);
 	}
@@ -30,7 +32,9 @@ public class LPS_194134 {
 		DLVersionNumberIncrease dlVersionNumberIncrease, byte[] bytes,
 		ServiceContext serviceContext) {
 
-		DLAppLocalServiceUtil.updateFileEntry(123, fileEntryId, "test123", mimeType, title, description, changeLog, dlVersionNumberIncrease, bytes, serviceContext);
+		DLAppLocalServiceUtil.updateFileEntry(
+			123, fileEntryId, "test123", mimeType, title, description,
+			changeLog, dlVersionNumberIncrease, bytes, serviceContext);
 		DLAppLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, bytes, null, null, null, serviceContext);
 		_dlAppLocalService.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, bytes, null, null, null, serviceContext);
 	}

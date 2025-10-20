@@ -20,6 +20,7 @@ import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -77,11 +78,12 @@ public class FaroProjectLocalServiceImpl
 		long faroProjectId = counterLocalService.increment();
 
 		Group group = _groupLocalService.addGroup(
-			userId, 0, FaroProject.class.getName(), faroProjectId, 0,
+			StringPool.BLANK, userId, 0, FaroProject.class.getName(),
+			faroProjectId, 0,
 			Collections.singletonMap(LocaleUtil.getDefault(), name), null,
-			GroupConstants.TYPE_SITE_PRIVATE, true,
+			GroupConstants.TYPE_SITE_PRIVATE, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true,
-			true, null);
+			false, true, null);
 
 		// friendlyURL will be derived from the group name if empty, so it has
 		// to be removed after creation

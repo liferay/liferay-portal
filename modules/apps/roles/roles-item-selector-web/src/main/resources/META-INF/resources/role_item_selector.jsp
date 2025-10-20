@@ -49,13 +49,13 @@ RoleItemSelectorViewDisplayContext roleItemSelectorViewDisplayContext = (RoleIte
 			<liferay-ui:search-container-column-text
 				cssClass="<%= cssClass %>"
 				name="title"
-				value="<%= role.getTitle(locale) %>"
+				value="<%= HtmlUtil.escape(role.getTitle(locale)) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
 				cssClass="<%= cssClass %>"
 				name="description"
-				value="<%= role.getDescription(locale) %>"
+				value="<%= HtmlUtil.escape(role.getDescription(locale)) %>"
 			/>
 		</liferay-ui:search-container-row>
 

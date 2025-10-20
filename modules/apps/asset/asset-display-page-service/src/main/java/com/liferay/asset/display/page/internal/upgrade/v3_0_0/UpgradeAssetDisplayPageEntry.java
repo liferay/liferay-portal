@@ -8,14 +8,12 @@ package com.liferay.asset.display.page.internal.upgrade.v3_0_0;
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.upgrade.BaseUpgradeAssetDisplayPageEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 /**
@@ -26,14 +24,18 @@ public class UpgradeAssetDisplayPageEntry
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		upgradeAssetDisplayPageTypes(
-			"BlogsEntry", "entryId", "com.liferay.blogs.model.BlogsEntry");
+		try (SafeCloseable safeCloseable = addTemporaryIndex(
+				"AssetDisplayPageEntry", false, "classNameId", "type_")) {
 
-		upgradeAssetDisplayPageTypes(
-			"JournalArticle", "resourcePrimKey",
-			"com.liferay.journal.model.JournalArticle");
+			upgradeAssetDisplayPageTypes(
+				"BlogsEntry", "entryId", "com.liferay.blogs.model.BlogsEntry");
 
-		_upgradeDLAssetDisplayPageTypes();
+			upgradeAssetDisplayPageTypes(
+				"JournalArticle", "resourcePrimKey",
+				"com.liferay.journal.model.JournalArticle");
+
+			_upgradeDLAssetDisplayPageTypes();
+		}
 	}
 
 	private void _upgradeDLAssetDisplayPageTypes() throws Exception {
@@ -43,69 +45,62 @@ public class UpgradeAssetDisplayPageEntry
 		long fileEntryClassNameId = PortalUtil.getClassNameId(
 			FileEntry.class.getName());
 
-		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"select distinct DLFileEntry.ctCollectionId, ",
-					"DLFileEntry.groupId, DLFileEntry.companyId, ",
-					"DLFileEntry.userId, DLFileEntry.userName, ",
-					"DLFileEntry.fileEntryId from DLFileEntry where ",
-					"DLFileEntry.fileEntryId not in (select classPK from ",
-					"AssetDisplayPageEntry where classNameId in (",
-					dlFileEntryClassNameId, ", ", fileEntryClassNameId,
-					")) and ctCollectionId = DLFileEntry.ctCollectionId"));
-			PreparedStatement preparedStatement2 =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					StringBundler.concat(
-						"insert into AssetDisplayPageEntry (ctCollectionId, ",
-						"uuid_, assetDisplayPageEntryId, groupId, companyId, ",
-						"userId, userName, createDate, modifiedDate, ",
-						"classNameId, classPK, layoutPageTemplateEntryId, ",
-						"type_, plid) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ",
-						"?, ?, ?)"))) {
+		processConcurrently(
+			StringBundler.concat(
+				"select distinct DLFileEntry.ctCollectionId, ",
+				"DLFileEntry.groupId, DLFileEntry.companyId, ",
+				"DLFileEntry.userId, DLFileEntry.userName, ",
+				"DLFileEntry.fileEntryId from DLFileEntry left join ",
+				"AssetDisplayPageEntry on AssetDisplayPageEntry.classPK = ",
+				"DLFileEntry.fileEntryId and ",
+				"AssetDisplayPageEntry.classNameId in (",
+				dlFileEntryClassNameId, ", ", fileEntryClassNameId,
+				") and AssetDisplayPageEntry.ctCollectionId = ",
+				"DLFileEntry.ctCollectionId where ",
+				"AssetDisplayPageEntry.classPK is null"),
+			StringBundler.concat(
+				"insert into AssetDisplayPageEntry (ctCollectionId, uuid_, ",
+				"assetDisplayPageEntryId, groupId, companyId, userId, ",
+				"userName, createDate, modifiedDate, classNameId, classPK, ",
+				"layoutPageTemplateEntryId, type_, plid) values(?, ?, ?, ?, ",
+				"?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"),
+			resultSet -> new Object[] {
+				resultSet.getLong(1), resultSet.getLong(2),
+				resultSet.getLong(3), resultSet.getLong(4),
+				resultSet.getString(5), resultSet.getLong(6)
+			},
+			(values, preparedStatement) -> {
+				long ctCollectionId = (long)values[0];
+				long groupId = (long)values[1];
+				long companyId = (long)values[2];
+				long userId = (long)values[3];
+				String userName = (String)values[4];
+				long fileEntryId = (long)values[5];
 
-			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
-				while (resultSet.next()) {
-					Timestamp now = new Timestamp(System.currentTimeMillis());
+				Timestamp now = new Timestamp(System.currentTimeMillis());
 
-					preparedStatement2.setLong(
-						1, resultSet.getLong("ctCollectionId"));
-					preparedStatement2.setString(2, PortalUUIDUtil.generate());
-					preparedStatement2.setLong(3, increment());
-					preparedStatement2.setLong(4, resultSet.getLong("groupId"));
-					preparedStatement2.setLong(
-						5, resultSet.getLong("companyId"));
-					preparedStatement2.setLong(6, resultSet.getLong("userId"));
-					preparedStatement2.setString(
-						7, resultSet.getString("userName"));
-					preparedStatement2.setTimestamp(8, now);
-					preparedStatement2.setTimestamp(9, now);
-					preparedStatement2.setLong(10, fileEntryClassNameId);
-					preparedStatement2.setLong(
-						11, resultSet.getLong("fileEntryId"));
-					preparedStatement2.setLong(12, 0);
-					preparedStatement2.setLong(
-						13, AssetDisplayPageConstants.TYPE_NONE);
-					preparedStatement2.setLong(14, 0);
+				preparedStatement.setLong(1, ctCollectionId);
+				preparedStatement.setString(2, PortalUUIDUtil.generate());
+				preparedStatement.setLong(3, increment());
+				preparedStatement.setLong(4, groupId);
+				preparedStatement.setLong(5, companyId);
+				preparedStatement.setLong(6, userId);
+				preparedStatement.setString(7, userName);
+				preparedStatement.setTimestamp(8, now);
+				preparedStatement.setTimestamp(9, now);
+				preparedStatement.setLong(10, fileEntryClassNameId);
+				preparedStatement.setLong(11, fileEntryId);
+				preparedStatement.setLong(12, 0L);
+				preparedStatement.setLong(
+					13, AssetDisplayPageConstants.TYPE_NONE);
+				preparedStatement.setLong(14, 0L);
 
-					preparedStatement2.addBatch();
-				}
+				preparedStatement.addBatch();
+			},
+			null);
 
-				preparedStatement2.executeBatch();
-			}
-		}
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"delete from AssetDisplayPageEntry where (classNameId = ? or " +
-					"classNameId = ?) and type_ = ?")) {
-
-			preparedStatement.setLong(1, dlFileEntryClassNameId);
-			preparedStatement.setLong(2, fileEntryClassNameId);
-			preparedStatement.setLong(
-				3, AssetDisplayPageConstants.TYPE_DEFAULT);
-
-			preparedStatement.executeUpdate();
-		}
+		cleanAssetDisplayPageEntry(
+			new long[] {dlFileEntryClassNameId, fileEntryClassNameId});
 	}
 
 }

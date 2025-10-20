@@ -98,7 +98,15 @@ public class OrderReturnsDataSetFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
-		return FeatureFlagManagerUtil.isEnabled("LPD-20379");
+		if (FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-10562") ||
+			FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-20379")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -107,6 +115,12 @@ public class OrderReturnsDataSetFragmentRenderer implements FragmentRenderer {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws IOException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-10562")) {
+
+			return;
+		}
 
 		CommerceOrder commerceOrder =
 			CommerceOrderInfoItemUtil.getCommerceOrder(

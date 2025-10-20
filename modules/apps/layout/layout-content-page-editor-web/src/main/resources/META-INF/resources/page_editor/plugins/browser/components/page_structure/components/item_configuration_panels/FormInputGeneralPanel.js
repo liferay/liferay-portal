@@ -178,7 +178,7 @@ export function FormInputGeneralPanel({item}) {
 			(state) =>
 				selectFormConfiguration(item, state.layoutData) ||
 				DEFAULT_FORM_CONFIGURATION,
-			[item.itemId]
+			[item.itemId, item.parentId]
 		);
 
 	const formFields = useObjectFields(

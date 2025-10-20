@@ -105,7 +105,9 @@ const TranslateFieldEditor = ({
 			editorRef.current.editor.setData(targetContent);
 			setContent(targetContent);
 		}
-		internalUpdateRef.current = false;
+		else {
+			internalUpdateRef.current = false;
+		}
 	}, [targetContent]);
 
 	return (

@@ -23,11 +23,11 @@ public class AppendCheck extends BaseStringConcatenationCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "append");
 
-		for (int i = 0; i < methodCallDetailASTList.size(); i++) {
-			DetailAST methodCallDetailAST = methodCallDetailASTList.get(i);
+		for (int i = 0; i < methodCallDetailASTs.size(); i++) {
+			DetailAST methodCallDetailAST = methodCallDetailASTs.get(i);
 
 			String variableName = getVariableName(methodCallDetailAST);
 
@@ -58,8 +58,8 @@ public class AppendCheck extends BaseStringConcatenationCheck {
 				continue;
 			}
 
-			if (i < (methodCallDetailASTList.size() - 1)) {
-				DetailAST nextMethodCallDetailAST = methodCallDetailASTList.get(
+			if (i < (methodCallDetailASTs.size() - 1)) {
+				DetailAST nextMethodCallDetailAST = methodCallDetailASTs.get(
 					i + 1);
 
 				if (!variableName.equals(
@@ -98,7 +98,7 @@ public class AppendCheck extends BaseStringConcatenationCheck {
 				continue;
 			}
 
-			DetailAST previousMethodCallDetailAST = methodCallDetailASTList.get(
+			DetailAST previousMethodCallDetailAST = methodCallDetailASTs.get(
 				i - 1);
 
 			if (!variableName.equals(
@@ -192,10 +192,10 @@ public class AppendCheck extends BaseStringConcatenationCheck {
 			return;
 		}
 
-		List<DetailAST> literalStringDetailASTList = getAllChildTokens(
+		List<DetailAST> literalStringDetailASTs = getAllChildTokens(
 			parameterDetailAST, true, TokenTypes.STRING_LITERAL);
 
-		if (!literalStringDetailASTList.isEmpty()) {
+		if (!literalStringDetailASTs.isEmpty()) {
 			log(parameterDetailAST, MSG_INCORRECT_PLUS);
 		}
 	}
@@ -204,10 +204,10 @@ public class AppendCheck extends BaseStringConcatenationCheck {
 		DetailAST detailAST, String variableName, String... methodNames) {
 
 		for (String methodName : methodNames) {
-			List<DetailAST> methodCallDetailASTList = getMethodCalls(
+			List<DetailAST> methodCallDetailASTs = getMethodCalls(
 				detailAST, variableName, methodName);
 
-			if (!methodCallDetailASTList.isEmpty()) {
+			if (!methodCallDetailASTs.isEmpty()) {
 				return true;
 			}
 		}

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -123,6 +124,9 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	protected Language language;
+
+	@Reference
+	protected Portal portal;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.commerce.fragment.impl)"

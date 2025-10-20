@@ -138,6 +138,10 @@ definition {
 
 	@summary = "Default summary"
 	macro assertViewerPermissions(publicationName = null) {
+		PublicationsNavigator.openPublicationsAdmin();
+
+		WaitForPageLoad();
+
 		AssertElementPresent(locator1 = "Publications#REVIEW_CHANGES_BUTTON");
 
 		Click(locator1 = "Publications#REVIEW_CHANGES_BUTTON");

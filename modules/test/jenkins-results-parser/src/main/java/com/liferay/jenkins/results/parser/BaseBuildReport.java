@@ -116,7 +116,7 @@ public abstract class BaseBuildReport implements BuildReport {
 			return null;
 		}
 
-		return buildReportJSONObject.getString("result");
+		return buildReportJSONObject.optString("result");
 	}
 
 	@Override

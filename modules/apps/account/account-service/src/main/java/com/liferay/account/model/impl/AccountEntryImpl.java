@@ -24,13 +24,12 @@ import com.liferay.portal.kernel.model.Phone;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.service.AddressLocalServiceUtil;
-import com.liferay.portal.kernel.service.AddressServiceUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ContactServiceUtil;
-import com.liferay.portal.kernel.service.EmailAddressServiceUtil;
+import com.liferay.portal.kernel.service.EmailAddressLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.PhoneServiceUtil;
-import com.liferay.portal.kernel.service.WebsiteServiceUtil;
+import com.liferay.portal.kernel.service.PhoneLocalServiceUtil;
+import com.liferay.portal.kernel.service.WebsiteLocalServiceUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
@@ -129,29 +128,28 @@ public class AccountEntryImpl extends AccountEntryBaseImpl {
 	}
 
 	@Override
-	public List<EmailAddress> getEmailAddresses() throws PortalException {
-		return EmailAddressServiceUtil.getEmailAddresses(
-			AccountEntry.class.getName(), getAccountEntryId());
+	public List<EmailAddress> getEmailAddresses() {
+		return EmailAddressLocalServiceUtil.getEmailAddresses(
+			getCompanyId(), AccountEntry.class.getName(), getAccountEntryId());
 	}
 
 	@Override
-	public List<Address> getListTypeAddresses(long[] listTypeIds)
-		throws PortalException {
-
-		return AddressServiceUtil.getListTypeAddresses(
-			AccountEntry.class.getName(), getAccountEntryId(), listTypeIds);
+	public List<Address> getListTypeAddresses(long[] listTypeIds) {
+		return AddressLocalServiceUtil.getListTypeAddresses(
+			getCompanyId(), AccountEntry.class.getName(), getAccountEntryId(),
+			listTypeIds);
 	}
 
 	@Override
-	public List<Phone> getPhones() throws PortalException {
-		return PhoneServiceUtil.getPhones(
-			AccountEntry.class.getName(), getAccountEntryId());
+	public List<Phone> getPhones() {
+		return PhoneLocalServiceUtil.getPhones(
+			getCompanyId(), AccountEntry.class.getName(), getAccountEntryId());
 	}
 
 	@Override
-	public List<Website> getWebsites() throws PortalException {
-		return WebsiteServiceUtil.getWebsites(
-			AccountEntry.class.getName(), getAccountEntryId());
+	public List<Website> getWebsites() {
+		return WebsiteLocalServiceUtil.getWebsites(
+			getCompanyId(), AccountEntry.class.getName(), getAccountEntryId());
 	}
 
 	@Override

@@ -618,7 +618,7 @@ public class ObjectDefinitionLocalServiceTest {
 		// After publish, resources
 
 		Assert.assertEquals(
-			4,
+			5,
 			_resourceActionLocalService.getResourceActionsCount(
 				objectDefinition.getClassName()));
 		Assert.assertEquals(

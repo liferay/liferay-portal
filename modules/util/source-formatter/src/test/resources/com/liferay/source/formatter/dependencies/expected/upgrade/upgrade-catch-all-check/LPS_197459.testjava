@@ -17,8 +17,8 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_197459 {
 
 	public void method(long commerceOrderId) {
+		CommerceOrderItemLocalServiceUtil.deleteCommerceOrderItems(123);
 		CommerceOrderItemLocalServiceUtil.deleteCommerceOrderItems(ServiceContextThreadLocal.getServiceContext().getUserId(), commerceOrderId);
-		_commerceOrderItemLocalService.deleteCommerceOrderItems(123);
 		_commerceOrderItemLocalService.deleteCommerceOrderItems(ServiceContextThreadLocal.getServiceContext().getUserId(), commerceOrderId);
 	}
 
@@ -27,13 +27,17 @@ public class LPS_197459 {
 		int shippedQuantity, String json, CommerceContext commerceContext,
 		ServiceContext serviceContext) {
 
-		_commerceOrderItemLocalService.addCommerceOrderItem(0, commerceOrderId, cpInstanceId, json, BigDecimal.valueOf(quantity), cpInstanceId, BigDecimal.valueOf(shippedQuantity), null, commerceContext, serviceContext);
+		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(
+			123, cpInstanceId, quantity, shippedQuantity, json, commerceContext,
+			serviceContext);
 		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(0, commerceOrderId, cpInstanceId, json, BigDecimal.valueOf(quantity), cpInstanceId, BigDecimal.valueOf(shippedQuantity), null, commerceContext, serviceContext);
-		CommerceOrderItemLocalServiceUtil.addCommerceOrderItem(123, cpInstanceId, 123, shippedQuantity, "test", commerceContext, serviceContext);
+		_commerceOrderItemLocalService.addCommerceOrderItem(0, commerceOrderId, cpInstanceId, json, BigDecimal.valueOf(quantity), cpInstanceId, BigDecimal.valueOf(shippedQuantity), null, commerceContext, serviceContext);
 
+		CommerceOrderItemServiceUtil.addCommerceOrderItem(
+			123, cpInstanceId, quantity, shippedQuantity, json, commerceContext,
+			serviceContext);
 		CommerceOrderItemServiceUtil.addCommerceOrderItem(commerceOrderId, cpInstanceId, json, BigDecimal.valueOf(quantity), cpInstanceId, BigDecimal.valueOf(shippedQuantity), null, commerceContext, serviceContext);
 		_commerceOrderItemService.addCommerceOrderItem(commerceOrderId, cpInstanceId, json, BigDecimal.valueOf(quantity), cpInstanceId, BigDecimal.valueOf(shippedQuantity), null, commerceContext, serviceContext);
-		_commerceOrderItemService.addCommerceOrderItem(123, cpInstanceId, 123, shippedQuantity, "test", commerceContext, serviceContext);
 	}
 
 	@Reference

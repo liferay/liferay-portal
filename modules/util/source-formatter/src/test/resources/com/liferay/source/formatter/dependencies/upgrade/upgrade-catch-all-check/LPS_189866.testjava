@@ -15,9 +15,12 @@ public class LPS_189866 {
 	public void method(
 		long companyId, long groupId, String title, int start, int end) {
 
-		_assetVocabularyLocalService.searchVocabularies(companyId, groupId, title, start, end);
-		_assetVocabularyService.searchVocabularies(companyId, 123, "test123", start, end);
-		_assetVocabularyService.searchVocabularies(companyId, groupId, title, start, end);
+		_assetVocabularyLocalService.searchVocabularies(
+			companyId, groupId, title, start, end);
+		_assetVocabularyService.searchVocabularies(
+			companyId, 123, "test123", start, end);
+		_assetVocabularyService.searchVocabularies(
+			companyId, groupId, title, start, end);
 	}
 
 	@Reference

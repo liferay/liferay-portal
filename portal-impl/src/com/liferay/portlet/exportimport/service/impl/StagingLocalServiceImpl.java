@@ -25,6 +25,7 @@ import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -664,12 +665,13 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 		throws PortalException {
 
 		Group stagingGroup = _groupLocalService.addGroup(
-			userId, liveGroup.getParentGroupId(), liveGroup.getClassName(),
-			liveGroup.getClassPK(), liveGroup.getGroupId(),
-			liveGroup.getNameMap(), liveGroup.getDescriptionMap(),
-			liveGroup.getType(), liveGroup.isManualMembership(),
+			StringPool.BLANK, userId, liveGroup.getParentGroupId(),
+			liveGroup.getClassName(), liveGroup.getClassPK(),
+			liveGroup.getGroupId(), liveGroup.getNameMap(),
+			liveGroup.getDescriptionMap(), liveGroup.getType(), null,
+			liveGroup.isManualMembership(),
 			liveGroup.getMembershipRestriction(), liveGroup.getFriendlyURL(),
-			false, true, serviceContext);
+			false, false, true, serviceContext);
 
 		if (LanguageUtil.isInheritLocales(liveGroup.getGroupId())) {
 			return stagingGroup;

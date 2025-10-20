@@ -79,6 +79,7 @@ export interface DefaultPermissionFormProps {
 
 export interface DefaultPermissionModalContentProps {
 	actions: ActionsMap;
+	allowPropagate?: boolean;
 	classExternalReferenceCode: string;
 	className: string;
 	closeModal: () => void;

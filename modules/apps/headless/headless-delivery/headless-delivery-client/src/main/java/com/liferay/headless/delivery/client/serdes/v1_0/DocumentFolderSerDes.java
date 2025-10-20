@@ -220,6 +220,26 @@ public class DocumentFolderSerDes {
 			sb.append(documentFolder.getParentDocumentFolderId());
 		}
 
+		if (documentFolder.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < documentFolder.getPermissions().length; i++) {
+				sb.append(documentFolder.getPermissions()[i]);
+
+				if ((i + 1) < documentFolder.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (documentFolder.getSiteId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -386,6 +406,14 @@ public class DocumentFolderSerDes {
 				String.valueOf(documentFolder.getParentDocumentFolderId()));
 		}
 
+		if (documentFolder.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions", String.valueOf(documentFolder.getPermissions()));
+		}
+
 		if (documentFolder.getSiteId() == null) {
 			map.put("siteId", null);
 		}
@@ -470,6 +498,9 @@ public class DocumentFolderSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "parentDocumentFolderId")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "siteId")) {
@@ -584,6 +615,26 @@ public class DocumentFolderSerDes {
 				if (jsonParserFieldValue != null) {
 					documentFolder.setParentDocumentFolderId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.delivery.client.permission.Permission[]
+						permissionsArray = new
+						com.liferay.headless.delivery.client.permission.
+							Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.delivery.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					documentFolder.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "siteId")) {

@@ -31,7 +31,7 @@ EditRolesDisplayContext editRolesDisplayContext = new EditRolesDisplayContext(re
 			cssClass="table-cell-expand-small table-cell-minw-200 table-title"
 			href="<%= rowURL %>"
 			name="title"
-			value="<%= role.getTitle(locale) %>"
+			value="<%= HtmlUtil.escape(role.getTitle(locale)) %>"
 		/>
 
 		<liferay-ui:search-container-column-text
@@ -45,7 +45,7 @@ EditRolesDisplayContext editRolesDisplayContext = new EditRolesDisplayContext(re
 			cssClass="table-cell-expand table-cell-minw-300"
 			href="<%= rowURL %>"
 			name="description"
-			value="<%= role.getDescription(locale) %>"
+			value="<%= HtmlUtil.escape(role.getDescription(locale)) %>"
 		/>
 
 		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>

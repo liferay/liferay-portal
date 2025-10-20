@@ -89,14 +89,14 @@ export default {
 
 	changeStyleBookEntry({
 		onNetworkStatus,
-		styleBookEntryId,
+		styleBookEntryERC,
 	}: {
 		onNetworkStatus: OnNetworkStatus;
-		styleBookEntryId: string;
+		styleBookEntryERC: string;
 	}) {
 		return draftServiceFetch<{tokenValues: StyleBookTokenValueMap}>(
 			config.changeStyleBookEntryURL,
-			{body: {styleBookEntryId}},
+			{body: {styleBookEntryERC}},
 			onNetworkStatus
 		);
 	},

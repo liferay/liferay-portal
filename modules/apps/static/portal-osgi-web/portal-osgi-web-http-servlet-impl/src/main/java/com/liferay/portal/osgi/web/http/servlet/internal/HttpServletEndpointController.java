@@ -67,13 +67,9 @@ public class HttpServletEndpointController {
 				JavaConstants.JAKARTA_SERVLET_CONTEXT_TEMPDIR);
 
 		if (parentServletContextTempDir != null) {
-			parentServletContextTempDir = new File(
+			_parentServletContextTempDir = new File(
 				parentServletContextTempDir,
 				HttpServletEndpointController.class.getName() + hashCode());
-
-			_parentServletContextTempDir = parentServletContextTempDir;
-
-			_parentServletContextTempDir.mkdirs();
 		}
 		else {
 			_parentServletContextTempDir = null;

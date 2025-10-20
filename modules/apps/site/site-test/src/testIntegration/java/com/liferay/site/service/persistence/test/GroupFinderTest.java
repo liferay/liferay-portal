@@ -326,7 +326,7 @@ public class GroupFinderTest {
 		_groupLocalService.updateGroup(
 			parentGroup.getGroupId(), parentGroup.getParentGroupId(),
 			parentGroup.getNameMap(), parentGroup.getDescriptionMap(),
-			parentGroup.getType(), parentGroup.isManualMembership(),
+			parentGroup.getType(), null, parentGroup.isManualMembership(),
 			parentGroup.getMembershipRestriction(),
 			parentGroup.getFriendlyURL(), parentGroup.isInheritContent(), false,
 			ServiceContextTestUtil.getServiceContext());

@@ -461,7 +461,7 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 			TransformUtil.transform(
 				new ArrayList<>(objectEntriesPage.getItems()),
 				objectEntry -> ObjectEntryUtil.toObjectEntry(
-					_objectDefinition.getObjectDefinitionId(), objectEntry)),
+					_objectDefinition, objectEntry)),
 			collectionQuery.getPagination(),
 			(int)objectEntriesPage.getTotalCount());
 	}

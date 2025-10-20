@@ -53,14 +53,26 @@ export function SpaceMembersPermissionSelect({
 		[onChange, selectedRoles]
 	);
 
-	const triggerText = useMemo(
-		() =>
-			roles
-				.filter((role) => selectedRoles.includes(role.name))
-				.map((role) => getRoleName(role.name))
-				.join(', '),
-		[getRoleName, roles, selectedRoles]
-	);
+	const {tooltipText, triggerText} = useMemo(() => {
+		const allSelectedRoleNames = roles
+			.filter(({name}) => selectedRoles.includes(name))
+			.map(({name}) => getRoleName(name));
+
+		const maxVisibleRoles = 2;
+		const tooltip = allSelectedRoleNames.join(', ');
+
+		if (allSelectedRoleNames.length > maxVisibleRoles) {
+			const remaining = allSelectedRoleNames.length - maxVisibleRoles;
+
+			const trigger = `${allSelectedRoleNames
+				.slice(0, maxVisibleRoles)
+				.join(', ')}, +${remaining}`;
+
+			return {tooltipText: tooltip, triggerText: trigger};
+		}
+
+		return {tooltipText: tooltip, triggerText: tooltip};
+	}, [getRoleName, roles, selectedRoles]);
 
 	return (
 		<ClayDropDown
@@ -78,7 +90,7 @@ export function SpaceMembersPermissionSelect({
 						<span
 							className="permission-select-trigger-text text-truncate"
 							data-tooltip-align="top"
-							title={triggerText}
+							title={tooltipText}
 						>
 							{triggerText}
 						</span>

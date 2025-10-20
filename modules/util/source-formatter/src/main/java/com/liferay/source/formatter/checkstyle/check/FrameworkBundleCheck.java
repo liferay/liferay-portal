@@ -34,26 +34,26 @@ public class FrameworkBundleCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> detailASTList = getAllChildTokens(
+		List<DetailAST> detailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.CTOR_DEF, TokenTypes.METHOD_DEF);
 
-		for (DetailAST curDetailAST : detailASTList) {
+		for (DetailAST curDetailAST : detailASTs) {
 			_checkGetHeadersMethodCall(curDetailAST);
 		}
 	}
 
 	private void _checkGetHeadersMethodCall(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "getHeaders");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 
-			List<DetailAST> exprDetailASTList = getAllChildTokens(
+			List<DetailAST> exprDetailASTs = getAllChildTokens(
 				elistDetailAST, false, TokenTypes.EXPR);
 
-			if (!exprDetailASTList.isEmpty()) {
+			if (!exprDetailASTs.isEmpty()) {
 				continue;
 			}
 

@@ -13,10 +13,18 @@ public class LPD_31994 {
 	public void method(
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
-		PortletPreferences portletPreferences = portletSharedSearchSettings.getPortletPreferences();
-		PortletPreferences portletPreferences = portletSharedSearchSettings.getPortletPreferences();
-		String portletPreferences = portletSharedSearchSettings.getParameter("test123");
-		String portletPreferences = portletSharedSearchSettings.getParameter("test123");
+		PortletPreferences portletPreferences1 =
+			portletSharedSearchSettings.getPortletPreferences();
+
+		PortletPreferences portletPreferences2 =
+			portletSharedSearchSettings.getPortletPreferences();
+
+		String portletPreferences3 =
+			portletSharedSearchSettings.getParameter("test123");
+
+		String portletPreferences4 =
+			portletSharedSearchSettings.getParameter("test123");
+
 		portletSharedSearchSettings.getParameter("test123");
 		portletSharedSearchSettings.getParameter("test123");
 		portletSharedSearchSettings.getPortletPreferences();

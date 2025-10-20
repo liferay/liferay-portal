@@ -87,7 +87,7 @@ public class LayoutModelImpl
 		{"hidden_", Types.BOOLEAN}, {"system_", Types.BOOLEAN},
 		{"friendlyURL", Types.VARCHAR}, {"iconImageId", Types.BIGINT},
 		{"themeId", Types.VARCHAR}, {"colorSchemeId", Types.VARCHAR},
-		{"styleBookEntryId", Types.BIGINT}, {"css", Types.CLOB},
+		{"styleBookEntryERC", Types.VARCHAR}, {"css", Types.CLOB},
 		{"priority", Types.INTEGER}, {"faviconFileEntryId", Types.BIGINT},
 		{"masterLayoutPlid", Types.BIGINT},
 		{"layoutPrototypeUuid", Types.VARCHAR},
@@ -132,7 +132,7 @@ public class LayoutModelImpl
 		TABLE_COLUMNS_MAP.put("iconImageId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("themeId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("colorSchemeId", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("styleBookEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("styleBookEntryERC", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("css", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("priority", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("faviconFileEntryId", Types.BIGINT);
@@ -149,7 +149,7 @@ public class LayoutModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Layout (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,plid LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentPlid LONG,privateLayout BOOLEAN,layoutId LONG,parentLayoutId LONG,classNameId LONG,classPK LONG,name STRING null,title TEXT null,description TEXT null,keywords STRING null,robots STRING null,type_ VARCHAR(75) null,typeSettings TEXT null,hidden_ BOOLEAN,system_ BOOLEAN,friendlyURL VARCHAR(255) null,iconImageId LONG,themeId VARCHAR(75) null,colorSchemeId VARCHAR(75) null,styleBookEntryId LONG,css TEXT null,priority INTEGER,faviconFileEntryId LONG,masterLayoutPlid LONG,layoutPrototypeUuid VARCHAR(75) null,layoutPrototypeLinkEnabled BOOLEAN,layoutSetPrototypeLayoutERC VARCHAR(75) null,publishDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (plid, ctCollectionId))";
+		"create table Layout (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,plid LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentPlid LONG,privateLayout BOOLEAN,layoutId LONG,parentLayoutId LONG,classNameId LONG,classPK LONG,name STRING null,title TEXT null,description TEXT null,keywords STRING null,robots STRING null,type_ VARCHAR(75) null,typeSettings TEXT null,hidden_ BOOLEAN,system_ BOOLEAN,friendlyURL VARCHAR(255) null,iconImageId LONG,themeId VARCHAR(75) null,colorSchemeId VARCHAR(75) null,styleBookEntryERC VARCHAR(75) null,css TEXT null,priority INTEGER,faviconFileEntryId LONG,masterLayoutPlid LONG,layoutPrototypeUuid VARCHAR(75) null,layoutPrototypeLinkEnabled BOOLEAN,layoutSetPrototypeLayoutERC VARCHAR(75) null,publishDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (plid, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table Layout";
 
@@ -438,7 +438,7 @@ public class LayoutModelImpl
 			attributeGetterFunctions.put(
 				"colorSchemeId", Layout::getColorSchemeId);
 			attributeGetterFunctions.put(
-				"styleBookEntryId", Layout::getStyleBookEntryId);
+				"styleBookEntryERC", Layout::getStyleBookEntryERC);
 			attributeGetterFunctions.put("css", Layout::getCss);
 			attributeGetterFunctions.put("priority", Layout::getPriority);
 			attributeGetterFunctions.put(
@@ -551,8 +551,8 @@ public class LayoutModelImpl
 				"colorSchemeId",
 				(BiConsumer<Layout, String>)Layout::setColorSchemeId);
 			attributeSetterBiConsumers.put(
-				"styleBookEntryId",
-				(BiConsumer<Layout, Long>)Layout::setStyleBookEntryId);
+				"styleBookEntryERC",
+				(BiConsumer<Layout, String>)Layout::setStyleBookEntryERC);
 			attributeSetterBiConsumers.put(
 				"css", (BiConsumer<Layout, String>)Layout::setCss);
 			attributeSetterBiConsumers.put(
@@ -1768,17 +1768,22 @@ public class LayoutModelImpl
 
 	@JSON
 	@Override
-	public long getStyleBookEntryId() {
-		return _styleBookEntryId;
+	public String getStyleBookEntryERC() {
+		if (_styleBookEntryERC == null) {
+			return "";
+		}
+		else {
+			return _styleBookEntryERC;
+		}
 	}
 
 	@Override
-	public void setStyleBookEntryId(long styleBookEntryId) {
+	public void setStyleBookEntryERC(String styleBookEntryERC) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_styleBookEntryId = styleBookEntryId;
+		_styleBookEntryERC = styleBookEntryERC;
 	}
 
 	@JSON
@@ -2392,7 +2397,7 @@ public class LayoutModelImpl
 		layoutImpl.setIconImageId(getIconImageId());
 		layoutImpl.setThemeId(getThemeId());
 		layoutImpl.setColorSchemeId(getColorSchemeId());
-		layoutImpl.setStyleBookEntryId(getStyleBookEntryId());
+		layoutImpl.setStyleBookEntryERC(getStyleBookEntryERC());
 		layoutImpl.setCss(getCss());
 		layoutImpl.setPriority(getPriority());
 		layoutImpl.setFaviconFileEntryId(getFaviconFileEntryId());
@@ -2462,8 +2467,8 @@ public class LayoutModelImpl
 		layoutImpl.setThemeId(this.<String>getColumnOriginalValue("themeId"));
 		layoutImpl.setColorSchemeId(
 			this.<String>getColumnOriginalValue("colorSchemeId"));
-		layoutImpl.setStyleBookEntryId(
-			this.<Long>getColumnOriginalValue("styleBookEntryId"));
+		layoutImpl.setStyleBookEntryERC(
+			this.<String>getColumnOriginalValue("styleBookEntryERC"));
 		layoutImpl.setCss(this.<String>getColumnOriginalValue("css"));
 		layoutImpl.setPriority(
 			this.<Integer>getColumnOriginalValue("priority"));
@@ -2739,7 +2744,13 @@ public class LayoutModelImpl
 			layoutCacheModel.colorSchemeId = null;
 		}
 
-		layoutCacheModel.styleBookEntryId = getStyleBookEntryId();
+		layoutCacheModel.styleBookEntryERC = getStyleBookEntryERC();
+
+		String styleBookEntryERC = layoutCacheModel.styleBookEntryERC;
+
+		if ((styleBookEntryERC != null) && (styleBookEntryERC.length() == 0)) {
+			layoutCacheModel.styleBookEntryERC = null;
+		}
 
 		layoutCacheModel.css = getCss();
 
@@ -2915,7 +2926,7 @@ public class LayoutModelImpl
 	private long _iconImageId;
 	private String _themeId;
 	private String _colorSchemeId;
-	private long _styleBookEntryId;
+	private String _styleBookEntryERC;
 	private String _css;
 	private int _priority;
 	private long _faviconFileEntryId;
@@ -2991,7 +3002,7 @@ public class LayoutModelImpl
 		_columnOriginalValues.put("iconImageId", _iconImageId);
 		_columnOriginalValues.put("themeId", _themeId);
 		_columnOriginalValues.put("colorSchemeId", _colorSchemeId);
-		_columnOriginalValues.put("styleBookEntryId", _styleBookEntryId);
+		_columnOriginalValues.put("styleBookEntryERC", _styleBookEntryERC);
 		_columnOriginalValues.put("css", _css);
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("faviconFileEntryId", _faviconFileEntryId);
@@ -3093,7 +3104,7 @@ public class LayoutModelImpl
 
 		columnBitmasks.put("colorSchemeId", 536870912L);
 
-		columnBitmasks.put("styleBookEntryId", 1073741824L);
+		columnBitmasks.put("styleBookEntryERC", 1073741824L);
 
 		columnBitmasks.put("css", 2147483648L);
 

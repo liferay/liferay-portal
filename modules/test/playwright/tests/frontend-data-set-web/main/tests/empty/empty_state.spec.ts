@@ -46,5 +46,35 @@ test(
 				page.getByText('Start creating one to show your data.')
 			).toBeVisible();
 		});
+
+		await test.step('Check that the "Create New Item" button has btn-primary class', async () => {
+			await expect(
+				page.getByRole('button', {name: 'Create New Item'})
+			).toHaveClass(/btn-primary/);
+		});
+	}
+);
+
+test(
+	'Check that management toolbar is hidden in empty state',
+	{
+		tag: ['@LPD-56880'],
+	},
+	async ({fdsSamplePage}) => {
+		await test.step('Verify management toolbar is hidden when no items and no active filters/search', async () => {
+			await expect(
+				fdsSamplePage.managementToolbar.container
+			).not.toBeVisible();
+
+			await expect(
+				fdsSamplePage.managementToolbar.searchInput
+			).not.toBeVisible();
+
+			await expect(
+				fdsSamplePage.managementToolbar.container.getByRole('button', {
+					name: 'Filter',
+				})
+			).not.toBeVisible();
+		});
 	}
 );

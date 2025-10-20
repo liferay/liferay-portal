@@ -977,7 +977,8 @@ public class LayoutPageTemplateEntryServiceImpl
 
 		return layoutPageTemplateEntryLocalService.
 			updateLayoutPageTemplateEntry(
-				layoutPageTemplateEntryId, classNameId, classTypeId);
+				getUserId(), layoutPageTemplateEntryId, classNameId,
+				classTypeId);
 	}
 
 	@Override

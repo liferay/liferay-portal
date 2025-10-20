@@ -11,7 +11,6 @@ import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
-import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -38,7 +37,8 @@ public class PendingAccountOrdersDataSetFragmentRenderer
 
 	@Override
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
-		return FeatureFlagManagerUtil.isEnabled("LPD-58472");
+		return FeatureFlagManagerUtil.isEnabled(
+			portal.getCompanyId(httpServletRequest), "LPD-58472");
 	}
 
 	@Override
@@ -53,16 +53,13 @@ public class PendingAccountOrdersDataSetFragmentRenderer
 
 		return new PendingAccountOrdersDataSetDisplayContext(
 			getConfigurationValuesMap(fragmentRendererContext),
-			httpServletRequest, language, _portal, _portletURLFactory);
+			httpServletRequest, language, portal, _portletURLFactory);
 	}
 
 	@Override
 	protected String getLabelKey() {
 		return "account-orders-data-set";
 	}
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private PortletURLFactory _portletURLFactory;

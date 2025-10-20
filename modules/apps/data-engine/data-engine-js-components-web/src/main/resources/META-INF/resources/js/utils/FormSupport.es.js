@@ -114,6 +114,66 @@ export function addFieldToColumn(
 	);
 }
 
+/**
+ * Cleans a single column by recursively cleaning its fields,
+ * removing any fields that have no content.
+ */
+function cleanColumn(column) {
+	const fields = Array.isArray(column.fields) ? column.fields : [];
+
+	column.fields = fields.map(cleanField).filter(hasFieldContent);
+
+	return column;
+}
+
+/**
+ * Recursively cleans a field by processing its nested fields
+ * and rows, removing empty ones. Returns the cleaned
+ * field only if it still has content.
+ */
+function cleanField(field) {
+	if (!field) {
+		return field;
+	}
+
+	if (Array.isArray(field.nestedFields)) {
+		field.nestedFields = field.nestedFields
+			.map(cleanField)
+			.filter(hasFieldContent);
+	}
+
+	if (Array.isArray(field.rows)) {
+		field.rows = field.rows
+			.map(cleanRow)
+			.filter((row) => !!row.columns.length);
+	}
+
+	return field;
+}
+
+/**
+ * Cleans a single page by removing rows that have no columns
+ */
+function cleanPage(page) {
+	const rows = Array.isArray(page.rows) ? page.rows : [];
+
+	page.rows = rows.map(cleanRow).filter((row) => !!row.columns.length);
+}
+
+/**
+ * Cleans a single row by removing columns that no longer contain
+ * any valid fields.
+ */
+function cleanRow(row) {
+	const columns = Array.isArray(row.columns) ? row.columns : [];
+
+	row.columns = columns
+		.map(cleanColumn)
+		.filter((column) => !!column.fields.length);
+
+	return row;
+}
+
 export function getFieldIndexes(pages, fieldName) {
 	let indexes = {};
 	const visitor = new PagesVisitor(pages);
@@ -133,6 +193,44 @@ export function getFieldIndexes(pages, fieldName) {
 	});
 
 	return indexes;
+}
+
+/**
+ * Determines whether a field still contains any content
+ * after cleanup. If:
+ * - It has nested fields or rows with content, or
+ * - It is a simple field (no nested structures).
+ */
+function hasFieldContent(field) {
+	if (!field) {
+		return false;
+	}
+
+	const hasNestedFields =
+		Array.isArray(field.nestedFields) && !!field.nestedFields.length;
+
+	const hasRows = Array.isArray(field.rows) && !!field.rows.length;
+
+	if (!hasNestedFields && !hasRows) {
+		return true;
+	}
+
+	if (
+		(hasNestedFields &&
+			field.nestedFields.some((nestedField) =>
+				hasFieldContent(nestedField)
+			)) ||
+		(hasRows &&
+			field.rows.some((row) =>
+				row.columns?.some((column) =>
+					column.fields?.some((field) => hasFieldContent(field))
+				)
+			))
+	) {
+		return true;
+	}
+
+	return false;
 }
 
 export function isEmptyRow(pages, pageIndex, rowIndex) {
@@ -242,6 +340,23 @@ export function removeEmptyRows(pages, pageIndex) {
 
 		return result;
 	}, []);
+}
+
+/**
+ * Removes empty rows, columns, and nested field structures
+ * from a deeply nested form pages array.
+ * Returns the cleaned rows of the given page index.
+ */
+export function removeNestedEmptyRows(pages, pageIndex) {
+	const page = pages[pageIndex];
+
+	if (!page) {
+		return [];
+	}
+
+	cleanPage(page);
+
+	return page.rows;
 }
 
 export function removeRow(pages, pageIndex, rowIndex) {

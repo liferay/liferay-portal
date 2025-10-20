@@ -7,7 +7,7 @@ package com.liferay.portal.instances.internal.component.enabler;
 
 import com.liferay.portal.instances.internal.operation.CopyPortalInstanceOperation;
 import com.liferay.portal.instances.internal.operation.ImportPortalInstanceOperation;
-import com.liferay.portal.kernel.db.partition.DBPartition;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -21,7 +21,7 @@ public class ComponentEnabler {
 
 	@Activate
 	protected void activate(ComponentContext componentContext) {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			componentContext.enableComponent(
 				CopyPortalInstanceOperation.class.getName());
 			componentContext.enableComponent(

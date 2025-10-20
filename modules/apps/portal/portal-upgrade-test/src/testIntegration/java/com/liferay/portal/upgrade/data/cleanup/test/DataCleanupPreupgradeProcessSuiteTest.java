@@ -10,7 +10,6 @@ import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -20,6 +19,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeException;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -72,7 +72,7 @@ public class DataCleanupPreupgradeProcessSuiteTest
 			_updatePortalSchemaVersion(_currentPortalSchemaVersion + ".0");
 		}
 
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			long[] companyIds = PortalInstancePool.getCompanyIds();
 
 			_companiesCount = companyIds.length;

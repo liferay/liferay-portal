@@ -69,12 +69,12 @@ public class ExceptionCheck extends BaseCheck {
 
 		String methodName = getName(methodDefinitionDetailAST);
 
-		List<DetailAST> identDetailASTList = getAllChildTokens(
+		List<DetailAST> identDetailASTs = getAllChildTokens(
 			classDefinitionDetailAST, true, TokenTypes.IDENT);
 
 		boolean calledByMethodWithException = false;
 
-		for (DetailAST identDetailAST : identDetailASTList) {
+		for (DetailAST identDetailAST : identDetailASTs) {
 			if (!methodName.equals(identDetailAST.getText())) {
 				continue;
 			}

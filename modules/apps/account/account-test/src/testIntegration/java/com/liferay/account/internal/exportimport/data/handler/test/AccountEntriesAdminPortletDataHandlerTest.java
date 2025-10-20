@@ -26,11 +26,18 @@ import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandler
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.util.ObjectFieldUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManager;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -40,10 +47,13 @@ import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.staging.StagingGroupHelper;
 
 import java.io.File;
@@ -226,6 +236,134 @@ public class AccountEntriesAdminPortletDataHandlerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-64512")
+	public void testExportImportAccountEntriesWithError() throws Exception {
+		AccountGroup accountGroup = AccountGroupTestUtil.addAccountGroup(
+			_accountGroupLocalService, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString() + "@liferay.com", null,
+			RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getCompanyId(), group.getGroupId(),
+				TestPropsValues.getUserId()));
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
+			accountEntry.getAccountEntryId());
+
+		Organization organization = _organizationLocalService.addOrganization(
+			TestPropsValues.getUserId(), 0, RandomTestUtil.randomString(),
+			false);
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			accountEntry.getAccountEntryId(), organization.getOrganizationId());
+
+		File larFile = _exportImportLocalService.exportLayoutsAsFile(
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildExportLayoutSettingsMap(
+							TestPropsValues.getUser(), group.getGroupId(),
+							false, new long[0],
+							HashMapBuilder.put(
+								PortletDataHandlerKeys.PORTLET_DATA,
+								new String[] {Boolean.TRUE.toString()}
+							).put(
+								PortletDataHandlerKeys.PORTLET_DATA + "_" +
+									AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
+								new String[] {Boolean.TRUE.toString()}
+							).build())));
+
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager(
+					AccountEntry.class.getSimpleName());
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchSystemObjectDefinition(
+				TestPropsValues.getCompanyId(),
+				systemObjectDefinitionManager.getName());
+
+		String fieldName = "x" + RandomTestUtil.randomString();
+
+		ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				fieldName
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).required(
+				true
+			).build());
+
+		ExportImportConfiguration exportImportConfiguration =
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildImportLayoutSettingsMap(
+							TestPropsValues.getUser(), group.getGroupId(),
+							false, new long[0],
+							HashMapBuilder.put(
+								PortletDataHandlerKeys.PORTLET_DATA,
+								new String[] {Boolean.TRUE.toString()}
+							).put(
+								PortletDataHandlerKeys.PORTLET_DATA + "_" +
+									AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
+								new String[] {Boolean.TRUE.toString()}
+							).build()));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.OFF)) {
+
+			_exportImportLocalService.importLayouts(
+				exportImportConfiguration, larFile);
+		}
+
+		int accountEntriesCount =
+			_accountEntryLocalService.getAccountEntriesCount(
+				TestPropsValues.getCompanyId(),
+				WorkflowConstants.STATUS_APPROVED);
+
+		List<ExportImportReportEntry> exportImportReportEntries =
+			_exportImportReportEntryLocalService.getExportImportReportEntries(
+				TestPropsValues.getCompanyId(),
+				exportImportConfiguration.getExportImportConfigurationId());
+
+		Assert.assertEquals(
+			exportImportReportEntries.toString(), accountEntriesCount,
+			exportImportReportEntries.size());
+		Assert.assertTrue(
+			ListUtil.exists(
+				exportImportReportEntries,
+				exportImportReportEntry ->
+					Objects.equals(
+						exportImportReportEntry.getErrorMessage(),
+						"The properties [" + fieldName + "] are required") &&
+					(exportImportReportEntry.getType() ==
+						ExportImportReportEntryConstants.TYPE_ERROR)));
+	}
+
+	@Test
 	public void testPortletDataHandlerRegistration() throws Exception {
 		PortletDataHandler portletDataHandler =
 			_portletDataHandlerProvider.provide(
@@ -271,6 +409,9 @@ public class AccountEntriesAdminPortletDataHandlerTest {
 		_exportImportReportEntryLocalService;
 
 	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
 	private OrganizationLocalService _organizationLocalService;
 
 	@Inject
@@ -278,5 +419,9 @@ public class AccountEntriesAdminPortletDataHandlerTest {
 
 	@Inject
 	private StagingGroupHelper _stagingGroupHelper;
+
+	@Inject
+	private SystemObjectDefinitionManagerRegistry
+		_systemObjectDefinitionManagerRegistry;
 
 }

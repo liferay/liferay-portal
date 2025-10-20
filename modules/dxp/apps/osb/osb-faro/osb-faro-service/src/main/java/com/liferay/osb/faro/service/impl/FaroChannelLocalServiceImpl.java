@@ -14,6 +14,7 @@ import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.base.FaroChannelLocalServiceBaseImpl;
 import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -64,12 +65,12 @@ public class FaroChannelLocalServiceImpl
 		long faroChannelId = counterLocalService.increment();
 
 		Group group = _groupLocalService.addGroup(
-			userId, workspaceGroupId, FaroChannel.class.getName(),
-			faroChannelId, 0,
+			StringPool.BLANK, userId, workspaceGroupId,
+			FaroChannel.class.getName(), faroChannelId, 0,
 			Collections.singletonMap(LocaleUtil.getDefault(), name), null,
-			GroupConstants.TYPE_SITE_PRIVATE, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, true,
-			null);
+			GroupConstants.TYPE_SITE_PRIVATE, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
+			true, null);
 
 		// friendlyURL will be derived from the group name if empty, so it has
 		// to be removed after creation

@@ -10,8 +10,14 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
+
+import jakarta.portlet.ResourceURL;
 
 import java.util.Map;
 
@@ -34,6 +40,22 @@ public class AssigneeDDMFormFieldTemplateContextContributor
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
 		return HashMapBuilder.<String, Object>put(
+			"searchURL",
+			() -> {
+				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+					RequestBackedPortletURLFactoryUtil.create(
+						ddmFormFieldRenderingContext.getHttpServletRequest());
+
+				return ResourceURLBuilder.createResourceURL(
+					(ResourceURL)
+						requestBackedPortletURLFactory.createResourceURL(
+							GetterUtil.getString(
+								ddmFormField.getProperty("portletId")))
+				).setResourceID(
+					"/object_entries/autocomplete_assignee"
+				).buildString();
+			}
+		).put(
 			"value",
 			() -> {
 				String value = ddmFormFieldRenderingContext.getValue();

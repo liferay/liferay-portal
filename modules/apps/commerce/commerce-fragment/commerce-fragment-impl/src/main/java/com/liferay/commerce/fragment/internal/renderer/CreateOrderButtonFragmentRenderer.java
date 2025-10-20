@@ -55,7 +55,8 @@ public class CreateOrderButtonFragmentRenderer
 
 	@Override
 	public boolean isSelectable(HttpServletRequest httpServletRequest) {
-		return FeatureFlagManagerUtil.isEnabled("LPD-58472");
+		return FeatureFlagManagerUtil.isEnabled(
+			portal.getCompanyId(httpServletRequest), "LPD-58472");
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class CreateOrderButtonFragmentRenderer
 
 	@Override
 	protected String getModule() {
-		return "{CreateOrder} from commerce-frontend-js";
+		return "{CreateOrderButton} from commerce-fragment-impl";
 	}
 
 	@Override
@@ -83,13 +84,13 @@ public class CreateOrderButtonFragmentRenderer
 			(CommerceContext)httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
-		return HashMapBuilder.<String, Object>putAll(
-			getConfigurationValuesMap(fragmentRendererContext)
-		).put(
+		return HashMapBuilder.<String, Object>put(
 			"addCommerceOrderURL",
 			_commerceOrderHttpHelper.getCommerceCartBaseURL(httpServletRequest)
 		).put(
 			"commerceChannelId", commerceContext.getCommerceChannelId()
+		).put(
+			"configuration", getConfigurationValuesMap(fragmentRendererContext)
 		).put(
 			"currencyCode",
 			() -> {

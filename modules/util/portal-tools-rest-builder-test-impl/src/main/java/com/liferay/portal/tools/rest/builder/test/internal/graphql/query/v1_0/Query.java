@@ -435,7 +435,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryERCScopedTestEntity(assetLibraryExternalReferenceCode: ___, ercScopedTestEntityExternalReferenceCode: ___){assetLibraryExternalReferenceCode, dateCreated, dateModified, description, externalReferenceCode, permissions, siteExternalReferenceCode}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryERCScopedTestEntity(assetLibraryExternalReferenceCode: ___, ercScopedTestEntityExternalReferenceCode: ___){assetLibraryExternalReferenceCode, dateCreated, dateModified, description, externalReferenceCode, id, permissions, siteExternalReferenceCode}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ERCScopedTestEntity assetLibraryERCScopedTestEntity(
@@ -457,10 +457,73 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {eRCScopedTestEntities(siteExternalReferenceCode: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryERCScopedTestEntityPermissions(assetLibraryExternalReferenceCode: ___, ercScopedTestEntityExternalReferenceCode: ___, roleNames: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public ERCScopedTestEntityPage assetLibraryERCScopedTestEntityPermissions(
+			@GraphQLName("assetLibraryExternalReferenceCode") @NotEmpty String
+				assetLibraryExternalReferenceCode,
+			@GraphQLName("ercScopedTestEntityExternalReferenceCode") String
+				ercScopedTestEntityExternalReferenceCode,
+			@GraphQLName("roleNames") String roleNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_ercScopedTestEntityResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			ercScopedTestEntityResource -> new ERCScopedTestEntityPage(
+				ercScopedTestEntityResource.
+					getAssetLibraryERCScopedTestEntityPermissionsPage(
+						assetLibraryExternalReferenceCode,
+						ercScopedTestEntityExternalReferenceCode, roleNames)));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {eRCScopedTestEntities(roleNames: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ERCScopedTestEntityPage eRCScopedTestEntities(
+			@GraphQLName("roleNames") String roleNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_ercScopedTestEntityResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			ercScopedTestEntityResource -> new ERCScopedTestEntityPage(
+				ercScopedTestEntityResource.getERCScopedTestEntitiesPage(
+					roleNames)));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {eRCScopedTestEntityPermissions(ercScopedTestEntityExternalReferenceCode: ___, roleNames: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public ERCScopedTestEntityPage eRCScopedTestEntityPermissions(
+			@GraphQLName("ercScopedTestEntityExternalReferenceCode") String
+				ercScopedTestEntityExternalReferenceCode,
+			@GraphQLName("roleNames") String roleNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_ercScopedTestEntityResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			ercScopedTestEntityResource -> new ERCScopedTestEntityPage(
+				ercScopedTestEntityResource.
+					getERCScopedTestEntityPermissionsPage(
+						ercScopedTestEntityExternalReferenceCode, roleNames)));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {siteERCScopedTestEntities(siteExternalReferenceCode: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public ERCScopedTestEntityPage siteERCScopedTestEntities(
 			@GraphQLName("siteExternalReferenceCode") @NotEmpty String
 				siteExternalReferenceCode)
 		throws Exception {
@@ -476,7 +539,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {eRCScopedTestEntity(ercScopedTestEntityExternalReferenceCode: ___, siteExternalReferenceCode: ___){assetLibraryExternalReferenceCode, dateCreated, dateModified, description, externalReferenceCode, permissions, siteExternalReferenceCode}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {eRCScopedTestEntity(ercScopedTestEntityExternalReferenceCode: ___, siteExternalReferenceCode: ___){assetLibraryExternalReferenceCode, dateCreated, dateModified, description, externalReferenceCode, id, permissions, siteExternalReferenceCode}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ERCScopedTestEntity eRCScopedTestEntity(
@@ -493,6 +556,30 @@ public class Query {
 				ercScopedTestEntityResource.getSiteERCScopedTestEntity(
 					siteExternalReferenceCode,
 					ercScopedTestEntityExternalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {siteERCScopedTestEntityPermissions(ercScopedTestEntityExternalReferenceCode: ___, roleNames: ___, siteExternalReferenceCode: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public ERCScopedTestEntityPage siteERCScopedTestEntityPermissions(
+			@GraphQLName("siteExternalReferenceCode") @NotEmpty String
+				siteExternalReferenceCode,
+			@GraphQLName("ercScopedTestEntityExternalReferenceCode") String
+				ercScopedTestEntityExternalReferenceCode,
+			@GraphQLName("roleNames") String roleNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_ercScopedTestEntityResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			ercScopedTestEntityResource -> new ERCScopedTestEntityPage(
+				ercScopedTestEntityResource.
+					getSiteERCScopedTestEntityPermissionsPage(
+						siteExternalReferenceCode,
+						ercScopedTestEntityExternalReferenceCode, roleNames)));
 	}
 
 	/**

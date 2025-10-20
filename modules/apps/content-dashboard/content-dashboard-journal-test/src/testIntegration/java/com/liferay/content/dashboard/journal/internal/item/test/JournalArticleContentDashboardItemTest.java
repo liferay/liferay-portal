@@ -297,15 +297,15 @@ public class JournalArticleContentDashboardItemTest {
 			VersionableContentDashboardItem versionableContentDashboardItem =
 				(VersionableContentDashboardItem)contentDashboardItem;
 
-			HttpServletRequest mockHttpServletRequest =
+			HttpServletRequest httpServletRequest =
 				new MockHttpServletRequest();
 
-			mockHttpServletRequest.setAttribute(
+			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
 			List<ContentDashboardItemVersion> contentDashboardItemVersions =
 				versionableContentDashboardItem.
-					getAllContentDashboardItemVersions(mockHttpServletRequest);
+					getAllContentDashboardItemVersions(httpServletRequest);
 
 			Assert.assertEquals(
 				contentDashboardItemVersions.toString(), 1,
@@ -345,13 +345,12 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testGetDefaultContentDashboardItemAction() throws Exception {
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
-		_serviceContext.setRequest(mockHttpServletRequest);
+		_serviceContext.setRequest(httpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 
@@ -366,16 +365,16 @@ public class JournalArticleContentDashboardItemTest {
 				_contentDashboardItemFactory.create(
 					journalArticle.getResourcePrimKey());
 
-			mockHttpServletRequest.setAttribute(
+			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
 			ContentDashboardItemAction contentDashboardItemAction =
 				contentDashboardItem.getDefaultContentDashboardItemAction(
-					mockHttpServletRequest);
+					httpServletRequest);
 
 			ContentDashboardItemAction expectedContentDashboardItemAction =
 				_getContentDashboardItemAction(
-					journalArticle, mockHttpServletRequest,
+					journalArticle, httpServletRequest,
 					ContentDashboardItemAction.Type.VIEW);
 
 			Assert.assertEquals(
@@ -391,13 +390,12 @@ public class JournalArticleContentDashboardItemTest {
 	public void testGetDefaultContentDashboardItemActionWithApprovedAndDraftStatusAndNotOwnerUser()
 		throws Exception {
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
-		_serviceContext.setRequest(mockHttpServletRequest);
+		_serviceContext.setRequest(httpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 
@@ -425,11 +423,11 @@ public class JournalArticleContentDashboardItemTest {
 
 			ContentDashboardItemAction contentDashboardItemAction =
 				contentDashboardItem.getDefaultContentDashboardItemAction(
-					mockHttpServletRequest);
+					httpServletRequest);
 
 			ContentDashboardItemAction expectedContentDashboardItemAction =
 				_getContentDashboardItemAction(
-					journalArticle, mockHttpServletRequest,
+					journalArticle, httpServletRequest,
 					ContentDashboardItemAction.Type.VIEW);
 
 			Assert.assertEquals(
@@ -445,19 +443,18 @@ public class JournalArticleContentDashboardItemTest {
 	public void testGetDefaultContentDashboardItemActionWithDraftStatusAndOwnerUser()
 		throws Exception {
 
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG, _getLiferayPortletConfig());
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.CURRENT_URL, "http://localhost:8080");
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.USER_ID, TestPropsValues.getUserId());
 
-		_serviceContext.setRequest(mockHttpServletRequest);
+		_serviceContext.setRequest(httpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 
@@ -481,11 +478,11 @@ public class JournalArticleContentDashboardItemTest {
 
 			ContentDashboardItemAction contentDashboardItemAction =
 				contentDashboardItem.getDefaultContentDashboardItemAction(
-					mockHttpServletRequest);
+					httpServletRequest);
 
 			ContentDashboardItemAction expectedContentDashboardItemAction =
 				_getContentDashboardItemAction(
-					journalArticle, mockHttpServletRequest,
+					journalArticle, httpServletRequest,
 					ContentDashboardItemAction.Type.EDIT);
 
 			Assert.assertEquals(
@@ -944,15 +941,15 @@ public class JournalArticleContentDashboardItemTest {
 			VersionableContentDashboardItem versionableContentDashboardItem =
 				(VersionableContentDashboardItem)contentDashboardItem;
 
-			HttpServletRequest mockHttpServletRequest =
+			HttpServletRequest httpServletRequest =
 				new MockHttpServletRequest();
 
-			mockHttpServletRequest.setAttribute(
+			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
 			List<ContentDashboardItemVersion> contentDashboardItemVersions =
 				versionableContentDashboardItem.
-					getAllContentDashboardItemVersions(mockHttpServletRequest);
+					getAllContentDashboardItemVersions(httpServletRequest);
 
 			Assert.assertEquals(
 				contentDashboardItemVersions.toString(), 1,
@@ -977,13 +974,12 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsViewable() throws Exception {
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
-		_serviceContext.setRequest(mockHttpServletRequest);
+		_serviceContext.setRequest(httpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 
@@ -999,7 +995,7 @@ public class JournalArticleContentDashboardItemTest {
 			_addAssetDisplayPageEntry(journalArticle);
 
 			Assert.assertTrue(
-				contentDashboardItem.isViewable(mockHttpServletRequest));
+				contentDashboardItem.isViewable(httpServletRequest));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -1008,13 +1004,12 @@ public class JournalArticleContentDashboardItemTest {
 
 	@Test
 	public void testIsViewableWithNoAssetDisplayPageEntry() throws Exception {
-		HttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(LocaleUtil.US));
 
-		_serviceContext.setRequest(mockHttpServletRequest);
+		_serviceContext.setRequest(httpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
 
@@ -1028,7 +1023,7 @@ public class JournalArticleContentDashboardItemTest {
 					journalArticle.getResourcePrimKey());
 
 			Assert.assertFalse(
-				contentDashboardItem.isViewable(mockHttpServletRequest));
+				contentDashboardItem.isViewable(httpServletRequest));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();

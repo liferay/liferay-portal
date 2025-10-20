@@ -26,10 +26,10 @@ public class MapIterationCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> forEachClauseDetailASTList = getAllChildTokens(
+		List<DetailAST> forEachClauseDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.FOR_EACH_CLAUSE);
 
-		for (DetailAST forEachClauseDetailAST : forEachClauseDetailASTList) {
+		for (DetailAST forEachClauseDetailAST : forEachClauseDetailASTs) {
 			_checkKeySetIteration(forEachClauseDetailAST);
 		}
 	}
@@ -40,12 +40,10 @@ public class MapIterationCheck extends BaseCheck {
 
 		String keyName = getName(variableDefinitionDetailAST);
 
-		List<DetailAST> keySetMethodCallDetailASTList = getMethodCalls(
+		List<DetailAST> keySetMethodCallDetailASTs = getMethodCalls(
 			forEachClauseDetailAST, "keySet");
 
-		for (DetailAST keySetMethodCallDetailAST :
-				keySetMethodCallDetailASTList) {
-
+		for (DetailAST keySetMethodCallDetailAST : keySetMethodCallDetailASTs) {
 			FullIdent fullIdent = FullIdent.createFullIdentBelow(
 				keySetMethodCallDetailAST);
 
@@ -62,10 +60,10 @@ public class MapIterationCheck extends BaseCheck {
 				keySetMethodCallDetailAST, mapName);
 
 			if ((typeDetailAST != null) && isCollection(typeDetailAST)) {
-				List<DetailAST> wildcardTypeDetailASTList = getAllChildTokens(
+				List<DetailAST> wildcardTypeDetailASTs = getAllChildTokens(
 					typeDetailAST, true, TokenTypes.WILDCARD_TYPE);
 
-				if (wildcardTypeDetailASTList.isEmpty()) {
+				if (wildcardTypeDetailASTs.isEmpty()) {
 					log(forEachClauseDetailAST, _MSG_USE_ENTRY_SET);
 				}
 			}
@@ -75,10 +73,10 @@ public class MapIterationCheck extends BaseCheck {
 	private boolean _containsGetMethod(
 		DetailAST forDetailAST, String keyName, String mapName) {
 
-		List<DetailAST> getMethodCallDetailASTList = getMethodCalls(
+		List<DetailAST> getMethodCallDetailASTs = getMethodCalls(
 			forDetailAST, mapName, "get");
 
-		for (DetailAST getMethodCallDetailAST : getMethodCallDetailASTList) {
+		for (DetailAST getMethodCallDetailAST : getMethodCallDetailASTs) {
 			DetailAST eListDetailAST = getMethodCallDetailAST.findFirstToken(
 				TokenTypes.ELIST);
 

@@ -239,14 +239,6 @@ public class EmailNotificationType extends BaseNotificationType {
 		NotificationTemplate notificationTemplate =
 			notificationContext.getNotificationTemplate();
 
-		if (Objects.equals(
-				notificationTemplate.getRecipientType(),
-				NotificationRecipientConstants.TYPE_USER_GROUP) &&
-			!FeatureFlagManagerUtil.isEnabled("LPD-50091")) {
-
-			return;
-		}
-
 		long groupId = 0;
 
 		User user = userLocalService.getUser(notificationContext.getUserId());

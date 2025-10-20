@@ -19,6 +19,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -87,6 +88,8 @@ public class HelpCenterUtil {
 
 		Http.Options options = new Http.Options();
 
+		options.addHeader(HttpHeaders.USER_AGENT, _PATCHER_USER_AGENT);
+
 		String login =
 			patcherConfiguration.helpCenterApiUserName() + ":" +
 				patcherConfiguration.helpCenterApiPassword();
@@ -128,6 +131,8 @@ public class HelpCenterUtil {
 		throws Exception {
 
 		Http.Options options = new Http.Options();
+
+		options.addHeader(HttpHeaders.USER_AGENT, _PATCHER_USER_AGENT);
 
 		PatcherConfiguration patcherConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
@@ -229,5 +234,7 @@ public class HelpCenterUtil {
 
 		httpURLConnection.disconnect();
 	}
+
+	private static final String _PATCHER_USER_AGENT = "OSB Patcher Portal/7.4";
 
 }

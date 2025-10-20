@@ -139,7 +139,7 @@ export default function AccountsListView({
 
 			{modalVisible && (
 				<AccountCreationModal
-					accountTypes={accountEntryAllowedTypes}
+					accountEntryAllowedTypes={accountEntryAllowedTypes}
 					closeModal={onClose}
 					commerceChannelId={commerceChannelId}
 					handleAccountChange={changeAccount}

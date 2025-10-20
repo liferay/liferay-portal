@@ -13,11 +13,19 @@ import org.osgi.service.component.annotations.Reference;
 public class LPS_190521 {
 
 	public void method(long companyId, String externalReferenceCode) {
-		CPDefinitionLocalServiceUtil.fetchCPDefinitionByCProductExternalReferenceCode(companyId, externalReferenceCode);
-		CPDefinitionServiceUtil.fetchCPDefinitionByCProductExternalReferenceCode(companyId, externalReferenceCode);
-		_cpDefinitionLocalService.fetchCPDefinitionByCProductExternalReferenceCode(companyId, externalReferenceCode);
-		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(123, "test123");
-		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(companyId, externalReferenceCode);
+		CPDefinitionLocalServiceUtil.
+			fetchCPDefinitionByCProductExternalReferenceCode(
+				companyId, externalReferenceCode);
+		CPDefinitionServiceUtil.
+			fetchCPDefinitionByCProductExternalReferenceCode(
+				companyId, externalReferenceCode);
+		_cpDefinitionLocalService.
+			fetchCPDefinitionByCProductExternalReferenceCode(
+				companyId, externalReferenceCode);
+		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(
+			123, "test123");
+		_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(
+			companyId, externalReferenceCode);
 	}
 
 	@Reference

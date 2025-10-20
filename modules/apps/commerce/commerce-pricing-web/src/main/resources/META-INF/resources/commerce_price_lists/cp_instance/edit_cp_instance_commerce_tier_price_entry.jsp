@@ -65,7 +65,7 @@ CPInstance cpInstance = cpInstanceCommerceTierPriceEntryDisplayContext.getCPInst
 				}
 				%>
 
-				<aui:input label='<%= LanguageUtil.get(request, "quantity") %>' name="minQuantity" required="<%= true %>" value="<%= minQuantity.toString() %>">
+				<aui:input label='<%= LanguageUtil.get(request, "quantity") %>' name="minQuantity" required="<%= true %>" value="<%= minQuantity.toPlainString() %>">
 					<aui:validator name="min"><%= 0 %></aui:validator>
 				</aui:input>
 

@@ -17,6 +17,7 @@ import {WorkflowPage} from '../../../pages/portal-workflow-web/WorkflowPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {performLogout, performUserSwitch} from '../../../utils/performLogin';
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 
@@ -115,7 +116,9 @@ test(
 
 		// Edit content page and submit for workflow as new user
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user.id);
+		await performUserSwitch(page, user.alternateName);
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		await pageEditorPage.editTextEditable(
 			headingId,
@@ -127,9 +130,7 @@ test(
 
 		// Go to view mode as new user
 
-		await page.goto(
-			`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}?doAsUserId=${user.id}`
-		);
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
 		await expect(page.getByText('Heading Example')).toBeVisible();
 
@@ -143,7 +144,7 @@ test(
 
 		// Assert status label as new user
 
-		await pagesAdminPage.goto(site.friendlyUrlPath, user.id);
+		await pagesAdminPage.goto(site.friendlyUrlPath);
 
 		await expect(
 			page.locator('.miller-columns-item').filter({hasText: layoutTitle})
@@ -175,6 +176,8 @@ test(
 		).not.toBeVisible();
 
 		// Preview page and assert edited text
+
+		await performUserSwitch(page, 'test');
 
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
@@ -223,6 +226,8 @@ test(
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
 		await expect(page.getByText('Approved text')).toBeVisible();
+
+		await performLogout(page);
 	}
 );
 
@@ -266,9 +271,11 @@ test(
 
 		const user = await createPageEditorUser(apiHelpers);
 
+		await performUserSwitch(page, user.alternateName);
+
 		// Edit content page and submit for workflow as new user
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath, user.id);
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
 		await pageEditorPage.editTextEditable(
 			headingId,
@@ -279,6 +286,8 @@ test(
 		await pageEditorPage.publishPage();
 
 		// Reject content page
+
+		await performUserSwitch(page, 'test');
 
 		await workflowTasksPage.goToAssignedToMyRoles(site.friendlyUrlPath);
 
@@ -310,5 +319,7 @@ test(
 
 		await expect(page.getByText('Modified text')).toBeVisible();
 		await expect(page.getByText('Rejected text')).not.toBeVisible();
+
+		await performLogout(page);
 	}
 );

@@ -38,8 +38,6 @@ public class ServletContextHelperDataContext {
 		_servletContextTempDir = new File(
 			parentServletContextTempDir, contextName + hashCode());
 
-		_servletContextTempDir.mkdirs();
-
 		_attributesDictionary.put(
 			JavaConstants.JAKARTA_SERVLET_CONTEXT_TEMPDIR,
 			_servletContextTempDir);

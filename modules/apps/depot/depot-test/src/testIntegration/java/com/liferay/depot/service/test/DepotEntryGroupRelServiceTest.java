@@ -12,6 +12,7 @@ import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryGroupRelService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
@@ -61,16 +62,16 @@ public class DepotEntryGroupRelServiceTest {
 		throws Exception {
 
 		Group group = _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), 0, null, 0,
+			StringPool.BLANK, TestPropsValues.getUserId(), 0, null, 0,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			GroupConstants.TYPE_SITE_RESTRICTED, true,
+			GroupConstants.TYPE_SITE_RESTRICTED, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			FriendlyURLNormalizerUtil.normalize(RandomTestUtil.randomString()),
-			true, true, ServiceContextTestUtil.getServiceContext());
+			true, false, true, ServiceContextTestUtil.getServiceContext());
 
 		DepotEntry depotEntry = _addDepotEntry();
 
@@ -107,16 +108,16 @@ public class DepotEntryGroupRelServiceTest {
 	@Test
 	public void testGetDepotEntryGroupRelsWithPermissions() throws Exception {
 		Group group = _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), 0, null, 0,
+			StringPool.BLANK, TestPropsValues.getUserId(), 0, null, 0,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			GroupConstants.TYPE_SITE_OPEN, true,
+			GroupConstants.TYPE_SITE_OPEN, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			FriendlyURLNormalizerUtil.normalize(RandomTestUtil.randomString()),
-			true, true, ServiceContextTestUtil.getServiceContext());
+			true, false, true, ServiceContextTestUtil.getServiceContext());
 
 		DepotEntry depotEntry = _addDepotEntry();
 

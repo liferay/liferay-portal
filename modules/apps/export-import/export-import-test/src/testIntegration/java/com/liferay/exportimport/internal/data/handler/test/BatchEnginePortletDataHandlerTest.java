@@ -1463,56 +1463,56 @@ public class BatchEnginePortletDataHandlerTest {
 		if (Objects.equals(
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY, type)) {
 
-			for (int i = 0; i < objectEntries1.length; i++) {
-				ObjectEntry objectEntry = objectEntries1[i];
-
-				JSONAssert.assertEquals(
-					JSONUtil.put(
+			JSONAssert.assertEquals(
+				JSONUtil.toJSONArray(
+					objectEntries1,
+					objectEntry -> JSONUtil.put(
 						_toSimplifiedObjectEntryJSONObject(
-							group, objectEntry, scope)
-					).toString(),
-					exportedObjectEntriesJSONArray.getJSONObject(
-						i
-					).getJSONArray(
-						objectRelationship.getName()
-					).toString(),
-					JSONCompareMode.STRICT);
-			}
+							group, objectEntry, scope))
+				).toString(),
+				JSONUtil.toJSONArray(
+					JSONUtil.toList(
+						exportedObjectEntriesJSONArray,
+						objectEntry -> objectEntry),
+					exportedObjectEntry -> exportedObjectEntry.getJSONArray(
+						objectRelationship.getName())
+				).toString(),
+				JSONCompareMode.NON_EXTENSIBLE);
 
 			exportedObjectEntriesJSONArray = _getExportedObjectEntriesJSONArray(
 				objectDefinition1.getName(), larFile, group.getGroupId());
 
-			for (int i = 0; i < objectEntries2.length; i++) {
-				ObjectEntry objectEntry = objectEntries2[i];
-
-				JSONAssert.assertEquals(
-					JSONUtil.put(
+			JSONAssert.assertEquals(
+				JSONUtil.toJSONArray(
+					objectEntries2,
+					objectEntry -> JSONUtil.put(
 						_toSimplifiedObjectEntryJSONObject(
-							group, objectEntry, scope)
-					).toString(),
-					exportedObjectEntriesJSONArray.getJSONObject(
-						i
-					).getJSONArray(
-						objectRelationship.getName()
-					).toString(),
-					JSONCompareMode.STRICT);
-			}
+							group, objectEntry, scope))
+				).toString(),
+				JSONUtil.toJSONArray(
+					JSONUtil.toList(
+						exportedObjectEntriesJSONArray,
+						objectEntry -> objectEntry),
+					exportedObjectEntry -> exportedObjectEntry.getJSONArray(
+						objectRelationship.getName())
+				).toString(),
+				JSONCompareMode.NON_EXTENSIBLE);
 		}
 		else {
-			for (int i = 0; i < objectEntries1.length; i++) {
-				ObjectEntry objectEntry = objectEntries1[i];
-
-				JSONAssert.assertEquals(
-					_toSimplifiedObjectEntryJSONObject(
-						group, objectEntry, scope
-					).toString(),
-					exportedObjectEntriesJSONArray.getJSONObject(
-						i
-					).getJSONObject(
-						objectRelationship.getName()
-					).toString(),
-					JSONCompareMode.STRICT);
-			}
+			JSONAssert.assertEquals(
+				JSONUtil.toJSONArray(
+					objectEntries1,
+					objectEntry -> _toSimplifiedObjectEntryJSONObject(
+						group, objectEntry, scope)
+				).toString(),
+				JSONUtil.toJSONArray(
+					JSONUtil.toList(
+						exportedObjectEntriesJSONArray,
+						objectEntry -> objectEntry),
+					exportedObjectEntry -> exportedObjectEntry.getJSONObject(
+						objectRelationship.getName())
+				).toString(),
+				JSONCompareMode.NON_EXTENSIBLE);
 		}
 
 		_deleteObjectEntries(objectEntries1);

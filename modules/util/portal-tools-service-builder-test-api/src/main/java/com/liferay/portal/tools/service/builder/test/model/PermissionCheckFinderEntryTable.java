@@ -29,6 +29,11 @@ public class PermissionCheckFinderEntryTable
 			Column.FLAG_PRIMARY);
 	public final Column<PermissionCheckFinderEntryTable, Long> groupId =
 		createColumn("groupId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<PermissionCheckFinderEntryTable, Long> companyId =
+		createColumn(
+			"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<PermissionCheckFinderEntryTable, Long> userId =
+		createColumn("userId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<PermissionCheckFinderEntryTable, Integer> integer =
 		createColumn(
 			"integer_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);

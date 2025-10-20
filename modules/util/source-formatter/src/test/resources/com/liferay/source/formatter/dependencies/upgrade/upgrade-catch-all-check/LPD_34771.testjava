@@ -28,44 +28,77 @@ public class LPD_34771 {
 		long userId, Long parentCommerceAccountId, int commerceSiteType,
 		String keywords) {
 
-		AccountEntryLocalServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords);
-		AccountEntryServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, 123, "test123");
-		AccountEntryServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords);
-		_accountEntryLocalService.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords);
-		_accountEntryService.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords);
+		AccountEntryLocalServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords);
+		AccountEntryServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, 123, "test123");
+		AccountEntryServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords);
+		_accountEntryLocalService.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords);
+		_accountEntryService.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords);
 	}
 
 	public void method(
 		long userId, Long parentCommerceAccountId, int commerceSiteType,
 		String keywords, Boolean active) {
 
-		AccountEntryLocalServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords, active);
-		AccountEntryServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, 123, "test123", active);
-		AccountEntryServiceUtil.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords, active);
-		_accountEntryLocalService.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords, active);
-		_accountEntryService.getUserCommerceAccountsCount(userId, parentCommerceAccountId, commerceSiteType, keywords, active);
+		AccountEntryLocalServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords,
+			active);
+		AccountEntryServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, 123, "test123", active);
+		AccountEntryServiceUtil.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords,
+			active);
+		_accountEntryLocalService.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords,
+			active);
+		_accountEntryService.getUserCommerceAccountsCount(
+			userId, parentCommerceAccountId, commerceSiteType, keywords,
+			active);
 	}
 
 	public void method(
 		long userId, Long parentCommerceAccountId, int commerceSiteType,
 		String keywords, Boolean active, int start, int end) {
 
-		AccountEntryLocalServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, active, start, end);
-		AccountEntryServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, 123, "test123", active, start, end);
-		AccountEntryServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, active, start, end);
-		_accountEntryLocalService.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, active, start, end);
-		_accountEntryService.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, active, start, end);
+		AccountEntryLocalServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, active,
+			start, end);
+		AccountEntryServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, 123, "test123", active, start,
+			end);
+		AccountEntryServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, active,
+			start, end);
+		_accountEntryLocalService.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, active,
+			start, end);
+		_accountEntryService.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, active,
+			start, end);
 	}
 
 	public void method(
 		long userId, Long parentCommerceAccountId, int commerceSiteType,
 		String keywords, int start, int end) {
 
-		AccountEntryLocalServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, start, end);
-		AccountEntryServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, 123, "test123", start, end);
-		AccountEntryServiceUtil.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, start, end);
-		_accountEntryLocalService.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, start, end);
-		_accountEntryService.getUserCommerceAccounts(userId, parentCommerceAccountId, commerceSiteType, keywords, start, end);
+		AccountEntryLocalServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, start,
+			end);
+		AccountEntryServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, 123, "test123", start, end);
+		AccountEntryServiceUtil.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, start,
+			end);
+		_accountEntryLocalService.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, start,
+			end);
+		_accountEntryService.getUserCommerceAccounts(
+			userId, parentCommerceAccountId, commerceSiteType, keywords, start,
+			end);
 	}
 
 	public void method(
@@ -74,11 +107,25 @@ public class LPD_34771 {
 		long defaultBillingAddressId, long defaultShippingAddressId,
 		ServiceContext serviceContext) {
 
-		AccountEntryLocalServiceUtil.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, serviceContext);
-		AccountEntryServiceUtil.updateAccountEntry(123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, serviceContext);
-		AccountEntryServiceUtil.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, serviceContext);
-		_accountEntryLocalService.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, serviceContext);
-		_accountEntryService.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, serviceContext);
+		AccountEntryLocalServiceUtil.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			serviceContext);
+		AccountEntryServiceUtil.updateAccountEntry(
+			123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active,
+			defaultBillingAddressId, defaultShippingAddressId, serviceContext);
+		AccountEntryServiceUtil.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			serviceContext);
+		_accountEntryLocalService.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			serviceContext);
+		_accountEntryService.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			serviceContext);
 	}
 
 	public void method(
@@ -87,11 +134,26 @@ public class LPD_34771 {
 		long defaultBillingAddressId, long defaultShippingAddressId,
 		String externalReferenceCode, ServiceContext serviceContext) {
 
-		AccountEntryLocalServiceUtil.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, externalReferenceCode, serviceContext);
-		AccountEntryServiceUtil.updateAccountEntry(123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, externalReferenceCode, serviceContext);
-		AccountEntryServiceUtil.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, externalReferenceCode, serviceContext);
-		_accountEntryLocalService.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, externalReferenceCode, serviceContext);
-		_accountEntryService.updateAccountEntry(commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber, active, defaultBillingAddressId, defaultShippingAddressId, externalReferenceCode, serviceContext);
+		AccountEntryLocalServiceUtil.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			externalReferenceCode, serviceContext);
+		AccountEntryServiceUtil.updateAccountEntry(
+			123, "test123", logo, logoBytes, emailAddress, taxIdNumber, active,
+			defaultBillingAddressId, defaultShippingAddressId,
+			externalReferenceCode, serviceContext);
+		AccountEntryServiceUtil.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			externalReferenceCode, serviceContext);
+		_accountEntryLocalService.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			externalReferenceCode, serviceContext);
+		_accountEntryService.updateAccountEntry(
+			commerceAccountId, name, logo, logoBytes, emailAddress, taxIdNumber,
+			active, defaultBillingAddressId, defaultShippingAddressId,
+			externalReferenceCode, serviceContext);
 	}
 
 	@Reference

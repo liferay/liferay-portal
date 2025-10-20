@@ -615,6 +615,8 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 	private static final Set<String> _ignoredParameters = new HashSet<>(
 		Arrays.asList(
 			"callbackURL", "fieldNameMapping", "taskItemDelegateName"));
+	private static final Map<String, Integer> _itemClassBatchSizeMap =
+		new HashMap<>();
 
 	@Reference
 	private BatchEngineImportTaskExecutor _batchEngineImportTaskExecutor;
@@ -627,8 +629,6 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 
 	@Reference
 	private File _file;
-
-	private final Map<String, Integer> _itemClassBatchSizeMap = new HashMap<>();
 
 	@Reference
 	private ItemClassRegistry _itemClassRegistry;

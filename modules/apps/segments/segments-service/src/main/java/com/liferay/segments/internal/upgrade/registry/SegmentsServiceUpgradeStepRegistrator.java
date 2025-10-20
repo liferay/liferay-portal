@@ -103,10 +103,8 @@ public class SegmentsServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"SegmentsExperience", "segmentsExperienceId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"SegmentsExperience"};
 				}
 
 			});

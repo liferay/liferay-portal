@@ -10,7 +10,6 @@ import com.liferay.notification.context.NotificationContext;
 import com.liferay.notification.term.evaluator.NotificationTermEvaluator;
 import com.liferay.notification.term.evaluator.NotificationTermEvaluatorTracker;
 import com.liferay.notification.type.util.NotificationTypeUtil;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -23,8 +22,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Feliphe Marinho
@@ -54,7 +57,7 @@ public class TermUsersProvider implements UsersProvider {
 			NotificationContext notificationContext, List<String> values)
 		throws PortalException {
 
-		List<User> users = new ArrayList<>();
+		Map<Long, User> usersMap = new LinkedHashMap<>();
 
 		List<String> screenNames = new ArrayList<>();
 		List<String> termNames = new ArrayList<>();
@@ -68,73 +71,79 @@ public class TermUsersProvider implements UsersProvider {
 			}
 		}
 
-		users.addAll(
-			TransformUtil.unsafeTransform(
-				screenNames,
-				screenName -> {
-					User user = _userLocalService.getUserByScreenName(
-						notificationContext.getCompanyId(), screenName);
+		for (String screenName : screenNames) {
+			User user = _userLocalService.getUserByScreenName(
+				notificationContext.getCompanyId(), screenName);
 
-					if (!ModelResourcePermissionUtil.contains(
-							_permissionCheckerFactory.create(user),
-							notificationContext.getGroupId(),
-							notificationContext.getClassName(),
-							notificationContext.getClassPK(),
-							ActionKeys.VIEW)) {
+			if (usersMap.containsKey(user.getUserId())) {
+				continue;
+			}
 
-						return null;
-					}
-
-					return user;
-				}));
+			if (_hasViewPermission(user, notificationContext)) {
+				usersMap.put(user.getUserId(), user);
+			}
+		}
 
 		for (NotificationTermEvaluator notificationTermEvaluator :
 				_notificationTermEvaluatorTracker.getNotificationTermEvaluators(
 					notificationContext.getClassName())) {
 
-			users.addAll(
-				TransformUtil.unsafeTransform(
-					termNames,
-					termName -> {
-						String termValue = notificationTermEvaluator.evaluate(
-							NotificationTermEvaluator.Context.RECIPIENT,
-							notificationContext.getTermValues(), termName);
+			for (String termName : termNames) {
+				String termValue = notificationTermEvaluator.evaluate(
+					NotificationTermEvaluator.Context.RECIPIENT,
+					notificationContext.getTermValues(), termName);
 
-						if (Objects.equals(termName, termValue)) {
-							return null;
-						}
+				if (Objects.equals(termName, termValue)) {
+					continue;
+				}
 
-						Role role = _roleLocalService.fetchRole(
-							GetterUtil.getLong(termValue));
+				Matcher matcher = _numberPattern.matcher(termValue);
 
-						if (role != null) {
-							users.addAll(
+				while (matcher.find()) {
+					long id = GetterUtil.getLong(Long.valueOf(matcher.group()));
+
+					Role role = _roleLocalService.fetchRole(id);
+
+					if (role != null) {
+						for (User user :
 								_roleUsersProvider.provide(
 									notificationContext,
-									Collections.singletonList(role.getName())));
+									Collections.singletonList(
+										role.getName()))) {
 
-							return null;
+							usersMap.put(user.getUserId(), user);
 						}
 
-						User user = _userLocalService.getUser(
-							GetterUtil.getLong(termValue));
+						continue;
+					}
 
-						if (!ModelResourcePermissionUtil.contains(
-								_permissionCheckerFactory.create(user),
-								notificationContext.getGroupId(),
-								notificationContext.getClassName(),
-								notificationContext.getClassPK(),
-								ActionKeys.VIEW)) {
+					if (usersMap.containsKey(id)) {
+						continue;
+					}
 
-							return null;
-						}
+					User user = _userLocalService.getUser(id);
 
-						return user;
-					}));
+					if (_hasViewPermission(user, notificationContext)) {
+						usersMap.put(id, user);
+					}
+				}
+			}
 		}
 
-		return users;
+		return new ArrayList<>(usersMap.values());
 	}
+
+	private boolean _hasViewPermission(
+		User user, NotificationContext notificationContext) {
+
+		return ModelResourcePermissionUtil.contains(
+			_permissionCheckerFactory.create(user),
+			notificationContext.getGroupId(),
+			notificationContext.getClassName(),
+			notificationContext.getClassPK(), ActionKeys.VIEW);
+	}
+
+	private static final Pattern _numberPattern = Pattern.compile("\\d+");
 
 	private final NotificationTermEvaluatorTracker
 		_notificationTermEvaluatorTracker;

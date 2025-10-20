@@ -54,12 +54,12 @@ public class JSONStorageUpgradeStepFactoryTest {
 				"create table JSONStorageUpgrade (jsonStorageUpgradeId LONG ",
 				"not null, ctCollectionId LONG not null, companyId LONG, ",
 				"jsonString VARCHAR(75), primary key (jsonStorageUpgradeId, ",
-				"ctCollectionId));"));
+				"ctCollectionId))"));
 
 		db.runSQL(
 			StringBundler.concat(
 				"insert into JSONStorageUpgrade values (", _CLASS_PK, ", 0, ",
-				TestPropsValues.getCompanyId(), ", '", _JSON_STRING, "');"));
+				TestPropsValues.getCompanyId(), ", '", _JSON_STRING, "')"));
 
 		_className = _classNameLocalService.getClassName(
 			JSONStorageUpgradeStepFactoryTest.class.getName());

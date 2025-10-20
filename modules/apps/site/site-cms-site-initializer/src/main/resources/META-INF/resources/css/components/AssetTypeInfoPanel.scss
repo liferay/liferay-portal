@@ -32,17 +32,8 @@
 
 .c-slideout .sidebar {
 	.asset-metadata-section {
-		margin-top: 1rem;
-
-		&-title {
-			font-weight: 600;
-			margin-bottom: 0;
-		}
-
 		p {
-			display: block;
 			font-size: 0.875rem;
-			margin-bottom: 0;
 		}
 	}
 
@@ -52,7 +43,6 @@
 		}
 
 		.c-empty-state-text {
-			color: $gray-600;
 			margin-top: 2rem;
 		}
 	}
@@ -60,7 +50,6 @@
 	.card-image {
 		height: 250px;
 		object-fit: contain;
-		width: 100%;
 	}
 
 	.nav {
@@ -77,22 +66,8 @@
 	}
 
 	.sidebar-header {
-		border-bottom-width: 0;
-
-		.asset-icon {
-			font-size: 20px;
-
-			&-files {
-				color: $red-l1;
-			}
-		}
-
-		.asset-title {
-			margin-bottom: 0;
-		}
-
-		.component-title {
-			margin-right: 0.5rem;
+		.asset-icon-files {
+			color: $red-l1;
 		}
 	}
 

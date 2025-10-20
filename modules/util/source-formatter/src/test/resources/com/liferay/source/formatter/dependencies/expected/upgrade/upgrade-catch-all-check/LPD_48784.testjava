@@ -15,12 +15,14 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_48784 {
 
 	public void method(long companyId, String sku, String unitOfMeasureKey) {
-		CommerceInventoryBookedQuantityLocalServiceUtil.getCommerceBookedQuantity(123, "test123");
+		CommerceInventoryBookedQuantityLocalServiceUtil.
+			getCommerceBookedQuantity(123, "test123");
 		CommerceInventoryBookedQuantityLocalServiceUtil.getCommerceInventoryBookedQuantity(companyId, sku, StringPool.BLANK);
 		_commerceInventoryBookedQuantityLocalService.getCommerceInventoryBookedQuantity(companyId, sku, StringPool.BLANK);
 	}
 
 	@Reference
-	private CommerceInventoryBookedQuantityLocalService _commerceInventoryBookedQuantityLocalService;
+	private CommerceInventoryBookedQuantityLocalService
+		_commerceInventoryBookedQuantityLocalService;
 
 }

@@ -13,15 +13,22 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_37502 {
 
 	public void method(String externalReferenceCode, long companyId) {
-		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode("test123", 123);
-		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode(externalReferenceCode, companyId);
-		_commercePriceListLocalService.fetchByExternalReferenceCode(externalReferenceCode, companyId);
+		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode(
+			"test123", 123);
+		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode(
+			externalReferenceCode, companyId);
+		_commercePriceListLocalService.fetchByExternalReferenceCode(
+			externalReferenceCode, companyId);
 
 		CPInstanceLocalServiceUtil.fetchByExternalReferenceCode("test123", 123);
-		CPInstanceLocalServiceUtil.fetchByExternalReferenceCode(externalReferenceCode, companyId);
-		CPInstanceServiceUtil.fetchByExternalReferenceCode(externalReferenceCode, companyId);
-		_cpInstanceLocalService.fetchByExternalReferenceCode(externalReferenceCode, companyId);
-		_cpInstanceService.fetchByExternalReferenceCode(externalReferenceCode, companyId);
+		CPInstanceLocalServiceUtil.fetchByExternalReferenceCode(
+			externalReferenceCode, companyId);
+		CPInstanceServiceUtil.fetchByExternalReferenceCode(
+			externalReferenceCode, companyId);
+		_cpInstanceLocalService.fetchByExternalReferenceCode(
+			externalReferenceCode, companyId);
+		_cpInstanceService.fetchByExternalReferenceCode(
+			externalReferenceCode, companyId);
 	}
 
 	@Reference

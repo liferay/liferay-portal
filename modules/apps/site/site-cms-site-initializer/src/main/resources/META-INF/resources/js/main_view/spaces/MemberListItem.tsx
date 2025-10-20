@@ -48,7 +48,7 @@ export function MembersListItem({
 				const classes = cx(
 					'align-items-center d-flex justify-content-between',
 					{
-						'c-pt-2 c-pb-2': isOwner,
+						'c-pt-2 c-pb-2': isOwner || !hasAssignMembersPermission,
 					}
 				);
 

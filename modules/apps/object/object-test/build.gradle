@@ -8,6 +8,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:application-list:application-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-api")
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
+	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")

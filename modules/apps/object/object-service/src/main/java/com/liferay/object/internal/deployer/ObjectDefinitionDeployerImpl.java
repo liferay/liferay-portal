@@ -13,12 +13,10 @@ import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.notification.handler.NotificationHandler;
 import com.liferay.notification.term.evaluator.NotificationTermEvaluator;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.definition.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
-import com.liferay.object.internal.defaultpermissions.resource.ObjectEntryPortalDefaultPermissionsModelResource;
 import com.liferay.object.internal.layout.tab.screen.navigation.category.ObjectLayoutTabScreenNavigationCategory;
 import com.liferay.object.internal.notification.handler.ObjectDefinitionNotificationHandler;
 import com.liferay.object.internal.notification.term.contributor.ObjectDefinitionNotificationTermEvaluator;
@@ -68,9 +66,7 @@ import com.liferay.object.tree.Tree;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
-import com.liferay.portal.kernel.defaultpermissions.resource.PortalDefaultPermissionsModelResource;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
@@ -116,7 +112,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -410,14 +405,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				MapUtil.singletonDictionary(
 					"model.class.name", objectDefinition.getClassName())),
 			_bundleContext.registerService(
-				PortalDefaultPermissionsModelResource.class,
-				new ObjectEntryPortalDefaultPermissionsModelResource(
-					objectDefinition.getClassName(),
-					objectDefinition.getLabel(), _getScope(objectDefinition)),
-				MapUtil.singletonDictionary(
-					"portal.default.permissions.model.resource.key",
-					objectDefinition.getClassName())),
-			_bundleContext.registerService(
 				RESTContextPathResolver.class,
 				new RESTContextPathResolverImpl(
 					objectDefinition,
@@ -575,18 +562,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		}
 
 		return serviceRegistrations;
-	}
-
-	private String _getScope(ObjectDefinition objectDefinition) {
-		if (Objects.equals(
-				objectDefinition.getScope(),
-				ObjectDefinitionConstants.SCOPE_COMPANY)) {
-
-			return ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-				toString();
-		}
-
-		return ExtendedObjectClassDefinition.Scope.GROUP.toString();
 	}
 
 	private String _getServiceRegistrationKey(

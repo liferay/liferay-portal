@@ -76,7 +76,7 @@ class CriteriaCard extends React.Component<
 			<Card
 				className='criteria-card-root'
 				reportContainer={
-					segment.segmentType === SegmentTypes.Dynamic &&
+					segment.segmentType === SegmentTypes.Batch &&
 					ReportContainer.SegmentCriteriaCard
 				}
 			>

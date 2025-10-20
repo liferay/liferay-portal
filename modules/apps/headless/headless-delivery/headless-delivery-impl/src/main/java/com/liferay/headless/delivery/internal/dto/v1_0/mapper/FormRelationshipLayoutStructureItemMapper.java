@@ -96,6 +96,9 @@ public class FormRelationshipLayoutStructureItemMapper
 							setName(
 								formRelationshipStyledLayoutStructureItem::
 									getName);
+							setRepeatable(
+								formRelationshipStyledLayoutStructureItem::
+									isRepeatable);
 						}
 					});
 				setId(layoutStructureItem::getItemId);

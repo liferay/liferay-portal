@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -62,16 +61,19 @@ public class NumericDDMFormFieldTypeUtil {
 			).build();
 		}
 
-		String numericInputMask = _getPropertyValue(
-			ddmFormField, ddmFormFieldRenderingContext, locale,
-			"numericInputMask");
+		String numericInputMaskJSON =
+			NumericInputMaskDDMFormFieldTypeUtil.getJSON(
+				_getPropertyValue(
+					ddmFormField, ddmFormFieldRenderingContext, locale,
+					"numericInputMask"));
 
 		return HashMapBuilder.<String, Object>put(
-			"inputMask", inputMask
+			"inputMask", true
 		).put(
-			"numericInputMask", numericInputMask
+			"numericInputMask", numericInputMaskJSON
 		).putAll(
-			_getNumericInputMaskParameters(numericInputMask)
+			(Map<String, Object>)JSONFactoryUtil.looseDeserialize(
+				numericInputMaskJSON)
 		).build();
 	}
 
@@ -91,17 +93,6 @@ public class NumericDDMFormFieldTypeUtil {
 		}
 
 		return localizedSymbols;
-	}
-
-	private static Map<String, Object> _getNumericInputMaskParameters(
-		String numericInputMask) {
-
-		if (Validator.isNull(numericInputMask)) {
-			return new HashMap<>();
-		}
-
-		return (Map<String, Object>)JSONFactoryUtil.looseDeserialize(
-			numericInputMask);
 	}
 
 	private static String _getPropertyValue(

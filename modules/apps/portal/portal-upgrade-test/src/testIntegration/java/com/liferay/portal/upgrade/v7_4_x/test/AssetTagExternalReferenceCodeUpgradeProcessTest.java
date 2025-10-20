@@ -62,8 +62,8 @@ public class AssetTagExternalReferenceCodeUpgradeProcessTest
 		return new BaseExternalReferenceCodeUpgradeProcess() {
 
 			@Override
-			protected String[][] getTableAndPrimaryKeyColumnNames() {
-				return new String[][] {{"AssetTag", "tagId"}};
+			protected String[] getTableNames() {
+				return new String[] {"AssetTag"};
 			}
 
 		};

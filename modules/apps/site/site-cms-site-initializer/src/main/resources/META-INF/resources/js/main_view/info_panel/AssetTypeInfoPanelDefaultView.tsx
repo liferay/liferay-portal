@@ -20,7 +20,8 @@ const AssetTypeInfoPanelDefaultView = () => {
 		small: boolean;
 		title: string | null;
 	} = {
-		className: 'justify-content-center structure-builder__empty-state',
+		className:
+			'justify-content-center text-secondary structure-builder__empty-state',
 		description: '',
 		imgSrc: '',
 		imgSrcReducedMotion: '',

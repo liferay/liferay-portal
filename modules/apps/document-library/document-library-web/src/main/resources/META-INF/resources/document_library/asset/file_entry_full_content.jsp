@@ -18,7 +18,7 @@ DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext = dlDisplayConte
 <liferay-util:html-top
 	outputKey="com.liferay.document.library.web#/document_library/asset/file_entry_full_content.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/document_library/css/document_library_preview.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="document-library-web/document_library/css/document_library_preview.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <c:choose>

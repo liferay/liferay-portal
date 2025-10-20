@@ -10,7 +10,7 @@ import {withSegment} from 'shared/hoc/WithSegment';
 
 export class Edit extends React.Component {
 	static defaultProps = {
-		type: SegmentTypes.Dynamic
+		type: SegmentTypes.Batch
 	};
 
 	static propTypes = {
@@ -20,7 +20,7 @@ export class Edit extends React.Component {
 	render() {
 		const {segment, ...otherProps} = this.props;
 
-		const segmentType = get(segment, 'segmentType') || SegmentTypes.Dynamic;
+		const segmentType = get(segment, 'segmentType') || SegmentTypes.Batch;
 
 		if (segmentType) {
 			return (

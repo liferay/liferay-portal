@@ -53,7 +53,7 @@ public class SQLEqualsTest {
 				"typeBlob BLOB, typeBoolean BOOLEAN, typeDate DATE null, ",
 				"typeDouble DOUBLE, typeInteger INTEGER, typeLong LONG null, ",
 				"typeString STRING null, typeText TEXT null, typeVarchar ",
-				"VARCHAR(75) null);"));
+				"VARCHAR(75) null)"));
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(

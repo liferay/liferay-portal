@@ -26,7 +26,7 @@ String previewURL = DLURLHelperUtil.getPreviewURL(fileVersion.getFileEntry(), fi
 <liferay-util:html-top
 	outputKey="com.liferay.document.library.preview.image#/preview/view.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/preview/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="document-library-preview-image/preview/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <c:choose>

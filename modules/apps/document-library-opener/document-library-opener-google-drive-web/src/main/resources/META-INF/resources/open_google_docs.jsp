@@ -20,7 +20,7 @@ String googleDocsRedirect = ParamUtil.getString(request, "googleDocsRedirect");
 		<meta content="initial-scale=1.0, width=device-width" name="viewport" />
 
 		<aui:link cssClass="lfr-css-file" href="<%= HtmlUtil.escapeAttribute(themeDisplay.getClayCSSURL()) %>" id="liferayAUICSS" rel="stylesheet" type="text/css" />
-		<aui:link href='<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, StringBundler.concat(themeDisplay.getCDNBaseURL(), PortalUtil.getPathProxy(), application.getContextPath(), "/css/google_docs.css"))) %>' id="liferayGoogleDriveCSS" rel="stylesheet" type="text/css" />
+		<aui:link hashedFile="<%= true %>" href="document-library-opener-google-drive-web/css/google_docs.css" id="liferayGoogleDriveCSS" rel="stylesheet" type="text/css" />
 	</head>
 
 	<body>

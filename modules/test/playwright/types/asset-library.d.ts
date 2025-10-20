@@ -6,5 +6,5 @@
 type AssetLibrary = {
 	externalReferenceCode?: string;
 	id: number;
-	name: string;
+	name?: string;
 };

@@ -112,6 +112,9 @@ components:
                     type: string
                 externalReferenceCode:
                     type: string
+                id:
+                    format: int64
+                    type: integer
                 permissions:
                     items:
                         type: permission
@@ -710,6 +713,61 @@ paths:
                                 $ref: "#/components/schemas/ERCScopedTestEntity"
                     description:
                         "OK"
+            tags: ["ERCScopedTestEntity"]
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}/permissions":
+        get:
+            operationId: getAssetLibraryERCScopedTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCScopedTestEntity"]
+        put:
+            operationId: putAssetLibraryERCScopedTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
             tags: ["ERCScopedTestEntity"]
     "/asset-libraries/{assetLibraryId}/asset-library-test-entities":
         get:
@@ -1321,6 +1379,83 @@ paths:
                     description:
                         "OK"
             tags: ["EntityModelResourceTestEntity2"]
+    "/erc-scoped-test-entities":
+        get:
+            operationId: getERCScopedTestEntitiesPage
+            parameters:
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ERCScopedTestEntity"
+                                type: array
+                        "application/xml":
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ERCScopedTestEntity"
+                                type: array
+                    description:
+                        "OK"
+            tags: ["ERCScopedTestEntity"]
+    "/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}/permissions":
+        get:
+            operationId: getERCScopedTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCScopedTestEntity"]
+        put:
+            operationId: putERCScopedTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCScopedTestEntity"]
     "/filters":
         get:
             operationId: getFiltersPage
@@ -1725,6 +1860,61 @@ paths:
                                 $ref: "#/components/schemas/ERCScopedTestEntity"
                     description:
                         "OK"
+            tags: ["ERCScopedTestEntity"]
+    "/sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}/permissions":
+        get:
+            operationId: getSiteERCScopedTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCScopedTestEntity"]
+        put:
+            operationId: putSiteERCScopedTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
             tags: ["ERCScopedTestEntity"]
     "/sites/{siteExternalReferenceCode}/erc-site-test-entities":
         get:
@@ -2305,6 +2495,25 @@ paths:
                                     items:
                                         $ref: "#/components/schemas/TestEntity"
                                     type: array
+                            type: object
+            responses:
+                200:
+                    description:
+                        "OK"
+            tags: ["TestEntity"]
+    "/test-entities/multipart/image":
+        post:
+            operationId: postTestEntityMultipartImage
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                file:
+                                    format: binary
+                                    type: string
+                                imageName:
+                                    type: string
                             type: object
             responses:
                 200:

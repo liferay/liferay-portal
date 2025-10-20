@@ -59,7 +59,7 @@ exports[`List should render 1`] = `
           >
             <a
               class="button-root btn btn-primary"
-              href="/workspace/23/123/contacts/segments/create?type=DYNAMIC"
+              href="/workspace/23/123/contacts/segments/create?type=BATCH"
             >
               Create Segment
             </a>

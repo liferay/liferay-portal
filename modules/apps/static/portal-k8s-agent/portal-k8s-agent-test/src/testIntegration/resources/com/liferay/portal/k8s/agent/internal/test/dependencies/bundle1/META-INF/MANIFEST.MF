@@ -1,0 +1,4 @@
+Manifest-Version: 2
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: bundle1
+Bundle-Version: 1.0.0

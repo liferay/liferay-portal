@@ -43,6 +43,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal:portal-upload-test-util")
 	testIntegrationImplementation project(":apps:portlet-display-template:portlet-display-template-api")
 	testIntegrationImplementation project(":apps:segments:segments-api")
+	testIntegrationImplementation project(":apps:site-navigation:site-navigation-api")
+	testIntegrationImplementation project(":apps:site-navigation:site-navigation-menu-item-api")
 	testIntegrationImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:template:template-api")

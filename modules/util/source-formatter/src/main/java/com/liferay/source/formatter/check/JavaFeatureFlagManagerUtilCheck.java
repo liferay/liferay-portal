@@ -78,10 +78,9 @@ public class JavaFeatureFlagManagerUtilCheck extends BaseFileCheck {
 				continue;
 			}
 
-			if (i < (lines.length - 1)) {
+			for (int j = i + 1; j < (lines.length - 1); j++) {
 				trimmedLine =
-					trimmedLine +
-						StringUtil.trimLeading(lines[i + 1].substring(1));
+					trimmedLine + StringUtil.trimLeading(lines[j].substring(1));
 			}
 
 			List<String> parameterList = JavaSourceUtil.getParameterList(

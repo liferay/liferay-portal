@@ -74,12 +74,12 @@ public class MembershipPolicyTestUtil {
 			StringPool.SLASH + FriendlyURLNormalizerUtil.normalize(name);
 
 		return GroupServiceUtil.addGroup(
-			GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			StringPool.BLANK, GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
 			RandomTestUtil.randomLocaleStringMap(),
-			GroupConstants.TYPE_SITE_OPEN, true,
+			GroupConstants.TYPE_SITE_OPEN, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, friendlyURL, true,
-			true, populateServiceContext(Group.class, true));
+			false, true, populateServiceContext(Group.class, true));
 	}
 
 	public static Organization addOrganization() throws Exception {

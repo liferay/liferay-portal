@@ -203,59 +203,16 @@ public class ObjectDefinitionNotificationTermEvaluator
 	private String _evaluateObjectEntry(
 		Context context, String termName, Map<String, Object> termValues) {
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_objectDefinition.getCompanyId(), "LPD-17564")) {
+
+			return null;
+		}
+
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			GetterUtil.getLong(termValues.get("id")));
 
 		if (objectEntry == null) {
-			return null;
-		}
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				_objectDefinition.getCompanyId(), "LPD-6233") &&
-			termName.equals("[%OBJECT_ENTRY_ASSIGNEE%]")) {
-
-			ObjectField objectField =
-				_objectFieldLocalService.fetchObjectFieldByBusinessType(
-					_objectDefinition.getObjectDefinitionId(),
-					ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE, null);
-
-			if (objectField == null) {
-				return null;
-			}
-
-			Map<String, Object> entryDTO = (Map<String, Object>)termValues.get(
-				"entryDTO");
-
-			Map<String, Object> properties = (Map<String, Object>)entryDTO.get(
-				"properties");
-
-			Map<String, Object> assigneeMap =
-				(Map<String, Object>)properties.get(objectField.getName());
-
-			if (MapUtil.isEmpty(assigneeMap)) {
-				return null;
-			}
-
-			if (!context.equals(Context.RECIPIENT)) {
-				return GetterUtil.getString(assigneeMap.get("name"));
-			}
-
-			String type = GetterUtil.getString(assigneeMap.get("type"));
-
-			if (StringUtil.equalsIgnoreCase("Role", type) ||
-				StringUtil.equalsIgnoreCase("User", type)) {
-
-				return MapUtil.getString(
-					(Map<String, Object>)termValues.get(objectField.getName()),
-					"classPK");
-			}
-
-			return null;
-		}
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_objectDefinition.getCompanyId(), "LPD-17564")) {
-
 			return null;
 		}
 
@@ -289,7 +246,7 @@ public class ObjectDefinitionNotificationTermEvaluator
 				return null;
 			}
 
-			return _getObjectFieldValue(objectField, termValues);
+			return _getObjectFieldValue(context, objectField, termValues);
 		}
 		else if (termName.equals("[%OBJECT_ENTRY_VERSION%]")) {
 			return String.valueOf(objectEntry.getVersion());
@@ -313,7 +270,7 @@ public class ObjectDefinitionNotificationTermEvaluator
 				continue;
 			}
 
-			return _getObjectFieldValue(objectField, termValues);
+			return _getObjectFieldValue(context, objectField, termValues);
 		}
 
 		return null;
@@ -476,7 +433,41 @@ public class ObjectDefinitionNotificationTermEvaluator
 	}
 
 	private String _getObjectFieldValue(
-		ObjectField objectField, Map<String, Object> termValues) {
+		Context context, ObjectField objectField,
+		Map<String, Object> termValues) {
+
+		if (objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
+
+			Map<String, Object> entryDTO = (Map<String, Object>)termValues.get(
+				"entryDTO");
+
+			Map<String, Object> properties = (Map<String, Object>)entryDTO.get(
+				"properties");
+
+			Map<String, Object> assigneeMap =
+				(Map<String, Object>)properties.get(objectField.getName());
+
+			if (MapUtil.isEmpty(assigneeMap)) {
+				return null;
+			}
+
+			if (!context.equals(Context.RECIPIENT)) {
+				return GetterUtil.getString(assigneeMap.get("name"));
+			}
+
+			String type = GetterUtil.getString(assigneeMap.get("type"));
+
+			if (StringUtil.equalsIgnoreCase("Role", type) ||
+				StringUtil.equalsIgnoreCase("User", type)) {
+
+				return MapUtil.getString(
+					(Map<String, Object>)termValues.get(objectField.getName()),
+					"classPK");
+			}
+
+			return null;
+		}
 
 		Object termValue = termValues.get(objectField.getName());
 

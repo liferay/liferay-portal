@@ -56,6 +56,18 @@ describe('SharedItemRenderer', () => {
 		).toBeInTheDocument();
 	});
 
+	it('renders the untitled link when title is empty', () => {
+		render(<SharedItemRenderer {...testProps} value="" />);
+
+		expect(screen.queryByRole('link')).toBeInTheDocument();
+
+		expect(
+			screen.getByRole('link', {
+				name: 'untitled-asset',
+			})
+		).toHaveAttribute('aria-label', 'untitled-asset');
+	});
+
 	it('shows the default icon for basic web content', () => {
 		const {container} = render(
 			<SharedItemRenderer {...testProps} itemData={testItemDataContent} />

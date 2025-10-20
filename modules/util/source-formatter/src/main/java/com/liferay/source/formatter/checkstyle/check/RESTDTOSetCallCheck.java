@@ -72,10 +72,10 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		DetailAST objBlockDetailAST = detailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			objBlockDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST dotDetailAST = methodCallDetailAST.findFirstToken(
 				TokenTypes.DOT);
 
@@ -150,10 +150,10 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> childDetailASTList = getAllChildTokens(
+		List<DetailAST> childDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.ASSIGN, TokenTypes.METHOD_CALL);
 
-		for (DetailAST childDetailAST : childDetailASTList) {
+		for (DetailAST childDetailAST : childDetailASTs) {
 			parentDetailAST = getParentWithTokenType(
 				childDetailAST, TokenTypes.INSTANCE_INIT);
 

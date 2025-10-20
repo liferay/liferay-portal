@@ -135,7 +135,8 @@ public abstract class BaseSegmentsEntryProvider
 			segmentsEntries = segmentsEntryLocalService.getSegmentsEntries(
 				filterSegmentsEntryIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 		}
-		else {
+
+		if (segmentsEntries.isEmpty()) {
 			segmentsEntries = segmentsEntryLocalService.getSegmentsEntries(
 				groupId, getSource(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null);

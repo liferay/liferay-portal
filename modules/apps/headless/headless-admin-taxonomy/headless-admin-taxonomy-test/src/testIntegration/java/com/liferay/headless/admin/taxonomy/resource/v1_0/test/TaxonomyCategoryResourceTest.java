@@ -71,7 +71,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Javier Gamarra
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class TaxonomyCategoryResourceTest
 	extends BaseTaxonomyCategoryResourceTestCase {
@@ -325,6 +324,32 @@ public class TaxonomyCategoryResourceTest
 
 		_testPostSiteTaxonomyCategoryBatch("INSERT");
 		_testPostSiteTaxonomyCategoryBatch("UPSERT");
+	}
+
+	@Override
+	@Test
+	public void testPostTaxonomyVocabularyTaxonomyCategory() throws Exception {
+		super.testPostTaxonomyVocabularyTaxonomyCategory();
+
+		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
+
+		TaxonomyCategory parentTaxonomyCategory =
+			testGetSiteTaxonomyCategoryByExternalReferenceCode_addTaxonomyCategory();
+
+		randomTaxonomyCategory.setParentTaxonomyCategory(
+			new ParentTaxonomyCategory() {
+				{
+					externalReferenceCode =
+						parentTaxonomyCategory.getExternalReferenceCode();
+					id = Long.valueOf(parentTaxonomyCategory.getId());
+				}
+			});
+
+		TaxonomyCategory postTaxonomyCategory =
+			testPostTaxonomyVocabularyTaxonomyCategory_addTaxonomyCategory(
+				randomTaxonomyCategory);
+
+		Assert.assertTrue(equals(randomTaxonomyCategory, postTaxonomyCategory));
 	}
 
 	@Override

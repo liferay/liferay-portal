@@ -2,7 +2,6 @@
 
 Check | Category | Description
 ----- | -------- | -----------
-AccessModifierCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks for cases where visibility of methods can be decreased. |
 [AnnotationUseStyleCheck](https://checkstyle.sourceforge.io/checks/annotation/annotationusestyle.html) | [Styling](styling_checks.md#styling-checks) | Checks the style of elements in annotations. |
 [AnonymousClassCheck](check/anonymous_class_check.md#anonymousclasscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks for serialization issue when using anonymous class. |
 AppendCheck | [Styling](styling_checks.md#styling-checks) | Checks instances where literal Strings are appended. |
@@ -262,14 +261,17 @@ RedundantBranchingStatementCheck | [Performance](performance_checks.md#performan
 ReferenceAnnotationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on classes with @Reference annotation. |
 [RequireThisCheck](https://checkstyle.sourceforge.io/checks/coding/requirethis.html) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that references to instance variables and methods of the present object are explicitly of the form 'this.varName' or 'this.methodName(args)' and that those references don't rely on the default behavior when 'this.' is absent. |
 [ResourceBundleCheck](check/resource_bundle_check.md#resourcebundlecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that there are no calls to `java.util.ResourceBundle.getBundle`. |
-ResourceImplCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `*ResourceImpl` classes (except `Base*ResourceImpl` classes). |
+ResourceImplCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `*ResourceImpl` classes. |
 ResourcePermissionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `*ResourcePermission` classes. |
 [ResourcePermissionFactoryCheck](check/resource_permission_factory_check.md#resourcepermissionfactorycheck) | [Performance](performance_checks.md#performance-checks) | Checks usage of `*ResourcePermissionFactory` classes. |
+ResourceTestInjectionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that if any `*ResourceTest` class injects another resource that is not a `client`. |
+ResultSetGetCallCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds incorrect use of `ResultSet.get*` calls. |
 ReturnVariableDeclarationAsUsedCheck | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Finds cases where a variable declaration should be moved. |
 SealedAndNonsealedModifierCheck | [Performance](performance_checks.md#performance-checks) | Finds usage of `sealed` and `non-sealed`. |
 SelfReferenceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases of unnecessary reference to its own class. |
 SemiColonCheck | [Styling](styling_checks.md#styling-checks) | Finds cases of unnecessary semicolon. |
 [ServiceComponentRuntimeCheck](check/service_component_runtime_check.md#servicecomponentruntimecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks `ServiceComponentRuntime` usage in test classes. |
+ServiceImplAccessModifierCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks for cases where visibility of methods can be decreased. |
 [ServiceProxyFactoryCheck](check/service_proxy_factory_check.md#serviceproxyfactorycheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds incorrect parameter in method call. |
 ServiceUpdateCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that there are no stale references in service code from service updates. |
 SessionKeysCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks that messages send to `SessionsErrors` or `SessionMessages` follow naming conventions. |

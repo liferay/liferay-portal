@@ -32,7 +32,7 @@ if (draggable) {
 %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/image_selector.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="item-selector-taglib/css/image_selector.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div>

@@ -76,6 +76,12 @@ public class PLOEntryLocalServiceTest {
 
 		_assertTranslationValue(existingKey, ploEntry.getValue());
 
+		newKey = RandomTestUtil.randomString();
+
+		_addOrUpdatePLOEntry(newKey, "en_CA", RandomTestUtil.randomString());
+
+		_assertTranslationValue(newKey, null);
+
 		_assertException(
 			PLOEntryKeyException.MustBeShorter.class,
 			() -> {

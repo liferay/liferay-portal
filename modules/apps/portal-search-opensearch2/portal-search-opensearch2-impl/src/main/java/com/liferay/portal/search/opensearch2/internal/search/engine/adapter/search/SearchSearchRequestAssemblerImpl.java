@@ -184,7 +184,6 @@ public class SearchSearchRequestAssemblerImpl
 					searchSearchRequest.getHighlightFieldNames(),
 					searchSearchRequest.getHighlightFragmentSize(),
 					searchSearchRequest.isHighlightRequireFieldMatch(),
-					searchSearchRequest.isLuceneSyntax(),
 					searchSearchRequest.getHighlightSnippetSize()));
 		}
 	}

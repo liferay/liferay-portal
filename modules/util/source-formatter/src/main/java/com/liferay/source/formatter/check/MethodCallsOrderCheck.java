@@ -260,7 +260,7 @@ public class MethodCallsOrderCheck extends BaseFileCheck {
 
 		Pattern pattern = Pattern.compile(
 			StringBundler.concat(
-				"(\\W(\\w+)\\.(", _GENERIC_TYPE_NAMES_PATTERN,
+				"(\\W(\\w+)(\\(\\s*\\))?\\.(", _GENERIC_TYPE_NAMES_PATTERN,
 				")?|[\n\t]\\)\\.)", methodName, "\\("));
 
 		Matcher matcher = pattern.matcher(content);

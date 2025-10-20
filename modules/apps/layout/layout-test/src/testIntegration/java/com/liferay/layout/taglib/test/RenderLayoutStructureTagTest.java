@@ -13,6 +13,9 @@ import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.util.DLURLHelper;
@@ -89,7 +92,6 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
-import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureRule;
@@ -417,10 +419,9 @@ public class RenderLayoutStructureTagTest {
 				continue;
 			}
 
-			String expectedContent = StringBundler.concat(
-				"id=\"", fragmentEntryLink.getNamespace(),
-				"-text-input\" name=\"text\" placeholder=\"\" type=\"text\" ",
-				"value=\"");
+			String expectedContent =
+				"name=\"ObjectField_text\" placeholder=\"\" type=\"text\" " +
+					"value=\"";
 
 			JSONObject editableValueJSONObject =
 				fragmentEntryLink.getEditableValuesJSONObject();
@@ -440,10 +441,9 @@ public class RenderLayoutStructureTagTest {
 						"inputFieldId"),
 					"ObjectEntry_externalReferenceCode")) {
 
-				expectedContent = StringBundler.concat(
-					"id=\"", fragmentEntryLink.getNamespace(),
-					"-text-input\" name=\"externalReferenceCode\" ",
-					"placeholder=\"\" type=\"text\" value=\"");
+				expectedContent =
+					"name=\"ObjectEntry_externalReferenceCode\" " +
+						"placeholder=\"\" type=\"text\" value=\"";
 
 				expectedList.add(
 					expectedContent + externalReferenceCode + StringPool.QUOTE);
@@ -453,10 +453,9 @@ public class RenderLayoutStructureTagTest {
 							"inputFieldId"),
 						"ObjectEntry_objectEntryFriendlyURL")) {
 
-				expectedContent = StringBundler.concat(
-					"id=\"", fragmentEntryLink.getNamespace(),
-					"-friendly-url-input\" name=\"objectEntryFriendlyURL\" ",
-					"type=\"text\" value=\"");
+				expectedContent =
+					"name=\"ObjectEntry_objectEntryFriendlyURL\" " +
+						"type=\"text\" value=\"";
 
 				expectedList.add(
 					expectedContent + friendlyURLValue + StringPool.QUOTE);
@@ -470,10 +469,8 @@ public class RenderLayoutStructureTagTest {
 							"_objectEntryFriendlyURL"))) {
 
 				expectedContent = StringBundler.concat(
-					"id=\"", fragmentEntryLink.getNamespace(),
-					"-friendly-url-input\" name=\"",
-					objectRelationship.getName(),
-					"_objectEntryFriendlyURL\"\" type=\"text\" value=\"");
+					"name=\"", objectRelationship.getName(),
+					"_objectEntryFriendlyURL\" type=\"text\" value=\"");
 
 				expectedList.add(
 					expectedContent + relationshipFriendlyURLValue +
@@ -642,9 +639,12 @@ public class RenderLayoutStructureTagTest {
 		MockHttpServletResponse mockHttpServletResponse = _renderLayout(
 			layout, _getMockHttpServletRequest(layout));
 
-		String content = mockHttpServletResponse.getContentAsString();
+		String content = StringUtil.extractLast(
+			mockHttpServletResponse.getContentAsString(), "row ");
 
-		Assert.assertFalse(content, content.contains("col-"));
+		Assert.assertNotNull(content);
+
+		Assert.assertTrue(content, content.contains("col "));
 	}
 
 	@Test
@@ -741,47 +741,15 @@ public class RenderLayoutStructureTagTest {
 
 		String content = _getRenderLayoutHTML(layout);
 
-		LayoutStructure layoutStructure =
-			_layoutStructureProvider.getLayoutStructure(
-				layout.getPlid(),
-				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(layout.getPlid()));
-
-		FragmentStyledLayoutStructureItem
-			submitButtonFragmentStyledLayoutStructureItem =
-				(FragmentStyledLayoutStructureItem)
-					layoutStructure.getLayoutStructureItem(
-						inputTypesMap.get(
-							DefaultInputFragmentEntryConfigurationProvider.
-								FORM_INPUT_SUBMIT_BUTTON));
-
-		FragmentEntryLink submitButtonFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
-				submitButtonFragmentStyledLayoutStructureItem.
-					getFragmentEntryLinkId());
-
-		String submitButtonIdAttribute =
-			"id=\"fragment-" + submitButtonFragmentEntryLink.getNamespace() +
-				"-submit-button\"";
+		String submitButtonAttributes =
+			"data-lfr-editable-id=\"submit-button-text\" " +
+				"data-lfr-editable-type=\"text\"";
 
 		Assert.assertTrue(
-			content, content.contains("disabled " + submitButtonIdAttribute));
-
-		FragmentStyledLayoutStructureItem
-			textInputFragmentStyledLayoutStructureItem =
-				(FragmentStyledLayoutStructureItem)
-					layoutStructure.getLayoutStructureItem(
-						inputTypesMap.get(
-							TextInfoFieldType.INSTANCE.getName()));
-
-		FragmentEntryLink textInputFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
-				textInputFragmentStyledLayoutStructureItem.
-					getFragmentEntryLinkId());
+			content, content.contains(submitButtonAttributes + " disabled"));
 
 		String textInputIdAttribute =
-			"id=\"" + textInputFragmentEntryLink.getNamespace() +
-				"-text-input\"";
+			"class=\"lfr-layout-structure-item-inputs-text-input";
 
 		Assert.assertFalse(content, content.contains(textInputIdAttribute));
 
@@ -791,8 +759,8 @@ public class RenderLayoutStructureTagTest {
 				_companyLocalService.getCompany(_group.getCompanyId())));
 
 		Assert.assertFalse(
-			content, content.contains("disabled " + submitButtonIdAttribute));
-		Assert.assertTrue(content, content.contains(submitButtonIdAttribute));
+			content, content.contains(submitButtonAttributes + " disabled"));
+		Assert.assertTrue(content, content.contains(submitButtonAttributes));
 		Assert.assertTrue(content, content.contains(textInputIdAttribute));
 	}
 
@@ -1348,6 +1316,101 @@ public class RenderLayoutStructureTagTest {
 			content,
 			content.contains(
 				_language.get(mockHttpServletRequest, "no-results-found")));
+	}
+
+	@Test
+	@TestInfo("LPD-64102")
+	public void testRenderCollectionStyledLayoutStructureItemWithAssetListEntryReferencedByExternalReferenceCode()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				companyGroup.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				null, TestPropsValues.getUserId(), companyGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"anyAssetType",
+					String.valueOf(_portal.getClassNameId(JournalArticle.class))
+				).buildString(),
+				serviceContext);
+
+		String title = RandomTestUtil.randomString();
+
+		JournalTestUtil.addArticle(
+			companyGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, title,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			_portal.getSiteDefaultLocale(companyGroup), true, true,
+			serviceContext);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry();
+
+		_addCollectionStyledLayoutStructureItem(
+			JSONUtil.put(
+				"className", AssetListEntry.class
+			).put(
+				"externalReferenceCode",
+				assetListEntry.getExternalReferenceCode()
+			).put(
+				"itemType", JournalArticle.class.getName()
+			).put(
+				"scopeExternalReferenceCode",
+				companyGroup.getExternalReferenceCode()
+			).put(
+				"type", InfoListItemSelectorReturnType.class.getName()
+			),
+			JSONUtil.put(
+				"displayAllPages", true
+			).put(
+				"numberOfItemsPerPage", 10
+			).put(
+				"paginationType", "none"
+			).put(
+				"showAllItems", true
+			),
+			layout, null, segmentsExperienceId,
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+				segmentsExperienceId, draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"element-text",
+						JSONUtil.put(
+							"collectionFieldId", "JournalArticle_title"
+						).put(
+							"defaultValue", "Heading Example"
+						))
+				).toString(),
+				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
+				fragmentEntry.getType(), _serviceContext));
+
+		String content = _getContent(
+			layout, _getMockHttpServletRequest(layout), segmentsExperienceId);
+
+		Assert.assertFalse(content, content.contains(">Heading Example</h1>"));
+		Assert.assertTrue(content, content.contains(">" + title + "</h1>"));
 	}
 
 	@Test
@@ -1976,6 +2039,106 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
+	@TestInfo("LPD-55927")
+	public void testRenderContainerWithBackgroundImageMappedByExternalReferenceCode()
+		throws Exception {
+
+		long classNameId = _portal.getClassNameId(FileEntry.class);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_ASSET_LIBRARY, _serviceContext);
+
+		Group depotGroup = depotEntry.getGroup();
+
+		FileEntry depotFileEntry = _addFileEntry(depotGroup);
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		ContentLayoutTestUtil.addItemToLayout(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"backgroundImage",
+					JSONUtil.put(
+						"className", FileEntry.class.getName()
+					).put(
+						"classNameId", classNameId
+					).put(
+						"externalReferenceCode",
+						depotFileEntry.getExternalReferenceCode()
+					).put(
+						"fieldId", "FileEntry_title"
+					).put(
+						"scopeExternalReferenceCode",
+						depotGroup.getExternalReferenceCode()
+					))
+			).toString(),
+			LayoutDataItemTypeConstants.TYPE_CONTAINER, draftLayout,
+			_layoutStructureProvider, segmentsExperienceId);
+
+		FileEntry fileEntry = _addFileEntry();
+
+		ContentLayoutTestUtil.addItemToLayout(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"backgroundImage",
+					JSONUtil.put(
+						"className", FileEntry.class.getName()
+					).put(
+						"classNameId", classNameId
+					).put(
+						"externalReferenceCode",
+						fileEntry.getExternalReferenceCode()
+					).put(
+						"fieldId", "FileEntry_title"
+					))
+			).toString(),
+			LayoutDataItemTypeConstants.TYPE_CONTAINER, draftLayout,
+			_layoutStructureProvider, segmentsExperienceId);
+
+		ContentLayoutTestUtil.addItemToLayout(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"backgroundImage",
+					JSONUtil.put(
+						"className", FileEntry.class.getName()
+					).put(
+						"classNameId", classNameId
+					).put(
+						"classPK", RandomTestUtil::randomLong
+					).put(
+						"externalReferenceCode",
+						fileEntry.getExternalReferenceCode()
+					).put(
+						"fieldId", "FileEntry_title"
+					))
+			).toString(),
+			LayoutDataItemTypeConstants.TYPE_CONTAINER, draftLayout,
+			_layoutStructureProvider, segmentsExperienceId);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		String content = _getRenderLayoutHTML(layout);
+
+		Assert.assertEquals(
+			content, 2, StringUtil.count(content, "--lfr-background-image"));
+		Assert.assertEquals(
+			content, 1, StringUtil.count(content, depotFileEntry.getTitle()));
+		Assert.assertEquals(
+			content, 1, StringUtil.count(content, fileEntry.getTitle()));
+	}
+
+	@Test
 	@TestInfo("LPD-59838")
 	public void testRenderContainerWithBackgroundImageWhereInfoItemObjectIsNull()
 		throws Exception {
@@ -2118,11 +2281,11 @@ public class RenderLayoutStructureTagTest {
 
 	@Test
 	@TestInfo("LPS-169924")
-	public void testRenderEditionFormWithAddPermissionAndWithoutViewPermission()
+	public void testRenderEditionFormWithAddPermissionAndWithViewPermission()
 		throws Exception {
 
 		MockObject mockObject = new MockObject(
-			true, RandomTestUtil.randomLong(), false, false);
+			true, RandomTestUtil.randomLong(), false, true);
 
 		InfoField<TextInfoFieldType> infoField1 = _getInfoField(false);
 
@@ -2885,6 +3048,18 @@ public class RenderLayoutStructureTagTest {
 				_group, TestPropsValues.getUserId()));
 	}
 
+	private FileEntry _addFileEntry(Group group) throws Exception {
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
+			FileUtil.getBytes(
+				RenderLayoutStructureTagTest.class, "dependencies/liferay.jpg"),
+			null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId()));
+	}
+
 	private Map<String, String> _addFormToLayout(
 			String className, Layout layout)
 		throws Exception {
@@ -3254,7 +3429,7 @@ public class RenderLayoutStructureTagTest {
 		InfoField<TextInfoFieldType> infoField, String content) {
 
 		String expectedInfoFieldInput =
-			"<p>InputName:" + infoField.getName() + "</p>";
+			"<p>InputName:" + infoField.getUniqueId() + "</p>";
 
 		Assert.assertTrue(content.contains(expectedInfoFieldInput));
 	}
@@ -3783,6 +3958,9 @@ public class RenderLayoutStructureTagTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject(
 		filter = "info.item.capability.key=" + DisplayPageInfoItemCapability.KEY

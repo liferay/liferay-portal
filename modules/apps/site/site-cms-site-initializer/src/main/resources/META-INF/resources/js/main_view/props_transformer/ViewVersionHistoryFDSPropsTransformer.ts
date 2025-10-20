@@ -10,8 +10,8 @@ import {navigate, sessionStorage, sub} from 'frontend-js-web';
 import formatActionURL from '../../common/utils/formatActionURL';
 import FilePreviewerModalContent from '../modal/FilePreviewerModalContent';
 import deleteEntryAction from './actions/deleteEntryAction';
+import AssetVersionRenderer from './cell_renderers/AssetVersionRenderer';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
-import NameRenderer from './cell_renderers/NameRenderer';
 import VersionRenderer from './cell_renderers/VersionRenderer';
 import {executeAsyncItemAction} from './utils/executeAsyncItemAction';
 
@@ -33,8 +33,8 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: NameRenderer,
-					name: 'nameTableCellRenderer',
+					component: AssetVersionRenderer,
+					name: 'assetVersionTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{

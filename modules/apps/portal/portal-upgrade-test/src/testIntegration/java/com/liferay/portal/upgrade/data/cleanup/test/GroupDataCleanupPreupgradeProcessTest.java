@@ -8,6 +8,7 @@ package com.liferay.portal.upgrade.data.cleanup.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
@@ -84,12 +85,12 @@ public class GroupDataCleanupPreupgradeProcessTest
 	@Test
 	public void testUpgrade() throws Exception {
 		Group group = _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), 0,
+			StringPool.BLANK, TestPropsValues.getUserId(), 0,
 			GroupDataCleanupPreupgradeProcessTest.class.getName(),
 			RandomTestUtil.randomLong(), 0,
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
-			GroupConstants.TYPE_SITE_OPEN, false,
+			GroupConstants.TYPE_SITE_OPEN, null, false,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			"/" + RandomTestUtil.randomString(6), false, false, true,
 			ServiceContextTestUtil.getServiceContext());

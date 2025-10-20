@@ -42,7 +42,7 @@ export class AssetsPage {
 		this.page = page;
 
 		this.dataSetFragmentPage = new DataSetPage(page);
-		this.newButton = page.getByLabel('New');
+		this.newButton = page.getByTestId('fdsCreationActionButton').first();
 		this.processingTasksButton = page.getByRole('button', {
 			name: /Processing Tasks?/,
 		}) as Locator;
@@ -85,6 +85,13 @@ export class AssetsPage {
 			.waitFor();
 	}
 
+	async gotoContents() {
+		await this.page.goto(PORTLET_URLS.cmsContents);
+		await this.page
+			.getByRole('heading', {name: 'Contents Restricted Page'})
+			.waitFor();
+	}
+
 	async gotoFiles() {
 		await this.page.goto(PORTLET_URLS.cmsFiles);
 		await this.page
@@ -112,7 +119,13 @@ export class AssetsPage {
 		action,
 		filter,
 	}: {
-		action: 'Download' | 'Share' | 'Show Details' | 'View';
+		action:
+			| 'Delete'
+			| 'Download'
+			| 'Share'
+			| 'Show Details'
+			| 'View'
+			| 'View History';
 		filter: string;
 	}) {
 		await this.dataSetFragmentPage.execItemAction({

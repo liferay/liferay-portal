@@ -1479,7 +1479,7 @@ test('cannot import CSV file with empty headers row', async ({
 	).toBeVisible();
 });
 
-test('cannot import CSV file with object entry with UPSERT strategy', async ({
+test('can import CSV file with object entry with UPSERT strategy', async ({
 	apiHelpers,
 	dataMigrationCenterPage,
 	page,
@@ -1505,9 +1505,7 @@ test('cannot import CSV file with object entry with UPSERT strategy', async ({
 	);
 
 	await expect(
-		page.getByText(
-			'jakarta.ws.rs.NotSupportedException: Create strategy "UPSERT" is not supported for'
-		)
+		page.getByText('The import process completed successfully')
 	).toBeVisible();
 });
 

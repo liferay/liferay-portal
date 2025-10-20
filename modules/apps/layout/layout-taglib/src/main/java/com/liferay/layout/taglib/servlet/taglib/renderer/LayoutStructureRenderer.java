@@ -47,6 +47,7 @@ import com.liferay.layout.taglib.internal.display.context.RenderLayoutStructureD
 import com.liferay.layout.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.layout.taglib.internal.util.SegmentsExperienceUtil;
 import com.liferay.layout.util.CollectionPaginationUtil;
+import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
@@ -57,6 +58,7 @@ import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructureItemUtil;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.collection.EmptyCollectionOptions;
 import com.liferay.petra.string.StringBundler;
@@ -133,8 +135,7 @@ public class LayoutStructureRenderer {
 	}
 
 	public void render() throws Exception {
-		_renderLayoutStructure(
-			_renderLayoutStructureDisplayContext.getMainChildrenItemIds());
+		_renderLayoutStructure();
 
 		if (_renderActionHandler) {
 			_renderComponent(
@@ -205,6 +206,22 @@ public class LayoutStructureRenderer {
 		return layoutTypePortlet;
 	}
 
+	private String _getRowCssClass(
+		CollectionStyledLayoutStructureItem
+			collectionStyledLayoutStructureItem) {
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("align-items-");
+		sb.append(collectionStyledLayoutStructureItem.getVerticalAlignment());
+
+		if (!collectionStyledLayoutStructureItem.isGutters()) {
+			sb.append(" no-gutters");
+		}
+
+		return sb.toString();
+	}
+
 	private boolean _hasAddPermission(String className) {
 		InfoItemServiceRegistry infoItemServiceRegistry =
 			ServletContextUtil.getInfoItemServiceRegistry();
@@ -249,6 +266,31 @@ public class LayoutStructureRenderer {
 		}
 
 		return false;
+	}
+
+	private void _renderCol(
+			CollectionStyledLayoutStructureItem
+				collectionStyledLayoutStructureItem,
+			int index, InfoForm infoForm, InfoItemDetails infoItemDetails)
+		throws Exception {
+
+		_httpServletRequest.setAttribute(
+			InfoDisplayWebKeys.INFO_ITEM_REFERENCE,
+			infoItemDetails.getInfoItemReference());
+
+		ColTag colTag = new ColTag();
+
+		colTag.setCssClass(
+			ResponsiveLayoutStructureUtil.getColumnCssClass(
+				collectionStyledLayoutStructureItem, index));
+		colTag.setPageContext(_pageContext);
+
+		colTag.doStartTag();
+
+		_renderLayoutStructure(
+			collectionStyledLayoutStructureItem.getChildrenItemIds(), infoForm);
+
+		colTag.doEndTag();
 	}
 
 	private void _renderCollectionStyledLayoutStructureItem(
@@ -552,68 +594,68 @@ public class LayoutStructureRenderer {
 
 			containerTag.doStartTag();
 
-			RowTag rowTag = new RowTag();
-
-			sb.setIndex(0);
-
-			sb.append("align-items-");
-			sb.append(
-				collectionStyledLayoutStructureItem.getVerticalAlignment());
-
-			if (!collectionStyledLayoutStructureItem.isGutters()) {
-				sb.append(" no-gutters");
-			}
-
-			rowTag.setCssClass(sb.toString());
-
-			rowTag.setPageContext(_pageContext);
-
-			rowTag.doStartTag();
-
+			int numberOfColumns =
+				collectionStyledLayoutStructureItem.getNumberOfColumns();
 			int numberOfItemsToDisplay =
 				renderCollectionLayoutStructureItemDisplayContext.
 					getNumberOfItemsToDisplay();
 
-			for (int i = 0; i < numberOfItemsToDisplay; i++) {
-				if (i >= collection.size()) {
-					break;
+			if (Validator.isNull(
+					collectionStyledLayoutStructureItem.getListStyle())) {
+
+				RowTag rowTag = new RowTag();
+
+				rowTag.setCssClass(
+					_getRowCssClass(collectionStyledLayoutStructureItem));
+				rowTag.setPageContext(_pageContext);
+
+				rowTag.doStartTag();
+
+				for (int i = 0;
+					 (i < numberOfItemsToDisplay) && (i < collection.size());
+					 i++) {
+
+					_renderCol(
+						collectionStyledLayoutStructureItem,
+						i % numberOfColumns, infoForm,
+						infoItemDetailsProvider.getInfoItemDetails(
+							collection.get(i)));
 				}
 
-				InfoItemDetails infoItemDetails =
-					infoItemDetailsProvider.getInfoItemDetails(
-						collection.get(i));
-
-				_httpServletRequest.setAttribute(
-					InfoDisplayWebKeys.INFO_ITEM_REFERENCE,
-					infoItemDetails.getInfoItemReference());
-
-				ColTag colTag = new ColTag();
-
-				if (Validator.isNull(
-						collectionStyledLayoutStructureItem.getListStyle())) {
-
-					int numberOfColumns =
-						collectionStyledLayoutStructureItem.
-							getNumberOfColumns();
-
-					colTag.setCssClass(
-						ResponsiveLayoutStructureUtil.getColumnCssClass(
-							collectionStyledLayoutStructureItem,
-							i % numberOfColumns));
-				}
-
-				colTag.setPageContext(_pageContext);
-
-				colTag.doStartTag();
-
-				_renderLayoutStructure(
-					collectionStyledLayoutStructureItem.getChildrenItemIds(),
-					infoForm);
-
-				colTag.doEndTag();
+				rowTag.doEndTag();
 			}
+			else {
+				int numberOfRows =
+					renderCollectionLayoutStructureItemDisplayContext.
+						getNumberOfRows();
 
-			rowTag.doEndTag();
+				for (int i = 0; i < numberOfRows; i++) {
+					RowTag rowTag = new RowTag();
+
+					rowTag.setCssClass(
+						_getRowCssClass(collectionStyledLayoutStructureItem));
+					rowTag.setPageContext(_pageContext);
+
+					rowTag.doStartTag();
+
+					for (int j = 0; j < numberOfColumns; j++) {
+						int index = (i * numberOfColumns) + j;
+
+						if ((index >= numberOfItemsToDisplay) ||
+							(index >= collection.size())) {
+
+							break;
+						}
+
+						_renderCol(
+							collectionStyledLayoutStructureItem, j, infoForm,
+							infoItemDetailsProvider.getInfoItemDetails(
+								collection.get(index)));
+					}
+
+					rowTag.doEndTag();
+				}
+			}
 
 			containerTag.doEndTag();
 		}
@@ -1082,33 +1124,42 @@ public class LayoutStructureRenderer {
 				}
 			}
 
-			_renderReactComponent(
-				"{FormRelationshipAddButton} from layout-taglib/render",
-				HashMapBuilder.<String, Object>put(
-					"contentId",
-					formRelationshipStyledLayoutStructureItemContentId
-				).put(
-					"itemId",
-					formRelationshipStyledLayoutStructureItem.getItemId()
-				).put(
-					"label",
-					formRelationshipStyledLayoutStructureItem.
-						getButtonLabelJSONObject()
-				).put(
-					"renderURL",
-					HttpComponentsUtil.addParameters(
-						StringBundler.concat(
-							_themeDisplay.getPortalURL(),
-							_themeDisplay.getPathMain(), "/portal",
-							"/render_form_relationship_layout_structure_item"),
-						"formRelationshipLayoutStructureItemId",
-						formRelationshipStyledLayoutStructureItem.getItemId(),
-						"p_l_id", _themeDisplay.getPlid(),
-						"parentItemExternalReferenceCode",
-						parentItemExternalReferenceCode, "segmentsExperienceId",
-						SegmentsExperienceUtil.getSegmentsExperienceId(
-							_httpServletRequest))
-				).build());
+			if (formRelationshipStyledLayoutStructureItem.isRepeatable() &&
+				!Objects.equals(
+					_renderLayoutStructureDisplayContext.getLayoutMode(),
+					Constants.READ)) {
+
+				_renderReactComponent(
+					"{FormRelationshipAddButton} from layout-taglib/render",
+					HashMapBuilder.<String, Object>put(
+						"contentId",
+						formRelationshipStyledLayoutStructureItemContentId
+					).put(
+						"itemId",
+						formRelationshipStyledLayoutStructureItem.getItemId()
+					).put(
+						"label",
+						formRelationshipStyledLayoutStructureItem.
+							getButtonLabelJSONObject()
+					).put(
+						"renderURL",
+						HttpComponentsUtil.addParameters(
+							StringBundler.concat(
+								_themeDisplay.getPortalURL(),
+								_themeDisplay.getPathMain(), "/portal",
+								"/render_form_relationship_layout_structure_",
+								"item"),
+							"formRelationshipLayoutStructureItemId",
+							formRelationshipStyledLayoutStructureItem.
+								getItemId(),
+							"p_l_id", _themeDisplay.getPlid(),
+							"parentItemExternalReferenceCode",
+							parentItemExternalReferenceCode,
+							"segmentsExperienceId",
+							SegmentsExperienceUtil.getSegmentsExperienceId(
+								_httpServletRequest))
+					).build());
+			}
 		}
 		finally {
 			_httpServletRequest.setAttribute(
@@ -1630,13 +1681,33 @@ public class LayoutStructureRenderer {
 		}
 	}
 
-	private void _renderLayoutStructure(List<String> childrenItemIds)
-		throws Exception {
-
+	private void _renderLayoutStructure() throws Exception {
 		_httpServletRequest.setAttribute(
 			LayoutWebKeys.LAYOUT_STRUCTURE, _layoutStructure);
 
-		_renderLayoutStructure(childrenItemIds, null);
+		LayoutStructureItem layoutStructureItem =
+			_layoutStructure.getLayoutStructureItem(
+				_renderLayoutStructureDisplayContext.getMainItemId());
+
+		if (layoutStructureItem == null) {
+			return;
+		}
+
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem =
+			(FormStyledLayoutStructureItem)LayoutStructureItemUtil.getAncestor(
+				layoutStructureItem.getItemId(),
+				LayoutDataItemTypeConstants.TYPE_FORM, _layoutStructure);
+
+		if (formStyledLayoutStructureItem != null) {
+			_renderLayoutStructure(
+				layoutStructureItem.getChildrenItemIds(),
+				_renderLayoutStructureDisplayContext.getInfoForm(
+					formStyledLayoutStructureItem));
+		}
+		else {
+			_renderLayoutStructure(
+				layoutStructureItem.getChildrenItemIds(), null);
+		}
 	}
 
 	private void _renderLayoutStructure(

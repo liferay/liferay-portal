@@ -8,8 +8,10 @@ package com.liferay.portal.kernel.upgrade;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 
 /**
  * @author Amos Fong
@@ -20,24 +22,44 @@ public abstract class BaseExternalReferenceCodeUpgradeProcess
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		for (String[] tableAndPrimaryKeyColumnName :
-				getTableAndPrimaryKeyColumnNames()) {
+		String[] tableNames = getTableNames();
 
-			String tableName = tableAndPrimaryKeyColumnName[0];
-			String primKeyColumnName = tableAndPrimaryKeyColumnName[1];
-
-			upgradeExternalReferenceCode(tableName, primKeyColumnName);
+		for (String tableName : tableNames) {
+			upgradeExternalReferenceCode(tableName);
 		}
 	}
 
-	protected abstract String[][] getTableAndPrimaryKeyColumnNames();
+	protected String getPrimaryKeyColumnName(String tableName)
+		throws Exception {
+
+		String[] primaryKeyColumnNames = getPrimaryKeyColumnNames(
+			connection, tableName);
+
+		if (primaryKeyColumnNames.length == 0) {
+			throw new Exception("Table " + tableName + " has no primary key");
+		}
+
+		if (primaryKeyColumnNames.length > 1) {
+			primaryKeyColumnNames = ArrayUtil.filter(
+				primaryKeyColumnNames,
+				name -> !StringUtil.equalsIgnoreCase(name, "ctCollectionId"));
+		}
+
+		if (primaryKeyColumnNames.length > 1) {
+			throw new Exception(
+				"Table " + tableName + " has too many primary key columns");
+		}
+
+		return primaryKeyColumnNames[0];
+	}
+
+	protected abstract String[] getTableNames();
 
 	protected boolean isUseUUID(String tableName) throws Exception {
 		return hasColumn(tableName, "uuid_");
 	}
 
-	protected void upgradeExternalReferenceCode(
-			String tableName, String primKeyColumnName)
+	protected void upgradeExternalReferenceCode(String tableName)
 		throws Exception {
 
 		if (!hasTable(tableName)) {
@@ -55,22 +77,24 @@ public abstract class BaseExternalReferenceCodeUpgradeProcess
 				tableName, "externalReferenceCode", "VARCHAR(75)");
 		}
 
+		String primaryKeyColumnName = getPrimaryKeyColumnName(tableName);
+
 		boolean useUUID = isUseUUID(tableName);
 
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			processConcurrently(
 				StringBundler.concat(
-					"select ", useUUID ? "uuid_, " : StringPool.BLANK,
-					primKeyColumnName, " from ", tableName,
+					"select distinct ", useUUID ? "uuid_, " : StringPool.BLANK,
+					primaryKeyColumnName, " from ", tableName,
 					" where externalReferenceCode is null or ",
 					"externalReferenceCode = ''"),
 				StringBundler.concat(
 					"update ", tableName,
-					" set externalReferenceCode = ? where ", primKeyColumnName,
-					" = ?"),
+					" set externalReferenceCode = ? where ",
+					primaryKeyColumnName, " = ?"),
 				resultSet -> new Object[] {
 					useUUID ? resultSet.getString("uuid_") : null,
-					resultSet.getLong(primKeyColumnName)
+					resultSet.getLong(primaryKeyColumnName)
 				},
 				(values, preparedStatement) -> {
 					if (useUUID) {

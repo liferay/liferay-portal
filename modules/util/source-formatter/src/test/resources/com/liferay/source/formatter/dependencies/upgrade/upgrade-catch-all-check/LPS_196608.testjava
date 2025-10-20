@@ -15,9 +15,12 @@ public class LPS_196608 {
 	public void method(
 		long companyId, String externalReferenceCode, long groupId) {
 
-		AssetCategoryLocalServiceUtil.fetchAssetCategoryByExternalReferenceCode(123, externalReferenceCode);
-		AssetCategoryLocalServiceUtil.fetchAssetCategoryByExternalReferenceCode(companyId, externalReferenceCode);
-		_assetCategoryLocalService.fetchAssetCategoryByExternalReferenceCode(companyId, externalReferenceCode);
+		AssetCategoryLocalServiceUtil.fetchAssetCategoryByExternalReferenceCode(
+			123, externalReferenceCode);
+		AssetCategoryLocalServiceUtil.fetchAssetCategoryByExternalReferenceCode(
+			companyId, externalReferenceCode);
+		_assetCategoryLocalService.fetchAssetCategoryByExternalReferenceCode(
+			companyId, externalReferenceCode);
 	}
 
 	@Reference

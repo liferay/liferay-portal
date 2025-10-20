@@ -46,10 +46,10 @@ public class FilterStringWhitespaceCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> literalStringDetailASTList = getAllChildTokens(
+		List<DetailAST> literalStringDetailASTs = getAllChildTokens(
 			assignDetailAST, true, TokenTypes.STRING_LITERAL);
 
-		for (DetailAST literalStringDetailAST : literalStringDetailASTList) {
+		for (DetailAST literalStringDetailAST : literalStringDetailASTs) {
 			String literalStringValue = literalStringDetailAST.getText();
 
 			if (literalStringValue.contains(" = ")) {
@@ -63,10 +63,10 @@ public class FilterStringWhitespaceCheck extends BaseCheck {
 	private void _checkMethod(
 		DetailAST detailAST, String className, String methodName) {
 
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, className, methodName);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			String filterStringVariableName = _getFilterStringVariableName(
 				methodCallDetailAST);
 
@@ -74,10 +74,10 @@ public class FilterStringWhitespaceCheck extends BaseCheck {
 				continue;
 			}
 
-			List<DetailAST> assignDetailASTList = getAllChildTokens(
+			List<DetailAST> assignDetailASTs = getAllChildTokens(
 				detailAST, true, TokenTypes.ASSIGN);
 
-			for (DetailAST assignDetailAST : assignDetailASTList) {
+			for (DetailAST assignDetailAST : assignDetailASTs) {
 				_checkFilterStringAssign(
 					assignDetailAST, filterStringVariableName);
 			}
@@ -88,14 +88,14 @@ public class FilterStringWhitespaceCheck extends BaseCheck {
 		DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() < 2) {
+		if (exprDetailASTs.size() < 2) {
 			return null;
 		}
 
-		DetailAST secondParameterDetailAST = exprDetailASTList.get(1);
+		DetailAST secondParameterDetailAST = exprDetailASTs.get(1);
 
 		DetailAST firstChildDetailAST =
 			secondParameterDetailAST.getFirstChild();

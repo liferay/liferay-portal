@@ -114,7 +114,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 			description: '',
 			includeAnonymousUsers,
 			name: name.trim(),
-			segmentType: SegmentTypes.Dynamic
+			segmentType: SegmentTypes.Batch
 		};
 
 		return request({...requestData, channelId, groupId, id});

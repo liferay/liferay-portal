@@ -5,10 +5,10 @@
 
 package com.liferay.portal.upgrade.v7_4_x;
 
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +20,7 @@ public class UpgradeListTypeType extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		if (DBPartition.isPartitionEnabled()) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			_updateListType(CompanyThreadLocal.getCompanyId(), "intranet");
 			_updateListType(CompanyThreadLocal.getCompanyId(), "public");
 

@@ -74,11 +74,8 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 			new BaseUuidUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CIWarehouse", "CIWarehouseId"},
-						{"CIWarehouseItem", "CIWarehouseItemId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CIWarehouse", "CIWarehouseItem"};
 				}
 
 			});
@@ -88,11 +85,8 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CIWarehouse", "CIWarehouseId"},
-						{"CIWarehouseItem", "CIWarehouseItemId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CIWarehouse", "CIWarehouseItem"};
 				}
 
 			});
@@ -102,10 +96,8 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 			new BaseUuidUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CIReplenishmentItem", "CIReplenishmentItemId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CIReplenishmentItem"};
 				}
 
 			});
@@ -115,10 +107,8 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"CIReplenishmentItem", "CIReplenishmentItemId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"CIReplenishmentItem"};
 				}
 
 			});

@@ -71,10 +71,10 @@ public class TryWithResourcesCheck extends BaseCheck {
 		DetailAST slistDetailAST = literalFinallyDetailAST.findFirstToken(
 			TokenTypes.SLIST);
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			slistDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			List<String> cleanUpVariableNames = _getCleanUpVariableNames(
 				methodCallDetailAST);
 
@@ -166,10 +166,10 @@ public class TryWithResourcesCheck extends BaseCheck {
 		DetailAST elistDetailAST = methodCallDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST exprDetailAST : exprDetailASTList) {
+		for (DetailAST exprDetailAST : exprDetailASTs) {
 			firstChildDetailAST = exprDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() == TokenTypes.IDENT) {
@@ -305,10 +305,10 @@ public class TryWithResourcesCheck extends BaseCheck {
 
 		List<String> closeableTypeNames = _getCloseableTypeNames();
 
-		List<DetailAST> resourceDetailASTList = getAllChildTokens(
+		List<DetailAST> resourceDetailASTs = getAllChildTokens(
 			resourcesDetailAST, false, TokenTypes.RESOURCE);
 
-		for (DetailAST resourceDetailAST : resourceDetailASTList) {
+		for (DetailAST resourceDetailAST : resourceDetailASTs) {
 			DetailAST typeDetailAST = resourceDetailAST.findFirstToken(
 				TokenTypes.TYPE);
 
@@ -392,10 +392,10 @@ public class TryWithResourcesCheck extends BaseCheck {
 			}
 		}
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(parentDetailAST, variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			parentDetailAST, variableName);
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			if (hasParentWithTokenType(
 					variableCallerDetailAST, TokenTypes.LAMBDA)) {
 

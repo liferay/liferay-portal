@@ -578,6 +578,59 @@ export class TestEntityAPI {
 
 		/**
 		 * 
+				 	* @param file
+				 	* @param imageName
+		 * @param headers Optional custom request headers
+		 */
+		public async postTestEntityMultipartImage(
+						file?: File,
+						imageName?: string,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body?: any;
+			response: Response;
+		}> {
+				let body;
+						const formData = new FormData();
+								formData.append("file", file);
+								formData.append("imageName", JSON.stringify(ObjectSerializer.serialize(imageName, "string")));
+						body = formData;
+
+			const path = this._basePath + "/test/v1.0/test-entities/multipart/image"
+;
+
+			const queryParameters: any = {};
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+					body: body,
+				headers:
+					Object.assign({}, this._defaultHeaders
+					,headers || {}
+					),
+				method: "POST",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: await response.json(), response};
+					}
+					else {
+						return {body: await response.text(), response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
+		/**
+		 * 
 				 * @param testEntityId
 				 * @param optionalParameter
 		 		* @param requestBody Request body that can be one of multiple content types

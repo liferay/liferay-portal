@@ -14,9 +14,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 public class LPD_7741 {
 
-	public void method(
-		long sourceCPDefinitionId, long groupId, int status) {
-
+	public void method(long sourceCPDefinitionId, long groupId, int status) {
 		CPDefinitionLocalServiceUtil.copyCPDefinition(null, groupId);
 		CPDefinitionLocalServiceUtil.copyCPDefinition(sourceCPDefinitionId, groupId, WorkflowConstants.STATUS_DRAFT);
 		_cpDefinitionLocalService.copyCPDefinition(sourceCPDefinitionId, groupId, WorkflowConstants.STATUS_DRAFT);

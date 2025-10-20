@@ -93,6 +93,20 @@ describe('SpaceMembersPermissionSelect', () => {
 		expect(triggerText).toHaveTextContent('Space Member US, Role 1 US');
 	});
 
+	it('displays truncated trigger text when more than two roles are selected', () => {
+		render(
+			<SpaceMembersPermissionSelect
+				{...props}
+				selectedRoles={[SPACE_MEMBER_ROLE_NAME, 'Role 1', 'Role 2']}
+			/>
+		);
+
+		const trigger = screen.getByTitle(
+			'Space Member US, Role 1 US, Role 2 US'
+		);
+		expect(trigger).toHaveTextContent('Space Member US, Role 1 US, +1');
+	});
+
 	it('disables the "Space Member" role checkbox', async () => {
 		render(<SpaceMembersPermissionSelect {...props} />);
 

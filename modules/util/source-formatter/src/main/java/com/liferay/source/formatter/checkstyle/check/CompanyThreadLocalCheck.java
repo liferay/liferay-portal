@@ -22,10 +22,10 @@ public class CompanyThreadLocalCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "CompanyThreadLocal", "setCompanyId");
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			log(methodCallDetailAST, _MSG_AVOID_SET_COMPANY_ID_CALL);
 		}
 
@@ -36,11 +36,11 @@ public class CompanyThreadLocalCheck extends BaseCheck {
 		DetailAST variableDefinitionDetailAST = null;
 		String variableName = null;
 
-		List<DetailAST> methodCallDetailASTList = getMethodCalls(
+		List<DetailAST> methodCallDetailASTs = getMethodCalls(
 			detailAST, "CompanyThreadLocal",
 			new String[] {"lock", "setCompanyIdWithSafeCloseable"});
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST parentDetailAST = methodCallDetailAST.getParent();
 
 			if (parentDetailAST.getType() == TokenTypes.ASSIGN) {
@@ -77,10 +77,10 @@ public class CompanyThreadLocalCheck extends BaseCheck {
 				continue;
 			}
 
-			methodCallDetailASTList = getMethodCalls(
+			methodCallDetailASTs = getMethodCalls(
 				detailAST, variableName, "close");
 
-			if (!methodCallDetailASTList.isEmpty()) {
+			if (!methodCallDetailASTs.isEmpty()) {
 				continue;
 			}
 

@@ -253,18 +253,7 @@
 			app.server.type=weblogic
 		</app-server-properties-update>
 
-		<if>
-			<or>
-				<equals arg1="${app.server.weblogic.version}" arg2="12.2.1" />
-				<equals arg1="${app.server.weblogic.version}" arg2="14.1.1" />
-			</or>
-			<then>
-				<antcall target="unzip-weblogic-custom" />
-			</then>
-			<else>
-				<antcall target="unzip-weblogic" />
-			</else>
-		</if>
+		<antcall target="unzip-weblogic-custom" />
 
 		<delete dir="${project.dir}/portal-web/classes" />
 
@@ -939,6 +928,13 @@ this task.
 			<replacevalue><![CDATA[<!--<file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>-->]]></replacevalue>
 		</replace>
 
+		<replace
+			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
+		>
+			<replacetoken><![CDATA[<jsp-config />]]></replacetoken>
+			<replacevalue><![CDATA[<!--<jsp-config />-->]]></replacevalue>
+		</replace>
+
 		<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">
 			<![CDATA[${line.separator}JAVA_OPTS="$JAVA_OPTS ${app.server.jboss.jvm.args} ${app.server.jboss.jvm.mem}"
 
@@ -1138,63 +1134,22 @@ rerun this task.
 
 		<delete dir="${app.server.weblogic.dir}" />
 
-		<if>
-			<or>
-				<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-				<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-			</or>
-			<then>
-				<unzip
-					dest="${app.server.weblogic.dir}-temp"
-					src="${app.server.parent.dir}/${app.server.weblogic.zip.name}"
-				/>
-			</then>
-			<else>
-				<unzip
-					dest="${app.server.weblogic.dir}"
-					src="${app.server.parent.dir}/${app.server.weblogic.zip.name}"
-				/>
-			</else>
-		</if>
+		<unzip
+			dest="${app.server.weblogic.dir}-temp"
+			src="${app.server.parent.dir}/${app.server.weblogic.zip.name}"
+		/>
 
-		<if>
-			<or>
-				<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-				<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-			</or>
-			<then>
-				<java
-					fork="true"
-					jar="${app.server.weblogic.dir}-temp/${app.server.weblogic.jar.name}"
-				>
-					<arg line="ORACLE_HOME=${app.server.weblogic.dir}" />
-				</java>
+		<java
+			fork="true"
+			jar="${app.server.weblogic.dir}-temp/${app.server.weblogic.jar.name}"
+		>
+			<arg line="ORACLE_HOME=${app.server.weblogic.dir}" />
+		</java>
 
-				<delete dir="${app.server.weblogic.dir}-temp" />
+		<delete dir="${app.server.weblogic.dir}-temp" />
 
-				<property name="app.server.weblogic.configure.silent" value="-silent" />
-				<property name="app.server.weblogic.template.dir" value="${app.server.weblogic.wlserver.dir}/common/templates/wls" />
-			</then>
-			<elseif>
-				<equals arg1="${app.server.weblogic.version.build}" arg2="1213" />
-				<then>
-					<move
-						todir="${app.server.weblogic.dir}"
-					>
-						<fileset
-							dir="${app.server.weblogic.dir}/wls${app.server.weblogic.version.build}0"
-						/>
-					</move>
-
-					<property name="app.server.weblogic.configure.silent" value="-silent" />
-					<property name="app.server.weblogic.template.dir" value="${app.server.weblogic.wlserver.dir}/common/templates/wls" />
-				</then>
-			</elseif>
-			<else>
-				<property name="app.server.weblogic.configure.silent" value="" />
-				<property name="app.server.weblogic.template.dir" value="${app.server.weblogic.wlserver.dir}/common/templates/domains" />
-			</else>
-		</if>
+		<property name="app.server.weblogic.configure.silent" value="-silent" />
+		<property name="app.server.weblogic.template.dir" value="${app.server.weblogic.wlserver.dir}/common/templates/wls" />
 
 		<tstamp>
 			<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
@@ -1232,20 +1187,14 @@ closeTemplate()
 					<path location="${app.server.weblogic.wlserver.dir}" />
 				</pathconvert>
 
-				<if>
-					<or>
-						<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-						<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-					</or>
-					<then>
-						<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="cmd">
-							<env key="MW_HOME" value="${app.server.weblogic.dir.windows}" />
-							<arg value="/c" />
-							<arg value="setWLSEnv.cmd" />
-							<arg value="${app.server.weblogic.configure.silent}" />
-						</exec>
+				<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="cmd">
+					<env key="MW_HOME" value="${app.server.weblogic.dir.windows}" />
+					<arg value="/c" />
+					<arg value="setWLSEnv.cmd" />
+					<arg value="${app.server.weblogic.configure.silent}" />
+				</exec>
 
-						<echo file="${tstamp.value}/create-weblogic-domain.bat">
+				<echo file="${tstamp.value}/create-weblogic-domain.bat">
 							@echo off
 
 							set "JDK_JAVA_OPTIONS=%JDK_JAVA_OPTIONS% ${app.server.weblogic.jdk.java.options}"
@@ -1258,32 +1207,7 @@ closeTemplate()
 							set "CLASSPATH=%FMWCONFIG_CLASSPATH%"
 
 							"${env.JAVA_HOME}/bin/java" weblogic.WLST create-weblogic-domain.py
-						</echo>
-					</then>
-					<else>
-						<exec dir="${app.server.weblogic.dir}" executable="cmd">
-							<env key="MW_HOME" value="${app.server.weblogic.dir.windows}" />
-							<arg value="/c" />
-							<arg value="configure.cmd" />
-							<arg value="${app.server.weblogic.configure.silent}" />
-						</exec>
-
-						<echo file="${tstamp.value}/create-weblogic-domain.bat">
-							@echo off
-
-							set "JDK_JAVA_OPTIONS=%JDK_JAVA_OPTIONS% ${app.server.weblogic.jdk.java.options}"
-							set "MW_HOME=${app.server.weblogic.dir.windows}"
-							set "USER_MEM_ARGS=${app.server.weblogic.jvm.mem}"
-							set "WL_HOME=${app.server.weblogic.wlserver.dir.windows}"
-
-							call %WL_HOME%/common/bin/commEnv.cmd
-
-							set "CLASSPATH=%FMWCONFIG_CLASSPATH%"
-
-							"${env.JAVA_HOME}/bin/java" weblogic.WLST create-weblogic-domain.py
-						</echo>
-					</else>
-				</if>
+				</echo>
 
 				<exec dir="${tstamp.value}" executable="cmd">
 					<arg value="/c" />
@@ -1336,111 +1260,42 @@ closeTemplate()
 				<if>
 					<os family="unix" />
 					<then>
-						<if>
-							<or>
-								<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-								<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-							</or>
-							<then>
-								<replace
-									file="${app.server.weblogic.dir}/wlserver/server/bin/setWLSEnv.sh"
-								>
-									<replacefilter
-										token="#!/bin/sh"
-										value="#!/bin/bash"
-									/>
-								</replace>
+						<replace
+							file="${app.server.weblogic.dir}/wlserver/server/bin/setWLSEnv.sh"
+						>
+							<replacefilter
+								token="#!/bin/sh"
+								value="#!/bin/bash"
+							/>
+						</replace>
 
-								<var name="source.command" value="." />
-							</then>
-							<else>
-								<replace
-									file="${app.server.weblogic.dir}/configure.sh"
-								>
-									<replacefilter
-										token="#!/bin/sh"
-										value="#!/bin/bash"
-									/>
-								</replace>
-
-								<var name="source.command" value="." />
-							</else>
-						</if>
+						<var name="source.command" value="." />
 					</then>
 				</if>
 
-				<if>
-					<or>
-						<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-						<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-					</or>
-					<then>
-						<chmod
-							dir="${app.server.weblogic.dir}/wlserver/server/bin"
-							includes="setWLSEnv.sh"
-							perm="744"
-						/>
-					</then>
-					<else>
-						<chmod
-							dir="${app.server.weblogic.dir}"
-							includes="configure.sh"
-							perm="744"
-						/>
-					</else>
-				</if>
+				<chmod
+					dir="${app.server.weblogic.dir}/wlserver/server/bin"
+					includes="setWLSEnv.sh"
+					perm="744"
+				/>
 
 				<if>
 					<os family="unix" />
 					<then>
-						<if>
-							<or>
-								<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-								<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-							</or>
-							<then>
-								<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="./setWLSEnv.sh">
-									<env file="${app.server.weblogic.dir}" key="MW_HOME" />
-									<arg value="${app.server.weblogic.configure.silent}" />
-								</exec>
-							</then>
-							<else>
-								<exec dir="${app.server.weblogic.dir}" executable="./configure.sh">
-									<env file="${app.server.weblogic.dir}" key="MW_HOME" />
-									<arg value="${app.server.weblogic.configure.silent}" />
-								</exec>
-							</else>
-						</if>
+						<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="./setWLSEnv.sh">
+							<env file="${app.server.weblogic.dir}" key="MW_HOME" />
+							<arg value="${app.server.weblogic.configure.silent}" />
+						</exec>
 					</then>
 					<else>
-						<if>
-							<or>
-								<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-								<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-							</or>
-							<then>
-								<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="sh">
-									<env file="${app.server.weblogic.dir}" key="MW_HOME" />
-									<arg value="setWLSEnv.sh" />
-								</exec>
-							</then>
-							<else>
-								<exec dir="${app.server.weblogic.dir}" executable="sh">
-									<env file="${app.server.weblogic.dir}" key="MW_HOME" />
-									<arg value="configure.sh" />
-								</exec>
-							</else>
-						</if>
+						<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="sh">
+							<env file="${app.server.weblogic.dir}" key="MW_HOME" />
+							<arg value="setWLSEnv.sh" />
+						</exec>
 					</else>
 				</if>
 
-				<if>
-					<or>
-						<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-						<equals arg1="${app.server.weblogic.version.build}" arg2="14110" />
-					</or>
-					<then>
-						<echo file="${tstamp.value}/create-weblogic-domain.sh">
+				<echo file="${tstamp.value}/create-weblogic-domain.sh">
 							#!/bin/sh
 
 							export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
@@ -1453,25 +1308,7 @@ closeTemplate()
 							export CLASSPATH=${FMWCONFIG_CLASSPATH}
 
 							${env.JAVA_HOME}/bin/java weblogic.WLST create-weblogic-domain.py
-						</echo>
-					</then>
-					<else>
-						<echo file="${tstamp.value}/create-weblogic-domain.sh">
-							#!/bin/sh
-
-							export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.weblogic.jdk.java.options}"
-							export MW_HOME="${app.server.weblogic.dir}"
-							export USER_MEM_ARGS="${app.server.weblogic.jvm.mem}"
-							export WL_HOME="${app.server.weblogic.wlserver.dir}"
-
-							${source.command} ${WL_HOME}/common/bin/commEnv.sh
-
-							export CLASSPATH=${FMWCONFIG_CLASSPATH}
-
-							${env.JAVA_HOME}/bin/java weblogic.WLST create-weblogic-domain.py
-						</echo>
-					</else>
-				</if>
+				</echo>
 
 				<chmod
 					file="${tstamp.value}/create-weblogic-domain.sh"
@@ -1544,118 +1381,6 @@ closeTemplate()
 
 	<target name="unzip-weblogic-custom">
 		<antcall target="unzip-weblogic-custom-${app.server.weblogic.version.build}" />
-	</target>
-
-	<target name="unzip-weblogic-custom-12213">
-		<antcall target="unzip-weblogic-zip-files" />
-
-		<if>
-			<os family="unix" />
-			<then>
-				<replace
-					dir="${app.server.weblogic.dir}"
-					includes="**/*.cmd,**/*.domains,**/*.properties,**/*.sh,**/*.xml"
-				>
-					<replacefilter
-						token="@env.JAVA_HOME@"
-						value="${env.JAVA_HOME}"
-					/>
-				</replace>
-
-				<replace
-					dir="${app.server.weblogic.dir}"
-					includes="**/*.cmd,**/*.domains,**/*.py,**/*.properties,**/*.sh,**/*.txt,**/*.xml"
-				>
-					<replacefilter
-						token="/opt/dev/projects/github/liferay-portal/bundles"
-						value="${app.server.parent.dir}"
-					/>
-				</replace>
-
-				<chmod
-					perm="a+x"
-				>
-					<fileset
-						dir="${app.server.weblogic.bin.dir}"
-					>
-						<include name="**/*.sh" />
-					</fileset>
-				</chmod>
-
-				<local name="app.server.weblogic.java.options" />
-
-				<condition else="${app.server.weblogic.jdk.java.options} ${app.server.weblogic.jvm.args} ${app.server.weblogic.jvm.mem}" property="app.server.weblogic.java.options" value="${app.server.weblogic.jvm.args} ${app.server.weblogic.jvm.mem}">
-					<isset property="env.JENKINS_HOME" />
-				</condition>
-
-				<replace
-					file="${app.server.weblogic.instance.dir}/startWebLogic.sh"
-				>
-					<replacetoken><![CDATA[-Xmx1024m]]></replacetoken>
-					<replacevalue expandProperties="true"><![CDATA[${app.server.weblogic.java.options}]]></replacevalue>
-				</replace>
-
-				<chmod
-					perm="a+x"
-				>
-					<fileset
-						dir="${app.server.weblogic.instance.dir}"
-					>
-						<include name="**/*.sh" />
-					</fileset>
-				</chmod>
-			</then>
-			<elseif>
-				<os family="windows" />
-				<then>
-					<propertyregex
-						input="${app.server.weblogic.dir.windows}"
-						property="app.server.weblogic.dir.windows.double.slash"
-						regexp="\\"
-						replace="\\\\\\\\"
-					/>
-
-					<propertyregex
-						input="${app.server.weblogic.dir.windows.double.slash}"
-						property="app.server.weblogic.dir.windows.escaped"
-						regexp=":"
-						replace="\\\\:"
-					/>
-
-					<replace
-						dir="${app.server.weblogic.dir}"
-						includes="**/*.cmd,**/*.domains,**/*.properties,**/*.sh,**/*.xml"
-					>
-						<replacefilter
-							token="@app.server.weblogic.dir@"
-							value="${app.server.weblogic.dir}"
-						/>
-						<replacefilter
-							token="@app.server.weblogic.dir.windows@"
-							value="${app.server.weblogic.dir.windows}"
-						/>
-						<replacefilter
-							token="@app.server.weblogic.dir.windows.double.slash@"
-							value="${app.server.weblogic.dir.windows.double.slash}"
-						/>
-						<replacefilter
-							token="@app.server.weblogic.dir.windows.escaped@"
-							value="${app.server.weblogic.dir.windows.escaped}"
-						/>
-						<replacefilter
-							token="@env.COMPUTERNAME@"
-							value="${env.COMPUTERNAME}"
-						/>
-						<replacefilter
-							token="@env.JAVA_HOME@"
-							value="${env.JAVA_HOME}"
-						/>
-					</replace>
-				</then>
-			</elseif>
-		</if>
-
-		<set-weblogic-log-levels />
 	</target>
 
 	<target name="unzip-weblogic-custom-14110">
@@ -1738,16 +1463,6 @@ closeTemplate()
 
 	<target name="unzip-weblogic-zip-files">
 		<if>
-			<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
-			<then>
-				<property name="app.server.zip" value="${app.server.weblogic.custom.zip.name}" />
-			</then>
-			<else>
-				<property name="app.server.zip" value="${app.server.weblogic.zip.name}" />
-			</else>
-		</if>
-
-		<if>
 			<not>
 				<available file="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}" />
 			</not>
@@ -1758,7 +1473,7 @@ closeTemplate()
 
 						<mirrors-get
 							dest="${app.server.parent.dir}/${app.server.weblogic.custom.zip.name}"
-							src="http://files.liferay.com/private/apps/oracle/weblogicas/${app.server.weblogic.version.number}/${app.server.zip}"
+							src="http://files.liferay.com/private/apps/oracle/weblogicas/${app.server.weblogic.version.number}/${app.server.weblogic.zip.name}"
 							verbose="true"
 						/>
 					</try>
@@ -1891,6 +1606,13 @@ this task.
                     <named-formatter name="COLOR-PATTERN"]]></replacevalue>
 			</replace-elements>
 		</replace-multilines>
+
+		<replace
+			file="${app.server.wildfly.dir}/standalone/configuration/standalone.xml"
+		>
+			<replacetoken><![CDATA[<jsp-config />]]></replacetoken>
+			<replacevalue><![CDATA[<!--<jsp-config />-->]]></replacevalue>
+		</replace>
 
 		<echo append="true" file="${app.server.wildfly.bin.dir}/standalone.conf">
 			<![CDATA[${line.separator}JAVA_OPTS="$JAVA_OPTS ${app.server.wildfly.jvm.args} ${app.server.wildfly.jvm.mem}"

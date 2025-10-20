@@ -1,0 +1,20 @@
+{
+	"com.liferay.client.extension.type.configuration.CETConfiguration~able/able.liferay.com": {
+		":configurator:policy": "force",
+		"baseURL": "${portalURL}/o/able",
+		"description": "",
+		"dxp.lxc.liferay.com.virtualInstanceId": "able.liferay.com",
+		"name": "Able Global CSS",
+		"projectId": "able",
+		"projectName": "able",
+		"properties": [
+		],
+		"sourceCodeURL": "",
+		"type": "globalCSS",
+		"typeSettings": [
+			"url=global.css",
+			"scope=company"
+		],
+		"webContextPath": "/able"
+	}
+}

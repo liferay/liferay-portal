@@ -205,9 +205,21 @@ public class AssetCategoriesDisplayContext {
 					}
 				}
 				else {
-					name = ResourceActionsUtil.getModelResource(
-						_themeDisplay.getLocale(),
-						PortalUtil.getClassName(classNameId));
+					try {
+						name = ResourceActionsUtil.getModelResource(
+							_themeDisplay.getLocale(),
+							PortalUtil.getClassName(classNameId));
+					}
+					catch (RuntimeException runtimeException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(
+								"Unable to get class type with class name ID " +
+									classNameId,
+								runtimeException);
+						}
+
+						continue;
+					}
 				}
 			}
 

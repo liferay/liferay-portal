@@ -106,8 +106,7 @@ public class HighlightTranslator {
 
 	public org.opensearch.client.opensearch.core.search.Highlight translate(
 		String[] highlightFieldNames, int highlightFragmentSize,
-		boolean highlightRequireFieldMatch, boolean luceneSyntax,
-		int numberOfFragments) {
+		boolean highlightRequireFieldMatch, int numberOfFragments) {
 
 		if (ArrayUtil.isEmpty(highlightFieldNames)) {
 			return null;
@@ -130,10 +129,6 @@ public class HighlightTranslator {
 
 		builder.postTags(HighlightUtil.HIGHLIGHT_TAG_CLOSE);
 		builder.preTags(HighlightUtil.HIGHLIGHT_TAG_OPEN);
-
-		if (luceneSyntax) {
-			highlightRequireFieldMatch = false;
-		}
 
 		builder.requireFieldMatch(highlightRequireFieldMatch);
 

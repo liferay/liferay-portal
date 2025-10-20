@@ -32,25 +32,21 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.tools.DBUpgrader;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import java.net.URL;
-
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -361,37 +357,12 @@ public class BatchEngineBundleTrackerTest {
 	}
 
 	private InputStream _toInputStream(String dirName) throws Exception {
-		ZipWriter zipWriter = _zipWriterFactory.getZipWriter();
-
 		String basePath = StringBundler.concat(
 			"com/liferay/batch/engine/internal/test/dependencies/", dirName,
 			StringPool.SLASH);
 
-		Enumeration<URL> enumeration = _bundle.findEntries(basePath, "*", true);
-
-		if (enumeration != null) {
-			while (enumeration.hasMoreElements()) {
-				URL url = enumeration.nextElement();
-
-				String urlPath = url.getPath();
-
-				if (urlPath.endsWith(StringPool.SLASH)) {
-					continue;
-				}
-
-				String zipPath = urlPath.substring(basePath.length());
-
-				if (zipPath.startsWith(StringPool.SLASH)) {
-					zipPath = zipPath.substring(1);
-				}
-
-				try (InputStream inputStream = url.openStream()) {
-					zipWriter.addEntry(zipPath, inputStream);
-				}
-			}
-		}
-
-		return new FileInputStream(zipWriter.getFile());
+		return ZipFileTestUtil.toInputStream(
+			basePath, _bundle, _zipWriterFactory.getZipWriter());
 	}
 
 	private static StopWatch _originalStopWatch;

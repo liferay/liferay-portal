@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.constants.PublicationRoleConstants;
 import com.liferay.change.tracking.internal.test.util.CTCollectionTestUtil;
 import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -56,13 +57,14 @@ public class PublicationUserNotificationTest {
 			TestPropsValues.getUser());
 
 		_group = _groupLocalService.addGroup(
-			TestPropsValues.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			CTCollection.class.getName(), _ctCollection.getCtCollectionId(),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			RandomTestUtil.randomLocaleStringMap(), null,
-			GroupConstants.TYPE_SITE_OPEN, false,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, true,
-			null);
+			GroupConstants.TYPE_SITE_OPEN, null, false,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, false,
+			true, null);
 
 		_user = UserTestUtil.addUser();
 	}

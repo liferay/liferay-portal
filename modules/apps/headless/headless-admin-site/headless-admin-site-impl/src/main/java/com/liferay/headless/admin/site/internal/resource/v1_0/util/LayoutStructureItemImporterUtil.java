@@ -48,9 +48,6 @@ public class LayoutStructureItemImporterUtil {
 			PageElementDefinition.Type.COLLECTION_ITEM,
 			new CollectionItemLayoutStructureItemImporter());
 		_layoutStructureItemImporters.put(
-			PageElementDefinition.Type.COLUMN,
-			new ColumnLayoutStructureItemImporter());
-		_layoutStructureItemImporters.put(
 			PageElementDefinition.Type.CONTAINER,
 			new ContainerLayoutStructureItemImporter());
 		_layoutStructureItemImporters.put(
@@ -72,8 +69,11 @@ public class LayoutStructureItemImporterUtil {
 			PageElementDefinition.Type.FRAGMENT_DROP_ZONE,
 			new FragmentDropZoneLayoutStructureItemImporter());
 		_layoutStructureItemImporters.put(
-			PageElementDefinition.Type.ROW,
+			PageElementDefinition.Type.GRID,
 			new RowLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElementDefinition.Type.MODULE,
+			new ColumnLayoutStructureItemImporter());
 	}
 
 }

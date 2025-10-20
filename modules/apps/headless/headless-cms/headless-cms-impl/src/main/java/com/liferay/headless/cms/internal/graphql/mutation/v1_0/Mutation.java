@@ -5,9 +5,11 @@
 
 package com.liferay.headless.cms.internal.graphql.mutation.v1_0;
 
+import com.liferay.headless.cms.dto.v1_0.AssetPermissionAction;
 import com.liferay.headless.cms.dto.v1_0.BulkAction;
 import com.liferay.headless.cms.dto.v1_0.BulkActionItem;
 import com.liferay.headless.cms.dto.v1_0.BulkActionTask;
+import com.liferay.headless.cms.resource.v1_0.AssetPermissionActionResource;
 import com.liferay.headless.cms.resource.v1_0.BulkActionResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -37,12 +39,34 @@ import org.osgi.service.component.ComponentServiceObjects;
 @Generated("")
 public class Mutation {
 
+	public static void setAssetPermissionActionResourceComponentServiceObjects(
+		ComponentServiceObjects<AssetPermissionActionResource>
+			assetPermissionActionResourceComponentServiceObjects) {
+
+		_assetPermissionActionResourceComponentServiceObjects =
+			assetPermissionActionResourceComponentServiceObjects;
+	}
+
 	public static void setBulkActionResourceComponentServiceObjects(
 		ComponentServiceObjects<BulkActionResource>
 			bulkActionResourceComponentServiceObjects) {
 
 		_bulkActionResourceComponentServiceObjects =
 			bulkActionResourceComponentServiceObjects;
+	}
+
+	@GraphQLField(description = "Perform an action on the asset's permissions")
+	public AssetPermissionAction createAssetPermission(
+			@GraphQLName("assetPermissionAction") AssetPermissionAction
+				assetPermissionAction)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_assetPermissionActionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			assetPermissionActionResource ->
+				assetPermissionActionResource.postAssetPermission(
+					assetPermissionAction));
 	}
 
 	@GraphQLField(description = "Execute a bulk action")
@@ -129,6 +153,22 @@ public class Mutation {
 		}
 	}
 
+	private void _populateResourceContext(
+			AssetPermissionActionResource assetPermissionActionResource)
+		throws Exception {
+
+		assetPermissionActionResource.setContextAcceptLanguage(_acceptLanguage);
+		assetPermissionActionResource.setContextCompany(_company);
+		assetPermissionActionResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		assetPermissionActionResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		assetPermissionActionResource.setContextUriInfo(_uriInfo);
+		assetPermissionActionResource.setContextUser(_user);
+		assetPermissionActionResource.setGroupLocalService(_groupLocalService);
+		assetPermissionActionResource.setRoleLocalService(_roleLocalService);
+	}
+
 	private void _populateResourceContext(BulkActionResource bulkActionResource)
 		throws Exception {
 
@@ -142,6 +182,8 @@ public class Mutation {
 		bulkActionResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private static ComponentServiceObjects<AssetPermissionActionResource>
+		_assetPermissionActionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<BulkActionResource>
 		_bulkActionResourceComponentServiceObjects;
 

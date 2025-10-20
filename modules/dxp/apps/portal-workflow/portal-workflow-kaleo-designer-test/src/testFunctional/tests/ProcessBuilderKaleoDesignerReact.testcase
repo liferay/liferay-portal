@@ -2186,33 +2186,6 @@ definition {
 		ProcessBuilderKaleoDesignerReact.viewNotificationInfo(notificationTemplateLanguage = "Text");
 	}
 
-	@description = "Verify that the user can edit the Template Language of the Notification to Velocity"
-	@priority = 4
-	test CanEditTemplateLanguageToVelocity {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Title");
-
-		ProcessBuilderKaleoDesignerReact.selectNode(nodeType = "start");
-
-		ProcessBuilderKaleoDesignerReact.viewAndFillNotification(
-			name = "New Notification",
-			newNotification = "true",
-			notificationTemplateValue = "Notification Template",
-			notificationTypeOption = "Email",
-			singleAction = "true",
-			templateLanguageOption = "Velocity");
-
-		ProcessBuilderKaleoDesignerReact.backArrowOnSidebar();
-
-		ProcessBuilderKaleoDesignerReact.gotoNotification(notificationName = "New Notification");
-
-		ProcessBuilderKaleoDesignerReact.viewNotificationInfo(notificationTemplateLanguage = "Velocity");
-	}
-
 	@description = "Verify that the user can edit the Description of the Timer"
 	@priority = 3
 	test CanEditTimerDescription {

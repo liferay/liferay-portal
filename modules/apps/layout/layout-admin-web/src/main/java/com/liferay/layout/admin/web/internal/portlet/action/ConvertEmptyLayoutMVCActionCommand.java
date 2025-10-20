@@ -137,7 +137,7 @@ public class ConvertEmptyLayoutMVCActionCommand
 					layout.getTitleMap(), layout.getDescriptionMap(),
 					layout.getKeywordsMap(), layout.getRobotsMap(), type, false,
 					layout.getFriendlyURLMap(), layout.isIconImage(), null,
-					layout.getStyleBookEntryId(),
+					layout.getStyleBookEntryERC(),
 					layout.getFaviconFileEntryId(), masterLayoutPlid,
 					serviceContext);
 
@@ -205,7 +205,7 @@ public class ConvertEmptyLayoutMVCActionCommand
 					layout.getTitleMap(), layout.getDescriptionMap(),
 					layout.getKeywordsMap(), layout.getRobotsMap(), type, false,
 					layout.getFriendlyURLMap(), layout.isIconImage(), null,
-					layout.getStyleBookEntryId(),
+					layout.getStyleBookEntryERC(),
 					layout.getFaviconFileEntryId(), masterLayoutPlid,
 					serviceContext);
 

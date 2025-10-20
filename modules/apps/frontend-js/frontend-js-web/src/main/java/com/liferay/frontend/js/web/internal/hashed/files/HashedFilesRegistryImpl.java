@@ -12,7 +12,9 @@ import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.ServletContext;
 
@@ -34,6 +36,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -63,15 +66,23 @@ public class HashedFilesRegistryImpl implements HashedFilesRegistry {
 
 		List<String> pathParts = Arrays.asList(path.split(StringPool.SLASH));
 
+		int subpathIndex = 3;
+
+		if (!Validator.isBlank(_portal.getPathContext())) {
+			subpathIndex = 4;
+		}
+
 		ServletContext servletContext = _serviceTrackerMap.getService(
-			StringUtil.merge(pathParts.subList(0, 3), StringPool.SLASH));
+			StringUtil.merge(
+				pathParts.subList(0, subpathIndex), StringPool.SLASH));
 
 		if (servletContext == null) {
 			return null;
 		}
 
 		String subpath = StringUtil.merge(
-			pathParts.subList(3, pathParts.size()), StringPool.SLASH);
+			pathParts.subList(subpathIndex, pathParts.size()),
+			StringPool.SLASH);
 
 		subpath = StringPool.SLASH + subpath;
 
@@ -259,6 +270,10 @@ public class HashedFilesRegistryImpl implements HashedFilesRegistry {
 
 	private BundleContext _bundleContext;
 	private final Map<String, String> _map = new ConcurrentHashMap<>();
+
+	@Reference
+	private Portal _portal;
+
 	private volatile ServiceTracker<ServletContext, Map<String, String>>
 		_serviceTracker;
 	private volatile ServiceTrackerMap<String, ServletContext>

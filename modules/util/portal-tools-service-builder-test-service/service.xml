@@ -487,6 +487,11 @@
 
 		<column name="groupId" type="long" />
 
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+
 		<!-- Other fields -->
 
 		<column name="integer" type="int" />
@@ -503,7 +508,7 @@
 		<!-- Finder methods -->
 
 		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="groupId" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="RedundantIndexEntry" remote-service="false">

@@ -107,7 +107,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		const FIRST_ATTACHMENT_FILE_NAME = 'astronaut.png';
 
@@ -122,12 +122,8 @@ test.describe('Localized object entries are saved correctly', () => {
 			.nth(1);
 
 		const firstTranslationsDropdownTrigger = page
-			.getByTestId('triggerButton')
+			.getByRole('button', {name: 'en-us'})
 			.first();
-
-		const secondTranslationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.nth(1);
 
 		// with english locale, fill both inputs
 
@@ -147,11 +143,11 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await firstTranslationsDropdownTrigger.click();
 
-		const catalanOptions = page.getByTestId(
-			'availableLocalesDropdownca_ES'
-		);
+		const catalanOption = page.getByRole('menuitem', {
+			name: 'català (Espanya)',
+		});
 
-		await catalanOptions.first().click();
+		await catalanOption.first().click();
 
 		// with catalan locale selected for the first time, all values should be copied from english
 
@@ -172,19 +168,19 @@ test.describe('Localized object entries are saved correctly', () => {
 			TRANSLATED_ATTACHMENT_FILE_NAME
 		);
 
-		await secondTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'ca-es'}).last().click();
 
 		// check for labels in dropdown, catalan should show as translated
 
-		await expect(
-			catalanOptions.first().locator('.label-item-expand')
-		).toHaveText('translated', {ignoreCase: true});
-
-		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
+		await expect(catalanOption.getByText('translated')).toBeVisible();
 
 		await expect(
-			englishOption.first().locator('.label-item-expand')
-		).toHaveText('default', {ignoreCase: true});
+			page
+				.getByRole('menuitem', {
+					name: 'English (United States)',
+				})
+				.getByText('default')
+		).toBeVisible();
 
 		// save
 
@@ -192,7 +188,7 @@ test.describe('Localized object entries are saved correctly', () => {
 			`**${objectDefinition.restContextPath}`
 		);
 
-		await catalanOptions.nth(1).click();
+		await catalanOption.click();
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
@@ -226,7 +222,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await firstTranslationsDropdownTrigger.click();
 
-		await catalanOptions.first().click();
+		await catalanOption.click();
 
 		await expect(
 			page.getByRole('button', {name: TRANSLATED_ATTACHMENT_FILE_NAME})
@@ -287,7 +283,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		const firstCheckBox = page.getByRole('checkbox', {
 			name: objectFields[0].label['en_US'],
@@ -297,14 +293,6 @@ test.describe('Localized object entries are saved correctly', () => {
 			name: objectFields[1].label['en_US'],
 		});
 
-		const firstTranslationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
-
-		const secondTranslationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.nth(1);
-
 		// with english locale, select both checkboxes
 
 		await firstCheckBox.check();
@@ -313,13 +301,13 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		// use first dropdown locale to switch to catalan
 
-		await firstTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		const catalanOptions = page.getByTestId(
-			'availableLocalesDropdownca_ES'
-		);
+		const catalanOption = page.getByRole('menuitem', {
+			name: 'català (Espanya)',
+		});
 
-		await catalanOptions.first().click();
+		await catalanOption.click();
 
 		// with catalan locale selected for the first time, all values should be copied from english
 
@@ -331,19 +319,19 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await firstCheckBox.uncheck();
 
-		secondTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'ca-es'}).last().click();
 
 		// check for labels in dropdown, catalan should show as translated
 
-		await expect(
-			catalanOptions.first().locator('.label-item-expand')
-		).toHaveText('translated', {ignoreCase: true});
-
-		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
+		await expect(catalanOption.getByText('translated')).toBeVisible();
 
 		await expect(
-			englishOption.first().locator('.label-item-expand')
-		).toHaveText('default', {ignoreCase: true});
+			page
+				.getByRole('menuitem', {
+					name: 'English (United States)',
+				})
+				.getByText('default')
+		).toBeVisible();
 
 		// save
 
@@ -351,7 +339,7 @@ test.describe('Localized object entries are saved correctly', () => {
 			`**${objectDefinition.restContextPath}`
 		);
 
-		await catalanOptions.nth(1).click();
+		await catalanOption.click();
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
@@ -379,9 +367,9 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await expect(secondCheckBox).toBeChecked();
 
-		await firstTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await catalanOptions.first().click();
+		await catalanOption.first().click();
 
 		await expect(firstCheckBox).not.toBeChecked();
 
@@ -434,19 +422,11 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		const dateInput = page.getByPlaceholder('__/__/____').first();
 
 		const dateTimeInput = page.getByPlaceholder('__/__/____').nth(1);
-
-		const firstTranslationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
-
-		const secondTranslationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.nth(1);
 
 		// with english locale, fill both inputs
 
@@ -456,13 +436,13 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		// use first dropdown locale to switch to catalan
 
-		await firstTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		const catalanOptions = page.getByTestId(
-			'availableLocalesDropdownca_ES'
-		);
+		const catalanOption = page.getByRole('menuitem', {
+			name: 'català (Espanya)',
+		});
 
-		await catalanOptions.first().click();
+		await catalanOption.click();
 
 		// with catalan locale selected for the first time, all values should be copied from english
 
@@ -474,19 +454,19 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await dateInput.fill('11/01/2025');
 
-		await secondTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'ca-es'}).last().click();
 
 		// check for labels in dropdown, catalan should show as translated
 
-		await expect(
-			catalanOptions.first().locator('.label-item-expand')
-		).toHaveText('translated', {ignoreCase: true});
-
-		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
+		await expect(catalanOption.getByText('translated')).toBeVisible();
 
 		await expect(
-			englishOption.first().locator('.label-item-expand')
-		).toHaveText('default', {ignoreCase: true});
+			page
+				.getByRole('menuitem', {
+					name: 'English (United States)',
+				})
+				.getByText('default')
+		).toBeVisible();
 
 		// save
 
@@ -494,7 +474,7 @@ test.describe('Localized object entries are saved correctly', () => {
 			`**${objectDefinition.restContextPath}`
 		);
 
-		await catalanOptions.nth(1).click();
+		await catalanOption.click();
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
@@ -522,9 +502,9 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await expect(dateTimeInput).toHaveValue('02/20/2025 10:00 PM');
 
-		await firstTranslationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await catalanOptions.first().click();
+		await catalanOption.click();
 
 		await expect(dateInput).toHaveValue('11/01/2025');
 
@@ -590,7 +570,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		for (const {name_i18n: listTypeEntry_i18n} of listTypeEntries) {
 			await formFieldsPage.addSelectItem(listTypeEntry_i18n['en-US'], 0);
@@ -681,15 +661,13 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await page.waitForTimeout(2000);
 
-		const translationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await translationsDropdownTrigger.click();
+		const catalanOption = page.getByRole('menuitem', {
+			name: 'català (Espanya)',
+		});
 
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
-
-		await catalanOption.first().click();
+		await catalanOption.click();
 
 		const catalanItemLocators = listTypeEntries.map((listTypeEntry) =>
 			page.getByRole('row', {
@@ -740,9 +718,9 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await expectFinalEnglishState();
 
-		await translationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await catalanOption.first().click();
+		await catalanOption.click();
 
 		await expectFinalCatalanState();
 	});
@@ -801,17 +779,15 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
-		const translationsDropdownTriggerButton = page
-			.getByTestId('triggerButton')
-			.first();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await translationsDropdownTriggerButton.click();
-
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
-
-		await catalanOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		const encryptedContainer = page
 			.locator('.form-group')
@@ -835,11 +811,13 @@ test.describe('Localized object entries are saved correctly', () => {
 			textContainer.getByTitle('Translation is disabled for this field.')
 		).toBeVisible();
 
-		await translationsDropdownTriggerButton.click();
+		await page.getByRole('button', {name: 'ca-es'}).first().click();
 
-		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
-
-		await englishOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'English (United States)',
+			})
+			.click();
 
 		await expect(encryptedContainer.getByRole('textbox')).toBeEnabled();
 
@@ -914,7 +892,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		let englishValues: {[key: string]: string} = {};
 
@@ -940,15 +918,13 @@ test.describe('Localized object entries are saved correctly', () => {
 			}
 		}
 
-		const translationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await translationsDropdownTrigger.click();
-
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
-
-		await catalanOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		const responsePromise = page.waitForResponse(
 			`**${objectDefinition.restContextPath}`
@@ -970,9 +946,13 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await entryLink.click();
 
-		await translationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await catalanOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		let catalanValues: {[key: string]: string} = {};
 
@@ -1021,9 +1001,13 @@ test.describe('Localized object entries are saved correctly', () => {
 			).toBeTruthy();
 		}
 
-		await translationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await catalanOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		for (const {label, name} of objectFields) {
 			const inputValue = await page
@@ -1093,7 +1077,7 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		for (let i = 0; i < 2; i++) {
 			await formFieldsPage.addSelectItem(
@@ -1150,15 +1134,13 @@ test.describe('Localized object entries are saved correctly', () => {
 		// after navigating to catalan for the first time
 		// expect catalan items to be a copy of the default language
 
-		const translationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await translationsDropdownTrigger.click();
-
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
-
-		await catalanOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		const catalanItemLocators = listTypeEntries.map(({name_i18n}) =>
 			page.getByRole('combobox').filter({
@@ -1188,9 +1170,13 @@ test.describe('Localized object entries are saved correctly', () => {
 
 		await expectFinalEnglishState();
 
-		await translationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await catalanOption.first().click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		await expectFinalCatalanState();
 	});
@@ -1314,7 +1300,14 @@ test.describe('Manage object entries through Page Templates', () => {
 
 		siteLanguage = 'pt';
 
-		await viewObjectEntriesPage.clickAddObjectEntry();
+		await page
+			.getByLabel('Adicionar ' + objectDefinition2.label['en_US'])
+			.first()
+			.click();
+
+		await viewObjectEntriesPage.editObjectEntryForm.waitFor({
+			state: 'visible',
+		});
 
 		await page.getByPlaceholder('Buscar', {exact: true}).click();
 
@@ -1338,7 +1331,14 @@ test.describe('Manage object entries through Page Templates', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition2.className, 'pt');
 
-		await viewObjectEntriesPage.clickAddObjectEntry();
+		await page
+			.getByLabel('Adicionar ' + objectDefinition2.label['en_US'])
+			.first()
+			.click();
+
+		await viewObjectEntriesPage.editObjectEntryForm.waitFor({
+			state: 'visible',
+		});
 
 		await page.getByPlaceholder('Buscar', {exact: true}).click();
 
@@ -1400,26 +1400,25 @@ test.describe('Required localized object fields', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		await expect(page.getByRole('button', {name: 'en-us'})).toBeVisible();
 
-		const translationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
+		await page.getByRole('button', {name: 'en-us'}).first().click();
 
-		await translationsDropdownTrigger.click();
+		await expect(
+			page
+				.getByRole('menuitem', {
+					name: 'English (United States)',
+				})
+				.getByText('default')
+		).toBeVisible();
 
-		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
-
-		await expect(englishOption.locator('.label-item-expand')).toHaveText(
-			'default',
-			{ignoreCase: true}
-		);
-
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
-
-		await catalanOption.locator('.label-item-expand').click();
+		await page
+			.getByRole('menuitem', {
+				name: 'català (Espanya)',
+			})
+			.click();
 
 		await expect(page.getByRole('button', {name: 'ca-es'})).toBeVisible();
 
@@ -1501,24 +1500,17 @@ test.describe('Required localized object fields', () => {
 
 		await expect(page.getByRole('button', {name: 'ca-es'})).toBeVisible();
 
-		const translationsDropdownTrigger = page
-			.getByTestId('triggerButton')
-			.first();
+		await page.getByRole('button', {name: 'ca-es'}).click();
 
-		await translationsDropdownTrigger.click();
+		const catalanOption = page.getByRole('menuitem', {
+			name: 'català (Espanya)',
+		});
 
-		const catalanOption = page.getByTestId('availableLocalesDropdownca_ES');
+		await expect(catalanOption.getByText('default')).toBeVisible();
 
-		await expect(catalanOption.locator('.label-item-expand')).toHaveText(
-			'default',
-			{ignoreCase: true}
-		);
+		await catalanOption.click();
 
-		await catalanOption.locator('.label-item-expand').click();
-
-		const fieldInput = page.getByTestId('visibleChangeInput');
-
-		await fieldInput.fill(getRandomString());
+		await page.getByRole('textbox').fill(getRandomString());
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
@@ -1526,26 +1518,26 @@ test.describe('Required localized object fields', () => {
 			page.getByText('Success:Your request completed successfully.')
 		).toBeVisible();
 
-		await fieldInput.fill('');
+		await page.getByRole('textbox').fill('');
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
 		await expect(
-			page.getByText('Aquest camp és obligatori.', {exact: true})
+			page.getByText('This field is required.', {exact: true})
 		).toBeVisible();
 
-		await translationsDropdownTrigger.click();
+		await page.getByRole('button', {name: 'ca-es'}).click();
 
-		const englishOption = page.getByTestId('availableLocalesDropdownen_US');
+		const englishOption = page.getByRole('menuitem', {name: /English/});
 
-		await englishOption.locator('.label-item-expand').click();
+		await englishOption.click();
 
-		await fieldInput.fill(getRandomString());
+		await page.getByRole('textbox').fill(getRandomString());
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 
 		await expect(
-			page.getByText('Aquest camp és obligatori.', {exact: true})
+			page.getByText('This field is required.', {exact: true})
 		).toBeVisible();
 	});
 
@@ -1608,7 +1600,7 @@ test.describe('Required localized object fields', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.addObjectEntryButton.click();
+		await viewObjectEntriesPage.clickAddObjectEntry(objectDefinitionLabel);
 
 		await expect(
 			page.getByRole('button', {name: 'en-us'}).first()

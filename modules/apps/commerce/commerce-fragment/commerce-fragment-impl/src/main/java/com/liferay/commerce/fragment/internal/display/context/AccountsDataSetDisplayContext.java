@@ -7,6 +7,7 @@ package com.liferay.commerce.fragment.internal.display.context;
 
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
+import com.liferay.commerce.fragment.internal.util.CommerceFragmentUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -42,10 +43,8 @@ public class AccountsDataSetDisplayContext extends BaseDisplayContext {
 
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
-			"setCurrentAccountURL",
-			StringBundler.concat(
-				_portal.getPortalURL(httpServletRequest),
-				_portal.getPathContext(), "/o/commerce-ui/set-current-account")
+			"currentAccountPostURL",
+			CommerceFragmentUtil.getCurrentAccountPostURL(httpServletRequest)
 		).build();
 	}
 

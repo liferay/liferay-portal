@@ -11,13 +11,17 @@ import com.liferay.analytics.cms.rest.client.pagination.Pagination;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -26,7 +30,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -43,6 +46,7 @@ import java.io.File;
 import java.io.Serializable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -148,7 +152,7 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_WEB_CONTENT", testCompany.getCompanyId());
+					"L_CMS_BASIC_WEB_CONTENT", testCompany.getCompanyId());
 
 		_serviceContext.setAttribute(
 			"friendlyUrlMap", new HashMap<String, String>());
@@ -177,7 +181,7 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 			_serviceContext);
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			testGroup.getGroupId(), StringPool.BLANK,
+			_depotEntry.getGroupId(), StringPool.BLANK,
 			_portal.getClassNameId(objectDefinition.getClassName()),
 			objectEntry.getObjectEntryId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomInt(), RandomTestUtil.randomInt(),
@@ -225,41 +229,57 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 		return themeDisplay;
 	}
 
+	private boolean _isCMSSiteInitialized() throws Exception {
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES,
+				TestPropsValues.getCompanyId());
+
+		if (objectFolder != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _setUpCMSContext() throws Exception {
-		Bundle testBundle = FrameworkUtil.getBundle(OverviewResourceTest.class);
+		if (!_isCMSSiteInitialized()) {
+			Bundle testBundle = FrameworkUtil.getBundle(
+				OverviewResourceTest.class);
 
-		BundleContext bundleContext = testBundle.getBundleContext();
+			BundleContext bundleContext = testBundle.getBundleContext();
 
-		for (Bundle bundle : bundleContext.getBundles()) {
-			if (Objects.equals(
-					bundle.getSymbolicName(),
-					"com.liferay.site.initializer.cms")) {
+			for (Bundle bundle : bundleContext.getBundles()) {
+				if (Objects.equals(
+						bundle.getSymbolicName(),
+						"com.liferay.site.initializer.cms")) {
 
-				_deleteFile(bundle, "00.list.type.definition");
-				_deleteFile(bundle, "01.object.folder");
-				_deleteFile(bundle, "02.object.definition");
+					_deleteFile(bundle, "00.list.type.definition");
+					_deleteFile(bundle, "01.object.folder");
+					_deleteFile(bundle, "02.object.definition");
 
-				CompletableFuture<Void> completableFuture =
-					_batchEngineUnitProcessor.processBatchEngineUnits(
-						_batchEngineUnitReader.getBatchEngineUnits(bundle));
+					CompletableFuture<Void> completableFuture =
+						_batchEngineUnitProcessor.processBatchEngineUnits(
+							_batchEngineUnitReader.getBatchEngineUnits(bundle));
 
-				completableFuture.join();
+					completableFuture.join();
 
-				break;
+					break;
+				}
 			}
 		}
 
-		testGroup.setType(GroupConstants.TYPE_DEPOT);
-
-		testGroup = _groupLocalService.updateGroup(testGroup);
-
-		_serviceContext = ServiceContextTestUtil.getServiceContext(
-			testGroup.getGroupId(), TestPropsValues.getUserId());
-
-		_serviceContext.setAttribute("staging", Boolean.TRUE);
+		_serviceContext = new ServiceContext() {
+			{
+				setCompanyId(testGroup.getCompanyId());
+				setUserId(TestPropsValues.getUserId());
+			}
+		};
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
-			testGroup, _serviceContext);
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY, _serviceContext);
 
 		_themeDisplay = _getThemeDisplay();
 	}
@@ -287,6 +307,9 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	@Inject
 	private Portal _portal;

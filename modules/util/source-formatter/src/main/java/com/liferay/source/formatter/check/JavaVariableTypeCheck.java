@@ -75,16 +75,23 @@ public class JavaVariableTypeCheck extends BaseJavaTermCheck {
 		}
 
 		if (isFinal) {
+			if (javaClass.isAnonymous() || javaVariable.isStatic()) {
+				return classContent;
+			}
+
 			JavaClass parentJavaClass = javaClass.getParentJavaClass();
 
-			if (!javaClass.isAnonymous() && (parentJavaClass == null) &&
-				!javaVariable.isStatic() &&
-				(_isImmutableField(fieldType, absolutePath) ||
-				 fieldType.matches("Pattern(\\[\\])*") ||
-				 (fieldType.equals("Log") &&
-				  !isExcludedPath(_STATIC_LOG_EXCLUDES, absolutePath)))) {
+			if (parentJavaClass != null) {
+				return classContent;
+			}
 
-				classContent = _formatStaticableFieldType(
+			if (_isImmutableField(fieldType, absolutePath) ||
+				absolutePath.endsWith("ResourceImpl.java") ||
+				fieldType.matches("Pattern(\\[\\])*") ||
+				(fieldType.equals("Log") &&
+				 !isExcludedPath(_STATIC_LOG_EXCLUDES, absolutePath))) {
+
+				return _formatStaticableFieldType(
 					classContent, javaVariable.getContent(), fieldType);
 			}
 		}
@@ -101,7 +108,7 @@ public class JavaVariableTypeCheck extends BaseJavaTermCheck {
 					classContent, javaVariableContent, newJavaVariableContent);
 			}
 
-			classContent = _formatFinalableFieldType(
+			return _formatFinalableFieldType(
 				classContent, javaClass, javaVariable, fieldType);
 		}
 

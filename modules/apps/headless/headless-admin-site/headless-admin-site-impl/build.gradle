@@ -17,6 +17,7 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
+	compileOnly project(":apps:google-places:google-places-api")
 	compileOnly project(":apps:headless:headless-admin-site:headless-admin-site-api")
 	compileOnly project(":apps:headless:headless-admin-taxonomy:headless-admin-taxonomy-api")
 	compileOnly project(":apps:headless:headless-admin-user:headless-admin-user-api")
@@ -36,6 +37,7 @@ dependencies {
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:style-book:style-book-api")
 	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

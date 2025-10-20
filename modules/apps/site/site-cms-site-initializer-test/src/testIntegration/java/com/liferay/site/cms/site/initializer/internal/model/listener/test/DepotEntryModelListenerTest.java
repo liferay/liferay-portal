@@ -98,7 +98,7 @@ public class DepotEntryModelListenerTest {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_DOCUMENT", group.getCompanyId());
+					"L_CMS_BASIC_DOCUMENT", group.getCompanyId());
 
 		Repository repository = _portletFileRepository.getPortletRepository(
 			group.getGroupId(), objectDefinition.getPortletId());

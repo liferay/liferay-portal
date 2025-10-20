@@ -1402,6 +1402,11 @@ components:
                         The number of comments on the document.
                     readOnly: true
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                    writeOnly: true
                 relatedContents:
                     # @review
                     description:
@@ -1648,6 +1653,11 @@ components:
                         The ID of the folder's parent, if it exists.
                     format: int64
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                    writeOnly: true
                 siteId:
                     description:
                         The ID of the site to which this folder is scoped.
@@ -4090,6 +4100,10 @@ components:
                     description:
                         The custom name of of a Page form.
                     type: string
+                repeatable:
+                    description:
+                        A flag that indicates whether this form relationship can be repeatable.
+                    type: boolean
             type: object
         PageFormStepContainerDefinition:
             # @review
@@ -6155,7 +6169,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.delivery.client', and version '4.0.98'."
+        'com.liferay.headless.delivery.client', and version '4.0.99'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

@@ -23,6 +23,9 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -47,6 +50,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import java.sql.Connection;
 
 import java.util.List;
 
@@ -196,10 +201,17 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.OFF)) {
 
+			_renameColumn(
+				"classExternalReferenceCode", "cmExternalReferenceCode");
+
 			UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 				_upgradeStepRegistrator, _CLASS_NAME);
 
 			upgradeProcess.upgrade();
+		}
+		finally {
+			_renameColumn(
+				"cmExternalReferenceCode", "classExternalReferenceCode");
 
 			_multiVMPool.clear();
 		}
@@ -306,6 +318,18 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 			Assert.assertEquals(
 				layoutClassedModelUsages.toString(), 0,
 				layoutClassedModelUsages.size());
+		}
+	}
+
+	private void _renameColumn(String columnName, String newColumnName)
+		throws Exception {
+
+		try (Connection connection = DataAccess.getConnection()) {
+			DB db = DBManagerUtil.getDB();
+
+			db.alterColumnName(
+				connection, "LayoutClassedModelUsage", columnName,
+				newColumnName + " VARCHAR(75) null");
 		}
 	}
 

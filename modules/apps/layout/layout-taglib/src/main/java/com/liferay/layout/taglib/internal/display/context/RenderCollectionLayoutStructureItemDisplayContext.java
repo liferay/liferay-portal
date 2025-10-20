@@ -615,6 +615,8 @@ public class RenderCollectionLayoutStructureItemDisplayContext {
 				_collectionStyledLayoutStructureItem.getNumberOfItems(),
 				_collectionStyledLayoutStructureItem.getNumberOfItemsPerPage(),
 				_collectionStyledLayoutStructureItem.getPaginationType()));
+		defaultLayoutListRetrieverContext.setScopeGroupId(
+			_themeDisplay.getScopeGroupId());
 		defaultLayoutListRetrieverContext.setSegmentsEntryIds(
 			_getSegmentsEntryIds(layoutListRetriever, listObjectReference));
 

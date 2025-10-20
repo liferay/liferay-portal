@@ -15,3 +15,10 @@ export enum AccountType {
 	TECHNOLOGY_PARTNER = 'Technology Partner',
 	STRATEGIC_PARTNER = 'Strategic Partner',
 }
+
+export enum AccountTypes {
+	BUSINESS = 'business',
+	GUEST = 'guest',
+	PERSON = 'person',
+	SUPPLIER = 'supplier',
+}

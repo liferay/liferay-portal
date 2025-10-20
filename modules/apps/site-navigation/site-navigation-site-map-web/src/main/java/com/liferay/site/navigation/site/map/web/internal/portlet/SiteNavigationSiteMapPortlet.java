@@ -8,7 +8,7 @@ package com.liferay.site.navigation.site.map.web.internal.portlet;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.site.navigation.site.map.web.internal.constants.SiteNavigationSiteMapPortletKeys;
+import com.liferay.site.navigation.site.map.web.internal.constants.SiteNavigationSitemapPortletKeys;
 
 import jakarta.portlet.Portlet;
 
@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/view.jsp",
-		"jakarta.portlet.name=" + SiteNavigationSiteMapPortletKeys.SITE_NAVIGATION_SITE_MAP,
+		"jakarta.portlet.name=" + SiteNavigationSitemapPortletKeys.SITE_NAVIGATION_SITEMAP,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=guest,power-user,user",
 		"jakarta.portlet.version=4.0"
@@ -49,7 +49,7 @@ public class SiteNavigationSiteMapPortlet extends MVCPortlet {
 	@Activate
 	protected void activate() {
 		_portletRegistry.registerAlias(
-			_ALIAS, SiteNavigationSiteMapPortletKeys.SITE_NAVIGATION_SITE_MAP);
+			_ALIAS, SiteNavigationSitemapPortletKeys.SITE_NAVIGATION_SITEMAP);
 	}
 
 	@Deactivate

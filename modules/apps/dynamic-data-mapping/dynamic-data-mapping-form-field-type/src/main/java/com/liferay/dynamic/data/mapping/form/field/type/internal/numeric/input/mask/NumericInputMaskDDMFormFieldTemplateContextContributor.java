@@ -7,6 +7,7 @@ package com.liferay.dynamic.data.mapping.form.field.type.internal.numeric.input.
 
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTemplateContextContributor;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
+import com.liferay.dynamic.data.mapping.form.field.type.internal.util.NumericInputMaskDDMFormFieldTypeUtil;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.portal.kernel.json.JSONException;
@@ -117,7 +118,8 @@ public class NumericInputMaskDDMFormFieldTemplateContextContributor
 
 	private Map<String, Object> _getValueParameters(String value) {
 		try {
-			JSONObject valueJSONObject = _jsonFactory.createJSONObject(value);
+			JSONObject valueJSONObject = _jsonFactory.createJSONObject(
+				NumericInputMaskDDMFormFieldTypeUtil.getJSON(value));
 
 			JSONObject symbolsJSONObject = _jsonFactory.createJSONObject(
 				valueJSONObject.getString("symbols"));

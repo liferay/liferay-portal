@@ -182,8 +182,7 @@ public class ObjectEntryItemSelectorViewDescriptor
 					() -> TransformUtil.transform(
 						page.getItems(),
 						objectEntry -> ObjectEntryUtil.toObjectEntry(
-							_objectDefinition.getObjectDefinitionId(),
-							objectEntry)),
+							_objectDefinition, objectEntry)),
 					GetterUtil.getInteger(page.getTotalCount()));
 			}
 		}

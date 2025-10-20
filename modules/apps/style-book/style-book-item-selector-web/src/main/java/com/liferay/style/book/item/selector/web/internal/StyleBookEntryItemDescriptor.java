@@ -44,6 +44,8 @@ public class StyleBookEntryItemDescriptor
 	@Override
 	public String getPayload() {
 		return JSONUtil.put(
+			"externalReferenceCode", _styleBookEntry.getExternalReferenceCode()
+		).put(
 			"name", _styleBookEntry.getName()
 		).put(
 			"styleBookEntryId", _styleBookEntry.getStyleBookEntryId()

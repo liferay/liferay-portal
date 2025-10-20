@@ -96,10 +96,10 @@ public class EqualClauseIfStatementsCheck extends BaseCheck {
 			return false;
 		}
 
-		List<DetailAST> assignDetailASTList = getAllChildTokens(
+		List<DetailAST> assignDetailASTs = getAllChildTokens(
 			slistDetailAST, true, ASSIGNMENT_OPERATOR_TOKEN_TYPES);
 
-		for (DetailAST assignDetailAST : assignDetailASTList) {
+		for (DetailAST assignDetailAST : assignDetailASTs) {
 			String name = getName(assignDetailAST);
 
 			if (name == null) {
@@ -111,10 +111,10 @@ public class EqualClauseIfStatementsCheck extends BaseCheck {
 			}
 		}
 
-		List<DetailAST> methodCallDetailASTList = getAllChildTokens(
+		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			slistDetailAST, true, TokenTypes.METHOD_CALL);
 
-		for (DetailAST methodCallDetailAST : methodCallDetailASTList) {
+		for (DetailAST methodCallDetailAST : methodCallDetailASTs) {
 			DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() == TokenTypes.IDENT) {
@@ -126,12 +126,11 @@ public class EqualClauseIfStatementsCheck extends BaseCheck {
 					parentDetailAST = parentDetailAST.getParent();
 				}
 
-				List<DetailAST> methodDefinitionDetailASTList =
-					getAllChildTokens(
-						parentDetailAST, true, TokenTypes.METHOD_DEF);
+				List<DetailAST> methodDefinitionDetailASTs = getAllChildTokens(
+					parentDetailAST, true, TokenTypes.METHOD_DEF);
 
 				for (DetailAST methodDefinitionDetailAST :
-						methodDefinitionDetailASTList) {
+						methodDefinitionDetailASTs) {
 
 					String name = getName(methodDefinitionDetailAST);
 

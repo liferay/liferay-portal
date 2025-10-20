@@ -542,8 +542,8 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 			searchRequest.getPostFilterComplexQueryParts());
 		baseSearchRequest.setRescores(searchRequest.getRescores());
 		baseSearchRequest.setStatsRequests(searchRequest.getStatsRequests());
-		baseSearchRequest.setTrackTotalHits(
-			_elasticsearchConfigurationWrapper.trackTotalHits());
+		baseSearchRequest.setTrackTotalHitsLimit(
+			_elasticsearchConfigurationWrapper.trackTotalHitsLimit());
 
 		_setAggregations(baseSearchRequest, searchRequest);
 		_setConnectionId(baseSearchRequest, searchRequest);

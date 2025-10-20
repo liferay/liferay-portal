@@ -33,10 +33,8 @@ public class ListTypeServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"ListTypeDefinition", "listTypeDefinitionId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"ListTypeDefinition"};
 				}
 
 			});
@@ -46,10 +44,8 @@ public class ListTypeServiceUpgradeStepRegistrator
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"ListTypeEntry", "listTypeEntryId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"ListTypeEntry"};
 				}
 
 			});

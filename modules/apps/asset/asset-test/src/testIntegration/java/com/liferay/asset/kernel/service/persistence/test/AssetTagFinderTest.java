@@ -68,17 +68,17 @@ public class AssetTagFinderTest {
 			_group.getGroupId(), TestPropsValues.getUserId());
 
 		_scopeGroup = GroupLocalServiceUtil.addGroup(
-			TestPropsValues.getUserId(), _group.getParentGroupId(),
-			Layout.class.getName(), layout.getPlid(),
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			_group.getParentGroupId(), Layout.class.getName(), layout.getPlid(),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), name
 			).build(),
 			RandomTestUtil.randomLocaleStringMap(),
-			GroupConstants.TYPE_SITE_OPEN, true,
+			GroupConstants.TYPE_SITE_OPEN, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			StringPool.SLASH + FriendlyURLNormalizerUtil.normalize(name), false,
-			true, _serviceContext);
+			false, true, _serviceContext);
 	}
 
 	@After

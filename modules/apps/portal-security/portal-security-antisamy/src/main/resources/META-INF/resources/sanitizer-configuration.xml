@@ -12,6 +12,7 @@ http://www.w3.org/TR/html401/struct/global.html
 
 	<directives>
 		<directive name="noopenerAndNoreferrerAnchors" value="true" />
+		<directive name="preserveSpace" value="true" />
 		<directive name="omitXmlDeclaration" value="true"/>
 		<directive name="omitDoctypeDeclaration" value="true"/>
 		<directive name="maxInputSize" value="200000"/>

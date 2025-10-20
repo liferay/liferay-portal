@@ -79,10 +79,10 @@ public abstract class BaseMessageCheck extends BaseCheck {
 		DetailAST elistDetailAST = firstChildDetailAST.findFirstToken(
 			TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		for (DetailAST curExprDetailAST : exprDetailASTList) {
+		for (DetailAST curExprDetailAST : exprDetailASTs) {
 			firstChildDetailAST = curExprDetailAST.getFirstChild();
 
 			if (firstChildDetailAST.getType() != TokenTypes.STRING_LITERAL) {

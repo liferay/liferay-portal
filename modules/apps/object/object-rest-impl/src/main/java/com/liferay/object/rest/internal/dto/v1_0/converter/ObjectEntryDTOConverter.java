@@ -92,6 +92,7 @@ import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlParserUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -319,10 +320,23 @@ public class ObjectEntryDTOConverter
 				serviceBuilderObjectEntry,
 				ObjectEntryModel::getExpirationDate));
 		objectEntry.setFriendlyUrlPath(
-			() -> serviceBuilderObjectEntry.getURLTitle(
-				dtoConverterContext.getLocale()));
+			() -> HttpComponentsUtil.decodePath(
+				serviceBuilderObjectEntry.getURLTitle(
+					dtoConverterContext.getLocale())));
 		objectEntry.setFriendlyUrlPath_i18n(
-			serviceBuilderObjectEntry::getURLTitleMap);
+			() -> {
+				Map<String, String> urlTitleMap =
+					serviceBuilderObjectEntry.getURLTitleMap();
+
+				if (MapUtil.isEmpty(urlTitleMap)) {
+					return urlTitleMap;
+				}
+
+				urlTitleMap.replaceAll(
+					(key, value) -> HttpComponentsUtil.decodePath(value));
+
+				return urlTitleMap;
+			});
 		objectEntry.setId(serviceBuilderObjectEntry::getObjectEntryId);
 		objectEntry.setKeywords(
 			() -> {

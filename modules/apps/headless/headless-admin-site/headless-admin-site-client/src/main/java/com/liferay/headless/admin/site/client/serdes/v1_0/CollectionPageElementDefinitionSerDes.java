@@ -672,7 +672,7 @@ public class CollectionPageElementDefinitionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "layout")) {
 				if (jsonParserFieldValue != null) {
 					collectionPageElementDefinition.setLayout(
-						LayoutSerDes.toDTO((String)jsonParserFieldValue));
+						BasicLayoutSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "listItemStyle")) {

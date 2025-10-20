@@ -45,14 +45,14 @@ public class ServiceProxyFactoryCheck extends BaseCheck {
 
 		DetailAST elistDetailAST = detailAST.findFirstToken(TokenTypes.ELIST);
 
-		List<DetailAST> exprDetailASTList = getAllChildTokens(
+		List<DetailAST> exprDetailASTs = getAllChildTokens(
 			elistDetailAST, false, TokenTypes.EXPR);
 
-		if (exprDetailASTList.size() < 2) {
+		if (exprDetailASTs.size() < 2) {
 			return;
 		}
 
-		DetailAST exprDetailAST = exprDetailASTList.get(1);
+		DetailAST exprDetailAST = exprDetailASTs.get(1);
 
 		firstChildDetailAST = exprDetailAST.getFirstChild();
 

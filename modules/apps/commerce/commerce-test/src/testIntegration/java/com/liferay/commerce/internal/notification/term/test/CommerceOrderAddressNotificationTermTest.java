@@ -115,7 +115,7 @@ public class CommerceOrderAddressNotificationTermTest {
 			content,
 			new NotificationContextBuilder(
 			).className(
-				"com.liferay.commerce.model.CommerceOrder"
+				CommerceOrder.class.getName()
 			).classPK(
 				GetterUtil.getLong(termValues.get("id"))
 			).externalReferenceCode(

@@ -10,7 +10,7 @@ describe('StringMatchInput', () => {
 			<StringMatchInput
 				metadata='url'
 				onStringMatchChange={jest.fn()}
-				stringMatch='.*documents'
+				stringMatch='.*custom-assets'
 			/>
 		);
 

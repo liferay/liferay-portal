@@ -7,7 +7,6 @@ package com.liferay.headless.admin.site.client.serdes.v1_0;
 
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionItemPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionPageElementDefinition;
-import com.liferay.headless.admin.site.client.dto.v1_0.ColumnPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContainerPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.DropZonePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FormPageElementDefinition;
@@ -16,8 +15,9 @@ import com.liferay.headless.admin.site.client.dto.v1_0.FormStepPageElementDefini
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentCompositionInstancePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentDropZonePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentInstancePageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.GridPageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.ModulePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElementDefinition;
-import com.liferay.headless.admin.site.client.dto.v1_0.RowPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetInstancePageElementDefinition;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
@@ -70,11 +70,6 @@ public class PageElementDefinitionSerDes {
 					(CollectionItemPageElementDefinition)pageElementDefinition);
 			}
 
-			if (typeString.equals("Column")) {
-				return ColumnPageElementDefinitionSerDes.toJSON(
-					(ColumnPageElementDefinition)pageElementDefinition);
-			}
-
 			if (typeString.equals("Container")) {
 				return ContainerPageElementDefinitionSerDes.toJSON(
 					(ContainerPageElementDefinition)pageElementDefinition);
@@ -120,9 +115,14 @@ public class PageElementDefinitionSerDes {
 						pageElementDefinition);
 			}
 
-			if (typeString.equals("Row")) {
-				return RowPageElementDefinitionSerDes.toJSON(
-					(RowPageElementDefinition)pageElementDefinition);
+			if (typeString.equals("Grid")) {
+				return GridPageElementDefinitionSerDes.toJSON(
+					(GridPageElementDefinition)pageElementDefinition);
+			}
+
+			if (typeString.equals("Module")) {
+				return ModulePageElementDefinitionSerDes.toJSON(
+					(ModulePageElementDefinition)pageElementDefinition);
 			}
 
 			if (typeString.equals("Widget")) {
@@ -202,10 +202,6 @@ public class PageElementDefinitionSerDes {
 					return CollectionItemPageElementDefinition.toDTO(json);
 				}
 
-				if (typeString.equals("Column")) {
-					return ColumnPageElementDefinition.toDTO(json);
-				}
-
 				if (typeString.equals("Container")) {
 					return ContainerPageElementDefinition.toDTO(json);
 				}
@@ -239,8 +235,12 @@ public class PageElementDefinitionSerDes {
 					return FragmentDropZonePageElementDefinition.toDTO(json);
 				}
 
-				if (typeString.equals("Row")) {
-					return RowPageElementDefinition.toDTO(json);
+				if (typeString.equals("Grid")) {
+					return GridPageElementDefinition.toDTO(json);
+				}
+
+				if (typeString.equals("Module")) {
+					return ModulePageElementDefinition.toDTO(json);
 				}
 
 				if (typeString.equals("Widget")) {

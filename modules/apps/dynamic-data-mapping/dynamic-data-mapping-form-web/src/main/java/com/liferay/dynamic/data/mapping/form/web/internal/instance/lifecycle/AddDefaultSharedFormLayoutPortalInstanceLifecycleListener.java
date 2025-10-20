@@ -71,13 +71,13 @@ public class AddDefaultSharedFormLayoutPortalInstanceLifecycleListener
 
 	private Group _addFormsGroup(long companyId) throws Exception {
 		return _groupLocalService.addGroup(
-			_userLocalService.getGuestUserId(companyId),
+			StringPool.BLANK, _userLocalService.getGuestUserId(companyId),
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), GroupConstants.FORMS
 			).build(),
-			null, GroupConstants.TYPE_SITE_PRIVATE, true,
+			null, GroupConstants.TYPE_SITE_PRIVATE, null, true,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			GroupConstants.FORMS_FRIENDLY_URL, false, false, true, null);
 	}

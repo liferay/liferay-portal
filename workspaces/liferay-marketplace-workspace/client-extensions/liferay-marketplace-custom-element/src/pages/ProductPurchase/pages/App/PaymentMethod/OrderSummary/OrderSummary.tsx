@@ -69,7 +69,6 @@ const OrderSummary = () => {
 	const {
 		actions: {previousStep},
 		handlePurchase,
-		isSingleAccount,
 		marketplaceDeliveryProduct,
 		product,
 		productPurchaseCart,
@@ -129,7 +128,6 @@ const OrderSummary = () => {
 			className="product-purchase-summary select-payment-step"
 			footerProps={{
 				backButtonProps: {
-					disabled: isSingleAccount && isFreeApp,
 					onClick: previousStep,
 				},
 				continueButtonProps: {

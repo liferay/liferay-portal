@@ -54,7 +54,7 @@ public class BulkActionsMonitorComponentSectionFragmentRender
 				ObjectDefinition objectDefinition =
 					_objectDefinitionLocalService.getObjectDefinition(
 						PortalUtil.getCompanyId(httpServletRequest),
-						"BulkActionTask");
+						"CMSBulkActionTask");
 
 				return PortalUtil.getClassNameId(
 					objectDefinition.getClassName());

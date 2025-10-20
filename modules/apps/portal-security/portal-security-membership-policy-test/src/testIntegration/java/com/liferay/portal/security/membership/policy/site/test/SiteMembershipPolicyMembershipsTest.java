@@ -290,7 +290,7 @@ public class SiteMembershipPolicyMembershipsTest
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			group.getDescriptionMap(), group.getType(),
+			group.getDescriptionMap(), group.getType(), null,
 			group.isManualMembership(), group.getMembershipRestriction(),
 			group.getFriendlyURL(), group.isInheritContent(), group.isActive(),
 			ServiceContextTestUtil.getServiceContext());

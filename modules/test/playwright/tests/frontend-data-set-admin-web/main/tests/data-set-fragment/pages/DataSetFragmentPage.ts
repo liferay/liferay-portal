@@ -29,11 +29,12 @@ export class DataSetFragmentPage {
 	readonly paginationResults: Locator;
 	readonly paginationWrapper: Locator;
 	readonly publishPageButton: Locator;
-	readonly resetFilterButton: Locator;
+	readonly removeFilterButton: Locator;
 	readonly selectDataSetModalFrame: FrameLocator;
 	readonly selectDataSetButton: Locator;
 	readonly selectedDataSetInput: Locator;
 	readonly selectionListContainer: Locator;
+	readonly showResultsButton: Locator;
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
 	readonly table: {
@@ -76,9 +77,9 @@ export class DataSetFragmentPage {
 		this.publishPageButton = page.getByRole('button', {
 			name: 'Publish',
 		});
-		this.resetFilterButton = page.getByRole('button', {
+		this.removeFilterButton = page.getByRole('button', {
 			exact: true,
-			name: 'Reset Filters',
+			name: 'Remove Filter',
 		});
 		this.selectDataSetModalFrame = page.frameLocator(
 			'iframe[title="Select"]'
@@ -94,6 +95,10 @@ export class DataSetFragmentPage {
 			'.fds-admin-item-selector'
 		);
 
+		this.showResultsButton = page.getByRole('button', {
+			exact: true,
+			name: 'Show Results',
+		});
 		this.sidePanel = page.locator('.fds-side-panel');
 		this.sidePanelFrame = this.sidePanel.frameLocator('iframe');
 

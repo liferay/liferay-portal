@@ -107,16 +107,16 @@ public class UnusedVariableCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> variableCallerDetailASTList =
-			getVariableCallerDetailASTList(detailAST, variableName);
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			detailAST, variableName);
 
-		if (variableCallerDetailASTList.isEmpty()) {
+		if (variableCallerDetailASTs.isEmpty()) {
 			log(detailAST, _MSG_UNUSED_VARIABLE, variableName);
 
 			return;
 		}
 
-		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTs) {
 			if (_isInsideConstructor(variableCallerDetailAST) ||
 				!_isInsidePrivateMethod(variableCallerDetailAST)) {
 

@@ -7,23 +7,25 @@ import ClayBreadcrumb from '@clayui/breadcrumb';
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown, {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClaySticker from '@clayui/sticker';
-import {openConfirmModal, openModal} from 'frontend-js-components-web';
+import {openModal, openToast} from 'frontend-js-components-web';
 import {navigate} from 'frontend-js-web';
 import React, {ComponentProps} from 'react';
 
+import DefaultPermissionModalContent from '../../main_view/default_permission/DefaultPermissionModalContent';
+import {DefaultPermissionModalContentProps} from '../../main_view/default_permission/DefaultPermissionTypes';
 import ApiHelper from '../services/ApiHelper';
-import {
-	displayErrorToast,
-	displayRequestSuccessToast,
-} from '../utils/toastUtil';
+import {displayErrorToast} from '../utils/toastUtil';
 import SpaceSticker from './SpaceSticker';
 
-interface ActionDropdownItemProps {
+export interface ActionDropdownItemProps {
 	confirmationMessage?: string;
+	confirmationTitle?: string;
+	defaultPermissionAdditionalProps?: DefaultPermissionModalContentProps;
 	href?: string;
 	redirect?: string;
 	size?: 'full-screen' | 'lg' | 'md' | 'sm';
-	target?: 'asyncDelete' | 'link' | 'modal';
+	successMessage?: string;
+	target?: 'asyncDelete' | 'defaultPermissionsModal' | 'link' | 'modal';
 }
 
 interface Props
@@ -46,10 +48,13 @@ export interface BreadcrumbItem {
 
 function ActionDropdownItem({
 	confirmationMessage,
+	confirmationTitle,
+	defaultPermissionAdditionalProps,
 	href = '',
 	label,
 	redirect,
 	size = 'full-screen',
+	successMessage,
 	target = 'link',
 	...props
 }: {label: string} & ActionDropdownItemProps) {
@@ -65,7 +70,14 @@ function ActionDropdownItem({
 			const {error} = await ApiHelper.delete(href);
 
 			if (!error) {
-				displayRequestSuccessToast();
+				openToast({
+					message:
+						successMessage ||
+						Liferay.Language.get(
+							'your-request-completed-successfully'
+						),
+					type: 'success',
+				});
 
 				if (redirect) {
 					navigate(redirect);
@@ -75,6 +87,22 @@ function ActionDropdownItem({
 				displayErrorToast(error);
 			}
 		}
+		else if (
+			target === 'defaultPermissionsModal' &&
+			defaultPermissionAdditionalProps
+		) {
+			openModal({
+				containerProps: {
+					className: '',
+				},
+				contentComponent: ({closeModal}: {closeModal: () => void}) =>
+					DefaultPermissionModalContent({
+						...defaultPermissionAdditionalProps,
+						closeModal,
+					}),
+				size: 'full-screen',
+			});
+		}
 		else {
 			navigate(href);
 		}
@@ -82,13 +110,27 @@ function ActionDropdownItem({
 
 	const handleClick = () => {
 		if (confirmationMessage) {
-			openConfirmModal({
-				message: confirmationMessage,
-				onConfirm: (isConfirmed) => {
-					if (isConfirmed) {
-						handleTargetAction();
-					}
-				},
+			openModal({
+				bodyHTML: confirmationMessage,
+				buttons: [
+					{
+						autoFocus: true,
+						displayType: 'secondary',
+						label: Liferay.Language.get('cancel'),
+						type: 'cancel',
+					},
+					{
+						displayType: 'danger',
+						label: Liferay.Language.get('delete'),
+						onClick: ({processClose}) => {
+							processClose();
+							handleTargetAction();
+						},
+					},
+				],
+				role: 'alertdialog',
+				status: 'danger',
+				title: confirmationTitle || Liferay.Language.get('delete'),
 			});
 		}
 		else {
@@ -153,6 +195,7 @@ export default function Breadcrumb({
 								aria-label={Liferay.Language.get(
 									'more-actions'
 								)}
+								className="component-action"
 								displayType="unstyled"
 								size="sm"
 								symbol="ellipsis-v"

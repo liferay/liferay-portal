@@ -352,9 +352,10 @@ public class AddGroupMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		Group liveGroup = _groupService.addGroup(
-			parentGroupId, GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap,
-			descriptionMap, type, manualMembership, membershipRestriction,
-			friendlyURL, true, inheritContent, active, serviceContext);
+			StringPool.BLANK, parentGroupId,
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, descriptionMap, type,
+			null, manualMembership, membershipRestriction, friendlyURL, true,
+			inheritContent, active, serviceContext);
 
 		LiveUsers.joinGroup(
 			themeDisplay.getCompanyId(), liveGroup.getGroupId(), userId);

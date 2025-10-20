@@ -220,8 +220,12 @@ export default function checkAllowedChild(
 		}
 	}
 
-	if (!formParent && child.type === 'form-relationship') {
-		return {reason: 'form-relationship-outside-form', valid: false};
+	if (child.type === 'form-relationship') {
+		if (!formParent) {
+			return {reason: 'form-relationship-outside-form', valid: false};
+		}
+
+		return {valid: true};
 	}
 
 	if (

@@ -6,7 +6,6 @@
 package com.liferay.exportimport.kernel.lar;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -17,6 +16,7 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
@@ -770,7 +770,7 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 		Supplier<List<StagedModelType>> stagedModelTypesSupplier) {
 
 		return _stagedModelTypesMap.computeIfAbsent(
-			DBPartition.isPartitionEnabled() ?
+			PropsValues.DATABASE_PARTITION_ENABLED ?
 				CompanyThreadLocal.getCompanyId() : CompanyConstants.SYSTEM,
 			companyId -> {
 				List<StagedModelType> stagedModelTypes =

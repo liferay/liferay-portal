@@ -1589,7 +1589,10 @@ public class ObjectEntryDisplayContextImpl
 		Status status = objectEntry.getStatus();
 
 		if (status != null) {
-			values.put("status", status.getLabel());
+			values.put(
+				"status",
+				LanguageUtil.get(
+					_objectRequestHelper.getRequest(), status.getLabel()));
 		}
 
 		return values;
@@ -1691,10 +1694,8 @@ public class ObjectEntryDisplayContextImpl
 			return null;
 		}
 
-		ObjectDefinition objectDefinition = getObjectDefinition1();
-
 		return ObjectEntryUtil.toObjectEntry(
-			objectDefinition.getObjectDefinitionId(), objectEntry);
+			getObjectDefinition1(), objectEntry);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -9,7 +9,6 @@ import com.liferay.fragment.contributor.util.FragmentCollectionContributorRegist
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionItemPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionPageElementDefinition;
-import com.liferay.headless.admin.site.client.dto.v1_0.ColumnPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContainerPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.DropZonePageElementDefinition;
@@ -18,11 +17,11 @@ import com.liferay.headless.admin.site.client.dto.v1_0.FormStepContainerPageElem
 import com.liferay.headless.admin.site.client.dto.v1_0.FormStepPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentDropZonePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentInstancePageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.GridPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.HtmlProperties;
+import com.liferay.headless.admin.site.client.dto.v1_0.ModulePageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElementDefinition;
-import com.liferay.headless.admin.site.client.dto.v1_0.RowPageElementDefinition;
-import com.liferay.layout.util.constants.StyledLayoutStructureConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.util.Arrays;
@@ -56,15 +55,6 @@ public class PageElementsTestUtil {
 			return new CollectionItemPageElementDefinition() {
 				{
 					setType(Type.COLLECTION_ITEM);
-				}
-			};
-		}
-
-		if (Objects.equals(type, PageElementDefinition.Type.COLUMN)) {
-			return new ColumnPageElementDefinition() {
-				{
-					setSize(1);
-					setType(Type.COLUMN);
 				}
 			};
 		}
@@ -165,17 +155,25 @@ public class PageElementsTestUtil {
 			};
 		}
 
-		if (Objects.equals(type, PageElementDefinition.Type.ROW)) {
-			return new RowPageElementDefinition() {
+		if (Objects.equals(type, PageElementDefinition.Type.MODULE)) {
+			return new ModulePageElementDefinition() {
+				{
+					setSize(1);
+					setType(Type.MODULE);
+				}
+			};
+		}
+
+		if (Objects.equals(type, PageElementDefinition.Type.GRID)) {
+			return new GridPageElementDefinition() {
 				{
 					setGutters(Boolean.TRUE);
 					setIndexed(Boolean.TRUE);
 					setModulesPerRow(0);
-					setNumberOfColumns(0);
+					setNumberOfModules(0);
 					setReverseOrder(Boolean.FALSE);
-					setType(Type.ROW);
-					setVerticalAlignment(
-						StyledLayoutStructureConstants.VERTICAL_ALIGNMENT_TOP);
+					setType(Type.GRID);
+					setVerticalAlignment(VerticalAlignment.TOP);
 				}
 			};
 		}

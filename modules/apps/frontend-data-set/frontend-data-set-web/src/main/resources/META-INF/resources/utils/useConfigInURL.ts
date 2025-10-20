@@ -54,11 +54,11 @@ function registerConfigWriter<K extends keyof IConfigInURL>({
 
 function updateConfig({
 	config,
-	configInURLSettings,
+	configInURLBehavior,
 	id,
 }: {
 	config: Partial<IConfigInURL>;
-	configInURLSettings: EConfigInURLBehavior;
+	configInURLBehavior: EConfigInURLBehavior;
 	id: string;
 }) {
 	const updatedConfig: Partial<IConfigInURL> = {};
@@ -76,27 +76,27 @@ function updateConfig({
 		);
 	});
 
-	writeConfigInURL(id, updatedConfig, configInURLSettings);
+	writeConfigInURL(id, updatedConfig, configInURLBehavior);
 }
 
 export function useUpdateConfig({
-	configInURLSettings,
+	configInURLBehavior,
 	id,
 }: {
-	configInURLSettings: EConfigInURLBehavior;
+	configInURLBehavior: EConfigInURLBehavior;
 
 	id: string;
 }): Function {
 	return useCallback(
 		(config: Partial<IConfigInURL>) =>
-			updateConfig({config, configInURLSettings, id}),
-		[id, configInURLSettings]
+			updateConfig({config, configInURLBehavior, id}),
+		[id, configInURLBehavior]
 	);
 }
 
 function useConfigInURL<K extends keyof IConfigInURL>({
 	additionalStateDispatchers = [],
-	configInURLSettings,
+	configInURLBehavior,
 	configReader,
 	configWriter = (value: IConfigInURL[K]) => value,
 	id,
@@ -107,7 +107,7 @@ function useConfigInURL<K extends keyof IConfigInURL>({
 		type: EViewsActionTypes;
 		value: any;
 	}[];
-	configInURLSettings: EConfigInURLBehavior;
+	configInURLBehavior: EConfigInURLBehavior;
 	configReader: IConfigReader<K>;
 	configWriter?: IConfigWriter<K>;
 	id: string;
@@ -122,7 +122,7 @@ function useConfigInURL<K extends keyof IConfigInURL>({
 		useGetter({configReader, id, key}),
 		useUpdaterThunk({
 			additionalStateDispatchers,
-			configInURLSettings,
+			configInURLBehavior,
 			configWriter,
 			id,
 			key,
@@ -158,7 +158,7 @@ function useGetter<K extends keyof IConfigInURL>({
 function useUpdaterThunk<K extends keyof IConfigInURL>({
 	additionalStateDispatchers = [],
 
-	configInURLSettings,
+	configInURLBehavior,
 	configWriter = (value: IConfigInURL[K]) => value,
 	id,
 	key,
@@ -170,7 +170,7 @@ function useUpdaterThunk<K extends keyof IConfigInURL>({
 		value: any;
 	}[];
 
-	configInURLSettings: EConfigInURLBehavior;
+	configInURLBehavior: EConfigInURLBehavior;
 	configWriter?: IConfigWriter<K>;
 	id: string;
 	key: K;
@@ -197,7 +197,7 @@ function useUpdaterThunk<K extends keyof IConfigInURL>({
 
 	registerConfigWriter({configWriterRef, id, key});
 
-	const updateConfig = useUpdateConfig({configInURLSettings, id});
+	const updateConfig = useUpdateConfig({configInURLBehavior, id});
 
 	return useCallback(
 		(value: IConfigInURL[K]) => {

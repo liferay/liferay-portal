@@ -11,7 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_195079 {
 
 	public void method() {
-		ServiceTrackerList<Class<T>, Class<E>> serviceTrackerList = ServiceTrackerListFactory.open(null, null);
+		ServiceTrackerList<Class<T>, Class<E>> serviceTrackerList =
+			ServiceTrackerListFactory.open(null, null);
 	}
 
 	private ServiceTrackerList<PageInclude, PageInclude> _serviceTrackerList;

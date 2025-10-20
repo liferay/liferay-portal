@@ -25,11 +25,9 @@ const renderErrorComponent = (
 	switch (errorCode) {
 		case 'FORBIDDEN_ACCESS':
 			return <ForbiddenAccess />;
-		case 'TICKET_IS_CLOSED':
-			return <TicketIsClosed />;
 		case 'INVALID_TICKET_NUMBER':
 			return <InvalidTicketNumber />;
-		case 'ZENDESK_ORGANIZATION_ERROR': {
+		case 'JIRA_ORGANIZATION_ERROR': {
 			if (!uploadStateData?.uploadAccountKey) {
 				return <UnexpectedError uploadErrorMessage="try-again-later" />;
 			}
@@ -40,6 +38,8 @@ const renderErrorComponent = (
 				/>
 			);
 		}
+		case 'TICKET_IS_CLOSED':
+			return <TicketIsClosed />;
 		default:
 			return (
 				<UnexpectedError

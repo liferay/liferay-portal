@@ -18,7 +18,101 @@ configmap:
     overrideDefaults: false
 customEnv: {}
 customEnvFrom: {}
-customInitContainers: {}
+customInitContainers:
+    x-liferay-prepopulate-data:
+        -   containerTemplate: |
+                -   command:
+                        -   bash
+                        -   -c
+                        -   |
+                                rm -fr /temp/liferay/liferay.pid 2>/dev/null
+
+                                mkdir -p /temp/liferay
+
+                                touch /temp/liferay/liferay.pid
+
+                                if [ ! -d /temp/liferay/data ] || [ -z "$(ls -A /temp/liferay/data)" ]
+                                then
+                                    mkdir -p /temp/liferay/data
+
+                                    cp -frv /opt/liferay/data/* /temp/liferay/data
+                                fi
+
+                                if [ ! -d /temp/liferay/glowroot ] || [ -z "$(ls -A /temp/liferay/glowroot)" ]
+                                then
+                                    mkdir -p /temp/liferay/glowroot
+
+                                    cp -frv /opt/liferay/glowroot/* /temp/liferay/glowroot
+                                fi
+
+                                if [ ! -f /temp/tomcat/conf/server.xml ]
+                                then
+                                    mkdir -p /temp/tomcat/conf
+
+                                    cp /opt/liferay/tomcat/conf/logging.properties /temp/tomcat/conf/logging.properties
+
+                                    echo -e "\norg.apache.catalina.tribes.membership.cloud.level=SEVERE" >> /temp/tomcat/conf/logging.properties
+
+                                    cat /opt/liferay/tomcat/conf/server.xml | sed '/<!--.*-->/d' | sed '/<!--/,/-->/d' > /temp/tomcat/conf/server.xml
+
+                                    IFS='' read -r -d '' SERVER_XML_CLUSTER <<EOF
+                                    <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
+                                        <Manager className="com.liferay.support.tomcat.session.LiferayDeltaManager" />
+                                        <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+                                            <Membership
+                                                className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"
+                                                membershipProviderClassName="org.apache.catalina.tribes.membership.cloud.DNSMembershipProvider"
+                                            />
+                                            <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
+                                                <Transport
+                                                    className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"
+                                                    timeout="300000"
+                                                />
+                                            </Sender>
+                                        </Channel>
+                                    </Cluster>
+                                EOF
+
+                                    sed -i '/<Engine/r'<(echo "${SERVER_XML_CLUSTER}") /temp/tomcat/conf/server.xml
+                                fi
+
+                                if [ -d /opt/liferay/deploy ] && [ -z "$(ls -A /temp/liferay/deploy/*license* 2>/dev/null)" ]
+                                then
+                                    if [ ! -d /temp/liferay/data/license ] || [ -z "$(ls -A /temp/liferay/data/license/*.li)" ]
+                                    then
+                                        mkdir -p /temp/liferay/deploy
+
+                                        cp -fv /opt/liferay/deploy/* /temp/liferay/deploy
+                                    fi
+                                fi
+                    image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
+                    imagePullPolicy: {{ .image.pullPolicy }}
+                    name: liferay-prepopulate-data
+                    volumeMounts:
+                        -   mountPath: /temp
+                            name: liferay-persistent-volume
+    x-liferay-wait-on-services:
+        -   containerTemplate: |
+                -   command:
+                        -   bash
+                        -   -c
+                        -   |
+                                trap "echo 'Received signal to terminate.'; exit 0" SIGINT SIGTERM
+
+                                {{- $liferayname := .liferayname }}
+                                {{- range $k, $v := .dependencies }}
+                                    {{- if eq $v.source "statefulset" }}
+                                        until timeout 2 bash -c '</dev/tcp/{{ $liferayname }}-{{ $k }}/{{ (index $v.statefulset.service.ports 0).port }}' 2>/dev/null
+                                        do
+                                            echo "Waiting for {{ $liferayname }}-{{ $k }}..."
+
+                                            sleep 2
+                                        done
+                                    {{- end }}
+                                {{- end }}
+                    image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
+                    imagePullPolicy: {{ .image.pullPolicy }}
+                    name: liferay-wait-on-services
 customLabels:
     origin: liferay-cloud
 customPorts: {}
@@ -70,99 +164,7 @@ ingress:
     enabled: false
     rules: []
     tls: []
-initContainers:
-    -   containerTemplate: |
-            -   command:
-                    -   bash
-                    -   -c
-                    -   |
-                            rm -fr /temp/liferay/liferay.pid 2>/dev/null
-
-                            mkdir -p /temp/liferay
-
-                            touch /temp/liferay/liferay.pid
-
-                            if [ ! -d /temp/liferay/data ] || [ -z "$(ls -A /temp/liferay/data)" ]
-                            then
-                                mkdir -p /temp/liferay/data
-
-                                cp -frv /opt/liferay/data/* /temp/liferay/data
-                            fi
-
-                            if [ ! -d /temp/liferay/glowroot ] || [ -z "$(ls -A /temp/liferay/glowroot)" ]
-                            then
-                                mkdir -p /temp/liferay/glowroot
-
-                                cp -frv /opt/liferay/glowroot/* /temp/liferay/glowroot
-                            fi
-
-                            if [ ! -f /temp/tomcat/conf/server.xml ]
-                            then
-                                mkdir -p /temp/tomcat/conf
-
-                                cp /opt/liferay/tomcat/conf/logging.properties /temp/tomcat/conf/logging.properties
-
-                                echo -e "\norg.apache.catalina.tribes.membership.cloud.level=SEVERE" >> /temp/tomcat/conf/logging.properties
-
-                                cat /opt/liferay/tomcat/conf/server.xml | sed '/<!--.*-->/d' | sed '/<!--/,/-->/d' > /temp/tomcat/conf/server.xml
-
-                                IFS='' read -r -d '' SERVER_XML_CLUSTER <<EOF
-                                <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
-                                    <Manager className="com.liferay.support.tomcat.session.LiferayDeltaManager" />
-                                    <Channel className="org.apache.catalina.tribes.group.GroupChannel">
-                                        <Membership
-                                            className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"
-                                            membershipProviderClassName="org.apache.catalina.tribes.membership.cloud.DNSMembershipProvider"
-                                        />
-                                        <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
-                                            <Transport
-                                                className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"
-                                                timeout="300000"
-                                            />
-                                        </Sender>
-                                    </Channel>
-                                </Cluster>
-                            EOF
-
-                                sed -i '/<Engine/r'<(echo "${SERVER_XML_CLUSTER}") /temp/tomcat/conf/server.xml
-                            fi
-
-                            if [ -d /opt/liferay/deploy ] && [ -z "$(ls -A /temp/liferay/deploy/*license* 2>/dev/null)" ]
-                            then
-                                if [ ! -d /temp/liferay/data/license ] || [ -z "$(ls -A /temp/liferay/data/license/*.li)" ]
-                                then
-                                    mkdir -p /temp/liferay/deploy
-
-                                    cp -fv /opt/liferay/deploy/* /temp/liferay/deploy
-                                fi
-                            fi
-                image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
-                imagePullPolicy: {{ .image.pullPolicy }}
-                name: liferay-prepopulate-data
-                volumeMounts:
-                    -   mountPath: /temp
-                        name: liferay-persistent-volume
-    -   containerTemplate: |
-            -   command:
-                    -   bash
-                    -   -c
-                    -   |
-                            trap "echo 'Received signal to terminate.'; exit 0" SIGINT SIGTERM
-
-                            {{- $liferayname := .liferayname }}
-                            {{- range $k, $v := .dependencies }}
-                                {{- if eq $v.source "statefulset" }}
-                                    until nc -vz -w 2 {{ $liferayname }}-{{ $k }} {{ (index $v.statefulset.service.ports 0).port }}
-                                    do
-                                        echo "Waiting for {{ $liferayname }}-{{ $k }}..."
-
-                                        sleep 2
-                                    done
-                                {{- end }}
-                            {{- end }}
-                image: bash:5.2
-                imagePullPolicy: IfNotPresent
-                name: liferay-wait-on-services
+initContainers: []
 livenessProbe:
     failureThreshold: 3
     httpGet:

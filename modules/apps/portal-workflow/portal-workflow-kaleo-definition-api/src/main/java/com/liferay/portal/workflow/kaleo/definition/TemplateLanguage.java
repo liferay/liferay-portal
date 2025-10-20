@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public enum TemplateLanguage {
 
-	FREEMARKER("freemarker"), TEXT("text"), VELOCITY("velocity");
+	FREEMARKER("freemarker"), TEXT("text");
 
 	public static TemplateLanguage parse(String value)
 		throws KaleoDefinitionValidationException {
@@ -24,9 +24,6 @@ public enum TemplateLanguage {
 		}
 		else if (Objects.equals(TEXT.getValue(), value)) {
 			return TEXT;
-		}
-		else if (Objects.equals(VELOCITY.getValue(), value)) {
-			return VELOCITY;
 		}
 
 		throw new KaleoDefinitionValidationException.InvalidTemplateLanguage(

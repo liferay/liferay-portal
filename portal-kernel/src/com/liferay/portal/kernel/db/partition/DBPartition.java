@@ -29,8 +29,4 @@ public class DBPartition {
 		return false;
 	}
 
-	public static boolean isPartitionEnabled() {
-		return PropsValues.DATABASE_PARTITION_ENABLED;
-	}
-
 }

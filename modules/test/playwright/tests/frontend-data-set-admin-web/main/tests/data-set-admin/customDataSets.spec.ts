@@ -9,6 +9,7 @@ import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
 import getRandomString from '../../../../../utils/getRandomString';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
+import {API_ENDPOINT_PATH} from '../../utils/constants';
 import {customDataSetsPageTest} from './fixtures/customDataSetsPageTest';
 import {CustomDataSetsPage} from './pages/CustomDataSetsPage';
 
@@ -16,6 +17,7 @@ export const test = mergeTests(
 	dataSetManagerApiHelpersTest,
 	customDataSetsPageTest,
 	featureFlagsTest({
+		'LPD-38564': {enabled: true},
 		'LPS-164563': {enabled: true},
 	}),
 	loginTest()
@@ -53,29 +55,38 @@ const skusDataSetConfig = {
 
 const tableSectionsDataSetConfig = {
 	name: getRandomString(),
-	restApplication: '/data-set-admin/table-sections',
-	restEndpoint: '/',
+	restApplication: `${API_ENDPOINT_PATH}`,
+	restEndpoint:
+		'/by-external-reference-code/{currentExternalReferenceCode}/dataSetToDataSetTableSections',
 	restSchema: 'DataSetTableSection',
 };
 
 const tableSectionsWithSpecialCharactersDataSetConfig = {
 	name: 'Data Set ~!@#$%^&*(){}[].<>/? name',
-	restApplication: '/data-set-admin/table-sections',
-	restEndpoint: '/',
+	restApplication: `${API_ENDPOINT_PATH}`,
+	restEndpoint:
+		'/by-external-reference-code/{currentExternalReferenceCode}/dataSetToDataSetTableSections',
 	restSchema: 'DataSetTableSection',
 };
 
 async function assertTableActionLabels(customDataSetsPage: CustomDataSetsPage) {
-	await customDataSetsPage.table.bodyRows
+	const firstRowActionsButton = customDataSetsPage.table.bodyRows
 		.locator('td.cell-item-actions')
 		.first()
-		.locator('.dropdown-toggle')
-		.click();
+		.locator('.dropdown-toggle');
+
+	firstRowActionsButton.click();
+
+	const actionsDropdownId =
+		await firstRowActionsButton.getAttribute('aria-controls');
+	const actionsDropdown = customDataSetsPage.page.locator(
+		`#${actionsDropdownId}`
+	);
+
+	await actionsDropdown.waitFor();
 
 	const tableItemActions = await customDataSetsPage.page
-		.locator('.dropdown-menu')
-		.filter({has: customDataSetsPage.page.locator('span.pr-2')})
-		.first()
+		.locator(`#${actionsDropdownId}`)
 		.locator('.dropdown-item')
 		.allInnerTexts();
 
@@ -200,7 +211,7 @@ test('Create parameterized data set', async ({customDataSetsPage}) => {
 test(
 	'Assert endpoint with resolved paramater is available as an option',
 	{tag: '@LPD-31177'},
-	async ({customDataSetsPage}) => {
+	async ({customDataSetsPage, page}) => {
 		const cartDataSetConfig = {
 			name: 'Carts',
 			restApplication: '/headless-commerce-delivery-cart/v1.0',
@@ -217,6 +228,9 @@ test(
 			await customDataSetsPage.newDataSetButton.click();
 
 			await expect(modal.nameInput).toBeVisible();
+			await expect(modal.restApplicationField).toBeVisible();
+			await expect(modal.restSchemaField).toBeVisible();
+			await expect(modal.restEndpointField).toBeVisible();
 		});
 
 		await test.step('Assert endpoint with resolved paramater is available', async () => {
@@ -227,6 +241,14 @@ test(
 				.click();
 
 			await expect(modal.restSchemaField).toBeVisible();
+
+			await page.waitForResponse(
+				(response) =>
+					response
+						.url()
+						.includes(cartDataSetConfig.restApplication) &&
+					response.status() === 200
+			);
 
 			await modal.restSchemaField.click();
 

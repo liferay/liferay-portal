@@ -81,10 +81,8 @@ public class DispatchServiceUpgradeStepRegistrator
 			new BaseUuidUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {
-						{"DispatchTrigger", "dispatchTriggerId"}
-					};
+				protected String[] getTableNames() {
+					return new String[] {"DispatchTrigger"};
 				}
 
 			});

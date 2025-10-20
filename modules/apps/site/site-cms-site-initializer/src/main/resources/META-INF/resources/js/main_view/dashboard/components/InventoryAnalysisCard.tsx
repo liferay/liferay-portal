@@ -273,6 +273,83 @@ export function InventoryAnalysisCard() {
 				)}
 				title={Liferay.Language.get('inventory-analysis')}
 			>
+				<div className="align-items-lg-center d-flex flex-column flex-lg-row">
+					<div className="align-items-center d-flex mb-2 mb-md-0 mr-md-4">
+						<span className="mr-2">
+							<Text size={3} weight="semi-bold">
+								{Liferay.Language.get('group-by')}
+							</Text>
+						</span>
+
+						<GroupByDropdown
+							item={filters.structureType}
+							onSelectItem={(structureType) =>
+								setFilters({...filters, structureType})
+							}
+						/>
+					</div>
+
+					<div className="d-flex flex-md-row flex-row flex-xs-column">
+						<div className="align-items-center d-flex mb-2 mb-lg-0 mr-lg-3">
+							<span className="align-self-lg-auto align-self-start mr-2">
+								<Text size={3} weight="semi-bold">
+									{Liferay.Language.get('filter-by')}
+								</Text>
+							</span>
+						</div>
+
+						<div className="d-flex flex-wrap">
+							<div className="mb-2 mb-lg-0 mr-2">
+								<AllStructureTypesDropdown
+									item={filters.structure}
+									onSelectItem={(structure) =>
+										setFilters({
+											...filters,
+											structure,
+										})
+									}
+								/>
+							</div>
+
+							<div className="mb-2 mb-lg-0 mr-2">
+								<AllVocabulariesDropdown
+									item={filters.vocabulary}
+									onSelectItem={(vocabulary) => {
+										setFilters({
+											...filters,
+											vocabulary,
+										});
+									}}
+								/>
+							</div>
+
+							<div className="mb-2 mb-lg-0 mr-2">
+								<AllCategoriesDropdown
+									item={filters.category}
+									onSelectItem={(category) => {
+										setFilters({
+											...filters,
+											category,
+										});
+									}}
+								/>
+							</div>
+
+							<div className="mb-2 mb-lg-0">
+								<AllTagsDropdown
+									item={filters.tag}
+									onSelectItem={(tag) =>
+										setFilters({
+											...filters,
+											tag,
+										})
+									}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				{!inventoryAnalysisData ||
 				inventoryAnalysisData.totalCount === 0 ? (
 					<ClayEmptyState
@@ -285,96 +362,15 @@ export function InventoryAnalysisCard() {
 						title={Liferay.Language.get('no-assets-yet')}
 					/>
 				) : (
-					<>
-						<div className="align-items-lg-center d-flex flex-column flex-lg-row">
-							<div className="align-items-center d-flex mb-2 mb-md-0 mr-md-4">
-								<span className="mr-2">
-									<Text size={3} weight="semi-bold">
-										{Liferay.Language.get('group-by')}
-									</Text>
-								</span>
-
-								<GroupByDropdown
-									item={filters.structureType}
-									onSelectItem={(structureType) =>
-										setFilters({...filters, structureType})
-									}
-								/>
-							</div>
-
-							<div className="d-flex flex-md-row flex-row flex-xs-column">
-								<div className="align-items-center d-flex mb-2 mb-lg-0 mr-lg-3">
-									<span className="align-self-lg-auto align-self-start mr-2">
-										<Text size={3} weight="semi-bold">
-											{Liferay.Language.get('filter-by')}
-										</Text>
-									</span>
-								</div>
-
-								<div className="d-flex flex-wrap">
-									<div className="mb-2 mb-lg-0 mr-2">
-										<AllStructureTypesDropdown
-											item={filters.structure}
-											onSelectItem={(structure) =>
-												setFilters({
-													...filters,
-													structure,
-												})
-											}
-										/>
-									</div>
-
-									<div className="mb-2 mb-lg-0 mr-2">
-										<AllVocabulariesDropdown
-											item={filters.vocabulary}
-											onSelectItem={(vocabulary) => {
-												setFilters({
-													...filters,
-													vocabulary,
-												});
-											}}
-										/>
-									</div>
-
-									<div className="mb-2 mb-lg-0 mr-2">
-										<AllCategoriesDropdown
-											item={filters.category}
-											onSelectItem={(category) => {
-												setFilters({
-													...filters,
-													category,
-												});
-											}}
-										/>
-									</div>
-
-									<div className="mb-2 mb-lg-0">
-										<AllTagsDropdown
-											item={filters.tag}
-											onSelectItem={(tag) =>
-												setFilters({
-													...filters,
-													tag,
-												})
-											}
-										/>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<PaginatedTable
-							currentStructureTypeLabel={
-								filters.structureType.label
-							}
-							deltas={pagination.deltas}
-							handleDeltaChange={handleDeltaChange}
-							handlePageChange={handlePageChange}
-							inventoryAnalysisData={inventoryAnalysisData}
-							pagination={pagination}
-							viewType={selectedItem.value}
-						/>
-					</>
+					<PaginatedTable
+						currentStructureTypeLabel={filters.structureType.label}
+						deltas={pagination.deltas}
+						handleDeltaChange={handleDeltaChange}
+						handlePageChange={handlePageChange}
+						inventoryAnalysisData={inventoryAnalysisData}
+						pagination={pagination}
+						viewType={selectedItem.value}
+					/>
 				)}
 			</BaseCard>
 		</div>

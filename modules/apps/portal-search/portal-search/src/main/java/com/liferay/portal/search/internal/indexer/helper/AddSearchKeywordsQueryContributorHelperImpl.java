@@ -18,6 +18,7 @@ import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.internal.indexer.IncludeExcludeUtil;
 import com.liferay.portal.search.internal.indexer.IndexerProvidedClausesUtil;
 import com.liferay.portal.search.internal.util.SearchStringUtil;
+import com.liferay.portal.search.spi.model.query.contributor.HighlightFieldNamesQueryConfigContributor;
 import com.liferay.portal.search.spi.model.query.contributor.KeywordQueryContributor;
 import com.liferay.portal.search.spi.model.query.contributor.helper.KeywordQueryContributorHelper;
 
@@ -50,14 +51,18 @@ public class AddSearchKeywordsQueryContributorHelperImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_serviceTrackerList = ServiceTrackerListFactory.open(
+		_highlightFieldNamesQueryConfigContributors =
+			ServiceTrackerListFactory.open(
+				bundleContext, HighlightFieldNamesQueryConfigContributor.class);
+		_keywordQueryContributors = ServiceTrackerListFactory.open(
 			bundleContext, KeywordQueryContributor.class,
 			"(!(indexer.class.name=*))");
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceTrackerList.close();
+		_highlightFieldNamesQueryConfigContributors.close();
+		_keywordQueryContributors.close();
 	}
 
 	protected Collection<String> getStrings(
@@ -78,6 +83,14 @@ public class AddSearchKeywordsQueryContributorHelperImpl
 		String keywords = searchContext.getKeywords();
 
 		if (luceneSyntax) {
+			for (HighlightFieldNamesQueryConfigContributor
+					highlightFieldNamesQueryConfigContributor :
+						_highlightFieldNamesQueryConfigContributors) {
+
+				highlightFieldNamesQueryConfigContributor.
+					contributeHighlightFieldNames(searchContext);
+			}
+
 			_addStringQuery(booleanQuery, keywords);
 
 			return;
@@ -85,7 +98,7 @@ public class AddSearchKeywordsQueryContributorHelperImpl
 
 		List<KeywordQueryContributor> filteredKeywordQueryContributors =
 			IncludeExcludeUtil.filter(
-				_serviceTrackerList.toList(),
+				_keywordQueryContributors.toList(),
 				getStrings(
 					"search.full.query.clause.contributors.includes",
 					searchContext),
@@ -140,6 +153,9 @@ public class AddSearchKeywordsQueryContributorHelperImpl
 		return clazz.getName();
 	}
 
-	private ServiceTrackerList<KeywordQueryContributor> _serviceTrackerList;
+	private ServiceTrackerList<HighlightFieldNamesQueryConfigContributor>
+		_highlightFieldNamesQueryConfigContributors;
+	private ServiceTrackerList<KeywordQueryContributor>
+		_keywordQueryContributors;
 
 }

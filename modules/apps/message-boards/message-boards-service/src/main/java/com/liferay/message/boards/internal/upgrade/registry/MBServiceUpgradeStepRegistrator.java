@@ -141,8 +141,8 @@ public class MBServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"MBMessage", "messageId"}};
+				protected String[] getTableNames() {
+					return new String[] {"MBMessage"};
 				}
 
 			});
@@ -175,8 +175,8 @@ public class MBServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
-				protected String[][] getTableAndPrimaryKeyColumnNames() {
-					return new String[][] {{"MBCategory", "categoryId"}};
+				protected String[] getTableNames() {
+					return new String[] {"MBCategory"};
 				}
 
 			});

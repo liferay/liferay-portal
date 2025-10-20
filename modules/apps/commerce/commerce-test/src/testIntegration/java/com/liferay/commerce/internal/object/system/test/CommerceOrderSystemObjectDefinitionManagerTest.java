@@ -152,6 +152,9 @@ public class CommerceOrderSystemObjectDefinitionManagerTest {
 			String.valueOf(commerceOrder.getCommerceOrderTypeId()),
 			variables.get("orderTypeId"));
 		Assert.assertEquals(
+			String.valueOf(commerceOrder.getCommercePaymentMethodKey()),
+			variables.get("paymentMethod"));
+		Assert.assertEquals(
 			commerceOrder.getShippingAmount(), variables.get("shippingAmount"));
 		Assert.assertEquals(
 			commerceOrder.getTaxAmount(), variables.get("taxAmount"));

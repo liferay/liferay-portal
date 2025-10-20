@@ -50,6 +50,7 @@ import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
@@ -988,31 +989,41 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 	@Test
 	public void testSendNotificationToAssignee() throws Exception {
 		ObjectDefinition objectDefinition =
-			addObjectDefinitionWithNotificationTemplateObjectAction(
-				Arrays.asList(
-					NotificationRecipientSettingUtil.
-						createNotificationRecipientSetting(
-							NotificationRecipientSettingConstants.NAME_FROM,
-							"test@liferay.com"),
-					NotificationRecipientSettingUtil.
-						createNotificationRecipientSetting(
-							NotificationRecipientSettingConstants.
-								NAME_FROM_NAME,
-							Collections.singletonMap(LocaleUtil.US, "Test")),
-					NotificationRecipientSettingUtil.
-						createNotificationRecipientSetting(
-							NotificationRecipientSettingConstants.
-								NAME_SINGLE_RECIPIENT,
-							Boolean.FALSE.toString()),
-					NotificationRecipientSettingUtil.
-						createNotificationRecipientSetting(
-							NotificationRecipientSettingConstants.NAME_TO,
-							"[%OBJECT_ENTRY_ASSIGNEE%]"),
-					NotificationRecipientSettingUtil.
-						createNotificationRecipientSetting(
-							NotificationRecipientSettingConstants.NAME_TO_TYPE,
-							NotificationRecipientConstants.TYPE_TERM)),
-				"[%OBJECT_ENTRY_ASSIGNEE%]", NotificationConstants.TYPE_EMAIL);
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new AssigneeObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"assignee"
+					).build()));
+
+		addNotificationTemplateObjectAction(
+			Arrays.asList(
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_FROM,
+						"test@liferay.com"),
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_FROM_NAME,
+						Collections.singletonMap(LocaleUtil.US, "Test")),
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.
+							NAME_SINGLE_RECIPIENT,
+						Boolean.FALSE.toString()),
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_TO,
+						getObjectFieldTermName(objectDefinition, "assignee")),
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_TO_TYPE,
+						NotificationRecipientConstants.TYPE_TERM)),
+			objectDefinition,
+			getObjectFieldTermName(objectDefinition, "assignee"),
+			NotificationConstants.TYPE_EMAIL);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -1459,7 +1470,6 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			objectEntryFolder1.getObjectEntryFolderId());
 	}
 
-	@FeatureFlag("LPD-50091")
 	@Test
 	public void testSendNotificationToUserGroups() throws Exception {
 		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();

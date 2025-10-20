@@ -20,12 +20,10 @@ function AccountSelectionModal({
 	accountEntryAllowedTypes,
 	availableAccounts,
 	changeAccount,
-	checkoutURL,
 	commerceChannelId,
 	hasCreatePermission,
 	hasManagePermission,
 }) {
-	const {observer, onOpenChange, open} = useModal({defaultOpen: true});
 	const [accountFields, setAccountFields] = useState({
 		description: '',
 		externalReferenceCode: '',
@@ -38,6 +36,8 @@ function AccountSelectionModal({
 	const [isCreate, setIsCreate] = useState(false);
 	const [selectedAccountId, setSelectedAccountId] = useState(null);
 
+	const {observer, onOpenChange, open} = useModal({defaultOpen: true});
+
 	const createAccount = useCallback(() => {
 		const {organizations, ...accountJSON} = accountFields;
 
@@ -47,9 +47,9 @@ function AccountSelectionModal({
 			...accountJSON,
 			organizationIds,
 		})
-			.then((newAccount) => changeAccount(newAccount, !!checkoutURL))
+			.then((newAccount) => changeAccount(newAccount))
 			.catch(showErrorNotification);
-	}, [accountFields, changeAccount, checkoutURL, commerceChannelId]);
+	}, [accountFields, changeAccount, commerceChannelId]);
 
 	useEffect(() => {
 		setCanContinue(
@@ -57,13 +57,7 @@ function AccountSelectionModal({
 				? !!accountFields?.name && !!accountFields?.type
 				: !!selectedAccountId
 		);
-	}, [
-		accountFields,
-		checkoutURL,
-		commerceChannelId,
-		isCreate,
-		selectedAccountId,
-	]);
+	}, [accountFields, commerceChannelId, isCreate, selectedAccountId]);
 
 	return (
 		<>
@@ -74,7 +68,7 @@ function AccountSelectionModal({
 					id="account-selection-modal"
 					observer={observer}
 				>
-					<ClayForm onSubmit={changeAccount}>
+					<ClayForm>
 						<ClayModal.Header>
 							{Liferay.Language.get('sign-in-to-checkout')}
 						</ClayModal.Header>
@@ -111,7 +105,9 @@ function AccountSelectionModal({
 								{isCreate ? (
 									<AccountCreationModalBody
 										accountData={accountFields}
-										accountTypes={accountEntryAllowedTypes}
+										accountEntryAllowedTypes={
+											accountEntryAllowedTypes
+										}
 										quickCreate={true}
 										setAccountData={setAccountFields}
 									/>
@@ -174,10 +170,9 @@ function AccountSelectionModal({
 										onClick={() =>
 											isCreate
 												? createAccount()
-												: changeAccount(
-														{id: selectedAccountId},
-														true
-													)
+												: changeAccount({
+														id: selectedAccountId,
+													})
 										}
 										type="button"
 									>
@@ -197,7 +192,6 @@ AccountSelectionModal.propTypes = {
 	accountEntryAllowedTypes: PropTypes.array.isRequired,
 	availableAccounts: PropTypes.array,
 	changeAccount: PropTypes.func,
-	checkoutURL: PropTypes.string,
 	commerceChannelId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 		.isRequired,
 	hasCreatePermission: PropTypes.bool,
