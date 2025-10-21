@@ -33,43 +33,43 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("KeywordBulkAction")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@XmlRootElement(name = "KeywordBulkAction")
+public class KeywordBulkAction extends BulkAction implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static KeywordBulkAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(KeywordBulkAction.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static KeywordBulkAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(KeywordBulkAction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public String[] getKeywordsToAdd() {
+		if (_keywordsToAddSupplier != null) {
+			keywordsToAdd = _keywordsToAddSupplier.get();
 
-			_folderIdSupplier = null;
+			_keywordsToAddSupplier = null;
 		}
 
-		return folderId;
+		return keywordsToAdd;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setKeywordsToAdd(String[] keywordsToAdd) {
+		this.keywordsToAdd = keywordsToAdd;
 
-		_folderIdSupplier = null;
+		_keywordsToAddSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
+	public void setKeywordsToAdd(
+		UnsafeSupplier<String[], Exception> keywordsToAddUnsafeSupplier) {
 
-		_folderIdSupplier = () -> {
+		_keywordsToAddSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return keywordsToAddUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,35 +82,35 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected String[] keywordsToAdd;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
+	private Supplier<String[]> _keywordsToAddSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
+	public String[] getKeywordsToRemove() {
+		if (_keywordsToRemoveSupplier != null) {
+			keywordsToRemove = _keywordsToRemoveSupplier.get();
 
-			_repositoryIdSupplier = null;
+			_keywordsToRemoveSupplier = null;
 		}
 
-		return repositoryId;
+		return keywordsToRemove;
 	}
 
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
+	public void setKeywordsToRemove(String[] keywordsToRemove) {
+		this.keywordsToRemove = keywordsToRemove;
 
-		_repositoryIdSupplier = null;
+		_keywordsToRemoveSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
+	public void setKeywordsToRemove(
+		UnsafeSupplier<String[], Exception> keywordsToRemoveUnsafeSupplier) {
 
-		_repositoryIdSupplier = () -> {
+		_keywordsToRemoveSupplier = () -> {
 			try {
-				return repositoryIdUnsafeSupplier.get();
+				return keywordsToRemoveUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -123,51 +123,10 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
+	protected String[] keywordsToRemove;
 
 	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
-
-			_selectAllSupplier = null;
-		}
-
-		return selectAll;
-	}
-
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
-
-		_selectAllSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
-
-		_selectAllSupplier = () -> {
-			try {
-				return selectAllUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
-
-	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<String[]> _keywordsToRemoveSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +134,13 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof KeywordBulkAction)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		KeywordBulkAction keywordBulkAction = (KeywordBulkAction)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(toString(), keywordBulkAction.toString());
 	}
 
 	@Override
@@ -196,28 +155,78 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		String[] keywordsToAdd = getKeywordsToAdd();
 
-		if (folderId != null) {
+		if (keywordsToAdd != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"keywordsToAdd\": ");
 
-			sb.append(folderId);
+			sb.append("[");
+
+			for (int i = 0; i < keywordsToAdd.length; i++) {
+				sb.append("\"");
+
+				sb.append(_escape(keywordsToAdd[i]));
+
+				sb.append("\"");
+
+				if ((i + 1) < keywordsToAdd.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
-		Long repositoryId = getRepositoryId();
+		String[] keywordsToRemove = getKeywordsToRemove();
 
-		if (repositoryId != null) {
+		if (keywordsToRemove != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"keywordsToRemove\": ");
 
-			sb.append(repositoryId);
+			sb.append("[");
+
+			for (int i = 0; i < keywordsToRemove.length; i++) {
+				sb.append("\"");
+
+				sb.append(_escape(keywordsToRemove[i]));
+
+				sb.append("\"");
+
+				if ((i + 1) < keywordsToRemove.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		BulkActionItem[] bulkActionItems = getBulkActionItems();
+
+		if (bulkActionItems != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"bulkActionItems\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < bulkActionItems.length; i++) {
+				sb.append(String.valueOf(bulkActionItems[i]));
+
+				if ((i + 1) < bulkActionItems.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		Boolean selectAll = getSelectAll();
@@ -232,6 +241,22 @@ public class SelectionScope implements Serializable {
 			sb.append(selectAll);
 		}
 
+		Type type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+
+			sb.append(type);
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -239,7 +264,7 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.KeywordBulkAction",
 		name = "x-class-name"
 	)
 	public String xClassName;

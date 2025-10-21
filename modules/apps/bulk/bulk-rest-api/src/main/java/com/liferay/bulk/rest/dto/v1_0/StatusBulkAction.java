@@ -33,43 +33,43 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("StatusBulkAction")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@XmlRootElement(name = "StatusBulkAction")
+public class StatusBulkAction extends BulkAction implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static StatusBulkAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(StatusBulkAction.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static StatusBulkAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(StatusBulkAction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public Integer getStatus() {
+		if (_statusSupplier != null) {
+			status = _statusSupplier.get();
 
-			_folderIdSupplier = null;
+			_statusSupplier = null;
 		}
 
-		return folderId;
+		return status;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setStatus(Integer status) {
+		this.status = status;
 
-		_folderIdSupplier = null;
+		_statusSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
+	public void setStatus(
+		UnsafeSupplier<Integer, Exception> statusUnsafeSupplier) {
 
-		_folderIdSupplier = () -> {
+		_statusSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return statusUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,92 +82,10 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected Integer status;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
-
-			_repositoryIdSupplier = null;
-		}
-
-		return repositoryId;
-	}
-
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
-
-		_repositoryIdSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
-
-		_repositoryIdSupplier = () -> {
-			try {
-				return repositoryIdUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
-
-	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
-
-			_selectAllSupplier = null;
-		}
-
-		return selectAll;
-	}
-
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
-
-		_selectAllSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
-
-		_selectAllSupplier = () -> {
-			try {
-				return selectAllUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
-
-	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<Integer> _statusSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +93,13 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof StatusBulkAction)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		StatusBulkAction statusBulkAction = (StatusBulkAction)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(toString(), statusBulkAction.toString());
 	}
 
 	@Override
@@ -196,28 +114,38 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		Integer status = getStatus();
 
-		if (folderId != null) {
+		if (status != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"status\": ");
 
-			sb.append(folderId);
+			sb.append(status);
 		}
 
-		Long repositoryId = getRepositoryId();
+		BulkActionItem[] bulkActionItems = getBulkActionItems();
 
-		if (repositoryId != null) {
+		if (bulkActionItems != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"bulkActionItems\": ");
 
-			sb.append(repositoryId);
+			sb.append("[");
+
+			for (int i = 0; i < bulkActionItems.length; i++) {
+				sb.append(String.valueOf(bulkActionItems[i]));
+
+				if ((i + 1) < bulkActionItems.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		Boolean selectAll = getSelectAll();
@@ -232,6 +160,22 @@ public class SelectionScope implements Serializable {
 			sb.append(selectAll);
 		}
 
+		Type type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+
+			sb.append(type);
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -239,7 +183,7 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.StatusBulkAction",
 		name = "x-class-name"
 	)
 	public String xClassName;

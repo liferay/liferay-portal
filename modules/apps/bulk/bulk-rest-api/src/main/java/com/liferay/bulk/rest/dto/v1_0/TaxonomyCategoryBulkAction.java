@@ -33,43 +33,47 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("TaxonomyCategoryBulkAction")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@XmlRootElement(name = "TaxonomyCategoryBulkAction")
+public class TaxonomyCategoryBulkAction
+	extends BulkAction implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static TaxonomyCategoryBulkAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(
+			TaxonomyCategoryBulkAction.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static TaxonomyCategoryBulkAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			TaxonomyCategoryBulkAction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public Long[] getTaxonomyCategoryIdsToAdd() {
+		if (_taxonomyCategoryIdsToAddSupplier != null) {
+			taxonomyCategoryIdsToAdd = _taxonomyCategoryIdsToAddSupplier.get();
 
-			_folderIdSupplier = null;
+			_taxonomyCategoryIdsToAddSupplier = null;
 		}
 
-		return folderId;
+		return taxonomyCategoryIdsToAdd;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setTaxonomyCategoryIdsToAdd(Long[] taxonomyCategoryIdsToAdd) {
+		this.taxonomyCategoryIdsToAdd = taxonomyCategoryIdsToAdd;
 
-		_folderIdSupplier = null;
+		_taxonomyCategoryIdsToAddSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
+	public void setTaxonomyCategoryIdsToAdd(
+		UnsafeSupplier<Long[], Exception>
+			taxonomyCategoryIdsToAddUnsafeSupplier) {
 
-		_folderIdSupplier = () -> {
+		_taxonomyCategoryIdsToAddSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return taxonomyCategoryIdsToAddUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,35 +86,39 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected Long[] taxonomyCategoryIdsToAdd;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
+	private Supplier<Long[]> _taxonomyCategoryIdsToAddSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
+	public Long[] getTaxonomyCategoryIdsToRemove() {
+		if (_taxonomyCategoryIdsToRemoveSupplier != null) {
+			taxonomyCategoryIdsToRemove =
+				_taxonomyCategoryIdsToRemoveSupplier.get();
 
-			_repositoryIdSupplier = null;
+			_taxonomyCategoryIdsToRemoveSupplier = null;
 		}
 
-		return repositoryId;
+		return taxonomyCategoryIdsToRemove;
 	}
 
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
+	public void setTaxonomyCategoryIdsToRemove(
+		Long[] taxonomyCategoryIdsToRemove) {
 
-		_repositoryIdSupplier = null;
+		this.taxonomyCategoryIdsToRemove = taxonomyCategoryIdsToRemove;
+
+		_taxonomyCategoryIdsToRemoveSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
+	public void setTaxonomyCategoryIdsToRemove(
+		UnsafeSupplier<Long[], Exception>
+			taxonomyCategoryIdsToRemoveUnsafeSupplier) {
 
-		_repositoryIdSupplier = () -> {
+		_taxonomyCategoryIdsToRemoveSupplier = () -> {
 			try {
-				return repositoryIdUnsafeSupplier.get();
+				return taxonomyCategoryIdsToRemoveUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -123,51 +131,10 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
+	protected Long[] taxonomyCategoryIdsToRemove;
 
 	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
-
-			_selectAllSupplier = null;
-		}
-
-		return selectAll;
-	}
-
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
-
-		_selectAllSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
-
-		_selectAllSupplier = () -> {
-			try {
-				return selectAllUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
-
-	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<Long[]> _taxonomyCategoryIdsToRemoveSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +142,15 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof TaxonomyCategoryBulkAction)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		TaxonomyCategoryBulkAction taxonomyCategoryBulkAction =
+			(TaxonomyCategoryBulkAction)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(
+			toString(), taxonomyCategoryBulkAction.toString());
 	}
 
 	@Override
@@ -196,28 +165,70 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		Long[] taxonomyCategoryIdsToAdd = getTaxonomyCategoryIdsToAdd();
 
-		if (folderId != null) {
+		if (taxonomyCategoryIdsToAdd != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"taxonomyCategoryIdsToAdd\": ");
 
-			sb.append(folderId);
+			sb.append("[");
+
+			for (int i = 0; i < taxonomyCategoryIdsToAdd.length; i++) {
+				sb.append(taxonomyCategoryIdsToAdd[i]);
+
+				if ((i + 1) < taxonomyCategoryIdsToAdd.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
-		Long repositoryId = getRepositoryId();
+		Long[] taxonomyCategoryIdsToRemove = getTaxonomyCategoryIdsToRemove();
 
-		if (repositoryId != null) {
+		if (taxonomyCategoryIdsToRemove != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"taxonomyCategoryIdsToRemove\": ");
 
-			sb.append(repositoryId);
+			sb.append("[");
+
+			for (int i = 0; i < taxonomyCategoryIdsToRemove.length; i++) {
+				sb.append(taxonomyCategoryIdsToRemove[i]);
+
+				if ((i + 1) < taxonomyCategoryIdsToRemove.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		BulkActionItem[] bulkActionItems = getBulkActionItems();
+
+		if (bulkActionItems != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"bulkActionItems\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < bulkActionItems.length; i++) {
+				sb.append(String.valueOf(bulkActionItems[i]));
+
+				if ((i + 1) < bulkActionItems.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		Boolean selectAll = getSelectAll();
@@ -232,6 +243,22 @@ public class SelectionScope implements Serializable {
 			sb.append(selectAll);
 		}
 
+		Type type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+
+			sb.append(type);
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -239,7 +266,7 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.TaxonomyCategoryBulkAction",
 		name = "x-class-name"
 	)
 	public String xClassName;

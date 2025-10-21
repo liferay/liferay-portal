@@ -33,43 +33,46 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("DefaultPermissionBulkAction")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@XmlRootElement(name = "DefaultPermissionBulkAction")
+public class DefaultPermissionBulkAction
+	extends BulkAction implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static DefaultPermissionBulkAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(
+			DefaultPermissionBulkAction.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static DefaultPermissionBulkAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DefaultPermissionBulkAction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public String getDefaultPermissions() {
+		if (_defaultPermissionsSupplier != null) {
+			defaultPermissions = _defaultPermissionsSupplier.get();
 
-			_folderIdSupplier = null;
+			_defaultPermissionsSupplier = null;
 		}
 
-		return folderId;
+		return defaultPermissions;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setDefaultPermissions(String defaultPermissions) {
+		this.defaultPermissions = defaultPermissions;
 
-		_folderIdSupplier = null;
+		_defaultPermissionsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
+	public void setDefaultPermissions(
+		UnsafeSupplier<String, Exception> defaultPermissionsUnsafeSupplier) {
 
-		_folderIdSupplier = () -> {
+		_defaultPermissionsSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return defaultPermissionsUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,35 +85,35 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected String defaultPermissions;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
+	private Supplier<String> _defaultPermissionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
+	public Long getDepotGroupId() {
+		if (_depotGroupIdSupplier != null) {
+			depotGroupId = _depotGroupIdSupplier.get();
 
-			_repositoryIdSupplier = null;
+			_depotGroupIdSupplier = null;
 		}
 
-		return repositoryId;
+		return depotGroupId;
 	}
 
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
+	public void setDepotGroupId(Long depotGroupId) {
+		this.depotGroupId = depotGroupId;
 
-		_repositoryIdSupplier = null;
+		_depotGroupIdSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
+	public void setDepotGroupId(
+		UnsafeSupplier<Long, Exception> depotGroupIdUnsafeSupplier) {
 
-		_repositoryIdSupplier = () -> {
+		_depotGroupIdSupplier = () -> {
 			try {
-				return repositoryIdUnsafeSupplier.get();
+				return depotGroupIdUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -123,35 +126,35 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
+	protected Long depotGroupId;
 
 	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
+	private Supplier<Long> _depotGroupIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
+	public String getTreePath() {
+		if (_treePathSupplier != null) {
+			treePath = _treePathSupplier.get();
 
-			_selectAllSupplier = null;
+			_treePathSupplier = null;
 		}
 
-		return selectAll;
+		return treePath;
 	}
 
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
+	public void setTreePath(String treePath) {
+		this.treePath = treePath;
 
-		_selectAllSupplier = null;
+		_treePathSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
+	public void setTreePath(
+		UnsafeSupplier<String, Exception> treePathUnsafeSupplier) {
 
-		_selectAllSupplier = () -> {
+		_treePathSupplier = () -> {
 			try {
-				return selectAllUnsafeSupplier.get();
+				return treePathUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -164,10 +167,10 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
+	protected String treePath;
 
 	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<String> _treePathSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +178,15 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof DefaultPermissionBulkAction)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		DefaultPermissionBulkAction defaultPermissionBulkAction =
+			(DefaultPermissionBulkAction)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(
+			toString(), defaultPermissionBulkAction.toString());
 	}
 
 	@Override
@@ -196,28 +201,70 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		String defaultPermissions = getDefaultPermissions();
 
-		if (folderId != null) {
+		if (defaultPermissions != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"defaultPermissions\": ");
 
-			sb.append(folderId);
+			sb.append("\"");
+
+			sb.append(_escape(defaultPermissions));
+
+			sb.append("\"");
 		}
 
-		Long repositoryId = getRepositoryId();
+		Long depotGroupId = getDepotGroupId();
 
-		if (repositoryId != null) {
+		if (depotGroupId != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"depotGroupId\": ");
 
-			sb.append(repositoryId);
+			sb.append(depotGroupId);
+		}
+
+		String treePath = getTreePath();
+
+		if (treePath != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"treePath\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(treePath));
+
+			sb.append("\"");
+		}
+
+		BulkActionItem[] bulkActionItems = getBulkActionItems();
+
+		if (bulkActionItems != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"bulkActionItems\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < bulkActionItems.length; i++) {
+				sb.append(String.valueOf(bulkActionItems[i]));
+
+				if ((i + 1) < bulkActionItems.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		Boolean selectAll = getSelectAll();
@@ -232,6 +279,22 @@ public class SelectionScope implements Serializable {
 			sb.append(selectAll);
 		}
 
+		Type type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+
+			sb.append(type);
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -239,7 +302,7 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.DefaultPermissionBulkAction",
 		name = "x-class-name"
 	)
 	public String xClassName;

@@ -18,6 +18,8 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
+import jakarta.validation.Valid;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
@@ -33,43 +35,44 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("PermissionBulkAction")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@XmlRootElement(name = "PermissionBulkAction")
+public class PermissionBulkAction extends BulkAction implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static PermissionBulkAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(PermissionBulkAction.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static PermissionBulkAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PermissionBulkAction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public String getConfiguration() {
+		if (_configurationSupplier != null) {
+			configuration = _configurationSupplier.get();
 
-			_folderIdSupplier = null;
+			_configurationSupplier = null;
 		}
 
-		return folderId;
+		return configuration;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setConfiguration(String configuration) {
+		this.configuration = configuration;
 
-		_folderIdSupplier = null;
+		_configurationSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
+	public void setConfiguration(
+		UnsafeSupplier<String, Exception> configurationUnsafeSupplier) {
 
-		_folderIdSupplier = () -> {
+		_configurationSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return configurationUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,35 +85,40 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected String configuration;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
+	private Supplier<String> _configurationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
+	@Valid
+	public com.liferay.portal.vulcan.permission.Permission[] getPermissions() {
+		if (_permissionsSupplier != null) {
+			permissions = _permissionsSupplier.get();
 
-			_repositoryIdSupplier = null;
+			_permissionsSupplier = null;
 		}
 
-		return repositoryId;
+		return permissions;
 	}
 
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
+	public void setPermissions(
+		com.liferay.portal.vulcan.permission.Permission[] permissions) {
 
-		_repositoryIdSupplier = null;
+		this.permissions = permissions;
+
+		_permissionsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.portal.vulcan.permission.Permission[], Exception>
+				permissionsUnsafeSupplier) {
 
-		_repositoryIdSupplier = () -> {
+		_permissionsSupplier = () -> {
 			try {
-				return repositoryIdUnsafeSupplier.get();
+				return permissionsUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -123,51 +131,11 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
+	protected com.liferay.portal.vulcan.permission.Permission[] permissions;
 
 	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
-
-			_selectAllSupplier = null;
-		}
-
-		return selectAll;
-	}
-
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
-
-		_selectAllSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
-
-		_selectAllSupplier = () -> {
-			try {
-				return selectAllUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
-
-	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<com.liferay.portal.vulcan.permission.Permission[]>
+		_permissionsSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +143,14 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof PermissionBulkAction)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		PermissionBulkAction permissionBulkAction =
+			(PermissionBulkAction)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(toString(), permissionBulkAction.toString());
 	}
 
 	@Override
@@ -196,28 +165,65 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		String configuration = getConfiguration();
 
-		if (folderId != null) {
+		if (configuration != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"configuration\": ");
 
-			sb.append(folderId);
+			sb.append("\"");
+
+			sb.append(_escape(configuration));
+
+			sb.append("\"");
 		}
 
-		Long repositoryId = getRepositoryId();
+		com.liferay.portal.vulcan.permission.Permission[] permissions =
+			getPermissions();
 
-		if (repositoryId != null) {
+		if (permissions != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"permissions\": ");
 
-			sb.append(repositoryId);
+			sb.append("[");
+
+			for (int i = 0; i < permissions.length; i++) {
+				sb.append(permissions[i]);
+
+				if ((i + 1) < permissions.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		BulkActionItem[] bulkActionItems = getBulkActionItems();
+
+		if (bulkActionItems != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"bulkActionItems\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < bulkActionItems.length; i++) {
+				sb.append(String.valueOf(bulkActionItems[i]));
+
+				if ((i + 1) < bulkActionItems.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		Boolean selectAll = getSelectAll();
@@ -232,6 +238,22 @@ public class SelectionScope implements Serializable {
 			sb.append(selectAll);
 		}
 
+		Type type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+
+			sb.append(type);
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -239,7 +261,7 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.PermissionBulkAction",
 		name = "x-class-name"
 	)
 	public String xClassName;

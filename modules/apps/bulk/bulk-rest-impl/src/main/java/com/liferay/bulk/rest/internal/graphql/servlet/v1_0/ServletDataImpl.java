@@ -7,11 +7,13 @@ package com.liferay.bulk.rest.internal.graphql.servlet.v1_0;
 
 import com.liferay.bulk.rest.internal.graphql.mutation.v1_0.Mutation;
 import com.liferay.bulk.rest.internal.graphql.query.v1_0.Query;
+import com.liferay.bulk.rest.internal.resource.v1_0.BulkActionResourceImpl;
 import com.liferay.bulk.rest.internal.resource.v1_0.KeywordResourceImpl;
 import com.liferay.bulk.rest.internal.resource.v1_0.SelectionResourceImpl;
 import com.liferay.bulk.rest.internal.resource.v1_0.StatusResourceImpl;
 import com.liferay.bulk.rest.internal.resource.v1_0.TaxonomyCategoryResourceImpl;
 import com.liferay.bulk.rest.internal.resource.v1_0.TaxonomyVocabularyResourceImpl;
+import com.liferay.bulk.rest.resource.v1_0.BulkActionResource;
 import com.liferay.bulk.rest.resource.v1_0.KeywordResource;
 import com.liferay.bulk.rest.resource.v1_0.SelectionResource;
 import com.liferay.bulk.rest.resource.v1_0.StatusResource;
@@ -42,6 +44,8 @@ public class ServletDataImpl implements ServletData {
 
 	@Activate
 	public void activate(BundleContext bundleContext) {
+		Mutation.setBulkActionResourceComponentServiceObjects(
+			_bulkActionResourceComponentServiceObjects);
 		Mutation.setKeywordResourceComponentServiceObjects(
 			_keywordResourceComponentServiceObjects);
 		Mutation.setSelectionResourceComponentServiceObjects(
@@ -90,6 +94,15 @@ public class ServletDataImpl implements ServletData {
 			new HashMap<String, ObjectValuePair<Class<?>, String>>() {
 				{
 					put(
+						"mutation#createBulkAction",
+						new ObjectValuePair<>(
+							BulkActionResourceImpl.class, "postBulkAction"));
+					put(
+						"mutation#createBulkActionItemPreviewPage",
+						new ObjectValuePair<>(
+							BulkActionResourceImpl.class,
+							"postBulkActionItemPreviewPage"));
+					put(
 						"mutation#patchKeywordBatch",
 						new ObjectValuePair<>(
 							KeywordResourceImpl.class, "patchKeywordBatch"));
@@ -128,6 +141,10 @@ public class ServletDataImpl implements ServletData {
 							StatusResourceImpl.class, "getStatus"));
 				}
 			};
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<BulkActionResource>
+		_bulkActionResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<KeywordResource>
