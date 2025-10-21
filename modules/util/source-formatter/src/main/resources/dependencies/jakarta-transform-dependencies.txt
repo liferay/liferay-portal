@@ -22,7 +22,6 @@ com.liferay:org.apache.aries.jax.rs.whiteboard=com.liferay:org.apache.aries.jax.
 com.liferay:org.apache.felix.configurator=com.liferay:org.apache.felix.configurator:1.0.18.LIFERAY-PATCHED-1
 com.liferay:org.drools.core=com.liferay:org.drools.core:5.4.0.Final.LIFERAY-PATCHED-3.JAKARTA-LIFERAY-PATCHED-1
 com.liferay:org.eclipse.equinox.http.servlet=com.liferay:org.eclipse.equinox.http.servlet:1.2.2.v20211118-0920.LIFERAY-PATCHED-4.JAKARTA-LIFERAY-PATCHED-1
-com.liferay:org.hibernate.core=com.liferay:org.hibernate.core:5.6.7.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1
 com.liferay:org.mitre.dsmiley.http.proxy.servlet=org.mitre.dsmiley.httpproxy:smiley-http-proxy-servlet:2.0
 com.liferay:org.opensaml.messaging=com.liferay:org.opensaml.messaging:3.3.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1
 com.liferay:org.osgi.service.http=com.liferay:org.osgi.service.http:1.2.2.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1

@@ -13,7 +13,6 @@ configurations {
 }
 
 dependencies {
-	compileOnly group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.springframework.orm", version: "6.2.9.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.springframework.tx", version: "6.2.9.LIFERAY-PATCHED-1"
@@ -21,6 +20,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.persistence", name: "jakarta.persistence-api", version: "3.1.0"
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.dependencymanager", version: "4.6.0"
+	compileOnly group: "org.hibernate.orm", name: "hibernate-core", version: "7.1.4.Final"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.springframework", name: "spring-aop", version: "6.2.9"
