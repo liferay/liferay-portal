@@ -20,7 +20,7 @@ public class PrivatePropertyAccessor extends PropertyAccessStrategyFieldImpl {
 
 	@Override
 	public PropertyAccess buildPropertyAccess(
-		Class containerJavaType, String propertyName) {
+		Class containerJavaType, String propertyName, boolean setterRequired) {
 
 		Class<?> superClass = null;
 

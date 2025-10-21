@@ -14,7 +14,7 @@ public class CamelCasePropertyAccessor extends LiferayPropertyAccessor {
 
 	@Override
 	public PropertyAccess buildPropertyAccess(
-		Class containerJavaType, String propertyName) {
+		Class containerJavaType, String propertyName, boolean setterRequired) {
 
 		return new LiferayPropertyAccess(
 			this, containerJavaType, propertyName) {

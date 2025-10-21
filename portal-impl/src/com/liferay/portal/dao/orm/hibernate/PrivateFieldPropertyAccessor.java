@@ -16,10 +16,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import java.util.Map;
 
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.property.access.spi.Getter;
 import org.hibernate.property.access.spi.PropertyAccess;
@@ -41,7 +41,7 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 
 	@Override
 	public PropertyAccess buildPropertyAccess(
-		Class clazz, String propertyName) {
+		Class clazz, String propertyName, boolean setterRequired) {
 
 		String fieldName;
 
@@ -99,10 +99,17 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 		}
 
 		@Override
-		public Class getReturnType() {
+		public Type getReturnType() {
 			VarHandle verHandle = _varHandleHolder.getVarHandle();
 
 			return verHandle.varType();
+		}
+
+		@Override
+		public Class<?> getReturnTypeClass() {
+			VarHandle varHandle = _varHandleHolder.getVarHandle();
+
+			return varHandle.varType();
 		}
 
 		private FieldGetter(VarHandleHolder varHandleHolder) {
@@ -126,10 +133,7 @@ public class PrivateFieldPropertyAccessor implements PropertyAccessStrategy {
 		}
 
 		@Override
-		public void set(
-			Object target, Object value,
-			SessionFactoryImplementor sessionFactoryImplementor) {
-
+		public void set(Object target, Object value) {
 			VarHandle varHandle = _varHandleHolder.getVarHandle();
 
 			varHandle.set(target, value);
