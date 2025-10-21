@@ -25,6 +25,27 @@ public class Scope implements Cloneable, Serializable {
 		return ScopeSerDes.toDTO(json);
 	}
 
+	public String getExternalReferenceCode() {
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		try {
+			externalReferenceCode = externalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String externalReferenceCode;
+
 	public String getKey() {
 		return key;
 	}
@@ -65,15 +86,23 @@ public class Scope implements Cloneable, Serializable {
 
 	protected String label;
 
-	public String getType() {
+	public Type getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public String getTypeAsString() {
+		if (type == null) {
+			return null;
+		}
+
+		return type.toString();
+	}
+
+	public void setType(Type type) {
 		this.type = type;
 	}
 
-	public void setType(UnsafeSupplier<String, Exception> typeUnsafeSupplier) {
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
 		try {
 			type = typeUnsafeSupplier.get();
 		}
@@ -82,7 +111,7 @@ public class Scope implements Cloneable, Serializable {
 		}
 	}
 
-	protected String type;
+	protected Type type;
 
 	@Override
 	public Scope clone() throws CloneNotSupportedException {
@@ -113,6 +142,39 @@ public class Scope implements Cloneable, Serializable {
 
 	public String toString() {
 		return ScopeSerDes.toJSON(this);
+	}
+
+	public static enum Type {
+
+		ASSET_LIBRARY("AssetLibrary"), SITE("Site"), SPACE("Space");
+
+		public static Type create(String value) {
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value) ||
+					Objects.equals(type.name(), value)) {
+
+					return type;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Type(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
 	}
 
 }

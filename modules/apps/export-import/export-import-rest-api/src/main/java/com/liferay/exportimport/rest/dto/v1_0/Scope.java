@@ -5,9 +5,12 @@
 
 package com.liferay.exportimport.rest.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -17,6 +20,8 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
+
+import jakarta.validation.Valid;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,6 +50,47 @@ public class Scope implements Serializable {
 	public static Scope unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(Scope.class, json);
 	}
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCodeSupplier != null) {
+			externalReferenceCode = _externalReferenceCodeSupplier.get();
+
+			_externalReferenceCodeSupplier = null;
+		}
+
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+
+		_externalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		_externalReferenceCodeSupplier = () -> {
+			try {
+				return externalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String externalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getKey() {
@@ -127,7 +173,9 @@ public class Scope implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getType() {
+	@JsonGetter("type")
+	@Valid
+	public Type getType() {
 		if (_typeSupplier != null) {
 			type = _typeSupplier.get();
 
@@ -137,14 +185,25 @@ public class Scope implements Serializable {
 		return type;
 	}
 
-	public void setType(String type) {
+	@JsonIgnore
+	public String getTypeAsString() {
+		Type type = getType();
+
+		if (type == null) {
+			return null;
+		}
+
+		return type.toString();
+	}
+
+	public void setType(Type type) {
 		this.type = type;
 
 		_typeSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setType(UnsafeSupplier<String, Exception> typeUnsafeSupplier) {
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
 		_typeSupplier = () -> {
 			try {
 				return typeUnsafeSupplier.get();
@@ -160,10 +219,10 @@ public class Scope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String type;
+	protected Type type;
 
 	@JsonIgnore
-	private Supplier<String> _typeSupplier;
+	private Supplier<Type> _typeSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -191,6 +250,22 @@ public class Scope implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		String externalReferenceCode = getExternalReferenceCode();
+
+		if (externalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
+		}
 
 		String key = getKey();
 
@@ -224,7 +299,7 @@ public class Scope implements Serializable {
 			sb.append("\"");
 		}
 
-		String type = getType();
+		Type type = getType();
 
 		if (type != null) {
 			if (sb.length() > 1) {
@@ -233,11 +308,7 @@ public class Scope implements Serializable {
 
 			sb.append("\"type\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(type));
-
-			sb.append("\"");
+			sb.append(String.valueOf(type));
 		}
 
 		sb.append("}");
@@ -251,6 +322,44 @@ public class Scope implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("Type")
+	public static enum Type {
+
+		ASSET_LIBRARY("AssetLibrary"), SITE("Site"), SPACE("Space");
+
+		@JsonCreator
+		public static Type create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value)) {
+					return type;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Type(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
