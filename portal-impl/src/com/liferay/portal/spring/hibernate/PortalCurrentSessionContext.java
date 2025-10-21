@@ -11,8 +11,6 @@ import org.hibernate.Session;
 import org.hibernate.context.spi.CurrentSessionContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 
-import org.springframework.orm.hibernate5.SessionHolder;
-import org.springframework.orm.hibernate5.SpringSessionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**

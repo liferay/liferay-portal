@@ -325,7 +325,6 @@ Provide-Capability:\
 	@../../../lib/portal/spring-core.jar,\
 	@../../../lib/portal/spring-expression.jar,\
 	@../../../lib/portal/spring-jdbc.jar,\
-	@../../../lib/portal/spring-orm.jar,\
 	@../../../lib/portal/spring-tx.jar,\
 	@../../../lib/portal/spring-web.jar,\
 	@../../../lib/portal/xercesImpl.jar,\
