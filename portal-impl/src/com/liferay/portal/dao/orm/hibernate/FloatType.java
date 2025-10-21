@@ -10,35 +10,35 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class FloatType implements Serializable, UserType {
+public class FloatType implements Serializable, UserType<Float> {
 
 	public static final Float DEFAULT_VALUE = Float.valueOf(0);
 
 	@Override
-	public Object assemble(Serializable cached, Object owner) {
-		return cached;
+	public Float assemble(Serializable cached, Object owner) {
+		return (Float)cached;
 	}
 
 	@Override
-	public Object deepCopy(Object object) {
+	public Float deepCopy(Float object) {
 		return object;
 	}
 
 	@Override
-	public Serializable disassemble(Object value) {
-		return (Serializable)value;
+	public Serializable disassemble(Float value) {
+		return value;
 	}
 
 	@Override
-	public boolean equals(Object x, Object y) {
+	public boolean equals(Float x, Float y) {
 		if (x == y) {
 			return true;
 		}
@@ -50,7 +50,12 @@ public class FloatType implements Serializable, UserType {
 	}
 
 	@Override
-	public int hashCode(Object x) {
+	public int getSqlType() {
+		return Types.FLOAT;
+	}
+
+	@Override
+	public int hashCode(Float x) {
 		return x.hashCode();
 	}
 
@@ -60,14 +65,11 @@ public class FloatType implements Serializable, UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
+	public Float nullSafeGet(
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		Float value = StandardBasicTypes.FLOAT.nullSafeGet(
-			resultSet, names[0], sharedSessionContractImplementor);
+		Float value = resultSet.getFloat(position);
 
 		if (value == null) {
 			return DEFAULT_VALUE;
@@ -78,30 +80,25 @@ public class FloatType implements Serializable, UserType {
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object target, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
+			PreparedStatement preparedStatement, Float target, int position,
+			WrapperOptions wrapperOptions)
 		throws SQLException {
 
 		if (target == null) {
 			target = DEFAULT_VALUE;
 		}
 
-		preparedStatement.setFloat(index, (Float)target);
+		preparedStatement.setFloat(position, target);
 	}
 
 	@Override
-	public Object replace(Object original, Object target, Object owner) {
+	public Float replace(Float original, Float target, Object owner) {
 		return original;
 	}
 
 	@Override
 	public Class<Float> returnedClass() {
 		return Float.class;
-	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {StandardBasicTypes.FLOAT.sqlType()};
 	}
 
 }

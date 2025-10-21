@@ -15,19 +15,19 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Cristina González
  */
-public class MapType implements Serializable, UserType {
+public class MapType implements Serializable, UserType<Object> {
 
 	@Override
 	public Object assemble(Serializable cached, Object owner) {
@@ -50,6 +50,11 @@ public class MapType implements Serializable, UserType {
 	}
 
 	@Override
+	public int getSqlType() {
+		return Types.VARCHAR;
+	}
+
+	@Override
 	public int hashCode(Object x) {
 		return x.hashCode();
 	}
@@ -61,13 +66,10 @@ public class MapType implements Serializable, UserType {
 
 	@Override
 	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		String json = (String)StandardBasicTypes.STRING.nullSafeGet(
-			resultSet, names, sharedSessionContractImplementor, owner);
+		String json = resultSet.getString(position);
 
 		try {
 			return _jsonFactory.deserialize(json);
@@ -81,14 +83,22 @@ public class MapType implements Serializable, UserType {
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object target, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
+			PreparedStatement preparedStatement, Object target, int position,
+			WrapperOptions wrapperOptions)
 		throws SQLException {
 
 		String json = _jsonFactory.serialize(target);
 
-		StandardBasicTypes.STRING.nullSafeSet(
-			preparedStatement, json, index, sharedSessionContractImplementor);
+		if (json.isEmpty()) {
+			json = null;
+		}
+
+		if (json == null) {
+			preparedStatement.setNull(position, Types.VARCHAR);
+		}
+		else {
+			preparedStatement.setString(position, json);
+		}
 	}
 
 	@Override
@@ -98,13 +108,8 @@ public class MapType implements Serializable, UserType {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Class<Map> returnedClass() {
-		return Map.class;
-	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {StandardBasicTypes.STRING.sqlType()};
+	public Class<Object> returnedClass() {
+		return (Class<Object>)(Class<?>)Map.class;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(MapType.class);

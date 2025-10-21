@@ -5,44 +5,40 @@
 
 package com.liferay.portal.dao.orm.hibernate;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-
 import java.io.Serializable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class LongType implements Serializable, UserType {
+public class LongType implements Serializable, UserType<Long> {
 
 	public static final Long DEFAULT_VALUE = Long.valueOf(0);
 
 	@Override
-	public Object assemble(Serializable cached, Object owner) {
-		return cached;
+	public Long assemble(Serializable cached, Object owner) {
+		return (Long)cached;
 	}
 
 	@Override
-	public Object deepCopy(Object object) {
+	public Long deepCopy(Long object) {
 		return object;
 	}
 
 	@Override
-	public Serializable disassemble(Object value) {
+	public Serializable disassemble(Long value) {
 		return (Serializable)value;
 	}
 
 	@Override
-	public boolean equals(Object x, Object y) {
+	public boolean equals(Long x, Long y) {
 		if (x == y) {
 			return true;
 		}
@@ -54,7 +50,12 @@ public class LongType implements Serializable, UserType {
 	}
 
 	@Override
-	public int hashCode(Object x) {
+	public int getSqlType() {
+		return Types.BIGINT;
+	}
+
+	@Override
+	public int hashCode(Long x) {
 		return x.hashCode();
 	}
 
@@ -64,37 +65,11 @@ public class LongType implements Serializable, UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
+	public Long nullSafeGet(
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		Object value = null;
-
-		try {
-			value = StandardBasicTypes.LONG.nullSafeGet(
-				resultSet, names[0], sharedSessionContractImplementor);
-		}
-		catch (SQLException sqlException1) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(sqlException1);
-			}
-
-			// Some JDBC drivers do not know how to convert a VARCHAR column
-			// with a blank entry into a BIGINT
-
-			try {
-				value = Long.valueOf(
-					GetterUtil.getLong(
-						StandardBasicTypes.STRING.nullSafeGet(
-							resultSet, names[0],
-							sharedSessionContractImplementor)));
-			}
-			catch (SQLException sqlException2) {
-				throw sqlException2;
-			}
-		}
+		Long value = resultSet.getLong(position);
 
 		if (value == null) {
 			return DEFAULT_VALUE;
@@ -105,19 +80,19 @@ public class LongType implements Serializable, UserType {
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object target, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
+			PreparedStatement preparedStatement, Long target, int position,
+			WrapperOptions wrapperOptions)
 		throws SQLException {
 
 		if (target == null) {
 			target = DEFAULT_VALUE;
 		}
 
-		preparedStatement.setLong(index, (Long)target);
+		preparedStatement.setLong(position, target);
 	}
 
 	@Override
-	public Object replace(Object original, Object target, Object owner) {
+	public Long replace(Long original, Long target, Object owner) {
 		return original;
 	}
 
@@ -125,12 +100,5 @@ public class LongType implements Serializable, UserType {
 	public Class<Long> returnedClass() {
 		return Long.class;
 	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {StandardBasicTypes.LONG.sqlType()};
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(LongType.class);
 
 }

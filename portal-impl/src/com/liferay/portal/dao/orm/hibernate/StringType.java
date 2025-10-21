@@ -12,35 +12,35 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import java.util.Objects;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class StringType implements Serializable, UserType {
+public class StringType implements Serializable, UserType<String> {
 
 	@Override
-	public Object assemble(Serializable cached, Object owner) {
-		return cached;
+	public String assemble(Serializable cached, Object owner) {
+		return (String)cached;
 	}
 
 	@Override
-	public Object deepCopy(Object object) {
+	public String deepCopy(String object) {
 		return object;
 	}
 
 	@Override
-	public Serializable disassemble(Object value) {
-		return (Serializable)value;
+	public Serializable disassemble(String value) {
+		return value;
 	}
 
 	@Override
-	public boolean equals(Object x, Object y) {
+	public boolean equals(String x, String y) {
 		if (Objects.equals(x, y)) {
 			return true;
 		}
@@ -54,7 +54,12 @@ public class StringType implements Serializable, UserType {
 	}
 
 	@Override
-	public int hashCode(Object x) {
+	public int getSqlType() {
+		return Types.VARCHAR;
+	}
+
+	@Override
+	public int hashCode(String x) {
 		return x.hashCode();
 	}
 
@@ -64,47 +69,39 @@ public class StringType implements Serializable, UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
+	public String nullSafeGet(
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		return StandardBasicTypes.STRING.nullSafeGet(
-			resultSet, names, sharedSessionContractImplementor, owner);
+		return resultSet.getString(position);
 	}
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object target, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
+			PreparedStatement preparedStatement, String target, int position,
+			WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		if (target instanceof String) {
-			String targetString = (String)target;
-
-			if (targetString.isEmpty()) {
-				target = null;
-			}
+		if (target.isEmpty()) {
+			target = null;
 		}
 
-		StandardBasicTypes.STRING.nullSafeSet(
-			preparedStatement, target, index, sharedSessionContractImplementor);
+		if (target == null) {
+			preparedStatement.setNull(position, Types.VARCHAR);
+		}
+		else {
+			preparedStatement.setString(position, target);
+		}
 	}
 
 	@Override
-	public Object replace(Object original, Object target, Object owner) {
+	public String replace(String original, String target, Object owner) {
 		return original;
 	}
 
 	@Override
 	public Class<String> returnedClass() {
 		return String.class;
-	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {StandardBasicTypes.STRING.sqlType()};
 	}
 
 }

@@ -10,35 +10,35 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class ShortType implements Serializable, UserType {
+public class ShortType implements Serializable, UserType<Short> {
 
 	public static final Short DEFAULT_VALUE = Short.valueOf((short)0);
 
 	@Override
-	public Object assemble(Serializable cached, Object owner) {
-		return cached;
+	public Short assemble(Serializable cached, Object owner) {
+		return (Short)cached;
 	}
 
 	@Override
-	public Object deepCopy(Object object) {
+	public Short deepCopy(Short object) {
 		return object;
 	}
 
 	@Override
-	public Serializable disassemble(Object value) {
-		return (Serializable)value;
+	public Serializable disassemble(Short value) {
+		return value;
 	}
 
 	@Override
-	public boolean equals(Object x, Object y) {
+	public boolean equals(Short x, Short y) {
 		if (x == y) {
 			return true;
 		}
@@ -50,7 +50,12 @@ public class ShortType implements Serializable, UserType {
 	}
 
 	@Override
-	public int hashCode(Object x) {
+	public int getSqlType() {
+		return Types.SMALLINT;
+	}
+
+	@Override
+	public int hashCode(Short x) {
 		return x.hashCode();
 	}
 
@@ -60,14 +65,11 @@ public class ShortType implements Serializable, UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
+	public Short nullSafeGet(
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		Short value = StandardBasicTypes.SHORT.nullSafeGet(
-			resultSet, names[0], sharedSessionContractImplementor);
+		Short value = resultSet.getShort(position);
 
 		if (value == null) {
 			return DEFAULT_VALUE;
@@ -78,30 +80,25 @@ public class ShortType implements Serializable, UserType {
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object target, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
+			PreparedStatement preparedStatement, Short target, int position,
+			WrapperOptions wrapperOptions)
 		throws SQLException {
 
 		if (target == null) {
 			target = DEFAULT_VALUE;
 		}
 
-		preparedStatement.setShort(index, (Short)target);
+		preparedStatement.setShort(position, target);
 	}
 
 	@Override
-	public Object replace(Object original, Object target, Object owner) {
+	public Short replace(Short original, Short target, Object owner) {
 		return original;
 	}
 
 	@Override
 	public Class<Short> returnedClass() {
 		return Short.class;
-	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {StandardBasicTypes.SHORT.sqlType()};
 	}
 
 }

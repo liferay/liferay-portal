@@ -20,33 +20,33 @@ import java.sql.Types;
 import java.util.Objects;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Shuyang Zhou
  */
-public class StringClobType implements Serializable, UserType {
+public class StringClobType implements Serializable, UserType<String> {
 
 	@Override
-	public Object assemble(Serializable cached, Object owner)
+	public String assemble(Serializable cached, Object owner)
 		throws HibernateException {
 
-		return cached;
+		return (String)cached;
 	}
 
 	@Override
-	public Object deepCopy(Object value) throws HibernateException {
+	public String deepCopy(String value) throws HibernateException {
 		return value;
 	}
 
 	@Override
-	public Serializable disassemble(Object value) throws HibernateException {
-		return (Serializable)value;
+	public Serializable disassemble(String value) throws HibernateException {
+		return value;
 	}
 
 	@Override
-	public boolean equals(Object object1, Object object2) {
+	public boolean equals(String object1, String object2) {
 		if (Objects.equals(object1, object2)) {
 			return true;
 		}
@@ -60,7 +60,12 @@ public class StringClobType implements Serializable, UserType {
 	}
 
 	@Override
-	public int hashCode(Object object) throws HibernateException {
+	public int getSqlType() {
+		return Types.BLOB;
+	}
+
+	@Override
+	public int hashCode(String object) throws HibernateException {
 		return object.hashCode();
 	}
 
@@ -70,13 +75,11 @@ public class StringClobType implements Serializable, UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
-		throws HibernateException, SQLException {
+	public String nullSafeGet(
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
+		throws SQLException {
 
-		Reader reader = resultSet.getCharacterStream(names[0]);
+		Reader reader = resultSet.getCharacterStream(position);
 
 		if (reader == null) {
 			return null;
@@ -100,25 +103,23 @@ public class StringClobType implements Serializable, UserType {
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object value, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
-		throws HibernateException, SQLException {
+			PreparedStatement preparedStatement, String target, int position,
+			WrapperOptions wrapperOptions)
+		throws SQLException {
 
-		if (value != null) {
-			String string = (String)value;
-
-			StringReader stringReader = new StringReader(string);
+		if (target != null) {
+			StringReader stringReader = new StringReader(target);
 
 			preparedStatement.setCharacterStream(
-				index, stringReader, string.length());
+				position, stringReader, target.length());
 		}
 		else {
-			preparedStatement.setNull(index, sqlTypes()[0]);
+			preparedStatement.setNull(position, Types.BLOB);
 		}
 	}
 
 	@Override
-	public Object replace(Object original, Object target, Object owner)
+	public String replace(String original, String target, Object owner)
 		throws HibernateException {
 
 		return original;
@@ -127,11 +128,6 @@ public class StringClobType implements Serializable, UserType {
 	@Override
 	public Class<String> returnedClass() {
 		return String.class;
-	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {Types.CLOB};
 	}
 
 }

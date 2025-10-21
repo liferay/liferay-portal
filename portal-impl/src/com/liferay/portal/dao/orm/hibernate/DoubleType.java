@@ -10,35 +10,35 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class DoubleType implements Serializable, UserType {
+public class DoubleType implements Serializable, UserType<Double> {
 
 	public static final Double DEFAULT_VALUE = Double.valueOf(0);
 
 	@Override
-	public Object assemble(Serializable cached, Object owner) {
-		return cached;
+	public Double assemble(Serializable cached, Object owner) {
+		return (Double)cached;
 	}
 
 	@Override
-	public Object deepCopy(Object object) {
+	public Double deepCopy(Double object) {
 		return object;
 	}
 
 	@Override
-	public Serializable disassemble(Object value) {
-		return (Serializable)value;
+	public Serializable disassemble(Double value) {
+		return value;
 	}
 
 	@Override
-	public boolean equals(Object x, Object y) {
+	public boolean equals(Double x, Double y) {
 		if (x == y) {
 			return true;
 		}
@@ -50,7 +50,12 @@ public class DoubleType implements Serializable, UserType {
 	}
 
 	@Override
-	public int hashCode(Object x) {
+	public int getSqlType() {
+		return Types.DOUBLE;
+	}
+
+	@Override
+	public int hashCode(Double x) {
 		return x.hashCode();
 	}
 
@@ -60,14 +65,11 @@ public class DoubleType implements Serializable, UserType {
 	}
 
 	@Override
-	public Object nullSafeGet(
-			ResultSet resultSet, String[] names,
-			SharedSessionContractImplementor sharedSessionContractImplementor,
-			Object owner)
+	public Double nullSafeGet(
+			ResultSet resultSet, int position, WrapperOptions wrapperOptions)
 		throws SQLException {
 
-		Double value = StandardBasicTypes.DOUBLE.nullSafeGet(
-			resultSet, names[0], sharedSessionContractImplementor);
+		Double value = resultSet.getDouble(position);
 
 		if (value == null) {
 			return DEFAULT_VALUE;
@@ -78,30 +80,25 @@ public class DoubleType implements Serializable, UserType {
 
 	@Override
 	public void nullSafeSet(
-			PreparedStatement preparedStatement, Object target, int index,
-			SharedSessionContractImplementor sharedSessionContractImplementor)
+			PreparedStatement preparedStatement, Double target, int position,
+			WrapperOptions wrapperOptions)
 		throws SQLException {
 
 		if (target == null) {
 			target = DEFAULT_VALUE;
 		}
 
-		preparedStatement.setDouble(index, (Double)target);
+		preparedStatement.setDouble(position, target);
 	}
 
 	@Override
-	public Object replace(Object original, Object target, Object owner) {
+	public Double replace(Double original, Double target, Object owner) {
 		return original;
 	}
 
 	@Override
 	public Class<Double> returnedClass() {
 		return Double.class;
-	}
-
-	@Override
-	public int[] sqlTypes() {
-		return new int[] {StandardBasicTypes.DOUBLE.sqlType()};
 	}
 
 }
