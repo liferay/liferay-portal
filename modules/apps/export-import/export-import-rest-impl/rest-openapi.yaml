@@ -127,11 +127,14 @@ components:
             type: object
         Scope:
             properties:
+                externalReferenceCode:
+                    type: string
                 key:
                     type: string
                 label:
                     type: string
                 type:
+                    enum: [AssetLibrary, Site, Space]
                     type: string
             type: object
         Status:
