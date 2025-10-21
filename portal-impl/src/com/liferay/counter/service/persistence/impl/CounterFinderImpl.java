@@ -428,7 +428,7 @@ public class CounterFinderImpl implements CacheRegistryItem, CounterFinder {
 			session = _sessionFactory.openNewSession(connection);
 
 			Counter counter = (Counter)session.get(
-				CounterImpl.class, counterName, LockMode.UPGRADE);
+				CounterImpl.class, counterName, LockMode.PESSIMISTIC_WRITE);
 
 			long newValue = counter.getCurrentId();
 

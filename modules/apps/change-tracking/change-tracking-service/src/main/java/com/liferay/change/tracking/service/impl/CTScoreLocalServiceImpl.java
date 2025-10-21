@@ -166,7 +166,7 @@ public class CTScoreLocalServiceImpl extends CTScoreLocalServiceBaseImpl {
 
 		try {
 			ctScore = (CTScore)session.get(
-				CTScoreImpl.class, ctScoreId, LockMode.UPGRADE);
+				CTScoreImpl.class, ctScoreId, LockMode.PESSIMISTIC_WRITE);
 
 			if (ctScore == null) {
 				ctScore = new CTScoreImpl();

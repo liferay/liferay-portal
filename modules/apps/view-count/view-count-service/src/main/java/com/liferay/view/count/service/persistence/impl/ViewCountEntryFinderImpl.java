@@ -36,7 +36,8 @@ public class ViewCountEntryFinderImpl
 				companyId, classNameId, classPK);
 
 			ViewCountEntry viewCountEntry = (ViewCountEntry)session.get(
-				ViewCountEntryImpl.class, viewCountEntryPK, LockMode.UPGRADE);
+				ViewCountEntryImpl.class, viewCountEntryPK,
+				LockMode.PESSIMISTIC_WRITE);
 
 			if (viewCountEntry == null) {
 				viewCountEntry = new ViewCountEntryImpl();

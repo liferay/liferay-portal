@@ -13,10 +13,7 @@ import com.liferay.portal.kernel.dao.orm.LockMode;
 public class LockModeTranslator {
 
 	public static org.hibernate.LockMode translate(LockMode lockMode) {
-		if (lockMode == LockMode.FORCE) {
-			return org.hibernate.LockMode.PESSIMISTIC_FORCE_INCREMENT;
-		}
-		else if (lockMode == LockMode.NONE) {
+		if (lockMode == LockMode.NONE) {
 			return org.hibernate.LockMode.NONE;
 		}
 		else if (lockMode == LockMode.OPTIMISTIC) {
@@ -37,11 +34,11 @@ public class LockModeTranslator {
 		else if (lockMode == LockMode.READ) {
 			return org.hibernate.LockMode.READ;
 		}
-		else if (lockMode == LockMode.UPGRADE) {
-			return org.hibernate.LockMode.PESSIMISTIC_WRITE;
-		}
 		else if (lockMode == LockMode.UPGRADE_NOWAIT) {
 			return org.hibernate.LockMode.UPGRADE_NOWAIT;
+		}
+		else if (lockMode == LockMode.UPGRADE_SKIPLOCKED) {
+			return org.hibernate.LockMode.UPGRADE_SKIPLOCKED;
 		}
 		else if (lockMode == LockMode.WRITE) {
 			return org.hibernate.LockMode.WRITE;
