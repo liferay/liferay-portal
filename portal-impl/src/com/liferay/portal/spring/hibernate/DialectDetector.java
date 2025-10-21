@@ -9,15 +9,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.jdbc.util.DBInfo;
 import com.liferay.portal.dao.jdbc.util.DBInfoUtil;
-import com.liferay.portal.dao.orm.hibernate.DB2Dialect;
-import com.liferay.portal.dao.orm.hibernate.HSQLDialect;
 import com.liferay.portal.dao.orm.hibernate.MariaDBDialect;
-import com.liferay.portal.dao.orm.hibernate.Oracle10gDialect;
-import com.liferay.portal.dao.orm.hibernate.SQLServer2005Dialect;
-import com.liferay.portal.dao.orm.hibernate.SQLServer2008Dialect;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.sql.Connection;
 
@@ -26,8 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
-import org.hibernate.dialect.DB2400Dialect;
+import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.HSQLDialect;
+import org.hibernate.dialect.OracleDialect;
+import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
 import org.hibernate.engine.jdbc.dialect.spi.DatabaseMetaDataDialectResolutionInfoAdapter;
 import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
@@ -86,14 +83,11 @@ public class DialectDetector {
 			else if (dbName.startsWith("MariaDB")) {
 				dialect = new MariaDBDialect();
 			}
-			else if (dbName.startsWith("Microsoft") && (dbMajorVersion == 9)) {
-				dialect = new SQLServer2005Dialect();
+			else if (dbName.startsWith("Microsoft")) {
+				dialect = new SQLServerDialect();
 			}
-			else if (dbName.startsWith("Microsoft") && (dbMajorVersion >= 10)) {
-				dialect = new SQLServer2008Dialect();
-			}
-			else if (dbName.startsWith("Oracle") && (dbMajorVersion >= 10)) {
-				dialect = new Oracle10gDialect();
+			else if (dbName.startsWith("Oracle")) {
+				dialect = new OracleDialect();
 			}
 			else {
 				try (Connection connection = dataSource.getConnection()) {
@@ -107,21 +101,7 @@ public class DialectDetector {
 			}
 		}
 		catch (Exception exception) {
-			String msg = GetterUtil.getString(exception.getMessage());
-
-			if (msg.contains("explicitly set for database: DB2")) {
-				dialect = new DB2400Dialect();
-
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"DB2400Dialect was dynamically chosen as the " +
-							"Hibernate dialect for DB2. This can be " +
-								"overriden in portal.properties");
-				}
-			}
-			else {
-				_log.error(exception);
-			}
+			_log.error(exception);
 		}
 
 		if (dialect == null) {

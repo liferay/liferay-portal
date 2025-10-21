@@ -8,6 +8,8 @@ package com.liferay.portal.dao.orm.hibernate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.Dialect;
 
+import org.hibernate.dialect.pagination.LimitHandler;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -23,7 +25,9 @@ public class DialectImpl implements Dialect {
 
 	@Override
 	public boolean supportsLimit() {
-		return _dialect.supportsLimit();
+		LimitHandler limitHandler = _dialect.getLimitHandler();
+
+		return limitHandler.supportsLimit();
 	}
 
 	@Override
