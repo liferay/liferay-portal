@@ -90,7 +90,7 @@ public class CTModelIntegrator implements Integrator {
 			sessionFactoryImplementor.getSessionFactoryOptions();
 
 		CTSQLInterceptor ctSQLInterceptor =
-			(CTSQLInterceptor)sessionFactoryOptions.getInterceptor();
+			(CTSQLInterceptor)sessionFactoryOptions.getStatementInspector();
 
 		ctSQLInterceptor.setEnabled(containCTModel);
 

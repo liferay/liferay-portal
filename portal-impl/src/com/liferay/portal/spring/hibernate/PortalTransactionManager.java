@@ -89,11 +89,18 @@ public class PortalTransactionManager
 
 			sessionImplementor = session.unwrap(SessionImplementor.class);
 
+			JdbcCoordinator jdbcCoordinator =
+				sessionImplementor.getJdbcCoordinator();
+
+			LogicalConnectionImplementor logicalConnectionImplementor =
+				jdbcCoordinator.getLogicalConnection();
+
 			if ((transactionDefinition.getIsolationLevel() !=
 					TransactionDefinition.ISOLATION_DEFAULT) ||
 				transactionDefinition.isReadOnly()) {
 
-				Connection connection = sessionImplementor.connection();
+				Connection connection =
+					logicalConnectionImplementor.getPhysicalConnection();
 
 				hibernateTransactionObject.markConnectionModified();
 				hibernateTransactionObject.setPreviousIsolationLevel(
@@ -122,7 +129,7 @@ public class PortalTransactionManager
 			}
 
 			ConnectionHolder newConnectionHolder = new ConnectionHolder(
-				sessionImplementor::connection);
+				logicalConnectionImplementor.getPhysicalConnection());
 
 			Transaction transaction = null;
 
@@ -225,7 +232,8 @@ public class PortalTransactionManager
 			logicalConnectionImplementor.isPhysicallyConnected()) {
 
 			try {
-				Connection connection = sessionImplementor.connection();
+				Connection connection =
+					logicalConnectionImplementor.getPhysicalConnection();
 
 				DataSourceUtils.resetConnectionAfterTransaction(
 					connection,
@@ -258,7 +266,7 @@ public class PortalTransactionManager
 				sessionImplementor.setHibernateFlushMode(flushMode);
 			}
 
-			sessionImplementor.disconnect();
+			logicalConnectionImplementor.manualDisconnect();
 		}
 
 		sessionHolder.clear();

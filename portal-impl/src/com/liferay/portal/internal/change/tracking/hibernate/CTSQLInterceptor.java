@@ -8,15 +8,15 @@ package com.liferay.portal.internal.change.tracking.hibernate;
 import com.liferay.portal.change.tracking.sql.CTSQLTransformer;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
-import org.hibernate.EmptyInterceptor;
+import org.hibernate.resource.jdbc.spi.StatementInspector;
 
 /**
  * @author Preston Crary
  */
-public class CTSQLInterceptor extends EmptyInterceptor {
+public class CTSQLInterceptor implements StatementInspector {
 
 	@Override
-	public String onPrepareStatement(String sql) {
+	public String inspect(String sql) {
 		if (_enabled) {
 			CTSQLTransformer ctSQLTransformer = _ctSQLTransformerSnapshot.get();
 

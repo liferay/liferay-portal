@@ -7,6 +7,24 @@ package com.liferay.portal.dao.orm.hibernate;
 
 import com.liferay.portal.kernel.dao.orm.Type;
 
+import java.io.Serializable;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import java.sql.Blob;
+import java.sql.Clob;
+
+import java.time.Duration;
+
+import java.util.Calendar;
+import java.util.Currency;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.UUID;
+
+import org.hibernate.type.BasicTypeReference;
 import org.hibernate.type.StandardBasicTypes;
 
 /**
@@ -14,110 +32,115 @@ import org.hibernate.type.StandardBasicTypes;
  */
 public class TypeTranslator {
 
-	public static final org.hibernate.type.Type BIG_DECIMAL =
+	public static final BasicTypeReference<BigDecimal> BIG_DECIMAL =
 		StandardBasicTypes.BIG_DECIMAL;
 
-	public static final org.hibernate.type.Type BIG_INTEGER =
+	public static final BasicTypeReference<BigInteger> BIG_INTEGER =
 		StandardBasicTypes.BIG_INTEGER;
 
-	public static final org.hibernate.type.Type BINARY =
+	public static final BasicTypeReference<byte[]> BINARY =
 		StandardBasicTypes.BINARY;
 
-	public static final org.hibernate.type.Type BLOB = StandardBasicTypes.BLOB;
+	public static final BasicTypeReference<Blob> BLOB = StandardBasicTypes.BLOB;
 
-	public static final org.hibernate.type.Type BOOLEAN =
-		StandardBasicTypes.BOOLEAN;
+	public static final BasicTypeReference<Boolean> BOOLEAN =
+		new BasicTypeReference("boolean", Boolean.class, 16);
 
-	public static final org.hibernate.type.Type BYTE = StandardBasicTypes.BYTE;
+	public static final BasicTypeReference<Byte> BYTE = StandardBasicTypes.BYTE;
 
-	public static final org.hibernate.type.Type CALENDAR =
+	public static final BasicTypeReference<Calendar> CALENDAR =
 		StandardBasicTypes.CALENDAR;
 
-	public static final org.hibernate.type.Type CALENDAR_DATE =
+	public static final BasicTypeReference<Calendar> CALENDAR_DATE =
 		StandardBasicTypes.CALENDAR_DATE;
 
-	public static final org.hibernate.type.Type CHAR_ARRAY =
+	public static final BasicTypeReference<char[]> CHAR_ARRAY =
 		StandardBasicTypes.CHAR_ARRAY;
 
-	public static final org.hibernate.type.Type CHARACTER =
+	public static final BasicTypeReference<Character> CHARACTER =
 		StandardBasicTypes.CHARACTER;
 
-	public static final org.hibernate.type.Type CHARACTER_ARRAY =
+	public static final BasicTypeReference<Character[]> CHARACTER_ARRAY =
 		StandardBasicTypes.CHARACTER_ARRAY;
 
-	public static final org.hibernate.type.Type CLASS =
+	@SuppressWarnings("rawtypes")
+	public static final BasicTypeReference<Class> CLASS =
 		StandardBasicTypes.CLASS;
 
-	public static final org.hibernate.type.Type CLOB = StandardBasicTypes.CLOB;
+	public static final BasicTypeReference<Clob> CLOB = StandardBasicTypes.CLOB;
 
-	public static final org.hibernate.type.Type CURRENCY =
+	public static final BasicTypeReference<Currency> CURRENCY =
 		StandardBasicTypes.CURRENCY;
 
-	public static final org.hibernate.type.Type DATE = StandardBasicTypes.DATE;
+	public static final BasicTypeReference<Date> DATE = StandardBasicTypes.DATE;
 
-	public static final org.hibernate.type.Type DOUBLE =
+	public static final BasicTypeReference<Double> DOUBLE =
 		StandardBasicTypes.DOUBLE;
 
-	public static final org.hibernate.type.Type FLOAT =
+	public static final BasicTypeReference<Duration> DURATION =
+		StandardBasicTypes.DURATION;
+
+	public static final BasicTypeReference<Float> FLOAT =
 		StandardBasicTypes.FLOAT;
 
-	public static final org.hibernate.type.Type IMAGE =
+	public static final BasicTypeReference<byte[]> IMAGE =
 		StandardBasicTypes.IMAGE;
 
-	public static final org.hibernate.type.Type INTEGER =
+	public static final BasicTypeReference<Integer> INTEGER =
 		StandardBasicTypes.INTEGER;
 
-	public static final org.hibernate.type.Type LOCALE =
+	public static final BasicTypeReference<Locale> LOCALE =
 		StandardBasicTypes.LOCALE;
 
-	public static final org.hibernate.type.Type LONG = StandardBasicTypes.LONG;
+	public static final BasicTypeReference<Long> LONG = StandardBasicTypes.LONG;
 
-	public static final org.hibernate.type.Type MATERIALIZED_BLOB =
+	public static final BasicTypeReference<byte[]> MATERIALIZED_BLOB =
 		StandardBasicTypes.MATERIALIZED_BLOB;
 
-	public static final org.hibernate.type.Type MATERIALIZED_CLOB =
+	public static final BasicTypeReference<String> MATERIALIZED_CLOB =
 		StandardBasicTypes.MATERIALIZED_CLOB;
 
-	public static final org.hibernate.type.Type NUMERIC_BOOLEAN =
+	public static final BasicTypeReference<Boolean> NUMERIC_BOOLEAN =
 		StandardBasicTypes.NUMERIC_BOOLEAN;
 
-	public static final org.hibernate.type.Type SERIALIZABLE =
+	public static final BasicTypeReference<Serializable> SERIALIZABLE =
 		StandardBasicTypes.SERIALIZABLE;
 
-	public static final org.hibernate.type.Type SHORT =
+	public static final BasicTypeReference<Short> SHORT =
 		StandardBasicTypes.SHORT;
 
-	public static final org.hibernate.type.Type STRING =
+	public static final BasicTypeReference<String> STRING =
 		StandardBasicTypes.STRING;
 
-	public static final org.hibernate.type.Type TEXT = StandardBasicTypes.TEXT;
+	public static final BasicTypeReference<String> TEXT =
+		StandardBasicTypes.TEXT;
 
-	public static final org.hibernate.type.Type TIME = StandardBasicTypes.TIME;
+	public static final BasicTypeReference<Date> TIME = StandardBasicTypes.TIME;
 
-	public static final org.hibernate.type.Type TIMESTAMP =
+	public static final BasicTypeReference<Date> TIMESTAMP =
 		StandardBasicTypes.TIMESTAMP;
 
-	public static final org.hibernate.type.Type TIMEZONE =
+	public static final BasicTypeReference<TimeZone> TIMEZONE =
 		StandardBasicTypes.TIMEZONE;
 
-	public static final org.hibernate.type.Type TRUE_FALSE =
+	public static final BasicTypeReference<Boolean> TRUE_FALSE =
 		StandardBasicTypes.TRUE_FALSE;
 
-	public static final org.hibernate.type.Type URL = StandardBasicTypes.URL;
+	public static final BasicTypeReference<java.net.URL> URL =
+		StandardBasicTypes.URL;
 
-	public static final org.hibernate.type.Type UUID_BINARY =
+	public static final BasicTypeReference<UUID> UUID = StandardBasicTypes.UUID;
+
+	public static final BasicTypeReference<UUID> UUID_BINARY =
 		StandardBasicTypes.UUID_BINARY;
 
-	public static final org.hibernate.type.Type UUID_CHAR =
+	public static final BasicTypeReference<UUID> UUID_CHAR =
 		StandardBasicTypes.UUID_CHAR;
 
-	public static final org.hibernate.type.Type WRAPPER_BINARY =
-		StandardBasicTypes.WRAPPER_BINARY;
-
-	public static final org.hibernate.type.Type YES_NO =
+	public static final BasicTypeReference<Boolean> YES_NO =
 		StandardBasicTypes.YES_NO;
 
-	public static org.hibernate.type.Type translate(Type type) {
+	public static BasicTypeReference<?> translate(Type type) {
 		if (type == Type.BIG_DECIMAL) {
 			return BIG_DECIMAL;
 		}
@@ -222,9 +245,6 @@ public class TypeTranslator {
 		}
 		else if (type == Type.UUID_CHAR) {
 			return UUID_CHAR;
-		}
-		else if (type == Type.WRAPPER_BINARY) {
-			return WRAPPER_BINARY;
 		}
 		else if (type == Type.YES_NO) {
 			return YES_NO;

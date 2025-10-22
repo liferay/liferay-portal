@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionCustomizer;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PreloadClassLoader;
@@ -26,11 +24,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.hibernate.SessionBuilder;
-import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.resource.jdbc.spi.LogicalConnectionImplementor;
-import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 
 /**
  * @author Brian Wing Shun Chan
@@ -101,23 +96,6 @@ public class SessionFactoryImpl implements SessionFactory {
 			session = sessionFactoryImplementor.openSession();
 		}
 
-		if (_log.isDebugEnabled()) {
-			org.hibernate.internal.SessionImpl sessionImpl =
-				(org.hibernate.internal.SessionImpl)session;
-
-			JdbcCoordinator jdbcCoordinator = sessionImpl.getJdbcCoordinator();
-
-			LogicalConnectionImplementor logicalConnectionImplementor =
-				jdbcCoordinator.getLogicalConnection();
-
-			PhysicalConnectionHandlingMode physicalConnectionHandlingMode =
-				logicalConnectionImplementor.getConnectionHandlingMode();
-
-			_log.debug(
-				"Session is using connection release mode " +
-					physicalConnectionHandlingMode.getReleaseMode());
-		}
-
 		return wrapSession(session);
 	}
 
@@ -178,9 +156,6 @@ public class SessionFactoryImpl implements SessionFactory {
 	private static final String[] _PRELOAD_CLASS_NAMES =
 		PropsValues.
 			SPRING_HIBERNATE_SESSION_FACTORY_PRELOAD_CLASSLOADER_CLASSES;
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SessionFactoryImpl.class);
 
 	private final ServiceTrackerList<SessionCustomizer> _sessionCustomizers =
 		ServiceTrackerListFactory.open(

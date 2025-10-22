@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
-import org.hibernate.persister.entity.EntityPersister;
 
 /**
  * @author Shuyang Zhou
@@ -83,13 +82,6 @@ public class MVCCSynchronizerPostUpdateEventListener
 				}
 			}
 		}
-	}
-
-	/** @deprecated */
-	@Deprecated
-	@Override
-	public boolean requiresPostCommitHanding(EntityPersister entityPersister) {
-		throw new UnsupportedOperationException();
 	}
 
 }
