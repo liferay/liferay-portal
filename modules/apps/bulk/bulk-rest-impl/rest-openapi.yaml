@@ -39,9 +39,8 @@ components:
                     items:
                         $ref: "#/components/schemas/BulkActionItem"
                     type: array
-                selectAll:
-                    default: false
-                    type: boolean
+                selectionScope:
+                    $ref: "#/components/schemas/SelectionScope"
                 type:
                     enum:
                         -   DefaultPermissionBulkAction
