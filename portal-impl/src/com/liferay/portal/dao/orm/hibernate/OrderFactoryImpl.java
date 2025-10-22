@@ -15,12 +15,12 @@ public class OrderFactoryImpl implements OrderFactory {
 
 	@Override
 	public Order asc(String propertyName) {
-		return new OrderImpl(org.hibernate.criterion.Order.asc(propertyName));
+		return null;
 	}
 
 	@Override
 	public Order desc(String propertyName) {
-		return new OrderImpl(org.hibernate.criterion.Order.desc(propertyName));
+		return null;
 	}
 
 }
