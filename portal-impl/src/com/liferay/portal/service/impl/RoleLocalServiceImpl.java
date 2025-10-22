@@ -21,10 +21,6 @@ import com.liferay.portal.kernel.cache.thread.local.Lifecycle;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCache;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateRoleException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -54,6 +50,7 @@ import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupGroupRoleTable;
 import com.liferay.portal.kernel.model.UserGroupRoleTable;
 import com.liferay.portal.kernel.model.UserGroups_TeamsTable;
+import com.liferay.portal.kernel.model.UserTable;
 import com.liferay.portal.kernel.model.Users_GroupsTable;
 import com.liferay.portal.kernel.model.Users_OrgsTable;
 import com.liferay.portal.kernel.model.Users_RolesTable;
@@ -683,58 +680,37 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		if ((type == RoleConstants.TYPE_DEPOT) ||
 			(type == RoleConstants.TYPE_SITE)) {
 
-			DynamicQuery userGroupGroupRoleDynamicQuery =
-				_userGroupGroupRoleLocalService.dynamicQuery();
-
-			Property property = PropertyFactoryUtil.forName("roleId");
-
-			userGroupGroupRoleDynamicQuery.add(property.eq(roleId));
-
-			userGroupGroupRoleDynamicQuery.setProjection(
-				ProjectionFactoryUtil.countDistinct("userGroupId"));
-
-			List<?> list = _userGroupRoleLocalService.dynamicQuery(
-				userGroupGroupRoleDynamicQuery);
-
-			Long count = (Long)list.get(0);
-
-			assigneesTotal += count.intValue();
+			assigneesTotal += _userGroupRoleLocalService.dslQueryCount(
+				DSLQueryFactoryUtil.countDistinct(
+					UserGroupGroupRoleTable.INSTANCE.userGroupId
+				).from(
+					UserGroupGroupRoleTable.INSTANCE
+				).where(
+					UserGroupRoleTable.INSTANCE.roleId.eq(roleId)
+				));
 		}
 
 		if ((type == RoleConstants.TYPE_DEPOT) ||
 			(type == RoleConstants.TYPE_ORGANIZATION) ||
 			(type == RoleConstants.TYPE_SITE)) {
 
-			DynamicQuery userDynamicQuery = _userLocalService.dynamicQuery();
-
-			Property statusProperty = PropertyFactoryUtil.forName("status");
-
-			userDynamicQuery.add(
-				statusProperty.eq(WorkflowConstants.STATUS_APPROVED));
-
-			userDynamicQuery.setProjection(
-				ProjectionFactoryUtil.property("userId"));
-
-			DynamicQuery userGroupRoleDynamicQuery =
-				_userGroupRoleLocalService.dynamicQuery();
-
-			Property userIdProperty = PropertyFactoryUtil.forName("userId");
-
-			userGroupRoleDynamicQuery.add(userIdProperty.in(userDynamicQuery));
-
-			Property roleIdProperty = PropertyFactoryUtil.forName("roleId");
-
-			userGroupRoleDynamicQuery.add(roleIdProperty.eq(roleId));
-
-			userGroupRoleDynamicQuery.setProjection(
-				ProjectionFactoryUtil.countDistinct("userId"));
-
-			List<?> list = _userGroupRoleLocalService.dynamicQuery(
-				userGroupRoleDynamicQuery);
-
-			Long count = (Long)list.get(0);
-
-			assigneesTotal += count.intValue();
+			assigneesTotal += _userGroupRoleLocalService.dslQueryCount(
+				DSLQueryFactoryUtil.countDistinct(
+					UserGroupRoleTable.INSTANCE.userId
+				).from(
+					UserGroupRoleTable.INSTANCE
+				).innerJoinON(
+					UserTable.INSTANCE,
+					UserTable.INSTANCE.userId.eq(
+						UserGroupRoleTable.INSTANCE.userId)
+				).where(
+					UserGroupRoleTable.INSTANCE.roleId.eq(
+						roleId
+					).and(
+						UserTable.INSTANCE.status.eq(
+							WorkflowConstants.STATUS_APPROVED)
+					)
+				));
 		}
 
 		return assigneesTotal;
