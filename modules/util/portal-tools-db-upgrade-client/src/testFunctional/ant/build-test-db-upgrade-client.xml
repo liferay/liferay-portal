@@ -116,7 +116,7 @@
 
 		<parallel failonany="true">
 			<execute dir="${db.upgrade.client.home}" failonerror="true">
-				db_upgrade_client${file.suffix.bat} -j "-Dfile.encoding=UTF8 -Duser.country=US -Duser.language=en -Duser.timezone=GMT -Xmx4096m"
+				db_upgrade_client${file.suffix.bat} -j "-Dfile.encoding=UTF8 -Duser.country=US -Duser.language=en -Duser.timezone=GMT -Xmx5120m"
 			</execute>
 			<sequential>
 				<wait-for-upgrade-start />
@@ -128,12 +128,12 @@
 				<echo>${jinfo.output}</echo>
 
 				<if>
-					<contains string="${jinfo.output}" substring="MaxHeapSize=4294967296" />
+					<contains string="${jinfo.output}" substring="MaxHeapSize=5368709120" />
 					<then>
-						<echo>Java memory was successfully set to 4GB during the upgrade process.</echo>
+						<echo>Java memory was successfully set to 5GB during the upgrade process.</echo>
 					</then>
 					<else>
-						<fail message="Could not verify that Java memory was set to 4GB" />
+						<fail message="Could not verify that Java memory was set to 5GB" />
 					</else>
 				</if>
 			</sequential>
