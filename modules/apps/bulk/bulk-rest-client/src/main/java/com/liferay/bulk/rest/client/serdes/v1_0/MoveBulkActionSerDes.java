@@ -80,14 +80,14 @@ public class MoveBulkActionSerDes {
 			sb.append("]");
 		}
 
-		if (moveBulkAction.getSelectAll() != null) {
+		if (moveBulkAction.getSelectionScope() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"selectionScope\": ");
 
-			sb.append(moveBulkAction.getSelectAll());
+			sb.append(String.valueOf(moveBulkAction.getSelectionScope()));
 		}
 
 		if (moveBulkAction.getType() != null) {
@@ -141,11 +141,13 @@ public class MoveBulkActionSerDes {
 				String.valueOf(moveBulkAction.getBulkActionItems()));
 		}
 
-		if (moveBulkAction.getSelectAll() == null) {
-			map.put("selectAll", null);
+		if (moveBulkAction.getSelectionScope() == null) {
+			map.put("selectionScope", null);
 		}
 		else {
-			map.put("selectAll", String.valueOf(moveBulkAction.getSelectAll()));
+			map.put(
+				"selectionScope",
+				String.valueOf(moveBulkAction.getSelectionScope()));
 		}
 
 		if (moveBulkAction.getType() == null) {
@@ -179,7 +181,7 @@ public class MoveBulkActionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -216,9 +218,11 @@ public class MoveBulkActionSerDes {
 					moveBulkAction.setBulkActionItems(bulkActionItemsArray);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				if (jsonParserFieldValue != null) {
-					moveBulkAction.setSelectAll((Boolean)jsonParserFieldValue);
+					moveBulkAction.setSelectionScope(
+						SelectionScopeSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {

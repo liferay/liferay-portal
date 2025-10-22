@@ -128,29 +128,31 @@ public abstract class BulkAction implements Serializable {
 	private Supplier<BulkActionItem[]> _bulkActionItemsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
+	@Valid
+	public SelectionScope getSelectionScope() {
+		if (_selectionScopeSupplier != null) {
+			selectionScope = _selectionScopeSupplier.get();
 
-			_selectAllSupplier = null;
+			_selectionScopeSupplier = null;
 		}
 
-		return selectAll;
+		return selectionScope;
 	}
 
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
+	public void setSelectionScope(SelectionScope selectionScope) {
+		this.selectionScope = selectionScope;
 
-		_selectAllSupplier = null;
+		_selectionScopeSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
+	public void setSelectionScope(
+		UnsafeSupplier<SelectionScope, Exception>
+			selectionScopeUnsafeSupplier) {
 
-		_selectAllSupplier = () -> {
+		_selectionScopeSupplier = () -> {
 			try {
-				return selectAllUnsafeSupplier.get();
+				return selectionScopeUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -163,10 +165,10 @@ public abstract class BulkAction implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
+	protected SelectionScope selectionScope;
 
 	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<SelectionScope> _selectionScopeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@JsonGetter("type")
@@ -269,16 +271,16 @@ public abstract class BulkAction implements Serializable {
 			sb.append("]");
 		}
 
-		Boolean selectAll = getSelectAll();
+		SelectionScope selectionScope = getSelectionScope();
 
-		if (selectAll != null) {
+		if (selectionScope != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"selectionScope\": ");
 
-			sb.append(selectAll);
+			sb.append(String.valueOf(selectionScope));
 		}
 
 		Type type = getType();

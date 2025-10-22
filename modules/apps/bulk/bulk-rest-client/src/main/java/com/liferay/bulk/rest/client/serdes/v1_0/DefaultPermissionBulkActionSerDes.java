@@ -118,14 +118,16 @@ public class DefaultPermissionBulkActionSerDes {
 			sb.append("]");
 		}
 
-		if (defaultPermissionBulkAction.getSelectAll() != null) {
+		if (defaultPermissionBulkAction.getSelectionScope() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"selectionScope\": ");
 
-			sb.append(defaultPermissionBulkAction.getSelectAll());
+			sb.append(
+				String.valueOf(
+					defaultPermissionBulkAction.getSelectionScope()));
 		}
 
 		if (defaultPermissionBulkAction.getType() != null) {
@@ -202,13 +204,14 @@ public class DefaultPermissionBulkActionSerDes {
 					defaultPermissionBulkAction.getBulkActionItems()));
 		}
 
-		if (defaultPermissionBulkAction.getSelectAll() == null) {
-			map.put("selectAll", null);
+		if (defaultPermissionBulkAction.getSelectionScope() == null) {
+			map.put("selectionScope", null);
 		}
 		else {
 			map.put(
-				"selectAll",
-				String.valueOf(defaultPermissionBulkAction.getSelectAll()));
+				"selectionScope",
+				String.valueOf(
+					defaultPermissionBulkAction.getSelectionScope()));
 		}
 
 		if (defaultPermissionBulkAction.getType() == null) {
@@ -249,7 +252,7 @@ public class DefaultPermissionBulkActionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -299,10 +302,11 @@ public class DefaultPermissionBulkActionSerDes {
 						bulkActionItemsArray);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				if (jsonParserFieldValue != null) {
-					defaultPermissionBulkAction.setSelectAll(
-						(Boolean)jsonParserFieldValue);
+					defaultPermissionBulkAction.setSelectionScope(
+						SelectionScopeSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {

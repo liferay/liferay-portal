@@ -280,8 +280,8 @@ public abstract class BaseBulkActionResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("selectAll", additionalAssertFieldName)) {
-				if (bulkAction.getSelectAll() == null) {
+			if (Objects.equals("selectionScope", additionalAssertFieldName)) {
+				if (bulkAction.getSelectionScope() == null) {
 					valid = false;
 				}
 
@@ -675,10 +675,10 @@ public abstract class BaseBulkActionResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("selectAll", additionalAssertFieldName)) {
+			if (Objects.equals("selectionScope", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						bulkAction1.getSelectAll(),
-						bulkAction2.getSelectAll())) {
+						bulkAction1.getSelectionScope(),
+						bulkAction2.getSelectionScope())) {
 
 					return false;
 				}
@@ -1133,7 +1133,7 @@ public abstract class BaseBulkActionResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("selectAll")) {
+		if (entityFieldName.equals("selectionScope")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1191,8 +1191,6 @@ public abstract class BaseBulkActionResourceTestCase {
 				DefaultPermissionBulkAction bulkAction =
 					new DefaultPermissionBulkAction();
 
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
-
 				bulkAction.setDefaultPermissions(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 				bulkAction.setDepotGroupId(RandomTestUtil.randomLong());
@@ -1207,8 +1205,6 @@ public abstract class BaseBulkActionResourceTestCase {
 			() -> {
 				DeleteBulkAction bulkAction = new DeleteBulkAction();
 
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
-
 				bulkAction.setType(BulkAction.Type.create("DeleteBulkAction"));
 
 				return bulkAction;
@@ -1216,16 +1212,12 @@ public abstract class BaseBulkActionResourceTestCase {
 			() -> {
 				KeywordBulkAction bulkAction = new KeywordBulkAction();
 
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
-
 				bulkAction.setType(BulkAction.Type.create("KeywordBulkAction"));
 
 				return bulkAction;
 			},
 			() -> {
 				MoveBulkAction bulkAction = new MoveBulkAction();
-
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
 
 				bulkAction.setObjectEntryFolderId(RandomTestUtil.randomLong());
 
@@ -1235,8 +1227,6 @@ public abstract class BaseBulkActionResourceTestCase {
 			},
 			() -> {
 				PermissionBulkAction bulkAction = new PermissionBulkAction();
-
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
 
 				bulkAction.setConfiguration(
 					StringUtil.toLowerCase(RandomTestUtil.randomString()));
@@ -1249,8 +1239,6 @@ public abstract class BaseBulkActionResourceTestCase {
 			() -> {
 				StatusBulkAction bulkAction = new StatusBulkAction();
 
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
-
 				bulkAction.setStatus(RandomTestUtil.randomInt());
 
 				bulkAction.setType(BulkAction.Type.create("StatusBulkAction"));
@@ -1260,8 +1248,6 @@ public abstract class BaseBulkActionResourceTestCase {
 			() -> {
 				TaxonomyCategoryBulkAction bulkAction =
 					new TaxonomyCategoryBulkAction();
-
-				bulkAction.setSelectAll(RandomTestUtil.randomBoolean());
 
 				bulkAction.setType(
 					BulkAction.Type.create("TaxonomyCategoryBulkAction"));

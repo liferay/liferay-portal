@@ -114,14 +114,14 @@ public class KeywordBulkActionSerDes {
 			sb.append("]");
 		}
 
-		if (keywordBulkAction.getSelectAll() != null) {
+		if (keywordBulkAction.getSelectionScope() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"selectionScope\": ");
 
-			sb.append(keywordBulkAction.getSelectAll());
+			sb.append(String.valueOf(keywordBulkAction.getSelectionScope()));
 		}
 
 		if (keywordBulkAction.getType() != null) {
@@ -186,12 +186,13 @@ public class KeywordBulkActionSerDes {
 				String.valueOf(keywordBulkAction.getBulkActionItems()));
 		}
 
-		if (keywordBulkAction.getSelectAll() == null) {
-			map.put("selectAll", null);
+		if (keywordBulkAction.getSelectionScope() == null) {
+			map.put("selectionScope", null);
 		}
 		else {
 			map.put(
-				"selectAll", String.valueOf(keywordBulkAction.getSelectAll()));
+				"selectionScope",
+				String.valueOf(keywordBulkAction.getSelectionScope()));
 		}
 
 		if (keywordBulkAction.getType() == null) {
@@ -228,7 +229,7 @@ public class KeywordBulkActionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -271,10 +272,11 @@ public class KeywordBulkActionSerDes {
 					keywordBulkAction.setBulkActionItems(bulkActionItemsArray);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				if (jsonParserFieldValue != null) {
-					keywordBulkAction.setSelectAll(
-						(Boolean)jsonParserFieldValue);
+					keywordBulkAction.setSelectionScope(
+						SelectionScopeSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {

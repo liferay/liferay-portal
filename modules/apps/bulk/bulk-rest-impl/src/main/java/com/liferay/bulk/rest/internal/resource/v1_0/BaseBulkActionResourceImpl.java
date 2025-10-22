@@ -53,7 +53,7 @@ public abstract class BaseBulkActionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/bulk/v1.0/bulk-action' -d $'{"bulkActionItems": ___, "selectAll": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/bulk/v1.0/bulk-action' -d $'{"bulkActionItems": ___, "selectionScope": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Execute a bulk action"
@@ -93,7 +93,7 @@ public abstract class BaseBulkActionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/bulk/v1.0/bulk-action-item/preview' -d $'{"bulkActionItems": ___, "selectAll": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/bulk/v1.0/bulk-action-item/preview' -d $'{"bulkActionItems": ___, "selectionScope": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates a preview for each item based on the bulk action type"

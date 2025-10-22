@@ -231,16 +231,16 @@ public class TaxonomyCategoryBulkAction
 			sb.append("]");
 		}
 
-		Boolean selectAll = getSelectAll();
+		SelectionScope selectionScope = getSelectionScope();
 
-		if (selectAll != null) {
+		if (selectionScope != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"selectionScope\": ");
 
-			sb.append(selectAll);
+			sb.append(String.valueOf(selectionScope));
 		}
 
 		Type type = getType();

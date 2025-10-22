@@ -47,26 +47,27 @@ public abstract class BulkAction implements Cloneable, Serializable {
 
 	protected BulkActionItem[] bulkActionItems;
 
-	public Boolean getSelectAll() {
-		return selectAll;
+	public SelectionScope getSelectionScope() {
+		return selectionScope;
 	}
 
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
+	public void setSelectionScope(SelectionScope selectionScope) {
+		this.selectionScope = selectionScope;
 	}
 
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
+	public void setSelectionScope(
+		UnsafeSupplier<SelectionScope, Exception>
+			selectionScopeUnsafeSupplier) {
 
 		try {
-			selectAll = selectAllUnsafeSupplier.get();
+			selectionScope = selectionScopeUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Boolean selectAll;
+	protected SelectionScope selectionScope;
 
 	public Type getType() {
 		return type;

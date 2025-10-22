@@ -116,11 +116,13 @@ public class BulkActionSerDes {
 				String.valueOf(bulkAction.getBulkActionItems()));
 		}
 
-		if (bulkAction.getSelectAll() == null) {
-			map.put("selectAll", null);
+		if (bulkAction.getSelectionScope() == null) {
+			map.put("selectionScope", null);
 		}
 		else {
-			map.put("selectAll", String.valueOf(bulkAction.getSelectAll()));
+			map.put(
+				"selectionScope",
+				String.valueOf(bulkAction.getSelectionScope()));
 		}
 
 		if (bulkAction.getType() == null) {
@@ -151,7 +153,7 @@ public class BulkActionSerDes {
 			if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -227,9 +229,11 @@ public class BulkActionSerDes {
 					bulkAction.setBulkActionItems(bulkActionItemsArray);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
 				if (jsonParserFieldValue != null) {
-					bulkAction.setSelectAll((Boolean)jsonParserFieldValue);
+					bulkAction.setSelectionScope(
+						SelectionScopeSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
