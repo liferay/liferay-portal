@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.spi.BootstrapContext;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -30,6 +31,7 @@ import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.PrimaryKey;
 import org.hibernate.mapping.Table;
+import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 /**
@@ -49,8 +51,8 @@ public class CTModelIntegrator implements Integrator {
 
 	@Override
 	public void integrate(
-		Metadata metadata, SessionFactoryImplementor sessionFactoryImplementor,
-		SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+		Metadata metadata, BootstrapContext bootstrapContext,
+		SessionFactoryImplementor sessionFactoryImplementor) {
 
 		Collection<PersistentClass> persistentClasses =
 			metadata.getEntityBindings();
@@ -92,9 +94,11 @@ public class CTModelIntegrator implements Integrator {
 
 		ctSQLInterceptor.setEnabled(containCTModel);
 
+		ServiceRegistryImplementor serviceRegistryImplementor =
+			sessionFactoryImplementor.getServiceRegistry();
+
 		EventListenerRegistry eventListenerRegistry =
-			sessionFactoryServiceRegistry.getService(
-				EventListenerRegistry.class);
+			serviceRegistryImplementor.getService(EventListenerRegistry.class);
 
 		eventListenerRegistry.setListeners(
 			EventType.PRE_DELETE,

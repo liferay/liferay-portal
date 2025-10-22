@@ -9,10 +9,12 @@ import com.liferay.portal.dao.orm.hibernate.event.ResetOriginalValuesLoadEventLi
 import com.liferay.portal.dao.orm.hibernate.event.ResetOriginalValuesPostLoadEventListener;
 
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.spi.BootstrapContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
+import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 /**
@@ -31,12 +33,14 @@ public class GlobalEventListenerIntegrator implements Integrator {
 
 	@Override
 	public void integrate(
-		Metadata metadata, SessionFactoryImplementor sessionFactoryImplementor,
-		SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+		Metadata metadata, BootstrapContext bootstrapContext,
+		SessionFactoryImplementor sessionFactoryImplementor) {
+
+		ServiceRegistryImplementor serviceRegistryImplementor =
+			sessionFactoryImplementor.getServiceRegistry();
 
 		EventListenerRegistry eventListenerRegistry =
-			sessionFactoryServiceRegistry.getService(
-				EventListenerRegistry.class);
+			serviceRegistryImplementor.getService(EventListenerRegistry.class);
 
 		eventListenerRegistry.setListeners(
 			EventType.LOAD, ResetOriginalValuesLoadEventListener.INSTANCE);

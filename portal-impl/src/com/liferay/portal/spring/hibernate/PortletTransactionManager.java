@@ -126,7 +126,7 @@ public class PortletTransactionManager implements PlatformTransactionManager {
 			portalSession.flush();
 		}
 
-		SessionBuilder<?> sessionBuilder = portletSessionFactory.withOptions();
+		SessionBuilder sessionBuilder = portletSessionFactory.withOptions();
 
 		sessionBuilder = sessionBuilder.connection(portalConnection);
 
