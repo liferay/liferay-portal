@@ -705,10 +705,10 @@ public class DataGuardTestRuleUtil {
 		}
 
 		@Override
-		public Serializable save(Object object) throws ORMException {
+		public void save(Object object) throws ORMException {
 			_record(object);
 
-			return super.save(object);
+			super.save(object);
 		}
 
 		@Override

@@ -142,8 +142,8 @@ public class SessionWrapper implements Session {
 	}
 
 	@Override
-	public Object load(Class<?> clazz, Serializable id) throws ORMException {
-		return session.load(clazz, id);
+	public void load(Class<?> clazz, Serializable id) throws ORMException {
+		session.load(clazz, id);
 	}
 
 	@Override
@@ -152,8 +152,8 @@ public class SessionWrapper implements Session {
 	}
 
 	@Override
-	public Serializable save(Object object) throws ORMException {
-		return session.save(object);
+	public void save(Object object) throws ORMException {
+		session.save(object);
 	}
 
 	@Override
