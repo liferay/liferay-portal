@@ -13,8 +13,6 @@ create table ExportImportReportEntry (
 	errorStacktrace TEXT null,
 	modelName VARCHAR(255) null,
 	origin INTEGER,
-	scope VARCHAR(75) null,
-	scopeKey VARCHAR(75) null,
 	type_ INTEGER,
 	status INTEGER
 );

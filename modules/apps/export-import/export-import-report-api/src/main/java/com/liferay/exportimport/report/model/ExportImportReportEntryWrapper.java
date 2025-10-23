@@ -52,8 +52,6 @@ public class ExportImportReportEntryWrapper
 		attributes.put("errorStacktrace", getErrorStacktrace());
 		attributes.put("modelName", getModelName());
 		attributes.put("origin", getOrigin());
-		attributes.put("scope", getScope());
-		attributes.put("scopeKey", getScopeKey());
 		attributes.put("type", getType());
 		attributes.put("status", getStatus());
 
@@ -147,18 +145,6 @@ public class ExportImportReportEntryWrapper
 
 		if (origin != null) {
 			setOrigin(origin);
-		}
-
-		String scope = (String)attributes.get("scope");
-
-		if (scope != null) {
-			setScope(scope);
-		}
-
-		String scopeKey = (String)attributes.get("scopeKey");
-
-		if (scopeKey != null) {
-			setScopeKey(scopeKey);
 		}
 
 		Integer type = (Integer)attributes.get("type");
@@ -337,26 +323,6 @@ public class ExportImportReportEntryWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
-	}
-
-	/**
-	 * Returns the scope of this export import report entry.
-	 *
-	 * @return the scope of this export import report entry
-	 */
-	@Override
-	public String getScope() {
-		return model.getScope();
-	}
-
-	/**
-	 * Returns the scope key of this export import report entry.
-	 *
-	 * @return the scope key of this export import report entry
-	 */
-	@Override
-	public String getScopeKey() {
-		return model.getScopeKey();
 	}
 
 	/**
@@ -541,26 +507,6 @@ public class ExportImportReportEntryWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
-	}
-
-	/**
-	 * Sets the scope of this export import report entry.
-	 *
-	 * @param scope the scope of this export import report entry
-	 */
-	@Override
-	public void setScope(String scope) {
-		model.setScope(scope);
-	}
-
-	/**
-	 * Sets the scope key of this export import report entry.
-	 *
-	 * @param scopeKey the scope key of this export import report entry
-	 */
-	@Override
-	public void setScopeKey(String scopeKey) {
-		model.setScopeKey(scopeKey);
 	}
 
 	/**

@@ -69,11 +69,6 @@ public class ExportImportReportEntryTable
 	public final Column<ExportImportReportEntryTable, Integer> origin =
 		createColumn(
 			"origin", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
-	public final Column<ExportImportReportEntryTable, String> scope =
-		createColumn("scope", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<ExportImportReportEntryTable, String> scopeKey =
-		createColumn(
-			"scopeKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ExportImportReportEntryTable, Integer> type =
 		createColumn(
 			"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);

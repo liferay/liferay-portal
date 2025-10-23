@@ -22,8 +22,6 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="origin" type="int" />
-		<field name="scope" type="String" />
-		<field name="scopeKey" type="String" />
 		<field name="type" type="int" />
 		<field name="status" type="int" />
 	</model>

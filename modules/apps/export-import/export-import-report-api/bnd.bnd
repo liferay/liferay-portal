@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import Report API
 Bundle-SymbolicName: com.liferay.exportimport.report.api
-Bundle-Version: 3.0.1
+Bundle-Version: 4.0.0
 Export-Package:\
 	com.liferay.exportimport.report.constants,\
 	com.liferay.exportimport.report.exception,\

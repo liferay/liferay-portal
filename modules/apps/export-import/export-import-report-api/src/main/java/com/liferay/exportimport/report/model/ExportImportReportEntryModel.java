@@ -272,36 +272,6 @@ public interface ExportImportReportEntryModel
 	public void setOrigin(int origin);
 
 	/**
-	 * Returns the scope of this export import report entry.
-	 *
-	 * @return the scope of this export import report entry
-	 */
-	@AutoEscape
-	public String getScope();
-
-	/**
-	 * Sets the scope of this export import report entry.
-	 *
-	 * @param scope the scope of this export import report entry
-	 */
-	public void setScope(String scope);
-
-	/**
-	 * Returns the scope key of this export import report entry.
-	 *
-	 * @return the scope key of this export import report entry
-	 */
-	@AutoEscape
-	public String getScopeKey();
-
-	/**
-	 * Sets the scope key of this export import report entry.
-	 *
-	 * @param scopeKey the scope key of this export import report entry
-	 */
-	public void setScopeKey(String scopeKey);
-
-	/**
 	 * Returns the type of this export import report entry.
 	 *
 	 * @return the type of this export import report entry

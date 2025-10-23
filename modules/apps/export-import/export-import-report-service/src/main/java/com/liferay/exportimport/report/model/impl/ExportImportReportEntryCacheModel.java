@@ -69,7 +69,7 @@ public class ExportImportReportEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -99,10 +99,6 @@ public class ExportImportReportEntryCacheModel
 		sb.append(modelName);
 		sb.append(", origin=");
 		sb.append(origin);
-		sb.append(", scope=");
-		sb.append(scope);
-		sb.append(", scopeKey=");
-		sb.append(scopeKey);
 		sb.append(", type=");
 		sb.append(type);
 		sb.append(", status=");
@@ -160,21 +156,6 @@ public class ExportImportReportEntryCacheModel
 		}
 
 		exportImportReportEntryImpl.setOrigin(origin);
-
-		if (scope == null) {
-			exportImportReportEntryImpl.setScope("");
-		}
-		else {
-			exportImportReportEntryImpl.setScope(scope);
-		}
-
-		if (scopeKey == null) {
-			exportImportReportEntryImpl.setScopeKey("");
-		}
-		else {
-			exportImportReportEntryImpl.setScopeKey(scopeKey);
-		}
-
 		exportImportReportEntryImpl.setType(type);
 		exportImportReportEntryImpl.setStatus(status);
 
@@ -208,8 +189,6 @@ public class ExportImportReportEntryCacheModel
 		modelName = objectInput.readUTF();
 
 		origin = objectInput.readInt();
-		scope = objectInput.readUTF();
-		scopeKey = objectInput.readUTF();
 
 		type = objectInput.readInt();
 
@@ -264,20 +243,6 @@ public class ExportImportReportEntryCacheModel
 
 		objectOutput.writeInt(origin);
 
-		if (scope == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(scope);
-		}
-
-		if (scopeKey == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(scopeKey);
-		}
-
 		objectOutput.writeInt(type);
 
 		objectOutput.writeInt(status);
@@ -297,8 +262,6 @@ public class ExportImportReportEntryCacheModel
 	public String errorStacktrace;
 	public String modelName;
 	public int origin;
-	public String scope;
-	public String scopeKey;
 	public int type;
 	public int status;
 

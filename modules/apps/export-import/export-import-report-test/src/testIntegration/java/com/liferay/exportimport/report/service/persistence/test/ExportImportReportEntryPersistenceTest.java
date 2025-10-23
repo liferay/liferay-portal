@@ -149,10 +149,6 @@ public class ExportImportReportEntryPersistenceTest {
 
 		newExportImportReportEntry.setOrigin(RandomTestUtil.nextInt());
 
-		newExportImportReportEntry.setScope(RandomTestUtil.randomString());
-
-		newExportImportReportEntry.setScopeKey(RandomTestUtil.randomString());
-
 		newExportImportReportEntry.setType(RandomTestUtil.nextInt());
 
 		newExportImportReportEntry.setStatus(RandomTestUtil.nextInt());
@@ -210,12 +206,6 @@ public class ExportImportReportEntryPersistenceTest {
 			existingExportImportReportEntry.getOrigin(),
 			newExportImportReportEntry.getOrigin());
 		Assert.assertEquals(
-			existingExportImportReportEntry.getScope(),
-			newExportImportReportEntry.getScope());
-		Assert.assertEquals(
-			existingExportImportReportEntry.getScopeKey(),
-			newExportImportReportEntry.getScopeKey());
-		Assert.assertEquals(
 			existingExportImportReportEntry.getType(),
 			newExportImportReportEntry.getType());
 		Assert.assertEquals(
@@ -266,8 +256,7 @@ public class ExportImportReportEntryPersistenceTest {
 			true, "createDate", true, "modifiedDate", true,
 			"classExternalReferenceCode", true, "classNameId", true, "classPK",
 			true, "exportImportConfigurationId", true, "modelName", true,
-			"origin", true, "scope", true, "scopeKey", true, "type", true,
-			"status", true);
+			"origin", true, "type", true, "status", true);
 	}
 
 	@Test
@@ -542,10 +531,6 @@ public class ExportImportReportEntryPersistenceTest {
 		exportImportReportEntry.setModelName(RandomTestUtil.randomString());
 
 		exportImportReportEntry.setOrigin(RandomTestUtil.nextInt());
-
-		exportImportReportEntry.setScope(RandomTestUtil.randomString());
-
-		exportImportReportEntry.setScopeKey(RandomTestUtil.randomString());
 
 		exportImportReportEntry.setType(RandomTestUtil.nextInt());
 
