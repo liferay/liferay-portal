@@ -30,8 +30,6 @@
 		<column convert-null="false" name="errorStacktrace" type="String" />
 		<column name="modelName" type="String" />
 		<column name="origin" type="int" />
-		<column name="scope" type="String" />
-		<column name="scopeKey" type="String" />
 		<column name="type" type="int" />
 		<column name="status" type="int" />
 
