@@ -36,13 +36,12 @@ public class ExportImportReportEntryLocalServiceWrapper
 		addEmptyExportImportReportEntry(
 			long groupId, long companyId, String classExternalReferenceCode,
 			long classNameId, long exportImportConfigurationId,
-			String modelName, int origin, String scope, String scopeKey) {
+			String modelName, int origin) {
 
 		return _exportImportReportEntryLocalService.
 			addEmptyExportImportReportEntry(
 				groupId, companyId, classExternalReferenceCode, classNameId,
-				exportImportConfigurationId, modelName, origin, scope,
-				scopeKey);
+				exportImportConfigurationId, modelName, origin);
 	}
 
 	@Override
@@ -51,13 +50,13 @@ public class ExportImportReportEntryLocalServiceWrapper
 			long groupId, long companyId, String classExternalReferenceCode,
 			long classNameId, long classPK, long exportImportConfigurationId,
 			String errorMessage, String errorStacktrace, String modelName,
-			int origin, String scope, String scopeKey) {
+			int origin) {
 
 		return _exportImportReportEntryLocalService.
 			addErrorExportImportReportEntry(
 				groupId, companyId, classExternalReferenceCode, classNameId,
 				classPK, exportImportConfigurationId, errorMessage,
-				errorStacktrace, modelName, origin, scope, scopeKey);
+				errorStacktrace, modelName, origin);
 	}
 
 	/**
