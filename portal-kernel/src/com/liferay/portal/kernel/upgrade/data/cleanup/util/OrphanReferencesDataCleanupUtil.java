@@ -43,11 +43,11 @@ public class OrphanReferencesDataCleanupUtil {
 			return;
 		}
 
+		boolean aliasNeeded = false;
+
 		DB db = DBManagerUtil.getDB();
 
 		DBType dbType = db.getDBType();
-
-		boolean aliasNeeded = false;
 
 		if ((dbType == DBType.MYSQL) || (dbType == DBType.SQLSERVER) ||
 			(dbType == DBType.MARIADB)) {
@@ -139,15 +139,15 @@ public class OrphanReferencesDataCleanupUtil {
 				sourceColumnName, " != ''");
 		}
 
-		String query;
+		String whereClause = null;
 
 		if (db.getDBType() == DBType.MYSQL) {
-			query = _getMySQLWhereClause(
+			whereClause = _getMySQLWhereClause(
 				dbInspector, sourceColumnName, sourceTableName,
 				targetColumnNames, targetTableName);
 		}
 		else {
-			query = _getOtherDBsWhereClause(
+			whereClause = _getOtherDBsWhereClause(
 				dbInspector, sourceColumnName, sourceTableName,
 				targetColumnNames, targetTableName);
 		}
@@ -157,7 +157,7 @@ public class OrphanReferencesDataCleanupUtil {
 			_SOURCE_TABLE_ALIAS);
 
 		return StringBundler.concat(
-			query, " and ",
+			whereClause, " and ",
 			_SOURCE_TABLE_ALIAS + StringPool.PERIOD + sourceColumnName,
 			" is not null", additionalNullCheck,
 			(sourceAdditionalWhereClause != null) ?
