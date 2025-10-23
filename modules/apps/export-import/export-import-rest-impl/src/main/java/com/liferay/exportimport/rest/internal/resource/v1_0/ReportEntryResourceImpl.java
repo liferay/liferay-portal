@@ -19,7 +19,6 @@ import com.liferay.exportimport.rest.internal.odata.entity.v1_0.ReportEntryEntit
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ReportEntryResource;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -27,7 +26,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -35,18 +33,17 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
 import jakarta.ws.rs.NotFoundException;
@@ -55,6 +52,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -139,6 +137,35 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		return _toReportEntry(exportImportReportEntry);
 	}
 
+	private String _getGroupName(Group group, Locale locale) {
+		try {
+			String descriptiveName = group.getDescriptiveName(locale);
+
+			if (Validator.isNotNull(descriptiveName)) {
+				return descriptiveName;
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
+		return group.getName(locale);
+	}
+
+	private Scope.Type _getGroupType(Group group) {
+		if (group.isDepot()) {
+			return Scope.Type.ASSET_LIBRARY;
+		}
+		else if (group.isSite()) {
+			return Scope.Type.SITE;
+		}
+		else if (group.isCMS()) {
+			return Scope.Type.SPACE;
+		}
+
+		return null;
+	}
+
 	private String _getOriginLabel(int origin) {
 		if (origin == ExportImportReportEntryConstants.ORIGIN_BATCH) {
 			return _language.get(
@@ -152,45 +179,21 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		return null;
 	}
 
-	private Scope _getScope(ExportImportReportEntry exportImportReportEntry) {
+	private Scope _getScope(Group group) {
+		if (group == null) {
+			return null;
+		}
+
 		return new Scope() {
 			{
-				setKey(exportImportReportEntry::getScopeKey);
-				setLabel(() -> _getScopeLabel(exportImportReportEntry));
-				setType(exportImportReportEntry::getScope);
+				setExternalReferenceCode(group::getExternalReferenceCode);
+				setKey(group::getGroupKey);
+				setLabel(
+					() -> _getGroupName(
+						group, contextAcceptLanguage.getPreferredLocale()));
+				setType(() -> _getGroupType(group));
 			}
 		};
-	}
-
-	private String _getScopeLabel(
-		ExportImportReportEntry exportImportReportEntry) {
-
-		try {
-			if (StringUtil.equals(
-					exportImportReportEntry.getScope(),
-					ObjectDefinitionConstants.SCOPE_COMPANY)) {
-
-				Company company = _companyLocalService.getCompany(
-					exportImportReportEntry.getCompanyId());
-
-				return company.getName();
-			}
-
-			Group group = _groupLocalService.fetchGroup(
-				GroupUtil.getGroupId(
-					contextCompany.getCompanyId(),
-					exportImportReportEntry.getScopeKey(), _groupLocalService));
-
-			if (group != null) {
-				return group.getDescriptiveName(
-					contextAcceptLanguage.getPreferredLocale());
-			}
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
-
-		return null;
 	}
 
 	private String _getStatusLabel(int status) {
@@ -250,6 +253,9 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 			_exportImportConfigurationLocalService.getExportImportConfiguration(
 				exportImportReportEntry.getExportImportConfigurationId());
 
+		Group group = _groupLocalService.getGroup(
+			exportImportReportEntry.getGroupId());
+
 		return new ReportEntry() {
 			{
 				setClassExternalReferenceCode(
@@ -274,7 +280,7 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 				setModelName(
 					() -> _toModelName(exportImportReportEntry.getModelName()));
 				setOrigin(() -> _toOrigin(exportImportReportEntry.getOrigin()));
-				setScope(() -> _getScope(exportImportReportEntry));
+				setScope(() -> _getScope(group));
 				setStatus(() -> _toStatus(exportImportReportEntry.getStatus()));
 				setType(() -> _toType(exportImportReportEntry.getType()));
 			}
@@ -313,9 +319,6 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 
 	@Reference
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ExportImportConfigurationLocalService
