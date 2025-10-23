@@ -11,15 +11,16 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.report.internal.util.ExportImportReportEntryUtil;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -55,10 +56,13 @@ public class ImportStagedModelExceptionHandlerImpl
 		try {
 			long groupId = portletDataContext.getGroupId();
 
-			if (StringUtil.equals(
-					ExportImportReportEntryUtil.getScope(
-						_groupLocalService.getGroup(groupId)),
-					ObjectDefinitionConstants.SCOPE_COMPANY)) {
+			Group group = _groupLocalService.getGroup(groupId);
+
+			StagingGroupHelper stagingGroupHelper =
+				StagingGroupHelperUtil.getStagingGroupHelper();
+
+			if ((group == null) || group.isCompany() ||
+				stagingGroupHelper.isCompanyGroup(group)) {
 
 				groupId = 0;
 			}

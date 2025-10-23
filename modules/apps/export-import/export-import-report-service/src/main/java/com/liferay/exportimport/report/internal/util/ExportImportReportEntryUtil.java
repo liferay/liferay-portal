@@ -7,11 +7,6 @@ package com.liferay.exportimport.report.internal.util;
 
 import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
-import com.liferay.object.constants.ObjectDefinitionConstants;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.staging.StagingGroupHelper;
-import com.liferay.staging.StagingGroupHelperUtil;
 
 /**
  * @author Petteri Karttunen
@@ -24,45 +19,6 @@ public class ExportImportReportEntryUtil {
 		}
 
 		return ExportImportReportEntryConstants.ORIGIN_STAGING;
-	}
-
-	public static String getScope(Group group) {
-		if ((group == null) || group.isCompany()) {
-			return ObjectDefinitionConstants.SCOPE_COMPANY;
-		}
-
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		if (stagingGroupHelper.isCompanyGroup(group)) {
-			return ObjectDefinitionConstants.SCOPE_COMPANY;
-		}
-
-		return ObjectDefinitionConstants.SCOPE_SITE;
-	}
-
-	public static String getScope(long groupId) {
-		if (groupId == 0) {
-			return ObjectDefinitionConstants.SCOPE_COMPANY;
-		}
-
-		return getScope(GroupLocalServiceUtil.fetchGroup(groupId));
-	}
-
-	public static String getScopeKey(Group group) {
-		if (group == null) {
-			return null;
-		}
-
-		return group.getExternalReferenceCode();
-	}
-
-	public static String getScopeKey(long groupId) {
-		if (groupId == 0) {
-			return null;
-		}
-
-		return getScopeKey(GroupLocalServiceUtil.fetchGroup(groupId));
 	}
 
 }
