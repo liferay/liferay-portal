@@ -308,7 +308,9 @@ public class Scope implements Serializable {
 
 			sb.append("\"type\": ");
 
-			sb.append(String.valueOf(type));
+			sb.append("\"");
+			sb.append(type);
+			sb.append("\"");
 		}
 
 		sb.append("}");

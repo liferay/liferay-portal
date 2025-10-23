@@ -93,7 +93,9 @@ public class ScopeSerDes {
 
 			sb.append("\"type\": ");
 
-			sb.append(String.valueOf(scope.getType()));
+			sb.append("\"");
+			sb.append(scope.getType());
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -201,7 +203,7 @@ public class ScopeSerDes {
 			else if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
 					scope.setType(
-						TypeSerDes.toDTO((String)jsonParserFieldValue));
+						Scope.Type.create((String)jsonParserFieldValue));
 				}
 			}
 		}
