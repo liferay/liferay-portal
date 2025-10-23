@@ -33,7 +33,7 @@ public class ExportImportReportEntryLocalServiceImpl
 	public ExportImportReportEntry addEmptyExportImportReportEntry(
 		long groupId, long companyId, String classExternalReferenceCode,
 		long classNameId, long exportImportConfigurationId, String modelName,
-		int origin, String scope, String scopeKey) {
+		int origin) {
 
 		ExportImportReportEntry exportImportReportEntry =
 			exportImportReportEntryPersistence.create(
@@ -48,8 +48,6 @@ public class ExportImportReportEntryLocalServiceImpl
 			exportImportConfigurationId);
 		exportImportReportEntry.setModelName(modelName);
 		exportImportReportEntry.setOrigin(origin);
-		exportImportReportEntry.setScope(scope);
-		exportImportReportEntry.setScopeKey(scopeKey);
 		exportImportReportEntry.setType(
 			ExportImportReportEntryConstants.TYPE_EMPTY);
 		exportImportReportEntry.setStatus(
@@ -65,7 +63,7 @@ public class ExportImportReportEntryLocalServiceImpl
 		long groupId, long companyId, String classExternalReferenceCode,
 		long classNameId, long classPK, long exportImportConfigurationId,
 		String errorMessage, String errorStacktrace, String modelName,
-		int origin, String scope, String scopeKey) {
+		int origin) {
 
 		ExportImportReportEntry exportImportReportEntry =
 			exportImportReportEntryPersistence.create(
@@ -83,8 +81,6 @@ public class ExportImportReportEntryLocalServiceImpl
 		exportImportReportEntry.setErrorStacktrace(errorStacktrace);
 		exportImportReportEntry.setModelName(modelName);
 		exportImportReportEntry.setOrigin(origin);
-		exportImportReportEntry.setScope(scope);
-		exportImportReportEntry.setScopeKey(scopeKey);
 		exportImportReportEntry.setType(
 			ExportImportReportEntryConstants.TYPE_ERROR);
 		exportImportReportEntry.setStatus(
