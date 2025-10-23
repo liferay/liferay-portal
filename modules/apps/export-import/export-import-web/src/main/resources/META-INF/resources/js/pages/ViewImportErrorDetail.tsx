@@ -47,8 +47,10 @@ interface ErrorDetail {
 	id: number;
 	modelName: string;
 	scope: {
+		externalReferenceCode: string;
+		key: string;
 		label: string;
-		type: string;
+		type: 'AssetLibrary' | 'Site' | 'Space';
 	};
 	type: {
 		code: number;
