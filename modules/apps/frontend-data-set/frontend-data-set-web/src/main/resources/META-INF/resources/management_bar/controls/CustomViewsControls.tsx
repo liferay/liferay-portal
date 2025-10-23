@@ -14,7 +14,7 @@ import {
 	openToast,
 } from 'frontend-js-components-web';
 import {fetch, objectToFormData} from 'frontend-js-web';
-import React, {useContext, useRef, useState} from 'react';
+import React, {Ref, useContext, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import ViewsContext from '../../views/ViewsContext';
@@ -22,8 +22,26 @@ import {EViewsActionTypes} from '../../views/viewsReducer';
 
 const DEFAULT_VIEW_ID = 'DEFAULT_VIEW';
 
+const RequiredMark = () => (
+	<>
+		<span className="inline-item-after reference-mark text-warning">
+			<ClayIcon symbol="asterisk" />
+		</span>
+		<span className="hide-accessible sr-only">
+			{Liferay.Language.get('required')}
+		</span>
+	</>
+);
+
 const CustomViewsControlsTrigger = React.forwardRef(
-	({triggerLabel, viewUpdated, ...otherProps}, ref) => (
+	(
+		{
+			triggerLabel,
+			viewUpdated,
+			...otherProps
+		}: {triggerLabel: string; viewUpdated: boolean},
+		ref: Ref<HTMLButtonElement>
+	) => (
 		<ClayButton
 			{...otherProps}
 			aria-label={Liferay.Language.get('views')}
@@ -67,7 +85,8 @@ const CustomViewsControls = () => {
 
 	const [actionsDropdownActive, setActionsDropdownActive] = useState(false);
 
-	const customViewLabelInputRef = useRef();
+	const customViewLabelInputRef =
+		useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	const SaveCustomViewModalBody = () => (
 		<ClayForm.Group>
@@ -102,10 +121,18 @@ const CustomViewsControls = () => {
 		return String(nextId);
 	};
 
-	const saveCustomView = ({id, label, processClose}) => {
+	const saveCustomView = ({
+		id,
+		label,
+		processClose,
+	}: {
+		id: string;
+		label?: string;
+		processClose?: Function;
+	}) => {
 		const url = new URL(`${appURL}/fds/${fdsName}/custom-views`);
 
-		url.searchParams.append('portletId', portletId);
+		portletId && url.searchParams.append('portletId', portletId);
 
 		const viewState = {
 			activeView,
@@ -116,7 +143,7 @@ const CustomViewsControls = () => {
 			visibleFieldNames,
 		};
 
-		fetch(url, {
+		fetch(url.toString(), {
 			body: JSON.stringify({
 				customViewId: id,
 				viewState,
@@ -191,14 +218,20 @@ const CustomViewsControls = () => {
 		});
 	};
 
-	const renameActiveCustomView = ({label, processClose}) => {
+	const renameActiveCustomView = ({
+		label,
+		processClose,
+	}: {
+		label: string;
+		processClose: Function;
+	}) => {
 		const url = new URL(
 			`${appURL}/fds/${fdsName}/custom-views/${activeCustomViewId}/label`
 		);
 
-		url.searchParams.append('portletId', portletId);
+		portletId && url.searchParams.append('portletId', portletId);
 
-		fetch(url, {
+		fetch(url.toString(), {
 			body: objectToFormData({
 				customViewLabel: label,
 			}),
@@ -256,7 +289,7 @@ const CustomViewsControls = () => {
 					label: Liferay.Language.get('save'),
 					onClick: ({processClose}) => {
 						renameActiveCustomView({
-							label: customViewLabelInputRef.current.value,
+							label: customViewLabelInputRef.current?.value,
 							processClose,
 						});
 					},
@@ -266,12 +299,12 @@ const CustomViewsControls = () => {
 		});
 	};
 
-	const deleteCustomView = ({id}) => {
+	const deleteCustomView = ({id}: {id: string}) => {
 		const url = new URL(`${appURL}/fds/${fdsName}/custom-views/${id}`);
 
-		url.searchParams.append('portletId', portletId);
+		portletId && url.searchParams.append('portletId', portletId);
 
-		fetch(url, {
+		fetch(url.toString(), {
 			method: 'DELETE',
 		})
 			.then((response) => {
@@ -309,7 +342,7 @@ const CustomViewsControls = () => {
 			});
 	};
 
-	const openDeleteCustomViewModal = () => {
+	const openDeleteCustomViewModal = ({id}: {id: string}) => {
 		openModal({
 			bodyHTML: Liferay.Language.get(
 				'are-you-sure-you-want-to-delete-this'
@@ -327,7 +360,7 @@ const CustomViewsControls = () => {
 						processClose();
 
 						deleteCustomView({
-							id: activeCustomViewId,
+							id,
 						});
 					},
 				},
@@ -337,7 +370,7 @@ const CustomViewsControls = () => {
 		});
 	};
 
-	const handleSelectionChange = (id) => {
+	const handleSelectionChange = (id: string) => {
 		if (id === DEFAULT_VIEW_ID) {
 			viewsDispatch({
 				type: EViewsActionTypes.RESET_TO_DEFAULT_VIEW,
@@ -367,7 +400,11 @@ const CustomViewsControls = () => {
 						scrollToTopAriaLabel:
 							Liferay.Language.get('scroll-to-top'),
 					}}
-					onSelectionChange={handleSelectionChange}
+					onSelectionChange={() =>
+						handleSelectionChange(
+							activeCustomViewId ?? DEFAULT_VIEW_ID
+						)
+					}
 					selectedKey={activeCustomViewId ?? DEFAULT_VIEW_ID}
 					triggerLabel={
 						activeCustomViewId
@@ -437,7 +474,11 @@ const CustomViewsControls = () => {
 								</ClayDropDown.Item>
 
 								<ClayDropDown.Item
-									onClick={openDeleteCustomViewModal}
+									onClick={() =>
+										openDeleteCustomViewModal({
+											id: activeCustomViewId,
+										})
+									}
 									symbolLeft="trash"
 								>
 									{Liferay.Language.get('delete-view')}
@@ -450,16 +491,5 @@ const CustomViewsControls = () => {
 		</>
 	);
 };
-
-const RequiredMark = () => (
-	<>
-		<span className="inline-item-after reference-mark text-warning">
-			<ClayIcon symbol="asterisk" />
-		</span>
-		<span className="hide-accessible sr-only">
-			{Liferay.Language.get('required')}
-		</span>
-	</>
-);
 
 export default CustomViewsControls;

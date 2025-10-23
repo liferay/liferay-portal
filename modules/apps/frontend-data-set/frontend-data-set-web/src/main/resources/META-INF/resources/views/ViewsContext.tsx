@@ -14,6 +14,7 @@ export interface IViewsContext {
 	modifiedFields: any;
 	paginationDelta: any;
 	sorts: Array<any>;
+	viewUpdated: boolean;
 	views: Array<any>;
 	visibleFieldNames: any;
 }
@@ -36,6 +37,7 @@ const ViewsContext = createContext<[IViewsContext, any]>([
 		modifiedFields: {},
 		paginationDelta: null,
 		sorts: [],
+		viewUpdated: false,
 		views: [],
 		visibleFieldNames: {},
 	},
