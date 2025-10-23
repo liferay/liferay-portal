@@ -629,6 +629,7 @@ function CellRenderer({
 
 		if (
 			field.contentRendererClientExtension &&
+			modifiedField &&
 			!modifiedField.clientExtensionResolutionError
 		) {
 			const mergedField = {...field, ...modifiedField};
