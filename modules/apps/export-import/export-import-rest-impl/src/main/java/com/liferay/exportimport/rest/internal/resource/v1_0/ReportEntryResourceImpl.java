@@ -45,6 +45,8 @@ import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -179,8 +181,19 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		return null;
 	}
 
-	private Scope _getScope(Group group) {
-		if (group == null) {
+	private Scope _getScope(long groupId) throws Exception {
+		if (groupId == 0) {
+			return null;
+		}
+
+		Group group = _groupLocalService.getGroup(groupId);
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if ((group == null) || group.isCompany() ||
+			stagingGroupHelper.isCompanyGroup(group)) {
+
 			return null;
 		}
 
@@ -258,9 +271,6 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 			_exportImportConfigurationLocalService.getExportImportConfiguration(
 				exportImportReportEntry.getExportImportConfigurationId());
 
-		Group group = _groupLocalService.getGroup(
-			exportImportReportEntry.getGroupId());
-
 		return new ReportEntry() {
 			{
 				setClassExternalReferenceCode(
@@ -285,7 +295,7 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 				setModelName(
 					() -> _toModelName(exportImportReportEntry.getModelName()));
 				setOrigin(() -> _toOrigin(exportImportReportEntry.getOrigin()));
-				setScope(() -> _getScope(group));
+				setScope(() -> _getScope(exportImportReportEntry.getGroupId()));
 				setStatus(() -> _toStatus(exportImportReportEntry.getStatus()));
 				setType(() -> _toType(exportImportReportEntry.getType()));
 			}
