@@ -225,7 +225,7 @@ export function ViewImportErrorDetail({
 
 							<ClayLayout.Row>
 								<DetailViewDefinitionCol
-									body={Liferay.Language.get(scope.type)}
+									body={scope.type}
 									md={6}
 									title={Liferay.Language.get('scope')}
 								/>
