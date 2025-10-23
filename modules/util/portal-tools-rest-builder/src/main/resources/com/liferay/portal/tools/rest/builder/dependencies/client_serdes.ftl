@@ -402,6 +402,10 @@ public class ${schemaName}SerDes {
 							}
 
 							${schemaVarName}.set${capitalizedPropertyName}(${propertyName}Array);
+						<#elseif enumSchemas?keys?seq_contains(properties[propertyName])>
+							${schemaVarName}.set${capitalizedPropertyName}(${schemaName}.${propertyType}.create((String)jsonParserFieldValue));
+						<#elseif globalEnumSchemas?keys?seq_contains(propertyType)>
+							${schemaVarName}.set${capitalizedPropertyName}(${propertyType}.create((String)jsonParserFieldValue));
 						<#elseif allExternalSchemas?keys?seq_contains(propertyType) || allSchemas?keys?seq_contains(propertyType)>
 							${schemaVarName}.set${capitalizedPropertyName}(${propertyType}SerDes.toDTO((String)jsonParserFieldValue));
 						<#elseif propertyType?ends_with("[]") && (allExternalSchemas?keys?seq_contains(propertyType?remove_ending("[]")) || allSchemas?keys?seq_contains(propertyType?remove_ending("[]")))>
@@ -414,10 +418,6 @@ public class ${schemaName}SerDes {
 							}
 
 							${schemaVarName}.set${capitalizedPropertyName}(${propertyName}Array);
-						<#elseif enumSchemas?keys?seq_contains(properties[propertyName])>
-							${schemaVarName}.set${capitalizedPropertyName}(${schemaName}.${propertyType}.create((String)jsonParserFieldValue));
-						<#elseif globalEnumSchemas?keys?seq_contains(propertyType)>
-							${schemaVarName}.set${capitalizedPropertyName}(${propertyType}.create((String)jsonParserFieldValue));
 						<#else>
 							${schemaVarName}.set${capitalizedPropertyName}((${propertyType})jsonParserFieldValue);
 						</#if>
