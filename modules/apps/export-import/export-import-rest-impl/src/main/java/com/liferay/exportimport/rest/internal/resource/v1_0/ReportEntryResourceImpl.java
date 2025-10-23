@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.GroupUtil;
@@ -136,23 +137,6 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 			exportImportReportEntry.getGroupId());
 
 		return _toReportEntry(exportImportReportEntry);
-	}
-
-	private String _getErrorStacktrace(
-		ExportImportReportEntry exportImportReportEntry) {
-
-		MultivaluedMap<String, String> queryParameters =
-			contextUriInfo.getQueryParameters();
-
-		String nestedFields = queryParameters.getFirst("nestedFields");
-
-		if ((nestedFields == null) ||
-			!nestedFields.contains("errorStacktrace")) {
-
-			return null;
-		}
-
-		return exportImportReportEntry.getErrorStacktrace();
 	}
 
 	private String _getOriginLabel(int origin) {
@@ -282,7 +266,10 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 				setDateModified(exportImportReportEntry::getModifiedDate);
 				setErrorMessage(exportImportReportEntry::getErrorMessage);
 				setErrorStacktrace(
-					() -> _getErrorStacktrace(exportImportReportEntry));
+					() -> NestedFieldsSupplier.supply(
+						"errorStackTrace",
+						nestedField ->
+							exportImportReportEntry.getErrorStacktrace()));
 				setId(exportImportReportEntry::getExportImportReportEntryId);
 				setModelName(
 					() -> _toModelName(exportImportReportEntry.getModelName()));
