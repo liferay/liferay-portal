@@ -1416,7 +1416,6 @@ public class BatchEnginePortletDataHandlerTest {
 		Assert.assertEquals(
 			objectDefinition.getShortName(),
 			exportImportReportEntry.getModelName());
-		Assert.assertEquals(scope, exportImportReportEntry.getScope());
 		Assert.assertEquals(
 			ExportImportReportEntryConstants.TYPE_ERROR,
 			exportImportReportEntry.getType());

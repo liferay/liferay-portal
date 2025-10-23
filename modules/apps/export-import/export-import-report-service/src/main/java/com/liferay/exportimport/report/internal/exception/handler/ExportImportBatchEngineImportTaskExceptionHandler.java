@@ -10,7 +10,6 @@ import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskException
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
-import com.liferay.exportimport.report.internal.util.ExportImportReportEntryUtil;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -56,9 +55,7 @@ public class ExportImportBatchEngineImportTaskExceptionHandler
 				ExportImportThreadLocal.getExportImportConfigurationId()),
 			exception.getMessage(), _getErrorStackTrace(exception),
 			batchEngineImportTask.getParameterValue("modelName"),
-			ExportImportReportEntryConstants.ORIGIN_BATCH,
-			ExportImportReportEntryUtil.getScope(groupId),
-			ExportImportReportEntryUtil.getScopeKey(groupId));
+			ExportImportReportEntryConstants.ORIGIN_BATCH);
 	}
 
 	private String _getErrorStackTrace(Throwable throwable) {

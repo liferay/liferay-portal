@@ -9,7 +9,6 @@ import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.lang.SafeCloseable;
@@ -186,8 +185,7 @@ public class EmptyModelManagerImplTest {
 			).addEmptyExportImportReportEntry(
 				0L, companyId, externalReferenceCode, classNameId,
 				exportImportConfigurationId, User.class.getName(),
-				ExportImportReportEntryConstants.ORIGIN_STAGING,
-				ObjectDefinitionConstants.SCOPE_COMPANY, null
+				ExportImportReportEntryConstants.ORIGIN_STAGING
 			);
 		}
 	}
@@ -369,14 +367,6 @@ public class EmptyModelManagerImplTest {
 			).getCompanyId();
 
 			Mockito.verify(
-				_group
-			).getExternalReferenceCode();
-
-			Mockito.verify(
-				_group
-			).isCompany();
-
-			Mockito.verify(
 				_groupLocalService
 			).fetchGroup(
 				groupId
@@ -387,8 +377,7 @@ public class EmptyModelManagerImplTest {
 			).addEmptyExportImportReportEntry(
 				groupId, companyId, userExternalReferenceCode, classNameId,
 				exportImportConfigurationId, User.class.getName(),
-				ExportImportReportEntryConstants.ORIGIN_STAGING,
-				ObjectDefinitionConstants.SCOPE_SITE, groupExternalReferenceCode
+				ExportImportReportEntryConstants.ORIGIN_STAGING
 			);
 		}
 	}
@@ -490,8 +479,7 @@ public class EmptyModelManagerImplTest {
 			).addEmptyExportImportReportEntry(
 				0L, companyId, externalReferenceCode, classNameId,
 				exportImportConfigurationId, User.class.getName(),
-				ExportImportReportEntryConstants.ORIGIN_STAGING,
-				ObjectDefinitionConstants.SCOPE_COMPANY, null
+				ExportImportReportEntryConstants.ORIGIN_STAGING
 			);
 		}
 	}

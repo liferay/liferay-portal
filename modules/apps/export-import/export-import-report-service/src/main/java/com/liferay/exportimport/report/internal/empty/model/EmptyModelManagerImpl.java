@@ -9,7 +9,6 @@ import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.internal.util.ExportImportReportEntryUtil;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.lang.SafeCloseable;
@@ -63,8 +62,7 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 					GetterUtil.getLong(
 						ExportImportThreadLocal.
 							getExportImportConfigurationId()),
-					clazz.getName(), ExportImportReportEntryUtil.getOrigin(),
-					ObjectDefinitionConstants.SCOPE_COMPANY, null);
+					clazz.getName(), ExportImportReportEntryUtil.getOrigin());
 
 			return emptyModelUnsafeSupplier.get();
 		}
@@ -126,9 +124,7 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 					GetterUtil.getLong(
 						ExportImportThreadLocal.
 							getExportImportConfigurationId()),
-					modelName, ExportImportReportEntryUtil.getOrigin(),
-					ExportImportReportEntryUtil.getScope(group),
-					ExportImportReportEntryUtil.getScopeKey(group));
+					modelName, ExportImportReportEntryUtil.getOrigin());
 
 			return emptyModelUnsafeSupplier.get();
 		}

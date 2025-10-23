@@ -16,7 +16,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -56,12 +55,10 @@ public class ImportStagedModelExceptionHandlerImpl
 		try {
 			long groupId = portletDataContext.getGroupId();
 
-			Group group = _groupLocalService.getGroup(groupId);
-
-			String scope = ExportImportReportEntryUtil.getScope(group);
-
 			if (StringUtil.equals(
-					scope, ObjectDefinitionConstants.SCOPE_COMPANY)) {
+					ExportImportReportEntryUtil.getScope(
+						_groupLocalService.getGroup(groupId)),
+					ObjectDefinitionConstants.SCOPE_COMPANY)) {
 
 				groupId = 0;
 			}
@@ -77,8 +74,7 @@ public class ImportStagedModelExceptionHandlerImpl
 					portletDataException.getMessage(),
 					_getErrorStackTrace(portletDataException),
 					modelClass.getName(),
-					ExportImportReportEntryUtil.getOrigin(), scope,
-					ExportImportReportEntryUtil.getScopeKey(group));
+					ExportImportReportEntryUtil.getOrigin());
 		}
 		catch (Exception exception) {
 			_log.error(
