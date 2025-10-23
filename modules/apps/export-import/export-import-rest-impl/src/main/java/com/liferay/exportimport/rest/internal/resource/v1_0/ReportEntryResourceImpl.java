@@ -187,10 +187,15 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		return new Scope() {
 			{
 				setExternalReferenceCode(group::getExternalReferenceCode);
-				setKey(group::getGroupKey);
+				setKey(
+					() -> NestedFieldsSupplier.supply(
+						"scope.key", nestedField -> group.getGroupKey()));
 				setLabel(
-					() -> _getGroupName(
-						group, contextAcceptLanguage.getPreferredLocale()));
+					() -> NestedFieldsSupplier.supply(
+						"scope.label",
+						nestedField -> _getGroupName(
+							group,
+							contextAcceptLanguage.getPreferredLocale())));
 				setType(() -> _getGroupType(group));
 			}
 		};
