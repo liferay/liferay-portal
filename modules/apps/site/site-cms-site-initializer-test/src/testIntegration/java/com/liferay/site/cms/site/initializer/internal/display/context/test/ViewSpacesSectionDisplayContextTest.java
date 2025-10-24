@@ -12,16 +12,24 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -34,6 +42,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -188,6 +198,52 @@ public class ViewSpacesSectionDisplayContextTest
 		Assert.assertTrue(items.contains(pinnedByMeAssetLibrary5));
 	}
 
+	@Test
+	public void testGetProps() throws Exception {
+		AssetLibrary assetLibrary1 = _addAssetLibrary();
+
+		_addAssetLibrary();
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			assetLibrary1.getId());
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.addObjectEntryFolder(
+				null, depotEntry.getGroupId(), TestPropsValues.getUserId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				RandomTestUtil.randomString(),
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), StringUtil.randomString()
+				).build(),
+				StringUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext());
+
+		Map<String, Object> props = ReflectionTestUtil.invoke(
+			_getViewSpacesDisplayContext(
+				getMockHttpServletRequest(objectEntryFolder)),
+			"getProps", new Class<?>[0]);
+
+		Assert.assertNotNull(props);
+
+		JSONArray assetLibrariesJSONArray = (JSONArray)props.get(
+			"assetLibraries");
+
+		for (int i = 0; i < assetLibrariesJSONArray.length(); i++) {
+			JSONObject assetLibraryJSONObject =
+				assetLibrariesJSONArray.getJSONObject(i);
+
+			if (Objects.equals(
+					assetLibraryJSONObject.get("id"), assetLibrary1.getId())) {
+
+				Assert.assertTrue(assetLibraryJSONObject.getBoolean("active"));
+			}
+			else {
+				Assert.assertFalse(assetLibraryJSONObject.getBoolean("active"));
+			}
+		}
+	}
+
 	protected ThemeDisplay getUserThemeDisplay(
 			HttpServletRequest httpServletRequest, User user)
 		throws Exception {
@@ -285,5 +341,8 @@ public class ViewSpacesSectionDisplayContextTest
 		filter = "component.name=com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpacesComponentSectionFragmentRenderer"
 	)
 	private FragmentRenderer _fragmentRenderer;
+
+	@Inject
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 }
