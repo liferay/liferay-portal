@@ -230,6 +230,12 @@ test(
 
 			await page.getByRole('button', {name: 'Empty Bin'}).click();
 
+			await waitForAlert(
+				page,
+				'Info:Delete action started for all assets.',
+				{type: 'info'}
+			);
+
 			await page.reload();
 
 			await expect(
