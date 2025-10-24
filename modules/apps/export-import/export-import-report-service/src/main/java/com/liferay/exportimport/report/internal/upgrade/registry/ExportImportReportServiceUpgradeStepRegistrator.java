@@ -35,6 +35,11 @@ public class ExportImportReportServiceUpgradeStepRegistrator
 				"ExportImportReportEntry", "error", "errorMessage TEXT null"),
 			UpgradeProcessFactory.alterColumnType(
 				"ExportImportReportEntry", "modelName", "VARCHAR(255) null"));
+
+		registry.register(
+			"2.1.0", "3.0.0",
+			UpgradeProcessFactory.dropColumns(
+				"ExportImportReportEntry", "scope", "scopeKey"));
 	}
 
 }
