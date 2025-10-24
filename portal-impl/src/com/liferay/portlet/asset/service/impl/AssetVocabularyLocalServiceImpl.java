@@ -519,28 +519,37 @@ public class AssetVocabularyLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public AssetVocabulary updateVocabulary(
-			long vocabularyId, String title, Map<Locale, String> titleMap,
+			long vocabularyId, String name, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, String settings,
-			ServiceContext serviceContext)
+			int visibilityType, ServiceContext serviceContext)
 		throws PortalException {
 
 		AssetVocabulary vocabulary =
 			assetVocabularyPersistence.findByPrimaryKey(vocabularyId);
 
+		vocabulary.setName(name);
 		vocabulary.setTitleMap(_getTrimmedTitleMap(titleMap));
-
-		if (Validator.isNotNull(title)) {
-			vocabulary.setTitle(title);
-		}
-
 		vocabulary.setDescriptionMap(descriptionMap);
 		vocabulary.setSettings(settings);
+		vocabulary.setVisibilityType(visibilityType);
 
 		if (vocabulary.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			vocabulary.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 
-		return assetVocabularyPersistence.update(vocabulary);
+		vocabulary = assetVocabularyPersistence.update(vocabulary);
+
+		// Resources
+
+		if (serviceContext.isAddGroupPermissions() ||
+			serviceContext.isAddGuestPermissions()) {
+
+			addVocabularyResources(
+				vocabulary, serviceContext.isAddGroupPermissions(),
+				serviceContext.isAddGuestPermissions());
+		}
+
+		return vocabulary;
 	}
 
 	protected SearchContext buildSearchContext(
