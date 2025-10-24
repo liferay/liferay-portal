@@ -6,8 +6,10 @@
 package com.liferay.site.cms.site.initializer.internal.util;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryFolder;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,6 +24,11 @@ public class InfoItemUtil {
 
 		DepotEntry depotEntry =
 			object instanceof DepotEntry ? (DepotEntry)object : null;
+
+		if (depotEntry == null) {
+			depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
+				getGroupId(httpServletRequest));
+		}
 
 		if (depotEntry != null) {
 			return depotEntry.getDepotEntryId();
@@ -46,6 +53,14 @@ public class InfoItemUtil {
 
 		if (objectEntry != null) {
 			return objectEntry.getGroupId();
+		}
+
+		ObjectEntryFolder objectEntryFolder =
+			object instanceof ObjectEntryFolder ? (ObjectEntryFolder)object :
+				null;
+
+		if (objectEntryFolder != null) {
+			return objectEntryFolder.getGroupId();
 		}
 
 		return 0;
