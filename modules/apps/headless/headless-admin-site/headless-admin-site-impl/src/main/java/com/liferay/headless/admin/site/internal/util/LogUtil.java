@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.util;
 
+import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
@@ -31,6 +32,15 @@ public class LogUtil {
 
 			_log.warn(sb.toString());
 		}
+	}
+
+	public static void logOptionalReference(
+		ItemExternalReference itemExternalReference, long scopeId) {
+
+		logOptionalReference(
+			itemExternalReference.getClassName(),
+			itemExternalReference.getExternalReferenceCode(),
+			itemExternalReference.getScope(), scopeId);
 	}
 
 	public static void logOptionalReference(
