@@ -313,8 +313,8 @@
 
 		<!-- Other fields -->
 
-		<column name="blob1" type="Blob" />
-		<column name="blob2" type="Blob" />
+		<column lazy="false" name="blob1" type="Blob" />
+		<column lazy="false" name="blob2" type="Blob" />
 	</entity>
 	<entity local-service="true" name="LocalizedEntry" remote-service="false">
 

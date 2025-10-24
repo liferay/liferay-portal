@@ -83,7 +83,7 @@
 
 		<!-- Other fields -->
 
-		<column name="body" type="Blob" />
+		<column lazy="false" name="body" type="Blob" />
 
 		<!-- Order -->
 

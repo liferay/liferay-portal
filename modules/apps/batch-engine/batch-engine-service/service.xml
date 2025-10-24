@@ -21,7 +21,7 @@
 
 		<column name="callbackURL" type="String" />
 		<column name="className" type="String" />
-		<column name="content" type="Blob" />
+		<column lazy="false" name="content" type="Blob" />
 		<column name="contentType" type="String" />
 		<column name="endTime" type="Date" />
 		<column name="errorMessage" type="String" />
@@ -60,7 +60,7 @@
 		<column name="batchSize" type="long" />
 		<column name="callbackURL" type="String" />
 		<column name="className" type="String" />
-		<column name="content" type="Blob" />
+		<column lazy="false" name="content" type="Blob" />
 		<column name="contentType" type="String" />
 		<column name="endTime" type="Date" />
 		<column name="errorMessage" type="String" />

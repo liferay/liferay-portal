@@ -22,7 +22,7 @@
 		<column name="repositoryId" type="long" />
 		<column name="path" type="String" />
 		<column name="version" type="String" />
-		<column name="data" type="Blob" />
+		<column lazy="false" name="data" type="Blob" />
 		<column name="size" type="long" />
 
 		<!-- Order -->
