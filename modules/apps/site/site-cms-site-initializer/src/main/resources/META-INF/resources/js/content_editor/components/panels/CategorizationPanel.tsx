@@ -23,23 +23,22 @@ export default function CategorizationPanel({
 }) {
 	const updateCategorization = useCallback(
 		({keywords = [], taxonomyCategoryBriefs = []}: IAssetObjectEntry) => {
-			const fields: {
-				name: keyof CategorizationFields;
-				value: string;
-			}[] = [
-				{
-					name: 'assetCategoryIds',
-					value: taxonomyCategoryBriefs
+			const fields: CategorizationFields = {
+				assetCategoryIds: {
+					serverValue: taxonomyCategoryBriefs
 						.map(({taxonomyCategoryId: id}) => id)
 						.join(','),
+					value: taxonomyCategoryBriefs,
 				},
-				{
-					name: 'assetTagNames',
-					value: keywords.join(','),
+				assetTagNames: {
+					serverValue: keywords.join(','),
+					value: keywords,
 				},
-			];
+			};
 
-			fields.forEach(onUpdateCategorization);
+			(Object.entries(fields) as UpdateCategorizationProps[]).map(
+				onUpdateCategorization
+			);
 		},
 		[onUpdateCategorization]
 	);
