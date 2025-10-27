@@ -131,11 +131,14 @@ export default function AssetCategorization({
 
 						newObjectEntry = {
 							...data,
-							keywords: [...data.keywords, ...keywords],
-							taxonomyCategoryBriefs: [
+							keywords: getUnique([
+								...data.keywords,
+								...keywords,
+							]),
+							taxonomyCategoryBriefs: getUnique([
 								...data.taxonomyCategoryBriefs,
 								...taxonomyCategoryBriefs,
-							],
+							]),
 						};
 					}
 
@@ -172,4 +175,21 @@ export default function AssetCategorization({
 			/>
 		</>
 	);
+}
+
+function getUnique(
+	categorization:
+		| IAssetObjectEntry['keywords']
+		| IAssetObjectEntry['taxonomyCategoryBriefs']
+) {
+	if (typeof categorization[0] === 'string') {
+		return [...new Set(categorization)];
+	}
+	else {
+		return [
+			...new Map(
+				categorization.map((item) => [item.taxonomyCategoryId, item])
+			).values(),
+		];
+	}
 }
