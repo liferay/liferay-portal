@@ -6,6 +6,7 @@
 import {ClayInput} from '@clayui/form';
 import React, {ComponentProps, useEffect, useState} from 'react';
 
+import CategoryService from '../../../common/services/CategoryService';
 import {IAssetObjectEntry} from '../../../common/types/AssetType';
 import ObjectEntryService, {
 	EntryCategorizationDTO,
@@ -57,6 +58,50 @@ export default function AssetCategorization({
 					},
 					updateObjectEntryURL
 				));
+		}
+		else {
+			newObjectEntry = {
+				...objectEntry,
+				keywords: keywords || objectEntry.keywords,
+			};
+
+			if (taxonomyCategoryIds) {
+				if (
+					objectEntry.taxonomyCategoryBriefs.length >
+					taxonomyCategoryIds.length
+				) {
+					newObjectEntry = {
+						...newObjectEntry,
+						taxonomyCategoryBriefs:
+							objectEntry.taxonomyCategoryBriefs.filter(
+								({taxonomyCategoryId: id}) =>
+									taxonomyCategoryIds.includes(id)
+							),
+					};
+				}
+				else {
+					const addedCategoryId: number =
+						taxonomyCategoryIds[taxonomyCategoryIds.length - 1];
+
+					const {data: newCategory} =
+						await CategoryService.getCategoryById(addedCategoryId);
+
+					if (newCategory) {
+						newObjectEntry = {
+							...newObjectEntry,
+							taxonomyCategoryBriefs: [
+								...objectEntry.taxonomyCategoryBriefs,
+								{
+									embeddedTaxonomyCategory: newCategory,
+									taxonomyCategoryId: Number(newCategory.id),
+								},
+							],
+						};
+					}
+				}
+			}
+
+			onUpdateCategorization?.(newObjectEntry);
 		}
 
 		if (newObjectEntry) {
