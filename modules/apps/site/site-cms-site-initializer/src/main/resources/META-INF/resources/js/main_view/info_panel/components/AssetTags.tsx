@@ -26,9 +26,7 @@ const AssetTags = ({
 }: {
 	cmsGroupId: number | string;
 	inputSize?: CategorizationInputSize;
-	objectEntry:
-		| IAssetObjectEntry
-		| Pick<IAssetObjectEntry, 'keywords' | 'taxonomyCategoryBriefs'>;
+	objectEntry: IAssetObjectEntry | EntryCategorizationDTO;
 	updateObjectEntry: (object: EntryCategorizationDTO) => void | Promise<void>;
 }) => {
 	const [value, setValue] = useState('');
