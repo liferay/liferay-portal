@@ -123,8 +123,13 @@ public class CTStore implements Store {
 			CTSContent ctsContent = _ctsContentLocalService.getCTSContent(
 				companyId, repositoryId, fileName, versionLabel, _storeType);
 
-			return _ctsContentLocalService.openDataInputStream(
-				ctsContent.getCtsContentId());
+			try {
+				return ctsContent.getData(
+				).getBinaryStream();
+			}
+			catch (Exception exception) {
+				throw new PortalException(exception);
+			}
 		}
 
 		return _store.getFileAsStream(

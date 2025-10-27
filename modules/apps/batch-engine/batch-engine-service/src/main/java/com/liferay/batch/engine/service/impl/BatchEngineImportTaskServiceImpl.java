@@ -10,6 +10,7 @@ import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineImportTaskErrorLocalService;
 import com.liferay.batch.engine.service.base.BatchEngineImportTaskServiceBaseImpl;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -19,6 +20,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.InputStream;
 import java.io.Serializable;
+
+import java.sql.Blob;
 
 import java.util.List;
 import java.util.Map;
@@ -152,12 +155,24 @@ public class BatchEngineImportTaskServiceImpl
 	public InputStream openContentInputStream(long batchEngineImportTaskId)
 		throws PortalException {
 
-		_checkPermission(
+		BatchEngineImportTask batchEngineImportTask =
 			batchEngineImportTaskLocalService.getBatchEngineImportTask(
-				batchEngineImportTaskId));
+				batchEngineImportTaskId);
 
-		return batchEngineImportTaskLocalService.openContentInputStream(
-			batchEngineImportTaskId);
+		_checkPermission(batchEngineImportTask);
+
+		Blob blob = batchEngineImportTask.getContent();
+
+		if (blob == null) {
+			return new UnsyncByteArrayInputStream(new byte[0]);
+		}
+
+		try {
+			return blob.getBinaryStream();
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
+		}
 	}
 
 	private void _checkPermission(BatchEngineImportTask batchEngineImportTask)

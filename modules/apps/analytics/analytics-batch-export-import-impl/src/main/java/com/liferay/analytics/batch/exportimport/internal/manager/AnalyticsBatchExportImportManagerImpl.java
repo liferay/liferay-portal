@@ -162,10 +162,8 @@ public class AnalyticsBatchExportImportManagerImpl
 				skipUpload = false;
 
 				try (ZipInputStream zipInputStream = new ZipInputStream(
-						_batchEngineExportTaskLocalService.
-							openContentInputStream(
-								batchEngineExportTask.
-									getBatchEngineExportTaskId()))) {
+						batchEngineExportTask.getContent(
+						).getBinaryStream())) {
 
 					zipInputStream.getNextEntry();
 
@@ -300,8 +298,8 @@ public class AnalyticsBatchExportImportManagerImpl
 			try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(
 					new FileOutputStream(tempFile));
 				ZipInputStream zipInputStream = new ZipInputStream(
-					_batchEngineExportTaskLocalService.openContentInputStream(
-						batchEngineExportTask.getBatchEngineExportTaskId()))) {
+					batchEngineExportTask.getContent(
+					).getBinaryStream())) {
 
 				zipInputStream.getNextEntry();
 

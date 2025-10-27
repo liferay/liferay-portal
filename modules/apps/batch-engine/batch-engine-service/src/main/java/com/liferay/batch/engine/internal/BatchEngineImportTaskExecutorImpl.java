@@ -58,6 +58,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.sql.Blob;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -113,10 +115,9 @@ public class BatchEngineImportTaskExecutorImpl
 
 		File file;
 
-		try (InputStream inputStream =
-				_batchEngineImportTaskLocalService.openContentInputStream(
-					batchEngineImportTask.getBatchEngineImportTaskId())) {
+		Blob blob = batchEngineImportTask.getContent();
 
+		try (InputStream inputStream = blob.getBinaryStream()) {
 			file = FileUtil.createTempFile(inputStream);
 		}
 		catch (Throwable throwable) {

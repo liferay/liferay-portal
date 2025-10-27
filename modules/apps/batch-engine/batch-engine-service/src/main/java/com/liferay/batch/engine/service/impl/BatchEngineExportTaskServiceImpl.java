@@ -8,6 +8,7 @@ package com.liferay.batch.engine.service.impl;
 import com.liferay.batch.engine.model.BatchEngineExportTask;
 import com.liferay.batch.engine.service.base.BatchEngineExportTaskServiceBaseImpl;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -17,6 +18,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.InputStream;
 import java.io.Serializable;
+
+import java.sql.Blob;
 
 import java.util.List;
 import java.util.Map;
@@ -127,12 +130,24 @@ public class BatchEngineExportTaskServiceImpl
 	public InputStream openContentInputStream(long batchEngineExportTaskId)
 		throws PortalException {
 
-		_checkPermission(
+		BatchEngineExportTask batchEngineExportTask =
 			batchEngineExportTaskLocalService.getBatchEngineExportTask(
-				batchEngineExportTaskId));
+				batchEngineExportTaskId);
 
-		return batchEngineExportTaskLocalService.openContentInputStream(
-			batchEngineExportTaskId);
+		_checkPermission(batchEngineExportTask);
+
+		Blob blob = batchEngineExportTask.getContent();
+
+		if (blob == null) {
+			return new UnsyncByteArrayInputStream(new byte[0]);
+		}
+
+		try {
+			return blob.getBinaryStream();
+		}
+		catch (Exception exception) {
+			throw new PortalException(exception);
+		}
 	}
 
 	private void _checkPermission(BatchEngineExportTask batchEngineExportTask)

@@ -18,7 +18,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.sql.CTSQLModeThreadLocal;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -112,11 +111,11 @@ public class CTStoreCTEventListener implements CTEventListener {
 					store.addFile(
 						ctsContent.getCompanyId(), ctsContent.getRepositoryId(),
 						ctsContent.getPath(), ctsContent.getVersion(),
-						_ctsContentLocalService.openDataInputStream(
-							ctsContent.getCtsContentId()));
+						ctsContent.getData(
+						).getBinaryStream());
 				}
 			}
-			catch (PortalException portalException) {
+			catch (Exception portalException) {
 				throw new CTEventException(portalException);
 			}
 		}
