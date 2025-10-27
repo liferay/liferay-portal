@@ -19,6 +19,8 @@ import java.util.Locale;
  */
 public class RoleConstants {
 
+	public static final String ACCOUNT_MANAGER = "Account Manager";
+
 	public static final String ADMINISTRATOR = "Administrator";
 
 	public static final String ANALYTICS_ADMINISTRATOR =
@@ -75,7 +77,8 @@ public class RoleConstants {
 	public static final String SITE_OWNER = "Site Owner";
 
 	public static final String[] SYSTEM_ORGANIZATION_ROLES = {
-		ORGANIZATION_ADMINISTRATOR, ORGANIZATION_OWNER, ORGANIZATION_USER
+		ACCOUNT_MANAGER, ORGANIZATION_ADMINISTRATOR, ORGANIZATION_OWNER,
+		ORGANIZATION_USER
 	};
 
 	public static final String[] SYSTEM_ROLES = {
