@@ -213,7 +213,7 @@ public class CTSContentPersistenceImpl
 			List<CTSContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<CTSContent>)finderCache.getResult(
+				list = (List<CTSContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -291,7 +291,8 @@ public class CTSContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -663,7 +664,7 @@ public class CTSContentPersistenceImpl
 				companyId, repositoryId, storeType
 			};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -707,7 +708,7 @@ public class CTSContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -859,7 +860,7 @@ public class CTSContentPersistenceImpl
 			List<CTSContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<CTSContent>)finderCache.getResult(
+				list = (List<CTSContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -953,7 +954,8 @@ public class CTSContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -1355,7 +1357,7 @@ public class CTSContentPersistenceImpl
 				companyId, repositoryId, path, storeType
 			};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -1414,7 +1416,7 @@ public class CTSContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -1559,7 +1561,7 @@ public class CTSContentPersistenceImpl
 			List<CTSContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<CTSContent>)finderCache.getResult(
+				list = (List<CTSContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -1655,7 +1657,8 @@ public class CTSContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -2058,7 +2061,7 @@ public class CTSContentPersistenceImpl
 				companyId, repositoryId, path, storeType
 			};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -2117,7 +2120,7 @@ public class CTSContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -2257,7 +2260,7 @@ public class CTSContentPersistenceImpl
 			Object result = null;
 
 			if (useFinderCache) {
-				result = finderCache.getResult(
+				result = dummyFinderCache.getResult(
 					_finderPathFetchByC_R_P_V_S, finderArgs, this);
 			}
 
@@ -2347,7 +2350,7 @@ public class CTSContentPersistenceImpl
 
 					if (list.isEmpty()) {
 						if (useFinderCache) {
-							finderCache.putResult(
+							dummyFinderCache.putResult(
 								_finderPathFetchByC_R_P_V_S, finderArgs, list);
 						}
 					}
@@ -2475,10 +2478,10 @@ public class CTSContentPersistenceImpl
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					ctsContent.getCtCollectionId())) {
 
-			entityCache.putResult(
+			dummyEntityCache.putResult(
 				CTSContentImpl.class, ctsContent.getPrimaryKey(), ctsContent);
 
-			finderCache.putResult(
+			dummyFinderCache.putResult(
 				_finderPathFetchByC_R_P_V_S,
 				new Object[] {
 					ctsContent.getCompanyId(), ctsContent.getRepositoryId(),
@@ -2510,7 +2513,7 @@ public class CTSContentPersistenceImpl
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						ctsContent.getCtCollectionId())) {
 
-				if (entityCache.getResult(
+				if (dummyEntityCache.getResult(
 						CTSContentImpl.class, ctsContent.getPrimaryKey()) ==
 							null) {
 
@@ -2529,9 +2532,9 @@ public class CTSContentPersistenceImpl
 	 */
 	@Override
 	public void clearCache() {
-		entityCache.clearCache(CTSContentImpl.class);
+		dummyEntityCache.clearCache(CTSContentImpl.class);
 
-		finderCache.clearCache(CTSContentImpl.class);
+		dummyFinderCache.clearCache(CTSContentImpl.class);
 	}
 
 	/**
@@ -2543,22 +2546,22 @@ public class CTSContentPersistenceImpl
 	 */
 	@Override
 	public void clearCache(CTSContent ctsContent) {
-		entityCache.removeResult(CTSContentImpl.class, ctsContent);
+		dummyEntityCache.removeResult(CTSContentImpl.class, ctsContent);
 	}
 
 	@Override
 	public void clearCache(List<CTSContent> ctsContents) {
 		for (CTSContent ctsContent : ctsContents) {
-			entityCache.removeResult(CTSContentImpl.class, ctsContent);
+			dummyEntityCache.removeResult(CTSContentImpl.class, ctsContent);
 		}
 	}
 
 	@Override
 	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(CTSContentImpl.class);
+		dummyFinderCache.clearCache(CTSContentImpl.class);
 
 		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(CTSContentImpl.class, primaryKey);
+			dummyEntityCache.removeResult(CTSContentImpl.class, primaryKey);
 		}
 	}
 
@@ -2576,7 +2579,7 @@ public class CTSContentPersistenceImpl
 				ctsContentModelImpl.getStoreType()
 			};
 
-			finderCache.putResult(
+			dummyFinderCache.putResult(
 				_finderPathFetchByC_R_P_V_S, args, ctsContentModelImpl);
 		}
 	}
@@ -2721,14 +2724,8 @@ public class CTSContentPersistenceImpl
 				session.save(ctsContent);
 			}
 			else {
-				session.evict(
-					CTSContentImpl.class, ctsContent.getPrimaryKeyObj());
-
-				session.saveOrUpdate(ctsContent);
+				ctsContent = (CTSContent)session.merge(ctsContent);
 			}
-
-			session.flush();
-			session.clear();
 		}
 		catch (Exception exception) {
 			throw processException(exception);
@@ -2737,7 +2734,7 @@ public class CTSContentPersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			CTSContentImpl.class, ctsContentModelImpl, false, true);
 
 		cacheUniqueFindersCache(ctsContentModelImpl);
@@ -2809,7 +2806,7 @@ public class CTSContentPersistenceImpl
 			}
 		}
 
-		CTSContent ctsContent = (CTSContent)entityCache.getResult(
+		CTSContent ctsContent = (CTSContent)dummyEntityCache.getResult(
 			CTSContentImpl.class, primaryKey);
 
 		if (ctsContent != null) {
@@ -2890,7 +2887,7 @@ public class CTSContentPersistenceImpl
 					ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
 						CTSContent.class, primaryKey)) {
 
-				CTSContent ctsContent = (CTSContent)entityCache.getResult(
+				CTSContent ctsContent = (CTSContent)dummyEntityCache.getResult(
 					CTSContentImpl.class, primaryKey);
 
 				if (ctsContent == null) {
@@ -3058,7 +3055,7 @@ public class CTSContentPersistenceImpl
 			List<CTSContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<CTSContent>)finderCache.getResult(
+				list = (List<CTSContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 			}
 
@@ -3096,7 +3093,8 @@ public class CTSContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -3133,7 +3131,7 @@ public class CTSContentPersistenceImpl
 				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
 					CTSContent.class)) {
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 			if (count == null) {
@@ -3146,7 +3144,7 @@ public class CTSContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(
+					dummyFinderCache.putResult(
 						_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 				}
 				catch (Exception exception) {
@@ -3168,7 +3166,7 @@ public class CTSContentPersistenceImpl
 
 	@Override
 	protected EntityCache getEntityCache() {
-		return entityCache;
+		return dummyEntityCache;
 	}
 
 	@Override
@@ -3359,7 +3357,7 @@ public class CTSContentPersistenceImpl
 	public void deactivate() {
 		CTSContentUtil.setPersistence(null);
 
-		entityCache.removeCache(CTSContentImpl.class.getName());
+		dummyEntityCache.removeCache(CTSContentImpl.class.getName());
 	}
 
 	@Override
@@ -3391,12 +3389,6 @@ public class CTSContentPersistenceImpl
 	@Reference
 	protected CTPersistenceHelper ctPersistenceHelper;
 
-	@Reference
-	protected EntityCache entityCache;
-
-	@Reference
-	protected FinderCache finderCache;
-
 	private static final String _SQL_SELECT_CTSCONTENT =
 		"SELECT ctsContent FROM CTSContent ctsContent";
 
@@ -3425,7 +3417,7 @@ public class CTSContentPersistenceImpl
 
 	@Override
 	protected FinderCache getFinderCache() {
-		return finderCache;
+		return dummyFinderCache;
 	}
 
 }

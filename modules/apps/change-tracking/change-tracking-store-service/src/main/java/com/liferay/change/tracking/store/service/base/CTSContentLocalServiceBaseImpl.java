@@ -6,16 +6,13 @@
 package com.liferay.change.tracking.store.service.base;
 
 import com.liferay.change.tracking.store.model.CTSContent;
-import com.liferay.change.tracking.store.model.CTSContentDataBlobModel;
 import com.liferay.change.tracking.store.service.CTSContentLocalService;
 import com.liferay.change.tracking.store.service.persistence.CTSContentPersistence;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.petra.io.AutoDeleteFileInputStream;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnectionUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
@@ -23,10 +20,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PersistedModel;
@@ -39,20 +34,16 @@ import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
-import java.sql.Blob;
 import java.sql.Connection;
 
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
@@ -383,63 +374,6 @@ public abstract class CTSContentLocalServiceBaseImpl
 		return ctsContentPersistence.update(ctsContent);
 	}
 
-	@Override
-	public CTSContentDataBlobModel getDataBlobModel(Serializable primaryKey) {
-		Session session = null;
-
-		try {
-			session = ctsContentPersistence.openSession();
-
-			return (CTSContentDataBlobModel)session.get(
-				CTSContentDataBlobModel.class, primaryKey);
-		}
-		catch (Exception exception) {
-			throw ctsContentPersistence.processException(exception);
-		}
-		finally {
-			ctsContentPersistence.closeSession(session);
-		}
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public InputStream openDataInputStream(long ctsContentId) {
-		try {
-			CTSContentDataBlobModel CTSContentDataBlobModel = getDataBlobModel(
-				ctsContentId);
-
-			Blob blob = CTSContentDataBlobModel.getDataBlob();
-
-			if (blob == null) {
-				return _EMPTY_INPUT_STREAM;
-			}
-
-			InputStream inputStream = blob.getBinaryStream();
-
-			if (_useTempFile) {
-				inputStream = new AutoDeleteFileInputStream(
-					_file.createTempFile(inputStream));
-			}
-
-			return inputStream;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	@Activate
-	protected void activate() {
-		DB db = DBManagerUtil.getDB();
-
-		if ((db.getDBType() != DBType.DB2) &&
-			(db.getDBType() != DBType.MYSQL) &&
-			(db.getDBType() != DBType.MARIADB)) {
-
-			_useTempFile = true;
-		}
-	}
-
 	@Deactivate
 	protected void deactivate() {
 	}
@@ -530,13 +464,5 @@ public abstract class CTSContentLocalServiceBaseImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CTSContentLocalServiceBaseImpl.class);
-
-	@Reference
-	protected File _file;
-
-	private static final InputStream _EMPTY_INPUT_STREAM =
-		new UnsyncByteArrayInputStream(new byte[0]);
-
-	private boolean _useTempFile;
 
 }

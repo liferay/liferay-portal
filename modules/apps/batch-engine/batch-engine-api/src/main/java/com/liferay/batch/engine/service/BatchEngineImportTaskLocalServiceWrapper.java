@@ -421,14 +421,6 @@ public class BatchEngineImportTaskLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.batch.engine.model.BatchEngineImportTaskContentBlobModel
-		getContentBlobModel(java.io.Serializable primaryKey) {
-
-		return _batchEngineImportTaskLocalService.getContentBlobModel(
-			primaryKey);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -466,14 +458,6 @@ public class BatchEngineImportTaskLocalServiceWrapper
 
 		return _batchEngineImportTaskLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public java.io.InputStream openContentInputStream(
-		long batchEngineImportTaskId) {
-
-		return _batchEngineImportTaskLocalService.openContentInputStream(
-			batchEngineImportTaskId);
 	}
 
 	/**

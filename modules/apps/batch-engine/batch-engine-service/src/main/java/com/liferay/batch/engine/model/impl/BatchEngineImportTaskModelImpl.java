@@ -6,9 +6,7 @@
 package com.liferay.batch.engine.model.impl;
 
 import com.liferay.batch.engine.model.BatchEngineImportTask;
-import com.liferay.batch.engine.model.BatchEngineImportTaskContentBlobModel;
 import com.liferay.batch.engine.model.BatchEngineImportTaskModel;
-import com.liferay.batch.engine.service.BatchEngineImportTaskLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
@@ -25,6 +23,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
 
@@ -38,7 +37,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -128,37 +126,6 @@ public class BatchEngineImportTaskModelImpl
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 
 	public static final String TX_MANAGER = "liferayTransactionManager";
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long EXECUTESTATUS_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 4L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 8L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long BATCHENGINEIMPORTTASKID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -684,23 +651,7 @@ public class BatchEngineImportTaskModelImpl
 	@JSON
 	@Override
 	public Blob getContent() {
-		if (_contentBlobModel == null) {
-			try {
-				_contentBlobModel =
-					BatchEngineImportTaskLocalServiceUtil.getContentBlobModel(
-						getPrimaryKey());
-			}
-			catch (Exception exception) {
-			}
-		}
-
-		Blob blob = null;
-
-		if (_contentBlobModel != null) {
-			blob = _contentBlobModel.getContentBlob();
-		}
-
-		return blob;
+		return _content;
 	}
 
 	@Override
@@ -709,13 +660,7 @@ public class BatchEngineImportTaskModelImpl
 			_setColumnOriginalValues();
 		}
 
-		if (_contentBlobModel == null) {
-			_contentBlobModel = new BatchEngineImportTaskContentBlobModel(
-				getPrimaryKey(), content);
-		}
-		else {
-			_contentBlobModel.setContentBlob(content);
-		}
+		_content = content;
 	}
 
 	@JSON
@@ -940,30 +885,6 @@ public class BatchEngineImportTaskModelImpl
 			PortalUtil.getClassNameId(BatchEngineImportTask.class.getName()));
 	}
 
-	public long getColumnBitmask() {
-		if (_columnBitmask > 0) {
-			return _columnBitmask;
-		}
-
-		if ((_columnOriginalValues == null) ||
-			(_columnOriginalValues == Collections.EMPTY_MAP)) {
-
-			return 0;
-		}
-
-		for (Map.Entry<String, Object> entry :
-				_columnOriginalValues.entrySet()) {
-
-			if (!Objects.equals(
-					entry.getValue(), getColumnValue(entry.getKey()))) {
-
-				_columnBitmask |= _columnBitmasks.get(entry.getKey());
-			}
-		}
-
-		return _columnBitmask;
-	}
-
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return ExpandoBridgeFactoryUtil.getExpandoBridge(
@@ -1152,10 +1073,6 @@ public class BatchEngineImportTaskModelImpl
 		_columnOriginalValues = Collections.emptyMap();
 
 		_setModifiedDate = false;
-
-		_contentBlobModel = null;
-
-		_columnBitmask = 0;
 	}
 
 	@Override
@@ -1308,99 +1225,48 @@ public class BatchEngineImportTaskModelImpl
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		Map<String, Function<BatchEngineImportTask, Object>>
+			attributeGetterFunctions = getAttributeGetterFunctions();
 
-		sb.append("{\"mvccVersion\": ");
+		StringBundler sb = new StringBundler(
+			(5 * attributeGetterFunctions.size()) + 2);
 
-		sb.append(getMvccVersion());
+		sb.append("{");
 
-		sb.append(", \"uuid\": ");
+		for (Map.Entry<String, Function<BatchEngineImportTask, Object>> entry :
+				attributeGetterFunctions.entrySet()) {
 
-		sb.append("\"" + getUuid() + "\"");
+			String attributeName = entry.getKey();
+			Function<BatchEngineImportTask, Object> attributeGetterFunction =
+				entry.getValue();
 
-		sb.append(", \"externalReferenceCode\": ");
+			sb.append("\"");
+			sb.append(attributeName);
+			sb.append("\": ");
 
-		sb.append("\"" + getExternalReferenceCode() + "\"");
+			Object value = attributeGetterFunction.apply(
+				(BatchEngineImportTask)this);
 
-		sb.append(", \"batchEngineImportTaskId\": ");
+			if (value == null) {
+				sb.append("null");
+			}
+			else if (value instanceof Blob || value instanceof Date ||
+					 value instanceof Map || value instanceof String) {
 
-		sb.append(getBatchEngineImportTaskId());
+				sb.append(
+					"\"" + StringUtil.replace(value.toString(), "\"", "'") +
+						"\"");
+			}
+			else {
+				sb.append(value);
+			}
 
-		sb.append(", \"companyId\": ");
+			sb.append(", ");
+		}
 
-		sb.append(getCompanyId());
-
-		sb.append(", \"userId\": ");
-
-		sb.append(getUserId());
-
-		sb.append(", \"createDate\": ");
-
-		sb.append("\"" + getCreateDate() + "\"");
-
-		sb.append(", \"modifiedDate\": ");
-
-		sb.append("\"" + getModifiedDate() + "\"");
-
-		sb.append(", \"batchSize\": ");
-
-		sb.append(getBatchSize());
-
-		sb.append(", \"callbackURL\": ");
-
-		sb.append("\"" + getCallbackURL() + "\"");
-
-		sb.append(", \"className\": ");
-
-		sb.append("\"" + getClassName() + "\"");
-
-		sb.append(", \"contentType\": ");
-
-		sb.append("\"" + getContentType() + "\"");
-
-		sb.append(", \"endTime\": ");
-
-		sb.append("\"" + getEndTime() + "\"");
-
-		sb.append(", \"errorMessage\": ");
-
-		sb.append("\"" + getErrorMessage() + "\"");
-
-		sb.append(", \"executeStatus\": ");
-
-		sb.append("\"" + getExecuteStatus() + "\"");
-
-		sb.append(", \"fieldNameMapping\": ");
-
-		sb.append("\"" + getFieldNameMapping() + "\"");
-
-		sb.append(", \"importStrategy\": ");
-
-		sb.append(getImportStrategy());
-
-		sb.append(", \"operation\": ");
-
-		sb.append("\"" + getOperation() + "\"");
-
-		sb.append(", \"parameters\": ");
-
-		sb.append("\"" + getParameters() + "\"");
-
-		sb.append(", \"processedItemsCount\": ");
-
-		sb.append(getProcessedItemsCount());
-
-		sb.append(", \"startTime\": ");
-
-		sb.append("\"" + getStartTime() + "\"");
-
-		sb.append(", \"taskItemDelegateName\": ");
-
-		sb.append("\"" + getTaskItemDelegateName() + "\"");
-
-		sb.append(", \"totalItemsCount\": ");
-
-		sb.append(getTotalItemsCount());
+		if (sb.index() > 1) {
+			sb.setIndex(sb.index() - 1);
+		}
 
 		sb.append("}");
 
@@ -1428,7 +1294,7 @@ public class BatchEngineImportTaskModelImpl
 	private long _batchSize;
 	private String _callbackURL;
 	private String _className;
-	private transient BatchEngineImportTaskContentBlobModel _contentBlobModel;
+	private Blob _content;
 	private String _contentType;
 	private Date _endTime;
 	private String _errorMessage;
@@ -1485,6 +1351,7 @@ public class BatchEngineImportTaskModelImpl
 		_columnOriginalValues.put("batchSize", _batchSize);
 		_columnOriginalValues.put("callbackURL", _callbackURL);
 		_columnOriginalValues.put("className", _className);
+		_columnOriginalValues.put("content", _content);
 		_columnOriginalValues.put("contentType", _contentType);
 		_columnOriginalValues.put("endTime", _endTime);
 		_columnOriginalValues.put("errorMessage", _errorMessage);
@@ -1511,68 +1378,6 @@ public class BatchEngineImportTaskModelImpl
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
-
-	public static long getColumnBitmask(String columnName) {
-		return _columnBitmasks.get(columnName);
-	}
-
-	private static final Map<String, Long> _columnBitmasks;
-
-	static {
-		Map<String, Long> columnBitmasks = new HashMap<>();
-
-		columnBitmasks.put("mvccVersion", 1L);
-
-		columnBitmasks.put("uuid_", 2L);
-
-		columnBitmasks.put("externalReferenceCode", 4L);
-
-		columnBitmasks.put("batchEngineImportTaskId", 8L);
-
-		columnBitmasks.put("companyId", 16L);
-
-		columnBitmasks.put("userId", 32L);
-
-		columnBitmasks.put("createDate", 64L);
-
-		columnBitmasks.put("modifiedDate", 128L);
-
-		columnBitmasks.put("batchSize", 256L);
-
-		columnBitmasks.put("callbackURL", 512L);
-
-		columnBitmasks.put("className", 1024L);
-
-		columnBitmasks.put("content", 2048L);
-
-		columnBitmasks.put("contentType", 4096L);
-
-		columnBitmasks.put("endTime", 8192L);
-
-		columnBitmasks.put("errorMessage", 16384L);
-
-		columnBitmasks.put("executeStatus", 32768L);
-
-		columnBitmasks.put("fieldNameMapping", 65536L);
-
-		columnBitmasks.put("importStrategy", 131072L);
-
-		columnBitmasks.put("operation", 262144L);
-
-		columnBitmasks.put("parameters", 524288L);
-
-		columnBitmasks.put("processedItemsCount", 1048576L);
-
-		columnBitmasks.put("startTime", 2097152L);
-
-		columnBitmasks.put("taskItemDelegateName", 4194304L);
-
-		columnBitmasks.put("totalItemsCount", 8388608L);
-
-		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
-	}
-
-	private long _columnBitmask;
 	private BatchEngineImportTask _escapedModel;
 
 }

@@ -191,7 +191,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		List<BatchEngineImportTask> list = null;
 
 		if (useFinderCache) {
-			list = (List<BatchEngineImportTask>)finderCache.getResult(
+			list = (List<BatchEngineImportTask>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
@@ -258,7 +258,7 @@ public class BatchEngineImportTaskPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -582,7 +582,8 @@ public class BatchEngineImportTaskPersistenceImpl
 
 		Object[] finderArgs = new Object[] {uuid};
 
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+		Long count = (Long)dummyFinderCache.getResult(
+			finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler sb = new StringBundler(2);
@@ -617,7 +618,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(finderPath, finderArgs, count);
+				dummyFinderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception exception) {
 				throw processException(exception);
@@ -742,7 +743,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		List<BatchEngineImportTask> list = null;
 
 		if (useFinderCache) {
-			list = (List<BatchEngineImportTask>)finderCache.getResult(
+			list = (List<BatchEngineImportTask>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
@@ -815,7 +816,7 @@ public class BatchEngineImportTaskPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -1161,7 +1162,8 @@ public class BatchEngineImportTaskPersistenceImpl
 
 		Object[] finderArgs = new Object[] {uuid, companyId};
 
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+		Long count = (Long)dummyFinderCache.getResult(
+			finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler sb = new StringBundler(3);
@@ -1200,7 +1202,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(finderPath, finderArgs, count);
+				dummyFinderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception exception) {
 				throw processException(exception);
@@ -1319,7 +1321,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		List<BatchEngineImportTask> list = null;
 
 		if (useFinderCache) {
-			list = (List<BatchEngineImportTask>)finderCache.getResult(
+			list = (List<BatchEngineImportTask>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
@@ -1375,7 +1377,7 @@ public class BatchEngineImportTaskPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -1688,7 +1690,8 @@ public class BatchEngineImportTaskPersistenceImpl
 
 		Object[] finderArgs = new Object[] {companyId};
 
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+		Long count = (Long)dummyFinderCache.getResult(
+			finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler sb = new StringBundler(2);
@@ -1712,7 +1715,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(finderPath, finderArgs, count);
+				dummyFinderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception exception) {
 				throw processException(exception);
@@ -1830,7 +1833,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		List<BatchEngineImportTask> list = null;
 
 		if (useFinderCache) {
-			list = (List<BatchEngineImportTask>)finderCache.getResult(
+			list = (List<BatchEngineImportTask>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
@@ -1899,7 +1902,7 @@ public class BatchEngineImportTaskPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -2228,7 +2231,8 @@ public class BatchEngineImportTaskPersistenceImpl
 
 		Object[] finderArgs = new Object[] {executeStatus};
 
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+		Long count = (Long)dummyFinderCache.getResult(
+			finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler sb = new StringBundler(2);
@@ -2263,7 +2267,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(finderPath, finderArgs, count);
+				dummyFinderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception exception) {
 				throw processException(exception);
@@ -2360,7 +2364,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		Object result = null;
 
 		if (useFinderCache) {
-			result = finderCache.getResult(
+			result = dummyFinderCache.getResult(
 				_finderPathFetchByERC_C, finderArgs, this);
 		}
 
@@ -2416,7 +2420,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 				if (list.isEmpty()) {
 					if (useFinderCache) {
-						finderCache.putResult(
+						dummyFinderCache.putResult(
 							_finderPathFetchByERC_C, finderArgs, list);
 					}
 				}
@@ -2512,11 +2516,11 @@ public class BatchEngineImportTaskPersistenceImpl
 	 */
 	@Override
 	public void cacheResult(BatchEngineImportTask batchEngineImportTask) {
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			BatchEngineImportTaskImpl.class,
 			batchEngineImportTask.getPrimaryKey(), batchEngineImportTask);
 
-		finderCache.putResult(
+		dummyFinderCache.putResult(
 			_finderPathFetchByERC_C,
 			new Object[] {
 				batchEngineImportTask.getExternalReferenceCode(),
@@ -2547,7 +2551,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		for (BatchEngineImportTask batchEngineImportTask :
 				batchEngineImportTasks) {
 
-			if (entityCache.getResult(
+			if (dummyEntityCache.getResult(
 					BatchEngineImportTaskImpl.class,
 					batchEngineImportTask.getPrimaryKey()) == null) {
 
@@ -2565,9 +2569,9 @@ public class BatchEngineImportTaskPersistenceImpl
 	 */
 	@Override
 	public void clearCache() {
-		entityCache.clearCache(BatchEngineImportTaskImpl.class);
+		dummyEntityCache.clearCache(BatchEngineImportTaskImpl.class);
 
-		finderCache.clearCache(BatchEngineImportTaskImpl.class);
+		dummyFinderCache.clearCache(BatchEngineImportTaskImpl.class);
 	}
 
 	/**
@@ -2579,7 +2583,7 @@ public class BatchEngineImportTaskPersistenceImpl
 	 */
 	@Override
 	public void clearCache(BatchEngineImportTask batchEngineImportTask) {
-		entityCache.removeResult(
+		dummyEntityCache.removeResult(
 			BatchEngineImportTaskImpl.class, batchEngineImportTask);
 	}
 
@@ -2588,17 +2592,17 @@ public class BatchEngineImportTaskPersistenceImpl
 		for (BatchEngineImportTask batchEngineImportTask :
 				batchEngineImportTasks) {
 
-			entityCache.removeResult(
+			dummyEntityCache.removeResult(
 				BatchEngineImportTaskImpl.class, batchEngineImportTask);
 		}
 	}
 
 	@Override
 	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(BatchEngineImportTaskImpl.class);
+		dummyFinderCache.clearCache(BatchEngineImportTaskImpl.class);
 
 		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(
+			dummyEntityCache.removeResult(
 				BatchEngineImportTaskImpl.class, primaryKey);
 		}
 	}
@@ -2611,7 +2615,7 @@ public class BatchEngineImportTaskPersistenceImpl
 			batchEngineImportTaskModelImpl.getCompanyId()
 		};
 
-		finderCache.putResult(
+		dummyFinderCache.putResult(
 			_finderPathFetchByERC_C, args, batchEngineImportTaskModelImpl);
 	}
 
@@ -2865,15 +2869,9 @@ public class BatchEngineImportTaskPersistenceImpl
 				session.save(batchEngineImportTask);
 			}
 			else {
-				session.evict(
-					BatchEngineImportTaskImpl.class,
-					batchEngineImportTask.getPrimaryKeyObj());
-
-				session.saveOrUpdate(batchEngineImportTask);
+				batchEngineImportTask = (BatchEngineImportTask)session.merge(
+					batchEngineImportTask);
 			}
-
-			session.flush();
-			session.clear();
 		}
 		catch (Exception exception) {
 			throw processException(exception);
@@ -2882,7 +2880,7 @@ public class BatchEngineImportTaskPersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			BatchEngineImportTaskImpl.class, batchEngineImportTaskModelImpl,
 			false, true);
 
@@ -3034,7 +3032,7 @@ public class BatchEngineImportTaskPersistenceImpl
 		List<BatchEngineImportTask> list = null;
 
 		if (useFinderCache) {
-			list = (List<BatchEngineImportTask>)finderCache.getResult(
+			list = (List<BatchEngineImportTask>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 		}
 
@@ -3072,7 +3070,7 @@ public class BatchEngineImportTaskPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -3104,7 +3102,7 @@ public class BatchEngineImportTaskPersistenceImpl
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)finderCache.getResult(
+		Long count = (Long)dummyFinderCache.getResult(
 			_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -3118,7 +3116,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(
+				dummyFinderCache.putResult(
 					_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 			}
 			catch (Exception exception) {
@@ -3139,7 +3137,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 	@Override
 	protected EntityCache getEntityCache() {
-		return entityCache;
+		return dummyEntityCache;
 	}
 
 	@Override
@@ -3262,7 +3260,7 @@ public class BatchEngineImportTaskPersistenceImpl
 	public void deactivate() {
 		BatchEngineImportTaskUtil.setPersistence(null);
 
-		entityCache.removeCache(BatchEngineImportTaskImpl.class.getName());
+		dummyEntityCache.removeCache(BatchEngineImportTaskImpl.class.getName());
 	}
 
 	@Override
@@ -3290,12 +3288,6 @@ public class BatchEngineImportTaskPersistenceImpl
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		super.setSessionFactory(sessionFactory);
 	}
-
-	@Reference
-	protected EntityCache entityCache;
-
-	@Reference
-	protected FinderCache finderCache;
 
 	private static final String _SQL_SELECT_BATCHENGINEIMPORTTASK =
 		"SELECT batchEngineImportTask FROM BatchEngineImportTask batchEngineImportTask";
@@ -3326,7 +3318,7 @@ public class BatchEngineImportTaskPersistenceImpl
 
 	@Override
 	protected FinderCache getFinderCache() {
-		return finderCache;
+		return dummyFinderCache;
 	}
 
 }

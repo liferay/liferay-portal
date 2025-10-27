@@ -13,16 +13,8 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="repositoryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="path_" name="path" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="version" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<one-to-one access="com.liferay.portal.dao.orm.hibernate.PrivateFieldPropertyAccessor" cascade="save-update" class="com.liferay.change.tracking.store.model.CTSContentDataBlobModel" constrained="false" name="dataBlobModel" outer-join="false" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="data_" name="data" type="org.hibernate.type.BlobType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="size_" name="size" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="storeType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-	</class>
-	<class dynamic-update="true" lazy="true" name="com.liferay.change.tracking.store.model.CTSContentDataBlobModel" table="CTSContent">
-		<id column="ctsContentId" name="ctsContentId">
-			<generator class="foreign">
-				<param name="property">com.liferay.change.tracking.store.model.impl.CTSContentImpl</param>
-			</generator>
-		</id>
-		<property column="data_" name="dataBlob" type="blob" />
 	</class>
 </hibernate-mapping>

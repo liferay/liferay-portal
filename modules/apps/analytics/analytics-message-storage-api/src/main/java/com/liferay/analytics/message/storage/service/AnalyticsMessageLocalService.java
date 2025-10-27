@@ -6,7 +6,6 @@
 package com.liferay.analytics.message.storage.service;
 
 import com.liferay.analytics.message.storage.model.AnalyticsMessage;
-import com.liferay.analytics.message.storage.model.AnalyticsMessageBodyBlobModel;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -28,7 +27,6 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.List;
@@ -251,10 +249,6 @@ public interface AnalyticsMessageLocalService
 	public int getAnalyticsMessagesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AnalyticsMessageBodyBlobModel getBodyBlobModel(
-		Serializable primaryKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Long> getCompanyIds();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -274,9 +268,6 @@ public interface AnalyticsMessageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(readOnly = true)
-	public InputStream openBodyInputStream(long analyticsMessageId);
 
 	/**
 	 * Updates the analytics message in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

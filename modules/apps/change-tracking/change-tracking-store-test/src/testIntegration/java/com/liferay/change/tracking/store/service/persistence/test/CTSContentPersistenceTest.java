@@ -146,6 +146,12 @@ public class CTSContentPersistenceTest {
 
 		_ctsContents.add(_persistence.update(newCTSContent));
 
+		Session session = _persistence.openSession();
+
+		session.flush();
+
+		session.clear();
+
 		CTSContent existingCTSContent = _persistence.findByPrimaryKey(
 			newCTSContent.getPrimaryKey());
 

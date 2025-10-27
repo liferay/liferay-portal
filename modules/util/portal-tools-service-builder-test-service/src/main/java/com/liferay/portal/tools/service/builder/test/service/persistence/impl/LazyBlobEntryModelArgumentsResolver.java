@@ -13,8 +13,7 @@ import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryTable;
 import com.liferay.portal.tools.service.builder.test.model.impl.LazyBlobEntryImpl;
 import com.liferay.portal.tools.service.builder.test.model.impl.LazyBlobEntryModelImpl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 /**
  * The arguments resolver class for retrieving value from LazyBlobEntry.
@@ -49,28 +48,9 @@ public class LazyBlobEntryModelArgumentsResolver implements ArgumentsResolver {
 		LazyBlobEntryModelImpl lazyBlobEntryModelImpl =
 			(LazyBlobEntryModelImpl)baseModel;
 
-		long columnBitmask = lazyBlobEntryModelImpl.getColumnBitmask();
+		if (!checkColumn ||
+			_hasModifiedColumns(lazyBlobEntryModelImpl, columnNames)) {
 
-		if (!checkColumn || (columnBitmask == 0)) {
-			return _getValue(lazyBlobEntryModelImpl, columnNames, original);
-		}
-
-		Long finderPathColumnBitmask = _finderPathColumnBitmasksCache.get(
-			finderPath);
-
-		if (finderPathColumnBitmask == null) {
-			finderPathColumnBitmask = 0L;
-
-			for (String columnName : columnNames) {
-				finderPathColumnBitmask |=
-					lazyBlobEntryModelImpl.getColumnBitmask(columnName);
-			}
-
-			_finderPathColumnBitmasksCache.put(
-				finderPath, finderPathColumnBitmask);
-		}
-
-		if ((columnBitmask & finderPathColumnBitmask) != 0) {
 			return _getValue(lazyBlobEntryModelImpl, columnNames, original);
 		}
 
@@ -109,7 +89,23 @@ public class LazyBlobEntryModelArgumentsResolver implements ArgumentsResolver {
 		return arguments;
 	}
 
-	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
-		new ConcurrentHashMap<>();
+	private static boolean _hasModifiedColumns(
+		LazyBlobEntryModelImpl lazyBlobEntryModelImpl, String[] columnNames) {
+
+		if (columnNames.length == 0) {
+			return false;
+		}
+
+		for (String columnName : columnNames) {
+			if (!Objects.equals(
+					lazyBlobEntryModelImpl.getColumnOriginalValue(columnName),
+					lazyBlobEntryModelImpl.getColumnValue(columnName))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 }

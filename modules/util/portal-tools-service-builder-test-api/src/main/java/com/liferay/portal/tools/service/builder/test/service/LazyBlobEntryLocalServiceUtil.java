@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntry;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.List;
@@ -229,18 +228,6 @@ public class LazyBlobEntryLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static com.liferay.portal.tools.service.builder.test.model.
-		LazyBlobEntryBlob1BlobModel getBlob1BlobModel(Serializable primaryKey) {
-
-		return getService().getBlob1BlobModel(primaryKey);
-	}
-
-	public static com.liferay.portal.tools.service.builder.test.model.
-		LazyBlobEntryBlob2BlobModel getBlob2BlobModel(Serializable primaryKey) {
-
-		return getService().getBlob2BlobModel(primaryKey);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -316,14 +303,6 @@ public class LazyBlobEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static InputStream openBlob1InputStream(long lazyBlobEntryId) {
-		return getService().openBlob1InputStream(lazyBlobEntryId);
-	}
-
-	public static InputStream openBlob2InputStream(long lazyBlobEntryId) {
-		return getService().openBlob2InputStream(lazyBlobEntryId);
 	}
 
 	/**

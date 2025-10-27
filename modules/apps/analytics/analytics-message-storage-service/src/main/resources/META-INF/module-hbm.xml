@@ -43,14 +43,6 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="createDate" type="org.hibernate.type.TimestampType" />
-		<one-to-one access="com.liferay.portal.dao.orm.hibernate.PrivateFieldPropertyAccessor" cascade="save-update" class="com.liferay.analytics.message.storage.model.AnalyticsMessageBodyBlobModel" constrained="false" name="bodyBlobModel" outer-join="false" />
-	</class>
-	<class dynamic-update="true" lazy="true" name="com.liferay.analytics.message.storage.model.AnalyticsMessageBodyBlobModel" table="AnalyticsMessage">
-		<id column="analyticsMessageId" name="analyticsMessageId">
-			<generator class="foreign">
-				<param name="property">com.liferay.analytics.message.storage.model.impl.AnalyticsMessageImpl</param>
-			</generator>
-		</id>
-		<property column="body" name="bodyBlob" type="blob" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="body" type="org.hibernate.type.BlobType" />
 	</class>
 </hibernate-mapping>

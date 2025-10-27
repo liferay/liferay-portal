@@ -320,13 +320,6 @@ public class CTSContentLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.change.tracking.store.model.CTSContentDataBlobModel
-		getDataBlobModel(java.io.Serializable primaryKey) {
-
-		return _ctsContentLocalService.getDataBlobModel(primaryKey);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -361,11 +354,6 @@ public class CTSContentLocalServiceWrapper
 
 		return _ctsContentLocalService.hasCTSContent(
 			companyId, repositoryId, path, version, storeType);
-	}
-
-	@Override
-	public java.io.InputStream openDataInputStream(long ctsContentId) {
-		return _ctsContentLocalService.openDataInputStream(ctsContentId);
 	}
 
 	/**

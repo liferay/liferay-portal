@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.List;
@@ -279,14 +278,6 @@ public class AnalyticsMessageLocalServiceUtil {
 		return getService().getAnalyticsMessagesCount();
 	}
 
-	public static
-		com.liferay.analytics.message.storage.model.
-			AnalyticsMessageBodyBlobModel getBodyBlobModel(
-				Serializable primaryKey) {
-
-		return getService().getBodyBlobModel(primaryKey);
-	}
-
 	public static List<Long> getCompanyIds() {
 		return getService().getCompanyIds();
 	}
@@ -314,10 +305,6 @@ public class AnalyticsMessageLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static InputStream openBodyInputStream(long analyticsMessageId) {
-		return getService().openBodyInputStream(analyticsMessageId);
 	}
 
 	/**

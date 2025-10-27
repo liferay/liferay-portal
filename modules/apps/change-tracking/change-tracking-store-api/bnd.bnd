@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Change Tracking Store API
 Bundle-SymbolicName: com.liferay.change.tracking.store.api
-Bundle-Version: 4.0.1
+Bundle-Version: 5.0.0
 Export-Package:\
 	com.liferay.change.tracking.store.exception,\
 	com.liferay.change.tracking.store.model,\

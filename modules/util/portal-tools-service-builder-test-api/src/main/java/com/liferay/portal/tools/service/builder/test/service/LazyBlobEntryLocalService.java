@@ -24,10 +24,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntry;
-import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryBlob1BlobModel;
-import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryBlob2BlobModel;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.List;
@@ -219,14 +216,6 @@ public interface LazyBlobEntryLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LazyBlobEntryBlob1BlobModel getBlob1BlobModel(
-		Serializable primaryKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LazyBlobEntryBlob2BlobModel getBlob2BlobModel(
-		Serializable primaryKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -289,12 +278,6 @@ public interface LazyBlobEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(readOnly = true)
-	public InputStream openBlob1InputStream(long lazyBlobEntryId);
-
-	@Transactional(readOnly = true)
-	public InputStream openBlob2InputStream(long lazyBlobEntryId);
 
 	/**
 	 * Updates the lazy blob entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

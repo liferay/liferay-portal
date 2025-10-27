@@ -7,7 +7,6 @@ package com.liferay.change.tracking.store.service;
 
 import com.liferay.change.tracking.store.exception.NoSuchContentException;
 import com.liferay.change.tracking.store.model.CTSContent;
-import com.liferay.change.tracking.store.model.CTSContentDataBlobModel;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -261,9 +260,6 @@ public interface CTSContentLocalService
 	public int getCTSContentsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CTSContentDataBlobModel getDataBlobModel(Serializable primaryKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -285,9 +281,6 @@ public interface CTSContentLocalService
 	public boolean hasCTSContent(
 		long companyId, long repositoryId, String path, String version,
 		String storeType);
-
-	@Transactional(readOnly = true)
-	public InputStream openDataInputStream(long ctsContentId);
 
 	/**
 	 * Updates the cts content in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

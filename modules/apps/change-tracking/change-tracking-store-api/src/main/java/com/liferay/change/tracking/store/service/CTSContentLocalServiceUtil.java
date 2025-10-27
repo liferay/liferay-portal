@@ -293,13 +293,6 @@ public class CTSContentLocalServiceUtil {
 	}
 
 	public static
-		com.liferay.change.tracking.store.model.CTSContentDataBlobModel
-			getDataBlobModel(Serializable primaryKey) {
-
-		return getService().getDataBlobModel(primaryKey);
-	}
-
-	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
 
@@ -330,10 +323,6 @@ public class CTSContentLocalServiceUtil {
 
 		return getService().hasCTSContent(
 			companyId, repositoryId, path, version, storeType);
-	}
-
-	public static InputStream openDataInputStream(long ctsContentId) {
-		return getService().openDataInputStream(ctsContentId);
 	}
 
 	/**

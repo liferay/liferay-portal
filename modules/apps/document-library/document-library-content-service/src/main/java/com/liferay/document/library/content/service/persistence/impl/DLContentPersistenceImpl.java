@@ -199,7 +199,7 @@ public class DLContentPersistenceImpl
 			List<DLContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<DLContent>)finderCache.getResult(
+				list = (List<DLContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -261,7 +261,8 @@ public class DLContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -593,7 +594,7 @@ public class DLContentPersistenceImpl
 
 			Object[] finderArgs = new Object[] {companyId, repositoryId};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -622,7 +623,7 @@ public class DLContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -757,7 +758,7 @@ public class DLContentPersistenceImpl
 			List<DLContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<DLContent>)finderCache.getResult(
+				list = (List<DLContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -835,7 +836,8 @@ public class DLContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -1200,7 +1202,7 @@ public class DLContentPersistenceImpl
 
 			Object[] finderArgs = new Object[] {companyId, repositoryId, path};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -1244,7 +1246,7 @@ public class DLContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -1374,7 +1376,7 @@ public class DLContentPersistenceImpl
 			List<DLContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<DLContent>)finderCache.getResult(
+				list = (List<DLContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -1454,7 +1456,8 @@ public class DLContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -1823,7 +1826,7 @@ public class DLContentPersistenceImpl
 
 			Object[] finderArgs = new Object[] {companyId, repositoryId, path};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -1867,7 +1870,7 @@ public class DLContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -1991,7 +1994,7 @@ public class DLContentPersistenceImpl
 			Object result = null;
 
 			if (useFinderCache) {
-				result = finderCache.getResult(
+				result = dummyFinderCache.getResult(
 					_finderPathFetchByC_R_P_V, finderArgs, this);
 			}
 
@@ -2065,7 +2068,7 @@ public class DLContentPersistenceImpl
 
 					if (list.isEmpty()) {
 						if (useFinderCache) {
-							finderCache.putResult(
+							dummyFinderCache.putResult(
 								_finderPathFetchByC_R_P_V, finderArgs, list);
 						}
 					}
@@ -2183,10 +2186,10 @@ public class DLContentPersistenceImpl
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					dlContent.getCtCollectionId())) {
 
-			entityCache.putResult(
+			dummyEntityCache.putResult(
 				DLContentImpl.class, dlContent.getPrimaryKey(), dlContent);
 
-			finderCache.putResult(
+			dummyFinderCache.putResult(
 				_finderPathFetchByC_R_P_V,
 				new Object[] {
 					dlContent.getCompanyId(), dlContent.getRepositoryId(),
@@ -2217,7 +2220,7 @@ public class DLContentPersistenceImpl
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						dlContent.getCtCollectionId())) {
 
-				if (entityCache.getResult(
+				if (dummyEntityCache.getResult(
 						DLContentImpl.class, dlContent.getPrimaryKey()) ==
 							null) {
 
@@ -2236,9 +2239,9 @@ public class DLContentPersistenceImpl
 	 */
 	@Override
 	public void clearCache() {
-		entityCache.clearCache(DLContentImpl.class);
+		dummyEntityCache.clearCache(DLContentImpl.class);
 
-		finderCache.clearCache(DLContentImpl.class);
+		dummyFinderCache.clearCache(DLContentImpl.class);
 	}
 
 	/**
@@ -2250,22 +2253,22 @@ public class DLContentPersistenceImpl
 	 */
 	@Override
 	public void clearCache(DLContent dlContent) {
-		entityCache.removeResult(DLContentImpl.class, dlContent);
+		dummyEntityCache.removeResult(DLContentImpl.class, dlContent);
 	}
 
 	@Override
 	public void clearCache(List<DLContent> dlContents) {
 		for (DLContent dlContent : dlContents) {
-			entityCache.removeResult(DLContentImpl.class, dlContent);
+			dummyEntityCache.removeResult(DLContentImpl.class, dlContent);
 		}
 	}
 
 	@Override
 	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(DLContentImpl.class);
+		dummyFinderCache.clearCache(DLContentImpl.class);
 
 		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(DLContentImpl.class, primaryKey);
+			dummyEntityCache.removeResult(DLContentImpl.class, primaryKey);
 		}
 	}
 
@@ -2282,7 +2285,7 @@ public class DLContentPersistenceImpl
 				dlContentModelImpl.getPath(), dlContentModelImpl.getVersion()
 			};
 
-			finderCache.putResult(
+			dummyFinderCache.putResult(
 				_finderPathFetchByC_R_P_V, args, dlContentModelImpl);
 		}
 	}
@@ -2426,14 +2429,8 @@ public class DLContentPersistenceImpl
 				session.save(dlContent);
 			}
 			else {
-				session.evict(
-					DLContentImpl.class, dlContent.getPrimaryKeyObj());
-
-				session.saveOrUpdate(dlContent);
+				dlContent = (DLContent)session.merge(dlContent);
 			}
-
-			session.flush();
-			session.clear();
 		}
 		catch (Exception exception) {
 			throw processException(exception);
@@ -2442,7 +2439,7 @@ public class DLContentPersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			DLContentImpl.class, dlContentModelImpl, false, true);
 
 		cacheUniqueFindersCache(dlContentModelImpl);
@@ -2512,7 +2509,7 @@ public class DLContentPersistenceImpl
 			}
 		}
 
-		DLContent dlContent = (DLContent)entityCache.getResult(
+		DLContent dlContent = (DLContent)dummyEntityCache.getResult(
 			DLContentImpl.class, primaryKey);
 
 		if (dlContent != null) {
@@ -2592,7 +2589,7 @@ public class DLContentPersistenceImpl
 					ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
 						DLContent.class, primaryKey)) {
 
-				DLContent dlContent = (DLContent)entityCache.getResult(
+				DLContent dlContent = (DLContent)dummyEntityCache.getResult(
 					DLContentImpl.class, primaryKey);
 
 				if (dlContent == null) {
@@ -2760,7 +2757,7 @@ public class DLContentPersistenceImpl
 			List<DLContent> list = null;
 
 			if (useFinderCache) {
-				list = (List<DLContent>)finderCache.getResult(
+				list = (List<DLContent>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 			}
 
@@ -2798,7 +2795,8 @@ public class DLContentPersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -2835,7 +2833,7 @@ public class DLContentPersistenceImpl
 				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
 					DLContent.class)) {
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 			if (count == null) {
@@ -2848,7 +2846,7 @@ public class DLContentPersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(
+					dummyFinderCache.putResult(
 						_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 				}
 				catch (Exception exception) {
@@ -2870,7 +2868,7 @@ public class DLContentPersistenceImpl
 
 	@Override
 	protected EntityCache getEntityCache() {
-		return entityCache;
+		return dummyEntityCache;
 	}
 
 	@Override
@@ -3043,7 +3041,7 @@ public class DLContentPersistenceImpl
 	public void deactivate() {
 		DLContentUtil.setPersistence(null);
 
-		entityCache.removeCache(DLContentImpl.class.getName());
+		dummyEntityCache.removeCache(DLContentImpl.class.getName());
 	}
 
 	@Override
@@ -3075,12 +3073,6 @@ public class DLContentPersistenceImpl
 	@Reference
 	protected CTPersistenceHelper ctPersistenceHelper;
 
-	@Reference
-	protected EntityCache entityCache;
-
-	@Reference
-	protected FinderCache finderCache;
-
 	private static final String _SQL_SELECT_DLCONTENT =
 		"SELECT dlContent FROM DLContent dlContent";
 
@@ -3109,7 +3101,7 @@ public class DLContentPersistenceImpl
 
 	@Override
 	protected FinderCache getFinderCache() {
-		return finderCache;
+		return dummyFinderCache;
 	}
 
 }

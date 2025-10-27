@@ -142,6 +142,12 @@ public class LazyBlobEntryPersistenceTest {
 
 		_lazyBlobEntries.add(_persistence.update(newLazyBlobEntry));
 
+		Session session = _persistence.openSession();
+
+		session.flush();
+
+		session.clear();
+
 		LazyBlobEntry existingLazyBlobEntry = _persistence.findByPrimaryKey(
 			newLazyBlobEntry.getPrimaryKey());
 

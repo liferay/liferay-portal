@@ -12,8 +12,9 @@ import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -51,36 +52,10 @@ public class AnalyticsMessageModelArgumentsResolver
 		AnalyticsMessageModelImpl analyticsMessageModelImpl =
 			(AnalyticsMessageModelImpl)baseModel;
 
-		long columnBitmask = analyticsMessageModelImpl.getColumnBitmask();
+		if (!checkColumn ||
+			_hasModifiedColumns(analyticsMessageModelImpl, columnNames) ||
+			_hasModifiedColumns(analyticsMessageModelImpl, _ORDER_BY_COLUMNS)) {
 
-		if (!checkColumn || (columnBitmask == 0)) {
-			return _getValue(analyticsMessageModelImpl, columnNames, original);
-		}
-
-		Long finderPathColumnBitmask = _finderPathColumnBitmasksCache.get(
-			finderPath);
-
-		if (finderPathColumnBitmask == null) {
-			finderPathColumnBitmask = 0L;
-
-			for (String columnName : columnNames) {
-				finderPathColumnBitmask |=
-					analyticsMessageModelImpl.getColumnBitmask(columnName);
-			}
-
-			if (finderPath.isBaseModelResult() &&
-				(AnalyticsMessagePersistenceImpl.
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION ==
-						finderPath.getCacheName())) {
-
-				finderPathColumnBitmask |= _ORDER_BY_COLUMNS_BITMASK;
-			}
-
-			_finderPathColumnBitmasksCache.put(
-				finderPath, finderPathColumnBitmask);
-		}
-
-		if ((columnBitmask & finderPathColumnBitmask) != 0) {
 			return _getValue(analyticsMessageModelImpl, columnNames, original);
 		}
 
@@ -119,15 +94,33 @@ public class AnalyticsMessageModelArgumentsResolver
 		return arguments;
 	}
 
-	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
-		new ConcurrentHashMap<>();
+	private static boolean _hasModifiedColumns(
+		AnalyticsMessageModelImpl analyticsMessageModelImpl,
+		String[] columnNames) {
 
-	private static final long _ORDER_BY_COLUMNS_BITMASK;
+		if (columnNames.length == 0) {
+			return false;
+		}
+
+		for (String columnName : columnNames) {
+			if (!Objects.equals(
+					analyticsMessageModelImpl.getColumnOriginalValue(
+						columnName),
+					analyticsMessageModelImpl.getColumnValue(columnName))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static final String[] _ORDER_BY_COLUMNS;
 
 	static {
-		long orderByColumnsBitmask = 0;
+		List<String> orderByColumns = new ArrayList<String>();
 
-		_ORDER_BY_COLUMNS_BITMASK = orderByColumnsBitmask;
+		_ORDER_BY_COLUMNS = orderByColumns.toArray(new String[0]);
 	}
 
 }

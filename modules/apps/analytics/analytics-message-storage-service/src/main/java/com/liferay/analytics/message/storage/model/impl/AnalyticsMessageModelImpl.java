@@ -6,9 +6,7 @@
 package com.liferay.analytics.message.storage.model.impl;
 
 import com.liferay.analytics.message.storage.model.AnalyticsMessage;
-import com.liferay.analytics.message.storage.model.AnalyticsMessageBodyBlobModel;
 import com.liferay.analytics.message.storage.model.AnalyticsMessageModel;
-import com.liferay.analytics.message.storage.service.AnalyticsMessageLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.petra.string.StringBundler;
@@ -22,6 +20,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
 
@@ -35,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -97,19 +95,6 @@ public class AnalyticsMessageModelImpl
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 
 	public static final String TX_MANAGER = "liferayTransactionManager";
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long ANALYTICSMESSAGEID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -422,23 +407,7 @@ public class AnalyticsMessageModelImpl
 
 	@Override
 	public Blob getBody() {
-		if (_bodyBlobModel == null) {
-			try {
-				_bodyBlobModel =
-					AnalyticsMessageLocalServiceUtil.getBodyBlobModel(
-						getPrimaryKey());
-			}
-			catch (Exception exception) {
-			}
-		}
-
-		Blob blob = null;
-
-		if (_bodyBlobModel != null) {
-			blob = _bodyBlobModel.getBodyBlob();
-		}
-
-		return blob;
+		return _body;
 	}
 
 	@Override
@@ -447,37 +416,7 @@ public class AnalyticsMessageModelImpl
 			_setColumnOriginalValues();
 		}
 
-		if (_bodyBlobModel == null) {
-			_bodyBlobModel = new AnalyticsMessageBodyBlobModel(
-				getPrimaryKey(), body);
-		}
-		else {
-			_bodyBlobModel.setBodyBlob(body);
-		}
-	}
-
-	public long getColumnBitmask() {
-		if (_columnBitmask > 0) {
-			return _columnBitmask;
-		}
-
-		if ((_columnOriginalValues == null) ||
-			(_columnOriginalValues == Collections.EMPTY_MAP)) {
-
-			return 0;
-		}
-
-		for (Map.Entry<String, Object> entry :
-				_columnOriginalValues.entrySet()) {
-
-			if (!Objects.equals(
-					entry.getValue(), getColumnValue(entry.getKey()))) {
-
-				_columnBitmask |= _columnBitmasks.get(entry.getKey());
-			}
-		}
-
-		return _columnBitmask;
+		_body = body;
 	}
 
 	@Override
@@ -620,10 +559,6 @@ public class AnalyticsMessageModelImpl
 	@Override
 	public void resetOriginalValues() {
 		_columnOriginalValues = Collections.emptyMap();
-
-		_bodyBlobModel = null;
-
-		_columnBitmask = 0;
 	}
 
 	@Override
@@ -663,35 +598,50 @@ public class AnalyticsMessageModelImpl
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(17);
+		Map<String, Function<AnalyticsMessage, Object>>
+			attributeGetterFunctions = getAttributeGetterFunctions();
 
-		sb.append("{\"mvccVersion\": ");
+		StringBundler sb = new StringBundler(
+			(5 * attributeGetterFunctions.size()) + 2);
 
-		sb.append(getMvccVersion());
+		sb.append("{");
 
-		sb.append(", \"ctCollectionId\": ");
+		for (Map.Entry<String, Function<AnalyticsMessage, Object>> entry :
+				attributeGetterFunctions.entrySet()) {
 
-		sb.append(getCtCollectionId());
+			String attributeName = entry.getKey();
+			Function<AnalyticsMessage, Object> attributeGetterFunction =
+				entry.getValue();
 
-		sb.append(", \"analyticsMessageId\": ");
+			sb.append("\"");
+			sb.append(attributeName);
+			sb.append("\": ");
 
-		sb.append(getAnalyticsMessageId());
+			Object value = attributeGetterFunction.apply(
+				(AnalyticsMessage)this);
 
-		sb.append(", \"companyId\": ");
+			if (value == null) {
+				sb.append("null");
+			}
+			else if (value instanceof Blob || value instanceof Date ||
+					 value instanceof Map || value instanceof String) {
 
-		sb.append(getCompanyId());
+				sb.append(
+					"\"" + StringUtil.replace(value.toString(), "\"", "'") +
+						"\"");
+			}
+			else {
+				sb.append(value);
+			}
 
-		sb.append(", \"userId\": ");
+			sb.append(", ");
+		}
 
-		sb.append(getUserId());
+		if (sb.index() > 1) {
+			sb.setIndex(sb.index() - 1);
+		}
 
-		sb.append(", \"userName\": ");
-
-		sb.append("\"" + getUserName() + "\"");
-
-		sb.append(", \"createDate\": ");
-
-		sb.append("\"" + getCreateDate() + "\"");
+		sb.append("}");
 
 		return sb.toString();
 	}
@@ -712,7 +662,7 @@ public class AnalyticsMessageModelImpl
 	private long _userId;
 	private String _userName;
 	private Date _createDate;
-	private transient AnalyticsMessageBodyBlobModel _bodyBlobModel;
+	private Blob _body;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<AnalyticsMessage, Object> function =
@@ -749,39 +699,10 @@ public class AnalyticsMessageModelImpl
 		_columnOriginalValues.put("userId", _userId);
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
+		_columnOriginalValues.put("body", _body);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
-
-	public static long getColumnBitmask(String columnName) {
-		return _columnBitmasks.get(columnName);
-	}
-
-	private static final Map<String, Long> _columnBitmasks;
-
-	static {
-		Map<String, Long> columnBitmasks = new HashMap<>();
-
-		columnBitmasks.put("mvccVersion", 1L);
-
-		columnBitmasks.put("ctCollectionId", 2L);
-
-		columnBitmasks.put("analyticsMessageId", 4L);
-
-		columnBitmasks.put("companyId", 8L);
-
-		columnBitmasks.put("userId", 16L);
-
-		columnBitmasks.put("userName", 32L);
-
-		columnBitmasks.put("createDate", 64L);
-
-		columnBitmasks.put("body", 128L);
-
-		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
-	}
-
-	private long _columnBitmask;
 	private AnalyticsMessage _escapedModel;
 
 }

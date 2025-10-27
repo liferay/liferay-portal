@@ -310,13 +310,6 @@ public class DLContentLocalServiceUtil {
 			companyId, repositoryId, dirName);
 	}
 
-	public static
-		com.liferay.document.library.content.model.DLContentDataBlobModel
-			getDataBlobModel(Serializable primaryKey) {
-
-		return getService().getDataBlobModel(primaryKey);
-	}
-
 	/**
 	 * Returns the document library content with the primary key.
 	 *
@@ -383,10 +376,6 @@ public class DLContentLocalServiceUtil {
 		long companyId, long repositoryId, String path, String version) {
 
 		return getService().hasContent(companyId, repositoryId, path, version);
-	}
-
-	public static InputStream openDataInputStream(long contentId) {
-		return getService().openDataInputStream(contentId);
 	}
 
 	/**

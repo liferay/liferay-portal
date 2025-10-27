@@ -16,11 +16,9 @@ import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntry;
-import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryBlob1BlobModel;
-import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryBlob2BlobModel;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryModel;
-import com.liferay.portal.tools.service.builder.test.service.LazyBlobEntryLocalServiceUtil;
 
 import java.io.Serializable;
 
@@ -30,10 +28,10 @@ import java.sql.Blob;
 import java.sql.Types;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -96,38 +94,13 @@ public class LazyBlobEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
 	 */
 	@Deprecated
-	public static final boolean ENTITY_CACHE_ENABLED = true;
+	public static final boolean ENTITY_CACHE_ENABLED = false;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
 	 */
 	@Deprecated
-	public static final boolean FINDER_CACHE_ENABLED = true;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static final boolean COLUMN_BITMASK_ENABLED = true;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *		#getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long LAZYBLOBENTRYID_COLUMN_BITMASK = 4L;
+	public static final boolean FINDER_CACHE_ENABLED = false;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.tools.service.builder.test.service.util.ServiceProps.
@@ -347,23 +320,7 @@ public class LazyBlobEntryModelImpl
 	@JSON
 	@Override
 	public Blob getBlob1() {
-		if (_blob1BlobModel == null) {
-			try {
-				_blob1BlobModel =
-					LazyBlobEntryLocalServiceUtil.getBlob1BlobModel(
-						getPrimaryKey());
-			}
-			catch (Exception exception) {
-			}
-		}
-
-		Blob blob = null;
-
-		if (_blob1BlobModel != null) {
-			blob = _blob1BlobModel.getBlob1Blob();
-		}
-
-		return blob;
+		return _blob1;
 	}
 
 	@Override
@@ -372,35 +329,13 @@ public class LazyBlobEntryModelImpl
 			_setColumnOriginalValues();
 		}
 
-		if (_blob1BlobModel == null) {
-			_blob1BlobModel = new LazyBlobEntryBlob1BlobModel(
-				getPrimaryKey(), blob1);
-		}
-		else {
-			_blob1BlobModel.setBlob1Blob(blob1);
-		}
+		_blob1 = blob1;
 	}
 
 	@JSON
 	@Override
 	public Blob getBlob2() {
-		if (_blob2BlobModel == null) {
-			try {
-				_blob2BlobModel =
-					LazyBlobEntryLocalServiceUtil.getBlob2BlobModel(
-						getPrimaryKey());
-			}
-			catch (Exception exception) {
-			}
-		}
-
-		Blob blob = null;
-
-		if (_blob2BlobModel != null) {
-			blob = _blob2BlobModel.getBlob2Blob();
-		}
-
-		return blob;
+		return _blob2;
 	}
 
 	@Override
@@ -409,37 +344,7 @@ public class LazyBlobEntryModelImpl
 			_setColumnOriginalValues();
 		}
 
-		if (_blob2BlobModel == null) {
-			_blob2BlobModel = new LazyBlobEntryBlob2BlobModel(
-				getPrimaryKey(), blob2);
-		}
-		else {
-			_blob2BlobModel.setBlob2Blob(blob2);
-		}
-	}
-
-	public long getColumnBitmask() {
-		if (_columnBitmask > 0) {
-			return _columnBitmask;
-		}
-
-		if ((_columnOriginalValues == null) ||
-			(_columnOriginalValues == Collections.EMPTY_MAP)) {
-
-			return 0;
-		}
-
-		for (Map.Entry<String, Object> entry :
-				_columnOriginalValues.entrySet()) {
-
-			if (!Objects.equals(
-					entry.getValue(), getColumnValue(entry.getKey()))) {
-
-				_columnBitmask |= _columnBitmasks.get(entry.getKey());
-			}
-		}
-
-		return _columnBitmask;
+		_blob2 = blob2;
 	}
 
 	@Override
@@ -559,12 +464,6 @@ public class LazyBlobEntryModelImpl
 	@Override
 	public void resetOriginalValues() {
 		_columnOriginalValues = Collections.emptyMap();
-
-		_blob1BlobModel = null;
-
-		_blob2BlobModel = null;
-
-		_columnBitmask = 0;
 	}
 
 	@Override
@@ -589,19 +488,49 @@ public class LazyBlobEntryModelImpl
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		Map<String, Function<LazyBlobEntry, Object>> attributeGetterFunctions =
+			getAttributeGetterFunctions();
 
-		sb.append("{\"uuid\": ");
+		StringBundler sb = new StringBundler(
+			(5 * attributeGetterFunctions.size()) + 2);
 
-		sb.append("\"" + getUuid() + "\"");
+		sb.append("{");
 
-		sb.append(", \"lazyBlobEntryId\": ");
+		for (Map.Entry<String, Function<LazyBlobEntry, Object>> entry :
+				attributeGetterFunctions.entrySet()) {
 
-		sb.append(getLazyBlobEntryId());
+			String attributeName = entry.getKey();
+			Function<LazyBlobEntry, Object> attributeGetterFunction =
+				entry.getValue();
 
-		sb.append(", \"groupId\": ");
+			sb.append("\"");
+			sb.append(attributeName);
+			sb.append("\": ");
 
-		sb.append(getGroupId());
+			Object value = attributeGetterFunction.apply((LazyBlobEntry)this);
+
+			if (value == null) {
+				sb.append("null");
+			}
+			else if (value instanceof Blob || value instanceof Date ||
+					 value instanceof Map || value instanceof String) {
+
+				sb.append(
+					"\"" + StringUtil.replace(value.toString(), "\"", "'") +
+						"\"");
+			}
+			else {
+				sb.append(value);
+			}
+
+			sb.append(", ");
+		}
+
+		if (sb.index() > 1) {
+			sb.setIndex(sb.index() - 1);
+		}
+
+		sb.append("}");
 
 		return sb.toString();
 	}
@@ -618,8 +547,8 @@ public class LazyBlobEntryModelImpl
 	private String _uuid;
 	private long _lazyBlobEntryId;
 	private long _groupId;
-	private transient LazyBlobEntryBlob1BlobModel _blob1BlobModel;
-	private transient LazyBlobEntryBlob2BlobModel _blob2BlobModel;
+	private Blob _blob1;
+	private Blob _blob2;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -654,6 +583,8 @@ public class LazyBlobEntryModelImpl
 		_columnOriginalValues.put("uuid_", _uuid);
 		_columnOriginalValues.put("lazyBlobEntryId", _lazyBlobEntryId);
 		_columnOriginalValues.put("groupId", _groupId);
+		_columnOriginalValues.put("blob1", _blob1);
+		_columnOriginalValues.put("blob2", _blob2);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -667,30 +598,6 @@ public class LazyBlobEntryModelImpl
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
-
-	public static long getColumnBitmask(String columnName) {
-		return _columnBitmasks.get(columnName);
-	}
-
-	private static final Map<String, Long> _columnBitmasks;
-
-	static {
-		Map<String, Long> columnBitmasks = new HashMap<>();
-
-		columnBitmasks.put("uuid_", 1L);
-
-		columnBitmasks.put("lazyBlobEntryId", 2L);
-
-		columnBitmasks.put("groupId", 4L);
-
-		columnBitmasks.put("blob1", 8L);
-
-		columnBitmasks.put("blob2", 16L);
-
-		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
-	}
-
-	private long _columnBitmask;
 	private LazyBlobEntry _escapedModel;
 
 }

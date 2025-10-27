@@ -12,8 +12,7 @@ import com.liferay.portal.kernel.dao.orm.ArgumentsResolver;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.BaseModel;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -51,29 +50,9 @@ public class BatchEngineExportTaskModelArgumentsResolver
 		BatchEngineExportTaskModelImpl batchEngineExportTaskModelImpl =
 			(BatchEngineExportTaskModelImpl)baseModel;
 
-		long columnBitmask = batchEngineExportTaskModelImpl.getColumnBitmask();
+		if (!checkColumn ||
+			_hasModifiedColumns(batchEngineExportTaskModelImpl, columnNames)) {
 
-		if (!checkColumn || (columnBitmask == 0)) {
-			return _getValue(
-				batchEngineExportTaskModelImpl, columnNames, original);
-		}
-
-		Long finderPathColumnBitmask = _finderPathColumnBitmasksCache.get(
-			finderPath);
-
-		if (finderPathColumnBitmask == null) {
-			finderPathColumnBitmask = 0L;
-
-			for (String columnName : columnNames) {
-				finderPathColumnBitmask |=
-					batchEngineExportTaskModelImpl.getColumnBitmask(columnName);
-			}
-
-			_finderPathColumnBitmasksCache.put(
-				finderPath, finderPathColumnBitmask);
-		}
-
-		if ((columnBitmask & finderPathColumnBitmask) != 0) {
 			return _getValue(
 				batchEngineExportTaskModelImpl, columnNames, original);
 		}
@@ -114,7 +93,26 @@ public class BatchEngineExportTaskModelArgumentsResolver
 		return arguments;
 	}
 
-	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
-		new ConcurrentHashMap<>();
+	private static boolean _hasModifiedColumns(
+		BatchEngineExportTaskModelImpl batchEngineExportTaskModelImpl,
+		String[] columnNames) {
+
+		if (columnNames.length == 0) {
+			return false;
+		}
+
+		for (String columnName : columnNames) {
+			if (!Objects.equals(
+					batchEngineExportTaskModelImpl.getColumnOriginalValue(
+						columnName),
+					batchEngineExportTaskModelImpl.getColumnValue(
+						columnName))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 }

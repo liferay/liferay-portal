@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
-import com.liferay.portal.spring.extender.service.ServiceReference;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchLazyBlobEntryException;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntry;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryTable;
@@ -168,7 +167,7 @@ public class LazyBlobEntryPersistenceImpl
 		List<LazyBlobEntry> list = null;
 
 		if (useFinderCache) {
-			list = (List<LazyBlobEntry>)finderCache.getResult(
+			list = (List<LazyBlobEntry>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if ((list != null) && !list.isEmpty()) {
@@ -235,7 +234,7 @@ public class LazyBlobEntryPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -551,7 +550,8 @@ public class LazyBlobEntryPersistenceImpl
 
 		Object[] finderArgs = new Object[] {uuid};
 
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+		Long count = (Long)dummyFinderCache.getResult(
+			finderPath, finderArgs, this);
 
 		if (count == null) {
 			StringBundler sb = new StringBundler(2);
@@ -586,7 +586,7 @@ public class LazyBlobEntryPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(finderPath, finderArgs, count);
+				dummyFinderCache.putResult(finderPath, finderArgs, count);
 			}
 			catch (Exception exception) {
 				throw processException(exception);
@@ -679,7 +679,7 @@ public class LazyBlobEntryPersistenceImpl
 		Object result = null;
 
 		if (useFinderCache) {
-			result = finderCache.getResult(
+			result = dummyFinderCache.getResult(
 				_finderPathFetchByUUID_G, finderArgs, this);
 		}
 
@@ -732,7 +732,7 @@ public class LazyBlobEntryPersistenceImpl
 
 				if (list.isEmpty()) {
 					if (useFinderCache) {
-						finderCache.putResult(
+						dummyFinderCache.putResult(
 							_finderPathFetchByUUID_G, finderArgs, list);
 					}
 				}
@@ -825,11 +825,11 @@ public class LazyBlobEntryPersistenceImpl
 	 */
 	@Override
 	public void cacheResult(LazyBlobEntry lazyBlobEntry) {
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			LazyBlobEntryImpl.class, lazyBlobEntry.getPrimaryKey(),
 			lazyBlobEntry);
 
-		finderCache.putResult(
+		dummyFinderCache.putResult(
 			_finderPathFetchByUUID_G,
 			new Object[] {lazyBlobEntry.getUuid(), lazyBlobEntry.getGroupId()},
 			lazyBlobEntry);
@@ -852,7 +852,7 @@ public class LazyBlobEntryPersistenceImpl
 		}
 
 		for (LazyBlobEntry lazyBlobEntry : lazyBlobEntries) {
-			if (entityCache.getResult(
+			if (dummyEntityCache.getResult(
 					LazyBlobEntryImpl.class, lazyBlobEntry.getPrimaryKey()) ==
 						null) {
 
@@ -870,9 +870,9 @@ public class LazyBlobEntryPersistenceImpl
 	 */
 	@Override
 	public void clearCache() {
-		entityCache.clearCache(LazyBlobEntryImpl.class);
+		dummyEntityCache.clearCache(LazyBlobEntryImpl.class);
 
-		finderCache.clearCache(LazyBlobEntryImpl.class);
+		dummyFinderCache.clearCache(LazyBlobEntryImpl.class);
 	}
 
 	/**
@@ -884,22 +884,23 @@ public class LazyBlobEntryPersistenceImpl
 	 */
 	@Override
 	public void clearCache(LazyBlobEntry lazyBlobEntry) {
-		entityCache.removeResult(LazyBlobEntryImpl.class, lazyBlobEntry);
+		dummyEntityCache.removeResult(LazyBlobEntryImpl.class, lazyBlobEntry);
 	}
 
 	@Override
 	public void clearCache(List<LazyBlobEntry> lazyBlobEntries) {
 		for (LazyBlobEntry lazyBlobEntry : lazyBlobEntries) {
-			entityCache.removeResult(LazyBlobEntryImpl.class, lazyBlobEntry);
+			dummyEntityCache.removeResult(
+				LazyBlobEntryImpl.class, lazyBlobEntry);
 		}
 	}
 
 	@Override
 	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(LazyBlobEntryImpl.class);
+		dummyFinderCache.clearCache(LazyBlobEntryImpl.class);
 
 		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(LazyBlobEntryImpl.class, primaryKey);
+			dummyEntityCache.removeResult(LazyBlobEntryImpl.class, primaryKey);
 		}
 	}
 
@@ -911,7 +912,7 @@ public class LazyBlobEntryPersistenceImpl
 			lazyBlobEntryModelImpl.getGroupId()
 		};
 
-		finderCache.putResult(
+		dummyFinderCache.putResult(
 			_finderPathFetchByUUID_G, args, lazyBlobEntryModelImpl);
 	}
 
@@ -1059,14 +1060,8 @@ public class LazyBlobEntryPersistenceImpl
 				session.save(lazyBlobEntry);
 			}
 			else {
-				session.evict(
-					LazyBlobEntryImpl.class, lazyBlobEntry.getPrimaryKeyObj());
-
-				session.saveOrUpdate(lazyBlobEntry);
+				lazyBlobEntry = (LazyBlobEntry)session.merge(lazyBlobEntry);
 			}
-
-			session.flush();
-			session.clear();
 		}
 		catch (Exception exception) {
 			throw processException(exception);
@@ -1075,7 +1070,7 @@ public class LazyBlobEntryPersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			LazyBlobEntryImpl.class, lazyBlobEntryModelImpl, false, true);
 
 		cacheUniqueFindersCache(lazyBlobEntryModelImpl);
@@ -1222,7 +1217,7 @@ public class LazyBlobEntryPersistenceImpl
 		List<LazyBlobEntry> list = null;
 
 		if (useFinderCache) {
-			list = (List<LazyBlobEntry>)finderCache.getResult(
+			list = (List<LazyBlobEntry>)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 		}
 
@@ -1260,7 +1255,7 @@ public class LazyBlobEntryPersistenceImpl
 				cacheResult(list);
 
 				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
+					dummyFinderCache.putResult(finderPath, finderArgs, list);
 				}
 			}
 			catch (Exception exception) {
@@ -1292,7 +1287,7 @@ public class LazyBlobEntryPersistenceImpl
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)finderCache.getResult(
+		Long count = (Long)dummyFinderCache.getResult(
 			_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
@@ -1305,7 +1300,7 @@ public class LazyBlobEntryPersistenceImpl
 
 				count = (Long)query.uniqueResult();
 
-				finderCache.putResult(
+				dummyFinderCache.putResult(
 					_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 			}
 			catch (Exception exception) {
@@ -1326,7 +1321,7 @@ public class LazyBlobEntryPersistenceImpl
 
 	@Override
 	protected EntityCache getEntityCache() {
-		return entityCache;
+		return dummyEntityCache;
 	}
 
 	@Override
@@ -1392,14 +1387,8 @@ public class LazyBlobEntryPersistenceImpl
 	public void destroy() {
 		LazyBlobEntryUtil.setPersistence(null);
 
-		entityCache.removeCache(LazyBlobEntryImpl.class.getName());
+		dummyEntityCache.removeCache(LazyBlobEntryImpl.class.getName());
 	}
-
-	@ServiceReference(type = EntityCache.class)
-	protected EntityCache entityCache;
-
-	@ServiceReference(type = FinderCache.class)
-	protected FinderCache finderCache;
 
 	private static final String _SQL_SELECT_LAZYBLOBENTRY =
 		"SELECT lazyBlobEntry FROM LazyBlobEntry lazyBlobEntry";
@@ -1429,7 +1418,7 @@ public class LazyBlobEntryPersistenceImpl
 
 	@Override
 	protected FinderCache getFinderCache() {
-		return finderCache;
+		return dummyFinderCache;
 	}
 
 }

@@ -313,15 +313,6 @@ public class AnalyticsMessageLocalServiceWrapper
 	}
 
 	@Override
-	public
-		com.liferay.analytics.message.storage.model.
-			AnalyticsMessageBodyBlobModel getBodyBlobModel(
-				java.io.Serializable primaryKey) {
-
-		return _analyticsMessageLocalService.getBodyBlobModel(primaryKey);
-	}
-
-	@Override
 	public java.util.List<Long> getCompanyIds() {
 		return _analyticsMessageLocalService.getCompanyIds();
 	}
@@ -353,12 +344,6 @@ public class AnalyticsMessageLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _analyticsMessageLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public java.io.InputStream openBodyInputStream(long analyticsMessageId) {
-		return _analyticsMessageLocalService.openBodyInputStream(
-			analyticsMessageId);
 	}
 
 	/**

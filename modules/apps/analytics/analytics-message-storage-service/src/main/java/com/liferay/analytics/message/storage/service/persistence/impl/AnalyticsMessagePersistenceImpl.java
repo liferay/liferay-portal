@@ -194,7 +194,7 @@ public class AnalyticsMessagePersistenceImpl
 			List<AnalyticsMessage> list = null;
 
 			if (useFinderCache) {
-				list = (List<AnalyticsMessage>)finderCache.getResult(
+				list = (List<AnalyticsMessage>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 
 				if ((list != null) && !list.isEmpty()) {
@@ -250,7 +250,8 @@ public class AnalyticsMessagePersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -563,7 +564,7 @@ public class AnalyticsMessagePersistenceImpl
 
 			Object[] finderArgs = new Object[] {companyId};
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				finderPath, finderArgs, this);
 
 			if (count == null) {
@@ -588,7 +589,7 @@ public class AnalyticsMessagePersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(finderPath, finderArgs, count);
+					dummyFinderCache.putResult(finderPath, finderArgs, count);
 				}
 				catch (Exception exception) {
 					throw processException(exception);
@@ -625,7 +626,7 @@ public class AnalyticsMessagePersistenceImpl
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					analyticsMessage.getCtCollectionId())) {
 
-			entityCache.putResult(
+			dummyEntityCache.putResult(
 				AnalyticsMessageImpl.class, analyticsMessage.getPrimaryKey(),
 				analyticsMessage);
 		}
@@ -653,7 +654,7 @@ public class AnalyticsMessagePersistenceImpl
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						analyticsMessage.getCtCollectionId())) {
 
-				if (entityCache.getResult(
+				if (dummyEntityCache.getResult(
 						AnalyticsMessageImpl.class,
 						analyticsMessage.getPrimaryKey()) == null) {
 
@@ -672,9 +673,9 @@ public class AnalyticsMessagePersistenceImpl
 	 */
 	@Override
 	public void clearCache() {
-		entityCache.clearCache(AnalyticsMessageImpl.class);
+		dummyEntityCache.clearCache(AnalyticsMessageImpl.class);
 
-		finderCache.clearCache(AnalyticsMessageImpl.class);
+		dummyFinderCache.clearCache(AnalyticsMessageImpl.class);
 	}
 
 	/**
@@ -686,23 +687,25 @@ public class AnalyticsMessagePersistenceImpl
 	 */
 	@Override
 	public void clearCache(AnalyticsMessage analyticsMessage) {
-		entityCache.removeResult(AnalyticsMessageImpl.class, analyticsMessage);
+		dummyEntityCache.removeResult(
+			AnalyticsMessageImpl.class, analyticsMessage);
 	}
 
 	@Override
 	public void clearCache(List<AnalyticsMessage> analyticsMessages) {
 		for (AnalyticsMessage analyticsMessage : analyticsMessages) {
-			entityCache.removeResult(
+			dummyEntityCache.removeResult(
 				AnalyticsMessageImpl.class, analyticsMessage);
 		}
 	}
 
 	@Override
 	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(AnalyticsMessageImpl.class);
+		dummyFinderCache.clearCache(AnalyticsMessageImpl.class);
 
 		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(AnalyticsMessageImpl.class, primaryKey);
+			dummyEntityCache.removeResult(
+				AnalyticsMessageImpl.class, primaryKey);
 		}
 	}
 
@@ -866,15 +869,9 @@ public class AnalyticsMessagePersistenceImpl
 				session.save(analyticsMessage);
 			}
 			else {
-				session.evict(
-					AnalyticsMessageImpl.class,
-					analyticsMessage.getPrimaryKeyObj());
-
-				session.saveOrUpdate(analyticsMessage);
+				analyticsMessage = (AnalyticsMessage)session.merge(
+					analyticsMessage);
 			}
-
-			session.flush();
-			session.clear();
 		}
 		catch (Exception exception) {
 			throw processException(exception);
@@ -883,7 +880,7 @@ public class AnalyticsMessagePersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(
+		dummyEntityCache.putResult(
 			AnalyticsMessageImpl.class, analyticsMessageModelImpl, false, true);
 
 		if (isNew) {
@@ -954,7 +951,7 @@ public class AnalyticsMessagePersistenceImpl
 		}
 
 		AnalyticsMessage analyticsMessage =
-			(AnalyticsMessage)entityCache.getResult(
+			(AnalyticsMessage)dummyEntityCache.getResult(
 				AnalyticsMessageImpl.class, primaryKey);
 
 		if (analyticsMessage != null) {
@@ -1036,7 +1033,7 @@ public class AnalyticsMessagePersistenceImpl
 						AnalyticsMessage.class, primaryKey)) {
 
 				AnalyticsMessage analyticsMessage =
-					(AnalyticsMessage)entityCache.getResult(
+					(AnalyticsMessage)dummyEntityCache.getResult(
 						AnalyticsMessageImpl.class, primaryKey);
 
 				if (analyticsMessage == null) {
@@ -1208,7 +1205,7 @@ public class AnalyticsMessagePersistenceImpl
 			List<AnalyticsMessage> list = null;
 
 			if (useFinderCache) {
-				list = (List<AnalyticsMessage>)finderCache.getResult(
+				list = (List<AnalyticsMessage>)dummyFinderCache.getResult(
 					finderPath, finderArgs, this);
 			}
 
@@ -1246,7 +1243,8 @@ public class AnalyticsMessagePersistenceImpl
 					cacheResult(list);
 
 					if (useFinderCache) {
-						finderCache.putResult(finderPath, finderArgs, list);
+						dummyFinderCache.putResult(
+							finderPath, finderArgs, list);
 					}
 				}
 				catch (Exception exception) {
@@ -1283,7 +1281,7 @@ public class AnalyticsMessagePersistenceImpl
 				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
 					AnalyticsMessage.class)) {
 
-			Long count = (Long)finderCache.getResult(
+			Long count = (Long)dummyFinderCache.getResult(
 				_finderPathCountAll, FINDER_ARGS_EMPTY, this);
 
 			if (count == null) {
@@ -1297,7 +1295,7 @@ public class AnalyticsMessagePersistenceImpl
 
 					count = (Long)query.uniqueResult();
 
-					finderCache.putResult(
+					dummyFinderCache.putResult(
 						_finderPathCountAll, FINDER_ARGS_EMPTY, count);
 				}
 				catch (Exception exception) {
@@ -1314,7 +1312,7 @@ public class AnalyticsMessagePersistenceImpl
 
 	@Override
 	protected EntityCache getEntityCache() {
-		return entityCache;
+		return dummyEntityCache;
 	}
 
 	@Override
@@ -1431,7 +1429,7 @@ public class AnalyticsMessagePersistenceImpl
 	public void deactivate() {
 		AnalyticsMessageUtil.setPersistence(null);
 
-		entityCache.removeCache(AnalyticsMessageImpl.class.getName());
+		dummyEntityCache.removeCache(AnalyticsMessageImpl.class.getName());
 	}
 
 	@Override
@@ -1463,12 +1461,6 @@ public class AnalyticsMessagePersistenceImpl
 	@Reference
 	protected CTPersistenceHelper ctPersistenceHelper;
 
-	@Reference
-	protected EntityCache entityCache;
-
-	@Reference
-	protected FinderCache finderCache;
-
 	private static final String _SQL_SELECT_ANALYTICSMESSAGE =
 		"SELECT analyticsMessage FROM AnalyticsMessage analyticsMessage";
 
@@ -1494,7 +1486,7 @@ public class AnalyticsMessagePersistenceImpl
 
 	@Override
 	protected FinderCache getFinderCache() {
-		return finderCache;
+		return dummyFinderCache;
 	}
 
 }

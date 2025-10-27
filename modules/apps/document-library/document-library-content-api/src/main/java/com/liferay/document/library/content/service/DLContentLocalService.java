@@ -7,7 +7,6 @@ package com.liferay.document.library.content.service;
 
 import com.liferay.document.library.content.exception.NoSuchContentException;
 import com.liferay.document.library.content.model.DLContent;
-import com.liferay.document.library.content.model.DLContentDataBlobModel;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -265,9 +264,6 @@ public interface DLContentLocalService
 	public List<DLContent> getContentsByDirectory(
 		long companyId, long repositoryId, String dirName);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DLContentDataBlobModel getDataBlobModel(Serializable primaryKey);
-
 	/**
 	 * Returns the document library content with the primary key.
 	 *
@@ -321,9 +317,6 @@ public interface DLContentLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasContent(
 		long companyId, long repositoryId, String path, String version);
-
-	@Transactional(readOnly = true)
-	public InputStream openDataInputStream(long contentId);
 
 	/**
 	 * Updates the document library content in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

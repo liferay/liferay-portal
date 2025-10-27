@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Content API
 Bundle-SymbolicName: com.liferay.document.library.content.api
-Bundle-Version: 7.0.1
+Bundle-Version: 8.0.0
 Export-Package:\
 	com.liferay.document.library.content.exception,\
 	com.liferay.document.library.content.model,\

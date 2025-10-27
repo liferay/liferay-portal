@@ -5,12 +5,10 @@
 
 package com.liferay.portal.tools.service.builder.test.service.base;
 
-import com.liferay.petra.io.AutoDeleteFileInputStream;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnectionUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
@@ -18,10 +16,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PersistedModel;
@@ -31,20 +27,15 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalServiceImpl;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntry;
-import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryBlob1BlobModel;
-import com.liferay.portal.tools.service.builder.test.model.LazyBlobEntryBlob2BlobModel;
 import com.liferay.portal.tools.service.builder.test.service.LazyBlobEntryLocalService;
 import com.liferay.portal.tools.service.builder.test.service.LazyBlobEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.LazyBlobEntryPersistence;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
-import java.sql.Blob;
 import java.sql.Connection;
 
 import java.util.List;
@@ -474,110 +465,7 @@ public abstract class LazyBlobEntryLocalServiceBaseImpl
 		this.counterLocalService = counterLocalService;
 	}
 
-	@Override
-	public LazyBlobEntryBlob1BlobModel getBlob1BlobModel(
-		Serializable primaryKey) {
-
-		Session session = null;
-
-		try {
-			session = lazyBlobEntryPersistence.openSession();
-
-			return (LazyBlobEntryBlob1BlobModel)session.get(
-				LazyBlobEntryBlob1BlobModel.class, primaryKey);
-		}
-		catch (Exception exception) {
-			throw lazyBlobEntryPersistence.processException(exception);
-		}
-		finally {
-			lazyBlobEntryPersistence.closeSession(session);
-		}
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public InputStream openBlob1InputStream(long lazyBlobEntryId) {
-		try {
-			LazyBlobEntryBlob1BlobModel LazyBlobEntryBlob1BlobModel =
-				getBlob1BlobModel(lazyBlobEntryId);
-
-			Blob blob = LazyBlobEntryBlob1BlobModel.getBlob1Blob();
-
-			if (blob == null) {
-				return _EMPTY_INPUT_STREAM;
-			}
-
-			InputStream inputStream = blob.getBinaryStream();
-
-			if (_useTempFile) {
-				inputStream = new AutoDeleteFileInputStream(
-					_file.createTempFile(inputStream));
-			}
-
-			return inputStream;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	@Override
-	public LazyBlobEntryBlob2BlobModel getBlob2BlobModel(
-		Serializable primaryKey) {
-
-		Session session = null;
-
-		try {
-			session = lazyBlobEntryPersistence.openSession();
-
-			return (LazyBlobEntryBlob2BlobModel)session.get(
-				LazyBlobEntryBlob2BlobModel.class, primaryKey);
-		}
-		catch (Exception exception) {
-			throw lazyBlobEntryPersistence.processException(exception);
-		}
-		finally {
-			lazyBlobEntryPersistence.closeSession(session);
-		}
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public InputStream openBlob2InputStream(long lazyBlobEntryId) {
-		try {
-			LazyBlobEntryBlob2BlobModel LazyBlobEntryBlob2BlobModel =
-				getBlob2BlobModel(lazyBlobEntryId);
-
-			Blob blob = LazyBlobEntryBlob2BlobModel.getBlob2Blob();
-
-			if (blob == null) {
-				return _EMPTY_INPUT_STREAM;
-			}
-
-			InputStream inputStream = blob.getBinaryStream();
-
-			if (_useTempFile) {
-				inputStream = new AutoDeleteFileInputStream(
-					_file.createTempFile(inputStream));
-			}
-
-			return inputStream;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
 	public void afterPropertiesSet() {
-		DB db = DBManagerUtil.getDB();
-
-		if ((db.getDBType() != DBType.DB2) &&
-			(db.getDBType() != DBType.MYSQL) &&
-			(db.getDBType() != DBType.MARIADB)) {
-
-			_useTempFile = true;
-		}
-
 		LazyBlobEntryLocalServiceUtil.setService(lazyBlobEntryLocalService);
 	}
 
@@ -646,13 +534,5 @@ public abstract class LazyBlobEntryLocalServiceBaseImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LazyBlobEntryLocalServiceBaseImpl.class);
-
-	@BeanReference(type = File.class)
-	protected File _file;
-
-	private static final InputStream _EMPTY_INPUT_STREAM =
-		new UnsyncByteArrayInputStream(new byte[0]);
-
-	private boolean _useTempFile;
 
 }

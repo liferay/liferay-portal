@@ -339,13 +339,6 @@ public class DLContentLocalServiceWrapper
 			companyId, repositoryId, dirName);
 	}
 
-	@Override
-	public com.liferay.document.library.content.model.DLContentDataBlobModel
-		getDataBlobModel(java.io.Serializable primaryKey) {
-
-		return _dlContentLocalService.getDataBlobModel(primaryKey);
-	}
-
 	/**
 	 * Returns the document library content with the primary key.
 	 *
@@ -420,11 +413,6 @@ public class DLContentLocalServiceWrapper
 
 		return _dlContentLocalService.hasContent(
 			companyId, repositoryId, path, version);
-	}
-
-	@Override
-	public java.io.InputStream openDataInputStream(long contentId) {
-		return _dlContentLocalService.openDataInputStream(contentId);
 	}
 
 	/**

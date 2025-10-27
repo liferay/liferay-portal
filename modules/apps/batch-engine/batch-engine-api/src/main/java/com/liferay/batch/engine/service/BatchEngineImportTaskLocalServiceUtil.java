@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.List;
@@ -366,13 +365,6 @@ public class BatchEngineImportTaskLocalServiceUtil {
 		return getService().getBatchEngineImportTasksCount(companyId);
 	}
 
-	public static
-		com.liferay.batch.engine.model.BatchEngineImportTaskContentBlobModel
-			getContentBlobModel(Serializable primaryKey) {
-
-		return getService().getContentBlobModel(primaryKey);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -404,12 +396,6 @@ public class BatchEngineImportTaskLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static InputStream openContentInputStream(
-		long batchEngineImportTaskId) {
-
-		return getService().openContentInputStream(batchEngineImportTaskId);
 	}
 
 	/**

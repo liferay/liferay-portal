@@ -146,6 +146,12 @@ public class DLContentPersistenceTest {
 
 		_dlContents.add(_persistence.update(newDLContent));
 
+		Session session = _persistence.openSession();
+
+		session.flush();
+
+		session.clear();
+
 		DLContent existingDLContent = _persistence.findByPrimaryKey(
 			newDLContent.getPrimaryKey());
 
