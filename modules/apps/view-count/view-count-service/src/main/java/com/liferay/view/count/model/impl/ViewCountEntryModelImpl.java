@@ -77,7 +77,7 @@ public class ViewCountEntryModelImpl
 	public static final String TABLE_SQL_DROP = "drop table ViewCountEntry";
 
 	public static final String ORDER_BY_JPQL =
-		" ORDER BY viewCountEntry.id.companyId ASC, viewCountEntry.id.classNameId ASC, viewCountEntry.id.classPK ASC";
+		" ORDER BY viewCountEntry.primaryKey.companyId ASC, viewCountEntry.primaryKey.classNameId ASC, viewCountEntry.primaryKey.classPK ASC";
 
 	public static final String ORDER_BY_SQL =
 		" ORDER BY ViewCountEntry.companyId ASC, ViewCountEntry.classNameId ASC, ViewCountEntry.classPK ASC";

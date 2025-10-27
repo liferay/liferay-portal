@@ -617,10 +617,10 @@ public class ViewCountEntryPersistenceImpl
 	}
 
 	private static final String _FINDER_COLUMN_C_CN_COMPANYID_2 =
-		"viewCountEntry.id.companyId = ? AND ";
+		"viewCountEntry.primaryKey.companyId = ? AND ";
 
 	private static final String _FINDER_COLUMN_C_CN_CLASSNAMEID_2 =
-		"viewCountEntry.id.classNameId = ?";
+		"viewCountEntry.primaryKey.classNameId = ?";
 
 	public ViewCountEntryPersistenceImpl() {
 		setModelClass(ViewCountEntry.class);
