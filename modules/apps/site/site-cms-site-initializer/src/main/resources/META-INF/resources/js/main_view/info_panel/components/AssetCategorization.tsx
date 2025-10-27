@@ -35,7 +35,7 @@ export default function AssetCategorization({
 	getObjectEntryURL: string;
 	inputSize?: CategorizationInputSize;
 	onUpdateCategorization?: (data: IAssetObjectEntry) => void;
-	updateObjectEntryURL: string;
+	updateObjectEntryURL?: string;
 }) {
 	const [objectEntry, setObjectEntry] = useState<IAssetObjectEntry>(
 		categorization as IAssetObjectEntry
@@ -45,18 +45,22 @@ export default function AssetCategorization({
 		keywords,
 		taxonomyCategoryIds,
 	}: EntryCategorizationDTO): Promise<void> => {
-		const {data, error} = await ObjectEntryService.patchObjectEntry(
-			{
-				keywords: keywords || objectEntry?.keywords!,
-				...(taxonomyCategoryIds ? {taxonomyCategoryIds} : {}),
-			},
-			updateObjectEntryURL
-		);
+		let newObjectEntry: IAssetObjectEntry | null = null;
+		let error: string | null = null;
 
-		if (data) {
-			setObjectEntry(data);
+		if (updateObjectEntryURL && !categorization) {
+			({data: newObjectEntry, error} =
+				await ObjectEntryService.patchObjectEntry(
+					{
+						keywords: keywords || objectEntry?.keywords!,
+						...(taxonomyCategoryIds ? {taxonomyCategoryIds} : {}),
+					},
+					updateObjectEntryURL
+				));
+		}
 
-			onUpdateCategorization?.(data);
+		if (newObjectEntry) {
+			setObjectEntry(newObjectEntry);
 		}
 		else if (error) {
 			if (keywords?.length) {
