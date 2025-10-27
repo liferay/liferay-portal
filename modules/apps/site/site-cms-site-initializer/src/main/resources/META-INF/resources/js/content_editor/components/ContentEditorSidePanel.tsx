@@ -45,6 +45,7 @@ type Props = {
 };
 
 type SidePanelProps = Props & {
+	categorizationFields: CategorizationFields;
 	dateConfig: datetimeUtils.DateConfig;
 	onUpdateCategorization: (props: UpdateCategorizationProps) => void;
 	onUpdateSchedule: (props: UpdateScheduleProps) => void;
@@ -192,6 +193,7 @@ export default function ContentEditorSidePanel(props: Props) {
 		<>
 			<SidePanel
 				{...props}
+				categorizationFields={categorizationFields}
 				dateConfig={dateConfig}
 				onUpdateCategorization={onUpdateCategorization}
 				onUpdateSchedule={onUpdateSchedule}
