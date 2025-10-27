@@ -264,6 +264,8 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 
 				return new TaxonomyCategoryBrief() {
 					{
+						setTaxonomyCategoryExternalReferenceCode(
+							assetCategory::getExternalReferenceCode);
 						setScope(
 							() -> ScopeUtil.toScope(
 								assetCategory.getGroupId()));
