@@ -13,25 +13,32 @@ import ObjectEntryService, {
 import AssetCategories from './AssetCategories';
 import AssetTags from './AssetTags';
 
+type Categorization = Pick<
+	IAssetObjectEntry,
+	'keywords' | 'taxonomyCategoryBriefs'
+>;
+
 export type CategorizationInputSize = ComponentProps<
 	typeof ClayInput
 >['sizing'];
 
 export default function AssetCategorization({
+	categorization,
 	cmsGroupId,
 	getObjectEntryURL,
 	inputSize,
 	onUpdateCategorization,
 	updateObjectEntryURL,
 }: {
+	categorization?: Categorization;
 	cmsGroupId: number | string;
 	getObjectEntryURL: string;
 	inputSize?: CategorizationInputSize;
 	onUpdateCategorization?: (data: IAssetObjectEntry) => void;
 	updateObjectEntryURL: string;
 }) {
-	const [objectEntry, setObjectEntry] = useState<IAssetObjectEntry | null>(
-		null
+	const [objectEntry, setObjectEntry] = useState<IAssetObjectEntry>(
+		categorization as IAssetObjectEntry
 	);
 
 	const updateObjectEntry = async ({
@@ -67,9 +74,26 @@ export default function AssetCategorization({
 				await ObjectEntryService.getObjectEntry(getObjectEntryURL);
 
 			if (data) {
-				setObjectEntry(data);
+				let newObjectEntry = data;
 
-				onUpdateCategorization?.(data);
+				setObjectEntry((objectEntry) => {
+					if (objectEntry) {
+						const {keywords, taxonomyCategoryBriefs} = objectEntry;
+
+						newObjectEntry = {
+							...data,
+							keywords: [...data.keywords, ...keywords],
+							taxonomyCategoryBriefs: [
+								...data.taxonomyCategoryBriefs,
+								...taxonomyCategoryBriefs,
+							],
+						};
+					}
+
+					return newObjectEntry;
+				});
+
+				onUpdateCategorization?.(newObjectEntry);
 			}
 			else if (error) {
 				console.error(error);
@@ -93,6 +117,7 @@ export default function AssetCategorization({
 			<AssetTags
 				cmsGroupId={cmsGroupId}
 				inputSize={inputSize}
+				key={objectEntry.keywords?.join(',') || 'tags'}
 				objectEntry={objectEntry}
 				updateObjectEntry={updateObjectEntry}
 			/>
