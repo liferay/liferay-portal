@@ -50,7 +50,7 @@ const renderComponent = (state?: Partial<State>) => {
 };
 
 const closeToast = async () => {
-	await userEvent.click(screen.getByRole('button', {name: 'Close'}));
+	await userEvent.click(screen.getByRole('button', {name: 'close'}));
 };
 
 describe('PicklistBuilderManagementBar', () => {

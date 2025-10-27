@@ -76,7 +76,7 @@ const renderComponent = () => {
 };
 
 const closeToast = async () => {
-	await userEvent.click(screen.getByRole('button', {name: 'Close'}));
+	await userEvent.click(screen.getByRole('button', {name: 'close'}));
 };
 
 describe('CommentsPanel', () => {
