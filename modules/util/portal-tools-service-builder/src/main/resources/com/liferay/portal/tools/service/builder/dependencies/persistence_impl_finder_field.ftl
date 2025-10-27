@@ -9,7 +9,7 @@
 </#if>
 
 <#if entity.hasCompoundPK() && entityColumn.isPrimary()>
-	<#assign finderFieldName = entity.alias + ".id." + entityColumnName />
+	<#assign finderFieldName = entity.alias + ".primaryKey." + entityColumnName />
 <#else>
 	<#assign finderFieldName = entity.alias + "." + entityColumnName />
 </#if>
