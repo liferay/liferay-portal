@@ -118,6 +118,11 @@ public class ObjectEntryManagerUtil {
 			existingObjectEntry.setStatus(objectEntry::getStatus);
 		}
 
+		if (objectEntry.getTaxonomyCategoryBriefs() != null) {
+			existingObjectEntry.setTaxonomyCategoryBriefs(
+				objectEntry::getTaxonomyCategoryBriefs);
+		}
+
 		if (objectEntry.getTaxonomyCategoryIds() != null) {
 			existingObjectEntry.setTaxonomyCategoryIds(
 				objectEntry::getTaxonomyCategoryIds);
