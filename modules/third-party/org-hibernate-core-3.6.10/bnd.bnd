@@ -1,3 +1,0 @@
-Bundle-SymbolicName: org.hibernate.core
-Bundle-Version: 3.6.10.LIFERAY-PATCHED-7
-Export-Package: org.hibernate.*
