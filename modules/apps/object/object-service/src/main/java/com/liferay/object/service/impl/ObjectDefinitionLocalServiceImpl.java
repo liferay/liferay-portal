@@ -1676,14 +1676,14 @@ public class ObjectDefinitionLocalServiceImpl
 
 		try {
 		_log.error(
-			"Getting languages for companyId = " +
+			"PDY Getting languages for companyId = " +
 				CompanyThreadLocal.getCompanyId());
 
 			for (Locale locale : _language.getAvailableLocales()) {
 				String languageId = LocaleUtil.toLanguageId(locale);
 
 				_log.error(
-					"Adding PLOEntry for languageId = " + languageId);
+					"PDY Adding PLOEntry for languageId = " + languageId);
 
 				_ploEntryLocalService.addOrUpdatePLOEntry(
 					objectDefinition.getCompanyId(),

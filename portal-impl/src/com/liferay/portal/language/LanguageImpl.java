@@ -2097,11 +2097,11 @@ public class LanguageImpl implements Language, Serializable {
 		}
 
 		private CompanyLocalesBag(long companyId) {
-			_log.error("{companyId = " + companyId + "}");
+			_log.error("PDY {companyId = " + companyId + "}");
 
 			String[] languageIds = PropsValues.LOCALES;
 
-			_log.error("There are " + languageIds.length + " languageIds");
+			_log.error("PDY There are " + languageIds.length + " languageIds");
 
 			if (companyId != CompanyConstants.SYSTEM) {
 				try {
@@ -2110,7 +2110,7 @@ public class LanguageImpl implements Language, Serializable {
 						PropsValues.LOCALES_ENABLED);
 
 					_log.error(
-						"There are " + languageIds.length + " languageIds");
+						"PDY-SYSTEM There are " + languageIds.length + " languageIds");
 				}
 				catch (SystemException systemException) {
 
@@ -2123,12 +2123,12 @@ public class LanguageImpl implements Language, Serializable {
 					languageIds = PropsValues.LOCALES_ENABLED;
 
 					_log.error(
-						"There are " + languageIds.length + " languageIds");
+						"PDY-EXCEPTION There are " + languageIds.length + " languageIds");
 				}
 			}
 
 			_log.error(
-				"Current languageIds = " + ArrayUtil.toString(languageIds, ""));
+				"PDY Current languageIds = " + ArrayUtil.toString(languageIds, ""));
 
 			Locale defaultLocale = LocaleUtil.getDefault();
 
@@ -2164,14 +2164,14 @@ public class LanguageImpl implements Language, Serializable {
 
 			for (String languageId : languageIds) {
 				if (languageId.equals("in_ID")) {
-					_log.error("Encountered language ID 'in_ID'");
+					_log.error("PDY Encountered language ID 'in_ID'");
 				}
 
 				Locale locale = LocaleUtil.fromLanguageId(languageId, false);
 
 				if (languageId.equals("in_ID")) {
 					_log.error(
-						"New language ID = " + LocaleUtil.toLanguageId(locale));
+						"PDY New language ID = " + LocaleUtil.toLanguageId(locale));
 				}
 
 				String languageCode = languageId;
