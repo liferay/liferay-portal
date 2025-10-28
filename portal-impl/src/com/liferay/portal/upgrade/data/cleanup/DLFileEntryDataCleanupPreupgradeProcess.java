@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -148,17 +149,30 @@ public class DLFileEntryDataCleanupPreupgradeProcess
 	}
 
 	private DataCleanupPreupgradeProcess
-		_getDLFileEntryMetadataDataCleanupPreupgradeProcess() {
+			_getDLFileEntryMetadataDataCleanupPreupgradeProcess()
+		throws Exception {
+
+		List<String> structureIds = new ArrayList<>();
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select structureId from DDMStructure where ",
+					"DDMStructure.classNameId in (select classNameId from ",
+					"ClassName_ where value in ('",
+					DLFileEntryMetadata.class.getName(), "', '",
+					RawMetadataProcessor.class.getName(), "'))"));
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			while (resultSet.next()) {
+				structureIds.add(resultSet.getString(1));
+			}
+		}
 
 		return new DataCleanupPreupgradeProcess(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
-					"exists (select 1 from DDMStructure where ",
-					"[$SOURCE_TABLE_ALIAS$].structureId = DDMStructure.",
-					"structureId and DDMStructure.classNameId in (select ",
-					"classNameId from ClassName_ where value in ('",
-					DLFileEntryMetadata.class.getName(), "', '",
-					RawMetadataProcessor.class.getName(), "')))"),
+					"[$SOURCE_TABLE_ALIAS$].structureId in (",
+					String.join(", ", structureIds), ")"),
 				"classPK", "DDMStorageLink", "DDMStorageId",
 				"DLFileEntryMetadata"));
 	}
