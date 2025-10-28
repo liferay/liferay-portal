@@ -3840,7 +3840,7 @@ public class BundleSiteInitializerTest {
 			0,
 			_menuAccessConfigurationManager.getAccessToControlMenuRoleIds(
 				_group.getGroupId()).length);
-		Assert.assertFalse(
+		Assert.assertTrue(
 			_menuAccessConfigurationManager.isShowControlMenuByRole(
 				_group.getGroupId()));
 	}

@@ -84,7 +84,7 @@ components:
                     readOnly: true
                     type: string
                 scope:
-                    $ref: "#/components/schemas/Scope"
+                    $ref: ../../headless/headless-object/headless-object-impl/rest-openapi.yaml#Scope
                 thumbnailURL:
                     # @review
                     description:
@@ -243,14 +243,6 @@ components:
                     type: array
                     writeOnly: true
             type: object
-        Scope:
-            properties:
-                externalReferenceCode:
-                    type: string
-                type:
-                    enum: [AssetLibrary, CMS, Site]
-                    type: string
-            type: object
         Status:
             properties:
                 code:
@@ -267,6 +259,8 @@ components:
             properties:
                 objectDefinitionBrief:
                     $ref: "#/components/schemas/ObjectDefinitionBrief"
+                scope:
+                    $ref: ../../headless/headless-object/headless-object-impl/rest-openapi.yaml#Scope
                 version:
                     $ref: "#/components/schemas/Version"
             type: object
@@ -301,7 +295,7 @@ components:
                     type: object
                     writeOnly: true
                 scope:
-                    $ref: "#/components/schemas/Scope"
+                    $ref: ../../headless/headless-object/headless-object-impl/rest-openapi.yaml#Scope
                 taxonomyCategoryExternalReferenceCode:
                     # @review
                     description:

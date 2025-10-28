@@ -21,7 +21,6 @@ import {
 	getProductSpecification,
 } from '../../utils/productUtils';
 import ProductPurchaseOutlet from './ProductPurchaseOutlet';
-import ProductPurchaseAccountSelection from './pages/AccountSelection';
 import AppAccountSelection from './pages/App/AccountSelection';
 import {InsuficientResources} from './pages/App/InsuficientResources';
 import ContactSalesPage from './pages/App/InsuficientResources/ContactSales';
@@ -75,18 +74,15 @@ export const productTypeRoutes = {
 	},
 	[ProductTypeVocabulary.SOLUTION]: {
 		metadata: {
+			showAccountSelected: false,
+			showSteps: false,
 			skipSingleAccountSelection: true,
 			tinyStepsDisplay: false,
 		},
 		routes: [
 			{
-				element: ProductPurchaseAccountSelection,
-				index: true,
-				title: i18n.translate('account-selection'),
-			},
-			{
 				element: SolutionProvisioningForm,
-				path: 'form',
+				path: '',
 				title: i18n.translate('form'),
 			},
 		],

@@ -114,7 +114,7 @@ const AssignSegments: React.FC<IAssignSegmentsProps> = ({groupId, onClose}) => {
 
 		const segmentsFn = toUpdate.map(({channelId, id}) => {
 			if (channelId === DELETE_OPTION.value) {
-				return () => API.individualSegment.delete({groupId, id});
+				return () => API.individualSegment.delete({groupId, ids: [id]});
 			}
 
 			return () =>

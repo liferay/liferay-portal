@@ -176,6 +176,7 @@ function openToast({
 	const root = render(
 		<ClayAlert
 			autoClose={autoClose}
+			closeButtonAriaLabel={Liferay.Language.get('close')}
 			displayType={type}
 			onClick={(event) => onClick({event, onClose: onCloseFn})}
 			onClose={onCloseFn as () => void}

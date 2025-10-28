@@ -6,8 +6,6 @@
 package com.liferay.portal.kernel.language;
 
 import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.io.StreamUtil;
-import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.petra.string.StringPool;
 
@@ -24,7 +22,6 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 
 /**
  * @author Raymond Augé
@@ -70,7 +67,8 @@ public class UTF8Control extends ResourceBundle.Control {
 		urlConnection.setUseCaches(!reload);
 
 		try (InputStream inputStream = urlConnection.getInputStream();
-			Reader reader = _toReader(url, inputStream)) {
+			Reader reader = new InputStreamReader(
+				inputStream, StringPool.UTF8)) {
 
 			ResourceBundle resourceBundle = new PropertyResourceBundle(reader);
 
@@ -84,47 +82,8 @@ public class UTF8Control extends ResourceBundle.Control {
 		}
 	}
 
-	private Reader _toReader(URL url, InputStream inputStream)
-		throws IOException {
-
-		if (_textReplacerBiFunction == null) {
-			return new InputStreamReader(inputStream, StringPool.UTF8);
-		}
-
-		return new UnsyncStringReader(
-			_textReplacerBiFunction.apply(
-				"UTF8Control#" + url,
-				StreamUtil.toString(inputStream, StringPool.UTF8)));
-	}
-
 	private static final Map<ClassLoader, Map<URL, ResourceBundle>>
 		_resourceBundlesMap = new ConcurrentReferenceKeyHashMap<>(
 			FinalizeManager.WEAK_REFERENCE_FACTORY);
-	private static final BiFunction<String, String, String>
-		_textReplacerBiFunction;
-
-	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"TextReplacerBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
-	}
 
 }

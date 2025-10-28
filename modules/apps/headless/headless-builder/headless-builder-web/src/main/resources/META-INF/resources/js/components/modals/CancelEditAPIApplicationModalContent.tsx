@@ -21,7 +21,9 @@ export function CancelEditAPIApplicationModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('cancel-changes')}
 			</ClayModal.Header>
 

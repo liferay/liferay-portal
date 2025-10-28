@@ -49,11 +49,12 @@ public class CommerceOrderItemSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
 		OrderItemResource orderItemResource = _buildOrderItemResource(
-			false, user);
+			checkPermissions, user);
 
 		OrderItem orderItem = orderItemResource.postOrderIdOrderItem(
 			GetterUtil.getLong(values.get("orderId")), _toOrderItem(values));

@@ -44,7 +44,6 @@ export const VariantTable = ({experiment}) => {
 				headingNowrap={false}
 				internalSort
 				items={variants}
-				nowrap={false}
 				onOrderIOMapChange={onOrderIOMapChange}
 				orderIOMap={orderIOMap}
 				rowIdentifier='dxpVariantId'

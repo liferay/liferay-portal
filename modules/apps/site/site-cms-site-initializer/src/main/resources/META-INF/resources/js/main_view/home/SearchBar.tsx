@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import React, {ChangeEvent, useState} from 'react';
 
 import '../../../css/home/SearchBar.scss';
@@ -44,13 +44,15 @@ export default function SearchBar({
 								type="text"
 							/>
 
-							<button
+							<ClayButtonWithIcon
 								aria-label={Liferay.Language.get('search')}
-								className="btn btn-unstyled position-absolute search-button"
+								className="position-absolute search-button"
+								displayType="unstyled"
+								monospaced
+								symbol="search"
+								title={Liferay.Language.get('search-for')}
 								type="submit"
-							>
-								<ClayIcon symbol="search" />
-							</button>
+							/>
 						</form>
 					</div>
 				</div>

@@ -35,7 +35,10 @@ const HTMLEditorModal = ({
 	return (
 		visible && (
 			<ClayModal observer={observer} size="full-screen">
-				<ClayModal.Header className="cadmin">
+				<ClayModal.Header
+					className="cadmin"
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('edit-content')}
 				</ClayModal.Header>
 

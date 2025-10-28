@@ -6,7 +6,7 @@
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {slaStatusConstants} from '../../../../src/main/resources/META-INF/resources/js/components/filter/SLAStatusFilter.es';
 import SummaryCard from '../../../../src/main/resources/META-INF/resources/js/components/process-metrics/process-items/SummaryCard.es';

@@ -5,6 +5,7 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.5.11.JAKARTA-LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "io.swagger.core.v3", name: "swagger-models-jakarta", version: "2.2.28"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation group: "org.yaml", name: "snakeyaml", version: "2.3"
 	testIntegrationImplementation project(":apps:account:account-api")

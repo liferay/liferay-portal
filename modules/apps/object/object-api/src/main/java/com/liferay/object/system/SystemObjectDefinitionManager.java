@@ -37,7 +37,8 @@ import java.util.Set;
  */
 public interface SystemObjectDefinitionManager {
 
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception;
 
 	public void checkModelResourcePermission(

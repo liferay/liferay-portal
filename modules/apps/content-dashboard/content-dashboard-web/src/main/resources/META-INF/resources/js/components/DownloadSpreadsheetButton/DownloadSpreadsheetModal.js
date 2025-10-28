@@ -29,7 +29,9 @@ const DownloadSpreadsheetModal = ({
 					status="info"
 					zIndex={2040}
 				>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('file-generation-in-progress')}
 					</ClayModal.Header>
 

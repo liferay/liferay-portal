@@ -7,7 +7,7 @@ application:
 author: Javier Gamarra
 changeTrackingEnabled: true
 clientDir: ../headless-admin-content-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 generateBatch: false
 graphQLNamespace: admin

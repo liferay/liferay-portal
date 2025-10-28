@@ -7,7 +7,7 @@ import {cleanup, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import LayoutReports from '../../../../src/main/resources/META-INF/resources/js/components/layout_reports/LayoutReports';
 import {StoreContextProvider} from '../../../../src/main/resources/META-INF/resources/js/context/StoreContext';

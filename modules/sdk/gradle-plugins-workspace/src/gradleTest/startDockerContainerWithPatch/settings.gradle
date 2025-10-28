@@ -20,6 +20,8 @@ gradle.liferayWorkspace {
 gradle.projectsEvaluated {
 	Project rootProject = gradle.rootProject
 
+	File sinkFile = rootProject.file "sink.txt"
+
 	rootProject.tasks.register("assertLog", DockerLogsContainer) {
 		dependsOn rootProject.tasks.startDockerContainer
 		finalizedBy rootProject.tasks.cleanDockerImage
@@ -31,23 +33,20 @@ gradle.projectsEvaluated {
 			gradle.liferayWorkspace.dockerContainerId
 		}
 
-		String expectedLine = "[LIFERAY] ... into /mnt/liferay/patching"
-		boolean expectedLineDetected = false
-
-		sink new PrintWriter(new StringWriter()) {
-			public void write(String line) {
-				if (line.contains(expectedLine)) {
-					expectedLineDetected = true
-				}
-
-				rootProject.print line
-			}
-		}
+		sink = sinkFile
+		stdOut = true
 
 		doLast {
 			int retries = 0
 
+			boolean expectedLineDetected = false
+			String expectedLine = "[LIFERAY] ... into /mnt/liferay/patching"
+
 			while (!expectedLineDetected && (retries < 30)) {
+				if (sinkFile.exists() && sinkFile.text.contains(expectedLine)) {
+					expectedLineDetected = true
+				}
+
 				Thread.sleep(100)
 
 				retries++

@@ -56,9 +56,10 @@ public class UpgradeProcessUtil {
 			}
 			else {
 				preparedStatement = connection.prepareStatement(
-					sql + " and type_ = " + UserConstants.TYPE_GUEST);
+					sql + " and type_ = ?");
 
 				preparedStatement.setLong(1, companyId);
+				preparedStatement.setInt(2, UserConstants.TYPE_GUEST);
 			}
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {

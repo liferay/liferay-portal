@@ -24,7 +24,7 @@
 				"defaultLanguageId": "en_US",
 				"enableCategorization": true,
 				"enableComments": false,
-				"enableLocalization": false,
+				"enableLocalization": true,
 				"enableObjectEntryHistory": false,
 				"externalReferenceCode": "TESTOBJECTDEFINITION2",
 				"label": {

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {cleanup, fireEvent, getByText, render} from '@testing-library/react';
 import {Select} from 'dynamic-data-mapping-form-field-type';
 import React from 'react';
@@ -12,6 +12,11 @@ import {RuleEditor} from '../../../src/main/resources/META-INF/resources/js/page
 import {FIELDS, FIELDS_TYPES, OPERATORS_BY_TYPE} from '../__mock__/fields.es';
 
 global.fetch.enableFetchMocks();
+
+jest.mock('frontend-js-web', () => ({
+	...jest.requireActual('frontend-js-web'),
+	loadModule: () => {},
+}));
 
 const DEFAULT_RULE = {
 	actions: [

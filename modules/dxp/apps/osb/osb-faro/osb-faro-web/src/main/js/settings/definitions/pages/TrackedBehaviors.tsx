@@ -19,7 +19,6 @@ export const TrackedBehaviors: React.FC<ITrackedBehaviorsProps> = ({
 				getDefinitions({groupId}),
 				{active: true, label: Liferay.Language.get('behaviors')}
 			]}
-			groupId={groupId}
 			pageDescription={Liferay.Language.get(
 				'this-is-the-data-model-of-behaviors-tracked-within-analytics-cloud.-instructions-for-tracking-third-party-assets-in-analytics-cloud-are-provided-when-you-click-each-behavior.-click-and-conversion-goals-can-be-tracked-using-click-events'
 			)}

@@ -123,7 +123,7 @@
 					<div class="submit-feedback">
 						<a
 							class="text-decoration-none"
-							href="https://liferay.dev/c/portal/login?redirect=https://liferay.dev/ask/questions/liferay-learn-feedback/new"
+							href="http://discuss.liferay.com"
 						>
 							${languageUtil.get(locale, "submit-feedback", "Submit Feedback")}
 							<@clay["icon"] symbol="message-boards" />

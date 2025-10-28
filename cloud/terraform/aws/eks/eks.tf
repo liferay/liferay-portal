@@ -1,46 +1,53 @@
+locals {
+	oidc_provider_arn="arn:${var.arn_partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks.oidc_provider}"
+}
 module "eks" {
-	cluster_addons={
+	addons={
 		amazon-cloudwatch-observability={
 			most_recent=true
 		}
 		aws-ebs-csi-driver={
 			most_recent=true
+			service_account_role_arn=aws_iam_role.ebs_csi_driver.arn
 		}
 		coredns={
+			before_compute=true
 			most_recent=true
 		}
 		kube-proxy={
+			before_compute=true
 			most_recent=true
 		}
 		metrics-server={
 			most_recent=true
 		}
 		vpc-cni={
+			before_compute=true
 			most_recent=true
 		}
 	}
-	cluster_endpoint_private_access=true
-	cluster_endpoint_public_access=true
-	cluster_name="${var.deployment_name}-eks"
-	cluster_security_group_id=aws_security_group.cluster.id
-	cluster_version="1.32"
+	cloudwatch_log_group_retention_in_days=90
+	create_cloudwatch_log_group=true
+	create_kms_key=false
 	eks_managed_node_groups={
-		liferay_dxp={
+		"${var.deployment_name}"={
 			ami_type=var.node_group_ami_type
 			block_device_mappings={
-				device_name="/dev/xvda"
-				ebs={
-					encrypted=true
-					volume_size=var.root_volume_size
-					volume_type=var.root_volume_type
+				xvda={
+					device_name="/dev/xvda"
+					ebs={
+						encrypted=true
+						volume_size=var.root_volume_size
+						volume_type=var.root_volume_type
+					}
 				}
 			}
 			cluster_primary_security_group_id=module.eks.cluster_primary_security_group_id
 			desired_size=var.node_group_desired_size
 			disk_size=var.root_volume_size
 			iam_role_additional_policies={
-				AmazonEBSCSIDriverPolicy="arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-				CloudWatchAgentServerPolicy="arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+				AmazonEBSCSIDriverPolicy="arn:${var.arn_partition}:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+				CloudWatchAgentServerPolicy="arn:${var.arn_partition}:iam::aws:policy/CloudWatchAgentServerPolicy"
 			}
 			instance_types=[var.node_instance_type]
 			max_size=var.node_group_max_size
@@ -48,7 +55,7 @@ module "eks" {
 			tags={
 				DeploymentName=var.deployment_name
 				"kubernetes.io/cluster/${module.eks.cluster_name}"="owned"
-				"liferay.cloud/nodegroup/name"="liferay-dxp"
+				"liferay.cloud/nodegroup/name"=var.deployment_name
 				"liferay.cloud/nodegroup/type"=var.node_instance_type
 			}
 			vpc_security_group_ids=[
@@ -59,9 +66,99 @@ module "eks" {
 	}
 	enable_cluster_creator_admin_permissions=true
 	enable_irsa=true
+	encryption_config={
+		provider_key_arn=aws_kms_key.eks_secrets.arn
+	}
+	endpoint_private_access=true
+	endpoint_public_access=true
+	kubernetes_version=data.aws_eks_cluster_versions.available.cluster_versions[0].cluster_version
+	name="${var.deployment_name}-eks"
 	node_security_group_id=aws_security_group.nodes.id
+	security_group_id=aws_security_group.cluster.id
 	source="terraform-aws-modules/eks/aws"
 	subnet_ids=module.vpc.private_subnets
-	version="20.13.1"
+	version="21.3.1"
 	vpc_id=module.vpc.vpc_id
+}
+resource "aws_iam_role" "ebs_csi_driver" {
+	assume_role_policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action="sts:AssumeRoleWithWebIdentity"
+					Condition={
+						StringEquals={
+							"${module.eks.oidc_provider}:sub"="system:serviceaccount:kube-system:ebs-csi-controller-sa"
+							"${module.eks.oidc_provider}:aud"="sts.amazonaws.com"
+						}
+					}
+					Effect="Allow"
+					Principal={
+						Federated=local.oidc_provider_arn
+					}
+				}
+			]
+			Version="2012-10-17"
+		}
+	)
+	force_detach_policies=true
+	name="${var.deployment_name}-ebs_csi_driver"
+}
+resource "aws_iam_role" "irsa" {
+	assume_role_policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action="sts:AssumeRoleWithWebIdentity"
+					Condition={
+						StringEquals={
+							"${module.eks.oidc_provider}:sub" : "system:serviceaccount:${var.deployment_namespace}:liferay-default"
+						}
+					}
+					Effect="Allow"
+					Principal={
+						Federated=local.oidc_provider_arn
+					}
+				}
+			]
+			Version="2012-10-17"
+		}
+	)
+	force_detach_policies=true
+	name="${var.deployment_name}-irsa"
+}
+resource "aws_iam_role_policy" "this" {
+	count = length(var.ecr_repositories) > 0 ? 1 : 0
+	policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action=[
+						"ecr:BatchCheckLayerAvailability",
+						"ecr:BatchGetImage",
+						"ecr:GetAuthorizationToken",
+						"ecr:GetDownloadUrlForLayer"
+					]
+					Effect="Allow"
+					Resource=[
+						for k, v in var.ecr_repositories : v.arn
+					]
+				}
+			]
+			Version="2012-10-17"
+		}
+	)
+	role=aws_iam_role.irsa.id
+}
+resource "aws_iam_role_policy_attachment" "role_policy_attachment_ebs_csi_driver" {
+	policy_arn="arn:${var.arn_partition}:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+	role=aws_iam_role.ebs_csi_driver.name
+}
+resource "aws_kms_alias" "eks_kms_alias" {
+	name="alias/${var.deployment_name}-eks_kms"
+	target_key_id=aws_kms_key.eks_secrets.key_id
+}
+resource "aws_kms_key" "eks_secrets" {
+	deletion_window_in_days=7
+	description="KMS key for EKS secrets encryption"
 }

@@ -74,6 +74,7 @@ export const testWithExportImportAtInstanceLevelFF = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
+		'LPD-32050': {enabled: true},
 		'LPD-35914': {enabled: true},
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},

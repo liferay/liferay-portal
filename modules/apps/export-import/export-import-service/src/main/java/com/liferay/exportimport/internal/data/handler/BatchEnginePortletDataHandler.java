@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -258,7 +257,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					"JSON", BatchEngineTaskExecuteStatus.INITIAL.name(),
 					Collections.emptyMap(),
 					BatchEngineImportTaskConstants.
-						IMPORT_STRATEGY_TRANSACTIONAL_ON_ERROR_CONTINUE,
+						IMPORT_STRATEGY_ON_ERROR_CONTINUE,
 					BatchEngineTaskOperation.DELETE.name(),
 					HashMapBuilder.<String, Serializable>put(
 						"createStrategy", CreateStrategy.UPSERT.getDBOperation()
@@ -370,7 +369,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					BatchEngineTaskExecuteStatus.INITIAL.name(),
 					Collections.emptyMap(),
 					BatchEngineImportTaskConstants.
-						IMPORT_STRATEGY_TRANSACTIONAL_ON_ERROR_CONTINUE,
+						IMPORT_STRATEGY_ON_ERROR_CONTINUE,
 					BatchEngineTaskOperation.CREATE.name(),
 					BatchEnginePortletDataHandlerUtil.buildImportParameters(
 						registration.getExportImportDescriptor(),
@@ -378,27 +377,12 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 						_getSiteExternalReferenceCode(portletDataContext)),
 					registration.getTaskItemDelegateName());
 
-			try {
-				BatchEngineImportTask finalBatchEngineImportTask =
-					batchEngineImportTask;
+			try (SafeCloseable safeCloseable =
+					PortletDataContextThreadLocal.
+						setPortletDataContextWithSafeCloseable(
+							portletDataContext)) {
 
-				TransactionInvokerUtil.invoke(
-					transactionConfig,
-					() -> {
-						try (SafeCloseable safeCloseable =
-								PortletDataContextThreadLocal.
-									setPortletDataContextWithSafeCloseable(
-										portletDataContext)) {
-
-							_batchEngineImportTaskExecutor.execute(
-								finalBatchEngineImportTask);
-						}
-
-						return null;
-					});
-			}
-			catch (Throwable throwable) {
-				throw new PortletDataException(throwable);
+				_batchEngineImportTaskExecutor.execute(batchEngineImportTask);
 			}
 
 			batchEngineImportTask =

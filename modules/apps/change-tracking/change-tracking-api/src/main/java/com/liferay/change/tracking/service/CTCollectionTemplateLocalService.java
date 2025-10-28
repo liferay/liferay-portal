@@ -97,10 +97,12 @@ public interface CTCollectionTemplateLocalService
 	 *
 	 * @param ctCollectionTemplate the ct collection template
 	 * @return the ct collection template that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public CTCollectionTemplate deleteCTCollectionTemplate(
-		CTCollectionTemplate ctCollectionTemplate);
+			CTCollectionTemplate ctCollectionTemplate)
+		throws PortalException;
 
 	/**
 	 * Deletes the ct collection template with the primary key from the database. Also notifies the appropriate model listeners.

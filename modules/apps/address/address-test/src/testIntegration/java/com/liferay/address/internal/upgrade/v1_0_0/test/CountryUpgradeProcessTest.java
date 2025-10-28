@@ -12,7 +12,6 @@ import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.base.BaseTable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CountryLocalization;
@@ -119,9 +118,9 @@ public class CountryUpgradeProcessTest {
 	private void _delete(String tableName) throws Exception {
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"delete from ", tableName, " where companyId = ",
-					_company.getCompanyId()))) {
+				"delete from " + tableName + " where companyId = ?")) {
+
+			preparedStatement.setLong(1, _company.getCompanyId());
 
 			preparedStatement.execute();
 		}
@@ -130,9 +129,9 @@ public class CountryUpgradeProcessTest {
 	private int _getCount(String tableName) throws Exception {
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select count(*) from ", tableName, " where companyId = ",
-					_company.getCompanyId()))) {
+				"select count(*) from " + tableName + " where companyId = ?")) {
+
+			preparedStatement.setLong(1, _company.getCompanyId());
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				resultSet.next();

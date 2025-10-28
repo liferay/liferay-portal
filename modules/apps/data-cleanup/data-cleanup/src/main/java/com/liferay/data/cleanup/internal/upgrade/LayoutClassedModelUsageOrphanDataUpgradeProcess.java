@@ -194,7 +194,7 @@ public class LayoutClassedModelUsageOrphanDataUpgradeProcess
 					_log.warn(
 						StringBundler.concat(
 							"Unable to update usages for fragment entry link ",
-							"ID ", fragmentEntryLink.getFragmentEntryId()),
+							"ID ", fragmentEntryLink.getFragmentEntryLinkId()),
 						exception);
 				}
 			}

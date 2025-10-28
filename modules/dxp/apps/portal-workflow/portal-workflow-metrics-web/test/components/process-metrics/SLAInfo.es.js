@@ -9,7 +9,7 @@ import React from 'react';
 import SLAInfo from '../../../src/main/resources/META-INF/resources/js/components/process-metrics/SLAInfo.es';
 import {MockRouter} from '../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('The SLAInfo component should', () => {
 	let container;

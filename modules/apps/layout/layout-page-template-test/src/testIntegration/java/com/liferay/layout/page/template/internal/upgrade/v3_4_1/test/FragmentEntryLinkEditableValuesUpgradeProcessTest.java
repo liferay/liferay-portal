@@ -259,8 +259,9 @@ public class FragmentEntryLinkEditableValuesUpgradeProcessTest
 				"BASIC_COMPONENT-heading");
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-			fragmentEntry.getFragmentEntryId(), _segmentsExperienceId,
+			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), _segmentsExperienceId,
 			_layout.getPlid(), fragmentEntry.getCss(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 			JSONUtil.put(
@@ -305,7 +306,8 @@ public class FragmentEntryLinkEditableValuesUpgradeProcessTest
 				JSONUtil.put(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString())
-			).toString());
+			).toString(),
+			true);
 	}
 
 	private void _assertEditableValues(
@@ -353,7 +355,8 @@ public class FragmentEntryLinkEditableValuesUpgradeProcessTest
 					jsonObject
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), _draftLayout,
 				fragmentEntry.getFragmentEntryKey(), _segmentsExperienceId,
 				fragmentEntry.getType());
@@ -363,7 +366,7 @@ public class FragmentEntryLinkEditableValuesUpgradeProcessTest
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				_layout.getGroupId(),
-				draftFragmentEntryLink.getFragmentEntryLinkId(),
+				draftFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		Assert.assertNotNull(fragmentEntryLink);

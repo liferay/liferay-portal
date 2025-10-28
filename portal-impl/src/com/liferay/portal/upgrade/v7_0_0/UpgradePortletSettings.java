@@ -47,54 +47,58 @@ public abstract class UpgradePortletSettings extends UpgradeProcess {
 						"PortletPreferences.ownerId, PortletPreferences.plid, ",
 						"Layout.groupId from PortletPreferences left join ",
 						"Layout on Layout.plid = PortletPreferences.plid ",
-						"where PortletPreferences.ownerType = ", ownerType,
-						" and PortletPreferences.portletId = '", portletId,
-						"'"));
-			ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+						"where PortletPreferences.ownerType = ? and ",
+						"PortletPreferences.portletId = '", portletId, "'"))) {
 
-			while (resultSet.next()) {
-				long oldPortletPreferencesId = resultSet.getLong(1);
+			selectPreparedStatement.setInt(1, ownerType);
 
-				long ownerId = 0;
-				long plid = 0;
+			try (ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long oldPortletPreferencesId = resultSet.getLong(1);
 
-				if (ownerType == PortletKeys.PREFS_OWNER_TYPE_LAYOUT) {
-					ownerId = resultSet.getLong(3);
-					plid = 0;
-				}
-				else {
-					ownerId = resultSet.getLong(1);
-					plid = resultSet.getLong(2);
-				}
+					long ownerId = 0;
+					long plid = 0;
 
-				long newPortletPreferencesId = increment();
+					if (ownerType == PortletKeys.PREFS_OWNER_TYPE_LAYOUT) {
+						ownerId = resultSet.getLong(3);
+						plid = 0;
+					}
+					else {
+						ownerId = resultSet.getLong(1);
+						plid = resultSet.getLong(2);
+					}
 
-				try (PreparedStatement insertPreparedStatement =
-						connection.prepareStatement(
-							StringBundler.concat(
-								"insert into PortletPreferences (mvccVersion, ",
-								"ctCollectionId, portletPreferencesId, ",
-								"ownerId, ownerType, plid, portletId) values ",
-								"(0, 0, ?, ?, ?, ?, ?)"))) {
+					long newPortletPreferencesId = increment();
 
-					insertPreparedStatement.setLong(1, newPortletPreferencesId);
-					insertPreparedStatement.setLong(2, ownerId);
-					insertPreparedStatement.setInt(
-						3, PortletKeys.PREFS_OWNER_TYPE_GROUP);
-					insertPreparedStatement.setLong(4, plid);
-					insertPreparedStatement.setString(5, serviceName);
+					try (PreparedStatement insertPreparedStatement =
+							connection.prepareStatement(
+								StringBundler.concat(
+									"insert into PortletPreferences (",
+									"mvccVersion, ctCollectionId, ",
+									"portletPreferencesId, ownerId, ",
+									"ownerType, plid, portletId) values (0, ",
+									"0, ?, ?, ?, ?, ?)"))) {
 
-					insertPreparedStatement.executeUpdate();
+						insertPreparedStatement.setLong(
+							1, newPortletPreferencesId);
+						insertPreparedStatement.setLong(2, ownerId);
+						insertPreparedStatement.setInt(
+							3, PortletKeys.PREFS_OWNER_TYPE_GROUP);
+						insertPreparedStatement.setLong(4, plid);
+						insertPreparedStatement.setString(5, serviceName);
 
-					_copyPortletPreferenceValues(
-						oldPortletPreferencesId, newPortletPreferencesId);
-				}
-				catch (SQLException sqlException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Unable to copy portlet preferences " +
-								oldPortletPreferencesId,
-							sqlException);
+						insertPreparedStatement.executeUpdate();
+
+						_copyPortletPreferenceValues(
+							oldPortletPreferencesId, newPortletPreferencesId);
+					}
+					catch (SQLException sqlException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(
+								"Unable to copy portlet preferences " +
+									oldPortletPreferencesId,
+								sqlException);
+						}
 					}
 				}
 			}

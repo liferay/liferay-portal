@@ -30,6 +30,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal:portal-instance-lifecycle-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-verify-test-util")
+	testIntegrationImplementation project(":apps:product-navigation:product-navigation-control-menu-api")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:users-admin:users-admin-test-util")

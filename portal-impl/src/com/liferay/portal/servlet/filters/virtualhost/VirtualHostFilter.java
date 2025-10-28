@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.struts.LastPath;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -269,7 +270,7 @@ public class VirtualHostFilter extends BasePortalFilter {
 			return;
 		}
 
-		long companyId = PortalInstances.getCompanyId(httpServletRequest);
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		try {
 			Map<String, String[]> parameterMap =

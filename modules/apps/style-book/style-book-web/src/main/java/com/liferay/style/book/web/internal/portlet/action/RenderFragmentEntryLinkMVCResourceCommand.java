@@ -69,8 +69,9 @@ public class RenderFragmentEntryLinkMVCResourceCommand
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
 
-		fragmentEntryLink.setFragmentEntryId(
-			fragmentEntry.getFragmentEntryId());
+		fragmentEntryLink.setFragmentEntryERC(
+			fragmentEntry.getExternalReferenceCode());
+		fragmentEntryLink.setFragmentEntryScopeERC(fragmentEntry.getScopeERC());
 		fragmentEntryLink.setCss(fragmentEntry.getCss());
 		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 		fragmentEntryLink.setJs(fragmentEntry.getJs());

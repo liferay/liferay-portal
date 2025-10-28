@@ -20,6 +20,7 @@ import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingMethodException;
 import com.liferay.commerce.exception.CommerceOrderStatusException;
 import com.liferay.commerce.internal.order.status.CancelledCommerceOrderStatusImpl;
+import com.liferay.commerce.internal.order.status.CompletedCommerceOrderStatusImpl;
 import com.liferay.commerce.internal.order.status.InProgressCommerceOrderStatusImpl;
 import com.liferay.commerce.internal.order.status.OnHoldCommerceOrderStatusImpl;
 import com.liferay.commerce.internal.order.status.OpenCommerceOrderStatusImpl;
@@ -36,6 +37,7 @@ import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
@@ -44,6 +46,7 @@ import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.commerce.test.util.order.status.Test1CommerceOrderStatusImpl;
 import com.liferay.commerce.test.util.order.status.Test2CommerceOrderStatusImpl;
 import com.liferay.commerce.test.util.order.status.Test3CommerceOrderStatusImpl;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -1188,6 +1191,81 @@ public class CommerceOrderEngineTest {
 			ProcessingCommerceOrderStatusImpl.KEY);
 	}
 
+	@Test
+	public void testTransitionOrderWithNonshippableItemToCompleted()
+		throws Exception {
+
+		frutillaRule.scenario(
+			StringBundler.concat(
+				"Use the order engine to checkout an order with non-shippable ",
+				"items, move it to processing, then verify that the order ",
+				"does not need to be shipped and can therefore be moved to ",
+				"completed")
+		).given(
+			"An Open Order"
+		).and(
+			"A user who has checkout permissions"
+		).when(
+			"We pull next order statuses"
+		).then(
+			"The order should be able to transition to completed"
+		);
+
+		Assert.assertEquals(
+			_commerceOrder.getOrderStatus(), OpenCommerceOrderStatusImpl.KEY);
+
+		CommerceOrderStatus openCommerceOrderStatus =
+			_commerceOrderEngine.getCurrentCommerceOrderStatus(_commerceOrder);
+
+		Assert.assertEquals(
+			openCommerceOrderStatus.getKey(), OpenCommerceOrderStatusImpl.KEY);
+
+		_commerceOrderLocalService.updateCommercePaymentMethodKey(
+			_commerceOrder.getCommerceOrderId(), TestCommercePaymentMethod.KEY);
+
+		List<CommerceOrderItem> commerceOrderItems =
+			_commerceOrder.getCommerceOrderItems();
+
+		Assert.assertEquals(
+			commerceOrderItems.toString(), 1, commerceOrderItems.size());
+
+		CommerceOrderItem commerceOrderItem = commerceOrderItems.get(0);
+
+		commerceOrderItem.setShippable(false);
+
+		_commerceOrderItemLocalService.updateCommerceOrderItem(
+			commerceOrderItem);
+
+		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrder, _user.getUserId());
+
+		Assert.assertEquals(
+			PendingCommerceOrderStatusImpl.KEY,
+			_commerceOrder.getOrderStatus());
+
+		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_PROCESSING,
+			_user.getUserId(), true);
+
+		List<CommerceOrderStatus> completedCommerceOrderStatuses =
+			ListUtil.filter(
+				_commerceOrderEngine.getNextCommerceOrderStatuses(
+					_commerceOrder),
+				entry ->
+					entry.getKey() == CompletedCommerceOrderStatusImpl.KEY);
+
+		Assert.assertEquals(
+			completedCommerceOrderStatuses.toString(), 1,
+			completedCommerceOrderStatuses.size());
+
+		CommerceOrderStatus completedCommerceOrderStatus =
+			completedCommerceOrderStatuses.get(0);
+
+		Assert.assertTrue(
+			completedCommerceOrderStatus.isTransitionCriteriaMet(
+				_commerceOrder));
+	}
+
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -1209,6 +1287,9 @@ public class CommerceOrderEngineTest {
 
 	@Inject
 	private CommerceOrderEngine _commerceOrderEngine;
+
+	@Inject
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;

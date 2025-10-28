@@ -317,9 +317,9 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(companyTestEntityId);
+		Long resourceId = getPermissionCheckerResourceId(companyTestEntityId);
 		String resourceName = getPermissionCheckerResourceName(
 			companyTestEntityId);
-		Long resourceId = getPermissionCheckerResourceId(companyTestEntityId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -768,9 +768,9 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(companyTestEntityId);
+		Long resourceId = getPermissionCheckerResourceId(companyTestEntityId);
 		String resourceName = getPermissionCheckerResourceName(
 			companyTestEntityId);
-		Long resourceId = getPermissionCheckerResourceId(companyTestEntityId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/configuration.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="portal-defaultpermissions-web/css/configuration.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <clay:container-fluid

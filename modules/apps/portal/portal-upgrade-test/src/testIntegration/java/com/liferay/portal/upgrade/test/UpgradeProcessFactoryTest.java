@@ -67,7 +67,7 @@ public class UpgradeProcessFactoryTest {
 					"typeBoolean BOOLEAN,typeDate DATE null, typeDouble ",
 					"DOUBLE, typeInteger INTEGER, typeLong LONG null, ",
 					"typeSBlob SBLOB, typeString STRING null, typeText TEXT ",
-					"null, typeVarchar VARCHAR(75) null);")));
+					"null, typeVarchar VARCHAR(75) null)")));
 	}
 
 	@After

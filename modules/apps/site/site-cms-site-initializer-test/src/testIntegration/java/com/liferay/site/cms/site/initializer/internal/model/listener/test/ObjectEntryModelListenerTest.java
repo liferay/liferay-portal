@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -76,6 +77,9 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * @author Stefano Motta
  */
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+)
 @RunWith(Arquillian.class)
 public class ObjectEntryModelListenerTest {
 
@@ -90,6 +94,8 @@ public class ObjectEntryModelListenerTest {
 	public void setUp() throws Exception {
 		_cmsAdministratorRole = _getOrAddCMSAdministratorRole(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
+		_ownerRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.OWNER);
 		_userRole = _roleLocalService.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.USER);
 
@@ -129,7 +135,6 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddObjectEntry() throws Exception {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
@@ -207,7 +212,10 @@ public class ObjectEntryModelListenerTest {
 			objectDefinition.getObjectDefinitionId(),
 			objectEntryFolder2.getObjectEntryFolderId(), "en_US",
 			HashMapBuilder.<String, Serializable>put(
-				"text", RandomTestUtil.randomString()
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
 			).build(),
 			serviceContext);
 
@@ -222,6 +230,17 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.UPDATE));
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
 		Assert.assertFalse(resourcePermission.hasActionId(randomString));
+
+		resourcePermission =
+			_resourcePermissionLocalService.getResourcePermission(
+				objectEntry2.getCompanyId(), objectEntry2.getModelClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(objectEntry2.getObjectEntryId()),
+				_ownerRole.getRoleId());
+
+		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.DELETE));
+		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.UPDATE));
+		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.VIEW));
 
 		resourcePermission =
 			_resourcePermissionLocalService.getResourcePermission(
@@ -263,6 +282,8 @@ public class ObjectEntryModelListenerTest {
 				JSONUtil.putAll(
 					ActionKeys.DELETE, ActionKeys.VIEW, randomString)
 			).put(
+				RoleConstants.OWNER, JSONUtil.putAll(ActionKeys.DELETE)
+			).put(
 				RoleConstants.USER, JSONUtil.putAll(ActionKeys.UPDATE)
 			));
 
@@ -299,6 +320,11 @@ public class ObjectEntryModelListenerTest {
 			objectEntryFolder2.getObjectEntryFolderId(), "en_US",
 			HashMapBuilder.<String, Serializable>put(
 				"file", dlFileEntry.getFileEntryId()
+			).put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
 			).build(),
 			serviceContext);
 
@@ -313,6 +339,17 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.UPDATE));
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
 		Assert.assertFalse(resourcePermission.hasActionId(randomString));
+
+		resourcePermission =
+			_resourcePermissionLocalService.getResourcePermission(
+				objectEntry2.getCompanyId(), objectEntry2.getModelClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(objectEntry2.getObjectEntryId()),
+				_ownerRole.getRoleId());
+
+		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.DELETE));
+		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.UPDATE));
+		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.VIEW));
 
 		resourcePermission =
 			_resourcePermissionLocalService.getResourcePermission(
@@ -397,6 +434,8 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private ObjectFolderLocalService _objectFolderLocalService;
+
+	private Role _ownerRole;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;

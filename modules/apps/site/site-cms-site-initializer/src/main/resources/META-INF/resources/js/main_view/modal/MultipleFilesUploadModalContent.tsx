@@ -119,7 +119,9 @@ export default function MultipleFilesUploadModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(
 					Liferay.Language.get('upload-x'),
 					Liferay.Language.get('multiple-files')

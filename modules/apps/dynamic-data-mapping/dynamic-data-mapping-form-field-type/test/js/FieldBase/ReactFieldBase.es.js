@@ -7,7 +7,7 @@ import {act, fireEvent, render} from '@testing-library/react';
 import {FormProvider, PageProvider} from 'data-engine-js-components-web';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import FieldBase, {
 	normalizeInputValue,

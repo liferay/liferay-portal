@@ -74,45 +74,49 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 					"PortalPreferences.preferences, Organization_.companyId ",
 					"from PortalPreferences inner join Organization_ on ",
 					"PortalPreferences.ownerId = Organization_.organizationId ",
-					"where PortalPreferences.ownerType = ",
-					PortletKeys.PREFS_OWNER_TYPE_ORGANIZATION,
-					" and preferences like '%reminderQueries%'"));
-			ResultSet resultSet = preparedStatement1.executeQuery();
-			PreparedStatement preparedStatement2 =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					"update PortalPreferences set preferences = ? where " +
-						"portalPreferencesId = ?")) {
+					"where PortalPreferences.ownerType = ? and preferences ",
+					"like '%reminderQueries%'"))) {
 
-			while (resultSet.next()) {
-				long companyId = resultSet.getLong("companyId");
+			preparedStatement1.setInt(
+				1, PortletKeys.PREFS_OWNER_TYPE_ORGANIZATION);
 
-				String preferences = resultSet.getString("preferences");
+			try (ResultSet resultSet = preparedStatement1.executeQuery();
+				PreparedStatement preparedStatement2 =
+					AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+						connection,
+						"update PortalPreferences set preferences = ? where " +
+							"portalPreferencesId = ?")) {
 
-				String defaultLanguageId =
-					UpgradeProcessUtil.getDefaultLanguageId(companyId);
+				while (resultSet.next()) {
+					long companyId = resultSet.getLong("companyId");
 
-				String localizedPreference =
-					"reminderQueries_" + defaultLanguageId;
+					String preferences = resultSet.getString("preferences");
 
-				if (preferences.contains(localizedPreference)) {
-					continue;
+					String defaultLanguageId =
+						UpgradeProcessUtil.getDefaultLanguageId(companyId);
+
+					String localizedPreference =
+						"reminderQueries_" + defaultLanguageId;
+
+					if (preferences.contains(localizedPreference)) {
+						continue;
+					}
+
+					preparedStatement2.setString(
+						1,
+						convertDefaultReminderQueries(
+							localizedPreference, preferences));
+
+					long portalPreferencesId = resultSet.getLong(
+						"portalPreferencesId");
+
+					preparedStatement2.setLong(2, portalPreferencesId);
+
+					preparedStatement2.addBatch();
 				}
 
-				preparedStatement2.setString(
-					1,
-					convertDefaultReminderQueries(
-						localizedPreference, preferences));
-
-				long portalPreferencesId = resultSet.getLong(
-					"portalPreferencesId");
-
-				preparedStatement2.setLong(2, portalPreferencesId);
-
-				preparedStatement2.addBatch();
+				preparedStatement2.executeBatch();
 			}
-
-			preparedStatement2.executeBatch();
 		}
 	}
 

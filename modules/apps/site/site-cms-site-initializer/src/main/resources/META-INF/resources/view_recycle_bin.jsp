@@ -16,12 +16,6 @@ ViewRecycleBinSectionDisplayContext viewRecycleBinSectionDisplayContext = (ViewR
 		<div>
 			<react:component
 				module="{RecycleBinToolbar} from site-cms-site-initializer"
-			/>
-		</div>
-
-		<div>
-			<react:component
-				module="{Breadcrumb} from site-cms-site-initializer"
 				props="<%= viewRecycleBinSectionDisplayContext.getBreadcrumbProps() %>"
 			/>
 		</div>

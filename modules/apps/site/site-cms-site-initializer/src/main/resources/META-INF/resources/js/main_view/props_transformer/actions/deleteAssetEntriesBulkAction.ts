@@ -8,6 +8,7 @@ import {sub} from 'frontend-js-web';
 
 import SpaceService from '../../../common/services/SpaceService';
 import {IBulkActionFDSData} from '../../../common/types/BulkActionTask';
+import {getScopeExternalReferenceCode} from '../../../common/utils/getScopeExternalReferenceCode';
 import {isFromRecycleBin} from '../utils/isFromRecycleBin';
 import {triggerAssetBulkAction} from './triggerAssetBulkAction';
 
@@ -66,13 +67,13 @@ function getBulkDeleteMessage(selectedData: any): {
 async function getEntriesSpaces(
 	items: IBulkActionFDSData['items'] = []
 ): Promise<any[]> {
-	const promises = items
-		.filter((item) => item.embedded.scopeId)
-		.map((item) =>
-			SpaceService.getSpace({
-				spaceId: item.embedded.scopeId as number,
-			})
-		);
+	const promises = items.flatMap((item) => {
+		const externalReferenceCode = getScopeExternalReferenceCode(item);
+
+		return externalReferenceCode
+			? [SpaceService.getSpace(externalReferenceCode)]
+			: [];
+	});
 
 	return (await Promise.all(promises)).filter(Boolean);
 }

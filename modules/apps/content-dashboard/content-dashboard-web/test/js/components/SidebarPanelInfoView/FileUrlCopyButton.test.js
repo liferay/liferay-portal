@@ -10,7 +10,7 @@
 import {fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act} from 'react-dom/test-utils';
 
 import FileUrlCopyButton from '../../../../src/main/resources/META-INF/resources/js/components/SidebarPanelInfoView/FileUrlCopyButton';

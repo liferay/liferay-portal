@@ -8,7 +8,7 @@ import React from 'react';
 
 import {StoreContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/StoreContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import PageAudit from '../../../src/main/resources/META-INF/resources/js/components/PageAudit';
 import {ConstantsContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/ConstantsContext';

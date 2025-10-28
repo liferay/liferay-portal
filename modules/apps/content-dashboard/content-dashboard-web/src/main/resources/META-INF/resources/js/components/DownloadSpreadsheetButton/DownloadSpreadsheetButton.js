@@ -277,6 +277,7 @@ const DownloadSpreadsheetButton = ({fileURL, total}) => {
 					<ClayAlert
 						autoClose={5000}
 						className="download-spreadsheet-button__alert"
+						closeButtonAriaLabel={Liferay.Language.get('close')}
 						displayType={toastMessage.type}
 						onClose={handleToastClose}
 					>

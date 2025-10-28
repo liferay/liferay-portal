@@ -11,7 +11,9 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPD_31998 {
 
 	public void method(Group group, LayoutSet layoutSet) {
-		group.getPrivateLayoutSet().getVirtualHostnames().firstKey();
+		group.getPrivateLayoutSet(
+		).getVirtualHostnames().firstKey();
+
 		layoutSet.getVirtualHostnames().firstKey();
 	}
 

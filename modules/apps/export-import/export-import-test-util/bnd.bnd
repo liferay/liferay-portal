@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import Test Utilities
 Bundle-SymbolicName: com.liferay.exportimport.test.util
-Bundle-Version: 8.2.2
+Bundle-Version: 8.3.0
 Export-Package:\
 	com.liferay.exportimport.test.rule,\
 	com.liferay.exportimport.test.util,\

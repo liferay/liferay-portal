@@ -114,7 +114,11 @@ export default function RulesModal({editingRule, onCloseModal}) {
 			observer={observer}
 			size="lg"
 		>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				<ErrorAlert setVisible={setRuleError} visible={ruleError} />

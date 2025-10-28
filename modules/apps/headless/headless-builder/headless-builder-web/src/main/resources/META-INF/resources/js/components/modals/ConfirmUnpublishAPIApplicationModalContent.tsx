@@ -16,7 +16,9 @@ export function ConfirmUnpublishAPIApplicationModalContent({
 }) {
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('unpublish-api-application')}
 			</ClayModal.Header>
 

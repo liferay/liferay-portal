@@ -19,7 +19,7 @@ String type = BeanParamUtil.getString(csDiagramSetting, renderRequest, "type", D
 CSDiagramType csDiagramType = csDiagramSettingDisplayContext.getCSDiagramType(type);
 %>
 
-<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/commerce-shop-by-diagram-web/css/shop-by-diagram-edit-page.css") %>' rel="stylesheet" />
+<aui:link hashedFile="<%= true %>" href="commerce-shop-by-diagram-web/css/shop-by-diagram-edit-page.css" rel="stylesheet" />
 
 <portlet:actionURL name="/cp_definitions/edit_cs_diagram_setting" var="editProductDefinitionDiagramSettingActionURL" />
 

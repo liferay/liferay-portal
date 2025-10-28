@@ -8,8 +8,9 @@ package com.liferay.portal.vulcan.internal.batch.engine;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
-import com.liferay.batch.engine.strategy.BatchEngineImportStrategy;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.function.UnsafeBiConsumer;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
@@ -152,15 +153,6 @@ public class VulcanBatchEngineTaskItemDelegateAdaptor<T>
 	}
 
 	@Override
-	public void setBatchEngineImportStrategy(
-		BatchEngineImportStrategy batchEngineImportStrategy) {
-
-		_vulcanBatchEngineTaskItemDelegate.setContextBatchUnsafeBiConsumer(
-			(collection, unsafeFunction) -> batchEngineImportStrategy.apply(
-				this, collection, unsafeFunction));
-	}
-
-	@Override
 	public void setContextCompany(Company contextCompany) {
 		_company = contextCompany;
 		_vulcanBatchEngineTaskItemDelegate.setContextCompany(contextCompany);
@@ -174,6 +166,19 @@ public class VulcanBatchEngineTaskItemDelegateAdaptor<T>
 	@Override
 	public void setContextUser(User contextUser) {
 		_vulcanBatchEngineTaskItemDelegate.setContextUser(contextUser);
+	}
+
+	@Override
+	public void setImportItemUnsafeBiConsumer(
+		UnsafeBiConsumer<T, UnsafeFunction<T, T, Exception>, Exception>
+			unsafeBiConsumer) {
+
+		_vulcanBatchEngineTaskItemDelegate.setContextBatchUnsafeBiConsumer(
+			(collection, unsafeFunction) -> {
+				for (T item : collection) {
+					unsafeBiConsumer.accept(item, unsafeFunction);
+				}
+			});
 	}
 
 	@Override

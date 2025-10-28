@@ -127,10 +127,10 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 							button.setAttribute('aria-expanded', 'true');
 							list.classList.add('show');
 
-							var selectedOption = list.querySelector('.active');
+							var element = list.querySelector('.active') || list;
 
-							if (selectedOption) {
-								selectedOption.focus();
+							if (element) {
+								element.focus();
 							}
 						}
 					}

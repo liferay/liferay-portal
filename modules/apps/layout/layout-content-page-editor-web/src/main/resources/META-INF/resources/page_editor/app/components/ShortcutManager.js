@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {isCtrlOrMeta} from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -46,7 +47,6 @@ import canBeHidden from '../utils/canBeHidden';
 import canBeRemoved from '../utils/canBeRemoved';
 import canBeRenamed from '../utils/canBeRenamed';
 import canBeSaved from '../utils/canBeSaved';
-import isCtrlOrMeta from '../utils/isCtrlOrMeta';
 import isCuttable from '../utils/isCuttable';
 import {isMovementValid} from '../utils/isMovementValid';
 import toMovementItem from '../utils/toMovementItem';

@@ -460,7 +460,12 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
 				_getDepotAppCustomizationMap(
 					depotEntry.getCompanyId(), externalReferenceCode),
-				unicodeProperties, serviceContext);
+				UnicodePropertiesBuilder.create(
+					group.getTypeSettingsProperties(), true
+				).putAll(
+					unicodeProperties
+				).build(),
+				serviceContext);
 		}
 
 		DepotEntry depotEntry = _depotEntryService.addDepotEntry(
@@ -481,7 +486,12 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			}
 
 			if ((unicodeProperties != null) && !unicodeProperties.isEmpty()) {
-				group.setTypeSettingsProperties(unicodeProperties);
+				group.setTypeSettingsProperties(
+					UnicodePropertiesBuilder.create(
+						group.getTypeSettingsProperties(), true
+					).putAll(
+						unicodeProperties
+					).build());
 			}
 
 			group = _groupLocalService.updateGroup(group);

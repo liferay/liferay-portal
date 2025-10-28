@@ -122,7 +122,6 @@ const InterestsCard: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 					<Table
 						columns={columns}
 						items={items}
-						rowBordered={false}
 						rowIdentifier='name'
 					/>
 				</StatesRenderer.Success>

@@ -749,8 +749,8 @@ public abstract class BaseDocumentResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(documentId);
-		String resourceName = getPermissionCheckerResourceName(documentId);
 		Long resourceId = getPermissionCheckerResourceId(documentId);
+		String resourceName = getPermissionCheckerResourceName(documentId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -1957,8 +1957,8 @@ public abstract class BaseDocumentResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(documentId);
-		String resourceName = getPermissionCheckerResourceName(documentId);
 		Long resourceId = getPermissionCheckerResourceId(documentId);
+		String resourceName = getPermissionCheckerResourceName(documentId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

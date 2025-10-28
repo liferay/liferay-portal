@@ -8,7 +8,7 @@ import React from 'react';
 
 import Keywords from '../../../src/main/resources/META-INF/resources/js/components/Keywords';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('Keywords', () => {
 	it('renders message no best keywords when content was published today', () => {

@@ -187,8 +187,8 @@ public class MapToFieldInformationTemplateTest {
 			_draftLayout, _layoutStructureProvider, null, null, 0,
 			_segmentsExperienceId,
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
-				_segmentsExperienceId, _draftLayout.getPlid(),
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, null, _segmentsExperienceId, _draftLayout.getPlid(),
 				_fragmentEntry.getCss(), _fragmentEntry.getHtml(),
 				_fragmentEntry.getJs(), _fragmentEntry.getConfiguration(),
 				JSONUtil.put(
@@ -367,7 +367,8 @@ public class MapToFieldInformationTemplateTest {
 					))
 			).toString(),
 			_fragmentEntry.getCss(), _fragmentEntry.getConfiguration(),
-			_fragmentEntry.getFragmentEntryId(), _fragmentEntry.getHtml(),
+			_fragmentEntry.getExternalReferenceCode(),
+			_fragmentEntry.getScopeERC(), _fragmentEntry.getHtml(),
 			_fragmentEntry.getJs(), _draftLayout,
 			_fragmentEntry.getFragmentEntryKey(), _fragmentEntry.getType(),
 			null, 0, _segmentsExperienceId);

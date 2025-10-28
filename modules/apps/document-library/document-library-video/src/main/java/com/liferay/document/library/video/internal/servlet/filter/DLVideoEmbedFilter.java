@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.repository.friendly.url.resolver.FileEntryFriendlyURLResolver;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -277,7 +278,7 @@ public class DLVideoEmbedFilter extends BasePortalFilter {
 		}
 
 		Company company = _companyLocalService.getCompany(
-			_portal.getCompanyId(httpServletRequest));
+			CompanyThreadLocal.getCompanyId());
 
 		return company.getGuestUser();
 	}

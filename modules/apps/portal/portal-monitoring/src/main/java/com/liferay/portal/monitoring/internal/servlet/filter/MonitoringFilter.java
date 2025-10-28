@@ -17,12 +17,12 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.monitoring.DataSampleFactory;
 import com.liferay.portal.kernel.monitoring.DataSampleThreadLocal;
 import com.liferay.portal.kernel.monitoring.RequestStatus;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.monitoring.internal.configuration.MonitoringConfiguration;
 import com.liferay.portal.monitoring.internal.statistics.portal.PortalRequestDataSample;
@@ -94,7 +94,7 @@ public class MonitoringFilter extends BaseFilter {
 			portalRequestDataSample =
 				(PortalRequestDataSample)
 					_dataSampleFactory.createPortalRequestDataSample(
-						_portal.getCompanyId(httpServletRequest),
+						CompanyThreadLocal.getCompanyId(),
 						_getGroupId(httpServletRequest),
 						httpServletRequest.getHeader(HttpHeaders.REFERER),
 						httpServletRequest.getRemoteAddr(),
@@ -218,8 +218,5 @@ public class MonitoringFilter extends BaseFilter {
 	private MessageBus _messageBus;
 
 	private volatile MonitoringConfiguration _monitoringConfiguration;
-
-	@Reference
-	private Portal _portal;
 
 }

@@ -59,10 +59,11 @@ public class ContainerPageElementDefinitionDTOConverter
 				containerStyledLayoutStructureItem)
 		throws Exception {
 
+		Long companyId = (Long)dtoConverterContext.getAttribute("companyId");
 		Long scopeGroupId = (Long)dtoConverterContext.getAttribute(
 			"scopeGroupId");
 
-		if (scopeGroupId == null) {
+		if ((companyId == null) || (scopeGroupId == null)) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -106,7 +107,7 @@ public class ContainerPageElementDefinitionDTOConverter
 					});
 				setFragmentLink(
 					() -> FragmentLinkUtil.toFragmentLink(
-						_infoItemServiceRegistry,
+						companyId, _infoItemServiceRegistry,
 						containerStyledLayoutStructureItem.getLinkJSONObject(),
 						scopeGroupId));
 				setFragmentViewports(

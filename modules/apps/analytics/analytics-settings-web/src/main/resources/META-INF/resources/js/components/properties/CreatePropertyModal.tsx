@@ -31,7 +31,9 @@ const CreatePropertyModal: React.FC<
 	return (
 		<ClayModal center observer={observer}>
 			<ClayForm onSubmit={(event) => event.preventDefault()}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('new-property')}
 				</ClayModal.Header>
 

@@ -11,6 +11,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
+import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from '../main/fixtures/cmsPagesTest';
 import {structureBuilderPagesTest} from './fixtures/structureBuilderPagesTest';
@@ -55,9 +56,67 @@ test(
 
 		await structureBuilderPage.enableForAllSpaces();
 
+		// Check validation in name field
+
+		await structureBuilderPage.changeStructureSettings({name: 'name'});
+
+		await expect(
+			page.getByText('The first character must be an uppercase letter')
+		).toBeVisible();
+
+		await structureBuilderPage.changeStructureSettings({name: 'Name---'});
+
+		await expect(
+			page.getByText('This field must only contain letters and digits')
+		).toBeVisible();
+
+		let longName = `Name${getRandomInt()}`;
+
+		while (longName.length < 41) {
+			longName += getRandomInt();
+		}
+
+		await structureBuilderPage.changeStructureSettings({name: longName});
+
+		await expect(
+			page.getByText('Maximum Number of Characters Exceeded')
+		).toBeVisible();
+
+		await structureBuilderPage.changeStructureSettings({name: 'CMSBlog'});
+
+		await expect(
+			page.getByText('This name is already in use')
+		).toBeVisible();
+
+		// Check validation in ERC field
+
+		await structureBuilderPage.changeStructureSettings({erc: 'L_erc'});
+
+		await expect(page.getByText('The prefix L_ is reserved')).toBeVisible();
+
+		while (longName.length < 75) {
+			longName += getRandomInt();
+		}
+
+		await structureBuilderPage.changeStructureSettings({erc: longName});
+
+		await expect(
+			page.getByText('Maximum Number of Characters Exceeded')
+		).toBeVisible();
+
 		// Add a Text field
 
 		await structureBuilderPage.addField('Text');
+
+		// Check validation for field name and ERC fields
+
+		await structureBuilderPage.changeFieldSettings({name: 'Field'});
+
+		await expect(
+			page.getByText('The first character must be a lowercase letter')
+		).toBeVisible();
+
+		await structureBuilderPage.changeFieldSettings({name: 'field'});
 
 		// Set label and empty name
 
@@ -89,9 +148,12 @@ test(
 			trigger: structureBuilderPage.saveButton,
 		});
 
-		// Fill name
+		// Fill name and ERC
 
-		await structureBuilderPage.changeStructureSettings({name: label});
+		await structureBuilderPage.changeStructureSettings({
+			erc: getRandomString(),
+			name: label,
+		});
 
 		// Now try to save and check it redirects to field view
 

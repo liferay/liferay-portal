@@ -35,7 +35,7 @@ public class LocalizedValueUtil {
 	}
 
 	public static Map<String, String> toLocalizedValues(JSONObject jsonObject) {
-		return new HashMap<String, String>() {
+		return new HashMap<>() {
 			{
 				List<String> availableLanguageIds = getAvailableLanguageIds();
 

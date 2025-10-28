@@ -69,29 +69,31 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 			%>
 
 			<c:if test="<%= showFriendlyURL && ((seoObjectLayoutBox != null) || defaultObjectLayout) %>">
-				<clay:panel-group>
-					<clay:panel
-						collapsable="<%= (seoObjectLayoutBox == null) ? true : seoObjectLayoutBox.isCollapsable() %>"
-						displayTitle='<%= LanguageUtil.get(request, "seo") %>'
-						displayType="default"
-						expanded="<%= true %>"
-					>
-						<div class="panel-body">
-							<div class="ddm-row">
-								<div class="ddm-field-container">
-									<liferay-friendly-url:input
-										className="<%= objectDefinition.getClassName() %>"
-										classPK="<%= (objectEntry == null) ? 0 : objectEntry.getObjectEntryId() %>"
-										disabled="<%= objectEntryDisplayContext.isReadOnly() %>"
-										helpMessage='<%= LanguageUtil.get(request, "the-friendly-url-is-automatically-generated-based-on-the-entry-title-field") %>'
-										inputAddon="<%= objectEntryDisplayContext.getURLSeparator() %>"
-										name="friendlyURL"
-									/>
+				<div class="mt-4">
+					<clay:panel-group>
+						<clay:panel
+							collapsable="<%= (seoObjectLayoutBox == null) ? true : seoObjectLayoutBox.isCollapsable() %>"
+							displayTitle='<%= LanguageUtil.get(request, "seo") %>'
+							displayType="default"
+							expanded="<%= true %>"
+						>
+							<div class="panel-body">
+								<div class="ddm-row">
+									<div class="ddm-field-container">
+										<liferay-friendly-url:input
+											className="<%= objectDefinition.getClassName() %>"
+											classPK="<%= (objectEntry == null) ? 0 : objectEntry.getObjectEntryId() %>"
+											disabled="<%= objectEntryDisplayContext.isReadOnly() %>"
+											helpMessage='<%= LanguageUtil.get(request, "the-friendly-url-is-automatically-generated-based-on-the-entry-title-field") %>'
+											inputAddon="<%= objectEntryDisplayContext.getURLSeparator() %>"
+											name="friendlyURL"
+										/>
+									</div>
 								</div>
 							</div>
-						</div>
-					</clay:panel>
-				</clay:panel-group>
+						</clay:panel>
+					</clay:panel-group>
+				</div>
 			</c:if>
 		</clay:sheet-section>
 	</liferay-frontend:edit-form-body>

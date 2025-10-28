@@ -184,7 +184,7 @@ describe('The instance list item should', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dueDateCol = container.querySelector('.due-date.text-success');

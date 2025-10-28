@@ -5,7 +5,6 @@
 
 package com.liferay.portal.upgrade.v7_4_x;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ListType;
@@ -28,10 +27,10 @@ public class UpgradeListType extends UpgradeProcess {
 
 	private void _addListType(String name, String type) throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select * from ListType where name = ",
-					StringUtil.quote(name), "and type_ = ",
-					StringUtil.quote(type)))) {
+				"select * from ListType where name = ? and type_ = ?")) {
+
+			preparedStatement.setString(1, StringUtil.quote(name));
+			preparedStatement.setString(2, StringUtil.quote(type));
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 

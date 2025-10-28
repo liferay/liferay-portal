@@ -3,14 +3,20 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {fetch} from 'frontend-js-web';
+import {fetch, sub} from 'frontend-js-web';
 
+import SpaceService from '../../../common/services/SpaceService';
+import {
+	OBJECT_ENTRY_FOLDER_CLASS_NAME,
+	getScopeExternalReferenceCode,
+} from '../../../common/utils/getScopeExternalReferenceCode';
 import {
 	displayDeleteSuccessToast,
 	displayErrorToast,
 } from '../../../common/utils/toastUtil';
 import {DEFAULT_HEADERS} from '../utils/constants';
 import displayUndoDeleteSuccessToast from '../utils/displayUndoDeleteSuccessToast';
+import confirmAndDeleteEntryAction from './confirmAndDeleteEntryAction';
 
 /**
  * Shows different success messages by having Recycle Bin enabled or not
@@ -64,25 +70,56 @@ export default async function deleteItemAction(
 ) {
 	const {actions, embedded} = itemData;
 
-	if (actions && embedded) {
-		try {
-			await fetch(actions.delete.href, {
-				headers: DEFAULT_HEADERS,
-				method: actions.delete.method,
-			});
+	if (embedded) {
+		const itemSpace = await SpaceService.getSpace(
+			getScopeExternalReferenceCode(itemData)
+		);
 
-			showSuccessToast(
-				actions.get.href,
-				embedded.title,
+		if (!itemSpace.settings?.trashEnabled) {
+			confirmAndDeleteEntryAction({
+				bodyHTML:
+					itemData.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME
+						? sub(
+								Liferay.Language.get(
+									'delete-folder-confirmation-body'
+								),
+								itemData.title
+							)
+						: sub(
+								Liferay.Language.get(
+									'delete-asset-confirmation-body'
+								),
+								itemData.title
+							),
+				deleteAction: actions.delete,
 				loadData,
-				actions.get.method
-			);
+				successMessage: sub(
+					Liferay.Language.get('x-was-successfully-deleted'),
+					`<strong>${itemData.title}</strong>`
+				),
+				title: sub(
+					Liferay.Language.get('delete-asset-confirmation-title'),
+					itemData.title
+				),
+			});
 		}
-		catch {
-			displayErrorToast();
+		else {
+			try {
+				await fetch(actions.delete.href, {
+					headers: DEFAULT_HEADERS,
+					method: actions.delete.method,
+				});
+
+				showSuccessToast(
+					actions.get.href,
+					embedded.title,
+					loadData,
+					actions.get.method
+				);
+			}
+			catch (error) {
+				displayErrorToast();
+			}
 		}
-	}
-	else {
-		displayErrorToast();
 	}
 }

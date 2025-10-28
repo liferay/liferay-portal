@@ -80,6 +80,11 @@ export default function PicklistFields({
 				/>
 
 				<ERCInput
+					error={
+						erc
+							? ''
+							: Liferay.Language.get('this-field-is-required')
+					}
 					helpText={sub(
 						Liferay.Language.get(
 							'unique-key-for-referencing-the-x'

@@ -44,6 +44,7 @@ export type StructureChild = Field | ReferencedStructure | RepeatableGroup;
 export type Structure = {
 	children: Map<Uuid, StructureChild>;
 	erc: string;
+	id?: number;
 	label: Liferay.Language.LocalizedValue<string>;
 	name: string;
 	spaces: Spaces;

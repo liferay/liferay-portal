@@ -1005,8 +1005,10 @@ public class JournalDisplayContext {
 	}
 
 	public Map<String, Object> getSearchProps() throws PortalException {
+		String searchIn = _getSearchIn();
+
 		return HashMapBuilder.<String, Object>put(
-			"searchIn", _getSearchIn()
+			"searchIn", searchIn
 		).put(
 			"searchInCommentsURL",
 			String.valueOf(_getSearchInCommentsPortletURL())
@@ -1026,7 +1028,7 @@ public class JournalDisplayContext {
 			() -> {
 				if ((getFolderId() ==
 						JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) ||
-					!isSearch()) {
+					!isSearch() || Objects.equals(searchIn, "comments")) {
 
 					return null;
 				}

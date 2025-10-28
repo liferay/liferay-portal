@@ -329,7 +329,11 @@ const TemplateList = () => {
 
 			{open && selectedTemplate && (
 				<ClayModal observer={observer} size="full-screen">
-					<ClayModal.Header>Design Template</ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
+						Design Template
+					</ClayModal.Header>
 					<ClayModal.Body className="p-0">
 						<Diagram templateId={selectedTemplate.id} />
 					</ClayModal.Body>

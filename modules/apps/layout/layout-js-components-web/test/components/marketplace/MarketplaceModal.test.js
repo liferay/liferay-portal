@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import MarketplaceModal from '../../../src/main/resources/META-INF/resources/js/components/marketplace/MarketplaceModal';
 import MarketplaceViews from '../../../src/main/resources/META-INF/resources/js/components/marketplace/MarketplaceViews';

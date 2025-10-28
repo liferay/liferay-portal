@@ -151,6 +151,12 @@ public class CPSpecificationOptionLocalServiceImpl
 			deleteCPSpecificationOptionDefinitionValues(
 				cpSpecificationOption.getCPSpecificationOptionId());
 
+		// Commerce product specification option list type definition rels
+
+		_cpSpecificationOptionListTypeDefinitionRelLocalService.
+			deleteCPSpecificationOptionListTypeDefinitionRels(
+				cpSpecificationOption.getCPSpecificationOptionId());
+
 		// Resources
 
 		_resourceLocalService.deleteResource(

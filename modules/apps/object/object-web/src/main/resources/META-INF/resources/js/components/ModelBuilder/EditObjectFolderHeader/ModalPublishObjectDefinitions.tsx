@@ -344,9 +344,16 @@ export function ModalPublishObjectDefinitions({
 			status={modalStatus()}
 		>
 			{publishObjectDefinitionsStatus !== STATUS.PENDING ? (
-				<ClayModal.Header>{modalHeaderMessage}</ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
+					{modalHeaderMessage}
+				</ClayModal.Header>
 			) : (
-				<ClayModal.Header withTitle={false}>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+					withTitle={false}
+				>
 					<ClayModal.ItemGroup>
 						<ClayModal.Item>
 							<ClayModal.Title>

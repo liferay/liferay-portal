@@ -5,7 +5,7 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
-import com.liferay.layout.admin.kernel.util.SitemapUtil;
+import com.liferay.site.manager.SitemapManager;
 
 /**
  * @author Regisson Aguiar
@@ -13,7 +13,8 @@ import com.liferay.layout.admin.kernel.util.SitemapUtil;
 public class LPD_50074 {
 
 	public void method() {
-		SitemapUtil.addURLElement(null, "test123", null, null, "test123", null);
+		SitemapManager.addURLElement(
+			null, "test123", null, null, "test123", null);
 	}
 
 }

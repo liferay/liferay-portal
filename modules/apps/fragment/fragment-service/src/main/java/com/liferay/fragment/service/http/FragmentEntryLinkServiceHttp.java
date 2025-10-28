@@ -44,11 +44,11 @@ public class FragmentEntryLinkServiceHttp {
 	public static com.liferay.fragment.model.FragmentEntryLink
 			addFragmentEntryLink(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long groupId, long originalFragmentEntryLinkId,
-				long fragmentEntryId, long segmentsExperienceId, long plid,
-				String css, String html, String js, String configuration,
-				String editableValues, String namespace, int position,
-				String rendererKey, int type,
+				long groupId, String originalFragmentEntryLinkERC,
+				String fragmentEntryERC, String fragmentEntryScopeERC,
+				long segmentsExperienceId, long plid, String css, String html,
+				String js, String configuration, String editableValues,
+				String namespace, int position, String rendererKey, int type,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -59,10 +59,10 @@ public class FragmentEntryLinkServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId,
-				originalFragmentEntryLinkId, fragmentEntryId,
-				segmentsExperienceId, plid, css, html, js, configuration,
-				editableValues, namespace, position, rendererKey, type,
-				serviceContext);
+				originalFragmentEntryLinkERC, fragmentEntryERC,
+				fragmentEntryScopeERC, segmentsExperienceId, plid, css, html,
+				js, configuration, editableValues, namespace, position,
+				rendererKey, type, serviceContext);
 
 			Object returnObj = null;
 
@@ -349,10 +349,10 @@ public class FragmentEntryLinkServiceHttp {
 
 	private static final Class<?>[] _addFragmentEntryLinkParameterTypes0 =
 		new Class[] {
-			String.class, long.class, long.class, long.class, long.class,
-			long.class, String.class, String.class, String.class, String.class,
-			String.class, String.class, int.class, String.class, int.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
+			String.class, long.class, String.class, String.class, String.class,
+			long.class, long.class, String.class, String.class, String.class,
+			String.class, String.class, String.class, int.class, String.class,
+			int.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _deleteFragmentEntryLinkParameterTypes1 =
 		new Class[] {long.class};

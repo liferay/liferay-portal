@@ -30,19 +30,20 @@ create index IX_515CC759 on FragmentEntry (head, type_);
 create index IX_40CE21AD on FragmentEntry (type_);
 create index IX_6E7DE18C on FragmentEntry (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_67FF823E on FragmentEntryLink (fragmentEntryId, deleted);
+create index IX_6F6EFA7F on FragmentEntryLink (fragmentEntryERC[$COLUMN_LENGTH:75$], fragmentEntryScopeERC[$COLUMN_LENGTH:75$], deleted);
 create index IX_2FB5437D on FragmentEntryLink (groupId, classNameId, classPK);
 create unique index IX_3CAD70F7 on FragmentEntryLink (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
-create index IX_4A9E751A on FragmentEntryLink (groupId, fragmentEntryId, classNameId, classPK);
-create index IX_E0719E24 on FragmentEntryLink (groupId, fragmentEntryId, deleted);
-create index IX_1E535B10 on FragmentEntryLink (groupId, fragmentEntryId, plid);
+create index IX_2A98C079 on FragmentEntryLink (groupId, fragmentEntryERC[$COLUMN_LENGTH:75$], fragmentEntryScopeERC[$COLUMN_LENGTH:75$], classNameId, classPK);
+create index IX_D654465 on FragmentEntryLink (groupId, fragmentEntryERC[$COLUMN_LENGTH:75$], fragmentEntryScopeERC[$COLUMN_LENGTH:75$], deleted);
+create index IX_7836446F on FragmentEntryLink (groupId, fragmentEntryERC[$COLUMN_LENGTH:75$], fragmentEntryScopeERC[$COLUMN_LENGTH:75$], plid);
 create index IX_3D731EF6 on FragmentEntryLink (groupId, plid, deleted);
-create index IX_22C863E3 on FragmentEntryLink (groupId, plid, originalFragmentEntryLinkId);
+create index IX_3603EB72 on FragmentEntryLink (groupId, plid, originalFragmentEntryLinkERC[$COLUMN_LENGTH:75$]);
 create index IX_EECD9CBD on FragmentEntryLink (groupId, plid, segmentsExperienceId, deleted);
 create index IX_EAA73980 on FragmentEntryLink (groupId, plid, segmentsExperienceId, rendererKey[$COLUMN_LENGTH:200$]);
 create index IX_EB688B56 on FragmentEntryLink (groupId, segmentsExperienceId, classNameId, classPK);
 create unique index IX_BE3A6BEA on FragmentEntryLink (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_352AE29E on FragmentEntryLink (rendererKey[$COLUMN_LENGTH:200$], companyId);
+create index IX_EA119BD3 on FragmentEntryLink (type_);
 create index IX_17C15BB2 on FragmentEntryLink (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_7A6F05CF on FragmentEntryVersion (fragmentCollectionId, version);

@@ -3,7 +3,7 @@ import getCN from 'classnames';
 import Loading, {Align} from 'shared/components/Loading';
 import Modal from 'shared/components/modal';
 import React, {useState} from 'react';
-import {DisplayType} from '@clayui/button/lib/Button';
+import {ButtonProps} from '@clayui/button';
 import {noop} from 'lodash';
 
 interface IConfirmationModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -13,7 +13,7 @@ interface IConfirmationModalProps extends React.HTMLAttributes<HTMLDivElement> {
 	modalVariant?: string;
 	onClose: () => void;
 	onSubmit: () => any;
-	submitButtonDisplay?: DisplayType;
+	submitButtonDisplay?: ButtonProps['displayType'];
 	submitMessage?: string;
 	title?: string;
 	titleIcon?: string;

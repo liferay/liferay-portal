@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.model.listener;
 
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -16,10 +17,12 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -39,7 +42,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.sharing.service.SharingEntryLocalService;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -184,23 +187,21 @@ public class ObjectEntryFolderModelListener
 		List<String> resourceActions = ResourceActionsUtil.getResourceActions(
 			ObjectEntryFolder.class.getName());
 
-		Iterator<String> iterator = objectEntryFoldersJSONObject.keys();
+		List<Role> roles = _roleLocalService.getGroupRolesAndTeamRoles(
+			objectEntryFolder.getCompanyId(), null,
+			Arrays.asList(
+				RoleConstants.ADMINISTRATOR,
+				DepotRolesConstants.ASSET_LIBRARY_OWNER),
+			null, null,
+			new int[] {RoleConstants.TYPE_REGULAR, RoleConstants.TYPE_DEPOT}, 0,
+			0, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		while (iterator.hasNext()) {
-			String key = iterator.next();
-
+		for (Role role : roles) {
 			JSONArray jsonArray = objectEntryFoldersJSONObject.getJSONArray(
-				key);
+				role.getName());
 
-			if ((jsonArray == null) || JSONUtil.isEmpty(jsonArray)) {
-				continue;
-			}
-
-			Role role = _roleLocalService.fetchRole(
-				objectEntryFolder.getCompanyId(), key);
-
-			if (role == null) {
-				continue;
+			if (jsonArray == null) {
+				jsonArray = _jsonFactory.createJSONArray();
 			}
 
 			_resourcePermissionLocalService.setResourcePermissions(
@@ -258,6 +259,9 @@ public class ObjectEntryFolderModelListener
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

@@ -1862,6 +1862,11 @@
 			<description name="Sorts and groups imports in `LPD_XXXXX.java` and `LPS_XXXXX.java` files." />
 			<weight>1</weight>
 		</check>
+		<check name="UpgradeCatchAllJavaLongLinesCheck">
+			<category name="Upgrade" />
+			<description name="Finds lines that are longer than the specified maximum line length in `LPD_XXXXX.java` and `LPS_XXXXX.java` files." />
+			<weight>1</weight>
+		</check>
 		<check name="UpgradeCatchAllJavaTermOrderCheck">
 			<category name="Upgrade" />
 			<description name="Sorts javaterms in `LPD_XXXXX.java` and `LPS_XXXXX.java` files." />

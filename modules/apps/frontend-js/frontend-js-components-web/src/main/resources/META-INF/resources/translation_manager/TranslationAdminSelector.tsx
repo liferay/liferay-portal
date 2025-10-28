@@ -204,6 +204,15 @@ export default function TranslationAdminSelector({
 				displayType={displayType}
 				id={selectorId}
 				items={activeLocales}
+				messages={{
+					itemDescribedby: Liferay.Language.get(
+						'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+					),
+					itemSelected: Liferay.Language.get('x-selected'),
+					scrollToBottomAriaLabel:
+						Liferay.Language.get('scroll-to-bottom'),
+					scrollToTopAriaLabel: Liferay.Language.get('scroll-to-top'),
+				}}
 				onActiveChange={(active: any) => {
 					if (active) {
 						onSelectorActiveChange();

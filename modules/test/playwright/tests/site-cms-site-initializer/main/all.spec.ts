@@ -26,6 +26,69 @@ const test = mergeTests(
 );
 
 test(
+	'Confirmation modal is shown when delete a single content in a space with recycle bin disabled',
+	{tag: '@LPD-64867'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const spaceName = `Space ${getRandomString()}`;
+		const file1Title = `Content ${getRandomString()}`;
+		let space = null;
+
+		await test.step('Create a new Space with recycle bin disabled', async () => {
+			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				settings: {
+					trashEnabled: false,
+				},
+				type: 'Space',
+			});
+		});
+
+		await test.step('Create a content for that space', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: file1Title,
+				},
+				applicationName,
+				spaceName
+			);
+		});
+
+		await test.step('Delete content', async () => {
+			await assetsPage.gotoAll();
+
+			await assetsPage.execItemAction({
+				action: 'Delete',
+				filter: file1Title,
+			});
+		});
+
+		await test.step('Accept confirmation modal', async () => {
+			await expect(
+				page.getByRole('heading', {name: `Delete "${file1Title}"`})
+			).toBeVisible();
+
+			await expect(
+				page.getByText('You are about to delete the asset')
+			).toBeVisible();
+
+			await page.getByRole('button', {name: 'Delete'}).click();
+
+			await waitForAlert(page, `${file1Title} was successfully deleted.`);
+
+			await expect(
+				page.getByRole('cell', {name: file1Title})
+			).not.toBeVisible();
+		});
+
+		await test.step('delete created space', async () => {
+			await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(space.id);
+		});
+	}
+);
+
+test(
 	'Can delete multiple contents across spaces with and without recycle bin enabled',
 	{tag: '@LPD-62787'},
 	async ({apiHelpers, assetsPage, page, recycleBinPage}) => {
@@ -509,7 +572,7 @@ test(
 );
 
 test(
-	'Task Status Manager component',
+	'Bulk Actions Monitor component',
 	{tag: '@LPD-57835'},
 	async ({apiHelpers, assetsPage, page}) => {
 		const basicWebContent = 'cms/basic-web-contents';
@@ -517,14 +580,16 @@ test(
 		const bulkActionTasksItems = 'cms/bulk-action-task-items';
 		const spaceName = 'Default';
 
+		const createdFiles = [];
 		const filesNames = [
 			getRandomString(),
 			getRandomString(),
 			getRandomString(),
 		];
+		let tasks;
 
 		for (const fileName of filesNames) {
-			await apiHelpers.objectEntry.postObjectEntry(
+			const file = await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: fileName,
@@ -532,12 +597,15 @@ test(
 				basicWebContent,
 				spaceName
 			);
+			createdFiles.push(file);
 		}
 		try {
 			await test.step('Select 1 asset and delete it using the Bulk Action', async () => {
 				await assetsPage.gotoAll();
 
-				await expect(assetsPage.taskStatusFormsButton).toBeDisabled();
+				await expect(
+					assetsPage.taskStatusFormsButton
+				).not.toBeVisible();
 
 				await assetsPage
 					.getItem(filesNames[0])
@@ -545,15 +613,9 @@ test(
 					.check();
 				await assetsPage.execBulkItemAction('Delete');
 
-				await expect(assetsPage.modal.title).toContainText(
-					'Delete Entry'
-				);
-
-				await assetsPage.modalDeleteButton.click();
-
 				await waitForAlert(
 					page,
-					'Info:Asset delete action started for 1 asset.' +
+					'Info:Delete action started for 1 asset.' +
 						' Check the Task Report for details.',
 					{
 						autoClose: true,
@@ -562,7 +624,7 @@ test(
 				);
 			});
 
-			await test.step('Check that the processingTask button Appear and click on it', async () => {
+			await test.step('Check that the processingTask button appear and click on it', async () => {
 				await expect(assetsPage.processingTasksButton).toBeVisible();
 
 				await assetsPage.processingTasksButton.click();
@@ -571,9 +633,10 @@ test(
 			await test.step('After the click, the dropdown component is shown and 1 task with details is visible', async () => {
 				await expect(
 					assetsPage
-						.taskStatusDropdownItemButton('Asset Deletion')
+						.taskStatusDropdownItemButton('Assets Deletion')
 						.nth(0)
 				).toBeVisible();
+
 				await expect(assetsPage.taskStatusDropdownList).toContainText(
 					'1 Items'
 				);
@@ -581,30 +644,61 @@ test(
 					'a few seconds ago'
 				);
 				await expect(assetsPage.taskStatusDropdownList).toContainText(
-					'processing'
+					'Processing'
 				);
 
 				await assetsPage
-					.taskStatusDropdownItemButton('Asset Deletion')
+					.taskStatusDropdownItemButton('Assets Deletion')
 					.click();
 
 				await expect(assetsPage.taskStatusButton('View')).toBeVisible();
 				await expect(assetsPage.viewAllTasksLink).toBeVisible();
+			});
 
+			await test.step('Check that View button and View All Task redirect to the exact page', async () => {
+				tasks =
+					await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+						bulkActionTasks
+					);
+
+				await assetsPage.taskStatusButton('View').click();
+
+				await expect(page.getByText('Report Summary')).toBeVisible();
+				await expect(
+					page.locator('#main-content').getByText(tasks.items[0].id)
+				).toBeVisible();
+
+				await assetsPage.gotoAll();
 				await assetsPage.processingTasksButton.click();
+
+				await expect(assetsPage.viewAllTasksLink).toBeVisible();
+
+				await assetsPage.viewAllTasksLink.click();
+
+				await expect(
+					page.getByRole('heading', {
+						exact: true,
+						name: 'Task Report',
+					})
+				).toBeVisible();
+				await expect(
+					page
+						.getByRole('cell', {name: tasks.items[0].id})
+						.locator('div')
+				).toBeVisible();
+
+				await assetsPage.gotoAll();
 			});
 
 			// This test step will be removed once the API flow will be completed
 
 			await test.step('Update the task status to Completed', async () => {
-				const tasks =
-					await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
-						bulkActionTasks
-					);
-
 				await apiHelpers.objectEntry.patchObjectEntry(
 					{
-						executionStatus: 'COMPLETED',
+						executionStatus: {
+							key: 'completed',
+							name: 'Completed',
+						},
 					},
 					bulkActionTasks,
 					tasks.items[0].id
@@ -614,17 +708,17 @@ test(
 					async () => {
 						await expect(
 							assetsPage.taskStatusFormsButton
-						).toBeEnabled();
+						).toBeVisible();
 					},
 					{
-						timeout: 10000,
+						timeout: 5000,
 					}
 				);
 
 				await assetsPage.taskStatusFormsButton.click();
 
 				await expect(assetsPage.taskStatusDropdownList).toContainText(
-					'completed'
+					'Completed'
 				);
 			});
 
@@ -650,7 +744,7 @@ test(
 
 				await waitForAlert(
 					page,
-					'Info:Asset delete action started for 2 assets.' +
+					'Info:Delete action started for all assets.' +
 						' Check the Task Report for details.',
 					{
 						autoClose: true,
@@ -666,12 +760,12 @@ test(
 
 				await expect(
 					assetsPage
-						.taskStatusDropdownItemButton('Asset Deletion')
+						.taskStatusDropdownItemButton('Assets Deletion')
 						.nth(0)
 				).toBeVisible();
 				await expect(
 					assetsPage
-						.taskStatusDropdownItemButton('Asset Deletion')
+						.taskStatusDropdownItemButton('Assets Deletion')
 						.nth(1)
 				).toBeVisible();
 			});
@@ -686,7 +780,7 @@ test(
 					'a few seconds ago'
 				);
 				await expect(assetsPage.taskStatusDropdownList).toContainText(
-					'processing'
+					'Processing'
 				);
 
 				await assetsPage.processingTasksButton.click();
@@ -699,13 +793,16 @@ test(
 					await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
 						bulkActionTasks,
 						new URLSearchParams({
-							filter: `executionStatus eq 'STARTED'`,
+							filter: `executionStatus eq 'initial'`,
 						})
 					);
 
 				await apiHelpers.objectEntry.patchObjectEntry(
 					{
-						executionStatus: 'FAILED',
+						executionStatus: {
+							key: 'failed',
+							name: 'Failed',
+						},
 					},
 					bulkActionTasks,
 					processingTasks.items[0].id
@@ -714,21 +811,12 @@ test(
 				expect.poll(
 					async () => {
 						await expect(
-							page
-								.getByLabel('CMS Control Menu')
-								.getByRole('button')
-								.locator('svg.lexicon-icon-forms')
-						).toBeVisible();
+							assetsPage.taskStatusDropdownList
+						).toContainText('Failed');
 					},
 					{
-						timeout: 10000,
+						timeout: 5000,
 					}
-				);
-
-				await assetsPage.taskStatusFormsButton.click();
-
-				await expect(assetsPage.taskStatusDropdownList).toContainText(
-					'failed'
 				);
 			});
 		}
@@ -738,7 +826,7 @@ test(
 					bulkActionTasksItems
 				);
 
-			const tasks =
+			tasks =
 				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
 					bulkActionTasks
 				);
@@ -754,6 +842,15 @@ test(
 					bulkActionTasks,
 					tasks.items[i].id
 				);
+			}
+
+			if (createdFiles) {
+				for (const file of createdFiles) {
+					await apiHelpers.objectEntry.deleteObjectEntry(
+						basicWebContent,
+						file.id
+					);
+				}
 			}
 		}
 	}

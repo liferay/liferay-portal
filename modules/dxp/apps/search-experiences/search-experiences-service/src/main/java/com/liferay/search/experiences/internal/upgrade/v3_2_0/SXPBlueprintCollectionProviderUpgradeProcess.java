@@ -100,14 +100,15 @@ public class SXPBlueprintCollectionProviderUpgradeProcess
 
 	private void _upgradeSXPBlueprints(long companyId) throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"select configurationJSON, sxpBlueprintId from ",
-					"SXPBlueprint where companyId = ", companyId));
+				"select configurationJSON, sxpBlueprintId from SXPBlueprint " +
+					"where companyId = ?");
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
 					"update SXPBlueprint set configurationJSON = ?, " +
 						"schemaVersion = ? where sxpBlueprintId = ?")) {
+
+			preparedStatement1.setLong(1, companyId);
 
 			try (ResultSet resultSet1 = preparedStatement1.executeQuery()) {
 				while (resultSet1.next()) {

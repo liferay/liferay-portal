@@ -47,21 +47,24 @@ public class SXPBlueprintAndSXPElementUpgradeProcess extends UpgradeProcess {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select sxpElementId, externalReferenceCode, readOnly, " +
-					"version from SXPElement where sxpElementId = " +
-						sxpElementId);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"version from SXPElement where sxpElementId = ?")) {
 
-			while (resultSet.next()) {
-				com.liferay.search.experiences.model.SXPElement sxpElement =
-					new SXPElementImpl();
+			preparedStatement.setLong(1, sxpElementId);
 
-				sxpElement.setExternalReferenceCode(
-					resultSet.getString("externalReferenceCode"));
-				sxpElement.setSXPElementId(resultSet.getLong("sxpElementId"));
-				sxpElement.setReadOnly(resultSet.getBoolean("readOnly"));
-				sxpElement.setVersion(resultSet.getString("version"));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					com.liferay.search.experiences.model.SXPElement sxpElement =
+						new SXPElementImpl();
 
-				return sxpElement;
+					sxpElement.setExternalReferenceCode(
+						resultSet.getString("externalReferenceCode"));
+					sxpElement.setSXPElementId(
+						resultSet.getLong("sxpElementId"));
+					sxpElement.setReadOnly(resultSet.getBoolean("readOnly"));
+					sxpElement.setVersion(resultSet.getString("version"));
+
+					return sxpElement;
+				}
 			}
 		}
 

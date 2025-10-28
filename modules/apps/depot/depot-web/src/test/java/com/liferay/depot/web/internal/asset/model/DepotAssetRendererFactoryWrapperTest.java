@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.function.Consumer;
@@ -213,7 +214,9 @@ public class DepotAssetRendererFactoryWrapperTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetAssetRendererByDepotEntryType() throws Exception {
 		AssetRenderer<Object> assetRenderer = Mockito.mock(AssetRenderer.class);

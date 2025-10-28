@@ -65,6 +65,14 @@ const SideMenu = () => {
 		[subscriptionGroups]
 	);
 
+	const hasSLASubscription = useMemo(
+		() =>
+			koroneikiAccount?.slaCurrent ||
+			koroneikiAccount?.slaExpired ||
+			koroneikiAccount?.slaFuture,
+		[koroneikiAccount]
+	);
+
 	useEffect(() => {
 		const expandedHeightProducts = isOpenedProductsMenu
 			? activationSubscriptionGroups?.length * 48
@@ -226,7 +234,7 @@ const SideMenu = () => {
 					</MenuItem>
 				</div>
 
-				{featureFlags.includes('LRSD-5119') && (
+				{hasSLASubscription && (
 					<div className="d-flex">
 						<MenuItem
 							iconKey="businessEvents"

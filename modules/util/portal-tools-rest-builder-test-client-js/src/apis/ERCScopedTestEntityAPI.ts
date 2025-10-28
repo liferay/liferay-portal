@@ -89,6 +89,59 @@ export class ERCScopedTestEntityAPI {
 
 		/**
 		 * 
+				 * @param ercScopedTestEntityExternalReferenceCode
+		 * @param headers Optional custom request headers
+		 */
+		public async deleteERCScopedTestEntity(
+						ercScopedTestEntityExternalReferenceCode: string,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body?: any;
+			response: Response;
+		}> {
+
+			const path = this._basePath + "/test/v1.0/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}"
+						.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
+				;
+
+			const queryParameters: any = {};
+
+						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling deleteERCScopedTestEntity.");
+						}
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+				headers:
+					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
+					,headers || {}
+					),
+				method: "DELETE",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: await response.json(), response};
+					}
+					else {
+						return {body: await response.text(), response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
+		/**
+		 * 
 				 * @param siteExternalReferenceCode
 				 * @param ercScopedTestEntityExternalReferenceCode
 		 * @param headers Optional custom request headers

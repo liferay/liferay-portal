@@ -136,7 +136,7 @@ const BusinessEvents = () => {
 
 					if (isOtherEventType) {
 						return (
-							<div className="text-neutral-10">
+							<div className="be-details text-neutral-10">
 								{businessEvent?.description}
 							</div>
 						);
@@ -249,7 +249,7 @@ const BusinessEvents = () => {
 					details: <DetailsColumn />,
 					eventName: (
 						<div>
-							<div className="font-weight-semi-bold text-neutral-10">
+							<div className="be-event-name font-weight-semi-bold text-neutral-10">
 								{businessEvent?.name}
 							</div>
 

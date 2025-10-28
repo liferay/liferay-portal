@@ -27,7 +27,9 @@ const SubmitWarningModal = ({
 
 	return (
 		<ClayModal observer={observer} size="md" status="warning">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('warning')}
 			</ClayModal.Header>
 

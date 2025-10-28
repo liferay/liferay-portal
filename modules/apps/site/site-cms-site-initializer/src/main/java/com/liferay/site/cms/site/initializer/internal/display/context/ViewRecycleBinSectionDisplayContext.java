@@ -92,7 +92,7 @@ public class ViewRecycleBinSectionDisplayContext
 		}
 
 		addBreadcrumbItem(
-			jsonArray, false, null,
+			jsonArray, false, ActionUtil.getRecycleBinURL(themeDisplay),
 			language.get(themeDisplay.getLocale(), "recycle-bin"));
 
 		for (String objectEntryFolderId :

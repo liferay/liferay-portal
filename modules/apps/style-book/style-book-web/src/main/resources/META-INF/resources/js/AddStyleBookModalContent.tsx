@@ -89,7 +89,9 @@ const AddStyleBookModalContent = ({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('add-style-book')}
 			</ClayModal.Header>
 
@@ -106,6 +108,17 @@ const AddStyleBookModalContent = ({
 							defaultSelectedKey={themeId}
 							id={frontendTokenDefinitionProviderId}
 							items={frontendTokenDefinitionProviders}
+							messages={{
+								itemDescribedby: Liferay.Language.get(
+									'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+								),
+								itemSelected:
+									Liferay.Language.get('x-selected'),
+								scrollToBottomAriaLabel:
+									Liferay.Language.get('scroll-to-bottom'),
+								scrollToTopAriaLabel:
+									Liferay.Language.get('scroll-to-top'),
+							}}
 							onSelectionChange={setThemeId}
 							selectedKey={themeId}
 						>

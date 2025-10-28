@@ -206,7 +206,8 @@ public class SaveVariantSegmentsExperienceMVCActionCommandTest {
 
 		return ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
 			segmentsExperienceId, fragmentEntry.getType());
 	}

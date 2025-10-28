@@ -318,7 +318,7 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 				searchValue={searchValue}
 				showCheckbox={false}
 				showSearch={false}
-				total={sessionsMappedResults.total}
+				total={sessionsMappedResults.total as number}
 			/>
 
 			<PaginatedVerticalTimeline

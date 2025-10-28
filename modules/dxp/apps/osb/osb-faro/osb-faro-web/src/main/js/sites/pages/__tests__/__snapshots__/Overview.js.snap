@@ -333,33 +333,37 @@ exports[`Sites Dashboard Overview render 1`] = `
             </div>
           </div>
           <div
-            class="table-responsive table-root flex-grow-1"
+            class="flex-grow-1 mx-4 table-root"
           >
-            <table
-              class="table table-autofit table-hover table-heading-nowrap table-nowrap table-row-no-bordered"
-            >
-              <thead>
-                <tr>
-                  <th
-                    class="table-head-title table-cell-expand"
-                  >
-                    Search Query | Searches
-                  </th>
-                  <th
-                    class="table-head-title table-column-text-end"
-                  >
-                    % of Searches
-                  </th>
-                </tr>
-              </thead>
-            </table>
             <div
-              class="loading-root overlay"
+              class="table-responsive"
             >
-              <span
-                aria-hidden="true"
-                class="loading-root center loading-animation"
-              />
+              <table
+                class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      class="table-head-title table-cell-expand"
+                    >
+                      Search Query | Searches
+                    </th>
+                    <th
+                      class="table-head-title table-column-text-end"
+                    >
+                      % of Searches
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+              <div
+                class="loading-root overlay"
+              >
+                <span
+                  aria-hidden="true"
+                  class="loading-root center loading-animation"
+                />
+              </div>
             </div>
           </div>
           <div
@@ -407,33 +411,37 @@ exports[`Sites Dashboard Overview render 1`] = `
             </div>
           </div>
           <div
-            class="table-responsive table-root flex-grow-1"
+            class="flex-grow-1 mx-4 table-root"
           >
-            <table
-              class="table table-autofit table-hover table-heading-nowrap table-nowrap table-row-no-bordered"
-            >
-              <thead>
-                <tr>
-                  <th
-                    class="table-head-title table-cell-expand"
-                  >
-                    Interest Topics | Sessions
-                  </th>
-                  <th
-                    class="table-head-title table-column-text-end"
-                  >
-                    % of Sessions
-                  </th>
-                </tr>
-              </thead>
-            </table>
             <div
-              class="loading-root overlay"
+              class="table-responsive"
             >
-              <span
-                aria-hidden="true"
-                class="loading-root center loading-animation"
-              />
+              <table
+                class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      class="table-head-title table-cell-expand"
+                    >
+                      Interest Topics | Sessions
+                    </th>
+                    <th
+                      class="table-head-title table-column-text-end"
+                    >
+                      % of Sessions
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+              <div
+                class="loading-root overlay"
+              >
+                <span
+                  aria-hidden="true"
+                  class="loading-root center loading-animation"
+                />
+              </div>
             </div>
           </div>
           <div

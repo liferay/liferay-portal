@@ -96,7 +96,9 @@ export default function AccountCreationModal({
 					maxHeight: 'inherit',
 				}}
 			>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('create-new-account')}
 				</ClayModal.Header>
 

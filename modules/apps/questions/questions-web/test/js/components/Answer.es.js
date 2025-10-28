@@ -7,7 +7,7 @@ import React from 'react';
 
 import Answer from '../../../src/main/resources/META-INF/resources/js/components/Answer.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {waitForElementToBeRemoved} from '@testing-library/dom';
 import {cleanup} from '@testing-library/react';
 

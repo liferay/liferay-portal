@@ -79,7 +79,11 @@ export function ModalBasicWithFieldName({
 		<>
 			<ClayModal observer={observer}>
 				<ClayForm onSubmit={handleSubmit}>
-					<ClayModal.Header>{label}</ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
+						{label}
+					</ClayModal.Header>
 
 					<ClayModal.Body>
 						{error && (

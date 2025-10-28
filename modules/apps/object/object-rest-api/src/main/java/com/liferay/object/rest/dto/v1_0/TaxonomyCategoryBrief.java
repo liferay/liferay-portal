@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.liferay.headless.object.dto.v1_0.Scope;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -504,7 +505,7 @@ public class TaxonomyCategoryBrief implements Serializable {
 
 			sb.append("\"scope\": ");
 
-			sb.append(String.valueOf(scope));
+			sb.append(scope);
 		}
 
 		String taxonomyCategoryExternalReferenceCode =

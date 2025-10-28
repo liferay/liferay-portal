@@ -220,6 +220,8 @@ public class DepotAssetRendererFactoryTest {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+		themeDisplay.setUser(TestPropsValues.getUser());
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);

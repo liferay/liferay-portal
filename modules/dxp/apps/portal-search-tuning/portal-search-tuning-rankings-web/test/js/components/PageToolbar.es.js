@@ -9,7 +9,7 @@ import React from 'react';
 import PageToolbar from '../../../src/main/resources/META-INF/resources/js/components/PageToolbar.es';
 import {STATUS_TYPES} from '../../../src/main/resources/META-INF/resources/js/utils/constants.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 function renderTestPageToolbar(props) {
 	return render(

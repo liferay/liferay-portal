@@ -445,7 +445,8 @@ public class JournalArticleStagedModelDataHandlerTest
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, layoutPageTemplateStructure.getUserId(),
-				stagingGroup.getGroupId(), 0, 0, defaultSegmentsExperienceId,
+				stagingGroup.getGroupId(), null, null, null,
+				defaultSegmentsExperienceId,
 				layoutPageTemplateStructure.getPlid(), StringPool.BLANK,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 				JSONUtil.put(
@@ -584,7 +585,8 @@ public class JournalArticleStagedModelDataHandlerTest
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, layoutPageTemplateStructure.getUserId(),
-				stagingGroup.getGroupId(), 0, 0, defaultSegmentsExperienceId,
+				stagingGroup.getGroupId(), null, null, null,
+				defaultSegmentsExperienceId,
 				layoutPageTemplateStructure.getPlid(), StringPool.BLANK,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 				JSONUtil.put(

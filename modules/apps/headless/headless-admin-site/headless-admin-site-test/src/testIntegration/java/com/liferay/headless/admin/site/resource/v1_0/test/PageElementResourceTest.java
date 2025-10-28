@@ -6,8 +6,11 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContainerPageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLink;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkInlineValue;
@@ -27,8 +30,12 @@ import com.liferay.headless.admin.site.client.dto.v1_0.ModuleViewport;
 import com.liferay.headless.admin.site.client.dto.v1_0.ModuleViewportDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetInstance;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetInstancePageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPermission;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
+import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
@@ -37,15 +44,21 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -55,7 +68,10 @@ import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -266,7 +282,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			testGroup.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
-		_testPutSitePageSpecificationPageExperiencePageElement(
+		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getContainerPageElement(
 				null, RandomTestUtil.randomString(),
 				JournalArticle.class.getName(),
@@ -276,12 +292,13 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
-		_getContainerPageElement(
-			RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)), null,
-			Layout.class.getName(), layout.getExternalReferenceCode(), null,
-			null, true, RandomTestUtil.randomString());
+		_testPostSitePageSpecificationPageExperiencePageElement(
+			_getContainerPageElement(
+				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
+				null, Layout.class.getName(), layout.getExternalReferenceCode(),
+				null, null, true, RandomTestUtil.randomString()));
 
-		_testPutSitePageSpecificationPageExperiencePageElement(
+		_testPostSitePageSpecificationPageExperiencePageElement(
 			_getContainerPageElement(
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				RandomTestUtil.randomString(), null, null, null,
@@ -338,6 +355,23 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
 				null, false, false, 6, 12,
 				GridPageElementDefinition.VerticalAlignment.BOTTOM));
+
+		String draftWidgetInstanceExternalReferenceCode =
+			RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
+
+		_addFragmentEntryLink(
+			draftWidgetInstanceExternalReferenceCode, layout, namespace);
+
+		_testPostSitePageSpecificationPageExperiencePageElement(
+			_getWidgetPageElement(
+				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
+				RandomTestUtil.randomString(),
+				draftWidgetInstanceExternalReferenceCode, false,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_getWidgetConfig(), RandomTestUtil.randomString(), namespace,
+				JournalContentPortletKeys.JOURNAL_CONTENT,
+				_getWidgetPermissions()));
 	}
 
 	@Ignore
@@ -437,6 +471,43 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				_getModulePageElements(externalReferenceCode, 12)));
 		_testPutSitePageSpecificationPageExperiencePageElement(
 			_getGridPageElementDefaultValues(externalReferenceCode));
+
+		String widgetInstanceExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		_testPutSitePageSpecificationPageExperiencePageElement(
+			_getWidgetPageElement(
+				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
+				RandomTestUtil.randomString(), null, false,
+				RandomTestUtil.randomString(), externalReferenceCode,
+				_getWidgetConfig(), widgetInstanceExternalReferenceCode,
+				RandomTestUtil.randomString(),
+				JournalContentPortletKeys.JOURNAL_CONTENT,
+				_getWidgetPermissions()));
+
+		String draftWidgetInstanceExternalReferenceCode =
+			RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
+
+		_addFragmentEntryLink(
+			draftWidgetInstanceExternalReferenceCode, layout, namespace);
+
+		_testPutSitePageSpecificationPageExperiencePageElement(
+			_getWidgetPageElement(
+				RandomTestUtil.randomStrings(RandomTestUtil.randomInt(1, 10)),
+				RandomTestUtil.randomString(),
+				draftWidgetInstanceExternalReferenceCode, false,
+				RandomTestUtil.randomString(), externalReferenceCode,
+				_getWidgetConfig(), widgetInstanceExternalReferenceCode,
+				namespace, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+				_getWidgetPermissions()));
+		_testPutSitePageSpecificationPageExperiencePageElement(
+			_getWidgetPageElement(
+				null, null, null, false, RandomTestUtil.randomString(),
+				externalReferenceCode, new HashMap<>(),
+				widgetInstanceExternalReferenceCode, namespace,
+				AssetPublisherPortletKeys.ASSET_PUBLISHER,
+				new WidgetPermission[0]));
 	}
 
 	@Override
@@ -570,6 +641,46 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				testGroup.getExternalReferenceCode(),
 				_draftLayout.getExternalReferenceCode(),
 				segmentsExperience.getExternalReferenceCode(), pageElement);
+	}
+
+	private void _addFragmentEntryLink(
+			String externalReferenceCode, Layout layout, String namespace)
+		throws Exception {
+
+		FragmentEntryLinkLocalServiceUtil.addFragmentEntryLink(
+			externalReferenceCode, TestPropsValues.getUserId(),
+			testGroup.getGroupId(), null, null, null, 0, layout.getPlid(),
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, namespace, 0, null,
+			FragmentConstants.TYPE_PORTLET, new ServiceContext());
+	}
+
+	private String[] _getActionIds(String roleName) {
+		if (Objects.equals(RoleConstants.GUEST, roleName)) {
+			if (RandomTestUtil.randomBoolean()) {
+				return null;
+			}
+
+			return new String[] {ActionKeys.VIEW};
+		}
+
+		int random = RandomTestUtil.randomInt(0, 3);
+
+		if (random == 0) {
+			return null;
+		}
+
+		if (random == 1) {
+			return new String[] {ActionKeys.VIEW};
+		}
+
+		if (random == 2) {
+			return new String[] {ActionKeys.CONFIGURATION, ActionKeys.VIEW};
+		}
+
+		return new String[] {
+			ActionKeys.ADD_TO_PAGE, ActionKeys.CONFIGURATION, ActionKeys.VIEW
+		};
 	}
 
 	private PageElement _getContainerPageElement(
@@ -991,6 +1102,96 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		pageElement.setPosition(position);
 
 		return pageElement;
+	}
+
+	private TreeMap<String, Object> _getWidgetConfig() {
+		int random = RandomTestUtil.randomInt(1, 10);
+
+		TreeMap<String, Object> widgetConfig = new TreeMap<>();
+
+		for (int i = 0; i < random; i++) {
+			widgetConfig.put(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		}
+
+		return widgetConfig;
+	}
+
+	private WidgetInstance _getWidgetInstance(
+			Map<String, Object> widgetConfig, String widgetInstanceId,
+			String widgetName, WidgetPermission[] widgetPermissions)
+		throws Exception {
+
+		WidgetInstance widgetInstance = new WidgetInstance();
+
+		widgetInstance.setWidgetConfig(widgetConfig);
+		widgetInstance.setWidgetInstanceId(widgetInstanceId);
+		widgetInstance.setWidgetName(widgetName);
+		widgetInstance.setWidgetPermissions(widgetPermissions);
+
+		return widgetInstance;
+	}
+
+	private PageElement _getWidgetPageElement(
+			String[] cssClasses, String customCss,
+			String draftWidgetInstanceExternalReferenceCode, boolean indexed,
+			String name, String pageElementExternalReferenceCode,
+			Map<String, Object> widgetConfig,
+			String widgetInstanceExternalReferenceCode, String widgetInstanceId,
+			String widgetName, WidgetPermission[] widgetPermissions)
+		throws Exception {
+
+		WidgetInstancePageElementDefinition
+			widgetInstancePageElementDefinition =
+				new WidgetInstancePageElementDefinition();
+
+		widgetInstancePageElementDefinition.setCssClasses(cssClasses);
+		widgetInstancePageElementDefinition.setCustomCSS(customCss);
+		widgetInstancePageElementDefinition.
+			setDraftWidgetInstanceExternalReferenceCode(
+				draftWidgetInstanceExternalReferenceCode);
+		widgetInstancePageElementDefinition.setIndexed(indexed);
+		widgetInstancePageElementDefinition.setName(name);
+		widgetInstancePageElementDefinition.setType(
+			PageElementDefinition.Type.WIDGET);
+		widgetInstancePageElementDefinition.setWidgetInstance(
+			() -> _getWidgetInstance(
+				widgetConfig, widgetInstanceId, widgetName, widgetPermissions));
+		widgetInstancePageElementDefinition.
+			setWidgetInstanceExternalReferenceCode(
+				widgetInstanceExternalReferenceCode);
+
+		return _getPageElement(
+			widgetInstancePageElementDefinition,
+			pageElementExternalReferenceCode);
+	}
+
+	private WidgetPermission[] _getWidgetPermissions() {
+		WidgetPermission[] widgetPermissions = TransformUtil.transformToArray(
+			ListUtil.fromArray(
+				RoleConstants.GUEST, RoleConstants.SITE_CONTENT_REVIEWER,
+				RoleConstants.SITE_MEMBER),
+			roleName -> {
+				String[] actionIds = _getActionIds(roleName);
+
+				if (actionIds == null) {
+					return null;
+				}
+
+				WidgetPermission widgetPermission = new WidgetPermission();
+
+				widgetPermission.setActionIds(actionIds);
+				widgetPermission.setRoleName(roleName);
+
+				return widgetPermission;
+			},
+			WidgetPermission.class);
+
+		if (ArrayUtil.isEmpty(widgetPermissions)) {
+			return null;
+		}
+
+		return widgetPermissions;
 	}
 
 	private PageElement _randomPageElement(

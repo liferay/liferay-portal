@@ -312,7 +312,12 @@ export default function Modal({
 					) : (
 						<>
 							{!disableHeader && (
-								<ClayModal.Header className={headerCssClass}>
+								<ClayModal.Header
+									className={headerCssClass}
+									closeButtonAriaLabel={Liferay.Language.get(
+										'close'
+									)}
+								>
 									{headerHTML ? (
 										<div
 											dangerouslySetInnerHTML={{

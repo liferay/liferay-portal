@@ -62,6 +62,7 @@ import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -182,7 +183,9 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testObjectEntryInfoItemFieldValuesProvider() throws Exception {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
@@ -261,8 +264,8 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			TestPropsValues.getUserId(), 0, null, false, true, false, true,
-			true, false, false, false, false, null,
+			null, TestPropsValues.getUserId(), 0, null, false, true, false,
+			true, true, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

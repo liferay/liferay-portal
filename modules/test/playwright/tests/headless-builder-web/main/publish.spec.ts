@@ -8,58 +8,87 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {headlessDiscoveryPagesTest} from '../../../fixtures/headlessDiscoveryWebPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
 import {headlessBuilderPagesTest} from './fixtures/headlessBuilderPagesTest';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
 	headlessBuilderPagesTest(),
 	headlessDiscoveryPagesTest,
-	loginTest()
+	loginTest(),
+	uiElementsPageTest
 );
 
-test('can get  updated title in response after publish', async ({
-	apiHelpers,
-	applicationPage,
-	headlessBuilderPage,
-	page,
-}) => {
-	const application = await apiHelpers.objectEntry.postObjectEntry(
-		{
-			apiApplicationToAPISchemas: [
-				{
-					description: 'API Application Schema',
-					externalReferenceCode: 'api-application-schema',
-					mainObjectDefinitionERC: 'L_API_APPLICATION',
-					name: 'API Application Schema',
-				},
-			],
-			applicationStatus: 'unpublished',
-			baseURL: 'basic-application',
-			description: 'Test API Application',
-			externalReferenceCode: 'basic-application',
-			title: 'Basic application',
-		},
-		'headless-builder/applications'
-	);
+test.describe('Headless Builder - API Application', () => {
+	let application: any;
 
-	apiHelpers.data.push({id: application.id, type: 'apiApplication'});
+	test.beforeEach(async ({apiHelpers, headlessBuilderPage}) => {
+		application = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				apiApplicationToAPISchemas: [
+					{
+						description: 'API Application Schema',
+						externalReferenceCode: 'api-application-schema',
+						mainObjectDefinitionERC: 'L_API_APPLICATION',
+						name: 'API Application Schema',
+					},
+				],
+				applicationStatus: 'unpublished',
+				baseURL: 'basic-application',
+				description: 'Test API Application',
+				externalReferenceCode: 'basic-application',
+				title: 'Basic application',
+			},
+			'headless-builder/applications'
+		);
 
-	await headlessBuilderPage.goto();
-	await headlessBuilderPage.openApplicationActions(application.title);
-	await page.getByRole('menuitem', {name: 'Edit'}).click();
+		apiHelpers.data.push({id: application.id, type: 'apiApplication'});
 
-	await applicationPage.applicationTitleTextBox.fill(
-		`${application.title} 1`
-	);
-	await applicationPage.publishButton.click();
-	await expect(page.getByText('API application was published')).toBeVisible();
+		await headlessBuilderPage.openApplicationAndEdit(application.title);
+	});
 
-	expect(
-		(
+	test('Can get updated title in response after publish', async ({
+		apiHelpers,
+		applicationPage,
+		page,
+	}) => {
+		await applicationPage.applicationTitleTextBox.fill(
+			`${application.title} 1`
+		);
+		await applicationPage.publishButton.click();
+
+		await expect(
+			page.getByText('API application was published')
+		).toBeVisible();
+		await expect(
+			page.getByText('API application was published')
+		).not.toBeVisible();
+
+		const updatedApp =
 			await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode({
 				applicationName: 'headless-builder/applications',
 				externalReferenceCode: application.externalReferenceCode,
-			})
-		).title
-	).toEqual(`${application.title} 1`);
+			});
+
+		expect(updatedApp.title).toEqual(`${application.title} 1`);
+	});
+
+	test('Can see cancel and publish buttons enabled after publish application', async ({
+		applicationPage,
+		page,
+		uiElementsPage,
+	}) => {
+		await applicationPage.publishButton.click();
+
+		await expect(
+			page.getByText('API application was published')
+		).toBeVisible();
+		await expect(
+			page.getByText('API application was published')
+		).not.toBeVisible();
+
+		await expect(uiElementsPage.cancelButton).toBeEnabled();
+
+		await expect(applicationPage.publishButton).toBeEnabled();
+	});
 });

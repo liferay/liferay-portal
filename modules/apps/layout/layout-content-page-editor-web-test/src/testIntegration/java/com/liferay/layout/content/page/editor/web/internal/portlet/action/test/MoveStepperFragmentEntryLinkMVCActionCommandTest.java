@@ -195,8 +195,9 @@ public class MoveStepperFragmentEntryLinkMVCActionCommandTest {
 			JSONUtil.put("numberOfSteps", 2));
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-			fragmentEntry.getFragmentEntryId(), _segmentsExperienceId,
+			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), _segmentsExperienceId,
 			_draftLayout.getPlid(), fragmentEntry.getCss(),
 			fragmentEntry.getHtml(), fragmentEntry.getJs(),
 			fragmentEntry.getConfiguration(),

@@ -13,6 +13,7 @@ exports[`TabsCard should render 1`] = `
       >
         <button
           aria-expanded="false"
+          aria-label="Open Menu, Current Page: Global Attributes"
           class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
           type="button"
         >
@@ -46,9 +47,7 @@ exports[`TabsCard should render 1`] = `
                   class="nav-link"
                   href="/workspace/23/settings/definitions/event-attributes/global"
                 >
-                  <span
-                    class="navbar-text-truncate"
-                  >
+                  <span>
                     Global Attributes
                   </span>
                 </a>
@@ -60,9 +59,7 @@ exports[`TabsCard should render 1`] = `
                   class="nav-link"
                   href="/workspace/23/settings/definitions/event-attributes/local"
                 >
-                  <span
-                    class="navbar-text-truncate"
-                  >
+                  <span>
                     Attributes
                   </span>
                 </a>

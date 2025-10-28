@@ -8,9 +8,8 @@ import React, {useState} from 'react';
 
 import {TABS} from './tab_content';
 import DetailsTabContent from './tab_content/DetailsTabContent';
-import PerformanceTabContent from './tab_content/PerformanceTabContent';
 
-const AssetTypeInfoPanelFilesView = () => {
+const AssetTypeInfoPanelFolderView = () => {
 	const [active, setActive] = useState(0);
 
 	return (
@@ -23,26 +22,14 @@ const AssetTypeInfoPanelFilesView = () => {
 				>
 					{TABS.DETAILS.name}
 				</Tabs.Item>
-
-				<Tabs.Item
-					innerProps={{
-						'aria-controls': `tabpanel-${TABS.PERFORMANCE.id}`,
-					}}
-				>
-					{TABS.PERFORMANCE.name}
-				</Tabs.Item>
 			</Tabs>
 			<Tabs.Content active={active} fade>
 				<Tabs.TabPane className="p-4" key={TABS.DETAILS.id}>
 					<DetailsTabContent />
-				</Tabs.TabPane>
-
-				<Tabs.TabPane className="p-4" key={TABS.PERFORMANCE.id}>
-					<PerformanceTabContent />
 				</Tabs.TabPane>
 			</Tabs.Content>
 		</>
 	);
 };
 
-export default AssetTypeInfoPanelFilesView;
+export default AssetTypeInfoPanelFolderView;

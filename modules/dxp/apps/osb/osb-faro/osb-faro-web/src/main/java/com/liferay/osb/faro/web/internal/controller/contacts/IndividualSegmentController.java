@@ -105,17 +105,19 @@ public class IndividualSegmentController extends BaseFaroController {
 	}
 
 	@DELETE
-	@Path("/{id}")
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public void delete(
-			@PathParam("groupId") long groupId, @PathParam("id") String id)
+			@PathParam("groupId") long groupId,
+			@FormParam("ids") FaroParam<List<String>> idsFaroParam)
 		throws Exception {
 
-		contactsEngineClient.deleteIndividualSegment(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId), id);
+		contactsEngineClient.deleteIndividualSegments(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId),
+			idsFaroParam.getValue());
 
-		_preferencesController.removeIndividualSegmentPreferences(
-			groupId, id, FaroPreferencesConstants.SCOPE_GROUP);
+		_preferencesController.removeIndividualSegmentsPreferences(
+			groupId, idsFaroParam.getValue(),
+			FaroPreferencesConstants.SCOPE_GROUP);
 	}
 
 	@GET

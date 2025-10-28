@@ -8,7 +8,7 @@ import React from 'react';
 
 import ClayEmptyState from '../../../../src/main/resources/META-INF/resources/js/components/shared/ClayEmptyState.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('ClayEmptyState', () => {
 	it('renders', () => {

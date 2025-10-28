@@ -96,102 +96,106 @@ exports[`TopPagesCard renders 1`] = `
         </li>
       </ul>
       <div
-        class="table-responsive table-root flex-grow-1 flex-grow-1 table-hover"
+        class="flex-grow-1 mx-4 table-root flex-grow-1 table-hover"
       >
-        <table
-          class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+        <div
+          class="table-responsive"
         >
-          <thead>
-            <tr>
-              <th
-                class="table-head-title table-cell-expand"
-              >
-                Page Title
+          <table
+            class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+          >
+            <thead>
+              <tr>
+                <th
+                  class="table-head-title table-cell-expand"
+                >
+                  Page Title
 			|
 			Canonical URL
-              </th>
-              <th
-                class="table-head-title table-column-text-end"
-              >
-                Unique Visitors
-              </th>
-            </tr>
-          </thead>
-          <tbody
-            class="flex-grow-1 table-hover"
-          >
-            <tr
-              class=""
+                </th>
+                <th
+                  class="table-head-title table-column-text-end"
+                >
+                  Unique Visitors
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="flex-grow-1 table-hover"
             >
-              <td
-                class="name-cell-root table-cell-expand"
+              <tr
+                class=""
               >
-                <div
-                  class="content-container"
+                <td
+                  class="name-cell-root table-cell-expand"
                 >
                   <div
-                    class="text-truncate"
+                    class="content-container"
                   >
                     <div
-                      class="table-title text-truncate"
+                      class="text-truncate"
                     >
-                      My asset A
-                    </div>
-                    <div
-                      class="secondary-info text-truncate"
-                    >
-                      123
+                      <div
+                        class="table-title text-truncate"
+                      >
+                        My asset A
+                      </div>
+                      <div
+                        class="secondary-info text-truncate"
+                      >
+                        123
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                <div
-                  class="h4 table-title text-truncate"
-                >
-                  20
-                </div>
-              </td>
-            </tr>
-            <tr
-              class=""
-            >
-              <td
-                class="name-cell-root table-cell-expand"
-              >
-                <div
-                  class="content-container"
+                </td>
+                <td
+                  class="table-column-text-end"
                 >
                   <div
-                    class="text-truncate"
+                    class="h4 table-title text-truncate"
+                  >
+                    20
+                  </div>
+                </td>
+              </tr>
+              <tr
+                class=""
+              >
+                <td
+                  class="name-cell-root table-cell-expand"
+                >
+                  <div
+                    class="content-container"
                   >
                     <div
-                      class="table-title text-truncate"
+                      class="text-truncate"
                     >
-                      My asset B
-                    </div>
-                    <div
-                      class="secondary-info text-truncate"
-                    >
-                      456
+                      <div
+                        class="table-title text-truncate"
+                      >
+                        My asset B
+                      </div>
+                      <div
+                        class="secondary-info text-truncate"
+                      >
+                        456
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                <div
-                  class="h4 table-title text-truncate"
+                </td>
+                <td
+                  class="table-column-text-end"
                 >
-                  20
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <div
+                    class="h4 table-title text-truncate"
+                  >
+                    20
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div

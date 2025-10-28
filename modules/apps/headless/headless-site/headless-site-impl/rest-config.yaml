@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Site
 author: Rubén Pulido
 clientDir: ../headless-site-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 generateBatch: true
 generateGraphQL: false

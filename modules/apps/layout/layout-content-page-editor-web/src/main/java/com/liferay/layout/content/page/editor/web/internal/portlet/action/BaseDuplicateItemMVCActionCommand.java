@@ -114,8 +114,9 @@ public abstract class BaseDuplicateItemMVCActionCommand
 
 				FragmentEntryLink duplicatedFragmentEntryLink =
 					fragmentEntryLinkService.addFragmentEntryLink(
-						null, fragmentEntryLink.getGroupId(), 0,
-						fragmentEntryLink.getFragmentEntryId(),
+						null, fragmentEntryLink.getGroupId(), null,
+						fragmentEntryLink.getFragmentEntryERC(),
+						fragmentEntryLink.getFragmentEntryScopeERC(),
 						fragmentEntryLink.getSegmentsExperienceId(),
 						fragmentEntryLink.getPlid(), fragmentEntryLink.getCss(),
 						fragmentEntryLink.getHtml(), fragmentEntryLink.getJs(),
@@ -166,8 +167,9 @@ public abstract class BaseDuplicateItemMVCActionCommand
 
 			FragmentEntryLink duplicatedFragmentEntryLink =
 				fragmentEntryLinkService.addFragmentEntryLink(
-					null, fragmentEntryLink.getGroupId(), 0,
-					fragmentEntryLink.getFragmentEntryId(),
+					null, fragmentEntryLink.getGroupId(), null,
+					fragmentEntryLink.getFragmentEntryERC(),
+					fragmentEntryLink.getFragmentEntryScopeERC(),
 					fragmentEntryLink.getSegmentsExperienceId(),
 					fragmentEntryLink.getPlid(), fragmentEntryLink.getCss(),
 					fragmentEntryLink.getHtml(), fragmentEntryLink.getJs(),

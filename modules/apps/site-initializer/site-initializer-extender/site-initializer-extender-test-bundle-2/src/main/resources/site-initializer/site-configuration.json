@@ -1,6 +1,8 @@
 {
+	"accessToControlMenuRoleNames": [
+	],
 	"manualMembership": "true",
 	"membershipRestriction": "0",
-	"showControlMenuByRole": "false",
+	"showControlMenuByRole": "true",
 	"typeSite": "1"
 }

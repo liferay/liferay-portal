@@ -5,7 +5,7 @@
 
 import {cleanup, fireEvent, render} from '@testing-library/react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import React from 'react';
 
 import {TargetCollectionsField} from '../../../../../src/main/resources/META-INF/resources/page_editor/app/components/fragment_configuration_fields/TargetCollectionsField';

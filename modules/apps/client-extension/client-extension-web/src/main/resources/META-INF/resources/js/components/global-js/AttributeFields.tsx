@@ -136,6 +136,16 @@ export default function AttributeFields({
 						disabled={disabled}
 						id={typeId}
 						items={TYPE_ITEMS}
+						messages={{
+							itemDescribedby: Liferay.Language.get(
+								'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+							),
+							itemSelected: Liferay.Language.get('x-selected'),
+							scrollToBottomAriaLabel:
+								Liferay.Language.get('scroll-to-bottom'),
+							scrollToTopAriaLabel:
+								Liferay.Language.get('scroll-to-top'),
+						}}
 
 						// @ts-ignore
 
@@ -180,11 +190,11 @@ export default function AttributeFields({
 							disabled={disabled}
 							id={valueId}
 							items={BOOLEAN_VALUE_ITEMS}
-
-							// @ts-ignore
-
-							onSelectionChange={(value) =>
+							onSelectionChange={(value: any) =>
 								onAttributeChange(index, {
+
+									// @ts-ignore
+
 									value: JSON.parse(value),
 								})
 							}

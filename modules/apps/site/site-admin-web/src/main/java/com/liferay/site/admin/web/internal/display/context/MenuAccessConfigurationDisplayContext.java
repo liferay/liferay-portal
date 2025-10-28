@@ -144,24 +144,28 @@ public class MenuAccessConfigurationDisplayContext {
 			}
 		}
 
-		Role administratorRole = _roleLocalService.getRole(
-			_themeDisplay.getCompanyId(), RoleConstants.ADMINISTRATOR);
+		if (!_menuAccessConfigurationManager.isShowControlMenuByRole(
+				_themeDisplay.getScopeGroupId())) {
 
-		if (!ArrayUtil.contains(
-				accessToControlMenuRoleIds,
-				String.valueOf(administratorRole.getRoleId()))) {
+			Role administratorRole = _roleLocalService.getRole(
+				_themeDisplay.getCompanyId(), RoleConstants.ADMINISTRATOR);
 
-			roles.add(administratorRole);
-		}
+			if (!ArrayUtil.contains(
+					accessToControlMenuRoleIds,
+					String.valueOf(administratorRole.getRoleId()))) {
 
-		Role siteAdministratorRole = _roleLocalService.getRole(
-			_themeDisplay.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
+				roles.add(administratorRole);
+			}
 
-		if (!ArrayUtil.contains(
-				accessToControlMenuRoleIds,
-				String.valueOf(siteAdministratorRole.getRoleId()))) {
+			Role siteAdministratorRole = _roleLocalService.getRole(
+				_themeDisplay.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
 
-			roles.add(siteAdministratorRole);
+			if (!ArrayUtil.contains(
+					accessToControlMenuRoleIds,
+					String.valueOf(siteAdministratorRole.getRoleId()))) {
+
+				roles.add(siteAdministratorRole);
+			}
 		}
 
 		searchContainer.setResultsAndTotal(roles);

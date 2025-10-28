@@ -209,7 +209,9 @@ export function ModalAddObjectLayoutTab({
 	return (
 		<ClayModal observer={observer}>
 			<ClayForm onSubmit={handleSubmit}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('add-tab')}
 				</ClayModal.Header>
 

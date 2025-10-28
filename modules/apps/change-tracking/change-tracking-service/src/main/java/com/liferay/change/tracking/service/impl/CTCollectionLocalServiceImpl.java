@@ -861,20 +861,22 @@ public class CTCollectionLocalServiceImpl
 						StringBundler.concat(
 							"select count(*) from ",
 							ctPersistence.getTableName(),
-							" where ctCollectionId = ", ctCollectionId,
-							" and status not in (",
+							" where ctCollectionId = ? and status not in (",
 							StringUtil.merge(
 								_getStatuses(
 									ctCollectionId, ctPersistence, entry),
 								StringPool.COMMA),
-							")"));
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+							")"))) {
 
-				if (resultSet.next()) {
-					int count = resultSet.getInt(1);
+				preparedStatement.setLong(1, ctCollectionId);
 
-					if (count > 0) {
-						return true;
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					if (resultSet.next()) {
+						int count = resultSet.getInt(1);
+
+						if (count > 0) {
+							return true;
+						}
 					}
 				}
 			}

@@ -19,7 +19,7 @@ ViewSpaceSitesSummarySectionDisplayContext viewSpaceSitesSummarySectionDisplayCo
 		/>
 	</div>
 
-	<div class="cms-fds-fluid cms-section custom-empty-state" data-testid="space-summary-connected-sites">
+	<div class="cms-fds-fluid cms-space-summary custom-empty-state space-summary-connected-sites" data-testid="space-summary-connected-sites">
 		<frontend-data-set:headless-display
 			apiURL="<%= viewSpaceSitesSummarySectionDisplayContext.getAPIURL() %>"
 			creationMenu="<%= viewSpaceSitesSummarySectionDisplayContext.getCreationMenu() %>"

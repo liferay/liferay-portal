@@ -9,7 +9,7 @@ import React from 'react';
 import VelocityUnitFilter from '../../../src/main/resources/META-INF/resources/js/components/filter/VelocityUnitFilter.es';
 import {MockRouter} from '../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const query = '?filters.velocityUnit%5B0%5D=weeks';
 

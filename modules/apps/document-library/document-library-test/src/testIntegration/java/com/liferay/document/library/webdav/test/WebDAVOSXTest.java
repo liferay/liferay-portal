@@ -28,6 +28,7 @@ import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMBeanTranslatorUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -364,7 +365,8 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 
 		try {
 			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
-				PortalUtil.getDefaultCompanyId(), getGroupFriendlyURL());
+				PortalUtil.getDefaultCompanyId(),
+				GroupConstants.GUEST_FRIENDLY_URL);
 
 			Folder folder = _dlAppLocalService.getFolder(
 				group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
@@ -672,7 +674,8 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 
 		try {
 			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
-				PortalUtil.getDefaultCompanyId(), getGroupFriendlyURL());
+				PortalUtil.getDefaultCompanyId(),
+				GroupConstants.GUEST_FRIENDLY_URL);
 
 			Folder folder = _dlAppLocalService.getFolder(
 				TestPropsValues.getGroupId(),
@@ -767,7 +770,8 @@ public class WebDAVOSXTest extends BaseWebDAVTestCase {
 
 		try {
 			Group group = GroupLocalServiceUtil.getFriendlyURLGroup(
-				PortalUtil.getDefaultCompanyId(), getGroupFriendlyURL());
+				PortalUtil.getDefaultCompanyId(),
+				GroupConstants.GUEST_FRIENDLY_URL);
 
 			Folder folder = _dlAppLocalService.getFolder(
 				TestPropsValues.getGroupId(),

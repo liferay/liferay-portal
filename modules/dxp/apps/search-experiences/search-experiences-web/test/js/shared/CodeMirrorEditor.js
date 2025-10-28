@@ -7,7 +7,7 @@ import {CodeMirror} from '@liferay/frontend-js-codemirror-web';
 import {render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {getCodeMirrorHints} from '../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/shared/CodeMirrorEditor';
 import aggregationConfigurationSchema from '../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/schemas/aggregation-configuration.schema.json';

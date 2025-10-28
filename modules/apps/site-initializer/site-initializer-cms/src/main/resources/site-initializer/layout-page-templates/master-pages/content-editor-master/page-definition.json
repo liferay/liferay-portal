@@ -4,6 +4,20 @@
 		"pageElements": [
 			{
 				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ContentEditorToolbarComponentSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"id": "7dae1d9f-3bf1-4883-8f80-deb5a320d77f",
+				"type": "Fragment"
+			},
+			{
+				"definition": {
 					"fragmentSettings": {
 						"unallowedFragments": [
 							{
@@ -23,20 +37,6 @@
 				},
 				"id": "2392e8c1-3805-8e93-f3f7-9836cfa64177",
 				"type": "DropZone"
-			},
-			{
-				"definition": {
-					"fragment": {
-						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ContentEditorManagementBarComponentSectionFragmentRenderer"
-					},
-					"fragmentConfig": {
-					},
-					"fragmentFields": [
-					],
-					"indexed": true
-				},
-				"id": "7dae1d9f-3bf1-4883-8f80-deb5a320d77f",
-				"type": "Fragment"
 			},
 			{
 				"definition": {

@@ -45,7 +45,7 @@ import java.util.function.Supplier;
 	value = "NavigationMenuItem"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Represents a navigation menu item.",
+	deprecated = true, description = "Represents a navigation menu item.",
 	requiredProperties = {"typeSettings"}
 )
 @JsonFilter("Liferay.Vulcan")

@@ -38,7 +38,8 @@ public class TestSystemObjectDefinitionManager
 	}
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
 		return 0;

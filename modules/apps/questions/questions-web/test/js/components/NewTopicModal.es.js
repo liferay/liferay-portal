@@ -11,7 +11,7 @@ import {act} from 'react-dom/test-utils';
 import NewTopicModal from '../../../src/main/resources/META-INF/resources/js/components/NewTopicModal.es';
 import {renderComponent} from '../../helpers.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockFetch = {
 	data: {

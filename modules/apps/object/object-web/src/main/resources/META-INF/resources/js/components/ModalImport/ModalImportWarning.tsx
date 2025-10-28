@@ -45,7 +45,9 @@ export function ModalImportWarning({
 }: ModalImportWarningProps) {
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{modalImportWarningTitle[modalImportKey]}
 			</ClayModal.Header>
 

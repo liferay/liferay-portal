@@ -706,7 +706,7 @@ test('can import CSV file with custom columns order', async ({
 			testLongTextField: 'This is a long text to test testLongTextField',
 			testPrecisionDecimalField: 321.123,
 			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField  </p>',
+				'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField\n </p>',
 			testRichTextFieldRawText:
 				'This is a long text with some fomatting to text testRichTextField',
 			testTextField: 'Test',
@@ -743,55 +743,58 @@ test('can import CSV file with multiple site scoped object entries', async ({
 		page.getByText('The import process completed successfully.')
 	).toBeVisible();
 
-	expect(
-		(
-			await apiHelpers.objectEntry.getObjectDefinitionObjectEntriesByScope(
-				'c/tests',
-				'Guest'
-			)
-		).items
-	).toMatchObject([
-		{
-			externalReferenceCode: '83b46736-f89b-9b90-188c-497d06c08271',
-			scopeKey: 'Guest',
-			testAutoIncrementField: 'prefix-1-suffix',
-			testBooleanField: true,
-			testDateField: '2024-01-05T00:00:00.000Z',
-			testDateTimeField: '2024-01-05T15:00:00.000Z',
-			testDecimalField: 10.2,
-			testFormulaField: 1,
-			testIntegerField: 100,
-			testLongInteger: 123456789,
-			testLongTextField:
-				'This is a long text to test testLongTextField. The first entry',
-			testPrecisionDecimalField: 321.123,
-			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField. The first entry.  </p>',
-			testRichTextFieldRawText:
-				'This is a long text with some fomatting to text testRichTextField. The first entry.',
-			testTextField: 'Test_FirstEntry',
-		},
-		{
-			externalReferenceCode: '83b46736-f89b-9b90-188c-497d06c08273',
-			scopeKey: 'Guest',
-			testAutoIncrementField: 'prefix-2-suffix',
-			testBooleanField: false,
-			testDateField: '2024-01-06T00:00:00.000Z',
-			testDateTimeField: '2024-01-06T15:00:00.000Z',
-			testDecimalField: 11.2,
-			testFormulaField: 1,
-			testIntegerField: 101,
-			testLongInteger: 123456790,
-			testLongTextField:
-				'This is a long text to test testLongTextField. The second entry',
-			testPrecisionDecimalField: 123.321,
-			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField. The second entry.  </p>',
-			testRichTextFieldRawText:
-				'This is a long text with some fomatting to text testRichTextField. The second entry.',
-			testTextField: 'Test_SecondEntry',
-		},
-	]);
+	const {items} =
+		await apiHelpers.objectEntry.getObjectDefinitionObjectEntriesByScope(
+			'c/tests',
+			'Guest'
+		);
+
+	expect(items).toHaveLength(2);
+
+	expect(items).toEqual(
+		expect.arrayContaining([
+			expect.objectContaining({
+				externalReferenceCode: '83b46736-f89b-9b90-188c-497d06c08271',
+				scopeKey: 'Guest',
+				testAutoIncrementField: 'prefix-1-suffix',
+				testBooleanField: true,
+				testDateField: '2024-01-05T00:00:00.000Z',
+				testDateTimeField: '2024-01-05T15:00:00.000Z',
+				testDecimalField: 10.2,
+				testFormulaField: 1,
+				testIntegerField: 100,
+				testLongInteger: 123456789,
+				testLongTextField:
+					'This is a long text to test testLongTextField. The first entry',
+				testPrecisionDecimalField: 321.123,
+				testRichTextField:
+					'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField. The first entry.\n </p>',
+				testRichTextFieldRawText:
+					'This is a long text with some fomatting to text testRichTextField. The first entry.',
+				testTextField: 'Test_FirstEntry',
+			}),
+			expect.objectContaining({
+				externalReferenceCode: '83b46736-f89b-9b90-188c-497d06c08273',
+				scopeKey: 'Guest',
+				testAutoIncrementField: 'prefix-2-suffix',
+				testBooleanField: false,
+				testDateField: '2024-01-06T00:00:00.000Z',
+				testDateTimeField: '2024-01-06T15:00:00.000Z',
+				testDecimalField: 11.2,
+				testFormulaField: 1,
+				testIntegerField: 101,
+				testLongInteger: 123456790,
+				testLongTextField:
+					'This is a long text to test testLongTextField. The second entry',
+				testPrecisionDecimalField: 123.321,
+				testRichTextField:
+					'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField. The second entry.\n </p>',
+				testRichTextFieldRawText:
+					'This is a long text with some fomatting to text testRichTextField. The second entry.',
+				testTextField: 'Test_SecondEntry',
+			}),
+		])
+	);
 });
 
 test('can import CSV file with new and existing site scoped object entries', async ({
@@ -858,7 +861,7 @@ test('can import CSV file with new and existing site scoped object entries', asy
 				'This is a long text to test testLongTextField. The first entry',
 			testPrecisionDecimalField: 321.123,
 			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField.  </p>',
+				'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField.\n </p>',
 			testRichTextFieldRawText:
 				'This is a long text with some fomatting to text testRichTextField.',
 			testTextField: 'Test',
@@ -878,7 +881,7 @@ test('can import CSV file with new and existing site scoped object entries', asy
 				'This is a long text to test testLongTextField. The second entry',
 			testPrecisionDecimalField: 123.321,
 			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField. New entry.  </p>',
+				'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField. New entry.\n </p>',
 			testRichTextFieldRawText:
 				'This is a long text with some fomatting to text testRichTextField. New entry.',
 			testTextField: 'Test_SecondEntry',
@@ -948,7 +951,7 @@ test('can import CSV file with new and modified existing company scoped object e
 				'This is a long text to test testLongTextField. The first entry',
 			testPrecisionDecimalField: 321.123,
 			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField. The modified entry.  </p>',
+				'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField. The modified entry.\n </p>',
 			testRichTextFieldRawText:
 				'This is a long text with some fomatting to text testRichTextField. The modified entry.',
 			testTextField: 'Test_Modified',
@@ -967,7 +970,7 @@ test('can import CSV file with new and modified existing company scoped object e
 				'This is a long text to test testLongTextField. The second entry',
 			testPrecisionDecimalField: 123.321,
 			testRichTextField:
-				'<p>This is a long text <strong>with some fomatting</strong> to text\n  testRichTextField. The new entry.  </p>',
+				'<p>This is a long text <strong>with some fomatting</strong> to text testRichTextField. The new entry.\n </p>',
 			testRichTextFieldRawText:
 				'This is a long text with some fomatting to text testRichTextField. The new entry.',
 			testTextField: 'Test_NewEntry',

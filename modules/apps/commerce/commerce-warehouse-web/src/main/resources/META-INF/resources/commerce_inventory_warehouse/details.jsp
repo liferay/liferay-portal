@@ -28,7 +28,7 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 <portlet:actionURL name="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" var="editCommerceInventoryWarehouseActionURL" />
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="commerce-warehouse-web/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <aui:form action="<%= editCommerceInventoryWarehouseActionURL %>" cssClass="pt-4" method="post" name="fm">

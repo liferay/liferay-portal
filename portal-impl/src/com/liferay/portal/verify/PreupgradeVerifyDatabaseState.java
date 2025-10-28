@@ -8,7 +8,6 @@ package com.liferay.portal.verify;
 import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -20,7 +19,6 @@ import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Jorge Avalos
@@ -62,11 +60,14 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 		DBInspector dbInspector = new DBInspector(connection);
 
-		Set<String> databaseTableNames = new HashSet<>(
-			dbInspector.getTableNames(null));
+		Set<String> databaseTableNames = new TreeSet<>(
+			String.CASE_INSENSITIVE_ORDER);
+
+		databaseTableNames.addAll(dbInspector.getTableNames(null));
 
 		if (!databaseTableNames.containsAll(serviceComponentTableNames)) {
-			Set<String> missingTableNames = ConcurrentHashMap.newKeySet();
+			Set<String> missingTableNames = new TreeSet<>(
+				String.CASE_INSENSITIVE_ORDER);
 
 			missingTableNames.addAll(serviceComponentTableNames);
 
@@ -81,15 +82,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 						new TreeSet<>(missingTableNames));
 			}
 
-			viewNames.removeIf(
-				viewName -> {
-					try {
-						return dbInspector.hasView(viewName);
-					}
-					catch (Exception exception) {
-						throw new SystemException(exception);
-					}
-				});
+			viewNames.removeAll(dbInspector.getViewNames(null));
 
 			if (!viewNames.isEmpty()) {
 				throw new VerifyException(
@@ -138,7 +131,7 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 			DBInspector dbInspector, Set<String> missingTableNames)
 		throws Exception {
 
-		Set<String> viewNames = new HashSet<>();
+		Set<String> viewNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
 		if (CompanyThreadLocal.getNonsystemCompanyId() ==
 				PortalInstancePool.getDefaultCompanyId()) {
@@ -148,10 +141,11 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 		for (String missingTableName : missingTableNames) {
 			if (dbInspector.isControlTable(missingTableName)) {
-				missingTableNames.remove(missingTableName);
 				viewNames.add(missingTableName);
 			}
 		}
+
+		missingTableNames.removeAll(viewNames);
 
 		return viewNames;
 	}

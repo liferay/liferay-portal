@@ -216,7 +216,9 @@ const PaginatedTable: React.FC<IPaginatedTable> = ({
 				ellipsisProps={{'aria-label': 'More', 'title': 'More'}}
 				onActiveChange={handlePageChange}
 				onDeltaChange={handleDeltaChange}
-				totalItems={inventoryAnalysisData?.totalCount ?? 0}
+				totalItems={
+					inventoryAnalysisData?.inventoryAnalysisItemsCount ?? 0
+				}
 			/>
 		</div>
 	);

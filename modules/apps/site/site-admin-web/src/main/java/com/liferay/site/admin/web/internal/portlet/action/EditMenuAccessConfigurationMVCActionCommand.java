@@ -66,7 +66,8 @@ public class EditMenuAccessConfigurationMVCActionCommand
 		}
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			themeDisplay.getScopeGroupId(), ArrayUtil.toStringArray(roleIds),
+			themeDisplay.getScopeGroupId(),
+			roleIds.isEmpty() ? null : ArrayUtil.toStringArray(roleIds),
 			ParamUtil.getBoolean(actionRequest, "showControlMenuByRole"));
 	}
 

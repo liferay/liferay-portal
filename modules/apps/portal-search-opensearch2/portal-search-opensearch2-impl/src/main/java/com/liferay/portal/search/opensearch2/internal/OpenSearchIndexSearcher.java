@@ -553,8 +553,8 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 			searchRequest.getPostFilterComplexQueryParts());
 		baseSearchRequest.setRescores(searchRequest.getRescores());
 		baseSearchRequest.setStatsRequests(searchRequest.getStatsRequests());
-		baseSearchRequest.setTrackTotalHits(
-			_openSearchConfigurationWrapper.trackTotalHits());
+		baseSearchRequest.setTrackTotalHitsLimit(
+			_openSearchConfigurationWrapper.trackTotalHitsLimit());
 
 		_setAggregations(baseSearchRequest, searchRequest);
 		_setConnectionId(baseSearchRequest, searchRequest);

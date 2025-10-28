@@ -1,0 +1,54 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Nícolas Moura
+ */
+public class LPD_58228 {
+
+	public void method(
+		long userId, long groupId, long classNameId, long classPK,
+		long resourceClassNameId, String templateKey,
+		Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+		String type, String mode, String language, String script,
+		boolean cacheable, boolean smallImage, String smallImageURL,
+		File smallImageFile, ServiceContext serviceContext) {
+
+		DDMTemplateLocalServiceUtil.addTemplate(
+			123, groupId, classNameId, classPK, resourceClassNameId,
+			templateKey, nameMap, descriptionMap, type, mode, language, script,
+			cacheable, smallImage, smallImageURL, smallImageFile,
+			serviceContext);
+		DDMTemplateLocalServiceUtil.addTemplate(null, userId, groupId, classNameId, classPK, resourceClassNameId, templateKey, nameMap, descriptionMap, type, mode, language, script, cacheable, smallImage, smallImageURL, smallImageFile, serviceContext);
+		_ddmTemplateLocalService.addTemplate(null, userId, groupId, classNameId, classPK, resourceClassNameId, templateKey, nameMap, descriptionMap, type, mode, language, script, cacheable, smallImage, smallImageURL, smallImageFile, serviceContext)
+	}
+
+	public void method(
+		long groupId, long classNameId, long classPK, long resourceClassNameId,
+		String templateKey, Map<Locale, String> nameMap,
+		Map<Locale, String> descriptionMap, String type, String mode,
+		String language, String script, boolean cacheable, boolean smallImage,
+		String smallImageURL, File smallImageFile,
+		ServiceContext serviceContext) {
+
+		DDMTemplateServiceUtil.addTemplate(
+			123, classNameId, classPK, resourceClassNameId, templateKey,
+			nameMap, descriptionMap, type, mode, language, script, cacheable,
+			smallImage, smallImageURL, smallImageFile, serviceContext);
+		DDMTemplateServiceUtil.addTemplate(null, groupId, classNameId, classPK, resourceClassNameId, templateKey, nameMap, descriptionMap, type, mode, language, script, cacheable, smallImage, smallImageURL, smallImageFile, serviceContext);
+		_ddmTemplateService.addTemplate(null, groupId, classNameId, classPK, resourceClassNameId, templateKey, nameMap, descriptionMap, type, mode, language, script, cacheable, smallImage, smallImageURL, smallImageFile, serviceContext)
+	}
+
+	@Reference
+	private DDMTemplateLocalService _ddmTemplateLocalService;
+
+	@Reference
+	private DDMTemplateService _ddmTemplateService;
+
+}

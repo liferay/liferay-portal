@@ -104,7 +104,7 @@ const FiltersDropdown = () => {
 					<ClayDropDown.Search
 						aria-label={Liferay.Language.get('search')}
 						onChange={onSearch}
-						role="none"
+						role="textbox"
 						value={query}
 					/>
 

@@ -2011,6 +2011,174 @@ components:
                 -   id
                 -   moduleViewportDefinition
             type: object
+        NavigationMenu:
+            # @review
+            description:
+                Represents a navigation menu.
+            properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    # @review
+                    description:
+                        Block of actions allowed by the user making the request.
+                    readOnly: true
+                    type: object
+                creator:
+                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    # @review
+                    description:
+                        The navigation menu's creator. It is not returned by default. It can be embedded via
+                        nestedFields.
+                    readOnly: true
+                dateCreated:
+                    # @review
+                    description:
+                        The navigation menu's creation date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    # @review
+                    description:
+                        The last time the navigation menu changed.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    description:
+                        The navigation menu's external reference code.
+                    type: string
+                id:
+                    # @review
+                    description:
+                        The navigation menu's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    # @review
+                    description:
+                        The navigation menu's name.
+                    type: string
+                navigationMenuItems:
+                    # @review
+                    description:
+                        The list of navigation menu items this navigation menu has.
+                    items:
+                        $ref: "#/components/schemas/NavigationMenuItem"
+                    type: array
+                navigationType:
+                    # @review
+                    description:
+                        The navigation menu's type (primary, secondary, social).
+                    enum: [Primary, Secondary, Social]
+                    type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                siteId:
+                    # @review
+                    description:
+                        The ID of the site to which this navigation menu is scoped.
+                    format: int64
+                    readOnly: true
+                    type: integer
+        NavigationMenuItem:
+            # @review
+            description:
+                Represents a navigation menu item.
+            properties:
+                availableLanguages:
+                    # @review
+                    description:
+                        The list of languages the navigation menu item has a translation for.
+                    items:
+                        type: string
+                    readOnly: true
+                    type: array
+                creator:
+                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    # @review
+                    description:
+                        The navigation menu item's creator. It is not returned by default. It can be embedded via
+                        nestedFields.
+                    readOnly: true
+                customFields:
+                    # @review
+                    description:
+                        A list of the custom fields associated with the navigation menu item.
+                    items:
+                        type: customField
+                    type: array
+                dateCreated:
+                    # @review
+                    description:
+                        The navigation menu item's creation date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    # @review
+                    description:
+                        The last time the navigation menu item changed.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    description:
+                        The navigation menu item's external reference code.
+                    type: string
+                id:
+                    # @review
+                    description:
+                        The navigation menu item's ID.
+                    format: int64
+                    type: integer
+                name:
+                    # @review
+                    description:
+                        The navigation menu item's name.
+                    type: string
+                name_i18n:
+                    additionalProperties:
+                        type: string
+                    # @review
+                    description:
+                        The localized navigation menu item's names.
+                    type: object
+                navigationMenuItems:
+                    # @review
+                    description:
+                        The navigation menu items this navigation menu item has.
+                    items:
+                        $ref: "#/components/schemas/NavigationMenuItem"
+                    type: array
+                parentNavigationMenuId:
+                    # @review
+                    description:
+                        The ID of the navigation menu item's parent.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                type:
+                    # @review
+                    description:
+                        The navigation menu item's type.
+                    type: string
+                typeSettings:
+                    additionalProperties:
+                        type: string
+                    description:
+                        The navigation menu item's type settings.
+                    type: object
+                useCustomName:
+                    type: boolean
+            required:
+                -   typeSettings
         NavigationSettings:
             # @review
             description:
@@ -3136,13 +3304,11 @@ components:
                             description:
                                 Custom CSS that is applied on the widget instance page element.
                             type: string
-                        customCSSViewports:
+                        draftWidgetInstanceExternalReferenceCode:
                             # @review
                             description:
-                                The custom CSS viewports of the widget instance page element.
-                            items:
-                                $ref: "#/components/schemas/CustomCSSViewport"
-                            type: array
+                                The draft widget instance external reference code.
+                            type: string
                         fragmentStyle:
                             $ref: "#/components/schemas/FragmentStyle"
                             # @review
@@ -3155,6 +3321,11 @@ components:
                             items:
                                 $ref: "#/components/schemas/FragmentViewport"
                             type: array
+                        indexed:
+                            # @review
+                            description:
+                                A flag that indicates whether the widget instance page element is indexed or not.
+                            type: boolean
                         name:
                             # @review
                             description:
@@ -3165,6 +3336,11 @@ components:
                             # @review
                             description:
                                 The widget instance.
+                        widgetInstanceExternalReferenceCode:
+                            # @review
+                            description:
+                                The widget instance external reference code.
+                            type: string
             # @review
             description:
                 The page element definition of a widget instance.
@@ -3631,6 +3807,138 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/navigation-menus/{navigationMenuId}":
+        delete:
+            # @review
+            description:
+                Deletes the navigation menu and returns a 204 if the operation succeeds
+            operationId: deleteNavigationMenu
+            parameters:
+                -   in: path
+                    name: navigationMenuId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NavigationMenu"]
+        get:
+            operationId: getNavigationMenu
+            parameters:
+                -   in: path
+                    name: navigationMenuId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+            tags: ["NavigationMenu"]
+        put:
+            # @review
+            description:
+                Replaces the navigation menu with the information sent in the request body. Any missing fields are
+                deleted, unless they are required.
+            operationId: putNavigationMenu
+            parameters:
+                -   in: path
+                    name: navigationMenuId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/NavigationMenu"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/NavigationMenu"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+            tags: ["NavigationMenu"]
+    "/navigation-menus/{navigationMenuId}/permissions":
+        get:
+            operationId: getNavigationMenuPermissionsPage
+            parameters:
+                -   in: path
+                    name: navigationMenuId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NavigationMenu"]
+        put:
+            operationId: putNavigationMenuPermissionsPage
+            parameters:
+                -   in: path
+                    name: navigationMenuId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NavigationMenu"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders":
         get:
             # @review
@@ -8746,6 +9054,241 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Site"
             tags: ["Site"]
+    "/sites/{siteId}/navigation-menus":
+        get:
+            operationId: getSiteNavigationMenusPage
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/NavigationMenu"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/NavigationMenu"
+                                type: array
+            tags: ["NavigationMenu"]
+        post:
+            # @review
+            description:
+                Creates a new navigation menu.
+            operationId: postSiteNavigationMenu
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/NavigationMenu"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/NavigationMenu"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+            tags: ["NavigationMenu"]
+    "/sites/{siteId}/navigation-menus/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes the navigation menu by external reference code and returns a 204 if the operation succeeds
+            operationId: deleteSiteNavigationMenuByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NavigationMenu"]
+        get:
+            # @review
+            description:
+                Retrieves the navigation menu by external reference code.
+            operationId: getSiteNavigationMenuByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+            tags: ["NavigationMenu"]
+        put:
+            # @review
+            description:
+                Updates the navigation menu with the given external reference code or creates it if it does not exist.
+            operationId: putSiteNavigationMenuByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/NavigationMenu"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/NavigationMenu"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/NavigationMenu"
+            tags: ["NavigationMenu"]
+    "/sites/{siteId}/navigation-menus/permissions":
+        get:
+            operationId: getSiteNavigationMenuPermissionsPage
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NavigationMenu"]
+        put:
+            operationId: putSiteNavigationMenuPermissionsPage
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NavigationMenu"]
     /sites:
         get:
             description:

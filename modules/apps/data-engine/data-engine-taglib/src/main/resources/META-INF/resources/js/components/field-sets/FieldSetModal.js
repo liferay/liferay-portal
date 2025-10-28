@@ -153,7 +153,9 @@ const ModalContent = ({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{dataDefinitionId
 					? Liferay.Language.get('edit-fieldset')
 					: Liferay.Language.get('create-new-fieldset')}

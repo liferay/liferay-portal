@@ -30,7 +30,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "org.apache.felix.configurator", version: "1.0.18.LIFERAY-PATCHED-3"
 	compileOnly group: "com.liferay", name: "org.apache.felix.eventadmin", version: "1.5.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.apache.felix.gogo.runtime", version: "1.1.2.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.apache.felix.scr", version: "2.1.14.LIFERAY-PATCHED-14"
+	compileOnly group: "com.liferay", name: "org.apache.felix.scr", version: "2.1.14.LIFERAY-PATCHED-15"
 	compileOnly group: "com.liferay", name: "org.eclipse.equinox.console", version: "1.4.300.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.eclipse.equinox.metatype", version: "1.4.400.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.osgi.service.cdi", version: "1.0.0.JAKARTA-LIFERAY-PATCHED-1"

@@ -937,11 +937,17 @@ public abstract class BaseWorkspaceGitRepository
 			return;
 		}
 
-		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+		String jobName = System.getenv("JOB_NAME");
 
-		File archiveFile = gitWorkingDirectory.archive(_getGitArchiveName());
+		if (!jobName.contains("-batch") && !jobName.contains("-downstream")) {
+			GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
 
-		CloudBucketUtil.uploadS3File(_getGitArchiveS3BucketPath(), archiveFile);
+			File archiveFile = gitWorkingDirectory.archive(
+				_getGitArchiveName());
+
+			CloudBucketUtil.uploadS3File(
+				_getGitArchiveS3BucketPath(), archiveFile);
+		}
 
 		_setSnapshot(true);
 

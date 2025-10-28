@@ -875,7 +875,7 @@ export default function ChangeTrackingRenderView({
 							mainFieldName: 'comment',
 							mainFieldPlaceholder:
 								Liferay.Language.get('comment'),
-							namespace,
+							namespace: workflowAction.namespace,
 							onFormSuccess: () =>
 								setTimeout(
 									() => setShowWorkflowSuccessMessage(true),

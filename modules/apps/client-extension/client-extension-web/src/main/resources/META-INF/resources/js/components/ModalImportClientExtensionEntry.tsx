@@ -104,7 +104,9 @@ export default function ModalImportClientExtensionEntry({
 
 	return visible ? (
 		<ClayModal center observer={observer}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('import-client-extension')}
 			</ClayModal.Header>
 

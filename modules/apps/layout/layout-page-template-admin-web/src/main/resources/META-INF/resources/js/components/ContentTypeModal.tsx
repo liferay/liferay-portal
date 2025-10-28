@@ -210,7 +210,11 @@ export default function ContentTypeModal({
 
 	return (
 		<ClayModal observer={observer}>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ModalContent
 				disableWarning={disableWarning}

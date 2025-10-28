@@ -60,7 +60,9 @@ export function ModalEditViewColumn({
 	return (
 		<ClayModal observer={observer}>
 			<ClayForm onSubmit={(event) => onSubmit(event)}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('rename-column-label')}
 				</ClayModal.Header>
 

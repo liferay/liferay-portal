@@ -131,7 +131,7 @@ public class SystemObjectEntryInfoItemFieldValuesProviderTest {
 				TestPropsValues.getGroupId()));
 
 		long accountEntryId = systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(),
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.<String, Object>put(
 				"description", RandomTestUtil.randomString()
 			).put(

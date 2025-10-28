@@ -7,7 +7,7 @@ import {act, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {StoreContextProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
 import PageContents from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/page_content/components/PageContents';

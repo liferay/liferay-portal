@@ -59,6 +59,16 @@ export default function TimeRangeInput({index, onChange, value}) {
 						aria-label={Liferay.Language.get('time-range')}
 						id={`timeRange${index}`}
 						items={TIME_RANGE_TYPES}
+						messages={{
+							itemDescribedby: Liferay.Language.get(
+								'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+							),
+							itemSelected: Liferay.Language.get('x-selected'),
+							scrollToBottomAriaLabel:
+								Liferay.Language.get('scroll-to-bottom'),
+							scrollToTopAriaLabel:
+								Liferay.Language.get('scroll-to-top'),
+						}}
 						onActiveChange={setActiveDropdown}
 						onSelectionChange={onChange}
 						placeholder={Liferay.Util.sub(

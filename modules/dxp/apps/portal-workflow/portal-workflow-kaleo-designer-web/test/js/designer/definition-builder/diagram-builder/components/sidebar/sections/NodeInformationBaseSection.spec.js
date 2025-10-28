@@ -5,7 +5,7 @@
 
 import {render} from '@testing-library/react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import React from 'react';
 
 import {NodeInformationBaseSection} from '../../../../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/diagram-builder/components/sidebar/sections/NodeInformationBaseSection';

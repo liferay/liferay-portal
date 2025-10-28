@@ -22,8 +22,11 @@ public class LPS_190401 {
 		Map<java.util.Locale, String> friendlyURLMap, boolean hasIconImage,
 		byte[] iconBytes, ServiceContext serviceContext) {
 
+		LayoutLocalServiceUtil.updateLayout(
+			123, privateLayout, layoutId, parentLayoutId, nameMap, titleMap,
+			descriptionMap, keywordsMap, robotsMap, type, hidden,
+			friendlyURLMap, hasIconImage, iconBytes, serviceContext);
 		LayoutLocalServiceUtil.updateLayout(groupId, privateLayout, layoutId, parentLayoutId, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden, friendlyURLMap, hasIconImage, iconBytes, 0, 0, 0, serviceContext);
-		LayoutServiceUtil.updateLayout(groupId, privateLayout, 123, parentLayoutId, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, test, hidden, friendlyURLMap, hasIconImage, iconBytes, serviceContext);
 		LayoutServiceUtil.updateLayout(groupId, privateLayout, layoutId, parentLayoutId, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden, friendlyURLMap, hasIconImage, iconBytes, 0, 0, 0, serviceContext);
 		_layoutLocalService.updateLayout(groupId, privateLayout, layoutId, parentLayoutId, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden, friendlyURLMap, hasIconImage, iconBytes, 0, 0, 0, serviceContext);
 		_layoutService.updateLayout(groupId, privateLayout, layoutId, parentLayoutId, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden, friendlyURLMap, hasIconImage, iconBytes, 0, 0, 0, serviceContext);
@@ -40,8 +43,11 @@ public class LPS_190401 {
 		Map<java.util.Locale, String> friendlyURLMap,
 		ServiceContext serviceContext) {
 
+		LayoutLocalServiceUtil.addLayout(
+			123, groupId, privateLayout, parentLayoutId, classNameId, classPK,
+			nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type,
+			typeSettings, hidden, system, friendlyURLMap, serviceContext);
 		LayoutLocalServiceUtil.addLayout(userId, groupId, privateLayout, parentLayoutId, classNameId, classPK, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, typeSettings, hidden, system, friendlyURLMap, 0, serviceContext);
-		_layoutLocalService.addLayout(userId, groupId, 123, parentLayoutId, classNameId, classPK, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, typeSettings, hidden, system, friendlyURLMap, serviceContext);
 		_layoutLocalService.addLayout(userId, groupId, privateLayout, parentLayoutId, classNameId, classPK, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type, typeSettings, hidden, system, friendlyURLMap, 0, serviceContext);
 	}
 

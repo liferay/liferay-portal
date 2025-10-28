@@ -40,6 +40,12 @@ public abstract class BaseTopLevelBuildReport
 			return;
 		}
 
+		if (downstreamBuildReport.isBuildCached()) {
+			_cachedDownstreamBuildReports.add(downstreamBuildReport);
+
+			return;
+		}
+
 		_downstreamBuildReports.add(downstreamBuildReport);
 	}
 
@@ -194,10 +200,20 @@ public abstract class BaseTopLevelBuildReport
 	@Override
 	public DownstreamBuildReport getDownstreamBuildReport(String axisName) {
 		for (DownstreamBuildReport downstreamBuildReport :
-				getDownstreamBuildReports()) {
+				_downstreamBuildReports) {
 
 			if (Objects.equals(downstreamBuildReport.getAxisName(), axisName)) {
 				return downstreamBuildReport;
+			}
+		}
+
+		for (DownstreamBuildReport cachedDownstreamBuildReport :
+				_cachedDownstreamBuildReports) {
+
+			if (Objects.equals(
+					cachedDownstreamBuildReport.getAxisName(), axisName)) {
+
+				return cachedDownstreamBuildReport;
 			}
 		}
 
@@ -206,7 +222,12 @@ public abstract class BaseTopLevelBuildReport
 
 	@Override
 	public List<DownstreamBuildReport> getDownstreamBuildReports() {
-		return new ArrayList<>(_downstreamBuildReports);
+		List<DownstreamBuildReport> downstreamBuildReports = new ArrayList<>();
+
+		downstreamBuildReports.addAll(_cachedDownstreamBuildReports);
+		downstreamBuildReports.addAll(_downstreamBuildReports);
+
+		return downstreamBuildReports;
 	}
 
 	@Override
@@ -409,6 +430,8 @@ public abstract class BaseTopLevelBuildReport
 			"(\\.liferay\\.com)?/job/(?<jobName>[^/]+))" +
 				"(/AXIS_VARIABLE=(?<axisVariable>\\d+))?/(?<buildNumber>\\d+)");
 
+	private final Set<DownstreamBuildReport> _cachedDownstreamBuildReports =
+		new HashSet<>();
 	private ControllerBuildReport _controllerBuildReport;
 	private final Set<DownstreamBuildReport> _downstreamBuildReports =
 		new HashSet<>();

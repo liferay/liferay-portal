@@ -3,6 +3,7 @@
 
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession" />
+	<import class="com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser" />
 	<class dynamic-update="true" name="com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionImpl" table="OpenIdConnectSession">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="openIdConnectSessionId" type="long">
 			<generator class="assigned" />
@@ -17,5 +18,16 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="clientId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="idToken" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="refreshToken" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class dynamic-update="true" name="com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectUserImpl" table="OpenIdConnectUser">
+		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="openIdConnectUserId" type="long">
+			<generator class="assigned" />
+		</id>
+		<version access="com.liferay.portal.dao.orm.hibernate.PrivateFieldPropertyAccessor" name="mvccVersion" type="long" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="createDate" type="org.hibernate.type.TimestampType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="issuer" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="subject" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>

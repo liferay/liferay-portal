@@ -83,14 +83,14 @@ public class PageExperienceDTOConverter
 	}
 
 	private DTOConverterContext _getDTOConverterContext(
-		LayoutStructure layoutStructure, long scopeGroupId) {
+		long companyId, LayoutStructure layoutStructure, long scopeGroupId) {
 
 		DTOConverterContext dtoConverterContext =
 			new DefaultDTOConverterContext(null, null, null, null, null);
 
 		dtoConverterContext.setAttribute(
 			LayoutStructure.class.getName(), layoutStructure);
-
+		dtoConverterContext.setAttribute("companyId", companyId);
 		dtoConverterContext.setAttribute("scopeGroupId", scopeGroupId);
 
 		return dtoConverterContext;
@@ -109,6 +109,7 @@ public class PageExperienceDTOConverter
 			rootLayoutStructureItem.getChildrenItemIds(),
 			childrenItemId -> _pageElementDTOConverter.toDTO(
 				_getDTOConverterContext(
+					layoutPageTemplateStructureRel.getCompanyId(),
 					layoutStructure,
 					layoutPageTemplateStructureRel.getGroupId()),
 				layoutStructure.getLayoutStructureItem(childrenItemId)),

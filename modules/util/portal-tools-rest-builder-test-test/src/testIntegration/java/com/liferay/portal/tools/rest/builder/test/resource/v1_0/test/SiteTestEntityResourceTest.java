@@ -288,8 +288,8 @@ public class SiteTestEntityResourceTest
 		SiteTestEntity randomSiteTestEntity = randomSiteTestEntity();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
 			SiteTestEntityResource siteTestEntityResource =

@@ -108,7 +108,9 @@ export default function NewTopicModal({
 		<>
 			{visible && (
 				<ClayModal observer={observer} size="lg" status="info">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('new-topic')}
 					</ClayModal.Header>
 

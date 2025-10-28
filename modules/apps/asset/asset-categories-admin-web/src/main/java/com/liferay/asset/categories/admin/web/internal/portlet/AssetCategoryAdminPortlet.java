@@ -23,12 +23,19 @@ import com.liferay.asset.kernel.exception.NoSuchEntryException;
 import com.liferay.asset.kernel.exception.NoSuchVocabularyException;
 import com.liferay.asset.kernel.exception.VocabularyNameException;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.change.tracking.spi.history.util.CTTimelineUtil;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
@@ -38,6 +45,7 @@ import jakarta.portlet.RenderResponse;
 import java.io.IOException;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -107,6 +115,13 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 
 		CTTimelineUtil.setClassName(renderRequest, AssetCategory.class);
 
+		if (Objects.equals(
+				getPath(renderRequest, renderResponse),
+				"/edit_asset_vocabulary.jsp")) {
+
+			_setShowEditAssetVocabularyHeader(renderRequest);
+		}
+
 		super.doDispatch(renderRequest, renderResponse);
 	}
 
@@ -133,12 +148,46 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 		return false;
 	}
 
+	private void _setShowEditAssetVocabularyHeader(
+		RenderRequest renderRequest) {
+
+		long vocabularyId = ParamUtil.getLong(renderRequest, "vocabularyId");
+
+		if (vocabularyId <= 0) {
+			return;
+		}
+
+		try {
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyService.fetchVocabulary(vocabularyId);
+
+			if ((assetVocabulary != null) &&
+				(assetVocabulary.getVisibilityType() ==
+					AssetVocabularyConstants.VISIBILITY_TYPE_EMPTY)) {
+
+				renderRequest.setAttribute(
+					AssetCategoriesAdminWebKeys.
+						SHOW_EDIT_ASSET_VOCABULARY_HEADER,
+					Boolean.TRUE);
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetCategoryAdminPortlet.class);
+
 	private volatile AssetCategoriesAdminWebConfiguration
 		_assetCategoriesAdminWebConfiguration;
 
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
+
+	@Reference
+	private AssetVocabularyService _assetVocabularyService;
 
 	@Reference
 	private ItemSelector _itemSelector;

@@ -824,9 +824,9 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(taxonomyCategoryId);
+		Long resourceId = getPermissionCheckerResourceId(taxonomyCategoryId);
 		String resourceName = getPermissionCheckerResourceName(
 			taxonomyCategoryId);
-		Long resourceId = getPermissionCheckerResourceId(taxonomyCategoryId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -2176,9 +2176,9 @@ public abstract class BaseTaxonomyCategoryResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(taxonomyCategoryId);
+		Long resourceId = getPermissionCheckerResourceId(taxonomyCategoryId);
 		String resourceName = getPermissionCheckerResourceName(
 			taxonomyCategoryId);
-		Long resourceId = getPermissionCheckerResourceId(taxonomyCategoryId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

@@ -59,7 +59,9 @@ export default function LockedArticleModal({
 		<>
 			{showModal && (
 				<ClayModal observer={observer} size="md" status="info">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('article-in-edition')}
 					</ClayModal.Header>
 

@@ -50,7 +50,9 @@ function SearchableTypesModal({
 			observer={observer}
 			size="lg"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('select-types')}
 			</ClayModal.Header>
 

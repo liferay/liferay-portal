@@ -619,7 +619,13 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		File file = project.file("Dockerfile.ext");
 
 		if (file.exists()) {
-			dockerfile.instructionsFromTemplate(file);
+			try {
+				dockerfile.instructionsFromTemplate(file);
+			}
+			catch (IOException ioException) {
+				throw new GradleException(
+					ioException.getMessage(), ioException);
+			}
 		}
 
 		dockerfile.setDescription(

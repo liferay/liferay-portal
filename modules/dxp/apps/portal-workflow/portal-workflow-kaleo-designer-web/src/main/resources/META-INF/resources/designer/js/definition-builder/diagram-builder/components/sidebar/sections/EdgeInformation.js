@@ -222,6 +222,7 @@ export default function EdgeInformation({errors, setErrors}) {
 				<ClayAlert.ToastContainer>
 					<ClayAlert
 						autoClose={5000}
+						closeButtonAriaLabel={Liferay.Language.get('close')}
 						displayType="warning"
 						onClose={() => setShowWarningAlert(false)}
 						title={`${Liferay.Language.get(

@@ -11,7 +11,7 @@ import {ChartStateContextProvider} from '../../../src/main/resources/META-INF/re
 import ConnectionContext from '../../../src/main/resources/META-INF/resources/js/context/ConnectionContext';
 import {StoreContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/StoreContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockEndpoints = {
 	analyticsReportsHistoricalReadsURL: '/o/analyticsReportsHistoricalReadsURL',

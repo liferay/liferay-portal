@@ -217,8 +217,8 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			group, "Test Page From Master Layout Page Template");
 
 		_fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), group.getGroupId(), 0,
-			RandomTestUtil.randomLong(),
+			null, TestPropsValues.getUserId(), group.getGroupId(), null,
+			RandomTestUtil.randomString(), null,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				masterPageTemplateDraftLayout.getPlid()),
 			masterPageTemplateDraftLayout.getPlid(), StringPool.BLANK,
@@ -649,8 +649,8 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			group, parentLayout.getPlid());
 
 		_fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), group.getGroupId(), 0,
-			RandomTestUtil.randomLong(),
+			null, TestPropsValues.getUserId(), group.getGroupId(), null,
+			RandomTestUtil.randomString(), null,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				layout.getPlid()),
 			layout.getPlid(), StringPool.BLANK, StringPool.BLANK,

@@ -88,7 +88,9 @@ export default function ModalSchedulePublication({
 		<>
 			{visible && (
 				<ClayModal center observer={observer}>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('schedule-publication')}
 					</ClayModal.Header>
 

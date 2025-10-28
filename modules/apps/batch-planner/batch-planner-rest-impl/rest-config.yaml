@@ -6,7 +6,7 @@ application:
     name: Liferay.Batch.Planner.REST
 author: Matija Petanjek
 clientDir: ../batch-planner-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 generateBatch: false
 generateGraphQL: false

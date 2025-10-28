@@ -66,7 +66,7 @@
 												[#if productType.name == 'Other']
 													<div class="app-type-badge"></div>
 												[#else]
-													[#assign badgeType = productType.name?lower_case?replace(" ", "-", "r")]
+													[#assign badgeType = productType.name?lower_case?replace(" ", "-", "r")?replace("/", "-", "r")]
 
 													<div class="app-type-badge ${badgeType}">
 														${productType.name}

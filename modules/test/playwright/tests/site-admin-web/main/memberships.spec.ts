@@ -6,8 +6,13 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
 	performLogout,
@@ -18,8 +23,12 @@ import {membershipsPagesTest} from './fixtures/membershipsPagesTest';
 
 export const test = mergeTests(
 	apiHelpersTest,
+	dataApiHelpersTest,
+	isolatedSiteTest,
 	loginTest(),
-	membershipsPagesTest
+	membershipsPagesTest,
+	pageEditorPagesTest,
+	siteSettingsPagesTest
 );
 
 test(
@@ -533,6 +542,185 @@ test(
 		await expect(
 			page.locator('.tooltip-inner', {hasText: 'Go to Memberships'})
 		).toBeVisible();
+
+		await apiHelpers.headlessAdminUser.deleteUserAccount(Number(user.id));
+	}
+);
+
+test(
+	'Confirm that no pop up appears when select user card with XSS name in memberships',
+	{
+		tag: '@LPD-69499',
+	},
+	async ({apiHelpers, membershipsPage, page}) => {
+		const randomNumber = getRandomInt();
+
+		const user = await apiHelpers.post(
+			`${apiHelpers.baseUrl}headless-admin-user/v1.0/user-accounts`,
+			{
+				data: {
+					alternateName: 'User' + randomNumber,
+					emailAddress: 'User' + randomNumber + '@liferay.com',
+					familyName: `"><script>alert(2)</script>`,
+					givenName: `"><script>alert(1)</script>`,
+					password: 'test',
+				},
+				failOnStatusCode: true,
+			}
+		);
+
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
+
+		await membershipsPage.goto();
+
+		await page.getByRole('button', {name: 'Add'}).click();
+
+		await page
+			.frameLocator('iframe[title="Assign Users to This Site"]')
+			.getByLabel(user.givenName)
+			.check();
+
+		await page.getByRole('button', {name: 'Done'}).click();
+
+		await page
+			.locator(
+				`[id="_com_liferay_site_memberships_web_portlet_SiteMembershipsPortlet_users_${user.alternateName}"]`
+			)
+			.click({force: true});
+
+		const alert = page.locator('.alert');
+
+		await expect(alert).toHaveCount(0);
+
+		await apiHelpers.headlessAdminUser.deleteUserAccount(Number(user.id));
+	}
+);
+
+test(
+	'Assert no pop up when viewing membership request detail',
+	{
+		tag: '@LPD-69499',
+	},
+	async ({
+		apiHelpers,
+		membershipsPage,
+		page,
+		pageEditorPage,
+		site,
+		siteSettingsPage,
+	}) => {
+		const site2 = await apiHelpers.headlessSite.createSite({
+			membershipType: 'restricted',
+			name: getRandomString(),
+		});
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {type: 'content'},
+			title: getRandomString(),
+		});
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.addWidget('Community', 'My Sites');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				exact: true,
+				name: 'Permissions',
+			}),
+			trigger: page
+				.locator('#wrapper')
+				.getByRole('button', {name: 'Options'}),
+		});
+
+		await page
+			.frameLocator('iframe[title="Permissions"]')
+			.locator('#user_ACTION_VIEW')
+			.check();
+
+		await page
+			.frameLocator('iframe[title="Permissions"]')
+			.getByRole('button', {name: 'Save'})
+			.click();
+
+		await page.getByLabel('Permissions').getByLabel('Close').click();
+
+		await page.getByLabel('Publish', {exact: true}).click();
+
+		await performLogout(page);
+
+		await performLogin(page, user.alternateName);
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await page.getByRole('link', {name: 'Available Sites'}).click();
+
+		await page
+			.locator(
+				`[id="_com_liferay_site_my_sites_web_portlet_MySitesPortlet_ocerSearchContainer_-${site2.name}"]`
+			)
+			.getByLabel('Show Actions')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Request Membership'}).click();
+
+		await page
+			.getByLabel('Characters Maximum')
+			.fill(`<html><script>alert('test');</script></html>`);
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await performLogout(page);
+
+		await performLogin(page, 'test');
+
+		await siteSettingsPage.goto(site2.friendlyUrlPath);
+
+		await membershipsPage.goto();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				name: 'View Membership Requests',
+			}),
+			trigger: page.getByLabel('Options', {exact: true}),
+		});
+
+		await page.getByLabel('More actions').click();
+
+		await page.getByRole('menuitem', {name: 'Reply'}).click();
+
+		await page
+			.getByLabel('Characters Maximum')
+			.fill(`<html><script>alert('test');</script></html>`);
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await page.getByRole('link', {name: 'Approved'}).click();
+
+		await page
+			.getByRole('link', {name: `${user.givenName} ${user.familyName}`})
+			.click();
+
+		const alert = page.locator('.alert');
+
+		await expect(alert).toHaveCount(0);
+
+		await apiHelpers.headlessSite.deleteSite(site2.id);
 
 		await apiHelpers.headlessAdminUser.deleteUserAccount(Number(user.id));
 	}

@@ -3,208 +3,491 @@
 exports[`IndividualFieldMapping should render 1`] = `
 <div>
   <div
-    class="settings-base-page-root data-source-base-page-root base-field-mapping-view-root"
+    class="settings-root"
   >
-    <div
-      class="maintenance-alert-root"
-    />
-    <ol
-      class="breadcrumb breadcrumbs-root"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <li
-        class="breadcrumb-item"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source"
-        >
-          Data Sources
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item"
-      >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source/27"
-        >
-          Liferay1
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item active"
-      >
-        <span
-          class="breadcrumb-text-truncate"
-        >
-          Individual Field Mapping
-        </span>
-      </li>
-    </ol>
-    <div
-      class="content-header"
-    >
-      <div
-        class="header-text"
-      >
-        <div
-          class="d-flex"
-        >
-          <h3
-            class="title-text text-truncate"
-          >
-            <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
-            >
-              Configure Salesforce
-            </span>
-          </h3>
-        </div>
-        <div
-          class="description"
-        >
-          Liferay1 - https://www.faro-1.io
-        </div>
-      </div>
-      <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="page-container"
-      >
-        <div
-          class="content-main"
+        <li
+          class="tbar-item"
         >
           <div
-            class="sheet"
+            class="component-action"
           >
-            <div
-              class="sheet-header"
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
             >
-              <div
-                class="sheet-section"
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
               >
-                <div
-                  class="h4"
-                >
-                  Individual Field Mapping
-                </div>
-                <div
-                  class="sheet-text"
-                >
-                  All fields have been mapped automatically to the best possible match. Please review the data mapping below to see how your Salesforce object has been mapped to Analytics Cloud.
-                </div>
-              </div>
-            </div>
-            <div
-              class="data-transformation-list-root read-only"
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="text-dark"
             >
-              <div
-                class="data-transformation-header"
+              <span
+                class="text-5 font-weight-bold"
               >
-                <div
-                  class="left"
-                >
-                  Salesforce Field
-                </div>
-                <div
-                  class="right"
-                >
-                  Analytics Cloud Field
-                </div>
-              </div>
-              <div
-                class="form-group data-transformation-item-root form-group-autofit"
+                Settings
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/apis/tokens"
               >
-                <div
-                  class="form-group-item"
-                >
-                  <div>
-                    <div
-                      class="dropdown searchable-select-root"
-                    >
-                      <button
-                        aria-controls="clay-dropdown-menu-1"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        class="dropdown-toggle button-root d-flex align-items-center justify-content-between w-100 btn btn-unstyled"
-                        type="button"
-                      >
-                        Test0
-                        <svg
-                          class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
-                          role="presentation"
-                        >
-                          <use
-                            href="#caret-bottom"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <div
-                      class="example-value text-truncate"
-                    >
-                      value
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="form-group-item add-on form-group-item-shrink"
+                <span
+                  class="icon-wrapper"
                 >
                   <svg
-                    class="lexicon-icon lexicon-icon-faro_connection_success_ovals icon-root"
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
                     role="presentation"
                   >
                     <use
-                      href="#faro_connection_success_ovals"
+                      href="#ac_api"
                     />
                   </svg>
-                </div>
+                </span>
+                APIs
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div
+        class="content section-main"
+      >
+        <div
+          class="settings-base-page-root data-source-base-page-root base-field-mapping-view-root"
+        >
+          <div
+            class="maintenance-alert-root"
+          />
+          <ol
+            class="breadcrumb breadcrumbs-root"
+          >
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source"
+              >
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source/27"
+              >
+                Liferay1
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item active"
+            >
+              <span
+                class="breadcrumb-text-truncate"
+              >
+                Individual Field Mapping
+              </span>
+            </li>
+          </ol>
+          <div
+            class="content-header"
+          >
+            <div
+              class="header-text"
+            >
+              <div
+                class="d-flex"
+              >
+                <h3
+                  class="title-text text-truncate"
+                >
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Configure Salesforce
+                  </span>
+                </h3>
+              </div>
+              <div
+                class="description"
+              >
+                Liferay1 - https://www.faro-1.io
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="page-container"
+            >
+              <div
+                class="content-main"
+              >
                 <div
-                  class="form-group-item"
+                  class="sheet"
                 >
                   <div
-                    class="suggestion"
+                    class="sheet-header"
                   >
                     <div
-                      class="dropdown searchable-select-root"
+                      class="sheet-section"
                     >
-                      <button
-                        aria-controls="clay-dropdown-menu-2"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        class="dropdown-toggle button-root d-flex align-items-center justify-content-between w-100 btn btn-unstyled"
-                        type="button"
+                      <div
+                        class="h4"
                       >
-                        MappingName
+                        Individual Field Mapping
+                      </div>
+                      <div
+                        class="sheet-text"
+                      >
+                        All fields have been mapped automatically to the best possible match. Please review the data mapping below to see how your Salesforce object has been mapped to Analytics Cloud.
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="data-transformation-list-root read-only"
+                  >
+                    <div
+                      class="data-transformation-header"
+                    >
+                      <div
+                        class="left"
+                      >
+                        Salesforce Field
+                      </div>
+                      <div
+                        class="right"
+                      >
+                        Analytics Cloud Field
+                      </div>
+                    </div>
+                    <div
+                      class="form-group data-transformation-item-root form-group-autofit"
+                    >
+                      <div
+                        class="form-group-item"
+                      >
+                        <div>
+                          <div
+                            class="dropdown searchable-select-root"
+                          >
+                            <button
+                              aria-controls="clay-dropdown-menu-1"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              class="dropdown-toggle button-root d-flex align-items-center justify-content-between w-100 btn btn-unstyled"
+                              type="button"
+                            >
+                              Test0
+                              <svg
+                                class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#caret-bottom"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <div
+                            class="example-value text-truncate"
+                          >
+                            value
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="form-group-item add-on form-group-item-shrink"
+                      >
                         <svg
-                          class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                          class="lexicon-icon lexicon-icon-faro_connection_success_ovals icon-root"
                           role="presentation"
                         >
                           <use
-                            href="#caret-bottom"
+                            href="#faro_connection_success_ovals"
                           />
                         </svg>
-                      </button>
-                    </div>
-                    <div
-                      class="example-value text-truncate"
-                    >
-                      mappingValue
+                      </div>
+                      <div
+                        class="form-group-item"
+                      >
+                        <div
+                          class="suggestion"
+                        >
+                          <div
+                            class="dropdown searchable-select-root"
+                          >
+                            <button
+                              aria-controls="clay-dropdown-menu-2"
+                              aria-expanded="false"
+                              aria-haspopup="true"
+                              class="dropdown-toggle button-root d-flex align-items-center justify-content-between w-100 btn btn-unstyled"
+                              type="button"
+                            >
+                              MappingName
+                              <svg
+                                class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#caret-bottom"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <div
+                            class="example-value text-truncate"
+                          >
+                            mappingValue
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div
+                class="content-side"
+              />
             </div>
           </div>
         </div>
-        <div
-          class="content-side"
-        />
       </div>
     </div>
   </div>

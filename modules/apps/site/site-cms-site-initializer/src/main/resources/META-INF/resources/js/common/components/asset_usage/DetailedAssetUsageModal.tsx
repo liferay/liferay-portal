@@ -108,7 +108,9 @@ const DetailedAssetUsageModal: React.FC<IDetailedAssetUsageModalProps> = ({
 				className="cms-detailed-asset-usage-modal"
 				ref={modalWrapperRef}
 			>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{sub(Liferay.Language.get('usages-of-x'), `"${item.name}"`)}
 				</ClayModal.Header>
 

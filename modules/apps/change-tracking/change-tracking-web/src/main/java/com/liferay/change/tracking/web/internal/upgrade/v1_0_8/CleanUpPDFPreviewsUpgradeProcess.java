@@ -38,25 +38,26 @@ public class CleanUpPDFPreviewsUpgradeProcess extends UpgradeProcess {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
-					"select distinct CTEntry.ctCollectionId, ",
-					"CTEntry.modelClassNameId, CTEntry.modelClassPK from ",
-					"CTEntry inner join DLFileVersionPreview on ",
-					"CTEntry.modelClassNameId = ",
-					dlFileVersionPreviewClassNameId,
-					" and DLFileVersionPreview.dlFileVersionPreviewId = ",
-					"CTEntry.modelClassPK inner join DLFileEntry on ",
-					"(DLFileVersionPreview.fileEntryId = ",
+					"select distinct CTEntry.ctCollectionId, CTEntry.",
+					"modelClassNameId, CTEntry.modelClassPK from CTEntry ",
+					"inner join DLFileVersionPreview on CTEntry.",
+					"modelClassNameId = ? and DLFileVersionPreview.",
+					"dlFileVersionPreviewId = CTEntry.modelClassPK inner join ",
+					"DLFileEntry on (DLFileVersionPreview.fileEntryId = ",
 					"DLFileEntry.fileEntryId and DLFileEntry.ctCollectionId ",
-					"!= CTEntry.ctCollectionId)"));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"!= CTEntry.ctCollectionId)"))) {
 
-			while (resultSet.next()) {
-				long ctCollectionId = resultSet.getLong("ctCollectionId");
-				long classNameId = resultSet.getLong("modelClassNameId");
-				long classPK = resultSet.getLong("modelClassPK");
+			preparedStatement.setLong(1, dlFileVersionPreviewClassNameId);
 
-				_ctCollectionLocalService.discardCTEntry(
-					ctCollectionId, classNameId, classPK, true);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long ctCollectionId = resultSet.getLong("ctCollectionId");
+					long classNameId = resultSet.getLong("modelClassNameId");
+					long classPK = resultSet.getLong("modelClassPK");
+
+					_ctCollectionLocalService.discardCTEntry(
+						ctCollectionId, classNameId, classPK, true);
+				}
 			}
 		}
 	}

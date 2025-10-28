@@ -10,6 +10,13 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 jest.useRealTimers();
 
 describe('Search', () => {

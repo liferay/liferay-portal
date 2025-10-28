@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 import {useSelector} from '@xstate/store/react';
-import classNames from 'classnames';
-import {useEffect, useMemo, useState} from 'react';
+import {ReactNode, useEffect, useMemo, useState} from 'react';
 import {
 	Outlet,
 	useLocation,
@@ -56,6 +56,7 @@ export type ProductPurchaseOutletContext = {
 	product: DeliveryProduct;
 	productPurchaseCart: ReturnType<typeof useProductPurchaseCart>;
 	productTypeRoute: ProductPurchaseOutletProps['productTypeRoute'];
+	setAlert: React.Dispatch<ReactNode>;
 	solutionTypeSpecificationValue: SolutionTypes;
 } & Omit<ReturnType<typeof useAccounts>, 'myUserAccount'>;
 
@@ -64,6 +65,7 @@ const ProductPurchaseOutlet: React.FC<ProductPurchaseOutletProps> = ({
 	productTypeRoute,
 	solutionTypeSpecificationValue,
 }) => {
+	const [alert, setAlert] = useState('');
 	const [isSubmitting, setSubmitting] = useState(false);
 	const {accounts, selectedAccount, setSelectedAccount} = useAccounts();
 
@@ -151,7 +153,12 @@ const ProductPurchaseOutlet: React.FC<ProductPurchaseOutletProps> = ({
 		setSubmitting(false);
 	};
 
-	const isTinyDisplay = metadata?.tinyStepsDisplay;
+	const {
+		showAccountSelected = true,
+		showSteps = true,
+		tinyStepsDisplay,
+	} = metadata;
+
 	const isSingleAccount = accounts.length === 1;
 
 	const context = {
@@ -167,6 +174,7 @@ const ProductPurchaseOutlet: React.FC<ProductPurchaseOutletProps> = ({
 		productPurchaseCart,
 		routes: steps,
 		selectedAccount,
+		setAlert,
 		setSelectedAccount,
 		solutionTypeSpecificationValue,
 	};
@@ -214,10 +222,18 @@ const ProductPurchaseOutlet: React.FC<ProductPurchaseOutletProps> = ({
 					</div>
 				)}
 
-				<ProductPurchase.HeaderAccount account={selectedAccount} />
+				{showAccountSelected && (
+					<ProductPurchase.HeaderAccount account={selectedAccount} />
+				)}
 			</ProductPurchase.Header>
 
-			{!isTinyDisplay && (
+			{alert && (
+				<ClayAlert className="mt-4" displayType="info">
+					{alert}
+				</ClayAlert>
+			)}
+
+			{showSteps && !tinyStepsDisplay && (
 				<ProductPurchase.Steps
 					className="mt-5 px-8"
 					onClickIndicator={(step) => navigate(step.key)}
@@ -225,16 +241,13 @@ const ProductPurchaseOutlet: React.FC<ProductPurchaseOutletProps> = ({
 				/>
 			)}
 
-			<ProductPurchase.Body
-				className={classNames('mt-7', {'mt-7': accounts.length === 1})}
-			>
-				{isTinyDisplay && (
+			<ProductPurchase.Body className="mt-4">
+				{showSteps && tinyStepsDisplay && (
 					<ProductPurchase.CircleSteps
 						className="my-5 px-8"
 						steps={steps}
 					/>
 				)}
-
 				<Outlet context={context} />
 			</ProductPurchase.Body>
 		</ProductPurchase>

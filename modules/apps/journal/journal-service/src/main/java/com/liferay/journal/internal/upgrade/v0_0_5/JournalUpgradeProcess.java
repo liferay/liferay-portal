@@ -621,51 +621,56 @@ public class JournalUpgradeProcess extends UpgradeProcess {
 	private void _updateJournalArticles(long companyId) throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select id_, groupId, content, DDMStructureKey from " +
-					"JournalArticle where companyId = " + companyId);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"JournalArticle where companyId = ?")) {
 
-			String name = _addBasicWebContentStructureAndTemplate(companyId);
+			preparedStatement.setLong(1, companyId);
 
-			while (resultSet.next()) {
-				long id = resultSet.getLong("id_");
-				String content = resultSet.getString("content");
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				String name = _addBasicWebContentStructureAndTemplate(
+					companyId);
 
-				String ddmStructureKey = resultSet.getString("DDMStructureKey");
+				while (resultSet.next()) {
+					long id = resultSet.getLong("id_");
+					String content = resultSet.getString("content");
 
-				if (Validator.isNull(ddmStructureKey)) {
-					long groupId = resultSet.getLong("groupId");
+					String ddmStructureKey = resultSet.getString(
+						"DDMStructureKey");
 
-					try {
-						content = _convertStaticContentToDynamic(
-							groupId, content);
+					if (Validator.isNull(ddmStructureKey)) {
+						long groupId = resultSet.getLong("groupId");
+
+						try {
+							content = _convertStaticContentToDynamic(
+								groupId, content);
+						}
+						catch (DocumentException documentException) {
+							content = _fixStaticContent(
+								id, content, documentException);
+
+							content = _convertStaticContentToDynamic(
+								groupId, content);
+						}
+						catch (Exception exception) {
+							_log.error(
+								StringBundler.concat(
+									"ID: ", id, "\nGroup ID: ", groupId,
+									"\nContent: ", content));
+
+							throw exception;
+						}
+
+						_updateJournalArticle(id, name, name, content);
+
+						continue;
 					}
-					catch (DocumentException documentException) {
-						content = _fixStaticContent(
-							id, content, documentException);
 
-						content = _convertStaticContentToDynamic(
-							groupId, content);
+					String updatedContent = _transformDateFieldValues(content);
+
+					updatedContent = _transformFieldNames(updatedContent);
+
+					if (!content.equals(updatedContent)) {
+						_updateJournalArticleContent(id, updatedContent);
 					}
-					catch (Exception exception) {
-						_log.error(
-							StringBundler.concat(
-								"ID: ", id, "\nGroup ID: ", groupId,
-								"\nContent: ", content));
-
-						throw exception;
-					}
-
-					_updateJournalArticle(id, name, name, content);
-
-					continue;
-				}
-
-				String updatedContent = _transformDateFieldValues(content);
-
-				updatedContent = _transformFieldNames(updatedContent);
-
-				if (!content.equals(updatedContent)) {
-					_updateJournalArticleContent(id, updatedContent);
 				}
 			}
 		}

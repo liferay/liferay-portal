@@ -7,7 +7,7 @@ import {cleanup, render, waitFor} from '@testing-library/react';
 import {fetch, runScriptsInElement} from 'frontend-js-web';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import ManageCollaborators from '../../../../src/main/resources/META-INF/resources/js/components/SidebarPanelInfoView/ManageCollaborators';
 

@@ -107,12 +107,6 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 						MapUtil.getString(
 							taskContextMap, "exportImportConfigurationId")),
 					BooleanClauseOccur.MUST);
-				booleanFilter.add(
-					new TermFilter(
-						"type_integer",
-						String.valueOf(
-							ExportImportReportEntryConstants.TYPE_ERROR)),
-					BooleanClauseOccur.MUST);
 			},
 			filter, ExportImportReportEntry.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(

@@ -28,21 +28,15 @@ export async function createCategories({
 	vocabularyName: string;
 	vocabularyVisibility?: boolean;
 }): Promise<({id: number} & TCategory)[]> {
-	const {id: vocabularyId} = siteId
-		? await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
-				assetTypes,
-				name: vocabularyName,
-				siteId,
-				visibilityType:
-					vocabularyVisibility === true ? 'INTERNAL' : 'PUBLIC',
-			})
-		: await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabulary({
-				assetLibraries,
-				assetTypes,
-				name: vocabularyName,
-				visibilityType:
-					vocabularyVisibility === true ? 'INTERNAL' : 'PUBLIC',
-			});
+	const {id: vocabularyId} =
+		await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
+			assetLibraries,
+			assetTypes,
+			name: vocabularyName,
+			siteId,
+			visibilityType:
+				vocabularyVisibility === true ? 'INTERNAL' : 'PUBLIC',
+		});
 
 	const categories = [];
 	for (const {name, name_i18n} of categoryNames) {

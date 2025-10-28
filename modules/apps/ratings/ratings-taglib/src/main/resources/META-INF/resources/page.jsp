@@ -14,7 +14,7 @@ String type = GetterUtil.getString((String)request.getAttribute("liferay-ratings
 <c:choose>
 	<c:when test="<%= themeDisplay.isIsolated() %>">
 		<div class="ratings-edit-page">
-			<aui:link hashedFile="<%= true %>" href="/css/main.css" rel="stylesheet" type="text/css" />
+			<aui:link hashedFile="<%= true %>" href="ratings-taglib/css/main.css" rel="stylesheet" type="text/css" />
 	</c:when>
 	<c:otherwise>
 		<liferay-util:html-top

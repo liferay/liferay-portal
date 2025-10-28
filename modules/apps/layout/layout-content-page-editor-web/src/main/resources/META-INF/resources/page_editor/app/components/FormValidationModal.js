@@ -45,7 +45,9 @@ export function FormValidationModal({onCloseModal, onPublish}) {
 			observer={observer}
 			status="warning"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('form-errors')}
 			</ClayModal.Header>
 
@@ -128,7 +130,11 @@ function SingleErrorModal({formValidation, observer, onClose, onPublish}) {
 			observer={observer}
 			status="warning"
 		>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				<p className="mb-0">{message}</p>

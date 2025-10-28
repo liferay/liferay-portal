@@ -105,8 +105,8 @@ public class LayoutReferencesExportImportContentProcessorTest {
 
 		FragmentEntryLink draftLayoutFragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), draftLayout.getGroupId(), 0,
-				0, segmentsExperienceId, draftLayout.getPlid(),
+				null, TestPropsValues.getUserId(), draftLayout.getGroupId(),
+				null, null, null, segmentsExperienceId, draftLayout.getPlid(),
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 				JSONFactoryUtil.toString(
 					fragmentRenderer.getConfigurationJSONObject(
@@ -133,7 +133,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 		Assert.assertNotNull(
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				liveGroup.getGroupId(),
-				draftLayoutFragmentEntryLink.getFragmentEntryLinkId(),
+				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid()));
 
 		GroupTestUtil.enableLocalStaging(

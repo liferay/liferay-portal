@@ -1,5 +1,5 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay", name: "org.eclipse.osgi", version: "3.13.0.LIFERAY-PATCHED-28"
+	testIntegrationImplementation group: "com.liferay", name: "org.eclipse.osgi", version: "3.13.0.LIFERAY-PATCHED-29"
 	testIntegrationImplementation group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"

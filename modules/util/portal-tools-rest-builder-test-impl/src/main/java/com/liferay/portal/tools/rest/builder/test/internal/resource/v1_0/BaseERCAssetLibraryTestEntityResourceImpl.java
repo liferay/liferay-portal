@@ -334,10 +334,10 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 
 		Long groupId = getPermissionCheckerGroupId(
 			assetLibraryExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			assetLibraryExternalReferenceCode,
 			ercAssetLibraryTestEntityExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			assetLibraryExternalReferenceCode,
 			ercAssetLibraryTestEntityExternalReferenceCode);
 
@@ -696,10 +696,10 @@ public abstract class BaseERCAssetLibraryTestEntityResourceImpl
 
 		Long groupId = getPermissionCheckerGroupId(
 			assetLibraryExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			assetLibraryExternalReferenceCode,
 			ercAssetLibraryTestEntityExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			assetLibraryExternalReferenceCode,
 			ercAssetLibraryTestEntityExternalReferenceCode);
 

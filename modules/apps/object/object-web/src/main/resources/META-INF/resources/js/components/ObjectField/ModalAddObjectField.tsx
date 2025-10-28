@@ -159,7 +159,9 @@ export function ModalAddObjectField({
 		<ClayModalProvider>
 			<ClayTooltipProvider>
 				<ClayModal center observer={observer}>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('new-field')}
 					</ClayModal.Header>
 

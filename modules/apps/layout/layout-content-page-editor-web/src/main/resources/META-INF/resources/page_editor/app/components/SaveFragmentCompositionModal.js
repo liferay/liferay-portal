@@ -97,7 +97,9 @@ const SaveFragmentCompositionModal = ({itemId, onCloseModal}) => {
 			observer={observer}
 			size="lg"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('save-as-fragment')}
 			</ClayModal.Header>
 

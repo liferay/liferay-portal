@@ -6,7 +6,7 @@ locals {
 	is_active_data_blue=var.data_active=="blue"
 	is_active_data_green=var.data_active=="green"
 	oidc_provider=replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
-	oidc_provider_arn="arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_provider}"
+	oidc_provider_arn="arn:${var.arn_partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_provider}"
 	vpc_config=data.aws_eks_cluster.cluster.vpc_config[0]
 }
 module "postgres_blue" {
@@ -78,30 +78,9 @@ resource "aws_iam_policy" "s3" {
 			Version="2012-10-17"
 		})
 }
-resource "aws_iam_role" "liferay" {
-	assume_role_policy=jsonencode(
-		{
-			Statement=[
-				{
-					Action="sts:AssumeRoleWithWebIdentity"
-					Condition={
-						StringEquals={
-							"${local.oidc_provider}:sub" : "system:serviceaccount:${var.deployment_namespace}:liferay-default"
-						}
-					}
-					Effect="Allow"
-					Principal={
-						Federated=local.oidc_provider_arn
-					}
-				}
-			]
-			Version="2012-10-17"
-		})
-	name="${var.deployment_name}-irsa"
-}
 resource "aws_iam_role_policy_attachment" "s3" {
 	policy_arn=aws_iam_policy.s3.arn
-	role=aws_iam_role.liferay.name
+	role=var.liferay_sa_role_name
 }
 resource "aws_opensearch_domain" "os" {
 	access_policies=<<POLICY
@@ -113,7 +92,7 @@ resource "aws_opensearch_domain" "os" {
 			"Principal": {
 				"AWS": "*"
 			},
-			"Resource": "arn:aws:es:${var.region}:${data.aws_caller_identity.current.account_id}:domain/${var.deployment_name}-os-d/*"
+			"Resource": "arn:${var.arn_partition}:es:${var.region}:${data.aws_caller_identity.current.account_id}:domain/${var.deployment_name}-os-d/*"
 		}
 	],
 	"Version": "2012-10-17"
@@ -213,4 +192,20 @@ resource "kubernetes_secret" "managed_service_details" {
 		namespace=kubernetes_namespace.liferay.metadata[0].name
 	}
 	type="Opaque"
+}
+resource "null_resource" "opensearch_service_role" {
+	provisioner "local-exec" {
+		command=<<-EOT
+			aws \
+				iam \
+				create-service-linked-role \
+				--aws-service-name opensearchservice.amazonaws.com \
+				--region "${var.region}" \
+				|| true
+		EOT
+	}
+
+	triggers={
+		service_name="opensearchservice.amazonaws.com"
+	}
 }

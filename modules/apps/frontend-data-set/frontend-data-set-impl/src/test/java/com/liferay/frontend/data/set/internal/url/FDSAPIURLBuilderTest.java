@@ -13,6 +13,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -64,10 +65,24 @@ public class FDSAPIURLBuilderTest {
 			12345L
 		);
 
+		User user = Mockito.mock(User.class);
+
 		Mockito.when(
-			themeDisplay.getUserId()
+			user.getExternalReferenceCode()
+		).thenReturn(
+			"6ce17b38-0dcb-8486-d54d-72d4c49eed06"
+		);
+
+		Mockito.when(
+			user.getUserId()
 		).thenReturn(
 			67890L
+		);
+
+		Mockito.when(
+			themeDisplay.getUser()
+		).thenReturn(
+			user
 		);
 
 		Mockito.when(
@@ -116,6 +131,9 @@ public class FDSAPIURLBuilderTest {
 
 		_testBuild(
 			"/o/app/67890/endpoint", "/app", "/{userId}/endpoint", "schema");
+		_testBuild(
+			"/o/app/6ce17b38-0dcb-8486-d54d-72d4c49eed06/endpoint", "/app",
+			"/{userExternalReferenceCode}/endpoint", "schema");
 		_testBuild("/o/app/endpoint", "/app", "/endpoint", "schema");
 		_testBuild("/o/app/endpoint", "/app/v1.0", "/endpoint", "schema");
 		_testBuild("/o/app/v1.0/endpoint", "/app", "/v1.0/endpoint", "schema");

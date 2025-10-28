@@ -341,10 +341,10 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(siteExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			siteExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			siteExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
 
@@ -1093,10 +1093,10 @@ public abstract class BaseDisplayPageTemplateResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(siteExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			siteExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			siteExternalReferenceCode,
 			displayPageTemplateExternalReferenceCode);
 

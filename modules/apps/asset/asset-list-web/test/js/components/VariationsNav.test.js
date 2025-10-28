@@ -7,7 +7,7 @@ import {cleanup, fireEvent, render} from '@testing-library/react';
 import {openConfirmModal, openToast} from 'frontend-js-components-web';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {saveVariationsListPriorityService} from '../../../src/main/resources/META-INF/resources/js/actions/index';
 import VariationsNav from '../../../src/main/resources/META-INF/resources/js/components/VariationsNav/index';

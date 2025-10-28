@@ -275,6 +275,16 @@ public class ServletDataImpl implements ServletData {
 							ERCScopedTestEntityResourceImpl.class,
 							"deleteAssetLibraryERCScopedTestEntity"));
 					put(
+						"mutation#deleteERCScopedTestEntity",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"deleteERCScopedTestEntity"));
+					put(
+						"mutation#deleteERCScopedTestEntityBatch",
+						new ObjectValuePair<>(
+							ERCScopedTestEntityResourceImpl.class,
+							"deleteERCScopedTestEntityBatch"));
+					put(
 						"mutation#deleteSiteERCScopedTestEntity",
 						new ObjectValuePair<>(
 							ERCScopedTestEntityResourceImpl.class,

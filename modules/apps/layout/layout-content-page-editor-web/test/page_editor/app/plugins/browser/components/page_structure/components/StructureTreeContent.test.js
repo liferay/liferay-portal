@@ -10,7 +10,7 @@ import {useSelector} from '../../../../../../../../src/main/resources/META-INF/r
 import StructureTreeContent from '../../../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/browser/components/page_structure/components/StructureTreeContent';
 import getTreeNodes from '../../../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/browser/components/page_structure/components/getTreeNodes';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.mock(
 	'../../../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/browser/components/page_structure/components/getTreeNodes'

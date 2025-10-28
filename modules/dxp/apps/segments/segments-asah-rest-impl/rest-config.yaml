@@ -6,7 +6,7 @@ application:
     name: Liferay.Segments.Asah.REST
 author: Javier Gamarra
 clientDir: ../segments-asah-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../segments-asah-rest-test/src/testIntegration/java

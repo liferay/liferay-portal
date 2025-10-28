@@ -175,6 +175,10 @@ const RecordGoLiveEventPage: React.FC<IProps> = ({
 		}
 	};
 
+	const isEditable = ['open', 'overdue'].includes(
+		businessEvent.eventStatus?.key!
+	);
+
 	return (
 		<BusinessEventsModal
 			baseButtonDisabled={baseButtonDisabled}
@@ -187,91 +191,97 @@ const RecordGoLiveEventPage: React.FC<IProps> = ({
 			submitButton={i18n.translate('record-actual-go-live')}
 			title={i18n.translate('record-actual-go-live')}
 		>
-			<div>
-				<ClayInput.Group className="business-date-container m-0">
-					<ClayInput.GroupItem
-						className={classNames('m-0', {
-							'be-record-container': !isValidRecordDate,
-						})}
-					>
-						<DatePicker
-							badgeClassName="mr-4"
-							dateFormat="MM-dd-yyyy"
-							groupStyle="pb-1"
-							label={i18n.translate('actual-go-live-date')}
-							name="businessEvent.actualGoLiveDate"
-							onChange={(value) =>
-								setFieldValue(
-									'businessEvent.actualGoLiveDate',
-									value
-								)
-							}
-							placeholder={i18n.translate('mm-dd-yyyy')}
-							required
-							validations={[isValidDate]}
-						/>
-					</ClayInput.GroupItem>
+			{isEditable ? (
+				<div>
+					<ClayInput.Group className="business-date-container m-0">
+						<ClayInput.GroupItem
+							className={classNames('m-0', {
+								'be-record-container': !isValidRecordDate,
+							})}
+						>
+							<DatePicker
+								badgeClassName="mr-4"
+								dateFormat="MM-dd-yyyy"
+								groupStyle="pb-1"
+								label={i18n.translate('actual-go-live-date')}
+								name="businessEvent.actualGoLiveDate"
+								onChange={(value) =>
+									setFieldValue(
+										'businessEvent.actualGoLiveDate',
+										value
+									)
+								}
+								placeholder={i18n.translate('mm-dd-yyyy')}
+								required
+								validations={[isValidDate]}
+							/>
+						</ClayInput.GroupItem>
 
-					<ClayInput.GroupItem className="m-0">
-						<Select
-							groupStyle="pb-1"
-							id="select-businessEvent.timeZone"
-							label={i18n.translate('time-zone')}
-							name="businessEvent.timeZone.key"
-							options={utcTimeZonesOptions}
-							required
-						/>
-					</ClayInput.GroupItem>
+						<ClayInput.GroupItem className="m-0">
+							<Select
+								groupStyle="pb-1"
+								id="select-businessEvent.timeZone"
+								label={i18n.translate('time-zone')}
+								name="businessEvent.timeZone.key"
+								options={utcTimeZonesOptions}
+								required
+							/>
+						</ClayInput.GroupItem>
 
-					<ClayInput.GroupItem className="m-0">
-						<TimePicker
-							groupStyle="pb-1"
-							label={i18n.translate('time')}
-							name="businessEvent.actualGoLiveTime"
-							onChange={(value) =>
-								setFieldValue(
-									'businessEvent.actualGoLiveTime',
-									value
-								)
-							}
-							required
-						/>
-					</ClayInput.GroupItem>
-				</ClayInput.Group>
+						<ClayInput.GroupItem className="m-0">
+							<TimePicker
+								groupStyle="pb-1"
+								label={i18n.translate('time')}
+								name="businessEvent.actualGoLiveTime"
+								onChange={(value) =>
+									setFieldValue(
+										'businessEvent.actualGoLiveTime',
+										value
+									)
+								}
+								required
+							/>
+						</ClayInput.GroupItem>
+					</ClayInput.Group>
 
-				<div className="font-weight-bold mb-3">
-					{i18n.translate(
-						'please-let-us-know-if-you-have-any-feedback-on-the-support-you-received-during-this-time'
-					)}
-				</div>
-
-				<ClayInput
-					component="textarea"
-					onChange={handleInputChange}
-					required
-					type="text"
-					value={values?.lastComment}
-				/>
-
-				<Badge alertType="info" badgeClassName="mt-3">
-					<span className="pl-1 text-paragraph">
+					<div className="font-weight-bold mb-3">
 						{i18n.translate(
-							'entering-an-actual-go-live-date-will-close-this-business-event-no-further-edits-will-be-possible'
+							'please-let-us-know-if-you-have-any-feedback-on-the-support-you-received-during-this-time'
 						)}
-					</span>
-				</Badge>
+					</div>
 
-				{values.businessEvent?.actualGoLiveDate! &&
-					!isValidRecordDate && (
-						<Badge>
-							<span className="pl-1">
-								{i18n.translate(
-									'please-select-an-actual-go-live-date-that-has-already-occurred-or-is-today'
-								)}
-							</span>
-						</Badge>
-					)}
-			</div>
+					<ClayInput
+						component="textarea"
+						onChange={handleInputChange}
+						required
+						type="text"
+						value={values?.lastComment}
+					/>
+
+					<Badge alertType="info" badgeClassName="mt-3">
+						<span className="pl-1 text-paragraph">
+							{i18n.translate(
+								'entering-an-actual-go-live-date-will-close-this-business-event-no-further-edits-will-be-possible'
+							)}
+						</span>
+					</Badge>
+
+					{values.businessEvent?.actualGoLiveDate! &&
+						!isValidRecordDate && (
+							<Badge>
+								<span className="pl-1">
+									{i18n.translate(
+										'please-select-an-actual-go-live-date-that-has-already-occurred-or-is-today'
+									)}
+								</span>
+							</Badge>
+						)}
+				</div>
+			) : (
+				<div className="h6 my-4">
+					{i18n.translate('cannot-edit-canceled-or-completed-events')}
+				</div>
+			)}
 		</BusinessEventsModal>
 	);
 };

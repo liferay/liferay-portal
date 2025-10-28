@@ -42,38 +42,42 @@ exports[`IndividualAttributesModal should render 1`] = `
           Data Sources
         </div>
         <div
-          class="table-responsive table-root flex-grow-1"
+          class="flex-grow-1 mx-4 table-root"
         >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+          <div
+            class="table-responsive"
           >
-            <thead>
-              <tr>
-                <th
-                  class="table-head-title"
+            <table
+              class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="table-head-title"
+                  >
+                    Source
+                  </th>
+                  <th
+                    class="table-head-title"
+                  >
+                    Attribute
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class=""
                 >
-                  Source
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Attribute
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td>
-                  LIFERAY-DATASOURCE-FARO-EXAMPLE-0
-                </td>
-                <td>
-                  testMiddleName0
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  <td>
+                    LIFERAY-DATASOURCE-FARO-EXAMPLE-0
+                  </td>
+                  <td>
+                    testMiddleName0
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

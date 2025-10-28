@@ -112,7 +112,7 @@ import org.osgi.framework.FrameworkUtil;
 @FeatureFlags(
 	featureFlags = {
 		@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-21926"),
-		@FeatureFlag("LPD-31149"), @FeatureFlag("LPD-34594"),
+		@FeatureFlag("LPD-32050"), @FeatureFlag("LPD-34594"),
 		@FeatureFlag("LPS-179669")
 	}
 )
@@ -239,13 +239,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		return _objectEntryLocalService.addObjectEntry(
 			groupId, _user.getUserId(),
 			_cmsBasicWebContentObjectDefinition.getObjectDefinitionId(),
-			objectEntryFolderId, _LANGUAGE_ID,
-			HashMapBuilder.<String, Serializable>put(
-				"title_i18n",
-				HashMapBuilder.<String, Serializable>put(
-					_LANGUAGE_ID, RandomTestUtil.randomString()
-				).build()
-			).build(),
+			objectEntryFolderId, _LANGUAGE_ID, _getObjectEntryValues(),
 			_serviceContext);
 	}
 
@@ -367,6 +361,15 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		ObjectEntry objectEntry = objectEntries.get(0);
 
 		return objectEntry.getValues();
+	}
+
+	private Map<String, Serializable> _getObjectEntryValues() {
+		return HashMapBuilder.<String, Serializable>put(
+			"title_i18n",
+			HashMapBuilder.put(
+				_LANGUAGE_ID, RandomTestUtil.randomString()
+			).build()
+		).build();
 	}
 
 	private boolean _isCMSSiteInitialized() throws Exception {
@@ -823,7 +826,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-			Collections.emptyMap());
+			_getObjectEntryValues());
 
 		bulkAction.setBulkActionItems(_toBulkActionItems(objectEntry));
 
@@ -839,7 +842,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-			Collections.emptyMap());
+			_getObjectEntryValues());
 
 		keywordBulkAction.setBulkActionItems(_toBulkActionItems(objectEntry));
 
@@ -870,7 +873,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-			Collections.emptyMap());
+			_getObjectEntryValues());
 
 		permissionBulkAction.setBulkActionItems(
 			_toBulkActionItems(objectEntry));
@@ -910,7 +913,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-			Collections.emptyMap());
+			_getObjectEntryValues());
 
 		taxonomyCategoryBulkAction.setBulkActionItems(
 			_toBulkActionItems(objectEntry));

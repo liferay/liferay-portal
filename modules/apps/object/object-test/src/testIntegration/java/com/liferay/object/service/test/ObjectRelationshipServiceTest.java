@@ -81,8 +81,8 @@ public class ObjectRelationshipServiceTest {
 
 		_objectDefinition1 =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, true,
-				false, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				true, false, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap("Able"), "Able", null, null,
 				LocalizedMapUtil.getLocalizedMap("Ables"), true,
 				ObjectDefinitionConstants.SCOPE_COMPANY,
@@ -102,8 +102,8 @@ public class ObjectRelationshipServiceTest {
 
 		_objectDefinition2 =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, true,
-				false, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				true, false, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap("Baker"), "Baker", null, null,
 				LocalizedMapUtil.getLocalizedMap("Bakers"), true,
 				ObjectDefinitionConstants.SCOPE_COMPANY,

@@ -259,6 +259,11 @@ public class FragmentServiceUpgradeStepRegistrator
 			"2.14.0", "2.15.0",
 			UpgradeProcessFactory.addColumns(
 				"FragmentCollection", "marketplace BOOLEAN"));
+
+		registry.register(
+			"2.15.0", "3.0.0",
+			new com.liferay.fragment.internal.upgrade.v3_0_0.
+				FragmentEntryLinkUpgradeProcess());
 	}
 
 	@Reference

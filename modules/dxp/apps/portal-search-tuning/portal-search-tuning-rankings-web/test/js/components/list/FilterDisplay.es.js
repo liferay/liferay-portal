@@ -8,7 +8,7 @@ import React from 'react';
 
 import FilterDisplay from '../../../../src/main/resources/META-INF/resources/js/components/list/FilterDisplay.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 function renderTestFilterDisplay(props) {
 	return render(

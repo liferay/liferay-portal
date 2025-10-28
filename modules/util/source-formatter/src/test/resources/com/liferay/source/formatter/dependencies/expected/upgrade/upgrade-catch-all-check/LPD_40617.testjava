@@ -21,11 +21,15 @@ public class LPD_40617 {
 		boolean site, ServiceContext serviceContext) {
 
 		OrganizationLocalServiceUtil.addOrganization(null, userId, parentOrganizationId, name, type, regionId, countryId, _listTypeLocalService.getListTypeId(CompanyThreadLocal.getCompanyId(), statusId, ListTypeConstants.ORGANIZATION_STATUS), comments, site, serviceContext);
-		_organizationLocalService.addOrganization(123, parentOrganizationId, name, type, regionId, countryId, statusId, comments, site, serviceContext);
+		_organizationLocalService.addOrganization(
+			123, parentOrganizationId, name, type, regionId, countryId,
+			statusId, comments, site, serviceContext);
 		_organizationLocalService.addOrganization(null, userId, parentOrganizationId, name, type, regionId, countryId, _listTypeLocalService.getListTypeId(CompanyThreadLocal.getCompanyId(), statusId, ListTypeConstants.ORGANIZATION_STATUS), comments, site, serviceContext);
 
 		OrganizationServiceUtil.addOrganization(null, parentOrganizationId, name, type, regionId, countryId, _listTypeService.getListTypeId(CompanyThreadLocal.getCompanyId(), statusId, ListTypeConstants.ORGANIZATION_STATUS), comments, site, serviceContext);
-		_organizationService.addOrganization(123, name, type, regionId, countryId, statusId, comments, site, serviceContext);
+		_organizationService.addOrganization(
+			123, name, type, regionId, countryId, statusId, comments, site,
+			serviceContext);
 		_organizationService.addOrganization(null, parentOrganizationId, name, type, regionId, countryId, _listTypeService.getListTypeId(CompanyThreadLocal.getCompanyId(), statusId, ListTypeConstants.ORGANIZATION_STATUS), comments, site, serviceContext);
 	}
 

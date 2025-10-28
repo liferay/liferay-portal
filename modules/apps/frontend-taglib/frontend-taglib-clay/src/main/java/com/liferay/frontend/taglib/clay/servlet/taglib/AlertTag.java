@@ -36,6 +36,10 @@ public class AlertTag extends BaseContainerTag {
 		return _autoClose;
 	}
 
+	public String getCloseButtonAriaLabel() {
+		return _closeButtonAriaLabel;
+	}
+
 	public boolean getDefaultTitleDisabled() {
 		return _defaultTitleDisabled;
 	}
@@ -66,6 +70,10 @@ public class AlertTag extends BaseContainerTag {
 
 	public void setAutoClose(boolean autoClose) {
 		_autoClose = autoClose;
+	}
+
+	public void setCloseButtonAriaLabel(String closeButtonAriaLabel) {
+		_closeButtonAriaLabel = closeButtonAriaLabel;
 	}
 
 	public void setDefaultTitleDisabled(boolean defaultTitleDisabled) {
@@ -101,6 +109,7 @@ public class AlertTag extends BaseContainerTag {
 		super.cleanUp();
 
 		_autoClose = false;
+		_closeButtonAriaLabel = null;
 		_defaultTitleDisabled = false;
 		_dismissible = false;
 		_displayType = "info";
@@ -139,10 +148,17 @@ public class AlertTag extends BaseContainerTag {
 			StringBundler sb = new StringBundler(7);
 
 			sb.append("<button aria-label=\"");
-			sb.append(
-				LanguageUtil.get(
-					TagResourceBundleUtil.getResourceBundle(pageContext),
-					"close"));
+
+			if (_closeButtonAriaLabel != null) {
+				sb.append(_closeButtonAriaLabel);
+			}
+			else {
+				sb.append(
+					LanguageUtil.get(
+						TagResourceBundleUtil.getResourceBundle(pageContext),
+						"close"));
+			}
+
 			sb.append("\" class=\"close\" onclick=\"");
 			sb.append("event.target.closest('[role=alert]').remove()\" ");
 			sb.append("type=\"button\">");
@@ -260,6 +276,7 @@ public class AlertTag extends BaseContainerTag {
 	private static final String _ATTRIBUTE_NAMESPACE = "clay:alert:";
 
 	private boolean _autoClose;
+	private String _closeButtonAriaLabel;
 	private boolean _defaultTitleDisabled;
 	private boolean _dismissible;
 	private String _displayType = "info";

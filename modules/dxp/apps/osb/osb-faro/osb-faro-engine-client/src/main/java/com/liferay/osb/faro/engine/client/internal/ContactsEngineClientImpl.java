@@ -487,8 +487,10 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public void deleteIndividualSegment(FaroProject faroProject, String id) {
-		delete(faroProject, Rels.INDIVIDUAL_SEGMENT, id);
+	public void deleteIndividualSegments(
+		FaroProject faroProject, List<String> ids) {
+
+		delete(faroProject, Rels.INDIVIDUAL_SEGMENTS, ids);
 	}
 
 	@Override

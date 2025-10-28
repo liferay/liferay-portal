@@ -65,7 +65,8 @@ public class LPD_28287 {
 		new CommerceShipmentItemCreateDateComparator(showHiddenPages);
 		new CommerceShipmentShippingDateComparator(showHiddenPages);
 		new CommerceShippingMethodPriorityComparator(showHiddenPages);
-		new CommerceSubscriptionEntryCreateDateComparatorOrganizationIdComparator(showHiddenPages);
+		new CommerceSubscriptionEntryCreateDateComparatorOrganizationIdComparator(
+			showHiddenPages);
 		new OrganizationNameComparator(showHiddenPages);
 		new OrganizationTypeComparator(showHiddenPages);
 		new PasswordPolicyDescriptionComparator(showHiddenPages);

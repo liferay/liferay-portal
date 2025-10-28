@@ -51,8 +51,10 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -144,6 +146,9 @@ public class OpenAPIResourceTest {
 						"multiselectPicklistField"
 					).build()),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectDefinitions.add(relatedObjectDefinition1);
+
 		ObjectDefinition relatedObjectDefinition2 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"Object3",
@@ -162,6 +167,8 @@ public class OpenAPIResourceTest {
 					).build()),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
 
+		_objectDefinitions.add(relatedObjectDefinition2);
+
 		ObjectDefinition relatedObjectDefinition3 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"Object4",
@@ -171,6 +178,9 @@ public class OpenAPIResourceTest {
 						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
 						"field1", "field1", false)),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectDefinitions.add(relatedObjectDefinition3);
+
 		ObjectDefinition relatedObjectDefinition4 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"Object5",
@@ -180,6 +190,9 @@ public class OpenAPIResourceTest {
 						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
 						"field1", "field1", false)),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectDefinitions.add(relatedObjectDefinition4);
+
 		ObjectDefinition relatedObjectDefinition5 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"Object6",
@@ -189,6 +202,9 @@ public class OpenAPIResourceTest {
 						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
 						"field1", "field1", false)),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectDefinitions.add(relatedObjectDefinition5);
+
 		ObjectDefinition relatedObjectDefinition6 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"Object7",
@@ -198,6 +214,8 @@ public class OpenAPIResourceTest {
 						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
 						"field1", "field1", false)),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_objectDefinitions.add(relatedObjectDefinition6);
 
 		ObjectRelationshipLocalServiceUtil.addObjectRelationship(
 			null, TestPropsValues.getUserId(),
@@ -471,6 +489,9 @@ public class OpenAPIResourceTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@DeleteAfterTestRun
+	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 
 	@Inject
 	private SystemObjectDefinitionManagerRegistry

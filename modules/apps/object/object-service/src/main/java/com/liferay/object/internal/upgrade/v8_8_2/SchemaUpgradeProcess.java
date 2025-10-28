@@ -24,21 +24,23 @@ public class SchemaUpgradeProcess extends UpgradeProcess {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				SQLTransformer.transform(
 					StringBundler.concat(
-						"select ObjectField.dbColumnName, ",
-						"ObjectField.dbTableName from ObjectField inner join ",
-						"ObjectDefinition on ",
-						"ObjectDefinition.objectDefinitionId = ",
-						"ObjectField.objectDefinitionId where ",
-						"ObjectDefinition.status = ",
-						WorkflowConstants.STATUS_APPROVED,
-						" and ObjectField.businessType = '",
-						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, "'")));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+						"select ObjectField.dbColumnName, ObjectField.",
+						"dbTableName from ObjectField inner join ",
+						"ObjectDefinition on ObjectDefinition.",
+						"objectDefinitionId = ObjectField.objectDefinitionId ",
+						"where ObjectDefinition.status = ? and ObjectField.",
+						"businessType = '",
+						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, "'")))) {
 
-			while (resultSet.next()) {
-				alterColumnType(
-					resultSet.getString("dbTableName"),
-					resultSet.getString("dbColumnName"), "VARCHAR(75) null");
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_APPROVED);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					alterColumnType(
+						resultSet.getString("dbTableName"),
+						resultSet.getString("dbColumnName"),
+						"VARCHAR(75) null");
+				}
 			}
 		}
 	}

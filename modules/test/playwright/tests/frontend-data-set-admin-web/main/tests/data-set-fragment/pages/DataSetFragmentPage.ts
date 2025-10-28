@@ -45,7 +45,7 @@ export class DataSetFragmentPage {
 	};
 
 	constructor(page: Page) {
-		this.activeViewSelector = page.getByLabel('Show View Options');
+		this.activeViewSelector = page.getByLabel(/View Selected/);
 		this.addFilterButton = page.getByRole('button', {
 			exact: true,
 			name: 'Add Filter',

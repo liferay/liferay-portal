@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Commerce.Admin.Inventory
 author: Alessio Antonio Rendina
 clientDir: ../headless-commerce-admin-inventory-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableSchemaPropertyName: false
 javaEEPackage: jakarta
 testDir: ../headless-commerce-admin-inventory-test/src/testIntegration/java

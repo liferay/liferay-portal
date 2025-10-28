@@ -48,9 +48,10 @@ public class CTTableMapperHelper {
 
 				try (PreparedStatement preparedStatement =
 						connection.prepareStatement(
-							StringBundler.concat(
-								"delete from ", _tableName,
-								" where ctCollectionId = ", ctCollectionId))) {
+							"delete from " + _tableName +
+								" where ctCollectionId = ?")) {
+
+					preparedStatement.setLong(1, ctCollectionId);
 
 					preparedStatement.executeUpdate();
 				}
@@ -139,17 +140,18 @@ public class CTTableMapperHelper {
 								"t1.companyId, t1.", _leftColumnName, ", t1.",
 								_rightColumnName, ", ", toCTCollectionId,
 								" as ctCollectionId, ? as ctChangeType from ",
-								_tableName, " t1 where t1.ctCollectionId = ",
-								fromCTCollectionId,
-								" and t1.ctChangeType = ?"))) {
+								_tableName, " t1 where t1.ctCollectionId = ? ",
+								"and t1.ctChangeType = ?"))) {
 
 					preparedStatement.setBoolean(1, true);
-					preparedStatement.setBoolean(2, false);
+					preparedStatement.setLong(2, fromCTCollectionId);
+					preparedStatement.setBoolean(3, false);
 
 					preparedStatement.executeUpdate();
 
 					preparedStatement.setBoolean(1, false);
-					preparedStatement.setBoolean(2, true);
+					preparedStatement.setLong(2, fromCTCollectionId);
+					preparedStatement.setBoolean(3, true);
 
 					preparedStatement.executeUpdate();
 				}
@@ -223,8 +225,9 @@ public class CTTableMapperHelper {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select ", _leftColumnName, ", ", _rightColumnName,
-					" from ", _tableName, " where ctCollectionId = ",
-					ctCollectionId))) {
+					" from ", _tableName, " where ctCollectionId = ?"))) {
+
+			preparedStatement.setLong(1, ctCollectionId);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				while (resultSet.next()) {
@@ -274,10 +277,10 @@ public class CTTableMapperHelper {
 					_tableName, " t2 on t2.ctCollectionId = 0 and t2.",
 					_leftColumnName, " = t1.", _leftColumnName, " and t2.",
 					_rightColumnName, " = t1.", _rightColumnName,
-					" where t1.ctCollectionId = ", ctCollectionId,
-					" and t1.ctChangeType = ?"))) {
+					" where t1.ctCollectionId = ? and t1.ctChangeType = ?"))) {
 
-			preparedStatement.setBoolean(1, true);
+			preparedStatement.setLong(1, ctCollectionId);
+			preparedStatement.setBoolean(2, true);
 
 			count += preparedStatement.executeUpdate();
 		}

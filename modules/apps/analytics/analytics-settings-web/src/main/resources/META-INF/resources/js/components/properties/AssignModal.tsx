@@ -57,7 +57,9 @@ const AssignModal: React.FC<
 
 	return (
 		<ClayModal center observer={observer} size="lg">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(Liferay.Language.get('assign-to-x'), name)}
 			</ClayModal.Header>
 

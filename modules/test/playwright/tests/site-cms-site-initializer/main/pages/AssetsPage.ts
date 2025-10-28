@@ -80,23 +80,17 @@ export class AssetsPage {
 
 	async gotoAll() {
 		await this.page.goto(PORTLET_URLS.cmsAll);
-		await this.page
-			.getByRole('heading', {name: 'All Restricted Page'})
-			.waitFor();
+		await this.page.getByRole('heading', {name: 'All'}).waitFor();
 	}
 
 	async gotoContents() {
 		await this.page.goto(PORTLET_URLS.cmsContents);
-		await this.page
-			.getByRole('heading', {name: 'Contents Restricted Page'})
-			.waitFor();
+		await this.page.getByRole('heading', {name: 'Contents'}).waitFor();
 	}
 
 	async gotoFiles() {
 		await this.page.goto(PORTLET_URLS.cmsFiles);
-		await this.page
-			.getByRole('heading', {name: 'Files Restricted Page'})
-			.waitFor();
+		await this.page.getByRole('heading', {name: 'Files'}).waitFor();
 	}
 
 	async createContent(type: string) {

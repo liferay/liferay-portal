@@ -6,7 +6,7 @@
 import {act, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import App from '../../src/main/resources/META-INF/resources/js/components/App.es';
 import FetchMock, {fetchMockResponse} from '../mock/fetch.es';
@@ -80,7 +80,7 @@ describe('The App component should', () => {
 		findByText = renderResult.findByText;
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 	});
 
@@ -110,7 +110,7 @@ describe('The App component should', () => {
 		fireEvent.click(document.getElementById('backButton').children[0]);
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 	});
 
@@ -125,7 +125,7 @@ describe('The App component should', () => {
 		fireEvent.click(processNameLink);
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 	});
 

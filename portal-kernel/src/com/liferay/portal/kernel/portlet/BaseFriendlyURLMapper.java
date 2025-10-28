@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  * The base implementation of {@link FriendlyURLMapper}.
@@ -81,11 +80,6 @@ public abstract class BaseFriendlyURLMapper implements FriendlyURLMapper {
 
 					xml = _getContent(
 						clazz.getClassLoader(), friendlyURLRoutes);
-
-					if (_textReplacerBiFunction != null) {
-						xml = _textReplacerBiFunction.apply(
-							clazz.getName() + "#" + friendlyURLRoutes, xml);
-					}
 				}
 
 				router = _newFriendlyURLRouter(xml);
@@ -360,33 +354,6 @@ public abstract class BaseFriendlyURLMapper implements FriendlyURLMapper {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseFriendlyURLMapper.class);
-
-	private static final BiFunction<String, String, String>
-		_textReplacerBiFunction;
-
-	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"TextReplacerBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
-	}
 
 	private String _friendlyURLRoutes;
 	private volatile boolean _initialized;

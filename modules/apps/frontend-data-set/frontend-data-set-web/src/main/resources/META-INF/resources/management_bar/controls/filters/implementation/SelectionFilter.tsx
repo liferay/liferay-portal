@@ -105,6 +105,7 @@ function getSelectedItemsLabel({
 function getOdataString({
 	entityFieldType,
 	id,
+	multiple,
 	selectedData,
 }: SelectionFilterImplementationArgs): string {
 	const {exclude, selectedItems} = selectedData;
@@ -114,8 +115,9 @@ function getOdataString({
 	}
 
 	const quotedSelectedItems = selectedItems.map((item) =>
-		typeof item.value === 'string' ||
-		entityFieldType === EEntityFieldType.STRING
+		entityFieldType === EEntityFieldType.STRING ||
+		(typeof item.value === 'string' &&
+			entityFieldType !== EEntityFieldType.INTEGER)
 			? `'${item.value}'`
 			: item.value
 	);
@@ -126,7 +128,7 @@ function getOdataString({
 			.map((value) => `(x ${exclude ? 'ne' : 'eq'} ${value})`)
 			.join(exclude ? ' and ' : ' or ')})`;
 	}
-	else if (selectedItems.length === 1) {
+	else if (selectedItems.length === 1 && !multiple) {
 		return `${id} ${exclude ? 'ne' : 'eq'} ${quotedSelectedItems[0]}`;
 	}
 	else {

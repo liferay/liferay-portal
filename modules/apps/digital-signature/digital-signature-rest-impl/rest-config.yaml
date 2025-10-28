@@ -6,7 +6,7 @@ application:
     name: Liferay.Digital.Signature.REST
 author: José Abelenda
 clientDir: ../digital-signature-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../digital-signature-rest-test/src/testIntegration/java

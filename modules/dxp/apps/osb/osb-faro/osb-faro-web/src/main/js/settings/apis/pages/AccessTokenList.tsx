@@ -296,7 +296,6 @@ interface IAccessTokenListProps {
 export const AccessTokenList: React.FC<IAccessTokenListProps> = ({groupId}) => (
 	<BasePage
 		className='access-token-list-root'
-		groupId={groupId}
 		pageDescription={sub(
 			Liferay.Language.get(
 				'access-this-workspaces-data-via-api-using-an-access-token.-a-full-list-of-endpoints-is-available-in-the-x'

@@ -317,12 +317,6 @@ public class FragmentLayoutStructureItemImporter
 			return null;
 		}
 
-		long fragmentEntryId = 0;
-
-		if (fragmentEntry != null) {
-			fragmentEntryId = fragmentEntry.getFragmentEntryId();
-		}
-
 		long segmentsExperienceId =
 			layoutStructureItemImporterContext.getSegmentsExperienceId();
 
@@ -447,6 +441,14 @@ public class FragmentLayoutStructureItemImporter
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
+		String fragmentEntryERC = null;
+		String fragmentEntryScopeERC = null;
+
+		if (fragmentEntry != null) {
+			fragmentEntryERC = fragmentEntry.getExternalReferenceCode();
+			fragmentEntryScopeERC = fragmentEntry.getScopeERC();
+		}
+
 		String namespace = StringUtil.randomId();
 
 		JSONObject editableJSONObject = jsonObject.getJSONObject(
@@ -472,10 +474,11 @@ public class FragmentLayoutStructureItemImporter
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, serviceContext.getUserId(), layout.getGroupId(), 0,
-				fragmentEntryId, segmentsExperienceId, layout.getPlid(), css,
-				html, js, configuration, jsonObject.toString(), namespace,
-				position, fragmentKey, type, serviceContext);
+				null, serviceContext.getUserId(), layout.getGroupId(), null,
+				fragmentEntryERC, fragmentEntryScopeERC, segmentsExperienceId,
+				layout.getPlid(), css, html, js, configuration,
+				jsonObject.toString(), namespace, position, fragmentKey, type,
+				serviceContext);
 
 		List<Object> widgetInstances = (List<Object>)definitionMap.get(
 			"widgetInstances");

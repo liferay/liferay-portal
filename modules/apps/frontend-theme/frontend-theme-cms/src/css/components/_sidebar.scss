@@ -1,6 +1,12 @@
 .sidebar-container {
 	background-color: $light-l1;
 	border-right: 0.05rem solid $secondary-l0;
+
+	.lfr-layout-structure-item-sidebar & {
+		position: static;
+		transform: none;
+		width: unset;
+	}
 }
 
 .cms-sidebar-nav {

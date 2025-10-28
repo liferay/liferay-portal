@@ -2,7 +2,7 @@
 	"dependencies": {
 		"@clayui/button": "3.144.1",
 		"@clayui/link": "3.144.1",
-		"@clayui/popover": "3.148.0",
+		"@clayui/popover": "3.151.0",
 		"@liferay/frontend-js-react-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",

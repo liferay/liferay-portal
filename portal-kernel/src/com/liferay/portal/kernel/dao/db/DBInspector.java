@@ -64,20 +64,13 @@ public class DBInspector {
 	public List<String> getTableNames(String tableNamePattern)
 		throws SQLException {
 
-		List<String> tableNames = new ArrayList<>();
+		return _getNames(tableNamePattern, "TABLE");
+	}
 
-		DatabaseMetaData databaseMetaData = _connection.getMetaData();
+	public List<String> getViewNames(String viewNamePattern)
+		throws SQLException {
 
-		try (ResultSet resultSet = databaseMetaData.getTables(
-				_connection.getCatalog(), _connection.getSchema(),
-				tableNamePattern, new String[] {"TABLE"})) {
-
-			while (resultSet.next()) {
-				tableNames.add(resultSet.getString("TABLE_NAME"));
-			}
-		}
-
-		return tableNames;
+		return _getNames(viewNamePattern, "VIEW");
 	}
 
 	public boolean hasColumn(String tableName, String columnName)
@@ -221,17 +214,6 @@ public class DBInspector {
 	}
 
 	public boolean hasTable(String tableName) throws Exception {
-		return _hasElement(tableName, "TABLE");
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             DBInspector#hasTable(String)}
-	 */
-	@Deprecated
-	public boolean hasTable(String tableName, boolean caseSensitive)
-		throws Exception {
-
 		return _hasElement(tableName, "TABLE");
 	}
 
@@ -425,6 +407,25 @@ public class DBInspector {
 		return databaseMetaData.getColumns(
 			getCatalog(), getSchema(),
 			normalizeName(tableName, databaseMetaData), columnName);
+	}
+
+	private List<String> _getNames(String namePattern, String elementType)
+		throws SQLException {
+
+		List<String> names = new ArrayList<>();
+
+		DatabaseMetaData databaseMetaData = _connection.getMetaData();
+
+		try (ResultSet resultSet = databaseMetaData.getTables(
+				_connection.getCatalog(), _connection.getSchema(), namePattern,
+				new String[] {elementType})) {
+
+			while (resultSet.next()) {
+				names.add(resultSet.getString("TABLE_NAME"));
+			}
+		}
+
+		return names;
 	}
 
 	private boolean _hasElement(String elementName, String elementType)

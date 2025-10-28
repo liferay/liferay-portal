@@ -9,7 +9,7 @@ import React from 'react';
 import BasicInformation from '../../../src/main/resources/META-INF/resources/js/components/BasicInformation';
 import {StoreStateContext} from '../../../src/main/resources/META-INF/resources/js/context/StoreContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.mock('frontend-js-web', () => ({
 	sub: jest.fn((langKey, arg) => langKey.replace('x', arg)),

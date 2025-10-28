@@ -519,6 +519,11 @@ public class FragmentEntryWrapper
 		return model.getReadOnly();
 	}
 
+	@Override
+	public String getScopeERC() {
+		return model.getScopeERC();
+	}
+
 	/**
 	 * Returns the status of this fragment entry.
 	 *

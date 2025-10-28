@@ -29,174 +29,178 @@ exports[`OutputVersionsCard should render 1`] = `
       class="card-body"
     >
       <div
-        class="table-responsive table-root flex-grow-1"
+        class="flex-grow-1 mx-4 table-root"
       >
-        <table
-          class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+        <div
+          class="table-responsive"
         >
-          <thead>
-            <tr>
-              <th
-                class="table-head-title table-cell-expand"
-              >
-                Training Date
-              </th>
-              <th
-                class="table-head-title table-column-text-end"
-              >
-                Events
-              </th>
-              <th
-                class="table-head-title table-column-text-end"
-              >
-                Items
-              </th>
-              <th
-                class="table-head-title"
-              >
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class=""
-            >
-              <td
-                class="table-cell-expand"
-              >
-                <div
-                  class="h4 table-title text-truncate"
+          <table
+            class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+          >
+            <thead>
+              <tr>
+                <th
+                  class="table-head-title table-cell-expand"
                 >
-                  Apr 24, 2020
-                </div>
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                321
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                123
-              </td>
-              <td>
-                <div
-                  class="label label-root status label-success label-lg label-uppercase"
+                  Training Date
+                </th>
+                <th
+                  class="table-head-title table-column-text-end"
                 >
-                  <span
-                    class="label-item"
+                  Events
+                </th>
+                <th
+                  class="table-head-title table-column-text-end"
+                >
+                  Items
+                </th>
+                <th
+                  class="table-head-title"
+                >
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class=""
+              >
+                <td
+                  class="table-cell-expand"
+                >
+                  <div
+                    class="h4 table-title text-truncate"
                   >
-                    Completed
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class=""
-            >
-              <td
-                class="table-cell-expand"
-              >
-                <div
-                  class="h4 table-title text-truncate"
+                    Apr 24, 2020
+                  </div>
+                </td>
+                <td
+                  class="table-column-text-end"
                 >
-                  Apr 24, 2020
-                </div>
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                321
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                123
-              </td>
-              <td>
-                <div
-                  class="label label-root status label-danger label-lg label-uppercase"
+                  321
+                </td>
+                <td
+                  class="table-column-text-end"
                 >
-                  <span
-                    class="label-item"
+                  123
+                </td>
+                <td>
+                  <div
+                    class="label label-root status label-success label-lg label-uppercase"
                   >
-                    Failed
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class=""
-            >
-              <td
-                class="table-cell-expand"
+                    <span
+                      class="label-item"
+                    >
+                      Completed
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              <tr
+                class=""
               >
-                <div
-                  class="h4 table-title text-truncate"
+                <td
+                  class="table-cell-expand"
                 >
-                  Apr 24, 2020
-                </div>
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                321
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                123
-              </td>
-              <td>
-                <div
-                  class="label label-root status label-primary label-lg label-uppercase"
-                >
-                  <span
-                    class="label-item"
+                  <div
+                    class="h4 table-title text-truncate"
                   >
-                    Live Version
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr
-              class=""
-            >
-              <td
-                class="table-cell-expand"
-              >
-                <div
-                  class="h4 table-title text-truncate"
+                    Apr 24, 2020
+                  </div>
+                </td>
+                <td
+                  class="table-column-text-end"
                 >
-                  Apr 24, 2020
-                </div>
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                321
-              </td>
-              <td
-                class="table-column-text-end"
-              >
-                123
-              </td>
-              <td>
-                <div
-                  class="label label-root status label-warning label-lg label-uppercase"
+                  321
+                </td>
+                <td
+                  class="table-column-text-end"
                 >
-                  <span
-                    class="label-item"
+                  123
+                </td>
+                <td>
+                  <div
+                    class="label label-root status label-danger label-lg label-uppercase"
                   >
-                    Training
-                  </span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <span
+                      class="label-item"
+                    >
+                      Failed
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              <tr
+                class=""
+              >
+                <td
+                  class="table-cell-expand"
+                >
+                  <div
+                    class="h4 table-title text-truncate"
+                  >
+                    Apr 24, 2020
+                  </div>
+                </td>
+                <td
+                  class="table-column-text-end"
+                >
+                  321
+                </td>
+                <td
+                  class="table-column-text-end"
+                >
+                  123
+                </td>
+                <td>
+                  <div
+                    class="label label-root status label-primary label-lg label-uppercase"
+                  >
+                    <span
+                      class="label-item"
+                    >
+                      Live Version
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              <tr
+                class=""
+              >
+                <td
+                  class="table-cell-expand"
+                >
+                  <div
+                    class="h4 table-title text-truncate"
+                  >
+                    Apr 24, 2020
+                  </div>
+                </td>
+                <td
+                  class="table-column-text-end"
+                >
+                  321
+                </td>
+                <td
+                  class="table-column-text-end"
+                >
+                  123
+                </td>
+                <td>
+                  <div
+                    class="label label-root status label-warning label-lg label-uppercase"
+                  >
+                    <span
+                      class="label-item"
+                    >
+                      Training
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <nav
         class="navbar navbar-root pagination-bar-root"

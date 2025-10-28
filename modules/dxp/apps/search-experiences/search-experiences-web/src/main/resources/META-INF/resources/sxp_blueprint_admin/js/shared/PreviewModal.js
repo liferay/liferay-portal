@@ -27,7 +27,11 @@ const PreviewModal = ({body, children, size = 'md', title}) => {
 					observer={observer}
 					size={size}
 				>
-					<ClayModal.Header>{title}</ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
+						{title}
+					</ClayModal.Header>
 
 					<ClayModal.Body>{body}</ClayModal.Body>
 				</ClayModal>

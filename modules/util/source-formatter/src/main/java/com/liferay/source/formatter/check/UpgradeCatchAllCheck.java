@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringParser;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.tools.java.parser.JavaParser;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
 import com.liferay.source.formatter.exception.UpgradeCatchAllException;
 import com.liferay.source.formatter.parser.JavaClass;
@@ -23,6 +24,8 @@ import com.liferay.source.formatter.parser.JavaClassParser;
 import com.liferay.source.formatter.parser.JavaMethod;
 import com.liferay.source.formatter.parser.JavaTerm;
 import com.liferay.source.formatter.parser.JavaVariable;
+
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,6 +117,20 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		throws Exception {
 
 		if (_testMode && fileName.endsWith(".java")) {
+			UpgradeCatchAllJavaLongLinesCheck longLinesCheck =
+				new UpgradeCatchAllJavaLongLinesCheck();
+
+			longLinesCheck.doProcess(
+				fileName + "-before", absolutePath, content);
+
+			String parsedContent = JavaParser.parse(
+				new File(absolutePath), getMaxLineLength());
+
+			if (getLineCount(content) != getLineCount(parsedContent)) {
+				throw new UpgradeCatchAllException(
+					fileName + " missing 80 max line length rule");
+			}
+
 			UpgradeCatchAllJavaTermOrderCheck termOrderCheck =
 				new UpgradeCatchAllJavaTermOrderCheck();
 
@@ -176,6 +193,12 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		_testMode = false;
 
 		return content;
+	}
+
+	protected int getLineCount(String content) {
+		String[] lines = content.split("\r\n|\r|\n");
+
+		return lines.length;
 	}
 
 	private static List<String> _getInterpolatedNewParameterNames(
@@ -361,7 +384,7 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 			for (int i = 0; i < toParameters.size(); i++) {
 				String toParameter = toParameters.get(i);
 
-				toParameter = toParameter.replaceFirst(
+				toParameter = toParameter.replaceAll(
 					"param\\#\\d+\\#", "\\$\\$");
 
 				if (StringUtil.equals(toParameter, "$$")) {
@@ -511,6 +534,10 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 			Matcher matcher = pattern.matcher(javaContent);
 
 			while (matcher.find()) {
+				if (_isCommentLine(newContent, index + matcher.start())) {
+					continue;
+				}
+
 				String methodCall = matcher.group();
 
 				String[] classNames = JSONUtil.toStringArray(
@@ -571,6 +598,10 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		Matcher matcher = pattern.matcher(content);
 
 		while (matcher.find()) {
+			if (_isCommentLine(content, matcher.start())) {
+				continue;
+			}
+
 			String methodCall = matcher.group();
 
 			String from = jsonObject.getString("from");
@@ -679,17 +710,14 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		if (!_hasValidMethodCall(
 				fileName, from, javaMethodContent, jsonObject, newContent,
 				parameterNames,
-				getLineNumber(
-					newContent,
-					newContent.indexOf(javaMethodContent) + matcher.start()),
-				to)) {
+				newContent.indexOf(javaMethodContent) + matcher.start(), to)) {
 
 			return newContent;
 		}
 
 		if (to.isEmpty()) {
-			String newJavaMethodContent = StringUtil.removeFirst(
-				javaMethodContent, methodCall);
+			String newJavaMethodContent = StringUtil.replaceFirst(
+				javaMethodContent, methodCall, "", matcher.start());
 
 			String line = getLine(newJavaMethodContent, lineNumber);
 
@@ -699,7 +727,9 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 					newJavaMethodContent, line + CharPool.NEW_LINE));
 		}
 
-		return _formatParameters(methodCall, newContent, parameterNames, to);
+		return _formatParameters(
+			methodCall, newContent, parameterNames, to,
+			newContent.indexOf(javaMethodContent) + matcher.start());
 	}
 
 	private String _formatMethodSignature(
@@ -713,6 +743,10 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		Matcher matcher = pattern.matcher(content);
 
 		while (matcher.find()) {
+			if (_isCommentLine(content, matcher.start())) {
+				continue;
+			}
+
 			if (from.startsWith("regex:")) {
 				return content.replaceAll(pattern.toString(), to);
 			}
@@ -733,7 +767,7 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 
 	private String _formatParameters(
 		String methodCall, String newContent, List<String> parameterNames,
-		String to) {
+		String to, int index) {
 
 		String newMethodCall = to.substring(
 			0, to.indexOf(CharPool.OPEN_PARENTHESIS) + 1);
@@ -754,7 +788,8 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 
 		newMethodCall = newMethodCall + removedFirstMethodCall;
 
-		return StringUtil.replaceFirst(newContent, methodCall, newMethodCall);
+		return StringUtil.replaceFirst(
+			newContent, methodCall, newMethodCall, index);
 	}
 
 	private String _formatTypeParameters(
@@ -828,7 +863,7 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 	private boolean _hasValidMethodCall(
 		String fileName, String from, String javaMethodContent,
 		JSONObject jsonObject, String newContent, List<String> parameterNames,
-		int lineNumber, String to) {
+		int position, String to) {
 
 		List<String> fromParameters = JavaSourceUtil.getParameterNames(from);
 
@@ -850,31 +885,32 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		boolean hasMessage = false;
 		boolean valid = true;
 
-		if (fileName.endsWith(".java")) {
-			if (!to.isEmpty() && _isAlreadyReplaced(parameterNames, to)) {
-				valid = false;
-			}
-			else {
-				for (int i = 0; i < fromParameters.size(); i++) {
-					String parameterName = parameterNames.get(i);
+		if (_isCommentLine(newContent, position) ||
+			(fileName.endsWith(".java") && !to.isEmpty() &&
+			 _isAlreadyReplaced(parameterNames, to))) {
 
-					String variableTypeName = getVariableTypeName(
-						javaMethodContent, null, newContent, fileName,
-						StringParser.escapeRegex(parameterName.trim()), true,
-						false);
+			valid = false;
+		}
+		else if (fileName.endsWith(".java")) {
+			for (int i = 0; i < fromParameters.size(); i++) {
+				String parameterName = parameterNames.get(i);
 
-					if ((variableTypeName == null) ||
-						parameterName.contains(StringPool.OPEN_BRACKET)) {
+				String variableTypeName = getVariableTypeName(
+					javaMethodContent, null, newContent, fileName,
+					StringParser.escapeRegex(parameterName.trim()), true,
+					false);
 
-						hasMessage = true;
-					}
-					else if (!StringUtil.equals(
-								fromParameters.get(i), variableTypeName)) {
+				if ((variableTypeName == null) ||
+					parameterName.contains(StringPool.OPEN_BRACKET)) {
 
-						valid = false;
+					hasMessage = true;
+				}
+				else if (!StringUtil.equals(
+							fromParameters.get(i), variableTypeName)) {
 
-						break;
-					}
+					valid = false;
+
+					break;
 				}
 			}
 		}
@@ -882,7 +918,9 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		Set<String> keys = jsonObject.keySet();
 
 		if (valid && (hasMessage || keys.contains("hasMessage"))) {
-			addMessage(fileName, _getMessage(jsonObject), lineNumber);
+			addMessage(
+				fileName, _getMessage(jsonObject),
+				getLineNumber(newContent, position));
 
 			_newMessage = true;
 
@@ -1028,6 +1066,34 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 		return newFileContentSB.toString();
 	}
 
+	private boolean _isCommentLine(String content, int position) {
+		int lineNumber = getLineNumber(content, position);
+
+		String line = getLine(content, lineNumber);
+
+		line = line.trim();
+
+		if (line.startsWith("//") || line.startsWith("<%--")) {
+			return true;
+		}
+
+		int lastStart = content.lastIndexOf("/*", position);
+		int lastEnd = content.lastIndexOf("*/", position);
+
+		if ((lastStart != -1) && ((lastEnd == -1) || (lastEnd < lastStart))) {
+			return true;
+		}
+
+		lastStart = content.lastIndexOf("<%--", position);
+		lastEnd = content.lastIndexOf("--%>", position);
+
+		if ((lastStart != -1) && ((lastEnd == -1) || (lastEnd < lastStart))) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private String _processReplacementOrMessage(
 		String content, String fileName, JSONObject jsonObject,
 		String newContent) {
@@ -1044,7 +1110,9 @@ public class UpgradeCatchAllCheck extends BaseFileCheck {
 
 				Matcher matcher = pattern.matcher(content);
 
-				if (matcher.find()) {
+				if (matcher.find() &&
+					!_isCommentLine(content, matcher.start())) {
+
 					addMessage(
 						fileName, _getMessage(jsonObject),
 						getLineNumber(content, matcher.start()));

@@ -25,7 +25,6 @@ const CreateItemSimilarity: React.FC<ICreateItemSimilarityProps> = ({
 					label: Liferay.Language.get('new-model')
 				}
 			]}
-			groupId={groupId}
 			pageDescription={Liferay.Language.get(
 				'item-similarity-model-uses-items-and-iteractions-for-training'
 			)}

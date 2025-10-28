@@ -30,18 +30,19 @@ public class FragmentEntryLinkServiceUtil {
 	 */
 	public static FragmentEntryLink addFragmentEntryLink(
 			String externalReferenceCode, long groupId,
-			long originalFragmentEntryLinkId, long fragmentEntryId,
-			long segmentsExperienceId, long plid, String css, String html,
-			String js, String configuration, String editableValues,
-			String namespace, int position, String rendererKey, int type,
+			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
+			String css, String html, String js, String configuration,
+			String editableValues, String namespace, int position,
+			String rendererKey, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addFragmentEntryLink(
-			externalReferenceCode, groupId, originalFragmentEntryLinkId,
-			fragmentEntryId, segmentsExperienceId, plid, css, html, js,
-			configuration, editableValues, namespace, position, rendererKey,
-			type, serviceContext);
+			externalReferenceCode, groupId, originalFragmentEntryLinkERC,
+			fragmentEntryERC, fragmentEntryScopeERC, segmentsExperienceId, plid,
+			css, html, js, configuration, editableValues, namespace, position,
+			rendererKey, type, serviceContext);
 	}
 
 	public static FragmentEntryLink deleteFragmentEntryLink(

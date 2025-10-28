@@ -131,7 +131,8 @@ public interface ContactsEngineClient {
 	public void deleteFields(FaroProject faroProject, String id)
 		throws FaroEngineClientException;
 
-	public void deleteIndividualSegment(FaroProject faroProject, String id)
+	public void deleteIndividualSegments(
+			FaroProject faroProject, List<String> ids)
 		throws Exception;
 
 	public void deleteMembership(

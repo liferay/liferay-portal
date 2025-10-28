@@ -90,11 +90,12 @@ public class FragmentTestUtil {
 
 		return FragmentEntryLinkLocalServiceUtil.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
-			0, fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
-			plid, fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-			StringPool.BLANK, StringPool.BLANK, 1, StringPool.BLANK,
-			fragmentEntry.getType(), serviceContext);
+			null, fragmentEntry.getExternalReferenceCode(), null,
+			defaultSegmentsExperienceId, plid, fragmentEntry.getCss(),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(),
+			fragmentEntry.getConfiguration(), StringPool.BLANK,
+			StringPool.BLANK, 1, StringPool.BLANK, fragmentEntry.getType(),
+			serviceContext);
 	}
 
 	public static FragmentEntryLink addFragmentEntryLink(
@@ -112,12 +113,13 @@ public class FragmentTestUtil {
 			ServiceContextTestUtil.getServiceContext(groupId);
 
 		return FragmentEntryLinkLocalServiceUtil.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), groupId, 0,
-			fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
-			plid, fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-			StringPool.BLANK, StringPool.BLANK, 1, StringPool.BLANK,
-			fragmentEntry.getType(), serviceContext);
+			null, TestPropsValues.getUserId(), groupId, null,
+			fragmentEntry.getExternalReferenceCode(), null,
+			defaultSegmentsExperienceId, plid, fragmentEntry.getCss(),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(),
+			fragmentEntry.getConfiguration(), StringPool.BLANK,
+			StringPool.BLANK, 1, StringPool.BLANK, fragmentEntry.getType(),
+			serviceContext);
 	}
 
 	public static FragmentEntryLink fetchFragmentEntryLink(

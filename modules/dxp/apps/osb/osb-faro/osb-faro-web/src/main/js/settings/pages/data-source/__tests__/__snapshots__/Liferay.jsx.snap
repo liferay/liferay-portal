@@ -3,261 +3,544 @@
 exports[`LiferayDataSource should render 1`] = `
 <div>
   <div
-    class="settings-base-page-root data-source-base-page-root"
+    class="settings-root"
   >
-    <div
-      class="maintenance-alert-root"
-    />
-    <ol
-      class="breadcrumb breadcrumbs-root"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <li
-        class="breadcrumb-item"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source"
-        >
-          Data Sources
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item active"
-      >
-        <span
-          class="breadcrumb-text-truncate"
-        >
-          Liferay1
-        </span>
-      </li>
-    </ol>
-    <div
-      class="content-header"
-    >
-      <div
-        class="header-text"
-      >
-        <div
-          class="d-flex"
-        >
-          <h3
-            class="title-text text-truncate"
-          >
-            <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
-            >
-              Liferay1
-            </span>
-          </h3>
-        </div>
-        <div
-          class="description"
-        >
-          https://www.faro-1.io
-        </div>
-      </div>
-      <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="page-container"
-      >
-        <div
-          class="content-main"
+        <li
+          class="tbar-item"
         >
           <div
-            class="sheet liferay-data-source-root"
+            class="component-action"
+          >
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
+              >
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="text-dark"
+            >
+              <span
+                class="text-5 font-weight-bold"
+              >
+                Settings
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/apis/tokens"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_api"
+                    />
+                  </svg>
+                </span>
+                APIs
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div
+        class="content section-main"
+      >
+        <div
+          class="settings-base-page-root data-source-base-page-root"
+        >
+          <div
+            class="maintenance-alert-root"
+          />
+          <ol
+            class="breadcrumb breadcrumbs-root"
+          >
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source"
+              >
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item active"
+            >
+              <span
+                class="breadcrumb-text-truncate"
+              >
+                Liferay1
+              </span>
+            </li>
+          </ol>
+          <div
+            class="content-header"
           >
             <div
-              class="sheet-header mb-1"
-            >
-              <h2
-                class="sheet-title"
-              >
-                Data Source Information
-              </h2>
-            </div>
-            <div
-              class="sheet-body"
+              class="header-text"
             >
               <div
-                class="sheet-section"
+                class="d-flex"
+              >
+                <h3
+                  class="title-text text-truncate"
+                >
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Liferay1
+                  </span>
+                </h3>
+              </div>
+              <div
+                class="description"
+              >
+                https://www.faro-1.io
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="page-container"
+            >
+              <div
+                class="content-main"
               >
                 <div
-                  class="input-with-edit-toggle-root definition-item-root"
+                  class="sheet liferay-data-source-root"
                 >
-                  <form
-                    class="form-root input-with-edit-toggle-editor"
+                  <div
+                    class="sheet-header mb-1"
                   >
-                    <label
-                      class="form-control-label label-root required"
+                    <h2
+                      class="sheet-title"
                     >
-                      <span
-                        class="content-container"
-                      >
-                        Name
-                      </span>
-                    </label>
+                      Data Source Information
+                    </h2>
+                  </div>
+                  <div
+                    class="sheet-body"
+                  >
                     <div
-                      class="form-group align-items-center form-group-autofit"
+                      class="sheet-section"
                     >
                       <div
-                        class=""
-                        style="flex-basis: 100%; flex-grow: 0;"
+                        class="input-with-edit-toggle-root definition-item-root"
+                      >
+                        <form
+                          class="form-root input-with-edit-toggle-editor"
+                        >
+                          <label
+                            class="form-control-label label-root required"
+                          >
+                            <span
+                              class="content-container"
+                            >
+                              Name
+                            </span>
+                          </label>
+                          <div
+                            class="form-group align-items-center form-group-autofit"
+                          >
+                            <div
+                              class=""
+                              style="flex-basis: 100%; flex-grow: 0;"
+                            >
+                              <div
+                                class="input-group content-after"
+                              >
+                                <div
+                                  class="input-group-item"
+                                >
+                                  <input
+                                    class="input-root form-control"
+                                    disabled=""
+                                    id="dataSourceName"
+                                    name="dataSourceName"
+                                    type="text"
+                                    value="Liferay1"
+                                  />
+                                </div>
+                                <div
+                                  class="input-group-item input-group-item-shrink"
+                                >
+                                  <button
+                                    aria-label="Edit"
+                                    class="button-root btn btn-sm btn-secondary"
+                                    type="button"
+                                  >
+                                    <svg
+                                      class="lexicon-icon lexicon-icon-pencil icon-root"
+                                      role="presentation"
+                                    >
+                                      <use
+                                        href="#pencil"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div
+                      class="sheet-section"
+                    >
+                      <form
+                        class="form-root dxp-instance-id-root"
                       >
                         <div
-                          class="input-group content-after"
+                          class="form-group"
                         >
                           <div
-                            class="input-group-item"
+                            class="form-group-item d-flex mb-3"
                           >
-                            <input
-                              class="input-root form-control"
-                              disabled=""
-                              id="dataSourceName"
-                              name="dataSourceName"
-                              type="text"
-                              value="Liferay1"
-                            />
+                            <div
+                              class=""
+                              style="flex-basis: 100%; flex-grow: 0;"
+                            >
+                              <label
+                                class="form-control-label label-root"
+                                for="dxpInstanceId"
+                              >
+                                <span
+                                  class="content-container"
+                                >
+                                  DXP Instance ID
+                                </span>
+                              </label>
+                              <input
+                                class="input-root form-control"
+                                id="dxpInstanceId"
+                                name="dxpInstanceId"
+                                readonly=""
+                                type="text"
+                                value="1"
+                              />
+                            </div>
                           </div>
                           <div
-                            class="input-group-item input-group-item-shrink"
+                            class="form-group-item"
                           >
                             <button
-                              aria-label="Edit"
-                              class="button-root btn btn-sm btn-secondary"
+                              class="button-root btn btn-secondary"
+                              data-testid="disconnect-button"
                               type="button"
                             >
-                              <svg
-                                class="lexicon-icon lexicon-icon-pencil icon-root"
-                                role="presentation"
-                              >
-                                <use
-                                  href="#pencil"
-                                />
-                              </svg>
+                              Disconnect
                             </button>
                           </div>
                         </div>
-                      </div>
+                      </form>
                     </div>
-                  </form>
-                </div>
-              </div>
-              <div
-                class="sheet-section"
-              >
-                <form
-                  class="form-root dxp-instance-id-root"
-                >
-                  <div
-                    class="form-group"
-                  >
                     <div
-                      class="form-group-item d-flex mb-3"
+                      class="sheet-section has-last-child-margin"
                     >
                       <div
-                        class=""
-                        style="flex-basis: 100%; flex-grow: 0;"
+                        class="mb-1 d-flex align-items-center"
                       >
-                        <label
-                          class="form-control-label label-root"
-                          for="dxpInstanceId"
+                        <div
+                          class="h4 mb-0 mr-2"
+                        >
+                          Synced Sites
+                        </div>
+                        <div
+                          class="label label-root label-secondary label-lg label-uppercase"
                         >
                           <span
-                            class="content-container"
+                            class="label-item"
                           >
-                            DXP Instance ID
+                            Unconfigured
                           </span>
-                        </label>
-                        <input
-                          class="input-root form-control"
-                          id="dxpInstanceId"
-                          name="dxpInstanceId"
-                          readonly=""
-                          type="text"
-                          value="1"
-                        />
+                        </div>
                       </div>
+                      <p
+                        class="description-secondary"
+                      >
+                        To configure sites, go to the Analytics Cloud configuration in your DXP Instance Settings, then select the sites you would like to start tracking.
+                      </p>
                     </div>
                     <div
-                      class="form-group-item"
+                      class="sheet-section has-last-child-margin"
                     >
-                      <button
-                        class="button-root btn btn-secondary"
-                        data-testid="disconnect-button"
-                        type="button"
+                      <div
+                        class="mb-1 d-flex align-items-center"
                       >
-                        Disconnect
-                      </button>
+                        <div
+                          class="h4 mb-0 mr-2"
+                        >
+                          Synced Contacts
+                        </div>
+                        <div
+                          class="label label-root label-secondary label-lg label-uppercase"
+                        >
+                          <span
+                            class="label-item"
+                          >
+                            Unconfigured
+                          </span>
+                        </div>
+                      </div>
+                      <p
+                        class="description-secondary"
+                      >
+                        To configure contacts, go to the Analytics Cloud configuration in your DXP Instance Settings, then select which contacts you would like to sync.
+                      </p>
                     </div>
                   </div>
-                </form>
+                </div>
               </div>
               <div
-                class="sheet-section has-last-child-margin"
-              >
-                <div
-                  class="mb-1 d-flex align-items-center"
-                >
-                  <div
-                    class="h4 mb-0 mr-2"
-                  >
-                    Synced Sites
-                  </div>
-                  <div
-                    class="label label-root label-secondary label-lg label-uppercase"
-                  >
-                    <span
-                      class="label-item"
-                    >
-                      Unconfigured
-                    </span>
-                  </div>
-                </div>
-                <p
-                  class="description-secondary"
-                >
-                  To configure sites, go to the Analytics Cloud configuration in your DXP Instance Settings, then select the sites you would like to start tracking.
-                </p>
-              </div>
-              <div
-                class="sheet-section has-last-child-margin"
-              >
-                <div
-                  class="mb-1 d-flex align-items-center"
-                >
-                  <div
-                    class="h4 mb-0 mr-2"
-                  >
-                    Synced Contacts
-                  </div>
-                  <div
-                    class="label label-root label-secondary label-lg label-uppercase"
-                  >
-                    <span
-                      class="label-item"
-                    >
-                      Unconfigured
-                    </span>
-                  </div>
-                </div>
-                <p
-                  class="description-secondary"
-                >
-                  To configure contacts, go to the Analytics Cloud configuration in your DXP Instance Settings, then select which contacts you would like to sync.
-                </p>
-              </div>
+                class="content-side"
+              />
             </div>
           </div>
         </div>
-        <div
-          class="content-side"
-        />
       </div>
     </div>
   </div>

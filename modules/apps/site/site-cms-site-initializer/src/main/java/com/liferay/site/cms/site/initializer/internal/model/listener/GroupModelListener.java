@@ -121,6 +121,11 @@ public class GroupModelListener extends BaseModelListener<Group> {
 				getObjectDefinitionByExternalReferenceCode(
 					externalReferenceCode, companyId);
 
+		String[] actionIds = TransformUtil.transformToArray(
+			_resourceActionLocalService.getResourceActions(
+				objectDefinition.getClassName()),
+			ResourceAction::getActionId, String.class);
+
 		return JSONUtil.put(
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
 			new String[] {
@@ -139,11 +144,9 @@ public class GroupModelListener extends BaseModelListener<Group> {
 			DepotRolesConstants.ASSET_LIBRARY_MEMBER,
 			new String[] {ActionKeys.VIEW}
 		).put(
-			RoleConstants.CMS_ADMINISTRATOR,
-			TransformUtil.transformToArray(
-				_resourceActionLocalService.getResourceActions(
-					objectDefinition.getClassName()),
-				ResourceAction::getActionId, String.class)
+			RoleConstants.CMS_ADMINISTRATOR, actionIds
+		).put(
+			RoleConstants.OWNER, actionIds
 		).put(
 			RoleConstants.USER, new String[] {ActionKeys.VIEW}
 		);
@@ -165,6 +168,11 @@ public class GroupModelListener extends BaseModelListener<Group> {
 		if (cmsDefaultPermissionObjectDefinition == null) {
 			return;
 		}
+
+		String[] actionIds = TransformUtil.transformToArray(
+			_resourceActionLocalService.getResourceActions(
+				ObjectEntryFolder.class.getName()),
+			ResourceAction::getActionId, String.class);
 
 		CMSDefaultPermissionUtil.addOrUpdateObjectEntry(
 			null, group.getCompanyId(), group.getCreatorUserId(),
@@ -197,12 +205,9 @@ public class GroupModelListener extends BaseModelListener<Group> {
 					DepotRolesConstants.ASSET_LIBRARY_MEMBER,
 					new String[] {ActionKeys.VIEW, ActionKeys.SUBSCRIBE}
 				).put(
-					RoleConstants.CMS_ADMINISTRATOR,
-					JSONUtil.putAll(
-						TransformUtil.transformToArray(
-							_resourceActionLocalService.getResourceActions(
-								ObjectEntryFolder.class.getName()),
-							ResourceAction::getActionId, String.class))
+					RoleConstants.CMS_ADMINISTRATOR, JSONUtil.putAll(actionIds)
+				).put(
+					RoleConstants.OWNER, JSONUtil.putAll(actionIds)
 				).put(
 					RoleConstants.USER,
 					new String[] {ActionKeys.VIEW, ActionKeys.SUBSCRIBE}

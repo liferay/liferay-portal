@@ -108,20 +108,31 @@ function renderAccounts(accounts, currentAccountId, search) {
 		return;
 	}
 
+	const emptyAccountContainer = fragmentElement.querySelector(
+		'#empty-account-container'
+	);
+
 	dropdownList.innerHTML = '';
 
-	showSearchElements(accounts.length >= MIN_ACCOUNTS_FOR_SEARCH || !!search);
+	showSearchElements(accounts.length >= MIN_ACCOUNTS_FOR_SEARCH || !search);
 
 	if (!accounts.length) {
-		const noResultItem = document.createElement('li');
+		dropdownList.style.display = 'none';
+		divider.style.display = 'none';
+		searchInput.style.display = 'none';
 
-		noResultItem.setAttribute('class', 'mx-3 no-results');
-		noResultItem.textContent = 'No results found';
-
-		dropdownList.appendChild(noResultItem);
+		if (emptyAccountContainer) {
+			emptyAccountContainer.classList.remove('d-none');
+		}
 
 		return;
 	}
+
+	if (emptyAccountContainer) {
+		emptyAccountContainer.classList.add('d-none');
+	}
+
+	dropdownList.style.display = 'block';
 
 	lastRenderedAccounts = accounts;
 

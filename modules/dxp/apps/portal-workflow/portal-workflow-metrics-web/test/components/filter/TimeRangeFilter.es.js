@@ -11,7 +11,7 @@ import {stringify} from '../../../src/main/resources/META-INF/resources/js/share
 import {jsonSessionStorage} from '../../../src/main/resources/META-INF/resources/js/shared/util/storage.es';
 import {MockRouter} from '../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const filters = {
 	testDateEnd: '2019-12-09T00:00:00Z',

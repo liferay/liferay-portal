@@ -13,18 +13,23 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_53535 {
 
 	public void method() {
-		CommerceInventoryBookedQuantityLocalServiceUtil.deleteCommerceInventoryBookedQuantity(_commerceOrderItem.getBookedQuantityId());
+		CommerceInventoryBookedQuantityLocalServiceUtil.
+			deleteCommerceInventoryBookedQuantity(
+				_commerceOrderItem.getBookedQuantityId());
 		_commerceOrderItemWrapper.getBookedQuantityId();
 	}
 
 	public void method(long bookedQuantityId) {
-		CommerceOrderItemLocalServiceUtil.fetchCommerceOrderItemByBookedQuantityId(bookedQuantityId);
+		CommerceOrderItemLocalServiceUtil.
+			fetchCommerceOrderItemByBookedQuantityId(bookedQuantityId);
 		CommerceOrderItemUtil.countByBookedQuantityId(bookedQuantityId);
 		CommerceOrderItemUtil.fetchByBookedQuantityId(bookedQuantityId);
 		CommerceOrderItemUtil.findByBookedQuantityId(bookedQuantityId);
 		CommerceOrderItemUtil.removeByBookedQuantityId(bookedQuantityId);
-		_commerceOrderItemLocalService.fetchCommerceOrderItemByBookedQuantityId(bookedQuantityId);
-		_commerceOrderItemLocalServiceWrapper.fetchCommerceOrderItemByBookedQuantityId(bookedQuantityId);
+		_commerceOrderItemLocalService.fetchCommerceOrderItemByBookedQuantityId(
+			bookedQuantityId);
+		_commerceOrderItemLocalServiceWrapper.
+			fetchCommerceOrderItemByBookedQuantityId(bookedQuantityId);
 		_commerceOrderItemWrapper.setBookedQuantityId(bookedQuantityId);
 	}
 
@@ -33,7 +38,8 @@ public class LPD_53535 {
 	@Reference
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
-	private CommerceOrderItemLocalServiceWrapper _commerceOrderItemLocalServiceWrapper;
+	private CommerceOrderItemLocalServiceWrapper
+		_commerceOrderItemLocalServiceWrapper;
 	private CommerceOrderItemWrapper _commerceOrderItemWrapper;
 
 }

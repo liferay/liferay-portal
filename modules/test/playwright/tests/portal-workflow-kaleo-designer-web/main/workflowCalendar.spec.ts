@@ -5,96 +5,65 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {calendarPagesTest} from '../../../fixtures/calendarPagesTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
+import getRandomString from '../../../utils/getRandomString';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
 export const test = mergeTests(
+	apiHelpersTest,
 	calendarPagesTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
+	isolatedSiteTest,
 	loginTest(),
+	pageEditorPagesTest,
 	pagesAdminPagesTest,
 	workflowPagesTest
-);
-
-let createdEvents: string[] = [];
-let calendarPageCreated = false;
-let workflowSet = false;
-
-test.afterEach(
-	async ({calendarWidgetPage, page, pagesAdminPage, workflowPage}) => {
-		await test.step('Cleanup: delete calendar events, widget page and workflow assignment for calendar events', async () => {
-			await page.goto('/');
-
-			if (!calendarPageCreated || !createdEvents.length) {
-				return;
-			}
-
-			await page.getByRole('menuitem', {name: 'Calendar Page'}).click();
-			await calendarWidgetPage.deleteApprovedEvents(createdEvents);
-			createdEvents = [];
-
-			if (!calendarPageCreated) {
-				return;
-			}
-
-			await pagesAdminPage.goto();
-			await pagesAdminPage.deletePage('Calendar Page');
-			calendarPageCreated = false;
-
-			if (!workflowSet) {
-				return;
-			}
-
-			await workflowPage.goto();
-			await workflowPage.changeCalendarEventWorkflow('');
-			workflowSet = false;
-		});
-	}
 );
 
 test(
 	'show calendar event after workflow approval',
 	{tag: '@LPD-44354'},
 	async ({
+		apiHelpers,
 		calendarWidgetPage,
 		page,
-		pagesAdminPage,
+		pageEditorPage,
+		site,
 		workflowPage,
 		workflowTasksPage,
 	}) => {
-		await test.step('Create a new widget page to host the calendar', async () => {
-			await pagesAdminPage.goto();
+		let layout: Layout;
 
-			await pagesAdminPage.addWidgetPage({name: 'Calendar Page'});
+		await test.step('Create and publish a site page with a calendar widget', async () => {
+			layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_calendar_web_portlet_CalendarPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
 
-			calendarPageCreated = true;
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
-			await page.getByText('1 Column', {exact: true}).click();
+			await pageEditorPage.publishPage();
 
-			await page.getByRole('button', {name: 'Save'}).click();
-		});
-
-		await test.step('Add the Calendar widget to the newly created page', async () => {
-			await page.goto('/');
-
-			await page.getByRole('menuitem', {name: 'Calendar Page'}).click();
-
-			await page.getByLabel('Add').click();
-
-			await page
-				.getByRole('textbox', {name: 'Search Form'})
-				.fill('calendar');
-
-			const addContentButton = page
-				.locator('li.sidebar-body__add-panel__tab-item', {
-					has: page.locator('div[title="Calendar"]'),
-				})
-				.locator('button[aria-label="Add Content"]');
-
-			await addContentButton.hover();
-
-			await addContentButton.click();
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
 		});
 
 		await test.step('Publish the first calendar event without triggering workflow', async () => {
@@ -102,33 +71,30 @@ test(
 				title: 'Calendar Event Without Workflow',
 			});
 
-			createdEvents.push('Calendar Event Without Workflow');
-
 			await expect(
 				page.locator('.calendar-portlet-event-approved').nth(0)
 			).toBeVisible();
 		});
 
 		await test.step('Enable Single Approver workflow for calendar events', async () => {
-			await workflowPage.goto();
+			await workflowPage.goto(site.friendlyUrlPath);
 
-			await workflowPage.changeCalendarEventWorkflow('Single Approver@1');
-
-			workflowSet = true;
+			await workflowPage.changeWorkflow(
+				'Calendar Event',
+				'Single Approver'
+			);
 		});
 
 		await test.step('Submit the second calendar event that will require workflow approval', async () => {
-			await page.goto('/');
-
-			await page.getByRole('menuitem', {name: 'Calendar Page'}).click();
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
 
 			await calendarWidgetPage.createAndSubmitEvent({
 				invitationUser: 'Test Test',
 				title: 'Calendar Event With Workflow',
 				withWorkflow: true,
 			});
-
-			createdEvents.push('Calendar Event With Workflow');
 
 			await expect(
 				page.locator('.calendar-portlet-event-approved')
@@ -148,9 +114,9 @@ test(
 		});
 
 		await test.step('Ensure the approved event is now visible in the calendar', async () => {
-			await page.goto('/');
-
-			await page.getByRole('menuitem', {name: 'Calendar Page'}).click();
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
 
 			await expect(
 				page.locator('.calendar-portlet-event-approved')

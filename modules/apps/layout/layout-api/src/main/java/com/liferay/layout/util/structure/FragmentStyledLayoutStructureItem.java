@@ -154,8 +154,10 @@ public class FragmentStyledLayoutStructureItem
 		}
 
 		FragmentEntry fragmentEntry =
-			FragmentEntryLocalServiceUtil.fetchFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId());
+			FragmentEntryLocalServiceUtil.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragmentEntryLink.getFragmentEntryERC(),
+					fragmentEntryLink.getFragmentEntryGroupId());
 
 		if (fragmentEntry != null) {
 			return fragmentEntry.getFragmentEntryKey();

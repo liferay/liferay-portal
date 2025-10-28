@@ -271,8 +271,8 @@ public class BatchEnginePortletDataHandlerTest {
 			values.get(_OBJECT_FIELD_NAME_TEXT));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.OFF)) {
 
 			_importLayouts(
@@ -1254,8 +1254,8 @@ public class BatchEnginePortletDataHandlerTest {
 
 		if (expectError) {
 			logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR);
 		}
 

@@ -8,9 +8,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-MenuAccessConfigurationDisplayContext menuAccessDisplayContext = (MenuAccessConfigurationDisplayContext)request.getAttribute(MenuAccessConfigurationDisplayContext.class.getName());
+MenuAccessConfigurationDisplayContext menuAccessConfigurationDisplayContext = (MenuAccessConfigurationDisplayContext)request.getAttribute(MenuAccessConfigurationDisplayContext.class.getName());
 
-String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modify-text" : "modify-text text-muted";
+String textCssClass = menuAccessConfigurationDisplayContext.isShowControlMenuByRole() ? "modify-text" : "modify-text text-muted";
 %>
 
 <liferay-util:buffer
@@ -39,7 +39,7 @@ String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modi
 		<clay:content-col>
 			<clay:checkbox
 				aria-describedby='<%= liferayPortletResponse.getNamespace() + "showControlMenuByRoleDescription" %>'
-				checked="<%= menuAccessDisplayContext.isShowControlMenuByRole() %>"
+				checked="<%= menuAccessConfigurationDisplayContext.isShowControlMenuByRole() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "showControlMenuByRole" %>'
 				label="show-control-menu-by-role-name"
 				name='<%= liferayPortletResponse.getNamespace() + "showControlMenuByRole" %>'
@@ -66,7 +66,7 @@ String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modi
 			<clay:button
 				aria-label='<%= LanguageUtil.get(request, "select") %>'
 				cssClass="modify-link"
-				disabled="<%= !menuAccessDisplayContext.isShowControlMenuByRole() %>"
+				disabled="<%= !menuAccessConfigurationDisplayContext.isShowControlMenuByRole() %>"
 				displayType="secondary"
 				id='<%= liferayPortletResponse.getNamespace() + "selectRoleLink" %>'
 				label="select"
@@ -84,7 +84,7 @@ String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modi
 				compactEmptyResultsMessage="<%= true %>"
 				headerNames="title,null"
 				id="roleSearchContainer"
-				searchContainer="<%= menuAccessDisplayContext.getSearchContainer() %>"
+				searchContainer="<%= menuAccessConfigurationDisplayContext.getSearchContainer() %>"
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Role"
@@ -100,13 +100,13 @@ String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modi
 					/>
 
 					<liferay-ui:search-container-column-text>
-						<c:if test="<%= menuAccessDisplayContext.isShowDeleteButton(role) %>">
+						<c:if test="<%= menuAccessConfigurationDisplayContext.isShowDeleteButton(role) %>">
 							<clay:button
 								aria-label='<%= LanguageUtil.get(request, "remove") %>'
 								borderless="<%= true %>"
 								cssClass="lfr-portal-tooltip modify-link"
 								data-rowId="<%= role.getRoleId() %>"
-								disabled="<%= !menuAccessDisplayContext.isShowControlMenuByRole() %>"
+								disabled="<%= !menuAccessConfigurationDisplayContext.isShowControlMenuByRole() %>"
 								displayType="secondary"
 								icon="times-circle"
 								monospaced="<%= true %>"
@@ -193,7 +193,7 @@ String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modi
 	};
 
 	const roleConfig = {
-		id: '<%= menuAccessDisplayContext.getEventName() %>>',
+		id: '<%= menuAccessConfigurationDisplayContext.getEventName() %>>',
 		idAttr: 'roleid',
 		inputId: '<portlet:namespace />roleSearchContainerPrimaryKeys',
 		linkId: '<portlet:namespace />selectRoleLink',
@@ -202,7 +202,7 @@ String textCssClass = menuAccessDisplayContext.isShowControlMenuByRole() ? "modi
 		),
 		title: '<liferay-ui:message arguments="role" key="select-x" />',
 		titleAttr: 'roletitle',
-		uri: '<%= menuAccessDisplayContext.getRoleItemSelectorURL() %>',
+		uri: '<%= menuAccessConfigurationDisplayContext.getRoleItemSelectorURL() %>',
 	};
 
 	bindModifyLink(roleConfig);

@@ -45,10 +45,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.url.builder.WebContextScriptAbsolutePortalURLBuilder;
-import com.liferay.portal.url.builder.WebContextStylesheetAbsolutePortalURLBuilder;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
@@ -142,8 +138,6 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 			themeDisplay.setLookAndFeel(theme, layout.getColorScheme());
 
-			_addClayURLs(httpServletRequest, themeDisplay);
-
 			themeDisplay.setSignedIn(false);
 
 			User guestUser = _userLocalService.getGuestUser(
@@ -225,42 +219,6 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 		}
 
 		return null;
-	}
-
-	private void _addClayURLs(
-		HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay) {
-
-		AbsolutePortalURLBuilder absolutePortalURLBuilder =
-			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
-				httpServletRequest);
-
-		Theme theme = themeDisplay.getTheme();
-		boolean rtl = _portal.isRightToLeft(httpServletRequest);
-
-		WebContextStylesheetAbsolutePortalURLBuilder
-			webContextStylesheetAbsolutePortalURLBuilder =
-				absolutePortalURLBuilder.forWebContextStylesheet(
-					theme.getServletContextName(),
-					rtl ? "/css/clay_rtl.css" : "/css/clay.css");
-
-		themeDisplay.setDefaultClayCSSURL(
-			webContextStylesheetAbsolutePortalURLBuilder.build());
-
-		webContextStylesheetAbsolutePortalURLBuilder =
-			absolutePortalURLBuilder.forWebContextStylesheet(
-				theme.getServletContextName(),
-				rtl ? "/css/main_rtl.css" : "/css/main.css");
-
-		themeDisplay.setDefaultMainCSSURL(
-			webContextStylesheetAbsolutePortalURLBuilder.build());
-
-		WebContextScriptAbsolutePortalURLBuilder
-			webContextScriptAbsolutePortalURLBuilder =
-				absolutePortalURLBuilder.forWebContextScript(
-					theme.getServletContextName(), "/js/main.js");
-
-		themeDisplay.setDefaultMainJSURL(
-			webContextScriptAbsolutePortalURLBuilder.build());
 	}
 
 	private void _addLinkedAssetEntryId(
@@ -345,9 +303,6 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetPagePreviewStrutsAction.class);
-
-	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;

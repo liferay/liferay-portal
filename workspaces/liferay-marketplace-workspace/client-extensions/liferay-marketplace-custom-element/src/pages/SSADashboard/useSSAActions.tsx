@@ -43,7 +43,7 @@ const useSSAActions = () => {
 			{
 				name: i18n.translate('details'),
 				onClick: (order: PlacedOrder) =>
-					navigate(`details/${order.id}`),
+					navigate(`/details/${order.id}`),
 			},
 			{
 				disabled: (order: PlacedOrder) =>

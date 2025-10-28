@@ -154,7 +154,9 @@ export default function AssetNavigationModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				<Header
 					activePanel={activePanel}
 					handleClickComments={handleClickComments}

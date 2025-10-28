@@ -11,6 +11,8 @@ import {ProductPurchaseOutletContext} from '../../ProductPurchaseOutlet';
 import AnalyticsProvisioning from './AnalyticsProvisioningForm';
 import PreBuiltTrialProvisioning from './PreBuiltTrialProvisioningForm';
 
+import './index.scss';
+
 const SolutionProvisioningForm = () => {
 	const {accounts, selectedAccount, solutionTypeSpecificationValue} =
 		useOutletContext<ProductPurchaseOutletContext>();

@@ -143,7 +143,9 @@ function ItemSelectorModal<T extends Record<string, any>>({
 
 	return open ? (
 		<ClayModal observer={observer} size="full-screen">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(Liferay.Language.get('select-x'), itemTypeLabel)}
 			</ClayModal.Header>
 

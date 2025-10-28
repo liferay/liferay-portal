@@ -281,13 +281,6 @@ export default function EditGeneralInfo({
 					<CategorizationSpaces
 						assetLibraries={assetLibraries}
 						checkboxText="vocabulary"
-						selectedSpaces={
-							vocabulary.assetLibraries
-								? vocabulary.assetLibraries.map(
-										(item: AssetLibraryType) => item.id
-									)
-								: []
-						}
 						setSelectedSpaces={onChangeSelectedSpaces}
 						setSpaceChange={setSpaceChange}
 						setSpaceInputError={setSpaceInputError}

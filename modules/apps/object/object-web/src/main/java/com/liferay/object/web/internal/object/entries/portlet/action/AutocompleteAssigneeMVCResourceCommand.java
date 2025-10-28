@@ -5,6 +5,7 @@
 
 package com.liferay.object.web.internal.object.entries.portlet.action;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.document.Document;
@@ -75,42 +77,43 @@ public class AutocompleteAssigneeMVCResourceCommand
 			).build());
 
 		for (Document document : searchResponse.getDocuments()) {
-			String entryClassName = document.getString(Field.ENTRY_CLASS_NAME);
+			String name = document.getString(Field.NAME);
+
+			String type = StringUtil.extractLast(
+				document.getString(Field.ENTRY_CLASS_NAME), StringPool.PERIOD);
+
+			if (StringUtil.equals(type, "User")) {
+				name = document.getString("fullName");
+			}
+
+			if (Validator.isNull(name)) {
+				continue;
+			}
 
 			jsonArray.put(
 				JSONUtil.put(
-					"embedded",
-					JSONUtil.put(
-						"externalReferenceCode",
-						document.getString("externalReferenceCode")
-					).put(
-						"image",
-						() -> {
-							if (!entryClassName.equals(User.class.getName())) {
-								return null;
-							}
-
-							User user = _userLocalService.fetchUser(
-								document.getLong(Field.ENTRY_CLASS_PK));
-
-							if (user == null) {
-								return null;
-							}
-
-							return user.getPortraitURL(themeDisplay);
-						}
-					).put(
-						"name",
-						() -> {
-							if (!entryClassName.equals(User.class.getName())) {
-								return document.getString(Field.NAME);
-							}
-
-							return document.getString("fullName");
-						}
-					)
+					"externalReferenceCode",
+					document.getString("externalReferenceCode")
 				).put(
-					"entryClassName", entryClassName
+					"image",
+					() -> {
+						if (!StringUtil.equals(type, "User")) {
+							return null;
+						}
+
+						User user = _userLocalService.fetchUser(
+							document.getLong(Field.ENTRY_CLASS_PK));
+
+						if (user == null) {
+							return null;
+						}
+
+						return user.getPortraitURL(themeDisplay);
+					}
+				).put(
+					"name", name
+				).put(
+					"type", type
 				));
 		}
 

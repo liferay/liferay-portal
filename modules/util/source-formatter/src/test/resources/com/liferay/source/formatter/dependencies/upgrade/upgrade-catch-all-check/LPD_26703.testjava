@@ -46,9 +46,12 @@ public class LPD_26703 {
 		new LayoutCreateDateComparator(showHiddenPages);
 		new LayoutModifiedDateComparator(showHiddenPages);
 		new LayoutPageTemplateCollectionCreateDateComparator(showHiddenPages);
-		new LayoutPageTemplateCollectionLayoutPageTemplateEntryCreateDateComparator(showHiddenPages);
-		new LayoutPageTemplateCollectionLayoutPageTemplateEntryModifiedDateComparator(showHiddenPages);
-		new LayoutPageTemplateCollectionLayoutPageTemplateEntryNameComparator(showHiddenPages);
+		new LayoutPageTemplateCollectionLayoutPageTemplateEntryCreateDateComparator(
+			showHiddenPages);
+		new LayoutPageTemplateCollectionLayoutPageTemplateEntryModifiedDateComparator(
+			showHiddenPages);
+		new LayoutPageTemplateCollectionLayoutPageTemplateEntryNameComparator(
+			showHiddenPages);
 		new LayoutPageTemplateCollectionModifiedDateComparator(showHiddenPages);
 		new LayoutPageTemplateCollectionNameComparator(showHiddenPages);
 		new LayoutPageTemplateEntryCreateDateComparator(showHiddenPages);

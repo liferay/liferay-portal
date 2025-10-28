@@ -6,7 +6,7 @@
 import {act, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {CustomDateModal} from '../../../src/main/resources/META-INF/resources/js/utils/openCustomDateModal';
 

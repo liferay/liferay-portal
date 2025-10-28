@@ -28,7 +28,9 @@ const PublisherSupportModal = ({
 
 	return (
 		<ClayModal center observer={observer} size={'md' as any}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('publisher-support-contact-info')}
 			</ClayModal.Header>
 

@@ -6,7 +6,7 @@ exports[`Toolbar should render 1`] = `
     class="toolbar-root"
   >
     <nav
-      class="navbar navbar-root management-bar management-bar-light navbar-expand"
+      class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
     >
       <div
         class="container-fluid"
@@ -38,7 +38,7 @@ exports[`Toolbar should render 1`] = `
           </li>
         </ul>
         <div
-          class="navbar-form navbar-form-autofit"
+          class="navbar-form navbar-form-autofit mx-2"
         >
           <div
             class="input-group search"

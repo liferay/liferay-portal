@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -53,6 +55,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  * @author Carolina Barbosa
@@ -105,47 +110,46 @@ public class AutocompleteAssigneeMVCResourceCommandTest {
 		Assert.assertEquals(
 			itemsJSONArray.toString(), 0, itemsJSONArray.length());
 
-		_assertJSONObject(
-			Role.class.getName(), _role.getExternalReferenceCode(),
-			_role.getName(), _getJSONObject("Custom R"));
-		_assertJSONObject(
-			Role.class.getName(), _role.getExternalReferenceCode(),
-			_role.getName(), _getJSONObject("custom role"));
-		_assertJSONObject(
-			User.class.getName(), _user.getExternalReferenceCode(),
-			_user.getFullName(), _getJSONObject("Doe"));
-		_assertJSONObject(
-			User.class.getName(), _user.getExternalReferenceCode(),
-			_user.getFullName(), _getJSONObject("John"));
-		_assertJSONObject(
-			User.class.getName(), _user.getExternalReferenceCode(),
-			_user.getFullName(), _getJSONObject("John D"));
-		_assertJSONObject(
-			User.class.getName(), _user.getExternalReferenceCode(),
-			_user.getFullName(), _getJSONObject("John Doe"));
+		_assertJSONObject("Role", _getJSONObject("Custom R"));
+		_assertJSONObject("Role", _getJSONObject("custom role"));
+		_assertJSONObject("User", _getJSONObject("Doe"));
+		_assertJSONObject("User", _getJSONObject("John"));
+		_assertJSONObject("User", _getJSONObject("John D"));
+		_assertJSONObject("User", _getJSONObject("John Doe"));
 	}
 
-	private void _assertJSONObject(
-		String expectedEntryClassName, String expectedExternalReferenceCode,
-		String expectedName, JSONObject jsonObject) {
+	private void _assertJSONObject(String expectedType, JSONObject jsonObject)
+		throws Exception {
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
 		Assert.assertEquals(
 			itemsJSONArray.toString(), 1, itemsJSONArray.length());
 
-		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"externalReferenceCode",
+				() -> {
+					if (StringUtil.equals(expectedType, "Role")) {
+						return _role.getExternalReferenceCode();
+					}
 
-		Assert.assertEquals(
-			expectedEntryClassName, itemJSONObject.getString("entryClassName"));
+					return _user.getExternalReferenceCode();
+				}
+			).put(
+				"name",
+				() -> {
+					if (StringUtil.equals(expectedType, "Role")) {
+						return _role.getName();
+					}
 
-		JSONObject embeddedJSONObject = itemJSONObject.getJSONObject(
-			"embedded");
-
-		Assert.assertEquals(
-			expectedExternalReferenceCode,
-			embeddedJSONObject.getString("externalReferenceCode"));
-		Assert.assertEquals(expectedName, embeddedJSONObject.getString("name"));
+					return _user.getFullName();
+				}
+			).put(
+				"type", expectedType
+			).toString(),
+			String.valueOf(itemsJSONArray.getJSONObject(0)),
+			JSONCompareMode.LENIENT);
 	}
 
 	private JSONObject _getJSONObject(String search) throws Exception {

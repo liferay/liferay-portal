@@ -6,13 +6,10 @@
 package com.liferay.product.navigation.control.menu.theme.contributor.internal.events;
 
 import com.liferay.portal.kernel.events.Action;
-import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.product.navigation.control.menu.theme.contributor.internal.util.ProductNavigationControlMenuUtil;
-import com.liferay.product.navigation.control.menu.util.ProductNavigationControlMenuCategoryRegistry;
-import com.liferay.product.navigation.control.menu.util.ProductNavigationControlMenuEntryRegistry;
+import com.liferay.product.navigation.control.menu.manager.ProductNavigationControlMenuManager;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,27 +27,20 @@ public class ProductNavigationControlMenuServicePreAction extends Action {
 
 	@Override
 	public void run(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws ActionException {
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
 		themeDisplay.setShowControlMenu(
-			ProductNavigationControlMenuUtil.isShowControlMenu(
-				httpServletRequest,
-				_productNavigationControlMenuCategoryRegistry,
-				_productNavigationControlMenuEntryRegistry));
+			_productNavigationControlMenuManager.isShowControlMenu(
+				httpServletRequest));
 	}
 
 	@Reference
-	private ProductNavigationControlMenuCategoryRegistry
-		_productNavigationControlMenuCategoryRegistry;
-
-	@Reference
-	private ProductNavigationControlMenuEntryRegistry
-		_productNavigationControlMenuEntryRegistry;
+	private ProductNavigationControlMenuManager
+		_productNavigationControlMenuManager;
 
 }

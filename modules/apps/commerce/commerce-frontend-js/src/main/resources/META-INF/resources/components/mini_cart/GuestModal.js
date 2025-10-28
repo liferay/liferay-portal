@@ -67,7 +67,9 @@ function GuestModal({isVisible, setIsVisible, signInURL}) {
 						)}
 					/>
 
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{viewsMap[activeView].title}
 					</ClayModal.Header>
 

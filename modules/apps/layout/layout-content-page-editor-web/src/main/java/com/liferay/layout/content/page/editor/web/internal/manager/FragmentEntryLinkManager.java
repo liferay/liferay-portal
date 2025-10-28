@@ -588,14 +588,16 @@ public class FragmentEntryLinkManager {
 	private FragmentEntry _getFragmentEntry(
 		FragmentEntryLink fragmentEntryLink, Locale locale) {
 
-		if (fragmentEntryLink.getFragmentEntryId() <= 0) {
+		if (Validator.isNull(fragmentEntryLink.getFragmentEntryERC())) {
 			return getFragmentEntry(
 				fragmentEntryLink.getGroupId(),
 				fragmentEntryLink.getRendererKey(), locale);
 		}
 
-		return _fragmentEntryLocalService.fetchFragmentEntry(
-			fragmentEntryLink.getFragmentEntryId());
+		return _fragmentEntryLocalService.
+			fetchFragmentEntryByExternalReferenceCode(
+				fragmentEntryLink.getFragmentEntryERC(),
+				fragmentEntryLink.getFragmentEntryGroupId());
 	}
 
 	private JSONArray _getFragmentEntryLinkCommentsJSONArray(
@@ -623,9 +625,8 @@ public class FragmentEntryLinkManager {
 					rootComment, httpServletRequest);
 
 				List<Comment> childComments = _commentManager.getChildComments(
-					rootComment.getCommentId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
+					rootComment.getCommentId(), WorkflowConstants.STATUS_ANY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 				JSONArray childCommentsJSONArray =
 					_jsonFactory.createJSONArray();

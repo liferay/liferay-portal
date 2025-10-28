@@ -12,7 +12,6 @@ import useSWR from 'swr';
 import {DetailedCard} from '../../../../components/DetailedCard/DetailedCard';
 import Loading from '../../../../components/Loading';
 import QATable from '../../../../components/QATable';
-import {useMarketplaceContext} from '../../../../context/MarketplaceContext';
 import {
 	OrderCustomFields,
 	OrderTypes,
@@ -111,25 +110,16 @@ type AnalyticsWorkspaceDetailsProps = {
 const AnalyticsWorkspaceDetails: React.FC<AnalyticsWorkspaceDetailsProps> = ({
 	analyticsGroupId,
 }) => {
-	const {
-		properties: {analyticsCloudURL},
-	} = useMarketplaceContext();
-	const {data = [], isLoading} = useSWR(
-		`/analytics/project/${analyticsGroupId}/`,
-		() =>
-			Promise.all([
-				analyticsOAuth2.getProject(analyticsGroupId),
-				analyticsOAuth2.getProjectEmailAddressDomains(analyticsGroupId),
-			])
+	const {data: project, isLoading} = useSWR(
+		`/analytics/project/${analyticsGroupId}`,
+		() => analyticsOAuth2.getProject(analyticsGroupId)
 	);
-
-	const [project, emailAddressDomains = []] = data ?? [];
 
 	return (
 		<DetailedCard
 			cardIconAltText="Summary Icon"
 			cardTitle={i18n.translate('workspace-info')}
-			clayIcon="liferay-ac"
+			clayIcon="polls"
 		>
 			{isLoading ? (
 				<Loading
@@ -141,17 +131,6 @@ const AnalyticsWorkspaceDetails: React.FC<AnalyticsWorkspaceDetailsProps> = ({
 			) : (
 				<QATable
 					items={[
-						{
-							title: i18n.translate('workspace-friendly-url'),
-							value: project?.friendlyURL ? (
-								<a
-									href={`${analyticsCloudURL}/workspace${project?.friendlyURL}`}
-									target="blank"
-								>
-									{project?.friendlyURL}
-								</a>
-							) : null,
-						},
 						{
 							title: i18n.translate('workspace-name'),
 							value: project?.name,
@@ -165,11 +144,6 @@ const AnalyticsWorkspaceDetails: React.FC<AnalyticsWorkspaceDetailsProps> = ({
 							value: project?.serverLocation,
 						},
 						{
-							title: i18n.translate('timezone'),
-							value: project?.timeZone.country,
-						},
-
-						{
 							title: i18n.translate('incident-report-contacts'),
 							value: project?.incidentReportEmailAddresses.map(
 								(emailAddress) => (
@@ -177,12 +151,7 @@ const AnalyticsWorkspaceDetails: React.FC<AnalyticsWorkspaceDetailsProps> = ({
 								)
 							),
 						},
-						{
-							title: i18n.translate('allowed-email-domains'),
-							value: emailAddressDomains.map((emailAddress) => (
-								<div key={emailAddress}>{emailAddress}</div>
-							)),
-						},
+
 						{
 							title: i18n.translate('subscription-type'),
 							value: project?.faroSubscription.name,
@@ -241,14 +210,6 @@ const Solution = () => {
 					<QATable
 						items={[
 							{
-								title: i18n.translate('account-name'),
-								value: placedOrder.account,
-							},
-							{
-								title: i18n.translate('purchased-by'),
-								value: placedOrder.author,
-							},
-							{
 								title: i18n.translate('order-id'),
 								value: orderId,
 							},
@@ -259,6 +220,15 @@ const Solution = () => {
 									'dd MMM, yyyy'
 								),
 							},
+							{
+								title: i18n.translate('account-name'),
+								value: placedOrder.account,
+							},
+							{
+								title: i18n.translate('purchased-by'),
+								value: placedOrder.author,
+							},
+
 							...getOrderDetails(),
 						]}
 					/>

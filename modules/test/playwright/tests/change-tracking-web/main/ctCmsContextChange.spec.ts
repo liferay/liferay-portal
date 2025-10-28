@@ -9,12 +9,15 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 
 const test = mergeTests(
 	apiHelpersTest,
 	changeTrackingPagesTest,
+	cmsPagesTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
+		'LPD-32050': {enabled: true},
 	}),
 	loginTest()
 );
@@ -22,14 +25,14 @@ const test = mergeTests(
 test(
 	'Publications bar is not visible in CMS site in Production',
 	{tag: '@LPD-64066'},
-	async ({page}) => {
+	async ({homePage, page}) => {
 		const changeTrackingIndicator = page.locator(
 			'.change-tracking-indicator'
 		);
 
 		await expect(changeTrackingIndicator).toBeVisible();
 
-		await page.goto(`/web/cms`);
+		await homePage.goto();
 
 		await expect(changeTrackingIndicator).not.toBeVisible();
 
@@ -42,10 +45,10 @@ test(
 test(
 	'Warning popover is displayed in CMS site in a Publication',
 	{tag: '@LPD-64066'},
-	async ({changeTrackingPage, ctCollection, page}) => {
+	async ({changeTrackingPage, ctCollection, homePage, page}) => {
 		await changeTrackingPage.workOnPublication(ctCollection);
 
-		await page.goto(`/web/cms`);
+		await homePage.goto();
 
 		await expect(page.getByLabel('CMS Control Menu')).toBeVisible();
 
@@ -83,10 +86,10 @@ test(
 test(
 	'Warning popover will not close without switching to Production',
 	{tag: '@LPD-64066'},
-	async ({changeTrackingPage, ctCollection, page}) => {
+	async ({changeTrackingPage, ctCollection, homePage, page}) => {
 		await changeTrackingPage.workOnPublication(ctCollection);
 
-		await page.goto(`/web/cms`);
+		await homePage.goto();
 
 		await page.locator('.change-tracking-indicator').click();
 
@@ -109,10 +112,10 @@ test(
 test(
 	'Assert publication bar dropdown is disabled for CMS site',
 	{tag: '@LPD-64065'},
-	async ({changeTrackingPage, ctCollection, page}) => {
+	async ({changeTrackingPage, ctCollection, homePage, page}) => {
 		await changeTrackingPage.workOnPublication(ctCollection);
 
-		await page.goto(`/web/cms`);
+		await homePage.goto();
 
 		const changeTrackingIndicatorButtonProduction = page.locator(
 			'.change-tracking-indicator-button'

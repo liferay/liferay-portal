@@ -38,10 +38,6 @@ public class IGDisplayPortletDataHandler extends BasePortletDataHandler {
 	@Activate
 	protected void activate() {
 		setDataLevel(DataLevel.PORTLET_INSTANCE);
-		setDataPortletPreferences(
-			"rootFolderExternalReferenceCode",
-			"selectedGroupExternalReferenceCode",
-			"selectedRepositoryExternalReferenceCode");
 		setExportControls(new PortletDataHandlerControl[0]);
 		setPublishToLiveByDefault(PropsValues.DL_PUBLISH_TO_LIVE_BY_DEFAULT);
 	}

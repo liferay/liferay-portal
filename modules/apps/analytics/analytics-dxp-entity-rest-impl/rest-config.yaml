@@ -1,7 +1,7 @@
 apiDir: ../analytics-dxp-entity-rest-api/src/main/java
 apiPackagePath: com.liferay.analytics.dxp.entity.rest
 author: Marcos Martins, Rachael Koestartyo, Riccardo Ferrari
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 liferayEnterpriseApp: true

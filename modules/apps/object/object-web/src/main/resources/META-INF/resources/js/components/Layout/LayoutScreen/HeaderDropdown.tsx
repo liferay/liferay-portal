@@ -5,18 +5,20 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import React, {MouseEventHandler, useState} from 'react';
+import React, {useState} from 'react';
 
 import {useLayoutContext} from '../objectLayoutContext';
 
 interface HeaderDropdownProps {
-	addCategorization?: MouseEventHandler;
-	deleteElement: MouseEventHandler;
+	addCategorization?: () => void;
+	addSeo?: () => void;
+	deleteElement: () => void;
 	disabled?: boolean;
 }
 
 export function HeaderDropdown({
 	addCategorization,
+	addSeo,
 	deleteElement,
 	disabled,
 }: HeaderDropdownProps) {
@@ -24,6 +26,7 @@ export function HeaderDropdown({
 	const [
 		{
 			enableCategorization,
+			enableFriendlyURLCustomization,
 			isViewOnly,
 			objectLayout: {objectLayoutTabs},
 		},
@@ -66,6 +69,18 @@ export function HeaderDropdown({
 						onClick={() => handleOnClick(addCategorization)}
 					>
 						{Liferay.Language.get('add-categorization')}
+					</ClayDropDown.Item>
+				)}
+
+				{addSeo && (
+					<ClayDropDown.Item
+						disabled={
+							isThereFramework('seo') ||
+							!enableFriendlyURLCustomization
+						}
+						onClick={() => handleOnClick(addSeo)}
+					>
+						{Liferay.Language.get('add-seo')}
 					</ClayDropDown.Item>
 				)}
 

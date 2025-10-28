@@ -11,6 +11,7 @@ import React, {useState} from 'react';
 
 export default function ERCInput({
 	disabled,
+	error,
 	onValueChange,
 	value: initialValue,
 	helpText = Liferay.Language.get(
@@ -18,6 +19,7 @@ export default function ERCInput({
 	),
 }: {
 	disabled?: boolean;
+	error?: string;
 	helpText?: string;
 	onValueChange: (value: string) => void;
 	value: string;
@@ -27,7 +29,7 @@ export default function ERCInput({
 	const [value, setValue] = useState(initialValue);
 
 	return (
-		<ClayForm.Group className={classNames({'has-error': !value})}>
+		<ClayForm.Group className={classNames({'has-error': error})}>
 			<label htmlFor={id}>
 				{Liferay.Language.get('erc')}
 
@@ -58,13 +60,7 @@ export default function ERCInput({
 				value={value}
 			/>
 
-			{!value ? (
-				<FieldFeedback
-					errorMessage={Liferay.Language.get(
-						'this-field-is-required'
-					)}
-				/>
-			) : null}
+			{error ? <FieldFeedback errorMessage={error} /> : null}
 		</ClayForm.Group>
 	);
 }

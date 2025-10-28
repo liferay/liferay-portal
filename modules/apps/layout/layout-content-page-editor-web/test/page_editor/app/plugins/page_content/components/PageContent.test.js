@@ -6,7 +6,7 @@
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {useSelectItem} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import {

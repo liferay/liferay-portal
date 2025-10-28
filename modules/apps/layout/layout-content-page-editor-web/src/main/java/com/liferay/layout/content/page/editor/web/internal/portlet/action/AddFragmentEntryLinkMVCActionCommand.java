@@ -84,7 +84,7 @@ public class AddFragmentEntryLinkMVCActionCommand
 				new DefaultFragmentRendererContext(null);
 
 			return _fragmentEntryLinkService.addFragmentEntryLink(
-				null, serviceContext.getScopeGroupId(), 0, 0,
+				null, serviceContext.getScopeGroupId(), null, null, null,
 				segmentsExperienceId, serviceContext.getPlid(),
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 				_jsonFactory.toString(
@@ -110,8 +110,9 @@ public class AddFragmentEntryLinkMVCActionCommand
 		}
 
 		return _fragmentEntryLinkService.addFragmentEntryLink(
-			null, serviceContext.getScopeGroupId(), 0,
-			fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+			null, serviceContext.getScopeGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), segmentsExperienceId,
 			serviceContext.getPlid(), fragmentEntry.getCss(),
 			fragmentEntry.getHtml(), fragmentEntry.getJs(),
 			fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,

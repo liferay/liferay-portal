@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {useModal} from '@clayui/modal';
 import {IView} from '@liferay/frontend-data-set-web';
 import {render, waitFor, within} from '@testing-library/react';

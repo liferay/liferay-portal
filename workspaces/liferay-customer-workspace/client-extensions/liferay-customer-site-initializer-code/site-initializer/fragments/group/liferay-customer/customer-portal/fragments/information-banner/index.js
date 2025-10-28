@@ -9,17 +9,42 @@ const bannerElement = document.querySelectorAll('.cp-information-banner');
 const bannerFragment = fragmentElement.querySelector('.cp-information-banner');
 const closeButton = fragmentElement.querySelector('.close');
 
-const currentDate = new Date();
-const {0: month, 1: day, 2: year} = configuration.displayEndDate.split('/');
-const expirationDate = new Date(year, month - 1, day);
-const isExpired = expirationDate < currentDate;
+const currentDateTrimmed = new Date(new Date().setHours(0, 0, 0, 0));
+
+const isAfterStart = () => {
+	if (!configuration.displayStartDate) {
+		return true;
+	}
+
+	const [month, day, year] = configuration.displayStartDate.split('/');
+	const startDate = new Date(year, month - 1, day);
+
+	return currentDateTrimmed >= startDate;
+};
+
+const isBeforeExpiration = () => {
+	if (!configuration.displayEndDate) {
+		return true;
+	}
+
+	const [month, day, year] = configuration.displayEndDate.split('/');
+	const expirationDate = new Date(year, month - 1, day);
+
+	return currentDateTrimmed < expirationDate;
+};
 
 const bannerState = !sessionStorage.getItem('@liferayCP:showBanner')
 	? true
 	: false;
+
 const sessionStorageLogState = Liferay.ThemeDisplay.isSignedIn();
 
-if (!isExpired && sessionStorageLogState && bannerState) {
+if (
+	bannerState &&
+	isAfterStart() &&
+	isBeforeExpiration() &&
+	sessionStorageLogState
+) {
 	bannerElement?.forEach((item) => {
 		item.style.display = 'flex';
 	});

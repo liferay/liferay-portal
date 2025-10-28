@@ -576,7 +576,10 @@ public class WabProcessor {
 		return webContextpath;
 	}
 
-	private void _processBeans(Builder analyzer) throws IOException {
+	private void _processBeans(
+			Builder analyzer, Properties pluginPackageProperties)
+		throws IOException {
+
 		String beansXMLFile = "WEB-INF/beans.xml";
 
 		File file = new File(_pluginDir, beansXMLFile);
@@ -637,9 +640,10 @@ public class WabProcessor {
 
 			});
 
-		String cdiInstruction = analyzer.getProperty(Constants.CDIANNOTATIONS);
+		String cdiInstruction = pluginPackageProperties.getProperty(
+			Constants.CDIANNOTATIONS);
 
-		if (cdiInstruction != null) {
+		if ((cdiInstruction != null) && cdiInstruction.isBlank()) {
 			return;
 		}
 
@@ -1553,7 +1557,7 @@ public class WabProcessor {
 
 			_processExcludedJSPs(analyzer);
 
-			_processBeans(analyzer);
+			_processBeans(analyzer, pluginPackageProperties);
 
 			for (String stringPropertyName :
 					pluginPackageProperties.stringPropertyNames()) {

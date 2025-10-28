@@ -64,7 +64,9 @@ export default function TransitionWorkflowStateModelContent({
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get(transitionName)}
 			</ClayModal.Header>
 

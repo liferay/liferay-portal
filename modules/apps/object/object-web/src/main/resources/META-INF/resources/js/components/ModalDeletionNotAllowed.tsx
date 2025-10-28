@@ -44,7 +44,9 @@ function ModalDeletionNotAllowed({
 		<>
 			{(visible || !!content) && (
 				<ClayModal center observer={observer} status="warning">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('deletion-not-allowed')}
 					</ClayModal.Header>
 

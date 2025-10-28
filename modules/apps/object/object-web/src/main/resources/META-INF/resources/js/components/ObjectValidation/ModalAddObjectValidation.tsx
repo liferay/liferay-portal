@@ -109,7 +109,9 @@ export function ModalAddObjectValidation({
 		<ClayModalProvider>
 			<ClayModal center observer={observer}>
 				<ClayForm onSubmit={handleSubmit}>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('new-validation')}
 					</ClayModal.Header>
 

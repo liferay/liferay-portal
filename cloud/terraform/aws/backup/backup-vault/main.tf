@@ -20,10 +20,10 @@ resource "aws_iam_role" "this" {
 resource "aws_iam_role_policy_attachment" "this" {
 	for_each=toset(
 		[
-			"arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup",
-			"arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore",
-			"arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
-			"arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
+			"arn:${var.arn_partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup",
+			"arn:${var.arn_partition}:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore",
+			"arn:${var.arn_partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
+			"arn:${var.arn_partition}:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
 		])
 	policy_arn=each.key
 	role=aws_iam_role.this.name

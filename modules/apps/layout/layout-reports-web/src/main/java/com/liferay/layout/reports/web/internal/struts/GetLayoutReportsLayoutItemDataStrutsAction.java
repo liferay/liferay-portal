@@ -303,11 +303,13 @@ public class GetLayoutReportsLayoutItemDataStrutsAction
 			return null;
 		}
 
-		long fragmentEntryId = fragmentEntryLink.getFragmentEntryId();
+		String fragmentEntryERC = fragmentEntryLink.getFragmentEntryERC();
 
-		if (fragmentEntryId > 0) {
-			return _fragmentEntryLocalService.fetchFragmentEntry(
-				fragmentEntryId);
+		if (Validator.isNotNull(fragmentEntryERC)) {
+			return _fragmentEntryLocalService.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragmentEntryERC,
+					fragmentEntryLink.getFragmentEntryGroupId());
 		}
 
 		String rendererKey = fragmentEntryLink.getRendererKey();
@@ -352,7 +354,7 @@ public class GetLayoutReportsLayoutItemDataStrutsAction
 		}
 
 		if (Validator.isNotNull(fragmentEntryLink.getRendererKey()) ||
-			(fragmentEntryLink.getFragmentEntryId() > 0)) {
+			Validator.isNotNull(fragmentEntryLink.getFragmentEntryERC())) {
 
 			return _fragmentEntryLinkHelper.getFragmentEntryName(
 				fragmentEntryLink, locale);

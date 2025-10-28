@@ -210,7 +210,7 @@ describe('Editor', () => {
 						await waitFor(() => getByTestId('field-operator-id'));
 
 						act(() => {
-							jest.runAllTimers();
+							jest.advanceTimersByTime(100);
 						});
 
 						const fieldOperator = getByTestId('field-operator-id');
@@ -254,7 +254,7 @@ describe('Editor', () => {
 						await waitFor(() => getByTestId('field-operator-id'));
 
 						act(() => {
-							jest.runAllTimers();
+							jest.advanceTimersByTime(100);
 						});
 
 						const fieldOperator = getByTestId('field-operator-id');
@@ -296,7 +296,7 @@ describe('Editor', () => {
 					await waitFor(() => getByTestId('field-operator-id'));
 
 					act(() => {
-						jest.runAllTimers();
+						jest.advanceTimersByTime(100);
 					});
 
 					const fieldOperator = getByTestId('field-operator-id');
@@ -348,7 +348,7 @@ describe('Editor', () => {
 						await waitFor(() => getByTestId('field-operator-id'));
 
 						act(() => {
-							jest.runAllTimers();
+							jest.advanceTimersByTime(100);
 						});
 
 						const fieldOperator = getByTestId('field-operator-id');
@@ -356,7 +356,7 @@ describe('Editor', () => {
 						fireEvent.click(fieldOperator);
 
 						act(() => {
-							jest.runAllTimers();
+							jest.advanceTimersByTime(100);
 						});
 
 						await act(async () => {
@@ -424,7 +424,7 @@ describe('Editor', () => {
 					await waitFor(() => getByTestId('field-operator-id'));
 
 					act(() => {
-						jest.runAllTimers();
+						jest.advanceTimersByTime(100);
 					});
 
 					const fieldOperator = getByTestId('field-operator-id');
@@ -432,7 +432,7 @@ describe('Editor', () => {
 					fireEvent.click(fieldOperator);
 
 					act(() => {
-						jest.runAllTimers();
+						jest.advanceTimersByTime(100);
 					});
 
 					await act(async () => {

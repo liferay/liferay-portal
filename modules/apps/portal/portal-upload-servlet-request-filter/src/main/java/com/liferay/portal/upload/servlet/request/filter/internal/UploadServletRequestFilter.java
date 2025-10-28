@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.InvokerPortlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.upload.UploadServletRequest;
@@ -70,7 +71,7 @@ public class UploadServletRequestFilter extends BasePortalFilter {
 
 		if (Validator.isNotNull(portletId)) {
 			Portlet portlet = _portletLocalService.getPortletById(
-				_portal.getCompanyId(httpServletRequest), portletId);
+				CompanyThreadLocal.getCompanyId(), portletId);
 
 			if (portlet != null) {
 				FilterConfig filterConfig = getFilterConfig();

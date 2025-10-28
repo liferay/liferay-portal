@@ -15,16 +15,17 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface FragmentEntryLinkFinder {
 
 	public java.util.List<com.liferay.fragment.model.FragmentEntryLink>
-		findByG_F(
-			long groupId, long fragmentEntryId, int start, int end,
+		findByG_FEERC_FESERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.fragment.model.FragmentEntryLink>
 					orderByComparator);
 
 	public java.util.List<com.liferay.fragment.model.FragmentEntryLink>
-		findByG_F_P_L(
-			long groupId, long fragmentEntryId, int layoutPageTemplateEntryType,
-			int start, int end,
+		findByG_FEERC_FESERC_P_L(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int layoutPageTemplateEntryType, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.fragment.model.FragmentEntryLink>
 					orderByComparator);

@@ -8,8 +8,6 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import '@testing-library/jest-dom/extend-expect';
-
 import TranslationAdminSelector from '../../src/main/resources/META-INF/resources/translation_manager/TranslationAdminSelector';
 
 const activeLanguageIds = ['en_US', 'ca_ES'];
@@ -224,7 +222,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(manageTranslationsTrigger);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const modal = document.querySelector('.modal');
@@ -250,7 +248,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(manageTranslationsTrigger);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const modalCloseButton = document.querySelector('.modal .close');
@@ -258,13 +256,13 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(modalCloseButton);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		fireEvent.click(trigger);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(dropdownMenu).toMatchSnapshot();
@@ -285,7 +283,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(trigger);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dropdownMenu = document.querySelector('.dropdown-menu');
@@ -296,7 +294,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(localeElement);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(props.onSelectedLanguageIdChange).toHaveBeenLastCalledWith(
@@ -318,7 +316,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(changeStateButton);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const trigger = getByTitle('select-a-language');
@@ -326,7 +324,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(trigger);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dropdownMenu = document.querySelector('.dropdown-menu');
@@ -356,7 +354,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(manageTranslationsTrigger);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const modalCloseButton = document.querySelector('.modal .close');
@@ -364,7 +362,7 @@ describe('TranslationAdminSelector', () => {
 		fireEvent.click(modalCloseButton);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(asFragment()).toMatchSnapshot();

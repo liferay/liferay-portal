@@ -16,8 +16,8 @@ export async function loadModule(importDeclaration: string): Promise<any> {
 function getModuleAndSymbolNames(importDeclaration: string): [string, string] {
 	const parts = importDeclaration.split(' from ');
 
-	const moduleName = parts[1].trim();
-	let symbolName = parts[0].trim();
+	const moduleName = parts[1]?.trim();
+	let symbolName = parts[0]?.trim();
 
 	if (symbolName.startsWith('{') && symbolName.endsWith('}')) {
 		symbolName = symbolName.substring(1, symbolName.length - 1).trim();

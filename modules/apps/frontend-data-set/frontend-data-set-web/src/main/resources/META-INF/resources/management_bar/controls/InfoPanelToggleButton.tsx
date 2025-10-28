@@ -5,6 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import classnames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useContext} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
@@ -13,19 +14,25 @@ const InfoPanelToggleButton = ({symbol}: {symbol: string}) => {
 	const {infoPanelId, infoPanelOpen, onInfoPanelToggleButtonClick} =
 		useContext(FrontendDataSetContext);
 
+	const tooltipText = sub(
+		infoPanelOpen
+			? Liferay.Language.get('hide-x')
+			: Liferay.Language.get('show-x'),
+		Liferay.Language.get('info-panel')
+	);
+
 	return (
 		<ClayButtonWithIcon
 			aria-controls={infoPanelId}
-			aria-label={Liferay.Language.get('toggle-info-panel')}
+			aria-label={tooltipText}
 			className={classnames('nav-link nav-link-monospaced', {
 				active: infoPanelOpen,
 			})}
 			displayType="unstyled"
-			onClick={() => {
-				onInfoPanelToggleButtonClick();
-			}}
+			onClick={() => onInfoPanelToggleButtonClick()}
 			size="sm"
 			symbol={symbol}
+			title={tooltipText}
 		/>
 	);
 };

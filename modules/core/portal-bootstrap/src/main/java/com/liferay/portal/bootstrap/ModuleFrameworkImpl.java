@@ -87,7 +87,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.function.BiFunction;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -764,25 +763,7 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 
 			Manifest manifest = new Manifest(inputStream);
 
-			Attributes attributes = manifest.getMainAttributes();
-
-			if (_bundleHeaderReplacerBiFunction == null) {
-				return attributes;
-			}
-
-			Map<Object, Object> modifiedAttributes =
-				_bundleHeaderReplacerBiFunction.apply(
-					"SystemBundle#", attributes);
-
-			attributes.clear();
-
-			for (Map.Entry<Object, Object> entry :
-					modifiedAttributes.entrySet()) {
-
-				attributes.put(entry.getKey(), entry.getValue());
-			}
-
-			return attributes;
+			return manifest.getMainAttributes();
 		}
 		catch (IOException ioException) {
 			return ReflectionUtil.throwException(ioException);
@@ -1842,39 +1823,10 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ModuleFrameworkImpl.class);
 
-	private static final BiFunction
-		<String, Map<Object, Object>, Map<Object, Object>>
-			_bundleHeaderReplacerBiFunction;
 	private static final List<String> _configurationBundleSymbolicNames =
 		Arrays.asList(
 			ModuleFrameworkPropsValues.
 				MODULE_FRAMEWORK_CONFIGURATION_BUNDLE_SYMBOLIC_NAMES);
-
-	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"BundleHeaderReplacerBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_bundleHeaderReplacerBiFunction =
-			(BiFunction<String, Map<Object, Object>, Map<Object, Object>>)
-				instance;
-	}
 
 	private BundleListener _bundleListener;
 	private volatile Framework _framework;

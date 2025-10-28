@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
@@ -38,7 +39,9 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -568,7 +571,28 @@ public class ObjectEntryFolderLocalServiceImpl
 				serviceContext);
 		}
 		else {
-			if (FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			if (FeatureFlagManagerUtil.isEnabled(
+					objectEntryFolder.getCompanyId(), "LPD-17564")) {
+
+				Group group = _groupLocalService.fetchGroup(
+					objectEntryFolder.getGroupId());
+
+				if (group.isDepot()) {
+					int count =
+						_resourcePermissionLocalService.
+							getResourcePermissionsCount(
+								objectEntryFolder.getCompanyId(),
+								ObjectEntryFolder.class.getName(),
+								ResourceConstants.SCOPE_INDIVIDUAL,
+								String.valueOf(
+									objectEntryFolder.
+										getObjectEntryFolderId()));
+
+					if (count > 0) {
+						return;
+					}
+				}
+
 				ModelPermissions modelPermissions =
 					serviceContext.getModelPermissions();
 
@@ -801,10 +825,16 @@ public class ObjectEntryFolderLocalServiceImpl
 	private EmptyModelManager _emptyModelManager;
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Reference
 	private SubscriptionLocalService _subscriptionLocalService;

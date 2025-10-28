@@ -15,11 +15,16 @@ public class LPD_66666 {
 	public void method(
 		long cpInstanceId, long commercePriceListId, boolean useAncestor) {
 
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(cpInstanceId, commercePriceListId, useAncestor);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(123, commercePriceListId, useAncestor);
-		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(cpInstanceId, commercePriceListId, useAncestor);
-		_commercePriceEntryLocalService.fetchCommercePriceEntry(cpInstanceId, commercePriceListId, useAncestor);
-		_commercePriceEntryService.fetchCommercePriceEntry(cpInstanceId, commercePriceListId, useAncestor);
+		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
+			123, commercePriceListId, useAncestor);
+		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId, useAncestor);
+		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId, useAncestor);
+		_commercePriceEntryLocalService.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId, useAncestor);
+		_commercePriceEntryService.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId, useAncestor);
 	}
 
 	@Reference

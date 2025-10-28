@@ -154,8 +154,9 @@ public class BasicFragmentEntryVerticalCard
 		return LanguageUtil.format(
 			_httpServletRequest, "x-usages",
 			FragmentEntryLinkLocalServiceUtil.
-				getFragmentEntryLinksCountByFragmentEntryId(
-					fragmentEntry.getFragmentEntryId(), false));
+				getFragmentEntryLinksCountByFragmentEntryERC(
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), false));
 	}
 
 	@Override

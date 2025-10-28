@@ -314,11 +314,12 @@ public class FragmentsImporterTest {
 
 			FragmentEntryLink fragmentEntryLink =
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, _user.getUserId(), _group.getGroupId(), 0,
-					fragmentEntry.getFragmentEntryId(), 0, 0,
-					fragmentEntry.getCss(), fragmentEntry.getHtml(),
-					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-					StringPool.BLANK, StringPool.BLANK, 0, StringPool.BLANK, 0,
+					null, _user.getUserId(), _group.getGroupId(), null,
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), 0, 0, fragmentEntry.getCss(),
+					fragmentEntry.getHtml(), fragmentEntry.getJs(),
+					fragmentEntry.getConfiguration(), StringPool.BLANK,
+					StringPool.BLANK, 0, StringPool.BLANK, 0,
 					ServiceContextTestUtil.getServiceContext(
 						_group.getGroupId()));
 

@@ -257,9 +257,9 @@ public abstract class BaseUtilityPageResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(siteExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
-			siteExternalReferenceCode, utilityPageExternalReferenceCode);
 		Long resourceId = getPermissionCheckerResourceId(
+			siteExternalReferenceCode, utilityPageExternalReferenceCode);
+		String resourceName = getPermissionCheckerResourceName(
 			siteExternalReferenceCode, utilityPageExternalReferenceCode);
 
 		PermissionServiceUtil.checkPermission(
@@ -887,9 +887,9 @@ public abstract class BaseUtilityPageResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(siteExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
-			siteExternalReferenceCode, utilityPageExternalReferenceCode);
 		Long resourceId = getPermissionCheckerResourceId(
+			siteExternalReferenceCode, utilityPageExternalReferenceCode);
+		String resourceName = getPermissionCheckerResourceName(
 			siteExternalReferenceCode, utilityPageExternalReferenceCode);
 
 		PermissionServiceUtil.checkPermission(

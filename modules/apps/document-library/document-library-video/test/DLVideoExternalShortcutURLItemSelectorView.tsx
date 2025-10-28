@@ -9,7 +9,7 @@ import {getOpener} from 'frontend-js-web';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import DLVideoExternalShortcutURLItemSelectorView from '../src/main/resources/META-INF/resources/js/DLVideoExternalShortcutURLItemSelectorView';
 

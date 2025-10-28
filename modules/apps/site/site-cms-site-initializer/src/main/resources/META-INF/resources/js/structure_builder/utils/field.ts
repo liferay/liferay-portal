@@ -215,7 +215,7 @@ export function getDefaultField({
 		},
 		localized: Liferay.FeatureFlags['LPD-32050'],
 		locked,
-		name: name ?? normalizeName(type),
+		name: name ?? normalizeName(FIELD_TYPE_LABEL[type], {style: 'camel'}),
 		parent,
 		required,
 		settings: {},

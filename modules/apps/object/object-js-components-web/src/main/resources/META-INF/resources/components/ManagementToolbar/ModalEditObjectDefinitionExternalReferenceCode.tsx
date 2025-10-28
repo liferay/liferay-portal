@@ -103,7 +103,9 @@ export function ModalEditObjectDefinitionExternalReferenceCode({
 	return (
 		<ClayModal center observer={observer}>
 			<ClayForm onSubmit={handleSubmit}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Util.sub(
 						Liferay.Language.get('edit-x'),
 						Liferay.Language.get('external-reference-code')

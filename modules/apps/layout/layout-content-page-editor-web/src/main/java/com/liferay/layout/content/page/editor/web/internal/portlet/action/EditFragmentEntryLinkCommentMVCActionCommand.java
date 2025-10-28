@@ -11,6 +11,7 @@ import com.liferay.layout.content.page.editor.web.internal.comment.CommentUtil;
 import com.liferay.layout.content.page.editor.web.internal.workflow.WorkflowUtil;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -66,11 +68,27 @@ public class EditFragmentEntryLinkCommentMVCActionCommand
 		}
 
 		WorkflowUtil.withoutWorkflow(
-			() -> _commentManager.updateComment(
-				themeDisplay.getUserId(), FragmentEntryLink.class.getName(),
-				comment.getClassPK(), commentId, null, body,
-				CommentUtil.getServiceContextFunction(
-					actionRequest, themeDisplay)));
+			() -> {
+				_commentManager.updateComment(
+					themeDisplay.getUserId(), FragmentEntryLink.class.getName(),
+					comment.getClassPK(), commentId, null, body,
+					CommentUtil.getServiceContextFunction(
+						actionRequest, themeDisplay));
+
+				for (Comment childComment :
+						_commentManager.getChildComments(
+							commentId, WorkflowConstants.STATUS_ANY,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+					_commentManager.updateComment(
+						themeDisplay.getUserId(),
+						FragmentEntryLink.class.getName(),
+						childComment.getClassPK(), childComment.getCommentId(),
+						null, childComment.getBody(),
+						CommentUtil.getServiceContextFunction(
+							actionRequest, themeDisplay));
+				}
+			});
 
 		return CommentUtil.getCommentJSONObject(
 			_commentManager.fetchComment(commentId),

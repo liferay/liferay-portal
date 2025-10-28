@@ -6,7 +6,6 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.jodd", name: "jodd-json", version: "6.0.3"
-	compileOnly group: "org.jsoup", name: "jsoup", version: "1.15.3"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"

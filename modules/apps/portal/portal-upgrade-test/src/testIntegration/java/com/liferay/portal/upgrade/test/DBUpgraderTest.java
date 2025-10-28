@@ -101,13 +101,15 @@ public class DBUpgraderTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select schemaVersion from Release_ where releaseId = " +
-					ReleaseConstants.DEFAULT_ID);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select schemaVersion from Release_ where releaseId = ?")) {
 
-			resultSet.next();
+			preparedStatement.setLong(1, ReleaseConstants.DEFAULT_ID);
 
-			currentSchemaVersion = resultSet.getString(1);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
+
+				currentSchemaVersion = resultSet.getString(1);
+			}
 		}
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(

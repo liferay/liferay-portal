@@ -225,16 +225,21 @@
 					});
 				}
 			}
-			window.onload = function () {
-				const signInButton = document.getElementsByClassName(
-					'btn disabled btn-primary'
-				)[0];
 
-				if (signInButton) {
-					signInButton.classList.remove('disabled');
-					signInButton.disabled = false;
+			document.onreadystatechange = () => {
+				if (document.readyState === 'complete') {
+					const signInButton = document.getElementsByClassName(
+						'btn disabled btn-primary'
+					)[0];
+
+					if (signInButton) {
+						signInButton.classList.remove('disabled');
+						signInButton.disabled = false;
+					}
 				}
 			};
+
+			document.onreadystatechange();
 		</aui:script>
 	</c:otherwise>
 </c:choose>

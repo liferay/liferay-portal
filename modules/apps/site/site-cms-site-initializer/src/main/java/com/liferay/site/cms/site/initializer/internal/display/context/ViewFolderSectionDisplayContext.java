@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -143,6 +144,17 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 				null, null, null));
 
 		return fdsBulkActionDropdownItems;
+	}
+
+	public String getCMSSiteInitializerFDSName() {
+		if (Objects.equals(
+				getRootObjectEntryFolderExternalReferenceCode(),
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)) {
+
+			return CMSSiteInitializerFDSNames.VIEW_CONTENTS_FOLDER;
+		}
+
+		return CMSSiteInitializerFDSNames.VIEW_FILES_FOLDER;
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import React from 'react';
 
 import ItemDragLayer from '../../../../src/main/resources/META-INF/resources/js/components/list/ItemDragLayer.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('ItemDragLayer', () => {
 	it('renders when dragging', () => {

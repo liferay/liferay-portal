@@ -96,7 +96,13 @@ export function MultiStepFormModal({
 			onSubmit={handleFormSubmit}
 			size={size}
 		>
-			{title && <ClayModal.Header>{title}</ClayModal.Header>}
+			{title && (
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
+					{title}
+				</ClayModal.Header>
+			)}
 
 			<ClayModal.Body>
 				<ClayForm ref={formRef}>

@@ -390,9 +390,11 @@ const ExportTranslation = ({
 					{Liferay.Language.get('export')}
 				</ClayButton>
 
-				<ClayLink button displayType="secondary" href={redirectURL}>
-					{Liferay.Language.get('cancel')}
-				</ClayLink>
+				{redirectURL && (
+					<ClayLink button displayType="secondary" href={redirectURL}>
+						{Liferay.Language.get('cancel')}
+					</ClayLink>
+				)}
 			</ClayButton.Group>
 		</ClayForm>
 	);

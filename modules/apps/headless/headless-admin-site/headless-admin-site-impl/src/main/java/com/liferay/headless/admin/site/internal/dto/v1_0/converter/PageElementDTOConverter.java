@@ -5,6 +5,8 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.CollectionItemPageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.CollectionPageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.ContainerPageElementDefinition;
@@ -18,6 +20,7 @@ import com.liferay.headless.admin.site.dto.v1_0.GridPageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.ModulePageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
+import com.liferay.headless.admin.site.dto.v1_0.WidgetInstancePageElementDefinition;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
@@ -31,6 +34,8 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -201,8 +206,17 @@ public class PageElementDTOConverter
 				layoutStructureItem.getItemType(),
 				LayoutDataItemTypeConstants.TYPE_FRAGMENT)) {
 
+			FragmentStyledLayoutStructureItem
+				fragmentStyledLayoutStructureItem =
+					(FragmentStyledLayoutStructureItem)layoutStructureItem;
+
+			if (_isWidgetInstance(fragmentStyledLayoutStructureItem)) {
+				return _widgetInstancePageElementDefinitionDTOConverter.toDTO(
+					dtoConverterContext, fragmentStyledLayoutStructureItem);
+			}
+
 			return _fragmentInstancePageElementDefinitionDTOConverter.toDTO(
-				(FragmentStyledLayoutStructureItem)layoutStructureItem);
+				fragmentStyledLayoutStructureItem);
 		}
 
 		if (Objects.equals(
@@ -245,6 +259,26 @@ public class PageElementDTOConverter
 			PageElement.class);
 	}
 
+	private boolean _isWidgetInstance(
+		FragmentStyledLayoutStructureItem fragmentStyledLayoutStructureItem) {
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
+
+		if (fragmentEntryLink == null) {
+			return false;
+		}
+
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
+
+		if (JSONUtil.isEmpty(jsonObject) || !jsonObject.has("portletId")) {
+			return false;
+		}
+
+		return true;
+	}
+
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.CollectionPageElementDefinitionDTOConverter)"
 	)
@@ -282,6 +316,9 @@ public class PageElementDTOConverter
 		 FragmentDropZonePageElementDefinition>
 			_fragmentDropZonePageElementDefinitionDTOConverter;
 
+	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.FragmentInstancePageElementDefinitionDTOConverter)"
 	)
@@ -302,5 +339,12 @@ public class PageElementDTOConverter
 	)
 	private DTOConverter<ColumnLayoutStructureItem, ModulePageElementDefinition>
 		_modulePageElementDefinitionDTOConverter;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.WidgetInstancePageElementDefinitionDTOConverter)"
+	)
+	private DTOConverter
+		<FragmentStyledLayoutStructureItem, WidgetInstancePageElementDefinition>
+			_widgetInstancePageElementDefinitionDTOConverter;
 
 }

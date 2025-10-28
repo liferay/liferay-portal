@@ -217,7 +217,9 @@ const AddDataSourceFieldsModalContent = ({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(
 					Liferay.Language.get('select-x'),
 					Liferay.Language.get('field')

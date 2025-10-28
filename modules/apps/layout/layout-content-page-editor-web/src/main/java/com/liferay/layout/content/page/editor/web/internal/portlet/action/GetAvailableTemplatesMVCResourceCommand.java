@@ -19,6 +19,8 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortlet
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -166,12 +168,19 @@ public class GetAvailableTemplatesMVCResourceCommand
 			}
 		}
 		catch (NoSuchInfoItemException noSuchInfoItemException) {
-			throw new RuntimeException(
-				"Caught unexpected exception", noSuchInfoItemException);
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Missing reference with info item identifier: " +
+						infoItemIdentifier,
+					noSuchInfoItemException);
+			}
 		}
 
 		return null;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		GetAvailableTemplatesMVCResourceCommand.class);
 
 	@Reference
 	private InfoItemRendererRegistry _infoItemRendererRegistry;

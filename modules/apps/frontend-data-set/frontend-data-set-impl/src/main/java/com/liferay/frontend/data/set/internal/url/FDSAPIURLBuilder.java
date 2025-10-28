@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -173,8 +174,14 @@ public class FDSAPIURLBuilder {
 			text, "{scopeKey}", String.valueOf(themeDisplay.getScopeGroupId()));
 		text = StringUtil.replace(
 			text, "{siteId}", String.valueOf(themeDisplay.getScopeGroupId()));
+
+		User user = themeDisplay.getUser();
+
 		text = StringUtil.replace(
-			text, "{userId}", String.valueOf(themeDisplay.getUserId()));
+			text, "{userExternalReferenceCode}",
+			user.getExternalReferenceCode());
+		text = StringUtil.replace(
+			text, "{userId}", String.valueOf(user.getUserId()));
 
 		if (StringUtil.contains(text, "{") && _log.isWarnEnabled()) {
 			_log.warn("Unresolved token in API URL: " + text);

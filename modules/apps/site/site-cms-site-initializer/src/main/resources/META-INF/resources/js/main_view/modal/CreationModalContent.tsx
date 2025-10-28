@@ -85,7 +85,11 @@ export default function CreationModalContent({
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{action === 'createFolder' ? (

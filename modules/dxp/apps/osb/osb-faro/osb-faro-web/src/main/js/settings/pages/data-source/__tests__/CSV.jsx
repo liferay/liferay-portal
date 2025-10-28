@@ -10,6 +10,13 @@ import {UserRoleNames} from 'shared/util/constants';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const DefaultComponent = props => (
 	<Provider store={mockStore()}>
 		<StaticRouter>

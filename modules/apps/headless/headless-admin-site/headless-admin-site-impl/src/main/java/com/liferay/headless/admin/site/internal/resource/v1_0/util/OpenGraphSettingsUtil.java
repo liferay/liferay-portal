@@ -8,7 +8,7 @@ package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.OpenGraphSettings;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.ScopeUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.portal.kernel.model.Layout;
@@ -57,9 +57,9 @@ public class OpenGraphSettingsUtil {
 								setExternalReferenceCode(
 									fileEntry::getExternalReferenceCode);
 								setScope(
-									() -> ScopeUtil.getScope(
-										layout.getGroupId(),
-										fileEntry.getGroupId()));
+									() -> ItemScopeUtil.getItemScope(
+										fileEntry.getGroupId(),
+										layout.getGroupId()));
 							}
 						};
 					});

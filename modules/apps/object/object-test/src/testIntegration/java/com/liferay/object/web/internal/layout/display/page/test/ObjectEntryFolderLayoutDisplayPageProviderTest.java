@@ -50,9 +50,7 @@ public class ObjectEntryFolderLayoutDisplayPageProviderTest {
 	}
 
 	@Test
-	public void testGetLayoutDisplayPageObjectProvider()
-		throws Exception {
-
+	public void testGetLayoutDisplayPageObjectProvider() throws Exception {
 		_testGetLayoutDisplayPageObjectProvider(
 			new ClassPKInfoItemIdentifier(
 				_objectEntryFolder.getObjectEntryFolderId()));

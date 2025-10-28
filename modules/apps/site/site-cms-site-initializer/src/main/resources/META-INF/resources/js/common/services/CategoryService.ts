@@ -19,6 +19,12 @@ const getCategory = async (categoryByCategoryIdAPIURL: string) => {
 	return await ApiHelper.get<TaxonomyCategory>(categoryByCategoryIdAPIURL);
 };
 
+const getCategoryById = async (id: number) => {
+	return await ApiHelper.get<TaxonomyCategory>(
+		`/o/headless-admin-taxonomy/v1.0/taxonomy-categories/${id}`
+	);
+};
+
 /**
  * Updates the TaxonomyCategory specified by the provided ID in the API URL.
  * Defaults to a 'PUT' request unless specified to 'PATCH'.
@@ -37,4 +43,4 @@ const updateCategory = async (
 	);
 };
 
-export default {createCategory, getCategory, updateCategory};
+export default {createCategory, getCategory, getCategoryById, updateCategory};

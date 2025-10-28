@@ -33,6 +33,15 @@ export default function PermissionSelector({
 			aria-label={Liferay.Language.get('edit-permissions')}
 			className="border-0 c-py-0 permissions-picker text-2 text-secondary text-weight-semi-bold"
 			items={PERMISSION_OPTIONS}
+			messages={{
+				itemDescribedby: Liferay.Language.get(
+					'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+				),
+				itemSelected: Liferay.Language.get('x-selected'),
+				scrollToBottomAriaLabel:
+					Liferay.Language.get('scroll-to-bottom'),
+				scrollToTopAriaLabel: Liferay.Language.get('scroll-to-top'),
+			}}
 			onSelectionChange={(value: React.Key) =>
 				onChange({actionIds: value as string})
 			}

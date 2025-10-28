@@ -368,8 +368,8 @@ public class BatchEngineImportTaskExecutorTest
 		String content = sb.toString();
 
 		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR);
 			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME_BATCH_ENGINE_IMPORT_TASK_EXECUTOR_IMPL,
@@ -526,8 +526,8 @@ public class BatchEngineImportTaskExecutorTest
 				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
 			_importBlogPostings(

@@ -44,7 +44,9 @@ export default function ConfigureAIModal({portletNamespace}) {
 		<>
 			{showModal && (
 				<ClayModal observer={observer} status="info">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('configure-openai')}
 					</ClayModal.Header>
 

@@ -5,8 +5,9 @@
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
+import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
-import SpaceRenderer from './cell_renderers/SpaceRenderer';
+import SpaceRendererWithCache from './cell_renderers/SpaceRendererWithCache';
 
 export default function CategoryUsagesFDSPropsTransformer({
 	...otherProps
@@ -23,7 +24,11 @@ export default function CategoryUsagesFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: SpaceRenderer,
+					component: ({itemData}) =>
+						SpaceRendererWithCache({
+							spaceExternalReferenceCode:
+								getScopeExternalReferenceCode(itemData),
+						}),
 					name: 'spaceTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,

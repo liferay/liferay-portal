@@ -67,11 +67,11 @@ export class StructureBuilderPage {
 		this.spaceSelector = this.page.getByLabel('Spaces', {exact: true});
 	}
 
-	private async goto(props: {erc: string} | {type: StructureType}) {
+	private async goto(props: {id: number} | {type: StructureType}) {
 		let url = PORTLET_URLS.cmsStructureBuilder;
 
-		if ('erc' in props) {
-			url = url + `?objectDefinitionExternalReferenceCode=${props.erc}`;
+		if ('id' in props) {
+			url = url + `?objectDefinitionId=${props.id}`;
 		}
 		else if ('type' in props) {
 			const folderERC =
@@ -348,11 +348,13 @@ export class StructureBuilderPage {
 			name,
 		});
 
-		await page.saveStructure();
+		const id = await page.saveStructure();
 
 		if (publish) {
 			await page.publishStructure();
 		}
+
+		return id;
 	}
 
 	async customizeExperience() {
@@ -408,8 +410,8 @@ export class StructureBuilderPage {
 		}
 	}
 
-	async editStructure(erc: string) {
-		await this.goto({erc});
+	async editStructure(id: number) {
+		await this.goto({id});
 	}
 
 	async enableForAllSpaces() {
@@ -497,6 +499,8 @@ export class StructureBuilderPage {
 			id,
 			type: 'objectDefinition',
 		});
+
+		return id;
 	}
 
 	async selectFields(fields: Field[]) {

@@ -6,7 +6,7 @@ application:
     name: Liferay.Data.Engine.REST
 author: Jeyvison Nascimento
 clientDir: ../data-engine-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../data-engine-rest-test/src/testIntegration/java

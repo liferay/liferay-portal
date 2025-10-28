@@ -73,7 +73,9 @@ export function DeleteAPIApplicationModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('delete-api-application')}
 			</ClayModal.Header>
 

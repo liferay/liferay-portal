@@ -6,186 +6,200 @@ exports[`BreakdownTable render 1`] = `
     class="breakdown-table-root"
   >
     <div
-      class="table-responsive table-root flex-grow-1"
+      class="flex-grow-1 mx-4 table-root"
     >
-      <table
-        class="table table-autofit table-hover table-bordered table-heading-nowrap table-nowrap"
+      <div
+        class="table-responsive"
       >
-        <thead>
-          <tr>
-            <th
-              class="table-head-title"
+        <table
+          class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+        >
+          <thead>
+            <tr>
+              <th
+                class="table-head-title"
+              >
+                <button
+                  class="inline-item text-truncate-inline btn btn-unstyled"
+                  type="button"
+                >
+                  <div
+                    class="align-items-center d-flex justify-content-between"
+                  >
+                    <div
+                      class="text-truncate"
+                    >
+                      <div>
+                        <span
+                          class="breakdown-category"
+                        >
+                          EVENT
+                        </span>
+                        Boolean Name
+                      </div>
+                    </div>
+                    <button
+                      aria-label="Descending"
+                      class="component-action ml-2 btn btn-sm btn-primary"
+                      type="button"
+                    >
+                      <span
+                        class="opacity-25"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order-arrow"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </button>
+              </th>
+              <th
+                class="table-head-title"
+              >
+                Events
+              </th>
+              <th
+                class="table-head-title"
+              >
+                % of View Article
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              class=""
             >
-              <button
-                class="inline-item text-truncate-inline btn btn-unstyled"
-                type="button"
+              <td
+                class="font-weight-semibold align-top"
+                data-testid="articleTitle [0]"
+                rowspan="1"
               >
                 <span
                   class="text-truncate"
+                  data-tooltip="true"
+                  title="articleTitle [0]"
                 >
-                  <div>
-                    <span
-                      class="breakdown-category"
-                    >
-                      EVENT
-                    </span>
-                    Boolean Name
-                  </div>
+                  ...
                 </span>
-                <span
-                  class="inline-item inline-item-after"
+              </td>
+              <td
+                class="align-top"
+              >
+                <div
+                  class="table-responsive table-root bar-comparison-root"
                 >
-                  <svg
-                    class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                    role="presentation"
+                  <table
+                    class="table"
                   >
-                    <use
-                      href="#order-arrow-up"
-                    />
-                  </svg>
-                </span>
-              </button>
-            </th>
-            <th
-              class="table-head-title"
-            >
-              Events
-            </th>
-            <th
-              class="table-head-title"
-            >
-              % of View Article
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            class=""
-          >
-            <td
-              class="font-weight-semibold align-top"
-              data-testid="articleTitle [0]"
-              rowspan="1"
-            >
-              <span
-                class="text-truncate"
-                data-tooltip="true"
-                title="articleTitle [0]"
+                    <thead>
+                      <tr>
+                        <th
+                          class="table-head-title table-column-event-name"
+                        >
+                          <span
+                            class="text-truncate"
+                            data-tooltip="false"
+                            title=""
+                          >
+                            Event Name
+                          </span>
+                        </th>
+                        <th
+                          class="table-head-title"
+                        >
+                          Total Events
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td
+                          class="table-column-event-name"
+                        >
+                          <span
+                            class="text-truncate"
+                            data-tooltip="false"
+                            title=""
+                          >
+                            View Article
+                          </span>
+                        </td>
+                        <td>
+                          <div
+                            class="metric-bar-root breakdown-table-bar"
+                          >
+                            <div
+                              class="bar mr-2 bar-primary bar-default"
+                              style="width: 67%; background-color: rgb(24, 127, 255);"
+                            />
+                            <div
+                              class="info-wrapper align-items-center d-flex justify-content-between"
+                            >
+                              <span>
+                                3,367
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          class="table-column-event-name"
+                        >
+                          <span
+                            class="text-truncate"
+                            data-tooltip="false"
+                            title=""
+                          >
+                            Previous Value
+                          </span>
+                        </td>
+                        <td>
+                          <div
+                            class="metric-bar-root breakdown-table-bar"
+                          >
+                            <div
+                              class="bar mr-2 lines bar-primary bar-default"
+                              style="width: 100%; background-color: rgb(151, 197, 255);"
+                            />
+                            <div
+                              class="info-wrapper align-items-center d-flex justify-content-between"
+                            >
+                              <span>
+                                5,033
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+              <td
+                class="align-top"
               >
-                ...
-              </span>
-            </td>
-            <td
-              class="align-top"
-            >
-              <div
-                class="table-responsive table-root bar-comparison-root"
-              >
-                <table
-                  class="table"
+                <ul
+                  class="percentage-column"
                 >
-                  <thead>
-                    <tr>
-                      <th
-                        class="table-head-title table-column-event-name"
-                      >
-                        <span
-                          class="text-truncate"
-                          data-tooltip="false"
-                          title=""
-                        >
-                          Event Name
-                        </span>
-                      </th>
-                      <th
-                        class="table-head-title"
-                      >
-                        Total Events
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td
-                        class="table-column-event-name"
-                      >
-                        <span
-                          class="text-truncate"
-                          data-tooltip="false"
-                          title=""
-                        >
-                          View Article
-                        </span>
-                      </td>
-                      <td>
-                        <div
-                          class="metric-bar-root breakdown-table-bar"
-                        >
-                          <div
-                            class="bar mr-2 bar-primary bar-default"
-                            style="width: 67%; background-color: rgb(24, 127, 255);"
-                          />
-                          <div
-                            class="info-wrapper align-items-center d-flex justify-content-between"
-                          >
-                            <span>
-                              3,367
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        class="table-column-event-name"
-                      >
-                        <span
-                          class="text-truncate"
-                          data-tooltip="false"
-                          title=""
-                        >
-                          Previous Value
-                        </span>
-                      </td>
-                      <td>
-                        <div
-                          class="metric-bar-root breakdown-table-bar"
-                        >
-                          <div
-                            class="bar mr-2 lines bar-primary bar-default"
-                            style="width: 100%; background-color: rgb(151, 197, 255);"
-                          />
-                          <div
-                            class="info-wrapper align-items-center d-flex justify-content-between"
-                          >
-                            <span>
-                              5,033
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-            <td
-              class="align-top"
-            >
-              <ul
-                class="percentage-column"
-              >
-                <li>
-                  66.9%
-                </li>
-                <li>
-                  100%
-                </li>
-              </ul>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  <li>
+                    66.9%
+                  </li>
+                  <li>
+                    100%
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <nav
       class="navbar navbar-root pagination-bar-root"

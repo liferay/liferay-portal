@@ -104,7 +104,9 @@ export default function CopyFragmentModal({
 	return (
 		visible && (
 			<ClayModal observer={observer}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{showFragmentSetForm
 						? Liferay.Language.get('add-fragment-set')
 						: Liferay.Language.get('select-fragment-set')}

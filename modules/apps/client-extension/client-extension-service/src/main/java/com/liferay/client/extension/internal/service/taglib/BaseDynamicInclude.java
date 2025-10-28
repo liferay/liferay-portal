@@ -14,7 +14,6 @@ import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -95,12 +94,6 @@ public abstract class BaseDynamicInclude implements DynamicInclude {
 				typeSettingsUnicodeProperties.getProperty(
 					"loadType", StringPool.BLANK),
 				printWriter);
-		}
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-30371")) {
-
-			return;
 		}
 
 		try {

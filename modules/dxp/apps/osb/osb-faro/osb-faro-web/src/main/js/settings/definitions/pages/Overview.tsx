@@ -95,7 +95,6 @@ const items = (devMode: boolean = false): ListItem[] => [
 export const Overview: React.FC<IOverviewProps> = ({groupId}) => (
 	<BasePage
 		className='definitions-overview-root'
-		groupId={groupId}
 		pageDescription={Liferay.Language.get(
 			'select-the-entity-to-view-its-data-model'
 		)}

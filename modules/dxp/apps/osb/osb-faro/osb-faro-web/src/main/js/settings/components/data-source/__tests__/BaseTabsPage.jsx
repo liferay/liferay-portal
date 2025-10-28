@@ -11,6 +11,13 @@ import {StaticRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 function getSalesforceDataSourceMock(id, config) {
 	return data.getImmutableMock(
 		DataSource,

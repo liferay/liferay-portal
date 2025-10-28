@@ -26,7 +26,6 @@ import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
@@ -217,15 +216,17 @@ public class CTCollectionServiceTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select count(*) from JournalArticle where id_ = ",
-					journalArticle.getPrimaryKey(), " and ctCollectionId = ",
-					_ctCollection.getCtCollectionId()));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select count(*) from JournalArticle where id_ = ? and " +
+					"ctCollectionId = ?")) {
 
-			Assert.assertTrue(resultSet.next());
+			preparedStatement.setLong(1, journalArticle.getPrimaryKey());
+			preparedStatement.setLong(2, _ctCollection.getCtCollectionId());
 
-			Assert.assertEquals(0, resultSet.getInt(1));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+
+				Assert.assertEquals(0, resultSet.getInt(1));
+			}
 		}
 
 		Destination destination = MessageBusUtil.getDestination(

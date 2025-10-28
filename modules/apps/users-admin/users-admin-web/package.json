@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.144.1",
-		"@clayui/form": "3.148.0",
+		"@clayui/form": "3.151.0",
 		"@liferay/address-web": "*",
 		"clipboard": "2.0.4",
 		"frontend-js-components-web": "*",

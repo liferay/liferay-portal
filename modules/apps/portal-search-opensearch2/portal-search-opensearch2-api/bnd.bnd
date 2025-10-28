@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search OpenSearch 2 API
 Bundle-SymbolicName: com.liferay.portal.search.opensearch2.api
-Bundle-Version: 1.0.6
+Bundle-Version: 1.1.0
 Export-Package:\
 	com.liferay.portal.search.opensearch2.configuration,\
 	com.liferay.portal.search.opensearch2.constants

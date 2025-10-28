@@ -320,8 +320,9 @@ public class PortletPreferencesUpgradeProcessTest {
 
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), layout.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				null, TestPropsValues.getUserId(), layout.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), segmentsExperienceId,
 				layout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(),
 				fragmentEntry.getConfiguration(), StringPool.BLANK,

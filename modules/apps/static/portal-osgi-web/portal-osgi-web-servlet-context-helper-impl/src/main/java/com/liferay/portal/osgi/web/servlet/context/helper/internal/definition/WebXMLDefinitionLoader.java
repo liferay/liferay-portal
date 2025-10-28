@@ -5,10 +5,7 @@
 
 package com.liferay.portal.osgi.web.servlet.context.helper.internal.definition;
 
-import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -34,7 +31,6 @@ import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.annotation.WebServlet;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
@@ -50,7 +46,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
-import java.util.function.BiFunction;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -496,7 +491,7 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 			return _webXMLDefinition;
 		}
 
-		try (InputStream inputStream = _toInputStream(url, url.openStream())) {
+		try (InputStream inputStream = url.openStream()) {
 			SAXParser saxParser = _saxParserFactory.newSAXParser();
 
 			XMLReader xmlReader = saxParser.getXMLReader();
@@ -1127,21 +1122,6 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 		servletDefinition.setServlet(_getServletInstance(servletClassName));
 	}
 
-	private InputStream _toInputStream(URL url, InputStream inputStream)
-		throws IOException {
-
-		if (_textReplacerBiFunction == null) {
-			return inputStream;
-		}
-
-		String xmlContent = _textReplacerBiFunction.apply(
-			"WebXMLDefinitionLoader#" + url,
-			StreamUtil.toString(inputStream, StringPool.UTF8));
-
-		return new UnsyncByteArrayInputStream(
-			xmlContent.getBytes(StringPool.UTF8));
-	}
-
 	private static final String[] _LEAVES = {
 		"async-supported", "dispatcher", "error-code", "exception-type",
 		"filter-class", "filter-name", "http-method", "http-method-exception",
@@ -1152,33 +1132,6 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		WebXMLDefinitionLoader.class);
-
-	private static final BiFunction<String, String, String>
-		_textReplacerBiFunction;
-
-	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"TextReplacerBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_textReplacerBiFunction = (BiFunction<String, String, String>)instance;
-	}
 
 	private List<String> _absoluteOrderingNames;
 	private boolean _after;

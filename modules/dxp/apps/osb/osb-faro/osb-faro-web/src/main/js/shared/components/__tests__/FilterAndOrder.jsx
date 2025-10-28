@@ -32,7 +32,7 @@ describe('FilterAndOrder', () => {
 	];
 
 	it('should render', () => {
-		render(<FilterAndOrder />);
+		render(<FilterAndOrder filterByOptions={FILTER_BY_OPTIONS} />);
 
 		expect(document.body).toMatchSnapshot();
 	});
@@ -71,9 +71,17 @@ describe('FilterAndOrder', () => {
 	});
 
 	it('should render as disabled', () => {
-		const {container} = render(<FilterAndOrder disabled />);
+		const {getByTestId} = render(
+			<FilterAndOrder
+				disabled
+				filterByOptions={FILTER_BY_OPTIONS}
+				orderByOptions={ORDER_BY_OPTIONS}
+			/>
+		);
 
-		expect(container.querySelector('.dropdown-toggle').disabled).toBe(true);
+		expect(getByTestId('filter-button')).toHaveAttribute('disabled');
+
+		expect(getByTestId('order-button')).toHaveAttribute('disabled');
 	});
 
 	it('should render filters as a flat list', () => {

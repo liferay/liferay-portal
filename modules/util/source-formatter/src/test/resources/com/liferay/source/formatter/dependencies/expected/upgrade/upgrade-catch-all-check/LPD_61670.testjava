@@ -1,0 +1,90 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Nícolas Moura
+ */
+public class LPD_61670 {
+
+	public List<JournalArticle> method(
+		long groupId, long classNameId, String ddmStructureKey, int status,
+		int start, int end,
+		OrderByComparator<JournalArticle> orderByComparator) {
+
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(
+			123, classNameId, ddmStructureKey, status, start, end,
+			orderByComparator);
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+		JournalArticleServiceUtil.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+		_journalArticleLocalService.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+		_journalArticleService.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+	}
+
+	public List<JournalArticle> method(
+		long groupId, long classNameId, String ddmStructureKey, Locale locale,
+		int status, int start, int end,
+		OrderByComparator<JournalArticle> orderByComparator) {
+
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(
+			123, classNameId, ddmStructureKey, locale, status, start, end,
+			orderByComparator);
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+		JournalArticleServiceUtil.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+		_journalArticleLocalService.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+		_journalArticleService.getArticlesByStructureId(groupId, classNameId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+	}
+
+	public List<JournalArticle> method(
+		long groupId, String ddmStructureKey, int status, int start, int end,
+		OrderByComparator<JournalArticle> orderByComparator) {
+
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(
+			123, ddmStructureKey, status, start, end, orderByComparator);
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+		JournalArticleServiceUtil.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+		_journalArticleLocalService.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+		_journalArticleService.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), status, start, end, orderByComparator);
+	}
+
+	public List<JournalArticle> method(
+		long groupId, String ddmStructureKey, int start, int end,
+		OrderByComparator<JournalArticle> orderByComparator) {
+
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(
+			123, ddmStructureKey, start, end, orderByComparator);
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), start, end, orderByComparator);
+		JournalArticleServiceUtil.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), start, end, orderByComparator);
+		_journalArticleLocalService.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), start, end, orderByComparator);
+		_journalArticleService.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), start, end, orderByComparator);
+	}
+
+	public List<JournalArticle> method(
+		long groupId, String ddmStructureKey, Locale locale, int status,
+		int start, int end,
+		OrderByComparator<JournalArticle> orderByComparator) {
+
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(
+			123, ddmStructureKey, locale, status, start, end,
+			orderByComparator);
+		JournalArticleLocalServiceUtil.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+		JournalArticleServiceUtil.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+		_journalArticleLocalService.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+		_journalArticleService.getArticlesByStructureId(groupId, DDMStructureLocalServiceUtil.getStructure(groupId, PortalUtil.getClassNameId(JournalArticle.class), ddmStructureKey).getStructureId(), locale, status, start, end, orderByComparator);
+	}
+
+	@Reference
+	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Reference
+	private JournalArticleService _journalArticleService;
+
+}

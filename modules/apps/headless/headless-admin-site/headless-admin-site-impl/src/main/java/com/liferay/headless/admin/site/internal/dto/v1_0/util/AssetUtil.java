@@ -42,8 +42,8 @@ public class AssetUtil {
 					setExternalReferenceCode(
 						assetCategory::getExternalReferenceCode);
 					setScope(
-						() -> ScopeUtil.getScope(
-							groupId, assetCategory.getGroupId()));
+						() -> ItemScopeUtil.getItemScope(
+							assetCategory.getGroupId(), groupId));
 				}
 			},
 			ItemExternalReference.class);

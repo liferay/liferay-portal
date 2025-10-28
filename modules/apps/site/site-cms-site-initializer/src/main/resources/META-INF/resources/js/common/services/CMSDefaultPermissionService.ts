@@ -4,7 +4,6 @@
  */
 
 import {CMSDefaultPermissionObjectEntryDTO} from '../../main_view/default_permission/DefaultPermissionTypes';
-import {Space} from '../types/Space';
 import ApiHelper from './ApiHelper';
 
 const BASE_PATH = '/o/cms/default-permissions';
@@ -86,18 +85,6 @@ async function getObjectEntry({
 	throw new Error(error || '');
 }
 
-async function getSpace(spaceId: number): Promise<Space> {
-	const url = `/o/headless-asset-library/v1.0/asset-libraries/${spaceId}`;
-
-	const {data, error} = await ApiHelper.get<Space>(url);
-
-	if (data) {
-		return data;
-	}
-
-	throw new Error(error || '');
-}
-
 async function updateObjectEntry({
 	defaultPermissions,
 	externalReferenceCode,
@@ -117,6 +104,5 @@ export default {
 	addObjectEntry,
 	batchUpdateObjectEntry,
 	getObjectEntry,
-	getSpace,
 	updateObjectEntry,
 };

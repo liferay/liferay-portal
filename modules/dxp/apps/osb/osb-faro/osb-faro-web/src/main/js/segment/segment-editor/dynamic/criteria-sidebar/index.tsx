@@ -1,5 +1,5 @@
 import autobind from 'autobind-decorator';
-import ClayButton from '@clayui/button/lib/Button';
+import ClayButton from '@clayui/button';
 import ClayDropdown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import CriteriaSidebarCollapse from './CriteriaSidebarCollapse';

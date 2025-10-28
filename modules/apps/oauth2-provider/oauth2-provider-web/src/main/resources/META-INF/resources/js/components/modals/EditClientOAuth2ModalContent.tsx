@@ -57,7 +57,11 @@ export function EditClientOAuth2ModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<div className="modal-body">
 				<ClayAlert

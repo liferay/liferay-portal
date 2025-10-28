@@ -104,7 +104,7 @@ export class ItemSelectorSamplePage {
 			container: tableContainer,
 		};
 
-		this.visualizationModeSelector = page.getByLabel('Show View Options');
+		this.visualizationModeSelector = page.getByLabel(/View Selected/);
 	}
 
 	async changeVisualizationMode({

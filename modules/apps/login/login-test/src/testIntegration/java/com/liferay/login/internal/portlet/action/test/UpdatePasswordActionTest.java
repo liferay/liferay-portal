@@ -150,11 +150,13 @@ public class UpdatePasswordActionTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, group.getGroupId(), 0, fragmentEntry.getFragmentEntryId(),
-				defaultSegmentsExperienceId, layout.getPlid(), StringPool.BLANK,
-				fragmentEntry.getHtml(), StringPool.BLANK, "{fieldSets: []}",
-				StringPool.BLANK, StringPool.BLANK, 0, null,
-				fragmentEntry.getType(), serviceContext);
+				null, group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), defaultSegmentsExperienceId,
+				layout.getPlid(), StringPool.BLANK, fragmentEntry.getHtml(),
+				StringPool.BLANK, "{fieldSets: []}", StringPool.BLANK,
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				serviceContext);
 
 		ContainerStyledLayoutStructureItem containerStyledLayoutStructureItem =
 			(ContainerStyledLayoutStructureItem)

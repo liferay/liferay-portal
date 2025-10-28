@@ -32,7 +32,9 @@ export function ModalDeleteObjectField({
 		<ClayModalProvider>
 			{objectField && (
 				<ClayModal center observer={observer} status="danger">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('delete-object-field')}
 					</ClayModal.Header>
 

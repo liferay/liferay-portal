@@ -76,7 +76,6 @@ const AttributeView: React.FC<IAttributeViewProps> = ({
 						getEventAttributes({groupId}),
 						{active: true, label: name}
 					]}
-					groupId={groupId}
 					pageActions={viewAttributePageActions}
 					pageDescription={
 						<>

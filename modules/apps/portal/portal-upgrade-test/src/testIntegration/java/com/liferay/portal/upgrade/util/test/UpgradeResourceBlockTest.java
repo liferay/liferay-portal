@@ -61,14 +61,14 @@ public class UpgradeResourceBlockTest extends BaseUpgradeResourceBlock {
 						"0 not null, resourceBlockId LONG not null primary ",
 						"key, companyId LONG, groupId LONG, name VARCHAR(75)  ",
 						"null, permissionsHash VARCHAR(75) null, ",
-						"referenceCount LONG);"));
+						"referenceCount LONG)"));
 
 				runSQL(
 					StringBundler.concat(
 						"create table ResourceBlockPermission (mvccVersion ",
 						"LONG default 0 not null, resourceBlockPermissionId ",
 						"LONG not null primary key, companyId LONG, ",
-						"resourceBlockId LONG, roleId LONG, actionIds LONG);"));
+						"resourceBlockId LONG, roleId LONG, actionIds LONG)"));
 
 				runSQL(
 					"create table UpgradeResourceBlockTest(id_ LONG not null " +
@@ -80,7 +80,7 @@ public class UpgradeResourceBlockTest extends BaseUpgradeResourceBlock {
 						"LONG default 0 not null, resourceTypePermissionId ",
 						"LONG not null primary key, companyId LONG, groupId ",
 						"LONG, name VARCHAR(75) null, roleId LONG, actionIds ",
-						"LONG);"));
+						"LONG)"));
 
 				long resourceBlockId = -1;
 

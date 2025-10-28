@@ -366,9 +366,9 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(dataRecordCollectionId);
-		String resourceName = getPermissionCheckerResourceName(
-			dataRecordCollectionId);
 		Long resourceId = getPermissionCheckerResourceId(
+			dataRecordCollectionId);
+		String resourceName = getPermissionCheckerResourceName(
 			dataRecordCollectionId);
 
 		PermissionServiceUtil.checkPermission(
@@ -734,9 +734,9 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(dataRecordCollectionId);
-		String resourceName = getPermissionCheckerResourceName(
-			dataRecordCollectionId);
 		Long resourceId = getPermissionCheckerResourceId(
+			dataRecordCollectionId);
+		String resourceName = getPermissionCheckerResourceName(
 			dataRecordCollectionId);
 
 		PermissionServiceUtil.checkPermission(

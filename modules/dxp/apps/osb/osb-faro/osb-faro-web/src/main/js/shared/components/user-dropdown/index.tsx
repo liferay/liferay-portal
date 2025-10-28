@@ -6,16 +6,9 @@ import Item from './Item';
 import React, {Fragment, useEffect, useRef, useState} from 'react';
 import Sticker from '../Sticker';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import {getInitials} from 'shared/util/util';
 import {last} from 'lodash';
 import {MenuItem, Menus} from './types';
-
-function getInitials(name = '') {
-	const nameArray = name.split(' ', 3);
-
-	return nameArray
-		.reduce((acc, val) => acc + val.substring(0, 1), '')
-		.toUpperCase();
-}
 
 interface IUserDropdownProps extends React.HTMLAttributes<HTMLElement> {
 	alignmentPosition?: React.ComponentProps<

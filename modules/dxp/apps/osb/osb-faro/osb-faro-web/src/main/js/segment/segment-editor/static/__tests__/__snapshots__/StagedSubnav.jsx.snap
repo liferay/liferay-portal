@@ -3,7 +3,7 @@
 exports[`StagedSubnav should render 1`] = `
 <div>
   <nav
-    class="subnav-tbar subnav-tbar-root tbar"
+    class="mb-3 subnav-tbar-root subnav-tbar tbar"
   >
     <div
       class="container-fluid"

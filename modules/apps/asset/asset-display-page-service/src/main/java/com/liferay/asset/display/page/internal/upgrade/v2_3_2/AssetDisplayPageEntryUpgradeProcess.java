@@ -37,19 +37,18 @@ public class AssetDisplayPageEntryUpgradeProcess extends UpgradeProcess {
 					"select assetDisplayPageEntry1.assetDisplayPageEntryId ",
 					"from AssetDisplayPageEntry assetDisplayPageEntry1 inner ",
 					"join AssetDisplayPageEntry assetDisplayPageEntry2 on ",
-					"assetDisplayPageEntry1.groupId = ",
-					"assetDisplayPageEntry2.groupId and ",
-					"assetDisplayPageEntry2.classNameId = ",
-					fileEntryClassNameId,
-					" and assetDisplayPageEntry1.classPK = ",
-					"assetDisplayPageEntry2.classPK where ",
-					"assetDisplayPageEntry1.classNameId = ",
-					dlFileEntryClassNameId));
+					"assetDisplayPageEntry1.groupId = assetDisplayPageEntry2.",
+					"groupId and assetDisplayPageEntry2.classNameId = ? and ",
+					"assetDisplayPageEntry1.classPK = assetDisplayPageEntry2.",
+					"classPK where assetDisplayPageEntry1.classNameId = ?"));
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
 					"delete from AssetDisplayPageEntry where " +
 						"assetDisplayPageEntryId = ?")) {
+
+			preparedStatement1.setLong(1, fileEntryClassNameId);
+			preparedStatement1.setLong(2, dlFileEntryClassNameId);
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {

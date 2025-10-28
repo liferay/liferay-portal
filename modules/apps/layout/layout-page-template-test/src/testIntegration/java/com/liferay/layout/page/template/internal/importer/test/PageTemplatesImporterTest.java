@@ -1190,7 +1190,8 @@ public class PageTemplatesImporterTest {
 		FragmentEntryLink fragmentEntryLink =
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				"{}", fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), draftLayout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				null, 0, defaultSegmentsExperienceId);
@@ -1256,8 +1257,11 @@ public class PageTemplatesImporterTest {
 				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 		Assert.assertEquals(
-			fragmentEntry.getFragmentEntryId(),
-			fragmentEntryLink.getFragmentEntryId());
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntryLink.getFragmentEntryERC());
+		Assert.assertEquals(
+			fragmentEntry.getGroupId(),
+			fragmentEntryLink.getFragmentEntryGroupId());
 
 		List<String> childrenItemIds =
 			fragmentStyledLayoutStructureItem.getChildrenItemIds();

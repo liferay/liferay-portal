@@ -6,7 +6,7 @@ liferay-marketplace-custom-element:
         -   "**/index*.css"
     friendlyURLMapping: liferay-marketplace-custom-element
     htmlElementName: liferay-marketplace-custom-element
-    instanceable: false
+    instanceable: true
     name: Liferay Marketplace
     portletCategoryName: category.client-extensions
     properties:

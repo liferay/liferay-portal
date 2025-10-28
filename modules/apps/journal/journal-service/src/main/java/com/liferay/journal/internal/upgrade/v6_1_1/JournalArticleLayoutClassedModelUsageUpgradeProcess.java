@@ -403,11 +403,13 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcess
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select Layout.plid, LayoutPageTemplateEntry.type_ from ",
-					"Layout left join LayoutPageTemplateEntry on ",
-					"(Layout.classPK = 0 and LayoutPageTemplateEntry.plid = ",
-					plid,
-					") or (LayoutPageTemplateEntry.plid = Layout.classPK) ",
-					"where Layout.plid = ", plid))) {
+					"Layout left join LayoutPageTemplateEntry on (Layout.",
+					"classPK = 0 and LayoutPageTemplateEntry.plid = ?) or (",
+					"LayoutPageTemplateEntry.plid = Layout.classPK) where ",
+					"Layout.plid = ?"))) {
+
+			preparedStatement.setLong(1, plid);
+			preparedStatement.setLong(2, plid);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				while (resultSet.next()) {

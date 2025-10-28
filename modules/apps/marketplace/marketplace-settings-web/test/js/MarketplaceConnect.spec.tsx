@@ -15,7 +15,7 @@ import {act} from 'react-dom/test-utils';
 
 import {MarketplaceSettings} from '../../src/main/resources/META-INF/resources/js';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const marketplaceSettingsProps = {
 	baseResourceURL: 'http://localhost:8080?p_p_id=marketplace_settings',

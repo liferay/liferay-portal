@@ -61,15 +61,17 @@ public class DataCleanupPreupgradeProcessSuiteTest
 	public static void setUpClass() throws Exception {
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select schemaVersion from Release_ where releaseId = " +
-					ReleaseConstants.DEFAULT_ID);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select schemaVersion from Release_ where releaseId = ?")) {
 
-			resultSet.next();
+			preparedStatement.setLong(1, ReleaseConstants.DEFAULT_ID);
 
-			_currentPortalSchemaVersion = resultSet.getString(1);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
 
-			_updatePortalSchemaVersion(_currentPortalSchemaVersion + ".0");
+				_currentPortalSchemaVersion = resultSet.getString(1);
+
+				_updatePortalSchemaVersion(_currentPortalSchemaVersion + ".0");
+			}
 		}
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {

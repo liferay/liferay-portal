@@ -18,7 +18,9 @@ const AccessFromDesktop = ({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('access-from-desktop')}
 			</ClayModal.Header>
 

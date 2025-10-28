@@ -41,79 +41,86 @@ public class SAPEntryUpgradeProcess extends UpgradeProcess {
 						connection.prepareStatement(
 							StringBundler.concat(
 								"select count(*) from SAPEntry where ",
-								"companyId = ", companyId, " and name = ",
+								"companyId = ? and name = ",
 								"'SYSTEM_REST_CLIENT_TEMPLATE_OBJECT'"))) {
 
-					ResultSet resultSet = preparedStatement1.executeQuery();
+					preparedStatement1.setLong(1, companyId);
 
-					resultSet.next();
+					try (ResultSet resultSet =
+							preparedStatement1.executeQuery()) {
 
-					int count = resultSet.getInt(1);
+						resultSet.next();
 
-					if (count != 0) {
-						return;
+						int count = resultSet.getInt(1);
+
+						if (count != 0) {
+							return;
+						}
+
+						StringBuilder sb = new StringBuilder(5);
+
+						sb.append("insert into SAPEntry (uuid_, sapEntryId, ");
+						sb.append("companyId, userId, createDate, ");
+						sb.append("modifiedDate, allowedServiceSignatures, ");
+						sb.append("defaultSAPEntry, enabled, name, title) ");
+						sb.append("values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+						PreparedStatement preparedStatement2 =
+							connection.prepareStatement(sb.toString());
+
+						preparedStatement2.setString(
+							1, PortalUUIDUtil.generate());
+
+						long sapEntryId = CounterLocalServiceUtil.increment();
+
+						preparedStatement2.setLong(2, sapEntryId);
+
+						preparedStatement2.setLong(3, companyId);
+						preparedStatement2.setLong(
+							4, UserLocalServiceUtil.getGuestUserId(companyId));
+
+						Timestamp timestamp = new Timestamp(
+							System.currentTimeMillis());
+
+						preparedStatement2.setTimestamp(5, timestamp);
+						preparedStatement2.setTimestamp(6, timestamp);
+
+						preparedStatement2.setString(7, StringPool.STAR);
+						preparedStatement2.setBoolean(8, false);
+						preparedStatement2.setBoolean(9, true);
+						preparedStatement2.setString(
+							10, "SYSTEM_REST_CLIENT_TEMPLATE_OBJECT");
+
+						String title =
+							"System Service Access Policy for REST Client " +
+								"Template Requests";
+
+						preparedStatement2.setString(
+							11,
+							LocalizationUtil.updateLocalization(
+								HashMapBuilder.put(
+									LocaleUtil.fromLanguageId(
+										UpgradeProcessUtil.getDefaultLanguageId(
+											companyId)),
+									title
+								).build(),
+								title, "Title",
+								UpgradeProcessUtil.getDefaultLanguageId(
+									companyId)));
+
+						preparedStatement2.execute();
+
+						Role guestRole = RoleLocalServiceUtil.getRole(
+							companyId, RoleConstants.GUEST);
+
+						ResourcePermissionLocalServiceUtil.
+							setResourcePermissions(
+								companyId, SAPEntry.class.getName(),
+								ResourceConstants.SCOPE_INDIVIDUAL,
+								String.valueOf(sapEntryId),
+								guestRole.getRoleId(),
+								new String[] {ActionKeys.VIEW});
 					}
-
-					StringBuilder sb = new StringBuilder(5);
-
-					sb.append("insert into SAPEntry (uuid_, sapEntryId, ");
-					sb.append("companyId, userId, createDate, ");
-					sb.append("modifiedDate, allowedServiceSignatures, ");
-					sb.append("defaultSAPEntry, enabled, name, title) ");
-					sb.append("values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-					PreparedStatement preparedStatement2 =
-						connection.prepareStatement(sb.toString());
-
-					preparedStatement2.setString(1, PortalUUIDUtil.generate());
-
-					long sapEntryId = CounterLocalServiceUtil.increment();
-
-					preparedStatement2.setLong(2, sapEntryId);
-
-					preparedStatement2.setLong(3, companyId);
-					preparedStatement2.setLong(
-						4, UserLocalServiceUtil.getGuestUserId(companyId));
-
-					Timestamp timestamp = new Timestamp(
-						System.currentTimeMillis());
-
-					preparedStatement2.setTimestamp(5, timestamp);
-					preparedStatement2.setTimestamp(6, timestamp);
-
-					preparedStatement2.setString(7, StringPool.STAR);
-					preparedStatement2.setBoolean(8, false);
-					preparedStatement2.setBoolean(9, true);
-					preparedStatement2.setString(
-						10, "SYSTEM_REST_CLIENT_TEMPLATE_OBJECT");
-
-					String title =
-						"System Service Access Policy for REST Client " +
-							"Template Requests";
-
-					preparedStatement2.setString(
-						11,
-						LocalizationUtil.updateLocalization(
-							HashMapBuilder.put(
-								LocaleUtil.fromLanguageId(
-									UpgradeProcessUtil.getDefaultLanguageId(
-										companyId)),
-								title
-							).build(),
-							title, "Title",
-							UpgradeProcessUtil.getDefaultLanguageId(
-								companyId)));
-
-					preparedStatement2.execute();
-
-					Role guestRole = RoleLocalServiceUtil.getRole(
-						companyId, RoleConstants.GUEST);
-
-					ResourcePermissionLocalServiceUtil.setResourcePermissions(
-						companyId, SAPEntry.class.getName(),
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						String.valueOf(sapEntryId), guestRole.getRoleId(),
-						new String[] {ActionKeys.VIEW});
 				}
 			});
 	}

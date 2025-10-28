@@ -365,7 +365,12 @@ export default function EditAPIApplication({
 				{activeNav === 'details' && (
 					<ClayLayout.Container className="api-app-details mt-5">
 						<ClayCard className="pt-2">
-							<ClayModal.Header withTitle={false}>
+							<ClayModal.Header
+								closeButtonAriaLabel={Liferay.Language.get(
+									'close'
+								)}
+								withTitle={false}
+							>
 								<Heading
 									fontSize={5}
 									level={3}

@@ -1,5 +1,23 @@
+variable "arn_partition" {
+	default="aws"
+}
 variable "deployment_name" {
 	default="liferay-self-hosted"
+	validation {
+		condition=can(regex("^[a-z0-9-]*$", var.deployment_name))
+		error_message="The deployment_name must contain only lowercase letters, numbers, and hyphens."
+	}
+}
+variable "deployment_namespace" {
+	default="liferay-system"
+	validation {
+		condition=can(regex("^[a-z0-9-]*$", var.deployment_namespace))
+		error_message="The deployment_namespace must contain only lowercase letters, numbers, and hyphens."
+	}
+}
+variable "ecr_repositories" {
+	type=map(object({ arn=string, url=string }))
+	default={}
 }
 variable "node_group_ami_type" {
 	default="AL2023_x86_64_STANDARD"
@@ -29,7 +47,7 @@ variable "root_volume_size" {
 	default=20
 }
 variable "root_volume_type" {
-	default="gp3"
+	default="gp2"
 }
 variable "vpc_cidr" {
 	default="10.0.0.0/16"

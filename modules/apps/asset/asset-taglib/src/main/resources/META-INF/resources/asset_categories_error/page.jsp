@@ -23,10 +23,10 @@
 
 	<c:choose>
 		<c:when test="<%= ace.getType() == AssetCategoryException.AT_LEAST_ONE_CATEGORY %>">
-			<liferay-ui:message arguments="<%= vocabularyTitle %>" key="please-select-at-least-one-category-for-x" translateArguments="<%= false %>" />
+			<liferay-ui:message arguments="<%= HtmlUtil.escape(vocabularyTitle) %>" key="please-select-at-least-one-category-for-x" translateArguments="<%= false %>" />
 		</c:when>
 		<c:when test="<%= ace.getType() == AssetCategoryException.TOO_MANY_CATEGORIES %>">
-			<liferay-ui:message arguments="<%= vocabularyTitle %>" key="you-cannot-select-more-than-one-category-for-x" translateArguments="<%= false %>" />
+			<liferay-ui:message arguments="<%= HtmlUtil.escape(vocabularyTitle) %>" key="you-cannot-select-more-than-one-category-for-x" translateArguments="<%= false %>" />
 		</c:when>
 	</c:choose>
 </liferay-ui:error>

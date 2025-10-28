@@ -31,7 +31,9 @@ const AddCustomFieldModalContent = ({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('add-field-manually')}
 			</ClayModal.Header>
 

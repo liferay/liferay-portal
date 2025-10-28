@@ -99,24 +99,24 @@ public class StyleBookEntryVersionThemeIdUpgradeProcessTest {
 		}
 
 		try (Connection connection = DataAccess.getConnection();
-			 PreparedStatement preparedStatement = connection.prepareStatement(
-				 StringBundler.concat(
-					 "select uuid_, themeId from StyleBookEntryVersion where ",
-					 "styleBookEntryId = ",
-					 styleBookEntry.getStyleBookEntryId(), " or ",
-					 "styleBookEntryId = ",
-					 orphanedStyleBookEntry.getStyleBookEntryId()));
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select uuid_, themeId from StyleBookEntryVersion where " +
+					"styleBookEntryId = ? or styleBookEntryId = ?")) {
 
-			 ResultSet resultSet = preparedStatement.executeQuery()) {
+			preparedStatement.setLong(1, styleBookEntry.getStyleBookEntryId());
+			preparedStatement.setLong(
+				2, orphanedStyleBookEntry.getStyleBookEntryId());
 
-			Assert.assertTrue(resultSet.next());
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
 
-			Assert.assertEquals(
-				styleBookEntry.getUuid(), resultSet.getString("uuid_"));
-			Assert.assertEquals(
-				"classic_WAR_classictheme", resultSet.getString("themeId"));
+				Assert.assertEquals(
+					styleBookEntry.getUuid(), resultSet.getString("uuid_"));
+				Assert.assertEquals(
+					"classic_WAR_classictheme", resultSet.getString("themeId"));
 
-			Assert.assertFalse(resultSet.next());
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 	}
 

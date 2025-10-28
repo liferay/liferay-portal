@@ -99,7 +99,11 @@ function CreationModal({
 
 	return (
 		<ClayModal className="m-0" observer={observer}>
-			<ClayModal.Header>{heading}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{heading}
+			</ClayModal.Header>
 
 			<ClayModal.Body className="m-0">
 				<ClayForm

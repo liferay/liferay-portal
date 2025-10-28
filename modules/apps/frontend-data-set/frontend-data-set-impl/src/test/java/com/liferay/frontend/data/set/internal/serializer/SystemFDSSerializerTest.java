@@ -53,6 +53,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizer
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -117,6 +118,12 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 			themeDisplay
 		);
 
+		Mockito.when(
+			themeDisplay.getUser()
+		).thenReturn(
+			Mockito.mock(User.class)
+		);
+
 		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
 
 		Assert.assertNull(
@@ -168,6 +175,12 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 		).thenReturn(
 			themeDisplay
+		);
+
+		Mockito.when(
+			themeDisplay.getUser()
+		).thenReturn(
+			Mockito.mock(User.class)
 		);
 
 		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));

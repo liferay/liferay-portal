@@ -7,7 +7,7 @@ import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {FormFooter} from '../../src/main/resources/META-INF/resources/ai_creator_modal/FormFooter';
 

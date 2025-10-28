@@ -192,6 +192,12 @@ public class ObjectEntryImpl extends ObjectEntryBaseImpl {
 					return title;
 				}
 
+				if (Objects.equals(
+						objectField.getName(), "externalReferenceCode")) {
+
+					return getExternalReferenceCode();
+				}
+
 				if (Objects.equals(objectField.getName(), "id")) {
 					return String.valueOf(getObjectEntryId());
 				}

@@ -6,7 +6,7 @@ application:
     name: Export.Import.REST
 author: Petteri Karttunen
 clientDir: ../export-import-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 generateGraphQL: false
 javaEEPackage: jakarta

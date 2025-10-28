@@ -34,7 +34,10 @@ const TicketOption: React.FC<IProps> = ({
 					className="d-flex w-100"
 					onClick={() => primaryAction(ticket)}
 				>
-					<div className="d-flex justify-content-between overflow-hidden ticket-text-container w-100">
+					<div
+						className="d-flex flex-grow-1 justify-content-between overflow-hidden ticket-text-container"
+						title={i18n.translate(ticket.status)}
+					>
 						<div className="overflow-hidden ticket-text">
 							{`${ticket.ticketId} - ${ticket.subject}`}
 						</div>
@@ -46,8 +49,10 @@ const TicketOption: React.FC<IProps> = ({
 						</div>
 					</div>
 
-					<div className="align-items-center d-flex justify-content-center px-3 text-capitalize ticket-status">
-						{i18n.translate(ticket.status)}
+					<div className="align-items-center d-flex flex-shrink-0 justify-content-center px-3 text-capitalize ticket-status">
+						<div className="overflow-hidden ticket-status-text">
+							{i18n.translate(ticket.status)}
+						</div>
 					</div>
 				</Button>
 			</div>

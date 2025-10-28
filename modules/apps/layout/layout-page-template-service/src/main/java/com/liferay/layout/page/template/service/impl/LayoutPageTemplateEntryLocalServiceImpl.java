@@ -358,7 +358,10 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	@SystemEvent(
+		action = SystemEventConstants.ACTION_SKIP,
+		type = SystemEventConstants.TYPE_DELETE
+	)
 	public LayoutPageTemplateEntry deleteLayoutPageTemplateEntry(
 			LayoutPageTemplateEntry layoutPageTemplateEntry)
 		throws PortalException {
@@ -435,8 +438,9 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			long layoutPageTemplateEntryId)
 		throws PortalException {
 
-		return deleteLayoutPageTemplateEntry(
-			getLayoutPageTemplateEntry(layoutPageTemplateEntryId));
+		return layoutPageTemplateEntryLocalService.
+			deleteLayoutPageTemplateEntry(
+				getLayoutPageTemplateEntry(layoutPageTemplateEntryId));
 	}
 
 	@Override

@@ -308,7 +308,7 @@ public class WelcomeSiteInitializerTest {
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
 				null, _serviceContext.getUserId(),
-				_serviceContext.getScopeGroupId(), 0, 0,
+				_serviceContext.getScopeGroupId(), null, null, null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(layout.getPlid()),
 				layout.getPlid(), StringPool.BLANK, StringPool.BLANK,

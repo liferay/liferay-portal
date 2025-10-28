@@ -44,6 +44,8 @@ public class GroupConstants {
 
 	public static final String GUEST = "Guest";
 
+	public static final String GUEST_FRIENDLY_URL = "/guest";
+
 	public static final int MEMBERSHIP_RESTRICTION_TO_PARENT_SITE_MEMBERS = 1;
 
 	public static final String[] SYSTEM_GROUPS = {

@@ -22,6 +22,8 @@ gradle.liferayWorkspace {
 gradle.projectsEvaluated {
 	Project rootProject = gradle.rootProject
 
+	File sinkFile = rootProject.file "sink.txt"
+
 	rootProject.tasks.register("assertLog", DockerLogsContainer) {
 		dependsOn rootProject.tasks.startDockerContainer
 		finalizedBy rootProject.tasks.cleanDockerImage
@@ -33,36 +35,26 @@ gradle.projectsEvaluated {
 			gradle.liferayWorkspace.dockerContainerId
 		}
 
-		List<String> expectedLines = ["Common script", "Other script"]
-		List<String> unexpectedLines = ["Local script", "No such file or directory", "Permission denied"]
-
-		int expectedLinesDetected = 0
-		int unexpectedLinesDetected = 0
-
-		sink new PrintWriter(new StringWriter()) {
-			public void write(String line) {
-				if (expectedLines.findAll{line.contains(it)}.size() > 0) {
-					expectedLinesDetected++
-				}
-
-				if (unexpectedLines.findAll{line.contains(it)}.size() > 0) {
-					unexpectedLinesDetected++
-				}
-
-				rootProject.print line
-			}
-		}
+		sink = sinkFile
 
 		doLast {
+			List<String> expectedLines = ["Common script", "Other script"]
+			List<String> unexpectedLines = ["Local script", "No such file or directory", "Permission denied"]
+
+			int expectedLinesDetected = 0
+			int unexpectedLinesDetected = 0
+
 			int retries = 0
 
-			while (expectedLinesDetected < 2 && (retries < 30)) {
+			while (expectedLinesDetected < expectedLines.size() && (retries < 30)) {
+				if (sinkFile.exists()) {
+					expectedLinesDetected = expectedLines.findAll{sinkFile.text.contains(it)}.size()
+					unexpectedLinesDetected = unexpectedLines.findAll{sinkFile.text.contains(it)}.size()
+				}
+
 				Thread.sleep(100)
 
 				retries++
-
-				expectedLinesDetected = 0
-				unexpectedLinesDetected = 0
 
 				start()
 			}

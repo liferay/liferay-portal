@@ -9,7 +9,7 @@ import React from 'react';
 import {AppContext} from '../../../../src/main/resources/META-INF/resources/js/components/AppContext.es';
 import VelocityChart from '../../../../src/main/resources/META-INF/resources/js/components/process-metrics/completion-velocity/VelocityChart.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('The velocity chart should', () => {
 	const {ResizeObserver} = window;

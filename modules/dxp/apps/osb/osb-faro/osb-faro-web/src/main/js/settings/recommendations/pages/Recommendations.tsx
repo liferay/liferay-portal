@@ -18,7 +18,6 @@ const Recommendations: React.FC<IRecommendationsProps> = ({
 
 	return (
 		<BasePage
-			groupId={groupId}
 			pageDescription={Liferay.Language.get(
 				'create-and-train-machine-learning-models-to-use-in-your-recommendations'
 			)}

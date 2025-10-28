@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
@@ -12,10 +12,7 @@ import SpaceRenderer from '../../../../../src/main/resources/META-INF/resources/
 describe('SpaceRenderer', () => {
 	it('renders the default space', () => {
 		const {container} = render(
-			<SpaceRenderer
-				itemData={{settings: {logoColor: 'outline-0'}}}
-				value="Test Space"
-			/>
+			<SpaceRenderer logoColor="outline-0" value="Test Space" />
 		);
 
 		expect(screen.getByText('Test Space')).toBeInTheDocument();
@@ -27,11 +24,7 @@ describe('SpaceRenderer', () => {
 
 	it('renders the correct size prop', () => {
 		const {container} = render(
-			<SpaceRenderer
-				itemData={{settings: {logoColor: 'outline-0'}}}
-				size="sm"
-				value="Test Space"
-			/>
+			<SpaceRenderer logoColor="outline-0" size="sm" value="Test Space" />
 		);
 
 		expect(container.querySelectorAll('.sticker')[0]).toHaveClass(
@@ -43,7 +36,7 @@ describe('SpaceRenderer', () => {
 		render(
 			<SpaceRenderer
 				href="http://www.test.com/space"
-				itemData={{settings: {logoColor: 'outline-0'}}}
+				logoColor="outline-0"
 				size="sm"
 				value="Test Space"
 			/>

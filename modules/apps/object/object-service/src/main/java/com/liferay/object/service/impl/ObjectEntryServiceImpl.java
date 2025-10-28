@@ -7,9 +7,7 @@ package com.liferay.object.service.impl;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
-import com.liferay.account.model.AccountEntryOrganizationRel;
 import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.object.configuration.ObjectConfiguration;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -17,6 +15,7 @@ import com.liferay.object.definition.security.permission.resource.ObjectDefiniti
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.ObjectDefinitionAccountEntryRestrictedException;
 import com.liferay.object.exception.ObjectEntryCountException;
+import com.liferay.object.internal.security.permission.util.ObjectEntryPermissionUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -40,7 +39,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
-import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
@@ -631,46 +629,12 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 					" does not have access to account entry ", accountEntryId));
 		}
 
-		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
-			accountEntryId);
-
-		if (permissionChecker.hasPermission(
-				accountEntry.getAccountEntryGroupId(),
-				objectDefinition.getResourceName(), 0,
-				ObjectActionKeys.ADD_OBJECT_ENTRY)) {
+		if (ObjectEntryPermissionUtil.hasAccountEntryPermission(
+				_accountEntryLocalService.getAccountEntry(accountEntryId),
+				ObjectActionKeys.ADD_OBJECT_ENTRY,
+				objectDefinition.getResourceName(), permissionChecker)) {
 
 			return;
-		}
-
-		List<AccountEntryOrganizationRel> accountEntryOrganizationRels =
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRels(accountEntryId);
-
-		for (AccountEntryOrganizationRel accountEntryOrganizationRel :
-				accountEntryOrganizationRels) {
-
-			Organization organization =
-				accountEntryOrganizationRel.getOrganization();
-
-			if (permissionChecker.hasPermission(
-					organization.getGroupId(),
-					objectDefinition.getResourceName(), 0,
-					ObjectActionKeys.ADD_OBJECT_ENTRY)) {
-
-				return;
-			}
-
-			for (Organization ancestorOrganization :
-					organization.getAncestors()) {
-
-				if (permissionChecker.hasPermission(
-						ancestorOrganization.getGroupId(),
-						objectDefinition.getResourceName(), 0,
-						ObjectActionKeys.ADD_OBJECT_ENTRY)) {
-
-					return;
-				}
-			}
 		}
 
 		throw new PrincipalException.MustHavePermission(
@@ -888,10 +852,6 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
-
-	@Reference
-	private AccountEntryOrganizationRelLocalService
-		_accountEntryOrganizationRelLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

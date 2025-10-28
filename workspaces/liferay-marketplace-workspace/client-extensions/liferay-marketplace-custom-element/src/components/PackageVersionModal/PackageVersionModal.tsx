@@ -87,7 +87,9 @@ export function PackageVersionModal({
 			className="package-version-modal-container"
 			observer={observer}
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{i18n.translate('select-compatible-versions')}
 			</ClayModal.Header>
 

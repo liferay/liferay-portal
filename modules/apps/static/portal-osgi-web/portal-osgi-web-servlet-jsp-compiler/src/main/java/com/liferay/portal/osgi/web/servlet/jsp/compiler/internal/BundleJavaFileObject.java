@@ -27,7 +27,7 @@ public class BundleJavaFileObject extends BaseJavaFileObject {
 
 	@Override
 	public InputStream openInputStream() throws IOException {
-		return jakartaTransform(_url.openStream());
+		return _url.openStream();
 	}
 
 	@Override

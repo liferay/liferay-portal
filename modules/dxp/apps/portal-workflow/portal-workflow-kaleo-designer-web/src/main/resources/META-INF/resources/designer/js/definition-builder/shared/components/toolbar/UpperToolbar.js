@@ -565,6 +565,7 @@ export default function UpperToolbar({
 				<ClayAlert.ToastContainer>
 					<ClayAlert
 						autoClose={5000}
+						closeButtonAriaLabel={Liferay.Language.get('close')}
 						displayType={alertType}
 						onClose={() => resetAlert()}
 						title={

@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -270,6 +271,30 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				sendRedirect(actionRequest, actionResponse, redirect);
 			}
 			else {
+				if (throwable instanceof RuntimeException) {
+					Throwable currentThrowable = throwable;
+
+					while (currentThrowable != null) {
+						currentThrowable = currentThrowable.getCause();
+
+						if (currentThrowable instanceof
+								SanitizerException sanitizerException) {
+
+							SessionErrors.add(
+								actionRequest, SanitizerException.class,
+								sanitizerException);
+
+							String redirect = ParamUtil.getString(
+								actionRequest, "redirect");
+
+							sendRedirect(
+								actionRequest, actionResponse, redirect);
+
+							return;
+						}
+					}
+				}
+
 				_log.error(throwable, throwable);
 
 				throw new Exception(throwable);

@@ -44,6 +44,7 @@ import com.liferay.portal.upgrade.data.cleanup.JournalDataCleanupPreupgradeProce
 import com.liferay.portal.upgrade.data.cleanup.NullUnicodeContentDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.QuartzJobDetailsDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.UserDataCleanupPreupgradeProcess;
+import com.liferay.portal.verify.VerifyProcess;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -131,6 +132,10 @@ public class DataRemovalExecutor {
 
 				CacheRegistryUtil.clear();
 			}
+		}
+
+		if (dataRemovalConfiguration.removeServiceComponentOrphanData()) {
+			_serviceComponentDataCleanupVerifyProcess.verify();
 		}
 	}
 
@@ -257,5 +262,10 @@ public class DataRemovalExecutor {
 
 	@Reference
 	private ReleaseLocalService _releaseLocalService;
+
+	@Reference(
+		target = "(component.name=com.liferay.data.cleanup.internal.verify.ServiceComponentDataCleanupVerifyProcess)"
+	)
+	private VerifyProcess _serviceComponentDataCleanupVerifyProcess;
 
 }

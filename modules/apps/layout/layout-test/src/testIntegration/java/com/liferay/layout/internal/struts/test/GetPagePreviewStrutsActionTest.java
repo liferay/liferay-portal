@@ -256,7 +256,7 @@ public class GetPagePreviewStrutsActionTest {
 		Assert.assertThat(
 			content,
 			CoreMatchers.containsString(
-				"href=\"/o/" + theme.getServletContextName() + "/css/"));
+				"/o/" + theme.getServletContextName() + "/css/main."));
 	}
 
 	private void _setUpThemeDisplay() throws Exception {

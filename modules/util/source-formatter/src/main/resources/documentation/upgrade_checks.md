@@ -13,6 +13,7 @@ UpgradeBNDIncludeResourceCheck | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf,
 UpgradeCatchAllCheck | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Performs replacements on Liferay's outdated code. |
 [UpgradeCatchAllJSPImportsCheck](check/jsp_imports_check.md#jspimportscheck) | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Sorts and groups imports in `LPD_XXXXX.jsp` and `LPS_XXXXX.jsp` files. |
 UpgradeCatchAllJavaImportsCheck | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Sorts and groups imports in `LPD_XXXXX.java` and `LPS_XXXXX.java` files. |
+UpgradeCatchAllJavaLongLinesCheck | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Finds lines that are longer than the specified maximum line length in `LPD_XXXXX.java` and `LPS_XXXXX.java` files. |
 UpgradeCatchAllJavaTermOrderCheck | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Sorts javaterms in `LPD_XXXXX.java` and `LPS_XXXXX.java` files. |
 UpgradeDeprecatedAPICheck | .java | Finds calls to deprecated classes, constructors, fields or methods after an upgrade. |
 UpgradeGradleIncludeResourceCheck | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Replaces with `compileInclude` the configuration attribute for dependencies in `build.gradle` that are listed at `Include-Resource` property at `bnd.bnd` associated file. |

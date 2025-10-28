@@ -5,7 +5,7 @@
 
 import '../../tests_utilities/polyfills';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {fireEvent, render} from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
@@ -158,7 +158,9 @@ describe('Global Search', () => {
 
 					expect(carts.length).toBe(4);
 
-					expect(firstCart.text).toContain(orderTemplate.id);
+					expect(firstCart.text).toContain(
+						orderTemplate.id.toString()
+					);
 
 					expect(firstCart.href).toContain(
 						`/cart-page/${orderTemplate.id}`

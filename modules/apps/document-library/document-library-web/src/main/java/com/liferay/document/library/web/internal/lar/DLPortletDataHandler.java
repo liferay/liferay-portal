@@ -110,10 +110,6 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 	protected void activate() {
 		setDataLevel(DataLevel.PORTLET_INSTANCE);
 		setDataLocalized(true);
-		setDataPortletPreferences(
-			"rootFolderExternalReferenceCode",
-			"selectedGroupExternalReferenceCode",
-			"selectedRepositoryExternalReferenceCode");
 		setDeletionSystemEventStagedModelTypes(
 			new StagedModelType(DLFileEntryType.class),
 			new StagedModelType(DLFileShortcut.class),

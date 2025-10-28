@@ -610,8 +610,8 @@ public abstract class BaseAssetLibraryResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(assetLibraryId);
-		String resourceName = getPermissionCheckerResourceName(assetLibraryId);
 		Long resourceId = getPermissionCheckerResourceId(assetLibraryId);
+		String resourceName = getPermissionCheckerResourceName(assetLibraryId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -1085,8 +1085,8 @@ public abstract class BaseAssetLibraryResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(assetLibraryId);
-		String resourceName = getPermissionCheckerResourceName(assetLibraryId);
 		Long resourceId = getPermissionCheckerResourceId(assetLibraryId);
+		String resourceName = getPermissionCheckerResourceName(assetLibraryId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

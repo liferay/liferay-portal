@@ -10,7 +10,7 @@ import {navigate, sub} from 'frontend-js-web';
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
 import DefaultPermissionModalContent from '../default_permission/DefaultPermissionModalContent';
 import {permissionsBulkAction} from '../default_permission/SpacesBulkPermissionModalContent';
-import deleteEntryAction from './actions/deleteEntryAction';
+import confirmAndDeleteEntryAction from './actions/confirmAndDeleteEntryAction';
 import manageConnectedSitesAction, {
 	ManageConnectedSitesData,
 } from './actions/manageConnectedSitesAction';
@@ -49,7 +49,7 @@ export default function AllSpacesFDSPropsTransformer({
 					component: ({itemData, value}) =>
 						SpaceRenderer({
 							href: additionalProps.baseSpaceURL + itemData.id,
-							itemData,
+							logoColor: itemData.settings.logoColor,
 							size: 'sm',
 							value,
 						}),
@@ -140,7 +140,7 @@ export default function AllSpacesFDSPropsTransformer({
 			else if (action.data.id === 'delete') {
 				event?.preventDefault();
 
-				deleteEntryAction({
+				confirmAndDeleteEntryAction({
 					bodyHTML: Liferay.Language.get(
 						'delete-space-confirmation-body'
 					),

@@ -192,7 +192,9 @@ export default function FragmentServiceConfiguration({
 					size="md"
 					status="warning"
 				>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('propagate-changes')}
 					</ClayModal.Header>
 

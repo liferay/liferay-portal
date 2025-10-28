@@ -194,7 +194,10 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	@SystemEvent(
+		action = SystemEventConstants.ACTION_SKIP,
+		type = SystemEventConstants.TYPE_DELETE
+	)
 	public LayoutUtilityPageEntry deleteLayoutUtilityPageEntry(
 			LayoutUtilityPageEntry layoutUtilityPageEntry)
 		throws PortalException {

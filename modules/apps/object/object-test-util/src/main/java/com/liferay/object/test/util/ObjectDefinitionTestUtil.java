@@ -79,7 +79,7 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-			userId, objectFolderId, null, false, true, false, true,
+			null, userId, objectFolderId, null, false, true, false, true,
 			enableLocalization, false, false, false, false,
 			FriendlyURLResolverConstants.URL_SEPARATOR_Y_OBJECT_ENTRY,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -101,8 +101,11 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-			TestPropsValues.getUserId(), 0, null, false, false, true, false,
-			false, false, false, false, false, null,
+			null, TestPropsValues.getUserId(), 0, null, false, false, true,
+			false,
+			FeatureFlagManagerUtil.isEnabled(
+				TestPropsValues.getCompanyId(), "LPD-32050"),
+			false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(name), name, null, null,
 			LocalizedMapUtil.getLocalizedMap(name), true,
 			ObjectDefinitionConstants.SCOPE_COMPANY,
@@ -190,7 +193,7 @@ public class ObjectDefinitionTestUtil {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-				userId, objectFolderId, null, false, true, false, true,
+				null, userId, objectFolderId, null, false, true, false, true,
 				localized, enableObjectEntryDraft, false,
 				enableObjectEntrySubscription, enableObjectEntryVersioning,
 				null,

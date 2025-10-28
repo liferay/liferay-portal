@@ -88,6 +88,7 @@ const scheduleTest = mergeTests(
 	test,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
+		'LPD-32050': {enabled: true},
 	})
 );
 
@@ -1663,7 +1664,9 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await objectLayoutsPage.createObjectLayoutTab(getRandomString());
 
-		await objectLayoutsPage.createObjectLayoutBlock(getRandomString());
+		await objectLayoutsPage.createObjectLayoutBlock({
+			objectLayoutRegularBlockName: getRandomString(),
+		});
 
 		await objectLayoutsPage.openObjectLayoutObjectField();
 
@@ -1847,24 +1850,11 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await objectLayoutsPage.markAsDefaultButton.check();
 
 		await objectLayoutsPage.createObjectLayoutContent({
-			objectLayoutBlockName: 'Block 1',
+			objectFieldNames: ['Custom Field', 'Relationship'],
 			objectLayoutName,
+			objectLayoutRegularBlockName: 'Block 1',
 			objectLayoutTabName: 'Field Tab',
 		});
-
-		await objectLayoutsPage.iframeLocator
-			.getByRole('option', {name: 'Custom Field Optional'})
-			.click();
-
-		await objectLayoutsPage.saveAddFieldButton.click();
-
-		await objectLayoutsPage.openObjectLayoutObjectField();
-
-		await objectLayoutsPage.iframeLocator
-			.getByRole('option', {name: 'Relationship Optional'})
-			.click();
-
-		await objectLayoutsPage.saveAddFieldButton.click();
 
 		await objectLayoutsPage.createObjectRelationshipTab(
 			objectLayoutName,
@@ -2139,14 +2129,11 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await objectLayoutsPage.createObjectLayout(objectLayoutName);
 
 		await objectLayoutsPage.createObjectLayoutContent({
-			objectLayoutBlockName: getRandomString(),
+			objectFieldNames: [objectField.label['en_US']],
 			objectLayoutName,
+			objectLayoutRegularBlockName: getRandomString(),
 			objectLayoutTabName: getRandomString(),
 		});
-
-		await objectLayoutsPage.addObjectLayoutObjectField(
-			objectField.label['en_US']
-		);
 
 		const objectEntry2 = await apiHelpers.objectEntry.postObjectEntry(
 			{

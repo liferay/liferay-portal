@@ -297,7 +297,7 @@ describe('MarketplaceRest', () => {
 		expect(fetchCall.headers['Authorization']).toBe(
 			`Bearer ${marketplaceToken.accessToken}`
 		);
-		expect(fetchCall.body).toContain(product.skus[0].id);
+		expect(fetchCall.body).toContain(product.skus[0].id.toString());
 		expect(response).toMatchObject(mockCart);
 	});
 

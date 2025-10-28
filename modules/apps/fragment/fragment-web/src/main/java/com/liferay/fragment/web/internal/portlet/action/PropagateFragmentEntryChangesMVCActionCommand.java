@@ -6,14 +6,17 @@
 package com.liferay.fragment.web.internal.portlet.action;
 
 import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -47,17 +50,36 @@ public class PropagateFragmentEntryChangesMVCActionCommand
 				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 					fragmentEntryLinkId);
 
+			FragmentEntry fragmentEntry =
+				_fragmentEntryLocalService.
+					fetchFragmentEntryByExternalReferenceCode(
+						fragmentEntryLink.getFragmentEntryERC(),
+						fragmentEntryLink.getFragmentEntryGroupId());
+
 			ActionableDynamicQuery actionableDynamicQuery =
 				_fragmentEntryLinkLocalService.getActionableDynamicQuery();
 
 			actionableDynamicQuery.setAddCriteriaMethod(
 				dynamicQuery -> {
 					Property fragmentEntryIdProperty =
-						PropertyFactoryUtil.forName("fragmentEntryId");
+						PropertyFactoryUtil.forName("fragmentEntryERC");
 
 					dynamicQuery.add(
 						fragmentEntryIdProperty.eq(
-							fragmentEntryLink.getFragmentEntryId()));
+							fragmentEntry.getExternalReferenceCode()));
+
+					Property fragmentEntryScopeERCProperty =
+						PropertyFactoryUtil.forName("fragmentEntryScopeERC");
+
+					if (Validator.isNull(fragmentEntry.getScopeERC())) {
+						dynamicQuery.add(
+							fragmentEntryScopeERCProperty.isNull());
+					}
+					else {
+						dynamicQuery.add(
+							fragmentEntryScopeERCProperty.eq(
+								fragmentEntry.getScopeERC()));
+					}
 
 					Property plidProperty = PropertyFactoryUtil.forName("plid");
 
@@ -78,5 +100,8 @@ public class PropagateFragmentEntryChangesMVCActionCommand
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 }

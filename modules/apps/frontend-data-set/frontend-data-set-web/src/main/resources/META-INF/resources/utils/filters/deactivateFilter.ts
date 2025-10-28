@@ -8,5 +8,7 @@ export function deactivateFilter(filter: any) {
 	filter.odataFilterString = undefined;
 	filter.selectedData = undefined;
 
-	return filter;
+	return {
+		...filter,
+	};
 }

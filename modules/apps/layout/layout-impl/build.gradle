@@ -44,7 +44,6 @@ dependencies {
 	compileOnly project(":apps:portal-lock:portal-lock-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-spi")
-	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
 	compileOnly project(":apps:portal:portal-json-validator")

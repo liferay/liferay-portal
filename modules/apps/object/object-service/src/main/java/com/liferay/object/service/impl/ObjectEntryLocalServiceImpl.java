@@ -2787,12 +2787,15 @@ public class ObjectEntryLocalServiceImpl
 					"select count(*) from ",
 					dynamicObjectDefinitionTable.getTableName(), " where ",
 					dynamicObjectDefinitionTable.getPrimaryKeyColumnName(),
-					" = ", primaryKey));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					" = ?"))) {
 
-			resultSet.next();
+			preparedStatement.setLong(1, primaryKey);
 
-			return resultSet.getInt(1);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
+
+				return resultSet.getInt(1);
+			}
 		}
 		catch (SQLException sqlException) {
 			throw new SystemException(sqlException);
@@ -6770,12 +6773,15 @@ public class ObjectEntryLocalServiceImpl
 				StringBundler.concat(
 					"select count(*) from ",
 					dynamicObjectDefinitionTable.getTableName(), " where ",
-					dbColumnName, " = ", dbColumnValue));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					dbColumnName, " = ?"))) {
 
-			resultSet.next();
+			preparedStatement.setLong(1, dbColumnValue);
 
-			count = resultSet.getInt(1);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
+
+				count = resultSet.getInt(1);
+			}
 		}
 		catch (SQLException sqlException) {
 			throw new SystemException(sqlException);
@@ -6808,13 +6814,16 @@ public class ObjectEntryLocalServiceImpl
 					"select count(*) from ",
 					dynamicObjectDefinitionTable.getTableName(), " where ",
 					dynamicObjectDefinitionTable.getPrimaryKeyColumnName(),
-					" != ", objectEntryId, " and ", dbColumnName, " = ",
-					dbColumnValue));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					" != ? and ", dbColumnName, " = ?"))) {
 
-			resultSet.next();
+			preparedStatement.setLong(1, objectEntryId);
+			preparedStatement.setLong(2, dbColumnValue);
 
-			count = resultSet.getInt(1);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
+
+				count = resultSet.getInt(1);
+			}
 		}
 		catch (SQLException sqlException) {
 			throw new SystemException(sqlException);

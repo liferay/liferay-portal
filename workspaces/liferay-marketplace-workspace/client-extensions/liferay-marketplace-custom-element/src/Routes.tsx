@@ -22,6 +22,9 @@ const lazyRoutes = {
 	'license-agreement': React.lazy(
 		() => import('./pages/LicenseAgreementPage')
 	),
+	'new-account-trigger': React.lazy(
+		() => import('./pages/NewAccount/NewAccountButton')
+	),
 	'next-steps': React.lazy(() => import('./pages/NextSteps')),
 	'oauth2-authorize': React.lazy(
 		() => import('./pages/OAuth2Authorize/OAuth2AuthorizeRouter')
@@ -61,7 +64,13 @@ export default function Routes({path, properties}: AppRoutesProps) {
 
 	return (
 		<Suspense
-			fallback={<Loading displayType="secondary" shape="squares" />}
+			fallback={
+				<Loading
+					className="mt-4"
+					displayType="secondary"
+					shape="squares"
+				/>
+			}
 		>
 			<Route properties={properties} />
 		</Suspense>

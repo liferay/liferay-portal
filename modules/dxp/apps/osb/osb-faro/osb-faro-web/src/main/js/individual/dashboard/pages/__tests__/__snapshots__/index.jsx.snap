@@ -62,6 +62,7 @@ exports[`Individuals Dashboard renders 1`] = `
             >
               <button
                 aria-expanded="false"
+                aria-label="Open Menu, Current Page: Overview"
                 class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
                 type="button"
               >
@@ -95,9 +96,7 @@ exports[`Individuals Dashboard renders 1`] = `
                         class="nav-link"
                         href="/workspace/123/contacts/individuals"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Overview
                         </span>
                       </a>
@@ -109,9 +108,7 @@ exports[`Individuals Dashboard renders 1`] = `
                         class="nav-link"
                         href="/workspace/123/contacts/individuals/known-individuals"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Known Individuals
                         </span>
                       </a>
@@ -123,9 +120,7 @@ exports[`Individuals Dashboard renders 1`] = `
                         class="nav-link"
                         href="/workspace/123/contacts/individuals/interests"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Interests
                         </span>
                       </a>
@@ -137,9 +132,7 @@ exports[`Individuals Dashboard renders 1`] = `
                         class="nav-link"
                         href="/workspace/123/contacts/individuals/distribution"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Distribution
                         </span>
                       </a>

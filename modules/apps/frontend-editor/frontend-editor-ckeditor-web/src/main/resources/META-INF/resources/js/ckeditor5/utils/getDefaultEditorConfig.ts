@@ -3,18 +3,24 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Alignment} from '@ckeditor/ckeditor5-alignment/dist/index.js';
 import {
-	Alignment,
-	BlockQuote,
-	BlockToolbar,
 	Bold,
-	EditorConfig,
-	Essentials,
-	Font,
+	Italic,
+	Strikethrough,
+	Underline,
+} from '@ckeditor/ckeditor5-basic-styles/dist/index.js';
+import {BlockQuote} from '@ckeditor/ckeditor5-block-quote/dist/index.js';
+import {EditorConfig} from '@ckeditor/ckeditor5-core/dist/index.js';
+import {Essentials} from '@ckeditor/ckeditor5-essentials/dist/index.js';
+import {Font} from '@ckeditor/ckeditor5-font/dist/index.js';
+import {Heading} from '@ckeditor/ckeditor5-heading/dist/index.js';
+import {HorizontalLine} from '@ckeditor/ckeditor5-horizontal-line/dist/index.js';
+import {
 	GeneralHtmlSupport,
 	GeneralHtmlSupportConfig,
-	Heading,
-	HorizontalLine,
+} from '@ckeditor/ckeditor5-html-support/dist/index.js';
+import {
 	Image,
 	ImageBlock,
 	ImageCaption,
@@ -22,23 +28,23 @@ import {
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
-	Indent,
-	Italic,
-	Link,
-	List,
-	MediaEmbed,
-	Paragraph,
-	PasteFromOffice,
-	RemoveFormat,
-	SourceEditing,
-	Strikethrough,
-	Style,
+} from '@ckeditor/ckeditor5-image/dist/index.js';
+import {Indent} from '@ckeditor/ckeditor5-indent/dist/index.js';
+import {Link} from '@ckeditor/ckeditor5-link/dist/index.js';
+import {List} from '@ckeditor/ckeditor5-list/dist/index.js';
+import {MediaEmbed} from '@ckeditor/ckeditor5-media-embed/dist/index.js';
+import {Paragraph} from '@ckeditor/ckeditor5-paragraph/dist/index.js';
+import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office/dist/index.js';
+import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format/dist/index.js';
+import {SourceEditing} from '@ckeditor/ckeditor5-source-editing/dist/index.js';
+import {Style} from '@ckeditor/ckeditor5-style/dist/index.js';
+import {
 	Table,
 	TableCaption,
 	TableProperties,
 	TableToolbar,
-	Underline,
-} from 'ckeditor5';
+} from '@ckeditor/ckeditor5-table/dist/index.js';
+import {BlockToolbar} from '@ckeditor/ckeditor5-ui/dist/index.js';
 import {sub} from 'frontend-js-web';
 
 import AICreator from '../plugins/AICreator';

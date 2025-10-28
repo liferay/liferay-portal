@@ -393,10 +393,7 @@ test(
 
 		// Create main structure
 
-		const erc = getRandomString();
-
-		await structureBuilderPage.createStructureFromData({
-			erc,
+		const id = await structureBuilderPage.createStructureFromData({
 			label: getRandomString(),
 			page: structureBuilderPage,
 		});
@@ -443,7 +440,7 @@ test(
 
 		await structureBuilderPage.publishStructure();
 
-		await structureBuilderPage.editStructure(erc);
+		await structureBuilderPage.editStructure(id);
 
 		await expect(page.locator('.treeview-link').nth(2)).toHaveText('Text');
 

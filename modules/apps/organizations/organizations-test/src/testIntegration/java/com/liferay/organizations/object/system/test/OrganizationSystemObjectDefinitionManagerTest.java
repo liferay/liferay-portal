@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -71,47 +72,71 @@ public class OrganizationSystemObjectDefinitionManagerTest
 
 	@Test
 	public void testAddBaseModel() throws Exception {
+
+		// With permissions
+
+		User user1 = TestPropsValues.getUser();
+
+		setUser(user1);
+
+		String comment = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+
+		Map<String, Object> values = HashMapBuilder.<String, Object>put(
+			"comment", comment
+		).put(
+			"name", name
+		).build();
+
 		int organizationsCount =
 			_organizationLocalService.getOrganizationsCount();
 
-		String comments1 = RandomTestUtil.randomString();
-		String name1 = RandomTestUtil.randomString();
-
-		long organizationId1 = _addBaseModel(
-			HashMapBuilder.<String, Object>put(
-				"comment", comments1
-			).put(
-				"name", name1
-			).build());
+		long organizationId1 = systemObjectDefinitionManager.addBaseModel(
+			true, user1, values);
 
 		_assertCount(organizationsCount + 1);
-
-		String comments2 = RandomTestUtil.randomString();
-		String name2 = RandomTestUtil.randomString();
-
-		long organizationId2 = _addBaseModel(
-			HashMapBuilder.<String, Object>put(
-				"comment", comments2
-			).put(
-				"name", name2
-			).build());
-
-		_assertCount(organizationsCount + 2);
 
 		Organization organization1 = _organizationLocalService.getOrganization(
 			organizationId1);
 
-		Assert.assertEquals(comments1, organization1.getComments());
-		Assert.assertEquals(name1, organization1.getName());
+		Assert.assertEquals(comment, organization1.getComments());
+		Assert.assertEquals(name, organization1.getName());
+
+		comment = RandomTestUtil.randomString();
+		name = RandomTestUtil.randomString();
+
+		long organizationId2 = systemObjectDefinitionManager.addBaseModel(
+			true, user1,
+			HashMapBuilder.<String, Object>put(
+				"comment", comment
+			).put(
+				"name", name
+			).build());
+
+		_assertCount(organizationsCount + 2);
 
 		Organization organization2 = _organizationLocalService.getOrganization(
 			organizationId2);
 
-		Assert.assertEquals(comments2, organization2.getComments());
-		Assert.assertEquals(name2, organization2.getName());
+		Assert.assertEquals(comment, organization2.getComments());
+		Assert.assertEquals(name, organization2.getName());
 
 		_organizationLocalService.deleteOrganization(organizationId1);
 		_organizationLocalService.deleteOrganization(organizationId2);
+
+		// Without permissions
+
+		User user2 = UserTestUtil.addUser();
+
+		setUser(user2);
+
+		AssertUtils.assertFailure(
+			PortalException.class,
+			StringBundler.concat(
+				"User ", user2.getUserId(), " must have ", PortletKeys.PORTAL,
+				", ADD_ORGANIZATION permission for null "),
+			() -> systemObjectDefinitionManager.addBaseModel(
+				true, user2, values));
 	}
 
 	@Test
@@ -119,7 +144,8 @@ public class OrganizationSystemObjectDefinitionManagerTest
 		int organizationsCount =
 			_organizationLocalService.getOrganizationsCount();
 
-		long organizationId = _addBaseModel(
+		long organizationId = systemObjectDefinitionManager.addBaseModel(
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.<String, Object>put(
 				"comment", RandomTestUtil.randomString()
 			).put(
@@ -254,11 +280,6 @@ public class OrganizationSystemObjectDefinitionManagerTest
 	@Override
 	protected String getSystemObjectDefinitionName() {
 		return "Organization";
-	}
-
-	private long _addBaseModel(Map<String, Object> values) throws Exception {
-		return systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(), values);
 	}
 
 	private void _assertCount(int count) throws Exception {

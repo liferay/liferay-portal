@@ -202,6 +202,10 @@
 		<filter-class>com.liferay.portal.servlet.filters.password.modified.PasswordModifiedFilter</filter-class>
 	</filter>
 	<filter>
+		<filter-name>Portal Instances Filter</filter-name>
+		<filter-class>com.liferay.portal.servlet.filters.portal.instances.PortalInstancesFilter</filter-class>
+	</filter>
+	<filter>
 		<filter-name>Secure Friendly URL Servlet Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.secure.SecureFilter</filter-class>
 		<init-param>
@@ -329,6 +333,12 @@
 		<filter-name>WebLogic Include Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.weblogic.WebLogicIncludeFilter</filter-class>
 	</filter>
+	<filter-mapping>
+		<filter-name>Portal Instances Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>ERROR</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>Ignore Filter - FTL</filter-name>
 		<url-pattern>*.ftl</url-pattern>

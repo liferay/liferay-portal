@@ -100,7 +100,8 @@ public class ContentFlagsFragmentRendererTest {
 
 	private FragmentEntryLink _addFragmentEntryLink() throws Exception {
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+			null, TestPropsValues.getUserId(), _group.getGroupId(), null, null,
+			null,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			_layout.getPlid(), StringPool.BLANK, StringPool.BLANK,

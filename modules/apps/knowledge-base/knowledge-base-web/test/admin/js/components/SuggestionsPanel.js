@@ -6,7 +6,7 @@
 import {cleanup, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import SuggestionsPanel from '../../../../src/main/resources/META-INF/resources/js/admin/components/SuggestionsPanel';
 
@@ -20,7 +20,7 @@ describe('Suggestions Panel', () => {
 	it('renders empty message if there are no items', () => {
 		const {getAllByRole, getByText} = render(<SuggestionsPanel />);
 
-		expect(getAllByRole('img').length).toBe(2);
+		expect(getAllByRole('presentation').length).toBe(2);
 		expect(getByText(EMPTY_STATE_TEXT)).toBeInTheDocument();
 	});
 });

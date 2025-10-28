@@ -18,6 +18,7 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.i
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.FragmentLayoutStructureItemImporter;
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.LayoutStructureItemImporter;
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.RowLayoutStructureItemImporter;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.WidgetInstanceLayoutStructureItemImporter;
 
 import java.util.EnumMap;
 
@@ -74,6 +75,9 @@ public class LayoutStructureItemImporterUtil {
 		_layoutStructureItemImporters.put(
 			PageElementDefinition.Type.MODULE,
 			new ColumnLayoutStructureItemImporter());
+		_layoutStructureItemImporters.put(
+			PageElementDefinition.Type.WIDGET,
+			new WidgetInstanceLayoutStructureItemImporter());
 	}
 
 }

@@ -66,7 +66,11 @@ export default function PublishModal({
 
 	return (
 		<ClayModal className="m-0" observer={observer} size="md">
-			<ClayModal.Header>{heading}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{heading}
+			</ClayModal.Header>
 
 			<ClayModal.Body className="m-0">
 				{showErrorAlert && dateError ? (

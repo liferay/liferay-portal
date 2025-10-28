@@ -24,7 +24,9 @@ const DisableJobModal: React.FC<IDisableJobModalProps> = ({
 }) => {
 	return (
 		<ClayModal observer={observer} status="warning">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(Liferay.Language.get('disable-x'), [`"${title}"`])}
 			</ClayModal.Header>
 

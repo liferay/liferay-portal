@@ -9,7 +9,7 @@ import React from 'react';
 import CriteriaRowReadable from '../../../../src/main/resources/META-INF/resources/js/components/criteria_builder/CriteriaRowReadable';
 import {dateToInternationalHuman} from '../../../../src/main/resources/META-INF/resources/js/utils/utils';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {
 	booleanCriterion,

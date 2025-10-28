@@ -23,8 +23,6 @@ public class BatchEngineImportTaskConstants {
 	public static final String IMPORT_STRATEGY_STRING_ON_ERROR_FAIL =
 		"ON_ERROR_FAIL";
 
-	public static final int IMPORT_STRATEGY_TRANSACTIONAL_ON_ERROR_CONTINUE = 3;
-
 	public static int getImportStrategy(String importStrategy) {
 		if (importStrategy.equals(IMPORT_STRATEGY_STRING_ON_ERROR_CONTINUE)) {
 			return IMPORT_STRATEGY_ON_ERROR_CONTINUE;

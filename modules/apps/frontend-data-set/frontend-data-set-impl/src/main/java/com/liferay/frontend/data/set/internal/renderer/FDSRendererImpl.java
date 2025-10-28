@@ -180,6 +180,8 @@ public class FDSRendererImpl implements FDSRenderer {
 						return filtersJSONArray;
 					}
 				).put(
+					"id", fdsName
+				).put(
 					"itemsActions",
 					() -> {
 						List<FDSActionDropdownItem> fdsActionDropdownItems =

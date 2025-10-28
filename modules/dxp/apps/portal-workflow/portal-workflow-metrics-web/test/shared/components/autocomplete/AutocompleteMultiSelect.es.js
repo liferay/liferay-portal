@@ -8,7 +8,7 @@ import React, {cloneElement, useState} from 'react';
 
 import {AutocompleteMultiSelect} from '../../../../src/main/resources/META-INF/resources/js/shared/components/autocomplete/AutocompleteMultiSelect.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const items = [
 	{id: 1, name: '1test test1'},

@@ -78,7 +78,7 @@
 		</div>
 
 		<div class="component-button recipe-feedback text-break">
-			<a class="btn btn-nm btn-link page-editor__editable" data-lfr-editable-id="link" data-lfr-editable-type="link" data-tooltip-floating="true" href="https://liferay.dev/c/portal/login?redirect=https://liferay.dev/ask/questions/liferay-learn-feedback/new" id="fragment-txnc-link">
+			<a class="btn btn-nm btn-link page-editor__editable" data-lfr-editable-id="link" data-lfr-editable-type="link" data-tooltip-floating="true" href="http://discuss.liferay.com" id="fragment-txnc-link">
 				<@liferay_ui["message"] key="submit-feedback" />
 			</a>
 		</div>

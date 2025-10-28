@@ -87,8 +87,9 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 					String propertyKey = StringUtil.extractFirst(
 						StringUtil.trimLeading(line), "=");
 
-					if (!propertyKey.contains("regex") &&
-						!allowedSingleLinePropertyKeys.contains(propertyKey)) {
+					if (!allowedSingleLinePropertyKeys.contains(propertyKey) &&
+						!propertyKey.contains("regex") &&
+						!propertyKey.startsWith("feature.flag.")) {
 
 						line = line.replaceFirst("=", "=\\\\\n        ");
 

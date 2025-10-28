@@ -6,13 +6,16 @@
 package com.liferay.source.formatter.dependencies.upgrade;
 
 /**
- * @author Mateus Xavier 
+ * @author Mateus Xavier
  */
 public class LPD_48402 {
 
-	public void method(AccountEntry accountEntry, CommerceContext commerceContext) {
+	public void method(
+		AccountEntry accountEntry, CommerceContext commerceContext) {
+
 		accountEntry.getAccountEntryId();
-		commerceContext.getAccountEntry().getAccountEntryId();
+		commerceContext.getAccountEntry(
+		).getAccountEntryId();
 	}
 
 }

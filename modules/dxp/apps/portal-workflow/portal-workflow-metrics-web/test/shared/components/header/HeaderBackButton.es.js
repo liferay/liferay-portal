@@ -9,7 +9,7 @@ import React from 'react';
 import HeaderBackButton from '../../../../src/main/resources/META-INF/resources/js/shared/components/header/HeaderBackButton.es';
 import {MockRouter} from '../../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('The HeaderBackButton component should', () => {
 	let containerWrapper;

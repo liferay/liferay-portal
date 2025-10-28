@@ -19,6 +19,7 @@ import com.liferay.object.rest.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.object.rest.dto.v1_0.util.ScopeUtil;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
+import com.liferay.object.rest.manager.v1_0.util.ObjectEntryManagerUtil;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.web.internal.info.item.handler.ObjectEntryInfoItemExceptionRequestHandler;
@@ -101,12 +102,16 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 				infoItemFieldValues, scopeKey);
 
 			com.liferay.object.rest.dto.v1_0.ObjectEntry dtoObjectEntry =
-				objectEntryManager.partialUpdateObjectEntry(
-					objectEntry.getCompanyId(),
-					new DefaultDTOConverterContext(
-						false, null, null, null, null, themeDisplay.getLocale(),
-						null, themeDisplay.getUser()),
-					objectEntry.getExternalReferenceCode(), _objectDefinition,
+				ObjectEntryManagerUtil.partialUpdateObjectEntry(
+					objectEntryManager.getObjectEntry(
+						objectEntry.getCompanyId(),
+						new DefaultDTOConverterContext(
+							false, null, null, null, null,
+							themeDisplay.getLocale(), null,
+							themeDisplay.getUser()),
+						objectEntry.getExternalReferenceCode(),
+						_objectDefinition, scopeKey),
+					_objectDefinition.getObjectDefinitionId(),
 					new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
 						{
 							setFriendlyUrlPath(
@@ -128,8 +133,7 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 								() -> _toTaxonomyCategoryBriefs(
 									serviceContext.getAssetCategoryIds()));
 						}
-					},
-					scopeKey);
+					});
 
 			if (curProperties.containsKey("displayDate") ||
 				curProperties.containsKey("expirationDate") ||
@@ -263,6 +267,8 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 						setScope(
 							() -> ScopeUtil.toScope(
 								assetCategory.getGroupId()));
+						setTaxonomyCategoryExternalReferenceCode(
+							assetCategory::getExternalReferenceCode);
 						setTaxonomyCategoryId(() -> assetCategoryId);
 					}
 				};

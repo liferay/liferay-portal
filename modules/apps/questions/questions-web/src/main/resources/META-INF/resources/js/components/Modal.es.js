@@ -29,7 +29,11 @@ export default function Modal({
 					observer={observer}
 					status={status}
 				>
-					<ClayModal.Header>{title}</ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
+						{title}
+					</ClayModal.Header>
 
 					<ClayModal.Body>{body}</ClayModal.Body>
 

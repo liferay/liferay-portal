@@ -530,7 +530,8 @@ public class LayoutWorkflowHandlerTest {
 				JSONUtil.put("headingLevel", "h1")
 			).toString(),
 			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
 			fragmentEntry.getType(), null, 0, segmentsExperienceId);
 	}

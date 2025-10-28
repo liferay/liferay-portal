@@ -19,7 +19,9 @@ export function GroovyScriptWarningModal({
 
 	return (
 		<ClayModal center observer={observer} size="lg" status="warning">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('error-updating-definition')}
 			</ClayModal.Header>
 

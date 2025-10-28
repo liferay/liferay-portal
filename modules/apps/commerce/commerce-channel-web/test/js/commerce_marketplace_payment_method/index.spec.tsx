@@ -8,7 +8,7 @@ import mockFetch from 'jest-fetch-mock';
 import React from 'react';
 import {act} from 'react-dom/test-utils';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import CommerceChannelAddPaymentMethod from '../../../src/main/resources/META-INF/resources/js/commerce_marketplace_payment_method';
 import marketplacePermissionsMock from '../__mock__/marketplacePermissions';

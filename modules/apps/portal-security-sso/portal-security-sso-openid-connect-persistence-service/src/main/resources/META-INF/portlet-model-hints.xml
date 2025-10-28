@@ -24,4 +24,13 @@
 			<hint name="max-length">2000</hint>
 		</field>
 	</model>
+	<model name="com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser">
+		<field name="mvccVersion" type="long" />
+		<field name="openIdConnectUserId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="issuer" type="String" />
+		<field name="subject" type="String" />
+	</model>
 </model-hints>

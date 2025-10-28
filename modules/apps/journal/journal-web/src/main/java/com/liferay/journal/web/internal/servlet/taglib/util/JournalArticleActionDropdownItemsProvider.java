@@ -1078,21 +1078,8 @@ public class JournalArticleActionDropdownItemsProvider {
 	}
 
 	private boolean _hasDeleteArticleAction() throws PortalException {
-		if (!JournalArticlePermission.contains(
-				_themeDisplay.getPermissionChecker(), _article,
-				ActionKeys.DELETE)) {
-
-			return false;
-		}
-
-		int count = JournalArticleLocalServiceUtil.getArticlesCount(
-			_article.getGroupId(), _article.getArticleId());
-
-		if (count > 1) {
-			return true;
-		}
-
-		return false;
+		return JournalArticlePermission.contains(
+			_themeDisplay.getPermissionChecker(), _article, ActionKeys.DELETE);
 	}
 
 	private boolean _hasTranslatePermission() {

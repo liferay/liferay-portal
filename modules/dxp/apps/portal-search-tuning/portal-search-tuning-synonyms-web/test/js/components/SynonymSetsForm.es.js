@@ -8,7 +8,7 @@ import React from 'react';
 
 import SynonymSetsForm from '../../../src/main/resources/META-INF/resources/js/components/SynonymSetsForm.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const FORM_NAME = 'testForm';
 

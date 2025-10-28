@@ -20,7 +20,6 @@ const BlockList: React.FC<IBlockListProps> = ({groupId, ...otherProps}) => (
 			},
 			{active: true, label: Liferay.Language.get('block-list')}
 		]}
-		groupId={groupId}
 		pageDescription={Liferay.Language.get(
 			'blocked-events-are-not-processed-by-analytics-cloud'
 		)}

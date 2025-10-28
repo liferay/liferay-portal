@@ -1,0 +1,30 @@
+.lfr-ck .ck.ck-editor.ck-rounded-corners {
+	.ck.ck-editor__main > .ck-editor__editable {
+		background-color: $gray-200;
+		border-bottom-left-radius: $border-radius;
+		border-bottom-right-radius: $border-radius;
+		border-color: $gray-300;
+		border-top-left-radius: 0 !important;
+		border-top-right-radius: 0 !important;
+	}
+
+	.ck.ck-toolbar {
+		border-bottom-left-radius: 0 !important;
+		border-bottom-right-radius: 0 !important;
+		border-color: $gray-300;
+		border-top-left-radius: $border-radius;
+		border-top-right-radius: $border-radius;
+	}
+
+	> .ck.ck-editor__top {
+		> .ck.ck-sticky-panel {
+			> .ck.ck-sticky-panel__content {
+				border-bottom-left-radius: 0 !important;
+				border-bottom-right-radius: 0 !important;
+				border-color: $gray-300;
+				border-top-left-radius: $border-radius;
+				border-top-right-radius: $border-radius;
+			}
+		}
+	}
+}

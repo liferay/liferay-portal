@@ -88,7 +88,6 @@ const View: React.FC<IViewProps> = ({addAlert, close, history, job, open}) => {
 							label: name
 						}
 					]}
-					groupId={groupId}
 					pageActions={
 						currentUser.isAdmin()
 							? [

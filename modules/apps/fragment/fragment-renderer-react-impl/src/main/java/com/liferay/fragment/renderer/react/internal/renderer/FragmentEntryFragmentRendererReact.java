@@ -201,8 +201,9 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 				sb.append("</style>");
 			}
 			else {
-				String outputKey =
-					fragmentEntryLink.getFragmentEntryId() + "_CSS";
+				String outputKey = StringBundler.concat(
+					fragmentEntryLink.getFragmentEntryERC(), "_",
+					fragmentEntryLink.getFragmentEntryGroupId(), "_CSS");
 
 				OutputData outputData =
 					(OutputData)httpServletRequest.getAttribute(

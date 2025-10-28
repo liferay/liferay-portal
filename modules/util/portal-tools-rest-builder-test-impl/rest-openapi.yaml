@@ -1411,6 +1411,21 @@ paths:
                     description:
                         "OK"
             tags: ["ERCScopedTestEntity"]
+    "/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}":
+        delete:
+            operationId: deleteERCScopedTestEntity
+            parameters:
+                -   in: path
+                    name: ercScopedTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCScopedTestEntity"]
     "/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}/permissions":
         get:
             operationId: getERCScopedTestEntityPermissionsPage

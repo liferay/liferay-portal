@@ -139,7 +139,9 @@ export function CreateAPISchemaModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('new-schema')}
 			</ClayModal.Header>
 

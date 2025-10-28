@@ -50,7 +50,7 @@ interface ICellProps {
 }
 
 const AnalyticsDataCell: React.FC<ICellProps> = ({data}) => (
-	<td>
+	<td className='text-center'>
 		{validAnalyticsConfig(new DataSource(fromJS(data))) && (
 			<ClayIcon className='icon-root' symbol='check' />
 		)}
@@ -58,7 +58,7 @@ const AnalyticsDataCell: React.FC<ICellProps> = ({data}) => (
 );
 
 const IndividualsDataCell: React.FC<ICellProps> = ({data}) => (
-	<td>
+	<td className='text-center'>
 		{validContactsConfig(new DataSource(fromJS(data))) &&
 			data.status === DataSourceStatuses.Active && (
 				<ClayIcon className='icon-root' symbol='check' />
@@ -265,7 +265,7 @@ const DataSourceList: React.FC<IDataSourceListProps> = ({
 				}
 			]}
 			trigger={
-				<ClayButton displayType='primary'>
+				<ClayButton displayType='primary' size='sm'>
 					{Liferay.Language.get('add-data-source')}
 
 					<ClayIcon className='ml-2' symbol='caret-bottom' />
@@ -326,16 +326,15 @@ const DataSourceList: React.FC<IDataSourceListProps> = ({
 	return (
 		<BasePage
 			className={className}
-			groupId={groupId}
 			key='dataSourceListpage'
 			pageDescription={Liferay.Language.get(
-				'manage-data-sources-that-are-synced-with-analytics-cloud'
+				'manage-and-connect-data-sources-to-bring-in-data-from-various-sources-into-liferay-analytics-cloud'
 			)}
 			pageTitle={Liferay.Language.get('data-sources')}
 		>
 			<EmbeddedAlertList alerts={alerts} />
 
-			<Card pageDisplay>
+			<Card>
 				<ListComponent
 					checkDisabled={disableRow}
 					columns={[

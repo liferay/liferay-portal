@@ -164,14 +164,20 @@ renderResponse.setTitle(exportTranslationDisplayContext.getTitle());
 						/>
 					</div>
 
-					<div class="btn-group-item">
-						<clay:link
-							displayType="secondary"
-							href="<%= exportTranslationDisplayContext.getRedirect() %>"
-							label="cancel"
-							type="button"
-						/>
-					</div>
+					<%
+					String redirectURL = exportTranslationDisplayContext.getRedirect();
+					%>
+
+					<c:if test="<%= Validator.isNotNull(redirectURL) %>">
+						<div class="btn-group-item">
+							<clay:link
+								displayType="secondary"
+								href="<%= redirectURL %>"
+								label="cancel"
+								type="button"
+							/>
+						</div>
+					</c:if>
 				</div>
 
 				<react:component

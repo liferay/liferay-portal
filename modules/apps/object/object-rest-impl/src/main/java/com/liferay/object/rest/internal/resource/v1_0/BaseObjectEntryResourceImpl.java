@@ -737,8 +737,8 @@ public abstract class BaseObjectEntryResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(objectEntryId);
-		String resourceName = getPermissionCheckerResourceName(objectEntryId);
 		Long resourceId = getPermissionCheckerResourceId(objectEntryId);
+		String resourceName = getPermissionCheckerResourceName(objectEntryId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -2283,8 +2283,8 @@ public abstract class BaseObjectEntryResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(objectEntryId);
-		String resourceName = getPermissionCheckerResourceName(objectEntryId);
 		Long resourceId = getPermissionCheckerResourceId(objectEntryId);
+		String resourceName = getPermissionCheckerResourceName(objectEntryId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

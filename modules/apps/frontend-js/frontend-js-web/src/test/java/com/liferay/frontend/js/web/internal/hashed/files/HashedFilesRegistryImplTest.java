@@ -59,6 +59,9 @@ public class HashedFilesRegistryImplTest {
 
 		ReflectionTestUtil.setFieldValue(
 			_hashedFilesRegistryImpl, "_portal", _mockPortal("liferay"));
+		ReflectionTestUtil.setFieldValue(
+			_hashedFilesRegistryImpl, "_serviceTrackerMap",
+			_mockServiceTrackerMap("/main.css", "/liferay/o/frontend-js-web"));
 
 		Assert.assertNotNull(
 			_hashedFilesRegistryImpl.getResource(

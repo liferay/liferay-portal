@@ -40,6 +40,7 @@ export default function buildStructure({
 			parent: uuid,
 		}),
 		erc: mainObjectDefinition.externalReferenceCode,
+		id: mainObjectDefinition.id,
 		label: mainObjectDefinition.label,
 		name: mainObjectDefinition.name ?? '',
 		spaces: getSpaces(mainObjectDefinition),
@@ -180,10 +181,7 @@ export function buildReferencedStructure({
 
 	const url = new URL(window.location.href);
 
-	url.searchParams.set(
-		'objectDefinitionExternalReferenceCode',
-		objectDefinition.externalReferenceCode
-	);
+	url.searchParams.set('objectDefinitionId', String(objectDefinition.id));
 	url.searchParams.set(
 		'objectFolderExternalReferenceCode',
 		String(objectDefinition.objectFolderExternalReferenceCode)

@@ -1,0 +1,24 @@
+#cloud-config
+
+#
+# The first line/comment is the shebang line for AWS cloud-init
+#
+
+package_update: true
+package_upgrade: true
+runcmd:
+    -   [chown, --recursive, "liferay:liferay", /opt/liferay]
+    -   [chmod, +x, /opt/liferay/bin/run_on_boot.sh]
+    -   [su, "-", liferay, -c, /opt/liferay/bin/run_on_boot.sh]
+users:
+    -   default
+    -   homedir: /opt/liferay
+        name: liferay
+        shell: /bin/bash
+write_files:
+    -   content: |
+            export PS1='\[\e[31m\]\u@\h:\w\$ \[\e[0m\]'
+            export KUBE_CONFIG_PATH="${HOME}/.kube/config"
+        owner: liferay:liferay
+        path: /opt/liferay/.bash_profile
+        permissions: "0644"

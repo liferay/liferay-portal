@@ -64,10 +64,7 @@ test(
 
 		// Create another one and reference the first two
 
-		const externalReferenceCode4 = getRandomString();
-
-		await structureBuilderPage.createStructureFromData({
-			erc: externalReferenceCode4,
+		const id4 = await structureBuilderPage.createStructureFromData({
 			label: label4,
 			page: structureBuilderPage,
 		});
@@ -146,7 +143,7 @@ test(
 
 		// Check everything is persisted
 
-		await structureBuilderPage.editStructure(externalReferenceCode4);
+		await structureBuilderPage.editStructure(id4);
 
 		await expect(
 			page.locator('.treeview-link', {hasText: label1})
@@ -302,7 +299,7 @@ test(
 
 		// Create four structures, one of them in draft
 
-		await structureBuilderPage.createStructureFromData({
+		const idA = await structureBuilderPage.createStructureFromData({
 			erc: labelA,
 			label: labelA,
 			page: structureBuilderPage,
@@ -314,13 +311,13 @@ test(
 			page: structureBuilderPage,
 		});
 
-		await structureBuilderPage.createStructureFromData({
+		const idC = await structureBuilderPage.createStructureFromData({
 			erc: labelC,
 			label: labelC,
 			page: structureBuilderPage,
 		});
 
-		await structureBuilderPage.createStructureFromData({
+		const idD = await structureBuilderPage.createStructureFromData({
 			erc: labelD,
 			label: labelD,
 			page: structureBuilderPage,
@@ -328,13 +325,13 @@ test(
 
 		// C will reference A and D will reference C
 
-		await structureBuilderPage.editStructure(labelC);
+		await structureBuilderPage.editStructure(idC);
 
 		await structureBuilderPage.addReferencedStructures([labelA]);
 
 		await structureBuilderPage.publishStructure();
 
-		await structureBuilderPage.editStructure(labelD);
+		await structureBuilderPage.editStructure(idD);
 
 		await structureBuilderPage.addReferencedStructures([labelC]);
 
@@ -342,7 +339,7 @@ test(
 
 		// Now edit A and check we can reference B, but not C or D
 
-		await structureBuilderPage.editStructure(labelA);
+		await structureBuilderPage.editStructure(idA);
 
 		await clickAndExpectToBeVisible({
 			target: page.getByRole('menuitem', {

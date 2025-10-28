@@ -101,8 +101,7 @@ describe('buildState', () => {
 		};
 
 		const initialState: State = {
-			error: null,
-			history: {deletedChildren: false},
+			history: {deletedChildren: false, modifiedNames: new Set()},
 			invalids: new Map(),
 			publishedChildren: new Set(),
 			selection: [],
@@ -151,8 +150,7 @@ describe('buildState', () => {
 		};
 
 		const initialState: State = {
-			error: null,
-			history: {deletedChildren: false},
+			history: {deletedChildren: false, modifiedNames: new Set()},
 			invalids: new Map(),
 			publishedChildren: new Set(),
 			selection: [],
@@ -212,8 +210,7 @@ describe('buildState', () => {
 		};
 
 		const initialState: State = {
-			error: null,
-			history: {deletedChildren: false},
+			history: {deletedChildren: false, modifiedNames: new Set()},
 			invalids: new Map(),
 			publishedChildren: new Set(),
 			selection: [],

@@ -6,7 +6,6 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import DropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import ClayLink from '@clayui/link';
 import classNames from 'classnames';
 import {postForm, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
@@ -230,31 +229,29 @@ function BulkActions({
 											)}
 								</span>
 
-								<ClayLink
-									className="c-ml-3"
-									href="#"
-									onClick={(event) => {
-										event.preventDefault();
-										onClear();
-									}}
+								<ClayButton
+									className="c-ml-1"
+									displayType="link"
+									onClick={onClear}
+									size="sm"
 								>
 									{Liferay.Language.get('clear')}
-								</ClayLink>
+								</ClayButton>
 
 								{pageSelectedItemsValue.length ===
 									items.length &&
 									showSelectAll &&
 									!allItemsSelectedActive && (
-										<ClayLink
-											className="c-ml-3"
-											href="#"
-											onClick={(event) => {
-												event.preventDefault();
-												handleSelectAll(true);
-											}}
+										<ClayButton
+											className="c-ml-1"
+											displayType="link"
+											onClick={() =>
+												handleSelectAll(true)
+											}
+											size="sm"
 										>
 											{Liferay.Language.get('select-all')}
-										</ClayLink>
+										</ClayButton>
 									)}
 							</li>
 						</ul>

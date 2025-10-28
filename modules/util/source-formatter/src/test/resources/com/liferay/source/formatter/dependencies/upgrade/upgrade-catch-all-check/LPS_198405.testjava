@@ -9,5 +9,4 @@ package com.liferay.source.formatter.dependencies.upgrade;
  * @author Kyle Miho
  */
 public class LPS_198405 implements ConfigurationBeanDeclaration {
-
 }

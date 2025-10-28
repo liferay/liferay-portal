@@ -88,6 +88,14 @@ const ProjectRoutes = () => {
 		[subscriptionGroups]
 	);
 
+	const hasSLASubscription = useMemo(
+		() =>
+			koroneikiAccount?.slaCurrent ||
+			koroneikiAccount?.slaExpired ||
+			koroneikiAccount?.slaFuture,
+		[koroneikiAccount]
+	);
+
 	useEffect(() => {
 		if (project && subscriptionGroups) {
 			dispatch({
@@ -291,7 +299,7 @@ const ProjectRoutes = () => {
 
 					<Route element={<TeamMembers />} path="team-members" />
 					
-					{featureFlags.includes('LRSD-5119') && (
+					{hasSLASubscription && (
 						<Route path="business-events">
 							<Route element={<BusinessEvents />} index />
 							<Route element={<BusinessEventAdd />} path="new"/>

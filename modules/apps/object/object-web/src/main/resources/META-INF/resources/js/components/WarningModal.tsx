@@ -16,7 +16,11 @@ export default function WarningModal({
 }: IProps) {
 	return (
 		<ClayModal center observer={observer} status="warning">
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>{children}</ClayModal.Body>
 

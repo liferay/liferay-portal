@@ -24,7 +24,7 @@ import {
 } from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/experience/actions';
 import ExperienceToolbarSection from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/experience/components/ExperienceToolbarSection';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const MOCK_DELETE_URL = 'delete-experience-test-url';
 const MOCK_DUPLICATE_URL = 'duplicate-experience-test-url';

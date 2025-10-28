@@ -23,7 +23,9 @@ export default function SubmitWarningModal({
 
 	return (
 		<ClayModal observer={observer} status="warning">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('warning')}
 			</ClayModal.Header>
 

@@ -53,10 +53,12 @@ public class CommerceOrderSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
-		OrderResource orderResource = _buildOrderResource(false, user);
+		OrderResource orderResource = _buildOrderResource(
+			checkPermissions, user);
 
 		Order order = orderResource.postOrder(_toOrder(values));
 

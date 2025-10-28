@@ -11,3 +11,13 @@ create table OpenIdConnectSession (
 	idToken TEXT null,
 	refreshToken VARCHAR(2000) null
 );
+
+create table OpenIdConnectUser (
+	mvccVersion LONG default 0 not null,
+	openIdConnectUserId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	createDate DATE null,
+	issuer VARCHAR(75) null,
+	subject VARCHAR(75) null
+);

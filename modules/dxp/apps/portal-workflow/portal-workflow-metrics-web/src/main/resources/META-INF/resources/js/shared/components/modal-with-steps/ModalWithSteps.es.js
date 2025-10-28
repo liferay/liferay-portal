@@ -22,7 +22,11 @@ const ModalWithSteps = ({
 		<>
 			{visible && (
 				<ClayModal observer={observer} size={modalSize}>
-					<ClayModal.Header>{step.title}</ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
+						{step.title}
+					</ClayModal.Header>
 
 					{error && (
 						<ClayAlert

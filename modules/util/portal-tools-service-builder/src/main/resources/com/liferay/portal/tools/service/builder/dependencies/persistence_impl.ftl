@@ -133,7 +133,6 @@ import com.liferay.registry.RegistryUtil;
 
 <#if osgiModule>
 	import org.osgi.framework.ServiceRegistration;
-
 <#else>
 	import com.liferay.registry.ServiceRegistration;
 </#if>

@@ -20,7 +20,10 @@ export default async function writeExportBridge(
 	overridenPackageSymbols,
 	moduleName
 ) {
-	const symbols = getExportedSymbols(overridenPackageSymbols, moduleName);
+	const symbols = await getExportedSymbols(
+		overridenPackageSymbols,
+		moduleName
+	);
 
 	const exportBridgePath = getExportBridgePath(moduleName);
 

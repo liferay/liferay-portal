@@ -35,19 +35,19 @@ test(
 				objectFolderExternalReferenceCode: 'L_CMS_FILE_TYPES',
 				status: {code: 2},
 			})) as ObjectDefinition;
-		const stucctureName = objectDefinition.name;
+		const structureName = objectDefinition.name;
 
 		await structuresPage.goto();
 
 		await structuresPage.execItemAction({
 			action: 'Delete',
-			filter: stucctureName,
+			filter: structureName,
 		});
-		await waitForAlert(page, `${stucctureName} was deleted successfully`, {
+		await waitForAlert(page, `${structureName} was deleted successfully`, {
 			type: 'success',
 		});
 
-		await expect(structuresPage.getItem(stucctureName)).toBeHidden();
+		await expect(structuresPage.getItem(structureName)).toBeHidden();
 	}
 );
 
@@ -60,25 +60,25 @@ test(
 				objectFolderExternalReferenceCode: 'L_CMS_FILE_TYPES',
 				status: {code: 0},
 			})) as ObjectDefinition;
-		const stucctureName = objectDefinition.name;
+		const structureName = objectDefinition.name;
 
 		await structuresPage.goto();
 
 		await structuresPage.execItemAction({
 			action: 'Delete',
-			filter: stucctureName,
+			filter: structureName,
 		});
 
 		await page
-			.getByPlaceholder('Confirm Structure Name')
-			.fill(stucctureName);
+			.getByPlaceholder('Confirm Content Structure Name')
+			.fill(structureName);
 		await page.getByRole('button', {name: 'Delete'}).click();
 
-		await waitForAlert(page, `${stucctureName} was deleted successfully`, {
+		await waitForAlert(page, `${structureName} was deleted successfully`, {
 			type: 'success',
 		});
 
-		await expect(structuresPage.getItem(stucctureName)).toBeHidden();
+		await expect(structuresPage.getItem(structureName)).toBeHidden();
 	}
 );
 
@@ -171,27 +171,27 @@ test(
 			.click();
 
 		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Edit'})
+		).toBeVisible();
+		expect(
 			page.getByRole('menuitem', {exact: true, name: 'View Usages'})
 		).toBeVisible();
 		expect(
 			page.getByRole('menuitem', {exact: true, name: 'Make a Copy'})
 		).toBeVisible();
 		expect(
-			page.getByRole('menuitem', {exact: true, name: 'Permissions'})
-		).toBeVisible();
-
-		expect(
-			page.getByRole('menuitem', {exact: true, name: 'Edit'})
-		).toBeHidden();
-		expect(
 			page.getByRole('menuitem', {exact: true, name: 'Export as JSON'})
-		).toBeHidden();
+		).toBeVisible();
 		expect(
 			page.getByRole('menuitem', {
 				exact: true,
 				name: 'Import and Override',
 			})
-		).toBeHidden();
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Permissions'})
+		).toBeVisible();
+
 		expect(
 			page.getByRole('menuitem', {exact: true, name: 'Delete'})
 		).toBeHidden();

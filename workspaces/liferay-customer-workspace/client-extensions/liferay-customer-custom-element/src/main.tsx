@@ -11,7 +11,7 @@ import {Root, createRoot} from 'react-dom/client';
 import {SWRConfig} from 'swr';
 
 import {AppPropertiesContext} from './contexts/AppPropertiesContext';
-import AttachmentUploader from './features/attachment-uploader';
+import Attachments from './features/attachments';
 import Onboarding from './features/onboarding';
 import Project from './features/project';
 import Projects from './features/projects';
@@ -26,7 +26,7 @@ import './main.css';
 const ELEMENT_ID = 'liferay-customer-custom-element';
 
 const AppRoutes = {
-	attachmentUploader: AttachmentUploader,
+	attachments: Attachments,
 	onboarding: Onboarding,
 	project: Project,
 	projects: Projects,

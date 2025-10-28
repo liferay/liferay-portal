@@ -9,7 +9,7 @@ import React from 'react';
 import WorkloadByStepCard from '../../../../src/main/resources/META-INF/resources/js/components/process-metrics/workload-by-step-card/WorkloadByStepCard.es';
 import {MockRouter} from '../../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockProps = {
 	page: 1,

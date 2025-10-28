@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -89,6 +90,12 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			themeDisplay.getCompanyId()
 		).thenReturn(
 			0L
+		);
+
+		Mockito.when(
+			themeDisplay.getUser()
+		).thenReturn(
+			Mockito.mock(User.class)
 		);
 
 		_resetFDSSerializer();

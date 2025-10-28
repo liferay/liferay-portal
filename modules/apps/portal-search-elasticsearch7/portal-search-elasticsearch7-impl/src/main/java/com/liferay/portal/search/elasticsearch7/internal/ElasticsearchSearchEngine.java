@@ -578,8 +578,8 @@ public class ElasticsearchSearchEngine
 			ingestClient.putPipeline(
 				putPipelineRequest, RequestOptions.DEFAULT);
 		}
-		catch (IOException ioException) {
-			_log.error("Unable to put timestamp pipeline", ioException);
+		catch (Exception exception) {
+			_log.error("Unable to put timestamp pipeline", exception);
 		}
 	}
 

@@ -211,14 +211,15 @@ public class PublishLayoutMVCActionCommandTest {
 		FragmentEntryLink publishedLayoutDropzoneFragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				_group.getGroupId(),
-				dropzoneFragmentEntryLink.getFragmentEntryLinkId(),
+				dropzoneFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		Assert.assertNotNull(publishedLayoutDropzoneFragmentEntryLink);
 
 		FragmentEntryLink publishedLayoutFragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
-				_group.getGroupId(), fragmentEntryLink.getFragmentEntryLinkId(),
+				_group.getGroupId(),
+				fragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		Assert.assertNotNull(publishedLayoutFragmentEntryLink);
@@ -669,7 +670,7 @@ public class PublishLayoutMVCActionCommandTest {
 			TestPropsValues.getUserId(),
 			GetterUtil.getLong(
 				fragmentEntryLinkJSONObject.getString("fragmentEntryLinkId")),
-			editableValuesJSONObject.toString());
+			editableValuesJSONObject.toString(), true);
 
 		Map<String, String> map = HashMapBuilder.put(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString()
@@ -706,7 +707,8 @@ public class PublishLayoutMVCActionCommandTest {
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				editableValues, fragmentEntry.getCss(),
 				fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), _draftLayout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				parentItemId, 0, _segmentsExperienceId);
@@ -750,7 +752,8 @@ public class PublishLayoutMVCActionCommandTest {
 
 		return ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			"{}", fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), _draftLayout,
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0, _segmentsExperienceId);

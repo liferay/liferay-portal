@@ -6,7 +6,7 @@
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
@@ -64,7 +64,7 @@ const renderComponent = ({rules = []} = {}) => {
 	);
 
 	act(() => {
-		jest.runAllTimers();
+		jest.advanceTimersByTime(100);
 	});
 };
 

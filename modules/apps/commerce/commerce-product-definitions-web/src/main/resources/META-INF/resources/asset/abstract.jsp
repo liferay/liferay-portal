@@ -9,14 +9,12 @@
 
 <%
 AssetRenderer<?> assetRenderer = (AssetRenderer<?>)request.getAttribute(WebKeys.ASSET_RENDERER);
-
-Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), portletDisplay.getId());
 %>
 
 <liferay-util:html-top
 	outputKey="com.liferay.commerce.product.definitions.web#/asset/abstract.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css", portlet.getTimestamp()) %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="commerce-product-definitions-web/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div class="portlet-commerce-product-definitions">

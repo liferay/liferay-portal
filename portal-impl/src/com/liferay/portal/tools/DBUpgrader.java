@@ -404,6 +404,8 @@ public class DBUpgrader {
 				buildNumber = _getBuildNumberForMissedUpgradeProcesses(
 					buildNumber);
 
+				StartupHelperUtil.setRunOnPortalUpgradeVerifiers(true);
+
 				StartupHelperUtil.upgradeProcess(buildNumber);
 
 				try (Connection connection = DataAccess.getConnection()) {

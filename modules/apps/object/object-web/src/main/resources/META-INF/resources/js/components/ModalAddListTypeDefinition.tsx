@@ -58,7 +58,9 @@ const ModalAddListTypeDefinition: React.FC<
 	return (
 		<ClayModal observer={observer}>
 			<ClayForm onSubmit={handleSubmit}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('new-picklist')}
 				</ClayModal.Header>
 

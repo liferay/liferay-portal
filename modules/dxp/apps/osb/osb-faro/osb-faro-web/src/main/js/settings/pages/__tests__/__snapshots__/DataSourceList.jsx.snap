@@ -3,82 +3,659 @@
 exports[`DataSourceList should render 1`] = `
 <div>
   <div
-    class="settings-base-page-root"
+    class="settings-root"
   >
-    <div
-      class="embedded-alert-list-root notification-alert-list-root"
-    />
-    <div
-      class="maintenance-alert-root"
-    />
-    <div
-      class="content-header"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <div
-        class="header-text"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <div
-          class="d-flex"
+        <li
+          class="tbar-item"
         >
-          <h3
-            class="title-text text-truncate"
+          <div
+            class="component-action"
+          >
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
+              >
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
           >
             <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
+              class="text-dark"
             >
-              Data Sources
+              <span
+                class="text-5 font-weight-bold"
+              >
+                Settings
+              </span>
             </span>
-          </h3>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/apis/tokens"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_api"
+                    />
+                  </svg>
+                </span>
+                APIs
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item active"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
         </div>
-        <div
-          class="description"
-        >
-          Manage Data Sources that are synced with Analytics Cloud.
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
         </div>
-      </div>
+      </nav>
       <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="embedded-alert-list-root"
-      />
-      <div
-        class="card card-root page-display"
+        class="content section-main"
       >
         <div
-          class="toolbar-root"
+          class="settings-base-page-root"
         >
-          <nav
-            class="navbar navbar-root management-bar management-bar-light navbar-expand"
+          <div
+            class="embedded-alert-list-root notification-alert-list-root"
+          />
+          <div
+            class="maintenance-alert-root"
+          />
+          <div
+            class="content-header"
           >
             <div
-              class="container-fluid"
+              class="header-text"
             >
-              <ul
-                class="nav-root front-nav navbar-nav"
-                role="tablist"
+              <div
+                class="d-flex"
               >
-                <li
-                  class="nav-item"
-                  role="presentation"
+                <h3
+                  class="title-text text-truncate"
+                >
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Data Sources
+                  </span>
+                </h3>
+              </div>
+              <div
+                class="description"
+              >
+                Manage and connect data sources to bring in data from various sources into Liferay Analytics Cloud.
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="embedded-alert-list-root"
+            />
+            <div
+              class="card card-root"
+            >
+              <div
+                class="toolbar-root"
+              >
+                <nav
+                  class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
                 >
                   <div
-                    class="dropdown dropdown-root filter-and-order-root"
+                    class="container-fluid"
+                  >
+                    <ul
+                      class="nav-root front-nav navbar-nav"
+                      role="tablist"
+                    >
+                      <li
+                        class="nav-item"
+                        role="presentation"
+                      >
+                        <div
+                          class="dropdown dropdown-root"
+                        >
+                          <button
+                            aria-controls="clay-dropdown-menu-1"
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                            class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+                            data-testid="order-button"
+                            type="button"
+                          >
+                            <span
+                              class="caret-root"
+                            >
+                              <svg
+                                class="lexicon-icon lexicon-icon-order-list-down"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#order-list-down"
+                                />
+                              </svg>
+                            </span>
+                            <span
+                              class="mx-2"
+                            >
+                              Order
+                            </span>
+                            <span
+                              class="caret-root"
+                            >
+                              <svg
+                                class="lexicon-icon lexicon-icon-caret-bottom"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#caret-bottom"
+                                />
+                              </svg>
+                            </span>
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                    <div
+                      class="navbar-form navbar-form-autofit mx-2"
+                    >
+                      <div
+                        class="input-group search"
+                      >
+                        <div
+                          class="input-group-item"
+                        >
+                          <input
+                            class="input-root form-control input-group-inset input-group-inset-after"
+                            placeholder="Search"
+                            type="text"
+                            value=""
+                          />
+                          <div
+                            class="input-group-inset-item input-group-inset-item-after"
+                          >
+                            <button
+                              aria-label="Search"
+                              class="button-root btn btn-unstyled"
+                              type="button"
+                            >
+                              <svg
+                                class="lexicon-icon lexicon-icon-search icon-root"
+                                role="presentation"
+                              >
+                                <use
+                                  href="#search"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="dropdown"
+                    >
+                      <button
+                        aria-controls="clay-dropdown-menu-2"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        class="dropdown-toggle btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        Add Data Source
+                        <svg
+                          class="lexicon-icon lexicon-icon-caret-bottom ml-2"
+                          role="presentation"
+                        >
+                          <use
+                            href="#caret-bottom"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+              <div
+                class="flex-grow-1 mx-4 table-root"
+              >
+                <div
+                  class="table-responsive"
+                >
+                  <table
+                    class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+                  >
+                    <thead>
+                      <tr>
+                        <th
+                          class="table-head-title"
+                        >
+                          <a
+                            class="button-root w-100 btn btn-unstyled"
+                            href="/?field=name&page=1&sortOrder=DESC"
+                          >
+                            <div
+                              class="align-items-center d-flex justify-content-between"
+                            >
+                              <div
+                                class="text-truncate"
+                              >
+                                Data Source Name
+                              </div>
+                              <button
+                                aria-label="Ascending"
+                                class="component-action ml-2 btn btn-sm btn-primary"
+                                type="button"
+                              >
+                                <svg
+                                  class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                                  role="presentation"
+                                >
+                                  <use
+                                    href="#order_arrow_ascending"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </a>
+                        </th>
+                        <th
+                          class="table-head-title"
+                        >
+                          <a
+                            class="button-root w-100 btn btn-unstyled"
+                            href="/?field=providerType&page=1&sortOrder=ASC"
+                          >
+                            <div
+                              class="align-items-center d-flex justify-content-between"
+                            >
+                              <div
+                                class="text-truncate"
+                              >
+                                Type
+                              </div>
+                              <button
+                                aria-label="Descending"
+                                class="component-action ml-2 btn btn-sm btn-primary"
+                                type="button"
+                              >
+                                <span
+                                  class="opacity-25"
+                                >
+                                  <svg
+                                    class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                                    role="presentation"
+                                  >
+                                    <use
+                                      href="#order-arrow"
+                                    />
+                                  </svg>
+                                </span>
+                              </button>
+                            </div>
+                          </a>
+                        </th>
+                        <th
+                          class="table-head-title"
+                        >
+                          Status
+                        </th>
+                        <th
+                          class="table-head-title"
+                        >
+                          Individuals Data
+                        </th>
+                        <th
+                          class="table-head-title"
+                        >
+                          Analytics Data
+                        </th>
+                        <th
+                          class="table-head-title"
+                        >
+                          <a
+                            class="button-root w-100 btn btn-unstyled"
+                            href="/?field=createDate&page=1&sortOrder=DESC"
+                          >
+                            <div
+                              class="align-items-center d-flex justify-content-between"
+                            >
+                              <div
+                                class="text-truncate"
+                              >
+                                Date Added
+                              </div>
+                              <button
+                                aria-label="Descending"
+                                class="component-action ml-2 btn btn-sm btn-primary"
+                                type="button"
+                              >
+                                <span
+                                  class="opacity-25"
+                                >
+                                  <svg
+                                    class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                                    role="presentation"
+                                  >
+                                    <use
+                                      href="#order-arrow"
+                                    />
+                                  </svg>
+                                </span>
+                              </button>
+                            </div>
+                          </a>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        class=""
+                      >
+                        <td
+                          class="table-cell-expand"
+                        >
+                          <div
+                            class="table-title"
+                          >
+                            <a
+                              class="text-truncate"
+                              href="/workspace/23/settings/data-source/0"
+                            >
+                              CSV0
+                            </a>
+                          </div>
+                        </td>
+                        <td>
+                          .CSV
+                        </td>
+                        <td>
+                          <div
+                            class="label label-root label-success label-uppercase"
+                          >
+                            <span
+                              class="label-item"
+                            >
+                              Active
+                            </span>
+                          </div>
+                        </td>
+                        <td
+                          class="text-center"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-check icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#check"
+                            />
+                          </svg>
+                        </td>
+                        <td
+                          class="text-center"
+                        />
+                        <td>
+                          Jul 8, 2018
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <nav
+                class="navbar navbar-root pagination-bar-root"
+              >
+                <div
+                  class="container-fluid"
+                >
+                  <div
+                    class="dropdown dropdown-root pagination-items-per-page"
                   >
                     <button
-                      aria-controls="clay-dropdown-menu-1"
+                      aria-controls="clay-dropdown-menu-3"
                       aria-expanded="false"
                       aria-haspopup="true"
-                      class="dropdown-toggle d-flex align-items-center btn btn-outline-borderless btn-sm btn-outline-secondary"
+                      class="dropdown-toggle button-root btn btn-sm btn-secondary"
                       type="button"
                     >
-                      Order
+                      2 Items
                       <svg
-                        class="lexicon-icon lexicon-icon-caret-bottom ml-2 mt-0"
+                        class="lexicon-icon lexicon-icon-caret-bottom ml-2"
                         role="presentation"
                       >
                         <use
@@ -87,299 +664,66 @@ exports[`DataSourceList should render 1`] = `
                       </svg>
                     </button>
                   </div>
-                </li>
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <a
-                    class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                    href="/?field=name&page=1&sortOrder=DESC"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                      role="presentation"
-                    >
-                      <use
-                        href="#order_arrow_ascending"
-                      />
-                    </svg>
-                  </a>
-                </li>
-              </ul>
-              <div
-                class="navbar-form navbar-form-autofit"
-              >
-                <div
-                  class="input-group search"
-                >
                   <div
-                    class="input-group-item"
+                    class="pagination-results"
                   >
-                    <input
-                      class="input-root form-control input-group-inset input-group-inset-after"
-                      placeholder="Search"
-                      type="text"
-                      value=""
-                    />
-                    <div
-                      class="input-group-inset-item input-group-inset-item-after"
+                    Showing 1 to 1 of 1 entry.
+                  </div>
+                  <ul
+                    class="pagination pagination-root"
+                  >
+                    <li
+                      class="page-item disabled"
                     >
-                      <button
-                        aria-label="Search"
-                        class="button-root btn btn-unstyled"
-                        type="button"
+                      <a
+                        class="button-root btn btn-unstyled page-link"
+                        disabled=""
+                        href="/?page=0"
                       >
                         <svg
-                          class="lexicon-icon lexicon-icon-search icon-root"
+                          class="lexicon-icon lexicon-icon-angle-left-small icon-root"
                           role="presentation"
                         >
                           <use
-                            href="#search"
+                            href="#angle-left-small"
                           />
                         </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="dropdown"
-              >
-                <button
-                  aria-controls="clay-dropdown-menu-2"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  class="dropdown-toggle btn btn-primary"
-                  type="button"
-                >
-                  Add Data Source
-                  <svg
-                    class="lexicon-icon lexicon-icon-caret-bottom ml-2"
-                    role="presentation"
-                  >
-                    <use
-                      href="#caret-bottom"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </nav>
-        </div>
-        <div
-          class="table-responsive table-root flex-grow-1"
-        >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap"
-          >
-            <thead>
-              <tr>
-                <th
-                  class="table-head-title"
-                >
-                  <a
-                    class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                    href="/?field=name&page=1&sortOrder=DESC"
-                  >
-                    <span
-                      class="text-truncate"
+                      </a>
+                    </li>
+                    <li
+                      class="page-item active"
                     >
-                      Data Source Name
-                    </span>
-                    <span
-                      class="inline-item inline-item-after"
-                    >
-                      <svg
-                        class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                        role="presentation"
+                      <a
+                        class="button-root btn btn-unstyled page-link"
+                        href="/?page=1"
                       >
-                        <use
-                          href="#order-arrow-up"
-                        />
-                      </svg>
-                    </span>
-                  </a>
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  <a
-                    class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                    href="/?field=providerType&page=1&sortOrder=ASC"
-                  >
-                    <span
-                      class="text-truncate"
+                        1
+                      </a>
+                    </li>
+                    <li
+                      class="page-item disabled"
                     >
-                      Type
-                    </span>
-                  </a>
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Status
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Individuals Data
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Analytics Data
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  <a
-                    class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                    href="/?field=createDate&page=1&sortOrder=DESC"
-                  >
-                    <span
-                      class="text-truncate"
-                    >
-                      Date Added
-                    </span>
-                  </a>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td
-                  class="table-cell-expand"
-                >
-                  <div
-                    class="table-title"
-                  >
-                    <a
-                      class="text-truncate"
-                      href="/workspace/23/settings/data-source/0"
-                    >
-                      CSV0
-                    </a>
-                  </div>
-                </td>
-                <td>
-                  .CSV
-                </td>
-                <td>
-                  <div
-                    class="label label-root label-success label-uppercase"
-                  >
-                    <span
-                      class="label-item"
-                    >
-                      Active
-                    </span>
-                  </div>
-                </td>
-                <td>
-                  <svg
-                    class="lexicon-icon lexicon-icon-check icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#check"
-                    />
-                  </svg>
-                </td>
-                <td />
-                <td>
-                  Jul 8, 2018
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <nav
-          class="navbar navbar-root pagination-bar-root"
-        >
-          <div
-            class="container-fluid"
-          >
-            <div
-              class="dropdown dropdown-root pagination-items-per-page"
-            >
-              <button
-                aria-controls="clay-dropdown-menu-3"
-                aria-expanded="false"
-                aria-haspopup="true"
-                class="dropdown-toggle button-root btn btn-sm btn-secondary"
-                type="button"
-              >
-                2 Items
-                <svg
-                  class="lexicon-icon lexicon-icon-caret-bottom ml-2"
-                  role="presentation"
-                >
-                  <use
-                    href="#caret-bottom"
-                  />
-                </svg>
-              </button>
+                      <a
+                        class="button-root btn btn-unstyled page-link"
+                        disabled=""
+                        href="/?page=2"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-angle-right-small icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#angle-right-small"
+                          />
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </nav>
             </div>
-            <div
-              class="pagination-results"
-            >
-              Showing 1 to 1 of 1 entry.
-            </div>
-            <ul
-              class="pagination pagination-root"
-            >
-              <li
-                class="page-item disabled"
-              >
-                <a
-                  class="button-root btn btn-unstyled page-link"
-                  disabled=""
-                  href="/?page=0"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-angle-left-small icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#angle-left-small"
-                    />
-                  </svg>
-                </a>
-              </li>
-              <li
-                class="page-item active"
-              >
-                <a
-                  class="button-root btn btn-unstyled page-link"
-                  href="/?page=1"
-                >
-                  1
-                </a>
-              </li>
-              <li
-                class="page-item disabled"
-              >
-                <a
-                  class="button-root btn btn-unstyled page-link"
-                  disabled=""
-                  href="/?page=2"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-angle-right-small icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#angle-right-small"
-                    />
-                  </svg>
-                </a>
-              </li>
-            </ul>
           </div>
-        </nav>
+        </div>
       </div>
     </div>
   </div>

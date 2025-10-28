@@ -28,7 +28,7 @@
 				<a
 					class="btn btn-link btn-nm page-editor__editable" data-lfr-editable-id="link" data-lfr-editable-type="link"
 					data-tooltip-floating="true"
-					href="https://liferay.dev/c/portal/login?redirect=https://liferay.dev/ask/questions/liferay-learn-feedback/new"
+					href="http://discuss.liferay.com"
 					id="fragment-txnc-link">
 						<@liferay_ui["message"] key="submit-feedback" />
 				</a>

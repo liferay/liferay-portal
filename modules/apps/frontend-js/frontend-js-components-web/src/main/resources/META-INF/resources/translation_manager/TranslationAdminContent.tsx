@@ -86,7 +86,9 @@ export default function TranslationAdminContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('manage-translations')}
 			</ClayModal.Header>
 

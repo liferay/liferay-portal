@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.service.persistence.BasePersistence;
 
 import java.io.Serializable;
 
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -27,9 +30,27 @@ public interface PersistedModelLocalService {
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
 
-	public <T> T dslQuery(DSLQuery dslQuery);
+	public default <T> T dslQuery(DSLQuery dslQuery) {
+		return dslQuery(dslQuery, true);
+	}
 
-	public int dslQueryCount(DSLQuery dslQuery);
+	public default <T> T dslQuery(DSLQuery dslQuery, boolean useFinderCache) {
+		BasePersistence<?> basePersistence = getBasePersistence();
+
+		return (T)basePersistence.dslQuery(dslQuery, useFinderCache);
+	}
+
+	public default int dslQueryCount(DSLQuery dslQuery) {
+		return dslQueryCount(dslQuery, true);
+	}
+
+	public default int dslQueryCount(
+		DSLQuery dslQuery, boolean useFinderCache) {
+
+		Long count = dslQuery(dslQuery, useFinderCache);
+
+		return count.intValue();
+	}
 
 	public default PersistedModel fetchPersistedModel(
 		Serializable primaryKeyObj) {
@@ -37,6 +58,15 @@ public interface PersistedModelLocalService {
 		BasePersistence<?> basePersistence = getBasePersistence();
 
 		return (PersistedModel)basePersistence.fetchByPrimaryKey(primaryKeyObj);
+	}
+
+	public default <T extends PersistedModel> Map<Serializable, T>
+		fetchPersistedModels(Set<Serializable> primaryKeys) {
+
+		BasePersistence<?> basePersistence = getBasePersistence();
+
+		return (Map<Serializable, T>)basePersistence.fetchByPrimaryKeys(
+			primaryKeys);
 	}
 
 	public default BasePersistence<?> getBasePersistence() {

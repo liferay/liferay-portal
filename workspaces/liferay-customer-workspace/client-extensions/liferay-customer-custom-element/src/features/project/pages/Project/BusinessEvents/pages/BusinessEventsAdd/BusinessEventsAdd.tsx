@@ -92,7 +92,8 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 
 	const {loading: loadingTickets, tickets} = useAccountsTickets(
 		undefined,
-		project?.accountKey || ''
+		project?.accountKey || '',
+		hasImpactingEvents === 'no'
 	);
 
 	const {loading: loadingUTCTimeZonesList, utcTimeZonesList} =
@@ -221,7 +222,6 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 	const loading =
 		loadingBusinessEventTypesList ||
 		loadingLiferayVersions ||
-		loadingTickets ||
 		loadingUTCTimeZonesList;
 
 	useEffect(() => {
@@ -379,287 +379,265 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 	}, [featureFlags, tickets]);
 
 	return !loading ? (
-		tickets ? (
-			hasAllEventsPermissions ? (
-				<Layout
-					footerProps={{
-						leftButton: (
-							<Button
-								displayType="secondary"
-								onClick={() => {
-									navigate(
-										`/${project?.accountKey}/business-events`
-									);
-								}}
-							>
-								{i18n.translate('cancel')}
-							</Button>
-						),
-						middleButton: (
-							<Button
-								disabled={
-									baseButtonDisabled || isLoadingSubmitButton
-								}
-								displayType="primary"
-								isLoading={isLoadingSubmitButton}
-								onClick={handleSubmit}
-							>
-								{i18n.translate('create-event')}
-							</Button>
-						),
-					}}
-					headerProps={{
-						greetings: project?.name,
-						title: i18n.translate('create-business-event'),
-					}}
-					layoutType="cp-required-info"
-				>
-					<FieldArray
-						name="businessEvent"
-						render={() => (
-							<>
-								<Input
-									badgeClassName="mt-1 mx-3"
-									label={i18n.translate('event-name')}
-									name="businessEvent.name"
-									placeholder={i18n.translate('event-name')}
-									required
-									type="text"
-								/>
+		hasAllEventsPermissions ? (
+			<Layout
+				footerProps={{
+					leftButton: (
+						<Button
+							displayType="secondary"
+							onClick={() => {
+								navigate(
+									`/${project?.accountKey}/business-events`
+								);
+							}}
+						>
+							{i18n.translate('cancel')}
+						</Button>
+					),
+					middleButton: (
+						<Button
+							disabled={
+								baseButtonDisabled || isLoadingSubmitButton
+							}
+							displayType="primary"
+							isLoading={isLoadingSubmitButton}
+							onClick={handleSubmit}
+						>
+							{i18n.translate('create-event')}
+						</Button>
+					),
+				}}
+				headerProps={{
+					greetings: project?.name,
+					title: i18n.translate('create-business-event'),
+				}}
+				layoutType="cp-required-info"
+			>
+				<FieldArray
+					name="businessEvent"
+					render={() => (
+						<>
+							<Input
+								badgeClassName="mt-1 mx-3"
+								label={i18n.translate('event-name')}
+								name="businessEvent.name"
+								placeholder={i18n.translate('event-name')}
+								required
+								type="text"
+							/>
 
+							<Select
+								badgeClassName="mt-1 mx-3"
+								label={i18n.translate('event-type')}
+								link="https://support.liferay.com/w/business-events"
+								name="businessEvent.eventType.key"
+								onChange={(value: string) =>
+									handleOptionChange(
+										'businessEvent.eventType.name',
+										value,
+										businessEventTypesList
+									)
+								}
+								options={[
+									emptyOption,
+									...businessEventTypesList,
+								]}
+								required
+								showPopover
+								text="to-learn-more-about-types-of-business-events-please-click-x-here-x"
+							/>
+
+							{subscriptionGroups && !isSaasOnly && (
 								<Select
 									badgeClassName="mt-1 mx-3"
-									label={i18n.translate('event-type')}
-									link="https://support.liferay.com/w/business-events"
-									name="businessEvent.eventType.key"
+									label={i18n.translate(
+										'your-current-liferay-version'
+									)}
+									name="businessEvent.currentLiferayVersion.key"
 									onChange={(value: string) =>
 										handleOptionChange(
-											'businessEvent.eventType.name',
+											'businessEvent.currentLiferayVersion.name',
 											value,
-											businessEventTypesList
+											dxpMinorVersionsAndPortalMajorVersions
 										)
 									}
 									options={[
 										emptyOption,
-										...businessEventTypesList,
+										...dxpMinorVersionsAndPortalMajorVersions,
 									]}
 									required
-									showPopover
-									text="to-learn-more-about-types-of-business-events-please-click-x-here-x"
 								/>
+							)}
 
-								{subscriptionGroups && !isSaasOnly && (
-									<Select
+							{isNewLiferayVersionRequired && (
+								<Select
+									badgeClassName="mt-1 mx-3"
+									label={i18n.translate('new-version')}
+									name="businessEvent.newLiferayVersion.key"
+									onChange={(value: string) =>
+										handleOptionChange(
+											'businessEvent.newLiferayVersion.name',
+											value,
+											newLiferayVersionOptions
+										)
+									}
+									options={[
+										emptyOption,
+										...newLiferayVersionOptions,
+									]}
+									required
+								/>
+							)}
+
+							{isDescriptionRequired && (
+								<Input
+									badgeClassName="mt-1 mx-3"
+									component="textarea"
+									label={i18n.translate('event-description')}
+									name="businessEvent.description"
+									placeholder={i18n.translate(
+										'event-description'
+									)}
+									required
+									type="text"
+								/>
+							)}
+
+							<ClayInput.Group className="m-0">
+								<ClayInput.GroupItem className="m-0">
+									<DatePicker
 										badgeClassName="mt-1 mx-3"
+										dateFormat="MM-dd-yyyy"
 										label={i18n.translate(
-											'your-current-liferay-version'
+											'target-go-live-date'
 										)}
-										name="businessEvent.currentLiferayVersion.key"
-										onChange={(value: string) =>
-											handleOptionChange(
-												'businessEvent.currentLiferayVersion.name',
-												value,
-												dxpMinorVersionsAndPortalMajorVersions
+										name="businessEvent.targetGoLiveDate"
+										onChange={(value) =>
+											setFieldValue(
+												'businessEvent.targetGoLiveDate',
+												value
 											)
 										}
-										options={[
-											emptyOption,
-											...dxpMinorVersionsAndPortalMajorVersions,
-										]}
-										required
-									/>
-								)}
-
-								{isNewLiferayVersionRequired && (
-									<Select
-										badgeClassName="mt-1 mx-3"
-										label={i18n.translate('new-version')}
-										name="businessEvent.newLiferayVersion.key"
-										onChange={(value: string) =>
-											handleOptionChange(
-												'businessEvent.newLiferayVersion.name',
-												value,
-												newLiferayVersionOptions
-											)
-										}
-										options={[
-											emptyOption,
-											...newLiferayVersionOptions,
-										]}
-										required
-									/>
-								)}
-
-								{isDescriptionRequired && (
-									<Input
-										badgeClassName="mt-1 mx-3"
-										component="textarea"
-										label={i18n.translate(
-											'event-description'
-										)}
-										name="businessEvent.description"
 										placeholder={i18n.translate(
-											'event-description'
+											'mm-dd-yyyy'
 										)}
 										required
-										type="text"
+										validations={[
+											(value) =>
+												isValidDate(value, years),
+										]}
+										years={years}
+										yearsCheck
 									/>
-								)}
+								</ClayInput.GroupItem>
 
-								<ClayInput.Group className="m-0">
-									<ClayInput.GroupItem className="m-0">
-										<DatePicker
-											badgeClassName="mt-1 mx-3"
-											dateFormat="MM-dd-yyyy"
-											label={i18n.translate(
-												'target-go-live-date'
-											)}
-											name="businessEvent.targetGoLiveDate"
-											onChange={(value) =>
-												setFieldValue(
-													'businessEvent.targetGoLiveDate',
-													value
-												)
-											}
-											placeholder={i18n.translate(
-												'mm-dd-yyyy'
-											)}
-											required
-											validations={[
-												(value) =>
-													isValidDate(value, years),
-											]}
-											years={years}
-											yearsCheck
-										/>
-									</ClayInput.GroupItem>
+								<ClayInput.GroupItem className="m-0">
+									<Select
+										id="select-businessEvent.timeZone"
+										label={i18n.translate('time-zone')}
+										name="businessEvent.timeZone.key"
+										onChange={(value: string) =>
+											handleOptionChange(
+												'businessEvent.timeZone.name',
+												value,
+												utcTimeZonesList
+											)
+										}
+										options={[
+											{
+												...emptyOption,
+												disabled: false,
+											},
+											...utcTimeZonesList,
+										]}
+										required
+									/>
+								</ClayInput.GroupItem>
 
-									<ClayInput.GroupItem className="m-0">
-										<Select
-											id="select-businessEvent.timeZone"
-											label={i18n.translate('time-zone')}
-											name="businessEvent.timeZone.key"
-											onChange={(value: string) =>
-												handleOptionChange(
-													'businessEvent.timeZone.name',
-													value,
-													utcTimeZonesList
-												)
-											}
-											options={[
-												{
-													...emptyOption,
-													disabled: false,
-												},
-												...utcTimeZonesList,
-											]}
-											required
-										/>
-									</ClayInput.GroupItem>
+								<ClayInput.GroupItem className="m-0">
+									<TimePicker
+										label={i18n.translate('time')}
+										name="businessEvent.targetGoLiveTime"
+										onChange={(value) =>
+											setFieldValue(
+												'businessEvent.targetGoLiveTime',
+												value
+											)
+										}
+										required
+										showPopover
+										text="if-unsure-please-provide-an-estimated-time"
+									/>
+								</ClayInput.GroupItem>
+							</ClayInput.Group>
 
-									<ClayInput.GroupItem className="m-0">
-										<TimePicker
-											label={i18n.translate('time')}
-											name="businessEvent.targetGoLiveTime"
-											onChange={(value) =>
-												setFieldValue(
-													'businessEvent.targetGoLiveTime',
-													value
-												)
-											}
-											required
-											showPopover
-											text="if-unsure-please-provide-an-estimated-time"
-										/>
-									</ClayInput.GroupItem>
-								</ClayInput.Group>
+							<div className="mx-3 pb-3">
+								<label>
+									{i18n.translate(
+										'are-there-any-support-tickets-impacting-this-event'
+									)}
+								</label>
 
-								<div className="mx-3 pb-3">
-									<label>
-										{i18n.translate(
-											'are-there-any-support-tickets-impacting-this-event'
-										)}
-									</label>
+								<div className="ml-1">
+									<ClayRadio
+										checked={hasImpactingEvents === 'no'}
+										label={i18n.translate('no')}
+										onChange={() => handleRadioChange('no')}
+										value="no"
+									/>
 
-									<div className="ml-1">
-										<ClayRadio
-											checked={
-												hasImpactingEvents === 'no'
-											}
-											label={i18n.translate('no')}
-											onChange={() =>
-												handleRadioChange('no')
-											}
-											value="no"
-										/>
-
-										<ClayRadio
-											checked={
-												hasImpactingEvents === 'yes'
-											}
-											label={i18n.translate('yes')}
-											onChange={() =>
-												handleRadioChange('yes')
-											}
-											value="yes"
-										/>
-									</div>
+									<ClayRadio
+										checked={hasImpactingEvents === 'yes'}
+										label={i18n.translate('yes')}
+										onChange={() =>
+											handleRadioChange('yes')
+										}
+										value="yes"
+									/>
 								</div>
+							</div>
 
-								{hasImpactingEvents === 'yes' && (
-									<div className="mx-3 pb-3">
-										{ticketOptions.length ? (
-											<>
-												<label>
-													{i18n.translate(
-														'please-select-the-tickets-that-are-impacting-this-event'
-													)}
-												</label>
-
-												<AssociatedTicketsContainer
-													editing
-													handleRemove={handleRemove}
-													handleSelect={handleSelect}
-													selectedTickets={
-														selectedTickets
-													}
-													ticketOptions={
-														ticketOptions
-													}
-												/>
-											</>
-										) : (
-											<div className="mx-3 pb-3">
+							{hasImpactingEvents === 'yes' && (
+								<div className="mx-3 pb-3">
+									{loadingTickets ? (
+										<ClayLoadingIndicator size="sm" />
+									) : ticketOptions.length ? (
+										<>
+											<label>
 												{i18n.translate(
-													'there-are-currently-no-open-tickets-under-this-project'
+													'please-select-the-tickets-that-are-impacting-this-event'
 												)}
-											</div>
-										)}
-									</div>
-								)}
-							</>
-						)}
-					/>
-				</Layout>
-			) : (
-				<p>
-					{i18n.translate(
-						'make-sure-the-project-link-is-correct-and-that-you-have-access-to-this-project'
+											</label>
+
+											<AssociatedTicketsContainer
+												editing
+												handleRemove={handleRemove}
+												handleSelect={handleSelect}
+												selectedTickets={
+													selectedTickets
+												}
+												ticketOptions={ticketOptions}
+											/>
+										</>
+									) : (
+										<div className="mx-3 pb-3">
+											{i18n.translate(
+												'there-are-currently-no-open-tickets-under-this-project'
+											)}
+										</div>
+									)}
+								</div>
+							)}
+						</>
 					)}
-				</p>
-			)
+				/>
+			</Layout>
 		) : (
-			<p
-				dangerouslySetInnerHTML={{
-					__html: i18n.sub(
-						'we-apologize-for-the-inconvenience-but-we-ve-detected-a-system-error-with-this-project',
-						[
-							'<a href="https://liferay.atlassian.net/servicedesk/customer/portals">',
-							'</a>',
-						]
-					),
-				}}
-			/>
+			<p>
+				{i18n.translate(
+					'make-sure-the-project-link-is-correct-and-that-you-have-access-to-this-project'
+				)}
+			</p>
 		)
 	) : (
 		<div className="mx-auto">

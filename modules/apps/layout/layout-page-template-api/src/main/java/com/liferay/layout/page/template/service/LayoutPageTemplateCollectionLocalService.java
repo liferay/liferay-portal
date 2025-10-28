@@ -121,7 +121,10 @@ public interface LayoutPageTemplateCollectionLocalService
 	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	@SystemEvent(
+		action = SystemEventConstants.ACTION_SKIP,
+		type = SystemEventConstants.TYPE_DELETE
+	)
 	public LayoutPageTemplateCollection deleteLayoutPageTemplateCollection(
 			LayoutPageTemplateCollection layoutPageTemplateCollection)
 		throws PortalException;

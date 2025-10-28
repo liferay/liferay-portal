@@ -44,7 +44,12 @@ public class DispatchMessageListener extends BaseMessageListener {
 		long dispatchTriggerId = jsonObject.getLong("dispatchTriggerId");
 
 		DispatchTrigger dispatchTrigger =
-			_dispatchTriggerLocalService.getDispatchTrigger(dispatchTriggerId);
+			_dispatchTriggerLocalService.fetchDispatchTrigger(
+				dispatchTriggerId);
+
+		if (dispatchTrigger == null) {
+			return;
+		}
 
 		if (!dispatchTrigger.isOverlapAllowed()) {
 			DispatchLog dispatchLog =

@@ -45,11 +45,12 @@ public class CommercePricingClassSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
 		ProductGroupResource productGroupResource = _buildProductGroupResource(
-			false, user);
+			checkPermissions, user);
 
 		ProductGroup productGroup = productGroupResource.postProductGroup(
 			_toProductGroup(values));

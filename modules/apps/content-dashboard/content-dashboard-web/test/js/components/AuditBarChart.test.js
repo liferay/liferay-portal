@@ -9,7 +9,7 @@ import React from 'react';
 
 import AuditBarChart from '../../../src/main/resources/META-INF/resources/js/components/AuditGraphApp/AuditBarChart';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 // Mock needed due to a bug in ResponsiveContainer Recharts component
 // See https://github.com/recharts/recharts/issues/2268

@@ -6,6 +6,7 @@
 package com.liferay.headless.asset.library.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryPinLocalService;
@@ -34,14 +35,16 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
@@ -51,7 +54,9 @@ import org.junit.runner.RunWith;
 /**
  * @author Roberto Díaz
  */
-@FeatureFlag("LPD-17564")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+)
 @RunWith(Arquillian.class)
 public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
@@ -100,6 +105,34 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		Assert.assertEquals(originalTotalCount + 1, page.getTotalCount());
 
 		assetLibraryResource.deleteAssetLibrary(assetLibrary.getId());
+	}
+
+	@Override
+	@Test
+	public void testGetAssetLibrariesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		AssetLibrary assetLibrary = testGetAssetLibrariesPage_addAssetLibrary(
+			randomAssetLibrary());
+
+		for (EntityField entityField : entityFields) {
+			Page<AssetLibrary> page =
+				assetLibraryResource.getAssetLibrariesPage(
+					null, null,
+					getFilterString(entityField, "between", assetLibrary),
+					Pagination.of(1, 10), null);
+
+			Collection<AssetLibrary> items = page.getItems();
+
+			Assert.assertTrue(items.contains(assetLibrary));
+		}
 	}
 
 	@Override
@@ -158,6 +191,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		Assert.assertFalse(resourcePermission.hasActionId(ActionKeys.DELETE));
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.UPDATE));
 		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
+
+		_assertGroupDepotEntryType(assetLibrary);
 
 		boolean autoTaggingEnabled = false;
 
@@ -261,8 +296,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	@Override
-	protected Collection<EntityField> getEntityFields() throws Exception {
-		return new ArrayList<>();
+	protected String[] getIgnoredEntityFieldNames() {
+		return new String[] {"type"};
 	}
 
 	protected AssetLibrary randomAssetLibrary() throws Exception {
@@ -277,26 +312,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 					useCustomLanguages = false;
 				}
 			});
-
-		return assetLibrary;
-	}
-
-	protected AssetLibrary randomAssetLibraryWithTrashEnabled()
-		throws Exception {
-
-		AssetLibrary assetLibrary = super.randomAssetLibrary();
-
-		assetLibrary.setSettings(
-			new Settings() {
-				{
-					autoTaggingEnabled = false;
-					logoColor = "color-1";
-					sharingEnabled = false;
-					trashEnabled = true;
-					trashEntriesMaxAge = RandomTestUtil.randomInt();
-					useCustomLanguages = false;
-				}
-			});
+		assetLibrary.setType(
+			RandomTestUtil.randomEnum(AssetLibrary.Type.class));
 
 		return assetLibrary;
 	}
@@ -486,6 +503,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		try {
 			User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
+			Assert.assertNotNull(user);
 			Assert.assertNotNull(
 				_depotEntryPinLocalService.getDepotEntryPin(
 					user.getUserId(), assetLibraryId));
@@ -501,6 +519,26 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		return assetLibraryResource.postAssetLibrary(randomAssetLibrary());
 	}
 
+	private void _assertGroupDepotEntryType(AssetLibrary assetLibrary)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			assetLibrary.getExternalReferenceCode(),
+			testCompany.getCompanyId());
+
+		UnicodeProperties unicodeProperties = group.getTypeSettingsProperties();
+
+		int depotEntryType = DepotConstants.TYPE_ASSET_LIBRARY;
+
+		if (assetLibrary.getType() == AssetLibrary.Type.SPACE) {
+			depotEntryType = DepotConstants.TYPE_SPACE;
+		}
+
+		Assert.assertEquals(
+			String.valueOf(depotEntryType),
+			unicodeProperties.get("depotEntryType"));
+	}
+
 	private void _assertSettings(
 		AssetLibrary assetLibrary, boolean expectedAutoTaggingEnabled,
 		String[] expectedAvailableLanguageIds, String expectedDefaultLanguageId,
@@ -514,7 +552,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			expectedAutoTaggingEnabled, settings.getAutoTaggingEnabled());
 		Assert.assertEquals(
 			expectedDefaultLanguageId, settings.getDefaultLanguageId());
-		Assert.assertEquals(
+		Assert.assertArrayEquals(
 			expectedAvailableLanguageIds, settings.getAvailableLanguageIds());
 		Assert.assertEquals(expectedLogoColor, settings.getLogoColor());
 
@@ -595,6 +633,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			assetLibrary, autoTaggingEnabled, availableLanguageIds,
 			defaultLanguageId, logoColor, mimeTypeLimits, sharingEnabled,
 			trashEnabled, trashEntriesMaxAge, useCustomLanguages);
+
+		_assertGroupDepotEntryType(assetLibrary);
 	}
 
 	private void _testPutAssetLibraryByExternalReferenceCode(
@@ -650,6 +690,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			assetLibrary, autoTaggingEnabled, availableLanguageIds,
 			defaultLanguageId, "outline-0", new MimeTypeLimit[0], true,
 			trashEnabled, trashEntriesMaxAge, useCustomLanguages);
+
+		_assertGroupDepotEntryType(assetLibrary);
 	}
 
 	@Inject

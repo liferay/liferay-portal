@@ -30,7 +30,9 @@ export function RedirectToEditObjectDetailsModal({
 			<ClayModalProvider>
 				<ClayModal center observer={observer} status="info">
 					<ClayForm>
-						<ClayModal.Header>
+						<ClayModal.Header
+							closeButtonAriaLabel={Liferay.Language.get('close')}
+						>
 							{Liferay.Language.get(
 								'leaving-object-model-builder'
 							)}

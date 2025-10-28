@@ -1,5 +1,4 @@
-import autobind from 'autobind-decorator';
-import ClayButton from '@clayui/button/lib/Button';
+import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
@@ -160,126 +159,120 @@ interface IFilterAndOrderProps extends React.HTMLAttributes<HTMLElement> {
 	filterBy?: FilterByType;
 	filterByOptions?: FilterOptionType[];
 	flat: boolean;
-	onFilterByChange?: (filterMap: Map<any, any>) => void;
+	onFilterByChange?: (filterBy: FilterByType) => void;
 	onOrderFieldChange?: (field: string) => void;
 	orderField: string;
 	orderByOptions?: {label: string; value: string}[];
 	trigger?: React.ReactElement<any, string>;
 }
 
-class FilterAndOrder extends React.Component<IFilterAndOrderProps> {
-	static defaultProps = {
-		disabled: false,
-		filterBy: Map(),
-		filterByOptions: [],
-		flat: false,
-		onFilterByChange: noop,
-		onOrderFieldChange: noop,
-		orderByOptions: [],
-		orderField: '',
-		trigger: null
-	};
-
-	_name = uniqueId('filterAndOrder');
-
-	@autobind
-	handleFilterChange(value, field) {
-		const {filterBy, filterByOptions, onFilterByChange} = this.props;
-
-		const {type} = filterByOptions.find(({key}) => key === field);
-
-		onFilterByChange(
-			filterBy.update(field, (values = Set()) => {
-				if (type === 'radio') {
-					return Set([value]);
-				}
-
-				return values.has(value)
-					? values.delete(value)
-					: values.add(value);
-			})
-		);
-	}
-
-	render() {
-		const {
-			className,
-			disabled,
-			filterBy,
-			filterByOptions,
-			flat,
-			onOrderFieldChange,
-			orderByOptions,
-			orderField,
-			trigger
-		} = this.props;
-
-		const hasFilterBy = !!filterByOptions.length;
-		const hasOrderBy = !!orderByOptions.length;
-
-		return (
+const FilterAndOrder: React.FC<IFilterAndOrderProps> = ({
+	className,
+	disabled = false,
+	filterBy = Map(),
+	filterByOptions = [],
+	flat = false,
+	onFilterByChange = noop,
+	onOrderFieldChange = noop,
+	orderByOptions = [],
+	orderField = ''
+}) => (
+	<>
+		{!!filterByOptions.length && (
 			<ClayDropDown
-				className={getCN(
-					'dropdown-root',
-					'filter-and-order-root',
-					className
-				)}
+				className={getCN('dropdown-root mr-2', className)}
 				trigger={
-					trigger ? (
-						trigger
-					) : (
-						<ClayButton
-							block
-							className='filter-and-order-button'
-							data-testid='filter-and-order-button'
-							disabled={disabled}
-							displayType='unstyled'
-						>
-							<span className='text-truncate'>
-								{getFilterAndOrderLabel({
-									filterByOptions,
-									orderByOptions
-								})}
-							</span>
+					<ClayButton
+						borderless
+						data-testid='filter-button'
+						disabled={disabled}
+						displayType='secondary'
+						size='sm'
+					>
+						<span className='caret-root'>
+							<ClayIcon symbol='filter' />
+						</span>
 
-							<span className='caret-root'>
-								<ClayIcon symbol='caret-bottom' />
-							</span>
-						</ClayButton>
-					)
+						<span className='mx-2'>
+							{Liferay.Language.get('filter')}
+						</span>
+
+						<span className='caret-root'>
+							<ClayIcon symbol='caret-bottom' />
+						</span>
+					</ClayButton>
 				}
 			>
-				{hasFilterBy && (
-					<FilterOptionsList
-						filterBy={filterBy}
-						filterByOptions={filterByOptions}
-						flat={flat}
-						onChange={this.handleFilterChange}
-					/>
-				)}
+				<FilterOptionsList
+					filterBy={filterBy}
+					filterByOptions={filterByOptions}
+					flat={flat}
+					onChange={(value, field) => {
+						const {type} = filterByOptions.find(
+							({key}) => key === field
+						);
 
-				{hasOrderBy && (
-					<ClayDropDown.ItemList>
-						<ClayDropDown.Group
-							header={Liferay.Language.get('order-by')}
-						>
-							{orderByOptions.map(({label, value}) => (
-								<Item
-									active={value === orderField}
-									key={value}
-									label={label}
-									name={this._name}
-									onChange={onOrderFieldChange}
-									type='radio'
-									value={value}
-								/>
-							))}
-						</ClayDropDown.Group>
-					</ClayDropDown.ItemList>
-				)}
+						onFilterByChange(
+							filterBy.update(field, (values: any = Set()) => {
+								if (type === 'radio') {
+									return Set([value]);
+								}
+
+								return values.has(value)
+									? values.delete(value)
+									: values.add(value);
+							})
+						);
+					}}
+				/>
 			</ClayDropDown>
-		);
-	}
-}
+		)}
+
+		{!!orderByOptions.length && (
+			<ClayDropDown
+				className={getCN('dropdown-root', className)}
+				trigger={
+					<ClayButton
+						borderless
+						data-testid='order-button'
+						disabled={disabled}
+						displayType='secondary'
+						size='sm'
+					>
+						<span className='caret-root'>
+							<ClayIcon symbol='order-list-down' />
+						</span>
+
+						<span className='mx-2'>
+							{Liferay.Language.get('order')}
+						</span>
+
+						<span className='caret-root'>
+							<ClayIcon symbol='caret-bottom' />
+						</span>
+					</ClayButton>
+				}
+			>
+				<ClayDropDown.ItemList>
+					<ClayDropDown.Group
+						header={Liferay.Language.get('order-by')}
+					>
+						{orderByOptions.map(({label, value}) => (
+							<Item
+								active={value === orderField}
+								key={value}
+								label={label}
+								name={uniqueId('filterAndOrder')}
+								onChange={onOrderFieldChange}
+								type='radio'
+								value={value}
+							/>
+						))}
+					</ClayDropDown.Group>
+				</ClayDropDown.ItemList>
+			</ClayDropDown>
+		)}
+	</>
+);
 
 export default FilterAndOrder;

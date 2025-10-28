@@ -8,7 +8,7 @@ import React from 'react';
 
 import Translation from '../../../../src/main/resources/META-INF/resources/js/components/layout_reports/Translation';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const noop = () => {};
 

@@ -512,5 +512,12 @@ modules/util/portal-tools-service-builder-test-test/    @liferay-core-infra
 modules/util/portal-tools-service-builder-test-uad/    @liferay-core-infra
 modules/util/release-util/    @liferay-devtools
 modules/util/source-formatter/    @liferay-devtools
+portal-impl/src/com/liferay/portal/db/    @liferay-database-infra
+portal-impl/src/com/liferay/portal/upgrade/    @liferay-database-infra
+portal-impl/src/com/liferay/portal/verify/    @liferay-database-infra
+portal-impl/test/unit/com/liferay/portal/upgrade/    @liferay-database-infra
+portal-impl/test/unit/com/liferay/portal/verify/    @liferay-database-infra
+portal-kernel/src/com/liferay/portal/kernel/db/    @liferay-database-infra
+portal-kernel/src/com/liferay/portal/kernel/upgrade/    @liferay-database-infra
 util-taglib/    @liferay-frontend
 workspaces/liferay-marketplace-workspace/    @liferay-commerce

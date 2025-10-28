@@ -1,10 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AttributeConjunctionInput should render 1`] = `
-<div
-  aria-hidden="true"
-  data-aria-hidden="true"
->
+<div>
   <div
     class="form-group-item form-group-item-shrink"
   >
@@ -24,7 +21,9 @@ exports[`AttributeConjunctionInput should render 1`] = `
     </div>
   </div>
   <div
+    aria-hidden="true"
     class="form-group-item form-group-item-shrink"
+    data-aria-hidden="true"
   >
     <button
       aria-activedescendant=""
@@ -39,7 +38,9 @@ exports[`AttributeConjunctionInput should render 1`] = `
     </button>
   </div>
   <div
+    aria-hidden="true"
     class="form-group-item form-group-item-shrink"
+    data-aria-hidden="true"
   >
     <input
       class="input-root form-control"

@@ -408,12 +408,12 @@ public class FragmentEntryLinkModelListenerTest {
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			TestPropsValues.getGroupId(), 0, 0, 0, _draftLayout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-			editableValues, RandomTestUtil.randomString(), 0,
-			RandomTestUtil.randomString(), FragmentConstants.TYPE_COMPONENT,
-			serviceContext);
+			TestPropsValues.getGroupId(), null, null, null, 0,
+			_draftLayout.getPlid(), fragmentEntry.getCss(),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(),
+			fragmentEntry.getConfiguration(), editableValues,
+			RandomTestUtil.randomString(), 0, RandomTestUtil.randomString(),
+			FragmentConstants.TYPE_COMPONENT, serviceContext);
 	}
 
 	private String _createEditableValues(String key, String value) {
@@ -490,7 +490,7 @@ public class FragmentEntryLinkModelListenerTest {
 
 		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			TestPropsValues.getUserId(),
-			fragmentEntryLink.getFragmentEntryLinkId(), editableValues);
+			fragmentEntryLink.getFragmentEntryLinkId(), editableValues, true);
 	}
 
 	@Inject

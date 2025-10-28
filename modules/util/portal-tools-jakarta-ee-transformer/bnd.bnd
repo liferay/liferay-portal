@@ -1,7 +1,0 @@
-Bundle-Name: Liferay Portal Tools Jakarta EE Transformer
-Bundle-SymbolicName: com.liferay.portal.tools.jakarta.ee.transformer
-Bundle-Version: 1.0.2
-Premain-Class: com.liferay.portal.tools.jakarta.ee.transformer.TransformerAgent
--includeresource:\
-	@asm-[0-9.]*.jar!/!module-info.class,\
-	@asm-commons-[0-9.]*.jar!/!module-info.class

@@ -19,7 +19,9 @@ export function StyleErrorsModal({onCloseModal, onPublish}) {
 			observer={observer}
 			status="warning"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('style-errors-detected')}
 			</ClayModal.Header>
 

@@ -251,33 +251,50 @@ public interface FragmentEntryLinkModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the original fragment entry link ID of this fragment entry link.
+	 * Returns the original fragment entry link erc of this fragment entry link.
 	 *
-	 * @return the original fragment entry link ID of this fragment entry link
+	 * @return the original fragment entry link erc of this fragment entry link
 	 */
-	public long getOriginalFragmentEntryLinkId();
+	@AutoEscape
+	public String getOriginalFragmentEntryLinkERC();
 
 	/**
-	 * Sets the original fragment entry link ID of this fragment entry link.
+	 * Sets the original fragment entry link erc of this fragment entry link.
 	 *
-	 * @param originalFragmentEntryLinkId the original fragment entry link ID of this fragment entry link
+	 * @param originalFragmentEntryLinkERC the original fragment entry link erc of this fragment entry link
 	 */
-	public void setOriginalFragmentEntryLinkId(
-		long originalFragmentEntryLinkId);
+	public void setOriginalFragmentEntryLinkERC(
+		String originalFragmentEntryLinkERC);
 
 	/**
-	 * Returns the fragment entry ID of this fragment entry link.
+	 * Returns the fragment entry erc of this fragment entry link.
 	 *
-	 * @return the fragment entry ID of this fragment entry link
+	 * @return the fragment entry erc of this fragment entry link
 	 */
-	public long getFragmentEntryId();
+	@AutoEscape
+	public String getFragmentEntryERC();
 
 	/**
-	 * Sets the fragment entry ID of this fragment entry link.
+	 * Sets the fragment entry erc of this fragment entry link.
 	 *
-	 * @param fragmentEntryId the fragment entry ID of this fragment entry link
+	 * @param fragmentEntryERC the fragment entry erc of this fragment entry link
 	 */
-	public void setFragmentEntryId(long fragmentEntryId);
+	public void setFragmentEntryERC(String fragmentEntryERC);
+
+	/**
+	 * Returns the fragment entry scope erc of this fragment entry link.
+	 *
+	 * @return the fragment entry scope erc of this fragment entry link
+	 */
+	@AutoEscape
+	public String getFragmentEntryScopeERC();
+
+	/**
+	 * Sets the fragment entry scope erc of this fragment entry link.
+	 *
+	 * @param fragmentEntryScopeERC the fragment entry scope erc of this fragment entry link
+	 */
+	public void setFragmentEntryScopeERC(String fragmentEntryScopeERC);
 
 	/**
 	 * Returns the segments experience ID of this fragment entry link.

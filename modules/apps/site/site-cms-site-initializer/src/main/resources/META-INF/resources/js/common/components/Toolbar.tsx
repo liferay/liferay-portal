@@ -12,12 +12,18 @@ import React from 'react';
 type Props = {
 	backURL?: string;
 	children?: React.ReactNode;
+	className?: string;
 	title: string;
 };
 
-function Toolbar({backURL, children, title}: Props) {
+function Toolbar({backURL, children, className, title}: Props) {
 	return (
-		<ClayToolbar className="bg-white cms-control-menu px-4 sticky-top top-bar">
+		<ClayToolbar
+			className={classNames(
+				'bg-white cms-control-menu px-4 sticky-top top-bar',
+				className
+			)}
+		>
 			<div className="container-fluid">
 				<ClayToolbar.Nav>
 					{backURL ? (

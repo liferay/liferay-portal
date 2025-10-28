@@ -9,7 +9,7 @@ import React from 'react';
 import AddSXPElementSidebar from '../../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/edit_sxp_blueprint/add_sxp_element_sidebar/index';
 import {QUERY_SXP_ELEMENTS} from '../../mocks/sxpElements';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 // Suppress act warning until @testing-library/react is updated past 9
 // to use screen. See https://javascript.plainenglish.io/

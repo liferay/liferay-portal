@@ -27,7 +27,7 @@ ViewFolderSectionDisplayContext viewFolderSectionDisplayContext = (ViewFolderSec
 		emptyState="<%= viewFolderSectionDisplayContext.getEmptyState() %>"
 		fdsActionDropdownItems="<%= viewFolderSectionDisplayContext.getFDSActionDropdownItems() %>"
 		formName="fm"
-		id="<%= CMSSiteInitializerFDSNames.VIEW_FOLDER %>"
+		id="<%= viewFolderSectionDisplayContext.getCMSSiteInitializerFDSName() %>"
 		itemsPerPage="<%= 20 %>"
 		propsTransformer="{AssetsFDSPropsTransformer} from site-cms-site-initializer"
 		selectedItemsKey="embedded.id"

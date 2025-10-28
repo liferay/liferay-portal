@@ -4,13 +4,15 @@
 	},
 	"description": "Liferay Sample Editor Config Contributor",
 	"devDependencies": {
-		"ckeditor5": "46.0.2",
+		"@ckeditor/ckeditor5-core": "46.0.2",
+		"@ckeditor/ckeditor5-fullscreen": "46.0.2",
+		"@ckeditor/ckeditor5-ui": "46.0.2",
 		"typescript": "^5.0.4"
 	},
 	"main": "./src/index.ts",
 	"name": "@liferay/liferay-sample-editor-config-contributor",
 	"scripts": {
-		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:ckeditor5",
+		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:@ckeditor/ckeditor-core --external:@ckeditor/ckeditor5-engine --external:@ckeditor/ckeditor5-fullscreen --external:@ckeditor/ckeditor5-ui --external:@ckeditor/ckeditor5-utils --external:@ckeditor/ckeditor5-watchdog",
 		"start": "PORT=3000 serve --cors",
 		"watch": "tsc --watch"
 	},

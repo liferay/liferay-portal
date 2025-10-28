@@ -9,7 +9,7 @@ import React from 'react';
 import ToasterProvider from '../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 import {useToaster} from '../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/hooks/useToaster.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const ComponentMock = () => {
 	const toaster = useToaster();

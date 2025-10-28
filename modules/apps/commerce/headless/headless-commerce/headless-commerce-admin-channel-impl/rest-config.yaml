@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Commerce.Admin.Channel
 author: Andrea Sbarra
 clientDir: ../headless-commerce-admin-channel-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: false
 forcePredictableSchemaPropertyName: false
 javaEEPackage: jakarta

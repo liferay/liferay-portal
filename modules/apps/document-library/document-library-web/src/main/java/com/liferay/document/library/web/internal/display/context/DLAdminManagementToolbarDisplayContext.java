@@ -550,7 +550,7 @@ public class DLAdminManagementToolbarDisplayContext
 							"extension",
 							() -> ArrayUtil.remove(extensions, extension)));
 					labelItem.setCloseable(true);
-					labelItem.setLabel(_getLabel("extension", extension));
+					labelItem.setLabel(_getLabel("extension[file]", extension));
 				});
 		}
 	}

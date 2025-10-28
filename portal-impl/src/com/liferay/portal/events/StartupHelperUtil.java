@@ -87,6 +87,10 @@ public class StartupHelperUtil {
 		return _newRelease;
 	}
 
+	public static boolean isRunOnPortalUpgradeVerifiers() {
+		return _runOnPortalUpgradeVerifiers;
+	}
+
 	public static boolean isUpgrading() {
 		return _upgrading;
 	}
@@ -117,6 +121,12 @@ public class StartupHelperUtil {
 
 	public static void setNewRelease(boolean newRelease) {
 		_newRelease = newRelease;
+	}
+
+	public static void setRunOnPortalUpgradeVerifiers(
+		boolean runOnPortalUpgradeVerifiers) {
+
+		_runOnPortalUpgradeVerifiers = runOnPortalUpgradeVerifiers;
 	}
 
 	public static void setUpgrading(boolean upgrading) {
@@ -269,6 +279,7 @@ public class StartupHelperUtil {
 	private static final DCLSingleton<Boolean> _dbWarmedSCLSingleton =
 		new DCLSingleton<>();
 	private static boolean _newRelease;
+	private static volatile boolean _runOnPortalUpgradeVerifiers;
 	private static volatile ServiceRegistration<?> _serviceRegistration;
 	private static volatile boolean _upgrading;
 

@@ -54,6 +54,12 @@
 			margin-top: 0.125rem;
 			width: 12rem;
 		}
+
+		.ticket-status-text {
+			max-width: 100%;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 	
 		.ticket-text-container {
 			color: var(--color-neutral-8, #54555F);

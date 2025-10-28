@@ -5,7 +5,7 @@
 
 import {fireEvent, render, screen} from '@testing-library/react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import React from 'react';
 
 import {LocalizationSelect} from '../src/main/resources/META-INF/resources/js/api/LocalizationSelect';

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Service
 Bundle-SymbolicName: com.liferay.commerce.service
-Bundle-Version: 11.0.210
+Bundle-Version: 11.0.211
 Liferay-Client-Extension-Batch: com/liferay/commerce/internal/batch
 Liferay-Require-SchemaVersion: 14.0.0
 Liferay-Service: true

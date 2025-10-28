@@ -76,7 +76,9 @@ export class CalendarWidgetPage {
 				exact: true,
 				name: 'Close',
 			});
-		this.closeEventModalButton = page.getByRole('button', {name: 'Close'});
+		this.closeEventModalButton = page
+			.locator('.modal-header')
+			.getByRole('button', {exact: true, name: 'Close'});
 		this.configurationMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Configuration',

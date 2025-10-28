@@ -74,6 +74,15 @@ export default function ViewportSizeSelector({
 				icon={availableViewportSizes[selectedSize].icon}
 				items={Object.values(availableViewportSizes)}
 				label={availableViewportSizes[selectedSize].label}
+				messages={{
+					itemDescribedby: Liferay.Language.get(
+						'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+					),
+					itemSelected: Liferay.Language.get('x-selected'),
+					scrollToBottomAriaLabel:
+						Liferay.Language.get('scroll-to-bottom'),
+					scrollToTopAriaLabel: Liferay.Language.get('scroll-to-top'),
+				}}
 				onSelectionChange={(size: Key) =>
 					onSizeSelected(size as ViewportSize)
 				}

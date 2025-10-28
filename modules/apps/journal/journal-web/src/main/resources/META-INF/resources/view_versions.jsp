@@ -11,6 +11,12 @@
 Map<String, Object> componentContext = journalDisplayContext.getComponentContext();
 %>
 
+<portlet:actionURL name="/journal/restore_trash_entries" var="restoreTrashEntriesURL" />
+
+<liferay-trash:undo
+	portletURL="<%= restoreTrashEntriesURL %>"
+/>
+
 <liferay-ui:search-container
 	cssClass='<%= journalDisplayContext.isSearch() ? "pt-0" : StringPool.BLANK %>'
 	emptyResultsMessage="no-version-was-found"

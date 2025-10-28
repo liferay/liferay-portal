@@ -53,10 +53,11 @@ class SubnavTbar extends React.Component {
 		const {children, className, display} = this.props;
 
 		const classes = getCN(
-			'subnav-tbar',
-			'subnav-tbar-root',
-			'tbar',
 			className,
+			'mb-3',
+			'subnav-tbar-root',
+			'subnav-tbar',
+			'tbar',
 			{
 				'subnav-tbar-primary': display === 'primary'
 			}

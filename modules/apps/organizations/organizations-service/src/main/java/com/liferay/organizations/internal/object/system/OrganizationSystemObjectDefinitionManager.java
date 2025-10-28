@@ -45,11 +45,12 @@ public class OrganizationSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
 		OrganizationResource organizationResource = _buildOrganizationResource(
-			false, user);
+			checkPermissions, user);
 
 		Organization organization = organizationResource.postOrganization(
 			_toOrganization(values));

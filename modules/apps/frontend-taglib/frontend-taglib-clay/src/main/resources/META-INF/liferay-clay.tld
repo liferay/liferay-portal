@@ -23,6 +23,12 @@
 		</attribute>
 		<attribute>
 			<description></description>
+			<name>closeButtonAriaLabel</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>cssClass</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -1225,7 +1231,19 @@
 		<body-content>JSP</body-content>
 		<attribute>
 			<description></description>
+			<name>closeButtonAriaLabel</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>cssClass</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description></description>
+			<name>dismissible</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

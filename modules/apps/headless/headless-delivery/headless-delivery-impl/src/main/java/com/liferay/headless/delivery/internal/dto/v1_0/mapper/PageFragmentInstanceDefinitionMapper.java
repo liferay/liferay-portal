@@ -130,7 +130,8 @@ public class PageFragmentInstanceDefinitionMapper {
 
 		FragmentEntry fragmentEntry = _getFragmentEntry(
 			_fragmentCollectionContributorRegistry,
-			fragmentEntryLink.getFragmentEntryId(), rendererKey);
+			fragmentEntryLink.getFragmentEntryERC(),
+			fragmentEntryLink.getFragmentEntryGroupId(), rendererKey);
 
 		return new PageFragmentInstanceDefinition() {
 			{
@@ -312,10 +313,13 @@ public class PageFragmentInstanceDefinitionMapper {
 	private FragmentEntry _getFragmentEntry(
 		FragmentCollectionContributorRegistry
 			fragmentCollectionContributorRegistry,
-		long fragmentEntryId, String rendererKey) {
+		String fragmentEntryERC, long fragmentEntryGroupId,
+		String rendererKey) {
 
 		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.fetchFragmentEntry(fragmentEntryId);
+			_fragmentEntryLocalService.
+				fetchFragmentEntryByExternalReferenceCode(
+					fragmentEntryERC, fragmentEntryGroupId);
 
 		if (fragmentEntry != null) {
 			return fragmentEntry;

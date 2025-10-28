@@ -197,11 +197,11 @@ describe('Bulk Actions Monitor Utils', () => {
 			expect(reportLink).toBe('');
 		});
 
-		it('returns a string when taskId is defined', () => {
+		it('returns TaskReportLink when taskId is defined', () => {
 			const reportLink = getTaskReportLink(1211, 1212);
 
 			expect(reportLink).toBe(
-				`<a class="alert-link lead" href="${Liferay.ThemeDisplay.getPortalURL()}/e/bulk-action-task/1211/1212"><strong>${Liferay.Language.get(
+				`<a class="alert-link lead" href="${Liferay.ThemeDisplay.getPortalURL()}/web/cms/e/bulk-action-task/1211/1212"><strong>${Liferay.Language.get(
 					'task-report'
 				)}</strong></a>`
 			);

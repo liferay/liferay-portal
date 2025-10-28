@@ -39,7 +39,7 @@ export class HeadlessAssetLibraryApiHelper {
 
 		if (this.apiHelpers instanceof DataApiHelpers) {
 			this.apiHelpers.data.push({
-				id: assetLibrary.id,
+				id: assetLibrary.externalReferenceCode,
 				type: 'assetLibrary',
 			});
 		}
@@ -55,9 +55,9 @@ export class HeadlessAssetLibraryApiHelper {
 		return response?.items;
 	}
 
-	async deleteAssetLibrary(assetLibraryId: number) {
+	async deleteAssetLibrary(externalReferenceCode: string) {
 		return this.apiHelpers.delete(
-			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/${assetLibraryId}`
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/by-external-reference-code/${externalReferenceCode}`
 		);
 	}
 }

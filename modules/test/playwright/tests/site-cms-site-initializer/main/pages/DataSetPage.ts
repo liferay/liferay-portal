@@ -16,9 +16,7 @@ export class DataSetPage {
 	readonly selectAllLink: Locator;
 
 	constructor(page: Page) {
-		this.activeViewSelector = page.getByLabel(
-			'Show View Options'
-		) as Locator;
+		this.activeViewSelector = page.getByLabel(/View Selected/);
 
 		const tableContainer = page.locator('.fds table');
 		this.table = {

@@ -5,6 +5,7 @@
 
 package com.liferay.depot.internal.security.permission.wrapper;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -156,9 +158,14 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 				return true;
 			}
 
+			Group group = _groupLocalService.fetchGroup(groupId);
+
+			if (_isCMSAdministrator(group)) {
+				return true;
+			}
+
 			return _isOrAddToPermissionCache(
-				_groupLocalService.fetchGroup(groupId),
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+				group, DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
 				this::_isGroupAdmin);
 		}
 		catch (Exception exception) {
@@ -220,7 +227,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 						return false;
 					}
 
-					if (_isGroupAdmin(group)) {
+					if (_isCMSAdministrator(group) || _isGroupAdmin(group)) {
 						return true;
 					}
 
@@ -248,6 +255,35 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 		}
 
 		return false;
+	}
+
+	private boolean _isCMSAdministrator(Group group) throws PortalException {
+		if ((group == null) || !group.isDepot()) {
+			return false;
+		}
+
+		long depotEntryType = GetterUtil.getInteger(
+			group.getTypeSettingsProperty("depotEntryType"),
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		if (depotEntryType != DepotConstants.TYPE_SPACE) {
+			return false;
+		}
+
+		Boolean value = PermissionCacheUtil.getUserPrimaryKeyRole(
+			getUserId(), group.getCompanyId(), RoleConstants.CMS_ADMINISTRATOR);
+
+		if (value == null) {
+			value = _roleLocalService.hasUserRole(
+				getUserId(), group.getCompanyId(),
+				RoleConstants.CMS_ADMINISTRATOR, true);
+
+			PermissionCacheUtil.putUserPrimaryKeyRole(
+				getUserId(), group.getCompanyId(),
+				RoleConstants.CMS_ADMINISTRATOR, value);
+		}
+
+		return value;
 	}
 
 	private boolean _isContentReviewer(Group group) throws PortalException {

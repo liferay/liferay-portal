@@ -99,6 +99,8 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 				return;
 			}
 
+			buildReportJSONObject.put("buildCached", true);
+
 			JenkinsResultsParserUtil.write(
 				buildReportFile, String.valueOf(buildReportJSONObject));
 

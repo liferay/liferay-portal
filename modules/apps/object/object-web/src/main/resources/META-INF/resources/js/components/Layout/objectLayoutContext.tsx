@@ -21,6 +21,7 @@ import {
 type TState = {
 	creationLanguageId: Liferay.Language.Locale;
 	enableCategorization: boolean;
+	enableFriendlyURLCustomization: boolean;
 	isViewOnly: boolean;
 	objectFieldBusinessTypes: ObjectFieldBusinessType[];
 	objectFields: TObjectField[];
@@ -29,11 +30,12 @@ type TState = {
 	objectRelationships: TObjectRelationship[];
 };
 
-type TAction =
+export type TAction =
 	| {
 			payload: {
 				creationLanguageId: Liferay.Language.Locale;
 				enableCategorization: boolean;
+				enableFriendlyURLCustomization: boolean;
 				objectLayout: TObjectLayout;
 				objectRelationships: TObjectRelationship[];
 			};
@@ -96,13 +98,6 @@ type TAction =
 	| {
 			payload: {
 				boxIndex: number;
-				tabIndex: number;
-			};
-			type: TYPES.DELETE_OBJECT_LAYOUT_BOX_CATEGORIZATION;
-	  }
-	| {
-			payload: {
-				boxIndex: number;
 				columnIndex: number;
 				objectFieldName: string;
 				rowIndex: number;
@@ -133,7 +128,6 @@ export enum TYPES {
 	CHANGE_OBJECT_LAYOUT_BOX_ATTRIBUTE = 'CHANGE_OBJECT_LAYOUT_BOX_ATTRIBUTE',
 	CHANGE_OBJECT_LAYOUT_NAME = 'CHANGE_OBJECT_LAYOUT_NAME',
 	DELETE_OBJECT_LAYOUT_BOX = 'DELETE_OBJECT_LAYOUT_BOX',
-	DELETE_OBJECT_LAYOUT_BOX_CATEGORIZATION = 'DELETE_OBJECT_LAYOUT_BOX_CATEGORIZATION',
 	DELETE_OBJECT_LAYOUT_FIELD = 'DELETE_OBJECT_LAYOUT_FIELD',
 	DELETE_OBJECT_LAYOUT_TAB = 'DELETE_OBJECT_LAYOUT_TAB',
 	SET_OBJECT_LAYOUT_AS_DEFAULT = 'SET_OBJECT_LAYOUT_AS_DEFAULT',
@@ -145,12 +139,13 @@ const initialState = {
 	objectRelationships: [] as TObjectRelationship[],
 } as TState;
 
-const layoutReducer = (state: TState, action: TAction) => {
+export function layoutReducer(state: TState, action: TAction) {
 	switch (action.type) {
 		case TYPES.ADD_OBJECT_LAYOUT: {
 			const {
 				creationLanguageId,
 				enableCategorization,
+				enableFriendlyURLCustomization,
 				objectLayout,
 				objectRelationships,
 			} = action.payload;
@@ -159,6 +154,7 @@ const layoutReducer = (state: TState, action: TAction) => {
 				...state,
 				creationLanguageId,
 				enableCategorization,
+				enableFriendlyURLCustomization,
 				objectLayout,
 				objectRelationships,
 			};
@@ -222,19 +218,27 @@ const layoutReducer = (state: TState, action: TAction) => {
 				type,
 			};
 
-			const frameworkIndex = objectLayoutBoxes.findIndex(
-				(box) => box.type !== 'regular'
+			const getPriority = (boxType: BoxType) => {
+				switch (boxType) {
+					case 'regular':
+						return 1;
+					case 'categorization':
+						return 2;
+					case 'seo':
+						return 3;
+					default:
+						return 4;
+				}
+			};
+
+			const newBoxPriority = getPriority(type);
+
+			const insertionIndex = objectLayoutBoxes.findIndex(
+				(box) => getPriority(box.type) > newBoxPriority
 			);
 
-			const hasCategorizationBox = !!objectLayoutBoxes.find(
-				(layoutBox) => layoutBox.type === 'categorization'
-			);
-
-			if (
-				(type === 'regular' && hasCategorizationBox) ||
-				(type === 'categorization' && frameworkIndex >= 0)
-			) {
-				objectLayoutBoxes.splice(frameworkIndex, 0, newBox);
+			if (insertionIndex >= 0) {
+				objectLayoutBoxes.splice(insertionIndex, 0, newBox);
 			}
 			else {
 				objectLayoutBoxes.push(newBox);
@@ -364,17 +368,6 @@ const layoutReducer = (state: TState, action: TAction) => {
 
 			return newState;
 		}
-		case TYPES.DELETE_OBJECT_LAYOUT_BOX_CATEGORIZATION: {
-			const {boxIndex, tabIndex} = action.payload;
-
-			const newState = {...state};
-
-			newState.objectLayout.objectLayoutTabs[
-				tabIndex
-			].objectLayoutBoxes.splice(boxIndex, 1);
-
-			return newState;
-		}
 		case TYPES.DELETE_OBJECT_LAYOUT_FIELD: {
 			const {boxIndex, columnIndex, objectFieldName, rowIndex, tabIndex} =
 				action.payload;
@@ -449,7 +442,7 @@ const layoutReducer = (state: TState, action: TAction) => {
 		default:
 			return state;
 	}
-};
+}
 
 interface ILayoutContextProviderProps
 	extends React.HTMLAttributes<HTMLElement> {

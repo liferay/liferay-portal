@@ -10,7 +10,7 @@ import React from 'react';
 
 import PageTemplateModal from '../../../src/main/resources/META-INF/resources/js/components/page_template_modal/PageTemplateModal';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.mock('frontend-js-components-web', () => ({
 	openToast: jest.fn(),

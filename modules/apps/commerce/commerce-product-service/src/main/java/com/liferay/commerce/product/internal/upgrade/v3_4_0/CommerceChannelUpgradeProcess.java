@@ -38,24 +38,28 @@ public class CommerceChannelUpgradeProcess extends UpgradeProcess {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select CommerceChannel.siteGroupId, Group_.groupId from ",
-					"CommerceChannel inner join Group_ on ",
-					"CommerceChannel.commerceChannelId = Group_.classPK and ",
-					"Group_.classNameId = ",
-					ClassNameLocalServiceUtil.getClassNameId(
-						CommerceChannel.class)));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"CommerceChannel inner join Group_ on CommerceChannel.",
+					"commerceChannelId = Group_.classPK and Group_.",
+					"classNameId = ?"))) {
 
-			while (resultSet.next()) {
-				long siteGroupId = resultSet.getLong(1);
+			preparedStatement.setLong(
+				1,
+				ClassNameLocalServiceUtil.getClassNameId(
+					CommerceChannel.class));
 
-				if (siteGroupId == 0) {
-					continue;
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long siteGroupId = resultSet.getLong(1);
+
+					if (siteGroupId == 0) {
+						continue;
+					}
+
+					long groupId = resultSet.getLong(2);
+
+					_accountEntryGroupSettings.setAllowedTypes(
+						siteGroupId, _getAllowedTypes(groupId));
 				}
-
-				long groupId = resultSet.getLong(2);
-
-				_accountEntryGroupSettings.setAllowedTypes(
-					siteGroupId, _getAllowedTypes(groupId));
 			}
 		}
 	}

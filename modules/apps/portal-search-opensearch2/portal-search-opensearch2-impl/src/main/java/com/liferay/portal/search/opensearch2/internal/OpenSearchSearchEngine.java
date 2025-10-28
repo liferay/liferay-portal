@@ -558,8 +558,8 @@ public class OpenSearchSearchEngine
 		try {
 			openSearchIngestClient.putPipeline(putPipelineRequest);
 		}
-		catch (IOException ioException) {
-			_log.error("Unable to put timestamp pipeline", ioException);
+		catch (Exception exception) {
+			_log.error("Unable to put timestamp pipeline", exception);
 		}
 	}
 

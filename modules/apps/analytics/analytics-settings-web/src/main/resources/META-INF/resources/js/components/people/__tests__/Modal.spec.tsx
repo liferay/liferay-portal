@@ -5,7 +5,7 @@
 
 import fetch from 'jest-fetch-mock';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {useModal} from '@clayui/modal';
 import {act, cleanup, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';

@@ -5,7 +5,6 @@
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
@@ -13,6 +12,7 @@ import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {styleBookPageTest} from '../../../fixtures/styleBookPageTest';
 import {PagesAdminPage} from '../../../pages/layout-admin-web/PagesAdminPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {disableCache} from '../../../utils/disableCache';
 import getRandomString from '../../../utils/getRandomString';
 import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
 import {editJSClientExtensionsPageTest} from './fixtures/editJSClientExtensionsPageTest';
@@ -32,9 +32,6 @@ const test = mergeTests(
 const testSample = mergeTests(loginTest());
 const testSampleInstanceScoped = mergeTests(
 	editJSClientExtensionsPageTest,
-	featureFlagsTest({
-		'LPD-30371': {enabled: true},
-	}),
 	loginTest(),
 	styleBookPageTest
 );
@@ -83,12 +80,16 @@ testSample.describe('Samples', () => {
 		testSample(
 			`${sample.name}'s .js file can be downloaded`,
 			async ({page}) => {
+				await disableCache(page);
+
 				const response = await page.goto(sample.url);
 
 				expect(response.status()).toBe(200);
-				expect(await response.headerValue('Content-Type')).toBe(
-					'application/javascript'
-				);
+
+				const responseContentType =
+					await response.headerValue('Content-Type');
+
+				expect(responseContentType).toBe('application/javascript');
 			}
 		);
 	}

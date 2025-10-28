@@ -39,7 +39,9 @@ export function PreviewModal({observer}) {
 
 	return (
 		<ClayModal observer={observer} size="xl">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('preview-menu')}
 			</ClayModal.Header>
 

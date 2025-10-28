@@ -640,16 +640,17 @@ public class BaseDBProcessTest extends BaseDBProcess {
 
 	private void _validateTableContent() throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select count(1) from ", _TABLE_NAME,
-					" where id >= 1 and id <= ", _PROCESS_CONCURRENTLY_COUNT,
-					" and typeInteger = id"));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select count(1) from " + _TABLE_NAME +
+					" where id >= 1 and id <= ? and typeInteger = id")) {
 
-			resultSet.next();
+			preparedStatement.setInt(1, _PROCESS_CONCURRENTLY_COUNT);
 
-			Assert.assertEquals(
-				_PROCESS_CONCURRENTLY_COUNT, resultSet.getInt(1));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
+
+				Assert.assertEquals(
+					_PROCESS_CONCURRENTLY_COUNT, resultSet.getInt(1));
+			}
 		}
 	}
 

@@ -204,11 +204,9 @@ test(
 			'Private'
 		);
 
-		const spacesInputLocator = page
-			.locator('.categorization-spaces .input-group-item span')
-			.nth(1);
+		const spacesInputLocator = page.locator('#multiSelect');
 
-		await expect(spacesInputLocator).toContainText('All Spaces');
+		await expect(spacesInputLocator).toHaveAttribute('value', 'All Spaces');
 
 		const newName = `Vocabulary${getRandomInt()}`;
 

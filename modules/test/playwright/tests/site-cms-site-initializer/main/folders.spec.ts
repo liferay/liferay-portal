@@ -39,7 +39,7 @@ test(
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'Edit'}),
+			target: page.getByRole('menuitem', {exact: true, name: 'Edit'}),
 			trigger: page
 				.getByRole('row', {name: folderTitle})
 				.locator('.dropdown-toggle'),

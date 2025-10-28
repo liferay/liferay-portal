@@ -127,7 +127,9 @@ function ReviewExperimentModal({modalObserver, onModalClose, onRun, variants}) {
 
 	return (
 		<ClayModal observer={modalObserver} size="lg">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{success
 					? Liferay.Language.get('test-started-successfully')
 					: Liferay.Language.get('review-and-run-test')}

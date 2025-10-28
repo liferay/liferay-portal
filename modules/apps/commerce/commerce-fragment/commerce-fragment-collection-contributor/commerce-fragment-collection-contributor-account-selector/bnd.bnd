@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Fragment Collection Contributor Account Selector
 Bundle-SymbolicName: com.liferay.commerce.fragment.collection.contributor.account.selector
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Web-ContextPath: /commerce-fragment-collection-contributor-account-selector
 -dsannotations-options: inherit

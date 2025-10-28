@@ -73,7 +73,11 @@ export default function ManagerStatusModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>Status Change</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				Status Change
+			</ClayModal.Header>
 			<ClayModal.Body>
 				<label className="fw-bold" htmlFor="descriptionTextArea">
 					Status change motivation

@@ -48,6 +48,7 @@ exports[`InterestDetails should render 1`] = `
         >
           <button
             aria-expanded="false"
+            aria-label="Open Menu, Current Page: label"
             class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
             type="button"
           >
@@ -82,9 +83,7 @@ exports[`InterestDetails should render 1`] = `
                     class="nav-link active"
                     href="/workspace/23/contacts/individuals/known-individuals/test/interests/1?active=true"
                   >
-                    <span
-                      class="navbar-text-truncate"
-                    >
+                    <span>
                       Active Pages
                     </span>
                   </a>
@@ -96,9 +95,7 @@ exports[`InterestDetails should render 1`] = `
                     class="nav-link"
                     href="/workspace/23/contacts/individuals/known-individuals/test/interests/1?active=false"
                   >
-                    <span
-                      class="navbar-text-truncate"
-                    >
+                    <span>
                       Inactive Pages
                     </span>
                   </a>
@@ -116,7 +113,7 @@ exports[`InterestDetails should render 1`] = `
         class="toolbar-root"
       >
         <nav
-          class="navbar navbar-root management-bar management-bar-light navbar-expand"
+          class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
         >
           <div
             class="container-fluid"
@@ -130,48 +127,51 @@ exports[`InterestDetails should render 1`] = `
                 role="presentation"
               >
                 <div
-                  class="dropdown dropdown-root filter-and-order-root"
+                  class="dropdown dropdown-root"
                 >
                   <button
                     aria-controls="clay-dropdown-menu-1"
                     aria-expanded="false"
                     aria-haspopup="true"
-                    class="dropdown-toggle d-flex align-items-center btn btn-outline-borderless btn-sm btn-outline-secondary"
+                    class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+                    data-testid="order-button"
                     type="button"
                   >
-                    Order
-                    <svg
-                      class="lexicon-icon lexicon-icon-caret-bottom ml-2 mt-0"
-                      role="presentation"
+                    <span
+                      class="caret-root"
                     >
-                      <use
-                        href="#caret-bottom"
-                      />
-                    </svg>
+                      <svg
+                        class="lexicon-icon lexicon-icon-order-list-down"
+                        role="presentation"
+                      >
+                        <use
+                          href="#order-list-down"
+                        />
+                      </svg>
+                    </span>
+                    <span
+                      class="mx-2"
+                    >
+                      Order
+                    </span>
+                    <span
+                      class="caret-root"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-caret-bottom"
+                        role="presentation"
+                      >
+                        <use
+                          href="#caret-bottom"
+                        />
+                      </svg>
+                    </span>
                   </button>
                 </div>
               </li>
-              <li
-                class="nav-item"
-                role="presentation"
-              >
-                <a
-                  class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                  href="/?field=uniqueVisitsCount&page=1&sortOrder=ASC"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-order_arrow_descending icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#order_arrow_descending"
-                    />
-                  </svg>
-                </a>
-              </li>
             </ul>
             <div
-              class="navbar-form navbar-form-autofit"
+              class="navbar-form navbar-form-autofit mx-2"
             >
               <div
                 class="input-group search"
@@ -210,123 +210,177 @@ exports[`InterestDetails should render 1`] = `
         </nav>
       </div>
       <div
-        class="table-responsive table-root flex-grow-1"
+        class="flex-grow-1 mx-4 table-root"
       >
-        <table
-          class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+        <div
+          class="table-responsive"
         >
-          <thead>
-            <tr>
-              <th
-                class="table-head-title"
-              >
-                <a
-                  class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                  href="/?field=title&page=1&sortOrder=ASC"
+          <table
+            class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+          >
+            <thead>
+              <tr>
+                <th
+                  class="table-head-title"
                 >
-                  <span
-                    class="text-truncate"
+                  <a
+                    class="button-root w-100 btn btn-unstyled"
+                    href="/?field=title&page=1&sortOrder=ASC"
                   >
-                    Page Title
-                  </span>
-                </a>
-              </th>
-              <th
-                class="table-head-title table-cell-expand"
-              >
-                <a
-                  class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                  href="/?field=url&page=1&sortOrder=ASC"
-                >
-                  <span
-                    class="text-truncate"
-                  >
-                    URL
-                  </span>
-                </a>
-              </th>
-              <th
-                class="table-head-title view-count table-column-text-end"
-              >
-                <a
-                  class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                  href="/?field=uniqueVisitsCount&page=1&sortOrder=ASC"
-                >
-                  <span
-                    class="text-truncate"
-                  >
-                    Views
-                  </span>
-                  <span
-                    class="inline-item inline-item-after"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-order-arrow-down icon-root"
-                      role="presentation"
+                    <div
+                      class="align-items-center d-flex justify-content-between"
                     >
-                      <use
-                        href="#order-arrow-down"
-                      />
-                    </svg>
-                  </span>
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class=""
-            >
-              <td
-                class="name-cell-root"
+                      <div
+                        class="text-truncate"
+                      >
+                        Page Title
+                      </div>
+                      <button
+                        aria-label="Descending"
+                        class="component-action ml-2 btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        <span
+                          class="opacity-25"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#order-arrow"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </a>
+                </th>
+                <th
+                  class="table-head-title table-cell-expand"
+                >
+                  <a
+                    class="button-root w-100 btn btn-unstyled"
+                    href="/?field=url&page=1&sortOrder=ASC"
+                  >
+                    <div
+                      class="align-items-center d-flex justify-content-between"
+                    >
+                      <div
+                        class="text-truncate"
+                      >
+                        URL
+                      </div>
+                      <button
+                        aria-label="Descending"
+                        class="component-action ml-2 btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        <span
+                          class="opacity-25"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#order-arrow"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </a>
+                </th>
+                <th
+                  class="table-head-title view-count table-column-text-end"
+                >
+                  <a
+                    class="button-root w-100 btn btn-unstyled"
+                    href="/?field=uniqueVisitsCount&page=1&sortOrder=ASC"
+                  >
+                    <div
+                      class="align-items-center d-flex justify-content-between"
+                    >
+                      <div
+                        class="text-truncate"
+                      >
+                        Views
+                      </div>
+                      <button
+                        aria-label="Descending"
+                        class="component-action ml-2 btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order_arrow_descending icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order_arrow_descending"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class=""
               >
-                <div
-                  class="content-container"
+                <td
+                  class="name-cell-root"
                 >
                   <div
-                    class="text-truncate"
+                    class="content-container"
                   >
                     <div
-                      class="table-title text-truncate"
+                      class="text-truncate"
                     >
-                      <a
-                        class="text-truncate"
-                        href="/workspace/23/sites/pages/overview/https%3A%2F%2Fwww.liferay.com/Page%20Visited%20Title"
+                      <div
+                        class="table-title text-truncate"
                       >
-                        Page Visited Title
-                      </a>
-                    </div>
-                    <div
-                      class="secondary-info text-truncate"
-                    >
-                      <span
-                        class="text-truncate"
-                        data-tooltip="false"
-                        title=""
-                      />
+                        <a
+                          class="text-truncate"
+                          href="/workspace/23/sites/pages/overview/https%3A%2F%2Fwww.liferay.com/Page%20Visited%20Title"
+                        >
+                          Page Visited Title
+                        </a>
+                      </div>
+                      <div
+                        class="secondary-info text-truncate"
+                      >
+                        <span
+                          class="text-truncate"
+                          data-tooltip="false"
+                          title=""
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td
-                class="table-cell-expand"
-              >
-                <span
-                  class="text-truncate"
-                  data-tooltip="false"
-                  title=""
+                </td>
+                <td
+                  class="table-cell-expand"
                 >
-                  https://www.liferay.com
-                </span>
-              </td>
-              <td
-                class="view-count table-column-text-end"
-              >
-                1
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    https://www.liferay.com
+                  </span>
+                </td>
+                <td
+                  class="view-count table-column-text-end"
+                >
+                  1
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <nav
         class="navbar navbar-root pagination-bar-root"

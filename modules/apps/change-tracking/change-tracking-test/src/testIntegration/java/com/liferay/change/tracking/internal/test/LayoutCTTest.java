@@ -172,11 +172,13 @@ public class LayoutCTTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select * from Layout where ctCollectionId = " +
-					_ctCollection.getCtCollectionId());
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select * from Layout where ctCollectionId = ?")) {
 
-			Assert.assertFalse(resultSet.next());
+			preparedStatement.setLong(1, _ctCollection.getCtCollectionId());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 		finally {
 			_ctCollection = null;
@@ -200,11 +202,13 @@ public class LayoutCTTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select * from Layout where ctCollectionId = " +
-					_ctCollection.getCtCollectionId());
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select * from Layout where ctCollectionId = ?")) {
 
-			Assert.assertFalse(resultSet.next());
+			preparedStatement.setLong(1, _ctCollection.getCtCollectionId());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 		finally {
 			_ctCollection = null;
@@ -229,11 +233,13 @@ public class LayoutCTTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select * from Layout where ctCollectionId = " +
-					_ctCollection.getCtCollectionId());
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select * from Layout where ctCollectionId = ?")) {
 
-			Assert.assertFalse(resultSet.next());
+			preparedStatement.setLong(1, _ctCollection.getCtCollectionId());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 		finally {
 			_ctCollection = null;
@@ -260,11 +266,13 @@ public class LayoutCTTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select * from Layout where ctCollectionId = " +
-					_ctCollection.getCtCollectionId());
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select * from Layout where ctCollectionId = ?")) {
 
-			Assert.assertFalse(resultSet.next());
+			preparedStatement.setLong(1, _ctCollection.getCtCollectionId());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 		finally {
 			_ctCollection = null;
@@ -643,53 +651,57 @@ public class LayoutCTTest {
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select changeType from CTEntry inner join Layout on ",
-					"CTEntry.modelClassNameId = ",
-					_classNameLocalService.getClassNameId(Layout.class),
-					" and CTEntry.modelClassPK = Layout.plid and ",
-					"CTEntry.modelMvccVersion = Layout.mvccVersion and ",
-					"CTEntry.ctCollectionId = Layout.ctCollectionId where ",
-					"CTEntry.ctCollectionId = ",
-					_ctCollection.getCtCollectionId(),
-					" order by ctEntryId ASC"));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"CTEntry.modelClassNameId = ? and CTEntry.modelClassPK = ",
+					"Layout.plid and CTEntry.modelMvccVersion = Layout.",
+					"mvccVersion and CTEntry.ctCollectionId = Layout.",
+					"ctCollectionId where CTEntry.ctCollectionId = ? order by ",
+					"ctEntryId ASC"))) {
 
-			Assert.assertTrue(resultSet.next());
+			preparedStatement.setLong(
+				1, _classNameLocalService.getClassNameId(Layout.class));
+			preparedStatement.setLong(2, _ctCollection.getCtCollectionId());
 
-			Assert.assertEquals(
-				CTConstants.CT_CHANGE_TYPE_DELETION,
-				resultSet.getLong("changeType"));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
 
-			Assert.assertFalse(resultSet.next());
+				Assert.assertEquals(
+					CTConstants.CT_CHANGE_TYPE_DELETION,
+					resultSet.getLong("changeType"));
+
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select changeType from CTEntry inner join Layout on ",
-					"CTEntry.modelClassNameId = ",
-					_classNameLocalService.getClassNameId(Layout.class),
-					" and CTEntry.modelClassPK = Layout.plid and ",
-					"CTEntry.modelMvccVersion = Layout.mvccVersion where ",
-					"CTEntry.ctCollectionId = ",
-					_ctCollection.getCtCollectionId(),
-					" and Layout.ctCollectionId = ",
-					CTConstants.CT_COLLECTION_ID_PRODUCTION,
-					" order by ctEntryId ASC"));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"CTEntry.modelClassNameId = ? and CTEntry.modelClassPK = ",
+					"Layout.plid and CTEntry.modelMvccVersion = Layout.",
+					"mvccVersion where CTEntry.ctCollectionId = ? and Layout.",
+					"ctCollectionId = ? order by ctEntryId ASC"))) {
 
-			Assert.assertTrue(resultSet.next());
+			preparedStatement.setLong(
+				1, _classNameLocalService.getClassNameId(Layout.class));
+			preparedStatement.setLong(2, _ctCollection.getCtCollectionId());
+			preparedStatement.setLong(
+				3, CTConstants.CT_COLLECTION_ID_PRODUCTION);
 
-			Assert.assertEquals(
-				CTConstants.CT_CHANGE_TYPE_ADDITION,
-				resultSet.getLong("changeType"));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
 
-			Assert.assertTrue(resultSet.next());
+				Assert.assertEquals(
+					CTConstants.CT_CHANGE_TYPE_ADDITION,
+					resultSet.getLong("changeType"));
 
-			Assert.assertEquals(
-				CTConstants.CT_CHANGE_TYPE_MODIFICATION,
-				resultSet.getLong("changeType"));
+				Assert.assertTrue(resultSet.next());
 
-			Assert.assertFalse(resultSet.next());
+				Assert.assertEquals(
+					CTConstants.CT_CHANGE_TYPE_MODIFICATION,
+					resultSet.getLong("changeType"));
+
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 	}
 
@@ -1213,17 +1225,19 @@ public class LayoutCTTest {
 			try (Connection connection = DataAccess.getConnection();
 				PreparedStatement preparedStatement =
 					connection.prepareStatement(
-						"select ctCollectionId from Layout where plid = " +
-							layout.getPlid());
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+						"select ctCollectionId from Layout where plid = ?")) {
 
-				Assert.assertTrue(resultSet.next());
+				preparedStatement.setLong(1, layout.getPlid());
 
-				Assert.assertEquals(
-					_ctCollection.getCtCollectionId(),
-					resultSet.getLong("ctCollectionId"));
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					Assert.assertTrue(resultSet.next());
 
-				Assert.assertFalse(resultSet.next());
+					Assert.assertEquals(
+						_ctCollection.getCtCollectionId(),
+						resultSet.getLong("ctCollectionId"));
+
+					Assert.assertFalse(resultSet.next());
+				}
 			}
 
 			_layoutLocalService.deleteLayout(layout);
@@ -1238,11 +1252,13 @@ public class LayoutCTTest {
 			try (Connection connection = DataAccess.getConnection();
 				PreparedStatement preparedStatement =
 					connection.prepareStatement(
-						"select * from Layout where plid = " +
-							layout.getPlid());
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+						"select * from Layout where plid = ?")) {
 
-				Assert.assertFalse(resultSet.next());
+				preparedStatement.setLong(1, layout.getPlid());
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					Assert.assertFalse(resultSet.next());
+				}
 			}
 		}
 	}
@@ -1262,15 +1278,17 @@ public class LayoutCTTest {
 			try (Connection connection = DataAccess.getConnection();
 				PreparedStatement preparedStatement =
 					connection.prepareStatement(
-						"select COUNT(*) from Layout where plid = " +
-							layout.getPlid());
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+						"select COUNT(*) from Layout where plid = ?")) {
 
-				Assert.assertTrue(resultSet.next());
+				preparedStatement.setLong(1, layout.getPlid());
 
-				Assert.assertEquals(2, resultSet.getLong(1));
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					Assert.assertTrue(resultSet.next());
 
-				Assert.assertFalse(resultSet.next());
+					Assert.assertEquals(2, resultSet.getLong(1));
+
+					Assert.assertFalse(resultSet.next());
+				}
 			}
 
 			_layoutLocalService.deleteLayout(layout);
@@ -1288,17 +1306,19 @@ public class LayoutCTTest {
 			try (Connection connection = DataAccess.getConnection();
 				PreparedStatement preparedStatement =
 					connection.prepareStatement(
-						"select ctCollectionId from Layout where plid = " +
-							layout.getPlid());
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+						"select ctCollectionId from Layout where plid = ?")) {
 
-				Assert.assertTrue(resultSet.next());
+				preparedStatement.setLong(1, layout.getPlid());
 
-				Assert.assertEquals(
-					CTConstants.CT_COLLECTION_ID_PRODUCTION,
-					resultSet.getLong("ctCollectionId"));
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					Assert.assertTrue(resultSet.next());
 
-				Assert.assertFalse(resultSet.next());
+					Assert.assertEquals(
+						CTConstants.CT_COLLECTION_ID_PRODUCTION,
+						resultSet.getLong("ctCollectionId"));
+
+					Assert.assertFalse(resultSet.next());
+				}
 			}
 		}
 	}

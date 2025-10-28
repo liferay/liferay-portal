@@ -175,7 +175,9 @@ export function ExpressionBuilderModal({sidebarElements}: IModalProps) {
 			observer={observer}
 			size="lg"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{header ?? Liferay.Language.get('expression-builder')}
 			</ClayModal.Header>
 

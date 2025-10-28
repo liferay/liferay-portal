@@ -5,6 +5,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:asset:asset-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-publisher-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
+	testIntegrationImplementation project(":apps:blogs:blogs-api")
+	testIntegrationImplementation project(":apps:blogs:blogs-test-util")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-type-api")
 	testIntegrationImplementation project(":apps:data-engine:data-engine-rest-api")

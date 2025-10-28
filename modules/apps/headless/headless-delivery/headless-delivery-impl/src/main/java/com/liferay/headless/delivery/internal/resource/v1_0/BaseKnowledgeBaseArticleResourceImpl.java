@@ -496,9 +496,9 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(knowledgeBaseArticleId);
-		String resourceName = getPermissionCheckerResourceName(
-			knowledgeBaseArticleId);
 		Long resourceId = getPermissionCheckerResourceId(
+			knowledgeBaseArticleId);
+		String resourceName = getPermissionCheckerResourceName(
 			knowledgeBaseArticleId);
 
 		PermissionServiceUtil.checkPermission(
@@ -1567,9 +1567,9 @@ public abstract class BaseKnowledgeBaseArticleResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(knowledgeBaseArticleId);
-		String resourceName = getPermissionCheckerResourceName(
-			knowledgeBaseArticleId);
 		Long resourceId = getPermissionCheckerResourceId(
+			knowledgeBaseArticleId);
+		String resourceName = getPermissionCheckerResourceName(
 			knowledgeBaseArticleId);
 
 		PermissionServiceUtil.checkPermission(

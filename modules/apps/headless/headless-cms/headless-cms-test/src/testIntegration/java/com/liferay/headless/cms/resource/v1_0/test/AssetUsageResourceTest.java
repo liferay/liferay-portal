@@ -94,7 +94,7 @@ import org.osgi.framework.FrameworkUtil;
 @FeatureFlags(
 	featureFlags = {
 		@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-21926"),
-		@FeatureFlag("LPD-31149"), @FeatureFlag("LPD-34594"),
+		@FeatureFlag("LPD-32050"), @FeatureFlag("LPD-34594"),
 		@FeatureFlag("LPS-179669")
 	}
 )
@@ -307,6 +307,11 @@ public class AssetUsageResourceTest extends BaseAssetUsageResourceTestCase {
 			_objectEntryFolder.getObjectEntryFolderId(), _LANGUAGE_ID,
 			HashMapBuilder.<String, Serializable>put(
 				"file", String.valueOf(dlFileEntry.getFileEntryId())
+			).put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
 			).build(),
 			_serviceContext);
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -150,7 +150,7 @@ describe('StructureBuilderToolbar', () => {
 
 	it('Shows warning modal when a published field has been deleted', async () => {
 		renderComponent({
-			history: {deletedChildren: true},
+			history: {deletedChildren: true, modifiedNames: new Set()},
 			structure: {status: 'published'},
 		});
 
@@ -225,7 +225,7 @@ describe('StructureBuilderToolbar', () => {
 
 	it('Shows modal to publish when trying to customize experience and the structure is published and some fields have been deleted', async () => {
 		renderComponent({
-			history: {deletedChildren: true},
+			history: {deletedChildren: true, modifiedNames: new Set()},
 			structure: {status: 'published'},
 		});
 

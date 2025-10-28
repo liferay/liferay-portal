@@ -425,7 +425,6 @@ const ChannelList: React.FC<IChannelListProps> = ({
 
 	return (
 		<BasePage
-			groupId={groupId}
 			key='sitesListPage'
 			pageDescription={
 				<>

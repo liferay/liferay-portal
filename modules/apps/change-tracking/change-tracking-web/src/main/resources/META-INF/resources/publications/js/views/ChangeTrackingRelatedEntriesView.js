@@ -175,7 +175,9 @@ export default function ChangeTrackingRelatedEntriesView({
 				size="full-screen"
 				spritemap={spritemap}
 			>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					<div className="autofit-row">
 						<div className="autofit-col publications-related-entries-user-portrait">
 							<ClaySticker

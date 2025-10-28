@@ -130,6 +130,88 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/test/v1.0/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "ercScopedTestEntityExternalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "ERCScopedTestEntity"
+			)
+		}
+	)
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
+		"/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteERCScopedTestEntity(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("ercScopedTestEntityExternalReferenceCode")
+			String ercScopedTestEntityExternalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/test/v1.0/erc-scoped-test-entities/batch'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "callbackURL"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "ERCScopedTestEntity"
+			)
+		}
+	)
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path("/erc-scoped-test-entities/batch")
+	@jakarta.ws.rs.Produces("application/json")
+	@Override
+	public Response deleteERCScopedTestEntityBatch(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("callbackURL")
+			String callbackURL,
+			Object object)
+		throws Exception {
+
+		vulcanBatchEngineImportTaskResource.setContextAcceptLanguage(
+			contextAcceptLanguage);
+		vulcanBatchEngineImportTaskResource.setContextCompany(contextCompany);
+		vulcanBatchEngineImportTaskResource.setContextHttpServletRequest(
+			contextHttpServletRequest);
+		vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
+		vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
+
+		Response.ResponseBuilder responseBuilder = Response.accepted();
+
+		return responseBuilder.entity(
+			vulcanBatchEngineImportTaskResource.deleteImportTask(
+				ERCScopedTestEntity.class.getName(), callbackURL, object)
+		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/test/v1.0/sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -363,10 +445,10 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 
 		Long groupId = getPermissionCheckerGroupId(
 			assetLibraryExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			assetLibraryExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			assetLibraryExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
 
@@ -506,8 +588,31 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 			String roleNames)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		Long groupId = getPermissionCheckerGroupId(
+			ercScopedTestEntityExternalReferenceCode);
+		Long resourceId = getPermissionCheckerResourceId(
+			ercScopedTestEntityExternalReferenceCode);
+		String resourceName = getPermissionCheckerResourceName(
+			ercScopedTestEntityExternalReferenceCode);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getERCScopedTestEntityPermissionsPage", null, resourceName,
+					groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putERCScopedTestEntityPermissionsPage", null, resourceName,
+					groupId)
+			).build(),
+			resourceId, resourceName, roleNames);
 	}
 
 	protected abstract Page<ERCScopedTestEntity>
@@ -700,10 +805,10 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(siteExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			siteExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			siteExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
 
@@ -1322,10 +1427,10 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 
 		Long groupId = getPermissionCheckerGroupId(
 			assetLibraryExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			assetLibraryExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			assetLibraryExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
 
@@ -1421,8 +1526,68 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 			Permission[] permissions)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		Long groupId = getPermissionCheckerGroupId(
+			ercScopedTestEntityExternalReferenceCode);
+		Long resourceId = getPermissionCheckerResourceId(
+			ercScopedTestEntityExternalReferenceCode);
+		String resourceName = getPermissionCheckerResourceName(
+			ercScopedTestEntityExternalReferenceCode);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		ModelPermissions modelPermissions =
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(), permissions, resourceId,
+				resourceName, resourceActionLocalService,
+				resourcePermissionLocalService, roleLocalService);
+
+		Collection<String> roleNames = modelPermissions.getRoleNames();
+
+		for (ResourcePermission resourcePermission :
+				resourcePermissionLocalService.getResourcePermissions(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId))) {
+
+			com.liferay.portal.kernel.model.Role role =
+				roleLocalService.fetchRole(resourcePermission.getRoleId());
+
+			if ((role == null) || roleNames.contains(role.getName())) {
+				continue;
+			}
+
+			for (ResourceAction resourceAction :
+					resourceActionLocalService.getResourceActions(
+						resourceName)) {
+
+				resourcePermissionLocalService.removeResourcePermission(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId), role.getRoleId(),
+					resourceAction.getActionId());
+			}
+		}
+
+		resourcePermissionLocalService.updateResourcePermissions(
+			contextCompany.getCompanyId(), groupId, resourceName,
+			String.valueOf(resourceId), modelPermissions);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getERCScopedTestEntityPermissionsPage", null, resourceName,
+					groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putERCScopedTestEntityPermissionsPage", null, resourceName,
+					groupId)
+			).build(),
+			resourceId, resourceName, null);
 	}
 
 	protected abstract ERCScopedTestEntity doPutSiteERCScopedTestEntity(
@@ -1546,10 +1711,10 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(siteExternalReferenceCode);
-		String resourceName = getPermissionCheckerResourceName(
+		Long resourceId = getPermissionCheckerResourceId(
 			siteExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
-		Long resourceId = getPermissionCheckerResourceId(
+		String resourceName = getPermissionCheckerResourceName(
 			siteExternalReferenceCode,
 			ercScopedTestEntityExternalReferenceCode);
 
@@ -1723,6 +1888,14 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 
 					return ercScopedTestEntity;
 				}
+				else if (ercScopedTestEntity.getExternalReferenceCode() !=
+							null) {
+
+					deleteERCScopedTestEntity(
+						ercScopedTestEntity.getExternalReferenceCode());
+
+					return ercScopedTestEntity;
+				}
 				else if (parameters.containsKey("siteExternalReferenceCode")) {
 					deleteSiteERCScopedTestEntity(
 						(String)parameters.get("siteExternalReferenceCode"),
@@ -1847,6 +2020,21 @@ public abstract class BaseERCScopedTestEntityResourceImpl
 				groupExternalReferenceCode, contextCompany.getCompanyId());
 
 		return group.getGroupId();
+	}
+
+	protected Long getPermissionCheckerResourceId(String externalReferenceCode)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String getPermissionCheckerResourceName(
+			String externalReferenceCode)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	protected Long getPermissionCheckerResourceId(

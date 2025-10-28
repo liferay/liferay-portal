@@ -213,9 +213,10 @@ public class LayoutsImporterTest {
 
 			FragmentEntryLink fragmentEntryLink =
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-					0, defaultSegmentsExperienceId, draftLayout.getPlid(),
-					StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+					null, TestPropsValues.getUserId(), _group1.getGroupId(),
+					null, null, null, defaultSegmentsExperienceId,
+					draftLayout.getPlid(), StringPool.BLANK, StringPool.BLANK,
+					StringPool.BLANK,
 					"com.liferay.fragment.renderer.collection.filter." +
 						"internal.CollectionAppliedFiltersFragmentRenderer",
 					JSONUtil.put(
@@ -484,8 +485,9 @@ public class LayoutsImporterTest {
 			layoutPageTemplateEntry);
 
 		FragmentEntry fragmentEntry = _addFragmentEntry(
-			_fragmentEntryLocalService.getFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId()),
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				fragmentEntryLink.getFragmentEntryERC(),
+				fragmentEntryLink.getFragmentEntryGroupId()),
 			_serviceContext2);
 
 		File file = _layoutsExporter.exportLayoutPageTemplateEntries(
@@ -1348,9 +1350,10 @@ public class LayoutsImporterTest {
 					ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 						null, fragmentEntry.getCss(),
 						fragmentEntry.getConfiguration(),
-						fragmentEntry.getFragmentEntryId(),
-						fragmentEntry.getHtml(), fragmentEntry.getJs(),
-						draftLayout, fragmentEntry.getFragmentEntryKey(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
+						fragmentEntry.getJs(), draftLayout,
+						fragmentEntry.getFragmentEntryKey(),
 						_segmentsExperienceLocalService.
 							fetchDefaultSegmentsExperienceId(
 								draftLayout.getPlid()),
@@ -1473,8 +1476,9 @@ public class LayoutsImporterTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group1.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), segmentsExperienceId,
 				draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getConfiguration(),
 				fragmentEntry.getConfiguration(), editableValues,
@@ -1505,8 +1509,9 @@ public class LayoutsImporterTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group1.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), defaultSegmentsExperienceId,
 				layoutPageTemplateEntry.getPlid(), StringPool.BLANK, html,
 				StringPool.BLANK,
 				_read("export_import_fragment_field_text_config.json"),
@@ -1657,8 +1662,11 @@ public class LayoutsImporterTest {
 		FragmentEntryLink curFragmentEntryLink = fragmentEntryLinks.get(0);
 
 		Assert.assertEquals(
-			fragmentEntry.getFragmentEntryId(),
-			curFragmentEntryLink.getFragmentEntryId());
+			fragmentEntry.getExternalReferenceCode(),
+			curFragmentEntryLink.getFragmentEntryERC());
+		Assert.assertEquals(
+			fragmentEntry.getGroupId(),
+			curFragmentEntryLink.getFragmentEntryGroupId());
 
 		Assert.assertTrue(
 			curFragmentEntryLink.getEditableValues(),
@@ -1690,8 +1698,11 @@ public class LayoutsImporterTest {
 		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
 
 		Assert.assertEquals(
-			fragmentEntry.getFragmentEntryId(),
-			fragmentEntryLink.getFragmentEntryId());
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntryLink.getFragmentEntryERC());
+		Assert.assertEquals(
+			fragmentEntry.getGroupId(),
+			fragmentEntryLink.getFragmentEntryGroupId());
 		Assert.assertTrue(
 			fragmentEntryLink.getConfiguration(),
 			JSONUtil.equals(
@@ -2042,8 +2053,9 @@ public class LayoutsImporterTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group1.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group1.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), segmentsExperienceId,
 				draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getConfiguration(),
 				fragmentEntry.getConfiguration(),

@@ -8,9 +8,9 @@
 <%@ include file="/asset/init.jsp" %>
 
 <%
-JournalDisplayContext journalDisplayContext = (JournalDisplayContext)request.getAttribute(JournalDisplayContext.class.getName());
+JournalFolderDisplayContext journalFolderDisplayContext = new JournalFolderDisplayContext(request);
 
-JournalFolder folder = journalDisplayContext.getFolder();
+JournalFolder folder = journalFolderDisplayContext.getFolder();
 %>
 
 <c:if test="<%= folder != null %>">
@@ -33,7 +33,7 @@ JournalFolder folder = journalDisplayContext.getFolder();
 	<div class="asset-details mb-3">
 
 		<%
-		int foldersCount = JournalFolderServiceUtil.getFoldersCount(folder.getGroupId(), folder.getFolderId(), journalDisplayContext.getStatus());
+		int foldersCount = JournalFolderServiceUtil.getFoldersCount(folder.getGroupId(), folder.getFolderId(), journalFolderDisplayContext.getStatus());
 		%>
 
 		<%= foldersCount %> <liferay-ui:message key='<%= (foldersCount == 1) ? "subfolder" : "subfolders" %>' />
@@ -42,7 +42,7 @@ JournalFolder folder = journalDisplayContext.getFolder();
 	<div class="asset-details mb-3">
 
 		<%
-		int entriesCount = JournalArticleServiceUtil.getArticlesCount(folder.getGroupId(), folder.getFolderId(), journalDisplayContext.getStatus());
+		int entriesCount = JournalArticleServiceUtil.getArticlesCount(folder.getGroupId(), folder.getFolderId(), journalFolderDisplayContext.getStatus());
 		%>
 
 		<%= entriesCount %> <liferay-ui:message key='<%= (entriesCount == 1) ? "article" : "articles" %>' />

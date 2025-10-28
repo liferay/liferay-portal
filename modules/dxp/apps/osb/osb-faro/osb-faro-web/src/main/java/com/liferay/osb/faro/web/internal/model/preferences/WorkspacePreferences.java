@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,6 +117,14 @@ public class WorkspacePreferences {
 
 	public void removeIndividualSegmentPreference(String individualSegmentId) {
 		_individualSegmentPreferences.remove(individualSegmentId);
+	}
+
+	public void removeIndividualSegmentsPreferences(
+		List<String> individualSegmentIds) {
+
+		for (String individualSegmentId : individualSegmentIds) {
+			_individualSegmentPreferences.remove(individualSegmentId);
+		}
 	}
 
 	public void setDefaultChannelId(String defaultChannelId) {

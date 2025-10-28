@@ -15,6 +15,7 @@ import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,13 +23,14 @@ import java.util.Map;
  */
 public class PlacedOrderEntityModel implements EntityModel {
 
-	public PlacedOrderEntityModel() {
+	public PlacedOrderEntityModel(List<EntityField> entityFields) {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
 			new CollectionEntityField(
 				new IntegerEntityField(
 					"accountId", locale -> "commerceAccountId")),
 			new CollectionEntityField(
 				new IntegerEntityField("orderStatus", locale -> "orderStatus")),
+			new ComplexEntityField("customFields", entityFields),
 			new ComplexEntityField(
 				"orderStatusInfo",
 				Collections.singletonList(

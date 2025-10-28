@@ -7,6 +7,13 @@ import {StaticRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const mockBreadcrumbItems = [
 	{
 		active: true,
@@ -29,7 +36,7 @@ describe('BasePage', () => {
 		const {container} = render(
 			<Provider store={mockStore()}>
 				<StaticRouter>
-					<BasePage groupId='23' />
+					<BasePage />
 				</StaticRouter>
 			</Provider>
 		);
@@ -41,10 +48,7 @@ describe('BasePage', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
 				<StaticRouter>
-					<BasePage
-						groupId='23'
-						pageDescription='testPageDescription'
-					/>
+					<BasePage pageDescription='testPageDescription' />
 				</StaticRouter>
 			</Provider>
 		);
@@ -56,10 +60,7 @@ describe('BasePage', () => {
 		const {getByText} = render(
 			<Provider store={mockStore()}>
 				<StaticRouter>
-					<BasePage
-						breadcrumbItems={mockBreadcrumbItems}
-						groupId='23'
-					/>
+					<BasePage breadcrumbItems={mockBreadcrumbItems} />
 				</StaticRouter>
 			</Provider>
 		);

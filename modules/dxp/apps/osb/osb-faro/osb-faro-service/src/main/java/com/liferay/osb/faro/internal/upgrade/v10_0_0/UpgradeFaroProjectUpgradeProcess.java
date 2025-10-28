@@ -39,43 +39,46 @@ public class UpgradeFaroProjectUpgradeProcess extends UpgradeProcess {
 			RoleConstants.SITE_OWNER, StringPool.APOSTROPHE);
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select roleId from Role_ where name = " + roleName);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select roleId from Role_ where name = ?")) {
 
-			if (resultSet.next()) {
-				return resultSet.getLong(1);
+			preparedStatement.setString(1, roleName);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getLong(1);
+				}
+
+				throw new Exception("Could not find site owner role ID");
 			}
-
-			throw new Exception("Could not find site owner role ID");
 		}
 	}
 
 	private void _updateIncidentReportEmailAddresses() throws Exception {
-		StringBundler sb = new StringBundler(6);
-
-		sb.append("select OSBFaro_FaroUser.emailAddress,");
-		sb.append("OSBFaro_FaroProject.faroProjectId from ");
-		sb.append("OSBFaro_FaroProject inner join OSBFaro_FaroUser on ");
-		sb.append("OSBFaro_FaroProject.groupId = OSBFaro_FaroUser.groupId ");
-		sb.append("where OSBFaro_FaroUser.roleId = ");
-		sb.append(_getSiteOwnerRoleId());
-
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				sb.toString());
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				StringBundler.concat(
+					"select OSBFaro_FaroUser.emailAddress, OSBFaro_",
+					"FaroProject.faroProjectId from OSBFaro_FaroProject inner ",
+					"join OSBFaro_FaroUser on OSBFaro_FaroProject.groupId = ",
+					"OSBFaro_FaroUser.groupId where OSBFaro_FaroUser.roleId = ",
+					"?"))) {
 
-			while (resultSet.next()) {
-				try (PreparedStatement updatePreparedStatement =
-						connection.prepareStatement(
-							"update OSBFaro_FaroProject set " +
-								"incidentReportEmailAddresses = ? where " +
-									"faroProjectId = ?")) {
+			preparedStatement.setLong(1, _getSiteOwnerRoleId());
 
-					updatePreparedStatement.setString(
-						1, "[\"" + resultSet.getString(1) + "\"]");
-					updatePreparedStatement.setLong(2, resultSet.getLong(2));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					try (PreparedStatement updatePreparedStatement =
+							connection.prepareStatement(
+								"update OSBFaro_FaroProject set " +
+									"incidentReportEmailAddresses = ? where " +
+										"faroProjectId = ?")) {
 
-					updatePreparedStatement.executeUpdate();
+						updatePreparedStatement.setString(
+							1, "[\"" + resultSet.getString(1) + "\"]");
+						updatePreparedStatement.setLong(
+							2, resultSet.getLong(2));
+
+						updatePreparedStatement.executeUpdate();
+					}
 				}
 			}
 		}

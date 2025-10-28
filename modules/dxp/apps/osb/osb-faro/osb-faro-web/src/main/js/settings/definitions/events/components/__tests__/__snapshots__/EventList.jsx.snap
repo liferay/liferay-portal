@@ -6,7 +6,7 @@ exports[`EventList should render 1`] = `
     class="toolbar-root"
   >
     <nav
-      class="navbar navbar-root management-bar management-bar-light navbar-expand"
+      class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
     >
       <div
         class="container-fluid"
@@ -35,27 +35,9 @@ exports[`EventList should render 1`] = `
               </label>
             </div>
           </li>
-          <li
-            class="nav-item"
-            role="presentation"
-          >
-            <a
-              class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-              href="/?field=name&page=1&sortOrder=DESC"
-            >
-              <svg
-                class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                role="presentation"
-              >
-                <use
-                  href="#order_arrow_ascending"
-                />
-              </svg>
-            </a>
-          </li>
         </ul>
         <div
-          class="navbar-form navbar-form-autofit"
+          class="navbar-form navbar-form-autofit mx-2"
         >
           <div
             class="input-group search"
@@ -94,154 +76,179 @@ exports[`EventList should render 1`] = `
     </nav>
   </div>
   <div
-    class="table-responsive table-root flex-grow-1"
+    class="flex-grow-1 mx-4 table-root"
   >
-    <table
-      class="table table-autofit table-hover show-quick-actions-on-hover table-heading-nowrap table-nowrap"
+    <div
+      class="table-responsive"
     >
-      <thead>
-        <tr>
-          <th />
-          <th
-            class="table-head-title table-cell-expand-small"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=name&page=1&sortOrder=DESC"
+      <table
+        class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover show-quick-actions-on-hover"
+      >
+        <thead>
+          <tr>
+            <th />
+            <th
+              class="table-head-title table-cell-expand-small"
             >
-              <span
-                class="text-truncate"
-              >
-                Event Name
-              </span>
-              <span
-                class="inline-item inline-item-after"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                  role="presentation"
-                >
-                  <use
-                    href="#order-arrow-up"
-                  />
-                </svg>
-              </span>
-            </a>
-          </th>
-          <th
-            class="table-head-title table-cell-expand-small text-truncate"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=displayName&page=1&sortOrder=ASC"
-            >
-              <span
-                class="text-truncate"
-              >
-                Display Name
-              </span>
-            </a>
-          </th>
-          <th
-            class="table-head-title table-cell-expand text-truncate"
-          >
-            Description
-          </th>
-          <th
-            class="table-head-title"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=hidden&page=1&sortOrder=ASC"
-            >
-              <span
-                class="text-truncate"
-              />
-            </a>
-          </th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          class="clickable"
-        >
-          <td>
-            <div
-              class="custom-control custom-checkbox"
-            >
-              <label>
-                <input
-                  class="custom-control-input"
-                  type="checkbox"
-                  value="false"
-                />
-                <span
-                  class="custom-control-label"
-                />
-              </label>
-            </div>
-          </td>
-          <td
-            class="name-cell-root table-cell-expand-small"
-          >
-            <div
-              class="content-container"
-            >
-              <div
-                class="text-truncate"
+              <a
+                class="button-root w-100 btn btn-unstyled"
+                href="/?field=name&page=1&sortOrder=DESC"
               >
                 <div
-                  class="table-title text-truncate"
+                  class="align-items-center d-flex justify-content-between"
                 >
-                  <a
+                  <div
                     class="text-truncate"
-                    href="/workspace/23/settings/definitions/events/0"
                   >
-                    name-0
-                  </a>
+                    Event Name
+                  </div>
+                  <button
+                    aria-label="Ascending"
+                    class="component-action ml-2 btn btn-sm btn-primary"
+                    type="button"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                      role="presentation"
+                    >
+                      <use
+                        href="#order_arrow_ascending"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </a>
+            </th>
+            <th
+              class="table-head-title table-cell-expand-small text-truncate"
+            >
+              <a
+                class="button-root w-100 btn btn-unstyled"
+                href="/?field=displayName&page=1&sortOrder=ASC"
+              >
+                <div
+                  class="align-items-center d-flex justify-content-between"
+                >
+                  <div
+                    class="text-truncate"
+                  >
+                    Display Name
+                  </div>
+                  <button
+                    aria-label="Descending"
+                    class="component-action ml-2 btn btn-sm btn-primary"
+                    type="button"
+                  >
+                    <span
+                      class="opacity-25"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#order-arrow"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </a>
+            </th>
+            <th
+              class="table-head-title table-cell-expand text-truncate"
+            >
+              Description
+            </th>
+            <th
+              class="table-head-title"
+            />
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="clickable"
+          >
+            <td>
+              <div
+                class="custom-control custom-checkbox"
+              >
+                <label>
+                  <input
+                    class="custom-control-input"
+                    type="checkbox"
+                    value="false"
+                  />
+                  <span
+                    class="custom-control-label"
+                  />
+                </label>
+              </div>
+            </td>
+            <td
+              class="name-cell-root table-cell-expand-small"
+            >
+              <div
+                class="content-container"
+              >
+                <div
+                  class="text-truncate"
+                >
+                  <div
+                    class="table-title text-truncate"
+                  >
+                    <a
+                      class="text-truncate"
+                      href="/workspace/23/settings/definitions/events/0"
+                    >
+                      name-0
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
-          <td
-            class="table-cell-expand-small text-truncate"
-          >
-            displayName-0
-          </td>
-          <td
-            class="table-cell-expand text-truncate"
-          />
-          <td />
-          <td
-            class="row-actions"
-          >
-            <span>
-              <div
-                class="quick-action-menu"
-              >
-                <button
-                  aria-label="Set to Hide"
-                  class="button-root component-action quick-action-item btn btn-unstyled"
-                  data-tooltip="true"
-                  title="Set to Hide"
-                  type="button"
+            </td>
+            <td
+              class="table-cell-expand-small text-truncate"
+            >
+              displayName-0
+            </td>
+            <td
+              class="table-cell-expand text-truncate"
+            />
+            <td
+              class="text-right"
+            />
+            <td
+              class="row-actions"
+            >
+              <span>
+                <div
+                  class="quick-action-menu"
                 >
-                  <svg
-                    class="lexicon-icon lexicon-icon-ac_hidden icon-root"
-                    role="presentation"
+                  <button
+                    aria-label="Set to Hide"
+                    class="button-root component-action quick-action-item btn btn-unstyled"
+                    data-tooltip="true"
+                    title="Set to Hide"
+                    type="button"
                   >
-                    <use
-                      href="#ac_hidden"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                    <svg
+                      class="lexicon-icon lexicon-icon-ac_hidden icon-root"
+                      role="presentation"
+                    >
+                      <use
+                        href="#ac_hidden"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <nav
     class="navbar navbar-root pagination-bar-root"

@@ -55,7 +55,9 @@ describe('SearchableEntitiesTableModal', () => {
 
 		expect(emailHeaderButton).toHaveTextContent('email');
 		expect(
-			emailHeaderButton.querySelector('.lexicon-icon-order-arrow-down')
+			emailHeaderButton.querySelector(
+				'.lexicon-icon-order_arrow_descending'
+			)
 		).toBeTruthy();
 	});
 });

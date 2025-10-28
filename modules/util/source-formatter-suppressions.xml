@@ -20,7 +20,6 @@
 		<suppress checks="LibraryVulnerabilitiesCheck" files="portal-tools-theme-builder/build\.gradle" />
 		<suppress checks="PrimitiveWrapperInstantiationCheck" files="portal-tools-upgrade-table-builder/src/main/java/com/liferay/portal/tools/upgrade/table/builder/UpgradeTableBuilder\.java" />
 		<suppress checks="StringMethodsCheck" files="css-builder/.*" />
-		<suppress checks="StringMethodsCheck" files="portal-tools-jakarta-ee-transformer/.*" />
 		<suppress checks="StringMethodsCheck" files="portal-tools-soy-builder/.*" />
 		<suppress checks="StringMethodsCheck" files="sass-compiler-dart/.*" />
 		<suppress checks="XMLDTDVersionCheck" files="portal-tools-service-builder/src/main/resources/com/liferay/mail/service\.xml" />

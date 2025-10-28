@@ -14,7 +14,6 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFeed;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -87,14 +86,16 @@ public class JournalFeedTypeUpgradeProcess extends UpgradeProcess {
 		long guestUserId = _userLocalService.getGuestUserId(companyId);
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select uuid_, id_, groupId, userId, createDate, ",
-					"modifiedDate, name, description from JournalFeed where ",
-					"companyId = ", companyId));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select uuid_, id_, groupId, userId, createDate, " +
+					"modifiedDate, name, description from JournalFeed where " +
+						"companyId = ?")) {
 
-			while (resultSet.next()) {
-				_addAssetEntry(0, classNameId, guestUserId, resultSet);
+			preparedStatement.setLong(1, companyId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					_addAssetEntry(0, classNameId, guestUserId, resultSet);
+				}
 			}
 		}
 	}
@@ -151,26 +152,28 @@ public class JournalFeedTypeUpgradeProcess extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select uuid_, id_, groupId, userId, createDate, ",
-					"modifiedDate, name, description, type_ from JournalFeed ",
-					"where companyId = ", companyId));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select uuid_, id_, groupId, userId, createDate, " +
+					"modifiedDate, name, description, type_ from JournalFeed " +
+						"where companyId = ?")) {
 
-			while (resultSet.next()) {
-				long assetCategoryId = 0;
+			preparedStatement.setLong(1, companyId);
 
-				String type = StringUtil.toLowerCase(
-					resultSet.getString("type_"));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long assetCategoryId = 0;
 
-				if (Validator.isNotNull(type) &&
-					journalFeedTypesMap.containsKey(type)) {
+					String type = StringUtil.toLowerCase(
+						resultSet.getString("type_"));
 
-					assetCategoryId = journalFeedTypesMap.get(type);
+					if (Validator.isNotNull(type) &&
+						journalFeedTypesMap.containsKey(type)) {
+
+						assetCategoryId = journalFeedTypesMap.get(type);
+					}
+
+					_addAssetEntry(
+						assetCategoryId, classNameId, guestUserId, resultSet);
 				}
-
-				_addAssetEntry(
-					assetCategoryId, classNameId, guestUserId, resultSet);
 			}
 		}
 	}
@@ -303,22 +306,25 @@ public class JournalFeedTypeUpgradeProcess extends UpgradeProcess {
 
 	private Set<String> _getJournalFeedTypes(long companyId) throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select distinct type_ from JournalFeed where companyId = " +
-					companyId + " and type_ != 'general'");
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select distinct type_ from JournalFeed where companyId = ? " +
+					"and type_ != 'general'")) {
 
-			Set<String> types = new HashSet<>();
+			preparedStatement.setLong(1, companyId);
 
-			while (resultSet.next()) {
-				String type = StringUtil.toLowerCase(
-					resultSet.getString("type_"));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Set<String> types = new HashSet<>();
 
-				if (Validator.isNotNull(type)) {
-					types.add(type);
+				while (resultSet.next()) {
+					String type = StringUtil.toLowerCase(
+						resultSet.getString("type_"));
+
+					if (Validator.isNotNull(type)) {
+						types.add(type);
+					}
 				}
-			}
 
-			return types;
+				return types;
+			}
 		}
 	}
 

@@ -7,6 +7,7 @@ package com.liferay.portal.security.permission;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
@@ -18,11 +19,13 @@ import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
 import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.UserBag;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.Serializable;
 
@@ -75,19 +78,16 @@ public class PermissionCacheUtil {
 			return;
 		}
 
-		_clearPermissionChecksMap();
+		_clearCache(userIds);
 
-		for (long userId : userIds) {
-			_userBagPortalCache.remove(userId);
-			_userGroupRoleIdsPortalCache.remove(userId);
-
-			_userPrimaryKeyRolePortalCacheUserIdIndexer.removeKeys(userId);
-			_userRolePortalCacheIndexer.removeKeys(userId);
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			_sendClearCacheClusterMessage(
+				_dbPartitionClearCacheMethodKey,
+				CompanyThreadLocal.getCompanyId(), userIds);
 		}
-
-		_permissionPortalCache.removeAll();
-
-		_sendClearCacheClusterMessage(_clearCacheMethodKey, userIds);
+		else {
+			_sendClearCacheClusterMessage(_clearCacheMethodKey, userIds);
+		}
 	}
 
 	public static void clearPrimaryKeyRoleCache() {
@@ -119,24 +119,31 @@ public class PermissionCacheUtil {
 			return;
 		}
 
-		_clearPermissionChecksMap();
+		_clearResourcePermissionCache(scope, name, primKey);
 
 		if (scope == ResourceConstants.SCOPE_INDIVIDUAL) {
-			_permissionPortalCacheNamePrimKeyIndexer.removeKeys(
-				PermissionKeyNamePrimKeyIndexEncoder.encode(name, primKey));
-
-			_sendClearCacheClusterMessage(
-				_clearResourcePermissionCacheMethodKey, scope, name, primKey);
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
+				_sendClearCacheClusterMessage(
+					_dbPartitionClearResourcePermissionCacheMethodKey,
+					CompanyThreadLocal.getCompanyId(), scope, name, primKey);
+			}
+			else {
+				_sendClearCacheClusterMessage(
+					_clearResourcePermissionCacheMethodKey, scope, name,
+					primKey);
+			}
 		}
 		else if (scope == ResourceConstants.SCOPE_GROUP) {
-			_permissionPortalCacheGroupIdIndexer.removeKeys(
-				Long.valueOf(primKey));
-
-			_sendClearCacheClusterMessage(
-				_clearResourcePermissionCacheMethodKey, scope, name, primKey);
-		}
-		else {
-			_permissionPortalCache.removeAll();
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
+				_sendClearCacheClusterMessage(
+					_dbPartitionClearResourcePermissionCacheMethodKey,
+					CompanyThreadLocal.getCompanyId(), scope, name, primKey);
+			}
+			else {
+				_sendClearCacheClusterMessage(
+					_clearResourcePermissionCacheMethodKey, scope, name,
+					primKey);
+			}
 		}
 	}
 
@@ -255,6 +262,32 @@ public class PermissionCacheUtil {
 			_userRolePortalCache, userRoleKey, value);
 	}
 
+	private static void _clearCache(long... userIds) {
+		if (ExportImportThreadLocal.isImportInProcess()) {
+			return;
+		}
+
+		_clearPermissionChecksMap();
+
+		for (long userId : userIds) {
+			_userBagPortalCache.remove(userId);
+			_userGroupRoleIdsPortalCache.remove(userId);
+
+			_userPrimaryKeyRolePortalCacheUserIdIndexer.removeKeys(userId);
+			_userRolePortalCacheIndexer.removeKeys(userId);
+		}
+
+		_permissionPortalCache.removeAll();
+	}
+
+	private static void _clearCache(long companyId, long... userIds) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			_clearCache(userIds);
+		}
+	}
+
 	private static void _clearPermissionChecksMap() {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -266,6 +299,41 @@ public class PermissionCacheUtil {
 			if (permissionChecksMap != null) {
 				permissionChecksMap.clear();
 			}
+		}
+	}
+
+	private static void _clearResourcePermissionCache(
+		int scope, String name, String primKey) {
+
+		if (ExportImportThreadLocal.isImportInProcess() ||
+			!PermissionThreadLocal.isFlushResourcePermissionEnabled(
+				name, primKey)) {
+
+			return;
+		}
+
+		_clearPermissionChecksMap();
+
+		if (scope == ResourceConstants.SCOPE_INDIVIDUAL) {
+			_permissionPortalCacheNamePrimKeyIndexer.removeKeys(
+				PermissionKeyNamePrimKeyIndexEncoder.encode(name, primKey));
+		}
+		else if (scope == ResourceConstants.SCOPE_GROUP) {
+			_permissionPortalCacheGroupIdIndexer.removeKeys(
+				Long.valueOf(primKey));
+		}
+		else {
+			_permissionPortalCache.removeAll();
+		}
+	}
+
+	private static void _clearResourcePermissionCache(
+		long companyId, int scope, String name, String primKey) {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			_clearResourcePermissionCache(scope, name, primKey);
 		}
 	}
 
@@ -285,11 +353,18 @@ public class PermissionCacheUtil {
 	}
 
 	private static final MethodKey _clearCacheMethodKey = new MethodKey(
-		PermissionCacheUtil.class, "clearCache", long[].class);
+		PermissionCacheUtil.class, "_clearCache", long[].class);
 	private static final MethodKey _clearResourcePermissionCacheMethodKey =
 		new MethodKey(
-			PermissionCacheUtil.class, "clearResourcePermissionCache",
+			PermissionCacheUtil.class, "_clearResourcePermissionCache",
 			int.class, String.class, String.class);
+	private static final MethodKey _dbPartitionClearCacheMethodKey =
+		new MethodKey(
+			PermissionCacheUtil.class, "_clearCache", long.class, long[].class);
+	private static final MethodKey
+		_dbPartitionClearResourcePermissionCacheMethodKey = new MethodKey(
+			PermissionCacheUtil.class, "_clearResourcePermissionCache",
+			long.class, int.class, String.class, String.class);
 	private static final PortalCache<PermissionKey, Boolean>
 		_permissionPortalCache = PortalCacheHelperUtil.getPortalCache(
 			PortalCacheManagerNames.MULTI_VM, PERMISSION_CACHE_NAME);

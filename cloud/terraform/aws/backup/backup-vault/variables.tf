@@ -1,3 +1,6 @@
+variable "arn_partition" {
+	default="aws"
+}
 variable "aws_backup_service_assumed_iam_role_name" {
 	default="liferay-aws-backup-service-role"
 }

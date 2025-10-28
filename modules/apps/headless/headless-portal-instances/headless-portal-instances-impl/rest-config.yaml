@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Portal.Instances
 author: Alberto Chaparro
 clientDir: ../headless-portal-instances-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 generateBatch: false
 generateGraphQL: false

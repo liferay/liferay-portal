@@ -6,7 +6,7 @@
 import {cleanup, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import TemplatesPanel from '../../../../src/main/resources/META-INF/resources/js/admin/components/TemplatesPanel';
 
@@ -41,7 +41,7 @@ describe('Templates Panel', () => {
 	it('renders empty message if there are no items', () => {
 		const {getAllByRole, getByText} = render(<TemplatesPanel />);
 
-		expect(getAllByRole('img').length).toBe(2);
+		expect(getAllByRole('presentation').length).toBe(2);
 		expect(getByText(EMPTY_STATE_TEXT)).toBeInTheDocument();
 	});
 });

@@ -415,7 +415,7 @@ export const eventListColumns = {
 	hidden: {
 		accessor: 'hidden',
 		cellRenderer: ({data: {hidden}}) => (
-			<td>
+			<td className='text-right'>
 				{hidden && (
 					<ClayIcon
 						className={getCN('icon-root', Colors.Secondary)}
@@ -423,7 +423,8 @@ export const eventListColumns = {
 					/>
 				)}
 			</td>
-		)
+		),
+		sortable: false
 	},
 	lastSeenURL: {
 		accessor: 'lastSeenURL',

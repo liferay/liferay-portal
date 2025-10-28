@@ -21,6 +21,8 @@ gradle.liferayWorkspace {
 gradle.projectsEvaluated {
 	Project rootProject = gradle.rootProject
 
+	File sinkFile = rootProject.file "sink.txt"
+
 	rootProject.tasks.register("assertLog", DockerLogsContainer) {
 		dependsOn rootProject.tasks.startDockerContainer
 		finalizedBy rootProject.tasks.cleanDockerImage
@@ -32,30 +34,23 @@ gradle.projectsEvaluated {
 			gradle.liferayWorkspace.dockerContainerId
 		}
 
-		String expectedLine = "Hello World"
-		String unexpectedLine = "No such file or directory"
-
-		boolean expectedLineDetected = false
-		boolean unexpectedLineDetected = false
-
-		sink new PrintWriter(new StringWriter()) {
-			public void write(String line) {
-				if (line.contains(expectedLine)) {
-					expectedLineDetected = true
-				}
-
-				if (line.contains(unexpectedLine)) {
-					unexpectedLineDetected = true
-				}
-
-				rootProject.print line
-			}
-		}
+		sink = sinkFile
 
 		doLast {
+			String expectedLine = "Hello World"
+			String unexpectedLine = "No such file or directory"
+
+			boolean expectedLineDetected = false
+			boolean unexpectedLineDetected = false
+
 			int retries = 0
 
 			while (!expectedLineDetected && (retries < 30)) {
+				if (sinkFile.exists()) {
+					expectedLineDetected = sinkFile.text.contains(expectedLine)
+					unexpectedLineDetected = sinkFile.text.contains(unexpectedLine)
+				}
+
 				Thread.sleep(100)
 
 				retries++

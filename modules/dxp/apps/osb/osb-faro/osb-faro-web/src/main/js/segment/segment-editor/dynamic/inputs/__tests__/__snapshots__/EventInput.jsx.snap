@@ -1,15 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EventInput should render 1`] = `
-<div
-  aria-hidden="true"
-  data-aria-hidden="true"
->
+<div>
   <div
     class="criteria-statement"
   >
     <div
+      aria-hidden="true"
       class="form-group form-group-autofit"
+      data-aria-hidden="true"
     >
       <div
         aria-hidden="true"
@@ -127,7 +126,9 @@ exports[`EventInput should render 1`] = `
       data-aria-hidden="true"
     >
       <div
+        aria-hidden="true"
         class="form-group-item conjunction form-group-item-label form-group-item-shrink"
+        data-aria-hidden="true"
       >
         where attribute
       </div>
@@ -150,7 +151,9 @@ exports[`EventInput should render 1`] = `
         </div>
       </div>
       <div
+        aria-hidden="true"
         class="form-group-item form-group-item-shrink"
+        data-aria-hidden="true"
       >
         <button
           aria-activedescendant=""
@@ -165,7 +168,9 @@ exports[`EventInput should render 1`] = `
         </button>
       </div>
       <div
+        aria-hidden="true"
         class="form-group-item form-group-item-shrink"
+        data-aria-hidden="true"
       >
         <input
           class="input-root form-control"

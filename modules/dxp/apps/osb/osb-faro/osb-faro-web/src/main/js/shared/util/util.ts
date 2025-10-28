@@ -221,3 +221,11 @@ export const mergeRef = (...refs) => instance =>
 			ref.current = instance;
 		}
 	});
+
+export function getInitials(name = '') {
+	const nameArray = name.split(' ', 3);
+
+	return nameArray
+		.reduce((acc, val) => acc + val.substring(0, 1), '')
+		.toUpperCase();
+}

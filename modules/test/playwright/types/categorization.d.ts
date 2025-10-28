@@ -5,7 +5,7 @@
 
 type AssetType = {
 	required: boolean;
-	subtype:
+	subtype?:
 		| 'AllAssetSubtypes'
 		| 'Basic Web Content'
 		| 'Basic Document'

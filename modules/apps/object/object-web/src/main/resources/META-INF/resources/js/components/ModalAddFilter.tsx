@@ -497,7 +497,11 @@ export function ModalAddFilter({
 			disableAutoClose={disableAutoClose}
 			observer={observer}
 		>
-			<ClayModal.Header>{header}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{header}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{!editingFilter && (

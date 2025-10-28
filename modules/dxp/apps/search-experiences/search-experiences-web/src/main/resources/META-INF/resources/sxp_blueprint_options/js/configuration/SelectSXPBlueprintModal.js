@@ -256,7 +256,9 @@ const SelectSXPBlueprintModal = ({
 
 	return (
 		<ClayModal observer={observer} size="full-screen">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('select-blueprint')}
 			</ClayModal.Header>
 

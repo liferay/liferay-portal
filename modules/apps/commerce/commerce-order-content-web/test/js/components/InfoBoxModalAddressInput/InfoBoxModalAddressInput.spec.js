@@ -5,7 +5,7 @@
 
 import fetchMock from 'fetch-mock';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {cleanup, render, waitFor} from '@testing-library/react';
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';

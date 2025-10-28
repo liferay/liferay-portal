@@ -4,10 +4,7 @@ exports[`SearchableSelect should render 1`] = `
 <body
   class="dxp"
 >
-  <div
-    aria-hidden="true"
-    data-aria-hidden="true"
-  >
+  <div>
     <div
       class="dropdown searchable-select-root"
     >

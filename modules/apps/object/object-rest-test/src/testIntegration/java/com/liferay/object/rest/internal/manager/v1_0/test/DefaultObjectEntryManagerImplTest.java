@@ -850,8 +850,8 @@ public class DefaultObjectEntryManagerImplTest
 
 		_objectDefinition3 =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				adminUser.getUserId(), 0, null, false, true, false, true, true,
-				false, false, false, false, null,
+				null, adminUser.getUserId(), 0, null, false, true, false, true,
+				true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -1344,29 +1344,19 @@ public class DefaultObjectEntryManagerImplTest
 
 		AccountEntry accountEntry = _addAccountEntry();
 
-		Organization organization = OrganizationTestUtil.addOrganization();
+		Organization organization = _addUserOrganization();
 
 		_addAccountEntryOrganizationRel(accountEntry, organization);
 
-		_user = _addUser();
-
-		_organizationLocalService.addUserOrganization(
-			_user.getUserId(), organization.getOrganizationId());
-
-		Role role = _roleLocalService.getRole(
+		Role organizationUserRole = _roleLocalService.getRole(
 			companyId, RoleConstants.ORGANIZATION_USER);
 
 		_addResourcePermission(
-			ObjectActionKeys.ADD_OBJECT_ENTRY, _objectDefinition3, role);
+			ActionKeys.VIEW, _objectDefinition3, organizationUserRole);
 
 		_addRoleUser(
 			new String[] {ActionKeys.VIEW}, _accountEntryObjectDefinition,
 			_user);
-
-		Assert.assertNotNull(_addObjectEntry(accountEntry));
-
-		_removeResourcePermission(
-			ObjectActionKeys.ADD_OBJECT_ENTRY, _objectDefinition3, role);
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustHavePermission.class,
@@ -1375,6 +1365,12 @@ public class DefaultObjectEntryManagerImplTest
 				" must have ADD_OBJECT_ENTRY permission for ",
 				_objectDefinition3.getResourceName(), StringPool.SPACE),
 			() -> _addObjectEntry(accountEntry));
+
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, _objectDefinition3,
+			organizationUserRole);
+
+		_addObjectEntry(accountEntry);
 	}
 
 	@FeatureFlag("LPD-6233")
@@ -2409,7 +2405,9 @@ public class DefaultObjectEntryManagerImplTest
 				ObjectDefinitionConstants.SCOPE_COMPANY));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testAddObjectEntryWithLocalizedAttachmentObjectField()
 		throws Exception {
@@ -2682,7 +2680,9 @@ public class DefaultObjectEntryManagerImplTest
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testAddObjectEntryWithMissingTaxonomyCategoryBriefReference()
 		throws Exception {
@@ -2874,7 +2874,9 @@ public class DefaultObjectEntryManagerImplTest
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testAddObjectEntryWithScheduleDates() throws Exception {
 
@@ -3206,12 +3208,13 @@ public class DefaultObjectEntryManagerImplTest
 				"listTypeEntryKey1", objectDefinition,
 				"picklistObjectFieldName");
 
-			Assert.assertEquals(
-				StringPool.BLANK,
-				_getListEntryKey(
-					_defaultObjectEntryManager.getObjectEntry(
-						_simpleDTOConverterContext, objectDefinition,
-						objectEntryId2)));
+			ListEntry listEntry = _getListEntry(
+				_defaultObjectEntryManager.getObjectEntry(
+					_simpleDTOConverterContext, objectDefinition,
+					objectEntryId2));
+
+			Assert.assertEquals(StringPool.BLANK, listEntry.getKey());
+			Assert.assertEquals(StringPool.BLANK, listEntry.getName());
 
 			_updateAndAssertObjectEntryWithPicklistObjectField(
 				StringPool.BLANK, StringPool.BLANK, objectDefinition,
@@ -3225,6 +3228,13 @@ public class DefaultObjectEntryManagerImplTest
 			_updateAndAssertObjectEntryWithPicklistObjectField(
 				"listTypeEntryKey2", "listTypeEntryKey2", objectDefinition,
 				objectEntryId4);
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_getListEntryName(
+					_defaultObjectEntryManager.getObjectEntry(
+						_simpleDTOConverterContext, objectDefinition,
+						objectEntryId1)));
 
 			_addAndAssertObjectEntryWithPicklistObjectField(
 				null, "listTypeEntryKey1", objectDefinition);
@@ -3276,7 +3286,9 @@ public class DefaultObjectEntryManagerImplTest
 					objectRelationship, _group.getGroupKey()));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testCopyObjectEntryByVersion() throws Exception {
 
@@ -3612,7 +3624,9 @@ public class DefaultObjectEntryManagerImplTest
 			objectDefinition2.getObjectDefinitionId());
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testDeleteObjectEntryByVersion() throws Exception {
 
@@ -4014,6 +4028,46 @@ public class DefaultObjectEntryManagerImplTest
 	}
 
 	@Test
+	public void testDeleteObjectEntryWithAccountEntryRestricted3()
+		throws Exception {
+
+		// Account entry restricted with implicit role Organization User
+
+		AccountEntry accountEntry = _addAccountEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(accountEntry);
+
+		Organization organization = _addUserOrganization();
+
+		_addAccountEntryOrganizationRel(accountEntry, organization);
+
+		Role organizationUserRole = _roleLocalService.getRole(
+			companyId, RoleConstants.ORGANIZATION_USER);
+
+		_addResourcePermission(
+			ActionKeys.VIEW, _objectDefinition3, organizationUserRole);
+
+		_addRoleUser(
+			new String[] {ActionKeys.VIEW}, _accountEntryObjectDefinition,
+			_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have DELETE permission for ",
+				_objectDefinition3.getClassName(), StringPool.SPACE,
+				objectEntry.getId()),
+			() -> _defaultObjectEntryManager.deleteObjectEntry(
+				_objectDefinition3, objectEntry.getId()));
+
+		_addResourcePermission(
+			ActionKeys.DELETE, _objectDefinition3, organizationUserRole);
+
+		_defaultObjectEntryManager.deleteObjectEntry(
+			_objectDefinition3, objectEntry.getId());
+	}
+
+	@Test
 	public void testDeleteObjectEntryWithRelatedObjectEntries()
 		throws Exception {
 
@@ -4142,7 +4196,9 @@ public class DefaultObjectEntryManagerImplTest
 					_group.getGroupKey()));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testExpireObjectEntry() throws Exception {
 		_enableObjectEntryVersioning();
@@ -4179,7 +4235,9 @@ public class DefaultObjectEntryManagerImplTest
 			WorkflowConstants.STATUS_EXPIRED, objectEntryVersion.getStatus());
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testExpireObjectEntryByVersion() throws Exception {
 
@@ -4323,7 +4381,9 @@ public class DefaultObjectEntryManagerImplTest
 					dtoConverterContext, _objectDefinition4, objectEntryId, 1));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetApprovedObjectEntries() throws Exception {
 		_assertApprovedObjectEntries();
@@ -4415,7 +4475,9 @@ public class DefaultObjectEntryManagerImplTest
 				objectEntry4.getId(), _objectDefinition1));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetApprovedObjectEntriesWithNestedFields()
 		throws Exception {
@@ -4552,7 +4614,9 @@ public class DefaultObjectEntryManagerImplTest
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetApprovedObjectEntry() throws Exception {
 		ObjectEntry objectEntry1 = _addObjectEntry(
@@ -6153,7 +6217,9 @@ public class DefaultObjectEntryManagerImplTest
 			});
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetObjectEntryByVersion() throws Exception {
 
@@ -6688,7 +6754,9 @@ public class DefaultObjectEntryManagerImplTest
 					objectEntry1.getExternalReferenceCode(), null));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetVersionedObjectEntries() throws Exception {
 
@@ -6766,7 +6834,9 @@ public class DefaultObjectEntryManagerImplTest
 					dtoConverterContext, objectEntry2.getId(), 2)));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testMoveObjectEntryToTrash() throws Exception {
 		ObjectEntry objectEntry = _addObjectEntry(
@@ -7330,7 +7400,9 @@ public class DefaultObjectEntryManagerImplTest
 			"Edited", objectEntry.getPropertyValue("textObjectFieldName"));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testRestoreObjectEntryByVersion() throws Exception {
 
@@ -7411,7 +7483,9 @@ public class DefaultObjectEntryManagerImplTest
 					dtoConverterContext, _objectDefinition4, objectEntryId, 1));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testRestoreObjectEntryFromTrash() throws Exception {
 		_enableObjectEntryVersioning();
@@ -7497,7 +7571,9 @@ public class DefaultObjectEntryManagerImplTest
 		_assertObjectEntriesSize1(_objectDefinition3, "Delta", 1);
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testSubscribeObjectEntry() throws Exception {
 		ObjectDefinition objectDefinition = _addObjectDefinition(
@@ -7647,7 +7723,9 @@ public class DefaultObjectEntryManagerImplTest
 				objectDefinition.getClassName(), objectEntry2.getId()));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testSubscribeObjectEntryWithHierarchy() throws Exception {
 		ObjectDefinition objectDefinitionA = _addObjectDefinition(
@@ -8613,6 +8691,48 @@ public class DefaultObjectEntryManagerImplTest
 			});
 	}
 
+	@Test
+	public void testUpdateObjectEntryWithAccountEntryRestricted4()
+		throws Exception {
+
+		// Account entry restricted with implicit role Organization User
+
+		AccountEntry accountEntry = _addAccountEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(accountEntry);
+
+		Organization organization = _addUserOrganization();
+
+		_addAccountEntryOrganizationRel(accountEntry, organization);
+
+		Role organizationUserRole = _roleLocalService.getRole(
+			companyId, RoleConstants.ORGANIZATION_USER);
+
+		_addResourcePermission(
+			ActionKeys.VIEW, _objectDefinition3, organizationUserRole);
+
+		_addRoleUser(
+			new String[] {ActionKeys.VIEW}, _accountEntryObjectDefinition,
+			_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have UPDATE permission for ",
+				_objectDefinition3.getClassName(), StringPool.SPACE,
+				objectEntry.getId()),
+			() -> _defaultObjectEntryManager.updateObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition3,
+				objectEntry.getId(), objectEntry));
+
+		_addResourcePermission(
+			ActionKeys.UPDATE, _objectDefinition3, organizationUserRole);
+
+		_defaultObjectEntryManager.updateObjectEntry(
+			_simpleDTOConverterContext, _objectDefinition3, objectEntry.getId(),
+			objectEntry);
+	}
+
 	@FeatureFlag("LPD-6233")
 	@Test
 	public void testUpdateObjectEntryWithAssigneeObjectField()
@@ -8690,7 +8810,9 @@ public class DefaultObjectEntryManagerImplTest
 		PrincipalThreadLocal.setName(_originalName);
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testUpdateObjectEntryWithScheduleDates() throws Exception {
 		ObjectDefinition objectDefinition = _addObjectDefinition(
@@ -9075,8 +9197,8 @@ public class DefaultObjectEntryManagerImplTest
 
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				adminUser.getUserId(), 0, null, false, true, false, true, true,
-				false, false, enableObjectEntrySubscription, false, null,
+				null, adminUser.getUserId(), 0, null, false, true, false, true,
+				true, false, false, enableObjectEntrySubscription, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -9480,6 +9602,17 @@ public class DefaultObjectEntryManagerImplTest
 		PrincipalThreadLocal.setName(user.getUserId());
 
 		return user;
+	}
+
+	private Organization _addUserOrganization() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_user = _addUser();
+
+		_organizationLocalService.addUserOrganization(
+			_user.getUserId(), organization.getOrganizationId());
+
+		return organization;
 	}
 
 	private void _assertActions(
@@ -10004,13 +10137,22 @@ public class DefaultObjectEntryManagerImplTest
 			objectDefinition, null);
 	}
 
-	private String _getListEntryKey(ObjectEntry objectEntry) {
+	private ListEntry _getListEntry(ObjectEntry objectEntry) {
 		Map<String, Object> properties = objectEntry.getProperties();
 
-		ListEntry listEntry = (ListEntry)properties.get(
-			"picklistObjectFieldName");
+		return (ListEntry)properties.get("picklistObjectFieldName");
+	}
+
+	private String _getListEntryKey(ObjectEntry objectEntry) {
+		ListEntry listEntry = _getListEntry(objectEntry);
 
 		return listEntry.getKey();
+	}
+
+	private String _getListEntryName(ObjectEntry objectEntry) {
+		ListEntry listEntry = _getListEntry(objectEntry);
+
+		return listEntry.getName();
 	}
 
 	private LocalDateTime _getLocalDateTime(String dateTimeString) {

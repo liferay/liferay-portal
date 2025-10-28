@@ -24,7 +24,9 @@ const ImportPreviewModal = ({
 
 	return (
 		<ClayModal observer={observer} size="lg">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('preview')}
 			</ClayModal.Header>
 

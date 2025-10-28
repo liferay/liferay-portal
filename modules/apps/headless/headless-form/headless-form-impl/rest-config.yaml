@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Form
 author: Javier Gamarra
 clientDir: ../headless-form-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../headless-form-test/src/testIntegration/java

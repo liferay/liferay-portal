@@ -9,7 +9,7 @@ import React from 'react';
 import PageToolbar from '../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/shared/PageToolbar';
 import ThemeContext from '../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/shared/ThemeContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.useFakeTimers();
 

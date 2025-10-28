@@ -6,7 +6,7 @@
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 

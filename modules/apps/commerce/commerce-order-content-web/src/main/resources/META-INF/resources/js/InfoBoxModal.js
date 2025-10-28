@@ -72,7 +72,11 @@ const InfoBoxModal = ({
 					spritemap={spritemap}
 				>
 					<ClayForm onSubmit={handleSubmit}>
-						<ClayModal.Header>{label}</ClayModal.Header>
+						<ClayModal.Header
+							closeButtonAriaLabel={Liferay.Language.get('close')}
+						>
+							{label}
+						</ClayModal.Header>
 
 						<ClayModal.Body>
 							<ClayForm.Group>

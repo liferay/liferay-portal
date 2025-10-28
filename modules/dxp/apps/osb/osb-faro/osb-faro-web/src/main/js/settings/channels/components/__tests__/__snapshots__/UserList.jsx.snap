@@ -6,7 +6,7 @@ exports[`ChannelUserList should render 1`] = `
     class="toolbar-root"
   >
     <nav
-      class="navbar navbar-root management-bar management-bar-light navbar-expand"
+      class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
     >
       <div
         class="container-fluid"
@@ -35,27 +35,9 @@ exports[`ChannelUserList should render 1`] = `
               </label>
             </div>
           </li>
-          <li
-            class="nav-item"
-            role="presentation"
-          >
-            <a
-              class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-              href="/?field=name&page=1&sortOrder=DESC"
-            >
-              <svg
-                class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                role="presentation"
-              >
-                <use
-                  href="#order_arrow_ascending"
-                />
-              </svg>
-            </a>
-          </li>
         </ul>
         <div
-          class="navbar-form navbar-form-autofit"
+          class="navbar-form navbar-form-autofit mx-2"
         >
           <div
             class="input-group search"
@@ -110,111 +92,115 @@ exports[`ChannelUserList should render 1`] = `
     </nav>
   </div>
   <div
-    class="table-responsive table-root flex-grow-1"
+    class="flex-grow-1 mx-4 table-root"
   >
-    <table
-      class="table table-autofit table-hover show-quick-actions-on-hover table-heading-nowrap table-nowrap"
+    <div
+      class="table-responsive"
     >
-      <thead>
-        <tr>
-          <th />
-          <th
-            class="table-head-title table-cell-expand"
-          >
-            Name
-          </th>
-          <th
-            class="table-head-title table-cell-expand"
-          >
-            Email
-          </th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          class="clickable"
-        >
-          <td>
-            <div
-              class="custom-control custom-checkbox"
+      <table
+        class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover show-quick-actions-on-hover"
+      >
+        <thead>
+          <tr>
+            <th />
+            <th
+              class="table-head-title table-cell-expand"
             >
-              <label>
-                <input
-                  class="custom-control-input"
-                  type="checkbox"
-                  value="false"
-                />
-                <span
-                  class="custom-control-label"
-                />
-              </label>
-            </div>
-          </td>
-          <td
-            class="table-cell-expand"
-          >
-            <div
-              class="h4 table-title text-truncate"
+              Name
+            </th>
+            <th
+              class="table-head-title table-cell-expand"
             >
-              Test Test
-            </div>
-          </td>
-          <td
-            class="table-cell-expand"
+              Email
+            </th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="clickable"
           >
-            test@liferay.com
-          </td>
-          <td
-            class="row-actions"
-          >
-            <span>
+            <td>
               <div
-                class="quick-action-menu"
+                class="custom-control custom-checkbox"
               >
-                <button
-                  aria-label="Delete"
-                  class="button-root component-action quick-action-item btn btn-unstyled"
-                  data-tooltip="true"
-                  title="Delete"
-                  type="button"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-times icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#times"
-                    />
-                  </svg>
-                </button>
+                <label>
+                  <input
+                    class="custom-control-input"
+                    type="checkbox"
+                    value="false"
+                  />
+                  <span
+                    class="custom-control-label"
+                  />
+                </label>
               </div>
+            </td>
+            <td
+              class="table-cell-expand"
+            >
               <div
-                class="dropdown dropdown-action"
+                class="h4 table-title text-truncate"
               >
-                <button
-                  aria-controls="clay-dropdown-menu-1"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label="Menu"
-                  class="dropdown-toggle component-action btn btn-unstyled"
-                  type="button"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-ellipsis-v"
-                    role="presentation"
-                  >
-                    <use
-                      href="#ellipsis-v"
-                    />
-                  </svg>
-                </button>
+                Test Test
               </div>
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+            <td
+              class="table-cell-expand"
+            >
+              test@liferay.com
+            </td>
+            <td
+              class="row-actions"
+            >
+              <span>
+                <div
+                  class="quick-action-menu"
+                >
+                  <button
+                    aria-label="Delete"
+                    class="button-root component-action quick-action-item btn btn-unstyled"
+                    data-tooltip="true"
+                    title="Delete"
+                    type="button"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-times icon-root"
+                      role="presentation"
+                    >
+                      <use
+                        href="#times"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div
+                  class="dropdown dropdown-action"
+                >
+                  <button
+                    aria-controls="clay-dropdown-menu-1"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-label="Menu"
+                    class="dropdown-toggle component-action btn btn-unstyled"
+                    type="button"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-ellipsis-v"
+                      role="presentation"
+                    >
+                      <use
+                        href="#ellipsis-v"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <nav
     class="navbar navbar-root pagination-bar-root"

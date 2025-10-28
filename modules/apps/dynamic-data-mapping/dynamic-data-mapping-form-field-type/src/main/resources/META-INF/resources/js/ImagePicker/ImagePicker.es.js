@@ -209,7 +209,9 @@ const ImagePicker = ({
 					observer={observer}
 					size="full-screen"
 				>
-					<ClayModal.Header />
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					/>
 
 					<ClayModal.Body>
 						<img

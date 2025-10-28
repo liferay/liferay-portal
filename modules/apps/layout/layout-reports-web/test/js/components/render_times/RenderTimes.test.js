@@ -8,7 +8,7 @@ import React from 'react';
 
 import RenderTimes from '../../../../src/main/resources/META-INF/resources/js/components/render_times/RenderTimes';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.mock('frontend-js-web', () => ({
 	...jest.requireActual('frontend-js-web'),

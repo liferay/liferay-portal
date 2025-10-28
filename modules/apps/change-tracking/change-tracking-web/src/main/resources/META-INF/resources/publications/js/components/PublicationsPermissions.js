@@ -67,7 +67,10 @@ export default function PublicationsPermissions({
 
 		return (
 			<ClayModal observer={observer} size="full-screen">
-				<ClayModal.Header withTitle>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+					withTitle
+				>
 					{Liferay.Language.get('permissions')}
 				</ClayModal.Header>
 
@@ -104,6 +107,9 @@ export default function PublicationsPermissions({
 								aria-label={Liferay.Language.get('save')}
 								onClick={() => {
 									saveRolePermissions();
+									Liferay.Portlet.refresh(
+										`#p_p_id${namespace}`
+									);
 								}}
 								type="submit"
 							>

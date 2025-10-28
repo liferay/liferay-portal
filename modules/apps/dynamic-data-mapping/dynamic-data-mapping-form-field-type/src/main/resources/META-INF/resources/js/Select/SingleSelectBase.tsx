@@ -124,6 +124,16 @@ export default function SingleSelectBase({
 					data-testid={id}
 					disabled={readOnly}
 					items={[{items: options, label}]}
+					messages={{
+						itemDescribedby: Liferay.Language.get(
+							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+						),
+						itemSelected: Liferay.Language.get('x-selected'),
+						scrollToBottomAriaLabel:
+							Liferay.Language.get('scroll-to-bottom'),
+						scrollToTopAriaLabel:
+							Liferay.Language.get('scroll-to-top'),
+					}}
 					onSelectionChange={onSelectionChange}
 					placeholder={placeholder}
 					selectedKey={selectedItem ?? 'chooseAnOption'}

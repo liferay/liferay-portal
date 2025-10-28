@@ -5,7 +5,7 @@
 
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {
 	FormProvider,
 	PageProvider,
@@ -169,7 +169,7 @@ describe('Field LocalizableText', () => {
 			fireEvent.click(triggerButton);
 
 			act(() => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 
 			const dropdownItem = await findByTestId(
@@ -179,7 +179,7 @@ describe('Field LocalizableText', () => {
 			fireEvent.click(dropdownItem);
 
 			act(() => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 
 			const inputComponent = await findByTestId('visibleChangeInput');
@@ -299,7 +299,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(triggerElement);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dropdownItem = await findByTestId(
@@ -309,7 +309,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(dropdownItem);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const inputComponent = getByTestId('visibleChangeInput');
@@ -323,7 +323,7 @@ describe('Field LocalizableText', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(inputComponent.value).toEqual('Test JP');
@@ -358,7 +358,7 @@ describe('Field LocalizableText', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(handleFieldEdited).toHaveBeenCalledWith(
@@ -389,7 +389,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(triggerElement);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dropdownItem = await findByTestId(
@@ -399,7 +399,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(dropdownItem);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const inputComponent = getByTestId('visibleChangeInput');
@@ -429,7 +429,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(triggerButton);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dropdownItem = await findByTestId(
@@ -439,7 +439,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(dropdownItem);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const inputElement = await findByTestId('visibleChangeInput');
@@ -465,7 +465,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -504,7 +504,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -524,7 +524,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -544,7 +544,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -568,7 +568,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(triggerElement);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const dropdownItem = await findByTestId(
@@ -578,7 +578,7 @@ describe('Field LocalizableText', () => {
 		fireEvent.click(dropdownItem);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const inputComponent = getByTestId('visibleChangeInput');
@@ -592,7 +592,7 @@ describe('Field LocalizableText', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(inputComponent.value).toEqual('');
@@ -609,7 +609,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -628,7 +628,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -647,7 +647,7 @@ describe('Field LocalizableText', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const triggerElement = getByTestId('triggerText');

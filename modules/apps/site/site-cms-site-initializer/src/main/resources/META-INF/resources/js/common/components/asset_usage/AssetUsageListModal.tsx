@@ -35,62 +35,62 @@ interface IAssetUsageListModalProps {
 		selectAll: boolean;
 	};
 	closeModal: () => void;
-
-	/**
-	 * Armazena os dados ao navegar por pastas
-	 */
-
 	initialCachedData?: CachedDataItem[];
-
 	initialData: BulkActionItemResponse;
 	onDelete: () => void;
 }
 
-function getModalProps({
-	cachedData,
-	selectAll,
-}: {
-	cachedData: CachedDataItem[];
-	selectAll: boolean;
-}) {
-	const root = cachedData[0];
-	const rootHasSingleItem = root?.data.totalCount === 1;
-	const rootHasSingleFolder =
-		typeof root?.data.items[0].attributes.itemsCount === 'number';
-	const itemName = root?.data.items[0].name;
+function getModalProps(cachedData: CachedDataItem[]) {
+	const root = cachedData[0]?.data;
+	const item = root.items[0];
 
-	if (rootHasSingleFolder) {
-		return {
-			deleteButtonLabel: Liferay.Language.get('delete-folder'),
-			description: Liferay.Language.get(
-				'the-contents-of-this-folder-may-be-used-in-other-assets-or-pages.-deleting-it-will-permanently-remove-all-files-and-subfolders.-do-you-want-to-continue?'
-			),
-			title: sub(Liferay.Language.get('delete-x'), `"${itemName}"`),
-		};
-	}
-	else if (rootHasSingleItem) {
+	if (root.totalCount === 1) {
+		if (item.attributes.type === 'FOLDER') {
+			if (item.attributes.deletionType === 'PERMANENT_DELETION') {
+				return {
+					deleteButtonLabel: Liferay.Language.get('delete-folder'),
+					description: Liferay.Language.get(
+						'the-contents-of-this-folder-may-be-used-in-other-assets-or-pages.-deleting-it-will-permanently-remove-all-files-and-subfolders.-do-you-want-to-continue?'
+					),
+					title: sub(
+						Liferay.Language.get('delete-x'),
+						`"${item.name}"`
+					),
+				};
+			}
+
+			return {
+				deleteButtonLabel: Liferay.Language.get('delete-folder'),
+				description: Liferay.Language.get(
+					'the-contents-of-this-folder-may-be-used-in-other-assets-or-pages.-sending-it-to-the-recycle-bin-will-break-references-to-its-files-and-subfolders,-potentially-causing-broken-links.-do-you-want-to-continue?'
+				),
+				title: sub(Liferay.Language.get('delete-x'), `"${item.name}"`),
+			};
+		}
+
+		if (item.attributes.deletionType === 'PERMANENT_DELETION') {
+			return {
+				deleteButtonLabel: Liferay.Language.get('delete-entry'),
+				description: Liferay.Language.get(
+					'this-item-is-being-used-in-other-assets-or-pages.-deleting-it-will-break-those-references-and-cause-broken-links-or-missing-content.-this-action-cannot-be-undone.-are-you-sure-you-want-to-continue?'
+				),
+				title: sub(Liferay.Language.get('delete-x'), `"${item.name}"`),
+			};
+		}
+
 		return {
 			deleteButtonLabel: Liferay.Language.get('delete-entry'),
 			description: Liferay.Language.get(
-				'this-item-is-being-used-in-other-assets-or-pages-deleting-it-will-break-those-references-and-cause-broken-links-or-missing-content-this-action-cannot-be-undone-are-you-sure-you-want-to-continue'
+				'this-item-is-being-used-in-other-assets-or-pages.-sending-it-to-the-recycle-will-break-those-references-and-cause-broken-links-or-missing-content.-this-action-cannot-be-undone.-are-you-sure-you-want-to-continue?'
 			),
-			title: sub(Liferay.Language.get('delete-x'), `"${itemName}"`),
-		};
-	}
-	else if (selectAll) {
-		return {
-			deleteButtonLabel: Liferay.Language.get('delete'),
-			description: Liferay.Language.get(
-				'some-items-are-being-used-in-other-assets-or-pages.-deleting-them-will-break-those-references-and-cause-broken-links-or-missing-content.-this-action-cannot-be-undone.-are-you-sure-you-want-to-continue'
-			),
-			title: Liferay.Language.get('delete-all-entries'),
+			title: sub(Liferay.Language.get('delete-x'), `"${item.name}"`),
 		};
 	}
 
 	return {
 		deleteButtonLabel: Liferay.Language.get('delete'),
 		description: Liferay.Language.get(
-			'some-items-are-being-used-in-other-assets-or-pages.-deleting-them-will-break-those-references-and-cause-broken-links-or-missing-content.-this-action-cannot-be-undone.-are-you-sure-you-want-to-continue'
+			'some-items-are-being-used-in-other-assets-or-pages.-deleting-them-will-break-those-references-and-cause-broken-links-or-missing-content.-this-action-cannot-be-undone.-are-you-sure-you-want-to-continue?'
 		),
 		title: Liferay.Language.get('delete-entries'),
 	};
@@ -271,10 +271,7 @@ const AssetUsageListModal: React.FC<IAssetUsageListModalProps> = ({
 		}
 	};
 
-	const modalProps = getModalProps({
-		cachedData,
-		selectAll: apiParams.selectAll,
-	});
+	const modalProps = getModalProps(cachedData);
 
 	const ableToPaginateAndSearch =
 		cachedData.length > 1 ||
@@ -283,7 +280,11 @@ const AssetUsageListModal: React.FC<IAssetUsageListModalProps> = ({
 	return (
 		<ClayTooltipProvider>
 			<div className="cms-asset-usage-list-modal">
-				<ClayModal.Header>{modalProps.title}</ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
+					{modalProps.title}
+				</ClayModal.Header>
 
 				<ClayModal.Body>
 					{cachedData.length === 1 && (

@@ -8,7 +8,7 @@ import React from 'react';
 
 import ConnectToAC from '../../../src/main/resources/META-INF/resources/js/components/ConnectToAC';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('ConnectToAC', () => {
 	it('renders a link to analytics cloud in order to connect with our site when analytics is connected', () => {

@@ -256,11 +256,15 @@ public class SearchBarPortletDisplayContextFactoryTest {
 
 	@Test
 	public void testSamePageNoDestination() throws Exception {
+		Layout layout = Mockito.mock(Layout.class);
+
+		_whenPortalGetLayoutFriendlyURL(layout, "/web/guest/home");
+
 		Mockito.doReturn(
-			"http://example.com/web/guest/home?param=arg"
+			layout
 		).when(
 			_themeDisplay
-		).getURLCurrent();
+		).getLayout();
 
 		SearchBarPortletDisplayContextFactory
 			searchBarPortletDisplayContextFactory =

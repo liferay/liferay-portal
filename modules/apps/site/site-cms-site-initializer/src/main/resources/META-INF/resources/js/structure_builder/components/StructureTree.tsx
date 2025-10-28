@@ -24,7 +24,6 @@ import selectInvalids from '../selectors/selectInvalids';
 import selectSelection from '../selectors/selectSelection';
 import selectStructure from '../selectors/selectStructure';
 import selectStructureChildren from '../selectors/selectStructureChildren';
-import selectStructureError from '../selectors/selectStructureError';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import {
@@ -67,7 +66,6 @@ export default function StructureTree({search}: {search: string}) {
 	const selection = useSelector(selectSelection);
 	const structureLabel = useSelector(selectStructureLocalizedLabel);
 	const structureUuid = useSelector(selectStructureUuid);
-	const structureError = useSelector(selectStructureError);
 	const structure = useSelector(selectStructure);
 
 	const {load: loadObjectDefinitions, status: objectDefinitionsStatus} =
@@ -241,8 +239,7 @@ export default function StructureTree({search}: {search: string}) {
 							<></>
 						)}
 
-						{item.invalid ||
-						(item.id === structureUuid && structureError) ? (
+						{item.invalid ? (
 							<ClayIcon
 								className="ml-2 text-danger"
 								data-title={Liferay.Language.get(

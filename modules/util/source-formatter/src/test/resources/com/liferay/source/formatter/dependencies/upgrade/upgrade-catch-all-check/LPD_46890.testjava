@@ -23,10 +23,18 @@ public class LPD_46890 {
 		Map<Locale, String> descriptionMap, String type, String mode,
 		String language, String script, ServiceContext serviceContext) {
 
-		DDMTemplateLocalServiceUtil.addTemplate(123, groupId, classNameId, classPK, resourceClassNameId, nameMap, descriptionMap, type, mode, language, script, serviceContext);
-		DDMTemplateServiceUtil.addTemplate(123, classNameId, classPK, resourceClassNameId, nameMap, descriptionMap, type, mode, language, script, serviceContext);
-		_ddmTemplateLocalService.addTemplate(userId, groupId, classNameId, classPK, resourceClassNameId, nameMap, descriptionMap, type, mode, language, script, serviceContext);
-		_ddmTemplateService.addTemplate(groupId, classNameId, classPK, resourceClassNameId, nameMap, descriptionMap, type, mode, language, script, serviceContext);
+		DDMTemplateLocalServiceUtil.addTemplate(
+			123, groupId, classNameId, classPK, resourceClassNameId, nameMap,
+			descriptionMap, type, mode, language, script, serviceContext);
+		DDMTemplateServiceUtil.addTemplate(
+			123, classNameId, classPK, resourceClassNameId, nameMap,
+			descriptionMap, type, mode, language, script, serviceContext);
+		_ddmTemplateLocalService.addTemplate(
+			userId, groupId, classNameId, classPK, resourceClassNameId, nameMap,
+			descriptionMap, type, mode, language, script, serviceContext);
+		_ddmTemplateService.addTemplate(
+			groupId, classNameId, classPK, resourceClassNameId, nameMap,
+			descriptionMap, type, mode, language, script, serviceContext);
 	}
 
 	@Reference

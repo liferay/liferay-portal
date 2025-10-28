@@ -22,18 +22,6 @@ export class WorkflowPage {
 		);
 	}
 
-	async changeCalendarEventWorkflow(option: string) {
-		await this.page.getByRole('button', {name: 'Edit'}).nth(1).click();
-
-		await this.page
-			.locator(
-				'[id="_com_liferay_portal_workflow_web_internal_portlet_SiteAdministrationWorkflowPortlet_workflowDefinitionName-com-liferay-calendar-model-CalendarBooking"]'
-			)
-			.selectOption(option);
-
-		await this.page.getByRole('button', {name: 'Save'}).click();
-	}
-
 	async changeWorkflow(
 		asset: string,
 		value: string,

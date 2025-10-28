@@ -8,6 +8,7 @@ package com.liferay.portal.upgrade.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.upgrade.ReleaseManager;
@@ -19,6 +20,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.portal.upgrade.release.SchemaCreator;
 
 import java.sql.Connection;
 
@@ -49,6 +51,56 @@ public class ReleaseManagerTest {
 	public void tearDown() throws Exception {
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testSuccessfulSchemaCreatorAfterUnsuccesfulOne()
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(ReleaseManagerTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Release release = _releaseLocalService.addRelease(
+			bundle.getSymbolicName(), "0.0.0");
+
+		try {
+			release.setState(ReleaseConstants.STATE_UPGRADE_FAILURE);
+
+			_releaseLocalService.updateRelease(release);
+
+			_serviceRegistration = bundleContext.registerService(
+				SchemaCreator.class,
+				new SchemaCreator() {
+
+					@Override
+					public void create() {
+					}
+
+					@Override
+					public String getBundleSymbolicName() {
+						return bundle.getSymbolicName();
+					}
+
+					public String getSchemaVersion() {
+						return "1.0.0";
+					}
+
+				},
+				null);
+
+			Thread.sleep(2000);
+
+			release = _releaseLocalService.fetchRelease(
+				bundle.getSymbolicName());
+
+			Assert.assertEquals("1.0.0", release.getSchemaVersion());
+			Assert.assertEquals(
+				ReleaseConstants.STATE_GOOD, release.getState());
+		}
+		finally {
+			_releaseLocalService.deleteRelease(release);
 		}
 	}
 
@@ -135,7 +187,7 @@ public class ReleaseManagerTest {
 	@Inject
 	private volatile ReleaseManager _releaseManager;
 
-	private ServiceRegistration<UpgradeStepRegistrator> _serviceRegistration;
+	private ServiceRegistration<?> _serviceRegistration;
 
 	private static class TestUpgradeStepRegistrator
 		implements UpgradeStepRegistrator {

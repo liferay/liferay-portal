@@ -277,7 +277,8 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 				ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 					null, importedGroupFragmentEntry.getCss(),
 					importedGroupFragmentEntry.getConfiguration(),
-					importedGroupFragmentEntry.getFragmentEntryId(),
+					importedGroupFragmentEntry.getExternalReferenceCode(),
+					importedGroupFragmentEntry.getScopeERC(),
 					importedGroupFragmentEntry.getHtml(),
 					importedGroupFragmentEntry.getJs(),
 					importedDraftGroupLayout,

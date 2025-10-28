@@ -6,7 +6,7 @@
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import TranslationAdminStatusLabel from '../../src/main/resources/META-INF/resources/translation_manager/TranslationAdminStatusLabel';
 

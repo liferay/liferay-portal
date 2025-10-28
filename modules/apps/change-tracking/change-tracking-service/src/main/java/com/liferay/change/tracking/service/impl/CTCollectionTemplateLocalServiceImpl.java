@@ -16,6 +16,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -82,6 +83,22 @@ public class CTCollectionTemplateLocalServiceImpl
 			_classNameLocalService.getClassNameId(
 				CTCollectionTemplate.class.getName()),
 			ctCollectionTemplateId, json);
+
+		return ctCollectionTemplate;
+	}
+
+	@Override
+	public CTCollectionTemplate deleteCTCollectionTemplate(
+			CTCollectionTemplate ctCollectionTemplate)
+		throws PortalException {
+
+		ctCollectionTemplatePersistence.remove(ctCollectionTemplate);
+
+		_resourceLocalService.deleteResource(
+			ctCollectionTemplate.getCompanyId(),
+			CTCollectionTemplate.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			ctCollectionTemplate.getCtCollectionTemplateId());
 
 		return ctCollectionTemplate;
 	}

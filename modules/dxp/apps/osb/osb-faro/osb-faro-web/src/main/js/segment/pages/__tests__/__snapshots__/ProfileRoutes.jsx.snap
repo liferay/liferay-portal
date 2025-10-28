@@ -104,6 +104,7 @@ exports[`SegmentProfileRoutes should render 1`] = `
             >
               <button
                 aria-expanded="false"
+                aria-label="Open Menu, Current Page: Overview"
                 class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
                 type="button"
               >
@@ -137,9 +138,7 @@ exports[`SegmentProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/segments/test"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Overview
                         </span>
                       </a>
@@ -151,9 +150,7 @@ exports[`SegmentProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/segments/test/membership"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Membership
                         </span>
                       </a>
@@ -165,9 +162,7 @@ exports[`SegmentProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/segments/test/interests"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Interests
                         </span>
                       </a>
@@ -179,9 +174,7 @@ exports[`SegmentProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/segments/test/distribution"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Distribution
                         </span>
                       </a>

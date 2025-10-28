@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Frontend JS
 Bundle-SymbolicName: com.liferay.commerce.frontend.js
-Bundle-Version: 4.0.144
+Bundle-Version: 4.0.145
 Web-ContextPath: /commerce-frontend-js

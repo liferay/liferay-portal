@@ -34,7 +34,9 @@ export function ConnectionWithMarketplaceNeededModal(
 
 	return (
 		<ClayModal center observer={props.observer} status="info">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('connection-with-marketplace-needed')}
 			</ClayModal.Header>
 

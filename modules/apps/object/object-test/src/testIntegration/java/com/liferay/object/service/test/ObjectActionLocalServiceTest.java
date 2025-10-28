@@ -89,6 +89,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -227,7 +228,8 @@ public class ObjectActionLocalServiceTest {
 			_group.getGroupId(), _commerceCurrency.getCode());
 
 		_objectDefinition = ObjectDefinitionTestUtil.addCustomObjectDefinition(
-			false,
+			FeatureFlagManagerUtil.isEnabled(
+				TestPropsValues.getCompanyId(), "LPD-32050"),
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_DATE,
@@ -1792,7 +1794,9 @@ public class ObjectActionLocalServiceTest {
 					"usePreferredLanguageForGuests")));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testAddOrUpdateSubscriptionObjectActions() throws Exception {
 		ObjectDefinition objectDefinition =
@@ -2376,7 +2380,7 @@ public class ObjectActionLocalServiceTest {
 				getSystemObjectDefinitionManager("User");
 
 		long userId = systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(),
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.putAll(
 				values
 			).put(

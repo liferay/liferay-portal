@@ -502,8 +502,8 @@ public class BatchTestEntityExportImportTest {
 				null);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
 			_exportImportLocalService.importLayouts(
@@ -738,8 +738,8 @@ public class BatchTestEntityExportImportTest {
 				null);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
 			_exportImportLocalService.importLayouts(

@@ -45,7 +45,7 @@ exports[`Membership should render 1`] = `
           class="toolbar-root"
         >
           <nav
-            class="navbar navbar-root management-bar management-bar-light navbar-expand"
+            class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
           >
             <div
               class="container-fluid"
@@ -53,29 +53,9 @@ exports[`Membership should render 1`] = `
               <ul
                 class="nav-root front-nav navbar-nav"
                 role="tablist"
-              >
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <button
-                    aria-label="Ascending"
-                    class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                    type="button"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                      role="presentation"
-                    >
-                      <use
-                        href="#order_arrow_ascending"
-                      />
-                    </svg>
-                  </button>
-                </li>
-              </ul>
+              />
               <div
-                class="navbar-form navbar-form-autofit"
+                class="navbar-form navbar-form-autofit mx-2"
               >
                 <div
                   class="input-group search"
@@ -114,90 +94,122 @@ exports[`Membership should render 1`] = `
           </nav>
         </div>
         <div
-          class="table-responsive table-root flex-grow-1"
+          class="flex-grow-1 mx-4 table-root"
         >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+          <div
+            class="table-responsive"
           >
-            <thead>
-              <tr>
-                <th
-                  class="table-head-title"
-                >
-                  <button
-                    class="inline-item text-truncate-inline btn btn-unstyled"
-                    type="button"
+            <table
+              class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="table-head-title"
                   >
-                    <span
-                      class="text-truncate"
-                    >
-                      Name
-                    </span>
-                    <span
-                      class="inline-item inline-item-after"
-                    >
-                      <svg
-                        class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                        role="presentation"
-                      >
-                        <use
-                          href="#order-arrow-up"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Email
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  <button
-                    class="inline-item text-truncate-inline btn btn-unstyled"
-                    type="button"
-                  >
-                    <span
-                      class="text-truncate"
-                    >
-                      First Seen
-                    </span>
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td
-                  class="name-cell-root"
-                >
-                  <div
-                    class="content-container"
-                  >
-                    <div
-                      class="text-truncate"
+                    <button
+                      class="inline-item text-truncate-inline btn btn-unstyled"
+                      type="button"
                     >
                       <div
-                        class="table-title text-truncate"
+                        class="align-items-center d-flex justify-content-between"
                       >
-                        Foo Bar
+                        <div
+                          class="text-truncate"
+                        >
+                          Name
+                        </div>
+                        <button
+                          aria-label="Ascending"
+                          class="component-action ml-2 btn btn-sm btn-primary"
+                          type="button"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#order_arrow_ascending"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </button>
+                  </th>
+                  <th
+                    class="table-head-title"
+                  >
+                    Email
+                  </th>
+                  <th
+                    class="table-head-title"
+                  >
+                    <button
+                      class="inline-item text-truncate-inline btn btn-unstyled"
+                      type="button"
+                    >
+                      <div
+                        class="align-items-center d-flex justify-content-between"
+                      >
+                        <div
+                          class="text-truncate"
+                        >
+                          First Seen
+                        </div>
+                        <button
+                          aria-label="Descending"
+                          class="component-action ml-2 btn btn-sm btn-primary"
+                          type="button"
+                        >
+                          <span
+                            class="opacity-25"
+                          >
+                            <svg
+                              class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                              role="presentation"
+                            >
+                              <use
+                                href="#order-arrow"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </div>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class=""
+                >
+                  <td
+                    class="name-cell-root"
+                  >
+                    <div
+                      class="content-container"
+                    >
+                      <div
+                        class="text-truncate"
+                      >
+                        <div
+                          class="table-title text-truncate"
+                        >
+                          Foo Bar
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td>
-                  -
-                </td>
-                <td>
-                  Jul 8, 2018
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                  <td>
+                    -
+                  </td>
+                  <td>
+                    Jul 8, 2018
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <nav
           class="navbar navbar-root pagination-bar-root"
@@ -325,7 +337,7 @@ exports[`MembershipChart should render 1`] = `
         class="toolbar-root"
       >
         <nav
-          class="navbar navbar-root management-bar management-bar-light navbar-expand"
+          class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
         >
           <div
             class="container-fluid"
@@ -333,29 +345,9 @@ exports[`MembershipChart should render 1`] = `
             <ul
               class="nav-root front-nav navbar-nav"
               role="tablist"
-            >
-              <li
-                class="nav-item"
-                role="presentation"
-              >
-                <button
-                  aria-label="Ascending"
-                  class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                  type="button"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#order_arrow_ascending"
-                    />
-                  </svg>
-                </button>
-              </li>
-            </ul>
+            />
             <div
-              class="navbar-form navbar-form-autofit"
+              class="navbar-form navbar-form-autofit mx-2"
             >
               <div
                 class="input-group search"
@@ -394,90 +386,122 @@ exports[`MembershipChart should render 1`] = `
         </nav>
       </div>
       <div
-        class="table-responsive table-root flex-grow-1"
+        class="flex-grow-1 mx-4 table-root"
       >
-        <table
-          class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+        <div
+          class="table-responsive"
         >
-          <thead>
-            <tr>
-              <th
-                class="table-head-title"
-              >
-                <button
-                  class="inline-item text-truncate-inline btn btn-unstyled"
-                  type="button"
+          <table
+            class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+          >
+            <thead>
+              <tr>
+                <th
+                  class="table-head-title"
                 >
-                  <span
-                    class="text-truncate"
-                  >
-                    Name
-                  </span>
-                  <span
-                    class="inline-item inline-item-after"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                      role="presentation"
-                    >
-                      <use
-                        href="#order-arrow-up"
-                      />
-                    </svg>
-                  </span>
-                </button>
-              </th>
-              <th
-                class="table-head-title"
-              >
-                Email
-              </th>
-              <th
-                class="table-head-title"
-              >
-                <button
-                  class="inline-item text-truncate-inline btn btn-unstyled"
-                  type="button"
-                >
-                  <span
-                    class="text-truncate"
-                  >
-                    First Seen
-                  </span>
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class=""
-            >
-              <td
-                class="name-cell-root"
-              >
-                <div
-                  class="content-container"
-                >
-                  <div
-                    class="text-truncate"
+                  <button
+                    class="inline-item text-truncate-inline btn btn-unstyled"
+                    type="button"
                   >
                     <div
-                      class="table-title text-truncate"
+                      class="align-items-center d-flex justify-content-between"
                     >
-                      Foo Bar
+                      <div
+                        class="text-truncate"
+                      >
+                        Name
+                      </div>
+                      <button
+                        aria-label="Ascending"
+                        class="component-action ml-2 btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order_arrow_ascending"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </button>
+                </th>
+                <th
+                  class="table-head-title"
+                >
+                  Email
+                </th>
+                <th
+                  class="table-head-title"
+                >
+                  <button
+                    class="inline-item text-truncate-inline btn btn-unstyled"
+                    type="button"
+                  >
+                    <div
+                      class="align-items-center d-flex justify-content-between"
+                    >
+                      <div
+                        class="text-truncate"
+                      >
+                        First Seen
+                      </div>
+                      <button
+                        aria-label="Descending"
+                        class="component-action ml-2 btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        <span
+                          class="opacity-25"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#order-arrow"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class=""
+              >
+                <td
+                  class="name-cell-root"
+                >
+                  <div
+                    class="content-container"
+                  >
+                    <div
+                      class="text-truncate"
+                    >
+                      <div
+                        class="table-title text-truncate"
+                      >
+                        Foo Bar
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td>
-                -
-              </td>
-              <td>
-                Jul 8, 2018
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+                <td>
+                  -
+                </td>
+                <td>
+                  Jul 8, 2018
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <nav
         class="navbar navbar-root pagination-bar-root"

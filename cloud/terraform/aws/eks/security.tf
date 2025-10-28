@@ -8,17 +8,13 @@ resource "aws_security_group" "nodes" {
 }
 resource "aws_vpc_security_group_egress_rule" "cluster_egress" {
 	cidr_ipv4="0.0.0.0/0"
-	from_port=0
 	ip_protocol="-1"
 	security_group_id=aws_security_group.cluster.id
-	to_port=0
 }
 resource "aws_vpc_security_group_egress_rule" "nodes_egress" {
 	cidr_ipv4="0.0.0.0/0"
-	from_port=0
 	ip_protocol="-1"
 	security_group_id=aws_security_group.nodes.id
-	to_port=0
 }
 resource "aws_vpc_security_group_ingress_rule" "cluster_ingress" {
 	cidr_ipv4=var.vpc_cidr

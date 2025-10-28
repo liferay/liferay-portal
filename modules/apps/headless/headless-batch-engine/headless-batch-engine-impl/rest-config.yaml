@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Batch.Engine
 author: Ivica Cardic
 clientDir: ../headless-batch-engine-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 generateBatch: false
 generateGraphQL: false

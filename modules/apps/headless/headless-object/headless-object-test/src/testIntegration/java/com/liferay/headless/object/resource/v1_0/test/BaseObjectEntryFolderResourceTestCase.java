@@ -2247,6 +2247,14 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("scope", additionalAssertFieldName)) {
+				if (objectEntryFolder.getScope() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("scopeId", additionalAssertFieldName)) {
 				if (objectEntryFolder.getScopeId() == null) {
 					valid = false;
@@ -2608,6 +2616,17 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 				if (!Objects.deepEquals(
 						objectEntryFolder1.getRemovedDate(),
 						objectEntryFolder2.getRemovedDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("scope", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						objectEntryFolder1.getScope(),
+						objectEntryFolder2.getScope())) {
 
 					return false;
 				}
@@ -3106,6 +3125,11 @@ public abstract class BaseObjectEntryFolderResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("scope")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("scopeId")) {

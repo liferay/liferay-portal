@@ -251,6 +251,8 @@ public class PageExperienceResourceImpl extends BasePageExperienceResourceImpl {
 			new DefaultDTOConverterContext(null, null, null, null, null);
 
 		dtoConverterContext.setAttribute(
+			"companyId", layoutPageTemplateStructureRel.getCompanyId());
+		dtoConverterContext.setAttribute(
 			"scopeGroupId", layoutPageTemplateStructureRel.getGroupId());
 
 		return _pageExperienceDTOConverter.toDTO(

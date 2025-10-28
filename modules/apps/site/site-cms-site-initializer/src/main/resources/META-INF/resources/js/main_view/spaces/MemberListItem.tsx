@@ -12,7 +12,10 @@ import React from 'react';
 
 import {Role} from '../../common/types/Role';
 import {UserAccount, UserGroup} from '../../common/types/UserAccount';
-import {SpaceMembersPermissionSelect} from './SpaceMembersPermissionSelect';
+import {
+	SPACE_MEMBER_ROLE_NAME,
+	SpaceMembersPermissionSelect,
+} from './SpaceMembersPermissionSelect';
 
 interface MembersListItemProps {
 	assetLibraryCreatorUserId?: string | number;
@@ -44,7 +47,9 @@ export function MembersListItem({
 					String(assetLibraryCreatorUserId) === String(item.id);
 
 				const memberRoles = item.roles.map((r) => r.name);
-				const selectedRoles = memberRoles.length ? memberRoles : [];
+				const selectedRoles = memberRoles.length
+					? memberRoles
+					: [SPACE_MEMBER_ROLE_NAME];
 				const classes = cx(
 					'align-items-center d-flex justify-content-between',
 					{

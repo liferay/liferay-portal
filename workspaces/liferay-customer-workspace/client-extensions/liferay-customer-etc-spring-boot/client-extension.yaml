@@ -5,7 +5,7 @@ liferay-customer-etc-spring-boot-oahs:
     .serviceScheme: http
     name: Liferay Customer Etc Spring Boot OAuth Application Headless Server
     scopes:
-        -   Liferay.Headless.Admin.List.Type.everything.read
+        -   Liferay.Headless.Admin.List.Type.everything
         -   Liferay.Headless.Admin.User.everything.read
         -   Liferay.Notification.REST.everything
         -   c_accountsubscription.everything.read

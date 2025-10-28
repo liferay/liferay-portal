@@ -34,7 +34,9 @@ const Modal: React.FC<ModalProps> = ({
 
 	return (
 		<ClayModal observer={observer} size={size}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				<ClayModal.Title>{title}</ClayModal.Title>
 			</ClayModal.Header>
 

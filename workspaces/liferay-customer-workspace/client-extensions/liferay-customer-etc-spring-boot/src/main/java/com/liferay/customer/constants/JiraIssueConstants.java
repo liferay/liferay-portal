@@ -5,6 +5,8 @@
 
 package com.liferay.customer.constants;
 
+import com.liferay.petra.string.StringPool;
+
 /**
  * @author Jenny Chen
  */
@@ -30,5 +32,13 @@ public interface JiraIssueConstants {
 		STATUS_CLOSED, STATUS_FLS_CLOSED, STATUS_FLS_SOLVED, STATUS_INACTIVE,
 		STATUS_SOLUTION_ACCEPTED, STATUS_SOLUTION_PROPOSED
 	};
+
+	public static final String TYPE_GENERAL_REQUEST = "General Request";
+
+	public static String toJQLCustomField(String customField) {
+		int pos = customField.indexOf(StringPool.UNDERLINE);
+
+		return "cf[" + customField.substring(pos + 1) + "]";
+	}
 
 }

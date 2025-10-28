@@ -38,7 +38,9 @@ export class PicklistBuilderPage {
 
 		await clickAndExpectToBeHidden({
 			target: this.page.locator('.modal-header').getByText('Add Option'),
-			trigger: this.page.locator('.modal-footer').getByText('Save'),
+			trigger: this.page
+				.locator('.modal-footer')
+				.getByText('Save', {exact: true}),
 		});
 	}
 

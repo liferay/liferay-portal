@@ -7,7 +7,7 @@ import useTranslationProgress, {
 	fieldToTranslations,
 } from '../../../src/main/resources/META-INF/resources/js/translation_manager/useTranslationProgress';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {fireEvent, render, screen, within} from '@testing-library/react';
 import {act, renderHook} from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';

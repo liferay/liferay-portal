@@ -149,7 +149,9 @@ export default function EditTagsModalContent({
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(Liferay.Language.get('edit-x'), '"' + tagName + '"')}
 			</ClayModal.Header>
 
@@ -170,7 +172,6 @@ export default function EditTagsModalContent({
 				<CategorizationSpaces
 					assetLibraries={assetLibraries}
 					checkboxText="tag"
-					selectedSpaces={selectedSpaces}
 					setSelectedSpaces={setSelectedSpaces}
 					setSpaceChange={setSpaceChange}
 					setSpaceInputError={setSpaceInputError}

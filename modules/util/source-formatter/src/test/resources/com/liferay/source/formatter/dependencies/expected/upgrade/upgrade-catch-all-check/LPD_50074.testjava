@@ -15,7 +15,8 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_50074 {
 
 	public void method() {
-		_sitemapManager.addURLElement(null, "test123", null, null, "test123", null);
+		_sitemapManager.addURLElement(
+			null, "test123", null, null, "test123", null);
 	}
 
 	@Reference

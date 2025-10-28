@@ -224,6 +224,7 @@ export default function SourceBuilder() {
 				<ClayAlert.ToastContainer>
 					<ClayAlert
 						autoClose={5000}
+						closeButtonAriaLabel={Liferay.Language.get('close')}
 						displayType="success"
 						onClose={() => setShowImportSuccessMessage(false)}
 						title={`${Liferay.Language.get('success')}:`}

@@ -11,7 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_189358 {
 
 	public void method(CommerceAddress commerceAddress, Region region) {
-		commerceAddress.getRegion().getRegionCode();
+		commerceAddress.getRegion(
+		).getRegionCode();
 		region.getRegionCode();
 	}
 

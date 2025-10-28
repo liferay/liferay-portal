@@ -7,7 +7,7 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import MarketplacePresentationModal from '../../../src/main/resources/META-INF/resources/js/components/marketplace/MarketplacePresentationModal';
 
@@ -70,7 +70,9 @@ describe('MarketplacePresentationModal', () => {
 			expect(screen.getByText('Test body')).toBeInTheDocument();
 			expect(screen.getByText('cancel')).toBeInTheDocument();
 			expect(screen.getByText('explore-marketplace')).toBeInTheDocument();
-			expect(screen.getByRole('img')).toHaveAttribute(
+			expect(
+				screen.getAllByRole('presentation', {hidden: true})[1]
+			).toHaveAttribute(
 				'src',
 				`${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/layout-js-components-web/images/marketplace.svg`
 			);

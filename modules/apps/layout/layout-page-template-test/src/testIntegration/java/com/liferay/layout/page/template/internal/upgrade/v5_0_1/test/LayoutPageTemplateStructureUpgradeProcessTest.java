@@ -332,8 +332,9 @@ public class LayoutPageTemplateStructureUpgradeProcessTest {
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
 		_fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-			fragmentEntry.getFragmentEntryId(),
+			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(),
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				plid),
 			plid, fragmentEntry.getCss(), fragmentEntry.getHtml(),

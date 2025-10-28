@@ -213,7 +213,7 @@ public class SemanticSearchConfigurationFormRenderer
 
 		for (ObjectDefinition objectDefinition :
 				_objectDefinitionLocalService.getObjectDefinitions(
-					CompanyThreadLocal.getCompanyId(), true,
+					CompanyThreadLocal.getCompanyId(), true, false,
 					WorkflowConstants.STATUS_APPROVED)) {
 
 			if (!objectDefinition.isEnableIndexSearch()) {

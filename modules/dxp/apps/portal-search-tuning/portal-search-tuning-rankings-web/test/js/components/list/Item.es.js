@@ -8,7 +8,7 @@ import React from 'react';
 
 import Item from '../../../../src/main/resources/META-INF/resources/js/components/list/Item.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 /* eslint-disable no-unused-vars */
 jest.mock('react-dnd', () => ({

@@ -51,7 +51,7 @@ public class ERCCompanyEntrySystemObjectDefinitionManagerTest {
 		int randomInt = RandomTestUtil.randomInt();
 
 		_systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(),
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.<String, Object>put(
 				"column1", randomInt
 			).put(

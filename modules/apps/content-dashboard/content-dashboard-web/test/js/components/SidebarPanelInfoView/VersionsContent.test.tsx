@@ -7,7 +7,7 @@ import {cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import VersionsContent from '../../../../src/main/resources/META-INF/resources/js/components/SidebarPanelInfoView/VersionsContent';
 

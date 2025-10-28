@@ -264,8 +264,8 @@ public class SiteNavigationMenuItemExternalReferenceCodeUpgradeProcessTest {
 	public void testUpgradeWithObjectEntry() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, true,
-				false, false, false, false, false,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				true, false, false, false, false, false,
 				RandomTestUtil.randomString(),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"TestObject", null, "control_panel.sites",

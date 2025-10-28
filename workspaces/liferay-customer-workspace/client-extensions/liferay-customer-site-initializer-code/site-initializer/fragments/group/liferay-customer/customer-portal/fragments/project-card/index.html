@@ -26,6 +26,7 @@
 
 [#if projectERC?has_content]
 	[#assign
+		hasSLASubscription = false
 		parsedDate = ""
 		project = restClient.get("/c/koroneikiaccounts/by-external-reference-code/" + projectERC)
 		slaProjectCardDate = ""
@@ -34,16 +35,19 @@
 
 	[#if project.slaCurrent?has_content]
 		[#assign
+			hasSLASubscription = true
 			slaProjectCardDate = project.slaCurrentEndDate!""
 			status = "active"
 		/]
 	[#elseif project.slaFuture?has_content]
 		[#assign
+			hasSLASubscription = true
 			slaProjectCardDate = project.slaFutureStartDate!""
 			status = "future"
 		/]
 	[#elseif project.slaExpired?has_content]
 		[#assign
+			hasSLASubscription = true
 			slaProjectCardDate = project.slaExpiredEndDate!""
 			status = "expired"
 		/]
@@ -134,25 +138,31 @@
 						</a>
 					</div>
 
-					<div class="ml-2 project-card-button">
-						<a class="btn btn-ghost btn-inverted btn-style-neutral cp-button medium" href="${projectEventsPath}" role="button">
-							<svg class="lexicon-icon lexicon-icon-date mr-2 my-0" role="presentation">
-								<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#date" />
-							</svg>
+					[#if hasSLASubscription]
+						<div class="ml-2 project-card-button">
+							<a class="btn btn-ghost btn-inverted btn-style-neutral cp-button medium" href="${projectEventsPath}" role="button">
+								<svg class="lexicon-icon lexicon-icon-date mr-2 my-0" role="presentation">
+									<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#date" />
+								</svg>
 
-							${languageUtil.get(locale, "business-events")}
-						</a>
+								${languageUtil.get(locale, "business-events")}
+							</a>
+						</div>
+					[/#if]
+				</div>
+			</div>
+
+			[#if hasSLASubscription]
+				<div class="project-card-status-container">
+					<div class="status-${status} status-badge status-badge-${status}">
+						<span class="status-dot"></span>
+
+						${languageUtil.get(locale, status)}
 					</div>
 				</div>
-			</div>
-
-			<div class="project-card-status-container">
-				<div class="status-${status} status-badge status-badge-${status}">
-					<span class="status-dot"></span>
-
-					${languageUtil.get(locale, status)}
-				</div>
-			</div>
+			[#else]
+				<br />
+			[/#if]
 
 			<div class="align-items-end d-flex justify-content-between project-card-footer">
 				<div>

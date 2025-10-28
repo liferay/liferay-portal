@@ -13,7 +13,7 @@ import {
 	IPostalAddressAPIResponse,
 } from '../../../src/main/resources/META-INF/resources/components/multishipping/Types';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {RenderResult, cleanup, render, waitFor} from '@testing-library/react';
 import React from 'react';
 import {act} from 'react-dom/test-utils';

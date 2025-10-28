@@ -872,9 +872,9 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(taxonomyVocabularyId);
+		Long resourceId = getPermissionCheckerResourceId(taxonomyVocabularyId);
 		String resourceName = getPermissionCheckerResourceName(
 			taxonomyVocabularyId);
-		Long resourceId = getPermissionCheckerResourceId(taxonomyVocabularyId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -1878,9 +1878,9 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(taxonomyVocabularyId);
+		Long resourceId = getPermissionCheckerResourceId(taxonomyVocabularyId);
 		String resourceName = getPermissionCheckerResourceName(
 			taxonomyVocabularyId);
-		Long resourceId = getPermissionCheckerResourceId(taxonomyVocabularyId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

@@ -1,20 +1,4 @@
 .toolbar-root {
-	/**
-	* Webkit bugfix pseudo elements not always repainted
-	* https://bugs.webkit.org/show_bug.cgi?id=45168
-	*/
-
-	@include browser(Chrome) {
-		.custom-checkbox {
-			.custom-control-input:indeterminate,
-			.custom-control-input:checked {
-				& ~ .custom-control-label::before {
-					transform: translateZ(0);
-				}
-			}
-		}
-	}
-
 	.navbar-root {
 		border-top-left-radius: 0.25rem;
 		border-top-right-radius: 0.25rem;
@@ -53,7 +37,7 @@
 
 	.subnav-tbar-root {
 		.view-selected-link-container:not(:only-child) {
-			border-right: 1px solid #C4C4C4;
+			border-right: 1px solid #c4c4c4;
 			margin: 0.5rem 1rem 0.5rem 0;
 			padding-right: 1rem;
 		}

@@ -11,6 +11,13 @@ import {Workspace} from '../Workspace';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 jest.mock('shared/actions/alerts', () => ({
 	actionTypes: {},
 	addAlert: jest.fn(() => ({meta: {}, payload: {}, type: 'addAlert'}))

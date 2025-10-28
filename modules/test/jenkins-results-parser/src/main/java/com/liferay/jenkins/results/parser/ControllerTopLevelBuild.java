@@ -18,4 +18,8 @@ public class ControllerTopLevelBuild extends BaseTopLevelBuild {
 		super(url, topLevelBuild);
 	}
 
+	@Override
+	protected void findDownstreamBuilds() {
+	}
+
 }

@@ -241,7 +241,9 @@ export default function PageTemplateModal({
 
 	return (
 		<ClayModal containerProps={{className: 'cadmin'}} observer={observer}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{openAddTemplateSetModal
 					? Liferay.Language.get('add-page-template-set')
 					: Liferay.Language.get('select-page-template-set')}

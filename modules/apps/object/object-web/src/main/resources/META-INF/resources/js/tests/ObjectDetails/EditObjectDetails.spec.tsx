@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
@@ -88,10 +88,12 @@ describe('inheritance alert', () => {
 	it('is visible when the object definition is a descendant of another object definition', async () => {
 		renderComponent({isRootDescendantNode: true, isRootNode: false});
 
-		const inheritanceObjectDefinitionAlert = await screen.findByText(
-			/inheritance-is-enabled-for-at-least-one-relationship/i
-		);
-
-		expect(inheritanceObjectDefinitionAlert).toBeVisible();
+		await waitFor(async () => {
+			return expect(
+				await screen.findByText(
+					/inheritance-is-enabled-for-at-least-one-relationship/i
+				)
+			).toBeVisible();
+		});
 	});
 });

@@ -29,7 +29,6 @@ const Edit: React.FC<IEditProps> = ({job, router}) => {
 					label: name
 				}
 			]}
-			groupId={groupId}
 			pageDescription={Liferay.Language.get(
 				'item-similarity-model-uses-items-and-iteractions-for-training'
 			)}

@@ -75,6 +75,12 @@ const validate = (
 	const nextErrors = {...errors};
 
 	Object.entries(fields).forEach(([inputName, validations]) => {
+		if (!validations.length) {
+			delete nextErrors[inputName];
+
+			return;
+		}
+
 		validations.some((validation) => {
 			const error = validation(values[inputName]);
 

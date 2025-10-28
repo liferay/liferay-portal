@@ -17,7 +17,7 @@ output "is_restoring" {
 	value=var.is_restoring
 }
 output "liferay_sa_role" {
-	value=aws_iam_role.liferay.arn
+	value=var.liferay_sa_role_arn
 }
 output "region" {
 	value=var.region

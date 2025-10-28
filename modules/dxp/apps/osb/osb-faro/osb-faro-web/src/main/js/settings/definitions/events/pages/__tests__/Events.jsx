@@ -7,6 +7,13 @@ import {StaticRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 describe('Events', () => {
 	it('should render', () => {
 		const {container} = render(

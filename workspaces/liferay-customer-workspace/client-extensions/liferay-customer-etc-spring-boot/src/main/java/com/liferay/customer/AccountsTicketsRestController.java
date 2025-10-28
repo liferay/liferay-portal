@@ -96,7 +96,7 @@ public class AccountsTicketsRestController extends BaseRestController {
 			_businessEventPermission.check(
 				jwt, externalReferenceCode, ActionKeys.VIEW);
 
-			StringBundler sb = new StringBundler(9);
+			StringBundler sb = new StringBundler(12);
 
 			sb.append("Organization in aqlFunction('\"External Key\" = \"");
 			sb.append(externalReferenceCode);
@@ -104,15 +104,19 @@ public class AccountsTicketsRestController extends BaseRestController {
 			sb.append(
 				StringUtil.merge(
 					JiraIssueConstants.STATUSES_SOLVED_AND_CLOSED, "','"));
-			sb.append("')");
+			sb.append("')) and ");
+			sb.append(
+				JiraIssueConstants.toJQLCustomField(
+					_jiraSupportHCFieldRequestType));
+			sb.append(" = '");
+			sb.append(JiraIssueConstants.TYPE_GENERAL_REQUEST);
+			sb.append("'");
 
 			if (ArrayUtil.isNotEmpty(ticketIds)) {
 				sb.append(" or key in ('");
 				sb.append(StringUtil.merge(ticketIds, "','"));
 				sb.append("')");
 			}
-
-			sb.append(")");
 
 			List<JiraSupportIssue> jiraSupportIssues = _jiraService.search(
 				sb.toString(),
@@ -199,6 +203,9 @@ public class AccountsTicketsRestController extends BaseRestController {
 
 	@Value("${liferay.customer.jira.support.enabled}")
 	private boolean _jiraSupportEnabled;
+
+	@Value("${liferay.customer.jira.support.hc.field.request.type}")
+	private String _jiraSupportHCFieldRequestType;
 
 	@Autowired
 	private KoroneikiService _koroneikiService;

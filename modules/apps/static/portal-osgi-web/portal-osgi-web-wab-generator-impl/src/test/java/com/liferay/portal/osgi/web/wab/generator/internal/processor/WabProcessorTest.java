@@ -372,6 +372,33 @@ public class WabProcessorTest {
 
 				Assert.assertFalse(filter.matchMap(arguments));
 			}
+
+			// Make sure other CDI requirements were not added
+
+			// The EL extension
+
+			Assert.assertNull(
+				_findRequirement(
+					requirements, "osgi.cdi.extension",
+					Collections.singletonMap(
+						"osgi.cdi.extension", "aries.cdi.el.jsp")));
+
+			// The HTTP extension
+
+			Assert.assertNull(
+				_findRequirement(
+					requirements, "osgi.cdi.extension",
+					Collections.singletonMap(
+						"osgi.cdi.extension", "aries.cdi.http")));
+
+			// The Liferay bean portlet extension
+
+			Assert.assertNull(
+				_findRequirement(
+					requirements, "osgi.cdi.extension",
+					Collections.singletonMap(
+						"osgi.cdi.extension",
+						"com.liferay.bean.portlet.cdi.extension")));
 		}
 	}
 
@@ -416,8 +443,8 @@ public class WabProcessorTest {
 
 			// Now that we've established CDI discovery would kick
 			// in, check to see if the WAB opted-out of integration by
-			// having the "-cdiannotations" instruction set to the empty
-			// value in liferay-plugin-package.properties.
+			// not having the "-cdiannotations" instruction set in
+			// liferay-plugin-package.properties.
 
 			Resource packageProperties = jar.getResource(
 				"WEB-INF/liferay-plugin-package.properties");

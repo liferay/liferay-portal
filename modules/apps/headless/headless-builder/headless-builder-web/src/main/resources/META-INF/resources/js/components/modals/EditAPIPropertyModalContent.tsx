@@ -131,7 +131,9 @@ export default function EditAPIPropertyModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('edit-property')}
 			</ClayModal.Header>
 

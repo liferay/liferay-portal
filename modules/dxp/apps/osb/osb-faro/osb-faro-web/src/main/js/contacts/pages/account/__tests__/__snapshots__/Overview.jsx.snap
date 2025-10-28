@@ -104,94 +104,98 @@ exports[`AccountOverview should render 1`] = `
           </div>
         </div>
         <div
-          class="table-responsive table-root flex-grow-1"
+          class="flex-grow-1 mx-4 table-root"
         >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap table-row-no-bordered"
+          <div
+            class="table-responsive"
           >
-            <thead>
-              <tr>
-                <th
-                  class="table-head-title"
+            <table
+              class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="table-head-title"
+                  >
+                    Topic
+                  </th>
+                  <th
+                    class="table-head-title table-cell-expand"
+                  >
+                    Account Members
+                  </th>
+                  <th
+                    class="table-head-title table-column-text-end"
+                  >
+                    % of Active Members
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class=""
                 >
-                  Topic
-                </th>
-                <th
-                  class="table-head-title table-cell-expand"
-                >
-                  Account Members
-                </th>
-                <th
-                  class="table-head-title table-column-text-end"
-                >
-                  % of Active Members
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td
-                  class="name-cell-root"
-                >
-                  <div
-                    class="content-container"
-                    style="max-width: 200px;"
+                  <td
+                    class="name-cell-root"
                   >
                     <div
-                      class="text-truncate"
+                      class="content-container"
+                      style="max-width: 200px;"
                     >
                       <div
-                        class="table-title text-truncate"
+                        class="text-truncate"
                       >
-                        <a
-                          class="text-truncate"
-                          href="/workspace/456/123/contacts/accounts/test/interests/composition 01"
+                        <div
+                          class="table-title text-truncate"
                         >
-                          composition 01
-                        </a>
+                          <a
+                            class="text-truncate"
+                            href="/workspace/456/123/contacts/accounts/test/interests/composition 01"
+                          >
+                            composition 01
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td
-                  class="table-cell-expand relative-metric-bar-root"
-                >
-                  <div
-                    class="metric-bar-root"
+                  </td>
+                  <td
+                    class="table-cell-expand relative-metric-bar-root"
                   >
                     <div
-                      class="bar bar-lg"
-                    />
-                    <div
-                      class="info-wrapper align-items-center d-flex justify-content-between"
+                      class="metric-bar-root"
                     >
-                      <span
-                        class="text-truncate title"
-                        data-tooltip="false"
-                        title=""
+                      <div
+                        class="bar bar-lg"
                       />
-                      <span
-                        class="count"
+                      <div
+                        class="info-wrapper align-items-center d-flex justify-content-between"
                       >
-                        10
-                      </span>
+                        <span
+                          class="text-truncate title"
+                          data-tooltip="false"
+                          title=""
+                        />
+                        <span
+                          class="count"
+                        >
+                          10
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td
-                  class="table-column-text-end"
-                >
-                  <div
-                    class="h4 table-title text-truncate"
+                  </td>
+                  <td
+                    class="table-column-text-end"
                   >
-                    Infinity%
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <div
+                      class="h4 table-title text-truncate"
+                    >
+                      Infinity%
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div
           class="card-footer"
@@ -528,54 +532,58 @@ exports[`AccountOverview should render 1`] = `
           </div>
         </div>
         <div
-          class="table-responsive table-root flex-grow-1"
+          class="flex-grow-1 mx-4 table-root"
         >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+          <div
+            class="table-responsive"
           >
-            <thead>
-              <tr>
-                <th
-                  class="table-head-title name"
+            <table
+              class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="table-head-title name"
+                  >
+                    Individual
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class=""
                 >
-                  Individual
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td
-                  class="name-cell-root name"
-                >
-                  <div
-                    class="content-container"
+                  <td
+                    class="name-cell-root name"
                   >
                     <div
-                      class="text-truncate"
+                      class="content-container"
                     >
                       <div
-                        class="table-title text-truncate"
+                        class="text-truncate"
                       >
-                        <a
-                          class="text-truncate"
-                          href="/workspace/456/123/contacts/individuals/known-individuals/0"
+                        <div
+                          class="table-title text-truncate"
                         >
-                          Foo Bar
-                        </a>
-                      </div>
-                      <div
-                        class="secondary-info text-truncate"
-                      >
-                        Developer
+                          <a
+                            class="text-truncate"
+                            href="/workspace/456/123/contacts/individuals/known-individuals/0"
+                          >
+                            Foo Bar
+                          </a>
+                        </div>
+                        <div
+                          class="secondary-info text-truncate"
+                        >
+                          Developer
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div
           class="card-footer"

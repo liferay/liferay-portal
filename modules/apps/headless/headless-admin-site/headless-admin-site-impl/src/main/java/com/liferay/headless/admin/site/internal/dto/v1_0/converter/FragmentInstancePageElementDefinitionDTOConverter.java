@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -85,8 +86,11 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 				setFragmentReference(
 					() -> {
 						FragmentEntry fragmentEntry =
-							_fragmentEntryLocalService.fetchFragmentEntry(
-								fragmentEntryLink.getFragmentEntryId());
+							_fragmentEntryLocalService.
+								fetchFragmentEntryByExternalReferenceCode(
+									fragmentEntryLink.getFragmentEntryERC(),
+									fragmentEntryLink.
+										getFragmentEntryGroupId());
 
 						if (fragmentEntry != null) {
 							return new FragmentItemExternalReference() {
@@ -167,16 +171,18 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 	private String _getDraftFragmentInstanceExternalReferenceCode(
 		FragmentEntryLink fragmentEntryLink) {
 
-		long originalFragmentEntryLinkId =
-			fragmentEntryLink.getOriginalFragmentEntryLinkId();
+		String originalFragmentEntryLinkERC =
+			fragmentEntryLink.getOriginalFragmentEntryLinkERC();
 
-		if (originalFragmentEntryLinkId == 0) {
+		if (Validator.isNull(originalFragmentEntryLinkERC)) {
 			return null;
 		}
 
 		FragmentEntryLink originalFragmentEntryLink =
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				originalFragmentEntryLinkId);
+			_fragmentEntryLinkLocalService.
+				fetchFragmentEntryLinkByExternalReferenceCode(
+					originalFragmentEntryLinkERC,
+					fragmentEntryLink.getGroupId());
 
 		if (originalFragmentEntryLink == null) {
 			return null;

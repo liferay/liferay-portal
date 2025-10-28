@@ -23,7 +23,9 @@ export default function ShortcutModal({onCloseModal}) {
 			observer={observer}
 			size="md"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('keyboard-shortcuts')}
 			</ClayModal.Header>
 

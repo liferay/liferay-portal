@@ -423,7 +423,9 @@ function AddResultModal({
 				className="add-result-modal-root"
 				data-testid="add-result-modal"
 			>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('add-result')}
 
 					<span

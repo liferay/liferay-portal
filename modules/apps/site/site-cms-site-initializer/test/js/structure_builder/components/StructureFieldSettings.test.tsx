@@ -4,8 +4,6 @@
  */
 
 import '@testing-library/jest-dom';
-
-import '@testing-library/jest-dom/extend-expect';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -44,8 +42,7 @@ const FIELD: Field = {
 };
 
 const DEFAULT_STATE: State = {
-	error: null,
-	history: {deletedChildren: false},
+	history: {deletedChildren: false, modifiedNames: new Set()},
 	invalids: new Map(),
 	publishedChildren: new Set(),
 	selection: [],

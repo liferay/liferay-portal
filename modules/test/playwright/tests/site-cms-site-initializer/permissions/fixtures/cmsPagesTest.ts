@@ -9,11 +9,13 @@ import {ContentsPage} from '../../main/pages/ContentsPage';
 import {FolderPage} from '../../main/pages/FolderPage';
 import {SpaceSummaryPage} from '../../main/pages/SpaceSummaryPage';
 import {DefaultPermissionsPage} from '../pages/DefaultPermissionsPage';
+import {FilesPage} from '../pages/FilesPage';
 import {PermissionsPage} from '../pages/PermissionsPage';
 
 const cmsPagesTest = test.extend<{
 	contentsPage: ContentsPage;
 	defaultPermissionsPage: DefaultPermissionsPage;
+	filesPage: FilesPage;
 	folderPage: FolderPage;
 	permissionsPage: PermissionsPage;
 	spaceSummaryPage: SpaceSummaryPage;
@@ -23,6 +25,9 @@ const cmsPagesTest = test.extend<{
 	},
 	defaultPermissionsPage: async ({page}, use) => {
 		await use(new DefaultPermissionsPage(page));
+	},
+	filesPage: async ({page}, use) => {
+		await use(new FilesPage(page));
 	},
 	folderPage: async ({page}, use) => {
 		await use(new FolderPage(page));

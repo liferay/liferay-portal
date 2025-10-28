@@ -40,20 +40,22 @@ public class RatingsStatsUpgradeProcess extends UpgradeProcess {
 	private void _updateRatingsStats() throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select statsId, totalScore, averageScore from RatingsStats " +
-					"where classNameId = " +
-						getClassNameId(_CLASS_NAME_ARTICLE));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"where classNameId = ?")) {
 
-			while (resultSet.next()) {
-				long statsId = resultSet.getLong("statsId");
-				double totalScore = resultSet.getDouble("totalScore");
-				double averageScore = resultSet.getDouble("averageScore");
+			preparedStatement.setLong(1, getClassNameId(_CLASS_NAME_ARTICLE));
 
-				runSQL(
-					StringBundler.concat(
-						"update RatingsStats set totalScore = ", totalScore * 2,
-						", averageScore = ", averageScore * 2,
-						" where statsId = ", statsId));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long statsId = resultSet.getLong("statsId");
+					double totalScore = resultSet.getDouble("totalScore");
+					double averageScore = resultSet.getDouble("averageScore");
+
+					runSQL(
+						StringBundler.concat(
+							"update RatingsStats set totalScore = ",
+							totalScore * 2, ", averageScore = ",
+							averageScore * 2, " where statsId = ", statsId));
+				}
 			}
 		}
 	}

@@ -17,343 +17,347 @@ exports[`InterestsCard renders 1`] = `
       </div>
     </div>
     <div
-      class="table-responsive table-root flex-grow-1"
+      class="flex-grow-1 mx-4 table-root"
     >
-      <table
-        class="table table-autofit table-hover table-heading-nowrap table-nowrap table-row-no-bordered"
+      <div
+        class="table-responsive"
       >
-        <thead>
-          <tr>
-            <th
-              class="table-head-title"
+        <table
+          class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+        >
+          <thead>
+            <tr>
+              <th
+                class="table-head-title"
+              >
+                Topic
+              </th>
+              <th
+                class="table-head-title table-cell-expand"
+              >
+                Total Individuals
+              </th>
+              <th
+                class="table-head-title table-column-text-end"
+              >
+                % of Total Individuals
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              class=""
             >
-              Topic
-            </th>
-            <th
-              class="table-head-title table-cell-expand"
-            >
-              Total Individuals
-            </th>
-            <th
-              class="table-head-title table-column-text-end"
-            >
-              % of Total Individuals
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            class=""
-          >
-            <td
-              class="name-cell-root"
-            >
-              <div
-                class="content-container"
-                style="max-width: 200px;"
+              <td
+                class="name-cell-root"
               >
                 <div
-                  class="text-truncate"
+                  class="content-container"
+                  style="max-width: 200px;"
                 >
                   <div
-                    class="table-title text-truncate"
+                    class="text-truncate"
                   >
-                    <a
-                      class="text-truncate"
-                      href="/workspace/123/456/contacts/individuals/interests/cutting-edge platforms"
+                    <div
+                      class="table-title text-truncate"
                     >
-                      cutting-edge platforms
-                    </a>
+                      <a
+                        class="text-truncate"
+                        href="/workspace/123/456/contacts/individuals/interests/cutting-edge platforms"
+                      >
+                        cutting-edge platforms
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-cell-expand relative-metric-bar-root"
-            >
-              <div
-                class="metric-bar-root"
+              </td>
+              <td
+                class="table-cell-expand relative-metric-bar-root"
               >
                 <div
-                  class="bar bar-lg"
-                  style="width: 67%;"
-                />
-                <div
-                  class="info-wrapper align-items-center d-flex justify-content-between"
-                >
-                  <span
-                    class="text-truncate title"
-                    data-tooltip="false"
-                    title=""
-                  />
-                  <span
-                    class="count"
-                  >
-                    2
-                  </span>
-                </div>
-              </div>
-            </td>
-            <td
-              class="table-column-text-end"
-            >
-              <div
-                class="h4 table-title text-truncate"
-              >
-                66.67%
-              </div>
-            </td>
-          </tr>
-          <tr
-            class=""
-          >
-            <td
-              class="name-cell-root"
-            >
-              <div
-                class="content-container"
-                style="max-width: 200px;"
-              >
-                <div
-                  class="text-truncate"
+                  class="metric-bar-root"
                 >
                   <div
-                    class="table-title text-truncate"
+                    class="bar bar-lg"
+                    style="width: 67%;"
+                  />
+                  <div
+                    class="info-wrapper align-items-center d-flex justify-content-between"
                   >
-                    <a
-                      class="text-truncate"
-                      href="/workspace/123/456/contacts/individuals/interests/mesh"
+                    <span
+                      class="text-truncate title"
+                      data-tooltip="false"
+                      title=""
+                    />
+                    <span
+                      class="count"
                     >
-                      mesh
-                    </a>
+                      2
+                    </span>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-cell-expand relative-metric-bar-root"
-            >
-              <div
-                class="metric-bar-root"
+              </td>
+              <td
+                class="table-column-text-end"
               >
                 <div
-                  class="bar bar-lg"
-                  style="width: 67%;"
-                />
-                <div
-                  class="info-wrapper align-items-center d-flex justify-content-between"
+                  class="h4 table-title text-truncate"
                 >
-                  <span
-                    class="text-truncate title"
-                    data-tooltip="false"
-                    title=""
-                  />
-                  <span
-                    class="count"
-                  >
-                    2
-                  </span>
+                  66.67%
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-column-text-end"
+              </td>
+            </tr>
+            <tr
+              class=""
             >
-              <div
-                class="h4 table-title text-truncate"
-              >
-                66.67%
-              </div>
-            </td>
-          </tr>
-          <tr
-            class=""
-          >
-            <td
-              class="name-cell-root"
-            >
-              <div
-                class="content-container"
-                style="max-width: 200px;"
+              <td
+                class="name-cell-root"
               >
                 <div
-                  class="text-truncate"
+                  class="content-container"
+                  style="max-width: 200px;"
                 >
                   <div
-                    class="table-title text-truncate"
+                    class="text-truncate"
                   >
-                    <a
-                      class="text-truncate"
-                      href="/workspace/123/456/contacts/individuals/interests/mesh synergistic schemas"
+                    <div
+                      class="table-title text-truncate"
                     >
-                      mesh synergistic schemas
-                    </a>
+                      <a
+                        class="text-truncate"
+                        href="/workspace/123/456/contacts/individuals/interests/mesh"
+                      >
+                        mesh
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-cell-expand relative-metric-bar-root"
-            >
-              <div
-                class="metric-bar-root"
+              </td>
+              <td
+                class="table-cell-expand relative-metric-bar-root"
               >
                 <div
-                  class="bar bar-lg"
-                  style="width: 67%;"
-                />
-                <div
-                  class="info-wrapper align-items-center d-flex justify-content-between"
-                >
-                  <span
-                    class="text-truncate title"
-                    data-tooltip="false"
-                    title=""
-                  />
-                  <span
-                    class="count"
-                  >
-                    2
-                  </span>
-                </div>
-              </div>
-            </td>
-            <td
-              class="table-column-text-end"
-            >
-              <div
-                class="h4 table-title text-truncate"
-              >
-                66.67%
-              </div>
-            </td>
-          </tr>
-          <tr
-            class=""
-          >
-            <td
-              class="name-cell-root"
-            >
-              <div
-                class="content-container"
-                style="max-width: 200px;"
-              >
-                <div
-                  class="text-truncate"
+                  class="metric-bar-root"
                 >
                   <div
-                    class="table-title text-truncate"
+                    class="bar bar-lg"
+                    style="width: 67%;"
+                  />
+                  <div
+                    class="info-wrapper align-items-center d-flex justify-content-between"
                   >
-                    <a
-                      class="text-truncate"
-                      href="/workspace/123/456/contacts/individuals/interests/synergistic schemas"
+                    <span
+                      class="text-truncate title"
+                      data-tooltip="false"
+                      title=""
+                    />
+                    <span
+                      class="count"
                     >
-                      synergistic schemas
-                    </a>
+                      2
+                    </span>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-cell-expand relative-metric-bar-root"
-            >
-              <div
-                class="metric-bar-root"
+              </td>
+              <td
+                class="table-column-text-end"
               >
                 <div
-                  class="bar bar-lg"
-                  style="width: 67%;"
-                />
-                <div
-                  class="info-wrapper align-items-center d-flex justify-content-between"
+                  class="h4 table-title text-truncate"
                 >
-                  <span
-                    class="text-truncate title"
-                    data-tooltip="false"
-                    title=""
-                  />
-                  <span
-                    class="count"
-                  >
-                    2
-                  </span>
+                  66.67%
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-column-text-end"
+              </td>
+            </tr>
+            <tr
+              class=""
             >
-              <div
-                class="h4 table-title text-truncate"
-              >
-                66.67%
-              </div>
-            </td>
-          </tr>
-          <tr
-            class=""
-          >
-            <td
-              class="name-cell-root"
-            >
-              <div
-                class="content-container"
-                style="max-width: 200px;"
+              <td
+                class="name-cell-root"
               >
                 <div
-                  class="text-truncate"
+                  class="content-container"
+                  style="max-width: 200px;"
                 >
                   <div
-                    class="table-title text-truncate"
+                    class="text-truncate"
                   >
-                    <a
-                      class="text-truncate"
-                      href="/workspace/123/456/contacts/individuals/interests/rich e-commerce"
+                    <div
+                      class="table-title text-truncate"
                     >
-                      rich e-commerce
-                    </a>
+                      <a
+                        class="text-truncate"
+                        href="/workspace/123/456/contacts/individuals/interests/mesh synergistic schemas"
+                      >
+                        mesh synergistic schemas
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-cell-expand relative-metric-bar-root"
-            >
-              <div
-                class="metric-bar-root"
+              </td>
+              <td
+                class="table-cell-expand relative-metric-bar-root"
               >
                 <div
-                  class="bar bar-lg"
-                  style="width: 33%;"
-                />
-                <div
-                  class="info-wrapper align-items-center d-flex justify-content-between"
+                  class="metric-bar-root"
                 >
-                  <span
-                    class="text-truncate title"
-                    data-tooltip="false"
-                    title=""
+                  <div
+                    class="bar bar-lg"
+                    style="width: 67%;"
                   />
-                  <span
-                    class="count"
+                  <div
+                    class="info-wrapper align-items-center d-flex justify-content-between"
                   >
-                    1
-                  </span>
+                    <span
+                      class="text-truncate title"
+                      data-tooltip="false"
+                      title=""
+                    />
+                    <span
+                      class="count"
+                    >
+                      2
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td
-              class="table-column-text-end"
-            >
-              <div
-                class="h4 table-title text-truncate"
+              </td>
+              <td
+                class="table-column-text-end"
               >
-                33.33%
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  66.67%
+                </div>
+              </td>
+            </tr>
+            <tr
+              class=""
+            >
+              <td
+                class="name-cell-root"
+              >
+                <div
+                  class="content-container"
+                  style="max-width: 200px;"
+                >
+                  <div
+                    class="text-truncate"
+                  >
+                    <div
+                      class="table-title text-truncate"
+                    >
+                      <a
+                        class="text-truncate"
+                        href="/workspace/123/456/contacts/individuals/interests/synergistic schemas"
+                      >
+                        synergistic schemas
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="table-cell-expand relative-metric-bar-root"
+              >
+                <div
+                  class="metric-bar-root"
+                >
+                  <div
+                    class="bar bar-lg"
+                    style="width: 67%;"
+                  />
+                  <div
+                    class="info-wrapper align-items-center d-flex justify-content-between"
+                  >
+                    <span
+                      class="text-truncate title"
+                      data-tooltip="false"
+                      title=""
+                    />
+                    <span
+                      class="count"
+                    >
+                      2
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="table-column-text-end"
+              >
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  66.67%
+                </div>
+              </td>
+            </tr>
+            <tr
+              class=""
+            >
+              <td
+                class="name-cell-root"
+              >
+                <div
+                  class="content-container"
+                  style="max-width: 200px;"
+                >
+                  <div
+                    class="text-truncate"
+                  >
+                    <div
+                      class="table-title text-truncate"
+                    >
+                      <a
+                        class="text-truncate"
+                        href="/workspace/123/456/contacts/individuals/interests/rich e-commerce"
+                      >
+                        rich e-commerce
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="table-cell-expand relative-metric-bar-root"
+              >
+                <div
+                  class="metric-bar-root"
+                >
+                  <div
+                    class="bar bar-lg"
+                    style="width: 33%;"
+                  />
+                  <div
+                    class="info-wrapper align-items-center d-flex justify-content-between"
+                  >
+                    <span
+                      class="text-truncate title"
+                      data-tooltip="false"
+                      title=""
+                    />
+                    <span
+                      class="count"
+                    >
+                      1
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td
+                class="table-column-text-end"
+              >
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  33.33%
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div
       class="card-footer"

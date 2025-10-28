@@ -44,7 +44,7 @@ exports[`SearchableTableModalGraphql should render 1`] = `
         class="toolbar-root"
       >
         <nav
-          class="navbar navbar-root management-bar management-bar-light navbar-expand"
+          class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
         >
           <div
             class="container-fluid"
@@ -73,28 +73,9 @@ exports[`SearchableTableModalGraphql should render 1`] = `
                   </label>
                 </div>
               </li>
-              <li
-                class="nav-item"
-                role="presentation"
-              >
-                <button
-                  aria-label="Ascending"
-                  class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                  type="button"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#order_arrow_ascending"
-                    />
-                  </svg>
-                </button>
-              </li>
             </ul>
             <div
-              class="navbar-form navbar-form-autofit"
+              class="navbar-form navbar-form-autofit mx-2"
             >
               <div
                 class="input-group search"
@@ -133,160 +114,170 @@ exports[`SearchableTableModalGraphql should render 1`] = `
         </nav>
       </div>
       <div
-        class="table-responsive table-root flex-grow-1"
+        class="flex-grow-1 mx-4 table-root"
       >
-        <table
-          class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+        <div
+          class="table-responsive"
         >
-          <thead>
-            <tr>
-              <th />
-              <th
-                class="table-head-title"
-              >
-                <button
-                  class="inline-item text-truncate-inline btn btn-unstyled"
-                  type="button"
+          <table
+            class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+          >
+            <thead>
+              <tr>
+                <th />
+                <th
+                  class="table-head-title"
                 >
-                  <span
-                    class="text-truncate"
+                  <button
+                    class="inline-item text-truncate-inline btn btn-unstyled"
+                    type="button"
                   >
-                    name
-                  </span>
-                  <span
-                    class="inline-item inline-item-after"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                      role="presentation"
+                    <div
+                      class="align-items-center d-flex justify-content-between"
                     >
-                      <use
-                        href="#order-arrow-up"
+                      <div
+                        class="text-truncate"
+                      >
+                        name
+                      </div>
+                      <button
+                        aria-label="Ascending"
+                        class="component-action ml-2 btn btn-sm btn-primary"
+                        type="button"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order_arrow_ascending"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="clickable"
+              >
+                <td>
+                  <div
+                    class="custom-control custom-checkbox"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        type="checkbox"
+                        value="false"
                       />
-                    </svg>
-                  </span>
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class="clickable"
-            >
-              <td>
-                <div
-                  class="custom-control custom-checkbox"
-                >
-                  <label>
-                    <input
-                      class="custom-control-input"
-                      type="checkbox"
-                      value="false"
-                    />
-                    <span
-                      class="custom-control-label"
-                    />
-                  </label>
-                </div>
-              </td>
-              <td>
-                fooOrganization-0
-              </td>
-            </tr>
-            <tr
-              class="clickable"
-            >
-              <td>
-                <div
-                  class="custom-control custom-checkbox"
-                >
-                  <label>
-                    <input
-                      class="custom-control-input"
-                      type="checkbox"
-                      value="false"
-                    />
-                    <span
-                      class="custom-control-label"
-                    />
-                  </label>
-                </div>
-              </td>
-              <td>
-                fooOrganization-1
-              </td>
-            </tr>
-            <tr
-              class="clickable"
-            >
-              <td>
-                <div
-                  class="custom-control custom-checkbox"
-                >
-                  <label>
-                    <input
-                      class="custom-control-input"
-                      type="checkbox"
-                      value="false"
-                    />
-                    <span
-                      class="custom-control-label"
-                    />
-                  </label>
-                </div>
-              </td>
-              <td>
-                fooOrganization-2
-              </td>
-            </tr>
-            <tr
-              class="clickable"
-            >
-              <td>
-                <div
-                  class="custom-control custom-checkbox"
-                >
-                  <label>
-                    <input
-                      class="custom-control-input"
-                      type="checkbox"
-                      value="false"
-                    />
-                    <span
-                      class="custom-control-label"
-                    />
-                  </label>
-                </div>
-              </td>
-              <td>
-                fooOrganization-3
-              </td>
-            </tr>
-            <tr
-              class="clickable"
-            >
-              <td>
-                <div
-                  class="custom-control custom-checkbox"
-                >
-                  <label>
-                    <input
-                      class="custom-control-input"
-                      type="checkbox"
-                      value="false"
-                    />
-                    <span
-                      class="custom-control-label"
-                    />
-                  </label>
-                </div>
-              </td>
-              <td>
-                fooOrganization-4
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                      <span
+                        class="custom-control-label"
+                      />
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  fooOrganization-0
+                </td>
+              </tr>
+              <tr
+                class="clickable"
+              >
+                <td>
+                  <div
+                    class="custom-control custom-checkbox"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        class="custom-control-label"
+                      />
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  fooOrganization-1
+                </td>
+              </tr>
+              <tr
+                class="clickable"
+              >
+                <td>
+                  <div
+                    class="custom-control custom-checkbox"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        class="custom-control-label"
+                      />
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  fooOrganization-2
+                </td>
+              </tr>
+              <tr
+                class="clickable"
+              >
+                <td>
+                  <div
+                    class="custom-control custom-checkbox"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        class="custom-control-label"
+                      />
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  fooOrganization-3
+                </td>
+              </tr>
+              <tr
+                class="clickable"
+              >
+                <td>
+                  <div
+                    class="custom-control custom-checkbox"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        class="custom-control-label"
+                      />
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  fooOrganization-4
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <nav
         class="navbar navbar-root pagination-bar-root"

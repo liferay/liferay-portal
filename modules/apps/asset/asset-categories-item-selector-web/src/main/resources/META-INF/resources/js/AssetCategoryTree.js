@@ -71,7 +71,7 @@ export function AssetCategoryTree({
 		selectedKeys.forEach((key) => {
 			const item = itemsById[key];
 
-			if (item.disabled) {
+			if (!item || item.disabled) {
 				return;
 			}
 

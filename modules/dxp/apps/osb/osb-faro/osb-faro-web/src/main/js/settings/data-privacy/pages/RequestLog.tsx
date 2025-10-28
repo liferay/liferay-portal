@@ -22,7 +22,6 @@ export const RequestLog = () => {
 			]}
 			className='request-log-page-root'
 			documentTitle={Liferay.Language.get('request-log')}
-			groupId={groupId}
 		>
 			<RequestList currentUser={currentUser} timeZoneId={timeZoneId} />
 		</BasePage>

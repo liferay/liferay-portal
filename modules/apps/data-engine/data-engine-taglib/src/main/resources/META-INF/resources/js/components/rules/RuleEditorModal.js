@@ -82,7 +82,9 @@ const RuleEditorModalContent = ({onClose, onSaveRule, rule}) => {
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{rule
 					? Liferay.Language.get('edit-rule')
 					: Liferay.Language.get('create-new-rule')}

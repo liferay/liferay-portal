@@ -325,9 +325,10 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"update Layout set typeSettings = ? where plid = " + plid)) {
+				"update Layout set typeSettings = ? where plid = ?")) {
 
 			preparedStatement.setString(1, typeSettings);
+			preparedStatement.setLong(2, plid);
 
 			preparedStatement.executeUpdate();
 		}
@@ -343,17 +344,20 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select typeSettings from Layout where plid = " + plid);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select typeSettings from Layout where plid = ?")) {
 
-			while (resultSet.next()) {
-				String typeSettings = resultSet.getString("typeSettings");
+			preparedStatement.setLong(1, plid);
 
-				String newTypeSettings = StringUtil.replace(
-					typeSettings, oldPortletId, newPortletId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					String typeSettings = resultSet.getString("typeSettings");
 
-				if (!Objects.equals(typeSettings, newTypeSettings)) {
-					updateLayout(plid, newTypeSettings);
+					String newTypeSettings = StringUtil.replace(
+						typeSettings, oldPortletId, newPortletId);
+
+					if (!Objects.equals(typeSettings, newTypeSettings)) {
+						updateLayout(plid, newTypeSettings);
+					}
 				}
 			}
 		}

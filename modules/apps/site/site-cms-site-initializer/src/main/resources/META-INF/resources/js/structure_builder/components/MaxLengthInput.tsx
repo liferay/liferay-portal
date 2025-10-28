@@ -7,7 +7,8 @@ import ClayForm, {ClayCheckbox} from '@clayui/form';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
-import {useStateDispatch} from '../contexts/StateContext';
+import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import selectErrors from '../selectors/selectErrors';
 import {Field, MaxLengthSettingsField} from '../utils/field';
 import Input from './Input';
 
@@ -21,6 +22,8 @@ export default function MaxLengthInput({
 	const maxLengthSettingsField = field as MaxLengthSettingsField;
 
 	const dispatch = useStateDispatch();
+
+	const errors = useSelector(selectErrors(field.uuid));
 
 	const [enableLimitCharacters, setEnableLimitCharacters] = useState(
 		!!maxLengthSettingsField.settings.maxLength
@@ -56,6 +59,7 @@ export default function MaxLengthInput({
 				<ClayForm.Group className="mb-3">
 					<Input
 						disabled={disabled}
+						error={errors.get('max-length')}
 						helpMessage={sub(
 							Liferay.Language.get(
 								'set-the-maximum-number-of-characters-accepted-this-value-cant-be-less-than-x-or-greater-than-x'

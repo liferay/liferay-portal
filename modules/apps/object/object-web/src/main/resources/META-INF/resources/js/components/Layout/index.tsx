@@ -142,6 +142,8 @@ const Layout: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 				payload: {
 					creationLanguageId: objectDefinition.defaultLanguageId,
 					enableCategorization: objectDefinition.enableCategorization,
+					enableFriendlyURLCustomization:
+						objectDefinition.enableFriendlyURLCustomization,
 					objectLayout,
 					objectRelationships: normalizeObjectRelationships({
 						objectLayoutTabs,

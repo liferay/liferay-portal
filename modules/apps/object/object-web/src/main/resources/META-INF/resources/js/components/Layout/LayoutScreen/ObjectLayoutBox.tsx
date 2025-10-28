@@ -36,14 +36,11 @@ export function ObjectLayoutBox({
 	tabIndex,
 	type,
 }: ObjectLayoutBoxProps) {
-	const [{enableCategorization, isViewOnly}, dispatch] = useLayoutContext();
+	const [{isViewOnly}, dispatch] = useLayoutContext();
 	const [visibleModal, setVisibleModal] = useState(false);
 	const {observer, onClose} = useModal({
 		onClose: () => setVisibleModal(false),
 	});
-
-	const disabled =
-		(type === 'categorization' && !enableCategorization) || isViewOnly;
 
 	return (
 		<>
@@ -53,7 +50,7 @@ export function ObjectLayoutBox({
 						<>
 							<Toggle
 								aria-label={Liferay.Language.get('collapsible')}
-								disabled={disabled}
+								disabled={isViewOnly}
 								label={Liferay.Language.get('collapsible')}
 								onToggle={(value) => {
 									dispatch({
@@ -90,17 +87,14 @@ export function ObjectLayoutBox({
 											boxIndex,
 											tabIndex,
 										},
-										type:
-											type === 'categorization'
-												? TYPES.DELETE_OBJECT_LAYOUT_BOX_CATEGORIZATION
-												: TYPES.DELETE_OBJECT_LAYOUT_BOX,
+										type: TYPES.DELETE_OBJECT_LAYOUT_BOX,
 									});
 								}}
-								disabled={disabled}
+								disabled={isViewOnly}
 							/>
 						</>
 					}
-					disabled={disabled}
+					disabled={isViewOnly}
 					title={label}
 					type={type}
 				/>

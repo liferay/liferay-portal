@@ -20,18 +20,25 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.delivery.order.client.dto.v1_0.PlacedOrder;
 import com.liferay.headless.commerce.delivery.order.client.dto.v1_0.PlacedOrderAddress;
 import com.liferay.headless.commerce.delivery.order.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.order.client.pagination.Pagination;
 import com.liferay.headless.commerce.delivery.order.client.resource.v1_0.PlacedOrderResource;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.AddressLocalService;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -43,6 +50,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
@@ -50,6 +58,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -113,6 +122,59 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 		super.testGetChannelPlacedOrdersPage();
 
 		_testGetChannelPlacedOrdersPageWithFilter();
+	}
+
+	@Test
+	public void testGetChannelPlacedOrdersPageWithCustomFieldFilter()
+		throws Exception {
+
+		ExpandoTable expandoTable = _expandoTableLocalService.addTable(
+			testGroup.getCompanyId(),
+			_classNameLocalService.getClassNameId(CommerceOrder.class),
+			"CUSTOM_FIELDS");
+
+		ExpandoColumn expandoColumn = _expandoColumnLocalService.addColumn(
+			expandoTable.getTableId(), "A" + RandomTestUtil.randomString(),
+			ExpandoColumnConstants.STRING);
+
+		UnicodeProperties unicodeProperties =
+			expandoColumn.getTypeSettingsProperties();
+
+		unicodeProperties.setProperty(
+			ExpandoColumnConstants.INDEX_TYPE,
+			String.valueOf(ExpandoColumnConstants.INDEX_TYPE_KEYWORD));
+
+		expandoColumn.setTypeSettingsProperties(unicodeProperties);
+
+		expandoColumn = _expandoColumnLocalService.updateExpandoColumn(
+			expandoColumn);
+
+		String customFieldValue = RandomTestUtil.randomString();
+
+		PlacedOrder placedOrder1 = _addPlacedOrder(
+			expandoColumn.getName(), customFieldValue, randomPlacedOrder());
+
+		Page<PlacedOrder> page = placedOrderResource.getChannelPlacedOrdersPage(
+			_commerceChannel.getCommerceChannelId(), null,
+			StringBundler.concat(
+				"(customFields/", expandoColumn.getName(), " eq '",
+				RandomTestUtil.randomString(), "')"),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		page = placedOrderResource.getChannelPlacedOrdersPage(
+			_commerceChannel.getCommerceChannelId(), null,
+			StringBundler.concat(
+				"(customFields/", expandoColumn.getName(), " eq '",
+				customFieldValue, "')"),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertEquals(
+			Collections.singletonList(placedOrder1),
+			(List<PlacedOrder>)page.getItems());
 	}
 
 	@Override
@@ -403,6 +465,48 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 		};
 	}
 
+	private PlacedOrder _addPlacedOrder(
+			String expandoAttributeName, String expandoAttributeValue,
+			PlacedOrder placedOrder)
+		throws Exception {
+
+		DateConfig orderDateConfig = DateConfig.toDisplayDateConfig(
+			placedOrder.getCreateDate(), _user.getTimeZone());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				placedOrder.getPlacedOrderBillingAddressId(),
+				placedOrder.getAccountId(), _commerceCurrency.getCode(),
+				placedOrder.getOrderTypeId(), 0,
+				placedOrder.getPlacedOrderShippingAddressId(),
+				placedOrder.getPaymentMethod(), placedOrder.getName(),
+				orderDateConfig.getMonth(), orderDateConfig.getDay(),
+				orderDateConfig.getYear(), orderDateConfig.getHour(),
+				orderDateConfig.getMinute(),
+				CommerceOrderConstants.ORDER_STATUS_COMPLETED,
+				placedOrder.getPaymentStatus(),
+				placedOrder.getPurchaseOrderNumber(), BigDecimal.ZERO,
+				placedOrder.getShippingOption(), BigDecimal.ZERO,
+				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, BigDecimal.ZERO, _serviceContext);
+
+		_serviceContext.setExpandoBridgeAttributes(
+			Collections.singletonMap(
+				expandoAttributeName, expandoAttributeValue));
+
+		commerceOrder.setRequestedDeliveryDate(
+			placedOrder.getRequestedDeliveryDate());
+		commerceOrder.setExpandoBridgeAttributes(_serviceContext);
+
+		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			commerceOrder);
+
+		_commerceOrders.add(commerceOrder);
+
+		return _addPlacedOrder(commerceOrder);
+	}
+
 	private PlacedOrderAddress _addPlacedOrderAddress() throws Exception {
 		Address address = _addressLocalService.addAddress(
 			RandomTestUtil.randomString(), _user.getUserId(),
@@ -594,6 +698,9 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 	@Inject
 	private AddressLocalService _addressLocalService;
 
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
+
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
 
@@ -620,6 +727,15 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 
 	@Inject
 	private CountryLocalService _countryLocalService;
+
+	@Inject
+	private ExpandoColumnLocalService _expandoColumnLocalService;
+
+	@DeleteAfterTestRun
+	private ExpandoTable _expandoTable;
+
+	@Inject
+	private ExpandoTableLocalService _expandoTableLocalService;
 
 	@DeleteAfterTestRun
 	private Region _region;

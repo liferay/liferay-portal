@@ -19,8 +19,8 @@ function check_health {
 
 function download_hotfix {
 	for file_url in \
-		"https://releases-cdn.liferay.com/dxp/hotfix/2025.q2.0/liferay-dxp-2025.q2.0-lts-hotfix-13.zip" \
-		"https://releases-cdn.liferay.com/tools/patching-tool/patching-tool-4.0.8.zip"
+		"https://releases-cdn.liferay.com/dxp/hotfix/2025.q2.0/liferay-dxp-2025.q2.0-hotfix-44.zip" \
+		"https://releases-cdn.liferay.com/tools/patching-tool/patching-tool-4.0.9.zip"
 	do
 		local file_name="./liferay/patching/$(basename "${file_url}")"
 

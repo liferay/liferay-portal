@@ -7,9 +7,11 @@
 
 'use strict';
 
+const {hookFn} = require('@liferay/node-scripts/theme');
 const gulp = require('gulp');
 const liferayThemeTasks = require('liferay-theme-tasks');
 
 liferayThemeTasks.registerTasks({
 	gulp,
+	hookFn,
 });

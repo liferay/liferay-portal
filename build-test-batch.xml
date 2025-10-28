@@ -1327,14 +1327,14 @@ app.server.type=@{app.server.type}]]></echo>
 
 			<antcall inheritAll="false" target="compile" />
 
-			<antcall inheritAll="false" target="install-portal-snapshots" />
-
 			<if>
 				<and>
 					<equals arg1="@{app.server.type}" arg2="tomcat" />
 					<equals arg1="@{dist.type}" arg2="release" />
 				</and>
 				<then>
+					<antcall inheritAll="false" target="install-portal-snapshots" />
+
 					<lstopwatch action="start" name="prepare-test-build-dist.bundles.@{app.server.type}.dist" />
 
 					<ant antfile="build-test.xml" target="prepare-release-bundle" />
@@ -1344,6 +1344,8 @@ app.server.type=@{app.server.type}]]></echo>
 				<elseif>
 					<equals arg1="@{app.server.type}" arg2="weblogic" />
 					<then>
+						<antcall inheritAll="false" target="install-portal-snapshots" />
+
 						<antcall inheritAll="false" target="prepare-test-build-custom">
 							<param name="app.server.type" value="@{app.server.type}" />
 						</antcall>
@@ -4086,16 +4088,16 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		<run-archived-module-smoke database.type="mysql" database.version="8.4" />
 	</target>
 
-	<target name="archived-module-smoke-postgresql155">
-		<run-archived-module-smoke database.type="postgresql" database.version="15.5" />
+	<target name="archived-module-smoke-postgresql163">
+		<run-archived-module-smoke database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="archived-modules-test-mysql84">
 		<run-archived-modules-test database.type="mysql" database.version="8.4" />
 	</target>
 
-	<target name="archived-modules-test-postgresql155">
-		<run-archived-modules-test database.type="postgresql" database.version="15.5" />
+	<target name="archived-modules-test-postgresql163">
+		<run-archived-modules-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="blade-samples">
@@ -4395,11 +4397,11 @@ information. Make sure to commit in all build-lib-versions results.
 	</target>
 
 	<target name="empty-osgi-core-dir-postgresql163">
-		<run-empty-osgi-core-dir-test database.type="postgresql" />
+		<run-empty-osgi-core-dir-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="empty-osgi-core-dir-postgresql163-jdk21_zulu">
-		<run-empty-osgi-core-dir-test database.type="postgresql" />
+		<run-empty-osgi-core-dir-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="format-javadoc-test">
@@ -6795,10 +6797,10 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="weblogic" database.type="postgresql" />
 	</target>
 
-	<target name="functional-upgrade-weblogic141-postgresql155">
+	<target name="functional-upgrade-weblogic141-postgresql163">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="14.1.1" />
 
-		<run-functional-test app.server.type="weblogic" database.type="postgresql" database.version="15.5" />
+		<run-functional-test app.server.type="weblogic" database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="functional-upgrade-wildfly300-mariadb">
@@ -7646,7 +7648,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="lpkg-container-postgresql163">
-		<run-lpkg-container-test database.type="postgresql" />
+		<run-lpkg-container-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="lpkg-controller-mysql80">
@@ -7658,7 +7660,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="lpkg-controller-postgresql163">
-		<run-lpkg-controller-test database.type="postgresql" />
+		<run-lpkg-controller-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="lpkg-override-mysql80">
@@ -7670,7 +7672,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="lpkg-override-postgresql163">
-		<run-lpkg-override-test database.type="postgresql" />
+		<run-lpkg-override-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="lpkg-persistence-mysql80">
@@ -7682,7 +7684,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="lpkg-persistence-postgresql163">
-		<run-lpkg-persistence-test database.type="postgresql" />
+		<run-lpkg-persistence-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="lpkg-startup-mysql80">
@@ -7694,7 +7696,7 @@ information. Make sure to commit in all format-javadoc results.
 	</target>
 
 	<target name="lpkg-startup-postgresql163">
-		<run-lpkg-startup-test database.type="postgresql" />
+		<run-lpkg-startup-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="modules-compile">
@@ -8657,10 +8659,10 @@ ${output.content}</echo>
 		</run-batch-test>
 	</target>
 
-	<target name="patching-tool-postgresql155">
+	<target name="patching-tool-postgresql163">
 		<run-batch-test>
 			<test-action>
-				<database-test-run-test database.type="postgresql" stop.app.server="true">
+				<database-test-run-test database.type="postgresql" database.version="16.3" stop.app.server="true">
 					<test-action>
 						<local name="junit.failure.count" />
 						<local name="junit.failure.message" />
@@ -9175,10 +9177,10 @@ ${output.content}</echo>
 		</run-batch-test>
 	</target>
 
-	<target name="portal-renamed-tomcat-in-path-postgresql155">
+	<target name="portal-renamed-tomcat-in-path-postgresql163">
 		<run-batch-test>
 			<test-action>
-				<database-test-run-test database.type="postgresql" stop.app.server="true">
+				<database-test-run-test database.type="postgresql" database.version="16.3" stop.app.server="true">
 					<test-action>
 						<antcall inheritAll="false" target="prepare-log4j-ext-xml">
 							<param name="database.type" value="@{database.type}" />
@@ -9248,10 +9250,10 @@ ${output.content}</echo>
 		</run-batch-test>
 	</target>
 
-	<target name="portal-renamed-tomcat-in-path-postgresql155-jdk21_zulu">
+	<target name="portal-renamed-tomcat-in-path-postgresql163-jdk21_zulu">
 		<run-batch-test>
 			<test-action>
-				<database-test-run-test database.type="postgresql" stop.app.server="true">
+				<database-test-run-test database.type="postgresql" database.version="16.3" stop.app.server="true">
 					<test-action>
 						<antcall inheritAll="false" target="prepare-log4j-ext-xml">
 							<param name="database.type" value="@{database.type}" />
@@ -9403,11 +9405,11 @@ ${output.content}</echo>
 		</sequential>
 	</target>
 
-	<target name="portal-second-startup-space-in-path-postgresql155">
+	<target name="portal-second-startup-space-in-path-postgresql163">
 		<sequential>
 			<run-batch-test>
 				<test-action>
-					<database-test-run-test database.type="postgresql" stop.app.server="true">
+					<database-test-run-test database.type="postgresql" database.version="16.3" stop.app.server="true">
 						<test-action>
 							<sequential>
 								<antcall inheritAll="false" target="prepare-log4j-ext-xml">
@@ -9729,13 +9731,13 @@ ${output.content}</echo>
 		</sequential>
 	</target>
 
-	<target name="portal-startup-space-in-path-postgresql155">
+	<target name="portal-startup-space-in-path-postgresql163">
 		<propertycopy from="app.server.${app.server.type}.version" name="app.server.version" />
 
 		<sequential>
 			<run-batch-test>
 				<test-action>
-					<database-test-run-test database.type="postgresql" stop.app.server="true">
+					<database-test-run-test database.type="postgresql" database.version="16.3" stop.app.server="true">
 						<test-action>
 							<local name="junit.failure.count" />
 							<local name="junit.failure.message" />
@@ -9851,13 +9853,13 @@ ${output.content}</echo>
 		</sequential>
 	</target>
 
-	<target name="portal-startup-space-in-path-postgresql155-jdk21_zulu">
+	<target name="portal-startup-space-in-path-postgresql163-jdk21_zulu">
 		<propertycopy from="app.server.${app.server.type}.version" name="app.server.version" />
 
 		<sequential>
 			<run-batch-test>
 				<test-action>
-					<database-test-run-test database.type="postgresql" stop.app.server="true">
+					<database-test-run-test database.type="postgresql" database.version="16.3" stop.app.server="true">
 						<test-action>
 							<local name="junit.failure.count" />
 							<local name="junit.failure.message" />
@@ -10078,8 +10080,8 @@ ${output.content}</echo>
 		<run-release-osgi-state-exploded-test database.type="mysql" database.version="8.4" />
 	</target>
 
-	<target name="release-osgi-state-exploded-test-postgresql155">
-		<run-release-osgi-state-exploded-test database.type="postgresql" />
+	<target name="release-osgi-state-exploded-test-postgresql163">
+		<run-release-osgi-state-exploded-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="release-osgi-state-lpkg-change-directory-test-mysql80">
@@ -10090,8 +10092,8 @@ ${output.content}</echo>
 		<run-release-osgi-state-lpkg-change-directory-test database.type="mysql" database.version="8.4" />
 	</target>
 
-	<target name="release-osgi-state-lpkg-change-directory-test-postgresql155">
-		<run-release-osgi-state-lpkg-change-directory-test database.type="postgresql" />
+	<target name="release-osgi-state-lpkg-change-directory-test-postgresql163">
+		<run-release-osgi-state-lpkg-change-directory-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="release-osgi-state-lpkg-test-mysql80">
@@ -10102,8 +10104,8 @@ ${output.content}</echo>
 		<run-release-osgi-state-lpkg-test database.type="mysql" database.version="8.4" />
 	</target>
 
-	<target name="release-osgi-state-lpkg-test-postgresql155">
-		<run-release-osgi-state-lpkg-test database.type="postgresql" />
+	<target name="release-osgi-state-lpkg-test-postgresql163">
+		<run-release-osgi-state-lpkg-test database.type="postgresql" database.version="16.3" />
 	</target>
 
 	<target name="rest-builder">

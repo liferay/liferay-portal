@@ -14,7 +14,7 @@ const Toasts = require('../../../src/main/resources/META-INF/resources/sxp_bluep
 import {ENTITY_JSON, INITIAL_CONFIGURATION} from '../mocks/data';
 import {QUERY_SXP_ELEMENTS} from '../mocks/sxpElements';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {TEST_IDS} from '../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/utils/testIds';
 

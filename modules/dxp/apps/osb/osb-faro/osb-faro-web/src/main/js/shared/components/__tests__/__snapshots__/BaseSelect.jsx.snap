@@ -85,10 +85,7 @@ exports[`BaseSelect should render 1`] = `
 `;
 
 exports[`BaseSelect should render as disabled 1`] = `
-<div
-  aria-hidden="true"
-  data-aria-hidden="true"
->
+<div>
   <div
     class="dropdown dropdown-root base-select-container"
   >

@@ -25,90 +25,94 @@ exports[`Items should render 1`] = `
         New Rule
       </button>
       <div
-        class="table-responsive table-root flex-grow-1"
+        class="flex-grow-1 mx-4 table-root"
       >
-        <table
-          class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+        <div
+          class="table-responsive"
         >
-          <thead>
-            <tr>
-              <th
-                class="table-head-title rule-cell table-cell-expand"
-              >
-                Rule
-              </th>
-              <th
-                class="table-head-title count-cell table-column-text-end"
-              >
-                Matching Items
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              class=""
-            >
-              <td
-                class="rule-cell table-cell-expand"
-              >
-                <div
-                  class="rule-item-root d-flex align-items-baseline"
+          <table
+            class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+          >
+            <thead>
+              <tr>
+                <th
+                  class="table-head-title rule-cell table-cell-expand"
                 >
-                  <b>
-                    Include:
-                  </b>
+                  Rule
+                </th>
+                <th
+                  class="table-head-title count-cell table-column-text-end"
+                >
+                  Matching Items
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class=""
+              >
+                <td
+                  class="rule-cell table-cell-expand"
+                >
                   <div
-                    class="label label-root metadata-tag-root label-lg"
+                    class="rule-item-root d-flex align-items-baseline"
                   >
-                    <span
-                      class="label-item"
+                    <b>
+                      Include:
+                    </b>
+                    <div
+                      class="label label-root metadata-tag-root label-lg"
                     >
-                      url
+                      <span
+                        class="label-item"
+                      >
+                        url
+                      </span>
+                    </div>
+                    <span
+                      class="rule-value"
+                    >
+                      .*custom-assets
                     </span>
                   </div>
-                  <span
-                    class="rule-value"
-                  >
-                    .*custom-assets
-                  </span>
-                </div>
-              </td>
-              <td
-                class="count-cell table-column-text-end"
-              >
-                <button
-                  class="button-root matching-pages-modal-button btn btn-unstyled"
-                  type="button"
+                </td>
+                <td
+                  class="count-cell table-column-text-end"
                 >
-                  0
-                </button>
-              </td>
-              <td
-                class="row-inline-actions"
-              >
-                <span>
+                  <button
+                    class="button-root matching-pages-modal-button btn btn-unstyled"
+                    type="button"
+                  >
+                    0
+                  </button>
+                </td>
+                <td
+                  class="row-inline-actions"
+                >
                   <span>
-                    <button
-                      aria-label="Remove"
-                      class="button-root btn btn-outline-borderless btn-outline-secondary"
-                      type="button"
-                    >
-                      <svg
-                        class="lexicon-icon lexicon-icon-times icon-root"
-                        role="presentation"
+                    <span>
+                      <button
+                        aria-label="Remove"
+                        class="button-root btn btn-outline-borderless btn-outline-secondary"
+                        type="button"
                       >
-                        <use
-                          href="#times"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          class="lexicon-icon lexicon-icon-times icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#times"
+                          />
+                        </svg>
+                      </button>
+                    </span>
                   </span>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div
         class="total-included-pages d-flex justify-content-between"

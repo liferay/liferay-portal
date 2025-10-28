@@ -11,7 +11,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.jsp.engine.internal.delegate.CheckEnabledServletDelegate;
 import com.liferay.portal.jsp.engine.internal.delegate.JspConfigDescriptorServletContextDelegate;
-import com.liferay.portal.jsp.engine.internal.jakarta.transformer.JakartaTransformerJDTCompiler;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
@@ -41,6 +40,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Map;
 
+import org.apache.jasper.compiler.JDTCompiler;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.JspServlet;
 import org.apache.tomcat.JarScanFilter;
@@ -120,8 +120,7 @@ public class JSPEngineShieldedContainerInitializer
 		Map<String, String> initParameters = PropertiesUtil.toMap(
 			PropsUtil.getProperties("jsp.engine.", true));
 
-		initParameters.put(
-			"compilerClassName", JakartaTransformerJDTCompiler.class.getName());
+		initParameters.put("compilerClassName", JDTCompiler.class.getName());
 
 		JspServlet jspServlet = new JspServlet();
 

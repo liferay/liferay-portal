@@ -97,6 +97,11 @@
 					"name": "Cloud Architect"
 				},
 				{
+					"externalReferenceCode": "COMMERCE_ADMINISTRATOR",
+					"key": "commerceAdministrator",
+					"name": "Commerce Administrator"
+				},
+				{
 					"externalReferenceCode": "CONTENT_MANAGER",
 					"key": "contentManager",
 					"name": "Content Manager"

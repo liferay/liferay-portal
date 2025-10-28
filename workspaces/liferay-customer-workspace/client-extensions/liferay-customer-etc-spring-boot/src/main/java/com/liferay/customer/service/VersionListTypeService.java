@@ -121,11 +121,16 @@ public class VersionListTypeService extends BaseService {
 				continue;
 			}
 
-			productGroupVersion =
-				StringUtil.toUpperCase(product) + StringPool.SPACE +
-					StringUtil.toUpperCase(productGroupVersion);
+			String productMajorVersion = releaseJSONObject.optString(
+				"productMajorVersion", null);
 
-			_addVersion(product + "Major", productGroupVersion, versionsMap);
+			if (Validator.isNull(productMajorVersion)) {
+				productMajorVersion =
+					StringUtil.toUpperCase(product) + StringPool.SPACE +
+						StringUtil.toUpperCase(productGroupVersion);
+			}
+
+			_addVersion(product + "Major", productMajorVersion, versionsMap);
 
 			String productVersion = releaseJSONObject.getString(
 				"productVersion");

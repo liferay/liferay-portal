@@ -856,7 +856,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					site = false;
 				}
 				else if (groupKey.equals(GroupConstants.GUEST)) {
-					friendlyURL = "/guest";
+					friendlyURL = GroupConstants.GUEST_FRIENDLY_URL;
 					typeSettingsUnicodeProperties =
 						UnicodePropertiesBuilder.create(
 							true

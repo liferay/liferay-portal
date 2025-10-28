@@ -387,6 +387,7 @@ const Question = ({
 				<ClayAlert.ToastContainer>
 					<ClayAlert
 						autoClose={6000}
+						closeButtonAriaLabel={Liferay.Language.get('close')}
 						displayType="warning"
 						onClose={() => setIsModerate(false)}
 						title={Liferay.Language.get(

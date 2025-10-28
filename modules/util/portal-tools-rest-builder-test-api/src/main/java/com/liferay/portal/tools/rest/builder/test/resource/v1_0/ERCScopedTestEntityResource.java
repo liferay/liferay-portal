@@ -54,6 +54,14 @@ public interface ERCScopedTestEntityResource {
 			String ercScopedTestEntityExternalReferenceCode)
 		throws Exception;
 
+	public void deleteERCScopedTestEntity(
+			String ercScopedTestEntityExternalReferenceCode)
+		throws Exception;
+
+	public Response deleteERCScopedTestEntityBatch(
+			String callbackURL, Object object)
+		throws Exception;
+
 	public void deleteSiteERCScopedTestEntity(
 			String siteExternalReferenceCode,
 			String ercScopedTestEntityExternalReferenceCode)

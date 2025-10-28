@@ -11,6 +11,10 @@ import StatusLabel from '../../common/components/StatusLabel';
 import {openAssetUsageListModal} from '../../common/components/asset_usage/utils';
 import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
 import formatActionURL from '../../common/utils/formatActionURL';
+import {
+	OBJECT_ENTRY_FOLDER_CLASS_NAME,
+	getScopeExternalReferenceCode,
+} from '../../common/utils/getScopeExternalReferenceCode';
 import CategoriesAndTagsModalContent from '../categorization/modal/CategoriesAndTagsModalContent';
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
 import {permissionsBulkAction} from '../default_permission/BulkPermissionModalContent';
@@ -29,13 +33,10 @@ import shareAction from './actions/shareAction';
 import {triggerAssetBulkAction} from './actions/triggerAssetBulkAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
-import SpaceRenderer from './cell_renderers/SpaceRenderer';
+import SpaceRendererWithCache from './cell_renderers/SpaceRendererWithCache';
 import TypeRenderer from './cell_renderers/TypeRenderer';
 import addOnClickToCreationMenuItems from './utils/addOnClickToCreationMenuItems';
 import transformViewsItemsProps from './utils/transformViewsItemProps';
-
-const OBJECT_ENTRY_FOLDER_CLASS_NAME =
-	'com.liferay.object.model.ObjectEntryFolder';
 
 const ACTIONS = {
 	createAsset: createAssetAction,
@@ -55,7 +56,9 @@ export type AdditionalProps = {
 	fileMimeTypeIcons: Record<string, string>;
 	objectDefinitionCssClasses: Record<string, string>;
 	objectDefinitionIcons: Record<string, string>;
+	parentObjectEntryFolderExternalReferenceCode: string;
 	redirect: string;
+	rootObjectEntryFolderExternalReferenceCode: string;
 };
 
 export default function AssetsFDSPropsTransformer({
@@ -100,7 +103,13 @@ export default function AssetsFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: SpaceRenderer,
+					component: ({itemData}) => (
+						<SpaceRendererWithCache
+							spaceExternalReferenceCode={getScopeExternalReferenceCode(
+								itemData
+							)}
+						/>
+					),
 					name: 'spaceTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
@@ -220,6 +229,9 @@ export default function AssetsFDSPropsTransformer({
 								itemData.embedded.externalReferenceCode,
 							className: itemData.entryClassName,
 							closeModal,
+							section:
+								additionalProps.rootObjectEntryFolderExternalReferenceCode ||
+								additionalProps.parentObjectEntryFolderExternalReferenceCode,
 						}),
 					size: 'full-screen',
 				});
@@ -331,6 +343,9 @@ export default function AssetsFDSPropsTransformer({
 					className: OBJECT_ENTRY_FOLDER_CLASS_NAME,
 					defaultPermissionAdditionalProps:
 						additionalProps.defaultPermissionAdditionalProps || {},
+					section:
+						additionalProps.rootObjectEntryFolderExternalReferenceCode ||
+						additionalProps.parentObjectEntryFolderExternalReferenceCode,
 					selectedData,
 				});
 			}
@@ -380,6 +395,9 @@ export default function AssetsFDSPropsTransformer({
 					className: OBJECT_ENTRY_FOLDER_CLASS_NAME,
 					defaultPermissionAdditionalProps:
 						additionalProps.defaultPermissionAdditionalProps || {},
+					section:
+						additionalProps.rootObjectEntryFolderExternalReferenceCode ||
+						additionalProps.parentObjectEntryFolderExternalReferenceCode,
 					selectedData,
 				});
 			}

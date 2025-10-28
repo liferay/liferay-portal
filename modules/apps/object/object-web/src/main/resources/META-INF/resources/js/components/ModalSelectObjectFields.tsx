@@ -125,7 +125,11 @@ function ModalSelectObjectFields<T extends ModalItem>() {
 			className="lfr-object__object-view-modal-select-object-fields"
 			observer={observer}
 		>
-			<ClayModal.Header>{header}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{header}
+			</ClayModal.Header>
 
 			{!!alerts?.length &&
 				!!items.length &&

@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -57,7 +58,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Víctor Galán
  */
-@FeatureFlag("LPD-17564")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+)
 @RunWith(Arquillian.class)
 public class BasicComponentFragmentCollectionContributorTest {
 
@@ -85,8 +88,9 @@ public class BasicComponentFragmentCollectionContributorTest {
 		Document document = Jsoup.parseBodyFragment(
 			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
 				_fragmentEntryLinkService.addFragmentEntryLink(
-					null, _group.getGroupId(), 0,
-					fragmentEntry.getFragmentEntryId(), 0, layout.getPlid(),
+					null, _group.getGroupId(), null,
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), 0, layout.getPlid(),
 					fragmentEntry.getCss(), fragmentEntry.getHtml(),
 					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 					StringPool.BLANK, StringPool.BLANK, 0, null,
@@ -118,8 +122,9 @@ public class BasicComponentFragmentCollectionContributorTest {
 		Document document = Jsoup.parseBodyFragment(
 			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
 				_fragmentEntryLinkService.addFragmentEntryLink(
-					null, _group.getGroupId(), 0,
-					fragmentEntry.getFragmentEntryId(), 0, layout.getPlid(),
+					null, _group.getGroupId(), null,
+					fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), 0, layout.getPlid(),
 					fragmentEntry.getCss(), fragmentEntry.getHtml(),
 					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 					StringPool.BLANK, StringPool.BLANK, 0, null,

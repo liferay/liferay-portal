@@ -18,4 +18,7 @@ public class AssetCategoriesAdminWebKeys {
 	public static final String ASSET_DISPLAY_PAGE_FRIENDLY_URL_PROVIDER =
 		"ASSET_DISPLAY_PAGE_FRIENDLY_URL_PROVIDER";
 
+	public static final String SHOW_EDIT_ASSET_VOCABULARY_HEADER =
+		"SHOW_EDIT_ASSET_VOCABULARY_HEADER";
+
 }

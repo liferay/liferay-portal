@@ -5,8 +5,6 @@
 
 package com.liferay.portal.osgi.web.servlet.jsp.compiler.internal;
 
-import com.liferay.petra.io.StreamUtil;
-import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
@@ -15,8 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-
-import java.util.function.BiFunction;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
@@ -126,47 +122,7 @@ public abstract class BaseJavaFileObject implements JavaFileObject {
 		return sb.toString();
 	}
 
-	protected InputStream jakartaTransform(InputStream inputStream)
-		throws IOException {
-
-		if (_classRemapperBiFunction == null) {
-			return inputStream;
-		}
-
-		return new UnsyncByteArrayInputStream(
-			_classRemapperBiFunction.apply(
-				"ModuleJspCClass#" + toString(),
-				StreamUtil.toByteArray(inputStream)));
-	}
-
 	protected final String className;
 	protected final Kind kind;
-
-	private static final BiFunction<String, byte[], byte[]>
-		_classRemapperBiFunction;
-
-	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"ClassRemapperBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_classRemapperBiFunction = (BiFunction<String, byte[], byte[]>)instance;
-	}
 
 }

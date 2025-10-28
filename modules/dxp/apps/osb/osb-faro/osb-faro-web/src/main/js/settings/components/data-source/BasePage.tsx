@@ -130,7 +130,6 @@ const BaseDataSourcePage: React.FC<IBaseDataSourcePageProps> = ({
 			documentTitle={`${
 				documentTitle || pageTitle
 			} - ${Liferay.Language.get('data-sources')}`}
-			groupId={groupId}
 			pageActions={
 				ENABLE_DELETE_DATA_SOURCE_BUTTON &&
 				id &&

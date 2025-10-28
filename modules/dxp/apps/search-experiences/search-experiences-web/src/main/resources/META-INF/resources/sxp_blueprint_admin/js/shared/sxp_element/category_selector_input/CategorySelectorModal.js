@@ -348,7 +348,9 @@ function CategorySelectorModal({
 			observer={observer}
 			size="md"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('select-asset-category')}
 			</ClayModal.Header>
 

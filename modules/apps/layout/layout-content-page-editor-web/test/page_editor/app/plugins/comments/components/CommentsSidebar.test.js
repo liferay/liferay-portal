@@ -6,7 +6,7 @@
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {ControlsProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 import CommentsSidebar from '../../../../../../src/main/resources/META-INF/resources/page_editor/plugins/comments/components/CommentsSidebar';

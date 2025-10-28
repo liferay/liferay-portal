@@ -37,7 +37,7 @@ String xRequestWith = request.getHeader(HttpHeaders.X_REQUESTED_WITH);
 
 			LayoutSet layoutSet = (LayoutSet)request.getAttribute(WebKeys.VIRTUAL_HOST_LAYOUT_SET);
 
-			if (layoutSet != null) {
+			if ((layoutSet != null) && !StringUtil.equals(uri, PortalUtil.getPathMain())) {
 				redirect = PortalUtil.getPathMain();
 			}
 			else {

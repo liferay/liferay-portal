@@ -169,7 +169,9 @@ export default function TranslationOptions({
 
 			{openResetTranslation && (
 				<ClayModal observer={resetTranslationObserver} status="danger">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{sub(
 							Liferay.Language.get('delete-x-translation'),
 							selectedLanguageId
@@ -217,7 +219,9 @@ export default function TranslationOptions({
 			)}
 			{openMarkTranslated && (
 				<ClayModal observer={markTranslatedObserver} status="info">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{sub(
 							Liferay.Language.get('mark-x-as-translated'),
 							selectedLanguageId

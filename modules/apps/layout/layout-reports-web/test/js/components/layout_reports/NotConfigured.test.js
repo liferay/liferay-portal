@@ -8,7 +8,7 @@ import React from 'react';
 
 import NotConfigured from '../../../../src/main/resources/META-INF/resources/js/components/layout_reports/NotConfigured';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {StoreContextProvider} from '../../../../src/main/resources/META-INF/resources/js/context/StoreContext';
 

@@ -463,8 +463,6 @@ for (const spaConfiguration of spaConfigurations) {
 				});
 
 				await test.step('Check back navigation', async () => {
-					await checkFilter(true, 'color', 'Color: Green, Red');
-
 					await page.goBack();
 					await checkFilter(true, 'color', 'Color: Yellow, Green');
 					await page.goBack();

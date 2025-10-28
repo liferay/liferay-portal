@@ -341,8 +341,9 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), _segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), _segmentsExperienceId,
 				_draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(),
 				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
@@ -551,8 +552,9 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), _segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), _segmentsExperienceId,
 				_draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(),
 				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
@@ -1356,8 +1358,9 @@ public class UpdateFormItemConfigMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), _segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), _segmentsExperienceId,
 				_draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(),
 				fragmentEntry.getConfiguration(),

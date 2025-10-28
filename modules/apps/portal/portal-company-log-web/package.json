@@ -3,7 +3,7 @@
 		"@clayui/button": "3.144.1",
 		"@clayui/icon": "3.144.1",
 		"@clayui/label": "3.144.1",
-		"@clayui/list": "3.149.0",
+		"@clayui/list": "3.151.0",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-router-dom": "^5.0.1"

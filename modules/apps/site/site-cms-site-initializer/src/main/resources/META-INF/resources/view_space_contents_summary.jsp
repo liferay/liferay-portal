@@ -19,7 +19,7 @@ ViewSpaceContentsSummarySectionDisplayContext viewSpaceContentsSummarySectionDis
 		/>
 	</div>
 
-	<div class="cms-fds-fluid cms-section custom-empty-state">
+	<div class="cms-fds-fluid cms-space-summary custom-empty-state">
 		<frontend-data-set:headless-display
 			additionalProps="<%= viewSpaceContentsSummarySectionDisplayContext.getAdditionalProps() %>"
 			apiURL="<%= viewSpaceContentsSummarySectionDisplayContext.getAPIURL() %>"

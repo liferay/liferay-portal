@@ -12,8 +12,12 @@ public class LPD_8022 {
 
 	public void method(HttpServletRequest httpServletRequest, Object value) {
 		httpServletRequest.setAttribute(null, null);
-		httpServletRequest.setAttribute(InfoDisplayWebKeys.INFO_ITEM_FIELD_VALUES_PROVIDER, value);
-		httpServletRequest.setAttribute(InfoDisplayWebKeys.INFO_ITEM_FIELD_VALUES_PROVIDER, infoItemServiceTracker.getFirstInfoItemService(InfoItemFieldValuesProvider.class, infoItemClassName));
+		httpServletRequest.setAttribute(
+			InfoDisplayWebKeys.INFO_ITEM_FIELD_VALUES_PROVIDER, value);
+		httpServletRequest.setAttribute(
+			InfoDisplayWebKeys.INFO_ITEM_FIELD_VALUES_PROVIDER,
+			infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class, infoItemClassName));
 	}
 
 }

@@ -39,9 +39,10 @@ export default function DefaultPermissionFormContainer({
 	infoBoxMessage,
 	onChange,
 	roles,
+	section,
 	types,
 	values,
-}: DefaultPermissionFormContainerProps) {
+}: DefaultPermissionFormContainerProps & {section?: string}) {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [activeActions, setActiveActions] = useState<Action[]>([]);
 	const [activeValues, setActiveValues] = useState({});
@@ -91,8 +92,22 @@ export default function DefaultPermissionFormContainer({
 	}, [actions, activeIndex, data, tabs]);
 
 	useEffect(() => {
-		setTabs(types || DEFAULT_ASSET_TYPES);
-	}, [types]);
+		if (
+			section?.includes(DefaultAssetTypes.L_CONTENTS) ||
+			section?.includes(DefaultAssetTypes.L_FILES)
+		) {
+			setTabs(
+				(types || DEFAULT_ASSET_TYPES).filter(
+					(tab) =>
+						tab.key === section ||
+						tab.key === DefaultAssetTypes.OBJECT_ENTRY_FOLDERS
+				)
+			);
+		}
+		else {
+			setTabs(types || DEFAULT_ASSET_TYPES);
+		}
+	}, [section, types]);
 
 	useEffect(() => {
 		setData(values || {});

@@ -38,7 +38,7 @@ const ProductPurchase: React.FC<ProductPurchaseProps> &
 	<div
 		{...props}
 		className={classNames('container', className)}
-		style={{width: 684}}
+		style={{width: 600}}
 	>
 		{children}
 	</div>

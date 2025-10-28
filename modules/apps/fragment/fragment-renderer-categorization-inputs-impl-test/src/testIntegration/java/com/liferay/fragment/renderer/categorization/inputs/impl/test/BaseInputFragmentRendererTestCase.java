@@ -144,9 +144,9 @@ public abstract class BaseInputFragmentRendererTestCase {
 			JSONFactoryUtil.toString(
 				fragmentRenderer.getConfigurationJSONObject(
 					new DefaultFragmentRendererContext(null))),
-			0, StringPool.BLANK, StringPool.BLANK, draftLayout, getRenderKey(),
-			fragmentRenderer.getType(), jsonObject.getString("addedItemId"), 0,
-			segmentsExperienceId);
+			null, null, StringPool.BLANK, StringPool.BLANK, draftLayout,
+			getRenderKey(), fragmentRenderer.getType(),
+			jsonObject.getString("addedItemId"), 0, segmentsExperienceId);
 	}
 
 	protected abstract ObjectEntry addObjectEntry() throws Exception;
@@ -231,7 +231,8 @@ public abstract class BaseInputFragmentRendererTestCase {
 			objectDefinition.getPanelCategoryKey(),
 			objectDefinition.isPortlet(), objectDefinition.getPluralLabelMap(),
 			objectDefinition.getScope(), objectDefinition.getStatus(),
-			Collections.emptyList(), Collections.emptyList());
+			Collections.emptyList(), Collections.emptyList(),
+			Collections.emptyList());
 
 		FragmentRenderer fragmentRenderer = getFragmentRenderer();
 

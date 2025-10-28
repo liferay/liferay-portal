@@ -8,8 +8,6 @@ import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
-
 import CreationModalContent from '../../../../src/main/resources/META-INF/resources/js/main_view/modal/CreationModalContent';
 
 const mockOnSubmit = jest.fn();

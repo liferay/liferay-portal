@@ -13,11 +13,16 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_41285 {
 
 	public void method(long cpInstanceId, long commercePriceListId) {
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(cpInstanceId, commercePriceListId);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(123, commercePriceListId);
-		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(cpInstanceId, commercePriceListId);
-		_commercePriceEntryLocalService.fetchCommercePriceEntry(cpInstanceId, commercePriceListId);
-		_commercePriceEntryService.fetchCommercePriceEntry(cpInstanceId, commercePriceListId);
+		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
+			123, commercePriceListId);
+		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId);
+		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId);
+		_commercePriceEntryLocalService.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId);
+		_commercePriceEntryService.fetchCommercePriceEntry(
+			cpInstanceId, commercePriceListId);
 	}
 
 	@Reference

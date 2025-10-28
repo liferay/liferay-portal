@@ -15,7 +15,7 @@ import {getFileMimeTypeObjectDefinitionStickerValue} from '../utils/transformVie
 const OBJECT_ENTRY_FOLDER_CLASS_NAME =
 	'com.liferay.object.model.ObjectEntryFolder';
 
-interface ActionItem {
+export interface ActionItem {
 	data: {id: string};
 	href?: string;
 }
@@ -28,7 +28,7 @@ export default function SimpleActionLinkRenderer({
 	value,
 }: {
 	actions: ActionItem[];
-	additionalProps: {
+	additionalProps?: {
 		fileMimeTypeCssClasses: Record<string, string>;
 		fileMimeTypeIcons: Record<string, string>;
 		objectDefinitionCssClasses: Record<string, string>;
@@ -63,33 +63,35 @@ export default function SimpleActionLinkRenderer({
 
 	return (
 		<div className="align-items-center d-flex table-list-title">
-			<ClaySticker
-				className={classNames(
-					'c-mr-2',
-					'flex-shrink-0',
-					'inline-item',
-					'inline-item-before',
-					isFolder
-						? 'file-icon-color-0'
-						: getFileMimeTypeObjectDefinitionStickerValue(
-								additionalProps.fileMimeTypeCssClasses,
-								additionalProps.objectDefinitionCssClasses,
-								itemData
-							)
-				)}
-			>
-				<ClayIcon
-					symbol={
+			{additionalProps && (
+				<ClaySticker
+					className={classNames(
+						'c-mr-2',
+						'flex-shrink-0',
+						'inline-item',
+						'inline-item-before',
 						isFolder
-							? 'folder'
+							? 'file-icon-color-0'
 							: getFileMimeTypeObjectDefinitionStickerValue(
-									additionalProps.fileMimeTypeIcons,
-									additionalProps.objectDefinitionIcons,
+									additionalProps.fileMimeTypeCssClasses,
+									additionalProps.objectDefinitionCssClasses,
 									itemData
 								)
-					}
-				/>
-			</ClaySticker>
+					)}
+				>
+					<ClayIcon
+						symbol={
+							isFolder
+								? 'folder'
+								: getFileMimeTypeObjectDefinitionStickerValue(
+										additionalProps.fileMimeTypeIcons,
+										additionalProps.objectDefinitionIcons,
+										itemData
+									)
+						}
+					/>
+				</ClaySticker>
+			)}
 
 			<ClayLink aria-label={title} data-senna-off href={formattedHref}>
 				{title}

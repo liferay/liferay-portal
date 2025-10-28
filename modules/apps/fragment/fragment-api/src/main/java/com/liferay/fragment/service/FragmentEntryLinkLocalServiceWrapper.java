@@ -53,16 +53,18 @@ public class FragmentEntryLinkLocalServiceWrapper
 	@Override
 	public FragmentEntryLink addFragmentEntryLink(
 			String externalReferenceCode, long userId, long groupId,
-			long originalFragmentEntryLinkId, long fragmentEntryId,
-			long segmentsExperienceId, long plid, String css, String html,
-			String js, String configuration, String editableValues,
-			String namespace, int position, String rendererKey, int type,
+			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String fragmentEntryScopeERC, long segmentsExperienceId, long plid,
+			String css, String html, String js, String configuration,
+			String editableValues, String namespace, int position,
+			String rendererKey, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			externalReferenceCode, userId, groupId, originalFragmentEntryLinkId,
-			fragmentEntryId, segmentsExperienceId, plid, css, html, js,
+			externalReferenceCode, userId, groupId,
+			originalFragmentEntryLinkERC, fragmentEntryERC,
+			fragmentEntryScopeERC, segmentsExperienceId, plid, css, html, js,
 			configuration, editableValues, namespace, position, rendererKey,
 			type, serviceContext);
 	}
@@ -159,19 +161,22 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteFragmentEntryLinksByFragmentEntryId(
-		long fragmentEntryId) {
+	public void deleteFragmentEntryLinksByFragmentEntryERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC) {
 
 		_fragmentEntryLinkLocalService.
-			deleteFragmentEntryLinksByFragmentEntryId(fragmentEntryId);
+			deleteFragmentEntryLinksByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC);
 	}
 
 	@Override
-	public void deleteFragmentEntryLinksByFragmentEntryId(
-		long fragmentEntryId, boolean deleted) {
+	public void deleteFragmentEntryLinksByFragmentEntryERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted) {
 
 		_fragmentEntryLinkLocalService.
-			deleteFragmentEntryLinksByFragmentEntryId(fragmentEntryId, deleted);
+			deleteFragmentEntryLinksByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC, deleted);
 	}
 
 	@Override
@@ -362,23 +367,25 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 	@Override
 	public java.util.List<FragmentEntryLink>
-		getAllFragmentEntryLinksByFragmentEntryId(
-			long groupId, long fragmentEntryId, int start, int end,
+		getAllFragmentEntryLinksByFragmentEntryERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryLink>
 				orderByComparator) {
 
 		return _fragmentEntryLinkLocalService.
-			getAllFragmentEntryLinksByFragmentEntryId(
-				groupId, fragmentEntryId, start, end, orderByComparator);
+			getAllFragmentEntryLinksByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC, start, end,
+				orderByComparator);
 	}
 
 	@Override
-	public int getAllFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId) {
+	public int getAllFragmentEntryLinksCountByFragmentEntryERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC) {
 
 		return _fragmentEntryLinkLocalService.
-			getAllFragmentEntryLinksCountByFragmentEntryId(
-				groupId, fragmentEntryId);
+			getAllFragmentEntryLinksCountByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC);
 	}
 
 	/**
@@ -422,10 +429,10 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 	@Override
 	public FragmentEntryLink getFragmentEntryLink(
-		long groupId, long originalFragmentEntryLinkId, long plid) {
+		long groupId, String originalFragmentEntryLinkERC, long plid) {
 
 		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
-			groupId, originalFragmentEntryLinkId, plid);
+			groupId, originalFragmentEntryLinkERC, plid);
 	}
 
 	@Override
@@ -522,19 +529,23 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 	@Override
 	public java.util.List<FragmentEntryLink>
-		getFragmentEntryLinksByFragmentEntryId(long fragmentEntryId) {
+		getFragmentEntryLinksByFragmentEntryERC(
+			long groupId, String fragmentEntryERC,
+			String fragmentEntryScopeERC) {
 
 		return _fragmentEntryLinkLocalService.
-			getFragmentEntryLinksByFragmentEntryId(fragmentEntryId);
+			getFragmentEntryLinksByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC);
 	}
 
 	@Override
 	public java.util.List<FragmentEntryLink>
-		getFragmentEntryLinksByFragmentEntryId(
-			long fragmentEntryId, boolean deleted) {
+		getFragmentEntryLinksByFragmentEntryERC(
+			String fragmentEntryERC, String fragmentEntryScopeERC) {
 
 		return _fragmentEntryLinkLocalService.
-			getFragmentEntryLinksByFragmentEntryId(fragmentEntryId, deleted);
+			getFragmentEntryLinksByFragmentEntryERC(
+				fragmentEntryERC, fragmentEntryScopeERC);
 	}
 
 	@Override
@@ -646,29 +657,32 @@ public class FragmentEntryLinkLocalServiceWrapper
 	}
 
 	@Override
-	public int getFragmentEntryLinksCountByFragmentEntryId(
-		long fragmentEntryId) {
+	public int getFragmentEntryLinksCountByFragmentEntryERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted) {
 
 		return _fragmentEntryLinkLocalService.
-			getFragmentEntryLinksCountByFragmentEntryId(fragmentEntryId);
+			getFragmentEntryLinksCountByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC, deleted);
 	}
 
 	@Override
-	public int getFragmentEntryLinksCountByFragmentEntryId(
-		long fragmentEntryId, boolean deleted) {
+	public int getFragmentEntryLinksCountByFragmentEntryERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC) {
 
 		return _fragmentEntryLinkLocalService.
-			getFragmentEntryLinksCountByFragmentEntryId(
-				fragmentEntryId, deleted);
+			getFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntryERC, fragmentEntryScopeERC);
 	}
 
 	@Override
-	public int getFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId, boolean deleted) {
+	public int getFragmentEntryLinksCountByFragmentEntryERC(
+		String fragmentEntryERC, String fragmentEntryScopeERC,
+		boolean deleted) {
 
 		return _fragmentEntryLinkLocalService.
-			getFragmentEntryLinksCountByFragmentEntryId(
-				groupId, fragmentEntryId, deleted);
+			getFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntryERC, fragmentEntryScopeERC, deleted);
 	}
 
 	@Override
@@ -687,46 +701,50 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 	@Override
 	public java.util.List<FragmentEntryLink>
-		getLayoutFragmentEntryLinksByFragmentEntryId(
-			long groupId, long fragmentEntryId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryLink>
-				orderByComparator) {
-
-		return _fragmentEntryLinkLocalService.
-			getLayoutFragmentEntryLinksByFragmentEntryId(
-				groupId, fragmentEntryId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getLayoutFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId) {
-
-		return _fragmentEntryLinkLocalService.
-			getLayoutFragmentEntryLinksCountByFragmentEntryId(
-				groupId, fragmentEntryId);
-	}
-
-	@Override
-	public java.util.List<FragmentEntryLink>
-		getLayoutPageTemplateFragmentEntryLinksByFragmentEntryId(
-			long groupId, long fragmentEntryId, int layoutPageTemplateType,
+		getLayoutFragmentEntryLinksByFragmentEntryERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
 			int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryLink>
 				orderByComparator) {
 
 		return _fragmentEntryLinkLocalService.
-			getLayoutPageTemplateFragmentEntryLinksByFragmentEntryId(
-				groupId, fragmentEntryId, layoutPageTemplateType, start, end,
+			getLayoutFragmentEntryLinksByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC, start, end,
 				orderByComparator);
 	}
 
 	@Override
-	public int getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-		long groupId, long fragmentEntryId, int layoutPageTemplateType) {
+	public int getLayoutFragmentEntryLinksCountByFragmentEntryERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC) {
 
 		return _fragmentEntryLinkLocalService.
-			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-				groupId, fragmentEntryId, layoutPageTemplateType);
+			getLayoutFragmentEntryLinksCountByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC);
+	}
+
+	@Override
+	public java.util.List<FragmentEntryLink>
+		getLayoutPageTemplateFragmentEntryLinksByFragmentEntryERC(
+			long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+			int layoutPageTemplateType, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator<FragmentEntryLink>
+				orderByComparator) {
+
+		return _fragmentEntryLinkLocalService.
+			getLayoutPageTemplateFragmentEntryLinksByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC,
+				layoutPageTemplateType, start, end, orderByComparator);
+	}
+
+	@Override
+	public int getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+		long groupId, String fragmentEntryERC, String fragmentEntryScopeERC,
+		int layoutPageTemplateType) {
+
+		return _fragmentEntryLinkLocalService.
+			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+				groupId, fragmentEntryERC, fragmentEntryScopeERC,
+				layoutPageTemplateType);
 	}
 
 	/**
@@ -784,45 +802,29 @@ public class FragmentEntryLinkLocalServiceWrapper
 
 	@Override
 	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId, int position)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
-			userId, fragmentEntryLinkId, position);
-	}
-
-	@Override
-	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId,
-			long originalFragmentEntryLinkId, long fragmentEntryId, long plid,
-			String css, String html, String js, String configuration,
-			String editableValues, String namespace, int position, int type,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
-			userId, fragmentEntryLinkId, originalFragmentEntryLinkId,
-			fragmentEntryId, plid, css, html, js, configuration, editableValues,
-			namespace, position, type, serviceContext);
-	}
-
-	@Override
-	public FragmentEntryLink updateFragmentEntryLink(
-			long userId, long fragmentEntryLinkId, String editableValues)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
-			userId, fragmentEntryLinkId, editableValues);
-	}
-
-	@Override
-	public FragmentEntryLink updateFragmentEntryLink(
 			long userId, long fragmentEntryLinkId, String editableValues,
 			boolean updateClassedModel)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			userId, fragmentEntryLinkId, editableValues, updateClassedModel);
+	}
+
+	@Override
+	public FragmentEntryLink updateFragmentEntryLink(
+			long userId, long fragmentEntryLinkId,
+			String originalFragmentEntryLinkERC, String fragmentEntryERC,
+			String fragmentEntryScopeERC, long plid, String css, String html,
+			String js, String configuration, String editableValues,
+			String namespace, int position, int type,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _fragmentEntryLinkLocalService.updateFragmentEntryLink(
+			userId, fragmentEntryLinkId, originalFragmentEntryLinkERC,
+			fragmentEntryERC, fragmentEntryScopeERC, plid, css, html, js,
+			configuration, editableValues, namespace, position, type,
+			serviceContext);
 	}
 
 	@Override

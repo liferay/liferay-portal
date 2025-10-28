@@ -80,7 +80,7 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 
 			objectDefinition2 =
 				_objectDefinitionLocalService.addCustomObjectDefinition(
-					user.getUserId(), 0, objectDefinition1.getClassName(),
+					null, user.getUserId(), 0, objectDefinition1.getClassName(),
 					false, true, false, true, false, false, true, true, true,
 					null, RandomTestUtil.randomLocaleStringMap(),
 					objectDefinition1.getShortName(), null, null,

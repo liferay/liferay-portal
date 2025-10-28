@@ -71,6 +71,16 @@ function FirstSectionComponent({
 					disabled={disabled || isPublished}
 					id={id}
 					items={FILE_SOURCE_OPTIONS}
+					messages={{
+						itemDescribedby: Liferay.Language.get(
+							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+						),
+						itemSelected: Liferay.Language.get('x-selected'),
+						scrollToBottomAriaLabel:
+							Liferay.Language.get('scroll-to-bottom'),
+						scrollToTopAriaLabel:
+							Liferay.Language.get('scroll-to-top'),
+					}}
 					onSelectionChange={(fileSource: React.Key) => {
 						dispatch({
 							settings: {

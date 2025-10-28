@@ -6,7 +6,7 @@
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, render, screen} from '@testing-library/react';
 import React, {useState} from 'react';
 

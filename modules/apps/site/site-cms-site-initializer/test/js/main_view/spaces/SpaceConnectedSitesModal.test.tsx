@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 // eslint-disable-next-line
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
@@ -15,6 +15,7 @@ import React from 'react';
 import ConnectedSiteService from '../../../../src/main/resources/META-INF/resources/js/common/services/ConnectedSiteService';
 import {Site} from '../../../../src/main/resources/META-INF/resources/js/common/types/Site';
 import SpaceConnectedSitesModal from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceConnectedSitesModal';
+import {mockFetch} from '../../__mocks__/frontend-js-web';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/ConnectedSiteService'
@@ -28,10 +29,6 @@ const mockGetConnectedSitesFromSpace =
 	ConnectedSiteService.getConnectedSitesFromSpace as jest.MockedFunction<
 		typeof ConnectedSiteService.getConnectedSitesFromSpace
 	>;
-
-const mockGetAllSites = ConnectedSiteService.getAllSites as jest.MockedFunction<
-	typeof ConnectedSiteService.getAllSites
->;
 
 const mockConnectSiteToSpace =
 	ConnectedSiteService.connectSiteToSpace as jest.MockedFunction<
@@ -128,11 +125,6 @@ describe('SpaceConnectedSitesModal', () => {
 			error: null,
 		});
 
-		mockGetAllSites.mockResolvedValue({
-			data: {items: mockConnectedSites},
-			error: null,
-		});
-
 		mockConnectSiteToSpace.mockImplementation(
 			async (_externalReferenceCode, siteId, searchable) => ({
 				data: {
@@ -200,15 +192,27 @@ describe('SpaceConnectedSitesModal', () => {
 
 	describe('when hasConnectSitesPermission is true', () => {
 		it('allows connecting a new site', async () => {
-			mockGetAllSites.mockResolvedValue({
-				data: {items: [mockUnconnectedSite]},
-				error: null,
+			mockFetch.mockImplementation(async () => {
+				return {
+					headers: new Headers([
+						['Content-Type', 'application/json'],
+					]),
+					json: async () => ({
+						items: [...mockConnectedSites, mockUnconnectedSite],
+					}),
+				} as Response;
 			});
 
 			renderComponent();
 			await waitForComponentRendering();
 
 			await userEvent.click(screen.getByPlaceholderText('select-a-site'));
+
+			await waitFor(() => {
+				expect(
+					screen.getByRole('option', {name: mockUnconnectedSite.name})
+				).toBeInTheDocument();
+			});
 
 			await userEvent.click(
 				screen.getByRole('option', {name: mockUnconnectedSite.name})
@@ -235,9 +239,15 @@ describe('SpaceConnectedSitesModal', () => {
 		});
 
 		it('shows an error toast if connecting a site fails', async () => {
-			mockGetAllSites.mockResolvedValue({
-				data: {items: [mockUnconnectedSite]},
-				error: null,
+			mockFetch.mockImplementation(async () => {
+				return {
+					headers: new Headers([
+						['Content-Type', 'application/json'],
+					]),
+					json: async () => ({
+						items: [...mockConnectedSites, mockUnconnectedSite],
+					}),
+				} as Response;
 			});
 
 			mockConnectSiteToSpace.mockResolvedValue({
@@ -249,6 +259,12 @@ describe('SpaceConnectedSitesModal', () => {
 			await waitForComponentRendering();
 
 			await userEvent.click(screen.getByPlaceholderText('select-a-site'));
+
+			await waitFor(() => {
+				expect(
+					screen.getByRole('option', {name: mockUnconnectedSite.name})
+				).toBeInTheDocument();
+			});
 
 			await userEvent.click(
 				screen.getByRole('option', {name: mockUnconnectedSite.name})

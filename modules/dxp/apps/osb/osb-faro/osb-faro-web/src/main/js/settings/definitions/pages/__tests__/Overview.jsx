@@ -8,6 +8,14 @@ import {StaticRouter} from 'react-router-dom';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		channelId: '456',
+		groupId: '2000'
+	})
+}));
+
 describe('Definitions Overview', () => {
 	it('should render a list of definitions that includes individuals, accounts, behaviors, events, search and interests', () => {
 		// TODO: LRAC-4511 Remove DEVELOPER_MODE

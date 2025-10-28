@@ -59,16 +59,20 @@ public class FragmentEntryLinkDisplayContext {
 		FragmentEntry fragmentEntry = getFragmentEntry();
 
 		return FragmentEntryLinkLocalServiceUtil.
-			getAllFragmentEntryLinksCountByFragmentEntryId(
-				fragmentEntry.getGroupId(), getFragmentEntryId());
+			getAllFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntry.getGroupId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC());
 	}
 
 	public int getDisplayPagesUsageCount() throws PortalException {
 		FragmentEntry fragmentEntry = getFragmentEntry();
 
 		return FragmentEntryLinkLocalServiceUtil.
-			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-				fragmentEntry.getGroupId(), getFragmentEntryId(),
+			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntry.getGroupId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 	}
 
@@ -182,8 +186,10 @@ public class FragmentEntryLinkDisplayContext {
 		FragmentEntry fragmentEntry = getFragmentEntry();
 
 		return FragmentEntryLinkLocalServiceUtil.
-			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-				fragmentEntry.getGroupId(), getFragmentEntryId(),
+			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntry.getGroupId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
 	}
 
@@ -225,16 +231,20 @@ public class FragmentEntryLinkDisplayContext {
 		FragmentEntry fragmentEntry = getFragmentEntry();
 
 		return FragmentEntryLinkLocalServiceUtil.
-			getLayoutFragmentEntryLinksCountByFragmentEntryId(
-				fragmentEntry.getGroupId(), getFragmentEntryId());
+			getLayoutFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntry.getGroupId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC());
 	}
 
 	public int getPageTemplatesUsageCount() throws PortalException {
 		FragmentEntry fragmentEntry = getFragmentEntry();
 
 		return FragmentEntryLinkLocalServiceUtil.
-			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-				fragmentEntry.getGroupId(), getFragmentEntryId(),
+			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+				fragmentEntry.getGroupId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				LayoutPageTemplateEntryTypeConstants.BASIC);
 	}
 
@@ -309,77 +319,97 @@ public class FragmentEntryLinkDisplayContext {
 			fragmentEntryLinksSearchContainer.setResultsAndTotal(
 				() ->
 					FragmentEntryLinkLocalServiceUtil.
-						getLayoutFragmentEntryLinksByFragmentEntryId(
-							fragmentEntry.getGroupId(), getFragmentEntryId(),
+						getLayoutFragmentEntryLinksByFragmentEntryERC(
+							fragmentEntry.getGroupId(),
+							fragmentEntry.getExternalReferenceCode(),
+							fragmentEntry.getScopeERC(),
 							fragmentEntryLinksSearchContainer.getStart(),
 							fragmentEntryLinksSearchContainer.getEnd(),
 							fragmentEntryLinksSearchContainer.
 								getOrderByComparator()),
 				FragmentEntryLinkLocalServiceUtil.
-					getLayoutFragmentEntryLinksCountByFragmentEntryId(
-						fragmentEntry.getGroupId(), getFragmentEntryId()));
+					getLayoutFragmentEntryLinksCountByFragmentEntryERC(
+						fragmentEntry.getGroupId(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeERC()));
 		}
 		else if (Objects.equals(getNavigation(), "page-templates")) {
 			fragmentEntryLinksSearchContainer.setResultsAndTotal(
 				() ->
 					FragmentEntryLinkLocalServiceUtil.
-						getLayoutPageTemplateFragmentEntryLinksByFragmentEntryId(
-							fragmentEntry.getGroupId(), getFragmentEntryId(),
+						getLayoutPageTemplateFragmentEntryLinksByFragmentEntryERC(
+							fragmentEntry.getGroupId(),
+							fragmentEntry.getExternalReferenceCode(),
+							fragmentEntry.getScopeERC(),
 							LayoutPageTemplateEntryTypeConstants.BASIC,
 							fragmentEntryLinksSearchContainer.getStart(),
 							fragmentEntryLinksSearchContainer.getEnd(),
 							fragmentEntryLinksSearchContainer.
 								getOrderByComparator()),
 				FragmentEntryLinkLocalServiceUtil.
-					getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-						fragmentEntry.getGroupId(), getFragmentEntryId(),
+					getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+						fragmentEntry.getGroupId(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeERC(),
 						LayoutPageTemplateEntryTypeConstants.BASIC));
 		}
 		else if (Objects.equals(getNavigation(), "display-page-templates")) {
 			fragmentEntryLinksSearchContainer.setResultsAndTotal(
 				() ->
 					FragmentEntryLinkLocalServiceUtil.
-						getLayoutPageTemplateFragmentEntryLinksByFragmentEntryId(
-							fragmentEntry.getGroupId(), getFragmentEntryId(),
+						getLayoutPageTemplateFragmentEntryLinksByFragmentEntryERC(
+							fragmentEntry.getGroupId(),
+							fragmentEntry.getExternalReferenceCode(),
+							fragmentEntry.getScopeERC(),
 							LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 							fragmentEntryLinksSearchContainer.getStart(),
 							fragmentEntryLinksSearchContainer.getEnd(),
 							fragmentEntryLinksSearchContainer.
 								getOrderByComparator()),
 				FragmentEntryLinkLocalServiceUtil.
-					getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-						fragmentEntry.getGroupId(), getFragmentEntryId(),
+					getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+						fragmentEntry.getGroupId(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeERC(),
 						LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE));
 		}
 		else if (Objects.equals(getNavigation(), "master-pages")) {
 			fragmentEntryLinksSearchContainer.setResultsAndTotal(
 				() ->
 					FragmentEntryLinkLocalServiceUtil.
-						getLayoutPageTemplateFragmentEntryLinksByFragmentEntryId(
-							fragmentEntry.getGroupId(), getFragmentEntryId(),
+						getLayoutPageTemplateFragmentEntryLinksByFragmentEntryERC(
+							fragmentEntry.getGroupId(),
+							fragmentEntry.getExternalReferenceCode(),
+							fragmentEntry.getScopeERC(),
 							LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 							fragmentEntryLinksSearchContainer.getStart(),
 							fragmentEntryLinksSearchContainer.getEnd(),
 							fragmentEntryLinksSearchContainer.
 								getOrderByComparator()),
 				FragmentEntryLinkLocalServiceUtil.
-					getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryId(
-						fragmentEntry.getGroupId(), getFragmentEntryId(),
+					getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntryERC(
+						fragmentEntry.getGroupId(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeERC(),
 						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
 		}
 		else {
 			fragmentEntryLinksSearchContainer.setResultsAndTotal(
 				() ->
 					FragmentEntryLinkLocalServiceUtil.
-						getAllFragmentEntryLinksByFragmentEntryId(
-							fragmentEntry.getGroupId(), getFragmentEntryId(),
+						getAllFragmentEntryLinksByFragmentEntryERC(
+							fragmentEntry.getGroupId(),
+							fragmentEntry.getExternalReferenceCode(),
+							fragmentEntry.getScopeERC(),
 							fragmentEntryLinksSearchContainer.getStart(),
 							fragmentEntryLinksSearchContainer.getEnd(),
 							fragmentEntryLinksSearchContainer.
 								getOrderByComparator()),
 				FragmentEntryLinkLocalServiceUtil.
-					getAllFragmentEntryLinksCountByFragmentEntryId(
-						fragmentEntry.getGroupId(), getFragmentEntryId()));
+					getAllFragmentEntryLinksCountByFragmentEntryERC(
+						fragmentEntry.getGroupId(),
+						fragmentEntry.getExternalReferenceCode(),
+						fragmentEntry.getScopeERC()));
 		}
 
 		_searchContainer = fragmentEntryLinksSearchContainer;

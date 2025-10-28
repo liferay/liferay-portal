@@ -153,6 +153,7 @@ public class ContainerLayoutStructureItemImporter
 		}
 
 		JSONObject fragmentLinkJSONObject = FragmentLinkUtil.toJSONObject(
+			layoutStructureItemImporterContext.getCompanyId(),
 			containerPageElementDefinition.getFragmentLink(),
 			layoutStructureItemImporterContext.getInfoItemServiceRegistry(),
 			layoutStructureItemImporterContext.getGroupId());

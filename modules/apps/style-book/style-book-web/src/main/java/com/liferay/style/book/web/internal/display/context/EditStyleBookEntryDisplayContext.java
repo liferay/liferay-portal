@@ -322,13 +322,14 @@ public class EditStyleBookEntryDisplayContext {
 					_themeDisplay.getCompanyId(), _styleBookEntry.getThemeId());
 		}
 		else {
-			Group group = _themeDisplay.getScopeGroup();
+			LayoutSet layoutSet = _themeDisplay.getLayoutSet();
+
+			Group group = layoutSet.getGroup();
 
 			frontendTokenDefinition =
 				_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
 					LayoutSetLocalServiceUtil.fetchLayoutSet(
-						_themeDisplay.getSiteGroupId(),
-						group.isLayoutSetPrototype()));
+						group.getGroupId(), group.isLayoutSetPrototype()));
 		}
 
 		if (frontendTokenDefinition != null) {

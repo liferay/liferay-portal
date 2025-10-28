@@ -144,7 +144,9 @@ const DeliveryGroupModal = ({
 			observer={observerModal}
 			spritemap={spritemap}
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(
 					deliveryGroup
 						? Liferay.Language.get('edit-x')

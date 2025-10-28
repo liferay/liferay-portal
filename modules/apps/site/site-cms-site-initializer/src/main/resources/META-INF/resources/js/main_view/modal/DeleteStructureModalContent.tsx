@@ -37,7 +37,9 @@ export default function DeleteStructureModalContent({
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(
 					Liferay.Language.get('delete-x'),
 					Liferay.Util.escapeHTML(name)

@@ -8,7 +8,7 @@ import React from 'react';
 
 import BasicInformation from '../../../../src/main/resources/META-INF/resources/js/components/layout_reports/BasicInformation';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const testProps = {
 	defaultLanguageId: 'en-US',

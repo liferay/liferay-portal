@@ -24,9 +24,8 @@ gradle.projectsEvaluated {
 	rootProject.tasks.register("copyOverrideTestScript", DockerCopyFileFromContainer) {
 		dependsOn "createDockerContainer"
 
-		compressed = true
 		containerId = "create_docker_container_container"
-		hostPath = rootProject.buildDir.path
+		hostPath = "${rootProject.buildDir}/override_test.sh"
 		remotePath = "/home/liferay/configs/local/scripts/override_test.sh"
 	}
 

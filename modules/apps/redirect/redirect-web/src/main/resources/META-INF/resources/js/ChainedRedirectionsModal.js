@@ -33,7 +33,9 @@ const ChainedRedirectionsModal = ({
 			size="md"
 			status="warning"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('redirect-chain')}
 			</ClayModal.Header>
 

@@ -121,7 +121,8 @@ public class MenuDisplayFragmentRendererTest {
 		throws Exception {
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+			null, TestPropsValues.getUserId(), _group.getGroupId(), null, null,
+			null,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				plid),
 			plid, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,

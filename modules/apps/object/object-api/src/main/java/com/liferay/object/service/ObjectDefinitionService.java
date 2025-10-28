@@ -48,10 +48,11 @@ public interface ObjectDefinitionService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectDefinitionServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the object definition remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ObjectDefinitionServiceUtil} if injection and service tracking are not available.
 	 */
 	public ObjectDefinition addCustomObjectDefinition(
-			long objectFolderId, String className, boolean enableComments,
-			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
-			boolean enableIndexSearch, boolean enableLocalization,
-			boolean enableObjectEntryDraft, boolean enableObjectEntrySchedule,
+			String externalReferenceCode, long objectFolderId, String className,
+			boolean enableComments, boolean enableFormContainer,
+			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
+			boolean enableLocalization, boolean enableObjectEntryDraft,
+			boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			Map<Locale, String> labelMap, String name, String panelAppOrder,
@@ -148,6 +149,7 @@ public interface ObjectDefinitionService extends BaseService {
 			String panelCategoryKey, boolean portlet,
 			Map<Locale, String> pluralLabelMap, String scope, int status,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException;
 
@@ -159,6 +161,7 @@ public interface ObjectDefinitionService extends BaseService {
 			String externalReferenceCode, long objectDefinitionId,
 			long objectFolderId, long titleObjectFieldId,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException;
 

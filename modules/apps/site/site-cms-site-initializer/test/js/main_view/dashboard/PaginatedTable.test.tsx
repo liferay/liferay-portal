@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
@@ -128,6 +128,7 @@ const mockData: InventoryAnalysisDataType = {
 			title: 'title 22',
 		},
 	],
+	inventoryAnalysisItemsCount: 4050,
 	page: 1,
 	pageSize: 20,
 	totalCount: 4050,

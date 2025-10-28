@@ -11,14 +11,12 @@ import SpaceSticker from '../../../common/components/SpaceSticker';
 
 const SpaceRenderer = ({
 	href,
-	itemData,
-	size,
+	logoColor,
+	size = 'xs',
 	value,
 }: {
 	href?: string;
-	itemData: {
-		settings?: {logoColor: IClayStickerProps['displayType']};
-	};
+	logoColor: IClayStickerProps['displayType'];
 	size?: IClayStickerProps['size'];
 	value: string;
 }) => {
@@ -32,10 +30,10 @@ const SpaceRenderer = ({
 			)}
 		>
 			<SpaceSticker
-				displayType={itemData.settings?.logoColor}
+				displayType={logoColor}
 				href={href}
 				name={value}
-				size={size || 'xs'}
+				size={size}
 			/>
 		</span>
 	);

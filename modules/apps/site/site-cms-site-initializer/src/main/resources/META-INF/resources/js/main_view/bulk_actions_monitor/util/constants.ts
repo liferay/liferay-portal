@@ -24,8 +24,8 @@ export const BULK_ACTION_TAGS = 'KeywordBulkAction';
 
 export const INTERVAL_TASK_POLLING_MS = 5000;
 
-export const URL_TASKS_REPORT_DETAIL = `${Liferay.ThemeDisplay.getPortalURL()}/e/bulk-action-task/`;
-export const URL_TASKS_REPORT = `${Liferay.ThemeDisplay.getPortalURL()}/o/cms/bulk-action-tasks`;
+export const URL_TASKS_REPORT_DETAIL = `${Liferay.ThemeDisplay.getPortalURL()}/web/cms/e/bulk-action-task/`;
+export const URL_TASKS_REPORT = `${Liferay.ThemeDisplay.getPortalURL()}/web/cms/bulk-action-task-report`;
 
 export const LABELS_BULK_ACTIONS: {[key in keyof IBulkActionTaskType]: string} =
 	{

@@ -46,7 +46,9 @@ export default function StatusLabel({
 
 			{showInstanceTrackerModal && (
 				<ClayModal observer={observer} size="full-screen">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('track-workflow')}
 					</ClayModal.Header>
 

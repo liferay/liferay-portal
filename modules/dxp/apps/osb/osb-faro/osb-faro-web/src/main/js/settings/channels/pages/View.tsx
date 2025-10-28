@@ -166,7 +166,6 @@ const View: React.FC<IViewProps> = ({
 				})
 			]}
 			documentTitle={`${name} - ${Liferay.Language.get('properties')}`}
-			groupId={groupId}
 		>
 			<div className='content-header has-page-actions'>
 				<div className='header-text w-100'>

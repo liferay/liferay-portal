@@ -72,7 +72,8 @@ public class FTLImportsFormatter extends BaseImportsFormatter {
 			"(?m)^([ \t]*package .*;|</#.*>)\\s*^([ \t]*import)", "$1\n\n$2");
 
 		content = content.replaceAll(
-			"(?m)^([ \t]*(?:package|import) .*;)\\s*^([ \t]*/\\*\\*|@|<#)",
+			"(?m)^([ \t]*(?:package|import) .*;)\\s*^([ \t]*/\\*\\*|@|<#" +
+				"(?!else))",
 			"$1\n\n$2");
 
 		return content;

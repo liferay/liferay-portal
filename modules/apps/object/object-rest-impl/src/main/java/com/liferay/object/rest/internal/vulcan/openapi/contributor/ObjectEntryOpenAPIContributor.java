@@ -95,6 +95,10 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 	public void contribute(OpenAPI openAPI, OpenAPIContext openAPIContext)
 		throws Exception {
 
+		ObjectField assigneeObjectField =
+			_objectFieldLocalService.fetchObjectFieldByBusinessType(
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE, null);
 		List<ObjectAction> objectActions =
 			_objectActionLocalService.getObjectActions(
 				_objectDefinition.getObjectDefinitionId(),
@@ -113,6 +117,26 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 		Paths paths = openAPI.getPaths();
 
 		for (String key : ListUtil.fromMapKeys(paths)) {
+			if ((assigneeObjectField != null) &&
+				(key.equals("/") || key.equals("/scopes/{scopeKey}"))) {
+
+				PathItem pathItem = paths.get(key);
+
+				Operation operation = pathItem.getGet();
+
+				List<Parameter> parameters = operation.getParameters();
+
+				parameters.add(
+					1,
+					new Parameter() {
+						{
+							in("query");
+							name("assigneeUserExternalReferenceCode");
+							schema(new StringSchema());
+						}
+					});
+			}
+
 			if (!key.contains("objectActionName") &&
 				!key.contains("objectRelationshipName")) {
 

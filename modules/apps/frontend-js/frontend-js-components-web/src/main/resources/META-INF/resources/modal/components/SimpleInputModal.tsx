@@ -171,7 +171,11 @@ export default function SimpleInputModal({
 
 	return visible ? (
 		<ClayModal center={center} observer={observer} size={size}>
-			<ClayModal.Header>{dialogTitle}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{dialogTitle}
+			</ClayModal.Header>
 
 			<ClayForm
 				id={`${namespace}form`}

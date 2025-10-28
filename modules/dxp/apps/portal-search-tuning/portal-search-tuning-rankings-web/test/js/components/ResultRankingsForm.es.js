@@ -16,7 +16,7 @@ import {
 	VALIDATE_FORM_URL,
 } from '../mocks/data.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const HIDE_BUTTON_LABEL = 'hide-result';
 const PIN_BUTTON_LABEL = 'pin-result';

@@ -156,6 +156,8 @@ components:
                     format: date
                     readOnly: true
                     type: string
+                scope:
+                    $ref: "#/components/schemas/Scope"
                 scopeId:
                     # @review
                     description:
@@ -211,6 +213,14 @@ components:
                 title:
                     description:
                         The parent object entry folder's main title/name.
+                    type: string
+            type: object
+        Scope:
+            properties:
+                externalReferenceCode:
+                    type: string
+                type:
+                    enum: [AssetLibrary, CMS, Site]
                     type: string
             type: object
         Status:

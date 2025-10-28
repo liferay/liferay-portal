@@ -641,81 +641,6 @@ java -jar ${app.server.weblogic.dir}/${app.server.weblogic.jar.name} -ignoreSysP
 		<echo file="prepare-generated-files.tstamp">${prepare-generated-files.tstamp}</echo>
 	</target>
 
-	<target name="set-up-jakarta-ee-transformer-agent">
-		<if>
-			<and>
-				<equals arg1="${app.server.type}" arg2="tomcat" />
-				<matches pattern="10\.\d+\.\d+" string="${app.server.tomcat.version}" />
-			</and>
-			<then>
-				<var name="transformer.agent" value="\&quot;-javaagent:${CATALINA_HOME}/../tools/portal-tools-jakarta-ee-transformer/com.liferay.portal.tools.jakarta.ee.transformer.jar\&quot;" />
-
-				<if>
-					<not>
-						<resourcecontains
-							resource="${app.server.tomcat.bin.dir}/setenv.sh"
-							substring="${transformer.agent}"
-						/>
-					</not>
-					<then>
-						<echo append="true" file="${app.server.tomcat.bin.dir}/setenv.sh">
-							<![CDATA[
-CATALINA_OPTS="${transformer.agent} -Djakarta.ee.transformer.bundle.header.replacer.logging.disabled=true -Djakarta.ee.transformer.class.remapper.logging.disabled=true -Djakarta.ee.transformer.reverse.text.replacer.disabled=true -Djakarta.ee.transformer.text.replacer.logging.disabled=true ${CATALINA_OPTS}"]]>
-						</echo>
-					</then>
-				</if>
-			</then>
-		</if>
-		<if>
-			<and>
-				<equals arg1="${app.server.type}" arg2="jboss" />
-				<matches pattern="8\.\d+\.\d+" string="${app.server.jboss.version}" />
-			</and>
-			<then>
-				<var name="transformer.agent" value="-javaagent:${JBOSS_HOME}/../tools/portal-tools-jakarta-ee-transformer/com.liferay.portal.tools.jakarta.ee.transformer.jar" />
-
-				<if>
-					<not>
-						<resourcecontains
-							resource="${app.server.jboss.bin.dir}/standalone.conf"
-							substring="${transformer.agent}"
-						/>
-					</not>
-					<then>
-						<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">
-							<![CDATA[
-JAVA_OPTS="${transformer.agent} -Djakarta.ee.transformer.bundle.header.replacer.logging.disabled=true -Djakarta.ee.transformer.class.remapper.logging.disabled=true -Djakarta.ee.transformer.reverse.text.replacer.disabled=true -Djakarta.ee.transformer.text.replacer.logging.disabled=true $JAVA_OPTS"]]>
-						</echo>
-					</then>
-				</if>
-			</then>
-		</if>
-		<if>
-			<and>
-				<equals arg1="${app.server.type}" arg2="wildfly" />
-				<matches pattern="30\.\d+\.\d+" string="${app.server.wildfly.version}" />
-			</and>
-			<then>
-				<var name="transformer.agent" value="-javaagent:${JBOSS_HOME}/../tools/portal-tools-jakarta-ee-transformer/com.liferay.portal.tools.jakarta.ee.transformer.jar" />
-
-				<if>
-					<not>
-						<resourcecontains
-							resource="${app.server.wildfly.bin.dir}/standalone.conf"
-							substring="${transformer.agent}"
-						/>
-					</not>
-					<then>
-						<echo append="true" file="${app.server.wildfly.bin.dir}/standalone.conf">
-							<![CDATA[
-JAVA_OPTS="${transformer.agent} -Djakarta.ee.transformer.bundle.header.replacer.logging.disabled=true -Djakarta.ee.transformer.class.remapper.logging.disabled=true -Djakarta.ee.transformer.reverse.text.replacer.disabled=true -Djakarta.ee.transformer.text.replacer.logging.disabled=true $JAVA_OPTS"]]>
-						</echo>
-					</then>
-				</if>
-			</then>
-		</if>
-	</target>
-
 	<target name="unzip-glowroot">
 		<delete dir="${app.server.parent.dir}/glowroot" />
 
@@ -931,8 +856,8 @@ this task.
 		<replace
 			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
 		>
-			<replacetoken><![CDATA[<jsp-config />]]></replacetoken>
-			<replacevalue><![CDATA[<!--<jsp-config />-->]]></replacevalue>
+			<replacetoken><![CDATA[<jsp-config/>]]></replacetoken>
+			<replacevalue><![CDATA[<!--<jsp-config/>-->]]></replacevalue>
 		</replace>
 
 		<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">
@@ -1610,8 +1535,8 @@ this task.
 		<replace
 			file="${app.server.wildfly.dir}/standalone/configuration/standalone.xml"
 		>
-			<replacetoken><![CDATA[<jsp-config />]]></replacetoken>
-			<replacevalue><![CDATA[<!--<jsp-config />-->]]></replacevalue>
+			<replacetoken><![CDATA[<jsp-config/>]]></replacetoken>
+			<replacevalue><![CDATA[<!--<jsp-config/>-->]]></replacevalue>
 		</replace>
 
 		<echo append="true" file="${app.server.wildfly.bin.dir}/standalone.conf">

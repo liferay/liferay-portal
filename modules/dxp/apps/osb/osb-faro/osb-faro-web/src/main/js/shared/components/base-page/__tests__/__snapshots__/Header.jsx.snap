@@ -13,6 +13,7 @@ exports[`BasePage.Header NavBar renders NavBar 1`] = `
       >
         <button
           aria-expanded="false"
+          aria-label="Open Menu, Current Page: Test"
           class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
           type="button"
         >
@@ -46,9 +47,7 @@ exports[`BasePage.Header NavBar renders NavBar 1`] = `
                   class="nav-link"
                   href="/workspace/123/contacts/accounts/321?rangeKey=30"
                 >
-                  <span
-                    class="navbar-text-truncate"
-                  >
+                  <span>
                     Test
                   </span>
                 </a>
@@ -75,6 +74,7 @@ exports[`BasePage.Header NavBar renders NavBar w/o routeQueries 1`] = `
       >
         <button
           aria-expanded="false"
+          aria-label="Open Menu, Current Page: Test"
           class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
           type="button"
         >
@@ -108,9 +108,7 @@ exports[`BasePage.Header NavBar renders NavBar w/o routeQueries 1`] = `
                   class="nav-link"
                   href="/workspace/123/contacts/accounts/321"
                 >
-                  <span
-                    class="navbar-text-truncate"
-                  >
+                  <span>
                     Test
                   </span>
                 </a>
@@ -137,6 +135,7 @@ exports[`BasePage.Header NavBar renders NavBar with deprecated label 1`] = `
       >
         <button
           aria-expanded="false"
+          aria-label="Open Menu, Current Page: Test"
           class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
           type="button"
         >
@@ -170,9 +169,7 @@ exports[`BasePage.Header NavBar renders NavBar with deprecated label 1`] = `
                   class="nav-link"
                   href="/workspace/123/contacts/accounts/321?rangeKey=30"
                 >
-                  <span
-                    class="navbar-text-truncate"
-                  >
+                  <span>
                     Test
                     <span
                       class="badge badge-warning ml-1 badge-translucent"

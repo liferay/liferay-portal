@@ -9,7 +9,7 @@ exports[`RequestList should render 1`] = `
       class="toolbar-root"
     >
       <nav
-        class="navbar navbar-root management-bar management-bar-light navbar-expand"
+        class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
       >
         <div
           class="container-fluid"
@@ -43,48 +43,51 @@ exports[`RequestList should render 1`] = `
               role="presentation"
             >
               <div
-                class="dropdown dropdown-root filter-and-order-root"
+                class="dropdown dropdown-root mr-2"
               >
                 <button
                   aria-controls="clay-dropdown-menu-1"
                   aria-expanded="false"
                   aria-haspopup="true"
-                  class="dropdown-toggle d-flex align-items-center btn btn-outline-borderless btn-sm btn-outline-secondary"
+                  class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+                  data-testid="filter-button"
                   type="button"
                 >
-                  Filter
-                  <svg
-                    class="lexicon-icon lexicon-icon-caret-bottom ml-2 mt-0"
-                    role="presentation"
+                  <span
+                    class="caret-root"
                   >
-                    <use
-                      href="#caret-bottom"
-                    />
-                  </svg>
+                    <svg
+                      class="lexicon-icon lexicon-icon-filter"
+                      role="presentation"
+                    >
+                      <use
+                        href="#filter"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="mx-2"
+                  >
+                    Filter
+                  </span>
+                  <span
+                    class="caret-root"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-caret-bottom"
+                      role="presentation"
+                    >
+                      <use
+                        href="#caret-bottom"
+                      />
+                    </svg>
+                  </span>
                 </button>
               </div>
             </li>
-            <li
-              class="nav-item"
-              role="presentation"
-            >
-              <a
-                class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                href="/?field=createDate&page=1&sortOrder=ASC"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-order_arrow_descending icon-root"
-                  role="presentation"
-                >
-                  <use
-                    href="#order_arrow_descending"
-                  />
-                </svg>
-              </a>
-            </li>
           </ul>
           <div
-            class="navbar-form navbar-form-autofit"
+            class="navbar-form navbar-form-autofit mx-2"
           >
             <div
               class="input-group search"
@@ -139,493 +142,591 @@ exports[`RequestList should render 1`] = `
       </nav>
     </div>
     <div
-      class="table-responsive table-root flex-grow-1"
+      class="flex-grow-1 mx-4 table-root"
     >
-      <table
-        class="table table-autofit table-hover table-heading-nowrap"
+      <div
+        class="table-responsive"
       >
-        <thead>
-          <tr>
-            <th />
-            <th
-              class="table-head-title"
-            >
-              <a
-                class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                href="/?field=batchId&page=1&sortOrder=ASC"
+        <table
+          class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+        >
+          <thead>
+            <tr>
+              <th />
+              <th
+                class="table-head-title"
               >
-                <span
-                  class="text-truncate"
+                <a
+                  class="button-root w-100 btn btn-unstyled"
+                  href="/?field=batchId&page=1&sortOrder=ASC"
                 >
-                  Request ID
-                </span>
-              </a>
-            </th>
-            <th
-              class="table-head-title"
-            >
-              <a
-                class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                href="/?field=emailAddress&page=1&sortOrder=ASC"
-              >
-                <span
-                  class="text-truncate"
-                >
-                  Email
-                </span>
-              </a>
-            </th>
-            <th
-              class="table-head-title"
-            >
-              <a
-                class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                href="/?field=type&page=1&sortOrder=ASC"
-              >
-                <span
-                  class="text-truncate"
-                >
-                  Request Type
-                </span>
-              </a>
-            </th>
-            <th
-              class="table-head-title"
-            >
-              <a
-                class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                href="/?field=createDate&page=1&sortOrder=ASC"
-              >
-                <span
-                  class="text-truncate"
-                >
-                  Requested Date
-                </span>
-                <span
-                  class="inline-item inline-item-after"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-order-arrow-down icon-root"
-                    role="presentation"
+                  <div
+                    class="align-items-center d-flex justify-content-between"
                   >
-                    <use
-                      href="#order-arrow-down"
+                    <div
+                      class="text-truncate"
+                    >
+                      Request ID
+                    </div>
+                    <button
+                      aria-label="Descending"
+                      class="component-action ml-2 btn btn-sm btn-primary"
+                      type="button"
+                    >
+                      <span
+                        class="opacity-25"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order-arrow"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </a>
+              </th>
+              <th
+                class="table-head-title"
+              >
+                <a
+                  class="button-root w-100 btn btn-unstyled"
+                  href="/?field=emailAddress&page=1&sortOrder=ASC"
+                >
+                  <div
+                    class="align-items-center d-flex justify-content-between"
+                  >
+                    <div
+                      class="text-truncate"
+                    >
+                      Email
+                    </div>
+                    <button
+                      aria-label="Descending"
+                      class="component-action ml-2 btn btn-sm btn-primary"
+                      type="button"
+                    >
+                      <span
+                        class="opacity-25"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order-arrow"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </a>
+              </th>
+              <th
+                class="table-head-title"
+              >
+                <a
+                  class="button-root w-100 btn btn-unstyled"
+                  href="/?field=type&page=1&sortOrder=ASC"
+                >
+                  <div
+                    class="align-items-center d-flex justify-content-between"
+                  >
+                    <div
+                      class="text-truncate"
+                    >
+                      Request Type
+                    </div>
+                    <button
+                      aria-label="Descending"
+                      class="component-action ml-2 btn btn-sm btn-primary"
+                      type="button"
+                    >
+                      <span
+                        class="opacity-25"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order-arrow"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </a>
+              </th>
+              <th
+                class="table-head-title"
+              >
+                <a
+                  class="button-root w-100 btn btn-unstyled"
+                  href="/?field=createDate&page=1&sortOrder=ASC"
+                >
+                  <div
+                    class="align-items-center d-flex justify-content-between"
+                  >
+                    <div
+                      class="text-truncate"
+                    >
+                      Requested Date
+                    </div>
+                    <button
+                      aria-label="Descending"
+                      class="component-action ml-2 btn btn-sm btn-primary"
+                      type="button"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-order_arrow_descending icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#order_arrow_descending"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </a>
+              </th>
+              <th
+                class="table-head-title"
+              >
+                <a
+                  class="button-root w-100 btn btn-unstyled"
+                  href="/?field=status&page=1&sortOrder=ASC"
+                >
+                  <div
+                    class="align-items-center d-flex justify-content-between"
+                  >
+                    <div
+                      class="text-truncate"
+                    >
+                      Request Status
+                    </div>
+                    <button
+                      aria-label="Descending"
+                      class="component-action ml-2 btn btn-sm btn-primary"
+                      type="button"
+                    >
+                      <span
+                        class="opacity-25"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order-arrow"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </a>
+              </th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              class="clickable disabled"
+            >
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      disabled=""
+                      type="checkbox"
+                      value="false"
                     />
-                  </svg>
-                </span>
-              </a>
-            </th>
-            <th
-              class="table-head-title"
-            >
-              <a
-                class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                href="/?field=status&page=1&sortOrder=ASC"
-              >
-                <span
-                  class="text-truncate"
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
                 >
-                  Request Status
-                </span>
-              </a>
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            class="clickable disabled"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    disabled=""
-                    type="checkbox"
-                    value="false"
-                  />
+                  1
+                </div>
+              </td>
+              <td>
+                t.smith@nosaints.com
+              </td>
+              <td>
+                Delete
+              </td>
+              <td>
+                Oct 09, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-info label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Running
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                1
-              </div>
-            </td>
-            <td>
-              t.smith@nosaints.com
-            </td>
-            <td>
-              Delete
-            </td>
-            <td>
-              Oct 09, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-info label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Running
-                </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
+                <span />
+              </td>
+            </tr>
+            <tr
+              class="clickable disabled"
             >
-              <span />
-            </td>
-          </tr>
-          <tr
-            class="clickable disabled"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    disabled=""
-                    type="checkbox"
-                    value="false"
-                  />
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      disabled=""
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  2
+                </div>
+              </td>
+              <td>
+                alice.bryant@example.com
+              </td>
+              <td>
+                Unsuppress
+              </td>
+              <td>
+                Oct 09, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-info label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Running
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                2
-              </div>
-            </td>
-            <td>
-              alice.bryant@example.com
-            </td>
-            <td>
-              Unsuppress
-            </td>
-            <td>
-              Oct 09, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-info label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Running
-                </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
+                <span />
+              </td>
+            </tr>
+            <tr
+              class="clickable disabled"
             >
-              <span />
-            </td>
-          </tr>
-          <tr
-            class="clickable disabled"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    disabled=""
-                    type="checkbox"
-                    value="false"
-                  />
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      disabled=""
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  3
+                </div>
+              </td>
+              <td>
+                scott.gilbert@example.com
+              </td>
+              <td>
+                Suppress
+              </td>
+              <td>
+                Sep 09, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-success label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Done
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                3
-              </div>
-            </td>
-            <td>
-              scott.gilbert@example.com
-            </td>
-            <td>
-              Suppress
-            </td>
-            <td>
-              Sep 09, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-success label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Done
+                <span>
+                  <b>
+                    Download Expired
+                  </b>
                 </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
+              </td>
+            </tr>
+            <tr
+              class="clickable"
             >
-              <span>
-                <b>
-                  Download Expired
-                </b>
-              </span>
-            </td>
-          </tr>
-          <tr
-            class="clickable"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    type="checkbox"
-                    value="false"
-                  />
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  4
+                </div>
+              </td>
+              <td>
+                foo@bar.com
+              </td>
+              <td>
+                Suppress
+              </td>
+              <td>
+                Nov 09, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-success label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Done
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                4
-              </div>
-            </td>
-            <td>
-              foo@bar.com
-            </td>
-            <td>
-              Suppress
-            </td>
-            <td>
-              Nov 09, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-success label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Done
+                <span>
+                  <a
+                    class="btn btn-secondary btn-sm button-root"
+                    href="/o/proxy/download/data-control-tasks/4?projectGroupId=23"
+                    role="button"
+                    tabindex="0"
+                  >
+                    Download
+                  </a>
                 </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
+              </td>
+            </tr>
+            <tr
+              class="clickable disabled"
             >
-              <span>
-                <a
-                  class="btn btn-secondary btn-sm button-root"
-                  href="/o/proxy/download/data-control-tasks/4?projectGroupId=23"
-                  role="button"
-                  tabindex="0"
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
                 >
-                  Download
-                </a>
-              </span>
-            </td>
-          </tr>
-          <tr
-            class="clickable disabled"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    disabled=""
-                    type="checkbox"
-                    value="false"
-                  />
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      disabled=""
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  5
+                </div>
+              </td>
+              <td>
+                ]lillie.foster@example.com
+              </td>
+              <td>
+                Access
+              </td>
+              <td>
+                Sep 09, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-danger label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Error
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                5
-              </div>
-            </td>
-            <td>
-              ]lillie.foster@example.com
-            </td>
-            <td>
-              Access
-            </td>
-            <td>
-              Sep 09, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-danger label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Error
-                </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
+                <span />
+              </td>
+            </tr>
+            <tr
+              class="clickable disabled"
             >
-              <span />
-            </td>
-          </tr>
-          <tr
-            class="clickable disabled"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    disabled=""
-                    type="checkbox"
-                    value="false"
-                  />
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      disabled=""
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  6
+                </div>
+              </td>
+              <td>
+                bazbuz@example.com
+              </td>
+              <td>
+                Delete
+              </td>
+              <td>
+                Sep 09, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-secondary label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Pending
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                6
-              </div>
-            </td>
-            <td>
-              bazbuz@example.com
-            </td>
-            <td>
-              Delete
-            </td>
-            <td>
-              Sep 09, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-secondary label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Pending
-                </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
+                <span />
+              </td>
+            </tr>
+            <tr
+              class="clickable"
             >
-              <span />
-            </td>
-          </tr>
-          <tr
-            class="clickable"
-          >
-            <td>
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    type="checkbox"
-                    value="false"
-                  />
+              <td>
+                <div
+                  class="custom-control custom-checkbox"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      value="false"
+                    />
+                    <span
+                      class="custom-control-label"
+                    />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div
+                  class="h4 table-title text-truncate"
+                >
+                  7
+                </div>
+              </td>
+              <td>
+                scott.gilbert@example.com
+              </td>
+              <td>
+                Access
+              </td>
+              <td>
+                Dec 05, 2019
+              </td>
+              <td>
+                <div
+                  class="label label-root status label-success label-lg label-uppercase"
+                >
                   <span
-                    class="custom-control-label"
-                  />
-                </label>
-              </div>
-            </td>
-            <td>
-              <div
-                class="h4 table-title text-truncate"
+                    class="label-item"
+                  >
+                    Done
+                  </span>
+                </div>
+              </td>
+              <td
+                class="row-inline-actions"
               >
-                7
-              </div>
-            </td>
-            <td>
-              scott.gilbert@example.com
-            </td>
-            <td>
-              Access
-            </td>
-            <td>
-              Dec 05, 2019
-            </td>
-            <td>
-              <div
-                class="label label-root status label-success label-lg label-uppercase"
-              >
-                <span
-                  class="label-item"
-                >
-                  Done
+                <span>
+                  <a
+                    class="btn btn-secondary btn-sm button-root"
+                    href="/o/proxy/download/data-control-tasks/70?projectGroupId=23"
+                    role="button"
+                    tabindex="0"
+                  >
+                    Download
+                  </a>
                 </span>
-              </div>
-            </td>
-            <td
-              class="row-inline-actions"
-            >
-              <span>
-                <a
-                  class="btn btn-secondary btn-sm button-root"
-                  href="/o/proxy/download/data-control-tasks/70?projectGroupId=23"
-                  role="button"
-                  tabindex="0"
-                >
-                  Download
-                </a>
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <nav
       class="navbar navbar-root pagination-bar-root"

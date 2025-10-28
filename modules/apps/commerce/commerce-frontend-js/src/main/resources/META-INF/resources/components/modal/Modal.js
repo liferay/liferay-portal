@@ -125,7 +125,13 @@ function Modal(props) {
 					size={size}
 					status={props.status}
 				>
-					{title && <ClayModal.Header>{title}</ClayModal.Header>}
+					{title && (
+						<ClayModal.Header
+							closeButtonAriaLabel={Liferay.Language.get('close')}
+						>
+							{title}
+						</ClayModal.Header>
+					)}
 
 					<div
 						className="modal-body modal-body-iframe"

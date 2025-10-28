@@ -77,7 +77,7 @@ const FeatureFlagList: React.FC<IFeatureFlagListProps> = ({featureFlags}) => {
 													Liferay.Language.get(
 														'dependencies-x'
 													),
-													dependencyKeys as string[]
+													dependencyKeys.join(', ')
 												)}
 											</ClayList.ItemText>
 										)}

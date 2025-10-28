@@ -27,7 +27,9 @@ export default function EmptyRecycleBinModalContent({
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('empty-recycle-bin')}
 			</ClayModal.Header>
 

@@ -427,8 +427,8 @@ public abstract class BaseWikiPageResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(wikiPageId);
-		String resourceName = getPermissionCheckerResourceName(wikiPageId);
 		Long resourceId = getPermissionCheckerResourceId(wikiPageId);
+		String resourceName = getPermissionCheckerResourceName(wikiPageId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -856,8 +856,8 @@ public abstract class BaseWikiPageResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(wikiPageId);
-		String resourceName = getPermissionCheckerResourceName(wikiPageId);
 		Long resourceId = getPermissionCheckerResourceId(wikiPageId);
+		String resourceName = getPermissionCheckerResourceName(wikiPageId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

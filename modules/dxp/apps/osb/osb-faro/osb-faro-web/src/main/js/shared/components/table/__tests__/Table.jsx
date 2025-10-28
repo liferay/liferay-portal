@@ -57,22 +57,7 @@ describe('Table', () => {
 			</StaticRouter>
 		);
 
-		expect(container.querySelector('.table-bordered')).toBeTruthy();
-	});
-
-	it('should render with nowrap headings', () => {
-		const {container} = render(
-			<StaticRouter>
-				<Table
-					columns={COLUMNS}
-					headingNowrap
-					items={INDIVIDUALS}
-					rowIdentifier='id'
-				/>
-			</StaticRouter>
-		);
-
-		expect(container.querySelector('.table-heading-nowrap')).toBeTruthy();
+		expect(container.querySelector('.table-head-bordered')).toBeTruthy();
 	});
 
 	it('should render with nowrap rows', () => {

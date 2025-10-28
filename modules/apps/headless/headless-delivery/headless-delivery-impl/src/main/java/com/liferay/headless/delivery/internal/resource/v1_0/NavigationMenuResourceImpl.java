@@ -72,11 +72,13 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Javier Gamarra
+ * @deprecated As of Cavanaugh (7.4.x)
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/navigation-menu.properties",
 	scope = ServiceScope.PROTOTYPE, service = NavigationMenuResource.class
 )
+@Deprecated
 public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 
 	@Override
@@ -445,10 +447,10 @@ public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 		).build();
 	}
 
-	private boolean _isNameProperty(Map.Entry<String, String> property) {
-		String propertyKey = property.getKey();
+	private boolean _isNameProperty(Map.Entry<String, String> entry) {
+		String key = entry.getKey();
 
-		return propertyKey.startsWith("name_");
+		return key.startsWith("name_");
 	}
 
 	private NavigationMenu _toNavigationMenu(

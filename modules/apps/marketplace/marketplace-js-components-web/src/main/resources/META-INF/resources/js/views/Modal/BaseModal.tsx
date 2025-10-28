@@ -33,7 +33,11 @@ function BaseModal({
 			observer={observer}
 			size={size}
 		>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body className="m-0 p-0">{children}</ClayModal.Body>
 		</ClayModal>

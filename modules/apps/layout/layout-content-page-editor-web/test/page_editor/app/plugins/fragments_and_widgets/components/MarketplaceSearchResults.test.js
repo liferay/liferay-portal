@@ -6,7 +6,7 @@
 import {render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {
 	MarketplaceRest,
 	useMarketplaceConfiguration,
@@ -161,7 +161,7 @@ describe('MarketplaceSearchResults', () => {
 			expect(screen.getByText(`Product ${index}`)).toBeInTheDocument();
 			expect(screen.getByText(`Catalog ${index}`)).toBeInTheDocument();
 
-			const imageElements = screen.getAllByRole('img');
+			const imageElements = screen.getAllByRole('presentation');
 			const urlImage = imageElements.find(
 				(image) => image.getAttribute('src') === `urlImage${index}`
 			);

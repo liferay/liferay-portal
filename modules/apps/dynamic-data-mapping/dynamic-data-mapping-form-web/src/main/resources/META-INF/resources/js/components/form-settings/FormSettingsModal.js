@@ -95,7 +95,9 @@ const FormSettingsModal = ({
 					observer={observer}
 					spritemap={spritemap}
 				>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('settings')}
 					</ClayModal.Header>
 

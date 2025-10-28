@@ -68,7 +68,7 @@ import org.osgi.framework.FrameworkUtil;
 @FeatureFlags(
 	featureFlags = {
 		@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-21926"),
-		@FeatureFlag("LPD-31149"), @FeatureFlag("LPD-34594"),
+		@FeatureFlag("LPD-32050"), @FeatureFlag("LPD-34594"),
 		@FeatureFlag("LPS-179669")
 	}
 )

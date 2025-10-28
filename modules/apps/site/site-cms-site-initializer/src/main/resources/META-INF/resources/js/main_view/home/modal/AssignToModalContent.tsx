@@ -104,7 +104,9 @@ export default function AssignToModalContent({
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('assign-to-...')}
 			</ClayModal.Header>
 

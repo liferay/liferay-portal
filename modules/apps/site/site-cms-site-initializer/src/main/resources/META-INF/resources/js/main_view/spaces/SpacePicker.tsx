@@ -68,6 +68,15 @@ export default function SpacePicker({
 				}))}
 				label={logoColors[logoColor]}
 				logoColor={logoColor}
+				messages={{
+					itemDescribedby: Liferay.Language.get(
+						'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+					),
+					itemSelected: Liferay.Language.get('x-selected'),
+					scrollToBottomAriaLabel:
+						Liferay.Language.get('scroll-to-bottom'),
+					scrollToTopAriaLabel: Liferay.Language.get('scroll-to-top'),
+				}}
 				onSelectionChange={(selectedKey: React.Key) => {
 					onChangeValue(selectedKey as LogoColor);
 				}}

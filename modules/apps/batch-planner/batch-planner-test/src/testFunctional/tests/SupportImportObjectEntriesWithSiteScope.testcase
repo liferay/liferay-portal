@@ -135,37 +135,6 @@ definition {
 	}
 
 	@priority = 4
-	test CanCreateSiteScopedObjectEntryFromFileContainingExistingAndNewWithUncheckedStopImportOnError {
-		task ("When importing .json file as 'Student' Entity Type with 'Only Add New Records Import Strategy', 'Stop the Import on Error' unchecked") {
-			ImportExport.importFile(
-				entityType = "Student (v1.0 - Liferay Object REST)",
-				fileName = "multiple_site_scope_objectEntries_import_create.jsonl",
-				importStrategy = "Only Add New Records",
-				scope = "true",
-				stopImportOnError = "false");
-		}
-
-		task ("Then one new Student item is created") {
-			var response = ObjectDefinitionAPI.getObjectEntries(
-				en_US_plural_label = "students",
-				scopeKey = "true");
-
-			var firstName = JSONUtil.getWithJSONPath(${response}, "$.items[0].name");
-			var secondName = JSONUtil.getWithJSONPath(${response}, "$.items[1].name");
-
-			var actual = StringUtil.concat(${firstName}, ",", ${secondName});
-
-			TestUtils.assertContain(
-				actual = ${actual},
-				expected = "Jack");
-
-			TestUtils.assertContain(
-				actual = ${actual},
-				expected = "Jane");
-		}
-	}
-
-	@priority = 4
 	test CannotCreateSiteScopedObjectEntryWithoutRequiredFields {
 		task ("When importing .json file as 'Student' Entity Type with default setting") {
 			ImportExport.importFile(

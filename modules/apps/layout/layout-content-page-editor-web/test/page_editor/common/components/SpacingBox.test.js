@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -208,7 +208,13 @@ describe('SpacingBox', () => {
 	it('shows token value next to token name in the dropdown', async () => {
 		render(<SpacingBoxTest />);
 
-		await userEvent.click(screen.getByLabelText('padding-left'));
+		jest.useFakeTimers();
+
+		fireEvent.click(screen.getByLabelText('padding-left'));
+
+		act(() => {
+			jest.advanceTimersByTime(100);
+		});
 
 		expect(screen.getByText('5rem')).toBeInTheDocument();
 	});
@@ -221,10 +227,8 @@ describe('SpacingBox', () => {
 		fireEvent.click(screen.getByLabelText('margin-top'));
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
-
-		jest.useRealTimers();
 
 		expect(
 			screen.getByRole('menuitem', {name: /set-margin-top-to-10/i})
@@ -242,7 +246,13 @@ describe('SpacingBox', () => {
 
 		render(<SpacingBoxTest />);
 
-		await userEvent.click(screen.getByLabelText('padding-right'));
+		jest.useFakeTimers();
+
+		fireEvent.click(screen.getByLabelText('padding-right'));
+
+		act(() => {
+			jest.advanceTimersByTime(100);
+		});
 
 		expect(screen.getByText('111px')).toBeInTheDocument();
 	});
@@ -260,17 +270,24 @@ describe('SpacingBox', () => {
 			const onChange = jest.fn();
 			render(<SpacingBoxTest onChange={onChange} />);
 
-			const button = screen.getByLabelText('margin-top');
+			jest.useFakeTimers();
+			fireEvent.click(screen.getByLabelText('margin-top'));
 
-			await userEvent.click(button);
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			const input = screen.getByLabelText('margin-top', {
 				selector: 'input',
 			});
 
-			await userEvent.clear(input);
-			await userEvent.type(input, '12');
+			fireEvent.change(input, {target: {value: '12'}});
+
 			fireEvent.blur(input);
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(onChange).toHaveBeenCalledWith('marginTop', '12px');
 		});
@@ -279,17 +296,24 @@ describe('SpacingBox', () => {
 			const onChange = jest.fn();
 			render(<SpacingBoxTest onChange={onChange} />);
 
-			const button = screen.getByLabelText('padding-top');
+			jest.useFakeTimers();
 
-			await userEvent.click(button);
+			fireEvent.click(screen.getByLabelText('padding-top'));
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			const input = screen.getByLabelText('padding-top', {
 				selector: 'input',
 			});
 
-			await userEvent.clear(input);
-			await userEvent.type(input, '20');
+			fireEvent.change(input, {target: {value: '20'}});
 			fireEvent.keyUp(input, {key: 'Enter'});
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(onChange).toHaveBeenCalledWith('paddingTop', '20px');
 			expect(screen.queryByText('10rem')).not.toBeInTheDocument();
@@ -300,9 +324,13 @@ describe('SpacingBox', () => {
 		it('does not show reset button if no value is selected', async () => {
 			render(<SpacingBoxTest />);
 
-			const button = screen.getByLabelText('margin-top');
+			jest.useFakeTimers();
 
-			await userEvent.click(button);
+			fireEvent.click(screen.getByLabelText('margin-top'));
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(
 				screen.queryByTitle('reset-to-initial-value')
@@ -316,11 +344,19 @@ describe('SpacingBox', () => {
 				<SpacingBoxTest onChange={onChange} value={{marginTop: '10'}} />
 			);
 
-			const button = screen.getByLabelText('margin-top');
+			jest.useFakeTimers();
 
-			await userEvent.click(button);
+			fireEvent.click(screen.getByLabelText('margin-top'));
 
-			await userEvent.click(screen.getByTitle('reset-to-initial-value'));
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
+
+			fireEvent.click(screen.getByTitle('reset-to-initial-value'));
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(onChange).toHaveBeenCalledWith(
 				'marginTop',
@@ -341,7 +377,13 @@ describe('SpacingBox', () => {
 				/>
 			);
 
-			await userEvent.click(screen.getByLabelText('margin-top'));
+			jest.useFakeTimers();
+
+			fireEvent.click(screen.getByLabelText('margin-top'));
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(
 				screen.getByTitle('reset-to-desktop-value')
@@ -360,7 +402,13 @@ describe('SpacingBox', () => {
 				/>
 			);
 
-			await userEvent.click(screen.getByLabelText('margin-top'));
+			jest.useFakeTimers();
+
+			fireEvent.click(screen.getByLabelText('margin-top'));
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(
 				screen.getByTitle('reset-to-tablet-value')
@@ -379,7 +427,13 @@ describe('SpacingBox', () => {
 				/>
 			);
 
-			await userEvent.click(screen.getByLabelText('margin-top'));
+			jest.useFakeTimers();
+
+			fireEvent.click(screen.getByLabelText('margin-top'));
+
+			act(() => {
+				jest.advanceTimersByTime(100);
+			});
 
 			expect(
 				screen.getByTitle('reset-to-landscapeMobile-value')

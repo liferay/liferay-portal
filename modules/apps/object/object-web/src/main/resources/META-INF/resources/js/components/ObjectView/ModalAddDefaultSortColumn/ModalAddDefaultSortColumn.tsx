@@ -128,7 +128,11 @@ export function ModalAddDefaultSortColumn({
 	return (
 		<ClayModal observer={observer}>
 			<ClayForm onSubmit={onSubmit}>
-				<ClayModal.Header>{header}</ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
+					{header}
+				</ClayModal.Header>
 
 				<ClayModal.Body>
 					<SingleSelect

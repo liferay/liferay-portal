@@ -12,6 +12,7 @@ import com.liferay.depot.model.DepotEntryModel;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.attachment.ExportImportAttachmentManager;
+import com.liferay.headless.object.dto.v1_0.Scope;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -40,7 +41,6 @@ import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.Folder;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
-import com.liferay.object.rest.dto.v1_0.Scope;
 import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.rest.filter.parser.ObjectDefinitionFilterParser;
@@ -709,21 +709,21 @@ public class DefaultObjectEntryManagerImpl
 					ActionKeys.DELETE, ObjectEntryResourceImpl.class, 0L,
 					"deleteObjectEntryBatch", null,
 					objectDefinition.getUserId(),
-					objectDefinition.getResourceName(), groupId,
+					objectDefinition.getClassName(), groupId,
 					dtoConverterContext.getUriInfo())
 			).put(
 				"get",
 				ActionUtil.addAction(
 					ActionKeys.VIEW, ObjectEntryResourceImpl.class, 0L,
 					"getObjectEntriesPage", null, objectDefinition.getUserId(),
-					objectDefinition.getResourceName(), groupId,
+					objectDefinition.getClassName(), groupId,
 					dtoConverterContext.getUriInfo())
 			).put(
 				"updateBatch",
 				ActionUtil.addAction(
 					ActionKeys.UPDATE, ObjectEntryResourceImpl.class, 0L,
 					"putObjectEntryBatch", null, objectDefinition.getUserId(),
-					objectDefinition.getResourceName(), groupId,
+					objectDefinition.getClassName(), groupId,
 					dtoConverterContext.getUriInfo())
 			).build(),
 			_getFacets(

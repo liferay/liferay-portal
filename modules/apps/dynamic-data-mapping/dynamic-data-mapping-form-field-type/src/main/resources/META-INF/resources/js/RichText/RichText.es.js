@@ -22,6 +22,7 @@ import {
 	normalizeLocaleId,
 	transformAvailableLocalesAndValue,
 } from '../util/localizable/transform.es';
+import {sanitizeHTML} from '../util/sanitize.ts';
 
 const INITIAL_DEFAULT_LOCALE = {
 	icon: themeDisplay.getDefaultLanguageId(),
@@ -31,15 +32,6 @@ const INITIAL_EDITING_LOCALE = {
 	icon: normalizeLocaleId(themeDisplay.getDefaultLanguageId()),
 	localeId: themeDisplay.getDefaultLanguageId(),
 };
-
-const ALERT_REGEX = /alert\((.*?)\)/;
-const INNER_HTML_REGEX = /innerHTML\s*=\s*.*?/;
-const PHP_CODE_REGEX = /<\?[\s\S]*?\?>/g;
-const ASP_CODE_REGEX = /<%[\s\S]*?%>/g;
-const ASP_NET_CODE_REGEX = /(<asp:[^]+>[\s|\S]*?<\/asp:[^]+>)|(<asp:[^]+\/>)/gi;
-const HTML_TAG_WITH_ON_ATTRIBUTE_REGEX =
-	/<[^>]+?(\s+\bon\w+=(?:'[^']*'|"[^"]*"|[^'"\s>]+))*\s*\/?>/gi;
-const ON_ATTRIBUTE_REGEX = /(\s+\bon\w+=(?:'[^']*'|"[^"]*"|[^'"\s>]+))/gi;
 
 const ddmFormAdminPortlet =
 	'_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormAdminPortlet_';
@@ -282,24 +274,6 @@ const RichText = ({
 			}
 		});
 	};
-
-	function sanitizeHTML(html) {
-		if (Liferay.FeatureFlags['LPD-31212']) {
-			return html;
-		}
-
-		const sanitizedHtml = html
-			.replace(HTML_TAG_WITH_ON_ATTRIBUTE_REGEX, (match) => {
-				return match.replace(ON_ATTRIBUTE_REGEX, '');
-			})
-			.replace(ALERT_REGEX, '')
-			.replace(INNER_HTML_REGEX, '')
-			.replace(PHP_CODE_REGEX, '')
-			.replace(ASP_CODE_REGEX, '')
-			.replace(ASP_NET_CODE_REGEX, '');
-
-		return sanitizedHtml;
-	}
 
 	const resetTranslation = useCallback(() => {
 		const data = currentValue[defaultLocale.localeId];

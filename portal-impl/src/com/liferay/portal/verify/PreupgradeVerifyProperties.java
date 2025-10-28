@@ -1707,6 +1707,8 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		"cluster.executor.heartbeat.interval",
 		"cluster.link.node.bootup.response.timeout",
 		"com.liferay.filters.doubleclick.DoubleClickFilter",
+		"com.liferay.portal.servlet.filters.absoluteredirects." +
+			"AbsoluteRedirectsFilter",
 		"com.liferay.portal.servlet.filters.audit.AuditFilter",
 		"com.liferay.portal.servlet.filters.doubleclick.DoubleClickFilter",
 		"com.liferay.portal.servlet.filters.charbufferpool." +

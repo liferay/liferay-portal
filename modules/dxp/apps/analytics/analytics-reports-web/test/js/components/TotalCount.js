@@ -9,7 +9,7 @@ import React from 'react';
 import TotalCount from '../../../src/main/resources/META-INF/resources/js/components/TotalCount';
 import {StoreContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/StoreContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockLanguageTag = 'en-US';
 

@@ -29,24 +29,26 @@ public class RoleUpgradeProcess extends UpgradeProcess {
 					connection.prepareStatement(
 						StringBundler.concat(
 							"select distinct Role_.roleId from Role_ inner ",
-							"join AccountRole on AccountRole.roleId = ",
-							"Role_.roleId where AccountRole.accountEntryId = ",
-							AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-							" and Role_.classNameId = ",
-							PortalUtil.getClassNameId(AccountRole.class),
-							" and Role_.type_ = ",
-							RoleConstants.TYPE_PROVIDER));
+							"join AccountRole on AccountRole.roleId = Role_.",
+							"roleId where AccountRole.accountEntryId = ? and ",
+							"Role_.classNameId = ? and Role_.type_ = ?"));
 				PreparedStatement preparedStatement2 =
 					AutoBatchPreparedStatementUtil.autoBatch(
 						connection,
-						"update Role_ set type_ = " +
-							RoleConstants.TYPE_ACCOUNT + " where roleId = ?")) {
+						"update Role_ set type_ = ? where roleId = ?")) {
+
+				preparedStatement1.setLong(
+					1, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT);
+				preparedStatement1.setLong(
+					2, PortalUtil.getClassNameId(AccountRole.class));
+				preparedStatement1.setInt(3, RoleConstants.TYPE_PROVIDER);
 
 				try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 					while (resultSet.next()) {
-						long roleId = resultSet.getLong("roleId");
-
-						preparedStatement2.setLong(1, roleId);
+						preparedStatement2.setInt(
+							1, RoleConstants.TYPE_ACCOUNT);
+						preparedStatement2.setLong(
+							2, resultSet.getLong("roleId"));
 
 						preparedStatement2.addBatch();
 					}

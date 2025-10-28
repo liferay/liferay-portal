@@ -59,7 +59,9 @@ export default function ConfirmChangesModal({
 		<>
 			{open && (
 				<ClayModal observer={observer} status="warning">
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{confirmationMessages.title}
 					</ClayModal.Header>
 

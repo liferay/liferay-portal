@@ -266,7 +266,7 @@ public class CommerceInventoryDisplayContext {
 					dropdownItem.setHref(getCreateReplenishmentActionURL());
 					dropdownItem.setLabel(
 						LanguageUtil.get(
-							_cpRequestHelper.getRequest(), "add-income"));
+							_cpRequestHelper.getRequest(), "add-incoming"));
 					dropdownItem.setTarget("modal-lg");
 				});
 		}

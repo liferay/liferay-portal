@@ -162,8 +162,7 @@ public class AlloyEditorConfigContributor
 			_getToolbarsStylesSelectionsEmbedURLJSONObject(),
 			getToolbarsStylesSelectionsLinkJSONObject(),
 			_getToolbarsStylesSelectionsImageJSONObject(),
-			getToolbarsStylesSelectionsTextJSONObject(locale),
-			getToolbarsStylesSelectionsTableJSONObject());
+			getToolbarsStylesSelectionsTextJSONObject(locale));
 	}
 
 	protected JSONObject getToolbarsStylesSelectionsLinkJSONObject() {
@@ -173,24 +172,6 @@ public class AlloyEditorConfigContributor
 			"name", "link"
 		).put(
 			"test", "AlloyEditor.SelectionTest.link"
-		);
-	}
-
-	protected JSONObject getToolbarsStylesSelectionsTableJSONObject() {
-		return JSONUtil.put(
-			"buttons",
-			toJSONArray(
-				"['tableHeading', 'tableRow', 'tableColumn', 'tableCell', " +
-					"'tableRemove']")
-		).put(
-			"getArrowBoxClasses",
-			"AlloyEditor.SelectionGetArrowBoxClasses.table"
-		).put(
-			"name", "table"
-		).put(
-			"setPosition", "AlloyEditor.SelectionSetPosition.table"
-		).put(
-			"test", "AlloyEditor.SelectionTest.table"
 		);
 	}
 

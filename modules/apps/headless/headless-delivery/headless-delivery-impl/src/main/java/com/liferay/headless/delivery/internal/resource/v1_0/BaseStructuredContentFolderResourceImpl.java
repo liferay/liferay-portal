@@ -810,9 +810,9 @@ public abstract class BaseStructuredContentFolderResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(structuredContentFolderId);
-		String resourceName = getPermissionCheckerResourceName(
-			structuredContentFolderId);
 		Long resourceId = getPermissionCheckerResourceId(
+			structuredContentFolderId);
+		String resourceName = getPermissionCheckerResourceName(
 			structuredContentFolderId);
 
 		PermissionServiceUtil.checkPermission(
@@ -1833,9 +1833,9 @@ public abstract class BaseStructuredContentFolderResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(structuredContentFolderId);
-		String resourceName = getPermissionCheckerResourceName(
-			structuredContentFolderId);
 		Long resourceId = getPermissionCheckerResourceId(
+			structuredContentFolderId);
+		String resourceName = getPermissionCheckerResourceName(
 			structuredContentFolderId);
 
 		PermissionServiceUtil.checkPermission(

@@ -1,16 +1,19 @@
 <?xml version="1.0"?>
 
 <custom-sql>
-	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_F">
-		<![CDATA[
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_FEERC">
+	<![CDATA[
 			SELECT
 				FragmentEntryLink.*
 			FROM
 				FragmentEntryLink
 			WHERE
 				(FragmentEntryLink.groupId = ?) AND
-				(FragmentEntryLink.fragmentEntryId = ?) AND
 				(FragmentEntryLink.deleted = [$FALSE$]) AND
+				(
+					(FragmentEntryLink.fragmentEntryERC = ?) AND
+					(FragmentEntryLink.fragmentEntryScopeERC IS NULL)
+				) AND
 				(
 					FragmentEntryLink.createDate =
 						(
@@ -21,12 +24,42 @@
 							WHERE
 								(tempFragmentEntryLink.groupId = FragmentEntryLink.groupId) AND
 								(tempFragmentEntryLink.classPK = FragmentEntryLink.classPK) AND
-								(tempFragmentEntryLink.fragmentEntryId = FragmentEntryLink.fragmentEntryId)
+								(tempFragmentEntryLink.fragmentEntryERC = FragmentEntryLink.fragmentEntryERC) AND
+								(tempFragmentEntryLink.fragmentEntryScopeERC IS NULL)
 						)
 				)
 		]]>
 	</sql>
-	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_F_P">
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_FEERC_FESERC">
+		<![CDATA[
+			SELECT
+				FragmentEntryLink.*
+			FROM
+				FragmentEntryLink
+			WHERE
+				(FragmentEntryLink.groupId = ?) AND
+				(FragmentEntryLink.deleted = [$FALSE$]) AND
+				(
+					(FragmentEntryLink.fragmentEntryERC = ?) AND
+					(FragmentEntryLink.fragmentEntryScopeERC = ?)
+				) AND
+				(
+					FragmentEntryLink.createDate =
+						(
+							SELECT
+								MAX(tempFragmentEntryLink.createDate)
+							FROM
+								FragmentEntryLink tempFragmentEntryLink
+							WHERE
+								(tempFragmentEntryLink.groupId = FragmentEntryLink.groupId) AND
+								(tempFragmentEntryLink.classPK = FragmentEntryLink.classPK) AND
+								(tempFragmentEntryLink.fragmentEntryERC = FragmentEntryLink.fragmentEntryERC) AND
+								(tempFragmentEntryLink.fragmentEntryScopeERC = FragmentEntryLink.fragmentEntryScopeERC)
+						)
+				)
+		]]>
+	</sql>
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_FEERC_P">
 		<![CDATA[
 			SELECT
 				FragmentEntryLink.*
@@ -44,13 +77,16 @@
 					LayoutPageTemplateEntry.plid IS NULL
 			)
 			TEMP_TABLE
-				INNER JOIN
-					FragmentEntryLink ON
-						TEMP_TABLE.plid = FragmentEntryLink.plid
+			INNER JOIN
+				FragmentEntryLink ON
+					TEMP_TABLE.plid = FragmentEntryLink.plid
 			WHERE
-				(groupId = ?) AND
-				(fragmentEntryId = ?) AND
-				(deleted = [$FALSE$]) AND
+				(FragmentEntryLink.groupId = ?) AND
+				(FragmentEntryLink.deleted = [$FALSE$]) AND
+				(
+					(FragmentEntryLink.fragmentEntryERC = ?) AND
+					(FragmentEntryLink.fragmentEntryScopeERC IS NULL)
+				) AND
 				(
 					FragmentEntryLink.createDate =
 						(
@@ -61,12 +97,57 @@
 							WHERE
 								(tempFragmentEntryLink.groupId = FragmentEntryLink.groupId) AND
 								(tempFragmentEntryLink.plid = FragmentEntryLink.plid) AND
-								(tempFragmentEntryLink.fragmentEntryId = FragmentEntryLink.fragmentEntryId)
+								(tempFragmentEntryLink.fragmentEntryERC = FragmentEntryLink.fragmentEntryERC) AND
+								(tempFragmentEntryLink.fragmentEntryScopeERC IS NULL)
 						)
 				)
 		]]>
 	</sql>
-	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_F_P_L">
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_FEERC_FESERC_P">
+		<![CDATA[
+			SELECT
+				FragmentEntryLink.*
+			FROM
+			(
+				SELECT
+					Layout.plid
+				FROM
+					Layout
+				LEFT JOIN
+					LayoutPageTemplateEntry ON
+						(Layout.plid = LayoutPageTemplateEntry.plid) OR
+						(Layout.classPK = LayoutPageTemplateEntry.plid)
+				WHERE
+					LayoutPageTemplateEntry.plid IS NULL
+			)
+			TEMP_TABLE
+			INNER JOIN
+				FragmentEntryLink ON
+					TEMP_TABLE.plid = FragmentEntryLink.plid
+			WHERE
+				(FragmentEntryLink.groupId = ?) AND
+				(FragmentEntryLink.deleted = [$FALSE$]) AND
+				(
+					(FragmentEntryLink.fragmentEntryERC = ?) AND
+					(FragmentEntryLink.fragmentEntryScopeERC = ?)
+				) AND
+				(
+					FragmentEntryLink.createDate =
+						(
+							SELECT
+								MAX(tempFragmentEntryLink.createDate)
+							FROM
+								FragmentEntryLink tempFragmentEntryLink
+							WHERE
+								(tempFragmentEntryLink.groupId = FragmentEntryLink.groupId) AND
+								(tempFragmentEntryLink.plid = FragmentEntryLink.plid) AND
+								(tempFragmentEntryLink.fragmentEntryERC = FragmentEntryLink.fragmentEntryERC) AND
+								(tempFragmentEntryLink.fragmentEntryScopeERC = FragmentEntryLink.fragmentEntryScopeERC)
+						)
+				)
+		]]>
+	</sql>
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_FEERC_P_L">
 		<![CDATA[
 			SELECT
 				FragmentEntryLink.*
@@ -84,14 +165,17 @@
 					LayoutPageTemplateEntry.type_ = ?
 			)
 			TEMP_TABLE
-				INNER JOIN
-					FragmentEntryLink ON
-						TEMP_TABLE.plid = FragmentEntryLink.plid
+			INNER JOIN
+				FragmentEntryLink ON
+					TEMP_TABLE.plid = FragmentEntryLink.plid
 
 			WHERE
 				(FragmentEntryLink.groupId = ?) AND
-				(FragmentEntryLink.fragmentEntryId = ?) AND
 				(FragmentEntryLink.deleted = [$FALSE$]) AND
+				(
+					(FragmentEntryLink.fragmentEntryERC = ?) AND
+					(FragmentEntryLink.fragmentEntryScopeERC IS NULL)
+				) AND
 				(
 					FragmentEntryLink.createDate =
 						(
@@ -102,7 +186,53 @@
 							WHERE
 								(tempFragmentEntryLink.groupId = FragmentEntryLink.groupId) AND
 								(tempFragmentEntryLink.plid = FragmentEntryLink.plid) AND
-								(tempFragmentEntryLink.fragmentEntryId = FragmentEntryLink.fragmentEntryId)
+								(tempFragmentEntryLink.fragmentEntryERC = FragmentEntryLink.fragmentEntryERC) AND
+								(tempFragmentEntryLink.fragmentEntryScopeERC IS NULL)
+						)
+				)
+		]]>
+	</sql>
+	<sql id="com.liferay.fragment.service.persistence.FragmentEntryLinkFinder.findByG_FEERC_FESERC_P_L">
+		<![CDATA[
+			SELECT
+				FragmentEntryLink.*
+			FROM
+			(
+				SELECT
+					Layout.plid
+				FROM
+					LayoutPageTemplateEntry
+				INNER JOIN
+					Layout ON
+						(Layout.plid = LayoutPageTemplateEntry.plid) OR
+						(Layout.classPK = LayoutPageTemplateEntry.plid)
+				WHERE
+					LayoutPageTemplateEntry.type_ = ?
+			)
+			TEMP_TABLE
+			INNER JOIN
+				FragmentEntryLink ON
+					TEMP_TABLE.plid = FragmentEntryLink.plid
+
+			WHERE
+				(FragmentEntryLink.groupId = ?) AND
+				(FragmentEntryLink.deleted = [$FALSE$]) AND
+				(
+					(FragmentEntryLink.fragmentEntryERC = ?) AND
+					(FragmentEntryLink.fragmentEntryScopeERC = ?)
+				) AND
+				(
+					FragmentEntryLink.createDate =
+						(
+							SELECT
+								MAX(tempFragmentEntryLink.createDate)
+							FROM
+								FragmentEntryLink tempFragmentEntryLink
+							WHERE
+								(tempFragmentEntryLink.groupId = FragmentEntryLink.groupId) AND
+								(tempFragmentEntryLink.plid = FragmentEntryLink.plid) AND
+								(tempFragmentEntryLink.fragmentEntryERC = FragmentEntryLink.fragmentEntryERC) AND
+								(tempFragmentEntryLink.fragmentEntryScopeERC = FragmentEntryLink.fragmentEntryScopeERC)
 						)
 				)
 		]]>

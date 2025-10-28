@@ -5,6 +5,7 @@
 
 package com.liferay.object.rest.internal.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
@@ -30,6 +31,7 @@ import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyCategoryResource;
 import com.liferay.headless.delivery.dto.v1_0.Creator;
+import com.liferay.headless.object.dto.v1_0.Scope;
 import com.liferay.list.type.entry.util.ListTypeEntryUtil;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
@@ -64,7 +66,6 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.ObjectValidationRule;
 import com.liferay.object.rest.dto.v1_0.Folder;
 import com.liferay.object.rest.dto.v1_0.Link;
-import com.liferay.object.rest.dto.v1_0.Scope;
 import com.liferay.object.rest.dto.v1_0.ValidationRequest;
 import com.liferay.object.rest.dto.v1_0.ValidationResponse;
 import com.liferay.object.rest.dto.v1_0.util.ScopeUtil;
@@ -116,6 +117,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -135,9 +137,11 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
@@ -148,6 +152,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -187,6 +192,7 @@ import com.liferay.portal.spring.transaction.TransactionInterceptor;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -228,6 +234,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -5180,8 +5187,8 @@ public class ObjectEntryResourceTest {
 	public void testGetCreatorExternalReferenceCode() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, true,
-				false, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				true, false, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -5798,39 +5805,6 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
-	public void testGetObjectEntriesPageActions() throws Exception {
-		JSONObject jsonObject1 = HTTPTestUtil.invokeToJSONObject(
-			null, _objectDefinition4.getRESTContextPath(), Http.Method.GET);
-
-		JSONObject actionsJSONObject1 = jsonObject1.getJSONObject("actions");
-
-		Assert.assertFalse(actionsJSONObject1.isNull("create"));
-		Assert.assertFalse(actionsJSONObject1.isNull("createBatch"));
-		Assert.assertFalse(actionsJSONObject1.isNull("deleteBatch"));
-		Assert.assertTrue(actionsJSONObject1.isNull("get"));
-		Assert.assertFalse(actionsJSONObject1.isNull("updateBatch"));
-
-		HTTPTestUtil.customize(
-		).withGuest(
-		).apply(
-			() -> {
-				JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
-					null, _objectDefinition4.getRESTContextPath(),
-					Http.Method.GET);
-
-				JSONObject actionsJSONObject2 = jsonObject2.getJSONObject(
-					"actions");
-
-				Assert.assertTrue(actionsJSONObject2.isNull("create"));
-				Assert.assertTrue(actionsJSONObject2.isNull("createBatch"));
-				Assert.assertTrue(actionsJSONObject2.isNull("deleteBatch"));
-				Assert.assertTrue(actionsJSONObject2.isNull("get"));
-				Assert.assertTrue(actionsJSONObject2.isNull("updateBatch"));
-			}
-		);
-	}
-
-	@Test
 	public void testGetObjectEntriesPageWithLocalizedObjectField()
 		throws Exception {
 
@@ -5863,6 +5837,85 @@ public class ObjectEntryResourceTest {
 		itemsJSONArray = jsonObject.getJSONArray("items");
 
 		Assert.assertEquals(1, itemsJSONArray.length());
+	}
+
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
+	@Test
+	public void testGetObjectEntriesPageWithObjectActions() throws Exception {
+		JSONObject actionsJSONObject1 = _getActionsJSONObject(
+			_objectDefinition4);
+
+		Assert.assertFalse(actionsJSONObject1.isNull("create"));
+		Assert.assertFalse(actionsJSONObject1.isNull("createBatch"));
+		Assert.assertFalse(actionsJSONObject1.isNull("deleteBatch"));
+		Assert.assertFalse(actionsJSONObject1.isNull("get"));
+		Assert.assertFalse(actionsJSONObject1.isNull("updateBatch"));
+
+		HTTPTestUtil.customize(
+		).withGuest(
+		).apply(
+			() -> {
+				JSONObject actionsJSONObject2 = _getActionsJSONObject(
+					_objectDefinition4);
+
+				Assert.assertTrue(
+					actionsJSONObject2.keySet(
+					).isEmpty());
+			}
+		);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY,
+			_objectDefinition4.getResourceName(), role);
+		_addResourcePermission(
+			ActionKeys.VIEW, _objectDefinition4.getClassName(), role);
+
+		String userName = RandomTestUtil.randomString();
+
+		User user = _addUser(userName, "test1");
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			userName + "@liferay.com", "test1"
+		).apply(
+			() -> {
+				JSONObject actionsJSONObject3 = _getActionsJSONObject(
+					_objectDefinition4);
+
+				Assert.assertFalse(actionsJSONObject3.isNull("create"));
+				Assert.assertFalse(actionsJSONObject3.isNull("createBatch"));
+				Assert.assertTrue(actionsJSONObject3.isNull("deleteBatch"));
+				Assert.assertFalse(actionsJSONObject3.isNull("get"));
+				Assert.assertTrue(actionsJSONObject3.isNull("updateBatch"));
+			}
+		);
+
+		_addResourcePermission(
+			ActionKeys.DELETE, _objectDefinition4.getClassName(), role);
+		_addResourcePermission(
+			ActionKeys.UPDATE, _objectDefinition4.getClassName(), role);
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			userName + "@liferay.com", "test1"
+		).apply(
+			() -> {
+				JSONObject actionsJSONObject4 = _getActionsJSONObject(
+					_objectDefinition4);
+
+				Assert.assertFalse(actionsJSONObject4.isNull("create"));
+				Assert.assertFalse(actionsJSONObject4.isNull("createBatch"));
+				Assert.assertFalse(actionsJSONObject4.isNull("deleteBatch"));
+				Assert.assertFalse(actionsJSONObject4.isNull("get"));
+				Assert.assertFalse(actionsJSONObject4.isNull("updateBatch"));
+			}
+		);
 	}
 
 	@FeatureFlag("LPD-17564")
@@ -5961,6 +6014,158 @@ public class ObjectEntryResourceTest {
 				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
 	}
 
+	@FeatureFlag("LPD-6233")
+	@Test
+	public void testGetObjectEntriesWithAssigneeObjectField() throws Exception {
+		ObjectFieldUtil.addCustomObjectField(
+			new AssigneeObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"assignee"
+			).objectDefinitionId(
+				_objectDefinition1.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		User user1 = UserTestUtil.addUser();
+
+		HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"assignee",
+				HashMapBuilder.put(
+					"externalReferenceCode",
+					() -> {
+						Role role = _roleLocalService.getRole(
+							TestPropsValues.getCompanyId(),
+							AccountRoleConstants.
+								REQUIRED_ROLE_NAME_ACCOUNT_MANAGER);
+
+						Organization organization =
+							OrganizationTestUtil.addOrganization();
+
+						_organizationLocalService.addUserOrganization(
+							user1.getUserId(),
+							organization.getOrganizationId());
+
+						Group group = _groupLocalService.getOrganizationGroup(
+							TestPropsValues.getCompanyId(),
+							organization.getOrganizationId());
+
+						_userGroupRoleLocalService.addUserGroupRole(
+							user1.getUserId(), group.getGroupId(),
+							role.getRoleId());
+
+						return role.getExternalReferenceCode();
+					}
+				).put(
+					"type", "Role"
+				).build()
+			).toString(),
+			_objectDefinition1.getRESTContextPath(), Http.Method.POST);
+		HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"assignee",
+				HashMapBuilder.put(
+					"externalReferenceCode", user1.getExternalReferenceCode()
+				).put(
+					"type", "User"
+				).build()
+			).toString(),
+			_objectDefinition1.getRESTContextPath(), Http.Method.POST);
+
+		User user2 = UserTestUtil.addUser();
+
+		HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"assignee",
+				HashMapBuilder.put(
+					"externalReferenceCode",
+					() -> {
+						Role role = RoleTestUtil.addRole(
+							"Regular Role", RoleConstants.TYPE_REGULAR);
+
+						_userLocalService.addRoleUser(role.getRoleId(), user2);
+
+						return role.getExternalReferenceCode();
+					}
+				).put(
+					"type", "Role"
+				).build()
+			).toString(),
+			_objectDefinition1.getRESTContextPath(), Http.Method.POST);
+		HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"assignee",
+				HashMapBuilder.put(
+					"externalReferenceCode", user2.getExternalReferenceCode()
+				).put(
+					"type", "User"
+				).build()
+			).toString(),
+			_objectDefinition1.getRESTContextPath(), Http.Method.POST);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				_objectDefinition1.getRESTContextPath(),
+				"?assigneeUserExternalReferenceCode=",
+				user1.getExternalReferenceCode(), "&sort=",
+				URLCodec.encodeURL("id:asc")),
+			Http.Method.GET);
+
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(2, itemsJSONArray.length());
+
+		Assert.assertEquals(
+			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER,
+			JSONUtil.getValue(
+				itemsJSONArray.getJSONObject(0), "JSONObject/assignee",
+				"Object/name"));
+		Assert.assertEquals(
+			user1.getFullName(),
+			JSONUtil.getValue(
+				itemsJSONArray.getJSONObject(1), "JSONObject/assignee",
+				"Object/name"));
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				_objectDefinition1.getRESTContextPath(),
+				"?assigneeUserExternalReferenceCode=",
+				user2.getExternalReferenceCode(), "&sort=",
+				URLCodec.encodeURL("id:asc")),
+			Http.Method.GET);
+
+		itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(2, itemsJSONArray.length());
+
+		Assert.assertEquals(
+			"Regular Role",
+			JSONUtil.getValue(
+				itemsJSONArray.getJSONObject(0), "JSONObject/assignee",
+				"Object/name"));
+		Assert.assertEquals(
+			user2.getFullName(),
+			JSONUtil.getValue(
+				itemsJSONArray.getJSONObject(1), "JSONObject/assignee",
+				"Object/name"));
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			_objectDefinition1.getRESTContextPath() +
+				"?assigneeUserExternalReferenceCode=" +
+					RandomTestUtil.randomString(),
+			Http.Method.GET);
+
+		itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(0, itemsJSONArray.length());
+	}
+
 	@Test
 	public void testGetObjectEntriesWithPagination() throws Exception {
 		ObjectEntryTestUtil.addObjectEntry(
@@ -6014,7 +6219,9 @@ public class ObjectEntryResourceTest {
 		_testGetObjectEntryActions(false);
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithCompanySharingDisabled()
@@ -6034,7 +6241,9 @@ public class ObjectEntryResourceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithGroupSharingDisabled()
@@ -6060,14 +6269,18 @@ public class ObjectEntryResourceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithSharingEnabled() throws Exception {
 		_testGetObjectEntryActions(true);
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithSystemSharingDisabled()
@@ -7080,8 +7293,8 @@ public class ObjectEntryResourceTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, true,
-				false, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				true, false, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -7815,7 +8028,9 @@ public class ObjectEntryResourceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testGetObjectEntryWithTaxonomyCategories() throws Exception {
 		_addCMSGroup();
@@ -8709,7 +8924,9 @@ public class ObjectEntryResourceTest {
 			Http.Method.PUT, _objectDefinition2, _siteScopedObjectDefinition2);
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testPatchPutCustomObjectEntryWithScheduleDates()
 		throws Exception {
@@ -9432,6 +9649,76 @@ public class ObjectEntryResourceTest {
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInOneToManyRelationship(
 				_objectDefinition1.getRESTContextPath(), _objectRelationship1);
 		}
+	}
+
+	@Test
+	public void testPostCustomObjectEntryWithLargeAttachmentObjectField()
+		throws Exception {
+
+		String attachmentFieldName = "x" + RandomTestUtil.randomString();
+
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+			ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
+			attachmentFieldName, attachmentFieldName,
+			Arrays.asList(
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
+				).value(
+					"txt"
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_FILE_SOURCE
+				).value(
+					ObjectFieldSettingConstants.VALUE_USER_COMPUTER
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+				).value(
+					String.valueOf(100)
+				).build()),
+			false);
+
+		objectField.setObjectDefinitionId(
+			_objectDefinition1.getObjectDefinitionId());
+
+		ObjectFieldTestUtil.addCustomObjectField(
+			TestPropsValues.getUserId(), objectField);
+
+		byte[] data = new byte[60_000_000];
+
+		Random random = new Random();
+
+		random.nextBytes(data);
+
+		String base64 = Base64.encode(data);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				attachmentFieldName,
+				JSONUtil.put(
+					"fileBase64", base64
+				).put(
+					"name", StringUtil.randomString() + ".txt"
+				)
+			).toString(),
+			StringBundler.concat(
+				_objectDefinition1.getRESTContextPath(), "?nestedFields=",
+				attachmentFieldName, ".fileBase64"),
+			Http.Method.POST);
+
+		_assertAttachmentJSONObject(
+			_dlFileEntryLocalService.getDLFileEntry(
+				_testDLFileEntryModelListener.getLastFileEntryId()),
+			base64, jsonObject.getJSONObject(attachmentFieldName),
+			JSONUtil.put(
+				"externalReferenceCode", "L_GLOBAL"
+			).put(
+				"type", Scope.Type.SITE.getValue()
+			));
 	}
 
 	@Test
@@ -15218,6 +15505,21 @@ public class ObjectEntryResourceTest {
 		return URLCodec.encodeURL(string);
 	}
 
+	private JSONObject _getActionsJSONObject(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		JSONObject responseJSONObject = HTTPTestUtil.invokeToJSONObject(
+			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
+
+		if ((responseJSONObject == null) ||
+			!responseJSONObject.has("actions")) {
+
+			return JSONFactoryUtil.createJSONObject();
+		}
+
+		return responseJSONObject.getJSONObject("actions");
+	}
+
 	private Map<String, String> _getActionValue(String href, String method) {
 		return HashMapBuilder.put(
 			"href", href
@@ -19820,6 +20122,9 @@ public class ObjectEntryResourceTest {
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
 
 	@Inject
+	private OrganizationLocalService _organizationLocalService;
+
+	@Inject
 	private PortletFileRepository _portletFileRepository;
 
 	@Inject
@@ -19838,6 +20143,9 @@ public class ObjectEntryResourceTest {
 		_systemObjectDefinitionManagerRegistry;
 
 	private JSONObject _userAccountJSONObject;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

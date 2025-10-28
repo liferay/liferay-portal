@@ -8,6 +8,8 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.regex.Pattern;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -37,6 +39,9 @@ public class ViewStructureUsagesDisplayContextTest {
 
 		Assert.assertTrue(filterString.startsWith(StringPool.OPEN_PARENTHESIS));
 		Assert.assertTrue(filterString.endsWith(StringPool.CLOSE_PARENTHESIS));
+		Assert.assertTrue(
+			Pattern.matches(
+				".* and status in \\(\\d+(?:,\\d+)*\\)\\)$", filterString));
 	}
 
 	private final ViewStructureUsagesDisplayContext

@@ -157,7 +157,7 @@ public class FragmentCollectionContributorPropagationTest {
 			FragmentEntryLink fragmentEntryLink =
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
 					null, TestPropsValues.getUserId(),
-					defaultGroup.getGroupId(), 0, 0,
+					defaultGroup.getGroupId(), null, null, null,
 					_segmentsExperienceLocalService.
 						fetchDefaultSegmentsExperienceId(layout.getPlid()),
 					layout.getPlid(), StringPool.BLANK, originalHTML,
@@ -314,8 +314,8 @@ public class FragmentCollectionContributorPropagationTest {
 
 				FragmentEntryLink fragmentEntryLink =
 					_fragmentEntryLinkLocalService.addFragmentEntryLink(
-						null, user.getUserId(), group.getGroupId(), 0, 0,
-						segmentsExperienceId, layout.getPlid(),
+						null, user.getUserId(), group.getGroupId(), null, null,
+						null, segmentsExperienceId, layout.getPlid(),
 						StringPool.BLANK, originalHTML, StringPool.BLANK,
 						StringPool.BLANK, null, StringPool.BLANK, 0,
 						fragmentEntryKey, FragmentConstants.TYPE_COMPONENT,

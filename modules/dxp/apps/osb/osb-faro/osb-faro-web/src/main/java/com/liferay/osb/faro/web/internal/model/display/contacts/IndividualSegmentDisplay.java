@@ -122,6 +122,8 @@ public class IndividualSegmentDisplay implements FaroEntityDisplay {
 		_individualCount = individualSegment.getIndividualCount();
 		_knownIndividualCount = individualSegment.getKnownIndividualCount();
 		_lastActivityDate = individualSegment.getLastActivityDate();
+		_lastMembershipUpdateDate =
+			individualSegment.getLastMembershipUpdateDate();
 		_name = individualSegment.getName();
 		_segmentType = individualSegment.getSegmentType();
 		_state = individualSegment.getState();
@@ -224,6 +226,7 @@ public class IndividualSegmentDisplay implements FaroEntityDisplay {
 
 	private long _knownIndividualCount;
 	private Date _lastActivityDate;
+	private Date _lastMembershipUpdateDate;
 	private String _name;
 	private final Map<String, Object> _referencedObjects = new HashMap<>();
 	private String _segmentType;

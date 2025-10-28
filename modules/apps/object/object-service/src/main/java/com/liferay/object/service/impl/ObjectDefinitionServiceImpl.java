@@ -48,10 +48,11 @@ public class ObjectDefinitionServiceImpl
 
 	@Override
 	public ObjectDefinition addCustomObjectDefinition(
-			long objectFolderId, String className, boolean enableComments,
-			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
-			boolean enableIndexSearch, boolean enableLocalization,
-			boolean enableObjectEntryDraft, boolean enableObjectEntrySchedule,
+			String externalReferenceCode, long objectFolderId, String className,
+			boolean enableComments, boolean enableFormContainer,
+			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
+			boolean enableLocalization, boolean enableObjectEntryDraft,
+			boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			Map<Locale, String> labelMap, String name, String panelAppOrder,
@@ -71,8 +72,8 @@ public class ObjectDefinitionServiceImpl
 			ObjectActionKeys.ADD_OBJECT_DEFINITION);
 
 		return objectDefinitionLocalService.addCustomObjectDefinition(
-			getUserId(), objectFolderId, className, enableComments,
-			enableFormContainer, enableFriendlyURLCustomization,
+			externalReferenceCode, getUserId(), objectFolderId, className,
+			enableComments, enableFormContainer, enableFriendlyURLCustomization,
 			enableIndexSearch, enableLocalization, enableObjectEntryDraft,
 			enableObjectEntrySchedule, enableObjectEntrySubscription,
 			enableObjectEntryVersioning, friendlyURLSeparator, labelMap, name,
@@ -287,6 +288,7 @@ public class ObjectDefinitionServiceImpl
 			String panelCategoryKey, boolean portlet,
 			Map<Locale, String> pluralLabelMap, String scope, int status,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException {
 
@@ -308,7 +310,7 @@ public class ObjectDefinitionServiceImpl
 			enableObjectEntrySubscription, enableObjectEntryVersioning,
 			friendlyURLSeparator, labelMap, name, panelAppOrder,
 			panelCategoryKey, portlet, pluralLabelMap, scope, status,
-			objectDefinitionSettings, workflowDefinitionLinks);
+			objectDefinitionSettings, objectFields, workflowDefinitionLinks);
 	}
 
 	@Override
@@ -328,6 +330,7 @@ public class ObjectDefinitionServiceImpl
 			String externalReferenceCode, long objectDefinitionId,
 			long objectFolderId, long titleObjectFieldId,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException {
 
@@ -340,7 +343,7 @@ public class ObjectDefinitionServiceImpl
 
 		return objectDefinitionLocalService.updateSystemObjectDefinition(
 			externalReferenceCode, objectDefinitionId, objectFolderId,
-			titleObjectFieldId, objectDefinitionSettings,
+			titleObjectFieldId, objectDefinitionSettings, objectFields,
 			workflowDefinitionLinks);
 	}
 

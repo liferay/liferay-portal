@@ -12,7 +12,7 @@ import {
 	IOrderItem,
 } from '../../../src/main/resources/META-INF/resources/components/multishipping/Types';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {RenderResult, cleanup, render, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';

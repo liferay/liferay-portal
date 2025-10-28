@@ -6,7 +6,7 @@
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {SLAContext} from '../../../../src/main/resources/META-INF/resources/js/components/sla/SLAContainer.es';
 import SLAListPage from '../../../../src/main/resources/META-INF/resources/js/components/sla/list-page/SLAListPage.es';
@@ -43,7 +43,7 @@ describe('The SLAListPage component should', () => {
 			getByTitle = renderResult.getByTitle;
 
 			await act(async () => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 		});
 
@@ -119,7 +119,7 @@ describe('The SLAListPage component should', () => {
 			getByText = renderResult.getByText;
 
 			await act(async () => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 		});
 
@@ -169,7 +169,7 @@ describe('The SLAListPage component should', () => {
 			fireEvent.click(dropDownItems[1]);
 
 			await act(async () => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 		});
 
@@ -187,7 +187,7 @@ describe('The SLAListPage component should', () => {
 			fireEvent.click(deleteButton);
 
 			await act(async () => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 		});
 
@@ -209,7 +209,7 @@ describe('The SLAListPage component should', () => {
 			fireEvent.click(deleteButton);
 
 			await act(async () => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 		});
 
@@ -329,7 +329,7 @@ describe('The SLAListPage component should', () => {
 			getByText = renderResult.getByText;
 
 			await act(async () => {
-				jest.runAllTimers();
+				jest.advanceTimersByTime(100);
 			});
 		});
 

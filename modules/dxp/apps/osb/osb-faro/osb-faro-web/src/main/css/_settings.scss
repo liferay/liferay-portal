@@ -2,20 +2,6 @@
 	background: $lightBackground;
 	min-width: $sidebarOpenWidth + $minPageWidthContent + ($pagePadding * 2);
 
-	.back-arrow {
-		align-items: center;
-		color: $mainLighten28;
-		display: flex;
-
-		&:hover {
-			text-decoration: none;
-		}
-
-		.icon-root {
-			margin-top: 0;
-		}
-	}
-
 	.breadcrumb {
 		font-size: $fontSizeSmall;
 		padding: 0;
@@ -40,7 +26,6 @@
 		}
 	}
 
-	.settings-header,
 	.settings-side-bar {
 		.icon-wrapper {
 			height: 32px;
@@ -86,24 +71,6 @@
 
 	.section-side {
 		min-width: $sidebarOpenWidth;
-	}
-
-	> .settings-header {
-		align-items: center;
-		background: $white;
-		border-bottom: 1px solid $mainLighten74;
-		display: flex;
-		height: 88px;
-		margin-bottom: 24px;
-
-		.back-arrow {
-			margin-left: 24px;
-		}
-
-		.title {
-			font-weight: $fontWeightBold;
-			margin: 0;
-		}
 	}
 
 	> .content-wrapper {

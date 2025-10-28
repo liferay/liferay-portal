@@ -7,6 +7,7 @@ UpgradeBNDIncludeResourceCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | C
 UpgradeCatchAllCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Performs replacements on Liferay's outdated code. |
 [UpgradeCatchAllJSPImportsCheck](check/jsp_imports_check.md#jspimportscheck) | [Upgrade](upgrade_checks.md#upgrade-checks) | Sorts and groups imports in `LPD_XXXXX.jsp` and `LPS_XXXXX.jsp` files. |
 UpgradeCatchAllJavaImportsCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Sorts and groups imports in `LPD_XXXXX.java` and `LPS_XXXXX.java` files. |
+UpgradeCatchAllJavaLongLinesCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Finds lines that are longer than the specified maximum line length in `LPD_XXXXX.java` and `LPS_XXXXX.java` files. |
 UpgradeCatchAllJavaTermOrderCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Sorts javaterms in `LPD_XXXXX.java` and `LPS_XXXXX.java` files. |
 UpgradeGradleIncludeResourceCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replaces with `compileInclude` the configuration attribute for dependencies in `build.gradle` that are listed at `Include-Resource` property at `bnd.bnd` associated file. |
 UpgradeImportsCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replaces deprecated package references with updated values from `imports.txt` and handles class renaming by updating variable declarations and references when a package change involves a class name change. |

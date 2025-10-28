@@ -45,6 +45,9 @@ components:
                     items:
                         $ref: "#/components/schemas/InventoryAnalysisItem"
                     type: array
+                inventoryAnalysisItemsCount:
+                    format: int64
+                    type: integer
                 totalCount:
                     format: int64
                     type: integer

@@ -489,11 +489,15 @@ const AppsPanel = ({
 							xl="4"
 						>
 							<ClayLayout.ContainerFluid size={false}>
-								<ClayLayout.Row>
+								<ClayLayout.Row className="h-100">
 									<ClayLayout.Col
 										className="c-px-0"
 										md="12"
-										xl="6"
+										xl={
+											Liferay.FeatureFlags['LPD-17564']
+												? '6'
+												: '12'
+										}
 									>
 										<SitesPanel
 											portletNamespace={portletNamespace}
@@ -502,15 +506,15 @@ const AppsPanel = ({
 										/>
 									</ClayLayout.Col>
 
-									<ClayLayout.Col
-										className="c-px-0"
-										md="12"
-										xl="6"
-									>
-										{Liferay.FeatureFlags['LPD-17564'] && (
+									{Liferay.FeatureFlags['LPD-17564'] && (
+										<ClayLayout.Col
+											className="c-px-0"
+											md="12"
+											xl="6"
+										>
 											<SpacesPanel cms={cms} />
-										)}
-									</ClayLayout.Col>
+										</ClayLayout.Col>
+									)}
 								</ClayLayout.Row>
 							</ClayLayout.ContainerFluid>
 						</ClayLayout.Col>
@@ -522,9 +526,11 @@ const AppsPanel = ({
 				<ClayLayout.ContainerFluid size={false}>
 					<ClayLayout.Row>
 						<ClayLayout.Col
-							className="pr-3"
-							md={Liferay.FeatureFlags['LPD-17564'] ? '8' : '9'}
-							xl="8"
+							className={
+								Liferay.FeatureFlags['LPD-17564'] ? 'pr-3' : ''
+							}
+							md={Liferay.FeatureFlags['LPD-17564'] ? '8' : '12'}
+							xl={Liferay.FeatureFlags['LPD-17564'] ? '8' : '12'}
 						>
 							<ClayLayout.ContentRow
 								className="applications-menu-border-top bg-white c-py-3"
@@ -552,13 +558,15 @@ const AppsPanel = ({
 							</ClayLayout.ContentRow>
 						</ClayLayout.Col>
 
-						<ClayLayout.Col
-							className="d-md-block d-none px-0"
-							md="3"
-							xl="4"
-						>
-							<div className="applications-menu-sites"></div>
-						</ClayLayout.Col>
+						{Liferay.FeatureFlags['LPD-17564'] && (
+							<ClayLayout.Col
+								className="d-md-block d-none px-0"
+								md="4"
+								xl="4"
+							>
+								<div className="applications-menu-sites"></div>
+							</ClayLayout.Col>
+						)}
 					</ClayLayout.Row>
 				</ClayLayout.ContainerFluid>
 			</div>
@@ -704,7 +712,11 @@ const ApplicationsMenu = ({
 					observer={observer}
 					status="info"
 				>
-					<ClayModal.Header className="sr-only" withTitle={false}>
+					<ClayModal.Header
+						className="sr-only"
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+						withTitle={false}
+					>
 						<ClayModal.Title>
 							{Liferay.Language.get('applications-menu')}
 						</ClayModal.Title>

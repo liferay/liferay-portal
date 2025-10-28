@@ -6,7 +6,7 @@ application:
     name: Liferay.Dispatch.REST
 author: Nilton Vieira
 clientDir: ../dispatch-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../dispatch-rest-test/src/testIntegration/java

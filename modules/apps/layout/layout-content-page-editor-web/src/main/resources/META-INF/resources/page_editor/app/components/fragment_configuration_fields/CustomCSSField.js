@@ -122,7 +122,9 @@ function CustomCSSEditorModal({
 				observer={observer}
 				size="full-screen"
 			>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('custom-css')}
 				</ClayModal.Header>
 

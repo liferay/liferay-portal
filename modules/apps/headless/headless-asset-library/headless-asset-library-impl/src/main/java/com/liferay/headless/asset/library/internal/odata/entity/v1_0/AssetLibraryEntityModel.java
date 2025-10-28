@@ -6,8 +6,11 @@
 package com.liferay.headless.asset.library.internal.odata.entity.v1_0;
 
 import com.liferay.headless.asset.library.internal.util.AssetLibraryUtil;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Map;
 
@@ -18,11 +21,16 @@ public class AssetLibraryEntityModel implements EntityModel {
 
 	public AssetLibraryEntityModel() {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
+			new DateTimeEntityField(
+				"dateModified",
+				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
+				locale -> Field.MODIFIED_DATE),
 			new EntityField(
 				"type", EntityField.Type.STRING, locale -> "type",
 				locale -> "type",
 				value -> String.valueOf(
-					AssetLibraryUtil.getDepotEntryType((String)value))));
+					AssetLibraryUtil.getDepotEntryType((String)value))),
+			new StringEntityField("name", locale -> Field.NAME));
 	}
 
 	@Override

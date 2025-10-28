@@ -7,13 +7,19 @@ package com.liferay.site.internal.configuration.manager;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.site.configuration.MenuAccessConfiguration;
 import com.liferay.site.configuration.manager.MenuAccessConfigurationManager;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -87,6 +93,27 @@ public class MenuAccessConfigurationManagerImpl
 			boolean showControlMenuByRole)
 		throws Exception {
 
+		if (accessToControlMenuRoleIds == null) {
+			List<String> accessToControlMenuRoleIdsList = new ArrayList<>();
+
+			Group group = _groupLocalService.getGroup(groupId);
+
+			Role administratorRole = _roleLocalService.getRole(
+				group.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+			accessToControlMenuRoleIdsList.add(
+				String.valueOf(administratorRole.getRoleId()));
+
+			Role siteAdministratorRole = _roleLocalService.getRole(
+				group.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
+
+			accessToControlMenuRoleIdsList.add(
+				String.valueOf(siteAdministratorRole.getRoleId()));
+
+			accessToControlMenuRoleIds = ArrayUtil.toStringArray(
+				accessToControlMenuRoleIdsList);
+		}
+
 		_configurationProvider.saveGroupConfiguration(
 			MenuAccessConfiguration.class, groupId,
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -101,5 +128,11 @@ public class MenuAccessConfigurationManagerImpl
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }

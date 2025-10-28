@@ -33,6 +33,7 @@ const ProductPurchaseHeaderAccount: React.FC<
 				<strong className="account-banner-title-text align-self-center">
 					{i18n.translate('account-selected')}
 				</strong>
+
 				<AccountEmailInfo image={account.logoURL} name={account.name} />
 			</div>
 		</>

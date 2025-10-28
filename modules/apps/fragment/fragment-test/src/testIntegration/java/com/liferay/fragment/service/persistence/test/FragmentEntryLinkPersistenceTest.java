@@ -138,10 +138,13 @@ public class FragmentEntryLinkPersistenceTest {
 
 		newFragmentEntryLink.setModifiedDate(RandomTestUtil.nextDate());
 
-		newFragmentEntryLink.setOriginalFragmentEntryLinkId(
-			RandomTestUtil.nextLong());
+		newFragmentEntryLink.setOriginalFragmentEntryLinkERC(
+			RandomTestUtil.randomString());
 
-		newFragmentEntryLink.setFragmentEntryId(RandomTestUtil.nextLong());
+		newFragmentEntryLink.setFragmentEntryERC(RandomTestUtil.randomString());
+
+		newFragmentEntryLink.setFragmentEntryScopeERC(
+			RandomTestUtil.randomString());
 
 		newFragmentEntryLink.setSegmentsExperienceId(RandomTestUtil.nextLong());
 
@@ -214,11 +217,14 @@ public class FragmentEntryLinkPersistenceTest {
 			Time.getShortTimestamp(existingFragmentEntryLink.getModifiedDate()),
 			Time.getShortTimestamp(newFragmentEntryLink.getModifiedDate()));
 		Assert.assertEquals(
-			existingFragmentEntryLink.getOriginalFragmentEntryLinkId(),
-			newFragmentEntryLink.getOriginalFragmentEntryLinkId());
+			existingFragmentEntryLink.getOriginalFragmentEntryLinkERC(),
+			newFragmentEntryLink.getOriginalFragmentEntryLinkERC());
 		Assert.assertEquals(
-			existingFragmentEntryLink.getFragmentEntryId(),
-			newFragmentEntryLink.getFragmentEntryId());
+			existingFragmentEntryLink.getFragmentEntryERC(),
+			newFragmentEntryLink.getFragmentEntryERC());
+		Assert.assertEquals(
+			existingFragmentEntryLink.getFragmentEntryScopeERC(),
+			newFragmentEntryLink.getFragmentEntryScopeERC());
 		Assert.assertEquals(
 			existingFragmentEntryLink.getSegmentsExperienceId(),
 			newFragmentEntryLink.getSegmentsExperienceId());
@@ -327,19 +333,6 @@ public class FragmentEntryLinkPersistenceTest {
 	}
 
 	@Test
-	public void testCountByFragmentEntryId() throws Exception {
-		_persistence.countByFragmentEntryId(RandomTestUtil.nextLong());
-
-		_persistence.countByFragmentEntryId(0L);
-	}
-
-	@Test
-	public void testCountByFragmentEntryIdArrayable() throws Exception {
-		_persistence.countByFragmentEntryId(
-			new long[] {RandomTestUtil.nextLong(), 0L});
-	}
-
-	@Test
 	public void testCountByRendererKey() throws Exception {
 		_persistence.countByRendererKey("");
 
@@ -349,11 +342,10 @@ public class FragmentEntryLinkPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_F() throws Exception {
-		_persistence.countByG_F(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+	public void testCountByType() throws Exception {
+		_persistence.countByType(RandomTestUtil.nextInt());
 
-		_persistence.countByG_F(0L, 0L);
+		_persistence.countByType(0);
 	}
 
 	@Test
@@ -383,54 +375,31 @@ public class FragmentEntryLinkPersistenceTest {
 	}
 
 	@Test
-	public void testCountByF_D() throws Exception {
-		_persistence.countByF_D(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
+	public void testCountByFEERC_FESERC() throws Exception {
+		_persistence.countByFEERC_FESERC("", "");
 
-		_persistence.countByF_D(0L, RandomTestUtil.randomBoolean());
+		_persistence.countByFEERC_FESERC("null", "null");
+
+		_persistence.countByFEERC_FESERC((String)null, (String)null);
 	}
 
 	@Test
-	public void testCountByF_DArrayable() throws Exception {
-		_persistence.countByF_D(
-			new long[] {RandomTestUtil.nextLong(), 0L},
-			RandomTestUtil.randomBoolean());
+	public void testCountByG_OFELERC_P() throws Exception {
+		_persistence.countByG_OFELERC_P(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextLong());
+
+		_persistence.countByG_OFELERC_P(0L, "null", 0L);
+
+		_persistence.countByG_OFELERC_P(0L, (String)null, 0L);
 	}
 
 	@Test
-	public void testCountByG_OFELI_P() throws Exception {
-		_persistence.countByG_OFELI_P(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
+	public void testCountByG_FEERC_FESERC() throws Exception {
+		_persistence.countByG_FEERC_FESERC(RandomTestUtil.nextLong(), "", "");
 
-		_persistence.countByG_OFELI_P(0L, 0L, 0L);
-	}
+		_persistence.countByG_FEERC_FESERC(0L, "null", "null");
 
-	@Test
-	public void testCountByG_F_C() throws Exception {
-		_persistence.countByG_F_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByG_F_C(0L, 0L, 0L);
-	}
-
-	@Test
-	public void testCountByG_F_P() throws Exception {
-		_persistence.countByG_F_P(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByG_F_P(0L, 0L, 0L);
-	}
-
-	@Test
-	public void testCountByG_F_D() throws Exception {
-		_persistence.countByG_F_D(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_F_D(0L, 0L, RandomTestUtil.randomBoolean());
+		_persistence.countByG_FEERC_FESERC(0L, (String)null, (String)null);
 	}
 
 	@Test
@@ -469,12 +438,49 @@ public class FragmentEntryLinkPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_F_C_C() throws Exception {
-		_persistence.countByG_F_C_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+	public void testCountByFEERC_FESERC_D() throws Exception {
+		_persistence.countByFEERC_FESERC_D(
+			"", "", RandomTestUtil.randomBoolean());
 
-		_persistence.countByG_F_C_C(0L, 0L, 0L, 0L);
+		_persistence.countByFEERC_FESERC_D(
+			"null", "null", RandomTestUtil.randomBoolean());
+
+		_persistence.countByFEERC_FESERC_D(
+			(String)null, (String)null, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByG_FEERC_FESERC_C() throws Exception {
+		_persistence.countByG_FEERC_FESERC_C(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextLong());
+
+		_persistence.countByG_FEERC_FESERC_C(0L, "null", "null", 0L);
+
+		_persistence.countByG_FEERC_FESERC_C(
+			0L, (String)null, (String)null, 0L);
+	}
+
+	@Test
+	public void testCountByG_FEERC_FESERC_P() throws Exception {
+		_persistence.countByG_FEERC_FESERC_P(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextLong());
+
+		_persistence.countByG_FEERC_FESERC_P(0L, "null", "null", 0L);
+
+		_persistence.countByG_FEERC_FESERC_P(
+			0L, (String)null, (String)null, 0L);
+	}
+
+	@Test
+	public void testCountByG_FEERC_FESERC_D() throws Exception {
+		_persistence.countByG_FEERC_FESERC_D(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_FEERC_FESERC_D(
+			0L, "null", "null", RandomTestUtil.randomBoolean());
+
+		_persistence.countByG_FEERC_FESERC_D(
+			0L, (String)null, (String)null, RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -515,6 +521,18 @@ public class FragmentEntryLinkPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_FEERC_FESERC_C_C() throws Exception {
+		_persistence.countByG_FEERC_FESERC_C_C(
+			RandomTestUtil.nextLong(), "", "", RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong());
+
+		_persistence.countByG_FEERC_FESERC_C_C(0L, "null", "null", 0L, 0L);
+
+		_persistence.countByG_FEERC_FESERC_C_C(
+			0L, (String)null, (String)null, 0L, 0L);
+	}
+
+	@Test
 	public void testCountByERC_G() throws Exception {
 		_persistence.countByERC_G("", RandomTestUtil.nextLong());
 
@@ -552,11 +570,11 @@ public class FragmentEntryLinkPersistenceTest {
 			"uuid", true, "externalReferenceCode", true, "fragmentEntryLinkId",
 			true, "groupId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
-			"originalFragmentEntryLinkId", true, "fragmentEntryId", true,
-			"segmentsExperienceId", true, "classNameId", true, "classPK", true,
-			"plid", true, "deleted", true, "namespace", true, "position", true,
-			"rendererKey", true, "type", true, "lastPropagationDate", true,
-			"lastPublishDate", true);
+			"originalFragmentEntryLinkERC", true, "fragmentEntryERC", true,
+			"fragmentEntryScopeERC", true, "segmentsExperienceId", true,
+			"classNameId", true, "classPK", true, "plid", true, "deleted", true,
+			"namespace", true, "position", true, "rendererKey", true, "type",
+			true, "lastPropagationDate", true, "lastPublishDate", true);
 	}
 
 	@Test
@@ -881,10 +899,13 @@ public class FragmentEntryLinkPersistenceTest {
 
 		fragmentEntryLink.setModifiedDate(RandomTestUtil.nextDate());
 
-		fragmentEntryLink.setOriginalFragmentEntryLinkId(
-			RandomTestUtil.nextLong());
+		fragmentEntryLink.setOriginalFragmentEntryLinkERC(
+			RandomTestUtil.randomString());
 
-		fragmentEntryLink.setFragmentEntryId(RandomTestUtil.nextLong());
+		fragmentEntryLink.setFragmentEntryERC(RandomTestUtil.randomString());
+
+		fragmentEntryLink.setFragmentEntryScopeERC(
+			RandomTestUtil.randomString());
 
 		fragmentEntryLink.setSegmentsExperienceId(RandomTestUtil.nextLong());
 

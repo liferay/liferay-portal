@@ -6,7 +6,7 @@
 import {render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
 import ClayStyleModal from '../../../src/main/resources/META-INF/resources/js/components/modals/CardStyleModal';
@@ -41,10 +41,9 @@ describe('ClayStyleModal', () => {
 			expect(
 				screen.getByText('This is the body of the new feature.')
 			).toBeInTheDocument();
-			expect(screen.getByRole('img')).toHaveAttribute(
-				'src',
-				'/path/to/image.png'
-			);
+			expect(
+				screen.getAllByRole('presentation', {hidden: true})[1]
+			).toHaveAttribute('src', '/path/to/image.png');
 		});
 	});
 

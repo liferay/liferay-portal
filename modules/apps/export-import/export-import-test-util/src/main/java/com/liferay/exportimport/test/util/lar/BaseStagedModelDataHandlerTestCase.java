@@ -612,19 +612,9 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 	protected void exportImportStagedModel(StagedModel stagedModel)
 		throws Exception {
 
-		initExport();
+		exportStagedModel(stagedModel);
 
-		StagedModelDataHandlerUtil.exportStagedModel(
-			portletDataContext, stagedModel);
-
-		initImport();
-
-		StagedModel exportedStagedModel = readExportedStagedModel(stagedModel);
-
-		Assert.assertNotNull(exportedStagedModel);
-
-		StagedModelDataHandlerUtil.importStagedModel(
-			portletDataContext, exportedStagedModel);
+		importStagedModel(stagedModel);
 	}
 
 	protected void exportImportStagedModelFromLiveToStaging(
@@ -644,6 +634,13 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 
 		StagedModelDataHandlerUtil.importStagedModel(
 			portletDataContext, exportedStagedModel);
+	}
+
+	protected void exportStagedModel(StagedModel stagedModel) throws Exception {
+		initExport();
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, stagedModel);
 	}
 
 	protected AssetEntry fetchAssetEntry(StagedModel stagedModel, Group group)
@@ -689,6 +686,17 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 
 	protected Date getStartDate() {
 		return new Date(System.currentTimeMillis() - Time.HOUR);
+	}
+
+	protected void importStagedModel(StagedModel stagedModel) throws Exception {
+		initImport();
+
+		StagedModel exportedStagedModel = readExportedStagedModel(stagedModel);
+
+		Assert.assertNotNull(exportedStagedModel);
+
+		StagedModelDataHandlerUtil.importStagedModel(
+			portletDataContext, exportedStagedModel);
 	}
 
 	protected void initExport() throws Exception {

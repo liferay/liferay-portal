@@ -100,11 +100,9 @@ describe('PortletHub', () => {
 				param1: ['paramValue1'],
 			};
 
-			return hubA
-				.createResourceUrl(parameters, 'cacheLevelPage')
-				.then(() => {
-					done();
-				});
+			hubA.createResourceUrl(parameters, 'cacheLevelPage').then(() => {
+				done();
+			});
 		});
 
 		it('returns a string if both arguments are valid', () => {

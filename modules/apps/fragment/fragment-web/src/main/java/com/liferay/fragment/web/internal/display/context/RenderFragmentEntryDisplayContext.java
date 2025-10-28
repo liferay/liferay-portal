@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.upload.UploadRequest;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -61,13 +62,16 @@ public class RenderFragmentEntryDisplayContext {
 		FragmentEntryLink fragmentEntryLink =
 			FragmentEntryLinkLocalServiceUtil.createFragmentEntryLink(0);
 
-		long fragmentEntryId = 0;
+		String fragmentEntryERC = null;
+		String fragmentEntryScopeERC = null;
 
 		if (fragmentEntry != null) {
-			fragmentEntryId = fragmentEntry.getFragmentEntryId();
+			fragmentEntryERC = fragmentEntry.getExternalReferenceCode();
+			fragmentEntryScopeERC = fragmentEntry.getScopeERC();
 		}
 
-		fragmentEntryLink.setFragmentEntryId(fragmentEntryId);
+		fragmentEntryLink.setFragmentEntryERC(fragmentEntryERC);
+		fragmentEntryLink.setFragmentEntryScopeERC(fragmentEntryScopeERC);
 
 		fragmentEntryLink.setCss(css);
 		fragmentEntryLink.setHtml(html);
@@ -77,7 +81,7 @@ public class RenderFragmentEntryDisplayContext {
 
 		String rendererKey = null;
 
-		if ((fragmentEntry != null) && (fragmentEntryId == 0)) {
+		if ((fragmentEntry != null) && Validator.isNull(fragmentEntryERC)) {
 			rendererKey = fragmentEntry.getFragmentEntryKey();
 		}
 

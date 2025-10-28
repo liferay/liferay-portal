@@ -11,7 +11,7 @@ export type BulkActionItem = {
 		itemsCount?: number;
 		mimeType: MimeTypes;
 		type: 'ASSET' | 'FOLDER';
-		usages: 0;
+		usages: number;
 	};
 	classExternalReferenceCode: string;
 	className: string;

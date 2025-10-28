@@ -16,6 +16,7 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectFilterLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -31,8 +32,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -284,6 +287,35 @@ public class ObjectFieldUtil {
 			GetterUtil.getBoolean(objectField.getSystem()));
 
 		return serviceBuilderObjectField;
+	}
+
+	public static List<com.liferay.object.model.ObjectField> toObjectFields(
+		String defaultLanguageId,
+		ListTypeDefinitionLocalService listTypeDefinitionLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
+		ObjectField[] objectFields,
+		ObjectFieldSettingLocalService objectFieldSettingLocalService,
+		ObjectFilterLocalService objectFilterLocalService) {
+
+		if (objectFields == null) {
+			return new ArrayList<>();
+		}
+
+		return TransformUtil.transformToList(
+			objectFields,
+			objectField -> {
+				com.liferay.object.model.ObjectField serviceBuilderObjectField =
+					toObjectField(
+						defaultLanguageId, listTypeDefinitionLocalService,
+						objectField, objectFieldLocalService,
+						objectFieldSettingLocalService,
+						objectFilterLocalService);
+
+				serviceBuilderObjectField.setObjectFieldId(
+					GetterUtil.getLong(objectField.getId()));
+
+				return serviceBuilderObjectField;
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

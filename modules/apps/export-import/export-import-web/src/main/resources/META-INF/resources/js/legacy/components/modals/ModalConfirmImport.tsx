@@ -27,7 +27,9 @@ export function ModalConfirmImport({
 	return (
 		<ClayModalProvider>
 			<ClayModal center observer={observer} status="warning">
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('important-info-about-your-import')}
 				</ClayModal.Header>
 

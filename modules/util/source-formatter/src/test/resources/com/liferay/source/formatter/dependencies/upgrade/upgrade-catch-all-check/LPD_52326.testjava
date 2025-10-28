@@ -28,65 +28,356 @@ public class LPD_52326 {
 		File smallImageFile, Map<String, byte[]> images, String articleURL,
 		ServiceContext serviceContext) {
 
-		JournalArticleLocalServiceUtil.addArticle(123, groupId, folderId, classNameId, classPK, articleId, autoArticleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		JournalArticleLocalServiceUtil.addArticle(userId, groupId, folderId, classNameId, classPK, articleId, autoArticleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		_journalArticleLocalService.addArticle(userId, groupId, folderId, classNameId, classPK, articleId, autoArticleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.addArticle(
+			123, groupId, folderId, classNameId, classPK, articleId,
+			autoArticleId, version, titleMap, descriptionMap, friendlyURLMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
+			reviewDateHour, reviewDateMinute, neverReview, indexable,
+			smallImage, smallImageURL, smallFile, images, articleURL,
+			serviceContext);
+		JournalArticleLocalServiceUtil.addArticle(
+			userId, groupId, folderId, classNameId, classPK, articleId,
+			autoArticleId, version, titleMap, descriptionMap, friendlyURLMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
+			reviewDateHour, reviewDateMinute, neverReview, indexable,
+			smallImage, smallImageURL, smallFile, images, articleURL,
+			serviceContext);
+		_journalArticleLocalService.addArticle(
+			userId, groupId, folderId, classNameId, classPK, articleId,
+			autoArticleId, version, titleMap, descriptionMap, friendlyURLMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
+			reviewDateHour, reviewDateMinute, neverReview, indexable,
+			smallImage, smallImageURL, smallFile, images, articleURL,
+			serviceContext);
 
-		JournalArticleLocalServiceUtil.addArticle(123, groupId, folderId, classNameId, classPK, articleId, autoArticleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		JournalArticleLocalServiceUtil.addArticle(userId, groupId, folderId, classNameId, classPK, articleId, autoArticleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		_journalArticleLocalService.addArticle(userId, groupId, folderId, classNameId, classPK, articleId, autoArticleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.addArticle(
+			123, groupId, folderId, classNameId, classPK, articleId,
+			autoArticleId, version, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallFile, images, articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.addArticle(
+			userId, groupId, folderId, classNameId, classPK, articleId,
+			autoArticleId, version, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallFile, images, articleURL, serviceContext);
+		_journalArticleLocalService.addArticle(
+			userId, groupId, folderId, classNameId, classPK, articleId,
+			autoArticleId, version, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallFile, images, articleURL, serviceContext);
 
-		JournalArticleServiceUtil.addArticle(123, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		JournalArticleServiceUtil.addArticle(groupId, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		_journalArticleService.addArticle(groupId, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			123, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallFile, images, articleURL, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			groupId, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallFile, images, articleURL, serviceContext);
+		_journalArticleService.addArticle(
+			groupId, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallFile, images, articleURL, serviceContext);
 
-		JournalArticleLocalServiceUtil.addArticle(123, groupId, folderId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, serviceContext);
-		JournalArticleLocalServiceUtil.addArticle(userId, groupId, folderId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, serviceContext);
-		_journalArticleLocalService.addArticle(userId, groupId, folderId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, serviceContext);
+		JournalArticleLocalServiceUtil.addArticle(
+			123, groupId, folderId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, serviceContext);
+		JournalArticleLocalServiceUtil.addArticle(
+			userId, groupId, folderId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, serviceContext);
+		_journalArticleLocalService.addArticle(
+			userId, groupId, folderId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, serviceContext);
 
-		JournalArticleServiceUtil.addArticle(123, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		JournalArticleServiceUtil.addArticle(groupId, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
-		_journalArticleService.addArticle(groupId, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallFile, images, articleURL, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			123, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallFile, images, articleURL,
+			serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			groupId, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallFile, images, articleURL,
+			serviceContext);
+		_journalArticleService.addArticle(
+			groupId, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallFile, images, articleURL,
+			serviceContext);
 
-		JournalArticleServiceUtil.addArticle(123, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, articleURL, serviceContext);
-		JournalArticleServiceUtil.addArticle(groupId, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, articleURL, serviceContext);
-		_journalArticleService.addArticle(groupId, folderId, classNameId, classPK, articleId, autoArticleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, articleURL, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			123, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, articleURL, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			groupId, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, articleURL, serviceContext);
+		_journalArticleService.addArticle(
+			groupId, folderId, classNameId, classPK, articleId, autoArticleId,
+			titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, articleURL, serviceContext);
 
-		JournalArticleServiceUtil.addArticle(123, folderId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, serviceContext);
-		JournalArticleServiceUtil.addArticle(groupId, folderId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, serviceContext);
-		_journalArticleService.addArticle(groupId, folderId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			123, folderId, titleMap, descriptionMap, content, ddmStructureKey,
+			ddmTemplateKey, serviceContext);
+		JournalArticleServiceUtil.addArticle(
+			groupId, folderId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, serviceContext);
+		_journalArticleService.addArticle(
+			groupId, folderId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, serviceContext);
 
-		JournalArticleLocalServiceUtil.addArticleDefaultValues(123, groupId, classNameId, classPK, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
-		JournalArticleLocalServiceUtil.addArticleDefaultValues(userId, groupId, classNameId, classPK, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
-		_journalArticleLocalService.addArticleDefaultValues(userId, groupId, classNameId, classPK, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
+		JournalArticleLocalServiceUtil.addArticleDefaultValues(
+			123, groupId, classNameId, classPK, titleMap, descriptionMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable,
+			smallImage, smallImageURL, smallFile, serviceContext);
+		JournalArticleLocalServiceUtil.addArticleDefaultValues(
+			userId, groupId, classNameId, classPK, titleMap, descriptionMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable,
+			smallImage, smallImageURL, smallFile, serviceContext);
+		_journalArticleLocalService.addArticleDefaultValues(
+			userId, groupId, classNameId, classPK, titleMap, descriptionMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable,
+			smallImage, smallImageURL, smallFile, serviceContext);
 
-		JournalArticleServiceUtil.addArticleDefaultValues(123, classNameId, classPK, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallImageFile, serviceContext);
-		JournalArticleServiceUtil.addArticleDefaultValues(groupId, classNameId, classPK, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallImageFile, serviceContext);
-		_journalArticleService.addArticleDefaultValues(groupId, classNameId, classPK, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallImageFile, serviceContext);
+		JournalArticleServiceUtil.addArticleDefaultValues(
+			123, classNameId, classPK, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallImageFile, serviceContext);
+		JournalArticleServiceUtil.addArticleDefaultValues(
+			groupId, classNameId, classPK, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallImageFile, serviceContext);
+		_journalArticleService.addArticleDefaultValues(
+			groupId, classNameId, classPK, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallImageFile, serviceContext);
 
-		JournalArticleLocalServiceUtil.updateArticle(123, groupId, folderId, articleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		JournalArticleLocalServiceUtil.updateArticle(userId, groupId, folderId, articleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		_journalArticleLocalService.updateArticle(userId, groupId, folderId, articleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.updateArticle(
+			123, groupId, folderId, articleId, version, titleMap,
+			descriptionMap, friendlyURLMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallImageFile, images, articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.updateArticle(
+			userId, groupId, folderId, articleId, version, titleMap,
+			descriptionMap, friendlyURLMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallImageFile, images, articleURL, serviceContext);
+		_journalArticleLocalService.updateArticle(
+			userId, groupId, folderId, articleId, version, titleMap,
+			descriptionMap, friendlyURLMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour,
+			reviewDateMinute, neverReview, indexable, smallImage, smallImageURL,
+			smallImageFile, images, articleURL, serviceContext);
 
-		JournalArticleLocalServiceUtil.updateArticle(123, groupId, folderId, articleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		JournalArticleLocalServiceUtil.updateArticle(userId, groupId, folderId, articleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		_journalArticleLocalService.updateArticle(userId, groupId, folderId, articleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.updateArticle(
+			123, groupId, folderId, articleId, version, titleMap,
+			descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallImageFile, images,
+			articleURL, serviceContext);
+		JournalArticleLocalServiceUtil.updateArticle(
+			userId, groupId, folderId, articleId, version, titleMap,
+			descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallImageFile, images,
+			articleURL, serviceContext);
+		_journalArticleLocalService.updateArticle(
+			userId, groupId, folderId, articleId, version, titleMap,
+			descriptionMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallImageFile, images,
+			articleURL, serviceContext);
 
-		JournalArticleServiceUtil.updateArticle(123, folderId, articleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		JournalArticleServiceUtil.updateArticle(groupId, folderId, articleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		_journalArticleService.updateArticle(groupId, folderId, articleId, version, titleMap, descriptionMap, friendlyURLMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
+		JournalArticleServiceUtil.updateArticle(
+			123, folderId, articleId, version, titleMap, descriptionMap,
+			friendlyURLMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallImageFile, images,
+			articleURL, serviceContext);
+		JournalArticleServiceUtil.updateArticle(
+			groupId, folderId, articleId, version, titleMap, descriptionMap,
+			friendlyURLMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallImageFile, images,
+			articleURL, serviceContext);
+		_journalArticleService.updateArticle(
+			groupId, folderId, articleId, version, titleMap, descriptionMap,
+			friendlyURLMap, content, ddmStructureKey, ddmTemplateKey,
+			layoutUuid, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay,
+			reviewDateYear, reviewDateHour, reviewDateMinute, neverReview,
+			indexable, smallImage, smallImageURL, smallImageFile, images,
+			articleURL, serviceContext);
 
-		JournalArticleServiceUtil.updateArticle(123, folderId, articleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		JournalArticleServiceUtil.updateArticle(groupId, folderId, articleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
-		_journalArticleService.updateArticle(groupId, folderId, articleId, version, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear, reviewDateHour, reviewDateMinute, neverReview, indexable, smallImage, smallImageURL, smallImageFile, images, articleURL, serviceContext);
+		JournalArticleServiceUtil.updateArticle(
+			123, folderId, articleId, version, titleMap, descriptionMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
+			reviewDateHour, reviewDateMinute, neverReview, indexable,
+			smallImage, smallImageURL, smallImageFile, images, articleURL,
+			serviceContext);
+		JournalArticleServiceUtil.updateArticle(
+			groupId, folderId, articleId, version, titleMap, descriptionMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
+			reviewDateHour, reviewDateMinute, neverReview, indexable,
+			smallImage, smallImageURL, smallImageFile, images, articleURL,
+			serviceContext);
+		_journalArticleService.updateArticle(
+			groupId, folderId, articleId, version, titleMap, descriptionMap,
+			content, ddmStructureKey, ddmTemplateKey, layoutUuid,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, reviewDateMonth, reviewDateDay, reviewDateYear,
+			reviewDateHour, reviewDateMinute, neverReview, indexable,
+			smallImage, smallImageURL, smallImageFile, images, articleURL,
+			serviceContext);
 
-		JournalArticleLocalServiceUtil.updateArticleDefaultValues(123, groupId, articleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
-		JournalArticleLocalServiceUtil.updateArticleDefaultValues(userId, groupId, articleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
-		_journalArticleLocalService.updateArticleDefaultValues(userId, groupId, articleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
+		JournalArticleLocalServiceUtil.updateArticleDefaultValues(
+			123, groupId, articleId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallFile, serviceContext);
+		JournalArticleLocalServiceUtil.updateArticleDefaultValues(
+			userId, groupId, articleId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallFile, serviceContext);
+		_journalArticleLocalService.updateArticleDefaultValues(
+			userId, groupId, articleId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallFile, serviceContext);
 
-		JournalArticleServiceUtil.updateArticleDefaultValues(123, articleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
-		JournalArticleServiceUtil.updateArticleDefaultValues(groupId, articleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
-		_journalArticleService.updateArticleDefaultValues(groupId, articleId, titleMap, descriptionMap, content, ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL, smallFile, serviceContext);
+		JournalArticleServiceUtil.updateArticleDefaultValues(
+			123, articleId, titleMap, descriptionMap, content, ddmStructureKey,
+			ddmTemplateKey, layoutUuid, indexable, smallImage, smallImageURL,
+			smallFile, serviceContext);
+		JournalArticleServiceUtil.updateArticleDefaultValues(
+			groupId, articleId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallFile, serviceContext);
+		_journalArticleService.updateArticleDefaultValues(
+			groupId, articleId, titleMap, descriptionMap, content,
+			ddmStructureKey, ddmTemplateKey, layoutUuid, indexable, smallImage,
+			smallImageURL, smallFile, serviceContext);
 	}
 
 	@Reference

@@ -254,8 +254,8 @@ public class CompanyTestEntityResourceTest
 		CompanyTestEntity randomCompanyTestEntity = randomCompanyTestEntity();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal.strategy." +
-					"OnErrorContinueBatchEngineImportStrategy",
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
 				LoggerTestUtil.ERROR)) {
 
 			CompanyTestEntityResource companyTestEntityResource =

@@ -13,7 +13,6 @@ export const Search: React.FC<ISearchProps> = ({groupId}) => (
 			getDefinitions({groupId}),
 			{active: true, label: Liferay.Language.get('search')}
 		]}
-		groupId={groupId}
 		pageDescription={Liferay.Language.get(
 			'collect-your-propertys-search-data-by-defining-search-query-parameters'
 		)}

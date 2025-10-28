@@ -460,44 +460,50 @@ public class DDMFieldUpgradeProcess extends UpgradeProcess {
 		}
 
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"select parentStructureId from DDMStructureVersion where ",
-					"structureId = ", structureId, " and structureVersionId = ",
-					structureVersionId, " and ctCollectionId = 0"));
+				"select parentStructureId from DDMStructureVersion where " +
+					"structureId = ? and structureVersionId = ? and " +
+						"ctCollectionId = 0");
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				"select max(structureVersionId) from DDMStructureVersion " +
-					"where structureId = ?");
-			ResultSet resultSet1 = preparedStatement1.executeQuery()) {
+					"where structureId = ?")) {
 
-			if (resultSet1.next()) {
-				long parentStructureId = resultSet1.getLong(
-					"parentStructureId");
+			preparedStatement1.setLong(1, structureId);
+			preparedStatement1.setLong(2, structureVersionId);
 
-				fullHierarchyDDMForm = _getDDMForm(
-					structureId, structureVersionId);
+			try (ResultSet resultSet1 = preparedStatement1.executeQuery()) {
+				if (resultSet1.next()) {
+					long parentStructureId = resultSet1.getLong(
+						"parentStructureId");
 
-				_fullHierarchyDDMForms.put(
-					structureVersionId, fullHierarchyDDMForm);
+					fullHierarchyDDMForm = _getDDMForm(
+						structureId, structureVersionId);
 
-				if (parentStructureId <= 0) {
+					_fullHierarchyDDMForms.put(
+						structureVersionId, fullHierarchyDDMForm);
+
+					if (parentStructureId <= 0) {
+						return fullHierarchyDDMForm;
+					}
+
+					preparedStatement2.setLong(1, parentStructureId);
+
+					try (ResultSet resultSet2 =
+							preparedStatement2.executeQuery()) {
+
+						if (resultSet2.next()) {
+							DDMForm parentDDMForm = _getFullHierarchyDDMForm(
+								parentStructureId, resultSet2.getLong(1));
+
+							List<DDMFormField> ddmFormFields =
+								fullHierarchyDDMForm.getDDMFormFields();
+
+							ddmFormFields.addAll(
+								parentDDMForm.getDDMFormFields());
+						}
+					}
+
 					return fullHierarchyDDMForm;
 				}
-
-				preparedStatement2.setLong(1, parentStructureId);
-
-				try (ResultSet resultSet2 = preparedStatement2.executeQuery()) {
-					if (resultSet2.next()) {
-						DDMForm parentDDMForm = _getFullHierarchyDDMForm(
-							parentStructureId, resultSet2.getLong(1));
-
-						List<DDMFormField> ddmFormFields =
-							fullHierarchyDDMForm.getDDMFormFields();
-
-						ddmFormFields.addAll(parentDDMForm.getDDMFormFields());
-					}
-				}
-
-				return fullHierarchyDDMForm;
 			}
 		}
 

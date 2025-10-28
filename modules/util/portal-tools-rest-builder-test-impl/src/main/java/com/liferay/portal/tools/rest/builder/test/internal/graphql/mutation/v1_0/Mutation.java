@@ -565,6 +565,36 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deleteERCScopedTestEntity(
+			@GraphQLName("ercScopedTestEntityExternalReferenceCode") String
+				ercScopedTestEntityExternalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_ercScopedTestEntityResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			ercScopedTestEntityResource ->
+				ercScopedTestEntityResource.deleteERCScopedTestEntity(
+					ercScopedTestEntityExternalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField
+	public Response deleteERCScopedTestEntityBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_ercScopedTestEntityResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			ercScopedTestEntityResource ->
+				ercScopedTestEntityResource.deleteERCScopedTestEntityBatch(
+					callbackURL, object));
+	}
+
+	@GraphQLField
 	public boolean deleteSiteERCScopedTestEntity(
 			@GraphQLName("siteExternalReferenceCode") @NotEmpty String
 				siteExternalReferenceCode,

@@ -33,7 +33,9 @@ export function Modal({
 	if (visible) {
 		return (
 			<ClayModal observer={observer}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{Liferay.Language.get('share')}
 				</ClayModal.Header>
 

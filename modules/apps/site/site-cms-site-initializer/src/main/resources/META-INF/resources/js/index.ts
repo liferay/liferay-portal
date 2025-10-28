@@ -7,10 +7,11 @@ export {default as Breadcrumb} from './common/components/Breadcrumb';
 export {default as SpaceSticker} from './common/components/SpaceSticker';
 export {default as Toolbar} from './common/components/Toolbar';
 
+export {default as ContentEditorSidePanel} from './content_editor/components/ContentEditorSidePanel';
+
 // Content Editor
 
-export {default as ContentEditorManagementBar} from './content_editor/components/ContentEditorManagementBar';
-export {default as ContentEditorSidePanel} from './content_editor/components/ContentEditorSidePanel';
+export {default as ContentEditorToolbar} from './content_editor/components/ContentEditorToolbar';
 export {default as Spaces} from './content_editor/components/Spaces';
 
 export {default as BulkActionTaskAssets} from './main_view/bulk_action_task/BulkActionTaskAssets';

@@ -335,7 +335,10 @@ function AddressSubtypeAutocomplete({
 					id={`${namespace}_modalChangeSubtype`}
 					observer={observer}
 				>
-					<ClayModal.Header className="alert-warning">
+					<ClayModal.Header
+						className="alert-warning"
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						<ClayIcon className="mr-2" symbol="warning-full" />
 
 						{Liferay.Language.get('reset-subtype')}

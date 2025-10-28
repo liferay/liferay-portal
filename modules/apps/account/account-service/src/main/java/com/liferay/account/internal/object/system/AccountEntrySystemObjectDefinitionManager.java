@@ -46,10 +46,12 @@ public class AccountEntrySystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
-		AccountResource accountResource = _buildAccountResource(false, user);
+		AccountResource accountResource = _buildAccountResource(
+			checkPermissions, user);
 
 		Account account = accountResource.postAccount(_toAccount(values));
 

@@ -81,6 +81,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
             >
               <button
                 aria-expanded="false"
+                aria-label="Open Menu, Current Page: Overview"
                 class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
                 type="button"
               >
@@ -114,9 +115,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/individuals/known-individuals/test"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Overview
                         </span>
                       </a>
@@ -128,9 +127,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/individuals/known-individuals/test/interests"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Interests
                         </span>
                       </a>
@@ -142,9 +139,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/individuals/known-individuals/test/segments"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Segments
                         </span>
                       </a>
@@ -156,9 +151,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                         class="nav-link"
                         href="/workspace/23/123/contacts/individuals/known-individuals/test/details"
                       >
-                        <span
-                          class="navbar-text-truncate"
-                        >
+                        <span>
                           Details
                         </span>
                       </a>

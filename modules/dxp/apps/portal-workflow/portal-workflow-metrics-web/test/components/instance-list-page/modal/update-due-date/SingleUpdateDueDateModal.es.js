@@ -13,7 +13,7 @@ import {act, fireEvent} from '@testing-library/react';
 // import ToasterProvider from '../../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 // import {MockRouter} from '../../../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 // const ContainerMock = ({children}) => {
 // 	const selectedInstance = {

@@ -36,7 +36,9 @@ export function GroovyScriptUsesModalContent({
 }: GroovyScriptUsesModalProps) {
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('setting-cannot-be-deactivated')}
 			</ClayModal.Header>
 

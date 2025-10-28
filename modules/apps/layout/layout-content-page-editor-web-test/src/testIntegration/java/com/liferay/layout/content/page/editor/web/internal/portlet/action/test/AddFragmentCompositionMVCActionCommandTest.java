@@ -320,8 +320,9 @@ public class AddFragmentCompositionMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), defaultSegmentsExperienceId,
 				_layout.getPlid(), StringPool.BLANK, html, StringPool.BLANK,
 				_read("fragment_configuration.json"), editableValues,
 				StringPool.BLANK, 0, null, fragmentEntry.getType(),
@@ -463,8 +464,9 @@ public class AddFragmentCompositionMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), defaultSegmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), defaultSegmentsExperienceId,
 				_layout.getPlid(), StringPool.BLANK, html, StringPool.BLANK,
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0, null,
 				fragmentEntry.getType(), _serviceContext);
@@ -481,7 +483,8 @@ public class AddFragmentCompositionMVCActionCommandTest {
 						LocaleUtil.toLanguageId(
 							_portal.getSiteDefaultLocale(_group)),
 						RandomTestUtil.randomString()))
-			).toString());
+			).toString(),
+			true);
 
 		LayoutStructure layoutStructure = new LayoutStructure();
 
@@ -707,8 +710,9 @@ public class AddFragmentCompositionMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), segmentsExperienceId,
 				draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getConfiguration(),
 				fragmentEntry.getConfiguration(),

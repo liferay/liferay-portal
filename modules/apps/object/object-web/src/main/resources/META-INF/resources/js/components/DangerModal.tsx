@@ -23,7 +23,11 @@ export default function DangerModal({
 
 	return (
 		<ClayModal center observer={observer} status="danger">
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{children}

@@ -192,7 +192,8 @@ public class ContentLayoutTestUtil {
 					JSONUtil.put("inputFieldId", infoField.getUniqueId())
 				).toString(),
 				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), layout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				parentItemId, i, segmentsExperienceId);
@@ -214,7 +215,8 @@ public class ContentLayoutTestUtil {
 			addFragmentEntryLinkToLayout(
 				StringPool.BLANK, fragmentEntry.getCss(),
 				fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), layout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				parentItemId, infoFields.length, segmentsExperienceId);
@@ -295,9 +297,9 @@ public class ContentLayoutTestUtil {
 
 		FragmentEntryLink fragmentEntryLink =
 			FragmentEntryLinkServiceUtil.addFragmentEntryLink(
-				null, layout.getGroupId(), 0, 0, segmentsExperienceId,
-				layout.getPlid(), StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK,
+				null, layout.getGroupId(), null, null, null,
+				segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK,
 				JSONFactoryUtil.toString(
 					fragmentRenderer.getConfigurationJSONObject(
 						defaultFragmentRendererContext)),
@@ -340,7 +342,8 @@ public class ContentLayoutTestUtil {
 		return addFragmentEntryLinkToLayout(
 			editableValues, fragmentEntry.getCss(),
 			fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout, fragmentEntry.getFragmentEntryKey(),
 			fragmentEntry.getType(), parentItemId, position,
 			segmentsExperienceId);
@@ -348,17 +351,17 @@ public class ContentLayoutTestUtil {
 
 	public static FragmentEntryLink addFragmentEntryLinkToLayout(
 			String editableValues, String css, String configuration,
-			long fragmentEntryId, String html, String js, Layout layout,
-			String rendererKey, int type, String parentItemId, int position,
-			long segmentsExperienceId)
+			String fragmentEntryERC, String fragmentEntryScopeERC, String html,
+			String js, Layout layout, String rendererKey, int type,
+			String parentItemId, int position, long segmentsExperienceId)
 		throws Exception {
 
 		FragmentEntryLink fragmentEntryLink =
 			FragmentEntryLinkServiceUtil.addFragmentEntryLink(
-				null, layout.getGroupId(), 0, fragmentEntryId,
-				segmentsExperienceId, layout.getPlid(), css, html, js,
-				configuration, editableValues, StringPool.BLANK, 0, rendererKey,
-				type,
+				null, layout.getGroupId(), null, fragmentEntryERC,
+				fragmentEntryScopeERC, segmentsExperienceId, layout.getPlid(),
+				css, html, js, configuration, editableValues, StringPool.BLANK,
+				0, rendererKey, type,
 				ServiceContextTestUtil.getServiceContext(
 					layout.getGroupId(), TestPropsValues.getUserId()));
 
@@ -371,13 +374,15 @@ public class ContentLayoutTestUtil {
 
 	public static FragmentEntryLink addFragmentEntryLinkToLayout(
 			String editableValues, String css, String configuration,
-			long fragmentEntryId, String html, String js, Layout layout,
-			String rendererKey, long segmentsExperienceId, int type)
+			String fragmentEntryERC, String fragmentEntryScopeERC, String html,
+			String js, Layout layout, String rendererKey,
+			long segmentsExperienceId, int type)
 		throws Exception {
 
 		return addFragmentEntryLinkToLayout(
-			editableValues, css, configuration, fragmentEntryId, html, js,
-			layout, rendererKey, type, null, 0, segmentsExperienceId);
+			editableValues, css, configuration, fragmentEntryERC,
+			fragmentEntryScopeERC, html, js, layout, rendererKey, type, null, 0,
+			segmentsExperienceId);
 	}
 
 	public static JSONObject addItemToLayout(

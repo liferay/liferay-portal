@@ -24,7 +24,9 @@ export default function FilePreviewerModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				<div className="autofit-row autofit-row-center">
 					<div className="autofit-col autofit-col-expand">
 						<div className="text-truncate">

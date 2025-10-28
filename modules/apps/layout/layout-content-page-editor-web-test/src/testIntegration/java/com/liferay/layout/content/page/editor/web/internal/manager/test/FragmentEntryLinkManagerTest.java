@@ -269,7 +269,7 @@ public class FragmentEntryLinkManagerTest {
 			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
 				TestPropsValues.getUserId(),
 				fragmentEntryLink.getFragmentEntryLinkId(),
-				editableValuesJSONObject.toString());
+				editableValuesJSONObject.toString(), true);
 
 		Locale originalLocale = LocaleThreadLocal.getSiteDefaultLocale();
 

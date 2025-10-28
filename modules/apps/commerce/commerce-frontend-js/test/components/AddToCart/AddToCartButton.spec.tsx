@@ -5,7 +5,7 @@
 
 import '../../tests_utilities/polyfills';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {RenderResult, cleanup, fireEvent, render} from '@testing-library/react';
 
 // @ts-ignore

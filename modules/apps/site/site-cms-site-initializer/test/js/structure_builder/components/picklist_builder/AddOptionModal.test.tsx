@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -30,6 +30,10 @@ const renderComponent = async (
 };
 
 describe('AddOptionModal', () => {
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it('Generates random values if no option exists', async () => {
 		renderComponent(null);
 
@@ -63,7 +67,7 @@ describe('AddOptionModal', () => {
 		});
 	});
 
-	it('saves the option when the save button is pressed', async () => {
+	it('adds the option when the "Save" button is pressed and closes the modal', async () => {
 		renderComponent(null);
 
 		const mockAddOption = jest.fn();
@@ -99,10 +103,67 @@ describe('AddOptionModal', () => {
 				key: 'largeSize',
 				name: {en_US: expect.stringContaining('Large')},
 			});
+
+			expect(onCloseModal).toBeCalled();
 		});
 	});
 
-	it('calls onCloseModal when the cancel button is pressed', async () => {
+	it('adds options when the "Save and Add Another button" is pressed and keeps the modal open', async () => {
+		const getInputValue = (label: string) =>
+			(screen.getByLabelText(label) as HTMLInputElement).value;
+
+		renderComponent(null);
+
+		const mockAddOption = jest.fn();
+
+		jest.spyOn(PicklistContext, 'useAddOption').mockImplementation(
+			() => mockAddOption
+		);
+
+		await waitFor(() => {
+			expect(screen.getByText('add-option')).toBeInTheDocument();
+		});
+
+		const erc = getInputValue('erc');
+		const key = getInputValue('key');
+		const name = getInputValue('picklist-name');
+
+		await userEvent.click(screen.getByText('save-and-add-another'));
+
+		await waitFor(() => {
+			expect(onCloseModal).not.toBeCalled();
+
+			expect(mockAddOption).toHaveBeenCalledWith({
+				erc,
+				key,
+				name: {en_US: name},
+			});
+		});
+
+		const nextErc = getInputValue('erc');
+		const nextKey = getInputValue('key');
+		const nextName = getInputValue('picklist-name');
+
+		await waitFor(() => {
+			expect(name).toBe(nextName);
+			expect(key).not.toBe(nextKey);
+			expect(erc).not.toBe(nextErc);
+		});
+
+		await userEvent.click(screen.getByText('save-and-add-another'));
+
+		await waitFor(() => {
+			expect(onCloseModal).not.toBeCalled();
+
+			expect(mockAddOption).toHaveBeenCalledWith({
+				erc: nextErc,
+				key: nextKey,
+				name: {en_US: nextName},
+			});
+		});
+	});
+
+	it('calls onCloseModal when the "Cancel" button is pressed', async () => {
 		renderComponent();
 
 		await waitFor(() => {

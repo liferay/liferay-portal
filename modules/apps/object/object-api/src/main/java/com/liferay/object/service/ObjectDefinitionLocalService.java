@@ -65,11 +65,11 @@ public interface ObjectDefinitionLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectDefinition addCustomObjectDefinition(
-			long userId, long objectFolderId, String className,
-			boolean enableComments, boolean enableFormContainer,
-			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
-			boolean enableLocalization, boolean enableObjectEntryDraft,
-			boolean enableObjectEntrySchedule,
+			String externalReferenceCode, long userId, long objectFolderId,
+			String className, boolean enableComments,
+			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
+			boolean enableIndexSearch, boolean enableLocalization,
+			boolean enableObjectEntryDraft, boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			Map<Locale, String> labelMap, String name, String panelAppOrder,
@@ -461,6 +461,7 @@ public interface ObjectDefinitionLocalService
 			String panelCategoryKey, boolean portlet,
 			Map<Locale, String> pluralLabelMap, String scope, int status,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException;
 
@@ -493,6 +494,7 @@ public interface ObjectDefinitionLocalService
 			String externalReferenceCode, long objectDefinitionId,
 			long objectFolderId, long titleObjectFieldId,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException;
 

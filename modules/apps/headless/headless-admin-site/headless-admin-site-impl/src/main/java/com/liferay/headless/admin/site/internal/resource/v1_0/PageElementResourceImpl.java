@@ -146,7 +146,9 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 		}
 
 		return _pageElementDTOConverter.toDTO(
-			_getDTOConverterContext(layoutStructure, groupId),
+			_getDTOConverterContext(
+				layoutPageTemplateStructure.getCompanyId(), layoutStructure,
+				groupId),
 			layoutStructureItem);
 	}
 
@@ -200,7 +202,9 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				LayoutStructureItemUtil.getChildrenItemIds(
 					layoutStructureItem.getItemId(), layoutStructure),
 				itemId -> _pageElementDTOConverter.toDTO(
-					_getDTOConverterContext(layoutStructure, groupId),
+					_getDTOConverterContext(
+						layoutPageTemplateStructure.getCompanyId(),
+						layoutStructure, groupId),
 					layoutStructure.getLayoutStructureItem(itemId))));
 	}
 
@@ -249,7 +253,9 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				LayoutStructureItemUtil.getChildrenItemIds(
 					layoutStructure.getMainItemId(), layoutStructure),
 				itemId -> _pageElementDTOConverter.toDTO(
-					_getDTOConverterContext(layoutStructure, groupId),
+					_getDTOConverterContext(
+						layoutPageTemplateStructure.getCompanyId(),
+						layoutStructure, groupId),
 					layoutStructure.getLayoutStructureItem(itemId))));
 	}
 
@@ -369,18 +375,20 @@ public class PageElementResourceImpl extends BasePageElementResourceImpl {
 				layoutStructure.toString());
 
 		return _pageElementDTOConverter.toDTO(
-			_getDTOConverterContext(layoutStructure, groupId),
+			_getDTOConverterContext(
+				layout.getCompanyId(), layoutStructure, groupId),
 			layoutStructureItem);
 	}
 
 	private DTOConverterContext _getDTOConverterContext(
-		LayoutStructure layoutStructure, long scopeGroupId) {
+		long companyId, LayoutStructure layoutStructure, long scopeGroupId) {
 
 		DTOConverterContext dtoConverterContext =
 			new DefaultDTOConverterContext(null, null, null, null, null);
 
 		dtoConverterContext.setAttribute(
 			LayoutStructure.class.getName(), layoutStructure);
+		dtoConverterContext.setAttribute("companyId", companyId);
 		dtoConverterContext.setAttribute("scopeGroupId", scopeGroupId);
 
 		return dtoConverterContext;

@@ -1,11 +1,10 @@
 task runGradleTest
-task untarOverrideTestScript(type: Copy)
 
 runGradleTest {
-	dependsOn createDockerContainer, "inspectCustomImage", untarOverrideTestScript
+	dependsOn createDockerContainer, "inspectCustomImage", "copyOverrideTestScript"
 
 	doLast {
-		File overrideTestScript = new File(buildDir, "override_test.sh");
+		File overrideTestScript = project.file("${rootProject.buildDir}/override_test.sh")
 
 		assert overrideTestScript.text.contains("local");
 
@@ -50,10 +49,4 @@ runGradleTest {
 	}
 
 	finalizedBy "removeImage"
-}
-
-untarOverrideTestScript {
-	dependsOn "copyOverrideTestScript"
-	from tarTree(rootProject.buildDir.path + "/override_test.sh.tar")
-	into buildDir
 }

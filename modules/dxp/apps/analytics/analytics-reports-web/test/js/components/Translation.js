@@ -9,7 +9,7 @@ import React from 'react';
 import Translation from '../../../src/main/resources/META-INF/resources/js/components/Translation';
 import {ChartStateContextProvider} from '../../../src/main/resources/META-INF/resources/js/context/ChartStateContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockViewURLs = [
 	{

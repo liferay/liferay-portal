@@ -96,8 +96,12 @@ public class CMSSiteInitializerFDSNames {
 	public static final String TAG_USAGES =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-tagUsages";
 
-	public static final String VIEW_FOLDER =
-		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-viewFolder";
+	public static final String VIEW_CONTENTS_FOLDER =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-viewContentsFolder";
+
+	public static final String VIEW_FILES_FOLDER =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-viewFilesFolder";
 
 	public static final String VIEW_HISTORY =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-viewHistory";

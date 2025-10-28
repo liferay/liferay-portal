@@ -573,6 +573,26 @@
 																	],
 																	"indexed": true
 																},
+																"pageElements": [
+																	{
+																		"definition": {
+																		},
+																		"pageElements": [
+																			{
+																				"definition": {
+																					"widgetInstance": {
+																						"widgetConfig": {
+																							"properties": "path=new-account-trigger"
+																						},
+																						"widgetName": "com_liferay_client_extension_web_internal_portlet_ClientExtensionEntryPortlet_[$COMPANY_ID$]_LXC_liferay_marketplace_custom_element"
+																					}
+																				},
+																				"type": "Widget"
+																			}
+																		],
+																		"type": "FragmentDropZone"
+																	}
+																],
 																"type": "Fragment"
 															}
 														],

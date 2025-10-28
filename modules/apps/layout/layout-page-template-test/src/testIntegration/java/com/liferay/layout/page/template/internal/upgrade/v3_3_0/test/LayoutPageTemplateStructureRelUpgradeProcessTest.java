@@ -235,7 +235,8 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 		FragmentEntryLink fragmentEntryLink =
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 				null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-				fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 				fragmentEntry.getJs(), layout,
 				fragmentEntry.getFragmentEntryKey(),
 				_SEGMENTS_EXPERIENCE_ID_DEFAULT, fragmentEntry.getType());
@@ -284,8 +285,8 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				null, StringPool.BLANK, StringPool.BLANK, 0, StringPool.BLANK,
-				StringPool.BLANK, layout, StringPool.BLANK,
+				null, StringPool.BLANK, StringPool.BLANK, null, null,
+				StringPool.BLANK, StringPool.BLANK, layout, StringPool.BLANK,
 				_SEGMENTS_EXPERIENCE_ID_DEFAULT,
 				FragmentConstants.TYPE_PORTLET);
 

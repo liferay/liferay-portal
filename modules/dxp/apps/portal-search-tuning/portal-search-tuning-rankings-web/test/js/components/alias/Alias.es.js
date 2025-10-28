@@ -8,7 +8,7 @@ import React from 'react';
 
 import Alias from '../../../../src/main/resources/META-INF/resources/js/components/alias/Alias.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('Alias', () => {
 	it('has a list of aliases available', () => {

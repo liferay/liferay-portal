@@ -19,7 +19,9 @@ export default function SpaceMembersModal({
 }) {
 	return (
 		<div>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('all-members')}
 			</ClayModal.Header>
 

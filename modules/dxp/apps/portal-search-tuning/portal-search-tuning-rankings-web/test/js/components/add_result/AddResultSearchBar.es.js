@@ -8,7 +8,7 @@ import React from 'react';
 
 import AddResultSearchBar from '../../../../src/main/resources/META-INF/resources/js/components/add_result/AddResultSearchBar.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const TEST_TEXT = 'search query test';
 

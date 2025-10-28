@@ -68,7 +68,7 @@ public class UpgradeProcessTest {
 				StringBundler.concat(
 					"create table ", TABLE_NAME,
 					" (id LONG not null primary key, typeVarchar VARCHAR(75) ",
-					"not null);")));
+					"not null)")));
 	}
 
 	@After

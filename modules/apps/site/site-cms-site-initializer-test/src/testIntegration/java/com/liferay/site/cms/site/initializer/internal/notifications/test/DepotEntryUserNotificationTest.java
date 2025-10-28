@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -44,6 +45,9 @@ import org.junit.runner.RunWith;
  * @author Balázs Sáfrány-Kovalik
  */
 @DataGuard(scope = DataGuard.Scope.METHOD)
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+)
 @RunWith(Arquillian.class)
 public class DepotEntryUserNotificationTest {
 
@@ -65,7 +69,6 @@ public class DepotEntryUserNotificationTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddGroupUser() throws Exception {
 		User user = UserTestUtil.addUser();
@@ -76,7 +79,6 @@ public class DepotEntryUserNotificationTest {
 		_assertUserNotificationEvent(user);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddUserUserGroup() throws Exception {
 		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
@@ -91,7 +93,6 @@ public class DepotEntryUserNotificationTest {
 		_assertUserNotificationEvent(user);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testInterpret() throws Exception {
 		UserGroup userGroup = UserGroupTestUtil.addUserGroup();

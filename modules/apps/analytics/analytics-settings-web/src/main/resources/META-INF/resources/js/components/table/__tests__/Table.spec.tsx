@@ -5,7 +5,7 @@
 
 import fetch from 'jest-fetch-mock';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, fireEvent, render, screen, within} from '@testing-library/react';
 import React from 'react';
 

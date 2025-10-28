@@ -9,7 +9,7 @@ import React from 'react';
 import CriteriaRow from '../../../../src/main/resources/META-INF/resources/js/components/criteria_builder/CriteriaRow';
 import {PROPERTY_TYPES} from '../../../../src/main/resources/META-INF/resources/js/utils/constants';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 

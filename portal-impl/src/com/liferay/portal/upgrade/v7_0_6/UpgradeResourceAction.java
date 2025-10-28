@@ -55,11 +55,11 @@ public class UpgradeResourceAction extends UpgradeProcess {
 
 						try (PreparedStatement preparedStatement3 =
 								connection.prepareStatement(
-									StringBundler.concat(
-										"delete from ResourceAction where ",
-										"resourceActionId = ",
-										resultSet2.getLong(
-											"resourceActionId")))) {
+									"delete from ResourceAction where " +
+										"resourceActionId = ?")) {
+
+							preparedStatement3.setLong(
+								1, resultSet2.getLong("resourceActionId"));
 
 							preparedStatement3.execute();
 						}

@@ -15,6 +15,13 @@ jest.mock('shared/hooks/useCurrentUser', () => ({
 	})
 }));
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const defaultProps = {
 	currentUser: data.getImmutableMock(User, data.mockUser),
 	dataSource: data.getImmutableMock(DataSource, data.mockLiferayDataSource),

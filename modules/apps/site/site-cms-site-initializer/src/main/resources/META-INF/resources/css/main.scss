@@ -44,6 +44,55 @@
 	}
 }
 
+.custom-empty-state.cms-space-summary {
+	.fds.c-slideout-container {
+		min-height: unset;
+	}
+
+	.c-empty-state {
+		margin: 2.5rem auto;
+	}
+
+	.c-empty-state-image {
+		max-width: 136px;
+	}
+
+	.c-empty-state-title {
+		font-size: 16px;
+		margin-top: 1rem;
+	}
+
+	.c-empty-state-text {
+		font-size: 14px;
+	}
+
+	.c-empty-state-footer {
+		.btn {
+			border-radius: 0.5rem;
+			font-size: 0.875rem;
+			line-height: 1.15;
+			padding: 0.4375rem 0.75rem;
+
+			.d-inline-flex.inline-item-after {
+				align-items: center;
+				line-height: 1;
+				margin-top: -3px;
+				vertical-align: middle;
+
+				.lexicon-icon {
+					margin-top: 0;
+				}
+			}
+		}
+	}
+
+	&.space-summary-connected-sites {
+		.c-empty-state-image {
+			display: none;
+		}
+	}
+}
+
 .cursor-pointer {
 	cursor: pointer;
 }

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
 
@@ -71,11 +72,8 @@ public class FragmentEntryLinkCTDisplayRender
 			}
 		}
 
-		if (fragmentEntryLink.getOriginalFragmentEntryLinkId() == 0) {
-			return false;
-		}
-
-		return true;
+		return Validator.isNotNull(
+			fragmentEntryLink.getOriginalFragmentEntryLinkERC());
 	}
 
 	@Override

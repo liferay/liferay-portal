@@ -109,8 +109,10 @@ public class AnalyticsConfigurationModelListener
 		String[] syncedOrganizationIds =
 			analyticsConfiguration.syncedOrganizationIds();
 
-		if (!analyticsConfiguration.syncAllContacts() &&
-			ArrayUtil.isNotEmpty(syncedOrganizationIds)) {
+		if (!analyticsConfiguration.syncAllContacts()) {
+			if (syncedOrganizationIds == null) {
+				syncedOrganizationIds = new String[0];
+			}
 
 			properties.put(
 				"previousSyncedOrganizationIds", syncedOrganizationIds);
@@ -138,8 +140,10 @@ public class AnalyticsConfigurationModelListener
 		String[] syncedUserGroupIds =
 			analyticsConfiguration.syncedUserGroupIds();
 
-		if (!analyticsConfiguration.syncAllContacts() &&
-			ArrayUtil.isNotEmpty(syncedUserGroupIds)) {
+		if (!analyticsConfiguration.syncAllContacts()) {
+			if (syncedUserGroupIds == null) {
+				syncedUserGroupIds = new String[0];
+			}
 
 			properties.put("previousSyncedUserGroupIds", syncedUserGroupIds);
 		}

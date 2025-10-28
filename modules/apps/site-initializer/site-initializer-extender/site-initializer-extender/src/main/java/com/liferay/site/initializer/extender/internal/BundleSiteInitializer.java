@@ -4559,7 +4559,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		if (accessToControlMenuRoleNamesJSONArray == null) {
 			_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-				serviceContext.getScopeGroupId(), new String[0],
+				serviceContext.getScopeGroupId(), null,
 				jsonObject.getBoolean("showControlMenuByRole"));
 
 			return;

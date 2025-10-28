@@ -130,7 +130,9 @@ export function ERCModal({
 			size="md"
 		>
 			<ClayForm onSubmit={_handleSubmit}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{sub(Liferay.Language.get('edit-x'), [
 						Liferay.Language.get('external-reference-code'),
 					])}

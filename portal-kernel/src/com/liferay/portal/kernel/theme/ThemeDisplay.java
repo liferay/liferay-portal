@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistryUtil;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -190,8 +191,15 @@ public class ThemeDisplay
 			return _clayCSSURL;
 		}
 
-		if (Validator.isNotNull(_defaultClayCSSURL)) {
-			_clayCSSURL = _defaultClayCSSURL;
+		String hashedFileURI = HashedFilesRegistryUtil.getHashedFileURI(
+			StringBundler.concat(
+				PortalUtil.getPathModule(), StringPool.SLASH,
+				_theme.getServletContextName(), _theme.getCssPath(),
+				PortalUtil.isRightToLeft(_httpServletRequest) ?
+					"/clay_rtl.css" : "/clay.css"));
+
+		if (Validator.isNotNull(hashedFileURI)) {
+			_clayCSSURL = hashedFileURI;
 		}
 		else {
 			_clayCSSURL = PortalUtil.getStaticResourceURL(
@@ -564,8 +572,15 @@ public class ThemeDisplay
 			return _mainCSSURL;
 		}
 
-		if (Validator.isNotNull(_defaultMainCSSURL)) {
-			_mainCSSURL = _defaultMainCSSURL;
+		String hashedFileURI = HashedFilesRegistryUtil.getHashedFileURI(
+			StringBundler.concat(
+				PortalUtil.getPathModule(), StringPool.SLASH,
+				_theme.getServletContextName(), _theme.getCssPath(),
+				PortalUtil.isRightToLeft(_httpServletRequest) ?
+					"/main_rtl.css" : "/main.css"));
+
+		if (Validator.isNotNull(hashedFileURI)) {
+			_mainCSSURL = hashedFileURI;
 		}
 		else {
 			_mainCSSURL = PortalUtil.getStaticResourceURL(
@@ -580,8 +595,14 @@ public class ThemeDisplay
 			return _mainJSURL;
 		}
 
-		if (Validator.isNotNull(_defaultMainJSURL)) {
-			_mainJSURL = _defaultMainJSURL;
+		String hashedFileURI = HashedFilesRegistryUtil.getHashedFileURI(
+			StringBundler.concat(
+				PortalUtil.getPathModule(), StringPool.SLASH,
+				_theme.getServletContextName(), _theme.getJavaScriptPath(),
+				"/main.js"));
+
+		if (Validator.isNotNull(hashedFileURI)) {
+			_mainJSURL = hashedFileURI;
 		}
 		else {
 			_mainJSURL = PortalUtil.getStaticResourceURL(
@@ -1385,18 +1406,6 @@ public class ThemeDisplay
 		_contact = contact;
 	}
 
-	public void setDefaultClayCSSURL(String defaultClayCSSURL) {
-		_defaultClayCSSURL = defaultClayCSSURL;
-	}
-
-	public void setDefaultMainCSSURL(String defaultMainCSSURL) {
-		_defaultMainCSSURL = defaultMainCSSURL;
-	}
-
-	public void setDefaultMainJSURL(String defaultMainJSURL) {
-		_defaultMainJSURL = defaultMainJSURL;
-	}
-
 	public void setDevice(Device device) {
 		_device = device;
 	}
@@ -2029,9 +2038,6 @@ public class ThemeDisplay
 	private Contact _contact;
 	private Group _controlPanelGroup;
 	private Layout _controlPanelLayout;
-	private String _defaultClayCSSURL;
-	private String _defaultMainCSSURL;
-	private String _defaultMainJSURL;
 	private Device _device;
 	private long _doAsGroupId;
 	private String _doAsUserId = StringPool.BLANK;

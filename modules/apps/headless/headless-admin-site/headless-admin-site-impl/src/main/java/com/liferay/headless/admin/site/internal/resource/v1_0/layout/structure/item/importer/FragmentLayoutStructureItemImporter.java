@@ -136,10 +136,11 @@ public class FragmentLayoutStructureItemImporter
 					getFragmentInstanceExternalReferenceCode(),
 				layoutStructureItemImporterContext.getUserId(),
 				layout.getGroupId(),
-				_getOriginalFragmentEntryLinkId(
+				_getOriginalFragmentEntryLinkERC(
 					fragmentInstancePageElementDefinition,
 					layoutStructureItemImporterContext),
-				fragmentEntry.getFragmentEntryId(),
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				layoutStructureItemImporterContext.getSegmentsExperienceId(),
 				layout.getPlid(),
 				GetterUtil.getString(
@@ -211,7 +212,7 @@ public class FragmentLayoutStructureItemImporter
 				defaultFragmentReference.getDefaultFragmentKey()));
 	}
 
-	private long _getOriginalFragmentEntryLinkId(
+	private String _getOriginalFragmentEntryLinkERC(
 		FragmentInstancePageElementDefinition
 			fragmentInstancePageElementDefinition,
 		LayoutStructureItemImporterContext layoutStructureItemImporterContext) {
@@ -220,7 +221,7 @@ public class FragmentLayoutStructureItemImporter
 				fragmentInstancePageElementDefinition.
 					getDraftFragmentInstanceExternalReferenceCode())) {
 
-			return 0;
+			return null;
 		}
 
 		FragmentEntryLink fragmentEntryLink =
@@ -231,10 +232,10 @@ public class FragmentLayoutStructureItemImporter
 					layoutStructureItemImporterContext.getGroupId());
 
 		if (fragmentEntryLink == null) {
-			return 0;
+			return null;
 		}
 
-		return fragmentEntryLink.getFragmentEntryLinkId();
+		return fragmentEntryLink.getExternalReferenceCode();
 	}
 
 	private int _getType(
@@ -274,13 +275,14 @@ public class FragmentLayoutStructureItemImporter
 			throw new UnsupportedOperationException();
 		}
 
-		fragmentEntryLink.setOriginalFragmentEntryLinkId(
-			_getOriginalFragmentEntryLinkId(
+		fragmentEntryLink.setOriginalFragmentEntryLinkERC(
+			_getOriginalFragmentEntryLinkERC(
 				fragmentInstancePageElementDefinition,
 				layoutStructureItemImporterContext));
 
-		fragmentEntryLink.setFragmentEntryId(
-			fragmentEntry.getFragmentEntryId());
+		fragmentEntryLink.setFragmentEntryERC(
+			fragmentEntry.getExternalReferenceCode());
+		fragmentEntryLink.setFragmentEntryScopeERC(fragmentEntry.getScopeERC());
 		fragmentEntryLink.setCss(
 			GetterUtil.getString(
 				fragmentInstancePageElementDefinition.getCss()));

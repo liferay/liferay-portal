@@ -23,6 +23,7 @@ export default function Alert({displayType = 'danger', info}) {
 		<ClayAlert.ToastContainer>
 			<ClayAlert
 				autoClose={5000}
+				closeButtonAriaLabel={Liferay.Language.get('close')}
 				displayType={displayType}
 				onClose={() => {
 					setAlert(null);

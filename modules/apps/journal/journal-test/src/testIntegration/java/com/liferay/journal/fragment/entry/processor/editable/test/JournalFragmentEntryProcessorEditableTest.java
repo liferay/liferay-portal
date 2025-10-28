@@ -23,10 +23,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Portal;
@@ -59,15 +57,15 @@ public class JournalFragmentEntryProcessorEditableTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
+		_group = _groupLocalService.fetchGroup(TestPropsValues.getGroupId());
 
 		_layout = LayoutTestUtil.addTypeContentLayout(_group);
 
-		_ddmStructure = DDMStructureTestUtil.addStructure(
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
 		_ddmTemplate = DDMTemplateTestUtil.addTemplate(
-			_group.getGroupId(), _ddmStructure.getStructureId(),
+			_group.getGroupId(), ddmStructure.getStructureId(),
 			_portal.getClassNameId(JournalArticle.class));
 	}
 
@@ -77,8 +75,8 @@ public class JournalFragmentEntryProcessorEditableTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				RandomTestUtil.randomLong(),
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				_layout.getPlid(), StringPool.BLANK, StringPool.BLANK,
@@ -87,18 +85,30 @@ public class JournalFragmentEntryProcessorEditableTest {
 				FragmentConstants.TYPE_COMPONENT,
 				ServiceContextTestUtil.getServiceContext());
 
-		String editableValues = _readJSONFileToString(
-			"fragment_entry_link_mapped_ddm.json");
+		Class<?> clazz = getClass();
+
+		String fileContent = StringUtil.read(
+			clazz.getClassLoader(),
+			"com/liferay/journal/dependencies" +
+				"/fragment_entry_link_mapped_ddm.json");
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			fileContent);
 
 		_fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			TestPropsValues.getUserId(),
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			StringUtil.replace(
-				editableValues, "TEMPLATE_KEY", _ddmTemplate.getTemplateKey()));
+				editableValuesJSONObject.toString(), "TEMPLATE_KEY",
+				_ddmTemplate.getTemplateKey()),
+			true);
+
+		String compositeClassName = ResourceActionsUtil.getCompositeModelName(
+			FragmentEntryLink.class.getName(), "editable_text");
 
 		DDMTemplateLink ddmTemplateLink =
 			_ddmTemplateLinkLocalService.getTemplateLink(
-				_getClassNameId("editable_text"),
+				PortalUtil.getClassNameId(compositeClassName),
 				fragmentEntryLink.getFragmentEntryLinkId());
 
 		Assert.assertNotNull(ddmTemplateLink);
@@ -111,29 +121,6 @@ public class JournalFragmentEntryProcessorEditableTest {
 				ddmTemplateLink.getTemplateLinkId()));
 	}
 
-	private long _getClassNameId(String editableKey) {
-		String compositeClassName = ResourceActionsUtil.getCompositeModelName(
-			FragmentEntryLink.class.getName(), editableKey);
-
-		return PortalUtil.getClassNameId(compositeClassName);
-	}
-
-	private String _readFileToString(String fileName) throws Exception {
-		Class<?> clazz = getClass();
-
-		return StringUtil.read(
-			clazz.getClassLoader(),
-			"com/liferay/journal/dependencies/" + fileName);
-	}
-
-	private String _readJSONFileToString(String jsonFileName) throws Exception {
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			_readFileToString(jsonFileName));
-
-		return jsonObject.toString();
-	}
-
-	private DDMStructure _ddmStructure;
 	private DDMTemplate _ddmTemplate;
 
 	@Inject
@@ -142,8 +129,10 @@ public class JournalFragmentEntryProcessorEditableTest {
 	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
-	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private Layout _layout;
 

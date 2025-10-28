@@ -132,7 +132,8 @@ public class AddObjectEntryObjectActionExecutorImpl
 					getSystemObjectDefinitionManager(
 						objectDefinition.getName());
 
-			return systemObjectDefinitionManager.addBaseModel(user, values);
+			return systemObjectDefinitionManager.addBaseModel(
+				false, user, values);
 		}
 
 		ObjectEntryManager objectEntryManager =

@@ -33,8 +33,10 @@ public class LPD_27018 {
 		new ExportImportConfigurationNameComparator(showHiddenPages);
 		new FragmentCollectionCreateDateComparator(showHiddenPages);
 		new FragmentCollectionNameComparator(showHiddenPages);
-		new FragmentCompositionFragmentEntryCreateDateComparator(showHiddenPages);
-		new FragmentCompositionFragmentEntryModifiedDateComparator(showHiddenPages);
+		new FragmentCompositionFragmentEntryCreateDateComparator(
+			showHiddenPages);
+		new FragmentCompositionFragmentEntryModifiedDateComparator(
+			showHiddenPages);
 		new FragmentCompositionFragmentEntryNameComparator(showHiddenPages);
 		new FragmentEntryCreateDateComparator(showHiddenPages);
 		new FragmentEntryLinkLastPropagationDateComparator(showHiddenPages);

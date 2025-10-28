@@ -336,7 +336,7 @@ public class
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				_layout.getGroupId(),
-				draftFragmentEntryLink.getFragmentEntryLinkId(),
+				draftFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		_publishLayouts();

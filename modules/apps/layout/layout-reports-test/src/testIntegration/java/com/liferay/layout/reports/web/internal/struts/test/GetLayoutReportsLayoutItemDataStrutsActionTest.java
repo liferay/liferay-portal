@@ -245,8 +245,9 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(),
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				_layout.getPlid(), fragmentEntry.getCss(),
@@ -311,8 +312,9 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(),
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				_layout.getPlid(), fragmentEntry.getCss(),
@@ -343,7 +345,8 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, _layout.getUserId(), _group.getGroupId(), 0, 0,
+				null, _layout.getUserId(), _group.getGroupId(), null, null,
+				null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				_layout.getPlid(), StringPool.BLANK, StringPool.BLANK,

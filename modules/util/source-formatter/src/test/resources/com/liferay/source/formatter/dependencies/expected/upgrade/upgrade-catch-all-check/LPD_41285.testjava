@@ -15,8 +15,9 @@ import org.osgi.service.component.annotations.Reference;
 public class LPD_41285 {
 
 	public void method(long cpInstanceId, long commercePriceListId) {
+		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
+			123, commercePriceListId);
 		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(123, commercePriceListId);
 		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK);
 		_commercePriceEntryLocalService.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK);
 		_commercePriceEntryService.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK);

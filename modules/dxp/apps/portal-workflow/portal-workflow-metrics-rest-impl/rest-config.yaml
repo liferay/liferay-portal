@@ -6,7 +6,7 @@ application:
     name: Liferay.Portal.Workflow.Metrics.REST
 author: Rafael Praxedes
 clientDir: ../portal-workflow-metrics-rest-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../portal-workflow-metrics-rest-test/src/testIntegration/java

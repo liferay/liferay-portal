@@ -11,6 +11,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
@@ -192,9 +193,15 @@ public class SiteNavigationMenuItemStagedModelDataHandler
 			return;
 		}
 
+		ServiceContext serviceContext = portletDataContext.createServiceContext(
+			siteNavigationMenuItem);
+
 		importedSiteNavigationMenuItem =
 			_siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
-				importedSiteNavigationMenuItem);
+				importedSiteNavigationMenuItem.getUserId(),
+				importedSiteNavigationMenuItem.getSiteNavigationMenuItemId(),
+				importedSiteNavigationMenuItem.getTypeSettings(),
+				serviceContext);
 
 		portletDataContext.importClassedModel(
 			siteNavigationMenuItem, importedSiteNavigationMenuItem);

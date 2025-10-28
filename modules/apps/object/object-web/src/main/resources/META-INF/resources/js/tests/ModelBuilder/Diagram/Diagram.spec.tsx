@@ -6,7 +6,7 @@
 import {render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import Diagram from '../../../components/ModelBuilder/Diagram/Diagram';
 import {mockReactFlow} from './reactFlowMocks';

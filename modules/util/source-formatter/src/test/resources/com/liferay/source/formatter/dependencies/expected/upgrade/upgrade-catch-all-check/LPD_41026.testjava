@@ -17,17 +17,19 @@ public class LPD_41026 {
 		String name, String title, String description, String type,
 		boolean hidden, String friendlyURL, ServiceContext serviceContext) {
 
-		LayoutLocalServiceUtil.addLayout(123, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
+		LayoutLocalServiceUtil.addLayout(
+			123, groupId, privateLayout, parentLayoutId, name, title,
+			description, type, hidden, friendlyURL, serviceContext);
 		LayoutLocalServiceUtil.addLayout(null, userId, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
 		LayoutServiceUtil.addLayout(null, userId, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
-		_LayoutLocalService.addLayout(null, userId, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
-		_LayoutService.addLayout(null, userId, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
+		_layoutLocalService.addLayout(null, userId, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
+		_layoutService.addLayout(null, userId, groupId, privateLayout, parentLayoutId, name, title, description, type, hidden, friendlyURL, serviceContext);
 	}
 
 	@Reference
-	private LayoutLocalService _LayoutLocalService;
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
-	private LayoutService _LayoutService;
+	private LayoutService _layoutService;
 
 }

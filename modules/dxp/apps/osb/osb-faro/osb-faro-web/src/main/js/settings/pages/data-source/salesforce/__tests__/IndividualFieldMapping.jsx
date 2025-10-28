@@ -10,6 +10,13 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const defaultProps = {
 	dataSource: data.getImmutableMock(DataSource, data.mockLiferayDataSource),
 	groupId: '23',

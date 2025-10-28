@@ -221,7 +221,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_objectEntryManagerRegistry, _objectFieldLocalService,
 			_objectRelationshipLocalService, _objectRelationshipService,
 			_objectScopeProviderRegistry,
-			_systemObjectDefinitionManagerRegistry);
+			_systemObjectDefinitionManagerRegistry, _userLocalService);
 	}
 
 	private List<ServiceRegistration<?>> _deploy(

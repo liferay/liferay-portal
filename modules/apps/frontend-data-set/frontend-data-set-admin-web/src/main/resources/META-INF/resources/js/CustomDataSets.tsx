@@ -8,6 +8,7 @@ import ClayDropDown from '@clayui/drop-down';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
@@ -251,11 +252,6 @@ const NewDataSetModalContent = ({
 				setSelectedRESTEndpoint(paths[0]);
 			}
 		}
-		else {
-			setSelectedRESTSchema(null);
-
-			setSelectedRESTEndpoint(null);
-		}
 
 		setRESTSchemaEndpoints(schemaEndpoints);
 	};
@@ -320,6 +316,10 @@ const NewDataSetModalContent = ({
 				onItemClick={(item: string) => {
 					setSelectedRESTApplication(item);
 
+					setSelectedRESTSchema(null);
+
+					setSelectedRESTEndpoint(null);
+
 					setNoEnpointsRESTApplicationValidationError(false);
 
 					setRequiredRESTApplicationValidationError(false);
@@ -348,13 +348,24 @@ const NewDataSetModalContent = ({
 					displayType="secondary"
 					id={`${namespace}restSchemaSelect`}
 				>
-					{selectedRESTSchema
-						? selectedRESTSchema
-						: selectedRESTApplication
-							? Liferay.Language.get('choose-an-option')
-							: Liferay.Language.get(
-									'choose-a-rest-application-to-enable-this'
-								)}
+					{restSchemaLoading && (
+						<span className="mr-4 position-relative">
+							<ClayLoadingIndicator />
+						</span>
+					)}
+
+					{restSchemaLoading
+						? Liferay.Language.get(
+								'choose-a-rest-application-to-enable-this'
+							)
+						: selectedRESTSchema
+							? selectedRESTSchema
+							: selectedRESTApplication &&
+								  restSchemaEndpoints.size
+								? Liferay.Language.get('choose-an-option')
+								: Liferay.Language.get(
+										'choose-a-rest-application-to-enable-this'
+									)}
 				</ClayButton>
 			}
 		>
@@ -416,7 +427,9 @@ const NewDataSetModalContent = ({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('new-data-set')}
 			</ClayModal.Header>
 
@@ -657,7 +670,6 @@ const CustomDataSets = ({
 			<ClayTooltipProvider>
 				<ClayLink
 					data-tooltip-align="top"
-					decoration="underline"
 					displayType="tertiary"
 					href={apiExplorerURL}
 					rel="noopener noreferrer"

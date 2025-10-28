@@ -75,7 +75,9 @@ export default function PublishButton() {
 					observer={observerPublishModal}
 					status="info"
 				>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('publishing-info')}
 					</ClayModal.Header>
 

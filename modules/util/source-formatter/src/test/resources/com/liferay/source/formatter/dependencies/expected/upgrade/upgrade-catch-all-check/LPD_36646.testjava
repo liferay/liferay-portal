@@ -12,9 +12,10 @@ public class LPD_36646 {
 
 	public void method(
 		DDMFormViewFormInstanceRecordsDisplayContext
-			ddmFormViewFormInstanceRecordsDisplayContext){
+			ddmFormViewFormInstanceRecordsDisplayContext) {
 
-		ddmFormViewFormInstanceRecordsDisplayContext.getDDMFormViewFormInstanceRecordsDisplayContext();
+		ddmFormViewFormInstanceRecordsDisplayContext.
+			getDDMFormViewFormInstanceRecordsDisplayContext();
 	}
 
 }

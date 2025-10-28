@@ -47,31 +47,31 @@ public class ArticleExpirationDateUpgradeProcess extends UpgradeProcess {
 						StringBundler.concat(
 							"select JournalArticle.* from JournalArticle left ",
 							"join JournalArticle tempJournalArticle on ",
-							"(JournalArticle.groupId = ",
-							"tempJournalArticle.groupId) and ",
-							"(JournalArticle.articleId = ",
-							"tempJournalArticle.articleId) and ",
-							"(JournalArticle.version < ",
-							"tempJournalArticle.version) and ",
-							"(JournalArticle.status = ",
-							"tempJournalArticle.status) where ",
-							"(JournalArticle.classNameId = ",
-							JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-							") and (tempJournalArticle.version is null) and ",
-							"(JournalArticle.expirationDate is not null) and ",
-							"(JournalArticle.status = ",
-							WorkflowConstants.STATUS_APPROVED, ")"));
-				ResultSet resultSet = preparedStatement.executeQuery()) {
+							"(JournalArticle.groupId = tempJournalArticle.",
+							"groupId) and (JournalArticle.articleId = ",
+							"tempJournalArticle.articleId) and (",
+							"JournalArticle.version < tempJournalArticle.",
+							"version) and (JournalArticle.status = ",
+							"tempJournalArticle.status) where (JournalArticle.",
+							"classNameId = ?) and (tempJournalArticle.version ",
+							"is null) and (JournalArticle.expirationDate is ",
+							"not null) and (JournalArticle.status = ?)"))) {
 
-				while (resultSet.next()) {
-					long groupId = resultSet.getLong("groupId");
-					String articleId = resultSet.getString("articleId");
-					Timestamp expirationDate = resultSet.getTimestamp(
-						"expirationDate");
-					int status = resultSet.getInt("status");
+				preparedStatement.setLong(
+					1, JournalArticleConstants.CLASS_NAME_ID_DEFAULT);
+				preparedStatement.setInt(2, WorkflowConstants.STATUS_APPROVED);
 
-					_updateExpirationDate(
-						groupId, articleId, expirationDate, status);
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					while (resultSet.next()) {
+						long groupId = resultSet.getLong("groupId");
+						String articleId = resultSet.getString("articleId");
+						Timestamp expirationDate = resultSet.getTimestamp(
+							"expirationDate");
+						int status = resultSet.getInt("status");
+
+						_updateExpirationDate(
+							groupId, articleId, expirationDate, status);
+					}
 				}
 			}
 		}

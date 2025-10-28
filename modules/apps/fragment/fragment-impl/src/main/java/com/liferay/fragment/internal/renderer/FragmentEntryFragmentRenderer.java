@@ -171,8 +171,11 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 
 		if (fragmentEntry == null) {
-			fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId());
+			fragmentEntry =
+				_fragmentEntryLocalService.
+					fetchFragmentEntryByExternalReferenceCode(
+						fragmentEntryLink.getFragmentEntryERC(),
+						fragmentEntryLink.getFragmentEntryGroupId());
 		}
 
 		if (fragmentEntry == null) {
@@ -232,8 +235,11 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 
 		if (fragmentEntry == null) {
-			fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId());
+			fragmentEntry =
+				_fragmentEntryLocalService.
+					fetchFragmentEntryByExternalReferenceCode(
+						fragmentEntryLink.getFragmentEntryERC(),
+						fragmentEntryLink.getFragmentEntryGroupId());
 		}
 
 		if (fragmentEntry == null) {
@@ -294,8 +300,9 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 				sb.append("</style>");
 			}
 			else {
-				String outputKey =
-					fragmentEntryLink.getFragmentEntryId() + "_CSS";
+				String outputKey = StringBundler.concat(
+					fragmentEntryLink.getFragmentEntryERC(), "_",
+					fragmentEntryLink.getFragmentEntryGroupId(), "_CSS");
 
 				OutputData outputData =
 					(OutputData)httpServletRequest.getAttribute(

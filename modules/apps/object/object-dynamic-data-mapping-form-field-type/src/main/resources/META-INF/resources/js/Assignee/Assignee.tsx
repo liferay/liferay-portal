@@ -47,12 +47,10 @@ export default function Assignee({
 	}: {
 		resource: {
 			items: {
-				embedded: {
-					externalReferenceCode: string;
-					image?: string;
-					name: string;
-				};
-				entryClassName: string;
+				externalReferenceCode: string;
+				image?: string;
+				name: string;
+				type: string;
 			}[];
 		};
 	} = useResource({
@@ -81,18 +79,7 @@ export default function Assignee({
 				defaultValue={value?.name ?? ''}
 				disabled={readOnly}
 				filterKey="name"
-				items={
-					resource
-						? resource.items
-								.filter((item) => !!item.embedded)
-								.map((item) => {
-									return {
-										...item.embedded,
-										entryClassName: item.entryClassName,
-									};
-								})
-						: []
-				}
+				items={resource ? resource.items : []}
 				loadingState={networkStatus}
 				menuTrigger="focus"
 				messages={{
@@ -113,19 +100,17 @@ export default function Assignee({
 				onItemsChange={() => {}}
 				value={search}
 			>
-				{({entryClassName, externalReferenceCode, image, name}) => (
+				{({externalReferenceCode, image, name, type}) => (
 					<Autocomplete.Item
 						key={name}
 						onClick={() => {
-							const newValue = {
-								externalReferenceCode,
-								name,
-								type: entryClassName.split('.').pop(),
-							};
-
 							onChange({
 								target: {
-									value: newValue,
+									value: {
+										externalReferenceCode,
+										name,
+										type,
+									},
 								},
 							});
 						}}

@@ -161,7 +161,7 @@ public class EditableValuesExportImportContentProcessorTest {
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				layout.getGroupId(),
-				draftFragmentEntryLink.getFragmentEntryLinkId(),
+				draftFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid());
 
 		_publishLayouts();
@@ -256,7 +256,7 @@ public class EditableValuesExportImportContentProcessorTest {
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				layout.getGroupId(),
-				draftFragmentEntryLink.getFragmentEntryLinkId(),
+				draftFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid());
 
 		_assertItemSelectorClassPK(
@@ -436,8 +436,9 @@ public class EditableValuesExportImportContentProcessorTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), segmentsExperienceId,
 				_draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(),
 				fragmentEntry.getConfiguration(),
@@ -480,7 +481,7 @@ public class EditableValuesExportImportContentProcessorTest {
 
 		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
 			_stagingGroup.getGroupId(),
-			fragmentEntryLink.getFragmentEntryLinkId(), _layout.getPlid());
+			fragmentEntryLink.getExternalReferenceCode(), _layout.getPlid());
 	}
 
 	private FragmentEntryLink _addUrlMappedToLayoutFragmentEntryLink(
@@ -495,8 +496,9 @@ public class EditableValuesExportImportContentProcessorTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+				null, TestPropsValues.getUserId(), _draftLayout.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(), segmentsExperienceId,
 				_draftLayout.getPlid(), fragmentEntry.getCss(),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(),
 				fragmentEntry.getConfiguration(),
@@ -531,7 +533,7 @@ public class EditableValuesExportImportContentProcessorTest {
 
 		return _fragmentEntryLinkLocalService.getFragmentEntryLink(
 			_stagingGroup.getGroupId(),
-			fragmentEntryLink.getFragmentEntryLinkId(), _layout.getPlid());
+			fragmentEntryLink.getExternalReferenceCode(), _layout.getPlid());
 	}
 
 	private void _assertDeletedLayoutJSONObject(JSONObject layoutJSONObject) {

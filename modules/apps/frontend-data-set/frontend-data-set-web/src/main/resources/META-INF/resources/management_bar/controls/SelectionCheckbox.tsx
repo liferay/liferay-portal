@@ -21,37 +21,42 @@ const SelectionCheckbox = ({
 	selectedItemsValue,
 }: SelectionCheckboxProps) => {
 	const {allItemsSelectedActive} = useContext(FrontendDataSetContext);
+	const label = selectedItemsValue.length
+		? sub(
+				Liferay.Language.get(
+					'clear-selection.-there-are-currently-x-of-x-x-selected'
+				),
+				selectedItemsValue.length.toString(),
+				items.length.toString(),
+				Liferay.Language.get('items')
+			)
+		: sub(
+				Liferay.Language.get('select-all-x-on-the-page'),
+				Liferay.Language.get('items')
+			);
 
 	return (
-		<ClayCheckbox
-			aria-label={
-				selectedItemsValue.length
-					? sub(
-							Liferay.Language.get(
-								'clear-selection.-there-are-currently-x-of-x-x-selected'
-							),
-							selectedItemsValue.length.toString(),
-							items.length.toString(),
-							Liferay.Language.get('items')
-						)
-					: sub(
-							Liferay.Language.get('select-all-x-on-the-page'),
-							Liferay.Language.get('items')
-						)
-			}
-			checked={allItemsSelectedActive || !!selectedItemsValue.length}
-			indeterminate={
-				!!selectedItemsValue.length &&
-				items.length !== selectedItemsValue.length
-			}
-			name="items-selector"
-			onChange={handleCheckboxClick}
-			title={
-				selectedItemsValue.length
-					? Liferay.Language.get('clear-selection')
-					: Liferay.Language.get('select-items')
-			}
-		/>
+		<>
+			<ClayCheckbox
+				aria-labelledby="itemsSelectorLabel"
+				checked={allItemsSelectedActive || !!selectedItemsValue.length}
+				indeterminate={
+					!!selectedItemsValue.length &&
+					items.length !== selectedItemsValue.length
+				}
+				name="items-selector"
+				onChange={handleCheckboxClick}
+				title={
+					selectedItemsValue.length
+						? Liferay.Language.get('clear-selection')
+						: Liferay.Language.get('select-items')
+				}
+			/>
+
+			<span className="sr-only" id="itemsSelectorLabel">
+				{label}
+			</span>
+		</>
 	);
 };
 

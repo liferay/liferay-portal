@@ -221,7 +221,11 @@ function ListTypeEntriesModal() {
 
 	return header ? (
 		<ClayModal observer={observer}>
-			<ClayModal.Header>{header}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{header}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{errors.key && (

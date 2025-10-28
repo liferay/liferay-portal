@@ -478,7 +478,8 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 			}
 
 			if (_isCaptchaFragmentEntry(
-					fragmentEntryLink.getFragmentEntryId(),
+					fragmentEntryLink.getFragmentEntryGroupId(),
+					fragmentEntryLink.getFragmentEntryERC(),
 					fragmentEntryLink.getRendererKey())) {
 
 				return fragmentEntryLink;
@@ -612,7 +613,8 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 	}
 
 	private boolean _isCaptchaFragmentEntry(
-		long fragmentEntryId, String rendererKey) {
+		long fragmentEntryGroupId, String fragmentEntryERC,
+		String rendererKey) {
 
 		FragmentEntry fragmentEntry = null;
 
@@ -622,9 +624,11 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 					rendererKey);
 		}
 
-		if ((fragmentEntry == null) && (fragmentEntryId > 0)) {
-			fragmentEntry = _fragmentEntryLocalService.fetchFragmentEntry(
-				fragmentEntryId);
+		if ((fragmentEntry == null) && (fragmentEntryERC != null)) {
+			fragmentEntry =
+				_fragmentEntryLocalService.
+					fetchFragmentEntryByExternalReferenceCode(
+						fragmentEntryERC, fragmentEntryGroupId);
 		}
 
 		if ((fragmentEntry == null) ||

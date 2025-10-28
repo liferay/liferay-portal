@@ -7,6 +7,7 @@ import {FrameLocator, Page, expect} from '@playwright/test';
 
 type Options = {
 	autoClose?: boolean;
+	closeText?: string;
 	exact?: boolean;
 	timeout?: number;
 	type?: 'success' | 'info' | 'warning' | 'danger';
@@ -22,8 +23,15 @@ const CSS_CLASSES = {
 export async function waitForAlert(
 	parent: Page | FrameLocator,
 	text = 'Success:Your request completed successfully.',
-	{autoClose = true, exact = false, timeout, type = 'success'}: Options = {
+	{
+		autoClose = true,
+		closeText = 'Close',
+		exact = false,
+		timeout,
+		type = 'success',
+	}: Options = {
 		autoClose: true,
+		closeText: 'Close',
 		exact: false,
 		type: 'success',
 	}
@@ -44,7 +52,7 @@ export async function waitForAlert(
 	}
 
 	if (autoClose) {
-		await alert.getByLabel('Close').click();
+		await alert.getByLabel(closeText).click();
 
 		await alert.waitFor({state: 'hidden'});
 	}

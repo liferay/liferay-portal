@@ -23,7 +23,7 @@ ViewSpaceMembersSummarySectionDisplayContext viewSpaceMembersSummarySectionDispl
 		tabsItems="<%= viewSpaceMembersSummarySectionDisplayContext.getTabsItems() %>"
 	>
 		<clay:tabs-panel>
-			<div class="cms-fds-fluid cms-section custom-empty-state">
+			<div class="cms-fds-fluid cms-space-summary custom-empty-state">
 				<frontend-data-set:headless-display
 					apiURL='<%= viewSpaceMembersSummarySectionDisplayContext.getAPIURL("user-accounts") %>'
 					creationMenu="<%= viewSpaceMembersSummarySectionDisplayContext.getCreationMenu() %>"
@@ -41,7 +41,7 @@ ViewSpaceMembersSummarySectionDisplayContext viewSpaceMembersSummarySectionDispl
 		</clay:tabs-panel>
 
 		<clay:tabs-panel>
-			<div class="cms-fds-fluid cms-section custom-empty-state">
+			<div class="cms-fds-fluid cms-space-summary custom-empty-state">
 				<frontend-data-set:headless-display
 					apiURL='<%= viewSpaceMembersSummarySectionDisplayContext.getAPIURL("user-groups") %>'
 					creationMenu="<%= viewSpaceMembersSummarySectionDisplayContext.getCreationMenu() %>"

@@ -5,7 +5,7 @@ import Constants, {OrderByDirections} from 'shared/util/constants';
 import getCN from 'classnames';
 import React from 'react';
 import {getDefaultSortOrder, invertSortOrder} from 'shared/util/pagination';
-import {isNull, noop} from 'lodash';
+import {noop} from 'lodash';
 import {OrderParams} from 'shared/util/records';
 import {setUriQueryValues} from 'shared/util/router';
 
@@ -23,6 +23,37 @@ interface IHeaderCellProps {
 	sortOrder: OrderByDirections;
 }
 
+const ButtonSort = ({children, sortOrder}) => (
+	<div className='align-items-center d-flex justify-content-between'>
+		<div className='text-truncate'>{children}</div>
+
+		<ClayButton
+			aria-label={
+				sortOrder === OrderByDirections.Ascending
+					? Liferay.Language.get('ascending')
+					: Liferay.Language.get('descending')
+			}
+			className='component-action ml-2'
+			size='sm'
+		>
+			{!sortOrder ? (
+				<span className='opacity-25'>
+					<ClayIcon className='icon-root' symbol='order-arrow' />
+				</span>
+			) : (
+				<ClayIcon
+					className='icon-root'
+					symbol={
+						sortOrder === OrderByDirections.Ascending
+							? 'order_arrow_ascending'
+							: 'order_arrow_descending'
+					}
+				/>
+			)}
+		</ClayButton>
+	</div>
+);
+
 const HeaderCell: React.FC<IHeaderCellProps> = ({
 	children,
 	className,
@@ -31,65 +62,44 @@ const HeaderCell: React.FC<IHeaderCellProps> = ({
 	onSortOrderChange = noop,
 	sortOrder,
 	sortable = true
-}) => {
-	const ButtonContent = () => (
-		<>
-			<span className='text-truncate'>{children}</span>
-
-			{!isNull(sortOrder) && (
-				<span className='inline-item inline-item-after'>
-					<ClayIcon
-						className='icon-root'
-						symbol={
-							sortOrder === OrderByDirections.Descending
-								? 'order-arrow-down'
-								: 'order-arrow-up'
-						}
-					/>
-				</span>
-			)}
-		</>
-	);
-
-	return (
-		<th className={getCN('table-head-title', className)}>
-			{sortable ? (
-				headerLink ? (
-					<ClayLink
-						button
-						className='button-root inline-item text-truncate-inline'
-						displayType='unstyled'
-						href={setUriQueryValues({
-							field,
-							page: defaultPage,
-							sortOrder: sortOrder
-								? invertSortOrder(sortOrder)
-								: getDefaultSortOrder(field)
-						})}
-					>
-						<ButtonContent />
-					</ClayLink>
-				) : (
-					<ClayButton
-						className='inline-item text-truncate-inline'
-						displayType='unstyled'
-						onClick={() => {
-							onSortOrderChange(
-								new OrderParams({
-									field,
-									sortOrder: invertSortOrder(sortOrder)
-								})
-							);
-						}}
-					>
-						<ButtonContent />
-					</ClayButton>
-				)
+}) => (
+	<th className={getCN('table-head-title', className)}>
+		{sortable ? (
+			headerLink ? (
+				<ClayLink
+					button
+					className='button-root w-100'
+					displayType='unstyled'
+					href={setUriQueryValues({
+						field,
+						page: defaultPage,
+						sortOrder: sortOrder
+							? invertSortOrder(sortOrder)
+							: getDefaultSortOrder(field)
+					})}
+				>
+					<ButtonSort sortOrder={sortOrder}>{children}</ButtonSort>
+				</ClayLink>
 			) : (
-				children
-			)}
-		</th>
-	);
-};
+				<ClayButton
+					className='inline-item text-truncate-inline'
+					displayType='unstyled'
+					onClick={() => {
+						onSortOrderChange(
+							new OrderParams({
+								field,
+								sortOrder: invertSortOrder(sortOrder)
+							})
+						);
+					}}
+				>
+					<ButtonSort sortOrder={sortOrder}>{children}</ButtonSort>
+				</ClayButton>
+			)
+		) : (
+			children
+		)}
+	</th>
+);
 
 export default HeaderCell;

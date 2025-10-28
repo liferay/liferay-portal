@@ -31,6 +31,7 @@ export function ToastProvider({children}) {
 						<ClayAlert
 							{...otherProps}
 							autoClose={5000}
+							closeButtonAriaLabel={Liferay.Language.get('close')}
 							key={id}
 							onClose={() =>
 								setToastItems((prevItems) =>

@@ -8,7 +8,7 @@ import React from 'react';
 
 import LoadingState from '../../../../src/main/resources/META-INF/resources/js/shared/components/loading/LoadingState.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('The LoadingState component should', () => {
 	afterEach(cleanup);

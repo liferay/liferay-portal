@@ -366,7 +366,7 @@
 						"type": "string"
 					},
 					"x-class-name": {
-						"default": "com.liferay.object.rest.dto.v1_0.Scope",
+						"default": "com.liferay.headless.object.dto.v1_0.Scope",
 						"readOnly": true,
 						"type": "string"
 					}

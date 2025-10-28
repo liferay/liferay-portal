@@ -96,6 +96,6 @@ data "aws_iam_policy_document" "liferay_backup_restore_policy_doc" {
 	}
 }
 locals {
-	oidc_provider_arn="arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_provider_url}"
+	oidc_provider_arn="arn:${var.arn_partition}:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${local.oidc_provider_url}"
 	oidc_provider_url=replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
 }

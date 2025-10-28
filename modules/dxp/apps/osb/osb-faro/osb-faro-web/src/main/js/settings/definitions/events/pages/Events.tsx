@@ -13,7 +13,6 @@ const Events: React.FC<IEventsProps> = ({groupId}) => (
 			getDefinitions({groupId}),
 			{active: true, label: Liferay.Language.get('events')}
 		]}
-		groupId={groupId}
 		pageDescription={Liferay.Language.get(
 			'this-is-the-data-model-of-events-sent-to-analytics-cloud'
 		)}

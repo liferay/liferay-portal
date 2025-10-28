@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Fragment Implementation
 Bundle-SymbolicName: com.liferay.commerce.fragment.impl
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Web-ContextPath: /commerce-fragment-impl
 -dsannotations-options: inherit

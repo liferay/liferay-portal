@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {PageProvider} from 'data-engine-js-components-web';
@@ -149,7 +149,7 @@ describe('Field Text', () => {
 		const {container} = render(<TextWithProvider {...defaultTextConfig} />);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const textInputTag = container.querySelector('.ddm-field-text');
@@ -177,7 +177,7 @@ describe('Field Text', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(onChange).toHaveBeenCalled();
@@ -189,7 +189,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -201,7 +201,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -216,7 +216,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -228,7 +228,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -240,7 +240,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -264,7 +264,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const autocompleteDropdownMenu = document.body.querySelector(
@@ -304,7 +304,7 @@ describe('Field Text', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const autocompleteDropdownMenu = document.querySelector(
@@ -320,7 +320,7 @@ describe('Field Text', () => {
 		userEvent.click(body);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(autocompleteDropdownMenu.classList.contains('show')).toBeFalsy();
@@ -354,7 +354,7 @@ describe('Field Text', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const autocompleteDropdownMenu = document.querySelector(
@@ -370,7 +370,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -382,7 +382,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -394,7 +394,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();
@@ -516,7 +516,7 @@ describe('Field Text', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const autocompleteDropdownMenu = document.querySelector(
@@ -537,7 +537,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const textInputTag = container.querySelector('.ddm-field-text');
@@ -551,7 +551,7 @@ describe('Field Text', () => {
 		);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(container).toMatchSnapshot();

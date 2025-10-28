@@ -4,6 +4,8 @@ Bundle-Version: 1.0.0
 Import-Package:\
 	!com.mifmif.common.regex.*,\
 	\
+	!com.zaxxer.hikari.*,\
+	\
 	!org.apache.commons.lang3.*,\
 	\
 	!org.yaml.snakeyaml.*,\

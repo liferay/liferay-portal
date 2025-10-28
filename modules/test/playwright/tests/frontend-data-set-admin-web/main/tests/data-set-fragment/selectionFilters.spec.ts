@@ -806,7 +806,7 @@ test(
 				itemLabel: 'fieldName',
 				label_i18n: {en_US: filterLabel},
 				multiple: true,
-				source: `/o${API_ENDPOINT_PATH}/cards-sections/`,
+				source: `/o${API_ENDPOINT_PATH}/by-external-reference-code/${customDataSetERC}/dataSetToDataSetCardsSections`,
 				sourceType: 'API_REST_APPLICATION',
 			});
 		});

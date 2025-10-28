@@ -406,6 +406,121 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteERCScopedTestEntity() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ERCScopedTestEntity ercScopedTestEntity =
+			testDeleteERCScopedTestEntity_addERCScopedTestEntity();
+
+		assertHttpResponseStatusCode(
+			204,
+			ercScopedTestEntityResource.deleteERCScopedTestEntityHttpResponse(
+				ercScopedTestEntity.getExternalReferenceCode()));
+	}
+
+	protected ERCScopedTestEntity
+			testDeleteERCScopedTestEntity_addERCScopedTestEntity()
+		throws Exception {
+
+		return ercScopedTestEntityResource.postSiteERCScopedTestEntity(
+			testGroup.getExternalReferenceCode(), randomERCScopedTestEntity());
+	}
+
+	@Test
+	public void testGraphQLDeleteERCScopedTestEntity() throws Exception {
+
+		// No namespace
+
+		ERCScopedTestEntity ercScopedTestEntity1 =
+			testGraphQLDeleteERCScopedTestEntity_addERCScopedTestEntity();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteERCScopedTestEntity",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"ercScopedTestEntityExternalReferenceCode",
+									"\"" +
+										ercScopedTestEntity1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data", "Object/deleteERCScopedTestEntity"));
+
+		// Using the namespace test_v1_0
+
+		ERCScopedTestEntity ercScopedTestEntity2 =
+			testGraphQLDeleteERCScopedTestEntity_addERCScopedTestEntity();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"test_v1_0",
+						new GraphQLField(
+							"deleteERCScopedTestEntity",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"ercScopedTestEntityExternalReferenceCode",
+										"\"" +
+											ercScopedTestEntity2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/test_v1_0",
+				"Object/deleteERCScopedTestEntity"));
+	}
+
+	protected ERCScopedTestEntity
+			testGraphQLDeleteERCScopedTestEntity_addERCScopedTestEntity()
+		throws Exception {
+
+		return testGraphQLERCScopedTestEntity_addERCScopedTestEntity();
+	}
+
+	@Test
+	public void testDeleteERCScopedTestEntityBatch() throws Exception {
+		ERCScopedTestEntity ercScopedTestEntity1 =
+			testDeleteERCScopedTestEntityBatch_addERCScopedTestEntity();
+
+		testDeleteERCScopedTestEntityBatch_deleteERCScopedTestEntity(
+			202, ercScopedTestEntity1.getExternalReferenceCode(), null);
+	}
+
+	protected ERCScopedTestEntity
+			testDeleteERCScopedTestEntityBatch_addERCScopedTestEntity()
+		throws Exception {
+
+		return testDeleteERCScopedTestEntity_addERCScopedTestEntity();
+	}
+
+	protected void testDeleteERCScopedTestEntityBatch_deleteERCScopedTestEntity(
+			int expectedStatusCode, String externalReferenceCode, Long id)
+		throws Exception {
+
+		HttpInvoker.HttpResponse httpResponse =
+			ercScopedTestEntityResource.
+				deleteERCScopedTestEntityBatchHttpResponse(
+					null,
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode", () -> externalReferenceCode
+						).put(
+							"id", () -> id
+						)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
 	public void testDeleteSiteERCScopedTestEntity() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		ERCScopedTestEntity ercScopedTestEntity =
@@ -629,6 +744,12 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 		for (ERCScopedTestEntity ercScopedTestEntity : page.getItems()) {
 			Assert.assertNotNull(ercScopedTestEntity.getPermissions());
 		}
+
+		ercScopedTestEntityResource.deleteERCScopedTestEntity(
+			ercScopedTestEntity1.getExternalReferenceCode());
+
+		ercScopedTestEntityResource.deleteERCScopedTestEntity(
+			ercScopedTestEntity2.getExternalReferenceCode());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -1038,6 +1159,12 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 		for (ERCScopedTestEntity ercScopedTestEntity : page.getItems()) {
 			Assert.assertNotNull(ercScopedTestEntity.getPermissions());
 		}
+
+		ercScopedTestEntityResource.deleteERCScopedTestEntity(
+			ercScopedTestEntity1.getExternalReferenceCode());
+
+		ercScopedTestEntityResource.deleteERCScopedTestEntity(
+			ercScopedTestEntity2.getExternalReferenceCode());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -1264,6 +1391,12 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 		for (ERCScopedTestEntity ercScopedTestEntity : page.getItems()) {
 			Assert.assertNotNull(ercScopedTestEntity.getPermissions());
 		}
+
+		ercScopedTestEntityResource.deleteERCScopedTestEntity(
+			ercScopedTestEntity1.getExternalReferenceCode());
+
+		ercScopedTestEntityResource.deleteERCScopedTestEntity(
+			ercScopedTestEntity2.getExternalReferenceCode());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -2042,6 +2175,12 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 					ercScopedTestEntity1.getExternalReferenceCode()));
 
 		ercScopedTestEntity1 =
+			testBatchEngineDeleteImportTask_addERCScopedTestEntity();
+
+		testBatchEngineDeleteImportTask_deleteERCScopedTestEntity(
+			200, ercScopedTestEntity1.getExternalReferenceCode());
+
+		ercScopedTestEntity1 =
 			testBatchEngineDeleteImportTask_addSiteERCScopedTestEntity();
 
 		testBatchEngineDeleteImportTask_deleteERCScopedTestEntity(
@@ -2053,6 +2192,13 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 			ercScopedTestEntityResource.getSiteERCScopedTestEntityHttpResponse(
 				ercScopedTestEntity1.getSiteExternalReferenceCode(),
 				ercScopedTestEntity1.getExternalReferenceCode()));
+	}
+
+	protected ERCScopedTestEntity
+			testBatchEngineDeleteImportTask_addERCScopedTestEntity()
+		throws Exception {
+
+		return testDeleteERCScopedTestEntity_addERCScopedTestEntity();
 	}
 
 	protected ERCScopedTestEntity
@@ -2160,15 +2306,15 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 	}
 
 	protected ERCScopedTestEntity
-			testGraphQLSiteERCScopedTestEntity_addERCScopedTestEntity()
+			testGraphQLERCScopedTestEntity_addERCScopedTestEntity()
 		throws Exception {
 
-		return testGraphQLSiteERCScopedTestEntity_addERCScopedTestEntity(
+		return testGraphQLERCScopedTestEntity_addERCScopedTestEntity(
 			testGroup.getExternalReferenceCode(), randomERCScopedTestEntity());
 	}
 
 	protected ERCScopedTestEntity
-			testGraphQLSiteERCScopedTestEntity_addERCScopedTestEntity(
+			testGraphQLERCScopedTestEntity_addERCScopedTestEntity(
 				String siteExternalReferenceCode,
 				ERCScopedTestEntity ercScopedTestEntity)
 		throws Exception {
@@ -2215,15 +2361,15 @@ public abstract class BaseERCScopedTestEntityResourceTestCase {
 	}
 
 	protected ERCScopedTestEntity
-			testGraphQLERCScopedTestEntity_addERCScopedTestEntity()
+			testGraphQLSiteERCScopedTestEntity_addERCScopedTestEntity()
 		throws Exception {
 
-		return testGraphQLERCScopedTestEntity_addERCScopedTestEntity(
+		return testGraphQLSiteERCScopedTestEntity_addERCScopedTestEntity(
 			testGroup.getExternalReferenceCode(), randomERCScopedTestEntity());
 	}
 
 	protected ERCScopedTestEntity
-			testGraphQLERCScopedTestEntity_addERCScopedTestEntity(
+			testGraphQLSiteERCScopedTestEntity_addERCScopedTestEntity(
 				String siteExternalReferenceCode,
 				ERCScopedTestEntity ercScopedTestEntity)
 		throws Exception {

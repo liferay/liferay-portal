@@ -52,7 +52,7 @@ public abstract class BaseAlloyEditorConfigContributor
 		).put(
 			"extraPlugins",
 			"addimages,ae_dragresize,ae_imagealignment,ae_placeholder," +
-				"ae_selectionregion,ae_tableresize,ae_tabletools,ae_uicore"
+				"ae_selectionregion,ae_tableresize,ae_uicore,tableselection"
 		).put(
 			"imageScaleResize", "scale"
 		).put(
@@ -60,8 +60,8 @@ public abstract class BaseAlloyEditorConfigContributor
 			StringUtil.replace(getLanguageId(themeDisplay), "iw_", "he_")
 		).put(
 			"removePlugins",
-			"autolink,contextmenu,elementspath,floatingspace,image2,link," +
-				"liststyle,resize,table,tabletools,toolbar"
+			"autolink,elementspath,floatingspace,image2,link," +
+				"liststyle,resize,toolbar"
 		).put(
 			"skin", "moono-lisa"
 		);

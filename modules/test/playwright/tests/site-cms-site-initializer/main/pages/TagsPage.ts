@@ -33,7 +33,9 @@ export class TagsPage {
 
 	async goto() {
 		await this.page.goto(PORTLET_URLS.cmsTags);
-		await this.page.getByRole('heading', {name: 'Tags'}).waitFor();
+		await this.page
+			.getByRole('heading', {name: 'Categorization'})
+			.waitFor();
 	}
 
 	async createTag() {

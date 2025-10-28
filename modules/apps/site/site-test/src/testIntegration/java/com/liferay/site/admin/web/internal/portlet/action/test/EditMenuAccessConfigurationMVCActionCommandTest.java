@@ -94,6 +94,36 @@ public class EditMenuAccessConfigurationMVCActionCommandTest {
 		_assertConfiguration(new String[] {String.valueOf(role.getRoleId())});
 	}
 
+	@Test
+	public void testDoProcessActionWithDefaultRoles() throws Exception {
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.addParameter(
+			"roleSearchContainerPrimaryKeys", new String[0]);
+		mockLiferayPortletActionRequest.addParameter(
+			"showControlMenuByRole", Boolean.TRUE.toString());
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(TestPropsValues.getUser()));
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "doProcessAction",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Role administratorRole = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.ADMINISTRATOR);
+		Role siteAdministratorRole = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
+
+		_assertConfiguration(
+			new String[] {
+				String.valueOf(administratorRole.getRoleId()),
+				String.valueOf(siteAdministratorRole.getRoleId())
+			});
+	}
+
 	@Test(expected = PortalException.class)
 	public void testDoProcessActionWithoutPermission() throws Exception {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =

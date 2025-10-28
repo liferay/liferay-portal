@@ -1,13 +1,13 @@
 {
 	"dependencies": {
 		"@clayui/button": "3.144.1",
-		"@clayui/card": "3.149.0",
-		"@clayui/form": "3.148.0",
+		"@clayui/card": "3.151.0",
+		"@clayui/form": "3.151.0",
 		"@clayui/icon": "3.144.1",
 		"@clayui/label": "3.144.1",
 		"@clayui/layout": "3.144.1",
 		"@clayui/table": "3.144.1",
-		"@clayui/tabs": "3.149.2",
+		"@clayui/tabs": "3.151.0",
 		"classnames": "2.3.1",
 		"react": "18.2.0"
 	},

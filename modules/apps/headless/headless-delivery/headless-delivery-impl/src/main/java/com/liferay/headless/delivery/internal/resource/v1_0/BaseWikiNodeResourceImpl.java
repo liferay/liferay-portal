@@ -492,8 +492,8 @@ public abstract class BaseWikiNodeResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(wikiNodeId);
-		String resourceName = getPermissionCheckerResourceName(wikiNodeId);
 		Long resourceId = getPermissionCheckerResourceId(wikiNodeId);
+		String resourceName = getPermissionCheckerResourceName(wikiNodeId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);
@@ -925,8 +925,8 @@ public abstract class BaseWikiNodeResourceImpl
 		throws Exception {
 
 		Long groupId = getPermissionCheckerGroupId(wikiNodeId);
-		String resourceName = getPermissionCheckerResourceName(wikiNodeId);
 		Long resourceId = getPermissionCheckerResourceId(wikiNodeId);
+		String resourceName = getPermissionCheckerResourceName(wikiNodeId);
 
 		PermissionServiceUtil.checkPermission(
 			groupId, resourceName, resourceId);

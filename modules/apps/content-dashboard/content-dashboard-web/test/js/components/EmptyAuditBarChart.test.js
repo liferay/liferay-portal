@@ -8,7 +8,7 @@ import React from 'react';
 
 import EmptyAuditBarChart from '../../../src/main/resources/META-INF/resources/js/components/AuditGraphApp/EmptyAuditBarChart';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const LEARN_HOW_URL =
 	'https://help.liferay.com/hc/en-us/articles/360028820492-Defining-Categories-for-Content';

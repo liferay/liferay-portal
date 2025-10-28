@@ -6,7 +6,7 @@ exports[`UserList should render 1`] = `
     class="toolbar-root"
   >
     <nav
-      class="navbar navbar-root management-bar management-bar-light navbar-expand"
+      class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
     >
       <div
         class="container-fluid"
@@ -40,48 +40,51 @@ exports[`UserList should render 1`] = `
             role="presentation"
           >
             <div
-              class="dropdown dropdown-root filter-and-order-root"
+              class="dropdown dropdown-root"
             >
               <button
                 aria-controls="clay-dropdown-menu-1"
                 aria-expanded="false"
                 aria-haspopup="true"
-                class="dropdown-toggle d-flex align-items-center btn btn-outline-borderless btn-sm btn-outline-secondary"
+                class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+                data-testid="order-button"
                 type="button"
               >
-                Order
-                <svg
-                  class="lexicon-icon lexicon-icon-caret-bottom ml-2 mt-0"
-                  role="presentation"
+                <span
+                  class="caret-root"
                 >
-                  <use
-                    href="#caret-bottom"
-                  />
-                </svg>
+                  <svg
+                    class="lexicon-icon lexicon-icon-order-list-down"
+                    role="presentation"
+                  >
+                    <use
+                      href="#order-list-down"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="mx-2"
+                >
+                  Order
+                </span>
+                <span
+                  class="caret-root"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-caret-bottom"
+                    role="presentation"
+                  >
+                    <use
+                      href="#caret-bottom"
+                    />
+                  </svg>
+                </span>
               </button>
             </div>
           </li>
-          <li
-            class="nav-item"
-            role="presentation"
-          >
-            <a
-              class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-              href="/?field=name&page=1&sortOrder=DESC"
-            >
-              <svg
-                class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                role="presentation"
-              >
-                <use
-                  href="#order_arrow_ascending"
-                />
-              </svg>
-            </a>
-          </li>
         </ul>
         <div
-          class="navbar-form navbar-form-autofit"
+          class="navbar-form navbar-form-autofit mx-2"
         >
           <div
             class="input-group search"
@@ -136,146 +139,222 @@ exports[`UserList should render 1`] = `
     </nav>
   </div>
   <div
-    class="table-responsive table-root flex-grow-1"
+    class="flex-grow-1 mx-4 table-root"
   >
-    <table
-      class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+    <div
+      class="table-responsive"
     >
-      <thead>
-        <tr>
-          <th />
-          <th
-            class="table-head-title table-cell-expand"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=name&page=1&sortOrder=DESC"
+      <table
+        class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+      >
+        <thead>
+          <tr>
+            <th />
+            <th
+              class="table-head-title table-cell-expand"
             >
-              <span
-                class="text-truncate"
+              <a
+                class="button-root w-100 btn btn-unstyled"
+                href="/?field=name&page=1&sortOrder=DESC"
               >
-                Name
-              </span>
-              <span
-                class="inline-item inline-item-after"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                  role="presentation"
+                <div
+                  class="align-items-center d-flex justify-content-between"
                 >
-                  <use
-                    href="#order-arrow-up"
+                  <div
+                    class="text-truncate"
+                  >
+                    Name
+                  </div>
+                  <button
+                    aria-label="Ascending"
+                    class="component-action ml-2 btn btn-sm btn-primary"
+                    type="button"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                      role="presentation"
+                    >
+                      <use
+                        href="#order_arrow_ascending"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </a>
+            </th>
+            <th
+              class="table-head-title"
+            >
+              <a
+                class="button-root w-100 btn btn-unstyled"
+                href="/?field=emailAddress&page=1&sortOrder=ASC"
+              >
+                <div
+                  class="align-items-center d-flex justify-content-between"
+                >
+                  <div
+                    class="text-truncate"
+                  >
+                    Email
+                  </div>
+                  <button
+                    aria-label="Descending"
+                    class="component-action ml-2 btn btn-sm btn-primary"
+                    type="button"
+                  >
+                    <span
+                      class="opacity-25"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#order-arrow"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </a>
+            </th>
+            <th
+              class="table-head-title"
+            >
+              <a
+                class="button-root w-100 btn btn-unstyled"
+                href="/?field=status&page=1&sortOrder=ASC"
+              >
+                <div
+                  class="align-items-center d-flex justify-content-between"
+                >
+                  <div
+                    class="text-truncate"
+                  >
+                    Status
+                  </div>
+                  <button
+                    aria-label="Descending"
+                    class="component-action ml-2 btn btn-sm btn-primary"
+                    type="button"
+                  >
+                    <span
+                      class="opacity-25"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#order-arrow"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </a>
+            </th>
+            <th
+              class="table-head-title"
+            >
+              <a
+                class="button-root w-100 btn btn-unstyled"
+                href="/?field=roleName&page=1&sortOrder=ASC"
+              >
+                <div
+                  class="align-items-center d-flex justify-content-between"
+                >
+                  <div
+                    class="text-truncate"
+                  >
+                    Permission
+                  </div>
+                  <button
+                    aria-label="Descending"
+                    class="component-action ml-2 btn btn-sm btn-primary"
+                    type="button"
+                  >
+                    <span
+                      class="opacity-25"
+                    >
+                      <svg
+                        class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                        role="presentation"
+                      >
+                        <use
+                          href="#order-arrow"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </a>
+            </th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="clickable disabled"
+          >
+            <td>
+              <div
+                class="custom-control custom-checkbox"
+              >
+                <label>
+                  <input
+                    class="custom-control-input"
+                    disabled=""
+                    type="checkbox"
+                    value="false"
                   />
-                </svg>
-              </span>
-            </a>
-          </th>
-          <th
-            class="table-head-title"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=emailAddress&page=1&sortOrder=ASC"
+                  <span
+                    class="custom-control-label"
+                  />
+                </label>
+              </div>
+            </td>
+            <td
+              class="table-cell-expand"
             >
-              <span
-                class="text-truncate"
+              <div
+                class="h4 table-title text-truncate"
               >
-                Email
-              </span>
-            </a>
-          </th>
-          <th
-            class="table-head-title"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=status&page=1&sortOrder=ASC"
-            >
-              <span
-                class="text-truncate"
+                Test Test
+              </div>
+            </td>
+            <td>
+              test@liferay.com
+            </td>
+            <td>
+              <div
+                class="label label-root label-warning"
               >
-                Status
-              </span>
-            </a>
-          </th>
-          <th
-            class="table-head-title"
-          >
-            <a
-              class="button-root inline-item text-truncate-inline btn btn-unstyled"
-              href="/?field=roleName&page=1&sortOrder=ASC"
-            >
-              <span
-                class="text-truncate"
-              >
-                Permission
-              </span>
-            </a>
-          </th>
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          class="clickable disabled"
-        >
-          <td>
-            <div
-              class="custom-control custom-checkbox"
-            >
-              <label>
-                <input
-                  class="custom-control-input"
-                  disabled=""
-                  type="checkbox"
-                  value="false"
-                />
                 <span
-                  class="custom-control-label"
-                />
-              </label>
-            </div>
-          </td>
-          <td
-            class="table-cell-expand"
-          >
-            <div
-              class="h4 table-title text-truncate"
-            >
-              Test Test
-            </div>
-          </td>
-          <td>
-            test@liferay.com
-          </td>
-          <td>
-            <div
-              class="label label-root label-warning"
-            >
-              <span
-                class="label-item"
-              >
-                Pending
+                  class="label-item"
+                >
+                  Pending
+                </span>
+              </div>
+            </td>
+            <td>
+              <span>
+                Owner
               </span>
-            </div>
-          </td>
-          <td>
-            <span>
-              Owner
-            </span>
-          </td>
-          <td
-            class="row-inline-actions"
-          >
-            <span>
-              <span
-                class=""
-              />
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+            <td
+              class="row-inline-actions"
+            >
+              <span>
+                <span
+                  class=""
+                />
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <nav
     class="navbar navbar-root pagination-bar-root"

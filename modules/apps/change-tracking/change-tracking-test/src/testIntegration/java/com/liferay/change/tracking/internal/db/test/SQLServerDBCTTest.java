@@ -98,11 +98,13 @@ public class SQLServerDBCTTest {
 			Connection connection = DataAccess.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select * from CTSChild where ctCollectionId = " +
-					_ctCollection.getCtCollectionId());
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select * from CTSChild where ctCollectionId = ?")) {
 
-			Assert.assertFalse(resultSet.next());
+			preparedStatement.setLong(1, _ctCollection.getCtCollectionId());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 	}
 
@@ -148,11 +150,13 @@ public class SQLServerDBCTTest {
 			 Connection connection = DataAccess.getConnection();
 
 			 PreparedStatement preparedStatement = connection.prepareStatement(
-				 "select * from CTSChild where ctCollectionId = " +
-				 -_ctCollection.getCtCollectionId());
-			 ResultSet resultSet = preparedStatement.executeQuery()) {
+				 "select * from CTSChild where ctCollectionId = ?")) {
 
-			Assert.assertFalse(resultSet.next());
+			preparedStatement.setLong(1, -_ctCollection.getCtCollectionId());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertFalse(resultSet.next());
+			}
 		}
 	}
 

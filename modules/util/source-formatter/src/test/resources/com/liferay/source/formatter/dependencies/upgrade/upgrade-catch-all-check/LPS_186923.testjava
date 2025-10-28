@@ -11,7 +11,8 @@ package com.liferay.source.formatter.dependencies.upgrade;
 public class LPS_186923 {
 
 	public void method(CommerceAddress commerceAddress, Country country) {
-		commerceAddress.getCountry().getTwoLettersISOCode();
+		commerceAddress.getCountry(
+		).getTwoLettersISOCode();
 
 		country.getTwoLettersISOCode();
 		country.setTwoLettersISOCode();

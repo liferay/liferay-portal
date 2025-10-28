@@ -100,7 +100,11 @@ function ModalDeleteListType() {
 
 	return listTypeEntryId ? (
 		<ClayModal center observer={observer} status="danger">
-			<ClayModal.Header>{header}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{header}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				<Text as="p">

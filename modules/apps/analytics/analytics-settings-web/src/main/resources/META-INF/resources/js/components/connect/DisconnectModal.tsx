@@ -25,7 +25,9 @@ const DisconnectModal: React.FC<
 
 	return (
 		<ClayModal center observer={observer} status="warning">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('disconnecting-data-source')}
 			</ClayModal.Header>
 

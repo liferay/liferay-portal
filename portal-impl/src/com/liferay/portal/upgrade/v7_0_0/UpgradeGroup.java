@@ -184,7 +184,9 @@ public class UpgradeGroup extends UpgradeProcess {
 
 		PreparedStatement preparedStatement = connection.prepareStatement(
 			"select ownerId, preferences from PortalPreferences where " +
-				"ownerType = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY);
+				"ownerType = ?");
+
+		preparedStatement.setInt(1, PortletKeys.PREFS_OWNER_TYPE_COMPANY);
 
 		ResultSet resultSet = preparedStatement.executeQuery();
 

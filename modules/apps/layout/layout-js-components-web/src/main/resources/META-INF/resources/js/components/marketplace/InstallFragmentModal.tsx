@@ -55,7 +55,9 @@ export default function InstallFragmentModal({
 
 	return visible ? (
 		<ClayModal className="modal-dialog-centered" observer={observer}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(Liferay.Language.get('installing-x'), name)}
 			</ClayModal.Header>
 

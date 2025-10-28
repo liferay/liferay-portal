@@ -126,7 +126,8 @@ export class ContentsPage {
 	async deleteContent(title: string, recycleBinEnabled: boolean = true) {
 		const card = this.page
 			.locator('tr', {hasText: title})
-			.or(this.page.locator('.card-row', {hasText: title}));
+			.or(this.page.locator('.card-row', {hasText: title}))
+			.first();
 
 		this.page.once('dialog', async (dialog) => {
 			await dialog.accept();
@@ -196,6 +197,16 @@ export class ContentsPage {
 		await this.page.getByPlaceholder('Search').waitFor({state: 'visible'});
 	}
 
+	async openSchedulePublication() {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				name: 'Schedule Publication',
+			}),
+			trigger: this.page.getByTitle('Publish Options'),
+		});
+	}
+
 	async openSidePanel(panelName: SidePanelName = 'General') {
 		await clickAndExpectToBeVisible({
 			target: this.page.locator('.sidebar-header', {hasText: panelName}),
@@ -234,7 +245,7 @@ export class ContentsPage {
 		});
 
 		await expect(
-			this.page.locator('.management-bar').getByText('Publish')
+			this.page.locator('button[type="submit"]', {hasText: 'Publish'})
 		).toBeVisible();
 	}
 

@@ -118,7 +118,9 @@ const PreviewAttributesModal = ({
 					observer={observer}
 					size="md"
 				>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{title || Liferay.Language.get('attributes')}
 					</ClayModal.Header>
 

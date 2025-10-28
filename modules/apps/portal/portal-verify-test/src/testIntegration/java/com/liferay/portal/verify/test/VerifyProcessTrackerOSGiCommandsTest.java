@@ -50,10 +50,11 @@ public class VerifyProcessTrackerOSGiCommandsTest {
 		Bundle bundle = FrameworkUtil.getBundle(
 			VerifyProcessTrackerOSGiCommandsTest.class);
 
-		_symbolicName = bundle.getSymbolicName();
-
 		_bundleContext = bundle.getBundleContext();
 
+		_runOnPortalUpgradeVerifiers =
+			StartupHelperUtil.isRunOnPortalUpgradeVerifiers();
+		_symbolicName = bundle.getSymbolicName();
 		_upgrading = StartupHelperUtil.isUpgrading();
 
 		StartupHelperUtil.setUpgrading(false);
@@ -61,6 +62,8 @@ public class VerifyProcessTrackerOSGiCommandsTest {
 
 	@After
 	public void tearDown() {
+		StartupHelperUtil.setRunOnPortalUpgradeVerifiers(
+			_runOnPortalUpgradeVerifiers);
 		StartupHelperUtil.setUpgrading(_upgrading);
 
 		Release release = _releaseLocalService.fetchRelease(_symbolicName);
@@ -393,12 +396,13 @@ public class VerifyProcessTrackerOSGiCommandsTest {
 
 		_releaseLocalService.updateRelease(release);
 
-		StartupHelperUtil.setUpgrading(true);
+		StartupHelperUtil.setRunOnPortalUpgradeVerifiers(true);
 
-		return () -> StartupHelperUtil.setUpgrading(false);
+		return () -> StartupHelperUtil.setRunOnPortalUpgradeVerifiers(false);
 	}
 
 	private static BundleContext _bundleContext;
+	private static boolean _runOnPortalUpgradeVerifiers;
 	private static String _symbolicName;
 	private static boolean _upgrading;
 

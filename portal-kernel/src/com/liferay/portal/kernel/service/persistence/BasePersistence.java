@@ -105,8 +105,18 @@ public interface BasePersistence<T extends BaseModel<T>> {
 
 	public <R> R dslQuery(DSLQuery dslQuery);
 
+	public <R> R dslQuery(DSLQuery dslQuery, boolean useFinderCache);
+
 	public default int dslQueryCount(DSLQuery dslQuery) {
 		Long count = dslQuery(dslQuery);
+
+		return count.intValue();
+	}
+
+	public default int dslQueryCount(
+		DSLQuery dslQuery, boolean useFinderCache) {
+
+		Long count = dslQuery(dslQuery, useFinderCache);
 
 		return count.intValue();
 	}

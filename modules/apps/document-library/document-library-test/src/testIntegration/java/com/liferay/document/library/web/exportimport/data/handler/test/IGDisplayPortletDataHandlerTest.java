@@ -52,11 +52,7 @@ public class IGDisplayPortletDataHandlerTest
 
 	@Override
 	protected String[] getDataPortletPreferences() {
-		return new String[] {
-			"rootFolderExternalReferenceCode",
-			"selectedGroupExternalReferenceCode",
-			"selectedRepositoryExternalReferenceCode"
-		};
+		return new String[0];
 	}
 
 	@Override

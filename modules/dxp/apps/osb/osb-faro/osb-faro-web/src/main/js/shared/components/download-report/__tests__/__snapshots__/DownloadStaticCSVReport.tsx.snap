@@ -43,11 +43,12 @@ exports[`DownloadStaticCSVReport renders component 1`] = `
             <h1
               class="modal-title"
               id="clay-modal-label-1"
+              tabindex="-1"
             >
               Download Reports
             </h1>
             <button
-              aria-label="close"
+              aria-label="Close"
               class="close btn btn-unstyled"
               type="button"
             >
@@ -81,31 +82,23 @@ exports[`DownloadStaticCSVReport renders component 1`] = `
               class="modal-item-last"
             >
               <div
-                class="btn-group"
+                class="btn-group-spaced"
                 role="group"
               >
-                <div
-                  class="btn-group-item"
+                <button
+                  class="btn btn-secondary"
+                  data-testid="cancel"
+                  type="button"
                 >
-                  <button
-                    class="btn btn-secondary"
-                    data-testid="cancel"
-                    type="button"
-                  >
-                    Cancel
-                  </button>
-                </div>
-                <div
-                  class="btn-group-item"
+                  Cancel
+                </button>
+                <button
+                  class="btn btn-primary"
+                  data-testid="submit"
+                  type="submit"
                 >
-                  <button
-                    class="btn btn-primary"
-                    data-testid="submit"
-                    type="submit"
-                  >
-                    Download
-                  </button>
-                </div>
+                  Download
+                </button>
               </div>
             </div>
           </div>

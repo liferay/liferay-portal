@@ -350,12 +350,10 @@ public class ClientExtensionServicePreActionTest {
 		else {
 			MatcherAssert.assertThat(
 				themeDisplay.getClayCSSURL(),
-				CoreMatchers.containsString(
-					"themeId=classic_WAR_classictheme"));
+				CoreMatchers.startsWith("/o/classic-theme/css/clay."));
 			MatcherAssert.assertThat(
 				themeDisplay.getMainCSSURL(),
-				CoreMatchers.containsString(
-					"themeId=classic_WAR_classictheme"));
+				CoreMatchers.startsWith("/o/classic-theme/css/main."));
 		}
 	}
 

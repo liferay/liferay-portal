@@ -10,19 +10,26 @@ import ClayToolbar from '@clayui/toolbar';
 import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
+import Breadcrumb from '../../common/components/Breadcrumb';
+import isRecycleBinRootPage from '../../common/utils/isRecycleBinRootPage';
 import EmptyRecycleBinModalContent from '../modal/EmptyRecycleBinModalContent';
 
-export default function RecycleBinToolbar() {
-	return (
+interface Props {
+	breadcrumbItems: any[];
+}
+
+export default function RecycleBinToolbar({breadcrumbItems}: Props) {
+	return isRecycleBinRootPage(breadcrumbItems) ? (
 		<div>
 			<ClayToolbar
 				aria-label={Liferay.Language.get('recycle-bin')}
 				className="border-0"
 				light
+				style={{height: '72px'}}
 			>
-				<div className="container-fluid">
+				<div className="container-fluid px-4">
 					<ClayToolbar.Nav>
-						<ClayToolbar.Item className="text-left">
+						<ClayToolbar.Item>
 							<ClayToolbar.Section>
 								<div className="text-dark">
 									<Text as="span" size={7} weight="semi-bold">
@@ -75,5 +82,7 @@ export default function RecycleBinToolbar() {
 				</div>
 			</ClayToolbar>
 		</div>
+	) : (
+		<Breadcrumb breadcrumbItems={breadcrumbItems} hideSpace={true} />
 	);
 }

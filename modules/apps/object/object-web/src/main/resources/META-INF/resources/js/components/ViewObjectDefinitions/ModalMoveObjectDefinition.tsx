@@ -128,7 +128,9 @@ export function ModalMoveObjectDefinition({
 	return (
 		<ClayModalProvider>
 			<ClayModal center observer={observer}>
-				<ClayModal.Header>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+				>
 					{`${Liferay.Language.get(
 						'move'
 					)} "${stringUtils.getLocalizableLabel({

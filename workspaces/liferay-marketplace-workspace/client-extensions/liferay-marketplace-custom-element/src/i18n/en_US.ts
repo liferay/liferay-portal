@@ -29,6 +29,7 @@ export default {
 	'additional-admin': 'Additional Admin',
 	'additional-apps-requested': 'Additional Apps Requested',
 	'address': 'Address',
+	'address-name': 'Address Name',
 	'admin-dashboard': 'Admin Dashboard',
 	'agreements': 'Agreements',
 	'all-orders': 'All Orders',
@@ -43,7 +44,6 @@ export default {
 	'all-progress-and-information-related-to-the-creation-of-the-solution-will-be-lost-unless-you-save-the-solution-as-a-draft-do-you-still-want-to-exit':
 		'All progress and information related to the creation of the solution will be lost unless you save the solution as a draft. Do you still want to exit?',
 	'all-published-apps': 'All Published Apps',
-	'allowed-email-domains': 'Allowed Email Domains',
 	'amount': 'Amount',
 	'an-administrator-of-the-marketplace-will-review-your-request-shortly-if-you-have-questions-regarding-your-submission-please-email':
 		'An administrator of the Marketplace will review your request shortly. If you have questions regarding your submission, please email.',
@@ -148,6 +148,8 @@ export default {
 	'contact-sales': 'Contact Sales',
 	'contact-support': 'Contact Support',
 	'contact-us': 'Contact Us',
+	'contact-your-administrator-to-become-part-of-an-account':
+		'Contact your administrator to become part of an account.',
 	'content-media-type': 'Content Media Type',
 	'content-policy': 'Content Policy',
 	'continue': 'Continue',
@@ -162,6 +164,8 @@ export default {
 		'Create a Cloud App to be delivered as a live service.',
 	'create-a-dxp-app-to-be-delivered-as-a-download':
 		'Create a DXP App to be delivered as a download.',
+	'create-a-new-marketplace-acccount-or-join-an-already-existing-one':
+		'Create a new Marketplace acccount or join an already existing one',
 	'create-license-key': 'Create License Key',
 	'create-new-licenses-and-they-will-show-up-here':
 		'Create new licenses and they will show up here.',
@@ -275,6 +279,8 @@ export default {
 	'file-not-available-for-download': 'File not available for download.',
 	'filter': 'Filter',
 	'first-name': 'First Name',
+	'for-businesses-with-a-vat-tax-number-this-account-type-support-multiple-users':
+		'For businesses with a VAT/Tax number; this account type support multiple users.',
 	'for-businesses-with-a-vat-tax-number-this-account-type-support-multiple-users-it-also-possible-to-join-an-already-existing-business-account':
 		'For businesses with a VAT/Tax number; this account type support multiple users. It also possible to join an already existing business account',
 	'for-individuals-without-a-vat-tax-number-this-account-support-single-user-only':
@@ -329,6 +335,9 @@ export default {
 	'insufficient-resource-requirements': 'Insufficient Resource Requirements',
 	'intl-code': 'Intl. Code',
 	'ip-addresses': 'IP Addresses',
+	'join-an-existing-business-account-e-g-your-company-and-gain-full-access':
+		'Join an existing business account (e.g., your company) and gain full access.',
+	'join-existing-business-account': 'Join Existing Business Account',
 	'key-activations-available-x-of-x':
 		'Key activations available: {0} of {1}.',
 	'key-deactivation-requested-succesfully':
@@ -607,6 +616,7 @@ export default {
 		'Tags help to describe your solution in the Marketplace. Select the tags most relevant to your solution. They can be changed if needed.',
 	'tax-id': 'Tax ID',
 	'tax-vat': 'Tax/VAT',
+	'tax-vat-number': 'Tax/VAT Number',
 	'terms-of-service': 'Terms of Service',
 	'terms-privacy-returns-or-contact-support-all-costs-are-in-us-dollars':
 		'Terms, privacy, returns, or contact support. All costs are in US Dollars',
@@ -664,6 +674,8 @@ export default {
 	'times-already-extended': 'Times Already Extended',
 	'timezone': 'Timezone',
 	'title': 'Title',
+	'to-join-an-existing-business-account-pleasecontact-your-administrator-who-can-add-you-once-added-you-will-automatically-become-part-of-that-account-and-will-be-able-to-manage-it-and-make-purchases-on-markeplace':
+		'To join an existing business account, please contact your administrator, who can add you. Once added, you will automatically become part of that account and will be able to manage it and make purchases on Markeplace.',
 	'total': 'Total',
 	'transaction-details': 'Transaction Details',
 	'transaction-id': 'Transaction ID',
@@ -731,7 +743,6 @@ export default {
 	'when-adding-app-versions-you-can-use-your-own-numbering-system-but-be-sure-it-is-consistent-and-understandable-by-the-customer':
 		'When adding app versions, you can use your own numbering system, but be sure it is consistent and understandable by the customer.',
 	'workflow-action': 'Workflow Action',
-	'workspace-friendly-url': 'Workspace Friendly URL',
 	'workspace-info': 'Workspace Info',
 	'workspace-name': 'Workspace Name',
 	'workspace-owner-email': 'Workspace Owner Email',

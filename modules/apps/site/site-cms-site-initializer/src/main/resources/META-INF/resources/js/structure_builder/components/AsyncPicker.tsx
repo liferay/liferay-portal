@@ -89,6 +89,15 @@ export default function AsyncPicker({
 			disabled={status === 'saving' || (disabled && status !== 'stale')}
 			id={id}
 			items={items}
+			messages={{
+				itemDescribedby: Liferay.Language.get(
+					'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+				),
+				itemSelected: Liferay.Language.get('x-selected'),
+				scrollToBottomAriaLabel:
+					Liferay.Language.get('scroll-to-bottom'),
+				scrollToTopAriaLabel: Liferay.Language.get('scroll-to-top'),
+			}}
 			onActiveChange={async (active: boolean) => {
 				if (active && status === 'stale') {
 					await loader();

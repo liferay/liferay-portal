@@ -25,125 +25,157 @@ exports[`AssignSegments should render 1`] = `
         class="assign-segments-table-wrapper"
       >
         <div
-          class="table-responsive table-root flex-grow-1"
+          class="flex-grow-1 mx-4 table-root"
         >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+          <div
+            class="table-responsive"
           >
-            <thead
-              aria-hidden="true"
-              data-aria-hidden="true"
+            <table
+              class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
             >
-              <tr>
-                <th
-                  class="table-head-title"
-                >
-                  <button
-                    class="inline-item text-truncate-inline btn btn-unstyled"
-                    type="button"
-                  >
-                    <span
-                      class="text-truncate"
-                    >
-                      Segment Name
-                    </span>
-                    <span
-                      class="inline-item inline-item-after"
-                    >
-                      <svg
-                        class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                        role="presentation"
-                      >
-                        <use
-                          href="#order-arrow-up"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  <button
-                    class="inline-item text-truncate-inline btn btn-unstyled"
-                    type="button"
-                  >
-                    <span
-                      class="text-truncate"
-                    >
-                      Created by
-                    </span>
-                  </button>
-                </th>
-                <th
-                  class="table-head-title"
-                />
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td
-                  aria-hidden="true"
-                  data-aria-hidden="true"
-                >
-                  Seattle1
-                </td>
-                <td
-                  aria-hidden="true"
-                  data-aria-hidden="true"
-                >
-                  -
-                </td>
-                <td>
-                  <button
-                    aria-activedescendant=""
-                    aria-controls="clay-id-2"
-                    aria-expanded="true"
-                    aria-haspopup="listbox"
-                    aria-owns="clay-id-2"
-                    class="form-control form-control-select form-control-select-secondary show"
-                    data-testid="select-1"
-                    required=""
-                    role="combobox"
-                    style=""
-                    tabindex="0"
-                    type="button"
-                  >
-                    Select an option
-                  </button>
-                </td>
-              </tr>
-              <tr
+              <thead
                 aria-hidden="true"
-                class=""
                 data-aria-hidden="true"
               >
-                <td>
-                  Seattle2
-                </td>
-                <td>
-                  -
-                </td>
-                <td>
-                  <button
-                    aria-activedescendant=""
-                    aria-expanded="false"
-                    aria-haspopup="listbox"
-                    class="form-control form-control-select form-control-select-secondary"
-                    data-testid="select-2"
-                    required=""
-                    role="combobox"
-                    tabindex="0"
-                    type="button"
+                <tr>
+                  <th
+                    class="table-head-title"
                   >
-                    Select an option
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <button
+                      class="inline-item text-truncate-inline btn btn-unstyled"
+                      type="button"
+                    >
+                      <div
+                        class="align-items-center d-flex justify-content-between"
+                      >
+                        <div
+                          class="text-truncate"
+                        >
+                          Segment Name
+                        </div>
+                        <button
+                          aria-label="Ascending"
+                          class="component-action ml-2 btn btn-sm btn-primary"
+                          type="button"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#order_arrow_ascending"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </button>
+                  </th>
+                  <th
+                    class="table-head-title"
+                  >
+                    <button
+                      class="inline-item text-truncate-inline btn btn-unstyled"
+                      type="button"
+                    >
+                      <div
+                        class="align-items-center d-flex justify-content-between"
+                      >
+                        <div
+                          class="text-truncate"
+                        >
+                          Created by
+                        </div>
+                        <button
+                          aria-label="Descending"
+                          class="component-action ml-2 btn btn-sm btn-primary"
+                          type="button"
+                        >
+                          <span
+                            class="opacity-25"
+                          >
+                            <svg
+                              class="lexicon-icon lexicon-icon-order-arrow icon-root"
+                              role="presentation"
+                            >
+                              <use
+                                href="#order-arrow"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </div>
+                    </button>
+                  </th>
+                  <th
+                    class="table-head-title"
+                  />
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class=""
+                >
+                  <td
+                    aria-hidden="true"
+                    data-aria-hidden="true"
+                  >
+                    Seattle1
+                  </td>
+                  <td
+                    aria-hidden="true"
+                    data-aria-hidden="true"
+                  >
+                    -
+                  </td>
+                  <td>
+                    <button
+                      aria-activedescendant=""
+                      aria-controls="clay-id-2"
+                      aria-expanded="true"
+                      aria-haspopup="listbox"
+                      aria-owns="clay-id-2"
+                      class="form-control form-control-select form-control-select-secondary show"
+                      data-testid="select-1"
+                      required=""
+                      role="combobox"
+                      style=""
+                      tabindex="0"
+                      type="button"
+                    >
+                      Select an option
+                    </button>
+                  </td>
+                </tr>
+                <tr
+                  aria-hidden="true"
+                  class=""
+                  data-aria-hidden="true"
+                >
+                  <td>
+                    Seattle2
+                  </td>
+                  <td>
+                    -
+                  </td>
+                  <td>
+                    <button
+                      aria-activedescendant=""
+                      aria-expanded="false"
+                      aria-haspopup="listbox"
+                      class="form-control form-control-select form-control-select-secondary"
+                      data-testid="select-2"
+                      required=""
+                      role="combobox"
+                      tabindex="0"
+                      type="button"
+                    >
+                      Select an option
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

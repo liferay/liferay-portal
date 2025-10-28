@@ -8,7 +8,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import getCN from 'classnames';
 import React, {useState} from 'react';

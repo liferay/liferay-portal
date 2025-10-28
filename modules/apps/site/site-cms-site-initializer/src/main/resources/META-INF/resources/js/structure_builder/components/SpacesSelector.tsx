@@ -15,7 +15,7 @@ import SpaceSticker from '../../common/components/SpaceSticker';
 import {Space} from '../../common/types/Space';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
-import selectValidationErrors from '../selectors/selectValidationErrors';
+import selectErrors from '../selectors/selectErrors';
 import {ReferencedStructure, Structure} from '../types/Structure';
 
 type Item = {
@@ -36,17 +36,17 @@ export default function SpacesSelector({
 
 	const dispatch = useStateDispatch();
 
-	const validationErrors = useSelector(selectValidationErrors(structureUuid));
+	const errors = useSelector(selectErrors(structureUuid));
 
 	const id = useId();
 
 	const {data: spaces} = useCache('spaces');
 
-	const hasError = validationErrors.has('no-space');
-
 	const selectedSpaces = getSelection(structureSpaces, spaces);
 
 	const isDisabled = disabled || structureSpaces === 'all';
+
+	const error = errors.get('spaces');
 
 	return (
 		<div className="mt-5">
@@ -60,7 +60,7 @@ export default function SpacesSelector({
 				)}
 			</p>
 
-			<ClayForm.Group className={classNames({'has-error': hasError})}>
+			<ClayForm.Group className={classNames({'has-error': error})}>
 				<label htmlFor={id}>
 					{Liferay.Language.get('spaces')}
 
@@ -101,8 +101,9 @@ export default function SpacesSelector({
 						onBlur={() => {
 							if (!structureSpaces.length) {
 								dispatch({
-									error: 'no-space',
-									type: 'add-validation-error',
+									error: 'empty',
+									property: 'spaces',
+									type: 'add-error',
 									uuid: structureUuid,
 								});
 							}
@@ -131,13 +132,7 @@ export default function SpacesSelector({
 					</ItemSelector>
 				)}
 
-				{hasError ? (
-					<FieldFeedback
-						errorMessage={Liferay.Language.get(
-							'spaces-must-be-selected'
-						)}
-					/>
-				) : null}
+				{error ? <FieldFeedback errorMessage={error} /> : null}
 			</ClayForm.Group>
 
 			<ClayForm.Group>

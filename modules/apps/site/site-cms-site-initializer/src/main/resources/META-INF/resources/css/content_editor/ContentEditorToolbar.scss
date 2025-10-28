@@ -1,0 +1,68 @@
+@import 'cadmin-variables';
+@import 'variables';
+
+// View mode
+
+body {
+	#wrapper {
+		&:has(.content-editor__toolbar) {
+			margin-top: $contentEditorToolbarHeight;
+		}
+
+		.content-editor__toolbar {
+			left: 0;
+			top: var(--control-menu-container-height);
+			transition: padding-left ease 0.5s;
+			width: 100%;
+			z-index: 1;
+		}
+	}
+
+	&.product-menu-open #wrapper .content-editor__toolbar {
+		padding-left: $productMenuWidth;
+	}
+}
+
+// Edit mode
+
+html#{$cadmin-selector} {
+	.page-editor__wrapper {
+		&:has(.content-editor__toolbar) {
+			margin-top: $contentEditorToolbarHeight;
+		}
+
+		.content-editor__toolbar {
+			left: 0;
+			opacity: 50%;
+			top: calc(
+				var(--control-menu-container-height) +
+					$pageEditorManagamentBarHeight
+			);
+			padding-left: $pageEditorSidebarButtonsWidth;
+			transition:
+				padding-left,
+				width ease 0.5s;
+			width: 100%;
+			z-index: $pageEditorTopperZIndex;
+		}
+
+		&:not(.page-editor__wrapper--sidebar--hidden) .content-editor__toolbar {
+			width: calc(100% - $pageEditorSidebarWidth);
+		}
+
+		&--padded-start {
+			.content-editor__toolbar {
+				padding-left: $pageEditorSidebarWidth +
+					$pageEditorSidebarButtonsWidth;
+			}
+		}
+	}
+
+	.master-page .content-editor__toolbar {
+		opacity: 50%;
+	}
+
+	body.product-menu-open .page-editor__wrapper .content-editor__toolbar {
+		padding-left: $productMenuWidth;
+	}
+}

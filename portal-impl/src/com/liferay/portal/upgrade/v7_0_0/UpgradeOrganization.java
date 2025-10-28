@@ -80,9 +80,8 @@ public class UpgradeOrganization extends UpgradeProcess {
 				StringBundler.concat(
 					"select groupId, organizationId, parentOrganizationId, ",
 					"site, Organization_.treePath as treePath from Group_, ",
-					"Organization_ where classNameId = ",
-					PortalUtil.getClassNameId(Organization.class.getName()),
-					" and Group_.classPK = Organization_.organizationId"));
+					"Organization_ where classNameId = ? and Group_.classPK = ",
+					"Organization_.organizationId"));
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
@@ -90,6 +89,9 @@ public class UpgradeOrganization extends UpgradeProcess {
 						"groupId = ?")) {
 
 			List<OrganizationGroup> organizationGroups = new ArrayList<>();
+
+			preparedStatement1.setLong(
+				1, PortalUtil.getClassNameId(Organization.class.getName()));
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {

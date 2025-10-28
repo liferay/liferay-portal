@@ -32,7 +32,9 @@ const OrderItemDetailModal = ({
 			observer={observer}
 			spritemap={spritemap}
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{`${Liferay.Language.get('view')} ${orderItem.sku} ${Liferay.Language.get('details')}`}
 			</ClayModal.Header>
 

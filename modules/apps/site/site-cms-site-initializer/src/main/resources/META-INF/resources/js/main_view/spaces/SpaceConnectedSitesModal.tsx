@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import Autocomplete from '@clayui/autocomplete';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayModal from '@clayui/modal';
 import ClaySticker from '@clayui/sticker';
+import {ItemSelector} from '@liferay/frontend-js-item-selector-web';
 import {openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useId, useState} from 'react';
@@ -125,15 +125,13 @@ const SitesSelector = ({
 	externalReferenceCode: string;
 	onSiteConnected: (site: Site) => void;
 }) => {
-	const [value, setValue] = useState('');
-	const [sites, setSites] = useState<Site[]>([]);
-	const [siteSelected, setSiteSelected] = useState<Site>();
+	const [site, setSite] = useState<Site>();
 
 	const connectSiteToSpace = async () => {
-		if (siteSelected) {
+		if (site) {
 			const {data, error} = await ConnectedSiteService.connectSiteToSpace(
 				externalReferenceCode,
-				siteSelected.externalReferenceCode
+				site.externalReferenceCode
 			);
 
 			if (data) {
@@ -143,7 +141,7 @@ const SitesSelector = ({
 						Liferay.Language.get(
 							'site-x-was-successfully-connected-to-the-space'
 						),
-						`<strong>${siteSelected.name}</strong>`
+						`<strong>${site.name}</strong>`
 					)
 				);
 			}
@@ -156,18 +154,6 @@ const SitesSelector = ({
 		}
 	};
 
-	useEffect(() => {
-		const fetchSites = async () => {
-			const {data} = await ConnectedSiteService.getAllSites();
-
-			if (data) {
-				setSites(data.items);
-			}
-		};
-
-		fetchSites();
-	}, []);
-
 	return (
 		<div className="p-4">
 			<div className="align-items-end autofit-row c-gap-3">
@@ -176,25 +162,29 @@ const SitesSelector = ({
 						{Liferay.Language.get('site')}
 					</label>
 
-					<Autocomplete
-						allowsCustomValue
+					<ItemSelector
+						apiURL={`${location.origin}/o/headless-site/v1.0/sites?active=true`}
 						id="siteSelector"
-						menuTrigger="focus"
-						onChange={setValue}
+						items={site ? [site] : []}
+						onItemsChange={(items: Site[]) => {
+							if (items.length) {
+								setSite(items[0]);
+							}
+							else {
+								setSite(undefined);
+							}
+						}}
 						placeholder={Liferay.Language.get('select-a-site')}
-						value={value}
 					>
-						{sites.map((site) => (
-							<Autocomplete.Item
-								key={site.id}
-								onClick={() => {
-									setSiteSelected(site);
-								}}
+						{(item: Site) => (
+							<ItemSelector.Item
+								key={item.id}
+								textValue={item.name}
 							>
-								{site.name}
-							</Autocomplete.Item>
-						))}
-					</Autocomplete>
+								{item.name}
+							</ItemSelector.Item>
+						)}
+					</ItemSelector>
 				</div>
 
 				<div className="autofit-col">
@@ -264,7 +254,9 @@ export default function SpaceConnectedSitesModal({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('all-sites')}
 			</ClayModal.Header>
 

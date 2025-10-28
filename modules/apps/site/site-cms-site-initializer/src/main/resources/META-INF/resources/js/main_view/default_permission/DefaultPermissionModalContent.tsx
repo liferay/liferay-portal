@@ -31,7 +31,8 @@ export default function DefaultPermissionModalContent({
 	className,
 	closeModal,
 	roles,
-}: DefaultPermissionModalContentProps & {apiURL?: string}) {
+	section,
+}: DefaultPermissionModalContentProps & {apiURL?: string; section?: string}) {
 	const [currentObjectEntry, setCurrentObjectEntry] =
 		useState<CMSDefaultPermissionObjectEntryDTO | null>(null);
 	const [currentValues, setCurrentValues] =
@@ -139,7 +140,9 @@ export default function DefaultPermissionModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(
 					Liferay.Language.get('edit-x'),
 					Liferay.Language.get('default-permissions')
@@ -164,6 +167,7 @@ export default function DefaultPermissionModalContent({
 					disabled={loading}
 					onChange={onChangeHandler}
 					roles={roles}
+					section={section}
 					values={currentValues}
 				/>
 			</ClayModal.Body>

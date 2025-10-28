@@ -59,8 +59,7 @@ public class AssetListEntryUsageUpgradeProcess extends UpgradeProcess {
 		try (PreparedStatement selectPreparedStatement =
 				connection.prepareStatement(
 					"select distinct containerKey from AssetListEntryUsage " +
-						"where containerType  = " +
-							layoutPageTemplateStructureClassNameId);
+						"where containerType = ?");
 			PreparedStatement insertPreparedStatement =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
@@ -72,6 +71,9 @@ public class AssetListEntryUsageUpgradeProcess extends UpgradeProcess {
 						"containerKey, containerType, key_, plid, type_) ",
 						"values(?, ?, ?, ?, ?, ?, ?, ?, 0, ?, 0, ?, ?, ?, ?, ",
 						"?)"))) {
+
+			selectPreparedStatement.setLong(
+				1, layoutPageTemplateStructureClassNameId);
 
 			try (ResultSet resultSet = selectPreparedStatement.executeQuery()) {
 				while (resultSet.next()) {

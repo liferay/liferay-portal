@@ -50,36 +50,39 @@ public class ArticleAssetsUpgradeProcess extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select resourcePrimKey, indexable from JournalArticle ",
-					"where companyId = ", companyId, " and version = ",
-					JournalArticleConstants.VERSION_DEFAULT, " and status = ",
-					WorkflowConstants.STATUS_DRAFT));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select resourcePrimKey, indexable from JournalArticle where " +
+					"companyId = ? and version = ? and status = ?")) {
 
-			while (resultSet.next()) {
-				long resourcePrimKey = resultSet.getLong("resourcePrimKey");
+			preparedStatement.setLong(1, companyId);
+			preparedStatement.setDouble(
+				2, JournalArticleConstants.VERSION_DEFAULT);
+			preparedStatement.setInt(3, WorkflowConstants.STATUS_DRAFT);
 
-				AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-					JournalArticle.class.getName(), resourcePrimKey);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long resourcePrimKey = resultSet.getLong("resourcePrimKey");
 
-				if (assetEntry == null) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							StringBundler.concat(
-								"Journal article with resource primary key ",
-								resourcePrimKey, " does not have associated ",
-								"asset entry"));
+					AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+						JournalArticle.class.getName(), resourcePrimKey);
+
+					if (assetEntry == null) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								StringBundler.concat(
+									"Journal article with resource primary ",
+									"key ", resourcePrimKey,
+									" does not have associated asset entry"));
+						}
+
+						continue;
 					}
 
-					continue;
+					boolean indexable = resultSet.getBoolean("indexable");
+
+					_assetEntryLocalService.updateEntry(
+						assetEntry.getClassName(), assetEntry.getClassPK(),
+						null, null, indexable, assetEntry.isVisible());
 				}
-
-				boolean indexable = resultSet.getBoolean("indexable");
-
-				_assetEntryLocalService.updateEntry(
-					assetEntry.getClassName(), assetEntry.getClassPK(), null,
-					null, indexable, assetEntry.isVisible());
 			}
 		}
 	}

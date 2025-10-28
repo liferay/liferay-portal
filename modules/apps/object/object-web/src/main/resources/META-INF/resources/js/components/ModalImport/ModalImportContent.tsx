@@ -96,7 +96,9 @@ export function ModalImportContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{modalImportContentTitle[modalImportKey]}
 			</ClayModal.Header>
 

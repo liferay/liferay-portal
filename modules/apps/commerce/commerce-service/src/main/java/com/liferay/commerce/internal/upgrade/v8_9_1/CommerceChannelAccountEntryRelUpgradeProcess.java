@@ -28,18 +28,21 @@ public class CommerceChannelAccountEntryRelUpgradeProcess
 					"select CChannelAccountEntryRel.ctCollectionId, ",
 					"CChannelAccountEntryRel.CChannelAccountEntryRelId from ",
 					"CChannelAccountEntryRel inner join CommercePriceList on ",
-					"CChannelAccountEntryRel.classPK = ",
-					"CommercePriceList.commercePriceListId inner join ",
-					"ClassName_ on CChannelAccountEntryRel.classNameId = ",
-					"ClassName_.classNameId where ClassName_.classNameId = ",
-					ClassNameLocalServiceUtil.getClassNameId(
-						CommerceDiscount.class)));
+					"CChannelAccountEntryRel.classPK = CommercePriceList.",
+					"commercePriceListId inner join ClassName_ on ",
+					"CChannelAccountEntryRel.classNameId = ClassName_.",
+					"classNameId where ClassName_.classNameId = ?"));
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
 					"update CChannelAccountEntryRel set classNameId = ? " +
 						"where ctCollectionId = ? and " +
 							"CChannelAccountEntryRelId = ?")) {
+
+			preparedStatement1.setLong(
+				1,
+				ClassNameLocalServiceUtil.getClassNameId(
+					CommerceDiscount.class));
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {

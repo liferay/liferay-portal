@@ -5,7 +5,7 @@
 
 package com.liferay.object.rest.dto.v1_0.util;
 
-import com.liferay.object.rest.dto.v1_0.Scope;
+import com.liferay.headless.object.dto.v1_0.Scope;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;

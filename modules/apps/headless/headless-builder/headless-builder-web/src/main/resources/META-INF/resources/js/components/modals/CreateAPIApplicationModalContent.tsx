@@ -138,7 +138,9 @@ export function CreateAPIApplicationModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('new-api-application')}
 			</ClayModal.Header>
 

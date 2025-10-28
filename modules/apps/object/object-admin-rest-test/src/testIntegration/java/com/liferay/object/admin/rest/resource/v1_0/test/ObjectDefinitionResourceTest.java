@@ -128,7 +128,9 @@ public class ObjectDefinitionResourceTest
 			RandomTestUtil.randomString());
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Override
 	@Test
 	public void testGetObjectDefinition() throws Exception {

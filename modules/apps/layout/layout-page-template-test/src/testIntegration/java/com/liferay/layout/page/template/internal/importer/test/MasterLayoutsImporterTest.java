@@ -228,7 +228,8 @@ public class MasterLayoutsImporterTest {
 				JSONUtil.put("headingLevel", "h1")
 			).toString(),
 			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout.fetchDraftLayout(),
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0,

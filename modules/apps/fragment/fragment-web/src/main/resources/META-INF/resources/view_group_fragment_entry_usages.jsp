@@ -35,7 +35,8 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 
 				<portlet:actionURL name="/fragment/propagate_group_fragment_entry_changes" var="propagateGroupFragmentEntryChangesURL">
 					<portlet:param name="redirect" value="<%= currentURL %>" />
-					<portlet:param name="fragmentEntryId" value="<%= String.valueOf(fragmentEntry.getFragmentEntryId()) %>" />
+					<portlet:param name="fragmentEntryERC" value="<%= String.valueOf(fragmentEntry.getExternalReferenceCode()) %>" />
+					<portlet:param name="fragmentEntryScopeERC" value="<%= String.valueOf(fragmentEntry.getScopeERC()) %>" />
 				</portlet:actionURL>
 
 				<aui:form action="<%= propagateGroupFragmentEntryChangesURL %>" name="fm">

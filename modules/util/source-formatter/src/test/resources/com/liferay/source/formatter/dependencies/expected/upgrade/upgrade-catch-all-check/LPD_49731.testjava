@@ -15,12 +15,15 @@ public class LPD_49731 {
 		Map<Locale, String> descriptionMap, boolean facetable, String key,
 		ServiceContext serviceContext) {
 
+		CPSpecificationOptionLocalServiceUtil.addCPSpecificationOption(
+			123, cpOptionCategoryId, titleMap, descriptionMap, facetable, key,
+			serviceContext);
 		CPSpecificationOptionLocalServiceUtil.addCPSpecificationOption(null, userId, cpOptionCategoryId, null, titleMap, descriptionMap, facetable, key, 0, serviceContext);
-		_cpSpecificationOptionLocalService.addCPSpecificationOption(123, cpOptionCategoryId, titleMap, descriptionMap, facetable, key, serviceContext);
 		_cpSpecificationOptionLocalService.addCPSpecificationOption(null, userId, cpOptionCategoryId, null, titleMap, descriptionMap, facetable, key, 0, serviceContext);
 	}
 
 	@Reference
-	private CPSpecificationOptionLocalService _cpSpecificationOptionLocalService;
+	private CPSpecificationOptionLocalService
+		_cpSpecificationOptionLocalService;
 
 }

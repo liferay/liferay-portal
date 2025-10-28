@@ -7,6 +7,7 @@ package com.liferay.document.library.webdav.test;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -305,10 +306,6 @@ public class BaseWebDAVTestCase {
 		return _FOLDER_NAME;
 	}
 
-	protected String getGroupFriendlyURL() {
-		return _GROUP_FRIENDLY_URL;
-	}
-
 	protected String getUserAgent() {
 		return _DEFAULT_USER_AGENT;
 	}
@@ -319,12 +316,11 @@ public class BaseWebDAVTestCase {
 
 	private static final String _FOLDER_NAME = "WebDAVTest";
 
-	private static final String _GROUP_FRIENDLY_URL = "/guest";
-
 	private static final String _LOCK_XML;
 
 	private static final String _PATH_INFO_PREFACE = StringBundler.concat(
-		_GROUP_FRIENDLY_URL, "/document_library/", _FOLDER_NAME, "/");
+		GroupConstants.GUEST_FRIENDLY_URL, "/document_library/", _FOLDER_NAME,
+		"/");
 
 	private static final String _PROPFIND_XML;
 

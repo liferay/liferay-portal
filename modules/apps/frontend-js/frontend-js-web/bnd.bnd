@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend JS Web
 Bundle-SymbolicName: com.liferay.frontend.js.web
-Bundle-Version: 5.0.137
+Bundle-Version: 5.0.138
 Provide-Capability:\
 	osgi.extender;\
 		osgi.extender="liferay.js";\

@@ -105,7 +105,9 @@ export default function AddOrganizationModal({
 
 	return (
 		<ClayModal center observer={observer} size="md">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('add-organizations')}
 			</ClayModal.Header>
 

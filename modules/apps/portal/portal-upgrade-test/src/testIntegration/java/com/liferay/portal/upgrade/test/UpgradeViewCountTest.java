@@ -6,7 +6,6 @@
 package com.liferay.portal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -88,22 +87,23 @@ public class UpgradeViewCountTest {
 
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select * from ViewCountEntry where companyId = 2 AND ",
-					"classNameId = ", _className.getClassNameId(),
-					" AND classPK = 1"));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select * from ViewCountEntry where companyId = 2 AND " +
+					"classNameId = ? AND classPK = 1")) {
 
-			Assert.assertTrue(resultSet.next());
+			preparedStatement.setLong(1, _className.getClassNameId());
 
-			Assert.assertEquals(3, resultSet.getLong("viewCount"));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
 
-			Assert.assertFalse(resultSet.next());
+				Assert.assertEquals(3, resultSet.getLong("viewCount"));
 
-			DBInspector dbInspector = new DBInspector(connection);
+				Assert.assertFalse(resultSet.next());
 
-			Assert.assertFalse(
-				dbInspector.hasColumn("UpgradeViewCount", "readCount"));
+				DBInspector dbInspector = new DBInspector(connection);
+
+				Assert.assertFalse(
+					dbInspector.hasColumn("UpgradeViewCount", "readCount"));
+			}
 		}
 	}
 

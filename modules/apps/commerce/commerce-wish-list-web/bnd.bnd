@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Wish List Web
 Bundle-SymbolicName: com.liferay.commerce.wish.list.web
-Bundle-Version: 4.0.54
+Bundle-Version: 4.0.55
 -dsannotations-options: inherit

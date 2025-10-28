@@ -125,7 +125,7 @@ describe('AssignSegments', () => {
 
 		expect(API.individualSegment.delete).toBeCalledWith({
 			groupId: '123',
-			id: '1'
+			ids: ['1']
 		});
 	});
 });

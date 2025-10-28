@@ -88,7 +88,8 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommandTest {
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			StringPool.BLANK, fragmentEntry.getCss(),
 			fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), draftLayout,
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0,

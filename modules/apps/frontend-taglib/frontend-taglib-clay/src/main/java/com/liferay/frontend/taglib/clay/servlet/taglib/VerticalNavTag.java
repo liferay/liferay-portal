@@ -7,6 +7,7 @@ package com.liferay.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.frontend.taglib.clay.internal.servlet.taglib.BaseContainerTag;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -316,6 +317,30 @@ public class VerticalNavTag extends BaseContainerTag {
 
 					iconTag.doTag(pageContext);
 				}
+			}
+
+			List<LabelItem> labelItems = (List<LabelItem>)verticalNavItem.get(
+				"labelItems");
+
+			if (ListUtil.isNotEmpty(labelItems)) {
+				jspWriter.write("<span class=\"inline-item ");
+				jspWriter.write("inline-item-after\">");
+
+				for (LabelItem labelItem : labelItems) {
+					LabelTag labelTag = new LabelTag();
+
+					labelTag.setCssClass("c-ml-2");
+					labelTag.setDismissible(
+						(boolean)labelItem.get("dismissible"));
+					labelTag.setDisplayType(
+						(String)labelItem.get("displayType"));
+					labelTag.setLabel((String)labelItem.get("label"));
+					labelTag.setLarge((boolean)labelItem.get("large"));
+
+					labelTag.doTag(pageContext);
+				}
+
+				jspWriter.write("</span>");
 			}
 
 			if (GetterUtil.getBoolean(verticalNavItem.get("deprecated"))) {

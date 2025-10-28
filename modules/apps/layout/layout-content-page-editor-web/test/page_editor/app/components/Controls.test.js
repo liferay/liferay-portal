@@ -9,7 +9,7 @@ import {
 	reducer,
 } from '../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/ControlsContext';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const ACTION = {
 	itemId: null,

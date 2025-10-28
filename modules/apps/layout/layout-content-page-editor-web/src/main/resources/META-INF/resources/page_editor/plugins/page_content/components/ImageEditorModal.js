@@ -111,7 +111,9 @@ export default function ImageEditorModal({
 			observer={observer}
 			size="full-screen"
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('edit-image')}
 			</ClayModal.Header>
 

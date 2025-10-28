@@ -30,6 +30,7 @@ export interface IAllFiltersDropdown extends React.HTMLAttributes<HTMLElement> {
 
 export type InventoryAnalysisDataType = {
 	inventoryAnalysisItems: {count: number; key: string; title: string}[];
+	inventoryAnalysisItemsCount: number;
 	page: number;
 	pageSize: number;
 	totalCount: number;

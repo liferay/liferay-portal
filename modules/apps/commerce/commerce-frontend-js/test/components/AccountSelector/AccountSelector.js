@@ -5,7 +5,7 @@
 
 import '../../tests_utilities/polyfills';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';

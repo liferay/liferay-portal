@@ -85,6 +85,14 @@ public class IndividualSegment {
 		return new Date(_lastActivityDate.getTime());
 	}
 
+	public Date getLastMembershipUpdateDate() {
+		if (_lastMembershipUpdateDate == null) {
+			return null;
+		}
+
+		return new Date(_lastMembershipUpdateDate.getTime());
+	}
+
 	public String getName() {
 		return _name;
 	}
@@ -175,6 +183,13 @@ public class IndividualSegment {
 		}
 	}
 
+	public void setLastMembershipUpdateDate(Date lastMembershipUpdateDate) {
+		if (lastMembershipUpdateDate != null) {
+			_lastMembershipUpdateDate = new Date(
+				lastMembershipUpdateDate.getTime());
+		}
+	}
+
 	public void setName(String name) {
 		_name = name;
 	}
@@ -234,6 +249,7 @@ public class IndividualSegment {
 	private long _individualCount;
 	private long _knownIndividualCount;
 	private Date _lastActivityDate;
+	private Date _lastMembershipUpdateDate;
 	private String _name;
 	private String _scope = Scope.PROJECT.name();
 	private String _segmentType = Type.BATCH.name();

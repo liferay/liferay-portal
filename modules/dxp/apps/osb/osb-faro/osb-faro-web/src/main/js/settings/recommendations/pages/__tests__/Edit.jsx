@@ -13,6 +13,13 @@ import {waitForLoading} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const defaultProps = {
 	router: {params: {groupId: '23'}, query: {delta: '10', page: '1'}}
 };

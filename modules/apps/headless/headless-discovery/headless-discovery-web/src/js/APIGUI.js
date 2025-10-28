@@ -229,7 +229,11 @@ const APIGUI = () => {
 			<ClayLayout.ContainerFluid>
 				{showHeaders && (
 					<ClayModal observer={observer} size="lg" status="info">
-						<ClayModal.Header>Headers</ClayModal.Header>
+						<ClayModal.Header
+							closeButtonAriaLabel={Liferay.Language.get('close')}
+						>
+							Headers
+						</ClayModal.Header>
 
 						<ClayModal.Body>
 							<h1>

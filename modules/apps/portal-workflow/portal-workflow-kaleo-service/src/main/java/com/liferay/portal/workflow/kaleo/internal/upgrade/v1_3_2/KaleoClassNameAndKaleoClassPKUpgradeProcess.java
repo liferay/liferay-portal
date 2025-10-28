@@ -41,12 +41,12 @@ public class KaleoClassNameAndKaleoClassPKUpgradeProcess
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"update ", tableName,
-					" set kaleoClassName = ?, kaleoClassPK = ", columnName,
-					" where kaleoClassName is null and kaleoClassPK is null ",
-					"and ", columnName, " is not null and ", columnName,
-					" > 0 "))) {
+					" set kaleoClassName = ?, kaleoClassPK = ? where ",
+					"kaleoClassName is null and kaleoClassPK is null and ",
+					columnName, " is not null and ", columnName, " > 0 "))) {
 
 			preparedStatement.setString(1, kaleoClassName);
+			preparedStatement.setString(2, columnName);
 
 			preparedStatement.executeUpdate();
 		}

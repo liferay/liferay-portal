@@ -9,7 +9,7 @@ import {navigate, sessionStorage, sub} from 'frontend-js-web';
 
 import formatActionURL from '../../common/utils/formatActionURL';
 import FilePreviewerModalContent from '../modal/FilePreviewerModalContent';
-import deleteEntryAction from './actions/deleteEntryAction';
+import confirmAndDeleteEntryAction from './actions/confirmAndDeleteEntryAction';
 import AssetVersionRenderer from './cell_renderers/AssetVersionRenderer';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import VersionRenderer from './cell_renderers/VersionRenderer';
@@ -118,7 +118,7 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 			else if (action.data.id === 'delete') {
 				event?.preventDefault();
 
-				deleteEntryAction({
+				confirmAndDeleteEntryAction({
 					bodyHTML: sub(
 						Liferay.Language.get('delete-version-confirmation'),
 						`<strong>${sub(Liferay.Language.get('version-x'), itemData.systemProperties.version.number)}</strong>`,

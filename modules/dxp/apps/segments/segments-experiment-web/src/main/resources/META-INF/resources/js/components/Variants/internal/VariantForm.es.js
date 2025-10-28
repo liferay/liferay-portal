@@ -57,7 +57,11 @@ export default function VariantForm({
 
 	return (
 		<form onSubmit={onSubmit}>
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{error && errorMessage && (

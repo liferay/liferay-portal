@@ -72,7 +72,7 @@ test(
 			await structureBuilderPage.addField(type);
 		}
 
-		await structureBuilderPage.publishStructure();
+		const {id: structureId} = await structureBuilderPage.publishStructure();
 
 		// Go to view mode (create a content) and fill values in default language
 
@@ -99,7 +99,7 @@ test(
 
 		// Edit the experience for the structure and remove Friendly URL input
 
-		await structureBuilderPage.editStructure(structureERC);
+		await structureBuilderPage.editStructure(structureId);
 
 		await structureBuilderPage.customizeExperience();
 
@@ -191,7 +191,7 @@ test(
 			await structureBuilderPage.addField(type as FieldType);
 		}
 
-		await structureBuilderPage.publishStructure();
+		const {id: structureId} = await structureBuilderPage.publishStructure();
 
 		// Go to view mode (create a content) and fill values in default language and save the content
 
@@ -213,7 +213,7 @@ test(
 
 		// Edit the experience for the structure and enable localization management
 
-		await structureBuilderPage.editStructure(structureERC);
+		await structureBuilderPage.editStructure(structureId);
 
 		await structureBuilderPage.customizeExperience();
 
@@ -356,7 +356,7 @@ test(
 
 		await structureBuilderPage.addField('Long Text');
 
-		await structureBuilderPage.publishStructure();
+		const {id: structureId} = await structureBuilderPage.publishStructure();
 
 		// Go to view mode (create a content) and fill values in default language and save the content
 
@@ -374,7 +374,7 @@ test(
 
 		// Edit the experience for the structure and enable localization management
 
-		await structureBuilderPage.editStructure(structureERC);
+		await structureBuilderPage.editStructure(structureId);
 
 		await structureBuilderPage.customizeExperience();
 
@@ -437,7 +437,7 @@ test(
 			await route.fulfill({
 				body: JSON.stringify({
 					fields: {
-						ObjectField_longtext: 'Naranja',
+						ObjectField_longText: 'Naranja',
 						ObjectField_title: 'Naranja',
 					},
 				}),

@@ -9,7 +9,7 @@ import React from 'react';
 import Alert from '../../../src/main/resources/META-INF/resources/js/components/Alert.es';
 import {renderComponent} from '../../helpers.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('Alert', () => {
 	afterEach(cleanup);

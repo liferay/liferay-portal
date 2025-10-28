@@ -154,7 +154,7 @@ test(
 
 		await page.getByLabel('Space Selector').click();
 
-		await page.getByLabel('Default').last().click();
+		await page.getByRole('option', {name: 'D Default'}).click();
 
 		await clickAndExpectToBeVisible({
 			target: page.getByText(`Success:${name} was created successfully.`),
@@ -244,7 +244,7 @@ test('Bulk Merge tags', {tag: '@LPD-43388'}, async ({page, tagsPage}) => {
 		trigger: tagsPage.saveButton,
 	});
 
-	await page.getByRole('button', {name: 'OK'}).click();
+	await page.getByRole('button', {name: 'Save'}).click();
 
 	await expect(tag1).toBeVisible();
 	await expect(tag2).not.toBeVisible();
@@ -301,7 +301,7 @@ test('Merge tags', {tag: '@LPD-43388'}, async ({page, tagsPage}) => {
 		target: page.getByText(
 			`Success:${tagName2} and ${tagName1} have been successfully merged.`
 		),
-		trigger: page.getByRole('button', {name: 'OK'}),
+		trigger: page.getByRole('button', {name: 'Save'}),
 	});
 
 	await expect(tag1).toBeVisible();

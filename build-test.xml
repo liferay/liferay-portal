@@ -2448,6 +2448,22 @@ war.path=${app.server.portal.dir}/</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="is-less-than">
+		<attribute name="arg1" />
+		<attribute name="arg2" />
+		<attribute name="property.name" />
+		<sequential>
+			<beanshell>
+                <![CDATA[
+                    Float float1 = Float.parseFloat("@{arg1}");
+                    Float float2 = Float.parseFloat("@{arg2}");
+
+                    project.setProperty("@{property.name}", String.valueOf(float1 < float2));
+                ]]>
+			</beanshell>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="poshi-execute">
 		<attribute default="portal-web/build-test.gradle" name="build.gradle.file" />
 		<attribute default="${basedir}" name="build.gradle.dir" />
@@ -9893,6 +9909,9 @@ go</echo>
 	</target>
 
 	<target name="build-sql-file-playwright">
+		<var name="databases.size" unset="true" />
+		<var name="databases.size" value="1" />
+
 		<if>
 			<not>
 				<equals arg1="${database.type}" arg2="hypersonic" />
@@ -11352,7 +11371,7 @@ org.apache.catalina.ha.session.level=INFO]]>
 
 	<target name="deploy-sql-zip">
 		<if>
-			<matches pattern="https?://" string="${test.sql.zip.url}" />
+			<matches pattern="(file|https?)://" string="${test.sql.zip.url}" />
 			<then>
 				<mirrors-get
 					dest="sql/release-sql.zip"
@@ -15273,15 +15292,7 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 			<try>
 				<retry retrycount="2">
 					<sequential>
-						<if>
-							<equals arg1="${skip.delete.liferay.home}" arg2="true" />
-							<then>
-								<rebuild-database skip.delete.liferay.home="true" />
-							</then>
-							<else>
-								<rebuild-database />
-							</else>
-						</if>
+						<rebuild-database skip.delete.liferay.home="true" />
 					</sequential>
 				</retry>
 			</try>
@@ -15448,13 +15459,18 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 							<equals arg1="${database.type}" arg2="mysql" />
 						</and>
 						<then>
+							<is-less-than arg1="${database.version}" arg2="8.0" property.name="mysql.upgrade" />
+
 							<echo file="${import.database.sh.file.path}">
 								<![CDATA[
 									#!/bin/bash
 
 									mysql --password=${database.password} --user=${database.username} < /tmp/${database.type}.sql
 
-									mysql_upgrade --force --password=${database.password} --user=${database.username}
+									if [[ ${mysql.upgrade} == "true" ]]
+									then
+										mysql_upgrade --force --password=${database.password} --user=${database.username}
+									fi
 								]]>
 							</echo>
 
@@ -15471,13 +15487,18 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 								<param name="sql.file" value="create-bare-mysql.sql" />
 							</antcall>
 
+							<is-less-than arg1="${database.version}" arg2="8.0" property.name="mysql.upgrade" />
+
 							<echo file="${import.database.sh.file.path}">
 								<![CDATA[
 									#!/bin/bash
 
 									mysql --database=${database.schema} --password=${database.password} --user=${database.username} < /tmp/${database.type}.sql
 
-									mysql_upgrade --force --password=${database.password} --user=${database.username}
+									if [[ ${mysql.upgrade} == "true" ]]
+									then
+										mysql_upgrade --force --password=${database.password} --user=${database.username}
+									fi
 								]]>
 							</echo>
 
@@ -15677,7 +15698,14 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 								</exec>
 							</retry>
 
-							<exec executable="mysql_upgrade" />
+							<is-less-than arg1="${database.version}" arg2="8.0" property.name="mysql.upgrade" />
+
+							<if>
+								<equals arg1="${mysql.upgrade}" arg2="true" />
+								<then>
+									<exec executable="mysql_upgrade" />
+								</then>
+							</if>
 
 							<get-testcase-property property.name="custom.mysql.sql.statement" />
 

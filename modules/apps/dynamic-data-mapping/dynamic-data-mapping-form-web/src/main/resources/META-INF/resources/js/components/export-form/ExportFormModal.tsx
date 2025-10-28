@@ -21,7 +21,9 @@ const ExportFormModal: React.FC<
 }) => {
 	return (
 		<ClayModal observer={observer}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('export')}
 			</ClayModal.Header>
 

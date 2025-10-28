@@ -7,6 +7,8 @@ package com.liferay.object.internal.search.spi.model.index.contributor;
 
 import com.liferay.account.model.AccountEntryOrganizationRel;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.entry.util.ObjectEntryValuesUtil;
@@ -393,6 +395,12 @@ public class ObjectEntryModelDocumentContributor
 
 			_contributeObjectEntryFolder(
 				document, objectEntry.getObjectEntryFolderId());
+
+			long fileEntryId = GetterUtil.getLong(values.get("file"));
+
+			if (fileEntryId != 0) {
+				_contributeFile(document, fileEntryId);
+			}
 		}
 
 		if (FeatureFlagManagerUtil.isEnabled(
@@ -400,6 +408,15 @@ public class ObjectEntryModelDocumentContributor
 
 			_contributeTextEmbeddings(
 				document, objectContentHelper, objectDefinition, objectEntry);
+		}
+	}
+
+	private void _contributeFile(Document document, long fileEntryId) {
+		DLFileEntry fileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(
+			fileEntryId);
+
+		if (fileEntry != null) {
+			document.addKeyword("extension", fileEntry.getExtension());
 		}
 	}
 

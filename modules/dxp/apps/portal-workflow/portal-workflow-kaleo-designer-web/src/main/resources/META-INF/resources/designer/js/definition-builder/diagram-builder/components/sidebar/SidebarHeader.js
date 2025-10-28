@@ -105,7 +105,10 @@ export default function SidebarHeader({
 
 			{showDeleteConfirmationModal && (
 				<ClayModal center observer={observer} size="sm">
-					<ClayModal.Header className="text-secondary">
+					<ClayModal.Header
+						className="text-secondary"
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{modalInfo.title}
 					</ClayModal.Header>
 

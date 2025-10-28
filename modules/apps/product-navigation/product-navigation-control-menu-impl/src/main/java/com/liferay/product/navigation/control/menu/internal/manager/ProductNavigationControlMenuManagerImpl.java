@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
@@ -56,7 +55,7 @@ public class ProductNavigationControlMenuManagerImpl
 		Group group = themeDisplay.getScopeGroup();
 		Layout layout = themeDisplay.getLayout();
 
-		if (!group.isSite() || layout.isDraftLayout() ||
+		if ((!group.isCMS() && !group.isSite()) || layout.isDraftLayout() ||
 			layout.isTypeControlPanel()) {
 
 			return true;
@@ -76,12 +75,7 @@ public class ProductNavigationControlMenuManagerImpl
 				User user = themeDisplay.getUser();
 
 				for (Role role : user.getAllRoles()) {
-					if (Objects.equals(
-							role.getName(), RoleConstants.ADMINISTRATOR) ||
-						Objects.equals(
-							role.getRoleId(),
-							RoleConstants.SITE_ADMINISTRATOR) ||
-						ArrayUtil.contains(
+					if (ArrayUtil.contains(
 							accessToControlMenuRoleIds,
 							String.valueOf(role.getRoleId()))) {
 

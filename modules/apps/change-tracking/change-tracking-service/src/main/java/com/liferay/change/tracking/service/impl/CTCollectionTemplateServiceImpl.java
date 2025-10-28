@@ -7,7 +7,6 @@ package com.liferay.change.tracking.service.impl;
 
 import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.CTConstants;
-import com.liferay.change.tracking.model.CTCollectionTable;
 import com.liferay.change.tracking.model.CTCollectionTemplate;
 import com.liferay.change.tracking.model.CTCollectionTemplateTable;
 import com.liferay.change.tracking.service.base.CTCollectionTemplateServiceBaseImpl;
@@ -74,11 +73,11 @@ public class CTCollectionTemplateServiceImpl
 				Predicate.or(
 					_customSQL.getKeywordsPredicate(
 						DSLFunctionFactoryUtil.lower(
-							CTCollectionTable.INSTANCE.name),
+							CTCollectionTemplateTable.INSTANCE.name),
 						keywordsArray),
 					_customSQL.getKeywordsPredicate(
 						DSLFunctionFactoryUtil.lower(
-							CTCollectionTable.INSTANCE.description),
+							CTCollectionTemplateTable.INSTANCE.description),
 						keywordsArray))
 			)
 		).orderBy(
@@ -105,11 +104,11 @@ public class CTCollectionTemplateServiceImpl
 				Predicate.or(
 					_customSQL.getKeywordsPredicate(
 						DSLFunctionFactoryUtil.lower(
-							CTCollectionTable.INSTANCE.name),
+							CTCollectionTemplateTable.INSTANCE.name),
 						keywordsArray),
 					_customSQL.getKeywordsPredicate(
 						DSLFunctionFactoryUtil.lower(
-							CTCollectionTable.INSTANCE.description),
+							CTCollectionTemplateTable.INSTANCE.description),
 						keywordsArray))
 			)
 		);

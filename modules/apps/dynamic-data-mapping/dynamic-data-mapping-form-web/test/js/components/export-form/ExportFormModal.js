@@ -9,7 +9,7 @@ import React from 'react';
 
 import ExportFormModal from '../../../../src/main/resources/META-INF/resources/js/components/export-form/ExportFormModal';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('ExportFormModal', () => {
 	let fileExtensions;

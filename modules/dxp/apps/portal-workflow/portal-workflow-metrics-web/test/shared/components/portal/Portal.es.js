@@ -8,7 +8,7 @@ import React from 'react';
 
 import Portal from '../../../../src/main/resources/META-INF/resources/js/shared/components/portal/Portal.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('The Portal component should', () => {
 	let containerWrapper;

@@ -93,9 +93,11 @@ public class CTCollectionTemplateLocalServiceUtil {
 	 *
 	 * @param ctCollectionTemplate the ct collection template
 	 * @return the ct collection template that was removed
+	 * @throws PortalException
 	 */
 	public static CTCollectionTemplate deleteCTCollectionTemplate(
-		CTCollectionTemplate ctCollectionTemplate) {
+			CTCollectionTemplate ctCollectionTemplate)
+		throws PortalException {
 
 		return getService().deleteCTCollectionTemplate(ctCollectionTemplate);
 	}

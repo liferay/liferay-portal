@@ -165,22 +165,6 @@ definition {
 	}
 
 	@priority = 3
-	test GetAvailableButtonsAfterPublish {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("When I publish the API application in edit application wizard") {
-			APIBuilderUI.publishApplication(key_title = "App-test");
-		}
-
-		task ("Then only Cancel and Publish buttons are visible") {
-			AssertElementPresent(locator1 = "Button#CANCEL");
-
-			AssertElementPresent(locator1 = "APIBuilder#PUBLISH_BUTTON");
-		}
-	}
-
-	@priority = 3
 	test GetAvailableButtonsBeforePublish {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

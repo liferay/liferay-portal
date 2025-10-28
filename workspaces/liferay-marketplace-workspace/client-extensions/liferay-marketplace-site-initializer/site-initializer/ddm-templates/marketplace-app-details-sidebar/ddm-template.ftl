@@ -29,6 +29,7 @@
 </#if>
 
 <#assign
+	appUsageTerms = getSpecificationValue("appusagetermsurl")
 	cpuValue = getSpecificationValue("cpu")
 	developerName = getSpecificationValue("developer-name", catalogName)
 	publisherURL = (getSpecificationValue("publisherwebsiteurl")?trim?replace(" ", ""))!""
@@ -143,7 +144,10 @@
 				<@clay["icon"] symbol="document" />
 			</span>
 
-			<a class="d-flex w-100 justify-content-between help-and-support-link" href="https://www.liferay.com/en/legal/marketplace-terms-of-service" target="_blank">
+			<a
+				class="d-flex w-100 justify-content-between help-and-support-link"
+				href="${(appUsageTerms?has_content)?then(appUsageTerms, 'https://www.liferay.com/en/legal/marketplace-terms-of-service')}"
+				target="_blank">
 				<span class="copy-text ml-1 mb-4 help-and-support-link">
 					${languageUtil.get(locale, "terms-and-conditions", "Terms & Conditions")}
 				</span>

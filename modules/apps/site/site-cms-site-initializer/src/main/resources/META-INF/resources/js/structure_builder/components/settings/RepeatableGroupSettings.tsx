@@ -10,7 +10,8 @@ import {useId} from 'frontend-js-components-web';
 import React, {useEffect} from 'react';
 
 import focusInvalidElement from '../../../common/utils/focusInvalidElement';
-import {useStateDispatch} from '../../contexts/StateContext';
+import {useSelector, useStateDispatch} from '../../contexts/StateContext';
+import selectErrors from '../../selectors/selectErrors';
 import {RepeatableGroup} from '../../types/Structure';
 import Breadcrumb from '../Breadcrumb';
 import {LocalizedInput} from '../LocalizedInput';
@@ -64,6 +65,8 @@ function GeneralTab({
 }) {
 	const dispatch = useStateDispatch();
 
+	const errors = useSelector(selectErrors(group.uuid));
+
 	const labelInputId = useId();
 
 	return (
@@ -80,6 +83,7 @@ function GeneralTab({
 
 			<LocalizedInput
 				disabled={disabled}
+				error={errors.get('label')}
 				formGroupClassName="mt-4"
 				id={labelInputId}
 				label={Liferay.Language.get('label')}

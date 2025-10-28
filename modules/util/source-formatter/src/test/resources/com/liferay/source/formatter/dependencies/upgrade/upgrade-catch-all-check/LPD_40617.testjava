@@ -17,13 +17,25 @@ public class LPD_40617 {
 		long regionId, long countryId, long statusId, String comments,
 		boolean site, ServiceContext serviceContext) {
 
-		OrganizationLocalServiceUtil.addOrganization(userId, parentOrganizationId, name, type, regionId, countryId,statusId, comments, site, serviceContext);
-		_organizationLocalService.addOrganization(123, parentOrganizationId, name, type, regionId, countryId, statusId, comments, site, serviceContext);
-		_organizationLocalService.addOrganization(userId, parentOrganizationId, name, type, regionId, countryId, statusId, comments, site, serviceContext);
+		OrganizationLocalServiceUtil.addOrganization(
+			userId, parentOrganizationId, name, type, regionId, countryId,
+			statusId, comments, site, serviceContext);
+		_organizationLocalService.addOrganization(
+			123, parentOrganizationId, name, type, regionId, countryId,
+			statusId, comments, site, serviceContext);
+		_organizationLocalService.addOrganization(
+			userId, parentOrganizationId, name, type, regionId, countryId,
+			statusId, comments, site, serviceContext);
 
-		OrganizationServiceUtil.addOrganization(parentOrganizationId, name, type, regionId, countryId,statusId, comments, site, serviceContext);
-		_organizationService.addOrganization(123, name, type, regionId, countryId, statusId, comments, site, serviceContext);
-		_organizationService.addOrganization(parentOrganizationId, name, type, regionId, countryId, statusId, comments, site, serviceContext);
+		OrganizationServiceUtil.addOrganization(
+			parentOrganizationId, name, type, regionId, countryId, statusId,
+			comments, site, serviceContext);
+		_organizationService.addOrganization(
+			123, name, type, regionId, countryId, statusId, comments, site,
+			serviceContext);
+		_organizationService.addOrganization(
+			parentOrganizationId, name, type, regionId, countryId, statusId,
+			comments, site, serviceContext);
 	}
 
 	@Reference

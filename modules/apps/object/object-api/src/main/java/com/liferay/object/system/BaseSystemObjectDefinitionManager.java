@@ -108,7 +108,7 @@ public abstract class BaseSystemObjectDefinitionManager
 			return primaryKey;
 		}
 
-		return addBaseModel(user, values);
+		return addBaseModel(true, user, values);
 	}
 
 	protected Map<Locale, String> createLabelMap(String labelKey) {

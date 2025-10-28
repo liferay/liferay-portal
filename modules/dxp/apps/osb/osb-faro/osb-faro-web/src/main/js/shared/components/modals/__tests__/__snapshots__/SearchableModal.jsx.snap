@@ -37,7 +37,7 @@ exports[`SearchableModal should render 1`] = `
         class="toolbar-root"
       >
         <nav
-          class="navbar navbar-root management-bar management-bar-light navbar-expand"
+          class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
         >
           <div
             class="container-fluid"
@@ -45,29 +45,9 @@ exports[`SearchableModal should render 1`] = `
             <ul
               class="nav-root front-nav navbar-nav"
               role="tablist"
-            >
-              <li
-                class="nav-item"
-                role="presentation"
-              >
-                <button
-                  aria-label="Ascending"
-                  class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                  type="button"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#order_arrow_ascending"
-                    />
-                  </svg>
-                </button>
-              </li>
-            </ul>
+            />
             <div
-              class="navbar-form navbar-form-autofit"
+              class="navbar-form navbar-form-autofit mx-2"
             >
               <div
                 class="input-group search"
@@ -85,16 +65,16 @@ exports[`SearchableModal should render 1`] = `
                     class="input-group-inset-item input-group-inset-item-after"
                   >
                     <button
-                      aria-label="Clear"
+                      aria-label="Search"
                       class="button-root btn btn-unstyled"
                       type="button"
                     >
                       <svg
-                        class="lexicon-icon lexicon-icon-times icon-root"
+                        class="lexicon-icon lexicon-icon-search icon-root"
                         role="presentation"
                       >
                         <use
-                          href="#times"
+                          href="#search"
                         />
                       </svg>
                     </button>

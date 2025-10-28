@@ -110,6 +110,7 @@
 											data-term-name="${item.name}"
 											data-term-param="category"
 											data-term-value="${item.id}"
+											disabled
 											onChange="${namespace}handleSelection(event);"
 											type="checkbox"
 										/>

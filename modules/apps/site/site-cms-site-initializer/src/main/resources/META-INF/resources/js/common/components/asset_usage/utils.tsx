@@ -99,10 +99,11 @@ const openAssetUsageListModal = async ({
 
 	const firstItem = data?.items[0].attributes;
 
-	if (
-		!!firstItem?.usages ||
-		(firstItem?.type === 'FOLDER' && !!firstItem?.itemsCount)
-	) {
+	const folderThatContainsUsages = data?.items
+		.filter((item) => item.attributes.type === 'FOLDER')
+		.some(({attributes}) => (attributes?.itemsCount ?? 0) > 0);
+
+	if (!!firstItem?.usages || folderThatContainsUsages) {
 		openModal({
 			contentComponent: ({closeModal}: {closeModal: () => void}) => (
 				<AssetUsageListModal

@@ -105,7 +105,9 @@ export function ModalImportFailed({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('object-definitions-failed-to-import')}
 			</ClayModal.Header>
 

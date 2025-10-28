@@ -35,6 +35,7 @@ import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
@@ -634,6 +635,21 @@ public class AssetCategoriesDisplayContext {
 								LanguageUtil.get(
 									_themeDisplay.getLocale(),
 									"for-internal-use-only")));
+					}
+
+					if (vocabulary.getVisibilityType() ==
+							AssetVocabularyConstants.VISIBILITY_TYPE_EMPTY) {
+
+						verticalNavItem.setLabelItems(
+							LabelItemListBuilder.add(
+								labelItem -> {
+									labelItem.setDisplayType("warning");
+									labelItem.setLabel(
+										LanguageUtil.get(
+											_themeDisplay.getLocale(),
+											"empty"));
+								}
+							).build());
 					}
 
 					verticalNavItem.setActive(

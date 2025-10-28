@@ -29,12 +29,15 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -228,6 +231,7 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-67157")
 	public void testDeleteLayoutByExternalReferenceCode() throws Exception {
 		Layout layout = _layoutLocalService.addLayout(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), true,
@@ -239,6 +243,10 @@ public class LayoutLocalServiceTest {
 			layout.getExternalReferenceCode(), layout.getGroupId());
 
 		Assert.assertNull(_layoutLocalService.fetchLayout(layout.getPlid()));
+		Assert.assertNotNull(
+			_systemEventLocalService.fetchSystemEvent(
+				_group.getGroupId(), _portal.getClassNameId(Layout.class),
+				layout.getPlid(), SystemEventConstants.TYPE_DELETE));
 	}
 
 	@Test
@@ -613,7 +621,8 @@ public class LayoutLocalServiceTest {
 
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), draftLayout,
 			fragmentEntry.getFragmentEntryKey(),
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
@@ -1039,5 +1048,8 @@ public class LayoutLocalServiceTest {
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	private ServiceContext _serviceContext;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 }

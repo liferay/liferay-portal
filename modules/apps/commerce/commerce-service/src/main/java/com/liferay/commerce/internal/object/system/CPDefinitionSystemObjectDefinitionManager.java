@@ -55,10 +55,12 @@ public class CPDefinitionSystemObjectDefinitionManager
 	extends BaseSystemObjectDefinitionManager {
 
 	@Override
-	public long addBaseModel(User user, Map<String, Object> values)
+	public long addBaseModel(
+			boolean checkPermissions, User user, Map<String, Object> values)
 		throws Exception {
 
-		ProductResource productResource = _buildProductResource(false, user);
+		ProductResource productResource = _buildProductResource(
+			checkPermissions, user);
 
 		Product product = productResource.postProduct(_toProduct(values));
 

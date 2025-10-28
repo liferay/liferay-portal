@@ -42,7 +42,9 @@ function ModalDisableInheritance() {
 			{visible && (
 				<ClayModalProvider>
 					<ClayModal center observer={observer} status="warning">
-						<ClayModal.Header>
+						<ClayModal.Header
+							closeButtonAriaLabel={Liferay.Language.get('close')}
+						>
 							{Liferay.Language.get(
 								'disable-inheritance-confirmation'
 							)}

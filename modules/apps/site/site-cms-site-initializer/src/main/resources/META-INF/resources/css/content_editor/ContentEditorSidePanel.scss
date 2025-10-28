@@ -28,8 +28,7 @@
 
 	.content-editor__side-panel {
 		margin-top: calc(
-			var(--control-menu-container-height) +
-				$contentEditorManagementBarHeight
+			var(--control-menu-container-height) + $contentEditorToolbarHeight
 		);
 
 		.form-control.lfr-ck {
@@ -69,8 +68,7 @@ html#{$cadmin-selector} {
 			margin-right: 0;
 			margin-top: calc(
 				var(--control-menu-container-height) +
-					$contentEditorManagementBarHeight +
-					$pageEditorManagamentBarHeight
+					$contentEditorToolbarHeight + $pageEditorManagamentBarHeight
 			);
 			opacity: 50%;
 			transition: margin-right 0.5s ease;

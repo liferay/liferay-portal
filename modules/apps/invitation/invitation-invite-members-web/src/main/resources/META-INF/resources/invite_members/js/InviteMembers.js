@@ -267,7 +267,9 @@ export function InviteMembers({
 					observer={observer}
 					size="md"
 				>
-					<ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
 						{Liferay.Language.get('invite-members')}
 					</ClayModal.Header>
 
@@ -459,6 +461,24 @@ export function InviteMembers({
 												aria-labelledby="roleSelectorLabel"
 												id="roleSelector"
 												items={roles}
+												messages={{
+													itemDescribedby:
+														Liferay.Language.get(
+															'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+														),
+													itemSelected:
+														Liferay.Language.get(
+															'x-selected'
+														),
+													scrollToBottomAriaLabel:
+														Liferay.Language.get(
+															'scroll-to-bottom'
+														),
+													scrollToTopAriaLabel:
+														Liferay.Language.get(
+															'scroll-to-top'
+														),
+												}}
 												onSelectionChange={(roleId) =>
 													setRoleId(roleId)
 												}

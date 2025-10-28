@@ -95,6 +95,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.sql.DataSource;
@@ -168,6 +169,11 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 	@Override
 	@SuppressWarnings("unchecked")
 	public <R> R dslQuery(DSLQuery dslQuery) {
+		return dslQuery(dslQuery, true);
+	}
+
+	@Override
+	public <R> R dslQuery(DSLQuery dslQuery, boolean useFinderCache) {
 		DefaultASTNodeListener defaultASTNodeListener =
 			new DefaultASTNodeListener();
 
@@ -212,20 +218,28 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 		ProjectionType projectionType = _getProjectionType(
 			tableNames, select.getExpressions());
 
-		FinderCache finderCache = getFinderCache();
+		Consumer<Object> resultConsumer = null;
 
-		FinderPath finderPath = new FinderPath(
-			FinderPath.encodeDSLQueryCacheName(tableNames), "dslQuery",
-			ArrayUtil.append(
-				sb.getStrings(), _getAliasTypes(select.getExpressions())),
-			new String[0], projectionType == ProjectionType.MODELS);
+		if (useFinderCache) {
+			FinderCache finderCache = getFinderCache();
 
-		Object[] arguments = _getArguments(defaultASTNodeListener);
+			FinderPath finderPath = new FinderPath(
+				FinderPath.encodeDSLQueryCacheName(tableNames), "dslQuery",
+				ArrayUtil.append(
+					sb.getStrings(), _getAliasTypes(select.getExpressions())),
+				new String[0], projectionType == ProjectionType.MODELS);
 
-		Object cacheResult = finderCache.getResult(finderPath, arguments, this);
+			Object[] arguments = _getArguments(defaultASTNodeListener);
 
-		if (cacheResult != null) {
-			return (R)cacheResult;
+			Object cacheResult = finderCache.getResult(
+				finderPath, arguments, this);
+
+			if (cacheResult != null) {
+				return (R)cacheResult;
+			}
+
+			resultConsumer = result -> finderCache.putResult(
+				finderPath, arguments, result);
 		}
 
 		Session session = null;
@@ -299,7 +313,9 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 					defaultASTNodeListener.getEnd());
 			}
 
-			finderCache.putResult(finderPath, arguments, result);
+			if (resultConsumer != null) {
+				resultConsumer.accept(result);
+			}
 
 			return (R)result;
 		}

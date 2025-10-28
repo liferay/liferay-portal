@@ -13,7 +13,6 @@ const EventAttributes: React.FC<IEventAttributesProps> = ({groupId}) => (
 			getDefinitions({groupId}),
 			{active: true, label: Liferay.Language.get('event-attributes')}
 		]}
-		groupId={groupId}
 		pageDescription={Liferay.Language.get(
 			'attributes-provide-additional-context-for-events.-they-are-usually-event-specific-but-can-be-used-by-more-than-one.-global-attributes-will-be-sent-with-all-events-without-needing-to-be-configured'
 		)}

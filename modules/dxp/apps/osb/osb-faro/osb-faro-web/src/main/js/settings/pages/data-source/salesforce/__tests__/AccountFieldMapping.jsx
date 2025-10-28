@@ -10,6 +10,13 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const defaultProps = {
 	currentUser: data.getImmutableMock(User, data.mockUser),
 	dataSource: data.getImmutableMock(

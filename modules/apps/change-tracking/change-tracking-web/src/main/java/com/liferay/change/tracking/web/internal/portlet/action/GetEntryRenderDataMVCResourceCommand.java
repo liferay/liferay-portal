@@ -1149,6 +1149,10 @@ public class GetEntryRenderDataMVCResourceCommand
 					).put(
 						"label",
 						workflowTransition.getLabel(themeDisplay.getLocale())
+					).put(
+						"namespace",
+						_portal.getPortletNamespace(
+							PortletKeys.MY_WORKFLOW_TASK)
 					));
 			}
 		}

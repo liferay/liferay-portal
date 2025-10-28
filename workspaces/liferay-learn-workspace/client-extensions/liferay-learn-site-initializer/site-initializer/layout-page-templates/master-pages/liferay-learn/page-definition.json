@@ -1,6 +1,5 @@
 {
 	"pageElement": {
-		"id": "0a3fb99f-612f-a1ce-4ea0-63fc90ce2fb5",
 		"pageElements": [
 			{
 				"definition": {
@@ -50,12 +49,10 @@
 					],
 					"indexed": true
 				},
-				"id": "34c3bff4-7af8-5104-323a-861fbf5e37e8",
 				"pageElements": [
 					{
 						"definition": {
 						},
-						"id": "13f6b18a-0f53-0833-9e81-a415e3b4c0cc",
 						"pageElements": [
 							{
 								"definition": {
@@ -69,7 +66,6 @@
 									"layout": {
 									}
 								},
-								"id": "0707a724-1a48-56ec-f241-bd24b6ed62ee",
 								"pageElements": [
 									{
 										"definition": {
@@ -96,7 +92,6 @@
 												"contentDisplay": "FlexRow"
 											}
 										},
-										"id": "c7e262bb-78cb-1f51-a3e6-64ac14650193",
 										"pageElements": [
 											{
 												"definition": {
@@ -126,7 +121,6 @@
 													},
 													"indexed": true
 												},
-												"id": "47747691-3bf5-8786-046a-f08b57d9fb63",
 												"type": "Fragment"
 											},
 											{
@@ -168,7 +162,6 @@
 													},
 													"indexed": true
 												},
-												"id": "a7bc88c1-436e-185a-3dc1-416025e36b12",
 												"type": "Fragment"
 											},
 											{
@@ -192,7 +185,6 @@
 													],
 													"indexed": true
 												},
-												"id": "64687281-3674-1104-7051-1d069fd16d20",
 												"type": "Fragment"
 											}
 										],
@@ -206,7 +198,7 @@
 											"fragmentLink": {
 												"href": {
 													"value_i18n": {
-														"en_US": "https://help.liferay.com/hc/"
+														"en_US": "https://support.liferay.com/"
 													}
 												},
 												"target": "Blank"
@@ -223,7 +215,6 @@
 												"contentDisplay": "FlexRow"
 											}
 										},
-										"id": "92466448-ebb6-32f3-54ca-ec8d837b7e9b",
 										"pageElements": [
 											{
 												"definition": {
@@ -253,7 +244,6 @@
 													},
 													"indexed": true
 												},
-												"id": "6c59fef7-5867-0da6-739a-1e1cbfd574e3",
 												"type": "Fragment"
 											},
 											{
@@ -284,7 +274,7 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Help Center"
+																		"en_US": "Customer Portal"
 																	}
 																}
 															}
@@ -292,11 +282,10 @@
 													],
 													"fragmentStyle": {
 														"marginLeft": "2",
-														"width": "100%"
+														"width": "26rem"
 													},
 													"indexed": true
 												},
-												"id": "541b4214-55e7-7625-15b0-53b32fb34aa4",
 												"type": "Fragment"
 											},
 											{
@@ -320,7 +309,130 @@
 													],
 													"indexed": true
 												},
-												"id": "1c31c164-f031-27bd-0d7b-6c8f75825926",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									},
+									{
+										"definition": {
+											"cssClasses": [
+												"liferay-nav-item"
+											],
+											"fragmentLink": {
+												"href": {
+													"value_i18n": {
+														"en_US": "https://partner.liferay.com/"
+													}
+												},
+												"target": "Blank"
+											},
+											"fragmentStyle": {
+												"paddingBottom": "2",
+												"paddingLeft": "2",
+												"paddingRight": "2",
+												"paddingTop": "2"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "Center",
+												"contentDisplay": "FlexRow"
+											}
+										},
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-html"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+														{
+															"id": "element-html",
+															"value": {
+																"html": {
+																	"value_i18n": {
+																		"en_US": "<svg class=\"lexicon-icon lexicon-icon-sites\" role=\"presentation\" viewBox=\"0 0 512 512\">\n  <use color=\"#fff\" xlink:href=\"/o/dialect-theme/images/clay/icons.svg#sites\"></use>\n</svg>"
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"backgroundColor": "colorAccent2",
+														"borderRadius": "4px",
+														"paddingLeft": "1",
+														"paddingRight": "1",
+														"width": "12%"
+													},
+													"indexed": true
+												},
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"cssClasses": [
+														"liferay-nav-text"
+													],
+													"fragment": {
+														"key": "dialect-text",
+														"siteKey": "Liferay Learn"
+													},
+													"fragmentConfig": {
+														"textType": "text-paragraph",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																	"value": {
+																		"href": {
+																			"value_i18n": {
+																				"en_US": ""
+																			}
+																		}
+																	}
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "Partner Portal"
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"marginLeft": "2",
+														"width": "26rem"
+													},
+													"indexed": true
+												},
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-html"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+														{
+															"id": "element-html",
+															"value": {
+																"html": {
+																	"value_i18n": {
+																		"en_US": "<svg class=\"hover-show-icon lexicon-icon lexicon-icon-sites\" role=\"presentation\" viewBox=\"0 0 512 512\">\n  <use xlink:href=\"/o/dialect-theme/images/clay/icons.svg#shortcut\"></use>\n</svg>"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
 												"type": "Fragment"
 											}
 										],
@@ -351,7 +463,6 @@
 												"contentDisplay": "FlexRow"
 											}
 										},
-										"id": "5f0a7b90-9438-4e12-1733-88b27771ceca",
 										"pageElements": [
 											{
 												"definition": {
@@ -381,7 +492,6 @@
 													},
 													"indexed": true
 												},
-												"id": "c212d1d4-1c77-503b-2636-71a6b8bfa5e8",
 												"type": "Fragment"
 											},
 											{
@@ -423,7 +533,6 @@
 													},
 													"indexed": true
 												},
-												"id": "7d3fb854-412d-84d1-2975-9d3d5d55e195",
 												"type": "Fragment"
 											},
 											{
@@ -447,7 +556,6 @@
 													],
 													"indexed": true
 												},
-												"id": "760ba20d-164e-9dc9-4170-2c22c83c118d",
 												"type": "Fragment"
 											}
 										],
@@ -477,7 +585,6 @@
 												"contentDisplay": "FlexRow"
 											}
 										},
-										"id": "19a7f721-9fbe-60ac-bedb-84df94272d10",
 										"pageElements": [
 											{
 												"definition": {
@@ -507,7 +614,6 @@
 													},
 													"indexed": true
 												},
-												"id": "75f22835-de83-a1d9-3777-2e4b5d8d65df",
 												"type": "Fragment"
 											},
 											{
@@ -549,7 +655,6 @@
 													},
 													"indexed": true
 												},
-												"id": "49027fc3-0660-2527-1abf-c3e6b4227f59",
 												"type": "Fragment"
 											},
 											{
@@ -573,7 +678,6 @@
 													],
 													"indexed": true
 												},
-												"id": "2acef137-a9a1-a34d-76d2-441865f9e61a",
 												"type": "Fragment"
 											}
 										],
@@ -588,7 +692,6 @@
 					{
 						"definition": {
 						},
-						"id": "11de3bab-6e27-8bea-216d-03fac57605a9",
 						"pageElements": [
 							{
 								"definition": {
@@ -598,7 +701,6 @@
 										"widgetName": "com_liferay_site_navigation_language_web_portlet_SiteNavigationLanguagePortlet"
 									}
 								},
-								"id": "54708d9c-6758-f73a-761b-3a0925957782",
 								"type": "Widget"
 							}
 						],
@@ -607,7 +709,6 @@
 					{
 						"definition": {
 						},
-						"id": "11a71e2a-f8c0-74dd-2723-a87ed2016011",
 						"pageElements": [
 							{
 								"definition": {
@@ -615,7 +716,6 @@
 									"layout": {
 									}
 								},
-								"id": "2d47c579-c808-e128-66a9-6a7c7a14373c",
 								"pageElements": [
 									{
 										"definition": {
@@ -632,13 +732,11 @@
 											],
 											"indexed": true
 										},
-										"id": "e32d1ef3-0980-9d66-2357-8d4896405181",
 										"pageElements": [
 											{
 												"definition": {
 													"fragmentDropZoneId": "account-dropdown-dropzone"
 												},
-												"id": "dd4c8cfb-1e7d-8c3b-ab9a-340792b130bf",
 												"pageElements": [
 													{
 														"definition": {
@@ -680,7 +778,6 @@
 															],
 															"indexed": true
 														},
-														"id": "dcc1a2b4-6de0-1897-0e3f-9720e18af0a6",
 														"type": "Fragment"
 													}
 												],
@@ -698,7 +795,6 @@
 					{
 						"definition": {
 						},
-						"id": "462e81b2-985d-14d6-5b1f-7860f04caf07",
 						"pageElements": [
 							{
 								"definition": {
@@ -713,7 +809,6 @@
 										"contentDisplay": "FlexRow"
 									}
 								},
-								"id": "fde2d513-c9da-fa3d-ebcb-1b30eb1ce48c",
 								"pageElements": [
 									{
 										"definition": {
@@ -754,13 +849,11 @@
 											],
 											"indexed": true
 										},
-										"id": "7929ff09-04a3-c9ae-6538-a60a52663139",
 										"pageElements": [
 											{
 												"definition": {
 													"fragmentDropZoneId": "1"
 												},
-												"id": "fe9d88c9-b593-9903-2979-3c67ebf415df",
 												"pageElements": [
 													{
 														"definition": {
@@ -768,7 +861,6 @@
 															"layout": {
 															}
 														},
-														"id": "96143cf0-c23e-3e05-076c-e249e1daf858",
 														"pageElements": [
 															{
 																"definition": {
@@ -797,7 +889,6 @@
 																	],
 																	"verticalAlignment": "top"
 																},
-																"id": "a5e8403a-6f43-6873-8495-a4d824eee93d",
 																"pageElements": [
 																	{
 																		"definition": {
@@ -821,7 +912,6 @@
 																			],
 																			"size": 1
 																		},
-																		"id": "8350d24b-37a8-ac13-2348-1812db9323af",
 																		"type": "Column"
 																	},
 																	{
@@ -846,7 +936,6 @@
 																			],
 																			"size": 5
 																		},
-																		"id": "dc78b02a-ffd0-6e9c-6a97-f35ccc8919f4",
 																		"pageElements": [
 																			{
 																				"definition": {
@@ -872,7 +961,6 @@
 																						"paddingTop": 1
 																					}
 																				},
-																				"id": "4bcbd41b-fc5e-a279-364d-aa152ecdf217",
 																				"pageElements": [
 																					{
 																						"definition": {
@@ -886,7 +974,6 @@
 																								"paddingTop": 2
 																							}
 																						},
-																						"id": "1423d72e-969e-4796-ec7f-24e692f62d1d",
 																						"pageElements": [
 																							{
 																								"definition": {
@@ -920,7 +1007,6 @@
 																									},
 																									"indexed": true
 																								},
-																								"id": "7631d021-85f0-f104-2647-129b766e40a3",
 																								"type": "Fragment"
 																							},
 																							{
@@ -937,7 +1023,6 @@
 																										"contentDisplay": "FlexRow"
 																									}
 																								},
-																								"id": "fceb781a-b02d-b313-6ebe-dda8626a425c",
 																								"pageElements": [
 																									{
 																										"definition": {
@@ -946,7 +1031,6 @@
 																												"contentDisplay": "FlexColumn"
 																											}
 																										},
-																										"id": "59bb1d5b-09d8-8ead-c10e-4fe114635821",
 																										"pageElements": [
 																											{
 																												"definition": {
@@ -1000,7 +1084,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "a053c806-8a53-25e0-8a04-6d5fa1bc9646",
 																												"type": "Fragment"
 																											},
 																											{
@@ -1055,7 +1138,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "641e579f-580f-e07b-e975-1111f962a266",
 																												"type": "Fragment"
 																											},
 																											{
@@ -1110,7 +1192,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "75a99111-83b8-679f-84e8-3e5bcc1abc88",
 																												"type": "Fragment"
 																											}
 																										],
@@ -1123,7 +1204,6 @@
 																												"contentDisplay": "FlexColumn"
 																											}
 																										},
-																										"id": "81b35313-17f0-4456-c698-61aac80aee07",
 																										"pageElements": [
 																											{
 																												"definition": {
@@ -1177,7 +1257,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "1f2d2d22-09d6-a822-c602-b11d05fdc741",
 																												"type": "Fragment"
 																											},
 																											{
@@ -1232,7 +1311,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "c3f28029-8128-d410-7bb4-3afc0aedb22c",
 																												"type": "Fragment"
 																											},
 																											{
@@ -1287,7 +1365,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "14cd73b1-7144-ded8-db07-2fe553c9760d",
 																												"type": "Fragment"
 																											}
 																										],
@@ -1327,7 +1404,6 @@
 																			],
 																			"size": 5
 																		},
-																		"id": "e70f8d87-3355-197c-1e14-c5275a43b29b",
 																		"pageElements": [
 																			{
 																				"definition": {
@@ -1351,7 +1427,6 @@
 																						"paddingTop": 1
 																					}
 																				},
-																				"id": "d79dbe2d-4390-5ae1-5103-e3ab53d3568a",
 																				"pageElements": [
 																					{
 																						"definition": {
@@ -1365,7 +1440,6 @@
 																								"paddingTop": 2
 																							}
 																						},
-																						"id": "97985123-a1b2-cbb8-92de-eaf0169eac3a",
 																						"pageElements": [
 																							{
 																								"definition": {
@@ -1399,7 +1473,6 @@
 																									},
 																									"indexed": true
 																								},
-																								"id": "729dd0ff-e15b-db4e-4eeb-54db922e3af3",
 																								"type": "Fragment"
 																							},
 																							{
@@ -1416,7 +1489,6 @@
 																										"contentDisplay": "FlexRow"
 																									}
 																								},
-																								"id": "f8a567f5-9f4e-688f-feb7-23440ffd7ac6",
 																								"pageElements": [
 																									{
 																										"definition": {
@@ -1425,7 +1497,6 @@
 																												"contentDisplay": "FlexColumn"
 																											}
 																										},
-																										"id": "46129ca0-26e4-6ea0-2169-1e7ab21181ab",
 																										"pageElements": [
 																											{
 																												"definition": {
@@ -1479,7 +1550,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "3d0592bf-7b18-013b-8de2-894c4b5f90b8",
 																												"type": "Fragment"
 																											},
 																											{
@@ -1534,7 +1604,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "bf4f2c5f-8d4e-0f2b-6307-01a18dd475bb",
 																												"type": "Fragment"
 																											}
 																										],
@@ -1547,7 +1616,6 @@
 																												"contentDisplay": "FlexColumn"
 																											}
 																										},
-																										"id": "d457009c-5e78-c2aa-92d9-bc55f7b5b23e",
 																										"pageElements": [
 																											{
 																												"definition": {
@@ -1601,7 +1669,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "71d73cad-2caa-c8f4-9b2e-90353449f156",
 																												"type": "Fragment"
 																											},
 																											{
@@ -1656,7 +1723,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "f3298daf-9fef-62b7-785c-8e9369aecc53",
 																												"type": "Fragment"
 																											}
 																										],
@@ -1696,7 +1762,6 @@
 																			],
 																			"size": 1
 																		},
-																		"id": "880b07dd-990c-6150-592a-121d3054ba3c",
 																		"type": "Column"
 																	}
 																],
@@ -1750,13 +1815,11 @@
 											],
 											"indexed": true
 										},
-										"id": "f68969ef-724b-833c-8394-e69afafcc966",
 										"pageElements": [
 											{
 												"definition": {
 													"fragmentDropZoneId": "1"
 												},
-												"id": "8e50dd55-36b7-afd4-7d23-6f1861f97f76",
 												"pageElements": [
 													{
 														"definition": {
@@ -1764,7 +1827,6 @@
 															"layout": {
 															}
 														},
-														"id": "ff5dfe87-0b13-f1bd-cc83-84737bd28c98",
 														"pageElements": [
 															{
 																"definition": {
@@ -1793,7 +1855,6 @@
 																	],
 																	"verticalAlignment": "top"
 																},
-																"id": "3e9f5fce-d715-4efc-0463-d6343e1a10a8",
 																"pageElements": [
 																	{
 																		"definition": {
@@ -1817,7 +1878,6 @@
 																			],
 																			"size": 1
 																		},
-																		"id": "4ac87d56-231a-7938-7e37-d70b1b3015b0",
 																		"type": "Column"
 																	},
 																	{
@@ -1842,7 +1902,6 @@
 																			],
 																			"size": 3
 																		},
-																		"id": "9d6c3d41-3bd6-bf7f-20c9-674ddde00342",
 																		"pageElements": [
 																			{
 																				"definition": {
@@ -1867,7 +1926,6 @@
 																						"paddingTop": 1
 																					}
 																				},
-																				"id": "bb9e01c7-c1cc-fa38-6da9-32cec8daa1ee",
 																				"pageElements": [
 																					{
 																						"definition": {
@@ -1881,7 +1939,6 @@
 																								"paddingTop": 2
 																							}
 																						},
-																						"id": "ba07fade-e1a3-bb14-ee8e-2edc842fdd6c",
 																						"pageElements": [
 																							{
 																								"definition": {
@@ -1915,7 +1972,6 @@
 																									},
 																									"indexed": true
 																								},
-																								"id": "7d54e475-310a-bddb-1628-1e8daa3fbbb2",
 																								"type": "Fragment"
 																							},
 																							{
@@ -1932,7 +1988,6 @@
 																										"contentDisplay": "FlexRow"
 																									}
 																								},
-																								"id": "0e7302c6-5f0a-d35f-a43c-116bca780747",
 																								"pageElements": [
 																									{
 																										"definition": {
@@ -1944,7 +1999,6 @@
 																												"contentDisplay": "FlexColumn"
 																											}
 																										},
-																										"id": "9753c567-d3f2-c433-57f6-7e1e595e7438",
 																										"pageElements": [
 																											{
 																												"definition": {
@@ -1998,7 +2052,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "8b6f43fa-918f-8d87-9944-2df061595d1f",
 																												"type": "Fragment"
 																											}
 																										],
@@ -2038,7 +2091,6 @@
 																			],
 																			"size": 7
 																		},
-																		"id": "db7486fe-f63d-8165-490d-1d4c40b3dc17",
 																		"pageElements": [
 																			{
 																				"definition": {
@@ -2062,7 +2114,6 @@
 																						"paddingTop": 1
 																					}
 																				},
-																				"id": "b61d9c4b-c78c-e089-6a72-ab344f0ec94f",
 																				"pageElements": [
 																					{
 																						"definition": {
@@ -2076,7 +2127,6 @@
 																								"paddingTop": 2
 																							}
 																						},
-																						"id": "89d339f6-7055-bc34-9124-85e12a872129",
 																						"pageElements": [
 																							{
 																								"definition": {
@@ -2110,7 +2160,6 @@
 																									},
 																									"indexed": true
 																								},
-																								"id": "323b7b19-d9bb-353c-e770-0e7dcf325344",
 																								"type": "Fragment"
 																							},
 																							{
@@ -2127,7 +2176,6 @@
 																										"contentDisplay": "FlexRow"
 																									}
 																								},
-																								"id": "1da07ef6-9ab1-9fd0-b7f4-04b93d03bf3b",
 																								"pageElements": [
 																									{
 																										"definition": {
@@ -2139,7 +2187,6 @@
 																												"contentDisplay": "FlexRow"
 																											}
 																										},
-																										"id": "34b59a2b-c3f5-a4db-9f43-1836c091f712",
 																										"pageElements": [
 																											{
 																												"definition": {
@@ -2193,7 +2240,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "85733ac6-06e4-db5e-ead2-d03fb7088032",
 																												"type": "Fragment"
 																											},
 																											{
@@ -2248,7 +2294,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "4a897dd0-9e73-358b-73de-a3e6fc6d6721",
 																												"type": "Fragment"
 																											},
 																											{
@@ -2303,7 +2348,6 @@
 																													},
 																													"indexed": true
 																												},
-																												"id": "c400399f-3950-8378-444f-7d48055eb046",
 																												"type": "Fragment"
 																											}
 																										],
@@ -2343,7 +2387,6 @@
 																			],
 																			"size": 1
 																		},
-																		"id": "66069b59-c9ae-28eb-f8ec-12eeb18abec4",
 																		"type": "Column"
 																	}
 																],
@@ -2367,7 +2410,6 @@
 					{
 						"definition": {
 						},
-						"id": "1b4a2c92-4359-d37e-08ed-1e20a41532f5",
 						"type": "FragmentDropZone"
 					}
 				],
@@ -2380,7 +2422,6 @@
 						]
 					}
 				},
-				"id": "149d2e0b-7f6d-bc1c-c840-e1a1fb7933f2",
 				"type": "DropZone"
 			},
 			{
@@ -2406,7 +2447,6 @@
 					},
 					"name": "Footer"
 				},
-				"id": "cab69f52-e36b-1407-89f7-706c8f107b8f",
 				"pageElements": [
 					{
 						"definition": {
@@ -2439,7 +2479,6 @@
 							},
 							"name": "Footer-Contents"
 						},
-						"id": "abac19fb-71b7-0fb1-f49f-080167f5b55b",
 						"pageElements": [
 							{
 								"definition": {
@@ -2456,7 +2495,6 @@
 									},
 									"name": "Footer-Contents-Top"
 								},
-								"id": "19741e3c-4d9d-6c6c-cd9e-82f5d510ae56",
 								"pageElements": [
 									{
 										"definition": {
@@ -2482,7 +2520,6 @@
 											},
 											"name": "Logo Info Section"
 										},
-										"id": "48f9a916-f340-bc25-2dea-f0d29a3d3549",
 										"pageElements": [
 											{
 												"definition": {
@@ -2493,7 +2530,6 @@
 													},
 													"name": "Logo-Info-Title"
 												},
-												"id": "006bedd4-abe6-d7f3-9771-f16236f296b6",
 												"pageElements": [
 													{
 														"definition": {
@@ -2517,7 +2553,6 @@
 															"indexed": true,
 															"name": "Liferay-logo"
 														},
-														"id": "0fbdfac8-59f6-8f9c-d15d-dfd92f308e3c",
 														"type": "Fragment"
 													}
 												],
@@ -2533,7 +2568,6 @@
 													},
 													"name": "Logo-Info-Links"
 												},
-												"id": "8f58584f-c695-63fb-e1df-6283fde61a2f",
 												"pageElements": [
 													{
 														"definition": {
@@ -2569,7 +2603,6 @@
 															"indexed": true,
 															"name": "Liferay.com"
 														},
-														"id": "00246e75-c413-57f4-095a-8ec838ab9b2c",
 														"type": "Fragment"
 													},
 													{
@@ -2606,7 +2639,6 @@
 															"indexed": true,
 															"name": "Ask"
 														},
-														"id": "18952fc7-1733-630e-867b-337110280630",
 														"type": "Fragment"
 													},
 													{
@@ -2643,7 +2675,6 @@
 															"indexed": true,
 															"name": "Events"
 														},
-														"id": "8620f27f-8d78-fae8-a00b-a18575bbd6f0",
 														"type": "Fragment"
 													},
 													{
@@ -2680,7 +2711,6 @@
 															"indexed": true,
 															"name": "Meet"
 														},
-														"id": "abd1dd23-4659-24ef-23e1-fc435f0d3cc9",
 														"type": "Fragment"
 													}
 												],
@@ -2729,7 +2759,6 @@
 											},
 											"name": "Other Sections"
 										},
-										"id": "39d82912-edb0-50aa-5d4d-f64888bbdcef",
 										"pageElements": [
 											{
 												"definition": {
@@ -2740,7 +2769,6 @@
 													},
 													"name": "Capabilities Section"
 												},
-												"id": "ddc54da4-182b-0e4c-fced-6a0d75ae5147",
 												"pageElements": [
 													{
 														"definition": {
@@ -2749,7 +2777,6 @@
 															},
 															"name": "Capabilities-Title"
 														},
-														"id": "aadb323b-de1e-9757-1f8a-5609290fba35",
 														"pageElements": [
 															{
 																"definition": {
@@ -2782,7 +2809,6 @@
 																	"indexed": true,
 																	"name": "Capabilities"
 																},
-																"id": "51bde076-56af-05ce-ba38-8f23ea0a3112",
 																"type": "Fragment"
 															}
 														],
@@ -2798,7 +2824,6 @@
 															},
 															"name": "Capabalities-Links"
 														},
-														"id": "3e9c171b-8ae9-2dcd-1645-e3682e4b5cf7",
 														"pageElements": [
 															{
 																"definition": {
@@ -2834,7 +2859,6 @@
 																	"indexed": true,
 																	"name": "View All Capabilities"
 																},
-																"id": "88077a92-b15c-4395-83a8-73359746fdad",
 																"type": "Fragment"
 															}
 														],
@@ -2853,7 +2877,6 @@
 													},
 													"name": "Products Section"
 												},
-												"id": "44205992-3a58-9c8c-9f1a-1395f9c2ea49",
 												"pageElements": [
 													{
 														"definition": {
@@ -2862,7 +2885,6 @@
 															},
 															"name": "Products-Title"
 														},
-														"id": "76bca64f-1498-dfdb-7eca-705806df4b9c",
 														"pageElements": [
 															{
 																"definition": {
@@ -2896,7 +2918,6 @@
 																	"indexed": true,
 																	"name": "Product"
 																},
-																"id": "3e146314-9fb6-83de-4743-76360fa8e95e",
 																"type": "Fragment"
 															}
 														],
@@ -2916,7 +2937,6 @@
 															},
 															"name": "Products-Links"
 														},
-														"id": "0bfbb743-fc9b-82c7-9bf9-5264cb5b8e43",
 														"pageElements": [
 															{
 																"definition": {
@@ -2953,7 +2973,6 @@
 																	"indexed": true,
 																	"name": "Analytics Cloud"
 																},
-																"id": "3a7d8eee-7070-5c68-47ca-51ad642ead8f",
 																"type": "Fragment"
 															},
 															{
@@ -2991,7 +3010,6 @@
 																	"indexed": true,
 																	"name": "Commerce"
 																},
-																"id": "0ba79b87-5677-46c9-9d3f-691a034b38a9",
 																"type": "Fragment"
 															},
 															{
@@ -3029,7 +3047,6 @@
 																	"indexed": true,
 																	"name": "DXP"
 																},
-																"id": "45e012bb-9fff-1f8a-8d76-f78251fc7ffc",
 																"type": "Fragment"
 															},
 															{
@@ -3067,7 +3084,6 @@
 																	"indexed": true,
 																	"name": "Liferay Cloud"
 																},
-																"id": "91c23ce4-d641-00a6-f392-2f0e1c21f67d",
 																"type": "Fragment"
 															},
 															{
@@ -3105,7 +3121,6 @@
 																	"indexed": true,
 																	"name": "Reference"
 																},
-																"id": "66cfa775-3931-d203-2850-d740960dcf05",
 																"type": "Fragment"
 															}
 														],
@@ -3129,7 +3144,6 @@
 													},
 													"name": "Contact-Connect Section"
 												},
-												"id": "5056d182-6fc7-3cac-a5bc-6c69ed6c0f63",
 												"pageElements": [
 													{
 														"definition": {
@@ -3141,7 +3155,6 @@
 															},
 															"name": "Contact Section"
 														},
-														"id": "c9c479ac-8740-8d1d-b064-a99e407ba423",
 														"pageElements": [
 															{
 																"definition": {
@@ -3150,7 +3163,6 @@
 																	},
 																	"name": "Contact-Title"
 																},
-																"id": "8ba742f0-5477-1aa4-d433-2e47f328347b",
 																"pageElements": [
 																	{
 																		"definition": {
@@ -3184,7 +3196,6 @@
 																			"indexed": true,
 																			"name": "Contact Us"
 																		},
-																		"id": "7932a61e-5a4d-5c21-40c2-07296321bf80",
 																		"type": "Fragment"
 																	}
 																],
@@ -3197,7 +3208,6 @@
 																	},
 																	"name": "Contact-Links"
 																},
-																"id": "e2ff9ebc-8159-cf3d-aeec-76a3e3e126f1",
 																"pageElements": [
 																	{
 																		"definition": {
@@ -3217,7 +3227,7 @@
 																							"value": {
 																								"href": {
 																									"value_i18n": {
-																										"en_US": "https://liferay.dev/c/portal/login?redirect=https://liferay.dev/ask/questions/liferay-learn-feedback/new"
+																										"en_US": "http://discuss.liferay.com"
 																									}
 																								}
 																							}
@@ -3233,7 +3243,6 @@
 																			"indexed": true,
 																			"name": "Submit Feedback"
 																		},
-																		"id": "7995fc62-950b-a150-d3ac-74ae7a254122",
 																		"type": "Fragment"
 																	}
 																],
@@ -3252,7 +3261,6 @@
 															},
 															"name": "Connect Section"
 														},
-														"id": "380329f1-1fd5-58db-b634-c26a4ef28042",
 														"pageElements": [
 															{
 																"definition": {
@@ -3261,7 +3269,6 @@
 																	},
 																	"name": "Connect-Title"
 																},
-																"id": "4381333a-f43e-2c60-0047-7b70ea646531",
 																"pageElements": [
 																	{
 																		"definition": {
@@ -3295,7 +3302,6 @@
 																			"indexed": true,
 																			"name": "Connect"
 																		},
-																		"id": "9436ee33-42b8-5fd8-d6e5-f9838dc30622",
 																		"type": "Fragment"
 																	}
 																],
@@ -3310,7 +3316,6 @@
 																	},
 																	"name": "Connect-Links"
 																},
-																"id": "246d9d54-8076-9e68-4d6e-69cf89df3de4",
 																"pageElements": [
 																	{
 																		"definition": {
@@ -3334,7 +3339,6 @@
 																			"indexed": true,
 																			"name": "Github-Logo"
 																		},
-																		"id": "46a4e56c-f843-d753-b130-8d4c56edff7f",
 																		"type": "Fragment"
 																	},
 																	{
@@ -3359,7 +3363,6 @@
 																			"indexed": true,
 																			"name": "Linkedin-Logo"
 																		},
-																		"id": "7f52ff9f-4e24-04e2-88a1-2530d2fcb347",
 																		"type": "Fragment"
 																	},
 																	{
@@ -3384,7 +3387,6 @@
 																			"indexed": true,
 																			"name": "Youtube-Logo"
 																		},
-																		"id": "a0d7ad97-834a-422c-e3bb-5c68a3f39af2",
 																		"type": "Fragment"
 																	},
 																	{
@@ -3409,7 +3411,6 @@
 																			"indexed": true,
 																			"name": "Facebook-Logo"
 																		},
-																		"id": "a233dc1a-af4e-748f-049a-3e51aeb4d54d",
 																		"type": "Fragment"
 																	},
 																	{
@@ -3434,7 +3435,6 @@
 																			"indexed": true,
 																			"name": "Instagram-Logo"
 																		},
-																		"id": "d12dcf86-ead3-2993-1e2b-e0ad55fa5f81",
 																		"type": "Fragment"
 																	},
 																	{
@@ -3459,7 +3459,6 @@
 																			"indexed": true,
 																			"name": "Twitter-Logo"
 																		},
-																		"id": "ffe99ade-415c-d680-adf3-56a25d1d4448",
 																		"type": "Fragment"
 																	}
 																],
@@ -3498,7 +3497,6 @@
 									},
 									"name": "Footer-Contents-Bottom"
 								},
-								"id": "1053d711-53d5-8cd6-638a-afd88f547e98",
 								"pageElements": [
 									{
 										"definition": {
@@ -3521,7 +3519,6 @@
 											],
 											"indexed": true
 										},
-										"id": "ad90a688-6a0a-f250-c312-16cb17313539",
 										"type": "Fragment"
 									},
 									{
@@ -3545,7 +3542,6 @@
 											],
 											"indexed": true
 										},
-										"id": "50e02f88-b72b-52a1-78fd-cf80cd9cc9f4",
 										"type": "Fragment"
 									}
 								],

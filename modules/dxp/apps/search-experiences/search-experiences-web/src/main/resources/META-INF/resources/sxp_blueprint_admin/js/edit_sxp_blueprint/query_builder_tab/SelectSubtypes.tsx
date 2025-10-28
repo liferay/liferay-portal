@@ -223,7 +223,9 @@ export function SearchableSubtypesModal({
 
 	return (
 		<ClayModal observer={observer} size="full-screen">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('select-subtypes')}
 			</ClayModal.Header>
 

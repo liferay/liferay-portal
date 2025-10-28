@@ -4,7 +4,7 @@
  */
 
 interface ItemData {
-	actions?: {
+	actions: {
 		delete: Action;
 		expire: Action;
 		get: Action;

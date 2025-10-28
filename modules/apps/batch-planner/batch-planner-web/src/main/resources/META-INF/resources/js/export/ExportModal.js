@@ -39,7 +39,9 @@ const ExportModal = ({
 
 	return (
 		<ClayModal observer={observer} size="md" status={modalStatus}>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('export-file')}
 			</ClayModal.Header>
 

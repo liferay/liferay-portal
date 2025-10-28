@@ -88,7 +88,11 @@ export default function SingleTransitionModal() {
 		<>
 			{visibleModal === 'singleTransition' && (
 				<ClayModal observer={observer} size="md">
-					<ClayModal.Header>{title}</ClayModal.Header>
+					<ClayModal.Header
+						closeButtonAriaLabel={Liferay.Language.get('close')}
+					>
+						{title}
+					</ClayModal.Header>
 
 					{errorToast && (
 						<ClayAlert

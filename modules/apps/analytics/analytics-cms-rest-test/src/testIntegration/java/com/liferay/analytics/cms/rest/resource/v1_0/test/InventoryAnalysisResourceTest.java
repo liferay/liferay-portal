@@ -23,10 +23,13 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -39,10 +42,11 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
 import java.io.File;
+import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -60,7 +64,7 @@ import org.osgi.framework.FrameworkUtil;
 @FeatureFlags(
 	featureFlags = {
 		@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-21926"),
-		@FeatureFlag("LPD-31149"), @FeatureFlag("LPD-34594"),
+		@FeatureFlag("LPD-32050"), @FeatureFlag("LPD-34594"),
 		@FeatureFlag("LPS-179669")
 	}
 )
@@ -96,6 +100,9 @@ public class InventoryAnalysisResourceTest
 			null, _depotEntry.getDepotEntryId(), "category", null, null, null,
 			null, null, null, null, null);
 
+		Assert.assertEquals(
+			2L, (long)inventoryAnalysis.getInventoryAnalysisItemsCount());
+
 		inventoryAnalysisItems = inventoryAnalysis.getInventoryAnalysisItems();
 
 		Assert.assertEquals(
@@ -118,11 +125,16 @@ public class InventoryAnalysisResourceTest
 			_assetCategory.getCategoryId(), _depotEntry.getDepotEntryId(),
 			"category", null, null, null, null, null, null, null, null);
 
+		Assert.assertEquals(
+			1L, (long)inventoryAnalysis.getInventoryAnalysisItemsCount());
+
 		inventoryAnalysisItems = inventoryAnalysis.getInventoryAnalysisItems();
 
 		Assert.assertEquals(
 			inventoryAnalysisItems.toString(), 1,
 			inventoryAnalysisItems.length);
+
+		inventoryAnalysisItem = inventoryAnalysisItems[0];
 
 		Assert.assertEquals(1L, (long)inventoryAnalysisItem.getCount());
 
@@ -139,25 +151,43 @@ public class InventoryAnalysisResourceTest
 		}
 	}
 
+	private boolean _isCMSSiteInitialized() throws Exception {
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES,
+				TestPropsValues.getCompanyId());
+
+		if (objectFolder != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _setUpCMSContext() throws Exception {
-		Bundle testBundle = FrameworkUtil.getBundle(OverviewResourceTest.class);
+		if (!_isCMSSiteInitialized()) {
+			Bundle testBundle = FrameworkUtil.getBundle(
+				OverviewResourceTest.class);
 
-		BundleContext bundleContext = testBundle.getBundleContext();
+			BundleContext bundleContext = testBundle.getBundleContext();
 
-		for (Bundle bundle : bundleContext.getBundles()) {
-			if (Objects.equals(
-					bundle.getSymbolicName(),
-					"com.liferay.site.initializer.cms")) {
+			for (Bundle bundle : bundleContext.getBundles()) {
+				if (Objects.equals(
+						bundle.getSymbolicName(),
+						"com.liferay.site.initializer.cms")) {
 
-				_deleteFile(bundle, "00.list.type.definition");
-				_deleteFile(bundle, "01.object.folder");
-				_deleteFile(bundle, "02.object.definition");
+					_deleteFile(bundle, "00.list.type.definition");
+					_deleteFile(bundle, "01.object.folder");
+					_deleteFile(bundle, "02.object.definition");
 
-				CompletableFuture<Void> completableFuture =
-					_batchEngineUnitProcessor.processBatchEngineUnits(
-						_batchEngineUnitReader.getBatchEngineUnits(bundle));
+					CompletableFuture<Void> completableFuture =
+						_batchEngineUnitProcessor.processBatchEngineUnits(
+							_batchEngineUnitReader.getBatchEngineUnits(bundle));
 
-				completableFuture.join();
+					completableFuture.join();
+
+					break;
+				}
 			}
 		}
 
@@ -178,10 +208,17 @@ public class InventoryAnalysisResourceTest
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_WEB_CONTENT", testCompany.getCompanyId());
 
+		Map<String, Serializable> objectEntryValues =
+			HashMapBuilder.<String, Serializable>put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
+			).build();
+
 		_objectEntries.add(
 			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry.getGroupId(), objectDefinition,
-				Collections.emptyMap()));
+				_depotEntry.getGroupId(), objectDefinition, objectEntryValues));
 
 		_assetVocabulary = _assetVocabularyLocalService.addVocabulary(
 			TestPropsValues.getUserId(), _depotEntry.getGroupId(),
@@ -192,7 +229,7 @@ public class InventoryAnalysisResourceTest
 			"My Category", _assetVocabulary.getVocabularyId(), _serviceContext);
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			_depotEntry.getGroupId(), objectDefinition, Collections.emptyMap());
+			_depotEntry.getGroupId(), objectDefinition, objectEntryValues);
 
 		_objectEntries.add(objectEntry);
 
@@ -206,8 +243,8 @@ public class InventoryAnalysisResourceTest
 
 		_objectEntries.add(
 			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry.getGroupId(), objectDefinition,
-				Collections.emptyMap(), RandomTestUtil.randomString()));
+				_depotEntry.getGroupId(), objectDefinition, objectEntryValues,
+				RandomTestUtil.randomString()));
 	}
 
 	@DeleteAfterTestRun
@@ -255,6 +292,9 @@ public class InventoryAnalysisResourceTest
 
 	@DeleteAfterTestRun
 	private List<ObjectEntry> _objectEntries = new ArrayList<>();
+
+	@Inject
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	private ServiceContext _serviceContext;
 

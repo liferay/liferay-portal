@@ -52,13 +52,12 @@ const SearchableModal: React.FC<ISearchableModalProps> = ({
 	title = Liferay.Language.get('see-all'),
 	...otherProps
 }) => {
-	const [searchValue, setSearchValue] = useState<any[]>([]);
+	const [searchValue, setSearchValue] = useState('');
 
 	const {
 		delta,
 		onOrderIOMapChange,
 		onPageChange,
-		onQueryChange,
 		orderIOMap,
 		page,
 		query
@@ -143,7 +142,6 @@ const SearchableModal: React.FC<ISearchableModalProps> = ({
 					alwaysShowSearch
 					autoFocus
 					onOrderIOMapChange={onOrderIOMapChange}
-					onSearchSubmit={onQueryChange}
 					onSearchValueChange={setSearchValue}
 					orderIOMap={orderIOMap}
 					searchValue={searchValue}

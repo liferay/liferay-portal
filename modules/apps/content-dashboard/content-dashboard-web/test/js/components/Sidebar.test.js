@@ -8,7 +8,7 @@ import React, {useState} from 'react';
 
 import Sidebar from '../../../src/main/resources/META-INF/resources/js/components/Sidebar';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const ControlledSidebar = ({open, title = ''}) => {
 	const [isOpen, setIsOpen] = useState(open);

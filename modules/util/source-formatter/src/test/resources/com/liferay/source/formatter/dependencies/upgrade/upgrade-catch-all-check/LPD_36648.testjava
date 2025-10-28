@@ -12,7 +12,7 @@ public class LPD_36648 {
 
 	public void method(
 		DDMFormViewFormInstanceRecordsDisplayContext
-			ddmFormViewFormInstanceRecordsDisplayContext){
+			ddmFormViewFormInstanceRecordsDisplayContext) {
 
 		ddmFormViewFormInstanceRecordsDisplayContext.getSearch();
 	}

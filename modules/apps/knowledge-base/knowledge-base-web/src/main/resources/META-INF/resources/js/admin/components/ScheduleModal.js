@@ -83,7 +83,9 @@ export default function ScheduleModal({
 
 	return (
 		<ClayModal observer={observer} size="md">
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{scheduled
 					? Liferay.Language.get('edit-scheduled-publication')
 					: Liferay.Language.get('schedule-publication')}

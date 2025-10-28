@@ -26,7 +26,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
@@ -120,8 +119,7 @@ public class JournalHistoryManagementToolbarDisplayContext
 
 		if (JournalArticlePermission.contains(
 				themeDisplay.getPermissionChecker(), article,
-				ActionKeys.DELETE) &&
-			!Objects.equals(_article.getVersion(), article.getVersion())) {
+				ActionKeys.DELETE)) {
 
 			availableActions.add("deleteArticles");
 		}

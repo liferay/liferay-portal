@@ -6,7 +6,7 @@
 import {State} from '@liferay/frontend-js-state-web';
 import userEvent from '@testing-library/user-event';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {
 	act,
 	fireEvent,

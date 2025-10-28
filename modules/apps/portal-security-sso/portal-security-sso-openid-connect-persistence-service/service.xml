@@ -44,7 +44,39 @@
 			<finder-column name="clientId" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="OpenIdConnectUser" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="openIdConnectUserId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="issuer" type="String" />
+		<column name="subject" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_U" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_I_S" return-type="OpenIdConnectUser" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="issuer" />
+			<finder-column name="subject" />
+		</finder>
+	</entity>
 	<exceptions>
 		<exception>DuplicateOpenIdConnectSession</exception>
+		<exception>DuplicateOpenIdConnectUser</exception>
+		<exception>OpenIdConnectUserIssuer</exception>
+		<exception>OpenIdConnectUserSubject</exception>
 	</exceptions>
 </service-builder>

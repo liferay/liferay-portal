@@ -38,6 +38,8 @@ public interface OpenSearchConfigurationWrapper
 
 	public boolean trackTotalHits();
 
+	public int trackTotalHitsLimit();
+
 	public void unregister(
 		OpenSearchConfigurationObserver openSearchConfigurationObserver);
 

@@ -24,7 +24,7 @@ const ChatFileModal: React.FC<Props> = ({
 	setSelectedTree,
 }) => (
 	<ClayModal disableAutoClose observer={modal.observer}>
-		<ClayModal.Header>
+		<ClayModal.Header closeButtonAriaLabel={Liferay.Language.get('close')}>
 			<ClayModal.Title>
 				Choose the Documents and Media Files
 			</ClayModal.Title>

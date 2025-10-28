@@ -48,7 +48,6 @@ export class FDSSamplePage {
 	readonly paginator: {
 		itemsPerPageSelector: Locator;
 	};
-	readonly showViewOptionsButton: Locator;
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
 	readonly selectAllCheckbox: Locator;
@@ -153,9 +152,6 @@ export class FDSSamplePage {
 			container: selectionToolbarContainer,
 		};
 
-		this.showViewOptionsButton = page.getByLabel('Show View Options', {
-			exact: true,
-		});
 		this.sidePanel = page.locator('.fds-side-panel');
 		this.sidePanelFrame = this.sidePanel.frameLocator('iframe');
 		this.tablist = page.getByRole('tablist');
@@ -182,7 +178,7 @@ export class FDSSamplePage {
 
 		this.toggleInfoPanelButton = page.getByLabel('Toggle Info Panel');
 
-		this.visualizationModeSelector = page.getByLabel('Show View Options');
+		this.visualizationModeSelector = page.getByLabel(/View Selected/);
 	}
 
 	async changeItemsPerPage({delta}: {delta: string}) {

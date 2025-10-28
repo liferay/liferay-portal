@@ -211,51 +211,6 @@ test(
 );
 
 test(
-	'Delete option should not be available when there is only one version available',
-	{tag: '@LPD-65083'},
-	async ({apiHelpers, journalPage, page, site}) => {
-		const basicWebContentStructureId =
-			await getBasicWebContentStructureId(apiHelpers);
-
-		const article = await apiHelpers.jsonWebServicesJournal.addWebContent({
-			ddmStructureId: basicWebContentStructureId,
-			groupId: site.id,
-			titleMap: {en_US: 'Basic Web content'},
-		});
-
-		await journalPage.goto(site.friendlyUrlPath);
-
-		await page.getByRole('button', {name: 'Actions'}).click();
-
-		await page.getByRole('menuitem', {name: 'View History'}).click();
-
-		await page.getByRole('button', {name: 'Actions'}).first().click();
-
-		await expect(
-			page.getByRole('menuitem', {name: 'Delete'})
-		).not.toBeVisible();
-
-		await apiHelpers.jsonWebServicesJournal.editWebContent(
-			{title: 'Updated Basic Web content'},
-			site.id,
-			article
-		);
-
-		await journalPage.goto(site.friendlyUrlPath);
-
-		await page.getByRole('button', {name: 'Actions'}).click();
-
-		await page.getByRole('menuitem', {name: 'View History'}).click();
-
-		await page.getByRole('button', {name: 'Actions'}).first().click();
-
-		await expect(
-			page.getByRole('menuitem', {name: 'Delete'})
-		).toBeVisible();
-	}
-);
-
-test(
 	'Current item checkbox is disabled in Related Assets',
 	{
 		tag: '@LPD-54293',

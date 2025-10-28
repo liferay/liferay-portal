@@ -29,9 +29,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -39,6 +41,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -320,6 +323,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-67157")
 	public void testDeleteLayoutPageTemplateEntryByExternalReferenceCode()
 		throws Exception {
 
@@ -340,6 +344,17 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		Assert.assertNull(
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()));
+		Assert.assertNull(
+			_systemEventLocalService.fetchSystemEvent(
+				_group.getGroupId(), _portal.getClassNameId(Layout.class),
+				layoutPageTemplateEntry.getPlid(),
+				SystemEventConstants.TYPE_DELETE));
+		Assert.assertNotNull(
+			_systemEventLocalService.fetchSystemEvent(
+				_group.getGroupId(),
+				_portal.getClassNameId(LayoutPageTemplateEntry.class),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+				SystemEventConstants.TYPE_DELETE));
 	}
 
 	@Test
@@ -754,9 +769,15 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
 
+	@Inject
+	private Portal _portal;
+
 	private ServiceContext _serviceContext;
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 }

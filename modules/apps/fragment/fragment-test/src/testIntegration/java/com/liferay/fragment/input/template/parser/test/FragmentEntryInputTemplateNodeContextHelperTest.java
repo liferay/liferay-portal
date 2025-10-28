@@ -632,8 +632,8 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		throws Exception {
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-			RandomTestUtil.randomLong(),
+			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+			RandomTestUtil.randomString(), null,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			_layout.getPlid(), StringPool.BLANK, StringPool.BLANK,
@@ -748,8 +748,8 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 
 		objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, true,
-				true, true, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				true, true, true, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"CustomObjectDefinition", null, "control_panel.sites",
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

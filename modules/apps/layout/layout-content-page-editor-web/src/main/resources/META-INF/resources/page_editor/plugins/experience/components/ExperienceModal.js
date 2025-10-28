@@ -105,7 +105,11 @@ const ExperienceModal = ({
 			observer={observer}
 			size="md"
 		>
-			<ClayModal.Header>{modalTitle}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{modalTitle}
+			</ClayModal.Header>
 
 			<ClayModal.Body>
 				<ClayForm

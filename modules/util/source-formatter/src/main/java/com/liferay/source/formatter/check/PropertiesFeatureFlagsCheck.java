@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +207,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 	private String _generateFeatureFlagUIProperties(
 		Map<String, String> properties) {
 
-		StringBundler sb = new StringBundler(properties.size() * 6);
+		StringBundler sb1 = new StringBundler(properties.size() * 6);
 
 		for (Map.Entry<String, String> entry : properties.entrySet()) {
 			String key = entry.getKey();
@@ -214,15 +215,31 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 			String environmentVariable = ToolsUtil.encodeEnvironmentProperty(
 				key);
 
-			sb.append("\n\n    #\n    # Env: ");
-			sb.append(environmentVariable);
-			sb.append("\n    #\n    ");
-			sb.append(key);
-			sb.append(StringPool.EQUAL);
-			sb.append(entry.getValue());
+			sb1.append("\n\n    #\n    # Env: ");
+			sb1.append(environmentVariable);
+			sb1.append("\n    #\n    ");
+			sb1.append(key);
+			sb1.append(StringPool.EQUAL);
+
+			String[] jiraIssueIds = StringUtil.split(entry.getValue());
+
+			Arrays.sort(jiraIssueIds, new NaturalOrderStringComparator());
+
+			StringBundler sb2 = new StringBundler(jiraIssueIds.length * 2);
+
+			for (String jiraIssueId : jiraIssueIds) {
+				sb2.append(jiraIssueId);
+				sb2.append(StringPool.COMMA);
+			}
+
+			if (sb2.index() > 0) {
+				sb2.setIndex(sb2.index() - 1);
+			}
+
+			sb1.append(sb2.toString());
 		}
 
-		return sb.toString();
+		return sb1.toString();
 	}
 
 	private String _generateFeatureFlagUIProperties(

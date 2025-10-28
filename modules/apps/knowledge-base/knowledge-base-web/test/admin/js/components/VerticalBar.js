@@ -7,7 +7,7 @@ import {cleanup, fireEvent, render} from '@testing-library/react';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import VerticalNavigationBar from '../../../../src/main/resources/META-INF/resources/js/admin/components/VerticalBar';
 

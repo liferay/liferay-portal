@@ -136,7 +136,9 @@ export default function CategoriesAndTagsModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('add-categories-and-tags')}
 			</ClayModal.Header>
 

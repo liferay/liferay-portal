@@ -212,7 +212,8 @@ public class ContentLayoutTypeControllerTest {
 
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), _layout.fetchDraftLayout(),
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0,
@@ -261,7 +262,8 @@ public class ContentLayoutTypeControllerTest {
 
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), masterLayout.fetchDraftLayout(),
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0,
@@ -295,7 +297,8 @@ public class ContentLayoutTypeControllerTest {
 
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), _layout.fetchDraftLayout(),
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0,

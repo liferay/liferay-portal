@@ -33,6 +33,7 @@ public class YMLEmptyLinesCheck extends BaseFileCheck {
 			boolean insideBlockStyle = false;
 			String leadingSpaces = null;
 			String line = null;
+			String previousLine = null;
 
 			while ((line = unsyncBufferedReader.readLine()) != null) {
 				if (line.startsWith("{{- define ") && (sb.index() > 0)) {
@@ -56,7 +57,11 @@ public class YMLEmptyLinesCheck extends BaseFileCheck {
 					continue;
 				}
 
-				if (Validator.isBlank(line)) {
+				if (Validator.isBlank(line) && (previousLine != null) &&
+					!previousLine.startsWith("#")) {
+
+					previousLine = line;
+
 					continue;
 				}
 
@@ -64,6 +69,8 @@ public class YMLEmptyLinesCheck extends BaseFileCheck {
 				sb.append("\n");
 
 				if (!YMLSourceUtil.isBlockStyle(line)) {
+					previousLine = line;
+
 					continue;
 				}
 

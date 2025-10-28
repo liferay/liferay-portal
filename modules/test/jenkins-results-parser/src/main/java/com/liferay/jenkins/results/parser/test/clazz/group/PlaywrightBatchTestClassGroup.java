@@ -865,12 +865,27 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 	}
 
 	private void _sendNotification(String message) {
+		String topLevelBuildURL = System.getenv("TOP_LEVEL_BUILD_URL");
+
+		if (!topLevelBuildURL.contains("(release)") ||
+			!topLevelBuildURL.contains(
+				"test-portal-acceptance-upstream-dxp(master)") ||
+			!topLevelBuildURL.contains(
+				"test-portal-testsuite-upstream(master)")) {
+
+			return;
+		}
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(message);
-		sb.append(" <@U04GTH03Q>, <@U01EV0V1Y6N>\n");
 
-		sb.append(System.getenv("TOP_LEVEL_BUILD_URL"));
+		if (topLevelBuildURL.contains("(release)")) {
+			sb.append(" <@U04HF3T8M>");
+		}
+
+		sb.append(" <@U01EV0V1Y6N>\n");
+		sb.append(topLevelBuildURL);
 
 		NotificationUtil.sendSlackNotification(
 			sb.toString(), "#ci-notifications", ":playwright:",

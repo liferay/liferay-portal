@@ -8,7 +8,7 @@ import React from 'react';
 
 import HeaderTitle from '../../../../src/main/resources/META-INF/resources/js/shared/components/header/HeaderTitle.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 describe('The HeaderTitle component should', () => {
 	test('Render with title "Metrics" and rerender with "Single Approver"', () => {

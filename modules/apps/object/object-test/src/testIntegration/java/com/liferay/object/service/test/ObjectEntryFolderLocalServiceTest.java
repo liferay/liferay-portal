@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -111,7 +112,9 @@ public class ObjectEntryFolderLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testAddObjectEntryFolder() throws Exception {
 		String externalReferenceCode = StringUtil.randomString();
@@ -409,7 +412,9 @@ public class ObjectEntryFolderLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testMoveObjectEntryFolderToTrash() throws Exception {
 		Group group = GroupTestUtil.addGroup();
@@ -486,7 +491,9 @@ public class ObjectEntryFolderLocalServiceTest {
 				objectEntryFolder2.getObjectEntryFolderId()));
 	}
 
-	@FeatureFlag("LPD-17564")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-32050")}
+	)
 	@Test
 	public void testRestoreObjectEntryFolderFromTrash() throws Exception {
 		Group group = GroupTestUtil.addGroup();
@@ -684,8 +691,8 @@ public class ObjectEntryFolderLocalServiceTest {
 	private ObjectDefinition _addObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, true, false, false,
-				true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, false, true, false,
+				false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(StringUtil.randomString()),
 				"A" + StringUtil.randomString(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

@@ -134,25 +134,6 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}
 
 	/**
-	 * It allows creating a vocabulary.
-	 *
-	 * @param name the name of the vocabulary
-	 * @param assetLibraries the asset libraries where the vocabulary will be available
-	 */
-
-	async postTaxonomyVocabulary({
-		assetLibraries,
-		name,
-		name_i18n,
-		visibilityType,
-	}: postTaxonomyVocabularyProps): Promise<{id: number}> {
-		return this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-vocabularies`,
-			{data: {assetLibraries, name, name_i18n, visibilityType}}
-		);
-	}
-
-	/**
 	 * It allows creating a category inside a vocabulary.
 	 *
 	 * @param name the name of the category

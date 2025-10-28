@@ -23,10 +23,11 @@ public class CommerceOrderUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"select commerceOrderId from CommerceOrder where ",
-					"orderStatus = ",
-					CommerceOrderConstants.ORDER_STATUS_OPEN))) {
+				"select commerceOrderId from CommerceOrder where orderStatus " +
+					"= ?")) {
+
+			preparedStatement1.setInt(
+				1, CommerceOrderConstants.ORDER_STATUS_OPEN);
 
 			try (ResultSet resultSet1 = preparedStatement1.executeQuery()) {
 				while (resultSet1.next()) {

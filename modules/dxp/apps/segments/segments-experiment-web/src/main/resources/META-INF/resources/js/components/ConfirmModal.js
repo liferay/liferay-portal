@@ -17,7 +17,11 @@ function ConfirmModal({
 }) {
 	return (
 		<ClayModal observer={modalObserver} status="warning">
-			<ClayModal.Header>{title}</ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
+				{title}
+			</ClayModal.Header>
 
 			<ClayModal.Body>{children}</ClayModal.Body>
 

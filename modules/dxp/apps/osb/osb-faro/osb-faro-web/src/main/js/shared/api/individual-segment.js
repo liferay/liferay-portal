@@ -21,10 +21,13 @@ export function addIndividuals({groupId, individualIds, selectedSegmentId}) {
 	});
 }
 
-function delete$({groupId, id}) {
+function delete$({groupId, ids}) {
 	return sendRequest({
+		data: {
+			ids
+		},
 		method: 'DELETE',
-		path: `contacts/${groupId}/individual_segment/${id}`
+		path: `contacts/${groupId}/individual_segment`
 	});
 }
 

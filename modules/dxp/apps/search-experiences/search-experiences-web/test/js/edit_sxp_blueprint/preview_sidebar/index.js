@@ -10,7 +10,7 @@ import PreviewSidebar from '../../../../src/main/resources/META-INF/resources/sx
 import transformToSearchPreviewHits from '../../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/utils/sxp_element/transform_to_search_preview_hits';
 import {mockSearchResults} from '../../mocks/data';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/sxp_blueprint_admin/js/shared/CodeMirrorEditor',

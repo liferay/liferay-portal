@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.liferay.headless.object.dto.v1_0.Scope;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -95,6 +96,46 @@ public class SystemProperties implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
+	public Scope getScope() {
+		if (_scopeSupplier != null) {
+			scope = _scopeSupplier.get();
+
+			_scopeSupplier = null;
+		}
+
+		return scope;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
+
+		_scopeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScope(UnsafeSupplier<Scope, Exception> scopeUnsafeSupplier) {
+		_scopeSupplier = () -> {
+			try {
+				return scopeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Scope scope;
+
+	@JsonIgnore
+	private Supplier<Scope> _scopeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
 	public Version getVersion() {
 		if (_versionSupplier != null) {
 			version = _versionSupplier.get();
@@ -173,6 +214,18 @@ public class SystemProperties implements Serializable {
 			sb.append("\"objectDefinitionBrief\": ");
 
 			sb.append(String.valueOf(objectDefinitionBrief));
+		}
+
+		Scope scope = getScope();
+
+		if (scope != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scope\": ");
+
+			sb.append(scope);
 		}
 
 		Version version = getVersion();

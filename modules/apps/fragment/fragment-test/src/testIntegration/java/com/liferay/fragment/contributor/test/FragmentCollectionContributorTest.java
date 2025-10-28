@@ -96,8 +96,9 @@ public class FragmentCollectionContributorTest {
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
-				segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, null, segmentsExperienceId, layout.getPlid(),
+				StringPool.BLANK,
 				"<div data-lfr-editable-id=\"editable-1\" " +
 					"data-lfr-editable-type=\"rich-text\">EDITABLE 1</div>",
 				StringPool.BLANK, StringPool.BLANK, null, StringPool.BLANK, 0,

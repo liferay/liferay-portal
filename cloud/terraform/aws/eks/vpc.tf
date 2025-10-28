@@ -18,5 +18,5 @@ module "vpc" {
 		DeploymentName=var.deployment_name
 		Name="${var.deployment_name}-vpc"
 	}
-	version = "5.8.1"
+	version="5.8.1"
 }

@@ -45,9 +45,9 @@ test(
 
 		await contentsPage.goto();
 
-		// Create new Knowledge Base content
+		// Create new Basic Content
 
-		await contentsPage.createContent('Knowledge Base');
+		await contentsPage.createContent('Basic Content');
 
 		// Fill data and save
 
@@ -267,7 +267,7 @@ test(
 
 		await contentsPage.goto();
 
-		// Create new Folder and a Knowledge Base content
+		// Create new Folder and a Basic Content
 
 		const folderName = getRandomString();
 
@@ -275,7 +275,7 @@ test(
 
 		await folderPage.clickOption(folderName, 'View Folder');
 
-		await contentsPage.createContent('Knowledge Base');
+		await contentsPage.createContent('Basic Content');
 
 		// Fill data and save
 
@@ -323,7 +323,10 @@ test.describe('Comments Panel', () => {
 
 		await page.keyboard.type(content);
 
-		const saveButton = rootComment.getByRole('button', {name: 'Save'});
+		const saveButton = rootComment.getByRole('button', {
+			exact: true,
+			name: 'Save',
+		});
 
 		await expect(saveButton).toBeEnabled();
 
@@ -504,7 +507,10 @@ test.describe('Comments Panel', () => {
 
 		await page.keyboard.type('New Comment');
 
-		const saveButton = page.getByRole('button', {name: 'Save'});
+		const saveButton = page.getByRole('button', {
+			exact: true,
+			name: 'Save',
+		});
 
 		await saveButton.click();
 
@@ -591,7 +597,7 @@ test.describe('Schedule Panel', () => {
 test.describe('Categorization Panel', () => {
 	test(
 		'Add categories and tags to the content',
-		{tag: '@LPD-62047'},
+		{tag: ['@LPD-62047', '@LPD-69196']},
 		async ({
 			apiHelpers,
 			contentsPage,
@@ -599,56 +605,73 @@ test.describe('Categorization Panel', () => {
 			tagsPage,
 			vocabulariesPage,
 		}) => {
+			const selectCategory = async (categoryName: string) => {
+				const categoriesAutocomplete =
+					page.getByPlaceholder('Add category');
+
+				await categoriesAutocomplete.fill(categoryName);
+
+				const option = page.getByRole('option', {name: categoryName});
+
+				await option.waitFor();
+				await option.click();
+			};
+
+			const selectTag = async (tagName: string) => {
+				const tagsAutocomplete = page.getByPlaceholder('Add tag');
+
+				await tagsAutocomplete.fill(tagName);
+
+				const newTagOption = page.getByRole('option', {
+					name: 'Create New Tag:',
+				});
+
+				await newTagOption.waitFor();
+				await newTagOption.click();
+			};
 
 			// Create category
 
 			const categoryName = getRandomString();
 			const vocabularyName = getRandomString();
 
+			const site = await apiHelpers.headlessSite.getSiteByERC('L_CMS');
+
 			await createCategories({
 				apiHelpers,
 				assetLibraries: [{id: -1, name: 'All Spaces'}],
+				assetTypes: [{required: false, type: 'AllAssetTypes'}],
 				categoryNames: [{name: categoryName}],
+				siteId: site.id,
 				vocabularyName,
 			});
 
-			// Create a content
+			// Create a content and publish it
 
 			await contentsPage.goto();
 
 			await contentsPage.createContent('Basic Content');
 
-			await contentsPage.openSidePanel('Categorization');
-
 			const title = getRandomString();
 
 			await page.getByPlaceholder('New Basic Web Content').fill(title);
 
-			// Add a new tag to the content
+			await contentsPage.publishButton.click();
 
-			const tagsAutocomplete = page.getByPlaceholder('Add tag');
+			// Edit the content to set a categorization
 
-			const tagName = getRandomString();
+			const content = page.locator('.table-list-title a', {
+				hasText: title,
+			});
 
-			await tagsAutocomplete.fill(tagName);
+			await content.waitFor();
+			await content.click();
 
-			await page.getByRole('option', {name: 'Create New Tag:'}).click();
+			await contentsPage.openSidePanel('Categorization');
 
-			const tagLabel = page.locator('.label-item', {hasText: tagName});
+			// Add a category to the content
 
-			await expect(tagLabel).toBeAttached();
-
-			// Add a new category to the content
-
-			const categoriesAutocomplete =
-				page.getByPlaceholder('Add category');
-
-			await categoriesAutocomplete.fill(categoryName);
-
-			const option = page.getByRole('option', {name: categoryName});
-
-			option.waitFor();
-			option.click();
+			await selectCategory(categoryName);
 
 			const categoryLabel = page.locator('.label-item', {
 				hasText: categoryName,
@@ -656,17 +679,43 @@ test.describe('Categorization Panel', () => {
 
 			await expect(categoryLabel).toBeAttached();
 
-			// Publish the content
+			// Add a tag to the content
+
+			let tagName = getRandomString();
+
+			await selectTag(tagName);
+
+			let tagLabel = page.locator('.label-item', {hasText: tagName});
+
+			await expect(tagLabel).toBeAttached();
+
+			// Cancel the content and edit it again to check that nothing has been saved
+
+			await page.getByLabel('Cancel', {exact: true}).click();
+
+			await content.waitFor();
+			await content.click();
+
+			await contentsPage.openSidePanel('Categorization');
+
+			await expect(categoryLabel).not.toBeAttached();
+			await expect(tagLabel).not.toBeAttached();
+
+			// Select again the category and the tag and publish it
+
+			await selectCategory(categoryName);
+
+			tagName = getRandomString();
+			tagLabel = page.locator('.label-item', {hasText: tagName});
+
+			await selectTag(tagName);
+
+			await expect(categoryLabel).toBeAttached();
+			await expect(tagLabel).toBeAttached();
 
 			await contentsPage.publishButton.click();
 
-			const content = page.locator('.table-list-title a', {
-				hasText: title,
-			});
-
-			await content.waitFor();
-
-			// Edit content and check that the tag and category are still there
+			// Edit the content and check that the categorization is still there
 
 			await content.click();
 
@@ -709,18 +758,177 @@ test(
 
 		// Check that the content is saved as draft
 
-		expect(
+		await expect(
 			page
 				.locator('tr', {hasText: title})
 				.or(page.locator('.card-row', {hasText: title}))
 				.locator('.cell-embedded-status')
-		).toHaveText('Draft');
+		).toHaveText('draft');
 
 		// Delete content
 
 		await contentsPage.deleteContent(title);
 	}
 );
+
+test.describe('Schedule Publication', () => {
+	test(
+		'Allow scheduling a publication',
+		{tag: '@LPD-68099'},
+		async ({contentsPage, page}) => {
+
+			// Create a content
+
+			await contentsPage.goto();
+
+			await contentsPage.createContent('Basic Content');
+
+			const title = getRandomString();
+
+			await page.getByPlaceholder('New Basic Web Content').fill(title);
+
+			// Try to schedule the publication
+
+			await contentsPage.openSchedulePublication();
+
+			await expect(
+				page.getByRole('heading', {name: 'Schedule Publication'})
+			).toBeAttached();
+
+			// Validate the empty display date
+
+			const displayDateHiddenInput = page.locator(
+				'[name="ObjectEntry_displayDate"]'
+			);
+
+			await expect(displayDateHiddenInput).toHaveValue('');
+
+			await page.getByRole('button', {name: 'Schedule'}).click();
+
+			await expect(
+				page.getByText('This field is required')
+			).toBeAttached();
+
+			// Fill the display date field
+
+			const displayDateInput = page.getByRole('textbox', {
+				name: 'Date and Time',
+			});
+
+			const nextYear = new Date().getFullYear() + 1;
+
+			await displayDateInput.fill(`10/31/${nextYear} 01:00 PM`);
+
+			await page.keyboard.press('Tab');
+
+			await expect(displayDateHiddenInput).toHaveValue(
+				`${nextYear}-10-31T13:00`
+			);
+
+			await expect(
+				page.getByText('This field is required')
+			).not.toBeAttached();
+
+			// Cancel the schedule publication
+
+			await page.getByRole('button', {name: 'Cancel'}).click();
+
+			await expect(displayDateHiddenInput).toHaveValue('');
+
+			// Schedule the publication
+
+			await contentsPage.openSchedulePublication();
+
+			await displayDateInput.fill(`10/31/${nextYear} 12:30 PM`);
+
+			await page.getByRole('button', {name: 'Schedule'}).click();
+
+			// Check that the content is scheduled
+
+			expect(
+				page
+					.locator('tr', {hasText: title})
+					.or(page.locator('.card-row', {hasText: title}))
+					.locator('.cell-embedded-status')
+			).toHaveText('scheduled');
+
+			// Delete content
+
+			await contentsPage.deleteContent(title);
+		}
+	);
+
+	test(
+		'Do not allow scheduling a publication if there are errors in the fields',
+		{tag: '@LPD-68099'},
+		async ({contentsPage, page}) => {
+
+			// Create a content
+
+			await contentsPage.goto();
+
+			await contentsPage.createContent('Basic Content');
+
+			await contentsPage.openSidePanel('Schedule');
+
+			const title = getRandomString();
+
+			await page.getByPlaceholder('New Basic Web Content').fill(title);
+
+			// Fill the expiration date input with an error
+
+			const expireCheckbox = page.getByLabel('Never Expire').first();
+
+			await expireCheckbox.uncheck();
+
+			const expirationDateField = page.getByRole('textbox', {
+				name: 'Expiration Date',
+			});
+
+			await expirationDateField.fill('05/12/2025');
+
+			// Try to schedule the publication
+
+			await contentsPage.openSchedulePublication();
+
+			const displayDateInput = page.getByRole('textbox', {
+				name: 'Date and Time',
+			});
+
+			const nextYear = new Date().getFullYear() + 1;
+
+			await displayDateInput.fill(`10/31/${nextYear} 12:30 PM`);
+
+			await page.getByRole('button', {name: 'Schedule'}).click();
+
+			// Check that it remains on the page and the error is shown
+
+			await expect(
+				page.getByRole('heading', {name: 'Edit Basic Web Content'})
+			).toBeAttached();
+
+			await expect(
+				page.getByText('The field value is invalid.')
+			).toBeVisible();
+
+			// Schedule the publication
+
+			await expireCheckbox.check();
+
+			await contentsPage.openSchedulePublication();
+
+			await page.getByRole('button', {name: 'Schedule'}).click();
+
+			// Delete content
+
+			await expect(
+				page.locator('.table-list-title a', {hasText: title})
+			).toBeAttached();
+
+			await contentsPage.deleteContent(title);
+		}
+	);
+});
 
 const testWithRepeatableFF = mergeTests(
 	test,

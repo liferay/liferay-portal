@@ -19,6 +19,8 @@ const useAccountsTickets = (
 
 	const fetchTickets = useCallback(async () => {
 		if (skip || !externalReferenceCode) {
+			setLoading(false);
+
 			return;
 		}
 
@@ -56,6 +58,8 @@ const useAccountsTickets = (
 	}, [businessEvent, externalReferenceCode, featureFlags, skip]);
 
 	useEffect(() => {
+		setLoading(true);
+
 		fetchTickets();
 	}, [fetchTickets]);
 

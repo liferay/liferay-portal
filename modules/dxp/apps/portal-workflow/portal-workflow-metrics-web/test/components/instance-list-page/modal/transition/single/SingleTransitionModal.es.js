@@ -13,7 +13,7 @@ import ToasterProvider from '../../../../../../src/main/resources/META-INF/resou
 import {MockRouter} from '../../../../../mock/MockRouter.es';
 import FetchMock, {fetchMockResponse} from '../../../../../mock/fetch.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const ContainerMock = ({children}) => {
 	const selectedInstance = {

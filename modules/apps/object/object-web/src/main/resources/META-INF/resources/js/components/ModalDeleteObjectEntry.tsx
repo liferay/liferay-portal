@@ -95,7 +95,9 @@ export default function ModalDeleteObjectEntry({
 					: 'danger'
 			}
 		>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{modalDeleteObjectEntryState.deletionErrorMessage
 					? Liferay.Language.get('deletion-not-possible')
 					: Liferay.Language.get('delete-entry')}

@@ -7,6 +7,7 @@ package com.liferay.portal.search.internal.background.task;
 
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 import com.liferay.portal.kernel.log.Log;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.search.ReindexCacheThreadLocal;
 import com.liferay.portal.kernel.search.SearchEngine;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
 import com.liferay.portal.kernel.search.background.task.ReindexBackgroundTaskConstants;
@@ -94,7 +96,9 @@ public class ReindexSingleIndexerBackgroundTaskExecutor
 						executionMode));
 			}
 
-			try {
+			try (SafeCloseable safeCloseable =
+					ReindexCacheThreadLocal.openReindexMode()) {
+
 				searchEngine.initialize(companyId);
 
 				Date date = null;

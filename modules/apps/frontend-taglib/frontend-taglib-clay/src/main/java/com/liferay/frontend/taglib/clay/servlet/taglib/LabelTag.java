@@ -32,6 +32,10 @@ public class LabelTag extends BaseContainerTag {
 		return super.doStartTag();
 	}
 
+	public String getCloseButtonAriaLabel() {
+		return _closeButtonAriaLabel;
+	}
+
 	public boolean getDismissible() {
 		return _dismissible;
 	}
@@ -60,6 +64,10 @@ public class LabelTag extends BaseContainerTag {
 		return _translated;
 	}
 
+	public void setCloseButtonAriaLabel(String closeButtonAriaLabel) {
+		_closeButtonAriaLabel = closeButtonAriaLabel;
+	}
+
 	public void setDismissible(boolean dismissible) {
 		_dismissible = dismissible;
 	}
@@ -84,6 +92,7 @@ public class LabelTag extends BaseContainerTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_closeButtonAriaLabel = null;
 		_dismissible = false;
 		_displayType = "secondary";
 		_label = null;
@@ -131,7 +140,23 @@ public class LabelTag extends BaseContainerTag {
 			if (_dismissible) {
 				jspWriter.write("<span class=\"label-item label-item-after\">");
 
-				jspWriter.write("<button class=\"close\" type=\"button\">");
+				jspWriter.write("<button aria-label=\"");
+
+				if (_closeButtonAriaLabel != null) {
+					jspWriter.write(_closeButtonAriaLabel);
+				}
+				else {
+					jspWriter.write(
+						LanguageUtil.get(
+							TagResourceBundleUtil.getResourceBundle(
+								pageContext),
+							"close"));
+				}
+
+				jspWriter.write("\" class=\"close\" onclick=\"");
+				jspWriter.write(
+					"event.target.closest('.label-dismissible').remove()\" ");
+				jspWriter.write("type=\"button\">");
 
 				IconTag iconTag = new IconTag();
 
@@ -151,6 +176,7 @@ public class LabelTag extends BaseContainerTag {
 
 	private static final String _ATTRIBUTE_NAMESPACE = "clay:label:";
 
+	private String _closeButtonAriaLabel;
 	private boolean _dismissible;
 	private String _displayType = "secondary";
 	private String _label;

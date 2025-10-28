@@ -389,27 +389,25 @@ message.
 				<if>
 					<equals arg1="${marker.files.lfrbuild.ci.enabled}" arg2="true" />
 					<then>
-						<sequential>
-							<for param="lfrbuild.file">
-								<fileset
-									dir="${project.dir}/modules"
-									includes="**/.lfrbuild-ci"
+						<dirset
+							dir="${project.dir}/modules"
+							id="lfrbuild-ci.dirs"
+						>
+							<present targetdir="${project.dir}/modules">
+								<globmapper
+									from="*"
+									to="*/.lfrbuild-ci"
 								/>
-								<sequential>
-									<local name="lfrbuild.dir" />
+							</present>
+						</dirset>
 
-									<antelope:stringutil property="lfrbuild.dir" string="@{lfrbuild.file}">
-										<antelope:replace regex="\\" replacement="/" />
-									</antelope:stringutil>
+						<pathconvert pathsep=" " property="ci.build.module.deploy.tasks" refid="lfrbuild-ci.dirs">
+							<regexpmapper from=".*modules/([^/]+)/([^/]+)$" to=":\1:\2:deploy" />
+						</pathconvert>
 
-									<antelope:stringutil property="lfrbuild.dir" string="${lfrbuild.dir}">
-										<antelope:replace regex="(.+)\/\.lfrbuild-ci" replacement="$1" />
-									</antelope:stringutil>
-
-									<gradle-execute dir="${lfrbuild.dir}" task="deploy" />
-								</sequential>
-							</for>
-						</sequential>
+						<gradle-execute dir="${project.dir}/modules" task="${ci.build.module.deploy.tasks}">
+							<arg value="--parallel" />
+						</gradle-execute>
 					</then>
 				</if>
 			</then>

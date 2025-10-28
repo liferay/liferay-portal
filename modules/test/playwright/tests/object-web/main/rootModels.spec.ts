@@ -942,23 +942,18 @@ test.describe('Manage root models elements through Objects Admin', () => {
 
 				await objectLayoutsPage.createObjectLayout(objectLayoutName);
 
-				await objectLayoutsPage.createObjectLayoutContent({
-					objectLayoutBlockName: getRandomString(),
-					objectLayoutName,
-					objectLayoutTabName: getRandomString(),
-				});
-
-				await objectLayoutsPage.fieldSelect.waitFor({state: 'visible'});
-
 				const customObjectField =
 					parentObjectDefinition.objectFields.find(
 						(objectField: ObjectField) =>
 							objectField.system === false
 					);
 
-				await objectLayoutsPage.addObjectLayoutObjectField(
-					customObjectField.label['en_US']
-				);
+				await objectLayoutsPage.createObjectLayoutContent({
+					objectFieldNames: [customObjectField.label['en_US']],
+					objectLayoutName,
+					objectLayoutRegularBlockName: getRandomString(),
+					objectLayoutTabName: getRandomString(),
+				});
 
 				const objectLayoutRelationshipTabName = getRandomString();
 
@@ -998,13 +993,19 @@ test.describe('Manage root models elements through Objects Admin', () => {
 
 				await objectLayoutsPage.createObjectLayout(objectLayoutName);
 
-				await objectLayoutsPage.createObjectLayoutContent({
-					objectLayoutBlockName: getRandomString(),
-					objectLayoutName,
-					objectLayoutTabName: getRandomString(),
+				await objectLayoutsPage.openObjectLayoutConfiguration(
+					objectLayoutName
+				);
+
+				await objectLayoutsPage.createObjectLayoutTab(
+					getRandomString()
+				);
+
+				await objectLayoutsPage.createObjectLayoutBlock({
+					objectLayoutRegularBlockName: getRandomString(),
 				});
 
-				await objectLayoutsPage.fieldSelect.waitFor({state: 'visible'});
+				await objectLayoutsPage.openObjectLayoutObjectField();
 
 				await expect(
 					objectLayoutsPage.iframeLocator.getByRole('option', {
@@ -1012,12 +1013,16 @@ test.describe('Manage root models elements through Objects Admin', () => {
 					})
 				).toBeHidden();
 
-				await objectLayoutsPage.iframeLocator
-					.getByRole('option')
-					.filter({hasText: 'objectRelationship'})
-					.click();
+				await objectLayoutsPage.goto(
+					childObjectDefinition.label['en_US']
+				);
 
-				await objectLayoutsPage.saveAddFieldButton.click();
+				await objectLayoutsPage.createObjectLayoutContent({
+					objectFieldNames: ['objectRelationship'],
+					objectLayoutName,
+					objectLayoutRegularBlockName: getRandomString(),
+					objectLayoutTabName: getRandomString(),
+				});
 
 				await objectLayoutsPage.setObjectLayoutAsDefault();
 

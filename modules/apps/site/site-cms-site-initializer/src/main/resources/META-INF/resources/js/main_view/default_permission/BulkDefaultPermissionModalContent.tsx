@@ -14,6 +14,8 @@ import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import CMSDefaultPermissionService from '../../common/services/CMSDefaultPermissionService';
+import SpaceService from '../../common/services/SpaceService';
+import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
 import {triggerAssetBulkAction} from '../props_transformer/actions/triggerAssetBulkAction';
 import DefaultPermissionFormContainer from './DefaultPermissionFormContainer';
 import {
@@ -40,18 +42,18 @@ export function DEFAULT_PERMISSIONS(actions: ActionsMap) {
 export const DEPOT_CLASS_NAME = 'com.liferay.depot.model.DepotEntry';
 export const OBJECT_DEFINITION_CLASS_NAME =
 	'com.liferay.object.model.ObjectDefinition';
-export const OBJECT_ENTRY_FOLDER_CLASS_NAME =
-	'com.liferay.object.model.ObjectEntryFolder';
 
 export function defaultPermissionsBulkAction({
 	apiURL,
 	className,
 	defaultPermissionAdditionalProps,
+	section,
 	selectedData,
 }: {
 	apiURL?: string;
 	className: string;
 	defaultPermissionAdditionalProps: any;
+	section?: string;
 	selectedData: any;
 }) {
 	if (
@@ -90,6 +92,7 @@ export function defaultPermissionsBulkAction({
 				apiURL,
 				className,
 				closeModal,
+				section,
 				selectedData,
 			}),
 		size: 'full-screen',
@@ -102,8 +105,12 @@ export default function BulkDefaultPermissionModalContent({
 	className,
 	closeModal,
 	roles,
+	section,
 	selectedData,
-}: BulkDefaultPermissionModalContentProps & {apiURL?: string}) {
+}: BulkDefaultPermissionModalContentProps & {
+	apiURL?: string;
+	section?: string;
+}) {
 	const [currentValues, setCurrentValues] =
 		useState<AssetRoleSelectedActions>({});
 	const [loading, setLoading] = useState(false);
@@ -195,10 +202,9 @@ export default function BulkDefaultPermissionModalContent({
 							return;
 						}
 						else {
-							const space =
-								await CMSDefaultPermissionService.getSpace(
-									firstItem.embedded.scopeId
-								);
+							const space = await SpaceService.getSpace(
+								getScopeExternalReferenceCode(firstItem)
+							);
 
 							entryClassExternalReferenceCode =
 								space.externalReferenceCode;
@@ -245,7 +251,9 @@ export default function BulkDefaultPermissionModalContent({
 
 	return (
 		<>
-			<ClayModal.Header>
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{sub(
 					Liferay.Language.get('edit-x'),
 					Liferay.Language.get('default-permissions')
@@ -282,6 +290,7 @@ export default function BulkDefaultPermissionModalContent({
 					)}
 					onChange={onChangeHandler}
 					roles={roles}
+					section={section}
 					values={currentValues}
 				/>
 			</ClayModal.Body>

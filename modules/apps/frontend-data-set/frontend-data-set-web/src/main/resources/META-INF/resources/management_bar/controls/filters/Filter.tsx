@@ -8,7 +8,6 @@ import {loadModule} from 'frontend-js-web';
 import React, {ReactElement, useContext, useEffect, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
-import {activateFilter} from '../../../utils/filters/activateFilter';
 import ViewsContext from '../../../views/ViewsContext';
 
 // @ts-ignore
@@ -97,10 +96,14 @@ const Filter = ({
 			...filters.find(
 				(filter: FilterConfiguration) => filter.id === filterId
 			),
+			selectedData,
 			...otherProps,
 		};
 
-		activateFilter({filter: newFilter, selectedData});
+		newFilter.odataFilterString =
+			filterImplementation.getOdataString(newFilter);
+		newFilter.selectedItemsLabel =
+			filterImplementation.getSelectedItemsLabel(newFilter);
 
 		setSearching(true);
 

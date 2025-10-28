@@ -22,16 +22,27 @@ public class LPD_48712 {
 		boolean galleryEnabled, Map<Locale, String> titleMap, String json,
 		double priority, int type, ServiceContext serviceContext) {
 
-		CPAttachmentFileEntryLocalServiceUtil.addCPAttachmentFileEntry(123, groupId, classNameId, classPK, fileEntryId, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, titleMap, json, priority, type, externalReferenceCode, serviceContext);
+		CPAttachmentFileEntryLocalServiceUtil.addCPAttachmentFileEntry(
+			123, groupId, classNameId, classPK, fileEntryId, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire, titleMap,
+			json, priority, type, externalReferenceCode, serviceContext);
 		CPAttachmentFileEntryLocalServiceUtil.addCPAttachmentFileEntry(externalReferenceCode, userId, groupId, classNameId, classPK, fileEntryId, false, null, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, true, titleMap, json, priority, type, serviceContext);
-		CPAttachmentFileEntryServiceUtil.addCPAttachmentFileEntry(123, groupId, classNameId, classPK, fileEntryId, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, titleMap, json, priority, type, serviceContext);
+		CPAttachmentFileEntryServiceUtil.addCPAttachmentFileEntry(
+			123, groupId, classNameId, classPK, fileEntryId, displayDateMonth,
+			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire, titleMap,
+			json, priority, type, serviceContext);
 		CPAttachmentFileEntryServiceUtil.addCPAttachmentFileEntry(groupId, classNameId, classPK, fileEntryId, false, null, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, true, titleMap, json, priority, type, serviceContext);
 		_cpAttachmentFileEntryLocalService.addCPAttachmentFileEntry(externalReferenceCode, userId, groupId, classNameId, classPK, fileEntryId, false, null, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, true, titleMap, json, priority, type, serviceContext);
 		_cpAttachmentFileEntryService.addCPAttachmentFileEntry(groupId, classNameId, classPK, fileEntryId, false, null, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, true, titleMap, json, priority, type, serviceContext);
 	}
 
 	@Reference
-	private CPAttachmentFileEntryLocalService _cpAttachmentFileEntryLocalService;
+	private CPAttachmentFileEntryLocalService
+		_cpAttachmentFileEntryLocalService;
 
 	@Reference
 	private CPAttachmentFileEntryService _cpAttachmentFileEntryService;

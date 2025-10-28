@@ -3,13 +3,13 @@ dependencies {
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.osgi.service.jaxrs", version: "1.0.0.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.1"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:client-extension:client-extension-type-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")

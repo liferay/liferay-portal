@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Analytics CMS REST API
 Bundle-SymbolicName: com.liferay.analytics.cms.rest.api
-Bundle-Version: 4.2.1
+Bundle-Version: 4.3.0
 Export-Package:\
 	com.liferay.analytics.cms.rest.dto.v1_0,\
 	com.liferay.analytics.cms.rest.resource.v1_0

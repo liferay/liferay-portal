@@ -51,6 +51,7 @@ exports[`BaseInterestDetails should render 1`] = `
           >
             <button
               aria-expanded="false"
+              aria-label="Open Menu, Current Page: label"
               class="navbar-toggler navbar-toggler-link collapsed btn btn-unstyled"
               type="button"
             >
@@ -85,9 +86,7 @@ exports[`BaseInterestDetails should render 1`] = `
                       class="nav-link active"
                       href="/workspace/23/123/contacts/segments/test/interests/1/individuals"
                     >
-                      <span
-                        class="navbar-text-truncate"
-                      >
+                      <span>
                         <div
                           class="h4"
                         >
@@ -103,9 +102,7 @@ exports[`BaseInterestDetails should render 1`] = `
                       class="nav-link"
                       href="/workspace/23/123/contacts/segments/test/interests/1/pages?active=true"
                     >
-                      <span
-                        class="navbar-text-truncate"
-                      >
+                      <span>
                         <div
                           class="h4"
                         >
@@ -121,9 +118,7 @@ exports[`BaseInterestDetails should render 1`] = `
                       class="nav-link"
                       href="/workspace/23/123/contacts/segments/test/interests/1/pages?active=false"
                     >
-                      <span
-                        class="navbar-text-truncate"
-                      >
+                      <span>
                         <div
                           class="h4"
                         >
@@ -150,7 +145,7 @@ exports[`BaseInterestDetails should render 1`] = `
           class="toolbar-root"
         >
           <nav
-            class="navbar navbar-root management-bar management-bar-light navbar-expand"
+            class="navbar navbar-root my-2 management-bar management-bar-light navbar-expand"
           >
             <div
               class="container-fluid"
@@ -164,48 +159,51 @@ exports[`BaseInterestDetails should render 1`] = `
                   role="presentation"
                 >
                   <div
-                    class="dropdown dropdown-root filter-and-order-root"
+                    class="dropdown dropdown-root"
                   >
                     <button
                       aria-controls="clay-dropdown-menu-1"
                       aria-expanded="false"
                       aria-haspopup="true"
-                      class="dropdown-toggle d-flex align-items-center btn btn-outline-borderless btn-sm btn-outline-secondary"
+                      class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+                      data-testid="order-button"
                       type="button"
                     >
-                      Order
-                      <svg
-                        class="lexicon-icon lexicon-icon-caret-bottom ml-2 mt-0"
-                        role="presentation"
+                      <span
+                        class="caret-root"
                       >
-                        <use
-                          href="#caret-bottom"
-                        />
-                      </svg>
+                        <svg
+                          class="lexicon-icon lexicon-icon-order-list-down"
+                          role="presentation"
+                        >
+                          <use
+                            href="#order-list-down"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="mx-2"
+                      >
+                        Order
+                      </span>
+                      <span
+                        class="caret-root"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-caret-bottom"
+                          role="presentation"
+                        >
+                          <use
+                            href="#caret-bottom"
+                          />
+                        </svg>
+                      </span>
                     </button>
                   </div>
                 </li>
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <a
-                    class="btn-root nav-link nav-link-monospaced btn btn-outline-borderless btn-outline-unstyled"
-                    href="/?field=name&page=1&sortOrder=DESC"
-                  >
-                    <svg
-                      class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
-                      role="presentation"
-                    >
-                      <use
-                        href="#order_arrow_ascending"
-                      />
-                    </svg>
-                  </a>
-                </li>
               </ul>
               <div
-                class="navbar-form navbar-form-autofit"
+                class="navbar-form navbar-form-autofit mx-2"
               >
                 <div
                   class="input-group search"
@@ -244,87 +242,97 @@ exports[`BaseInterestDetails should render 1`] = `
           </nav>
         </div>
         <div
-          class="table-responsive table-root flex-grow-1"
+          class="flex-grow-1 mx-4 table-root"
         >
-          <table
-            class="table table-autofit table-hover table-heading-nowrap table-nowrap"
+          <div
+            class="table-responsive"
           >
-            <thead>
-              <tr>
-                <th
-                  class="table-head-title"
-                >
-                  <a
-                    class="button-root inline-item text-truncate-inline btn btn-unstyled"
-                    href="/?field=name&page=1&sortOrder=DESC"
+            <table
+              class="table table-autofit table-striped table-list table-nowrap table-head-bordered table-hover"
+            >
+              <thead>
+                <tr>
+                  <th
+                    class="table-head-title"
                   >
-                    <span
-                      class="text-truncate"
+                    <a
+                      class="button-root w-100 btn btn-unstyled"
+                      href="/?field=name&page=1&sortOrder=DESC"
                     >
-                      Name
-                    </span>
-                    <span
-                      class="inline-item inline-item-after"
-                    >
-                      <svg
-                        class="lexicon-icon lexicon-icon-order-arrow-up icon-root"
-                        role="presentation"
+                      <div
+                        class="align-items-center d-flex justify-content-between"
                       >
-                        <use
-                          href="#order-arrow-up"
-                        />
-                      </svg>
-                    </span>
-                  </a>
-                </th>
-                <th
-                  class="table-head-title"
+                        <div
+                          class="text-truncate"
+                        >
+                          Name
+                        </div>
+                        <button
+                          aria-label="Ascending"
+                          class="component-action ml-2 btn btn-sm btn-primary"
+                          type="button"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-order_arrow_ascending icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#order_arrow_ascending"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </a>
+                  </th>
+                  <th
+                    class="table-head-title"
+                  >
+                    Email
+                  </th>
+                  <th
+                    class="table-head-title"
+                  >
+                    Account Names
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  class=""
                 >
-                  Email
-                </th>
-                <th
-                  class="table-head-title"
-                >
-                  Account Names
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class=""
-              >
-                <td
-                  class="name-cell-root"
-                >
-                  <div
-                    class="content-container"
+                  <td
+                    class="name-cell-root"
+                  >
+                    <div
+                      class="content-container"
+                    >
+                      <div
+                        class="text-truncate"
+                      >
+                        <div
+                          class="table-title text-truncate"
+                        >
+                          Foo Bar
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    -
+                  </td>
+                  <td
+                    class="name-cell-root"
                   >
                     <div
                       class="text-truncate"
                     >
-                      <div
-                        class="table-title text-truncate"
-                      >
-                        Foo Bar
-                      </div>
+                      -
                     </div>
-                  </div>
-                </td>
-                <td>
-                  -
-                </td>
-                <td
-                  class="name-cell-root"
-                >
-                  <div
-                    class="text-truncate"
-                  >
-                    -
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <nav
           class="navbar navbar-root pagination-bar-root"

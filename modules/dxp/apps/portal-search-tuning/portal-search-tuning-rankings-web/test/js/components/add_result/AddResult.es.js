@@ -12,7 +12,7 @@ import {
 	getMockResultsData,
 } from '../../mocks/data.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const MODAL_ID = 'add-result-modal';
 

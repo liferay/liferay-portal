@@ -129,16 +129,20 @@ public class CTServicePublisher<T extends CTModel<T>> {
 				StringBundler.concat(
 					"select count(*) from CTEntry left join ", tableName,
 					" on CTEntry.modelClassPK = ", tableName, ".",
-					primaryKeyName, " and ", tableName, ".ctCollectionId = ",
-					_targetCTCollectionId, " where CTEntry.changeType = ",
-					CTConstants.CT_CHANGE_TYPE_DELETION,
-					" and CTEntry.ctCollectionId = ", _sourceCTCollectionId,
-					" and CTEntry.modelClassNameId = ", _modelClassNameId,
-					" and ", tableName, ".", primaryKeyName, " is null"));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					primaryKeyName, " and ", tableName, ".ctCollectionId = ? ",
+					"where CTEntry.changeType = ? and CTEntry.ctCollectionId ",
+					"= ? and CTEntry.modelClassNameId = ? and ", tableName, ".",
+					primaryKeyName, " is null"))) {
 
-			if (resultSet.next()) {
-				return resultSet.getInt(1);
+			preparedStatement.setLong(1, _targetCTCollectionId);
+			preparedStatement.setInt(2, CTConstants.CT_CHANGE_TYPE_DELETION);
+			preparedStatement.setLong(3, _sourceCTCollectionId);
+			preparedStatement.setLong(4, _modelClassNameId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt(1);
+				}
 			}
 		}
 

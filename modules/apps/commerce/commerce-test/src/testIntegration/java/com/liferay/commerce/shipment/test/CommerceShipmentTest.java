@@ -780,6 +780,61 @@ public class CommerceShipmentTest {
 	}
 
 	@Test
+	public void testDeleteOrderShipment() throws Exception {
+		frutillaRule.scenario(
+			"An order with a shipment is created"
+		).given(
+			"An order"
+		).when(
+			"I delete a shipment on that order"
+		).then(
+			"The shipment is deleted to the order"
+		);
+
+		CPInstance cpInstance = _createCPInstance();
+
+		BigDecimal value = BigDecimal.valueOf(RandomTestUtil.nextDouble());
+
+		CommerceOrder commerceOrder =
+			CommerceTestUtil.createCommerceOrderForShipping(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_commerceCurrency.getCommerceCurrencyId(),
+				cpInstance.getCPInstanceId(), value, BigDecimal.ONE, 1);
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse =
+			_createCommerceInventoryWarehouse(
+				_commerceChannel.getCommerceChannelId(), true);
+
+		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+			_user.getUserId(), commerceInventoryWarehouse,
+			BigDecimal.valueOf(5), cpInstance.getSku(), StringPool.BLANK);
+
+		_commerceOrders.add(commerceOrder);
+
+		CommerceShipment commerceShipment =
+			CommerceShipmentTestUtil.createOrderShipment(
+				commerceOrder.getGroupId(), commerceOrder.getCommerceOrderId(),
+				commerceInventoryWarehouse.getCommerceInventoryWarehouseId());
+
+		List<CommerceShipment> commerceShipments =
+			_commerceShipmentLocalService.getCommerceShipments(
+				commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceShipments.toString(), 1, commerceShipments.size());
+
+		_commerceShipmentLocalService.deleteCommerceShipment(commerceShipment);
+
+		commerceShipments = _commerceShipmentLocalService.getCommerceShipments(
+			commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceShipments.toString(), 0, commerceShipments.size());
+	}
+
+	@Test
 	public void testShippingAmountAndShippingTaxes() throws Exception {
 		frutillaRule.scenario(
 			"When a shipping amount with tax is associated with an order the " +

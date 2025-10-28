@@ -291,55 +291,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro approveJoinSiteRestrictedViaMySitesPG(userLastName = null, userScreenName = null, userFirstName = null) {
-		var key_userScreenName = ${userScreenName};
-
-		LexiconEntry.gotoHeaderMenuItem(menuItem = "View Membership Requests");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-		AssertTextEquals(
-			locator1 = "SiteMembershipsViewMembershipRequests#USER_NAME",
-			value1 = "${userFirstName} ${userLastName}");
-
-		if (!(isSet(memebershipComment))) {
-			var memebershipComment = "Please allow me to join the Restricted Site.";
-		}
-
-		AssertTextEquals(
-			locator1 = "SiteMembershipsViewMembershipRequests#USER_COMMENTS",
-			value1 = ${memebershipComment});
-
-		LexiconTable.clickEllipsisItem(
-			item = "Reply",
-			tableEntry = "${userFirstName} ${userLastName}");
-
-		Select(
-			locator1 = "SiteMembershipsViewMembershipRequests#STATUS",
-			value1 = "Approve");
-
-		Type(
-			locator1 = "SiteMembershipsViewMembershipRequests#REPLY_COMMENTS_AREA",
-			value1 = "You may join the Restricted Site.");
-
-		Button.clickSave();
-
-		VerifyElementPresent(locator1 = "Message#SUCCESS");
-
-		Navigator.gotoNavItem(navItem = "Approved");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-		AssertTextEquals(
-			locator1 = "SiteMembershipsViewMembershipRequests#USER_NAME",
-			value1 = "${userFirstName} ${userLastName}");
-
-		AssertTextEquals(
-			locator1 = "SiteMembershipsViewMembershipRequests#REPLIER_NAME",
-			value1 = "Test Test");
-	}
-
-	@summary = "Default summary"
 	macro assertMemberListNotVisibleCP(usersEmailsList = null) {
 		for (var userEmail : list ${usersEmailsList}) {
 			var userName = StringUtil.replace(${userEmail}, "@liferay.com", "");

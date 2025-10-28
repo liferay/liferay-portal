@@ -298,13 +298,14 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 		for (int i = 0; i < numberOfFragmentEntryLinks; i++) {
 			FragmentEntryLink fragmentEntryLink =
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
-					fragmentEntry.getFragmentEntryId(),
-					defaultSegmentsExperienceId, layout.getPlid(),
-					fragmentEntry.getCss(), fragmentEntry.getHtml(),
-					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-					editableValues, StringPool.BLANK, 0, null,
-					fragmentEntry.getType(), serviceContext);
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					null, fragmentEntry.getExternalReferenceCode(),
+					fragmentEntry.getScopeERC(), defaultSegmentsExperienceId,
+					layout.getPlid(), fragmentEntry.getCss(),
+					fragmentEntry.getHtml(), fragmentEntry.getJs(),
+					fragmentEntry.getConfiguration(), editableValues,
+					StringPool.BLANK, 0, null, fragmentEntry.getType(),
+					serviceContext);
 
 			layoutStructure.addFragmentStyledLayoutStructureItem(
 				fragmentEntryLink.getFragmentEntryLinkId(),

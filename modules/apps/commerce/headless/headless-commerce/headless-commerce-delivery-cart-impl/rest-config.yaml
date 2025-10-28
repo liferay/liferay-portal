@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Commerce.Delivery.Cart
 author: Andrea Sbarra
 clientDir: ../headless-commerce-delivery-cart-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableSchemaPropertyName: false
 javaEEPackage: jakarta
 testDir: ../headless-commerce-delivery-cart-test/src/testIntegration/java

@@ -239,10 +239,11 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
-	public void deleteIndividualSegment(FaroProject faroProject, String id)
+	public void deleteIndividualSegments(
+			FaroProject faroProject, List<String> ids)
 		throws Exception {
 
-		contactsEngineClient.deleteIndividualSegment(faroProject, id);
+		contactsEngineClient.deleteIndividualSegments(faroProject, ids);
 	}
 
 	@Override

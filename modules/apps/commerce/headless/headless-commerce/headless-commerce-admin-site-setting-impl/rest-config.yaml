@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Commerce.Admin.Site.Setting
 author: Zoltán Takács
 clientDir: ../headless-commerce-admin-site-setting-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableSchemaPropertyName: false
 javaEEPackage: jakarta
 testDir: ../headless-commerce-admin-site-setting-test/src/testIntegration/java

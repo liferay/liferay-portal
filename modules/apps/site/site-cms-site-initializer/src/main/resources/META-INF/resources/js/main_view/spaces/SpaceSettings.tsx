@@ -29,9 +29,7 @@ export default function SpaceSettings({
 	const [space, setSpace] = useState<Space | null>(null);
 
 	useEffect(() => {
-		SpaceService.getSpace({
-			externalReferenceCode,
-		}).then((space) => {
+		SpaceService.getSpace(externalReferenceCode).then((space) => {
 			setSpace(space);
 		});
 	}, [externalReferenceCode]);

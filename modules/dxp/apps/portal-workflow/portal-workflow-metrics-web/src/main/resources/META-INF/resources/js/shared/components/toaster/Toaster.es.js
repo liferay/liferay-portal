@@ -12,6 +12,7 @@ const Toaster = ({removeToast, toasts = []}) => {
 			{toasts.map(({message, type, ...toast}, index) => (
 				<ClayAlert
 					{...toast}
+					closeButtonAriaLabel={Liferay.Language.get('close')}
 					displayType={type}
 					key={index}
 					onClose={() => {

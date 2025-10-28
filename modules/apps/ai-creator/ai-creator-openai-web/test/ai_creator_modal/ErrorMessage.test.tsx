@@ -6,7 +6,7 @@
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {ErrorMessage} from '../../src/main/resources/META-INF/resources/ai_creator_modal/ErrorMessage';
 

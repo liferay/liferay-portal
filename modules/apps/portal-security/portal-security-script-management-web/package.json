@@ -2,11 +2,11 @@
 	"dependencies": {
 		"@clayui/alert": "3.148.0",
 		"@clayui/button": "3.144.1",
-		"@clayui/core": "3.149.0",
-		"@clayui/form": "3.148.0",
+		"@clayui/core": "3.151.0",
+		"@clayui/form": "3.151.0",
 		"@clayui/icon": "3.144.1",
 		"@clayui/link": "3.144.1",
-		"@clayui/modal": "3.148.0",
+		"@clayui/modal": "3.151.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"

@@ -7,7 +7,7 @@ import React from 'react';
 
 import QuestionRow from '../../../src/main/resources/META-INF/resources/js/components/QuestionRow.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {cleanup} from '@testing-library/react';
 
 import {renderComponent} from '../../helpers.es';

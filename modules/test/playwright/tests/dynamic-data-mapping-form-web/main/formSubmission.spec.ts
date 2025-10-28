@@ -195,7 +195,7 @@ test.describe('Manage forms through submission page', () => {
 			await formBuilderPage.clickPublishFormButton();
 		});
 
-		await test.step('navigate to the form page and assert that CAPTCHA is reiquired', async () => {
+		await test.step('navigate to the form page and assert that CAPTCHA is required', async () => {
 			const formSubmissionURL =
 				await formBuilderPage.getFormSubmissionURL();
 
@@ -203,9 +203,27 @@ test.describe('Manage forms through submission page', () => {
 
 			await page.getByLabel('Text').fill('Text field value');
 
+			const submitButton = page.getByRole('button', {name: 'Submit'});
+
+			await submitButton.click();
+
+			await expect(submitButton).toBeDisabled();
+
+			await expect(
+				page.getByText('The Text Verification field is required.')
+			).toBeVisible();
+
+			await expect(submitButton).toBeEnabled();
+
 			await page.getByRole('textbox').last().fill('1');
 
-			await page.getByRole('button', {name: 'Submit'}).click();
+			await page.getByRole('textbox').last().blur();
+
+			await expect(
+				page.getByText('The Text Verification field is required.')
+			).not.toBeVisible();
+
+			await submitButton.click();
 
 			await expect(
 				page.getByText('Close Error:Text verification')

@@ -357,6 +357,16 @@ const CustomViewsControls = () => {
 				<Picker
 					as={CustomViewsControlsTrigger}
 					items={[...Object.keys(customViews), DEFAULT_VIEW_ID]}
+					messages={{
+						itemDescribedby: Liferay.Language.get(
+							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+						),
+						itemSelected: Liferay.Language.get('x-selected'),
+						scrollToBottomAriaLabel:
+							Liferay.Language.get('scroll-to-bottom'),
+						scrollToTopAriaLabel:
+							Liferay.Language.get('scroll-to-top'),
+					}}
 					onSelectionChange={handleSelectionChange}
 					selectedKey={activeCustomViewId ?? DEFAULT_VIEW_ID}
 					triggerLabel={

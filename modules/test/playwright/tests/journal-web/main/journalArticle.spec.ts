@@ -167,7 +167,7 @@ baseTest(
 		await waitForAlert(
 			page,
 			"Avertissement:Les URL simplifiées suivantes ont été modifiées pour garantir l'unicité",
-			{type: 'warning'}
+			{closeText: 'Fin', type: 'warning'}
 		);
 
 		// change back to english language
@@ -1655,7 +1655,7 @@ baseTest(
 
 		await waitForAlert(page, `Success:${title} was created successfully.`);
 
-		await page.getByLabel('Close', {exact: true});
+		await page.getByLabel('Fin', {exact: true});
 
 		await journalPage.goToJournalArticleAction(
 			'Delete Translations',

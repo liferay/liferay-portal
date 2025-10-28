@@ -109,8 +109,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="originalFragmentEntryLinkId" type="long" />
-		<field name="fragmentEntryId" type="long" />
+		<field name="originalFragmentEntryLinkERC" type="String" />
+		<field name="fragmentEntryERC" type="String" />
+		<field name="fragmentEntryScopeERC" type="String" />
 		<field name="segmentsExperienceId" type="long" />
 		<field name="classNameId" type="long" />
 		<field name="classPK" type="long" />

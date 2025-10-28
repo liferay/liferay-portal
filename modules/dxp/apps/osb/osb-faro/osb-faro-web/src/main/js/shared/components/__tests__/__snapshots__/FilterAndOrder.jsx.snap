@@ -6,20 +6,32 @@ exports[`FilterAndOrder should render 1`] = `
 >
   <div>
     <div
-      class="dropdown dropdown-root filter-and-order-root"
+      class="dropdown dropdown-root mr-2"
     >
       <button
         aria-controls="clay-dropdown-menu-1"
         aria-expanded="false"
         aria-haspopup="true"
-        class="dropdown-toggle filter-and-order-button btn btn-block btn-unstyled"
-        data-testid="filter-and-order-button"
+        class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+        data-testid="filter-button"
         type="button"
       >
         <span
-          class="text-truncate"
+          class="caret-root"
         >
-          Order
+          <svg
+            class="lexicon-icon lexicon-icon-filter"
+            role="presentation"
+          >
+            <use
+              href="#filter"
+            />
+          </svg>
+        </span>
+        <span
+          class="mx-2"
+        >
+          Filter
         </span>
         <span
           class="caret-root"
@@ -43,7 +55,133 @@ exports[`FilterAndOrder should render 1`] = `
         class="dropdown-menu"
         id="clay-dropdown-menu-1"
         role="presentation"
-      />
+      >
+        <li
+          aria-hidden="true"
+          class="dropdown-subheader"
+          id="clay-dropdown-menu-group-1"
+          role="presentation"
+        >
+          Filter By
+        </li>
+        <li
+          role="presentation"
+        >
+          <ul
+            aria-labelledby="clay-dropdown-menu-group-1"
+            class="list-unstyled"
+            role="group"
+          >
+            <div
+              class="dropdown"
+            >
+              <li
+                role="presentation"
+              >
+                <button
+                  aria-controls="clay-dropdown-menu-2"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  class="dropdown-item dropdown-toggle d-flex justify-content-between align-items-center w-100"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <span
+                    class="text-truncate"
+                  >
+                    status
+                  </span>
+                  <span
+                    class="caret-root"
+                  >
+                    <svg
+                      class="lexicon-icon lexicon-icon-caret-right"
+                      role="presentation"
+                    >
+                      <use
+                        href="#caret-right"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </li>
+            </div>
+          </ul>
+        </li>
+      </div>
+      <div>
+        <div>
+          <div
+            aria-hidden="true"
+            class="dropdown-menu"
+            id="clay-dropdown-menu-2"
+            role="presentation"
+          >
+            <li
+              aria-selected="false"
+              role="presentation"
+            >
+              <span
+                class="dropdown-item"
+                role="menuitem"
+                tabindex="-1"
+              >
+                <div
+                  class="custom-control custom-checkbox custom-control-outside"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      value="done"
+                    />
+                    <span
+                      class="custom-control-label"
+                    >
+                      <span
+                        class="custom-control-label-text"
+                      >
+                        done
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </span>
+            </li>
+            <li
+              aria-selected="false"
+              role="presentation"
+            >
+              <span
+                class="dropdown-item"
+                role="menuitem"
+                tabindex="-1"
+              >
+                <div
+                  class="custom-control custom-checkbox custom-control-outside"
+                >
+                  <label>
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      value="running"
+                    />
+                    <span
+                      class="custom-control-label"
+                    >
+                      <span
+                        class="custom-control-label-text"
+                      >
+                        running
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </span>
+            </li>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </body>
@@ -53,24 +191,33 @@ exports[`FilterAndOrder should render filters as a flat list 1`] = `
 <body
   class="dxp"
 >
-  <div
-    aria-hidden="true"
-    data-aria-hidden="true"
-  >
+  <div>
     <div
-      class="dropdown dropdown-root filter-and-order-root"
+      class="dropdown dropdown-root mr-2"
     >
       <button
-        aria-controls="clay-dropdown-menu-8"
+        aria-controls="clay-dropdown-menu-12"
         aria-expanded="true"
         aria-haspopup="true"
-        class="dropdown-toggle filter-and-order-button btn btn-block btn-unstyled"
-        data-testid="filter-and-order-button"
+        class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+        data-testid="filter-button"
         style=""
         type="button"
       >
         <span
-          class="text-truncate"
+          class="caret-root"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-filter"
+            role="presentation"
+          >
+            <use
+              href="#filter"
+            />
+          </svg>
+        </span>
+        <span
+          class="mx-2"
         >
           Filter
         </span>
@@ -93,14 +240,14 @@ exports[`FilterAndOrder should render filters as a flat list 1`] = `
     <div>
       <div
         class="dropdown-menu show"
-        id="clay-dropdown-menu-8"
+        id="clay-dropdown-menu-12"
         role="presentation"
         style="left: -999px; top: -995px;"
       >
         <li
           aria-hidden="true"
           class="dropdown-subheader"
-          id="clay-dropdown-menu-group-5"
+          id="clay-dropdown-menu-group-8"
           role="presentation"
         >
           Filter By status
@@ -109,7 +256,7 @@ exports[`FilterAndOrder should render filters as a flat list 1`] = `
           role="presentation"
         >
           <ul
-            aria-labelledby="clay-dropdown-menu-group-5"
+            aria-labelledby="clay-dropdown-menu-group-8"
             class="list-unstyled"
             role="group"
           >
@@ -187,24 +334,33 @@ exports[`FilterAndOrder should render with filter by options 1`] = `
 <body
   class="dxp"
 >
-  <div
-    aria-hidden="true"
-    data-aria-hidden="true"
-  >
+  <div>
     <div
-      class="dropdown dropdown-root filter-and-order-root"
+      class="dropdown dropdown-root mr-2"
     >
       <button
-        aria-controls="clay-dropdown-menu-2"
+        aria-controls="clay-dropdown-menu-3"
         aria-expanded="true"
         aria-haspopup="true"
-        class="dropdown-toggle filter-and-order-button btn btn-block btn-unstyled"
-        data-testid="filter-and-order-button"
+        class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+        data-testid="filter-button"
         style=""
         type="button"
       >
         <span
-          class="text-truncate"
+          class="caret-root"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-filter"
+            role="presentation"
+          >
+            <use
+              href="#filter"
+            />
+          </svg>
+        </span>
+        <span
+          class="mx-2"
         >
           Filter
         </span>
@@ -227,14 +383,14 @@ exports[`FilterAndOrder should render with filter by options 1`] = `
     <div>
       <div
         class="dropdown-menu show"
-        id="clay-dropdown-menu-2"
+        id="clay-dropdown-menu-3"
         role="presentation"
         style="left: -999px; top: -995px;"
       >
         <li
           aria-hidden="true"
           class="dropdown-subheader"
-          id="clay-dropdown-menu-group-1"
+          id="clay-dropdown-menu-group-2"
           role="presentation"
         >
           Filter By
@@ -243,7 +399,7 @@ exports[`FilterAndOrder should render with filter by options 1`] = `
           role="presentation"
         >
           <ul
-            aria-labelledby="clay-dropdown-menu-group-1"
+            aria-labelledby="clay-dropdown-menu-group-2"
             class="list-unstyled"
             role="group"
           >
@@ -254,7 +410,7 @@ exports[`FilterAndOrder should render with filter by options 1`] = `
                 role="presentation"
               >
                 <button
-                  aria-controls="clay-dropdown-menu-3"
+                  aria-controls="clay-dropdown-menu-4"
                   aria-expanded="false"
                   aria-haspopup="true"
                   class="dropdown-item dropdown-toggle d-flex justify-content-between align-items-center w-100"
@@ -292,7 +448,7 @@ exports[`FilterAndOrder should render with filter by options 1`] = `
           <div
             aria-hidden="true"
             class="dropdown-menu"
-            id="clay-dropdown-menu-3"
+            id="clay-dropdown-menu-4"
             role="presentation"
           >
             <li
@@ -369,24 +525,33 @@ exports[`FilterAndOrder should render with order by options 1`] = `
 <body
   class="dxp"
 >
-  <div
-    aria-hidden="true"
-    data-aria-hidden="true"
-  >
+  <div>
     <div
-      class="dropdown dropdown-root filter-and-order-root"
+      class="dropdown dropdown-root"
     >
       <button
-        aria-controls="clay-dropdown-menu-4"
+        aria-controls="clay-dropdown-menu-5"
         aria-expanded="true"
         aria-haspopup="true"
-        class="dropdown-toggle filter-and-order-button btn btn-block btn-unstyled"
-        data-testid="filter-and-order-button"
+        class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+        data-testid="order-button"
         style=""
         type="button"
       >
         <span
-          class="text-truncate"
+          class="caret-root"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-order-list-down"
+            role="presentation"
+          >
+            <use
+              href="#order-list-down"
+            />
+          </svg>
+        </span>
+        <span
+          class="mx-2"
         >
           Order
         </span>
@@ -409,7 +574,7 @@ exports[`FilterAndOrder should render with order by options 1`] = `
     <div>
       <div
         class="dropdown-menu show"
-        id="clay-dropdown-menu-4"
+        id="clay-dropdown-menu-5"
         role="presentation"
         style="left: -999px; top: -995px;"
       >
@@ -420,7 +585,7 @@ exports[`FilterAndOrder should render with order by options 1`] = `
           <li
             aria-hidden="true"
             class="dropdown-subheader"
-            id="clay-dropdown-menu-group-2"
+            id="clay-dropdown-menu-group-3"
             role="presentation"
           >
             Order By
@@ -429,7 +594,7 @@ exports[`FilterAndOrder should render with order by options 1`] = `
             role="presentation"
           >
             <ul
-              aria-labelledby="clay-dropdown-menu-group-2"
+              aria-labelledby="clay-dropdown-menu-group-3"
               class="list-unstyled"
               role="group"
             >
@@ -448,7 +613,7 @@ exports[`FilterAndOrder should render with order by options 1`] = `
                     <label>
                       <input
                         class="custom-control-input"
-                        name="filterAndOrder3"
+                        name="filterAndOrder1"
                         role="radio"
                         type="radio"
                         value="name"
@@ -479,26 +644,79 @@ exports[`FilterAndOrder should render with order by options and filter by option
 <body
   class="dxp"
 >
-  <div
-    aria-hidden="true"
-    data-aria-hidden="true"
-  >
+  <div>
     <div
-      class="dropdown dropdown-root filter-and-order-root"
+      class="dropdown dropdown-root mr-2"
     >
       <button
-        aria-controls="clay-dropdown-menu-5"
+        aria-controls="clay-dropdown-menu-6"
         aria-expanded="true"
         aria-haspopup="true"
-        class="dropdown-toggle filter-and-order-button btn btn-block btn-unstyled"
-        data-testid="filter-and-order-button"
+        class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+        data-testid="filter-button"
         style=""
         type="button"
       >
         <span
-          class="text-truncate"
+          class="caret-root"
         >
-          Filter and Order
+          <svg
+            class="lexicon-icon lexicon-icon-filter"
+            role="presentation"
+          >
+            <use
+              href="#filter"
+            />
+          </svg>
+        </span>
+        <span
+          class="mx-2"
+        >
+          Filter
+        </span>
+        <span
+          class="caret-root"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-caret-bottom"
+            role="presentation"
+          >
+            <use
+              href="#caret-bottom"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div
+      aria-hidden="true"
+      class="dropdown dropdown-root"
+      data-aria-hidden="true"
+    >
+      <button
+        aria-controls="clay-dropdown-menu-8"
+        aria-expanded="false"
+        aria-haspopup="true"
+        class="dropdown-toggle btn btn-outline-borderless btn-sm btn-outline-secondary"
+        data-testid="order-button"
+        type="button"
+      >
+        <span
+          class="caret-root"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-order-list-down"
+            role="presentation"
+          >
+            <use
+              href="#order-list-down"
+            />
+          </svg>
+        </span>
+        <span
+          class="mx-2"
+        >
+          Order
         </span>
         <span
           class="caret-root"
@@ -519,14 +737,14 @@ exports[`FilterAndOrder should render with order by options and filter by option
     <div>
       <div
         class="dropdown-menu show"
-        id="clay-dropdown-menu-5"
+        id="clay-dropdown-menu-6"
         role="presentation"
         style="left: -999px; top: -995px;"
       >
         <li
           aria-hidden="true"
           class="dropdown-subheader"
-          id="clay-dropdown-menu-group-3"
+          id="clay-dropdown-menu-group-4"
           role="presentation"
         >
           Filter By
@@ -535,7 +753,7 @@ exports[`FilterAndOrder should render with order by options and filter by option
           role="presentation"
         >
           <ul
-            aria-labelledby="clay-dropdown-menu-group-3"
+            aria-labelledby="clay-dropdown-menu-group-4"
             class="list-unstyled"
             role="group"
           >
@@ -546,7 +764,7 @@ exports[`FilterAndOrder should render with order by options and filter by option
                 role="presentation"
               >
                 <button
-                  aria-controls="clay-dropdown-menu-6"
+                  aria-controls="clay-dropdown-menu-7"
                   aria-expanded="false"
                   aria-haspopup="true"
                   class="dropdown-item dropdown-toggle d-flex justify-content-between align-items-center w-100"
@@ -575,62 +793,6 @@ exports[`FilterAndOrder should render with order by options and filter by option
             </div>
           </ul>
         </li>
-        <ul
-          class="list-unstyled"
-          role="menu"
-        >
-          <li
-            aria-hidden="true"
-            class="dropdown-subheader"
-            id="clay-dropdown-menu-group-4"
-            role="presentation"
-          >
-            Order By
-          </li>
-          <li
-            role="presentation"
-          >
-            <ul
-              aria-labelledby="clay-dropdown-menu-group-4"
-              class="list-unstyled"
-              role="group"
-            >
-              <li
-                aria-selected="false"
-                role="presentation"
-              >
-                <span
-                  class="dropdown-item"
-                  role="menuitem"
-                  tabindex="-1"
-                >
-                  <div
-                    class="custom-control custom-radio custom-control-outside"
-                  >
-                    <label>
-                      <input
-                        class="custom-control-input"
-                        name="filterAndOrder4"
-                        role="radio"
-                        type="radio"
-                        value="name"
-                      />
-                      <span
-                        class="custom-control-label"
-                      >
-                        <span
-                          class="custom-control-label-text"
-                        >
-                          name
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                </span>
-              </li>
-            </ul>
-          </li>
-        </ul>
       </div>
       <div
         aria-hidden="true"
@@ -640,7 +802,7 @@ exports[`FilterAndOrder should render with order by options and filter by option
           <div
             aria-hidden="true"
             class="dropdown-menu"
-            id="clay-dropdown-menu-6"
+            id="clay-dropdown-menu-7"
             role="presentation"
           >
             <li
@@ -707,6 +869,76 @@ exports[`FilterAndOrder should render with order by options and filter by option
             </li>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div
+    aria-hidden="true"
+    data-aria-hidden="true"
+  >
+    <div>
+      <div
+        aria-hidden="true"
+        class="dropdown-menu"
+        id="clay-dropdown-menu-8"
+        role="presentation"
+      >
+        <ul
+          class="list-unstyled"
+          role="menu"
+        >
+          <li
+            aria-hidden="true"
+            class="dropdown-subheader"
+            id="clay-dropdown-menu-group-5"
+            role="presentation"
+          >
+            Order By
+          </li>
+          <li
+            role="presentation"
+          >
+            <ul
+              aria-labelledby="clay-dropdown-menu-group-5"
+              class="list-unstyled"
+              role="group"
+            >
+              <li
+                aria-selected="false"
+                role="presentation"
+              >
+                <span
+                  class="dropdown-item"
+                  role="menuitem"
+                  tabindex="-1"
+                >
+                  <div
+                    class="custom-control custom-radio custom-control-outside"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        name="filterAndOrder2"
+                        role="radio"
+                        type="radio"
+                        value="name"
+                      />
+                      <span
+                        class="custom-control-label"
+                      >
+                        <span
+                          class="custom-control-label-text"
+                        >
+                          name
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </span>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

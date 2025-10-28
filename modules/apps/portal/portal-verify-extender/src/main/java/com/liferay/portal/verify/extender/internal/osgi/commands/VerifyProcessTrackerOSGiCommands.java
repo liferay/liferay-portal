@@ -220,7 +220,7 @@ public class VerifyProcessTrackerOSGiCommands {
 							serviceReference.getProperty(
 								"initial.deployment")) &&
 						 initialDeployment) ||
-						(StartupHelperUtil.isUpgrading() &&
+						(StartupHelperUtil.isRunOnPortalUpgradeVerifiers() &&
 						 GetterUtil.getBoolean(
 							 serviceReference.getProperty(
 								 "run.on.portal.upgrade")))) {

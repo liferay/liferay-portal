@@ -120,6 +120,16 @@ const TicketsOverview = () => {
 					<Picker
 						aria-label="Select a Filter"
 						items={FILTERS}
+						messages={{
+							itemDescribedby: Liferay.Language.get(
+								'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+							),
+							itemSelected: Liferay.Language.get('x-selected'),
+							scrollToBottomAriaLabel:
+								Liferay.Language.get('scroll-to-bottom'),
+							scrollToTopAriaLabel:
+								Liferay.Language.get('scroll-to-top'),
+						}}
 						onSelectionChange={(selectedFilterValue: any) => {
 							setPage(1);
 

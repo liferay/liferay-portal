@@ -76,7 +76,6 @@ export const ClearData: React.FC<IClearDataProps> = ({
 				dataSource.name
 			]) as string
 		}
-		groupId={groupId}
 		pageDescription={Liferay.Language.get(
 			'the-following-data-will-be-impacted-and-can-yield-unexpected-results.-this-action-will-not-remove-the-data-source'
 		)}

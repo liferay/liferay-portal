@@ -324,7 +324,6 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 					label: Liferay.Language.get('interest-topics')
 				}
 			]}
-			groupId={groupId}
 			key='interestTopicsPage'
 			pageDescription={renderPageDescription()}
 			pageTitle={Liferay.Language.get('interest-topics')}

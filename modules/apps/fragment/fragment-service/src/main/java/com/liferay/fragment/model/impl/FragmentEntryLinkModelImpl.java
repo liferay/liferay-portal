@@ -75,8 +75,9 @@ public class FragmentEntryLinkModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP},
-		{"originalFragmentEntryLinkId", Types.BIGINT},
-		{"fragmentEntryId", Types.BIGINT},
+		{"originalFragmentEntryLinkERC", Types.VARCHAR},
+		{"fragmentEntryERC", Types.VARCHAR},
+		{"fragmentEntryScopeERC", Types.VARCHAR},
 		{"segmentsExperienceId", Types.BIGINT}, {"classNameId", Types.BIGINT},
 		{"classPK", Types.BIGINT}, {"plid", Types.BIGINT}, {"css", Types.CLOB},
 		{"html", Types.CLOB}, {"js", Types.CLOB}, {"configuration", Types.CLOB},
@@ -102,8 +103,9 @@ public class FragmentEntryLinkModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("originalFragmentEntryLinkId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("fragmentEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("originalFragmentEntryLinkERC", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fragmentEntryERC", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fragmentEntryScopeERC", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("segmentsExperienceId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classNameId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classPK", Types.BIGINT);
@@ -123,7 +125,7 @@ public class FragmentEntryLinkModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table FragmentEntryLink (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,fragmentEntryLinkId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,originalFragmentEntryLinkId LONG,fragmentEntryId LONG,segmentsExperienceId LONG,classNameId LONG,classPK LONG,plid LONG,css TEXT null,html TEXT null,js TEXT null,configuration TEXT null,deleted BOOLEAN,editableValues TEXT null,namespace VARCHAR(75) null,position INTEGER,rendererKey VARCHAR(200) null,type_ INTEGER,lastPropagationDate DATE null,lastPublishDate DATE null,primary key (fragmentEntryLinkId, ctCollectionId))";
+		"create table FragmentEntryLink (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,fragmentEntryLinkId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,originalFragmentEntryLinkERC VARCHAR(75) null,fragmentEntryERC VARCHAR(75) null,fragmentEntryScopeERC VARCHAR(75) null,segmentsExperienceId LONG,classNameId LONG,classPK LONG,plid LONG,css TEXT null,html TEXT null,js TEXT null,configuration TEXT null,deleted BOOLEAN,editableValues TEXT null,namespace VARCHAR(75) null,position INTEGER,rendererKey VARCHAR(200) null,type_ INTEGER,lastPropagationDate DATE null,lastPublishDate DATE null,primary key (fragmentEntryLinkId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table FragmentEntryLink";
 
@@ -173,50 +175,62 @@ public class FragmentEntryLinkModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long FRAGMENTENTRYID_COLUMN_BITMASK = 32L;
+	public static final long FRAGMENTENTRYERC_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 64L;
+	public static final long FRAGMENTENTRYSCOPEERC_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ORIGINALFRAGMENTENTRYLINKID_COLUMN_BITMASK = 128L;
+	public static final long GROUPID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PLID_COLUMN_BITMASK = 256L;
+	public static final long ORIGINALFRAGMENTENTRYLINKERC_COLUMN_BITMASK = 256L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long RENDERERKEY_COLUMN_BITMASK = 512L;
+	public static final long PLID_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SEGMENTSEXPERIENCEID_COLUMN_BITMASK = 1024L;
+	public static final long RENDERERKEY_COLUMN_BITMASK = 1024L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 2048L;
+	public static final long SEGMENTSEXPERIENCEID_COLUMN_BITMASK = 2048L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long TYPE_COLUMN_BITMASK = 4096L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 8192L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long POSITION_COLUMN_BITMASK = 4096L;
+	public static final long POSITION_COLUMN_BITMASK = 16384L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -352,10 +366,13 @@ public class FragmentEntryLinkModelImpl
 			attributeGetterFunctions.put(
 				"modifiedDate", FragmentEntryLink::getModifiedDate);
 			attributeGetterFunctions.put(
-				"originalFragmentEntryLinkId",
-				FragmentEntryLink::getOriginalFragmentEntryLinkId);
+				"originalFragmentEntryLinkERC",
+				FragmentEntryLink::getOriginalFragmentEntryLinkERC);
 			attributeGetterFunctions.put(
-				"fragmentEntryId", FragmentEntryLink::getFragmentEntryId);
+				"fragmentEntryERC", FragmentEntryLink::getFragmentEntryERC);
+			attributeGetterFunctions.put(
+				"fragmentEntryScopeERC",
+				FragmentEntryLink::getFragmentEntryScopeERC);
 			attributeGetterFunctions.put(
 				"segmentsExperienceId",
 				FragmentEntryLink::getSegmentsExperienceId);
@@ -448,13 +465,17 @@ public class FragmentEntryLinkModelImpl
 				(BiConsumer<FragmentEntryLink, Date>)
 					FragmentEntryLink::setModifiedDate);
 			attributeSetterBiConsumers.put(
-				"originalFragmentEntryLinkId",
-				(BiConsumer<FragmentEntryLink, Long>)
-					FragmentEntryLink::setOriginalFragmentEntryLinkId);
+				"originalFragmentEntryLinkERC",
+				(BiConsumer<FragmentEntryLink, String>)
+					FragmentEntryLink::setOriginalFragmentEntryLinkERC);
 			attributeSetterBiConsumers.put(
-				"fragmentEntryId",
-				(BiConsumer<FragmentEntryLink, Long>)
-					FragmentEntryLink::setFragmentEntryId);
+				"fragmentEntryERC",
+				(BiConsumer<FragmentEntryLink, String>)
+					FragmentEntryLink::setFragmentEntryERC);
+			attributeSetterBiConsumers.put(
+				"fragmentEntryScopeERC",
+				(BiConsumer<FragmentEntryLink, String>)
+					FragmentEntryLink::setFragmentEntryScopeERC);
 			attributeSetterBiConsumers.put(
 				"segmentsExperienceId",
 				(BiConsumer<FragmentEntryLink, Long>)
@@ -767,19 +788,24 @@ public class FragmentEntryLinkModelImpl
 
 	@JSON
 	@Override
-	public long getOriginalFragmentEntryLinkId() {
-		return _originalFragmentEntryLinkId;
+	public String getOriginalFragmentEntryLinkERC() {
+		if (_originalFragmentEntryLinkERC == null) {
+			return "";
+		}
+		else {
+			return _originalFragmentEntryLinkERC;
+		}
 	}
 
 	@Override
-	public void setOriginalFragmentEntryLinkId(
-		long originalFragmentEntryLinkId) {
+	public void setOriginalFragmentEntryLinkERC(
+		String originalFragmentEntryLinkERC) {
 
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_originalFragmentEntryLinkId = originalFragmentEntryLinkId;
+		_originalFragmentEntryLinkERC = originalFragmentEntryLinkERC;
 	}
 
 	/**
@@ -787,24 +813,28 @@ public class FragmentEntryLinkModelImpl
 	 *             #getColumnOriginalValue(String)}
 	 */
 	@Deprecated
-	public long getOriginalOriginalFragmentEntryLinkId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("originalFragmentEntryLinkId"));
+	public String getOriginalOriginalFragmentEntryLinkERC() {
+		return getColumnOriginalValue("originalFragmentEntryLinkERC");
 	}
 
 	@JSON
 	@Override
-	public long getFragmentEntryId() {
-		return _fragmentEntryId;
+	public String getFragmentEntryERC() {
+		if (_fragmentEntryERC == null) {
+			return "";
+		}
+		else {
+			return _fragmentEntryERC;
+		}
 	}
 
 	@Override
-	public void setFragmentEntryId(long fragmentEntryId) {
+	public void setFragmentEntryERC(String fragmentEntryERC) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_fragmentEntryId = fragmentEntryId;
+		_fragmentEntryERC = fragmentEntryERC;
 	}
 
 	/**
@@ -812,9 +842,37 @@ public class FragmentEntryLinkModelImpl
 	 *             #getColumnOriginalValue(String)}
 	 */
 	@Deprecated
-	public long getOriginalFragmentEntryId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("fragmentEntryId"));
+	public String getOriginalFragmentEntryERC() {
+		return getColumnOriginalValue("fragmentEntryERC");
+	}
+
+	@JSON
+	@Override
+	public String getFragmentEntryScopeERC() {
+		if (_fragmentEntryScopeERC == null) {
+			return "";
+		}
+		else {
+			return _fragmentEntryScopeERC;
+		}
+	}
+
+	@Override
+	public void setFragmentEntryScopeERC(String fragmentEntryScopeERC) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_fragmentEntryScopeERC = fragmentEntryScopeERC;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalFragmentEntryScopeERC() {
+		return getColumnOriginalValue("fragmentEntryScopeERC");
 	}
 
 	@JSON
@@ -1145,6 +1203,16 @@ public class FragmentEntryLinkModelImpl
 		_type = type;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
+	}
+
 	@JSON
 	@Override
 	public Date getLastPropagationDate() {
@@ -1271,9 +1339,11 @@ public class FragmentEntryLinkModelImpl
 		fragmentEntryLinkImpl.setUserName(getUserName());
 		fragmentEntryLinkImpl.setCreateDate(getCreateDate());
 		fragmentEntryLinkImpl.setModifiedDate(getModifiedDate());
-		fragmentEntryLinkImpl.setOriginalFragmentEntryLinkId(
-			getOriginalFragmentEntryLinkId());
-		fragmentEntryLinkImpl.setFragmentEntryId(getFragmentEntryId());
+		fragmentEntryLinkImpl.setOriginalFragmentEntryLinkERC(
+			getOriginalFragmentEntryLinkERC());
+		fragmentEntryLinkImpl.setFragmentEntryERC(getFragmentEntryERC());
+		fragmentEntryLinkImpl.setFragmentEntryScopeERC(
+			getFragmentEntryScopeERC());
 		fragmentEntryLinkImpl.setSegmentsExperienceId(
 			getSegmentsExperienceId());
 		fragmentEntryLinkImpl.setClassNameId(getClassNameId());
@@ -1324,10 +1394,13 @@ public class FragmentEntryLinkModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		fragmentEntryLinkImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
-		fragmentEntryLinkImpl.setOriginalFragmentEntryLinkId(
-			this.<Long>getColumnOriginalValue("originalFragmentEntryLinkId"));
-		fragmentEntryLinkImpl.setFragmentEntryId(
-			this.<Long>getColumnOriginalValue("fragmentEntryId"));
+		fragmentEntryLinkImpl.setOriginalFragmentEntryLinkERC(
+			this.<String>getColumnOriginalValue(
+				"originalFragmentEntryLinkERC"));
+		fragmentEntryLinkImpl.setFragmentEntryERC(
+			this.<String>getColumnOriginalValue("fragmentEntryERC"));
+		fragmentEntryLinkImpl.setFragmentEntryScopeERC(
+			this.<String>getColumnOriginalValue("fragmentEntryScopeERC"));
 		fragmentEntryLinkImpl.setSegmentsExperienceId(
 			this.<Long>getColumnOriginalValue("segmentsExperienceId"));
 		fragmentEntryLinkImpl.setClassNameId(
@@ -1530,10 +1603,37 @@ public class FragmentEntryLinkModelImpl
 			fragmentEntryLinkCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
-		fragmentEntryLinkCacheModel.originalFragmentEntryLinkId =
-			getOriginalFragmentEntryLinkId();
+		fragmentEntryLinkCacheModel.originalFragmentEntryLinkERC =
+			getOriginalFragmentEntryLinkERC();
 
-		fragmentEntryLinkCacheModel.fragmentEntryId = getFragmentEntryId();
+		String originalFragmentEntryLinkERC =
+			fragmentEntryLinkCacheModel.originalFragmentEntryLinkERC;
+
+		if ((originalFragmentEntryLinkERC != null) &&
+			(originalFragmentEntryLinkERC.length() == 0)) {
+
+			fragmentEntryLinkCacheModel.originalFragmentEntryLinkERC = null;
+		}
+
+		fragmentEntryLinkCacheModel.fragmentEntryERC = getFragmentEntryERC();
+
+		String fragmentEntryERC = fragmentEntryLinkCacheModel.fragmentEntryERC;
+
+		if ((fragmentEntryERC != null) && (fragmentEntryERC.length() == 0)) {
+			fragmentEntryLinkCacheModel.fragmentEntryERC = null;
+		}
+
+		fragmentEntryLinkCacheModel.fragmentEntryScopeERC =
+			getFragmentEntryScopeERC();
+
+		String fragmentEntryScopeERC =
+			fragmentEntryLinkCacheModel.fragmentEntryScopeERC;
+
+		if ((fragmentEntryScopeERC != null) &&
+			(fragmentEntryScopeERC.length() == 0)) {
+
+			fragmentEntryLinkCacheModel.fragmentEntryScopeERC = null;
+		}
 
 		fragmentEntryLinkCacheModel.segmentsExperienceId =
 			getSegmentsExperienceId();
@@ -1715,8 +1815,9 @@ public class FragmentEntryLinkModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private long _originalFragmentEntryLinkId;
-	private long _fragmentEntryId;
+	private String _originalFragmentEntryLinkERC;
+	private String _fragmentEntryERC;
+	private String _fragmentEntryScopeERC;
 	private long _segmentsExperienceId;
 	private long _classNameId;
 	private long _classPK;
@@ -1777,8 +1878,10 @@ public class FragmentEntryLinkModelImpl
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put(
-			"originalFragmentEntryLinkId", _originalFragmentEntryLinkId);
-		_columnOriginalValues.put("fragmentEntryId", _fragmentEntryId);
+			"originalFragmentEntryLinkERC", _originalFragmentEntryLinkERC);
+		_columnOriginalValues.put("fragmentEntryERC", _fragmentEntryERC);
+		_columnOriginalValues.put(
+			"fragmentEntryScopeERC", _fragmentEntryScopeERC);
 		_columnOriginalValues.put(
 			"segmentsExperienceId", _segmentsExperienceId);
 		_columnOriginalValues.put("classNameId", _classNameId);
@@ -1842,41 +1945,43 @@ public class FragmentEntryLinkModelImpl
 
 		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("originalFragmentEntryLinkId", 2048L);
+		columnBitmasks.put("originalFragmentEntryLinkERC", 2048L);
 
-		columnBitmasks.put("fragmentEntryId", 4096L);
+		columnBitmasks.put("fragmentEntryERC", 4096L);
 
-		columnBitmasks.put("segmentsExperienceId", 8192L);
+		columnBitmasks.put("fragmentEntryScopeERC", 8192L);
 
-		columnBitmasks.put("classNameId", 16384L);
+		columnBitmasks.put("segmentsExperienceId", 16384L);
 
-		columnBitmasks.put("classPK", 32768L);
+		columnBitmasks.put("classNameId", 32768L);
 
-		columnBitmasks.put("plid", 65536L);
+		columnBitmasks.put("classPK", 65536L);
 
-		columnBitmasks.put("css", 131072L);
+		columnBitmasks.put("plid", 131072L);
 
-		columnBitmasks.put("html", 262144L);
+		columnBitmasks.put("css", 262144L);
 
-		columnBitmasks.put("js", 524288L);
+		columnBitmasks.put("html", 524288L);
 
-		columnBitmasks.put("configuration", 1048576L);
+		columnBitmasks.put("js", 1048576L);
 
-		columnBitmasks.put("deleted", 2097152L);
+		columnBitmasks.put("configuration", 2097152L);
 
-		columnBitmasks.put("editableValues", 4194304L);
+		columnBitmasks.put("deleted", 4194304L);
 
-		columnBitmasks.put("namespace", 8388608L);
+		columnBitmasks.put("editableValues", 8388608L);
 
-		columnBitmasks.put("position", 16777216L);
+		columnBitmasks.put("namespace", 16777216L);
 
-		columnBitmasks.put("rendererKey", 33554432L);
+		columnBitmasks.put("position", 33554432L);
 
-		columnBitmasks.put("type_", 67108864L);
+		columnBitmasks.put("rendererKey", 67108864L);
 
-		columnBitmasks.put("lastPropagationDate", 134217728L);
+		columnBitmasks.put("type_", 134217728L);
 
-		columnBitmasks.put("lastPublishDate", 268435456L);
+		columnBitmasks.put("lastPropagationDate", 268435456L);
+
+		columnBitmasks.put("lastPublishDate", 536870912L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

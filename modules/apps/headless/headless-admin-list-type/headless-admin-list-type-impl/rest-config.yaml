@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Admin.List.Type
 author: Gabriel Albuquerque
 clientDir: ../headless-admin-list-type-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../headless-admin-list-type-test/src/testIntegration/java

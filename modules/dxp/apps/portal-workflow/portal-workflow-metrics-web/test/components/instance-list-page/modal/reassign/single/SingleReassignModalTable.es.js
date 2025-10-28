@@ -198,7 +198,7 @@ describe('The AssigneeInput component should', () => {
 		fireEvent.change(autocompleteInput, {target: {value: 'Test'}});
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(autocompleteInput.value).toBe('Test');
@@ -225,7 +225,7 @@ describe('The AssigneeInput component should', () => {
 		);
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		expect(fetch).toHaveBeenCalled();
@@ -255,7 +255,7 @@ describe('The AssigneeInput component should', () => {
 		fireEvent.change(autocompleteInput, {target: {value: 'Test'}});
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		fireEvent.blur(autocompleteInput);
@@ -289,7 +289,7 @@ describe('The AssigneeInput component should', () => {
 		fireEvent.change(autocompleteInput, {target: {value: 'Test'}});
 
 		await act(async () => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		fireEvent.blur(autocompleteInput);

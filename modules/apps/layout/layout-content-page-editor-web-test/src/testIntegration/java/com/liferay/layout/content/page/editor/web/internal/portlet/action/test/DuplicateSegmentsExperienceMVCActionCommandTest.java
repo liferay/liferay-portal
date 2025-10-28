@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -151,12 +152,15 @@ public class DuplicateSegmentsExperienceMVCActionCommandTest {
 			_fragmentEntryLinkLocalService.getFragmentEntryLink(
 				GetterUtil.getLong(iterator.next()));
 
+		Assert.assertTrue(
+			Validator.isNull(
+				targetFragmentEntryLink.getOriginalFragmentEntryLinkERC()));
 		Assert.assertEquals(
-			0, targetFragmentEntryLink.getOriginalFragmentEntryLinkId());
-
+			sourceFragmentEntryLink.getFragmentEntryERC(),
+			targetFragmentEntryLink.getFragmentEntryERC());
 		Assert.assertEquals(
-			sourceFragmentEntryLink.getFragmentEntryId(),
-			targetFragmentEntryLink.getFragmentEntryId());
+			sourceFragmentEntryLink.getFragmentEntryGroupId(),
+			targetFragmentEntryLink.getFragmentEntryGroupId());
 		Assert.assertEquals(
 			sourceFragmentEntryLink.getHtml(),
 			targetFragmentEntryLink.getHtml());

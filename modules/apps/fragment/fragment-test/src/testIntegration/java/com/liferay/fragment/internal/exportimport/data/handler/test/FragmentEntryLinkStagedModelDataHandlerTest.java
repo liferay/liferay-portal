@@ -88,7 +88,7 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 	}
 
 	@Test
-	@TestInfo("LPD-40868")
+	@TestInfo({"LPD-40868", "LPS-149718"})
 	public void testFragmentEntryLinkWithFragmentEntryInCompanyGroup()
 		throws Exception {
 
@@ -112,8 +112,9 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		StagedModel stagedModel =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(),
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, fragmentEntry.getExternalReferenceCode(),
+				fragmentEntry.getScopeERC(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), StringPool.BLANK, "html",
@@ -127,8 +128,14 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			(FragmentEntryLink)_getExportImportStagedModel(stagedModel);
 
 		Assert.assertEquals(
-			fragmentEntry.getFragmentEntryId(),
-			importedFragmentEntryLink.getFragmentEntryId());
+			fragmentEntry.getGroupId(),
+			importedFragmentEntryLink.getFragmentEntryGroupId());
+		Assert.assertEquals(
+			fragmentEntry.getExternalReferenceCode(),
+			importedFragmentEntryLink.getFragmentEntryERC());
+
+		_testImportRestoresDeletedFragmentEntryInCompanyGroup(
+			fragmentEntry, stagedModel);
 	}
 
 	@Test
@@ -151,9 +158,11 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		stagedModel = _fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			TestPropsValues.getUserId(),
 			fragmentEntryLink.getFragmentEntryLinkId(),
-			fragmentEntryLink.getFragmentEntryLinkId(),
-			fragmentEntryLink.getFragmentEntryId(), fragmentEntryLink.getPlid(),
-			"css", "html", "js", fragmentEntryLink.getConfiguration(),
+			fragmentEntryLink.getOriginalFragmentEntryLinkERC(),
+			fragmentEntryLink.getFragmentEntryERC(),
+			fragmentEntryLink.getFragmentEntryScopeERC(),
+			fragmentEntryLink.getPlid(), "css", "html", "js",
+			fragmentEntryLink.getConfiguration(),
 			fragmentEntryLink.getEditableValues(),
 			fragmentEntryLink.getNamespace(),
 			fragmentEntryLink.getPosition() + 1, fragmentEntryLink.getType(),
@@ -190,8 +199,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		StagedModel stagedModel =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				0,
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, null, null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), StringPool.BLANK, "html",
@@ -245,8 +254,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		StagedModel stagedModel =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				0,
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, null, null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), StringPool.BLANK, "html",
@@ -312,8 +321,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		StagedModel stagedModel =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				0,
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, null, null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), StringPool.BLANK, "html",
@@ -344,8 +353,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		StagedModel stagedModel =
 			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(), 0,
-				0,
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				null, null, null,
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				stagingGroup.getDefaultPublicPlid(), StringPool.BLANK, "html",
@@ -370,8 +379,9 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 		FragmentEntryLink fragmentEntryLink = (FragmentEntryLink)stagedModel;
 
 		Assert.assertNotNull(
-			_fragmentEntryLocalService.getFragmentEntry(
-				fragmentEntryLink.getFragmentEntryId()));
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				fragmentEntryLink.getFragmentEntryERC(),
+				fragmentEntryLink.getFragmentEntryGroupId()));
 
 		try {
 			_exportImportStagedModel(stagedModel, true);
@@ -387,8 +397,9 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			(FragmentEntryLink)importedStagedModel;
 
 		Assert.assertNotNull(
-			_fragmentEntryLocalService.getFragmentEntry(
-				importedFragmentEntryLink.getFragmentEntryId()));
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				importedFragmentEntryLink.getFragmentEntryERC(),
+				importedFragmentEntryLink.getFragmentEntryGroupId()));
 	}
 
 	@Override
@@ -418,7 +429,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
-			0, fragmentEntry.getFragmentEntryId(),
+			null, fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(),
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			group.getDefaultPublicPlid(), fragmentEntry.getCss(),
@@ -511,7 +523,8 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 			fragmentEntryLink);
 
 		_fragmentEntryLocalService.deleteFragmentEntry(
-			fragmentEntryLink.getFragmentEntryId());
+			fragmentEntryLink.getFragmentEntryERC(),
+			fragmentEntryLink.getFragmentEntryGroupId());
 
 		initImport();
 
@@ -557,6 +570,43 @@ public class FragmentEntryLinkStagedModelDataHandlerTest
 	private String _read(String fileName) throws Exception {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
+	}
+
+	private void _testImportRestoresDeletedFragmentEntryInCompanyGroup(
+			FragmentEntry fragmentEntry, StagedModel stagedModel)
+		throws Exception {
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			exportStagedModel(stagedModel);
+
+			fragmentEntry.setExternalReferenceCode(
+				RandomTestUtil.randomString());
+
+			fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
+				fragmentEntry);
+
+			importStagedModel(stagedModel);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
+
+		StagedModel importedStagedModel = getStagedModel(
+			stagedModel.getUuid(), liveGroup);
+
+		Assert.assertNotNull(importedStagedModel);
+
+		FragmentEntryLink importedFragmentEntryLink =
+			(FragmentEntryLink)importedStagedModel;
+
+		Assert.assertEquals(
+			fragmentEntry.getGroupId(),
+			importedFragmentEntryLink.getFragmentEntryGroupId());
+		Assert.assertEquals(
+			fragmentEntry.getExternalReferenceCode(),
+			importedFragmentEntryLink.getFragmentEntryERC());
 	}
 
 	@Inject

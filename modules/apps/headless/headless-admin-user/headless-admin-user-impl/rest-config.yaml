@@ -6,6 +6,6 @@ application:
     name: Liferay.Headless.Admin.User
 author: Javier Gamarra
 clientDir: ../headless-admin-user-client/src/main/java
-compatibilityVersion: 12
+compatibilityVersion: 13
 javaEEPackage: jakarta
 testDir: ../headless-admin-user-test/src/testIntegration/java

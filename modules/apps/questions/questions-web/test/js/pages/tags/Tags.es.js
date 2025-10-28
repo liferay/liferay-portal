@@ -10,7 +10,7 @@ import {Route} from 'react-router-dom';
 import Tags from '../../../../src/main/resources/META-INF/resources/js/pages/tags/Tags.es';
 import {renderComponent} from '../../../helpers.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const mockTags = {
 	data: {

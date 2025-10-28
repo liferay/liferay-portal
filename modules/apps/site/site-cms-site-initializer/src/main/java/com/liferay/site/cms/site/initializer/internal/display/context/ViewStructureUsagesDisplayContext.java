@@ -17,7 +17,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.portlet.ActionRequest;
 
@@ -46,7 +48,7 @@ public class ViewStructureUsagesDisplayContext {
 			"/o/search/v1.0/search?emptySearch=true&",
 			"filter=(objectDefinitionId eq ",
 			ParamUtil.getLong(_httpServletRequest, "objectDefinitionId"),
-			")&nestedFields=embedded");
+			" and status in (", _STATUSES, "))&nestedFields=embedded");
 	}
 
 	public List<DropdownItem> getBulkActionDropdownItems() {
@@ -96,6 +98,13 @@ public class ViewStructureUsagesDisplayContext {
 				_language.get(_httpServletRequest, "delete"), "delete",
 				"delete", "headless"));
 	}
+
+	private static final String _STATUSES = StringUtil.merge(
+		new int[] {
+			WorkflowConstants.STATUS_APPROVED, WorkflowConstants.STATUS_DRAFT,
+			WorkflowConstants.STATUS_EXPIRED, WorkflowConstants.STATUS_PENDING,
+			WorkflowConstants.STATUS_SCHEDULED
+		});
 
 	private final HttpServletRequest _httpServletRequest;
 	private final Language _language;

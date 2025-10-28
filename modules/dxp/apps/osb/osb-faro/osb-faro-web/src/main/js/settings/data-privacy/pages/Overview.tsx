@@ -167,7 +167,6 @@ export const Overview: React.FC<IOverviewProps> = ({close, groupId, open}) => {
 	return (
 		<BasePage
 			className='data-privacy-overview-root'
-			groupId={groupId}
 			pageTitle={Liferay.Language.get('data-control-&-privacy')}
 		>
 			<div className='row'>

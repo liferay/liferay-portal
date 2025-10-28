@@ -77,6 +77,15 @@ export default function RuleSelect<T extends string>({
 			as={TriggerLabel}
 			items={getSelectOptions(items)}
 			key={selectedKey === undefined && previousSelectedKey ? 0 : 1}
+			messages={{
+				itemDescribedby: Liferay.Language.get(
+					'you-are-currently-on-a-text-element,-inside-of-a-list-box'
+				),
+				itemSelected: Liferay.Language.get('x-selected'),
+				scrollToBottomAriaLabel:
+					Liferay.Language.get('scroll-to-bottom'),
+				scrollToTopAriaLabel: Liferay.Language.get('scroll-to-top'),
+			}}
 			onSelectionChange={(selection: React.Key) =>
 				onSelectionChange(selection as T)
 			}

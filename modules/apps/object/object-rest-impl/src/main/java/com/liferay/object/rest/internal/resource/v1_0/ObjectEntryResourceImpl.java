@@ -6,8 +6,10 @@
 package com.liferay.object.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.exception.ObjectEntryValidationException;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationshipModel;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.ValidationError;
@@ -27,15 +29,19 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectRelationshipService;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -74,7 +80,8 @@ public class ObjectEntryResourceImpl
 		ObjectRelationshipService objectRelationshipService,
 		ObjectScopeProviderRegistry objectScopeProviderRegistry,
 		SystemObjectDefinitionManagerRegistry
-			systemObjectDefinitionManagerRegistry) {
+			systemObjectDefinitionManagerRegistry,
+		UserLocalService userLocalService) {
 
 		_dtoConverterRegistry = dtoConverterRegistry;
 		_entityModelProvider = entityModelProvider;
@@ -89,6 +96,7 @@ public class ObjectEntryResourceImpl
 		_objectScopeProviderRegistry = objectScopeProviderRegistry;
 		_systemObjectDefinitionManagerRegistry =
 			systemObjectDefinitionManagerRegistry;
+		_userLocalService = userLocalService;
 	}
 
 	@Override
@@ -1196,7 +1204,11 @@ public class ObjectEntryResourceImpl
 
 	private String _getFilterString() {
 		if (contextHttpServletRequest != null) {
-			return ParamUtil.getString(contextHttpServletRequest, "filter");
+			return _getFilterString(
+				ParamUtil.getString(
+					contextHttpServletRequest,
+					"assigneeUserExternalReferenceCode"),
+				ParamUtil.getString(contextHttpServletRequest, "filter"));
 		}
 
 		if (contextUriInfo == null) {
@@ -1206,7 +1218,45 @@ public class ObjectEntryResourceImpl
 		MultivaluedMap<String, String> queryParameters =
 			contextUriInfo.getQueryParameters();
 
-		return queryParameters.getFirst("filter");
+		return _getFilterString(
+			queryParameters.getFirst("assigneeUserExternalReferenceCode"),
+			queryParameters.getFirst("filter"));
+	}
+
+	private String _getFilterString(
+		String assigneeUserExternalReferenceCode, String filterString) {
+
+		if (Validator.isNull(assigneeUserExternalReferenceCode)) {
+			return filterString;
+		}
+
+		ObjectField objectField =
+			_objectFieldLocalService.fetchObjectFieldByBusinessType(
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE, null);
+
+		if (objectField == null) {
+			return filterString;
+		}
+
+		long userId = 0;
+
+		User user = _userLocalService.fetchUserByExternalReferenceCode(
+			assigneeUserExternalReferenceCode, contextCompany.getCompanyId());
+
+		if (user != null) {
+			userId = user.getUserId();
+		}
+
+		String assigneeFilterString = StringBundler.concat(
+			objectField.getName(), " eq ", userId);
+
+		if (Validator.isNull(filterString)) {
+			return assigneeFilterString;
+		}
+
+		return StringBundler.concat(
+			"(", filterString, ") and ", assigneeFilterString);
 	}
 
 	private String _getScopeKey(Map<String, Serializable> parameters) {
@@ -1289,5 +1339,6 @@ public class ObjectEntryResourceImpl
 	private final ObjectScopeProviderRegistry _objectScopeProviderRegistry;
 	private final SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
+	private final UserLocalService _userLocalService;
 
 }

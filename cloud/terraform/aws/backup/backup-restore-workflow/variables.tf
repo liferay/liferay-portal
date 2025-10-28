@@ -1,3 +1,6 @@
+variable "arn_partition" {
+	default="aws"
+}
 variable "artifact_repository_bucket_prefix" {
 	default="argo-workflows-artifact-repository-"
 }

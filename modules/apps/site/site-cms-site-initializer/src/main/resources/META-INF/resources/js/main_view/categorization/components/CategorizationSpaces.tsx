@@ -12,7 +12,6 @@ import React, {ChangeEvent, useEffect, useState} from 'react';
 
 import SpaceSticker from '../../../common/components/SpaceSticker';
 import SpaceService from '../../../common/services/SpaceService';
-import {LogoColor} from '../../../common/types/Space';
 
 type Space = {
 	displayType?: string;
@@ -20,17 +19,9 @@ type Space = {
 	value: any;
 };
 
-const ALL_SPACES: Space[] = [
-	{
-		label: 'All Spaces',
-		value: -1,
-	},
-];
-
 export default function CategorizationSpaces({
 	assetLibraries,
 	checkboxText,
-	selectedSpaces,
 	setSelectedSpaces,
 	setSpaceChange,
 	setSpaceInputError,
@@ -38,7 +29,6 @@ export default function CategorizationSpaces({
 }: {
 	assetLibraries?: any;
 	checkboxText: string;
-	selectedSpaces: number[];
 	setSelectedSpaces: (value: any) => void;
 	setSpaceChange?: (value: boolean) => void;
 	setSpaceInputError: (value: string) => void;
@@ -75,7 +65,7 @@ export default function CategorizationSpaces({
 			) {
 				setCheckbox(true);
 
-				setSelectedItems(ALL_SPACES);
+				setSelectedItems([]);
 			}
 			else if (initialSpaces) {
 				setCheckbox(false);
@@ -89,7 +79,7 @@ export default function CategorizationSpaces({
 
 	useEffect(() => {
 		if (setSpaceChange) {
-			if (selectedItems?.find((space) => space.value === -1)) {
+			if (checkbox) {
 				setSpaceChange(false);
 			}
 			else if (
@@ -105,7 +95,7 @@ export default function CategorizationSpaces({
 			}
 		}
 
-		if (selectedItems.length) {
+		if (checkbox || selectedItems.length) {
 			setSpaceInputError('');
 		}
 		else {
@@ -117,6 +107,7 @@ export default function CategorizationSpaces({
 			);
 		}
 	}, [
+		checkbox,
 		initialSelectedSpaces,
 		selectedItems,
 		setSpaceChange,
@@ -124,12 +115,12 @@ export default function CategorizationSpaces({
 	]);
 
 	const _handleChangeAllSpaces = (event: ChangeEvent<HTMLInputElement>) => {
+		setSelectedItems([]);
+
 		if (!event.target.checked) {
-			setSelectedItems([]);
 			setSelectedSpaces([]);
 		}
 		else {
-			setSelectedItems(ALL_SPACES);
 			setSelectedSpaces([-1]);
 		}
 
@@ -142,21 +133,6 @@ export default function CategorizationSpaces({
 		);
 
 		setSelectedSpaces(items.map((item) => item.value));
-	};
-
-	const isChecked = (itemValue: number) => {
-		return selectedSpaces.includes(itemValue);
-	};
-
-	const _handleCheckboxChange = (itemValue: any) => {
-		setSelectedSpaces((prevSelectedSpaces: number[]) => {
-			if (isChecked(itemValue)) {
-				return prevSelectedSpaces.filter((id) => id !== itemValue);
-			}
-			else {
-				return [...prevSelectedSpaces, itemValue];
-			}
-		});
 	};
 
 	return (
@@ -180,6 +156,7 @@ export default function CategorizationSpaces({
 						_handleChangeSpaces(items);
 					}}
 					sourceItems={availableSpaces}
+					value={checkbox ? Liferay.Language.get('all-spaces') : ''}
 				>
 					{(item) => (
 						<ClayMultiSelect.Item
@@ -187,24 +164,8 @@ export default function CategorizationSpaces({
 							textValue={item.label}
 						>
 							<div className="autofit-row autofit-row-center">
-								<div className="autofit-col">
-									<ClayCheckbox
-										aria-label={item.label}
-										checked={isChecked(item.value)}
-										onChange={() => {
-											_handleCheckboxChange(item.value);
-										}}
-									/>
-								</div>
-
 								<span className="align-items-center d-flex space-renderer-sticker">
-									<SpaceSticker
-										displayType={
-											item.displayType as LogoColor
-										}
-										name={item.label}
-										size="sm"
-									/>
+									<SpaceSticker name={item.label} />
 								</span>
 							</div>
 						</ClayMultiSelect.Item>

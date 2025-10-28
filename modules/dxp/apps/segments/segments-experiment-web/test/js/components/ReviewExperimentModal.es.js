@@ -12,7 +12,7 @@ import {ReviewExperimentModal} from '../../../src/main/resources/META-INF/resour
 import SegmentsExperimentContext from '../../../src/main/resources/META-INF/resources/js/context.es';
 import {StateContext} from '../../../src/main/resources/META-INF/resources/js/state/context.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const variants = [
 	{

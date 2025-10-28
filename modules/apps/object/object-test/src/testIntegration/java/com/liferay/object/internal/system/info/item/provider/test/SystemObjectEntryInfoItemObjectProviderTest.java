@@ -82,7 +82,7 @@ public class SystemObjectEntryInfoItemObjectProviderTest {
 				getSystemObjectDefinitionManager(objectDefinition.getName());
 
 		long userId = systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(),
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.<String, Object>put(
 				"alternateName", "john"
 			).put(

@@ -367,7 +367,10 @@ export default function ChangeTrackingIndicator({
 				size="lg"
 				spritemap={spritemap}
 			>
-				<ClayModal.Header withTitle>
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+					withTitle
+				>
 					{Liferay.Language.get('select-a-publication')}
 				</ClayModal.Header>
 

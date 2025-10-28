@@ -549,10 +549,12 @@ public class PortletRenderUtil {
 				content = StreamUtil.toString(resourceURL.openStream());
 			}
 			catch (Exception exception) {
-				_log.error(
-					"Assuming " + resourceURI +
-						" has no tokens because it could not be read",
-					exception);
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Assuming " + resourceURI +
+							" has no tokens because it could not be read",
+						exception);
+				}
 
 				_tokenized.putIfAbsent(resourceURI, false);
 

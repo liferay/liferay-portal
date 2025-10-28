@@ -68,7 +68,7 @@
 										"borderColor": "rgb(241, 242, 245)",
 										"borderRadius": "10px",
 										"borderWidth": "2px",
-										"marginBottom": "2",
+										"marginBottom": "4",
 										"marginLeft": "3",
 										"paddingLeft": "3",
 										"paddingRight": "3",
@@ -77,6 +77,31 @@
 									"indexed": true
 								},
 								"id": "b56a878b-6b3f-e87a-7364-b4943fba1684",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpaceFilesSummaryJSPSectionFragmentRenderer"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"fragmentStyle": {
+										"borderColor": "rgb(241, 242, 245)",
+										"borderRadius": "10px",
+										"borderWidth": "2px",
+										"marginLeft": "3",
+										"marginTop": "4",
+										"paddingBottom": "3",
+										"paddingLeft": "3",
+										"paddingRight": "3",
+										"paddingTop": "3"
+									},
+									"indexed": true
+								},
+								"id": "2c7d371c-2b8f-eb30-fddc-457b7e3c2048",
 								"type": "Fragment"
 							}
 						],
@@ -119,7 +144,7 @@
 										"borderColor": "rgb(241, 242, 245)",
 										"borderRadius": "10px",
 										"borderWidth": "2px",
-										"marginBottom": "2",
+										"marginBottom": "4",
 										"marginRight": "3",
 										"paddingLeft": "3",
 										"paddingRight": "3",
@@ -129,86 +154,7 @@
 								},
 								"id": "1ca914a8-b7b5-c8f6-ed98-2f8588ff212d",
 								"type": "Fragment"
-							}
-						],
-						"type": "Column"
-					},
-					{
-						"definition": {
-							"columnViewports": [
-								{
-									"columnViewportDefinition": {
-										"size": 12
-									},
-									"id": "landscapeMobile"
-								},
-								{
-									"columnViewportDefinition": {
-									},
-									"id": "portraitMobile"
-								},
-								{
-									"columnViewportDefinition": {
-									},
-									"id": "tablet"
-								}
-							],
-							"size": 6
-						},
-						"id": "0194ec48-c8e7-f054-9307-0a02230b4741",
-						"pageElements": [
-							{
-								"definition": {
-									"fragment": {
-										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpaceFilesSummaryJSPSectionFragmentRenderer"
-									},
-									"fragmentConfig": {
-									},
-									"fragmentFields": [
-									],
-									"fragmentStyle": {
-										"borderColor": "rgb(241, 242, 245)",
-										"borderRadius": "10px",
-										"borderWidth": "2px",
-										"marginLeft": "3",
-										"marginTop": "2",
-										"paddingBottom": "3",
-										"paddingLeft": "3",
-										"paddingRight": "3",
-										"paddingTop": "3"
-									},
-									"indexed": true
-								},
-								"id": "2c7d371c-2b8f-eb30-fddc-457b7e3c2048",
-								"type": "Fragment"
-							}
-						],
-						"type": "Column"
-					},
-					{
-						"definition": {
-							"columnViewports": [
-								{
-									"columnViewportDefinition": {
-										"size": 12
-									},
-									"id": "landscapeMobile"
-								},
-								{
-									"columnViewportDefinition": {
-									},
-									"id": "portraitMobile"
-								},
-								{
-									"columnViewportDefinition": {
-									},
-									"id": "tablet"
-								}
-							],
-							"size": 6
-						},
-						"id": "b54054e0-2f44-35e4-e229-b131fe82cc47",
-						"pageElements": [
+							},
 							{
 								"definition": {
 									"fragment": {
@@ -223,8 +169,7 @@
 										"borderRadius": "10px",
 										"borderWidth": "2px",
 										"marginRight": "3",
-										"marginTop": "2",
-										"paddingBottom": "3",
+										"marginTop": "4",
 										"paddingLeft": "3",
 										"paddingRight": "3",
 										"paddingTop": "3"

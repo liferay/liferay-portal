@@ -12,6 +12,13 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		groupId: '23'
+	})
+}));
+
 const WrappedComponent = props => (
 	<Provider store={mockStore()}>
 		<StaticRouter>

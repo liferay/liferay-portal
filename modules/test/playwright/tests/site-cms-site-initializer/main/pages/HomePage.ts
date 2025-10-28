@@ -51,7 +51,7 @@ export class HomePage {
 
 	async goto() {
 		await this.page.goto(PORTLET_URLS.cmsHome);
-		await this.page.getByRole('heading', {name: 'Home'}).waitFor();
+		await this.page.getByRole('menuitem', {name: 'Home'}).waitFor();
 	}
 
 	async assignToMe(name: string) {

@@ -11,10 +11,14 @@ import com.liferay.customer.constants.NotificationTemplateConstants;
 import com.liferay.customer.model.BusinessEvent;
 import com.liferay.customer.permission.BusinessEventPermission;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -264,38 +268,49 @@ public class ObjectActionBusinessEventRestController
 		return objectActionTriggerKey;
 	}
 
-	private Map<String, String> _getPlaceholderValues(
+	private Map<String, String[]> _getPlaceholderValues(
 		BusinessEvent businessEvent, JSONObject koroneikiAccountJSONObject) {
 
-		String formattedComment = "";
-
-		if (!StringUtil.equals(businessEvent.getLastComment(), "")) {
-			formattedComment = "<p>" + businessEvent.getLastComment() + "</p>";
-		}
-
 		return HashMapBuilder.put(
-			"BUSINESSEVENT_ACTIVITY_HISTORY_PAGE_LINK",
-			businessEvent.getActivityHistoryURL(_customerPortalURL)
+			"placeholders",
+			new String[] {
+				"[%BUSINESSEVENT_ACTIVITY_HISTORY_PAGE_LINK%]",
+				"[%BUSINESSEVENT_AUTHOR_FIRST_NAME%]",
+				"[%BUSINESSEVENT_DETAIL_PAGE_LINK%]",
+				"[%BUSINESSEVENT_EDIT_PAGE_LINK%]",
+				"[%BUSINESSEVENT_EVENTTYPE%]", "[%BUSINESSEVENT_LASTCOMMENT%]",
+				"[%BUSINESSEVENT_NAME%]",
+				"[%BUSINESSEVENT_TARGETGOLIVEDATETIME%]", "[%PROJECT_NAME%]"
+			}
 		).put(
-			"BUSINESSEVENT_AUTHOR_FIRST_NAME",
-			businessEvent.getCreatorGivenName()
-		).put(
-			"BUSINESSEVENT_DETAIL_PAGE_LINK",
-			businessEvent.getURL(_customerPortalURL)
-		).put(
-			"BUSINESSEVENT_EDIT_PAGE_LINK",
-			businessEvent.getEditURL(_customerPortalURL)
-		).put(
-			"BUSINESSEVENT_EVENTTYPE", businessEvent.getEventTypeName()
-		).put(
-			"BUSINESSEVENT_LASTCOMMENT", formattedComment
-		).put(
-			"BUSINESSEVENT_NAME", businessEvent.getName()
-		).put(
-			"BUSINESSEVENT_TARGETGOLIVEDATETIME",
-			businessEvent.getTargetGoLiveDate()
-		).put(
-			"PROJECT_NAME", koroneikiAccountJSONObject.getString("name")
+			"values",
+			() -> {
+				List<String> values = new ArrayList<>();
+
+				values.add(
+					businessEvent.getActivityHistoryURL(_customerPortalURL));
+				values.add(businessEvent.getCreatorGivenName());
+				values.add(businessEvent.getURL(_customerPortalURL));
+				values.add(businessEvent.getEditURL(_customerPortalURL));
+				values.add(businessEvent.getEventTypeName());
+
+				String formattedComment = StringPool.BLANK;
+
+				if (!StringUtil.equals(
+						businessEvent.getLastComment(), StringPool.BLANK)) {
+
+					formattedComment =
+						"<p>" + businessEvent.getLastComment() + "</p>";
+				}
+
+				values.add(formattedComment);
+
+				values.add(businessEvent.getName());
+				values.add(businessEvent.getTargetGoLiveDate());
+				values.add(koroneikiAccountJSONObject.getString("name"));
+
+				return ArrayUtil.toStringArray(values);
+			}
 		).build();
 	}
 
@@ -444,7 +459,7 @@ public class ObjectActionBusinessEventRestController
 		JSONObject koroneikiAccountJSONObject = _getKoroneikiAccountJSONObject(
 			businessEvent.getAccountExternalReferenceCode());
 
-		Map<String, String> placeholderValues = _getPlaceholderValues(
+		Map<String, String[]> placeholderValues = _getPlaceholderValues(
 			businessEvent, koroneikiAccountJSONObject);
 
 		post(
@@ -453,8 +468,9 @@ public class ObjectActionBusinessEventRestController
 			).put(
 				"body",
 				StringUtil.replace(
-					notificationTemplateBodyJSONObject.getString("en_US"), "[%",
-					"%]", placeholderValues)
+					notificationTemplateBodyJSONObject.getString("en_US"),
+					placeholderValues.get("placeholders"),
+					placeholderValues.get("values"))
 			).put(
 				"recipients",
 				_parseRecipientsJSONArray(
@@ -465,7 +481,8 @@ public class ObjectActionBusinessEventRestController
 				"subject",
 				StringUtil.replace(
 					notificationTemplateSubjectJSONObject.getString("en_US"),
-					"[%", "%]", placeholderValues)
+					placeholderValues.get("placeholders"),
+					placeholderValues.get("values"))
 			).put(
 				"type", "email"
 			).toString(),

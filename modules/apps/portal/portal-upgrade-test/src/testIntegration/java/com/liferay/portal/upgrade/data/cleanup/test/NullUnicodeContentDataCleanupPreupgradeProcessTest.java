@@ -126,21 +126,27 @@ public class NullUnicodeContentDataCleanupPreupgradeProcessTest
 		}
 
 		try (PreparedStatement preparedStatement = _connection.prepareStatement(
-				"select data_ from DDMContent where contentId = " + _contentId);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select data_ from DDMContent where contentId = ?")) {
 
-			Assert.assertTrue(resultSet.next());
+			preparedStatement.setLong(1, _contentId);
 
-			Assert.assertEquals(cleanContent, resultSet.getString(1));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+
+				Assert.assertEquals(cleanContent, resultSet.getString(1));
+			}
 		}
 
 		try (PreparedStatement preparedStatement = _connection.prepareStatement(
-				"select content from JournalArticle where id_ = " + _journalId);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				"select content from JournalArticle where id_ = ?")) {
 
-			Assert.assertTrue(resultSet.next());
+			preparedStatement.setLong(1, _journalId);
 
-			Assert.assertEquals(cleanContent, resultSet.getString(1));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+
+				Assert.assertEquals(cleanContent, resultSet.getString(1));
+			}
 		}
 	}
 

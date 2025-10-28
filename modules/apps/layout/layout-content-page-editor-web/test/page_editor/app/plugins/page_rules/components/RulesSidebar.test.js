@@ -6,7 +6,7 @@
 import {act, fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import {StoreAPIContextProvider} from '../../../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/StoreContext';
@@ -163,7 +163,7 @@ describe('RulesSidebar', () => {
 		});
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const modalTitle = document.querySelector('.modal-title');
@@ -192,13 +192,13 @@ describe('RulesSidebar', () => {
 		fireEvent.click(openOptionsButton);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		fireEvent.click(screen.getByText('edit'));
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		const modalTitle = document.querySelector('.modal-title');
@@ -227,7 +227,7 @@ describe('RulesSidebar', () => {
 		fireEvent.click(openOptionsButton);
 
 		act(() => {
-			jest.runAllTimers();
+			jest.advanceTimersByTime(100);
 		});
 
 		fireEvent.click(screen.getByText('delete'));

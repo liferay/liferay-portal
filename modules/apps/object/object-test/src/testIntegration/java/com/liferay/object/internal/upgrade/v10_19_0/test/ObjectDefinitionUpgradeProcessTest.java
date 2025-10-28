@@ -77,24 +77,27 @@ public class ObjectDefinitionUpgradeProcessTest {
 		try (Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				"select name, value from ObjectDefinitionSetting where " +
-					"objectDefinitionId = " + objectDefinitionId);
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"objectDefinitionId = ?")) {
 
-			while (resultSet.next()) {
-				Assert.assertEquals(
-					ObjectDefinitionSettingConstants.
-						NAME_ROOT_OBJECT_DEFINITION_IDS,
-					resultSet.getString("name"));
-				Assert.assertEquals(
-					String.valueOf(rootObjectDefinitionId),
-					resultSet.getString("value"));
+			preparedStatement.setLong(1, objectDefinitionId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					Assert.assertEquals(
+						ObjectDefinitionSettingConstants.
+							NAME_ROOT_OBJECT_DEFINITION_IDS,
+						resultSet.getString("name"));
+					Assert.assertEquals(
+						String.valueOf(rootObjectDefinitionId),
+						resultSet.getString("value"));
+				}
+
+				DBInspector dbInspector = new DBInspector(connection);
+
+				Assert.assertFalse(
+					dbInspector.hasColumn(
+						"ObjectDefinition", "rootObjectDefinitionId"));
 			}
-
-			DBInspector dbInspector = new DBInspector(connection);
-
-			Assert.assertFalse(
-				dbInspector.hasColumn(
-					"ObjectDefinition", "rootObjectDefinitionId"));
 		}
 	}
 

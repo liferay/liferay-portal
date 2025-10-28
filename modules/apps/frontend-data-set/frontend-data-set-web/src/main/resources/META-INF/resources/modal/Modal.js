@@ -148,7 +148,10 @@ function Modal({
 					status={status}
 				>
 					{!disableHeader && (
-						<ClayModal.Header withTitle={!disableHeader}>
+						<ClayModal.Header
+							closeButtonAriaLabel={Liferay.Language.get('close')}
+							withTitle={!disableHeader}
+						>
 							{title}
 						</ClayModal.Header>
 					)}

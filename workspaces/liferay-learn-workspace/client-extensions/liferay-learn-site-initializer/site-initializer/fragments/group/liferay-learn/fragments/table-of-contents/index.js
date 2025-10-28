@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	if (!tocContainer) {
 		return;
 	}
+
+	let isScrollHandlerActive = true;
+	const scrollOffset = 150;
+
 	let contentHeadings = document.querySelectorAll('h2');
 
 	if (!contentHeadings.length) {
@@ -54,20 +58,63 @@ document.addEventListener('DOMContentLoaded', () => {
 		activeIdSearch?.closest('li')?.classList.add('active');
 	};
 
-	const observerOptions = {
-		rootMargin: '-200px 0px 0px 0px',
-		threshold: 0.2,
+	const handleScroll = () => {
+		if (!isScrollHandlerActive) {
+			return;
+		}
+
+		let closestElement = null;
+		let closestOffset = Number.POSITIVE_INFINITY;
+
+		contentHeadings.forEach((element) => {
+			const {top} = element.getBoundingClientRect();
+
+			if (top - scrollOffset >= 0 && top < closestOffset) {
+				closestOffset = top;
+				closestElement = element;
+			}
+		});
+
+		if (!closestElement && contentHeadings.length) {
+			const firstHeading = contentHeadings[0];
+			const firstHeadingTop = firstHeading.getBoundingClientRect().top;
+
+			if (firstHeadingTop < scrollOffset && firstHeadingTop > 0) {
+				closestElement = firstHeading;
+			}
+			else if (firstHeadingTop < 0 && contentHeadings.length) {
+				let highestElement = null;
+				let minTop = Number.POSITIVE_INFINITY;
+
+				contentHeadings.forEach((element) => {
+					const {top} = element.getBoundingClientRect();
+					if (top < 0 && top > minTop) {
+						minTop = top;
+						highestElement = element;
+					}
+				});
+
+				if (
+					!highestElement &&
+					window.scrollY + window.innerHeight >=
+						document.documentElement.scrollHeight - 50
+				) {
+					highestElement =
+						contentHeadings[contentHeadings.length - 1];
+				}
+
+				if (highestElement) {
+					closestElement = highestElement;
+				}
+			}
+		}
+
+		if (closestElement) {
+			updateActiveLink(closestElement.id);
+		}
 	};
 
-	const observer = new IntersectionObserver((entries) => {
-		const intersectingEntry = entries.find((entry) => entry.isIntersecting);
-
-		if (intersectingEntry) {
-			updateActiveLink(intersectingEntry.target.id);
-		}
-	}, observerOptions);
-
-	contentHeadings.forEach((heading) => observer.observe(heading));
+	window.addEventListener('scroll', handleScroll);
 
 	tocList.addEventListener('click', (event) => {
 		const link = event.target.closest('a');
@@ -79,13 +126,23 @@ document.addEventListener('DOMContentLoaded', () => {
 			const targetElement = document.getElementById(targetId);
 
 			if (targetElement) {
+				isScrollHandlerActive = false;
+
 				window.scrollTo({
 					behavior: 'smooth',
 					top: targetElement.offsetTop - 160,
 				});
 
 				updateActiveLink(targetId);
+
+				setTimeout(() => {
+					isScrollHandlerActive = true;
+				}, 600);
 			}
 		}
+	});
+
+	window.addEventListener('beforeunload', () => {
+		window.removeEventListener('scroll', handleScroll);
 	});
 });

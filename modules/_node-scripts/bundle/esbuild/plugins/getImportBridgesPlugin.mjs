@@ -42,7 +42,7 @@ export default function getImportBridgesPlugin(
 
 					const {moduleName, type} = decodeBridgePath(loadPath);
 
-					const contents = getImportBridgeCode(
+					const contents = await getImportBridgeCode(
 						overridenPackageSymbols,
 						type,
 						moduleName,
@@ -61,7 +61,7 @@ export default function getImportBridgesPlugin(
 	};
 }
 
-function getImportBridgeCode(
+async function getImportBridgeCode(
 	overridenPackageSymbols,
 	type,
 	moduleName,
@@ -75,7 +75,10 @@ function getImportBridgeCode(
 		hasDefault = false;
 	}
 	else {
-		const symbols = getExportedSymbols(overridenPackageSymbols, moduleName);
+		const symbols = await getExportedSymbols(
+			overridenPackageSymbols,
+			moduleName
+		);
 
 		hasDefault = !!symbols['default'];
 	}

@@ -195,8 +195,9 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 				_fragmentEntryLinkLocalService.addFragmentEntryLink(
 					null, fragmentEntryLink.getUserId(),
 					fragmentEntryLink.getGroupId(),
-					fragmentEntryLink.getOriginalFragmentEntryLinkId(),
-					fragmentEntryLink.getFragmentEntryId(),
+					fragmentEntryLink.getOriginalFragmentEntryLinkERC(),
+					fragmentEntryLink.getFragmentEntryERC(),
+					fragmentEntryLink.getFragmentEntryScopeERC(),
 					segmentsExperienceId, fragmentEntryLink.getPlid(),
 					fragmentEntryLink.getCss(), fragmentEntryLink.getHtml(),
 					fragmentEntryLink.getJs(),

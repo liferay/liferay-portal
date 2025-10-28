@@ -5,7 +5,7 @@ application:
     className: HeadlessCommercePunchOutApplication
     name: Liferay.Headless.Commerce.PunchOut
 author: Jaclyn Ong
-compatibilityVersion: 12
+compatibilityVersion: 13
 forcePredictableSchemaPropertyName: false
 generateGraphQL: false
 javaEEPackage: jakarta

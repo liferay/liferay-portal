@@ -1,0 +1,26 @@
+.create-account-modal-form {
+	&-container {
+		min-height: 400px;
+	}
+
+	&-title {
+		font-size: 32px;
+	}
+}
+
+.account-image-container {
+	align-items: center;
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+
+	.account-image {
+		border-radius: 999px;
+		height: 4.5rem;
+		width: 4.5rem;
+
+		&-default {
+			background-color: #ebeef2;
+		}
+	}
+}

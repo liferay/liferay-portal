@@ -13,7 +13,7 @@ import {
 	getMockResultsData,
 } from '../../mocks/data.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const DATA_MAP = resultsDataToMap(
 	getMockResultsData(10, 0, '', false).documents

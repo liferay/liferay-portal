@@ -17,25 +17,53 @@ public class LPD_41244 {
 		String externalReferenceCode, String cpInstanceUuid, BigDecimal price,
 		BigDecimal promoPrice, ServiceContext serviceContext) {
 
-		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(cpInstanceId, commercePriceListId, price, promoPrice, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry(123, commercePriceListId, price, promoPrice, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry(cpInstanceId, commercePriceListId, price, promoPrice, serviceContext);
+		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, price, promoPrice,
+			serviceContext);
+		_commercePriceEntryLocalService.addCommercePriceEntry(
+			123, commercePriceListId, price, promoPrice, serviceContext);
+		_commercePriceEntryLocalService.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, price, promoPrice,
+			serviceContext);
 
-		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(cpInstanceId, commercePriceListId, externalReferenceCode, price, promoPrice, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry(123, commercePriceListId, externalReferenceCode, price, promoPrice, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry(cpInstanceId, commercePriceListId, externalReferenceCode, price, promoPrice, serviceContext);
+		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, externalReferenceCode, price,
+			promoPrice, serviceContext);
+		_commercePriceEntryLocalService.addCommercePriceEntry(
+			123, commercePriceListId, externalReferenceCode, price, promoPrice,
+			serviceContext);
+		_commercePriceEntryLocalService.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, externalReferenceCode, price,
+			promoPrice, serviceContext);
 
-		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(cProductId, cpInstanceUuid, commercePriceListId, price, promoPrice, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry(123, cpInstanceUuid, commercePriceListId, price, promoPrice, serviceContext);
-		_commercePriceEntryLocalService.addCommercePriceEntry(cProductId, cpInstanceUuid, commercePriceListId, price, promoPrice, serviceContext);
+		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
+			cProductId, cpInstanceUuid, commercePriceListId, price, promoPrice,
+			serviceContext);
+		_commercePriceEntryLocalService.addCommercePriceEntry(
+			123, cpInstanceUuid, commercePriceListId, price, promoPrice,
+			serviceContext);
+		_commercePriceEntryLocalService.addCommercePriceEntry(
+			cProductId, cpInstanceUuid, commercePriceListId, price, promoPrice,
+			serviceContext);
 
-		CommercePriceEntryServiceUtil.addCommercePriceEntry(cpInstanceId, commercePriceListId, price, promoPrice, serviceContext);
-		_commercePriceEntryService.addCommercePriceEntry(123, commercePriceListId, price, promoPrice, serviceContext);
-		_commercePriceEntryService.addCommercePriceEntry(cpInstanceId, commercePriceListId, price, promoPrice, serviceContext);
+		CommercePriceEntryServiceUtil.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, price, promoPrice,
+			serviceContext);
+		_commercePriceEntryService.addCommercePriceEntry(
+			123, commercePriceListId, price, promoPrice, serviceContext);
+		_commercePriceEntryService.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, price, promoPrice,
+			serviceContext);
 
-		CommercePriceEntryServiceUtil.addCommercePriceEntry(cpInstanceId, commercePriceListId, externalReferenceCode, price, promoPrice, serviceContext);
-		_commercePriceEntryService.addCommercePriceEntry(123, commercePriceListId, externalReferenceCode, price, promoPrice, serviceContext);
-		_commercePriceEntryService.addCommercePriceEntry(cpInstanceId, commercePriceListId, externalReferenceCode, price, promoPrice, serviceContext);
+		CommercePriceEntryServiceUtil.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, externalReferenceCode, price,
+			promoPrice, serviceContext);
+		_commercePriceEntryService.addCommercePriceEntry(
+			123, commercePriceListId, externalReferenceCode, price, promoPrice,
+			serviceContext);
+		_commercePriceEntryService.addCommercePriceEntry(
+			cpInstanceId, commercePriceListId, externalReferenceCode, price,
+			promoPrice, serviceContext);
 	}
 
 	@Reference

@@ -3,216 +3,499 @@
 exports[`SalesforceConfigurationStatus should render 1`] = `
 <div>
   <div
-    class="settings-base-page-root data-source-base-page-root"
+    class="settings-root"
   >
-    <div
-      class="maintenance-alert-root"
-    />
-    <ol
-      class="breadcrumb breadcrumbs-root"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <li
-        class="breadcrumb-item"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source"
-        >
-          Data Sources
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item"
-      >
-        <button
-          class="breadcrumb-text-truncate btn btn-unstyled"
-          type="button"
-        >
-          Liferay23
-        </button>
-      </li>
-      <li
-        class="breadcrumb-item active"
-      >
-        <span
-          class="breadcrumb-text-truncate"
-        >
-          Configuration Status
-        </span>
-      </li>
-    </ol>
-    <div
-      class="content-header"
-    >
-      <div
-        class="header-text"
-      >
-        <div
-          class="d-flex"
-        >
-          <h3
-            class="title-text text-truncate"
-          >
-            <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
-            >
-              Configure Salesforce
-            </span>
-          </h3>
-        </div>
-        <div
-          class="description"
-        >
-          Liferay23 - https://www.faro-23.io
-        </div>
-      </div>
-      <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="page-container"
-      >
-        <div
-          class="content-main"
+        <li
+          class="tbar-item"
         >
           <div
-            class="sheet data-source-base-tabs-root page-display"
+            class="component-action"
+          >
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
+              >
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="text-dark"
+            >
+              <span
+                class="text-5 font-weight-bold"
+              >
+                Settings
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/apis/tokens"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_api"
+                    />
+                  </svg>
+                </span>
+                APIs
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div
+        class="content section-main"
+      >
+        <div
+          class="settings-base-page-root data-source-base-page-root"
+        >
+          <div
+            class="maintenance-alert-root"
+          />
+          <ol
+            class="breadcrumb breadcrumbs-root"
+          >
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source"
+              >
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item"
+            >
+              <button
+                class="breadcrumb-text-truncate btn btn-unstyled"
+                type="button"
+              >
+                Liferay23
+              </button>
+            </li>
+            <li
+              class="breadcrumb-item active"
+            >
+              <span
+                class="breadcrumb-text-truncate"
+              >
+                Configuration Status
+              </span>
+            </li>
+          </ol>
+          <div
+            class="content-header"
           >
             <div
-              class="sheet-body"
-            >
-              <ul
-                class="nav-root nav nav-underline"
-                role="tablist"
-              >
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link"
-                    href="/workspace/23/settings/data-source/23"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Authorization
-                    </div>
-                  </a>
-                </li>
-                <li
-                  class="nav-item active"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link active"
-                    href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Configure Data Source
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div
-              class="sheet-body"
+              class="header-text"
             >
               <div
-                class="configuration-overview-root"
+                class="d-flex"
               >
                 <h3
-                  class="sheet-subtitle"
+                  class="title-text text-truncate"
                 >
-                  Data Configuration
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Configure Salesforce
+                  </span>
                 </h3>
+              </div>
+              <div
+                class="description"
+              >
+                Liferay23 - https://www.faro-23.io
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="page-container"
+            >
+              <div
+                class="content-main"
+              >
                 <div
-                  class="base-configuration-item-root"
+                  class="sheet data-source-base-tabs-root page-display"
                 >
                   <div
-                    class="actions"
+                    class="sheet-body"
                   >
-                    <a
-                      class="button-root btn btn-block btn-secondary"
-                      display="secondary"
-                      href="/workspace/23/settings/data-source/23/salesforce/field-mapping/accounts"
+                    <ul
+                      class="nav-root nav nav-underline"
+                      role="tablist"
                     >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Accounts
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                      <li
+                        class="nav-item"
+                        role="presentation"
                       >
-                        Represents an organization or person involved with your business.
-                      </div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="base-configuration-item-root"
-                >
-                  <div
-                    class="actions"
-                  >
-                    <a
-                      class="button-root btn btn-block btn-secondary"
-                      display="secondary"
-                      href="/workspace/23/settings/data-source/23/salesforce/field-mapping/individuals"
-                    >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Individuals
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                        <a
+                          class="nav-link"
+                          href="/workspace/23/settings/data-source/23"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Authorization
+                          </div>
+                        </a>
+                      </li>
+                      <li
+                        class="nav-item active"
+                        role="presentation"
                       >
-                        Represented by a contact or lead within Salesforce.
+                        <a
+                          class="nav-link active"
+                          href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Configure Data Source
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div
+                    class="sheet-body"
+                  >
+                    <div
+                      class="configuration-overview-root"
+                    >
+                      <h3
+                        class="sheet-subtitle"
+                      >
+                        Data Configuration
+                      </h3>
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root btn btn-block btn-secondary"
+                            display="secondary"
+                            href="/workspace/23/settings/data-source/23/salesforce/field-mapping/accounts"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Accounts
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represents an organization or person involved with your business.
+                            </div>
+                            
+                          </div>
+                        </div>
                       </div>
-                      
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root btn btn-block btn-secondary"
+                            display="secondary"
+                            href="/workspace/23/settings/data-source/23/salesforce/field-mapping/individuals"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Individuals
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represented by a contact or lead within Salesforce.
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div
+                class="content-side"
+              />
             </div>
           </div>
         </div>
-        <div
-          class="content-side"
-        />
       </div>
     </div>
   </div>
@@ -222,216 +505,499 @@ exports[`SalesforceConfigurationStatus should render 1`] = `
 exports[`SalesforceConfigurationStatus should render already configured items with the button text "pause" instead of "enable" 1`] = `
 <div>
   <div
-    class="settings-base-page-root data-source-base-page-root"
+    class="settings-root"
   >
-    <div
-      class="maintenance-alert-root"
-    />
-    <ol
-      class="breadcrumb breadcrumbs-root"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <li
-        class="breadcrumb-item"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source"
-        >
-          Data Sources
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item"
-      >
-        <button
-          class="breadcrumb-text-truncate btn btn-unstyled"
-          type="button"
-        >
-          Liferay23
-        </button>
-      </li>
-      <li
-        class="breadcrumb-item active"
-      >
-        <span
-          class="breadcrumb-text-truncate"
-        >
-          Configuration Status
-        </span>
-      </li>
-    </ol>
-    <div
-      class="content-header"
-    >
-      <div
-        class="header-text"
-      >
-        <div
-          class="d-flex"
-        >
-          <h3
-            class="title-text text-truncate"
-          >
-            <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
-            >
-              Configure Salesforce
-            </span>
-          </h3>
-        </div>
-        <div
-          class="description"
-        >
-          Liferay23 - https://www.faro-23.io
-        </div>
-      </div>
-      <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="page-container"
-      >
-        <div
-          class="content-main"
+        <li
+          class="tbar-item"
         >
           <div
-            class="sheet data-source-base-tabs-root page-display"
+            class="component-action"
+          >
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
+              >
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="text-dark"
+            >
+              <span
+                class="text-5 font-weight-bold"
+              >
+                Settings
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/apis/tokens"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_api"
+                    />
+                  </svg>
+                </span>
+                APIs
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div
+        class="content section-main"
+      >
+        <div
+          class="settings-base-page-root data-source-base-page-root"
+        >
+          <div
+            class="maintenance-alert-root"
+          />
+          <ol
+            class="breadcrumb breadcrumbs-root"
+          >
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source"
+              >
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item"
+            >
+              <button
+                class="breadcrumb-text-truncate btn btn-unstyled"
+                type="button"
+              >
+                Liferay23
+              </button>
+            </li>
+            <li
+              class="breadcrumb-item active"
+            >
+              <span
+                class="breadcrumb-text-truncate"
+              >
+                Configuration Status
+              </span>
+            </li>
+          </ol>
+          <div
+            class="content-header"
           >
             <div
-              class="sheet-body"
-            >
-              <ul
-                class="nav-root nav nav-underline"
-                role="tablist"
-              >
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link"
-                    href="/workspace/23/settings/data-source/23"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Authorization
-                    </div>
-                  </a>
-                </li>
-                <li
-                  class="nav-item active"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link active"
-                    href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Configure Data Source
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div
-              class="sheet-body"
+              class="header-text"
             >
               <div
-                class="configuration-overview-root"
+                class="d-flex"
               >
                 <h3
-                  class="sheet-subtitle"
+                  class="title-text text-truncate"
                 >
-                  Data Configuration
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Configure Salesforce
+                  </span>
                 </h3>
+              </div>
+              <div
+                class="description"
+              >
+                Liferay23 - https://www.faro-23.io
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="page-container"
+            >
+              <div
+                class="content-main"
+              >
                 <div
-                  class="base-configuration-item-root"
+                  class="sheet data-source-base-tabs-root page-display"
                 >
                   <div
-                    class="actions"
+                    class="sheet-body"
                   >
-                    <a
-                      class="button-root btn btn-block btn-secondary"
-                      display="secondary"
-                      href="/workspace/23/settings/data-source/23/salesforce/field-mapping/accounts"
+                    <ul
+                      class="nav-root nav nav-underline"
+                      role="tablist"
                     >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Accounts
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                      <li
+                        class="nav-item"
+                        role="presentation"
                       >
-                        Represents an organization or person involved with your business.
-                      </div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="base-configuration-item-root"
-                >
-                  <div
-                    class="actions"
-                  >
-                    <a
-                      class="button-root btn btn-block btn-secondary"
-                      display="secondary"
-                      href="/workspace/23/settings/data-source/23/salesforce/field-mapping/individuals"
-                    >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Individuals
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                        <a
+                          class="nav-link"
+                          href="/workspace/23/settings/data-source/23"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Authorization
+                          </div>
+                        </a>
+                      </li>
+                      <li
+                        class="nav-item active"
+                        role="presentation"
                       >
-                        Represented by a contact or lead within Salesforce.
+                        <a
+                          class="nav-link active"
+                          href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Configure Data Source
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div
+                    class="sheet-body"
+                  >
+                    <div
+                      class="configuration-overview-root"
+                    >
+                      <h3
+                        class="sheet-subtitle"
+                      >
+                        Data Configuration
+                      </h3>
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root btn btn-block btn-secondary"
+                            display="secondary"
+                            href="/workspace/23/settings/data-source/23/salesforce/field-mapping/accounts"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Accounts
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represents an organization or person involved with your business.
+                            </div>
+                            
+                          </div>
+                        </div>
                       </div>
-                      
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root btn btn-block btn-secondary"
+                            display="secondary"
+                            href="/workspace/23/settings/data-source/23/salesforce/field-mapping/individuals"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Individuals
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represented by a contact or lead within Salesforce.
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div
+                class="content-side"
+              />
             </div>
           </div>
         </div>
-        <div
-          class="content-side"
-        />
       </div>
     </div>
   </div>
@@ -441,225 +1007,508 @@ exports[`SalesforceConfigurationStatus should render already configured items wi
 exports[`SalesforceConfigurationStatus should render as configuring items with a metric bar instead of a button 1`] = `
 <div>
   <div
-    class="settings-base-page-root data-source-base-page-root"
+    class="settings-root"
   >
-    <div
-      class="maintenance-alert-root"
-    />
-    <ol
-      class="breadcrumb breadcrumbs-root"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <li
-        class="breadcrumb-item"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source"
-        >
-          Data Sources
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item"
-      >
-        <button
-          class="breadcrumb-text-truncate btn btn-unstyled"
-          type="button"
-        >
-          Liferay23
-        </button>
-      </li>
-      <li
-        class="breadcrumb-item active"
-      >
-        <span
-          class="breadcrumb-text-truncate"
-        >
-          Configuration Status
-        </span>
-      </li>
-    </ol>
-    <div
-      class="content-header"
-    >
-      <div
-        class="header-text"
-      >
-        <div
-          class="d-flex"
-        >
-          <h3
-            class="title-text text-truncate"
-          >
-            <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
-            >
-              Configure Salesforce
-            </span>
-          </h3>
-        </div>
-        <div
-          class="description"
-        >
-          Liferay23 - https://www.faro-23.io
-        </div>
-      </div>
-      <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="page-container"
-      >
-        <div
-          class="content-main"
+        <li
+          class="tbar-item"
         >
           <div
-            class="sheet data-source-base-tabs-root page-display"
+            class="component-action"
+          >
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
+              >
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="text-dark"
+            >
+              <span
+                class="text-5 font-weight-bold"
+              >
+                Settings
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/apis/tokens"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_api icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_api"
+                    />
+                  </svg>
+                </span>
+                APIs
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div
+        class="content section-main"
+      >
+        <div
+          class="settings-base-page-root data-source-base-page-root"
+        >
+          <div
+            class="maintenance-alert-root"
+          />
+          <ol
+            class="breadcrumb breadcrumbs-root"
+          >
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source"
+              >
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item"
+            >
+              <button
+                class="breadcrumb-text-truncate btn btn-unstyled"
+                type="button"
+              >
+                Liferay23
+              </button>
+            </li>
+            <li
+              class="breadcrumb-item active"
+            >
+              <span
+                class="breadcrumb-text-truncate"
+              >
+                Configuration Status
+              </span>
+            </li>
+          </ol>
+          <div
+            class="content-header"
           >
             <div
-              class="sheet-body"
-            >
-              <ul
-                class="nav-root nav nav-underline"
-                role="tablist"
-              >
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link"
-                    href="/workspace/23/settings/data-source/23"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Authorization
-                    </div>
-                  </a>
-                </li>
-                <li
-                  class="nav-item active"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link active"
-                    href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Configure Data Source
-                    </div>
-                    <span
-                      class="badge badge-primary ml-2"
-                    >
-                      <span
-                        class="badge-item badge-item-expand"
-                      >
-                        2
-                      </span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div
-              class="sheet-body"
+              class="header-text"
             >
               <div
-                class="configuration-overview-root"
+                class="d-flex"
               >
                 <h3
-                  class="sheet-subtitle"
+                  class="title-text text-truncate"
                 >
-                  Data Configuration
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Configure Salesforce
+                  </span>
                 </h3>
+              </div>
+              <div
+                class="description"
+              >
+                Liferay23 - https://www.faro-23.io
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="page-container"
+            >
+              <div
+                class="content-main"
+              >
                 <div
-                  class="base-configuration-item-root"
+                  class="sheet data-source-base-tabs-root page-display"
                 >
                   <div
-                    class="actions"
+                    class="sheet-body"
                   >
-                    <a
-                      class="button-root btn btn-block btn-secondary"
-                      display="secondary"
-                      href="/workspace/23/settings/data-source/23/salesforce/field-mapping/accounts"
+                    <ul
+                      class="nav-root nav nav-underline"
+                      role="tablist"
                     >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Accounts
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                      <li
+                        class="nav-item"
+                        role="presentation"
                       >
-                        Represents an organization or person involved with your business.
-                      </div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="base-configuration-item-root"
-                >
-                  <div
-                    class="actions"
-                  >
-                    <a
-                      class="button-root btn btn-block btn-secondary"
-                      display="secondary"
-                      href="/workspace/23/settings/data-source/23/salesforce/field-mapping/individuals"
-                    >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Individuals
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                        <a
+                          class="nav-link"
+                          href="/workspace/23/settings/data-source/23"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Authorization
+                          </div>
+                        </a>
+                      </li>
+                      <li
+                        class="nav-item active"
+                        role="presentation"
                       >
-                        Represented by a contact or lead within Salesforce.
+                        <a
+                          class="nav-link active"
+                          href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Configure Data Source
+                          </div>
+                          <span
+                            class="badge badge-primary ml-2"
+                          >
+                            <span
+                              class="badge-item badge-item-expand"
+                            >
+                              2
+                            </span>
+                          </span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div
+                    class="sheet-body"
+                  >
+                    <div
+                      class="configuration-overview-root"
+                    >
+                      <h3
+                        class="sheet-subtitle"
+                      >
+                        Data Configuration
+                      </h3>
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root btn btn-block btn-secondary"
+                            display="secondary"
+                            href="/workspace/23/settings/data-source/23/salesforce/field-mapping/accounts"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Accounts
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represents an organization or person involved with your business.
+                            </div>
+                            
+                          </div>
+                        </div>
                       </div>
-                      
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root btn btn-block btn-secondary"
+                            display="secondary"
+                            href="/workspace/23/settings/data-source/23/salesforce/field-mapping/individuals"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Individuals
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represented by a contact or lead within Salesforce.
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div
+                class="content-side"
+              />
             </div>
           </div>
         </div>
-        <div
-          class="content-side"
-        />
       </div>
     </div>
   </div>
@@ -669,214 +1518,475 @@ exports[`SalesforceConfigurationStatus should render as configuring items with a
 exports[`SalesforceConfigurationStatus should render as read-only if the user is not authorized to make changes 1`] = `
 <div>
   <div
-    class="settings-base-page-root data-source-base-page-root"
+    class="settings-root"
   >
-    <div
-      class="maintenance-alert-root"
-    />
-    <ol
-      class="breadcrumb breadcrumbs-root"
+    <nav
+      class="bg-white mb-4 tbar component-tbar"
     >
-      <li
-        class="breadcrumb-item"
+      <ul
+        class="mx-4 tbar-nav"
       >
-        <a
-          class="breadcrumb-text-truncate breadcrumb-link"
-          href="/workspace/23/settings/data-source"
-        >
-          Data Sources
-        </a>
-      </li>
-      <li
-        class="breadcrumb-item"
-      >
-        <button
-          class="breadcrumb-text-truncate btn btn-unstyled"
-          type="button"
-        >
-          Liferay23
-        </button>
-      </li>
-      <li
-        class="breadcrumb-item active"
-      >
-        <span
-          class="breadcrumb-text-truncate"
-        >
-          Configuration Status
-        </span>
-      </li>
-    </ol>
-    <div
-      class="content-header"
-    >
-      <div
-        class="header-text"
-      >
-        <div
-          class="d-flex"
-        >
-          <h3
-            class="title-text text-truncate"
-          >
-            <span
-              class="text-truncate"
-              data-tooltip="false"
-              title=""
-            >
-              Configure Salesforce
-            </span>
-          </h3>
-        </div>
-        <div
-          class="description"
-        >
-          Liferay23 - https://www.faro-23.io
-        </div>
-      </div>
-      <div
-        class="page-actions-container"
-      />
-    </div>
-    <div>
-      <div
-        class="page-container"
-      >
-        <div
-          class="content-main"
+        <li
+          class="tbar-item"
         >
           <div
-            class="sheet data-source-base-tabs-root page-display"
+            class="component-action"
+          >
+            <a
+              aria-label="Back"
+              class="text-secondary"
+              href="/workspace/23"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-angle-left mb-1"
+                role="presentation"
+              >
+                <use
+                  href="#angle-left"
+                />
+              </svg>
+            </a>
+          </div>
+        </li>
+        <li
+          class="pl-0 tbar-item"
+        >
+          <div
+            class="tbar-section"
+          >
+            <span
+              class="text-dark"
+            >
+              <span
+                class="text-5 font-weight-bold"
+              >
+                Settings
+              </span>
+            </span>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <div
+      class="content-wrapper"
+    >
+      <nav
+        class="section-side settings-side-bar"
+      >
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Data
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/definitions"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-definitions icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#definitions"
+                    />
+                  </svg>
+                </span>
+                Definitions
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-privacy"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-data_privacy_lock icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#data_privacy_lock"
+                    />
+                  </svg>
+                </span>
+                Data Control & Privacy
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/data-source"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-faro_data_source icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#faro_data_source"
+                    />
+                  </svg>
+                </span>
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/recommendations"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_star icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_star"
+                    />
+                  </svg>
+                </span>
+                Recommendations
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="section-title"
+          >
+            Workspace Settings
+          </h5>
+          <ul
+            class="nav"
+          >
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/users"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-user_management icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user_management"
+                    />
+                  </svg>
+                </span>
+                User Management
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/properties"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-ac_page icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#ac_page"
+                    />
+                  </svg>
+                </span>
+                Properties
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/usage"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-usage icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#usage"
+                    />
+                  </svg>
+                </span>
+                Subscription & Usage
+              </a>
+            </li>
+            <li
+              class="item"
+            >
+              <a
+                class="button-root"
+                href="/workspace/23/settings/workspace"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-cog icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#cog"
+                    />
+                  </svg>
+                </span>
+                Workspace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div
+        class="content section-main"
+      >
+        <div
+          class="settings-base-page-root data-source-base-page-root"
+        >
+          <div
+            class="maintenance-alert-root"
+          />
+          <ol
+            class="breadcrumb breadcrumbs-root"
+          >
+            <li
+              class="breadcrumb-item"
+            >
+              <a
+                class="breadcrumb-text-truncate breadcrumb-link"
+                href="/workspace/23/settings/data-source"
+              >
+                Data Sources
+              </a>
+            </li>
+            <li
+              class="breadcrumb-item"
+            >
+              <button
+                class="breadcrumb-text-truncate btn btn-unstyled"
+                type="button"
+              >
+                Liferay23
+              </button>
+            </li>
+            <li
+              class="breadcrumb-item active"
+            >
+              <span
+                class="breadcrumb-text-truncate"
+              >
+                Configuration Status
+              </span>
+            </li>
+          </ol>
+          <div
+            class="content-header"
           >
             <div
-              class="sheet-body"
-            >
-              <ul
-                class="nav-root nav nav-underline"
-                role="tablist"
-              >
-                <li
-                  class="nav-item"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link"
-                    href="/workspace/23/settings/data-source/23"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Authorization
-                    </div>
-                  </a>
-                </li>
-                <li
-                  class="nav-item active"
-                  role="presentation"
-                >
-                  <a
-                    class="nav-link active"
-                    href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
-                    role="tab"
-                  >
-                    <div
-                      class="h4"
-                    >
-                      Configure Data Source
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div
-              class="sheet-body"
+              class="header-text"
             >
               <div
-                class="configuration-overview-root"
+                class="d-flex"
               >
                 <h3
-                  class="sheet-subtitle"
+                  class="title-text text-truncate"
                 >
-                  Data Configuration
+                  <span
+                    class="text-truncate"
+                    data-tooltip="false"
+                    title=""
+                  >
+                    Configure Salesforce
+                  </span>
                 </h3>
+              </div>
+              <div
+                class="description"
+              >
+                Liferay23 - https://www.faro-23.io
+              </div>
+            </div>
+            <div
+              class="page-actions-container"
+            />
+          </div>
+          <div>
+            <div
+              class="page-container"
+            >
+              <div
+                class="content-main"
+              >
                 <div
-                  class="base-configuration-item-root"
+                  class="sheet data-source-base-tabs-root page-display"
                 >
                   <div
-                    class="actions"
+                    class="sheet-body"
                   >
-                    <a
-                      class="button-root link-disabled btn btn-block btn-secondary"
-                      display="secondary"
+                    <ul
+                      class="nav-root nav nav-underline"
+                      role="tablist"
                     >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Accounts
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                      <li
+                        class="nav-item"
+                        role="presentation"
                       >
-                        Represents an organization or person involved with your business.
-                      </div>
-                      
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="base-configuration-item-root"
-                >
-                  <div
-                    class="actions"
-                  >
-                    <a
-                      class="button-root link-disabled btn btn-block btn-secondary"
-                      display="secondary"
-                    >
-                      View
-                    </a>
-                  </div>
-                  <div
-                    class="info"
-                  >
-                    <div
-                      class="title"
-                    >
-                      <b>
-                        Individuals
-                      </b>
-                    </div>
-                    <div
-                      class="text-secondary"
-                    >
-                      <div
-                        class="description"
+                        <a
+                          class="nav-link"
+                          href="/workspace/23/settings/data-source/23"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Authorization
+                          </div>
+                        </a>
+                      </li>
+                      <li
+                        class="nav-item active"
+                        role="presentation"
                       >
-                        Represented by a contact or lead within Salesforce.
+                        <a
+                          class="nav-link active"
+                          href="/workspace/23/settings/data-source/23/salesforce/configuration-status"
+                          role="tab"
+                        >
+                          <div
+                            class="h4"
+                          >
+                            Configure Data Source
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div
+                    class="sheet-body"
+                  >
+                    <div
+                      class="configuration-overview-root"
+                    >
+                      <h3
+                        class="sheet-subtitle"
+                      >
+                        Data Configuration
+                      </h3>
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root link-disabled btn btn-block btn-secondary"
+                            display="secondary"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Accounts
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represents an organization or person involved with your business.
+                            </div>
+                            
+                          </div>
+                        </div>
                       </div>
-                      
+                      <div
+                        class="base-configuration-item-root"
+                      >
+                        <div
+                          class="actions"
+                        >
+                          <a
+                            class="button-root link-disabled btn btn-block btn-secondary"
+                            display="secondary"
+                          >
+                            View
+                          </a>
+                        </div>
+                        <div
+                          class="info"
+                        >
+                          <div
+                            class="title"
+                          >
+                            <b>
+                              Individuals
+                            </b>
+                          </div>
+                          <div
+                            class="text-secondary"
+                          >
+                            <div
+                              class="description"
+                            >
+                              Represented by a contact or lead within Salesforce.
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div
+                class="content-side"
+              />
             </div>
           </div>
         </div>
-        <div
-          class="content-side"
-        />
       </div>
     </div>
   </div>

@@ -6,7 +6,7 @@
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {
 	MarketplaceView,
 	useMarketplaceContext,
@@ -53,13 +53,12 @@ describe('MarketplaceTabItem', () => {
 
 		expect(screen.getByTitle('Test Item-details')).toBeInTheDocument();
 
+		const imageElement = screen.getAllByRole('presentation')[0];
+
 		expect(screen.getByText('Test Item')).toBeInTheDocument();
 		expect(screen.getByText('Test Catalog')).toBeInTheDocument();
-		expect(screen.getByRole('img')).toHaveAttribute(
-			'src',
-			'test-image.jpg'
-		);
-		expect(screen.getByRole('img')).toHaveAttribute('alt', '');
+		expect(imageElement).toHaveAttribute('src', 'test-image.jpg');
+		expect(imageElement).toHaveAttribute('alt', '');
 	});
 
 	it('renders the card with correct classNames', () => {

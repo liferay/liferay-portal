@@ -66,7 +66,8 @@ public class DeleteFragmentCompositionsAndFragmentEntriesMVCActionCommandTest {
 		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
 			StringPool.BLANK, fragmentEntry.getCss(),
 			fragmentEntry.getConfiguration(),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getHtml(),
+			fragmentEntry.getExternalReferenceCode(),
+			fragmentEntry.getScopeERC(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), layout, null,
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				layout.getPlid()),

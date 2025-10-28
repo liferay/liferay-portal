@@ -73,12 +73,6 @@ test('LPD-53979 Assert warning alert appears when sandbox mode is enabled and Ow
 
 	await saveButton.click();
 
-	const closeButton = page
-		.locator('.modal')
-		.getByLabel('Close', {exact: true});
-
-	await closeButton.click();
-
 	await expect(warningAlert).toBeHidden();
 
 	await changeTrackingPage.toggleSandboxConfiguration(false);
@@ -90,8 +84,6 @@ test('LPD-53979 Assert warning alert appears when sandbox mode is enabled and Ow
 	await checkbox.check();
 
 	await saveButton.click();
-
-	await closeButton.click();
 
 	await expect(warningAlert).toBeHidden();
 

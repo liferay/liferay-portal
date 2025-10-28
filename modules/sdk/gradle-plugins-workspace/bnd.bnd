@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Gradle Plugins Workspace
 Bundle-SymbolicName: com.liferay.gradle.plugins.workspace
-Bundle-Version: 14.0.2
+Bundle-Version: 14.0.3
 Export-Package:\
 	com.liferay.gradle.plugins.gulp,\
 	com.liferay.gradle.plugins.js.module.config.generator,\

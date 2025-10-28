@@ -13,6 +13,11 @@
 	color: var(--color-state-error-darken-1) !important;
 }
 
+.be-details,
+.be-event-name {
+	white-space: normal;
+}
+
 .be-header-sub-label {
 	color: var(--color-state-neutral-darken-1);
 	font-weight: 400;

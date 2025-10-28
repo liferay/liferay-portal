@@ -13,6 +13,7 @@ import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.CommentManager;
@@ -175,6 +176,22 @@ public class JournalDisplayContextTest {
 
 		_assertSearchContainer(2, "all", true, 0);
 		_assertSearchContainer(3, "all", false, 0);
+	}
+
+	@Test
+	public void testGetSearchProps() throws Exception {
+		JournalFolderFixture journalFolderFixture = new JournalFolderFixture(
+			_journalFolderLocalService);
+
+		JournalFolder journalFolder = journalFolderFixture.addFolder(
+			_group.getGroupId(), RandomTestUtil.randomString());
+
+		_testGetSearchProps(
+			journalFolder, "all-fields",
+			searchProps -> searchProps.containsKey("searchLocationOptions"));
+		_testGetSearchProps(
+			journalFolder, "comments",
+			searchProps -> !searchProps.containsKey("searchLocationOptions"));
 	}
 
 	@Test
@@ -345,6 +362,17 @@ public class JournalDisplayContextTest {
 			"getSearchContainer", new Class<?>[0]);
 	}
 
+	private Map<String, Object> _getSearchProps(
+			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
+		throws Exception {
+
+		return ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"com.liferay.journal.web.internal.display.context." +
+					"JournalDisplayContext"),
+			"getSearchProps", new Class<?>[0]);
+	}
+
 	private ThemeDisplay _getThemeDisplay() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -405,6 +433,26 @@ public class JournalDisplayContextTest {
 			new MockLiferayPortletRenderResponse());
 
 		return mockLiferayPortletRenderRequest;
+	}
+
+	private void _testGetSearchProps(
+			JournalFolder journalFolder, String searchIn,
+			UnsafeFunction<Map<String, Object>, Boolean, Exception>
+				unsafeFunction)
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_renderPortlet();
+
+		mockLiferayPortletRenderRequest.setAttribute(
+			WebKeys.JOURNAL_FOLDER, journalFolder);
+		mockLiferayPortletRenderRequest.setParameter(
+			"keywords", RandomTestUtil.randomString());
+		mockLiferayPortletRenderRequest.setParameter("searchIn", searchIn);
+
+		Assert.assertTrue(
+			unsafeFunction.apply(
+				_getSearchProps(mockLiferayPortletRenderRequest)));
 	}
 
 	@Inject

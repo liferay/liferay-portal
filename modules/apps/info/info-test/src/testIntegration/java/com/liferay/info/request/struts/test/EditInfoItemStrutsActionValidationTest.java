@@ -629,7 +629,7 @@ public class EditInfoItemStrutsActionValidationTest {
 			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
 				TestPropsValues.getUserId(),
 				inputFragmentEntryLink.getFragmentEntryLinkId(),
-				editableValuesJSONObject.toString());
+				editableValuesJSONObject.toString(), true);
 
 		for (FragmentEntryLinkListener fragmentEntryLinkListener :
 				_fragmentEntryLinkListenerRegistry.

@@ -28,4 +28,6 @@ public interface DownstreamBuildReport extends BuildReport {
 
 	public TopLevelBuildReport getTopLevelBuildReport();
 
+	public boolean isBuildCached();
+
 }

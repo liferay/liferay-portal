@@ -5,8 +5,6 @@
 
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
-
 import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {openModal} from 'frontend-js-components-web';

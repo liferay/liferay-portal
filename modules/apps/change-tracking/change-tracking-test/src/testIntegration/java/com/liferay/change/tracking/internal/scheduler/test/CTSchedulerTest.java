@@ -55,7 +55,7 @@ public class CTSchedulerTest {
 				StringPool.BLANK);
 		}
 
-		Date date = new Date(System.currentTimeMillis());
+		Date date = new Date(System.currentTimeMillis() + 30000);
 
 		_publishScheduler.schedulePublish(
 			ctCollection.getCtCollectionId(), TestPropsValues.getUserId(),

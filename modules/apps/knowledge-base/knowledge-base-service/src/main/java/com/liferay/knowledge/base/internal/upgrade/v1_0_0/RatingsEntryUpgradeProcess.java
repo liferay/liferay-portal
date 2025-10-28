@@ -40,17 +40,20 @@ public class RatingsEntryUpgradeProcess extends UpgradeProcess {
 	private void _updateRatingsEntries() throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select entryId, score from RatingsEntry where classNameId = " +
-					getClassNameId(_CLASS_NAME_ARTICLE));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+					"?")) {
 
-			while (resultSet.next()) {
-				long entryId = resultSet.getLong("entryId");
-				double score = resultSet.getDouble("score");
+			preparedStatement.setLong(1, getClassNameId(_CLASS_NAME_ARTICLE));
 
-				runSQL(
-					StringBundler.concat(
-						"update RatingsEntry set score = ", score * 2,
-						" where entryId = ", entryId));
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long entryId = resultSet.getLong("entryId");
+					double score = resultSet.getDouble("score");
+
+					runSQL(
+						StringBundler.concat(
+							"update RatingsEntry set score = ", score * 2,
+							" where entryId = ", entryId));
+				}
 			}
 		}
 	}

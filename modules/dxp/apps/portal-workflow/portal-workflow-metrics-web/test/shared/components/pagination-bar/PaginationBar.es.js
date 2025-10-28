@@ -9,7 +9,7 @@ import React, {cloneElement, useState} from 'react';
 import PaginationBar from '../../../../src/main/resources/META-INF/resources/js/shared/components/pagination-bar/PaginationBar.es';
 import {MockRouter} from '../../../mock/MockRouter.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 const ContainerProps = ({children, initialPage = 1, initialPageSize = 20}) => {
 	const [page, setPage] = useState(initialPage);

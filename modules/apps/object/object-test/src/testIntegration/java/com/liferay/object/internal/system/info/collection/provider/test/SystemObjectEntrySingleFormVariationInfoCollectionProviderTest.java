@@ -78,14 +78,14 @@ public class SystemObjectEntrySingleFormVariationInfoCollectionProviderTest {
 				getSystemObjectDefinitionManager(objectDefinition.getName());
 
 		long organizationId1 = systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(),
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.<String, Object>put(
 				"comment", "Comment 1"
 			).put(
 				"name", "Name 1"
 			).build());
 		long organizationId2 = systemObjectDefinitionManager.addBaseModel(
-			TestPropsValues.getUser(),
+			false, TestPropsValues.getUser(),
 			HashMapBuilder.<String, Object>put(
 				"comment", "Comment 2"
 			).put(

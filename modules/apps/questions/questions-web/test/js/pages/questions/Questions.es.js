@@ -7,7 +7,7 @@ import React from 'react';
 
 import Questions from '../../../../src/main/resources/META-INF/resources/js/pages/questions/Questions.es';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import {act, cleanup} from '@testing-library/react';
 import {Route} from 'react-router-dom';
 

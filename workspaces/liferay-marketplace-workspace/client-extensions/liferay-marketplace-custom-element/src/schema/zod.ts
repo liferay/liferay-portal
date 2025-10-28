@@ -7,7 +7,6 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
 
 import i18n from '../i18n';
-import {Liferay} from '../liferay/liferay';
 import {removeHTMLTags} from '../utils/string';
 
 const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+?\.)+[a-zA-Z]{2,}$/;
@@ -22,6 +21,18 @@ const baseAppSchema = {
 const baseContentSchema = z.object({
 	description: z.string().min(1).refine(removeHTMLTags),
 	title: z.string().min(1),
+});
+
+const billingAddress = z.object({
+	city: z.string().min(1),
+	country: z.string().min(1),
+	countryISOCode: z.string().optional(),
+	name: z.string().min(1),
+	phoneNumber: z.string().min(1),
+	regionISOCode: z.string().optional(),
+	street1: z.string().min(1),
+	street2: z.string().optional(),
+	zip: z.string().min(1),
 });
 
 const blocksContentSchemas = {
@@ -99,6 +110,18 @@ const zodSchema = {
 			.string()
 			.min(1, {message: 'Please enter a phone number to continue.'}),
 	}),
+	accountForm: z.object({
+		accountImage: z.any(),
+		accountName: z
+			.string()
+			.min(1, {message: 'Please enter a company name to continue'}),
+		accountType: z.string().min(1),
+		billingAddress,
+		emailAddress: z.string().email('Please fill in valid email'),
+		taxNumber: z
+			.string()
+			.min(1, {message: 'Please enter a Tax/VAT number to continue'}),
+	}),
 	analyticsProvisioning: z.object({
 		_refAllowedEmailDomains: z.array(z.any()),
 		_refIncidentReportContacts: z.array(z.any()),
@@ -119,12 +142,9 @@ const zodSchema = {
 		dataCenterLocation: z.string(),
 		friendlyWorkspaceURL: z.string().optional(),
 		incidentReportContacts: z.array(z.string().email()).min(1),
-		region: z.string(),
-		timezone: z.string(),
+		subscriptionType: z.string(),
 		workspaceName: z.string().min(3),
-		workspaceOwnerEmail: z
-			.string()
-			.default(Liferay.ThemeDisplay.getUserEmailAddress()),
+		workspaceOwnerEmail: z.string().email(),
 	}),
 	appPublishing: {
 		build: z.object({
@@ -175,17 +195,7 @@ const zodSchema = {
 			.string()
 			.min(3, {message: 'Request Description is required'}),
 	}),
-	billingAddress: z.object({
-		city: z.string().min(1),
-		country: z.string().min(1),
-		countryISOCode: z.string().optional(),
-		name: z.string().min(1),
-		phoneNumber: z.string().min(1),
-		regionISOCode: z.string().optional(),
-		street1: z.string().min(1),
-		street2: z.string().optional(),
-		zip: z.string().min(1),
-	}),
+	billingAddress,
 	contactSales: z.object({
 		accountName: z
 			.string()
@@ -320,8 +330,8 @@ const zodSchema = {
 		projectId: z
 			.string()
 			.min(3, {message: 'Project ID must have at least 3 characters'})
-			.regex(/^[a-zA-Z0-9-]*$/, {
-				message: 'Only letters, numbers, and hyphens are allowed',
+			.regex(/^[a-zA-Z0-9]+$/, {
+				message: 'Only alphanumeric characters are allowed',
 			}),
 		siteInitializerKey: z.string(),
 	}),

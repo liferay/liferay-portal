@@ -10,3 +10,57 @@
  */
 
 jest.setTimeout(30000);
+
+// Mock getClientRects (used by CodeMirror internally)
+
+Object.defineProperty(HTMLElement.prototype, 'getClientRects', {
+	configurable: true,
+	value() {
+		return [
+			{
+				bottom: 20,
+				height: 20,
+				left: 0,
+				right: 100,
+				top: 0,
+				width: 100,
+				x: 0,
+				y: 0,
+			},
+		];
+	},
+});
+
+// Mock document.createRange for CodeMirror
+
+document.createRange = () => {
+	const range = {
+		commonAncestorContainer: document.createElement('div'),
+		getBoundingClientRect: () => ({
+			bottom: 20,
+			height: 20,
+			left: 0,
+			right: 100,
+			top: 0,
+			width: 100,
+			x: 0,
+			y: 0,
+		}),
+		getClientRects: () => [
+			{
+				bottom: 20,
+				height: 20,
+				left: 0,
+				right: 100,
+				top: 0,
+				width: 100,
+				x: 0,
+				y: 0,
+			},
+		],
+		setEnd: jest.fn(),
+		setStart: jest.fn(),
+	};
+
+	return range;
+};

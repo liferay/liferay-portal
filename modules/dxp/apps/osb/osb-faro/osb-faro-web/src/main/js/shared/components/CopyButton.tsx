@@ -2,12 +2,12 @@ import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import Clipboard from 'clipboard';
 import React, {useEffect, useState} from 'react';
-import type {DisplayType} from '@clayui/button/lib/Button';
+import {ButtonProps} from '@clayui/button';
 
 interface ICopyButtonProps {
 	buttonText?: string;
 	className?: string;
-	displayType?: DisplayType;
+	displayType?: ButtonProps['displayType'];
 	onClick?: (any) => void;
 	position?: string;
 	text: string;

@@ -20,12 +20,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.function.BiFunction;
 import org.eclipse.osgi.container.Module;
 import org.eclipse.osgi.container.ModuleCapability;
 import org.eclipse.osgi.container.ModuleContainerAdaptor.ContainerEvent;
@@ -539,15 +535,6 @@ public class ClasspathManager {
 		String filename = name.replace('.', '/').concat(".class"); //$NON-NLS-1$
 
 		BundleEntry entry = classpathEntry.findEntry(filename);
-		if ((entry == null) && (_reverseTextReplacerBiFunction != null)) {
-			String newFilename = _reverseTextReplacerBiFunction.apply(
-				generation.getBundleFile() + "#", filename);
-
-			if (!newFilename.equals(filename)) {
-				entry = classpathEntry.findEntry(newFilename);
-			}
-		}
-
 		if (entry == null)
 			return null;
 
@@ -846,34 +833,5 @@ public class ClasspathManager {
 	public ModuleClassLoader getClassLoader() {
 		return classloader;
 	}
-
-	private static final BiFunction<String, String, String>
-		_reverseTextReplacerBiFunction;
-
-	static {
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-
-		Object instance = null;
-
-		try {
-			Class<?> clazz = classLoader.loadClass(
-				"com.liferay.portal.tools.jakarta.ee.transformer.function." +
-					"ReverseTextReplacerBiFunction");
-
-			instance = clazz.newInstance();
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			if (!(reflectiveOperationException instanceof
-					ClassNotFoundException)) {
-
-				throw new ExceptionInInitializerError(
-					reflectiveOperationException);
-			}
-		}
-
-		_reverseTextReplacerBiFunction =
-			(BiFunction<String, String, String>)instance;
-	}
-
 }
 /* @generated */

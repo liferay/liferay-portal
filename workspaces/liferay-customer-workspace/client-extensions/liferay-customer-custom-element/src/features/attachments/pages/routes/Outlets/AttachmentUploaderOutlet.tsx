@@ -1,0 +1,84 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {useState} from 'react';
+import useCheckAttachmentAccess from '~/features/attachments/hooks/useCheckAttachmentAccess';
+import {IUpload} from '~/utils/types';
+
+import {
+	AttachmentAlreadyExists,
+	AttachmentNotFound,
+	ForbiddenAccessUpload,
+	InvalidTicketNumber,
+	UnexpectedError,
+} from '../../AttachmentMessages';
+import TicketIsClosed from '../../AttachmentMessages/TicketIsClosed';
+import AttachmentUploader from '../../AttachmentUploader';
+
+const renderErrorComponent = (
+	errorCode: string | null,
+	uploadStateData: IUpload | null
+) => {
+	switch (errorCode) {
+		case 'FORBIDDEN_ACCESS':
+			return <ForbiddenAccessUpload />;
+		case 'INVALID_TICKET_NUMBER':
+			return <InvalidTicketNumber />;
+		case 'JIRA_ORGANIZATION_ERROR': {
+			if (!uploadStateData?.uploadAccountKey) {
+				return <UnexpectedError uploadErrorMessage="try-again-later" />;
+			}
+
+			return (
+				<AttachmentNotFound
+					uploadAccountKey={uploadStateData.uploadAccountKey}
+				/>
+			);
+		}
+		case 'TICKET_IS_CLOSED':
+			return <TicketIsClosed />;
+		default:
+			return (
+				<UnexpectedError
+					uploadErrorMessage={
+						uploadStateData?.errorMessage ?? 'try-again-later'
+					}
+				/>
+			);
+	}
+};
+
+const AttachmentUploaderOutlet = () => {
+	const {errorCode, hasAccess, loading} = useCheckAttachmentAccess();
+	const [uploadStateData, setUploadStateData] = useState<IUpload | null>(
+		null
+	);
+
+	if (loading) {
+		return (
+			<div className="mx-auto">
+				<ClayLoadingIndicator size="sm" />
+			</div>
+		);
+	}
+
+	if (uploadStateData?.errorCode === 'ATTACHMENT_ALREADY_EXISTS') {
+		return <AttachmentAlreadyExists />;
+	}
+
+	if (hasAccess) {
+		return (
+			<AttachmentUploader
+				setUploadStateData={setUploadStateData}
+				uploadStateData={uploadStateData}
+			/>
+		);
+	}
+
+	return renderErrorComponent(errorCode, uploadStateData);
+};
+
+export default AttachmentUploaderOutlet;

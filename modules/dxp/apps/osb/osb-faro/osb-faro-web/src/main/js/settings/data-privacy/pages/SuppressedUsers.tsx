@@ -22,7 +22,6 @@ export const SuppressedUsers = ({router}) => {
 			]}
 			className='suppressed-users-page-root'
 			documentTitle={Liferay.Language.get('suppressed-user-list')}
-			groupId={groupId}
 		>
 			<SuppressedUserList
 				currentUser={currentUser}

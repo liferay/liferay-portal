@@ -13,6 +13,14 @@ import {User} from 'shared/util/records';
 
 jest.unmock('react-dom');
 
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useParams: () => ({
+		channelId: '456',
+		groupId: '2000'
+	})
+}));
+
 jest.mock('shared/hooks/useTimeZone', () => ({
 	useTimeZone: () => ({timeZoneId: 'UTC'})
 }));
@@ -22,7 +30,6 @@ jest.mock('shared/hooks/useCurrentUser', () => ({
 }));
 
 const defaultProps = {
-	groupId: '23',
 	project: new Project(
 		data.mockProject(23, {
 			faroSubscription: fromJS(data.mockSubscription())
