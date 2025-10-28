@@ -74,7 +74,7 @@ public class ProductNavigationControlMenuManagerTest {
 		throws Exception {
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			_group.getGroupId(), new String[0], true);
+			_group.getGroupId(), null, true);
 
 		Assert.assertTrue(
 			_productNavigationControlMenuManager.isShowControlMenu(
