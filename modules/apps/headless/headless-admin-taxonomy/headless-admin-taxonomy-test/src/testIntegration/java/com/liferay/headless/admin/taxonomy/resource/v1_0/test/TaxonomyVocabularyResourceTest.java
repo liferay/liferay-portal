@@ -6,7 +6,9 @@
 package com.liferay.headless.admin.taxonomy.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -17,7 +19,9 @@ import com.liferay.headless.admin.taxonomy.client.pagination.Page;
 import com.liferay.headless.admin.taxonomy.client.pagination.Pagination;
 import com.liferay.headless.admin.taxonomy.client.problem.Problem;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyVocabularyResource;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -241,6 +245,53 @@ public class TaxonomyVocabularyResourceTest
 
 		_testGetTaxonomyVocabularyActions();
 		_testGetTaxonomyVocabularyWithoutPermissionsAction();
+	}
+
+	@Test
+	public void testPutTaxonomyVocabularyUpdatesEmptyVocabulary()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			assetVocabulary =
+				_assetVocabularyLocalService.getOrAddEmptyVocabulary(
+					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					testGroup.getGroupId());
+		}
+
+		String updatedName = RandomTestUtil.randomString();
+
+		TaxonomyVocabulary updateTaxonomyVocabulary = new TaxonomyVocabulary() {
+			{
+				multiValued = false;
+				name = updatedName;
+				visibilityType = VisibilityType.PUBLIC;
+			}
+		};
+
+		TaxonomyVocabulary updatedTaxonomyVocabulary =
+			taxonomyVocabularyResource.
+				putSiteTaxonomyVocabularyByExternalReferenceCode(
+					assetVocabulary.getGroupId(),
+					assetVocabulary.getExternalReferenceCode(),
+					updateTaxonomyVocabulary);
+
+		Assert.assertEquals(updatedName, updatedTaxonomyVocabulary.getName());
+		Assert.assertEquals(
+			TaxonomyVocabulary.VisibilityType.PUBLIC,
+			updatedTaxonomyVocabulary.getVisibilityType());
+
+		assetVocabulary =
+			_assetVocabularyLocalService.
+				getAssetVocabularyByExternalReferenceCode(
+					assetVocabulary.getExternalReferenceCode(),
+					assetVocabulary.getGroupId());
+
+		Assert.assertEquals(updatedName, assetVocabulary.getName());
+		Assert.assertEquals(0, assetVocabulary.getVisibilityType());
 	}
 
 	@Override
@@ -503,6 +554,9 @@ public class TaxonomyVocabularyResourceTest
 	@Inject
 	private AssetVocabularyGroupRelLocalService
 		_assetVocabularyGroupRelLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
