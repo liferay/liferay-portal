@@ -5,12 +5,14 @@
 
 package com.liferay.portal.kernel.upgrade.data.cleanup;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
 
@@ -94,9 +96,27 @@ public class TableOrphanReferencesDataCleanupPreupgradeProcess
 			return;
 		}
 
-		OrphanReferencesDataCleanupUtil.cleanUpTable(
-			connection, _sourceAdditionalWhereClause, sourceColumnName,
-			sourceTableName, new String[] {targetColumnName}, targetTableName);
+		SafeCloseable safeCloseable = null;
+
+		if (StringUtil.equalsIgnoreCase(
+				targetTableName, "DLFileEntryMetadata") &&
+			StringUtil.equalsIgnoreCase(targetColumnName, "DDMStorageId")) {
+
+			safeCloseable = addTemporaryIndex(
+				"DLFileEntryMetadata", false, "DDMStorageId");
+		}
+
+		try {
+			OrphanReferencesDataCleanupUtil.cleanUpTable(
+				connection, _sourceAdditionalWhereClause, sourceColumnName,
+				sourceTableName, new String[] {targetColumnName},
+				targetTableName);
+		}
+		finally {
+			if (safeCloseable != null) {
+				safeCloseable.close();
+			}
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
