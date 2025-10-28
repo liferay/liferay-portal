@@ -30,6 +30,7 @@ export class ExportImportPage {
 	readonly newExportButton: Locator;
 	readonly newImportButton: Locator;
 	readonly page: Page;
+	readonly pagesCheckbox: Locator;
 	readonly productMenuPage: ProductMenuPage;
 	readonly taskMenu: (taskName: string) => Locator;
 	readonly taskSuccessLabel: (taskName: string) => Locator;
@@ -73,6 +74,9 @@ export class ExportImportPage {
 		this.newExportButton = page.getByRole('link', {name: 'Custom Export'});
 		this.newImportButton = page.getByRole('link', {name: 'Import'});
 		this.page = page;
+		this.pagesCheckbox = this.page.locator(
+			'[id="_com_liferay_exportimport_web_portlet_ImportPortlet_contentLink_com_liferay_layout_admin_web_portlet_GroupPagesPortlet"]'
+		);
 		this.productMenuPage = new ProductMenuPage(page);
 		this.taskMenu = (taskName: string) =>
 			this.page
@@ -190,11 +194,9 @@ export class ExportImportPage {
 		await this.page.waitForLoadState('domcontentloaded');
 		await this.page.waitForTimeout(1000);
 
-		await this.page
-			.locator(
-				'[id="_com_liferay_exportimport_web_portlet_ImportPortlet_contentLink_com_liferay_layout_admin_web_portlet_GroupPagesPortlet"]'
-			)
-			.click();
+		if (await this.pagesCheckbox.isVisible()) {
+			await this.pagesCheckbox.click();
+		}
 
 		const utilityPages = this.page
 			.locator('#PagesContent')
