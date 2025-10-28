@@ -93,6 +93,12 @@ test('Can see error report and details', async ({
 		)
 	).toBeVisible();
 
+	await expect(exportImportPage.page.getByText('ScopeSite')).toBeVisible();
+
+	await expect(
+		exportImportPage.page.getByText('SiteLiferay DXP')
+	).toBeVisible();
+
 	await expect(
 		exportImportPage.page.getByText(objectEntry.externalReferenceCode)
 	).toBeVisible();
