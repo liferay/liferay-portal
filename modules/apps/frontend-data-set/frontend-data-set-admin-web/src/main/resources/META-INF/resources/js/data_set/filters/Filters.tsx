@@ -57,10 +57,11 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 	},
 	[EFilterType.DATE_RANGE]: {
 		Component: DateRangeFilterFormContent,
-		availableFieldsFilter: (item: IField) =>
-			(item.format === EFieldFormat.DATE ||
-				item.format === EFieldFormat.DATE_TIME) &&
-			item.filterable,
+		availableFieldsFilter: (item: IField) => 
+			(	item.format === EFieldFormat.DATE ||
+				item.format === EFieldFormat.DATE_TIME ||
+				item.format === EFieldFormat.F_DATE_TIME
+			),
 		displayType: () => Liferay.Language.get('date-filter'),
 		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS,
 		label: Liferay.Language.get('date-range'),
@@ -68,8 +69,7 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 	[EFilterType.SELECTION]: {
 		Component: SelectionFilterFormContent,
 		availableFieldsFilter: (item: IField) =>
-			((item.type === EFieldType.STRING && !item.format) || item.type === EFieldType.INTEGER || item.type === EFieldType.ARRAY)
-				&& item.filterable,
+			((item.type === EFieldType.STRING) || item.type === EFieldType.INTEGER || item.type === EFieldType.ARRAY),
 		displayType: (filter: IFilter | undefined) => {
 			if (filter?.sourceType === ESelectionFilterSourceType.ITEM_PROXY) {
 				return Liferay.Language.get('system-filter');
@@ -189,6 +189,7 @@ function FilterFormComponent({
 function Filters({
 	dataSet,
 	fieldTreeItems: fields,
+	filterableFieldTreeItems: filterableFields,
 	filterClientExtensionRenderers,
 	namespace,
 	resolvedRESTSchemas,
@@ -198,7 +199,7 @@ function Filters({
 	const [activeFilterType, setActiveFilterType] =
 		useState<EFilterType | null>(null);
 	const [activeMode, setActiveMode] = useState(FILTER_MODE.LIST);
-	const [availableFields, setAvailableFields] = useState(fields);
+	const [availableFields, setAvailableFields] = useState(filterableFields);
 	const [fieldNames, setFieldNames] = useState<string[]>([]);
 	const [filters, setFilters] = useState<IFilter[]>([]);
 	const [toggleActiveDisabled, setToogleActiveDisabled] =
@@ -260,8 +261,8 @@ function Filters({
 		getFilters();
 	}, [dataSet]);
 
-	const updateEntityFieldType = ({ item }: {item : IFilter}):string => {
-		let entityFieldType = "";
+	const getEntityFieldType = ({ item }: {item : IFilter}):EFieldType => {
+		let entityFieldType = EFieldType.STRING;
 		visit(fields, (field:IFieldTreeItem) => {
 			if(field.name === item.fieldName && field.entityFieldType) {
 				entityFieldType = field.entityFieldType;
@@ -336,28 +337,15 @@ function Filters({
 	};
 
 	const onCreationButtonClick = (filterType: EFilterType) => {
-		let availableFieldsListLength = 0;
 
-		const availableFilterTypeFields = JSON.parse(JSON.stringify(fields));
+		const currentFilterTypeFields: IFieldTreeItem[] = JSON.parse(JSON.stringify(filterableFields));
 
-		visit(availableFilterTypeFields, (field: IFieldTreeItem) => {
-			const availableFieldsFilter =
-				FILTER_TYPES[filterType as EFilterType].availableFieldsFilter(
-					field
-				);
-
-			if (!availableFieldsFilter) {
-				field.disabled = true;
-			}
-			else {
-				availableFieldsListLength++;
-				field.disabled = false;
-			}
-		});
+		const availableFilterTypeFields = currentFilterTypeFields
+		.filter(field => (FILTER_TYPES[filterType as EFilterType].availableFieldsFilter(field)));
 
 		setAvailableFields(availableFilterTypeFields);
 
-		if (!availableFieldsListLength) {
+		if (!availableFilterTypeFields.length) {
 			openModal({
 				bodyHTML: Liferay.Language.get(
 					'there-are-no-fields-compatible-with-this-type-of-filter'
@@ -449,7 +437,7 @@ function Filters({
 		}
 		else {
 
-			item.entityFieldType = updateEntityFieldType({item});
+			item.entityFieldType = getEntityFieldType({item});
 
 			setActiveMode(FILTER_MODE.EDITION);
 			setActiveFilter(item);

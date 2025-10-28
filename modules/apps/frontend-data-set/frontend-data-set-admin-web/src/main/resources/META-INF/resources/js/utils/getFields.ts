@@ -8,13 +8,10 @@ import {
 	FDS_ARRAY_FIELD_NAME_PARENT_SUFFIX,
 	FDS_NESTED_FIELD_NAME_DELIMITER,
 	FDS_NESTED_FIELD_NAME_PARENT_SUFFIX,
-	FDS_ARRAY_FIELD_CHILD_TYPE_DELIMITER,
-	FDS_ARRAY_FIELD_TYPE_DELIMITER
 } from '@liferay/frontend-data-set-web';
-import {fetch} from 'frontend-js-web';
 
 import openDefaultFailureToast from './openDefaultFailureToast';
-import {EFieldFormat, EFieldType, IField} from './types';
+import {EFieldFormat, EFieldType, IField, IFilterable, IProperties, ISchemas} from './types';
 
 export const BLACKLISTED_FIELDS = [
 	'actions',
@@ -25,26 +22,6 @@ export const BLACKLISTED_FIELDS = [
 
 const LOCALIZABLE_PROPERTY_SUFFIX = '_i18n';
 
-interface IProperty {
-	$ref?: string;
-	format?: EFieldFormat;
-	items?: any;
-	type?: EFieldType;
-	['x-parent-map']?: string;
-}
-
-interface IProperties {
-	[key: string]: IProperty;
-}
-
-interface ISchemas {
-	[key: string]: {
-		properties: IProperties;
-		type: string;
-		'x-filterable'?: Array<string>;
-	};
-}
-
 const validSchemaPropertyFilter = (propertyKey: string) => {
 	return (
 		!BLACKLISTED_FIELDS.includes(propertyKey) &&
@@ -52,31 +29,16 @@ const validSchemaPropertyFilter = (propertyKey: string) => {
 	);
 };
 
-const generateEntityFieldType = (parentType: EFieldType, property: IProperty): EFieldType | undefined => {
-
-	let entityFieldType = parentType;
-
-	if(property.items?.type) {
-		entityFieldType = `${parentType}${FDS_ARRAY_FIELD_TYPE_DELIMITER}${FDS_ARRAY_FIELD_CHILD_TYPE_DELIMITER}${property.items?.type}` as EFieldType;
-	}
-
-	return entityFieldType;
-};
-
 function getValidFields({
 	contextPath,
-	parentPath,
 	schemaName,
 	schemas,
 	visitedFields,
-	filterablePaths = [],
 }: {
 	contextPath: string;
-	parentPath?: string;
 	schemaName: string;
 	schemas: ISchemas;
 	visitedFields: string[];
-	filterablePaths?: string[];
 }): Array<IField> {
 	const fields: Array<IField> = [];
 
@@ -86,14 +48,6 @@ function getValidFields({
 		return fields;
 	}
 
-	if (filterablePaths.length) {
-		const parentsFilterable = filterablePaths
-			.filter((item) => item.includes('/'))
-			.map((item) => item.split('/')[0]);
-
-		filterablePaths = [...filterablePaths, ...parentsFilterable];
-	}
-
 	Object.keys(properties)
 		.filter(validSchemaPropertyFilter)
 		.forEach((propertyKey) => {
@@ -101,10 +55,8 @@ function getValidFields({
 
 			const type = propertyValue.type;
 			contextPath = contextPath.replace(/\*/g, '');
-			const fullPath = parentPath ? `${parentPath}/${propertyKey}` : propertyKey;
 
 			const field: IField = {
-				filterable: false,
 				format: propertyValue.format,
 				label: propertyKey,
 				name: `${contextPath}${propertyKey}`,
@@ -152,17 +104,11 @@ function getValidFields({
 
 				field.children = getValidFields({
 					contextPath: field.name,
-					parentPath: fullPath,
 					schemaName: targetSchemaName,
 					schemas,
 					visitedFields: [...visitedFields, targetSchemaName],
-					filterablePaths,
 				});
 			}
-				
-			field.filterable = filterablePaths.includes(fullPath);
-
-			field.entityFieldType = type === EFieldType.ARRAY ? generateEntityFieldType(type, propertyValue) : type;
 
 			fields.push(field);
 		});
@@ -171,39 +117,66 @@ function getValidFields({
 }
 
 export default async function getFields({
-	restApplication,
+	schemas,
 	restSchema,
 }: {
-	restApplication: string;
+	schemas: ISchemas;
 	restSchema: string;
 }) {
-	const response = await fetch(`/o${restApplication}/openapi.json`);
-
-	if (!response.ok) {
-		openDefaultFailureToast();
-
-		return [];
-	}
-
-	const responseJSON = await response.json();
-
-	const schemas = responseJSON?.components?.schemas;
-
-	if (!schemas?.[restSchema]?.properties) {
-		openDefaultFailureToast();
-
-		return [];
-	}
-
-	const filterablePaths = schemas[restSchema]['x-filterable'] || [];
 
 	return getValidFields({
 		contextPath: '',
 		schemaName: restSchema,
 		schemas,
-		visitedFields: [],
-		filterablePaths,
+		visitedFields: []
 	});
 }
 
-export {getValidFields, ISchemas};
+async function getFilterableFields({ restSchema, schemas }: {
+	restSchema: string;
+	schemas: ISchemas
+}): Promise<IField[]> {
+
+	if (!schemas[restSchema]['x-filterable']) {
+		openDefaultFailureToast();
+		return [];
+	}
+
+	const filterablePaths: IFilterable = schemas[restSchema]['x-filterable'];
+	const filterableItemList = Object.keys(filterablePaths);
+	
+	if(!filterableItemList) {
+		return [];
+	}
+
+	const filterableFields: Array<IField> = [];
+
+	filterableItemList.forEach(item => {
+
+		const type = filterablePaths[item].type;
+		const entityFieldType = type === EFieldType.ARRAY ? filterablePaths[item].items : type;
+
+		const field: IField = {
+			name: item,
+			label: item,
+			type: type,
+			entityFieldType: entityFieldType,
+			format: type
+		};
+
+		if(item.includes("/")) {
+			field.type = EFieldType.ARRAY;
+		}
+
+		if(field.type === EFieldFormat.F_DATE_TIME) {
+			field.entityFieldType = EFieldType.STRING;
+		}
+
+		filterableFields.push(field);
+		
+	});
+
+	return filterableFields;
+}
+
+export {getValidFields, getFilterableFields};

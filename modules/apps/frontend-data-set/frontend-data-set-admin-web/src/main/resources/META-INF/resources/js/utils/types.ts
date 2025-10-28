@@ -8,15 +8,17 @@ import {JSXElementConstructor} from 'react';
 export enum EFieldFormat {
 	DATE = 'date',
 	DATE_TIME = 'date-time',
+	F_DATE_TIME = 'date_time',
 	INT32 = 'int32',
 	INT64 = 'int64',
 }
 
 export enum EFieldType {
 	ARRAY = 'array',
+	COLLECTION = 'collection',
 	INTEGER = 'integer',
 	OBJECT = 'object',
-	STRING = 'string',
+	STRING = 'string'
 }
 
 export enum EFilterType {
@@ -31,6 +33,29 @@ export enum ESelectionFilterSourceType {
 	API_REST_APPLICATION = 'API_REST_APPLICATION',
 }
 
+export interface IProperty {
+	$ref?: string;
+	format?: EFieldFormat;
+	items?: any;
+	type?: EFieldType;
+	['x-parent-map']?: string;
+}
+
+export interface IProperties {
+	[key: string]: IProperty;
+}
+
+export interface IFilterable {
+	[key: string]: IProperty;
+}
+
+export interface ISchemas {
+	[key: string]: {
+		properties: IProperties;
+		type: string;
+		'x-filterable'?: IFilterable;
+	};
+}
 export interface IBaseVisualizationMode<Mode extends string> {
 	label: string;
 	mode: Mode;
@@ -93,9 +118,8 @@ export interface IDateFilter extends IFilter {
 
 export interface IField {
 	children?: Array<IField>;
-	entityFieldType?: string;
-	filterable: boolean;
-	format?: EFieldFormat;
+	entityFieldType?: EFieldType;
+	format?: EFieldFormat | EFieldType;
 	id?: string;
 	label?: string;
 	name: string;
@@ -116,7 +140,7 @@ export interface IFieldTreeItem extends IField {
 }
 
 export interface IFilter extends IOrderable {
-	entityFieldType: string;
+	entityFieldType: EFieldType;
 	fieldName: string;
 	filterable: boolean;
 	filterType?: EFilterType;

@@ -16,7 +16,8 @@ import React, {useEffect, useState} from 'react';
 
 import {DEFAULT_FETCH_HEADERS} from '../utils/constants';
 import getDataSetResourceURL from '../utils/getDataSetResourceURL';
-import getFields from '../utils/getFields';
+import getFields, { getFilterableFields } from '../utils/getFields';
+import getOpenApiData from '../utils/getOpenApiData';
 import openDefaultFailureToast from '../utils/openDefaultFailureToast';
 import {IDataSet, IFieldTreeItem} from '../utils/types';
 import Actions from './actions/Actions';
@@ -62,6 +63,7 @@ export interface IDataSetSectionProps {
 	backURL: string;
 	cellClientExtensionRenderers: IClientExtensionRenderer[];
 	dataSet: IDataSet;
+	filterableFieldTreeItems: Array<IFieldTreeItem>;
 	fieldTreeItems: Array<IFieldTreeItem>;
 	filterClientExtensionRenderers: IClientExtensionRenderer[];
 	namespace: string;
@@ -106,6 +108,8 @@ const DataSet = ({
 	const [fieldTreeItems, setFieldTreeItems] = useState<Array<IFieldTreeItem>>(
 		[]
 	);
+	const [filterableFieldTreeItems, setFilterableFieldTreeItems] = useState<Array<IFieldTreeItem>>([]);
+
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -125,11 +129,24 @@ const DataSet = ({
 
 				const {restApplication, restSchema} = responseJSON;
 
-				getFields({restApplication, restSchema}).then((fields) => {
-					setFieldTreeItems(fields);
+				getOpenApiData({restApplication, restSchema}).then(oApiData => {
 
-					setLoading(false);
-				});
+					if(!oApiData) return;
+
+					const {restSchema, schemas} = oApiData;
+
+					getFields({schemas, restSchema}).then((fields) => {
+						setFieldTreeItems(fields);
+						setLoading(false);
+					});
+
+					getFilterableFields({schemas, restSchema})
+					.then(filterableFields => {
+						setFilterableFieldTreeItems(filterableFields);
+					});
+
+				})
+
 			}
 			else {
 				openDefaultFailureToast();
@@ -170,6 +187,7 @@ const DataSet = ({
 							}
 							dataSet={dataSet}
 							fieldTreeItems={fieldTreeItems}
+							filterableFieldTreeItems={filterableFieldTreeItems}
 							filterClientExtensionRenderers={
 								filterClientExtensionRenderers
 							}

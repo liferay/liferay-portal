@@ -17,6 +17,7 @@ import React, {useState} from 'react';
 import CheckboxMultiSelect from '../../../../components/CheckboxMultiSelect';
 import RequiredMark from '../../../../components/RequiredMark';
 import {
+	EFieldType,
 	ESelectionFilterSourceType,
 	IField,
 	IFilter,
@@ -86,7 +87,7 @@ function Body({
 		JSON.parse(filter?.preselectedValues || '[]')
 	);
 	const [selectedField, setSelectedField] = useState<IField | undefined>(
-		filter ? {label: filter.fieldName, name: filter.fieldName, filterable: filter.filterable, entityFieldType: filter.entityFieldType} : undefined
+		filter ? {label: filter.fieldName, name: filter.fieldName, entityFieldType: filter.entityFieldType} : undefined
 	);
 	const [source, setSource] = useState<string | undefined>(filter?.source);
 	const [sourceType, setSourceType] = useState(filter?.sourceType);
@@ -214,7 +215,10 @@ function Body({
 
 		if (success) {
 			let formData: any = {
-				entityFieldType: selectedField?.entityFieldType,
+				filterData: {
+					entityFieldType: selectedField?.entityFieldType,
+					entityFieldTypeCollection: selectedField?.type === EFieldType.ARRAY 
+				},
 				fieldName: selectedField?.name,
 				include: includeMode === 'include',
 				label_i18n: i18nFilterLabels,
