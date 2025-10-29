@@ -127,8 +127,8 @@ public class BatchEngineImportTaskExecutorImpl
 				throwable);
 
 			_updateBatchEngineImportTask(
-				BatchEngineTaskExecuteStatus.FAILED, batchEngineImportTask,
-				throwable);
+				BatchEngineTaskExecuteStatus.FAILED,
+				batchEngineImportTask.getBatchEngineImportTaskId(), throwable);
 
 			return;
 		}
@@ -159,13 +159,13 @@ public class BatchEngineImportTaskExecutorImpl
 			BatchEngineTaskExecutorUtil.execute(
 				checkPermissions,
 				() -> _importFile(
-					batchEngineImportTask, batchEngineTaskItemDelegate, file,
-					user),
+					batchEngineImportTask.getBatchEngineImportTaskId(),
+					batchEngineTaskItemDelegate, file, user),
 				user);
 
 			_updateBatchEngineImportTask(
-				BatchEngineTaskExecuteStatus.COMPLETED, batchEngineImportTask,
-				null);
+				BatchEngineTaskExecuteStatus.COMPLETED,
+				batchEngineImportTask.getBatchEngineImportTaskId(), null);
 		}
 		catch (Throwable throwable) {
 			_log.error(
@@ -174,8 +174,8 @@ public class BatchEngineImportTaskExecutorImpl
 				throwable);
 
 			_updateBatchEngineImportTask(
-				BatchEngineTaskExecuteStatus.FAILED, batchEngineImportTask,
-				throwable);
+				BatchEngineTaskExecuteStatus.FAILED,
+				batchEngineImportTask.getBatchEngineImportTaskId(), throwable);
 		}
 		finally {
 			BatchEngineThreadLocal.setBatchImportInProcess(false);
@@ -253,11 +253,15 @@ public class BatchEngineImportTaskExecutorImpl
 	}
 
 	private <T> void _commitItems(
-			BatchEngineImportTask batchEngineImportTask,
+			long batchEngineImportTaskId,
 			BatchEngineTaskItemDelegate<T> batchEngineTaskItemDelegate,
 			List<T> items, Map<String, Serializable> parameters,
 			int processedItemsCount)
 		throws Throwable {
+
+		BatchEngineImportTask batchEngineImportTask =
+			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
+				batchEngineImportTaskId);
 
 		BatchEngineTaskOperation batchEngineTaskOperation =
 			BatchEngineTaskOperation.valueOf(
@@ -412,10 +416,14 @@ public class BatchEngineImportTaskExecutorImpl
 	}
 
 	private <T> Void _importFile(
-			BatchEngineImportTask batchEngineImportTask,
+			long batchEngineImportTaskId,
 			BatchEngineTaskItemDelegate<T> batchEngineTaskItemDelegate,
 			File file, User user)
 		throws Throwable {
+
+		BatchEngineImportTask batchEngineImportTask =
+			_batchEngineImportTaskLocalService.fetchBatchEngineImportTask(
+				batchEngineImportTaskId);
 
 		Map<String, Serializable> parameters = _getParameters(
 			batchEngineImportTask);
@@ -471,7 +479,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 				if (items.size() == batchEngineImportTask.getBatchSize()) {
 					_commitItems(
-						batchEngineImportTask, batchEngineTaskItemDelegate,
+						batchEngineImportTaskId, batchEngineTaskItemDelegate,
 						items, parameters, processedItemsCount);
 
 					items.clear();
@@ -482,7 +490,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 			if (!items.isEmpty()) {
 				_commitItems(
-					batchEngineImportTask, batchEngineTaskItemDelegate, items,
+					batchEngineImportTaskId, batchEngineTaskItemDelegate, items,
 					parameters, processedItemsCount);
 			}
 		}
@@ -567,7 +575,11 @@ public class BatchEngineImportTaskExecutorImpl
 
 	private void _updateBatchEngineImportTask(
 		BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus,
-		BatchEngineImportTask batchEngineImportTask, Throwable throwable) {
+		long batchEngineImportTaskId, Throwable throwable) {
+
+		BatchEngineImportTask batchEngineImportTask =
+			_batchEngineImportTaskLocalService.fetchBatchEngineImportTask(
+				batchEngineImportTaskId);
 
 		batchEngineImportTask.setEndTime(new Date());
 		batchEngineImportTask.setErrorMessage(
