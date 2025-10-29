@@ -20,6 +20,9 @@ public class OAuth2ProviderActionKeys {
 
 	public static final String ACTION_CREATE_TOKEN = "CREATE_TOKEN";
 
+	public static final String ACTION_REGISTER_APPLICATION =
+		"REGISTER_APPLICATION";
+
 	public static final String ACTION_REVOKE_TOKEN = "REVOKE_TOKEN";
 
 	public static final String ACTION_VIEW_GRANTED_AUTHORIZATIONS =
