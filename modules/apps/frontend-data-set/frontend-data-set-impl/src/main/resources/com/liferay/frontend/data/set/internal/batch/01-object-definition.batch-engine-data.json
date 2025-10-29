@@ -1092,6 +1092,38 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
+					"externalReferenceCode": "ENTITY_FIELD_TYPE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Entity Field Type"
+					},
+					"localized": false,
+					"name": "entityFieldType",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"externalReferenceCode": "ENTITY_FIELD_TYPE_COLLECTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Entity Field Type Collection"
+					},
+					"localized": false,
+					"name": "entityFieldTypeCollection",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
 					"externalReferenceCode": "FIELD_NAME",
 					"indexed": true,
 					"indexedAsKeyword": false,
