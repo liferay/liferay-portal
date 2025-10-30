@@ -504,7 +504,11 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 
 				sb.append("\"${key}\": ");
 
-				<#if allSchemas[propertyType]??>
+				<#if toStringEnumSchemas?keys?seq_contains(propertyType)>
+					sb.append("\"");
+					sb.append(${propertyName});
+					sb.append("\"");
+				<#elseif allSchemas[propertyType]??>
 					sb.append(String.valueOf(${propertyName}));
 				<#elseif stringUtil.equals(propertyType, "Object")>
 					if (${propertyName} instanceof Map) {
@@ -550,15 +554,13 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 
 						sb.append("]");
 					<#else>
-						<#if stringUtil.equals(propertyType, "Date") || stringUtil.equals(propertyType, "String") || toStringEnumSchemas?keys?seq_contains(propertyType)>
+						<#if stringUtil.equals(propertyType, "Date") || stringUtil.equals(propertyType, "String")>
 							sb.append("\"");
 
 							<#if stringUtil.equals(propertyType, "Date")>
 								sb.append(liferayToJSONDateFormat.format(${propertyName}));
 							<#elseif stringUtil.equals(propertyType, "String")>
 								sb.append(_escape(${propertyName}));
-							<#else>
-								sb.append(${propertyName});
 							</#if>
 
 							sb.append("\"");
