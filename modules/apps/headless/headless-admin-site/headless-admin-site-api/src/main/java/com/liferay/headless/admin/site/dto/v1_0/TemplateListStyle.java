@@ -272,9 +272,7 @@ public class TemplateListStyle
 			sb.append("\"collectionDisplayListStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayListStyleType);
-
 			sb.append("\"");
 		}
 

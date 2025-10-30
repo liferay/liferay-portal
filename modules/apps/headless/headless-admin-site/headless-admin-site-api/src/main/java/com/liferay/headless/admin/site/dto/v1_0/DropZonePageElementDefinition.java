@@ -164,9 +164,7 @@ public class DropZonePageElementDefinition
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

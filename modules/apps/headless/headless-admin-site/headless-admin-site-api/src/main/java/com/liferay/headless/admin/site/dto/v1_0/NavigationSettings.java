@@ -208,9 +208,7 @@ public class NavigationSettings implements Serializable {
 			sb.append("\"targetType\": ");
 
 			sb.append("\"");
-
 			sb.append(targetType);
-
 			sb.append("\"");
 		}
 

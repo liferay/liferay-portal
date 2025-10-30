@@ -54,9 +54,7 @@ public class EnumTestEntitySerDes {
 			sb.append("\"testEnum\": ");
 
 			sb.append("\"");
-
 			sb.append(enumTestEntity.getTestEnum());
-
 			sb.append("\"");
 		}
 

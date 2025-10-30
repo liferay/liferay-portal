@@ -824,9 +824,7 @@ public class DataDefinitionField implements Serializable {
 			sb.append("\"indexType\": ");
 
 			sb.append("\"");
-
 			sb.append(indexType);
-
 			sb.append("\"");
 		}
 

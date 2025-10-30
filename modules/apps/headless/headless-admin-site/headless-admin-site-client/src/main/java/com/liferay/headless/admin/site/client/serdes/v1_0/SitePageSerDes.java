@@ -294,9 +294,7 @@ public class SitePageSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(sitePage.getType());
-
 			sb.append("\"");
 		}
 
@@ -322,9 +320,7 @@ public class SitePageSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(sitePage.getViewableBy());
-
 			sb.append("\"");
 		}
 

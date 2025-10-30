@@ -211,9 +211,7 @@ public class LocalizationConfig implements Serializable {
 			sb.append("\"unlocalizedFieldsState\": ");
 
 			sb.append("\"");
-
 			sb.append(unlocalizedFieldsState);
-
 			sb.append("\"");
 		}
 

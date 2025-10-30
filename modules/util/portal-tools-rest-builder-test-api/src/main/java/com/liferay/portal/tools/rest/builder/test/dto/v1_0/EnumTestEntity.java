@@ -142,9 +142,7 @@ public class EnumTestEntity implements Serializable {
 			sb.append("\"testEnum\": ");
 
 			sb.append("\"");
-
 			sb.append(testEnum);
-
 			sb.append("\"");
 		}
 

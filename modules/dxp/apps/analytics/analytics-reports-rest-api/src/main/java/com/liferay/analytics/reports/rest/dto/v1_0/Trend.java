@@ -198,9 +198,7 @@ public class Trend implements Serializable {
 			sb.append("\"trendClassification\": ");
 
 			sb.append("\"");
-
 			sb.append(trendClassification);
-
 			sb.append("\"");
 		}
 

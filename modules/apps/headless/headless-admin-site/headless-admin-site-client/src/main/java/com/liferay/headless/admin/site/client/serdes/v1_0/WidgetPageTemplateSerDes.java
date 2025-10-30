@@ -332,9 +332,7 @@ public class WidgetPageTemplateSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(widgetPageTemplate.getType());
-
 			sb.append("\"");
 		}
 

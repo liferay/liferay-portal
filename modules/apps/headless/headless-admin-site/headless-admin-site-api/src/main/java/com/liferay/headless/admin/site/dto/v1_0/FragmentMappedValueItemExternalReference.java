@@ -262,9 +262,7 @@ public class FragmentMappedValueItemExternalReference
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

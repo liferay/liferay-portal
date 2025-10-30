@@ -530,9 +530,7 @@ public class DocumentSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(document.getViewableBy());
-
 			sb.append("\"");
 		}
 

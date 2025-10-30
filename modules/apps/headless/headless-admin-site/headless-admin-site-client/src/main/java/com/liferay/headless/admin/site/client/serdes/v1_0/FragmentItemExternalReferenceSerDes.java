@@ -98,9 +98,7 @@ public class FragmentItemExternalReferenceSerDes {
 			sb.append("\"fragmentReferenceType\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentItemExternalReference.getFragmentReferenceType());
-
 			sb.append("\"");
 		}
 

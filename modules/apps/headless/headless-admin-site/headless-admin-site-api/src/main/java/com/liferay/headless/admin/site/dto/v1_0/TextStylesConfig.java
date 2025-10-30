@@ -532,9 +532,7 @@ public class TextStylesConfig implements Serializable {
 			sb.append("\"alignment\": ");
 
 			sb.append("\"");
-
 			sb.append(alignment);
-
 			sb.append("\"");
 		}
 
@@ -576,9 +574,7 @@ public class TextStylesConfig implements Serializable {
 			sb.append("\"font\": ");
 
 			sb.append("\"");
-
 			sb.append(font);
-
 			sb.append("\"");
 		}
 
@@ -652,9 +648,7 @@ public class TextStylesConfig implements Serializable {
 			sb.append("\"textDecoration\": ");
 
 			sb.append("\"");
-
 			sb.append(textDecoration);
-
 			sb.append("\"");
 		}
 

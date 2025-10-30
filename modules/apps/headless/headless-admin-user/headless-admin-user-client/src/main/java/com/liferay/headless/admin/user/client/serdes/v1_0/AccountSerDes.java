@@ -567,9 +567,7 @@ public class AccountSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(account.getType());
-
 			sb.append("\"");
 		}
 

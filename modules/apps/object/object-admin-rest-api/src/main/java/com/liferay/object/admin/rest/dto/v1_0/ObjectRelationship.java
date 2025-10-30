@@ -1002,9 +1002,7 @@ public class ObjectRelationship implements Serializable {
 			sb.append("\"deletionType\": ");
 
 			sb.append("\"");
-
 			sb.append(deletionType);
-
 			sb.append("\"");
 		}
 
@@ -1264,9 +1262,7 @@ public class ObjectRelationship implements Serializable {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

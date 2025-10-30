@@ -54,9 +54,7 @@ public class BasicLayoutSerDes {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(basicLayout.getAlign());
-
 			sb.append("\"");
 		}
 
@@ -68,9 +66,7 @@ public class BasicLayoutSerDes {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(basicLayout.getFlexWrap());
-
 			sb.append("\"");
 		}
 
@@ -82,9 +78,7 @@ public class BasicLayoutSerDes {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(basicLayout.getJustify());
-
 			sb.append("\"");
 		}
 

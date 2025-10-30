@@ -748,9 +748,7 @@ public class GridPageElementDefinition
 			sb.append("\"verticalAlignment\": ");
 
 			sb.append("\"");
-
 			sb.append(verticalAlignment);
-
 			sb.append("\"");
 		}
 
@@ -764,9 +762,7 @@ public class GridPageElementDefinition
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

@@ -488,9 +488,7 @@ public class SamlProvider implements Serializable {
 			sb.append("\"role\": ");
 
 			sb.append("\"");
-
 			sb.append(role);
-
 			sb.append("\"");
 		}
 

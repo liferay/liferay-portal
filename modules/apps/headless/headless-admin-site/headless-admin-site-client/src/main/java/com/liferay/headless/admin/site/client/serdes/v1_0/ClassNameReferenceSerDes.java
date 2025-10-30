@@ -68,9 +68,7 @@ public class ClassNameReferenceSerDes {
 			sb.append("\"collectionType\": ");
 
 			sb.append("\"");
-
 			sb.append(classNameReference.getCollectionType());
-
 			sb.append("\"");
 		}
 

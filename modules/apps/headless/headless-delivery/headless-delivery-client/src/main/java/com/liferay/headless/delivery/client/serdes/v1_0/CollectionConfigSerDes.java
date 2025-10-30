@@ -71,9 +71,7 @@ public class CollectionConfigSerDes {
 			sb.append("\"collectionType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionConfig.getCollectionType());
-
 			sb.append("\"");
 		}
 

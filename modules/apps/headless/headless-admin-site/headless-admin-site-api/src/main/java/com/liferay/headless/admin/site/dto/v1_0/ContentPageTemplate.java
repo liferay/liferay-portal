@@ -318,9 +318,7 @@ public class ContentPageTemplate extends PageTemplate implements Serializable {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

@@ -66,9 +66,7 @@ public class ScopeSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(scope.getType());
-
 			sb.append("\"");
 		}
 

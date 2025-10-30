@@ -52,9 +52,7 @@ public class IndexSerDes {
 			sb.append("\"group\": ");
 
 			sb.append("\"");
-
 			sb.append(index.getGroup());
-
 			sb.append("\"");
 		}
 

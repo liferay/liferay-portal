@@ -86,9 +86,7 @@ public class SitePageNavigationSettingsSerDes {
 			sb.append("\"targetType\": ");
 
 			sb.append("\"");
-
 			sb.append(sitePageNavigationSettings.getTargetType());
-
 			sb.append("\"");
 		}
 

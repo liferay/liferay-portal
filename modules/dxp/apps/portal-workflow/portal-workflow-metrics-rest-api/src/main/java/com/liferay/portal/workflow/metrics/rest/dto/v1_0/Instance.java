@@ -1241,9 +1241,7 @@ public class Instance implements Serializable {
 			sb.append("\"slaStatus\": ");
 
 			sb.append("\"");
-
 			sb.append(slaStatus);
-
 			sb.append("\"");
 		}
 

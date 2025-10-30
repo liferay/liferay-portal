@@ -304,9 +304,7 @@ public class ObjectViewFilterColumn implements Serializable {
 			sb.append("\"filterType\": ");
 
 			sb.append("\"");
-
 			sb.append(filterType);
-
 			sb.append("\"");
 		}
 

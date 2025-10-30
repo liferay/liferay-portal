@@ -202,9 +202,7 @@ public class ListStyle
 			sb.append("\"listStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyleType);
-
 			sb.append("\"");
 		}
 
@@ -219,9 +217,7 @@ public class ListStyle
 			sb.append("\"collectionDisplayListStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayListStyleType);
-
 			sb.append("\"");
 		}
 

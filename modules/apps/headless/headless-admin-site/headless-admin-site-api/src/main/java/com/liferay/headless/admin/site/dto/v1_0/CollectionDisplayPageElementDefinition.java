@@ -804,9 +804,7 @@ public class CollectionDisplayPageElementDefinition
 			sb.append("\"paginationType\": ");
 
 			sb.append("\"");
-
 			sb.append(paginationType);
-
 			sb.append("\"");
 		}
 
@@ -820,9 +818,7 @@ public class CollectionDisplayPageElementDefinition
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

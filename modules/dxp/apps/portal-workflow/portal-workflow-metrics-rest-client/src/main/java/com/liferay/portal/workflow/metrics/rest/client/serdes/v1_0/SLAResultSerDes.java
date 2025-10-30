@@ -132,9 +132,7 @@ public class SLAResultSerDes {
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(slaResult.getStatus());
-
 			sb.append("\"");
 		}
 

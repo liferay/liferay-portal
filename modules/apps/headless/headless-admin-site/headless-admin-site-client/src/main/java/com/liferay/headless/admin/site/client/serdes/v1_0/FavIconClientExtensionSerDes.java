@@ -80,9 +80,7 @@ public class FavIconClientExtensionSerDes {
 			sb.append("\"favIconType\": ");
 
 			sb.append("\"");
-
 			sb.append(favIconClientExtension.getFavIconType());
-
 			sb.append("\"");
 		}
 

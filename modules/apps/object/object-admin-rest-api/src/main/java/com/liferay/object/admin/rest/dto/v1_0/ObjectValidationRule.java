@@ -973,9 +973,7 @@ public class ObjectValidationRule implements Serializable {
 			sb.append("\"outputType\": ");
 
 			sb.append("\"");
-
 			sb.append(outputType);
-
 			sb.append("\"");
 		}
 

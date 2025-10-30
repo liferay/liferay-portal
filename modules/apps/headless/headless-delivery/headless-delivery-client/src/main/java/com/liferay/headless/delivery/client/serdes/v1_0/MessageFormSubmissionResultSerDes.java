@@ -68,9 +68,7 @@ public class MessageFormSubmissionResultSerDes {
 			sb.append("\"messageType\": ");
 
 			sb.append("\"");
-
 			sb.append(messageFormSubmissionResult.getMessageType());
-
 			sb.append("\"");
 		}
 

@@ -73,9 +73,7 @@ public class CollectionDisplayViewportSerDes {
 			sb.append("\"id\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayViewport.getId());
-
 			sb.append("\"");
 		}
 

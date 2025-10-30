@@ -791,9 +791,7 @@ public class Currency implements Serializable {
 			sb.append("\"roundingMode\": ");
 
 			sb.append("\"");
-
 			sb.append(roundingMode);
-
 			sb.append("\"");
 		}
 

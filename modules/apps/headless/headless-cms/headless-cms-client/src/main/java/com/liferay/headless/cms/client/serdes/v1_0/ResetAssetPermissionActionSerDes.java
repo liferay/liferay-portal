@@ -82,9 +82,7 @@ public class ResetAssetPermissionActionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(resetAssetPermissionAction.getType());
-
 			sb.append("\"");
 		}
 

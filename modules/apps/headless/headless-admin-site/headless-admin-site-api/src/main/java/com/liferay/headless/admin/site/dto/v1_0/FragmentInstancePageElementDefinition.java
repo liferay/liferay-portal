@@ -1285,9 +1285,7 @@ public class FragmentInstancePageElementDefinition
 			sb.append("\"fragmentType\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentType);
-
 			sb.append("\"");
 		}
 
@@ -1437,9 +1435,7 @@ public class FragmentInstancePageElementDefinition
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

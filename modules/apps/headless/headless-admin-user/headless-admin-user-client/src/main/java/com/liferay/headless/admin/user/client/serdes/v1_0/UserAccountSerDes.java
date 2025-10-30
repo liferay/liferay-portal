@@ -293,9 +293,7 @@ public class UserAccountSerDes {
 			sb.append("\"gender\": ");
 
 			sb.append("\"");
-
 			sb.append(userAccount.getGender());
-
 			sb.append("\"");
 		}
 
@@ -609,9 +607,7 @@ public class UserAccountSerDes {
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(userAccount.getStatus());
-
 			sb.append("\"");
 		}
 

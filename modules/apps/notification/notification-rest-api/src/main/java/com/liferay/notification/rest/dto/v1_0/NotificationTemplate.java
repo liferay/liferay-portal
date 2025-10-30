@@ -1071,9 +1071,7 @@ public class NotificationTemplate implements Serializable {
 			sb.append("\"editorType\": ");
 
 			sb.append("\"");
-
 			sb.append(editorType);
-
 			sb.append("\"");
 		}
 

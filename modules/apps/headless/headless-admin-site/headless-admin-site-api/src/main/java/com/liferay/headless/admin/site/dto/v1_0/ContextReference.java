@@ -151,9 +151,7 @@ public class ContextReference implements Serializable {
 			sb.append("\"contextSource\": ");
 
 			sb.append("\"");
-
 			sb.append(contextSource);
-
 			sb.append("\"");
 		}
 

@@ -220,9 +220,7 @@ public class Index implements Serializable {
 			sb.append("\"group\": ");
 
 			sb.append("\"");
-
 			sb.append(group);
-
 			sb.append("\"");
 		}
 

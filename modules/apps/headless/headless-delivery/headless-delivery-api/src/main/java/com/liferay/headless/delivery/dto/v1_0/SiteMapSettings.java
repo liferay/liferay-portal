@@ -288,9 +288,7 @@ public class SiteMapSettings implements Serializable {
 			sb.append("\"changeFrequency\": ");
 
 			sb.append("\"");
-
 			sb.append(changeFrequency);
-
 			sb.append("\"");
 		}
 

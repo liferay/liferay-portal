@@ -222,9 +222,7 @@ public class CollectionConfig implements Serializable {
 			sb.append("\"collectionType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionType);
-
 			sb.append("\"");
 		}
 

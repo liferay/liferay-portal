@@ -1252,9 +1252,7 @@ public class ProductConfiguration implements Serializable {
 			sb.append("\"entityType\": ");
 
 			sb.append("\"");
-
 			sb.append(entityType);
-
 			sb.append("\"");
 		}
 

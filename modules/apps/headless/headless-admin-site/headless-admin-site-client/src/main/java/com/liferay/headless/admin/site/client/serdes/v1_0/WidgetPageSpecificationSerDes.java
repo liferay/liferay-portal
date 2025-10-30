@@ -155,9 +155,7 @@ public class WidgetPageSpecificationSerDes {
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(widgetPageSpecification.getStatus());
-
 			sb.append("\"");
 		}
 
@@ -169,9 +167,7 @@ public class WidgetPageSpecificationSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(widgetPageSpecification.getType());
-
 			sb.append("\"");
 		}
 

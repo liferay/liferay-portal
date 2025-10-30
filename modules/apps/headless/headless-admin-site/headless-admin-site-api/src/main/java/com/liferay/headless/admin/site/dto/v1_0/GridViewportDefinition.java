@@ -207,9 +207,7 @@ public class GridViewportDefinition implements Serializable {
 			sb.append("\"verticalAlignment\": ");
 
 			sb.append("\"");
-
 			sb.append(verticalAlignment);
-
 			sb.append("\"");
 		}
 

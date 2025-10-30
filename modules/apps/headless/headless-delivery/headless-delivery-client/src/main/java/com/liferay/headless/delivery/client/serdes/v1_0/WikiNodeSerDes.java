@@ -190,9 +190,7 @@ public class WikiNodeSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(wikiNode.getViewableBy());
-
 			sb.append("\"");
 		}
 

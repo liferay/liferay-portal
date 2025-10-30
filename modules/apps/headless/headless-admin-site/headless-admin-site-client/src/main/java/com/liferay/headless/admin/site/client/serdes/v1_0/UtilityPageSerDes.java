@@ -227,9 +227,7 @@ public class UtilityPageSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(utilityPage.getType());
-
 			sb.append("\"");
 		}
 

@@ -250,9 +250,7 @@ public class MessageFormSubmissionResult implements Serializable {
 			sb.append("\"messageType\": ");
 
 			sb.append("\"");
-
 			sb.append(messageType);
-
 			sb.append("\"");
 		}
 

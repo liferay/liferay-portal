@@ -619,9 +619,7 @@ public class ExportTask implements Serializable {
 			sb.append("\"executeStatus\": ");
 
 			sb.append("\"");
-
 			sb.append(executeStatus);
-
 			sb.append("\"");
 		}
 

@@ -52,9 +52,7 @@ public class LayoutSerDes {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getAlign());
-
 			sb.append("\"");
 		}
 
@@ -80,9 +78,7 @@ public class LayoutSerDes {
 			sb.append("\"borderRadius\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getBorderRadius());
-
 			sb.append("\"");
 		}
 
@@ -104,9 +100,7 @@ public class LayoutSerDes {
 			sb.append("\"containerType\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getContainerType());
-
 			sb.append("\"");
 		}
 
@@ -118,9 +112,7 @@ public class LayoutSerDes {
 			sb.append("\"contentDisplay\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getContentDisplay());
-
 			sb.append("\"");
 		}
 
@@ -132,9 +124,7 @@ public class LayoutSerDes {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getFlexWrap());
-
 			sb.append("\"");
 		}
 
@@ -146,9 +136,7 @@ public class LayoutSerDes {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getJustify());
-
 			sb.append("\"");
 		}
 
@@ -260,9 +248,7 @@ public class LayoutSerDes {
 			sb.append("\"shadow\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getShadow());
-
 			sb.append("\"");
 		}
 
@@ -274,9 +260,7 @@ public class LayoutSerDes {
 			sb.append("\"widthType\": ");
 
 			sb.append("\"");
-
 			sb.append(layout.getWidthType());
-
 			sb.append("\"");
 		}
 

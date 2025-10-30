@@ -211,9 +211,7 @@ public class WidgetPageTemplateSettings
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

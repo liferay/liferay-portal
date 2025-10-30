@@ -338,9 +338,7 @@ public class TaxonomyVocabularySerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(taxonomyVocabulary.getViewableBy());
-
 			sb.append("\"");
 		}
 
@@ -352,9 +350,7 @@ public class TaxonomyVocabularySerDes {
 			sb.append("\"visibilityType\": ");
 
 			sb.append("\"");
-
 			sb.append(taxonomyVocabulary.getVisibilityType());
-
 			sb.append("\"");
 		}
 

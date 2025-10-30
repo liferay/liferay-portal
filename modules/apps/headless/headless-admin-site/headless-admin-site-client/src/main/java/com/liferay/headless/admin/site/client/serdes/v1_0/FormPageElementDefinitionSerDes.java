@@ -211,9 +211,7 @@ public class FormPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(formPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

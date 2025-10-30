@@ -106,9 +106,7 @@ public class AttributeSerDes {
 			sb.append("\"mutability\": ");
 
 			sb.append("\"");
-
 			sb.append(attribute.getMutability());
-
 			sb.append("\"");
 		}
 
@@ -164,9 +162,7 @@ public class AttributeSerDes {
 			sb.append("\"returned\": ");
 
 			sb.append("\"");
-
 			sb.append(attribute.getReturned());
-
 			sb.append("\"");
 		}
 
@@ -198,9 +194,7 @@ public class AttributeSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(attribute.getType());
-
 			sb.append("\"");
 		}
 
@@ -212,9 +206,7 @@ public class AttributeSerDes {
 			sb.append("\"uniqueness\": ");
 
 			sb.append("\"");
-
 			sb.append(attribute.getUniqueness());
-
 			sb.append("\"");
 		}
 

@@ -118,9 +118,7 @@ public class ObjectLayoutBoxSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(objectLayoutBox.getType());
-
 			sb.append("\"");
 		}
 

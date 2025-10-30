@@ -221,9 +221,7 @@ public class ChildTestEntity3SerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(childTestEntity3.getType());
-
 			sb.append("\"");
 		}
 

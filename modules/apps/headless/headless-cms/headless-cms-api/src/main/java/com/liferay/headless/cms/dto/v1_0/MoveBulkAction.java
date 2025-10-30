@@ -172,9 +172,7 @@ public class MoveBulkAction extends BulkAction implements Serializable {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

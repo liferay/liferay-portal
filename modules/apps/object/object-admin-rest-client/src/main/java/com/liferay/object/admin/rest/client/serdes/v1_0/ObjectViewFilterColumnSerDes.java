@@ -54,9 +54,7 @@ public class ObjectViewFilterColumnSerDes {
 			sb.append("\"filterType\": ");
 
 			sb.append("\"");
-
 			sb.append(objectViewFilterColumn.getFilterType());
-
 			sb.append("\"");
 		}
 

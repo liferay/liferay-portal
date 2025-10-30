@@ -55,9 +55,7 @@ public class ObjectFieldSerDes {
 			sb.append("\"DBType\": ");
 
 			sb.append("\"");
-
 			sb.append(objectField.getDBType());
-
 			sb.append("\"");
 		}
 
@@ -79,9 +77,7 @@ public class ObjectFieldSerDes {
 			sb.append("\"businessType\": ");
 
 			sb.append("\"");
-
 			sb.append(objectField.getBusinessType());
-
 			sb.append("\"");
 		}
 
@@ -280,9 +276,7 @@ public class ObjectFieldSerDes {
 			sb.append("\"readOnly\": ");
 
 			sb.append("\"");
-
 			sb.append(objectField.getReadOnly());
-
 			sb.append("\"");
 		}
 
@@ -308,9 +302,7 @@ public class ObjectFieldSerDes {
 			sb.append("\"relationshipType\": ");
 
 			sb.append("\"");
-
 			sb.append(objectField.getRelationshipType());
-
 			sb.append("\"");
 		}
 
@@ -352,9 +344,7 @@ public class ObjectFieldSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(objectField.getType());
-
 			sb.append("\"");
 		}
 

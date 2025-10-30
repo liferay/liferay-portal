@@ -2134,9 +2134,7 @@ public class UserAccount implements Serializable {
 			sb.append("\"gender\": ");
 
 			sb.append("\"");
-
 			sb.append(gender);
-
 			sb.append("\"");
 		}
 
@@ -2493,9 +2491,7 @@ public class UserAccount implements Serializable {
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(status);
-
 			sb.append("\"");
 		}
 

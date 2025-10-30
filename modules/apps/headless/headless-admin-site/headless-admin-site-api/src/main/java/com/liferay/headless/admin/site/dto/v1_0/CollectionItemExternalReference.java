@@ -259,9 +259,7 @@ public class CollectionItemExternalReference
 			sb.append("\"collectionType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionType);
-
 			sb.append("\"");
 		}
 

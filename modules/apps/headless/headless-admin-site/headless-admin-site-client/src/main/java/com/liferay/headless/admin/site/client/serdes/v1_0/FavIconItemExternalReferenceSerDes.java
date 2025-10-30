@@ -98,9 +98,7 @@ public class FavIconItemExternalReferenceSerDes {
 			sb.append("\"favIconType\": ");
 
 			sb.append("\"");
-
 			sb.append(favIconItemExternalReference.getFavIconType());
-
 			sb.append("\"");
 		}
 

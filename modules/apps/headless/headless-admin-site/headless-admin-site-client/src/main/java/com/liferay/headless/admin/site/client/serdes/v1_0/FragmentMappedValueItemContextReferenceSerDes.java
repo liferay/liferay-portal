@@ -65,10 +65,8 @@ public class FragmentMappedValueItemContextReferenceSerDes {
 			sb.append("\"contextSource\": ");
 
 			sb.append("\"");
-
 			sb.append(
 				fragmentMappedValueItemContextReference.getContextSource());
-
 			sb.append("\"");
 		}
 
@@ -80,9 +78,7 @@ public class FragmentMappedValueItemContextReferenceSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentMappedValueItemContextReference.getType());
-
 			sb.append("\"");
 		}
 

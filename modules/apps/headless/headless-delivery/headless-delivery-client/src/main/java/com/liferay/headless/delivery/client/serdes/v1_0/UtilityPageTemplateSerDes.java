@@ -92,9 +92,7 @@ public class UtilityPageTemplateSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(utilityPageTemplate.getType());
-
 			sb.append("\"");
 		}
 

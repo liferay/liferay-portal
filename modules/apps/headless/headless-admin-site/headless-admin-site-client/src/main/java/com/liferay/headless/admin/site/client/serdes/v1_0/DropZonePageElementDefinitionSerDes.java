@@ -79,9 +79,7 @@ public class DropZonePageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(dropZonePageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

@@ -69,9 +69,7 @@ public class FormConfigSerDes {
 			sb.append("\"formType\": ");
 
 			sb.append("\"");
-
 			sb.append(formConfig.getFormType());
-
 			sb.append("\"");
 		}
 

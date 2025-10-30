@@ -378,9 +378,7 @@ public class FormConfig implements Serializable {
 			sb.append("\"formType\": ");
 
 			sb.append("\"");
-
 			sb.append(formType);
-
 			sb.append("\"");
 		}
 

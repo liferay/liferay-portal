@@ -1120,9 +1120,7 @@ public class PageCollectionDefinition implements Serializable {
 			sb.append("\"paginationType\": ");
 
 			sb.append("\"");
-
 			sb.append(paginationType);
-
 			sb.append("\"");
 		}
 

@@ -305,9 +305,7 @@ public class ObjectViewSortColumn implements Serializable {
 			sb.append("\"sortOrder\": ");
 
 			sb.append("\"");
-
 			sb.append(sortOrder);
-
 			sb.append("\"");
 		}
 

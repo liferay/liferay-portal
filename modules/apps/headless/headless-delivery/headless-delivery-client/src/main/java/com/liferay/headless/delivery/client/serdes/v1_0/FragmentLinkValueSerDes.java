@@ -71,9 +71,7 @@ public class FragmentLinkValueSerDes {
 			sb.append("\"target\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentLinkValue.getTarget());
-
 			sb.append("\"");
 		}
 

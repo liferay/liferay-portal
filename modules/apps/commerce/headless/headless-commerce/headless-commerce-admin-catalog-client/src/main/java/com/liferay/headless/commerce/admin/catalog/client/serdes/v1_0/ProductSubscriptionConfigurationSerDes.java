@@ -102,10 +102,8 @@ public class ProductSubscriptionConfigurationSerDes {
 			sb.append("\"deliverySubscriptionType\": ");
 
 			sb.append("\"");
-
 			sb.append(
 				productSubscriptionConfiguration.getDeliverySubscriptionType());
-
 			sb.append("\"");
 		}
 
@@ -162,9 +160,7 @@ public class ProductSubscriptionConfigurationSerDes {
 			sb.append("\"subscriptionType\": ");
 
 			sb.append("\"");
-
 			sb.append(productSubscriptionConfiguration.getSubscriptionType());
-
 			sb.append("\"");
 		}
 

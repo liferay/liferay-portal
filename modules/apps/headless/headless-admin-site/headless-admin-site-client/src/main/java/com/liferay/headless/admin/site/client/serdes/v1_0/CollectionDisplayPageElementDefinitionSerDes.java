@@ -227,10 +227,8 @@ public class CollectionDisplayPageElementDefinitionSerDes {
 			sb.append("\"paginationType\": ");
 
 			sb.append("\"");
-
 			sb.append(
 				collectionDisplayPageElementDefinition.getPaginationType());
-
 			sb.append("\"");
 		}
 
@@ -242,9 +240,7 @@ public class CollectionDisplayPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

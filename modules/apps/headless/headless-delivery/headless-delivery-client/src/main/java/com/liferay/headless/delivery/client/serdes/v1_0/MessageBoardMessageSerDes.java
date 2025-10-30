@@ -404,9 +404,7 @@ public class MessageBoardMessageSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(messageBoardMessage.getViewableBy());
-
 			sb.append("\"");
 		}
 

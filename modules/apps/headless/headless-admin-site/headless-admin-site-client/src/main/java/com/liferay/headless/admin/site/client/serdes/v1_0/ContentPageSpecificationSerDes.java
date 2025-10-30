@@ -175,9 +175,7 @@ public class ContentPageSpecificationSerDes {
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(contentPageSpecification.getStatus());
-
 			sb.append("\"");
 		}
 
@@ -189,9 +187,7 @@ public class ContentPageSpecificationSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(contentPageSpecification.getType());
-
 			sb.append("\"");
 		}
 

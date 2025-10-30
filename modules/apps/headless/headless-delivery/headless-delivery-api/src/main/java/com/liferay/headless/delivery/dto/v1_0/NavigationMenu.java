@@ -723,9 +723,7 @@ public class NavigationMenu implements Serializable {
 			sb.append("\"navigationType\": ");
 
 			sb.append("\"");
-
 			sb.append(navigationType);
-
 			sb.append("\"");
 		}
 

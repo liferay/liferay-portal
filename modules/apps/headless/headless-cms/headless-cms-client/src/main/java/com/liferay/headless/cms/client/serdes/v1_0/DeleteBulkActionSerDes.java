@@ -88,9 +88,7 @@ public class DeleteBulkActionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(deleteBulkAction.getType());
-
 			sb.append("\"");
 		}
 

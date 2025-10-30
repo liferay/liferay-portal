@@ -54,9 +54,7 @@ public class SitemapSettingsSerDes {
 			sb.append("\"changeFrequency\": ");
 
 			sb.append("\"");
-
 			sb.append(sitemapSettings.getChangeFrequency());
-
 			sb.append("\"");
 		}
 

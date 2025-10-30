@@ -114,9 +114,7 @@ public class ExportTaskSerDes {
 			sb.append("\"executeStatus\": ");
 
 			sb.append("\"");
-
 			sb.append(exportTask.getExecuteStatus());
-
 			sb.append("\"");
 		}
 

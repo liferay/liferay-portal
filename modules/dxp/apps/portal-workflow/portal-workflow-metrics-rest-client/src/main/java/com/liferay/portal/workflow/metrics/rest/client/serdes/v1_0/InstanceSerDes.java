@@ -292,9 +292,7 @@ public class InstanceSerDes {
 			sb.append("\"slaStatus\": ");
 
 			sb.append("\"");
-
 			sb.append(instance.getSLAStatus());
-
 			sb.append("\"");
 		}
 

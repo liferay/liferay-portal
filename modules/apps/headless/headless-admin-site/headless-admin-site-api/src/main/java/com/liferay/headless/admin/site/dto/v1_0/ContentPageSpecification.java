@@ -300,9 +300,7 @@ public class ContentPageSpecification
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(status);
-
 			sb.append("\"");
 		}
 
@@ -316,9 +314,7 @@ public class ContentPageSpecification
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

@@ -737,9 +737,7 @@ public class Attribute implements Serializable {
 			sb.append("\"mutability\": ");
 
 			sb.append("\"");
-
 			sb.append(mutability);
-
 			sb.append("\"");
 		}
 
@@ -807,9 +805,7 @@ public class Attribute implements Serializable {
 			sb.append("\"returned\": ");
 
 			sb.append("\"");
-
 			sb.append(returned);
-
 			sb.append("\"");
 		}
 
@@ -845,9 +841,7 @@ public class Attribute implements Serializable {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 
@@ -861,9 +855,7 @@ public class Attribute implements Serializable {
 			sb.append("\"uniqueness\": ");
 
 			sb.append("\"");
-
 			sb.append(uniqueness);
-
 			sb.append("\"");
 		}
 

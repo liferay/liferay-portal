@@ -85,9 +85,7 @@ public class WidgetPageTemplateSettingsSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(widgetPageTemplateSettings.getType());
-
 			sb.append("\"");
 		}
 

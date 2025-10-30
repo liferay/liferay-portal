@@ -172,9 +172,7 @@ public class CurrencySerDes {
 			sb.append("\"roundingMode\": ");
 
 			sb.append("\"");
-
 			sb.append(currency.getRoundingMode());
-
 			sb.append("\"");
 		}
 

@@ -54,9 +54,7 @@ public class HtmlPropertiesSerDes {
 			sb.append("\"htmlTag\": ");
 
 			sb.append("\"");
-
 			sb.append(htmlProperties.getHtmlTag());
-
 			sb.append("\"");
 		}
 

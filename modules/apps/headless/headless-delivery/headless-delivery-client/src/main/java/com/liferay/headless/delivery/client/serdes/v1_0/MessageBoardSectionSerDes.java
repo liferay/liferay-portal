@@ -236,9 +236,7 @@ public class MessageBoardSectionSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(messageBoardSection.getViewableBy());
-
 			sb.append("\"");
 		}
 

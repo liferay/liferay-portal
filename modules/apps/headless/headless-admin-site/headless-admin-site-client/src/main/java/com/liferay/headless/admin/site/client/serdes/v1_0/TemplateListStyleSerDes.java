@@ -96,9 +96,7 @@ public class TemplateListStyleSerDes {
 			sb.append("\"collectionDisplayListStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(templateListStyle.getCollectionDisplayListStyleType());
-
 			sb.append("\"");
 		}
 

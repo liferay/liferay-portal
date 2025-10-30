@@ -248,9 +248,7 @@ public class HistogramMetric implements Serializable {
 			sb.append("\"unit\": ");
 
 			sb.append("\"");
-
 			sb.append(unit);
-
 			sb.append("\"");
 		}
 

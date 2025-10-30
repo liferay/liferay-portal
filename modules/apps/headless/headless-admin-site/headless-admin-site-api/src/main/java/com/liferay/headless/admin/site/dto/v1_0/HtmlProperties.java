@@ -142,9 +142,7 @@ public class HtmlProperties implements Serializable {
 			sb.append("\"htmlTag\": ");
 
 			sb.append("\"");
-
 			sb.append(htmlTag);
-
 			sb.append("\"");
 		}
 

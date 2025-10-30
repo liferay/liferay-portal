@@ -216,9 +216,7 @@ public class FragmentLinkValue implements Serializable {
 			sb.append("\"target\": ");
 
 			sb.append("\"");
-
 			sb.append(target);
-
 			sb.append("\"");
 		}
 

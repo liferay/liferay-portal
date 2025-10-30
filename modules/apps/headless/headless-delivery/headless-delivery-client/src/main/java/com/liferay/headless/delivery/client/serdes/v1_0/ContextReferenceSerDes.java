@@ -54,9 +54,7 @@ public class ContextReferenceSerDes {
 			sb.append("\"contextSource\": ");
 
 			sb.append("\"");
-
 			sb.append(contextReference.getContextSource());
-
 			sb.append("\"");
 		}
 

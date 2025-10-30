@@ -233,9 +233,7 @@ public class GeneralConfig implements Serializable {
 			sb.append("\"applicationDecorator\": ");
 
 			sb.append("\"");
-
 			sb.append(applicationDecorator);
-
 			sb.append("\"");
 		}
 

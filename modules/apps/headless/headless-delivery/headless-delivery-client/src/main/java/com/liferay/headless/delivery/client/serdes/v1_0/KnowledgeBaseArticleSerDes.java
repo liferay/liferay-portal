@@ -430,9 +430,7 @@ public class KnowledgeBaseArticleSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(knowledgeBaseArticle.getViewableBy());
-
 			sb.append("\"");
 		}
 

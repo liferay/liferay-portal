@@ -75,9 +75,7 @@ public class HistogramMetricSerDes {
 			sb.append("\"unit\": ");
 
 			sb.append("\"");
-
 			sb.append(histogramMetric.getUnit());
-
 			sb.append("\"");
 		}
 

@@ -260,9 +260,7 @@ public class FragmentItemExternalReference
 			sb.append("\"fragmentReferenceType\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentReferenceType);
-
 			sb.append("\"");
 		}
 

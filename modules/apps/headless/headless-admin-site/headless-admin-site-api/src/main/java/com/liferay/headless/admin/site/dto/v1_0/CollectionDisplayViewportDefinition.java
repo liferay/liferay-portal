@@ -346,9 +346,7 @@ public class CollectionDisplayViewportDefinition implements Serializable {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(align);
-
 			sb.append("\"");
 		}
 
@@ -362,9 +360,7 @@ public class CollectionDisplayViewportDefinition implements Serializable {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(flexWrap);
-
 			sb.append("\"");
 		}
 
@@ -390,9 +386,7 @@ public class CollectionDisplayViewportDefinition implements Serializable {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(justify);
-
 			sb.append("\"");
 		}
 

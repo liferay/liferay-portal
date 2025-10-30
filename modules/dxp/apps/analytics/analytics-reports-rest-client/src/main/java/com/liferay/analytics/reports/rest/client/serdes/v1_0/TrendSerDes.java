@@ -62,9 +62,7 @@ public class TrendSerDes {
 			sb.append("\"trendClassification\": ");
 
 			sb.append("\"");
-
 			sb.append(trend.getTrendClassification());
-
 			sb.append("\"");
 		}
 

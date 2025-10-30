@@ -1008,9 +1008,7 @@ public class Site implements Serializable {
 			sb.append("\"membershipType\": ");
 
 			sb.append("\"");
-
 			sb.append(membershipType);
-
 			sb.append("\"");
 		}
 
@@ -1101,9 +1099,7 @@ public class Site implements Serializable {
 			sb.append("\"templateType\": ");
 
 			sb.append("\"");
-
 			sb.append(templateType);
-
 			sb.append("\"");
 		}
 

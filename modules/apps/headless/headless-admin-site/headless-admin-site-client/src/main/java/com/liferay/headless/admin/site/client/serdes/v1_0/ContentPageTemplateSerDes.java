@@ -282,9 +282,7 @@ public class ContentPageTemplateSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(contentPageTemplate.getType());
-
 			sb.append("\"");
 		}
 

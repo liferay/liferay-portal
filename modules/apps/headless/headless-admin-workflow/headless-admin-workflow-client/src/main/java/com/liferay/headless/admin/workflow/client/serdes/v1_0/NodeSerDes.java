@@ -80,9 +80,7 @@ public class NodeSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(node.getType());
-
 			sb.append("\"");
 		}
 

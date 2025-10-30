@@ -471,9 +471,7 @@ public class MessageBoardThreadSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(messageBoardThread.getViewableBy());
-
 			sb.append("\"");
 		}
 

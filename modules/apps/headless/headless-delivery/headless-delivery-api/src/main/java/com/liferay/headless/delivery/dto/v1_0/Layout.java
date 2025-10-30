@@ -1032,9 +1032,7 @@ public class Layout implements Serializable {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(align);
-
 			sb.append("\"");
 		}
 
@@ -1064,9 +1062,7 @@ public class Layout implements Serializable {
 			sb.append("\"borderRadius\": ");
 
 			sb.append("\"");
-
 			sb.append(borderRadius);
-
 			sb.append("\"");
 		}
 
@@ -1092,9 +1088,7 @@ public class Layout implements Serializable {
 			sb.append("\"containerType\": ");
 
 			sb.append("\"");
-
 			sb.append(containerType);
-
 			sb.append("\"");
 		}
 
@@ -1108,9 +1102,7 @@ public class Layout implements Serializable {
 			sb.append("\"contentDisplay\": ");
 
 			sb.append("\"");
-
 			sb.append(contentDisplay);
-
 			sb.append("\"");
 		}
 
@@ -1124,9 +1116,7 @@ public class Layout implements Serializable {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(flexWrap);
-
 			sb.append("\"");
 		}
 
@@ -1140,9 +1130,7 @@ public class Layout implements Serializable {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(justify);
-
 			sb.append("\"");
 		}
 
@@ -1276,9 +1264,7 @@ public class Layout implements Serializable {
 			sb.append("\"shadow\": ");
 
 			sb.append("\"");
-
 			sb.append(shadow);
-
 			sb.append("\"");
 		}
 
@@ -1292,9 +1278,7 @@ public class Layout implements Serializable {
 			sb.append("\"widthType\": ");
 
 			sb.append("\"");
-
 			sb.append(widthType);
-
 			sb.append("\"");
 		}
 

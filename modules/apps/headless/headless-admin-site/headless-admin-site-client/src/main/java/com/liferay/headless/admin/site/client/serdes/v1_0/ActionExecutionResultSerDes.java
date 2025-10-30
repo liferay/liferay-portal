@@ -54,9 +54,7 @@ public class ActionExecutionResultSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(actionExecutionResult.getType());
-
 			sb.append("\"");
 		}
 

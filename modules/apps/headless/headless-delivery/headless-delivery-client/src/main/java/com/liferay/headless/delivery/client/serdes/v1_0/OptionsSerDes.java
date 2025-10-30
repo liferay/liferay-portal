@@ -52,9 +52,7 @@ public class OptionsSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(options.getType());
-
 			sb.append("\"");
 		}
 

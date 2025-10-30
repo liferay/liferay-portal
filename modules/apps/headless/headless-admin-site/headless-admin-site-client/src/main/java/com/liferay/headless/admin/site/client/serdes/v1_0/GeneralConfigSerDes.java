@@ -54,9 +54,7 @@ public class GeneralConfigSerDes {
 			sb.append("\"applicationDecorator\": ");
 
 			sb.append("\"");
-
 			sb.append(generalConfig.getApplicationDecorator());
-
 			sb.append("\"");
 		}
 

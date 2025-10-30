@@ -398,9 +398,7 @@ public class ListStyleDefinition implements Serializable {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(align);
-
 			sb.append("\"");
 		}
 
@@ -414,9 +412,7 @@ public class ListStyleDefinition implements Serializable {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(flexWrap);
-
 			sb.append("\"");
 		}
 
@@ -442,9 +438,7 @@ public class ListStyleDefinition implements Serializable {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(justify);
-
 			sb.append("\"");
 		}
 
@@ -470,9 +464,7 @@ public class ListStyleDefinition implements Serializable {
 			sb.append("\"verticalAlignment\": ");
 
 			sb.append("\"");
-
 			sb.append(verticalAlignment);
-
 			sb.append("\"");
 		}
 

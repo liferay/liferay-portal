@@ -59,9 +59,7 @@ public class ContainerPageElementDefinitionSerDes {
 			sb.append("\"contentVisibility\": ");
 
 			sb.append("\"");
-
 			sb.append(containerPageElementDefinition.getContentVisibility());
-
 			sb.append("\"");
 		}
 
@@ -214,9 +212,7 @@ public class ContainerPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(containerPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

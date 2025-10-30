@@ -58,9 +58,7 @@ public class ContentPageTemplateSettingsSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(contentPageTemplateSettings.getType());
-
 			sb.append("\"");
 		}
 

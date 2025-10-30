@@ -78,9 +78,7 @@ public class FormStepPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(formStepPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

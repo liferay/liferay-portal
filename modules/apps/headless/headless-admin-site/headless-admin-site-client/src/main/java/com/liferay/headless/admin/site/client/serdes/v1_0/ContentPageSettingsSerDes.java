@@ -130,9 +130,7 @@ public class ContentPageSettingsSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(contentPageSettings.getType());
-
 			sb.append("\"");
 		}
 

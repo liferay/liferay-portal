@@ -66,9 +66,7 @@ public class FragmentLinkMappedValueSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentLinkMappedValue.getType());
-
 			sb.append("\"");
 		}
 

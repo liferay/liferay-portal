@@ -54,9 +54,7 @@ public class TextStylesConfigSerDes {
 			sb.append("\"alignment\": ");
 
 			sb.append("\"");
-
 			sb.append(textStylesConfig.getAlignment());
-
 			sb.append("\"");
 		}
 
@@ -92,9 +90,7 @@ public class TextStylesConfigSerDes {
 			sb.append("\"font\": ");
 
 			sb.append("\"");
-
 			sb.append(textStylesConfig.getFont());
-
 			sb.append("\"");
 		}
 
@@ -158,9 +154,7 @@ public class TextStylesConfigSerDes {
 			sb.append("\"textDecoration\": ");
 
 			sb.append("\"");
-
 			sb.append(textStylesConfig.getTextDecoration());
-
 			sb.append("\"");
 		}
 

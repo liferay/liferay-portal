@@ -776,9 +776,7 @@ public class ImportTask implements Serializable {
 			sb.append("\"executeStatus\": ");
 
 			sb.append("\"");
-
 			sb.append(executeStatus);
-
 			sb.append("\"");
 		}
 
@@ -842,9 +840,7 @@ public class ImportTask implements Serializable {
 			sb.append("\"importStrategy\": ");
 
 			sb.append("\"");
-
 			sb.append(importStrategy);
-
 			sb.append("\"");
 		}
 
@@ -858,9 +854,7 @@ public class ImportTask implements Serializable {
 			sb.append("\"operation\": ");
 
 			sb.append("\"");
-
 			sb.append(operation);
-
 			sb.append("\"");
 		}
 

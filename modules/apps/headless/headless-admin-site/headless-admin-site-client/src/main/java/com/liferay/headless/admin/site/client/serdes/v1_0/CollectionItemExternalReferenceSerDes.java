@@ -102,9 +102,7 @@ public class CollectionItemExternalReferenceSerDes {
 			sb.append("\"collectionType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionItemExternalReference.getCollectionType());
-
 			sb.append("\"");
 		}
 

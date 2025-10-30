@@ -202,9 +202,7 @@ public class WidgetPageSettingsSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(widgetPageSettings.getType());
-
 			sb.append("\"");
 		}
 

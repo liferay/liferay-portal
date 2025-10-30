@@ -273,9 +273,7 @@ public class SitePageNavigationMenuSettings implements Serializable {
 			sb.append("\"targetType\": ");
 
 			sb.append("\"");
-
 			sb.append(targetType);
-
 			sb.append("\"");
 		}
 

@@ -54,9 +54,7 @@ public class ListStyleDefinitionSerDes {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyleDefinition.getAlign());
-
 			sb.append("\"");
 		}
 
@@ -68,9 +66,7 @@ public class ListStyleDefinitionSerDes {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyleDefinition.getFlexWrap());
-
 			sb.append("\"");
 		}
 
@@ -92,9 +88,7 @@ public class ListStyleDefinitionSerDes {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyleDefinition.getJustify());
-
 			sb.append("\"");
 		}
 
@@ -116,9 +110,7 @@ public class ListStyleDefinitionSerDes {
 			sb.append("\"verticalAlignment\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyleDefinition.getVerticalAlignment());
-
 			sb.append("\"");
 		}
 

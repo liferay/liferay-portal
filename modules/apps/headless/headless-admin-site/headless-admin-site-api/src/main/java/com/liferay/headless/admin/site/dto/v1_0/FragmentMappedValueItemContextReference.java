@@ -153,9 +153,7 @@ public class FragmentMappedValueItemContextReference
 			sb.append("\"contextSource\": ");
 
 			sb.append("\"");
-
 			sb.append(contextSource);
-
 			sb.append("\"");
 		}
 
@@ -169,9 +167,7 @@ public class FragmentMappedValueItemContextReference
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

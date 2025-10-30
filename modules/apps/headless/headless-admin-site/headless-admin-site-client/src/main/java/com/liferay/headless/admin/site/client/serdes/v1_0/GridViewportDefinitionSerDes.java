@@ -64,9 +64,7 @@ public class GridViewportDefinitionSerDes {
 			sb.append("\"verticalAlignment\": ");
 
 			sb.append("\"");
-
 			sb.append(gridViewportDefinition.getVerticalAlignment());
-
 			sb.append("\"");
 		}
 

@@ -404,9 +404,7 @@ public class SitePageSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(sitePage.getViewableBy());
-
 			sb.append("\"");
 		}
 

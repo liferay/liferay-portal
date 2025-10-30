@@ -330,9 +330,7 @@ public class GridViewport implements Serializable {
 			sb.append("\"id\": ");
 
 			sb.append("\"");
-
 			sb.append(id);
-
 			sb.append("\"");
 		}
 

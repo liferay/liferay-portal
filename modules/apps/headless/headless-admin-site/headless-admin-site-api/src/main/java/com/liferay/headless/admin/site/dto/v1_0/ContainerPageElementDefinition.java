@@ -555,9 +555,7 @@ public class ContainerPageElementDefinition
 			sb.append("\"contentVisibility\": ");
 
 			sb.append("\"");
-
 			sb.append(contentVisibility);
-
 			sb.append("\"");
 		}
 
@@ -711,9 +709,7 @@ public class ContainerPageElementDefinition
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

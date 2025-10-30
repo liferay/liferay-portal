@@ -86,9 +86,7 @@ public class ContentPageTemplateSettings
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

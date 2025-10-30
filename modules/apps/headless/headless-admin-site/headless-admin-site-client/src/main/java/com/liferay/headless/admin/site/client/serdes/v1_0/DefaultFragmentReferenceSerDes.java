@@ -71,9 +71,7 @@ public class DefaultFragmentReferenceSerDes {
 			sb.append("\"fragmentReferenceType\": ");
 
 			sb.append("\"");
-
 			sb.append(defaultFragmentReference.getFragmentReferenceType());
-
 			sb.append("\"");
 		}
 

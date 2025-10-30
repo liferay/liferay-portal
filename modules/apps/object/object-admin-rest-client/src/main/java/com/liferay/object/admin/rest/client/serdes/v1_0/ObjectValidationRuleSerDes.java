@@ -244,9 +244,7 @@ public class ObjectValidationRuleSerDes {
 			sb.append("\"outputType\": ");
 
 			sb.append("\"");
-
 			sb.append(objectValidationRule.getOutputType());
-
 			sb.append("\"");
 		}
 

@@ -318,9 +318,7 @@ public class PageRule implements Serializable {
 			sb.append("\"conditionType\": ");
 
 			sb.append("\"");
-
 			sb.append(conditionType);
-
 			sb.append("\"");
 		}
 

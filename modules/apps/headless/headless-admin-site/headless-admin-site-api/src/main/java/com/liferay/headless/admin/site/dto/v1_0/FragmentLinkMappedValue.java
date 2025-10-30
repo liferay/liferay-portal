@@ -147,9 +147,7 @@ public class FragmentLinkMappedValue
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

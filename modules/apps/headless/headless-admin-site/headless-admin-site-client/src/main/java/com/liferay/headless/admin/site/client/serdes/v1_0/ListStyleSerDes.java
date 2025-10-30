@@ -62,9 +62,7 @@ public class ListStyleSerDes {
 			sb.append("\"listStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyle.getListStyleType());
-
 			sb.append("\"");
 		}
 
@@ -76,9 +74,7 @@ public class ListStyleSerDes {
 			sb.append("\"collectionDisplayListStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(listStyle.getCollectionDisplayListStyleType());
-
 			sb.append("\"");
 		}
 

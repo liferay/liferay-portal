@@ -117,9 +117,7 @@ public class ParameterSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(parameter.getType());
-
 			sb.append("\"");
 		}
 

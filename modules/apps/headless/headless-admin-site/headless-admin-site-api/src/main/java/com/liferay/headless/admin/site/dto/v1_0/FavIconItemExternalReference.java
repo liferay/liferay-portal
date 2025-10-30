@@ -259,9 +259,7 @@ public class FavIconItemExternalReference
 			sb.append("\"favIconType\": ");
 
 			sb.append("\"");
-
 			sb.append(favIconType);
-
 			sb.append("\"");
 		}
 

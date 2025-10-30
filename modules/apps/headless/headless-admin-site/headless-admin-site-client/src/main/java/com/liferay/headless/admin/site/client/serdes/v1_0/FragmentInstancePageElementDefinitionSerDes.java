@@ -302,9 +302,7 @@ public class FragmentInstancePageElementDefinitionSerDes {
 			sb.append("\"fragmentType\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentInstancePageElementDefinition.getFragmentType());
-
 			sb.append("\"");
 		}
 
@@ -459,9 +457,7 @@ public class FragmentInstancePageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentInstancePageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

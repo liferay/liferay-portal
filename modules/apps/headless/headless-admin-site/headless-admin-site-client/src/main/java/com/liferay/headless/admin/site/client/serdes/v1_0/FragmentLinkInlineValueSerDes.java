@@ -66,9 +66,7 @@ public class FragmentLinkInlineValueSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentLinkInlineValue.getType());
-
 			sb.append("\"");
 		}
 

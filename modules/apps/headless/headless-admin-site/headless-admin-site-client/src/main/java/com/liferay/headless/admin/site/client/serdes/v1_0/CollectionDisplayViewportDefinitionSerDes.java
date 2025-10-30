@@ -59,9 +59,7 @@ public class CollectionDisplayViewportDefinitionSerDes {
 			sb.append("\"align\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayViewportDefinition.getAlign());
-
 			sb.append("\"");
 		}
 
@@ -73,9 +71,7 @@ public class CollectionDisplayViewportDefinitionSerDes {
 			sb.append("\"flexWrap\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayViewportDefinition.getFlexWrap());
-
 			sb.append("\"");
 		}
 
@@ -97,9 +93,7 @@ public class CollectionDisplayViewportDefinitionSerDes {
 			sb.append("\"justify\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayViewportDefinition.getJustify());
-
 			sb.append("\"");
 		}
 

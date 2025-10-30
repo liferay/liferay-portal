@@ -1006,9 +1006,7 @@ public class KnowledgeBaseFolder implements Serializable {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(viewableBy);
-
 			sb.append("\"");
 		}
 

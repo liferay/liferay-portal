@@ -156,9 +156,7 @@ public class DefaultFragmentReference
 			sb.append("\"fragmentReferenceType\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentReferenceType);
-
 			sb.append("\"");
 		}
 

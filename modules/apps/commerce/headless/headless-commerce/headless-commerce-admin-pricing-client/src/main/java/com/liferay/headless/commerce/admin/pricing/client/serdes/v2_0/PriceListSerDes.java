@@ -450,9 +450,7 @@ public class PriceListSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(priceList.getType());
-
 			sb.append("\"");
 		}
 

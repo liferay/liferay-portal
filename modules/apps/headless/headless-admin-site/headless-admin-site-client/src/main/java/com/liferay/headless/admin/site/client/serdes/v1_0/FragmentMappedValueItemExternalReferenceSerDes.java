@@ -110,9 +110,7 @@ public class FragmentMappedValueItemExternalReferenceSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentMappedValueItemExternalReference.getType());
-
 			sb.append("\"");
 		}
 

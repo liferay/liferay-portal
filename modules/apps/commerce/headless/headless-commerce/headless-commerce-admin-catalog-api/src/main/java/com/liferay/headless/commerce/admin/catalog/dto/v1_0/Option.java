@@ -786,9 +786,7 @@ public class Option implements Serializable {
 			sb.append("\"fieldType\": ");
 
 			sb.append("\"");
-
 			sb.append(fieldType);
-
 			sb.append("\"");
 		}
 

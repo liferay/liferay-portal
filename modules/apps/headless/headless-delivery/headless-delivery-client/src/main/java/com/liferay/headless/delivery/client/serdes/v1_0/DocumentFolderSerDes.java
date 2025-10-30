@@ -268,9 +268,7 @@ public class DocumentFolderSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(documentFolder.getViewableBy());
-
 			sb.append("\"");
 		}
 

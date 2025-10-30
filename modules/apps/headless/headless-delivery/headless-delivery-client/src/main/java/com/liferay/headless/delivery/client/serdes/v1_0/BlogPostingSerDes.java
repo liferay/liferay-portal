@@ -401,9 +401,7 @@ public class BlogPostingSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(blogPosting.getViewableBy());
-
 			sb.append("\"");
 		}
 

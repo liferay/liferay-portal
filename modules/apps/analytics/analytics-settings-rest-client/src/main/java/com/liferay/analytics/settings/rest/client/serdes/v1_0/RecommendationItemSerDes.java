@@ -64,9 +64,7 @@ public class RecommendationItemSerDes {
 			sb.append("\"status\": ");
 
 			sb.append("\"");
-
 			sb.append(recommendationItem.getStatus());
-
 			sb.append("\"");
 		}
 

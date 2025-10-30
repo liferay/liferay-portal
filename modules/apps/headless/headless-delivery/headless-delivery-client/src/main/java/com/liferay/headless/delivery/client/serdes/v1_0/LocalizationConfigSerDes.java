@@ -66,9 +66,7 @@ public class LocalizationConfigSerDes {
 			sb.append("\"unlocalizedFieldsState\": ");
 
 			sb.append("\"");
-
 			sb.append(localizationConfig.getUnlocalizedFieldsState());
-
 			sb.append("\"");
 		}
 

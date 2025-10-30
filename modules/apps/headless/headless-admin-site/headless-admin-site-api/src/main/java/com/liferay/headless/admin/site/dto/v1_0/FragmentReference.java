@@ -171,9 +171,7 @@ public abstract class FragmentReference implements Serializable {
 			sb.append("\"fragmentReferenceType\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentReferenceType);
-
 			sb.append("\"");
 		}
 

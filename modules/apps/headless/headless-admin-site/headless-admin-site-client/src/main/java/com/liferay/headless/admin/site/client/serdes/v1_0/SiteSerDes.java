@@ -144,9 +144,7 @@ public class SiteSerDes {
 			sb.append("\"membershipType\": ");
 
 			sb.append("\"");
-
 			sb.append(site.getMembershipType());
-
 			sb.append("\"");
 		}
 
@@ -224,9 +222,7 @@ public class SiteSerDes {
 			sb.append("\"templateType\": ");
 
 			sb.append("\"");
-
 			sb.append(site.getTemplateType());
-
 			sb.append("\"");
 		}
 

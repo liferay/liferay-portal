@@ -209,9 +209,7 @@ public class FormStepContainerPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(formStepContainerPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

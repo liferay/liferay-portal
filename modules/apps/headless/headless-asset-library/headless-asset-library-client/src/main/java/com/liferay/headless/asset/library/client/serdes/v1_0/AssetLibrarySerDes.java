@@ -289,9 +289,7 @@ public class AssetLibrarySerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(assetLibrary.getType());
-
 			sb.append("\"");
 		}
 

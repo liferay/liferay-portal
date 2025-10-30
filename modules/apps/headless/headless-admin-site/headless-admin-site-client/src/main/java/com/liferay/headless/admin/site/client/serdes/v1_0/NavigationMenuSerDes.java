@@ -174,9 +174,7 @@ public class NavigationMenuSerDes {
 			sb.append("\"navigationType\": ");
 
 			sb.append("\"");
-
 			sb.append(navigationMenu.getNavigationType());
-
 			sb.append("\"");
 		}
 

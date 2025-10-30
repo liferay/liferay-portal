@@ -123,9 +123,7 @@ public class TaxonomyCategoryBulkActionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(taxonomyCategoryBulkAction.getType());
-
 			sb.append("\"");
 		}
 

@@ -54,9 +54,7 @@ public class ModuleViewportSerDes {
 			sb.append("\"id\": ");
 
 			sb.append("\"");
-
 			sb.append(moduleViewport.getId());
-
 			sb.append("\"");
 		}
 

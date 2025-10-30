@@ -173,9 +173,7 @@ public abstract class CollectionDisplayListStyle implements Serializable {
 			sb.append("\"collectionDisplayListStyleType\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionDisplayListStyleType);
-
 			sb.append("\"");
 		}
 

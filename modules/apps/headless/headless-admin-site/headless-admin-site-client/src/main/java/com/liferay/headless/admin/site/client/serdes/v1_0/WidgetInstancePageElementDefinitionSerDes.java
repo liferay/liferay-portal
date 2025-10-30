@@ -220,9 +220,7 @@ public class WidgetInstancePageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(widgetInstancePageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

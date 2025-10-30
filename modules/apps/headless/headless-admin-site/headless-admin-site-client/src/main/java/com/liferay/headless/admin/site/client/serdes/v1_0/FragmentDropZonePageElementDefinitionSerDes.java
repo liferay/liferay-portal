@@ -79,9 +79,7 @@ public class FragmentDropZonePageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(fragmentDropZonePageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

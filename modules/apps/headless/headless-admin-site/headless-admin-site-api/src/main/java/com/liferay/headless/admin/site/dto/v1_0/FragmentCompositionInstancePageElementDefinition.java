@@ -162,9 +162,7 @@ public class FragmentCompositionInstancePageElementDefinition
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

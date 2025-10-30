@@ -341,9 +341,7 @@ public class ObjectEntryFolderSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(objectEntryFolder.getViewableBy());
-
 			sb.append("\"");
 		}
 

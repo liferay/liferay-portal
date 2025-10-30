@@ -1204,9 +1204,7 @@ public class ObjectField implements Serializable {
 			sb.append("\"DBType\": ");
 
 			sb.append("\"");
-
 			sb.append(DBType);
-
 			sb.append("\"");
 		}
 
@@ -1232,9 +1230,7 @@ public class ObjectField implements Serializable {
 			sb.append("\"businessType\": ");
 
 			sb.append("\"");
-
 			sb.append(businessType);
-
 			sb.append("\"");
 		}
 
@@ -1457,9 +1453,7 @@ public class ObjectField implements Serializable {
 			sb.append("\"readOnly\": ");
 
 			sb.append("\"");
-
 			sb.append(readOnly);
-
 			sb.append("\"");
 		}
 
@@ -1489,9 +1483,7 @@ public class ObjectField implements Serializable {
 			sb.append("\"relationshipType\": ");
 
 			sb.append("\"");
-
 			sb.append(relationshipType);
-
 			sb.append("\"");
 		}
 
@@ -1541,9 +1533,7 @@ public class ObjectField implements Serializable {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

@@ -105,9 +105,7 @@ public class PageElementSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(pageElement.getType());
-
 			sb.append("\"");
 		}
 

@@ -127,9 +127,7 @@ public class OptionSerDes {
 			sb.append("\"fieldType\": ");
 
 			sb.append("\"");
-
 			sb.append(option.getFieldType());
-
 			sb.append("\"");
 		}
 

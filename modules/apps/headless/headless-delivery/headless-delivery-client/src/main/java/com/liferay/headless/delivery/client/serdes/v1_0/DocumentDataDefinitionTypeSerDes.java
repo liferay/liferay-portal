@@ -309,9 +309,7 @@ public class DocumentDataDefinitionTypeSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(documentDataDefinitionType.getViewableBy());
-
 			sb.append("\"");
 		}
 

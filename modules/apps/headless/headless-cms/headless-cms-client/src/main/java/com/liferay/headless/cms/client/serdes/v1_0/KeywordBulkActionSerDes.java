@@ -108,9 +108,7 @@ public class KeywordBulkActionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(keywordBulkAction.getType());
-
 			sb.append("\"");
 		}
 

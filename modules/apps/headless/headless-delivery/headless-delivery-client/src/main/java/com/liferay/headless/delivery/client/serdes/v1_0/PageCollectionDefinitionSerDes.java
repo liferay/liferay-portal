@@ -260,9 +260,7 @@ public class PageCollectionDefinitionSerDes {
 			sb.append("\"paginationType\": ");
 
 			sb.append("\"");
-
 			sb.append(pageCollectionDefinition.getPaginationType());
-
 			sb.append("\"");
 		}
 

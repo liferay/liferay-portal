@@ -199,9 +199,7 @@ public class GridPageElementDefinitionSerDes {
 			sb.append("\"verticalAlignment\": ");
 
 			sb.append("\"");
-
 			sb.append(gridPageElementDefinition.getVerticalAlignment());
-
 			sb.append("\"");
 		}
 
@@ -213,9 +211,7 @@ public class GridPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(gridPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

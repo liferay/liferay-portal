@@ -158,9 +158,7 @@ public class BlogPostingImageSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(blogPostingImage.getViewableBy());
-
 			sb.append("\"");
 		}
 

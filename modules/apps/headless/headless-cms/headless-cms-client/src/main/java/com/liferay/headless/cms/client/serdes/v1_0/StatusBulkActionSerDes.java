@@ -98,9 +98,7 @@ public class StatusBulkActionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(statusBulkAction.getType());
-
 			sb.append("\"");
 		}
 

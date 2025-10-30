@@ -186,9 +186,7 @@ public class NotificationTemplateSerDes {
 			sb.append("\"editorType\": ");
 
 			sb.append("\"");
-
 			sb.append(notificationTemplate.getEditorType());
-
 			sb.append("\"");
 		}
 

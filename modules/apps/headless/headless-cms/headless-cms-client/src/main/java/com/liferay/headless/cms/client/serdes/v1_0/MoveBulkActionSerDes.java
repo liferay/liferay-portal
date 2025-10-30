@@ -98,9 +98,7 @@ public class MoveBulkActionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(moveBulkAction.getType());
-
 			sb.append("\"");
 		}
 

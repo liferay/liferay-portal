@@ -190,9 +190,7 @@ public class MappedProductSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(mappedProduct.getType());
-
 			sb.append("\"");
 		}
 

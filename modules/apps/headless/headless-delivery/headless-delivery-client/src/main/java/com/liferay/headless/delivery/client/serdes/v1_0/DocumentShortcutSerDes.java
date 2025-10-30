@@ -184,9 +184,7 @@ public class DocumentShortcutSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(documentShortcut.getViewableBy());
-
 			sb.append("\"");
 		}
 

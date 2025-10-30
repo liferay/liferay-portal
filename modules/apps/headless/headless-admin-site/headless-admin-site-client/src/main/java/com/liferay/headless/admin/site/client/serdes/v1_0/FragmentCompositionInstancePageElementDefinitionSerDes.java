@@ -82,10 +82,8 @@ public class FragmentCompositionInstancePageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(
 				fragmentCompositionInstancePageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

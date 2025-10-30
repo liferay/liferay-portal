@@ -97,9 +97,7 @@ public class ModulePageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(modulePageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

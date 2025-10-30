@@ -148,9 +148,7 @@ public class FragmentLinkInlineValue
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 

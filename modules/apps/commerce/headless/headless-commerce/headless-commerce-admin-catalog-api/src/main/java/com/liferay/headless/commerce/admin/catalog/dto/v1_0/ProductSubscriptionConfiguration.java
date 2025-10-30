@@ -600,9 +600,7 @@ public class ProductSubscriptionConfiguration implements Serializable {
 			sb.append("\"deliverySubscriptionType\": ");
 
 			sb.append("\"");
-
 			sb.append(deliverySubscriptionType);
-
 			sb.append("\"");
 		}
 
@@ -665,9 +663,7 @@ public class ProductSubscriptionConfiguration implements Serializable {
 			sb.append("\"subscriptionType\": ");
 
 			sb.append("\"");
-
 			sb.append(subscriptionType);
-
 			sb.append("\"");
 		}
 

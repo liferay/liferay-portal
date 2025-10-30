@@ -98,9 +98,7 @@ public class DataDefinitionFieldSerDes {
 			sb.append("\"indexType\": ");
 
 			sb.append("\"");
-
 			sb.append(dataDefinitionField.getIndexType());
-
 			sb.append("\"");
 		}
 

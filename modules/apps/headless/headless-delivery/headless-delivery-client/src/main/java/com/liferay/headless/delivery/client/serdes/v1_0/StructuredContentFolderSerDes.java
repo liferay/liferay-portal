@@ -261,9 +261,7 @@ public class StructuredContentFolderSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(structuredContentFolder.getViewableBy());
-
 			sb.append("\"");
 		}
 

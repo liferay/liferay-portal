@@ -165,9 +165,7 @@ public abstract class FavIcon implements Serializable {
 			sb.append("\"favIconType\": ");
 
 			sb.append("\"");
-
 			sb.append(favIconType);
-
 			sb.append("\"");
 		}
 

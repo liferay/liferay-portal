@@ -223,9 +223,7 @@ public class CollectionDisplayViewport implements Serializable {
 			sb.append("\"id\": ");
 
 			sb.append("\"");
-
 			sb.append(id);
-
 			sb.append("\"");
 		}
 

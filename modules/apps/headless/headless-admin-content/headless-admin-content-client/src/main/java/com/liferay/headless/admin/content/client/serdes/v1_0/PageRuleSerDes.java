@@ -54,9 +54,7 @@ public class PageRuleSerDes {
 			sb.append("\"conditionType\": ");
 
 			sb.append("\"");
-
 			sb.append(pageRule.getConditionType());
-
 			sb.append("\"");
 		}
 

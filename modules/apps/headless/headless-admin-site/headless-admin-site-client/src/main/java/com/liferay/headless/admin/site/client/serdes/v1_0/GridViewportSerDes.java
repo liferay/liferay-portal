@@ -88,9 +88,7 @@ public class GridViewportSerDes {
 			sb.append("\"id\": ");
 
 			sb.append("\"");
-
 			sb.append(gridViewport.getId());
-
 			sb.append("\"");
 		}
 

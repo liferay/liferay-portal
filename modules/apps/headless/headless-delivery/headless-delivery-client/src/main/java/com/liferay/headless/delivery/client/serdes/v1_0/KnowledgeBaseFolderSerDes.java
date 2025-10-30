@@ -238,9 +238,7 @@ public class KnowledgeBaseFolderSerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(knowledgeBaseFolder.getViewableBy());
-
 			sb.append("\"");
 		}
 

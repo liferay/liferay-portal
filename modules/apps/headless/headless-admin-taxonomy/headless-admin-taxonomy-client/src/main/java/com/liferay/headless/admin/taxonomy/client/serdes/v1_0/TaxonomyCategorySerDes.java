@@ -349,9 +349,7 @@ public class TaxonomyCategorySerDes {
 			sb.append("\"viewableBy\": ");
 
 			sb.append("\"");
-
 			sb.append(taxonomyCategory.getViewableBy());
-
 			sb.append("\"");
 		}
 

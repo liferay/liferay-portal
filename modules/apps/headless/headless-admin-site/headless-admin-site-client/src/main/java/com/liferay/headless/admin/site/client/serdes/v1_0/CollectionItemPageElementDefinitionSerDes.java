@@ -86,9 +86,7 @@ public class CollectionItemPageElementDefinitionSerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(collectionItemPageElementDefinition.getType());
-
 			sb.append("\"");
 		}
 

@@ -115,9 +115,7 @@ public class ImportTaskSerDes {
 			sb.append("\"executeStatus\": ");
 
 			sb.append("\"");
-
 			sb.append(importTask.getExecuteStatus());
-
 			sb.append("\"");
 		}
 
@@ -173,9 +171,7 @@ public class ImportTaskSerDes {
 			sb.append("\"importStrategy\": ");
 
 			sb.append("\"");
-
 			sb.append(importTask.getImportStrategy());
-
 			sb.append("\"");
 		}
 
@@ -187,9 +183,7 @@ public class ImportTaskSerDes {
 			sb.append("\"operation\": ");
 
 			sb.append("\"");
-
 			sb.append(importTask.getOperation());
-
 			sb.append("\"");
 		}
 

@@ -264,9 +264,7 @@ public class ChildTestEntity3 extends TestEntity implements Serializable {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-
 			sb.append(type);
-
 			sb.append("\"");
 		}
 
