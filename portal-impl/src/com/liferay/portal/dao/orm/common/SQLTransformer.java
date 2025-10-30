@@ -5,6 +5,7 @@
 
 package com.liferay.portal.dao.orm.common;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.dao.sql.transformer.HQLToJPQLTransformerLogic;
 import com.liferay.portal.dao.sql.transformer.JPQLToHQLTransformerLogic;
 import com.liferay.portal.dao.sql.transformer.SQLTransformerFactory;
@@ -102,6 +103,28 @@ public class SQLTransformer {
 			JPQLToHQLTransformerLogic.getCountFunction();
 
 		newSQL = countFunction.apply(newSQL);
+
+		if (newSQL.contains("?")) {
+			StringBundler sb = new StringBundler();
+
+			int counter = 1;
+
+			for (int i = 0; i < newSQL.length(); i++) {
+				char c = newSQL.charAt(i);
+
+				if ((c == '?') &&
+					((i == 0) || (newSQL.charAt(i - 1) == ' '))) {
+
+					sb.append('?');
+					sb.append(counter++);
+				}
+				else {
+					sb.append(c);
+				}
+			}
+
+			newSQL = sb.toString();
+		}
 
 		_transformedSQLsPortalCache.put(sql, newSQL);
 
