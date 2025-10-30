@@ -6,19 +6,13 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.security.permission.SimplePermissionChecker;
@@ -27,7 +21,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchPermissionCheckFinderEntryException;
 import com.liferay.portal.tools.service.builder.test.model.PermissionCheckFinderEntry;
-import com.liferay.portal.tools.service.builder.test.service.PermissionCheckFinderEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.PermissionCheckFinderEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.PermissionCheckFinderEntryUtil;
 
@@ -362,123 +355,6 @@ public class PermissionCheckFinderEntryPersistenceTest {
 			newPermissionCheckFinderEntry,
 			permissionCheckFinderEntries.get(
 				newPermissionCheckFinderEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			PermissionCheckFinderEntryLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<PermissionCheckFinderEntry>() {
-
-				@Override
-				public void performAction(
-					PermissionCheckFinderEntry permissionCheckFinderEntry) {
-
-					Assert.assertNotNull(permissionCheckFinderEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		PermissionCheckFinderEntry newPermissionCheckFinderEntry =
-			addPermissionCheckFinderEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PermissionCheckFinderEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"permissionCheckFinderEntryId",
-				newPermissionCheckFinderEntry.
-					getPermissionCheckFinderEntryId()));
-
-		List<PermissionCheckFinderEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		PermissionCheckFinderEntry existingPermissionCheckFinderEntry =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingPermissionCheckFinderEntry, newPermissionCheckFinderEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PermissionCheckFinderEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"permissionCheckFinderEntryId", RandomTestUtil.nextLong()));
-
-		List<PermissionCheckFinderEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		PermissionCheckFinderEntry newPermissionCheckFinderEntry =
-			addPermissionCheckFinderEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PermissionCheckFinderEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("permissionCheckFinderEntryId"));
-
-		Object newPermissionCheckFinderEntryId =
-			newPermissionCheckFinderEntry.getPermissionCheckFinderEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"permissionCheckFinderEntryId",
-				new Object[] {newPermissionCheckFinderEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingPermissionCheckFinderEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingPermissionCheckFinderEntryId,
-			newPermissionCheckFinderEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PermissionCheckFinderEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("permissionCheckFinderEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"permissionCheckFinderEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected PermissionCheckFinderEntry addPermissionCheckFinderEntry()

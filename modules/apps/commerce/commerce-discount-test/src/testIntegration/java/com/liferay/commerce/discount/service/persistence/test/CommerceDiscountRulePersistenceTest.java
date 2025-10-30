@@ -8,19 +8,12 @@ package com.liferay.commerce.discount.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.discount.exception.NoSuchDiscountRuleException;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
-import com.liferay.commerce.discount.service.CommerceDiscountRuleLocalServiceUtil;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountRulePersistence;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountRuleUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -341,119 +334,6 @@ public class CommerceDiscountRulePersistenceTest {
 		Assert.assertEquals(
 			newCommerceDiscountRule,
 			commerceDiscountRules.get(newCommerceDiscountRule.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceDiscountRuleLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceDiscountRule>() {
-
-				@Override
-				public void performAction(
-					CommerceDiscountRule commerceDiscountRule) {
-
-					Assert.assertNotNull(commerceDiscountRule);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceDiscountRule newCommerceDiscountRule =
-			addCommerceDiscountRule();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountRule.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceDiscountRuleId",
-				newCommerceDiscountRule.getCommerceDiscountRuleId()));
-
-		List<CommerceDiscountRule> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceDiscountRule existingCommerceDiscountRule = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceDiscountRule, newCommerceDiscountRule);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountRule.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceDiscountRuleId", RandomTestUtil.nextLong()));
-
-		List<CommerceDiscountRule> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceDiscountRule newCommerceDiscountRule =
-			addCommerceDiscountRule();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountRule.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceDiscountRuleId"));
-
-		Object newCommerceDiscountRuleId =
-			newCommerceDiscountRule.getCommerceDiscountRuleId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceDiscountRuleId",
-				new Object[] {newCommerceDiscountRuleId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceDiscountRuleId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceDiscountRuleId, newCommerceDiscountRuleId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountRule.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceDiscountRuleId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceDiscountRuleId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CommerceDiscountRule addCommerceDiscountRule() throws Exception {

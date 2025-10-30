@@ -6,23 +6,15 @@
 package com.liferay.portal.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchRecentLayoutRevisionException;
 import com.liferay.portal.kernel.model.RecentLayoutRevision;
-import com.liferay.portal.kernel.service.RecentLayoutRevisionLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.RecentLayoutRevisionPersistence;
 import com.liferay.portal.kernel.service.persistence.RecentLayoutRevisionUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -349,119 +341,6 @@ public class RecentLayoutRevisionPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			RecentLayoutRevisionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<RecentLayoutRevision>() {
-
-				@Override
-				public void performAction(
-					RecentLayoutRevision recentLayoutRevision) {
-
-					Assert.assertNotNull(recentLayoutRevision);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		RecentLayoutRevision newRecentLayoutRevision =
-			addRecentLayoutRevision();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutRevision.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"recentLayoutRevisionId",
-				newRecentLayoutRevision.getRecentLayoutRevisionId()));
-
-		List<RecentLayoutRevision> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		RecentLayoutRevision existingRecentLayoutRevision = result.get(0);
-
-		Assert.assertEquals(
-			existingRecentLayoutRevision, newRecentLayoutRevision);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutRevision.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"recentLayoutRevisionId", RandomTestUtil.nextLong()));
-
-		List<RecentLayoutRevision> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		RecentLayoutRevision newRecentLayoutRevision =
-			addRecentLayoutRevision();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutRevision.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("recentLayoutRevisionId"));
-
-		Object newRecentLayoutRevisionId =
-			newRecentLayoutRevision.getRecentLayoutRevisionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"recentLayoutRevisionId",
-				new Object[] {newRecentLayoutRevisionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingRecentLayoutRevisionId = result.get(0);
-
-		Assert.assertEquals(
-			existingRecentLayoutRevisionId, newRecentLayoutRevisionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutRevision.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("recentLayoutRevisionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"recentLayoutRevisionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		RecentLayoutRevision newRecentLayoutRevision =
 			addRecentLayoutRevision();
@@ -471,48 +350,6 @@ public class RecentLayoutRevisionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newRecentLayoutRevision.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		RecentLayoutRevision newRecentLayoutRevision =
-			addRecentLayoutRevision();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutRevision.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"recentLayoutRevisionId",
-				newRecentLayoutRevision.getRecentLayoutRevisionId()));
-
-		List<RecentLayoutRevision> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

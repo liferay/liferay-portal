@@ -6,16 +6,10 @@
 package com.liferay.portal.workflow.kaleo.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -24,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.workflow.kaleo.exception.NoSuchNotificationRecipientException;
 import com.liferay.portal.workflow.kaleo.model.KaleoNotificationRecipient;
-import com.liferay.portal.workflow.kaleo.service.KaleoNotificationRecipientLocalServiceUtil;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoNotificationRecipientPersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoNotificationRecipientUtil;
 
@@ -432,123 +425,6 @@ public class KaleoNotificationRecipientPersistenceTest {
 			newKaleoNotificationRecipient,
 			kaleoNotificationRecipients.get(
 				newKaleoNotificationRecipient.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			KaleoNotificationRecipientLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<KaleoNotificationRecipient>() {
-
-				@Override
-				public void performAction(
-					KaleoNotificationRecipient kaleoNotificationRecipient) {
-
-					Assert.assertNotNull(kaleoNotificationRecipient);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		KaleoNotificationRecipient newKaleoNotificationRecipient =
-			addKaleoNotificationRecipient();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoNotificationRecipient.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"kaleoNotificationRecipientId",
-				newKaleoNotificationRecipient.
-					getKaleoNotificationRecipientId()));
-
-		List<KaleoNotificationRecipient> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		KaleoNotificationRecipient existingKaleoNotificationRecipient =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingKaleoNotificationRecipient, newKaleoNotificationRecipient);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoNotificationRecipient.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"kaleoNotificationRecipientId", RandomTestUtil.nextLong()));
-
-		List<KaleoNotificationRecipient> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		KaleoNotificationRecipient newKaleoNotificationRecipient =
-			addKaleoNotificationRecipient();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoNotificationRecipient.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("kaleoNotificationRecipientId"));
-
-		Object newKaleoNotificationRecipientId =
-			newKaleoNotificationRecipient.getKaleoNotificationRecipientId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"kaleoNotificationRecipientId",
-				new Object[] {newKaleoNotificationRecipientId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingKaleoNotificationRecipientId = result.get(0);
-
-		Assert.assertEquals(
-			existingKaleoNotificationRecipientId,
-			newKaleoNotificationRecipientId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoNotificationRecipient.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("kaleoNotificationRecipientId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"kaleoNotificationRecipientId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected KaleoNotificationRecipient addKaleoNotificationRecipient()

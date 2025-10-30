@@ -6,22 +6,15 @@
 package com.liferay.view.count.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.view.count.exception.NoSuchEntryException;
 import com.liferay.view.count.model.ViewCountEntry;
-import com.liferay.view.count.service.ViewCountEntryLocalServiceUtil;
 import com.liferay.view.count.service.persistence.ViewCountEntryPK;
 import com.liferay.view.count.service.persistence.ViewCountEntryPersistence;
 import com.liferay.view.count.service.persistence.ViewCountEntryUtil;
@@ -281,121 +274,6 @@ public class ViewCountEntryPersistenceTest {
 		Assert.assertEquals(
 			newViewCountEntry,
 			viewCountEntries.get(newViewCountEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ViewCountEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<ViewCountEntry>() {
-
-				@Override
-				public void performAction(ViewCountEntry viewCountEntry) {
-					Assert.assertNotNull(viewCountEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ViewCountEntry newViewCountEntry = addViewCountEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ViewCountEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"primaryKey.companyId", newViewCountEntry.getCompanyId()));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"primaryKey.classNameId", newViewCountEntry.getClassNameId()));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"primaryKey.classPK", newViewCountEntry.getClassPK()));
-
-		List<ViewCountEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ViewCountEntry existingViewCountEntry = result.get(0);
-
-		Assert.assertEquals(existingViewCountEntry, newViewCountEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ViewCountEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"primaryKey.companyId", RandomTestUtil.nextLong()));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"primaryKey.classNameId", RandomTestUtil.nextLong()));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"primaryKey.classPK", RandomTestUtil.nextLong()));
-
-		List<ViewCountEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ViewCountEntry newViewCountEntry = addViewCountEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ViewCountEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("primaryKey.companyId"));
-
-		Object newCompanyId = newViewCountEntry.getCompanyId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"primaryKey.companyId", new Object[] {newCompanyId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCompanyId = result.get(0);
-
-		Assert.assertEquals(existingCompanyId, newCompanyId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ViewCountEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("primaryKey.companyId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"primaryKey.companyId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ViewCountEntry addViewCountEntry() throws Exception {

@@ -9,15 +9,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.exception.DuplicateAssetVocabularyExternalReferenceCodeException;
 import com.liferay.asset.kernel.exception.NoSuchVocabularyException;
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.asset.kernel.service.persistence.AssetVocabularyPersistence;
 import com.liferay.asset.kernel.service.persistence.AssetVocabularyUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -26,7 +20,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -493,108 +486,6 @@ public class AssetVocabularyPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			AssetVocabularyLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<AssetVocabulary>() {
-
-				@Override
-				public void performAction(AssetVocabulary assetVocabulary) {
-					Assert.assertNotNull(assetVocabulary);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		AssetVocabulary newAssetVocabulary = addAssetVocabulary();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetVocabulary.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"vocabularyId", newAssetVocabulary.getVocabularyId()));
-
-		List<AssetVocabulary> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		AssetVocabulary existingAssetVocabulary = result.get(0);
-
-		Assert.assertEquals(existingAssetVocabulary, newAssetVocabulary);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetVocabulary.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"vocabularyId", RandomTestUtil.nextLong()));
-
-		List<AssetVocabulary> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		AssetVocabulary newAssetVocabulary = addAssetVocabulary();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetVocabulary.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("vocabularyId"));
-
-		Object newVocabularyId = newAssetVocabulary.getVocabularyId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"vocabularyId", new Object[] {newVocabularyId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingVocabularyId = result.get(0);
-
-		Assert.assertEquals(existingVocabularyId, newVocabularyId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetVocabulary.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("vocabularyId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"vocabularyId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		AssetVocabulary newAssetVocabulary = addAssetVocabulary();
 
@@ -602,46 +493,6 @@ public class AssetVocabularyPersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newAssetVocabulary.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		AssetVocabulary newAssetVocabulary = addAssetVocabulary();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetVocabulary.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"vocabularyId", newAssetVocabulary.getVocabularyId()));
-
-		List<AssetVocabulary> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(AssetVocabulary assetVocabulary) {

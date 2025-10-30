@@ -6,18 +6,11 @@
 package com.liferay.saml.persistence.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -26,7 +19,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.saml.persistence.exception.NoSuchSpAuthRequestException;
 import com.liferay.saml.persistence.model.SamlSpAuthRequest;
-import com.liferay.saml.persistence.service.SamlSpAuthRequestLocalServiceUtil;
 import com.liferay.saml.persistence.service.persistence.SamlSpAuthRequestPersistence;
 import com.liferay.saml.persistence.service.persistence.SamlSpAuthRequestUtil;
 
@@ -312,114 +304,6 @@ public class SamlSpAuthRequestPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SamlSpAuthRequestLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<SamlSpAuthRequest>() {
-
-				@Override
-				public void performAction(SamlSpAuthRequest samlSpAuthRequest) {
-					Assert.assertNotNull(samlSpAuthRequest);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SamlSpAuthRequest newSamlSpAuthRequest = addSamlSpAuthRequest();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpAuthRequest.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlSpAuthnRequestId",
-				newSamlSpAuthRequest.getSamlSpAuthnRequestId()));
-
-		List<SamlSpAuthRequest> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SamlSpAuthRequest existingSamlSpAuthRequest = result.get(0);
-
-		Assert.assertEquals(existingSamlSpAuthRequest, newSamlSpAuthRequest);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpAuthRequest.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlSpAuthnRequestId", RandomTestUtil.nextLong()));
-
-		List<SamlSpAuthRequest> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SamlSpAuthRequest newSamlSpAuthRequest = addSamlSpAuthRequest();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpAuthRequest.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlSpAuthnRequestId"));
-
-		Object newSamlSpAuthnRequestId =
-			newSamlSpAuthRequest.getSamlSpAuthnRequestId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlSpAuthnRequestId",
-				new Object[] {newSamlSpAuthnRequestId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSamlSpAuthnRequestId = result.get(0);
-
-		Assert.assertEquals(
-			existingSamlSpAuthnRequestId, newSamlSpAuthnRequestId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpAuthRequest.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlSpAuthnRequestId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlSpAuthnRequestId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SamlSpAuthRequest newSamlSpAuthRequest = addSamlSpAuthRequest();
 
@@ -428,47 +312,6 @@ public class SamlSpAuthRequestPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newSamlSpAuthRequest.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SamlSpAuthRequest newSamlSpAuthRequest = addSamlSpAuthRequest();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpAuthRequest.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlSpAuthnRequestId",
-				newSamlSpAuthRequest.getSamlSpAuthnRequestId()));
-
-		List<SamlSpAuthRequest> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(SamlSpAuthRequest samlSpAuthRequest) {

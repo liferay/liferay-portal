@@ -8,22 +8,14 @@ package com.liferay.commerce.machine.learning.forecast.alert.service.persistence
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.machine.learning.forecast.alert.exception.NoSuchMLForecastAlertEntryException;
 import com.liferay.commerce.machine.learning.forecast.alert.model.CommerceMLForecastAlertEntry;
-import com.liferay.commerce.machine.learning.forecast.alert.service.CommerceMLForecastAlertEntryLocalServiceUtil;
 import com.liferay.commerce.machine.learning.forecast.alert.service.persistence.CommerceMLForecastAlertEntryPersistence;
 import com.liferay.commerce.machine.learning.forecast.alert.service.persistence.CommerceMLForecastAlertEntryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -454,124 +446,6 @@ public class CommerceMLForecastAlertEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceMLForecastAlertEntryLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceMLForecastAlertEntry>() {
-
-				@Override
-				public void performAction(
-					CommerceMLForecastAlertEntry commerceMLForecastAlertEntry) {
-
-					Assert.assertNotNull(commerceMLForecastAlertEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceMLForecastAlertEntry newCommerceMLForecastAlertEntry =
-			addCommerceMLForecastAlertEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceMLForecastAlertEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceMLForecastAlertEntryId",
-				newCommerceMLForecastAlertEntry.
-					getCommerceMLForecastAlertEntryId()));
-
-		List<CommerceMLForecastAlertEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceMLForecastAlertEntry existingCommerceMLForecastAlertEntry =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceMLForecastAlertEntry,
-			newCommerceMLForecastAlertEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceMLForecastAlertEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceMLForecastAlertEntryId", RandomTestUtil.nextLong()));
-
-		List<CommerceMLForecastAlertEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceMLForecastAlertEntry newCommerceMLForecastAlertEntry =
-			addCommerceMLForecastAlertEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceMLForecastAlertEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceMLForecastAlertEntryId"));
-
-		Object newCommerceMLForecastAlertEntryId =
-			newCommerceMLForecastAlertEntry.getCommerceMLForecastAlertEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceMLForecastAlertEntryId",
-				new Object[] {newCommerceMLForecastAlertEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceMLForecastAlertEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceMLForecastAlertEntryId,
-			newCommerceMLForecastAlertEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceMLForecastAlertEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceMLForecastAlertEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceMLForecastAlertEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CommerceMLForecastAlertEntry newCommerceMLForecastAlertEntry =
 			addCommerceMLForecastAlertEntry();
@@ -581,49 +455,6 @@ public class CommerceMLForecastAlertEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCommerceMLForecastAlertEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CommerceMLForecastAlertEntry newCommerceMLForecastAlertEntry =
-			addCommerceMLForecastAlertEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceMLForecastAlertEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceMLForecastAlertEntryId",
-				newCommerceMLForecastAlertEntry.
-					getCommerceMLForecastAlertEntryId()));
-
-		List<CommerceMLForecastAlertEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

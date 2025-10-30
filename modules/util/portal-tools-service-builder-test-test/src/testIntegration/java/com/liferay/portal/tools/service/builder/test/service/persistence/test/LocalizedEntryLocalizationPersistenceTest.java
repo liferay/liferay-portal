@@ -6,12 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -338,95 +333,6 @@ public class LocalizedEntryLocalizationPersistenceTest {
 	}
 
 	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		LocalizedEntryLocalization newLocalizedEntryLocalization =
-			addLocalizedEntryLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LocalizedEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"localizedEntryLocalizationId",
-				newLocalizedEntryLocalization.
-					getLocalizedEntryLocalizationId()));
-
-		List<LocalizedEntryLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		LocalizedEntryLocalization existingLocalizedEntryLocalization =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingLocalizedEntryLocalization, newLocalizedEntryLocalization);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LocalizedEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"localizedEntryLocalizationId", RandomTestUtil.nextLong()));
-
-		List<LocalizedEntryLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		LocalizedEntryLocalization newLocalizedEntryLocalization =
-			addLocalizedEntryLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LocalizedEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("localizedEntryLocalizationId"));
-
-		Object newLocalizedEntryLocalizationId =
-			newLocalizedEntryLocalization.getLocalizedEntryLocalizationId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"localizedEntryLocalizationId",
-				new Object[] {newLocalizedEntryLocalizationId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingLocalizedEntryLocalizationId = result.get(0);
-
-		Assert.assertEquals(
-			existingLocalizedEntryLocalizationId,
-			newLocalizedEntryLocalizationId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LocalizedEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("localizedEntryLocalizationId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"localizedEntryLocalizationId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		LocalizedEntryLocalization newLocalizedEntryLocalization =
 			addLocalizedEntryLocalization();
@@ -436,49 +342,6 @@ public class LocalizedEntryLocalizationPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newLocalizedEntryLocalization.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		LocalizedEntryLocalization newLocalizedEntryLocalization =
-			addLocalizedEntryLocalization();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LocalizedEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"localizedEntryLocalizationId",
-				newLocalizedEntryLocalization.
-					getLocalizedEntryLocalizationId()));
-
-		List<LocalizedEntryLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

@@ -8,20 +8,13 @@ package com.liferay.commerce.shipping.engine.fixed.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.shipping.engine.fixed.exception.NoSuchShippingFixedOptionRelException;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionRel;
-import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionRelLocalServiceUtil;
 import com.liferay.commerce.shipping.engine.fixed.service.persistence.CommerceShippingFixedOptionRelPersistence;
 import com.liferay.commerce.shipping.engine.fixed.service.persistence.CommerceShippingFixedOptionRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -434,126 +427,6 @@ public class CommerceShippingFixedOptionRelPersistenceTest {
 			newCommerceShippingFixedOptionRel,
 			commerceShippingFixedOptionRels.get(
 				newCommerceShippingFixedOptionRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceShippingFixedOptionRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceShippingFixedOptionRel>() {
-
-				@Override
-				public void performAction(
-					CommerceShippingFixedOptionRel
-						commerceShippingFixedOptionRel) {
-
-					Assert.assertNotNull(commerceShippingFixedOptionRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceShippingFixedOptionRel newCommerceShippingFixedOptionRel =
-			addCommerceShippingFixedOptionRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceShippingFixedOptionRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceShippingFixedOptionRelId",
-				newCommerceShippingFixedOptionRel.
-					getCommerceShippingFixedOptionRelId()));
-
-		List<CommerceShippingFixedOptionRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceShippingFixedOptionRel existingCommerceShippingFixedOptionRel =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceShippingFixedOptionRel,
-			newCommerceShippingFixedOptionRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceShippingFixedOptionRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceShippingFixedOptionRelId", RandomTestUtil.nextLong()));
-
-		List<CommerceShippingFixedOptionRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceShippingFixedOptionRel newCommerceShippingFixedOptionRel =
-			addCommerceShippingFixedOptionRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceShippingFixedOptionRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceShippingFixedOptionRelId"));
-
-		Object newCommerceShippingFixedOptionRelId =
-			newCommerceShippingFixedOptionRel.
-				getCommerceShippingFixedOptionRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceShippingFixedOptionRelId",
-				new Object[] {newCommerceShippingFixedOptionRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceShippingFixedOptionRelId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceShippingFixedOptionRelId,
-			newCommerceShippingFixedOptionRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceShippingFixedOptionRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceShippingFixedOptionRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceShippingFixedOptionRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CommerceShippingFixedOptionRel addCommerceShippingFixedOptionRel()

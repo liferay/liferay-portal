@@ -7,22 +7,14 @@ package com.liferay.account.service.persistence.test;
 
 import com.liferay.account.exception.NoSuchGroupRelException;
 import com.liferay.account.model.AccountGroupRel;
-import com.liferay.account.service.AccountGroupRelLocalServiceUtil;
 import com.liferay.account.service.persistence.AccountGroupRelPersistence;
 import com.liferay.account.service.persistence.AccountGroupRelUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -346,109 +338,6 @@ public class AccountGroupRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			AccountGroupRelLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<AccountGroupRel>() {
-
-				@Override
-				public void performAction(AccountGroupRel accountGroupRel) {
-					Assert.assertNotNull(accountGroupRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		AccountGroupRel newAccountGroupRel = addAccountGroupRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AccountGroupRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"accountGroupRelId",
-				newAccountGroupRel.getAccountGroupRelId()));
-
-		List<AccountGroupRel> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		AccountGroupRel existingAccountGroupRel = result.get(0);
-
-		Assert.assertEquals(existingAccountGroupRel, newAccountGroupRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AccountGroupRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"accountGroupRelId", RandomTestUtil.nextLong()));
-
-		List<AccountGroupRel> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		AccountGroupRel newAccountGroupRel = addAccountGroupRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AccountGroupRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("accountGroupRelId"));
-
-		Object newAccountGroupRelId = newAccountGroupRel.getAccountGroupRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"accountGroupRelId", new Object[] {newAccountGroupRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingAccountGroupRelId = result.get(0);
-
-		Assert.assertEquals(existingAccountGroupRelId, newAccountGroupRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AccountGroupRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("accountGroupRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"accountGroupRelId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		AccountGroupRel newAccountGroupRel = addAccountGroupRel();
 
@@ -456,47 +345,6 @@ public class AccountGroupRelPersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newAccountGroupRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		AccountGroupRel newAccountGroupRel = addAccountGroupRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AccountGroupRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"accountGroupRelId",
-				newAccountGroupRel.getAccountGroupRelId()));
-
-		List<AccountGroupRel> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(AccountGroupRel accountGroupRel) {

@@ -8,22 +8,14 @@ package com.liferay.osb.patcher.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.osb.patcher.exception.NoSuchPatcherBuildException;
 import com.liferay.osb.patcher.model.PatcherBuild;
-import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.persistence.PatcherBuildPersistence;
 import com.liferay.osb.patcher.service.persistence.PatcherBuildUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -607,108 +599,6 @@ public class PatcherBuildPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			PatcherBuildLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<PatcherBuild>() {
-
-				@Override
-				public void performAction(PatcherBuild patcherBuild) {
-					Assert.assertNotNull(patcherBuild);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		PatcherBuild newPatcherBuild = addPatcherBuild();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherBuild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"patcherBuildId", newPatcherBuild.getPatcherBuildId()));
-
-		List<PatcherBuild> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		PatcherBuild existingPatcherBuild = result.get(0);
-
-		Assert.assertEquals(existingPatcherBuild, newPatcherBuild);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherBuild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"patcherBuildId", RandomTestUtil.nextLong()));
-
-		List<PatcherBuild> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		PatcherBuild newPatcherBuild = addPatcherBuild();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherBuild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("patcherBuildId"));
-
-		Object newPatcherBuildId = newPatcherBuild.getPatcherBuildId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"patcherBuildId", new Object[] {newPatcherBuildId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingPatcherBuildId = result.get(0);
-
-		Assert.assertEquals(existingPatcherBuildId, newPatcherBuildId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherBuild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("patcherBuildId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"patcherBuildId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		PatcherBuild newPatcherBuild = addPatcherBuild();
 
@@ -716,46 +606,6 @@ public class PatcherBuildPersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newPatcherBuild.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		PatcherBuild newPatcherBuild = addPatcherBuild();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherBuild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"patcherBuildId", newPatcherBuild.getPatcherBuildId()));
-
-		List<PatcherBuild> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(PatcherBuild patcherBuild) {

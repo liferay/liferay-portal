@@ -8,21 +8,13 @@ package com.liferay.commerce.product.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.NoSuchCPSpecificationOptionListTypeDefinitionRelException;
 import com.liferay.commerce.product.model.CPSpecificationOptionListTypeDefinitionRel;
-import com.liferay.commerce.product.service.CPSpecificationOptionListTypeDefinitionRelLocalServiceUtil;
 import com.liferay.commerce.product.service.persistence.CPSpecificationOptionListTypeDefinitionRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPSpecificationOptionListTypeDefinitionRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -390,139 +382,6 @@ public class CPSpecificationOptionListTypeDefinitionRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CPSpecificationOptionListTypeDefinitionRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CPSpecificationOptionListTypeDefinitionRel>() {
-
-				@Override
-				public void performAction(
-					CPSpecificationOptionListTypeDefinitionRel
-						cpSpecificationOptionListTypeDefinitionRel) {
-
-					Assert.assertNotNull(
-						cpSpecificationOptionListTypeDefinitionRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CPSpecificationOptionListTypeDefinitionRel
-			newCPSpecificationOptionListTypeDefinitionRel =
-				addCPSpecificationOptionListTypeDefinitionRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPSpecificationOptionListTypeDefinitionRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPSpecificationOptionListTypeDefinitionRelId",
-				newCPSpecificationOptionListTypeDefinitionRel.
-					getCPSpecificationOptionListTypeDefinitionRelId()));
-
-		List<CPSpecificationOptionListTypeDefinitionRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CPSpecificationOptionListTypeDefinitionRel
-			existingCPSpecificationOptionListTypeDefinitionRel = result.get(0);
-
-		Assert.assertEquals(
-			existingCPSpecificationOptionListTypeDefinitionRel,
-			newCPSpecificationOptionListTypeDefinitionRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPSpecificationOptionListTypeDefinitionRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPSpecificationOptionListTypeDefinitionRelId",
-				RandomTestUtil.nextLong()));
-
-		List<CPSpecificationOptionListTypeDefinitionRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CPSpecificationOptionListTypeDefinitionRel
-			newCPSpecificationOptionListTypeDefinitionRel =
-				addCPSpecificationOptionListTypeDefinitionRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPSpecificationOptionListTypeDefinitionRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"CPSpecificationOptionListTypeDefinitionRelId"));
-
-		Object newCPSpecificationOptionListTypeDefinitionRelId =
-			newCPSpecificationOptionListTypeDefinitionRel.
-				getCPSpecificationOptionListTypeDefinitionRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPSpecificationOptionListTypeDefinitionRelId",
-				new Object[] {
-					newCPSpecificationOptionListTypeDefinitionRelId
-				}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCPSpecificationOptionListTypeDefinitionRelId =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCPSpecificationOptionListTypeDefinitionRelId,
-			newCPSpecificationOptionListTypeDefinitionRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPSpecificationOptionListTypeDefinitionRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"CPSpecificationOptionListTypeDefinitionRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPSpecificationOptionListTypeDefinitionRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CPSpecificationOptionListTypeDefinitionRel
 			newCPSpecificationOptionListTypeDefinitionRel =
@@ -533,51 +392,6 @@ public class CPSpecificationOptionListTypeDefinitionRelPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCPSpecificationOptionListTypeDefinitionRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CPSpecificationOptionListTypeDefinitionRel
-			newCPSpecificationOptionListTypeDefinitionRel =
-				addCPSpecificationOptionListTypeDefinitionRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPSpecificationOptionListTypeDefinitionRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPSpecificationOptionListTypeDefinitionRelId",
-				newCPSpecificationOptionListTypeDefinitionRel.
-					getCPSpecificationOptionListTypeDefinitionRelId()));
-
-		List<CPSpecificationOptionListTypeDefinitionRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

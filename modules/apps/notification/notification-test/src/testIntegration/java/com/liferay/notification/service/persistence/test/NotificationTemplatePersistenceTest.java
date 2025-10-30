@@ -9,21 +9,14 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.notification.exception.DuplicateNotificationTemplateExternalReferenceCodeException;
 import com.liferay.notification.exception.NoSuchNotificationTemplateException;
 import com.liferay.notification.model.NotificationTemplate;
-import com.liferay.notification.service.NotificationTemplateLocalServiceUtil;
 import com.liferay.notification.service.persistence.NotificationTemplatePersistence;
 import com.liferay.notification.service.persistence.NotificationTemplateUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -437,119 +430,6 @@ public class NotificationTemplatePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			NotificationTemplateLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<NotificationTemplate>() {
-
-				@Override
-				public void performAction(
-					NotificationTemplate notificationTemplate) {
-
-					Assert.assertNotNull(notificationTemplate);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		NotificationTemplate newNotificationTemplate =
-			addNotificationTemplate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationTemplateId",
-				newNotificationTemplate.getNotificationTemplateId()));
-
-		List<NotificationTemplate> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		NotificationTemplate existingNotificationTemplate = result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationTemplate, newNotificationTemplate);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationTemplateId", RandomTestUtil.nextLong()));
-
-		List<NotificationTemplate> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		NotificationTemplate newNotificationTemplate =
-			addNotificationTemplate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationTemplateId"));
-
-		Object newNotificationTemplateId =
-			newNotificationTemplate.getNotificationTemplateId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationTemplateId",
-				new Object[] {newNotificationTemplateId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingNotificationTemplateId = result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationTemplateId, newNotificationTemplateId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationTemplateId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationTemplateId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		NotificationTemplate newNotificationTemplate =
 			addNotificationTemplate();
@@ -559,48 +439,6 @@ public class NotificationTemplatePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newNotificationTemplate.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		NotificationTemplate newNotificationTemplate =
-			addNotificationTemplate();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationTemplateId",
-				newNotificationTemplate.getNotificationTemplateId()));
-
-		List<NotificationTemplate> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

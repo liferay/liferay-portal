@@ -8,21 +8,13 @@ package com.liferay.dynamic.data.mapping.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.exception.NoSuchDataProviderInstanceLinkException;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstanceLink;
-import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLinkLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstanceLinkPersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstanceLinkUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -350,123 +342,6 @@ public class DDMDataProviderInstanceLinkPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			DDMDataProviderInstanceLinkLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<DDMDataProviderInstanceLink>() {
-
-				@Override
-				public void performAction(
-					DDMDataProviderInstanceLink ddmDataProviderInstanceLink) {
-
-					Assert.assertNotNull(ddmDataProviderInstanceLink);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		DDMDataProviderInstanceLink newDDMDataProviderInstanceLink =
-			addDDMDataProviderInstanceLink();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMDataProviderInstanceLink.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dataProviderInstanceLinkId",
-				newDDMDataProviderInstanceLink.
-					getDataProviderInstanceLinkId()));
-
-		List<DDMDataProviderInstanceLink> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		DDMDataProviderInstanceLink existingDDMDataProviderInstanceLink =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingDDMDataProviderInstanceLink,
-			newDDMDataProviderInstanceLink);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMDataProviderInstanceLink.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dataProviderInstanceLinkId", RandomTestUtil.nextLong()));
-
-		List<DDMDataProviderInstanceLink> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		DDMDataProviderInstanceLink newDDMDataProviderInstanceLink =
-			addDDMDataProviderInstanceLink();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMDataProviderInstanceLink.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("dataProviderInstanceLinkId"));
-
-		Object newDataProviderInstanceLinkId =
-			newDDMDataProviderInstanceLink.getDataProviderInstanceLinkId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"dataProviderInstanceLinkId",
-				new Object[] {newDataProviderInstanceLinkId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingDataProviderInstanceLinkId = result.get(0);
-
-		Assert.assertEquals(
-			existingDataProviderInstanceLinkId, newDataProviderInstanceLinkId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMDataProviderInstanceLink.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("dataProviderInstanceLinkId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"dataProviderInstanceLinkId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		DDMDataProviderInstanceLink newDDMDataProviderInstanceLink =
 			addDDMDataProviderInstanceLink();
@@ -476,49 +351,6 @@ public class DDMDataProviderInstanceLinkPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newDDMDataProviderInstanceLink.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		DDMDataProviderInstanceLink newDDMDataProviderInstanceLink =
-			addDDMDataProviderInstanceLink();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMDataProviderInstanceLink.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dataProviderInstanceLinkId",
-				newDDMDataProviderInstanceLink.
-					getDataProviderInstanceLinkId()));
-
-		List<DDMDataProviderInstanceLink> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

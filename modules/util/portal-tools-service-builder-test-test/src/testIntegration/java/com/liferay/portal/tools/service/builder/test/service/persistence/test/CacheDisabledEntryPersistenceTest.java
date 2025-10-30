@@ -6,18 +6,11 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -25,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchCacheDisabledEntryException;
 import com.liferay.portal.tools.service.builder.test.model.CacheDisabledEntry;
-import com.liferay.portal.tools.service.builder.test.service.CacheDisabledEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.CacheDisabledEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.CacheDisabledEntryUtil;
 
@@ -285,116 +277,6 @@ public class CacheDisabledEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CacheDisabledEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CacheDisabledEntry>() {
-
-				@Override
-				public void performAction(
-					CacheDisabledEntry cacheDisabledEntry) {
-
-					Assert.assertNotNull(cacheDisabledEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CacheDisabledEntry newCacheDisabledEntry = addCacheDisabledEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheDisabledEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"cacheDisabledEntryId",
-				newCacheDisabledEntry.getCacheDisabledEntryId()));
-
-		List<CacheDisabledEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CacheDisabledEntry existingCacheDisabledEntry = result.get(0);
-
-		Assert.assertEquals(existingCacheDisabledEntry, newCacheDisabledEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheDisabledEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"cacheDisabledEntryId", RandomTestUtil.nextLong()));
-
-		List<CacheDisabledEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CacheDisabledEntry newCacheDisabledEntry = addCacheDisabledEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheDisabledEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("cacheDisabledEntryId"));
-
-		Object newCacheDisabledEntryId =
-			newCacheDisabledEntry.getCacheDisabledEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"cacheDisabledEntryId",
-				new Object[] {newCacheDisabledEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCacheDisabledEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingCacheDisabledEntryId, newCacheDisabledEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheDisabledEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("cacheDisabledEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"cacheDisabledEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CacheDisabledEntry newCacheDisabledEntry = addCacheDisabledEntry();
 
@@ -403,47 +285,6 @@ public class CacheDisabledEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCacheDisabledEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CacheDisabledEntry newCacheDisabledEntry = addCacheDisabledEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheDisabledEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"cacheDisabledEntryId",
-				newCacheDisabledEntry.getCacheDisabledEntryId()));
-
-		List<CacheDisabledEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(CacheDisabledEntry cacheDisabledEntry) {

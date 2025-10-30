@@ -6,21 +6,14 @@
 package com.liferay.portal.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserNotificationEventException;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.UserNotificationEventPersistence;
 import com.liferay.portal.kernel.service.persistence.UserNotificationEventUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -546,119 +539,6 @@ public class UserNotificationEventPersistenceTest {
 			newUserNotificationEvent,
 			userNotificationEvents.get(
 				newUserNotificationEvent.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			UserNotificationEventLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<UserNotificationEvent>() {
-
-				@Override
-				public void performAction(
-					UserNotificationEvent userNotificationEvent) {
-
-					Assert.assertNotNull(userNotificationEvent);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		UserNotificationEvent newUserNotificationEvent =
-			addUserNotificationEvent();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UserNotificationEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"userNotificationEventId",
-				newUserNotificationEvent.getUserNotificationEventId()));
-
-		List<UserNotificationEvent> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		UserNotificationEvent existingUserNotificationEvent = result.get(0);
-
-		Assert.assertEquals(
-			existingUserNotificationEvent, newUserNotificationEvent);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UserNotificationEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"userNotificationEventId", RandomTestUtil.nextLong()));
-
-		List<UserNotificationEvent> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		UserNotificationEvent newUserNotificationEvent =
-			addUserNotificationEvent();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UserNotificationEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("userNotificationEventId"));
-
-		Object newUserNotificationEventId =
-			newUserNotificationEvent.getUserNotificationEventId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"userNotificationEventId",
-				new Object[] {newUserNotificationEventId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingUserNotificationEventId = result.get(0);
-
-		Assert.assertEquals(
-			existingUserNotificationEventId, newUserNotificationEventId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UserNotificationEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("userNotificationEventId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"userNotificationEventId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected UserNotificationEvent addUserNotificationEvent()

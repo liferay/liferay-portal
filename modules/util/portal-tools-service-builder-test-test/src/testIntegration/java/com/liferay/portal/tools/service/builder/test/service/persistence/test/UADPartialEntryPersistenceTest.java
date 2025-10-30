@@ -6,16 +6,10 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -23,7 +17,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchUADPartialEntryException;
 import com.liferay.portal.tools.service.builder.test.model.UADPartialEntry;
-import com.liferay.portal.tools.service.builder.test.service.UADPartialEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.UADPartialEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.UADPartialEntryUtil;
 
@@ -277,109 +270,6 @@ public class UADPartialEntryPersistenceTest {
 		Assert.assertEquals(
 			newUADPartialEntry,
 			uadPartialEntries.get(newUADPartialEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			UADPartialEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<UADPartialEntry>() {
-
-				@Override
-				public void performAction(UADPartialEntry uadPartialEntry) {
-					Assert.assertNotNull(uadPartialEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		UADPartialEntry newUADPartialEntry = addUADPartialEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UADPartialEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"uadPartialEntryId",
-				newUADPartialEntry.getUadPartialEntryId()));
-
-		List<UADPartialEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		UADPartialEntry existingUADPartialEntry = result.get(0);
-
-		Assert.assertEquals(existingUADPartialEntry, newUADPartialEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UADPartialEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"uadPartialEntryId", RandomTestUtil.nextLong()));
-
-		List<UADPartialEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		UADPartialEntry newUADPartialEntry = addUADPartialEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UADPartialEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("uadPartialEntryId"));
-
-		Object newUadPartialEntryId = newUADPartialEntry.getUadPartialEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"uadPartialEntryId", new Object[] {newUadPartialEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingUadPartialEntryId = result.get(0);
-
-		Assert.assertEquals(existingUadPartialEntryId, newUadPartialEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			UADPartialEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("uadPartialEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"uadPartialEntryId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected UADPartialEntry addUADPartialEntry() throws Exception {

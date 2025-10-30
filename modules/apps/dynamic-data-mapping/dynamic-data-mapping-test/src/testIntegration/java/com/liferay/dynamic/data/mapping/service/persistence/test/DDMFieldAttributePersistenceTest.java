@@ -10,12 +10,7 @@ import com.liferay.dynamic.data.mapping.exception.NoSuchFieldAttributeException;
 import com.liferay.dynamic.data.mapping.model.DDMFieldAttribute;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributePersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributeUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -367,85 +362,6 @@ public class DDMFieldAttributePersistenceTest {
 	}
 
 	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		DDMFieldAttribute newDDMFieldAttribute = addDDMFieldAttribute();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMFieldAttribute.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"fieldAttributeId",
-				newDDMFieldAttribute.getFieldAttributeId()));
-
-		List<DDMFieldAttribute> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		DDMFieldAttribute existingDDMFieldAttribute = result.get(0);
-
-		Assert.assertEquals(existingDDMFieldAttribute, newDDMFieldAttribute);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMFieldAttribute.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"fieldAttributeId", RandomTestUtil.nextLong()));
-
-		List<DDMFieldAttribute> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		DDMFieldAttribute newDDMFieldAttribute = addDDMFieldAttribute();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMFieldAttribute.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("fieldAttributeId"));
-
-		Object newFieldAttributeId = newDDMFieldAttribute.getFieldAttributeId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"fieldAttributeId", new Object[] {newFieldAttributeId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingFieldAttributeId = result.get(0);
-
-		Assert.assertEquals(existingFieldAttributeId, newFieldAttributeId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMFieldAttribute.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("fieldAttributeId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"fieldAttributeId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		DDMFieldAttribute newDDMFieldAttribute = addDDMFieldAttribute();
 
@@ -454,47 +370,6 @@ public class DDMFieldAttributePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newDDMFieldAttribute.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		DDMFieldAttribute newDDMFieldAttribute = addDDMFieldAttribute();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DDMFieldAttribute.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"fieldAttributeId",
-				newDDMFieldAttribute.getFieldAttributeId()));
-
-		List<DDMFieldAttribute> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(DDMFieldAttribute ddmFieldAttribute) {

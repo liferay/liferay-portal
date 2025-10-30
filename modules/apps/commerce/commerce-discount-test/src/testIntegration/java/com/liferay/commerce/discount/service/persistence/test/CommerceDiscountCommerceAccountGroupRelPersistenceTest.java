@@ -8,21 +8,13 @@ package com.liferay.commerce.discount.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.discount.exception.NoSuchDiscountCommerceAccountGroupRelException;
 import com.liferay.commerce.discount.model.CommerceDiscountCommerceAccountGroupRel;
-import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelLocalServiceUtil;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountCommerceAccountGroupRelPersistence;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountCommerceAccountGroupRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -400,137 +392,6 @@ public class CommerceDiscountCommerceAccountGroupRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceDiscountCommerceAccountGroupRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceDiscountCommerceAccountGroupRel>() {
-
-				@Override
-				public void performAction(
-					CommerceDiscountCommerceAccountGroupRel
-						commerceDiscountCommerceAccountGroupRel) {
-
-					Assert.assertNotNull(
-						commerceDiscountCommerceAccountGroupRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceDiscountCommerceAccountGroupRel
-			newCommerceDiscountCommerceAccountGroupRel =
-				addCommerceDiscountCommerceAccountGroupRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountCommerceAccountGroupRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceDiscountCommerceAccountGroupRelId",
-				newCommerceDiscountCommerceAccountGroupRel.
-					getCommerceDiscountCommerceAccountGroupRelId()));
-
-		List<CommerceDiscountCommerceAccountGroupRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceDiscountCommerceAccountGroupRel
-			existingCommerceDiscountCommerceAccountGroupRel = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceDiscountCommerceAccountGroupRel,
-			newCommerceDiscountCommerceAccountGroupRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountCommerceAccountGroupRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceDiscountCommerceAccountGroupRelId",
-				RandomTestUtil.nextLong()));
-
-		List<CommerceDiscountCommerceAccountGroupRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceDiscountCommerceAccountGroupRel
-			newCommerceDiscountCommerceAccountGroupRel =
-				addCommerceDiscountCommerceAccountGroupRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountCommerceAccountGroupRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"commerceDiscountCommerceAccountGroupRelId"));
-
-		Object newCommerceDiscountCommerceAccountGroupRelId =
-			newCommerceDiscountCommerceAccountGroupRel.
-				getCommerceDiscountCommerceAccountGroupRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceDiscountCommerceAccountGroupRelId",
-				new Object[] {newCommerceDiscountCommerceAccountGroupRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceDiscountCommerceAccountGroupRelId = result.get(
-			0);
-
-		Assert.assertEquals(
-			existingCommerceDiscountCommerceAccountGroupRelId,
-			newCommerceDiscountCommerceAccountGroupRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountCommerceAccountGroupRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"commerceDiscountCommerceAccountGroupRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceDiscountCommerceAccountGroupRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CommerceDiscountCommerceAccountGroupRel
 			newCommerceDiscountCommerceAccountGroupRel =
@@ -541,51 +402,6 @@ public class CommerceDiscountCommerceAccountGroupRelPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCommerceDiscountCommerceAccountGroupRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CommerceDiscountCommerceAccountGroupRel
-			newCommerceDiscountCommerceAccountGroupRel =
-				addCommerceDiscountCommerceAccountGroupRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceDiscountCommerceAccountGroupRel.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceDiscountCommerceAccountGroupRelId",
-				newCommerceDiscountCommerceAccountGroupRel.
-					getCommerceDiscountCommerceAccountGroupRelId()));
-
-		List<CommerceDiscountCommerceAccountGroupRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

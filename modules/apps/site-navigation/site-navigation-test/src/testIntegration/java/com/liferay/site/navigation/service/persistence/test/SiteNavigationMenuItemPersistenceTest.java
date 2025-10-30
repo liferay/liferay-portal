@@ -6,18 +6,12 @@
 package com.liferay.site.navigation.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -27,7 +21,6 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.site.navigation.exception.DuplicateSiteNavigationMenuItemExternalReferenceCodeException;
 import com.liferay.site.navigation.exception.NoSuchMenuItemException;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
-import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalServiceUtil;
 import com.liferay.site.navigation.service.persistence.SiteNavigationMenuItemPersistence;
 import com.liferay.site.navigation.service.persistence.SiteNavigationMenuItemUtil;
 
@@ -497,119 +490,6 @@ public class SiteNavigationMenuItemPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SiteNavigationMenuItemLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<SiteNavigationMenuItem>() {
-
-				@Override
-				public void performAction(
-					SiteNavigationMenuItem siteNavigationMenuItem) {
-
-					Assert.assertNotNull(siteNavigationMenuItem);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SiteNavigationMenuItem newSiteNavigationMenuItem =
-			addSiteNavigationMenuItem();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SiteNavigationMenuItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"siteNavigationMenuItemId",
-				newSiteNavigationMenuItem.getSiteNavigationMenuItemId()));
-
-		List<SiteNavigationMenuItem> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SiteNavigationMenuItem existingSiteNavigationMenuItem = result.get(0);
-
-		Assert.assertEquals(
-			existingSiteNavigationMenuItem, newSiteNavigationMenuItem);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SiteNavigationMenuItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"siteNavigationMenuItemId", RandomTestUtil.nextLong()));
-
-		List<SiteNavigationMenuItem> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SiteNavigationMenuItem newSiteNavigationMenuItem =
-			addSiteNavigationMenuItem();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SiteNavigationMenuItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("siteNavigationMenuItemId"));
-
-		Object newSiteNavigationMenuItemId =
-			newSiteNavigationMenuItem.getSiteNavigationMenuItemId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"siteNavigationMenuItemId",
-				new Object[] {newSiteNavigationMenuItemId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSiteNavigationMenuItemId = result.get(0);
-
-		Assert.assertEquals(
-			existingSiteNavigationMenuItemId, newSiteNavigationMenuItemId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SiteNavigationMenuItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("siteNavigationMenuItemId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"siteNavigationMenuItemId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SiteNavigationMenuItem newSiteNavigationMenuItem =
 			addSiteNavigationMenuItem();
@@ -619,48 +499,6 @@ public class SiteNavigationMenuItemPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newSiteNavigationMenuItem.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SiteNavigationMenuItem newSiteNavigationMenuItem =
-			addSiteNavigationMenuItem();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SiteNavigationMenuItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"siteNavigationMenuItemId",
-				newSiteNavigationMenuItem.getSiteNavigationMenuItemId()));
-
-		List<SiteNavigationMenuItem> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

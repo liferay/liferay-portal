@@ -8,22 +8,14 @@ package com.liferay.commerce.shop.by.diagram.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.shop.by.diagram.exception.NoSuchCSDiagramSettingException;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramSetting;
-import com.liferay.commerce.shop.by.diagram.service.CSDiagramSettingLocalServiceUtil;
 import com.liferay.commerce.shop.by.diagram.service.persistence.CSDiagramSettingPersistence;
 import com.liferay.commerce.shop.by.diagram.service.persistence.CSDiagramSettingUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -362,111 +354,6 @@ public class CSDiagramSettingPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CSDiagramSettingLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CSDiagramSetting>() {
-
-				@Override
-				public void performAction(CSDiagramSetting csDiagramSetting) {
-					Assert.assertNotNull(csDiagramSetting);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CSDiagramSetting newCSDiagramSetting = addCSDiagramSetting();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CSDiagramSettingId",
-				newCSDiagramSetting.getCSDiagramSettingId()));
-
-		List<CSDiagramSetting> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CSDiagramSetting existingCSDiagramSetting = result.get(0);
-
-		Assert.assertEquals(existingCSDiagramSetting, newCSDiagramSetting);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CSDiagramSettingId", RandomTestUtil.nextLong()));
-
-		List<CSDiagramSetting> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CSDiagramSetting newCSDiagramSetting = addCSDiagramSetting();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CSDiagramSettingId"));
-
-		Object newCSDiagramSettingId =
-			newCSDiagramSetting.getCSDiagramSettingId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CSDiagramSettingId", new Object[] {newCSDiagramSettingId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCSDiagramSettingId = result.get(0);
-
-		Assert.assertEquals(existingCSDiagramSettingId, newCSDiagramSettingId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CSDiagramSettingId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CSDiagramSettingId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CSDiagramSetting newCSDiagramSetting = addCSDiagramSetting();
 
@@ -474,47 +361,6 @@ public class CSDiagramSettingPersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newCSDiagramSetting.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CSDiagramSetting newCSDiagramSetting = addCSDiagramSetting();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CSDiagramSettingId",
-				newCSDiagramSetting.getCSDiagramSettingId()));
-
-		List<CSDiagramSetting> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(CSDiagramSetting csDiagramSetting) {

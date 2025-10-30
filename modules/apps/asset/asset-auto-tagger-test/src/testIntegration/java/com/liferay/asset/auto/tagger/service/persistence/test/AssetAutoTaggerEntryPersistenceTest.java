@@ -8,21 +8,13 @@ package com.liferay.asset.auto.tagger.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.auto.tagger.exception.NoSuchEntryException;
 import com.liferay.asset.auto.tagger.model.AssetAutoTaggerEntry;
-import com.liferay.asset.auto.tagger.service.AssetAutoTaggerEntryLocalServiceUtil;
 import com.liferay.asset.auto.tagger.service.persistence.AssetAutoTaggerEntryPersistence;
 import com.liferay.asset.auto.tagger.service.persistence.AssetAutoTaggerEntryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -352,119 +344,6 @@ public class AssetAutoTaggerEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			AssetAutoTaggerEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<AssetAutoTaggerEntry>() {
-
-				@Override
-				public void performAction(
-					AssetAutoTaggerEntry assetAutoTaggerEntry) {
-
-					Assert.assertNotNull(assetAutoTaggerEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		AssetAutoTaggerEntry newAssetAutoTaggerEntry =
-			addAssetAutoTaggerEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetAutoTaggerEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"assetAutoTaggerEntryId",
-				newAssetAutoTaggerEntry.getAssetAutoTaggerEntryId()));
-
-		List<AssetAutoTaggerEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		AssetAutoTaggerEntry existingAssetAutoTaggerEntry = result.get(0);
-
-		Assert.assertEquals(
-			existingAssetAutoTaggerEntry, newAssetAutoTaggerEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetAutoTaggerEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"assetAutoTaggerEntryId", RandomTestUtil.nextLong()));
-
-		List<AssetAutoTaggerEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		AssetAutoTaggerEntry newAssetAutoTaggerEntry =
-			addAssetAutoTaggerEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetAutoTaggerEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("assetAutoTaggerEntryId"));
-
-		Object newAssetAutoTaggerEntryId =
-			newAssetAutoTaggerEntry.getAssetAutoTaggerEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"assetAutoTaggerEntryId",
-				new Object[] {newAssetAutoTaggerEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingAssetAutoTaggerEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingAssetAutoTaggerEntryId, newAssetAutoTaggerEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetAutoTaggerEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("assetAutoTaggerEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"assetAutoTaggerEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		AssetAutoTaggerEntry newAssetAutoTaggerEntry =
 			addAssetAutoTaggerEntry();
@@ -474,48 +353,6 @@ public class AssetAutoTaggerEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newAssetAutoTaggerEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		AssetAutoTaggerEntry newAssetAutoTaggerEntry =
-			addAssetAutoTaggerEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetAutoTaggerEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"assetAutoTaggerEntryId",
-				newAssetAutoTaggerEntry.getAssetAutoTaggerEntryId()));
-
-		List<AssetAutoTaggerEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

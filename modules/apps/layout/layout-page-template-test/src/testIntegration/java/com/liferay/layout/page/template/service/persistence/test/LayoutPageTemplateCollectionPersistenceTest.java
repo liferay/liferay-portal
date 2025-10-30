@@ -9,15 +9,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionExternalReferenceCodeException;
 import com.liferay.layout.page.template.exception.NoSuchPageTemplateCollectionException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
-import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalServiceUtil;
 import com.liferay.layout.page.template.service.persistence.LayoutPageTemplateCollectionPersistence;
 import com.liferay.layout.page.template.service.persistence.LayoutPageTemplateCollectionUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -26,7 +20,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -569,124 +562,6 @@ public class LayoutPageTemplateCollectionPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			LayoutPageTemplateCollectionLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<LayoutPageTemplateCollection>() {
-
-				@Override
-				public void performAction(
-					LayoutPageTemplateCollection layoutPageTemplateCollection) {
-
-					Assert.assertNotNull(layoutPageTemplateCollection);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		LayoutPageTemplateCollection newLayoutPageTemplateCollection =
-			addLayoutPageTemplateCollection();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutPageTemplateCollection.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutPageTemplateCollectionId",
-				newLayoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId()));
-
-		List<LayoutPageTemplateCollection> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		LayoutPageTemplateCollection existingLayoutPageTemplateCollection =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingLayoutPageTemplateCollection,
-			newLayoutPageTemplateCollection);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutPageTemplateCollection.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutPageTemplateCollectionId", RandomTestUtil.nextLong()));
-
-		List<LayoutPageTemplateCollection> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		LayoutPageTemplateCollection newLayoutPageTemplateCollection =
-			addLayoutPageTemplateCollection();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutPageTemplateCollection.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("layoutPageTemplateCollectionId"));
-
-		Object newLayoutPageTemplateCollectionId =
-			newLayoutPageTemplateCollection.getLayoutPageTemplateCollectionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"layoutPageTemplateCollectionId",
-				new Object[] {newLayoutPageTemplateCollectionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingLayoutPageTemplateCollectionId = result.get(0);
-
-		Assert.assertEquals(
-			existingLayoutPageTemplateCollectionId,
-			newLayoutPageTemplateCollectionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutPageTemplateCollection.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("layoutPageTemplateCollectionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"layoutPageTemplateCollectionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		LayoutPageTemplateCollection newLayoutPageTemplateCollection =
 			addLayoutPageTemplateCollection();
@@ -696,49 +571,6 @@ public class LayoutPageTemplateCollectionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newLayoutPageTemplateCollection.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		LayoutPageTemplateCollection newLayoutPageTemplateCollection =
-			addLayoutPageTemplateCollection();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutPageTemplateCollection.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutPageTemplateCollectionId",
-				newLayoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId()));
-
-		List<LayoutPageTemplateCollection> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

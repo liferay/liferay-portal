@@ -6,11 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -293,85 +289,6 @@ public class BigDecimalEntryPersistenceTest {
 		Assert.assertEquals(
 			newBigDecimalEntry,
 			bigDecimalEntries.get(newBigDecimalEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		BigDecimalEntry newBigDecimalEntry = addBigDecimalEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BigDecimalEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"bigDecimalEntryId",
-				newBigDecimalEntry.getBigDecimalEntryId()));
-
-		List<BigDecimalEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		BigDecimalEntry existingBigDecimalEntry = result.get(0);
-
-		Assert.assertEquals(existingBigDecimalEntry, newBigDecimalEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BigDecimalEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"bigDecimalEntryId", RandomTestUtil.nextLong()));
-
-		List<BigDecimalEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		BigDecimalEntry newBigDecimalEntry = addBigDecimalEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BigDecimalEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("bigDecimalEntryId"));
-
-		Object newBigDecimalEntryId = newBigDecimalEntry.getBigDecimalEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"bigDecimalEntryId", new Object[] {newBigDecimalEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingBigDecimalEntryId = result.get(0);
-
-		Assert.assertEquals(existingBigDecimalEntryId, newBigDecimalEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BigDecimalEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("bigDecimalEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"bigDecimalEntryId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected BigDecimalEntry addBigDecimalEntry() throws Exception {

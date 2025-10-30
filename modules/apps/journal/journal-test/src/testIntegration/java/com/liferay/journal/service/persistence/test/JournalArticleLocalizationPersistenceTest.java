@@ -10,12 +10,7 @@ import com.liferay.journal.exception.NoSuchArticleLocalizationException;
 import com.liferay.journal.model.JournalArticleLocalization;
 import com.liferay.journal.service.persistence.JournalArticleLocalizationPersistence;
 import com.liferay.journal.service.persistence.JournalArticleLocalizationUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -348,93 +343,6 @@ public class JournalArticleLocalizationPersistenceTest {
 	}
 
 	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		JournalArticleLocalization newJournalArticleLocalization =
-			addJournalArticleLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			JournalArticleLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"articleLocalizationId",
-				newJournalArticleLocalization.getArticleLocalizationId()));
-
-		List<JournalArticleLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		JournalArticleLocalization existingJournalArticleLocalization =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingJournalArticleLocalization, newJournalArticleLocalization);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			JournalArticleLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"articleLocalizationId", RandomTestUtil.nextLong()));
-
-		List<JournalArticleLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		JournalArticleLocalization newJournalArticleLocalization =
-			addJournalArticleLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			JournalArticleLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("articleLocalizationId"));
-
-		Object newArticleLocalizationId =
-			newJournalArticleLocalization.getArticleLocalizationId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"articleLocalizationId",
-				new Object[] {newArticleLocalizationId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingArticleLocalizationId = result.get(0);
-
-		Assert.assertEquals(
-			existingArticleLocalizationId, newArticleLocalizationId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			JournalArticleLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("articleLocalizationId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"articleLocalizationId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		JournalArticleLocalization newJournalArticleLocalization =
 			addJournalArticleLocalization();
@@ -444,48 +352,6 @@ public class JournalArticleLocalizationPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newJournalArticleLocalization.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		JournalArticleLocalization newJournalArticleLocalization =
-			addJournalArticleLocalization();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			JournalArticleLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"articleLocalizationId",
-				newJournalArticleLocalization.getArticleLocalizationId()));
-
-		List<JournalArticleLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

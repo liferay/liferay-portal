@@ -6,18 +6,11 @@
 package com.liferay.portlet.social.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -25,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.social.kernel.exception.NoSuchActivityAchievementException;
 import com.liferay.social.kernel.model.SocialActivityAchievement;
-import com.liferay.social.kernel.service.SocialActivityAchievementLocalServiceUtil;
 import com.liferay.social.kernel.service.persistence.SocialActivityAchievementPersistence;
 import com.liferay.social.kernel.service.persistence.SocialActivityAchievementUtil;
 
@@ -388,121 +380,6 @@ public class SocialActivityAchievementPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SocialActivityAchievementLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<SocialActivityAchievement>() {
-
-				@Override
-				public void performAction(
-					SocialActivityAchievement socialActivityAchievement) {
-
-					Assert.assertNotNull(socialActivityAchievement);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SocialActivityAchievement newSocialActivityAchievement =
-			addSocialActivityAchievement();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityAchievement.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"activityAchievementId",
-				newSocialActivityAchievement.getActivityAchievementId()));
-
-		List<SocialActivityAchievement> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SocialActivityAchievement existingSocialActivityAchievement =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingSocialActivityAchievement, newSocialActivityAchievement);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityAchievement.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"activityAchievementId", RandomTestUtil.nextLong()));
-
-		List<SocialActivityAchievement> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SocialActivityAchievement newSocialActivityAchievement =
-			addSocialActivityAchievement();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityAchievement.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("activityAchievementId"));
-
-		Object newActivityAchievementId =
-			newSocialActivityAchievement.getActivityAchievementId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"activityAchievementId",
-				new Object[] {newActivityAchievementId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingActivityAchievementId = result.get(0);
-
-		Assert.assertEquals(
-			existingActivityAchievementId, newActivityAchievementId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityAchievement.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("activityAchievementId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"activityAchievementId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SocialActivityAchievement newSocialActivityAchievement =
 			addSocialActivityAchievement();
@@ -512,48 +389,6 @@ public class SocialActivityAchievementPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newSocialActivityAchievement.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SocialActivityAchievement newSocialActivityAchievement =
-			addSocialActivityAchievement();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityAchievement.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"activityAchievementId",
-				newSocialActivityAchievement.getActivityAchievementId()));
-
-		List<SocialActivityAchievement> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

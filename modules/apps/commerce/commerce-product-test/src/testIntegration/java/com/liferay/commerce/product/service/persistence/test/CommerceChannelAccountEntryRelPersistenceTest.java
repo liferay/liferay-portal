@@ -8,22 +8,14 @@ package com.liferay.commerce.product.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.NoSuchChannelAccountEntryRelException;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
-import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalServiceUtil;
 import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelPersistence;
 import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -455,126 +447,6 @@ public class CommerceChannelAccountEntryRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceChannelAccountEntryRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceChannelAccountEntryRel>() {
-
-				@Override
-				public void performAction(
-					CommerceChannelAccountEntryRel
-						commerceChannelAccountEntryRel) {
-
-					Assert.assertNotNull(commerceChannelAccountEntryRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceChannelAccountEntryRel newCommerceChannelAccountEntryRel =
-			addCommerceChannelAccountEntryRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceChannelAccountEntryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceChannelAccountEntryRelId",
-				newCommerceChannelAccountEntryRel.
-					getCommerceChannelAccountEntryRelId()));
-
-		List<CommerceChannelAccountEntryRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceChannelAccountEntryRel existingCommerceChannelAccountEntryRel =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceChannelAccountEntryRel,
-			newCommerceChannelAccountEntryRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceChannelAccountEntryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceChannelAccountEntryRelId", RandomTestUtil.nextLong()));
-
-		List<CommerceChannelAccountEntryRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceChannelAccountEntryRel newCommerceChannelAccountEntryRel =
-			addCommerceChannelAccountEntryRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceChannelAccountEntryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceChannelAccountEntryRelId"));
-
-		Object newCommerceChannelAccountEntryRelId =
-			newCommerceChannelAccountEntryRel.
-				getCommerceChannelAccountEntryRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceChannelAccountEntryRelId",
-				new Object[] {newCommerceChannelAccountEntryRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceChannelAccountEntryRelId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceChannelAccountEntryRelId,
-			newCommerceChannelAccountEntryRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceChannelAccountEntryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceChannelAccountEntryRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceChannelAccountEntryRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CommerceChannelAccountEntryRel newCommerceChannelAccountEntryRel =
 			addCommerceChannelAccountEntryRel();
@@ -584,49 +456,6 @@ public class CommerceChannelAccountEntryRelPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCommerceChannelAccountEntryRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CommerceChannelAccountEntryRel newCommerceChannelAccountEntryRel =
-			addCommerceChannelAccountEntryRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceChannelAccountEntryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceChannelAccountEntryRelId",
-				newCommerceChannelAccountEntryRel.
-					getCommerceChannelAccountEntryRelId()));
-
-		List<CommerceChannelAccountEntryRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

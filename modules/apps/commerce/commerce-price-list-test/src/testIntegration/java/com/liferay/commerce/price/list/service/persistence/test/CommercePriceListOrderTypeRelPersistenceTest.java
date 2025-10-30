@@ -8,21 +8,13 @@ package com.liferay.commerce.price.list.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.price.list.exception.NoSuchPriceListOrderTypeRelException;
 import com.liferay.commerce.price.list.model.CommercePriceListOrderTypeRel;
-import com.liferay.commerce.price.list.service.CommercePriceListOrderTypeRelLocalServiceUtil;
 import com.liferay.commerce.price.list.service.persistence.CommercePriceListOrderTypeRelPersistence;
 import com.liferay.commerce.price.list.service.persistence.CommercePriceListOrderTypeRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -413,126 +405,6 @@ public class CommercePriceListOrderTypeRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommercePriceListOrderTypeRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommercePriceListOrderTypeRel>() {
-
-				@Override
-				public void performAction(
-					CommercePriceListOrderTypeRel
-						commercePriceListOrderTypeRel) {
-
-					Assert.assertNotNull(commercePriceListOrderTypeRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommercePriceListOrderTypeRel newCommercePriceListOrderTypeRel =
-			addCommercePriceListOrderTypeRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePriceListOrderTypeRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commercePriceListOrderTypeRelId",
-				newCommercePriceListOrderTypeRel.
-					getCommercePriceListOrderTypeRelId()));
-
-		List<CommercePriceListOrderTypeRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommercePriceListOrderTypeRel existingCommercePriceListOrderTypeRel =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCommercePriceListOrderTypeRel,
-			newCommercePriceListOrderTypeRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePriceListOrderTypeRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commercePriceListOrderTypeRelId", RandomTestUtil.nextLong()));
-
-		List<CommercePriceListOrderTypeRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommercePriceListOrderTypeRel newCommercePriceListOrderTypeRel =
-			addCommercePriceListOrderTypeRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePriceListOrderTypeRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commercePriceListOrderTypeRelId"));
-
-		Object newCommercePriceListOrderTypeRelId =
-			newCommercePriceListOrderTypeRel.
-				getCommercePriceListOrderTypeRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commercePriceListOrderTypeRelId",
-				new Object[] {newCommercePriceListOrderTypeRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommercePriceListOrderTypeRelId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommercePriceListOrderTypeRelId,
-			newCommercePriceListOrderTypeRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePriceListOrderTypeRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commercePriceListOrderTypeRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commercePriceListOrderTypeRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CommercePriceListOrderTypeRel newCommercePriceListOrderTypeRel =
 			addCommercePriceListOrderTypeRel();
@@ -542,49 +414,6 @@ public class CommercePriceListOrderTypeRelPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCommercePriceListOrderTypeRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CommercePriceListOrderTypeRel newCommercePriceListOrderTypeRel =
-			addCommercePriceListOrderTypeRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePriceListOrderTypeRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commercePriceListOrderTypeRelId",
-				newCommercePriceListOrderTypeRel.
-					getCommercePriceListOrderTypeRelId()));
-
-		List<CommercePriceListOrderTypeRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

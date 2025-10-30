@@ -8,20 +8,13 @@ package com.liferay.commerce.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.exception.NoSuchAvailabilityEstimateException;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
-import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalServiceUtil;
 import com.liferay.commerce.service.persistence.CommerceAvailabilityEstimatePersistence;
 import com.liferay.commerce.service.persistence.CommerceAvailabilityEstimateUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -384,124 +377,6 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 			newCommerceAvailabilityEstimate,
 			commerceAvailabilityEstimates.get(
 				newCommerceAvailabilityEstimate.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceAvailabilityEstimateLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceAvailabilityEstimate>() {
-
-				@Override
-				public void performAction(
-					CommerceAvailabilityEstimate commerceAvailabilityEstimate) {
-
-					Assert.assertNotNull(commerceAvailabilityEstimate);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceAvailabilityEstimate newCommerceAvailabilityEstimate =
-			addCommerceAvailabilityEstimate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceAvailabilityEstimateId",
-				newCommerceAvailabilityEstimate.
-					getCommerceAvailabilityEstimateId()));
-
-		List<CommerceAvailabilityEstimate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceAvailabilityEstimate existingCommerceAvailabilityEstimate =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceAvailabilityEstimate,
-			newCommerceAvailabilityEstimate);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceAvailabilityEstimateId", RandomTestUtil.nextLong()));
-
-		List<CommerceAvailabilityEstimate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceAvailabilityEstimate newCommerceAvailabilityEstimate =
-			addCommerceAvailabilityEstimate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceAvailabilityEstimateId"));
-
-		Object newCommerceAvailabilityEstimateId =
-			newCommerceAvailabilityEstimate.getCommerceAvailabilityEstimateId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceAvailabilityEstimateId",
-				new Object[] {newCommerceAvailabilityEstimateId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceAvailabilityEstimateId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceAvailabilityEstimateId,
-			newCommerceAvailabilityEstimateId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commerceAvailabilityEstimateId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceAvailabilityEstimateId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CommerceAvailabilityEstimate addCommerceAvailabilityEstimate()

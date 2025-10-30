@@ -9,22 +9,15 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.DuplicateCPConfigurationEntryExternalReferenceCodeException;
 import com.liferay.commerce.product.exception.NoSuchCPConfigurationEntryException;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
-import com.liferay.commerce.product.service.CPConfigurationEntryLocalServiceUtil;
 import com.liferay.commerce.product.service.persistence.CPConfigurationEntryPersistence;
 import com.liferay.commerce.product.service.persistence.CPConfigurationEntryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -586,119 +579,6 @@ public class CPConfigurationEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CPConfigurationEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CPConfigurationEntry>() {
-
-				@Override
-				public void performAction(
-					CPConfigurationEntry cpConfigurationEntry) {
-
-					Assert.assertNotNull(cpConfigurationEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CPConfigurationEntry newCPConfigurationEntry =
-			addCPConfigurationEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPConfigurationEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPConfigurationEntryId",
-				newCPConfigurationEntry.getCPConfigurationEntryId()));
-
-		List<CPConfigurationEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CPConfigurationEntry existingCPConfigurationEntry = result.get(0);
-
-		Assert.assertEquals(
-			existingCPConfigurationEntry, newCPConfigurationEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPConfigurationEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPConfigurationEntryId", RandomTestUtil.nextLong()));
-
-		List<CPConfigurationEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CPConfigurationEntry newCPConfigurationEntry =
-			addCPConfigurationEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPConfigurationEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPConfigurationEntryId"));
-
-		Object newCPConfigurationEntryId =
-			newCPConfigurationEntry.getCPConfigurationEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPConfigurationEntryId",
-				new Object[] {newCPConfigurationEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCPConfigurationEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingCPConfigurationEntryId, newCPConfigurationEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPConfigurationEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPConfigurationEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPConfigurationEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CPConfigurationEntry newCPConfigurationEntry =
 			addCPConfigurationEntry();
@@ -708,48 +588,6 @@ public class CPConfigurationEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCPConfigurationEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CPConfigurationEntry newCPConfigurationEntry =
-			addCPConfigurationEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPConfigurationEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPConfigurationEntryId",
-				newCPConfigurationEntry.getCPConfigurationEntryId()));
-
-		List<CPConfigurationEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

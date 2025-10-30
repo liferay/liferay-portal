@@ -8,21 +8,13 @@ package com.liferay.object.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.exception.NoSuchObjectEntryVersionException;
 import com.liferay.object.model.ObjectEntryVersion;
-import com.liferay.object.service.ObjectEntryVersionLocalServiceUtil;
 import com.liferay.object.service.persistence.ObjectEntryVersionPersistence;
 import com.liferay.object.service.persistence.ObjectEntryVersionUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -425,116 +417,6 @@ public class ObjectEntryVersionPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ObjectEntryVersionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<ObjectEntryVersion>() {
-
-				@Override
-				public void performAction(
-					ObjectEntryVersion objectEntryVersion) {
-
-					Assert.assertNotNull(objectEntryVersion);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ObjectEntryVersion newObjectEntryVersion = addObjectEntryVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectEntryVersionId",
-				newObjectEntryVersion.getObjectEntryVersionId()));
-
-		List<ObjectEntryVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ObjectEntryVersion existingObjectEntryVersion = result.get(0);
-
-		Assert.assertEquals(existingObjectEntryVersion, newObjectEntryVersion);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectEntryVersionId", RandomTestUtil.nextLong()));
-
-		List<ObjectEntryVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ObjectEntryVersion newObjectEntryVersion = addObjectEntryVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectEntryVersionId"));
-
-		Object newObjectEntryVersionId =
-			newObjectEntryVersion.getObjectEntryVersionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectEntryVersionId",
-				new Object[] {newObjectEntryVersionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingObjectEntryVersionId = result.get(0);
-
-		Assert.assertEquals(
-			existingObjectEntryVersionId, newObjectEntryVersionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectEntryVersionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectEntryVersionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		ObjectEntryVersion newObjectEntryVersion = addObjectEntryVersion();
 
@@ -543,47 +425,6 @@ public class ObjectEntryVersionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newObjectEntryVersion.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		ObjectEntryVersion newObjectEntryVersion = addObjectEntryVersion();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectEntryVersionId",
-				newObjectEntryVersion.getObjectEntryVersionId()));
-
-		List<ObjectEntryVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(ObjectEntryVersion objectEntryVersion) {

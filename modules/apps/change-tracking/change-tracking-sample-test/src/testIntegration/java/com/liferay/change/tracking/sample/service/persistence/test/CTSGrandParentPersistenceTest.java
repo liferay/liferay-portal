@@ -8,19 +8,12 @@ package com.liferay.change.tracking.sample.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.sample.exception.NoSuchCTSGrandParentException;
 import com.liferay.change.tracking.sample.model.CTSGrandParent;
-import com.liferay.change.tracking.sample.service.CTSGrandParentLocalServiceUtil;
 import com.liferay.change.tracking.sample.service.persistence.CTSGrandParentPersistence;
 import com.liferay.change.tracking.sample.service.persistence.CTSGrandParentUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -288,108 +281,6 @@ public class CTSGrandParentPersistenceTest {
 		Assert.assertEquals(
 			newCTSGrandParent,
 			ctsGrandParents.get(newCTSGrandParent.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CTSGrandParentLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CTSGrandParent>() {
-
-				@Override
-				public void performAction(CTSGrandParent ctsGrandParent) {
-					Assert.assertNotNull(ctsGrandParent);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTSGrandParent newCTSGrandParent = addCTSGrandParent();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSGrandParent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctsGrandParentId", newCTSGrandParent.getCtsGrandParentId()));
-
-		List<CTSGrandParent> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTSGrandParent existingCTSGrandParent = result.get(0);
-
-		Assert.assertEquals(existingCTSGrandParent, newCTSGrandParent);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSGrandParent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctsGrandParentId", RandomTestUtil.nextLong()));
-
-		List<CTSGrandParent> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTSGrandParent newCTSGrandParent = addCTSGrandParent();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSGrandParent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctsGrandParentId"));
-
-		Object newCtsGrandParentId = newCTSGrandParent.getCtsGrandParentId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctsGrandParentId", new Object[] {newCtsGrandParentId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCtsGrandParentId = result.get(0);
-
-		Assert.assertEquals(existingCtsGrandParentId, newCtsGrandParentId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSGrandParent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctsGrandParentId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctsGrandParentId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTSGrandParent addCTSGrandParent() throws Exception {

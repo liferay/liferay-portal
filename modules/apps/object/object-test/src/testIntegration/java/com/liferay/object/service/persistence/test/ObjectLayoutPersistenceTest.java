@@ -8,19 +8,12 @@ package com.liferay.object.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.exception.NoSuchObjectLayoutException;
 import com.liferay.object.model.ObjectLayout;
-import com.liferay.object.service.ObjectLayoutLocalServiceUtil;
 import com.liferay.object.service.persistence.ObjectLayoutPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -350,108 +343,6 @@ public class ObjectLayoutPersistenceTest {
 		Assert.assertEquals(
 			newObjectLayout,
 			objectLayouts.get(newObjectLayout.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ObjectLayoutLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<ObjectLayout>() {
-
-				@Override
-				public void performAction(ObjectLayout objectLayout) {
-					Assert.assertNotNull(objectLayout);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ObjectLayout newObjectLayout = addObjectLayout();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayout.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectLayoutId", newObjectLayout.getObjectLayoutId()));
-
-		List<ObjectLayout> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ObjectLayout existingObjectLayout = result.get(0);
-
-		Assert.assertEquals(existingObjectLayout, newObjectLayout);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayout.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectLayoutId", RandomTestUtil.nextLong()));
-
-		List<ObjectLayout> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ObjectLayout newObjectLayout = addObjectLayout();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayout.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectLayoutId"));
-
-		Object newObjectLayoutId = newObjectLayout.getObjectLayoutId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectLayoutId", new Object[] {newObjectLayoutId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingObjectLayoutId = result.get(0);
-
-		Assert.assertEquals(existingObjectLayoutId, newObjectLayoutId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayout.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectLayoutId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectLayoutId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ObjectLayout addObjectLayout() throws Exception {

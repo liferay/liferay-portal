@@ -10,11 +10,7 @@ import com.liferay.change.tracking.exception.NoSuchAutoResolutionInfoException;
 import com.liferay.change.tracking.model.CTAutoResolutionInfo;
 import com.liferay.change.tracking.service.persistence.CTAutoResolutionInfoPersistence;
 import com.liferay.change.tracking.service.persistence.CTAutoResolutionInfoUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -346,92 +342,6 @@ public class CTAutoResolutionInfoPersistenceTest {
 		Assert.assertEquals(
 			newCTAutoResolutionInfo,
 			ctAutoResolutionInfos.get(newCTAutoResolutionInfo.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTAutoResolutionInfo newCTAutoResolutionInfo =
-			addCTAutoResolutionInfo();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTAutoResolutionInfo.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctAutoResolutionInfoId",
-				newCTAutoResolutionInfo.getCtAutoResolutionInfoId()));
-
-		List<CTAutoResolutionInfo> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTAutoResolutionInfo existingCTAutoResolutionInfo = result.get(0);
-
-		Assert.assertEquals(
-			existingCTAutoResolutionInfo, newCTAutoResolutionInfo);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTAutoResolutionInfo.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctAutoResolutionInfoId", RandomTestUtil.nextLong()));
-
-		List<CTAutoResolutionInfo> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTAutoResolutionInfo newCTAutoResolutionInfo =
-			addCTAutoResolutionInfo();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTAutoResolutionInfo.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctAutoResolutionInfoId"));
-
-		Object newCtAutoResolutionInfoId =
-			newCTAutoResolutionInfo.getCtAutoResolutionInfoId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctAutoResolutionInfoId",
-				new Object[] {newCtAutoResolutionInfoId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCtAutoResolutionInfoId = result.get(0);
-
-		Assert.assertEquals(
-			existingCtAutoResolutionInfoId, newCtAutoResolutionInfoId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTAutoResolutionInfo.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctAutoResolutionInfoId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctAutoResolutionInfoId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTAutoResolutionInfo addCTAutoResolutionInfo() throws Exception {

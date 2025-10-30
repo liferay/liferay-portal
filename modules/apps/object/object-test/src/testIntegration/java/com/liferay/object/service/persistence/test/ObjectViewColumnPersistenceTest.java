@@ -10,11 +10,7 @@ import com.liferay.object.exception.NoSuchObjectViewColumnException;
 import com.liferay.object.model.ObjectViewColumn;
 import com.liferay.object.service.persistence.ObjectViewColumnPersistence;
 import com.liferay.object.service.persistence.ObjectViewColumnUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -350,87 +346,6 @@ public class ObjectViewColumnPersistenceTest {
 		Assert.assertEquals(
 			newObjectViewColumn,
 			objectViewColumns.get(newObjectViewColumn.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ObjectViewColumn newObjectViewColumn = addObjectViewColumn();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectViewColumnId",
-				newObjectViewColumn.getObjectViewColumnId()));
-
-		List<ObjectViewColumn> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ObjectViewColumn existingObjectViewColumn = result.get(0);
-
-		Assert.assertEquals(existingObjectViewColumn, newObjectViewColumn);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectViewColumnId", RandomTestUtil.nextLong()));
-
-		List<ObjectViewColumn> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ObjectViewColumn newObjectViewColumn = addObjectViewColumn();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectViewColumnId"));
-
-		Object newObjectViewColumnId =
-			newObjectViewColumn.getObjectViewColumnId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectViewColumnId", new Object[] {newObjectViewColumnId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingObjectViewColumnId = result.get(0);
-
-		Assert.assertEquals(existingObjectViewColumnId, newObjectViewColumnId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectViewColumnId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectViewColumnId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ObjectViewColumn addObjectViewColumn() throws Exception {

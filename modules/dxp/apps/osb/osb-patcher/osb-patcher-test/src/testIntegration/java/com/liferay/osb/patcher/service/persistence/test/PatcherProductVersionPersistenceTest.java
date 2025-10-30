@@ -8,21 +8,13 @@ package com.liferay.osb.patcher.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.osb.patcher.exception.NoSuchPatcherProductVersionException;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
-import com.liferay.osb.patcher.service.PatcherProductVersionLocalServiceUtil;
 import com.liferay.osb.patcher.service.persistence.PatcherProductVersionPersistence;
 import com.liferay.osb.patcher.service.persistence.PatcherProductVersionUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -353,119 +345,6 @@ public class PatcherProductVersionPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			PatcherProductVersionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<PatcherProductVersion>() {
-
-				@Override
-				public void performAction(
-					PatcherProductVersion patcherProductVersion) {
-
-					Assert.assertNotNull(patcherProductVersion);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		PatcherProductVersion newPatcherProductVersion =
-			addPatcherProductVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherProductVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"patcherProductVersionId",
-				newPatcherProductVersion.getPatcherProductVersionId()));
-
-		List<PatcherProductVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		PatcherProductVersion existingPatcherProductVersion = result.get(0);
-
-		Assert.assertEquals(
-			existingPatcherProductVersion, newPatcherProductVersion);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherProductVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"patcherProductVersionId", RandomTestUtil.nextLong()));
-
-		List<PatcherProductVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		PatcherProductVersion newPatcherProductVersion =
-			addPatcherProductVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherProductVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("patcherProductVersionId"));
-
-		Object newPatcherProductVersionId =
-			newPatcherProductVersion.getPatcherProductVersionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"patcherProductVersionId",
-				new Object[] {newPatcherProductVersionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingPatcherProductVersionId = result.get(0);
-
-		Assert.assertEquals(
-			existingPatcherProductVersionId, newPatcherProductVersionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherProductVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("patcherProductVersionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"patcherProductVersionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		PatcherProductVersion newPatcherProductVersion =
 			addPatcherProductVersion();
@@ -475,48 +354,6 @@ public class PatcherProductVersionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newPatcherProductVersion.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		PatcherProductVersion newPatcherProductVersion =
-			addPatcherProductVersion();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			PatcherProductVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"patcherProductVersionId",
-				newPatcherProductVersion.getPatcherProductVersionId()));
-
-		List<PatcherProductVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

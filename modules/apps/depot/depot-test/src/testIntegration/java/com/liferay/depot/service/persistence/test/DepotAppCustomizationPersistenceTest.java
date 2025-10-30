@@ -8,21 +8,13 @@ package com.liferay.depot.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.exception.NoSuchAppCustomizationException;
 import com.liferay.depot.model.DepotAppCustomization;
-import com.liferay.depot.service.DepotAppCustomizationLocalServiceUtil;
 import com.liferay.depot.service.persistence.DepotAppCustomizationPersistence;
 import com.liferay.depot.service.persistence.DepotAppCustomizationUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -341,119 +333,6 @@ public class DepotAppCustomizationPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			DepotAppCustomizationLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<DepotAppCustomization>() {
-
-				@Override
-				public void performAction(
-					DepotAppCustomization depotAppCustomization) {
-
-					Assert.assertNotNull(depotAppCustomization);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		DepotAppCustomization newDepotAppCustomization =
-			addDepotAppCustomization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DepotAppCustomization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"depotAppCustomizationId",
-				newDepotAppCustomization.getDepotAppCustomizationId()));
-
-		List<DepotAppCustomization> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		DepotAppCustomization existingDepotAppCustomization = result.get(0);
-
-		Assert.assertEquals(
-			existingDepotAppCustomization, newDepotAppCustomization);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DepotAppCustomization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"depotAppCustomizationId", RandomTestUtil.nextLong()));
-
-		List<DepotAppCustomization> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		DepotAppCustomization newDepotAppCustomization =
-			addDepotAppCustomization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DepotAppCustomization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("depotAppCustomizationId"));
-
-		Object newDepotAppCustomizationId =
-			newDepotAppCustomization.getDepotAppCustomizationId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"depotAppCustomizationId",
-				new Object[] {newDepotAppCustomizationId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingDepotAppCustomizationId = result.get(0);
-
-		Assert.assertEquals(
-			existingDepotAppCustomizationId, newDepotAppCustomizationId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DepotAppCustomization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("depotAppCustomizationId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"depotAppCustomizationId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		DepotAppCustomization newDepotAppCustomization =
 			addDepotAppCustomization();
@@ -463,48 +342,6 @@ public class DepotAppCustomizationPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newDepotAppCustomization.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		DepotAppCustomization newDepotAppCustomization =
-			addDepotAppCustomization();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DepotAppCustomization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"depotAppCustomizationId",
-				newDepotAppCustomization.getDepotAppCustomizationId()));
-
-		List<DepotAppCustomization> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

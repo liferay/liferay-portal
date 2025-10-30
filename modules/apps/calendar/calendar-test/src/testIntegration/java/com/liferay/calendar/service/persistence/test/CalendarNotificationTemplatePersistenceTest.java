@@ -8,21 +8,13 @@ package com.liferay.calendar.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.calendar.exception.NoSuchNotificationTemplateException;
 import com.liferay.calendar.model.CalendarNotificationTemplate;
-import com.liferay.calendar.service.CalendarNotificationTemplateLocalServiceUtil;
 import com.liferay.calendar.service.persistence.CalendarNotificationTemplatePersistence;
 import com.liferay.calendar.service.persistence.CalendarNotificationTemplateUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -444,124 +436,6 @@ public class CalendarNotificationTemplatePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CalendarNotificationTemplateLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CalendarNotificationTemplate>() {
-
-				@Override
-				public void performAction(
-					CalendarNotificationTemplate calendarNotificationTemplate) {
-
-					Assert.assertNotNull(calendarNotificationTemplate);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CalendarNotificationTemplate newCalendarNotificationTemplate =
-			addCalendarNotificationTemplate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CalendarNotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"calendarNotificationTemplateId",
-				newCalendarNotificationTemplate.
-					getCalendarNotificationTemplateId()));
-
-		List<CalendarNotificationTemplate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CalendarNotificationTemplate existingCalendarNotificationTemplate =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCalendarNotificationTemplate,
-			newCalendarNotificationTemplate);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CalendarNotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"calendarNotificationTemplateId", RandomTestUtil.nextLong()));
-
-		List<CalendarNotificationTemplate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CalendarNotificationTemplate newCalendarNotificationTemplate =
-			addCalendarNotificationTemplate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CalendarNotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("calendarNotificationTemplateId"));
-
-		Object newCalendarNotificationTemplateId =
-			newCalendarNotificationTemplate.getCalendarNotificationTemplateId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"calendarNotificationTemplateId",
-				new Object[] {newCalendarNotificationTemplateId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCalendarNotificationTemplateId = result.get(0);
-
-		Assert.assertEquals(
-			existingCalendarNotificationTemplateId,
-			newCalendarNotificationTemplateId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CalendarNotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("calendarNotificationTemplateId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"calendarNotificationTemplateId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CalendarNotificationTemplate newCalendarNotificationTemplate =
 			addCalendarNotificationTemplate();
@@ -571,49 +445,6 @@ public class CalendarNotificationTemplatePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCalendarNotificationTemplate.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CalendarNotificationTemplate newCalendarNotificationTemplate =
-			addCalendarNotificationTemplate();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CalendarNotificationTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"calendarNotificationTemplateId",
-				newCalendarNotificationTemplate.
-					getCalendarNotificationTemplateId()));
-
-		List<CalendarNotificationTemplate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

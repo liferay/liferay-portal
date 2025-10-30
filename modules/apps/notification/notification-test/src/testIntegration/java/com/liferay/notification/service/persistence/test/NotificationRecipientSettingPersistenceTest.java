@@ -8,21 +8,13 @@ package com.liferay.notification.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.notification.exception.NoSuchNotificationRecipientSettingException;
 import com.liferay.notification.model.NotificationRecipientSetting;
-import com.liferay.notification.service.NotificationRecipientSettingLocalServiceUtil;
 import com.liferay.notification.service.persistence.NotificationRecipientSettingPersistence;
 import com.liferay.notification.service.persistence.NotificationRecipientSettingUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -394,124 +386,6 @@ public class NotificationRecipientSettingPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			NotificationRecipientSettingLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<NotificationRecipientSetting>() {
-
-				@Override
-				public void performAction(
-					NotificationRecipientSetting notificationRecipientSetting) {
-
-					Assert.assertNotNull(notificationRecipientSetting);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		NotificationRecipientSetting newNotificationRecipientSetting =
-			addNotificationRecipientSetting();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationRecipientSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationRecipientSettingId",
-				newNotificationRecipientSetting.
-					getNotificationRecipientSettingId()));
-
-		List<NotificationRecipientSetting> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		NotificationRecipientSetting existingNotificationRecipientSetting =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationRecipientSetting,
-			newNotificationRecipientSetting);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationRecipientSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationRecipientSettingId", RandomTestUtil.nextLong()));
-
-		List<NotificationRecipientSetting> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		NotificationRecipientSetting newNotificationRecipientSetting =
-			addNotificationRecipientSetting();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationRecipientSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationRecipientSettingId"));
-
-		Object newNotificationRecipientSettingId =
-			newNotificationRecipientSetting.getNotificationRecipientSettingId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationRecipientSettingId",
-				new Object[] {newNotificationRecipientSettingId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingNotificationRecipientSettingId = result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationRecipientSettingId,
-			newNotificationRecipientSettingId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationRecipientSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationRecipientSettingId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationRecipientSettingId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		NotificationRecipientSetting newNotificationRecipientSetting =
 			addNotificationRecipientSetting();
@@ -521,49 +395,6 @@ public class NotificationRecipientSettingPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newNotificationRecipientSetting.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		NotificationRecipientSetting newNotificationRecipientSetting =
-			addNotificationRecipientSetting();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationRecipientSetting.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationRecipientSettingId",
-				newNotificationRecipientSetting.
-					getNotificationRecipientSettingId()));
-
-		List<NotificationRecipientSetting> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

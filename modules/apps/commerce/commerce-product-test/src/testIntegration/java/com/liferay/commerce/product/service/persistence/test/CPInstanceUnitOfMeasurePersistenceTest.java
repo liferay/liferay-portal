@@ -8,22 +8,14 @@ package com.liferay.commerce.product.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceUnitOfMeasureException;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
-import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalServiceUtil;
 import com.liferay.commerce.product.service.persistence.CPInstanceUnitOfMeasurePersistence;
 import com.liferay.commerce.product.service.persistence.CPInstanceUnitOfMeasureUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -467,119 +459,6 @@ public class CPInstanceUnitOfMeasurePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CPInstanceUnitOfMeasureLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CPInstanceUnitOfMeasure>() {
-
-				@Override
-				public void performAction(
-					CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure) {
-
-					Assert.assertNotNull(cpInstanceUnitOfMeasure);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CPInstanceUnitOfMeasure newCPInstanceUnitOfMeasure =
-			addCPInstanceUnitOfMeasure();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceUnitOfMeasure.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPInstanceUnitOfMeasureId",
-				newCPInstanceUnitOfMeasure.getCPInstanceUnitOfMeasureId()));
-
-		List<CPInstanceUnitOfMeasure> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CPInstanceUnitOfMeasure existingCPInstanceUnitOfMeasure = result.get(0);
-
-		Assert.assertEquals(
-			existingCPInstanceUnitOfMeasure, newCPInstanceUnitOfMeasure);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceUnitOfMeasure.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPInstanceUnitOfMeasureId", RandomTestUtil.nextLong()));
-
-		List<CPInstanceUnitOfMeasure> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CPInstanceUnitOfMeasure newCPInstanceUnitOfMeasure =
-			addCPInstanceUnitOfMeasure();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceUnitOfMeasure.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPInstanceUnitOfMeasureId"));
-
-		Object newCPInstanceUnitOfMeasureId =
-			newCPInstanceUnitOfMeasure.getCPInstanceUnitOfMeasureId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPInstanceUnitOfMeasureId",
-				new Object[] {newCPInstanceUnitOfMeasureId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCPInstanceUnitOfMeasureId = result.get(0);
-
-		Assert.assertEquals(
-			existingCPInstanceUnitOfMeasureId, newCPInstanceUnitOfMeasureId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceUnitOfMeasure.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPInstanceUnitOfMeasureId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPInstanceUnitOfMeasureId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CPInstanceUnitOfMeasure newCPInstanceUnitOfMeasure =
 			addCPInstanceUnitOfMeasure();
@@ -589,48 +468,6 @@ public class CPInstanceUnitOfMeasurePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCPInstanceUnitOfMeasure.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CPInstanceUnitOfMeasure newCPInstanceUnitOfMeasure =
-			addCPInstanceUnitOfMeasure();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceUnitOfMeasure.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPInstanceUnitOfMeasureId",
-				newCPInstanceUnitOfMeasure.getCPInstanceUnitOfMeasureId()));
-
-		List<CPInstanceUnitOfMeasure> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

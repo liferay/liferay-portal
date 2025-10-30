@@ -8,21 +8,13 @@ package com.liferay.commerce.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.exception.NoSuchCPDAvailabilityEstimateException;
 import com.liferay.commerce.model.CPDAvailabilityEstimate;
-import com.liferay.commerce.service.CPDAvailabilityEstimateLocalServiceUtil;
 import com.liferay.commerce.service.persistence.CPDAvailabilityEstimatePersistence;
 import com.liferay.commerce.service.persistence.CPDAvailabilityEstimateUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -383,119 +375,6 @@ public class CPDAvailabilityEstimatePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CPDAvailabilityEstimateLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CPDAvailabilityEstimate>() {
-
-				@Override
-				public void performAction(
-					CPDAvailabilityEstimate cpdAvailabilityEstimate) {
-
-					Assert.assertNotNull(cpdAvailabilityEstimate);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CPDAvailabilityEstimate newCPDAvailabilityEstimate =
-			addCPDAvailabilityEstimate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPDAvailabilityEstimateId",
-				newCPDAvailabilityEstimate.getCPDAvailabilityEstimateId()));
-
-		List<CPDAvailabilityEstimate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CPDAvailabilityEstimate existingCPDAvailabilityEstimate = result.get(0);
-
-		Assert.assertEquals(
-			existingCPDAvailabilityEstimate, newCPDAvailabilityEstimate);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPDAvailabilityEstimateId", RandomTestUtil.nextLong()));
-
-		List<CPDAvailabilityEstimate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CPDAvailabilityEstimate newCPDAvailabilityEstimate =
-			addCPDAvailabilityEstimate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPDAvailabilityEstimateId"));
-
-		Object newCPDAvailabilityEstimateId =
-			newCPDAvailabilityEstimate.getCPDAvailabilityEstimateId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPDAvailabilityEstimateId",
-				new Object[] {newCPDAvailabilityEstimateId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCPDAvailabilityEstimateId = result.get(0);
-
-		Assert.assertEquals(
-			existingCPDAvailabilityEstimateId, newCPDAvailabilityEstimateId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPDAvailabilityEstimateId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPDAvailabilityEstimateId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CPDAvailabilityEstimate newCPDAvailabilityEstimate =
 			addCPDAvailabilityEstimate();
@@ -505,48 +384,6 @@ public class CPDAvailabilityEstimatePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCPDAvailabilityEstimate.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CPDAvailabilityEstimate newCPDAvailabilityEstimate =
-			addCPDAvailabilityEstimate();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDAvailabilityEstimate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPDAvailabilityEstimateId",
-				newCPDAvailabilityEstimate.getCPDAvailabilityEstimateId()));
-
-		List<CPDAvailabilityEstimate> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

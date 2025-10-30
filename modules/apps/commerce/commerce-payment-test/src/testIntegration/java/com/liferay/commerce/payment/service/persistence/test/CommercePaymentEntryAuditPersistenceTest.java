@@ -8,19 +8,12 @@ package com.liferay.commerce.payment.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.payment.exception.NoSuchPaymentEntryAuditException;
 import com.liferay.commerce.payment.model.CommercePaymentEntryAudit;
-import com.liferay.commerce.payment.service.CommercePaymentEntryAuditLocalServiceUtil;
 import com.liferay.commerce.payment.service.persistence.CommercePaymentEntryAuditPersistence;
 import com.liferay.commerce.payment.service.persistence.CommercePaymentEntryAuditUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -365,122 +358,6 @@ public class CommercePaymentEntryAuditPersistenceTest {
 			newCommercePaymentEntryAudit,
 			commercePaymentEntryAudits.get(
 				newCommercePaymentEntryAudit.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommercePaymentEntryAuditLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommercePaymentEntryAudit>() {
-
-				@Override
-				public void performAction(
-					CommercePaymentEntryAudit commercePaymentEntryAudit) {
-
-					Assert.assertNotNull(commercePaymentEntryAudit);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommercePaymentEntryAudit newCommercePaymentEntryAudit =
-			addCommercePaymentEntryAudit();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePaymentEntryAudit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commercePaymentEntryAuditId",
-				newCommercePaymentEntryAudit.getCommercePaymentEntryAuditId()));
-
-		List<CommercePaymentEntryAudit> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommercePaymentEntryAudit existingCommercePaymentEntryAudit =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCommercePaymentEntryAudit, newCommercePaymentEntryAudit);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePaymentEntryAudit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commercePaymentEntryAuditId", RandomTestUtil.nextLong()));
-
-		List<CommercePaymentEntryAudit> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommercePaymentEntryAudit newCommercePaymentEntryAudit =
-			addCommercePaymentEntryAudit();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePaymentEntryAudit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commercePaymentEntryAuditId"));
-
-		Object newCommercePaymentEntryAuditId =
-			newCommercePaymentEntryAudit.getCommercePaymentEntryAuditId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commercePaymentEntryAuditId",
-				new Object[] {newCommercePaymentEntryAuditId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommercePaymentEntryAuditId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommercePaymentEntryAuditId,
-			newCommercePaymentEntryAuditId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommercePaymentEntryAudit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("commercePaymentEntryAuditId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commercePaymentEntryAuditId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CommercePaymentEntryAudit addCommercePaymentEntryAudit()

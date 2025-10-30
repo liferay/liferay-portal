@@ -6,22 +6,15 @@
 package com.liferay.portal.security.audit.storage.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.security.audit.storage.exception.NoSuchEventException;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
-import com.liferay.portal.security.audit.storage.service.AuditEventLocalServiceUtil;
 import com.liferay.portal.security.audit.storage.service.persistence.AuditEventPersistence;
 import com.liferay.portal.security.audit.storage.service.persistence.AuditEventUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -330,108 +323,6 @@ public class AuditEventPersistenceTest {
 		Assert.assertEquals(1, auditEvents.size());
 		Assert.assertEquals(
 			newAuditEvent, auditEvents.get(newAuditEvent.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			AuditEventLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<AuditEvent>() {
-
-				@Override
-				public void performAction(AuditEvent auditEvent) {
-					Assert.assertNotNull(auditEvent);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		AuditEvent newAuditEvent = addAuditEvent();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AuditEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"auditEventId", newAuditEvent.getAuditEventId()));
-
-		List<AuditEvent> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		AuditEvent existingAuditEvent = result.get(0);
-
-		Assert.assertEquals(existingAuditEvent, newAuditEvent);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AuditEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"auditEventId", RandomTestUtil.nextLong()));
-
-		List<AuditEvent> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		AuditEvent newAuditEvent = addAuditEvent();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AuditEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("auditEventId"));
-
-		Object newAuditEventId = newAuditEvent.getAuditEventId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"auditEventId", new Object[] {newAuditEventId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingAuditEventId = result.get(0);
-
-		Assert.assertEquals(existingAuditEventId, newAuditEventId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AuditEvent.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("auditEventId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"auditEventId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected AuditEvent addAuditEvent() throws Exception {

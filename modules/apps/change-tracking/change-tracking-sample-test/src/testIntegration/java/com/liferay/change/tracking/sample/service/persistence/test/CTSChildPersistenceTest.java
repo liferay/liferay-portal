@@ -8,19 +8,12 @@ package com.liferay.change.tracking.sample.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.sample.exception.NoSuchCTSChildException;
 import com.liferay.change.tracking.sample.model.CTSChild;
-import com.liferay.change.tracking.sample.service.CTSChildLocalServiceUtil;
 import com.liferay.change.tracking.sample.service.persistence.CTSChildPersistence;
 import com.liferay.change.tracking.sample.service.persistence.CTSChildUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -311,106 +304,6 @@ public class CTSChildPersistenceTest {
 		Assert.assertEquals(1, ctsChilds.size());
 		Assert.assertEquals(
 			newCTSChild, ctsChilds.get(newCTSChild.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CTSChildLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CTSChild>() {
-
-				@Override
-				public void performAction(CTSChild ctsChild) {
-					Assert.assertNotNull(ctsChild);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTSChild newCTSChild = addCTSChild();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSChild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctsChildId", newCTSChild.getCtsChildId()));
-
-		List<CTSChild> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTSChild existingCTSChild = result.get(0);
-
-		Assert.assertEquals(existingCTSChild, newCTSChild);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSChild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctsChildId", RandomTestUtil.nextLong()));
-
-		List<CTSChild> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTSChild newCTSChild = addCTSChild();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSChild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctsChildId"));
-
-		Object newCtsChildId = newCTSChild.getCtsChildId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctsChildId", new Object[] {newCtsChildId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCtsChildId = result.get(0);
-
-		Assert.assertEquals(existingCtsChildId, newCtsChildId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSChild.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctsChildId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctsChildId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTSChild addCTSChild() throws Exception {

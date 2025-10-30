@@ -8,19 +8,12 @@ package com.liferay.change.tracking.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.exception.NoSuchCommentException;
 import com.liferay.change.tracking.model.CTComment;
-import com.liferay.change.tracking.service.CTCommentLocalServiceUtil;
 import com.liferay.change.tracking.service.persistence.CTCommentPersistence;
 import com.liferay.change.tracking.service.persistence.CTCommentUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -306,108 +299,6 @@ public class CTCommentPersistenceTest {
 		Assert.assertEquals(1, ctComments.size());
 		Assert.assertEquals(
 			newCTComment, ctComments.get(newCTComment.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CTCommentLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CTComment>() {
-
-				@Override
-				public void performAction(CTComment ctComment) {
-					Assert.assertNotNull(ctComment);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTComment newCTComment = addCTComment();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTComment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctCommentId", newCTComment.getCtCommentId()));
-
-		List<CTComment> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTComment existingCTComment = result.get(0);
-
-		Assert.assertEquals(existingCTComment, newCTComment);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTComment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctCommentId", RandomTestUtil.nextLong()));
-
-		List<CTComment> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTComment newCTComment = addCTComment();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTComment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctCommentId"));
-
-		Object newCtCommentId = newCTComment.getCtCommentId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctCommentId", new Object[] {newCtCommentId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCtCommentId = result.get(0);
-
-		Assert.assertEquals(existingCtCommentId, newCtCommentId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTComment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctCommentId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctCommentId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTComment addCTComment() throws Exception {

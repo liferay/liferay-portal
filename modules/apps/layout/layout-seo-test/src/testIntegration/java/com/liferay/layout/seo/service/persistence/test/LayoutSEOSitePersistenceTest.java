@@ -8,21 +8,13 @@ package com.liferay.layout.seo.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.seo.exception.NoSuchSiteException;
 import com.liferay.layout.seo.model.LayoutSEOSite;
-import com.liferay.layout.seo.service.LayoutSEOSiteLocalServiceUtil;
 import com.liferay.layout.seo.service.persistence.LayoutSEOSitePersistence;
 import com.liferay.layout.seo.service.persistence.LayoutSEOSiteUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -361,108 +353,6 @@ public class LayoutSEOSitePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			LayoutSEOSiteLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<LayoutSEOSite>() {
-
-				@Override
-				public void performAction(LayoutSEOSite layoutSEOSite) {
-					Assert.assertNotNull(layoutSEOSite);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		LayoutSEOSite newLayoutSEOSite = addLayoutSEOSite();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOSite.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutSEOSiteId", newLayoutSEOSite.getLayoutSEOSiteId()));
-
-		List<LayoutSEOSite> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		LayoutSEOSite existingLayoutSEOSite = result.get(0);
-
-		Assert.assertEquals(existingLayoutSEOSite, newLayoutSEOSite);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOSite.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutSEOSiteId", RandomTestUtil.nextLong()));
-
-		List<LayoutSEOSite> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		LayoutSEOSite newLayoutSEOSite = addLayoutSEOSite();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOSite.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("layoutSEOSiteId"));
-
-		Object newLayoutSEOSiteId = newLayoutSEOSite.getLayoutSEOSiteId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"layoutSEOSiteId", new Object[] {newLayoutSEOSiteId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingLayoutSEOSiteId = result.get(0);
-
-		Assert.assertEquals(existingLayoutSEOSiteId, newLayoutSEOSiteId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOSite.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("layoutSEOSiteId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"layoutSEOSiteId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		LayoutSEOSite newLayoutSEOSite = addLayoutSEOSite();
 
@@ -470,46 +360,6 @@ public class LayoutSEOSitePersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newLayoutSEOSite.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		LayoutSEOSite newLayoutSEOSite = addLayoutSEOSite();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOSite.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutSEOSiteId", newLayoutSEOSite.getLayoutSEOSiteId()));
-
-		List<LayoutSEOSite> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(LayoutSEOSite layoutSEOSite) {

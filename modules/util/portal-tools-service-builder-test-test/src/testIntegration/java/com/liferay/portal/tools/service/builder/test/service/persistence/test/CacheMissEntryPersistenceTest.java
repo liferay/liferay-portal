@@ -6,16 +6,10 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -23,7 +17,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchCacheMissEntryException;
 import com.liferay.portal.tools.service.builder.test.model.CacheMissEntry;
-import com.liferay.portal.tools.service.builder.test.service.CacheMissEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.CacheMissEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.CacheMissEntryUtil;
 
@@ -272,108 +265,6 @@ public class CacheMissEntryPersistenceTest {
 		Assert.assertEquals(
 			newCacheMissEntry,
 			cacheMissEntries.get(newCacheMissEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CacheMissEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CacheMissEntry>() {
-
-				@Override
-				public void performAction(CacheMissEntry cacheMissEntry) {
-					Assert.assertNotNull(cacheMissEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CacheMissEntry newCacheMissEntry = addCacheMissEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheMissEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"cacheMissEntryId", newCacheMissEntry.getCacheMissEntryId()));
-
-		List<CacheMissEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CacheMissEntry existingCacheMissEntry = result.get(0);
-
-		Assert.assertEquals(existingCacheMissEntry, newCacheMissEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheMissEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"cacheMissEntryId", RandomTestUtil.nextLong()));
-
-		List<CacheMissEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CacheMissEntry newCacheMissEntry = addCacheMissEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheMissEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("cacheMissEntryId"));
-
-		Object newCacheMissEntryId = newCacheMissEntry.getCacheMissEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"cacheMissEntryId", new Object[] {newCacheMissEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCacheMissEntryId = result.get(0);
-
-		Assert.assertEquals(existingCacheMissEntryId, newCacheMissEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CacheMissEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("cacheMissEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"cacheMissEntryId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CacheMissEntry addCacheMissEntry() throws Exception {

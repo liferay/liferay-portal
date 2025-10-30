@@ -6,18 +6,11 @@
 package com.liferay.saml.persistence.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -26,7 +19,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.saml.persistence.exception.NoSuchSpMessageException;
 import com.liferay.saml.persistence.model.SamlSpMessage;
-import com.liferay.saml.persistence.service.SamlSpMessageLocalServiceUtil;
 import com.liferay.saml.persistence.service.persistence.SamlSpMessagePersistence;
 import com.liferay.saml.persistence.service.persistence.SamlSpMessageUtil;
 
@@ -308,108 +300,6 @@ public class SamlSpMessagePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SamlSpMessageLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<SamlSpMessage>() {
-
-				@Override
-				public void performAction(SamlSpMessage samlSpMessage) {
-					Assert.assertNotNull(samlSpMessage);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SamlSpMessage newSamlSpMessage = addSamlSpMessage();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlSpMessageId", newSamlSpMessage.getSamlSpMessageId()));
-
-		List<SamlSpMessage> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SamlSpMessage existingSamlSpMessage = result.get(0);
-
-		Assert.assertEquals(existingSamlSpMessage, newSamlSpMessage);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlSpMessageId", RandomTestUtil.nextLong()));
-
-		List<SamlSpMessage> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SamlSpMessage newSamlSpMessage = addSamlSpMessage();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlSpMessageId"));
-
-		Object newSamlSpMessageId = newSamlSpMessage.getSamlSpMessageId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlSpMessageId", new Object[] {newSamlSpMessageId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSamlSpMessageId = result.get(0);
-
-		Assert.assertEquals(existingSamlSpMessageId, newSamlSpMessageId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlSpMessageId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlSpMessageId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SamlSpMessage newSamlSpMessage = addSamlSpMessage();
 
@@ -417,46 +307,6 @@ public class SamlSpMessagePersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newSamlSpMessage.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SamlSpMessage newSamlSpMessage = addSamlSpMessage();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlSpMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlSpMessageId", newSamlSpMessage.getSamlSpMessageId()));
-
-		List<SamlSpMessage> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(SamlSpMessage samlSpMessage) {

@@ -8,19 +8,12 @@ package com.liferay.change.tracking.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.exception.NoSuchSchemaVersionException;
 import com.liferay.change.tracking.model.CTSchemaVersion;
-import com.liferay.change.tracking.service.CTSchemaVersionLocalServiceUtil;
 import com.liferay.change.tracking.service.persistence.CTSchemaVersionPersistence;
 import com.liferay.change.tracking.service.persistence.CTSchemaVersionUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -285,108 +278,6 @@ public class CTSchemaVersionPersistenceTest {
 		Assert.assertEquals(
 			newCTSchemaVersion,
 			ctSchemaVersions.get(newCTSchemaVersion.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CTSchemaVersionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CTSchemaVersion>() {
-
-				@Override
-				public void performAction(CTSchemaVersion ctSchemaVersion) {
-					Assert.assertNotNull(ctSchemaVersion);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTSchemaVersion newCTSchemaVersion = addCTSchemaVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSchemaVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"schemaVersionId", newCTSchemaVersion.getSchemaVersionId()));
-
-		List<CTSchemaVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTSchemaVersion existingCTSchemaVersion = result.get(0);
-
-		Assert.assertEquals(existingCTSchemaVersion, newCTSchemaVersion);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSchemaVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"schemaVersionId", RandomTestUtil.nextLong()));
-
-		List<CTSchemaVersion> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTSchemaVersion newCTSchemaVersion = addCTSchemaVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSchemaVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("schemaVersionId"));
-
-		Object newSchemaVersionId = newCTSchemaVersion.getSchemaVersionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"schemaVersionId", new Object[] {newSchemaVersionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSchemaVersionId = result.get(0);
-
-		Assert.assertEquals(existingSchemaVersionId, newSchemaVersionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTSchemaVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("schemaVersionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"schemaVersionId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTSchemaVersion addCTSchemaVersion() throws Exception {

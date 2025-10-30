@@ -6,12 +6,7 @@
 package com.liferay.portal.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchRegionLocalizationException;
 import com.liferay.portal.kernel.model.RegionLocalization;
 import com.liferay.portal.kernel.service.persistence.RegionLocalizationPersistence;
@@ -313,89 +308,6 @@ public class RegionLocalizationPersistenceTest {
 	}
 
 	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		RegionLocalization newRegionLocalization = addRegionLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RegionLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"regionLocalizationId",
-				newRegionLocalization.getRegionLocalizationId()));
-
-		List<RegionLocalization> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		RegionLocalization existingRegionLocalization = result.get(0);
-
-		Assert.assertEquals(existingRegionLocalization, newRegionLocalization);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RegionLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"regionLocalizationId", RandomTestUtil.nextLong()));
-
-		List<RegionLocalization> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		RegionLocalization newRegionLocalization = addRegionLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RegionLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("regionLocalizationId"));
-
-		Object newRegionLocalizationId =
-			newRegionLocalization.getRegionLocalizationId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"regionLocalizationId",
-				new Object[] {newRegionLocalizationId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingRegionLocalizationId = result.get(0);
-
-		Assert.assertEquals(
-			existingRegionLocalizationId, newRegionLocalizationId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RegionLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("regionLocalizationId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"regionLocalizationId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		RegionLocalization newRegionLocalization = addRegionLocalization();
 
@@ -404,47 +316,6 @@ public class RegionLocalizationPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newRegionLocalization.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		RegionLocalization newRegionLocalization = addRegionLocalization();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RegionLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"regionLocalizationId",
-				newRegionLocalization.getRegionLocalizationId()));
-
-		List<RegionLocalization> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(RegionLocalization regionLocalization) {

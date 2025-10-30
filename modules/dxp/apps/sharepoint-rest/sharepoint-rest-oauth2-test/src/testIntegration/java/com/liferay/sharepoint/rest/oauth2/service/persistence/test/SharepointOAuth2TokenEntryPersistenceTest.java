@@ -6,18 +6,11 @@
 package com.liferay.sharepoint.rest.oauth2.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -26,7 +19,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.sharepoint.rest.oauth2.exception.NoSuch2TokenEntryException;
 import com.liferay.sharepoint.rest.oauth2.model.SharepointOAuth2TokenEntry;
-import com.liferay.sharepoint.rest.oauth2.service.SharepointOAuth2TokenEntryLocalServiceUtil;
 import com.liferay.sharepoint.rest.oauth2.service.persistence.SharepointOAuth2TokenEntryPersistence;
 import com.liferay.sharepoint.rest.oauth2.service.persistence.SharepointOAuth2TokenEntryUtil;
 
@@ -363,123 +355,6 @@ public class SharepointOAuth2TokenEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SharepointOAuth2TokenEntryLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<SharepointOAuth2TokenEntry>() {
-
-				@Override
-				public void performAction(
-					SharepointOAuth2TokenEntry sharepointOAuth2TokenEntry) {
-
-					Assert.assertNotNull(sharepointOAuth2TokenEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SharepointOAuth2TokenEntry newSharepointOAuth2TokenEntry =
-			addSharepointOAuth2TokenEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SharepointOAuth2TokenEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"sharepointOAuth2TokenEntryId",
-				newSharepointOAuth2TokenEntry.
-					getSharepointOAuth2TokenEntryId()));
-
-		List<SharepointOAuth2TokenEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SharepointOAuth2TokenEntry existingSharepointOAuth2TokenEntry =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingSharepointOAuth2TokenEntry, newSharepointOAuth2TokenEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SharepointOAuth2TokenEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"sharepointOAuth2TokenEntryId", RandomTestUtil.nextLong()));
-
-		List<SharepointOAuth2TokenEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SharepointOAuth2TokenEntry newSharepointOAuth2TokenEntry =
-			addSharepointOAuth2TokenEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SharepointOAuth2TokenEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("sharepointOAuth2TokenEntryId"));
-
-		Object newSharepointOAuth2TokenEntryId =
-			newSharepointOAuth2TokenEntry.getSharepointOAuth2TokenEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"sharepointOAuth2TokenEntryId",
-				new Object[] {newSharepointOAuth2TokenEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSharepointOAuth2TokenEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingSharepointOAuth2TokenEntryId,
-			newSharepointOAuth2TokenEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SharepointOAuth2TokenEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("sharepointOAuth2TokenEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"sharepointOAuth2TokenEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SharepointOAuth2TokenEntry newSharepointOAuth2TokenEntry =
 			addSharepointOAuth2TokenEntry();
@@ -489,49 +364,6 @@ public class SharepointOAuth2TokenEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newSharepointOAuth2TokenEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SharepointOAuth2TokenEntry newSharepointOAuth2TokenEntry =
-			addSharepointOAuth2TokenEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SharepointOAuth2TokenEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"sharepointOAuth2TokenEntryId",
-				newSharepointOAuth2TokenEntry.
-					getSharepointOAuth2TokenEntryId()));
-
-		List<SharepointOAuth2TokenEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

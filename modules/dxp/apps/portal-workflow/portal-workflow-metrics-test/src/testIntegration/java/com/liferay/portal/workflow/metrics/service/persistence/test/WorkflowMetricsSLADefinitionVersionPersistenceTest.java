@@ -6,18 +6,11 @@
 package com.liferay.portal.workflow.metrics.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -26,7 +19,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.workflow.metrics.exception.NoSuchSLADefinitionVersionException;
 import com.liferay.portal.workflow.metrics.model.WorkflowMetricsSLADefinitionVersion;
-import com.liferay.portal.workflow.metrics.service.WorkflowMetricsSLADefinitionVersionLocalServiceUtil;
 import com.liferay.portal.workflow.metrics.service.persistence.WorkflowMetricsSLADefinitionVersionPersistence;
 import com.liferay.portal.workflow.metrics.service.persistence.WorkflowMetricsSLADefinitionVersionUtil;
 
@@ -518,135 +510,6 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			WorkflowMetricsSLADefinitionVersionLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<WorkflowMetricsSLADefinitionVersion>() {
-
-				@Override
-				public void performAction(
-					WorkflowMetricsSLADefinitionVersion
-						workflowMetricsSLADefinitionVersion) {
-
-					Assert.assertNotNull(workflowMetricsSLADefinitionVersion);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		WorkflowMetricsSLADefinitionVersion
-			newWorkflowMetricsSLADefinitionVersion =
-				addWorkflowMetricsSLADefinitionVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			WorkflowMetricsSLADefinitionVersion.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"workflowMetricsSLADefinitionVersionId",
-				newWorkflowMetricsSLADefinitionVersion.
-					getWorkflowMetricsSLADefinitionVersionId()));
-
-		List<WorkflowMetricsSLADefinitionVersion> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		WorkflowMetricsSLADefinitionVersion
-			existingWorkflowMetricsSLADefinitionVersion = result.get(0);
-
-		Assert.assertEquals(
-			existingWorkflowMetricsSLADefinitionVersion,
-			newWorkflowMetricsSLADefinitionVersion);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			WorkflowMetricsSLADefinitionVersion.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"workflowMetricsSLADefinitionVersionId",
-				RandomTestUtil.nextLong()));
-
-		List<WorkflowMetricsSLADefinitionVersion> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		WorkflowMetricsSLADefinitionVersion
-			newWorkflowMetricsSLADefinitionVersion =
-				addWorkflowMetricsSLADefinitionVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			WorkflowMetricsSLADefinitionVersion.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"workflowMetricsSLADefinitionVersionId"));
-
-		Object newWorkflowMetricsSLADefinitionVersionId =
-			newWorkflowMetricsSLADefinitionVersion.
-				getWorkflowMetricsSLADefinitionVersionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"workflowMetricsSLADefinitionVersionId",
-				new Object[] {newWorkflowMetricsSLADefinitionVersionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingWorkflowMetricsSLADefinitionVersionId = result.get(0);
-
-		Assert.assertEquals(
-			existingWorkflowMetricsSLADefinitionVersionId,
-			newWorkflowMetricsSLADefinitionVersionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			WorkflowMetricsSLADefinitionVersion.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"workflowMetricsSLADefinitionVersionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"workflowMetricsSLADefinitionVersionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		WorkflowMetricsSLADefinitionVersion
 			newWorkflowMetricsSLADefinitionVersion =
@@ -657,51 +520,6 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newWorkflowMetricsSLADefinitionVersion.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		WorkflowMetricsSLADefinitionVersion
-			newWorkflowMetricsSLADefinitionVersion =
-				addWorkflowMetricsSLADefinitionVersion();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			WorkflowMetricsSLADefinitionVersion.class,
-			_dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"workflowMetricsSLADefinitionVersionId",
-				newWorkflowMetricsSLADefinitionVersion.
-					getWorkflowMetricsSLADefinitionVersionId()));
-
-		List<WorkflowMetricsSLADefinitionVersion> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

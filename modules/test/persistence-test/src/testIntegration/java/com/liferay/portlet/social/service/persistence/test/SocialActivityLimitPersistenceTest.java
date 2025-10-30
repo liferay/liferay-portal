@@ -6,18 +6,11 @@
 package com.liferay.portlet.social.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -25,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.social.kernel.exception.NoSuchActivityLimitException;
 import com.liferay.social.kernel.model.SocialActivityLimit;
-import com.liferay.social.kernel.service.SocialActivityLimitLocalServiceUtil;
 import com.liferay.social.kernel.service.persistence.SocialActivityLimitPersistence;
 import com.liferay.social.kernel.service.persistence.SocialActivityLimitUtil;
 
@@ -359,113 +351,6 @@ public class SocialActivityLimitPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SocialActivityLimitLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<SocialActivityLimit>() {
-
-				@Override
-				public void performAction(
-					SocialActivityLimit socialActivityLimit) {
-
-					Assert.assertNotNull(socialActivityLimit);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SocialActivityLimit newSocialActivityLimit = addSocialActivityLimit();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityLimit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"activityLimitId",
-				newSocialActivityLimit.getActivityLimitId()));
-
-		List<SocialActivityLimit> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SocialActivityLimit existingSocialActivityLimit = result.get(0);
-
-		Assert.assertEquals(
-			existingSocialActivityLimit, newSocialActivityLimit);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityLimit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"activityLimitId", RandomTestUtil.nextLong()));
-
-		List<SocialActivityLimit> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SocialActivityLimit newSocialActivityLimit = addSocialActivityLimit();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityLimit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("activityLimitId"));
-
-		Object newActivityLimitId = newSocialActivityLimit.getActivityLimitId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"activityLimitId", new Object[] {newActivityLimitId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingActivityLimitId = result.get(0);
-
-		Assert.assertEquals(existingActivityLimitId, newActivityLimitId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityLimit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("activityLimitId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"activityLimitId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SocialActivityLimit newSocialActivityLimit = addSocialActivityLimit();
 
@@ -474,47 +359,6 @@ public class SocialActivityLimitPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newSocialActivityLimit.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SocialActivityLimit newSocialActivityLimit = addSocialActivityLimit();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SocialActivityLimit.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"activityLimitId",
-				newSocialActivityLimit.getActivityLimitId()));
-
-		List<SocialActivityLimit> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

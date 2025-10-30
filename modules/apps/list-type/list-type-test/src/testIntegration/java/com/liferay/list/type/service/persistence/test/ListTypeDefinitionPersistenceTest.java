@@ -9,21 +9,14 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.list.type.exception.DuplicateListTypeDefinitionExternalReferenceCodeException;
 import com.liferay.list.type.exception.NoSuchListTypeDefinitionException;
 import com.liferay.list.type.model.ListTypeDefinition;
-import com.liferay.list.type.service.ListTypeDefinitionLocalServiceUtil;
 import com.liferay.list.type.service.persistence.ListTypeDefinitionPersistence;
 import com.liferay.list.type.service.persistence.ListTypeDefinitionUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -383,116 +376,6 @@ public class ListTypeDefinitionPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ListTypeDefinitionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<ListTypeDefinition>() {
-
-				@Override
-				public void performAction(
-					ListTypeDefinition listTypeDefinition) {
-
-					Assert.assertNotNull(listTypeDefinition);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ListTypeDefinition newListTypeDefinition = addListTypeDefinition();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ListTypeDefinition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"listTypeDefinitionId",
-				newListTypeDefinition.getListTypeDefinitionId()));
-
-		List<ListTypeDefinition> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ListTypeDefinition existingListTypeDefinition = result.get(0);
-
-		Assert.assertEquals(existingListTypeDefinition, newListTypeDefinition);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ListTypeDefinition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"listTypeDefinitionId", RandomTestUtil.nextLong()));
-
-		List<ListTypeDefinition> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ListTypeDefinition newListTypeDefinition = addListTypeDefinition();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ListTypeDefinition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("listTypeDefinitionId"));
-
-		Object newListTypeDefinitionId =
-			newListTypeDefinition.getListTypeDefinitionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"listTypeDefinitionId",
-				new Object[] {newListTypeDefinitionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingListTypeDefinitionId = result.get(0);
-
-		Assert.assertEquals(
-			existingListTypeDefinitionId, newListTypeDefinitionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ListTypeDefinition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("listTypeDefinitionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"listTypeDefinitionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		ListTypeDefinition newListTypeDefinition = addListTypeDefinition();
 
@@ -501,47 +384,6 @@ public class ListTypeDefinitionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newListTypeDefinition.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		ListTypeDefinition newListTypeDefinition = addListTypeDefinition();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ListTypeDefinition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"listTypeDefinitionId",
-				newListTypeDefinition.getListTypeDefinitionId()));
-
-		List<ListTypeDefinition> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(ListTypeDefinition listTypeDefinition) {

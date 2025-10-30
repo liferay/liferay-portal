@@ -8,21 +8,13 @@ package com.liferay.oauth.client.persistence.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth.client.persistence.exception.NoSuchOAuthClientASLocalMetadataException;
 import com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata;
-import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalServiceUtil;
 import com.liferay.oauth.client.persistence.service.persistence.OAuthClientASLocalMetadataPersistence;
 import com.liferay.oauth.client.persistence.service.persistence.OAuthClientASLocalMetadataUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -370,123 +362,6 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			OAuthClientASLocalMetadataLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<OAuthClientASLocalMetadata>() {
-
-				@Override
-				public void performAction(
-					OAuthClientASLocalMetadata oAuthClientASLocalMetadata) {
-
-					Assert.assertNotNull(oAuthClientASLocalMetadata);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		OAuthClientASLocalMetadata newOAuthClientASLocalMetadata =
-			addOAuthClientASLocalMetadata();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			OAuthClientASLocalMetadata.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"oAuthClientASLocalMetadataId",
-				newOAuthClientASLocalMetadata.
-					getOAuthClientASLocalMetadataId()));
-
-		List<OAuthClientASLocalMetadata> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		OAuthClientASLocalMetadata existingOAuthClientASLocalMetadata =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingOAuthClientASLocalMetadata, newOAuthClientASLocalMetadata);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			OAuthClientASLocalMetadata.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"oAuthClientASLocalMetadataId", RandomTestUtil.nextLong()));
-
-		List<OAuthClientASLocalMetadata> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		OAuthClientASLocalMetadata newOAuthClientASLocalMetadata =
-			addOAuthClientASLocalMetadata();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			OAuthClientASLocalMetadata.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("oAuthClientASLocalMetadataId"));
-
-		Object newOAuthClientASLocalMetadataId =
-			newOAuthClientASLocalMetadata.getOAuthClientASLocalMetadataId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"oAuthClientASLocalMetadataId",
-				new Object[] {newOAuthClientASLocalMetadataId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingOAuthClientASLocalMetadataId = result.get(0);
-
-		Assert.assertEquals(
-			existingOAuthClientASLocalMetadataId,
-			newOAuthClientASLocalMetadataId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			OAuthClientASLocalMetadata.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("oAuthClientASLocalMetadataId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"oAuthClientASLocalMetadataId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		OAuthClientASLocalMetadata newOAuthClientASLocalMetadata =
 			addOAuthClientASLocalMetadata();
@@ -496,49 +371,6 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newOAuthClientASLocalMetadata.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		OAuthClientASLocalMetadata newOAuthClientASLocalMetadata =
-			addOAuthClientASLocalMetadata();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			OAuthClientASLocalMetadata.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"oAuthClientASLocalMetadataId",
-				newOAuthClientASLocalMetadata.
-					getOAuthClientASLocalMetadataId()));
-
-		List<OAuthClientASLocalMetadata> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

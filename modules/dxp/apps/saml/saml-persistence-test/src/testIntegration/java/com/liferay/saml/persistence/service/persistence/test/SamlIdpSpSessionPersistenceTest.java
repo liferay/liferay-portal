@@ -6,16 +6,10 @@
 package com.liferay.saml.persistence.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -24,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.saml.persistence.exception.NoSuchIdpSpSessionException;
 import com.liferay.saml.persistence.model.SamlIdpSpSession;
-import com.liferay.saml.persistence.service.SamlIdpSpSessionLocalServiceUtil;
 import com.liferay.saml.persistence.service.persistence.SamlIdpSpSessionPersistence;
 import com.liferay.saml.persistence.service.persistence.SamlIdpSpSessionUtil;
 
@@ -313,111 +306,6 @@ public class SamlIdpSpSessionPersistenceTest {
 		Assert.assertEquals(
 			newSamlIdpSpSession,
 			samlIdpSpSessions.get(newSamlIdpSpSession.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SamlIdpSpSessionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<SamlIdpSpSession>() {
-
-				@Override
-				public void performAction(SamlIdpSpSession samlIdpSpSession) {
-					Assert.assertNotNull(samlIdpSpSession);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SamlIdpSpSession newSamlIdpSpSession = addSamlIdpSpSession();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIdpSpSession.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlIdpSpSessionId",
-				newSamlIdpSpSession.getSamlIdpSpSessionId()));
-
-		List<SamlIdpSpSession> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SamlIdpSpSession existingSamlIdpSpSession = result.get(0);
-
-		Assert.assertEquals(existingSamlIdpSpSession, newSamlIdpSpSession);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIdpSpSession.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlIdpSpSessionId", RandomTestUtil.nextLong()));
-
-		List<SamlIdpSpSession> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SamlIdpSpSession newSamlIdpSpSession = addSamlIdpSpSession();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIdpSpSession.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlIdpSpSessionId"));
-
-		Object newSamlIdpSpSessionId =
-			newSamlIdpSpSession.getSamlIdpSpSessionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlIdpSpSessionId", new Object[] {newSamlIdpSpSessionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSamlIdpSpSessionId = result.get(0);
-
-		Assert.assertEquals(existingSamlIdpSpSessionId, newSamlIdpSpSessionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIdpSpSession.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlIdpSpSessionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlIdpSpSessionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected SamlIdpSpSession addSamlIdpSpSession() throws Exception {

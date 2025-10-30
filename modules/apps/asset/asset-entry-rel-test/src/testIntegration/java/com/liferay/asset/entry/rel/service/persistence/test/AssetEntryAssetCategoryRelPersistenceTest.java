@@ -8,21 +8,13 @@ package com.liferay.asset.entry.rel.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.entry.rel.exception.NoSuchEntryAssetCategoryRelException;
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRel;
-import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalServiceUtil;
 import com.liferay.asset.entry.rel.service.persistence.AssetEntryAssetCategoryRelPersistence;
 import com.liferay.asset.entry.rel.service.persistence.AssetEntryAssetCategoryRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -351,123 +343,6 @@ public class AssetEntryAssetCategoryRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			AssetEntryAssetCategoryRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<AssetEntryAssetCategoryRel>() {
-
-				@Override
-				public void performAction(
-					AssetEntryAssetCategoryRel assetEntryAssetCategoryRel) {
-
-					Assert.assertNotNull(assetEntryAssetCategoryRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		AssetEntryAssetCategoryRel newAssetEntryAssetCategoryRel =
-			addAssetEntryAssetCategoryRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetEntryAssetCategoryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"assetEntryAssetCategoryRelId",
-				newAssetEntryAssetCategoryRel.
-					getAssetEntryAssetCategoryRelId()));
-
-		List<AssetEntryAssetCategoryRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		AssetEntryAssetCategoryRel existingAssetEntryAssetCategoryRel =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingAssetEntryAssetCategoryRel, newAssetEntryAssetCategoryRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetEntryAssetCategoryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"assetEntryAssetCategoryRelId", RandomTestUtil.nextLong()));
-
-		List<AssetEntryAssetCategoryRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		AssetEntryAssetCategoryRel newAssetEntryAssetCategoryRel =
-			addAssetEntryAssetCategoryRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetEntryAssetCategoryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("assetEntryAssetCategoryRelId"));
-
-		Object newAssetEntryAssetCategoryRelId =
-			newAssetEntryAssetCategoryRel.getAssetEntryAssetCategoryRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"assetEntryAssetCategoryRelId",
-				new Object[] {newAssetEntryAssetCategoryRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingAssetEntryAssetCategoryRelId = result.get(0);
-
-		Assert.assertEquals(
-			existingAssetEntryAssetCategoryRelId,
-			newAssetEntryAssetCategoryRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetEntryAssetCategoryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("assetEntryAssetCategoryRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"assetEntryAssetCategoryRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		AssetEntryAssetCategoryRel newAssetEntryAssetCategoryRel =
 			addAssetEntryAssetCategoryRel();
@@ -477,49 +352,6 @@ public class AssetEntryAssetCategoryRelPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newAssetEntryAssetCategoryRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		AssetEntryAssetCategoryRel newAssetEntryAssetCategoryRel =
-			addAssetEntryAssetCategoryRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AssetEntryAssetCategoryRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"assetEntryAssetCategoryRelId",
-				newAssetEntryAssetCategoryRel.
-					getAssetEntryAssetCategoryRelId()));
-
-		List<AssetEntryAssetCategoryRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

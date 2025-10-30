@@ -8,19 +8,12 @@ package com.liferay.portal.background.task.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.background.task.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.background.task.model.BackgroundTask;
-import com.liferay.portal.background.task.service.BackgroundTaskLocalServiceUtil;
 import com.liferay.portal.background.task.service.persistence.BackgroundTaskPersistence;
 import com.liferay.portal.background.task.service.persistence.BackgroundTaskUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -493,108 +486,6 @@ public class BackgroundTaskPersistenceTest {
 		Assert.assertEquals(
 			newBackgroundTask,
 			backgroundTasks.get(newBackgroundTask.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			BackgroundTaskLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<BackgroundTask>() {
-
-				@Override
-				public void performAction(BackgroundTask backgroundTask) {
-					Assert.assertNotNull(backgroundTask);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		BackgroundTask newBackgroundTask = addBackgroundTask();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BackgroundTask.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"backgroundTaskId", newBackgroundTask.getBackgroundTaskId()));
-
-		List<BackgroundTask> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		BackgroundTask existingBackgroundTask = result.get(0);
-
-		Assert.assertEquals(existingBackgroundTask, newBackgroundTask);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BackgroundTask.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"backgroundTaskId", RandomTestUtil.nextLong()));
-
-		List<BackgroundTask> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		BackgroundTask newBackgroundTask = addBackgroundTask();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BackgroundTask.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("backgroundTaskId"));
-
-		Object newBackgroundTaskId = newBackgroundTask.getBackgroundTaskId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"backgroundTaskId", new Object[] {newBackgroundTaskId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingBackgroundTaskId = result.get(0);
-
-		Assert.assertEquals(existingBackgroundTaskId, newBackgroundTaskId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BackgroundTask.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("backgroundTaskId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"backgroundTaskId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected BackgroundTask addBackgroundTask() throws Exception {

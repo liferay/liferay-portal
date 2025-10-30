@@ -9,21 +9,14 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryReplenishmentItemExternalReferenceCodeException;
 import com.liferay.commerce.inventory.exception.NoSuchInventoryReplenishmentItemException;
 import com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem;
-import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemLocalServiceUtil;
 import com.liferay.commerce.inventory.service.persistence.CommerceInventoryReplenishmentItemPersistence;
 import com.liferay.commerce.inventory.service.persistence.CommerceInventoryReplenishmentItemUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -506,131 +499,6 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceInventoryReplenishmentItemLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceInventoryReplenishmentItem>() {
-
-				@Override
-				public void performAction(
-					CommerceInventoryReplenishmentItem
-						commerceInventoryReplenishmentItem) {
-
-					Assert.assertNotNull(commerceInventoryReplenishmentItem);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceInventoryReplenishmentItem
-			newCommerceInventoryReplenishmentItem =
-				addCommerceInventoryReplenishmentItem();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceInventoryReplenishmentItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceInventoryReplenishmentItemId",
-				newCommerceInventoryReplenishmentItem.
-					getCommerceInventoryReplenishmentItemId()));
-
-		List<CommerceInventoryReplenishmentItem> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceInventoryReplenishmentItem
-			existingCommerceInventoryReplenishmentItem = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceInventoryReplenishmentItem,
-			newCommerceInventoryReplenishmentItem);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceInventoryReplenishmentItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceInventoryReplenishmentItemId",
-				RandomTestUtil.nextLong()));
-
-		List<CommerceInventoryReplenishmentItem> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceInventoryReplenishmentItem
-			newCommerceInventoryReplenishmentItem =
-				addCommerceInventoryReplenishmentItem();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceInventoryReplenishmentItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"commerceInventoryReplenishmentItemId"));
-
-		Object newCommerceInventoryReplenishmentItemId =
-			newCommerceInventoryReplenishmentItem.
-				getCommerceInventoryReplenishmentItemId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceInventoryReplenishmentItemId",
-				new Object[] {newCommerceInventoryReplenishmentItemId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceInventoryReplenishmentItemId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceInventoryReplenishmentItemId,
-			newCommerceInventoryReplenishmentItemId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceInventoryReplenishmentItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"commerceInventoryReplenishmentItemId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceInventoryReplenishmentItemId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CommerceInventoryReplenishmentItem
 			newCommerceInventoryReplenishmentItem =
@@ -641,50 +509,6 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCommerceInventoryReplenishmentItem.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CommerceInventoryReplenishmentItem
-			newCommerceInventoryReplenishmentItem =
-				addCommerceInventoryReplenishmentItem();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceInventoryReplenishmentItem.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceInventoryReplenishmentItemId",
-				newCommerceInventoryReplenishmentItem.
-					getCommerceInventoryReplenishmentItemId()));
-
-		List<CommerceInventoryReplenishmentItem> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

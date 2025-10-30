@@ -8,20 +8,13 @@ package com.liferay.commerce.shop.by.diagram.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.shop.by.diagram.exception.NoSuchCSDiagramPinException;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramPin;
-import com.liferay.commerce.shop.by.diagram.service.CSDiagramPinLocalServiceUtil;
 import com.liferay.commerce.shop.by.diagram.service.persistence.CSDiagramPinPersistence;
 import com.liferay.commerce.shop.by.diagram.service.persistence.CSDiagramPinUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -325,108 +318,6 @@ public class CSDiagramPinPersistenceTest {
 		Assert.assertEquals(
 			newCSDiagramPin,
 			csDiagramPins.get(newCSDiagramPin.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CSDiagramPinLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CSDiagramPin>() {
-
-				@Override
-				public void performAction(CSDiagramPin csDiagramPin) {
-					Assert.assertNotNull(csDiagramPin);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CSDiagramPin newCSDiagramPin = addCSDiagramPin();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramPin.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CSDiagramPinId", newCSDiagramPin.getCSDiagramPinId()));
-
-		List<CSDiagramPin> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CSDiagramPin existingCSDiagramPin = result.get(0);
-
-		Assert.assertEquals(existingCSDiagramPin, newCSDiagramPin);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramPin.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CSDiagramPinId", RandomTestUtil.nextLong()));
-
-		List<CSDiagramPin> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CSDiagramPin newCSDiagramPin = addCSDiagramPin();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramPin.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CSDiagramPinId"));
-
-		Object newCSDiagramPinId = newCSDiagramPin.getCSDiagramPinId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CSDiagramPinId", new Object[] {newCSDiagramPinId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCSDiagramPinId = result.get(0);
-
-		Assert.assertEquals(existingCSDiagramPinId, newCSDiagramPinId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CSDiagramPin.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CSDiagramPinId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CSDiagramPinId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CSDiagramPin addCSDiagramPin() throws Exception {

@@ -8,19 +8,12 @@ package com.liferay.object.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.exception.NoSuchObjectStateTransitionException;
 import com.liferay.object.model.ObjectStateTransition;
-import com.liferay.object.service.ObjectStateTransitionLocalServiceUtil;
 import com.liferay.object.service.persistence.ObjectStateTransitionPersistence;
 import com.liferay.object.service.persistence.ObjectStateTransitionUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -379,119 +372,6 @@ public class ObjectStateTransitionPersistenceTest {
 			newObjectStateTransition,
 			objectStateTransitions.get(
 				newObjectStateTransition.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ObjectStateTransitionLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<ObjectStateTransition>() {
-
-				@Override
-				public void performAction(
-					ObjectStateTransition objectStateTransition) {
-
-					Assert.assertNotNull(objectStateTransition);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ObjectStateTransition newObjectStateTransition =
-			addObjectStateTransition();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectStateTransition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectStateTransitionId",
-				newObjectStateTransition.getObjectStateTransitionId()));
-
-		List<ObjectStateTransition> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ObjectStateTransition existingObjectStateTransition = result.get(0);
-
-		Assert.assertEquals(
-			existingObjectStateTransition, newObjectStateTransition);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectStateTransition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectStateTransitionId", RandomTestUtil.nextLong()));
-
-		List<ObjectStateTransition> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ObjectStateTransition newObjectStateTransition =
-			addObjectStateTransition();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectStateTransition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectStateTransitionId"));
-
-		Object newObjectStateTransitionId =
-			newObjectStateTransition.getObjectStateTransitionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectStateTransitionId",
-				new Object[] {newObjectStateTransitionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingObjectStateTransitionId = result.get(0);
-
-		Assert.assertEquals(
-			existingObjectStateTransitionId, newObjectStateTransitionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectStateTransition.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectStateTransitionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectStateTransitionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ObjectStateTransition addObjectStateTransition()

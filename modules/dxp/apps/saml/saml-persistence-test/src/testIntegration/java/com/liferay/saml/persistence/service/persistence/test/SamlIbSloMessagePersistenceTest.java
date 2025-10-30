@@ -6,18 +6,11 @@
 package com.liferay.saml.persistence.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -26,7 +19,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.saml.persistence.exception.NoSuchIbSloMessageException;
 import com.liferay.saml.persistence.model.SamlIbSloMessage;
-import com.liferay.saml.persistence.service.SamlIbSloMessageLocalServiceUtil;
 import com.liferay.saml.persistence.service.persistence.SamlIbSloMessagePersistence;
 import com.liferay.saml.persistence.service.persistence.SamlIbSloMessageUtil;
 
@@ -303,111 +295,6 @@ public class SamlIbSloMessagePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SamlIbSloMessageLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<SamlIbSloMessage>() {
-
-				@Override
-				public void performAction(SamlIbSloMessage samlIbSloMessage) {
-					Assert.assertNotNull(samlIbSloMessage);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SamlIbSloMessage newSamlIbSloMessage = addSamlIbSloMessage();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIbSloMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlIbSloMessageId",
-				newSamlIbSloMessage.getSamlIbSloMessageId()));
-
-		List<SamlIbSloMessage> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SamlIbSloMessage existingSamlIbSloMessage = result.get(0);
-
-		Assert.assertEquals(existingSamlIbSloMessage, newSamlIbSloMessage);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIbSloMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlIbSloMessageId", RandomTestUtil.nextLong()));
-
-		List<SamlIbSloMessage> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SamlIbSloMessage newSamlIbSloMessage = addSamlIbSloMessage();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIbSloMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlIbSloMessageId"));
-
-		Object newSamlIbSloMessageId =
-			newSamlIbSloMessage.getSamlIbSloMessageId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlIbSloMessageId", new Object[] {newSamlIbSloMessageId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSamlIbSloMessageId = result.get(0);
-
-		Assert.assertEquals(existingSamlIbSloMessageId, newSamlIbSloMessageId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIbSloMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("samlIbSloMessageId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"samlIbSloMessageId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SamlIbSloMessage newSamlIbSloMessage = addSamlIbSloMessage();
 
@@ -415,47 +302,6 @@ public class SamlIbSloMessagePersistenceTest {
 
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(newSamlIbSloMessage.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SamlIbSloMessage newSamlIbSloMessage = addSamlIbSloMessage();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SamlIbSloMessage.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"samlIbSloMessageId",
-				newSamlIbSloMessage.getSamlIbSloMessageId()));
-
-		List<SamlIbSloMessage> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(SamlIbSloMessage samlIbSloMessage) {

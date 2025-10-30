@@ -8,20 +8,13 @@ package com.liferay.notification.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.notification.exception.NoSuchNotificationQueueEntryException;
 import com.liferay.notification.model.NotificationQueueEntry;
-import com.liferay.notification.service.NotificationQueueEntryLocalServiceUtil;
 import com.liferay.notification.service.persistence.NotificationQueueEntryPersistence;
 import com.liferay.notification.service.persistence.NotificationQueueEntryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -397,119 +390,6 @@ public class NotificationQueueEntryPersistenceTest {
 			newNotificationQueueEntry,
 			notificationQueueEntries.get(
 				newNotificationQueueEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			NotificationQueueEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<NotificationQueueEntry>() {
-
-				@Override
-				public void performAction(
-					NotificationQueueEntry notificationQueueEntry) {
-
-					Assert.assertNotNull(notificationQueueEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		NotificationQueueEntry newNotificationQueueEntry =
-			addNotificationQueueEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationQueueEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationQueueEntryId",
-				newNotificationQueueEntry.getNotificationQueueEntryId()));
-
-		List<NotificationQueueEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		NotificationQueueEntry existingNotificationQueueEntry = result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationQueueEntry, newNotificationQueueEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationQueueEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationQueueEntryId", RandomTestUtil.nextLong()));
-
-		List<NotificationQueueEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		NotificationQueueEntry newNotificationQueueEntry =
-			addNotificationQueueEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationQueueEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationQueueEntryId"));
-
-		Object newNotificationQueueEntryId =
-			newNotificationQueueEntry.getNotificationQueueEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationQueueEntryId",
-				new Object[] {newNotificationQueueEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingNotificationQueueEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationQueueEntryId, newNotificationQueueEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationQueueEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationQueueEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationQueueEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected NotificationQueueEntry addNotificationQueueEntry()

@@ -8,21 +8,13 @@ package com.liferay.commerce.product.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceOptionValueRelException;
 import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
-import com.liferay.commerce.product.service.CPInstanceOptionValueRelLocalServiceUtil;
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -426,121 +418,6 @@ public class CPInstanceOptionValueRelPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CPInstanceOptionValueRelLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CPInstanceOptionValueRel>() {
-
-				@Override
-				public void performAction(
-					CPInstanceOptionValueRel cpInstanceOptionValueRel) {
-
-					Assert.assertNotNull(cpInstanceOptionValueRel);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CPInstanceOptionValueRel newCPInstanceOptionValueRel =
-			addCPInstanceOptionValueRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceOptionValueRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPInstanceOptionValueRelId",
-				newCPInstanceOptionValueRel.getCPInstanceOptionValueRelId()));
-
-		List<CPInstanceOptionValueRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CPInstanceOptionValueRel existingCPInstanceOptionValueRel = result.get(
-			0);
-
-		Assert.assertEquals(
-			existingCPInstanceOptionValueRel, newCPInstanceOptionValueRel);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceOptionValueRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPInstanceOptionValueRelId", RandomTestUtil.nextLong()));
-
-		List<CPInstanceOptionValueRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CPInstanceOptionValueRel newCPInstanceOptionValueRel =
-			addCPInstanceOptionValueRel();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceOptionValueRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPInstanceOptionValueRelId"));
-
-		Object newCPInstanceOptionValueRelId =
-			newCPInstanceOptionValueRel.getCPInstanceOptionValueRelId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPInstanceOptionValueRelId",
-				new Object[] {newCPInstanceOptionValueRelId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCPInstanceOptionValueRelId = result.get(0);
-
-		Assert.assertEquals(
-			existingCPInstanceOptionValueRelId, newCPInstanceOptionValueRelId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceOptionValueRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("CPInstanceOptionValueRelId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPInstanceOptionValueRelId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CPInstanceOptionValueRel newCPInstanceOptionValueRel =
 			addCPInstanceOptionValueRel();
@@ -550,48 +427,6 @@ public class CPInstanceOptionValueRelPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCPInstanceOptionValueRel.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CPInstanceOptionValueRel newCPInstanceOptionValueRel =
-			addCPInstanceOptionValueRel();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPInstanceOptionValueRel.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPInstanceOptionValueRelId",
-				newCPInstanceOptionValueRel.getCPInstanceOptionValueRelId()));
-
-		List<CPInstanceOptionValueRel> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

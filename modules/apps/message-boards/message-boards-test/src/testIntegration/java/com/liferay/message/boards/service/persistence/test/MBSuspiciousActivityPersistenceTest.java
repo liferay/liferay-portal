@@ -8,21 +8,13 @@ package com.liferay.message.boards.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.message.boards.exception.NoSuchSuspiciousActivityException;
 import com.liferay.message.boards.model.MBSuspiciousActivity;
-import com.liferay.message.boards.service.MBSuspiciousActivityLocalServiceUtil;
 import com.liferay.message.boards.service.persistence.MBSuspiciousActivityPersistence;
 import com.liferay.message.boards.service.persistence.MBSuspiciousActivityUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -413,119 +405,6 @@ public class MBSuspiciousActivityPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			MBSuspiciousActivityLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<MBSuspiciousActivity>() {
-
-				@Override
-				public void performAction(
-					MBSuspiciousActivity mbSuspiciousActivity) {
-
-					Assert.assertNotNull(mbSuspiciousActivity);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		MBSuspiciousActivity newMBSuspiciousActivity =
-			addMBSuspiciousActivity();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			MBSuspiciousActivity.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"suspiciousActivityId",
-				newMBSuspiciousActivity.getSuspiciousActivityId()));
-
-		List<MBSuspiciousActivity> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		MBSuspiciousActivity existingMBSuspiciousActivity = result.get(0);
-
-		Assert.assertEquals(
-			existingMBSuspiciousActivity, newMBSuspiciousActivity);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			MBSuspiciousActivity.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"suspiciousActivityId", RandomTestUtil.nextLong()));
-
-		List<MBSuspiciousActivity> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		MBSuspiciousActivity newMBSuspiciousActivity =
-			addMBSuspiciousActivity();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			MBSuspiciousActivity.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("suspiciousActivityId"));
-
-		Object newSuspiciousActivityId =
-			newMBSuspiciousActivity.getSuspiciousActivityId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"suspiciousActivityId",
-				new Object[] {newSuspiciousActivityId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSuspiciousActivityId = result.get(0);
-
-		Assert.assertEquals(
-			existingSuspiciousActivityId, newSuspiciousActivityId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			MBSuspiciousActivity.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("suspiciousActivityId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"suspiciousActivityId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		MBSuspiciousActivity newMBSuspiciousActivity =
 			addMBSuspiciousActivity();
@@ -535,48 +414,6 @@ public class MBSuspiciousActivityPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newMBSuspiciousActivity.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		MBSuspiciousActivity newMBSuspiciousActivity =
-			addMBSuspiciousActivity();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			MBSuspiciousActivity.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"suspiciousActivityId",
-				newMBSuspiciousActivity.getSuspiciousActivityId()));
-
-		List<MBSuspiciousActivity> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

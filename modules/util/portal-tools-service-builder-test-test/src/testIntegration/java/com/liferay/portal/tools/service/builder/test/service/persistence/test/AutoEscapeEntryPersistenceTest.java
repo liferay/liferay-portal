@@ -6,11 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -271,85 +267,6 @@ public class AutoEscapeEntryPersistenceTest {
 		Assert.assertEquals(
 			newAutoEscapeEntry,
 			autoEscapeEntries.get(newAutoEscapeEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		AutoEscapeEntry newAutoEscapeEntry = addAutoEscapeEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AutoEscapeEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"autoEscapeEntryId",
-				newAutoEscapeEntry.getAutoEscapeEntryId()));
-
-		List<AutoEscapeEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		AutoEscapeEntry existingAutoEscapeEntry = result.get(0);
-
-		Assert.assertEquals(existingAutoEscapeEntry, newAutoEscapeEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AutoEscapeEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"autoEscapeEntryId", RandomTestUtil.nextLong()));
-
-		List<AutoEscapeEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		AutoEscapeEntry newAutoEscapeEntry = addAutoEscapeEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AutoEscapeEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("autoEscapeEntryId"));
-
-		Object newAutoEscapeEntryId = newAutoEscapeEntry.getAutoEscapeEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"autoEscapeEntryId", new Object[] {newAutoEscapeEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingAutoEscapeEntryId = result.get(0);
-
-		Assert.assertEquals(existingAutoEscapeEntryId, newAutoEscapeEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			AutoEscapeEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("autoEscapeEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"autoEscapeEntryId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected AutoEscapeEntry addAutoEscapeEntry() throws Exception {

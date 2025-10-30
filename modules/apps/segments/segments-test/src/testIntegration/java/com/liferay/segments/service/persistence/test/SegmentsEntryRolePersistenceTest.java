@@ -6,18 +6,11 @@
 package com.liferay.segments.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -26,7 +19,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.segments.exception.NoSuchEntryRoleException;
 import com.liferay.segments.model.SegmentsEntryRole;
-import com.liferay.segments.service.SegmentsEntryRoleLocalServiceUtil;
 import com.liferay.segments.service.persistence.SegmentsEntryRolePersistence;
 import com.liferay.segments.service.persistence.SegmentsEntryRoleUtil;
 
@@ -338,113 +330,6 @@ public class SegmentsEntryRolePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			SegmentsEntryRoleLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<SegmentsEntryRole>() {
-
-				@Override
-				public void performAction(SegmentsEntryRole segmentsEntryRole) {
-					Assert.assertNotNull(segmentsEntryRole);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		SegmentsEntryRole newSegmentsEntryRole = addSegmentsEntryRole();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SegmentsEntryRole.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"segmentsEntryRoleId",
-				newSegmentsEntryRole.getSegmentsEntryRoleId()));
-
-		List<SegmentsEntryRole> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		SegmentsEntryRole existingSegmentsEntryRole = result.get(0);
-
-		Assert.assertEquals(existingSegmentsEntryRole, newSegmentsEntryRole);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SegmentsEntryRole.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"segmentsEntryRoleId", RandomTestUtil.nextLong()));
-
-		List<SegmentsEntryRole> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		SegmentsEntryRole newSegmentsEntryRole = addSegmentsEntryRole();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SegmentsEntryRole.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("segmentsEntryRoleId"));
-
-		Object newSegmentsEntryRoleId =
-			newSegmentsEntryRole.getSegmentsEntryRoleId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"segmentsEntryRoleId", new Object[] {newSegmentsEntryRoleId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingSegmentsEntryRoleId = result.get(0);
-
-		Assert.assertEquals(
-			existingSegmentsEntryRoleId, newSegmentsEntryRoleId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SegmentsEntryRole.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("segmentsEntryRoleId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"segmentsEntryRoleId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		SegmentsEntryRole newSegmentsEntryRole = addSegmentsEntryRole();
 
@@ -453,47 +338,6 @@ public class SegmentsEntryRolePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newSegmentsEntryRole.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		SegmentsEntryRole newSegmentsEntryRole = addSegmentsEntryRole();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			SegmentsEntryRole.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"segmentsEntryRoleId",
-				newSegmentsEntryRole.getSegmentsEntryRoleId()));
-
-		List<SegmentsEntryRole> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(SegmentsEntryRole segmentsEntryRole) {

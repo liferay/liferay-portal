@@ -10,12 +10,7 @@ import com.liferay.friendly.url.exception.NoSuchFriendlyURLEntryLocalizationExce
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.persistence.FriendlyURLEntryLocalizationPersistence;
 import com.liferay.friendly.url.service.persistence.FriendlyURLEntryLocalizationUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -418,96 +413,6 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 	}
 
 	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		FriendlyURLEntryLocalization newFriendlyURLEntryLocalization =
-			addFriendlyURLEntryLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			FriendlyURLEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"friendlyURLEntryLocalizationId",
-				newFriendlyURLEntryLocalization.
-					getFriendlyURLEntryLocalizationId()));
-
-		List<FriendlyURLEntryLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		FriendlyURLEntryLocalization existingFriendlyURLEntryLocalization =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingFriendlyURLEntryLocalization,
-			newFriendlyURLEntryLocalization);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			FriendlyURLEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"friendlyURLEntryLocalizationId", RandomTestUtil.nextLong()));
-
-		List<FriendlyURLEntryLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		FriendlyURLEntryLocalization newFriendlyURLEntryLocalization =
-			addFriendlyURLEntryLocalization();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			FriendlyURLEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("friendlyURLEntryLocalizationId"));
-
-		Object newFriendlyURLEntryLocalizationId =
-			newFriendlyURLEntryLocalization.getFriendlyURLEntryLocalizationId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"friendlyURLEntryLocalizationId",
-				new Object[] {newFriendlyURLEntryLocalizationId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingFriendlyURLEntryLocalizationId = result.get(0);
-
-		Assert.assertEquals(
-			existingFriendlyURLEntryLocalizationId,
-			newFriendlyURLEntryLocalizationId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			FriendlyURLEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("friendlyURLEntryLocalizationId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"friendlyURLEntryLocalizationId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		FriendlyURLEntryLocalization newFriendlyURLEntryLocalization =
 			addFriendlyURLEntryLocalization();
@@ -517,49 +422,6 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newFriendlyURLEntryLocalization.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		FriendlyURLEntryLocalization newFriendlyURLEntryLocalization =
-			addFriendlyURLEntryLocalization();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			FriendlyURLEntryLocalization.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"friendlyURLEntryLocalizationId",
-				newFriendlyURLEntryLocalization.
-					getFriendlyURLEntryLocalizationId()));
-
-		List<FriendlyURLEntryLocalization> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

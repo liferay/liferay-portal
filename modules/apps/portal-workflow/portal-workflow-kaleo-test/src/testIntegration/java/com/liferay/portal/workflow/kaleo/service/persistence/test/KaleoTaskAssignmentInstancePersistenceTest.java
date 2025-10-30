@@ -6,16 +6,10 @@
 package com.liferay.portal.workflow.kaleo.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -24,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.workflow.kaleo.exception.NoSuchTaskAssignmentInstanceException;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
-import com.liferay.portal.workflow.kaleo.service.KaleoTaskAssignmentInstanceLocalServiceUtil;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskAssignmentInstancePersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskAssignmentInstanceUtil;
 
@@ -480,124 +473,6 @@ public class KaleoTaskAssignmentInstancePersistenceTest {
 			newKaleoTaskAssignmentInstance,
 			kaleoTaskAssignmentInstances.get(
 				newKaleoTaskAssignmentInstance.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			KaleoTaskAssignmentInstanceLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<KaleoTaskAssignmentInstance>() {
-
-				@Override
-				public void performAction(
-					KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance) {
-
-					Assert.assertNotNull(kaleoTaskAssignmentInstance);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		KaleoTaskAssignmentInstance newKaleoTaskAssignmentInstance =
-			addKaleoTaskAssignmentInstance();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoTaskAssignmentInstance.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"kaleoTaskAssignmentInstanceId",
-				newKaleoTaskAssignmentInstance.
-					getKaleoTaskAssignmentInstanceId()));
-
-		List<KaleoTaskAssignmentInstance> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		KaleoTaskAssignmentInstance existingKaleoTaskAssignmentInstance =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingKaleoTaskAssignmentInstance,
-			newKaleoTaskAssignmentInstance);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoTaskAssignmentInstance.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"kaleoTaskAssignmentInstanceId", RandomTestUtil.nextLong()));
-
-		List<KaleoTaskAssignmentInstance> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		KaleoTaskAssignmentInstance newKaleoTaskAssignmentInstance =
-			addKaleoTaskAssignmentInstance();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoTaskAssignmentInstance.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("kaleoTaskAssignmentInstanceId"));
-
-		Object newKaleoTaskAssignmentInstanceId =
-			newKaleoTaskAssignmentInstance.getKaleoTaskAssignmentInstanceId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"kaleoTaskAssignmentInstanceId",
-				new Object[] {newKaleoTaskAssignmentInstanceId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingKaleoTaskAssignmentInstanceId = result.get(0);
-
-		Assert.assertEquals(
-			existingKaleoTaskAssignmentInstanceId,
-			newKaleoTaskAssignmentInstanceId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			KaleoTaskAssignmentInstance.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("kaleoTaskAssignmentInstanceId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"kaleoTaskAssignmentInstanceId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected KaleoTaskAssignmentInstance addKaleoTaskAssignmentInstance()

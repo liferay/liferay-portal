@@ -6,16 +6,10 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -24,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchDataLimitEntryException;
 import com.liferay.portal.tools.service.builder.test.model.DataLimitEntry;
-import com.liferay.portal.tools.service.builder.test.service.DataLimitEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.DataLimitEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.DataLimitEntryUtil;
 
@@ -288,108 +281,6 @@ public class DataLimitEntryPersistenceTest {
 		Assert.assertEquals(
 			newDataLimitEntry,
 			dataLimitEntries.get(newDataLimitEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			DataLimitEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<DataLimitEntry>() {
-
-				@Override
-				public void performAction(DataLimitEntry dataLimitEntry) {
-					Assert.assertNotNull(dataLimitEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		DataLimitEntry newDataLimitEntry = addDataLimitEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DataLimitEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dataLimitEntryId", newDataLimitEntry.getDataLimitEntryId()));
-
-		List<DataLimitEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		DataLimitEntry existingDataLimitEntry = result.get(0);
-
-		Assert.assertEquals(existingDataLimitEntry, newDataLimitEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DataLimitEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dataLimitEntryId", RandomTestUtil.nextLong()));
-
-		List<DataLimitEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		DataLimitEntry newDataLimitEntry = addDataLimitEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DataLimitEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("dataLimitEntryId"));
-
-		Object newDataLimitEntryId = newDataLimitEntry.getDataLimitEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"dataLimitEntryId", new Object[] {newDataLimitEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingDataLimitEntryId = result.get(0);
-
-		Assert.assertEquals(existingDataLimitEntryId, newDataLimitEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DataLimitEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("dataLimitEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"dataLimitEntryId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected DataLimitEntry addDataLimitEntry() throws Exception {

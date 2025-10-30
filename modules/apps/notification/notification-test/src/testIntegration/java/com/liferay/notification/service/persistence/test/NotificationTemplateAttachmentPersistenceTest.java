@@ -8,21 +8,13 @@ package com.liferay.notification.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.notification.exception.NoSuchNotificationTemplateAttachmentException;
 import com.liferay.notification.model.NotificationTemplateAttachment;
-import com.liferay.notification.service.NotificationTemplateAttachmentLocalServiceUtil;
 import com.liferay.notification.service.persistence.NotificationTemplateAttachmentPersistence;
 import com.liferay.notification.service.persistence.NotificationTemplateAttachmentUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -338,126 +330,6 @@ public class NotificationTemplateAttachmentPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			NotificationTemplateAttachmentLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<NotificationTemplateAttachment>() {
-
-				@Override
-				public void performAction(
-					NotificationTemplateAttachment
-						notificationTemplateAttachment) {
-
-					Assert.assertNotNull(notificationTemplateAttachment);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		NotificationTemplateAttachment newNotificationTemplateAttachment =
-			addNotificationTemplateAttachment();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplateAttachment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationTemplateAttachmentId",
-				newNotificationTemplateAttachment.
-					getNotificationTemplateAttachmentId()));
-
-		List<NotificationTemplateAttachment> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		NotificationTemplateAttachment existingNotificationTemplateAttachment =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationTemplateAttachment,
-			newNotificationTemplateAttachment);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplateAttachment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationTemplateAttachmentId", RandomTestUtil.nextLong()));
-
-		List<NotificationTemplateAttachment> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		NotificationTemplateAttachment newNotificationTemplateAttachment =
-			addNotificationTemplateAttachment();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplateAttachment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationTemplateAttachmentId"));
-
-		Object newNotificationTemplateAttachmentId =
-			newNotificationTemplateAttachment.
-				getNotificationTemplateAttachmentId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationTemplateAttachmentId",
-				new Object[] {newNotificationTemplateAttachmentId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingNotificationTemplateAttachmentId = result.get(0);
-
-		Assert.assertEquals(
-			existingNotificationTemplateAttachmentId,
-			newNotificationTemplateAttachmentId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplateAttachment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("notificationTemplateAttachmentId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"notificationTemplateAttachmentId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		NotificationTemplateAttachment newNotificationTemplateAttachment =
 			addNotificationTemplateAttachment();
@@ -467,49 +339,6 @@ public class NotificationTemplateAttachmentPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newNotificationTemplateAttachment.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		NotificationTemplateAttachment newNotificationTemplateAttachment =
-			addNotificationTemplateAttachment();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			NotificationTemplateAttachment.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"notificationTemplateAttachmentId",
-				newNotificationTemplateAttachment.
-					getNotificationTemplateAttachmentId()));
-
-		List<NotificationTemplateAttachment> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

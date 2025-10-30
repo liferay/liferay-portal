@@ -8,19 +8,12 @@ package com.liferay.batch.planner.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.planner.exception.NoSuchPlanException;
 import com.liferay.batch.planner.model.BatchPlannerPlan;
-import com.liferay.batch.planner.service.BatchPlannerPlanLocalServiceUtil;
 import com.liferay.batch.planner.service.persistence.BatchPlannerPlanPersistence;
 import com.liferay.batch.planner.service.persistence.BatchPlannerPlanUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -400,111 +393,6 @@ public class BatchPlannerPlanPersistenceTest {
 		Assert.assertEquals(
 			newBatchPlannerPlan,
 			batchPlannerPlans.get(newBatchPlannerPlan.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			BatchPlannerPlanLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<BatchPlannerPlan>() {
-
-				@Override
-				public void performAction(BatchPlannerPlan batchPlannerPlan) {
-					Assert.assertNotNull(batchPlannerPlan);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		BatchPlannerPlan newBatchPlannerPlan = addBatchPlannerPlan();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPlan.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"batchPlannerPlanId",
-				newBatchPlannerPlan.getBatchPlannerPlanId()));
-
-		List<BatchPlannerPlan> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		BatchPlannerPlan existingBatchPlannerPlan = result.get(0);
-
-		Assert.assertEquals(existingBatchPlannerPlan, newBatchPlannerPlan);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPlan.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"batchPlannerPlanId", RandomTestUtil.nextLong()));
-
-		List<BatchPlannerPlan> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		BatchPlannerPlan newBatchPlannerPlan = addBatchPlannerPlan();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPlan.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("batchPlannerPlanId"));
-
-		Object newBatchPlannerPlanId =
-			newBatchPlannerPlan.getBatchPlannerPlanId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"batchPlannerPlanId", new Object[] {newBatchPlannerPlanId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingBatchPlannerPlanId = result.get(0);
-
-		Assert.assertEquals(existingBatchPlannerPlanId, newBatchPlannerPlanId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPlan.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("batchPlannerPlanId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"batchPlannerPlanId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected BatchPlannerPlan addBatchPlannerPlan() throws Exception {

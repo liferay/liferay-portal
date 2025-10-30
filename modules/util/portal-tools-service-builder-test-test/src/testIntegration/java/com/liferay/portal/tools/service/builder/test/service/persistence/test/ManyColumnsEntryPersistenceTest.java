@@ -6,16 +6,10 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -23,7 +17,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchManyColumnsEntryException;
 import com.liferay.portal.tools.service.builder.test.model.ManyColumnsEntry;
-import com.liferay.portal.tools.service.builder.test.service.ManyColumnsEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.ManyColumnsEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.ManyColumnsEntryUtil;
 
@@ -599,111 +592,6 @@ public class ManyColumnsEntryPersistenceTest {
 		Assert.assertEquals(
 			newManyColumnsEntry,
 			manyColumnsEntries.get(newManyColumnsEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ManyColumnsEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<ManyColumnsEntry>() {
-
-				@Override
-				public void performAction(ManyColumnsEntry manyColumnsEntry) {
-					Assert.assertNotNull(manyColumnsEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ManyColumnsEntry newManyColumnsEntry = addManyColumnsEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ManyColumnsEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"manyColumnsEntryId",
-				newManyColumnsEntry.getManyColumnsEntryId()));
-
-		List<ManyColumnsEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ManyColumnsEntry existingManyColumnsEntry = result.get(0);
-
-		Assert.assertEquals(existingManyColumnsEntry, newManyColumnsEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ManyColumnsEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"manyColumnsEntryId", RandomTestUtil.nextLong()));
-
-		List<ManyColumnsEntry> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ManyColumnsEntry newManyColumnsEntry = addManyColumnsEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ManyColumnsEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("manyColumnsEntryId"));
-
-		Object newManyColumnsEntryId =
-			newManyColumnsEntry.getManyColumnsEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"manyColumnsEntryId", new Object[] {newManyColumnsEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingManyColumnsEntryId = result.get(0);
-
-		Assert.assertEquals(existingManyColumnsEntryId, newManyColumnsEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ManyColumnsEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("manyColumnsEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"manyColumnsEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ManyColumnsEntry addManyColumnsEntry() throws Exception {

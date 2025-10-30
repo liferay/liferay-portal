@@ -10,11 +10,7 @@ import com.liferay.object.exception.NoSuchObjectLayoutColumnException;
 import com.liferay.object.model.ObjectLayoutColumn;
 import com.liferay.object.service.persistence.ObjectLayoutColumnPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutColumnUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -354,89 +350,6 @@ public class ObjectLayoutColumnPersistenceTest {
 		Assert.assertEquals(
 			newObjectLayoutColumn,
 			objectLayoutColumns.get(newObjectLayoutColumn.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ObjectLayoutColumn newObjectLayoutColumn = addObjectLayoutColumn();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayoutColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectLayoutColumnId",
-				newObjectLayoutColumn.getObjectLayoutColumnId()));
-
-		List<ObjectLayoutColumn> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ObjectLayoutColumn existingObjectLayoutColumn = result.get(0);
-
-		Assert.assertEquals(existingObjectLayoutColumn, newObjectLayoutColumn);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayoutColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectLayoutColumnId", RandomTestUtil.nextLong()));
-
-		List<ObjectLayoutColumn> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ObjectLayoutColumn newObjectLayoutColumn = addObjectLayoutColumn();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayoutColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectLayoutColumnId"));
-
-		Object newObjectLayoutColumnId =
-			newObjectLayoutColumn.getObjectLayoutColumnId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectLayoutColumnId",
-				new Object[] {newObjectLayoutColumnId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingObjectLayoutColumnId = result.get(0);
-
-		Assert.assertEquals(
-			existingObjectLayoutColumnId, newObjectLayoutColumnId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectLayoutColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectLayoutColumnId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectLayoutColumnId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ObjectLayoutColumn addObjectLayoutColumn() throws Exception {

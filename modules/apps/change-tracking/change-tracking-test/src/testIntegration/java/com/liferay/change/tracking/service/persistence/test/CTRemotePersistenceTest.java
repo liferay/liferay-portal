@@ -8,19 +8,12 @@ package com.liferay.change.tracking.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.exception.NoSuchRemoteException;
 import com.liferay.change.tracking.model.CTRemote;
-import com.liferay.change.tracking.service.CTRemoteLocalServiceUtil;
 import com.liferay.change.tracking.service.persistence.CTRemotePersistence;
 import com.liferay.change.tracking.service.persistence.CTRemoteUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -305,106 +298,6 @@ public class CTRemotePersistenceTest {
 		Assert.assertEquals(1, ctRemotes.size());
 		Assert.assertEquals(
 			newCTRemote, ctRemotes.get(newCTRemote.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CTRemoteLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod<CTRemote>() {
-
-				@Override
-				public void performAction(CTRemote ctRemote) {
-					Assert.assertNotNull(ctRemote);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTRemote newCTRemote = addCTRemote();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTRemote.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctRemoteId", newCTRemote.getCtRemoteId()));
-
-		List<CTRemote> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTRemote existingCTRemote = result.get(0);
-
-		Assert.assertEquals(existingCTRemote, newCTRemote);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTRemote.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctRemoteId", RandomTestUtil.nextLong()));
-
-		List<CTRemote> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTRemote newCTRemote = addCTRemote();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTRemote.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctRemoteId"));
-
-		Object newCtRemoteId = newCTRemote.getCtRemoteId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctRemoteId", new Object[] {newCtRemoteId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCtRemoteId = result.get(0);
-
-		Assert.assertEquals(existingCtRemoteId, newCtRemoteId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTRemote.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctRemoteId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctRemoteId", new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTRemote addCTRemote() throws Exception {

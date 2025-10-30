@@ -6,12 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -391,93 +386,6 @@ public class ERCVersionedEntryVersionPersistenceTest {
 	}
 
 	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ERCVersionedEntryVersion newERCVersionedEntryVersion =
-			addERCVersionedEntryVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ERCVersionedEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ercVersionedEntryVersionId",
-				newERCVersionedEntryVersion.getErcVersionedEntryVersionId()));
-
-		List<ERCVersionedEntryVersion> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ERCVersionedEntryVersion existingERCVersionedEntryVersion = result.get(
-			0);
-
-		Assert.assertEquals(
-			existingERCVersionedEntryVersion, newERCVersionedEntryVersion);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ERCVersionedEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ercVersionedEntryVersionId", RandomTestUtil.nextLong()));
-
-		List<ERCVersionedEntryVersion> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ERCVersionedEntryVersion newERCVersionedEntryVersion =
-			addERCVersionedEntryVersion();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ERCVersionedEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ercVersionedEntryVersionId"));
-
-		Object newErcVersionedEntryVersionId =
-			newERCVersionedEntryVersion.getErcVersionedEntryVersionId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ercVersionedEntryVersionId",
-				new Object[] {newErcVersionedEntryVersionId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingErcVersionedEntryVersionId = result.get(0);
-
-		Assert.assertEquals(
-			existingErcVersionedEntryVersionId, newErcVersionedEntryVersionId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ERCVersionedEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ercVersionedEntryVersionId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ercVersionedEntryVersionId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		ERCVersionedEntryVersion newERCVersionedEntryVersion =
 			addERCVersionedEntryVersion();
@@ -487,48 +395,6 @@ public class ERCVersionedEntryVersionPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newERCVersionedEntryVersion.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		ERCVersionedEntryVersion newERCVersionedEntryVersion =
-			addERCVersionedEntryVersion();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ERCVersionedEntryVersion.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ercVersionedEntryVersionId",
-				newERCVersionedEntryVersion.getErcVersionedEntryVersionId()));
-
-		List<ERCVersionedEntryVersion> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

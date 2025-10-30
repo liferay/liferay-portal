@@ -8,21 +8,13 @@ package com.liferay.document.library.opener.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.opener.exception.NoSuchFileEntryReferenceException;
 import com.liferay.document.library.opener.model.DLOpenerFileEntryReference;
-import com.liferay.document.library.opener.service.DLOpenerFileEntryReferenceLocalServiceUtil;
 import com.liferay.document.library.opener.service.persistence.DLOpenerFileEntryReferencePersistence;
 import com.liferay.document.library.opener.service.persistence.DLOpenerFileEntryReferenceUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -373,123 +365,6 @@ public class DLOpenerFileEntryReferencePersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			DLOpenerFileEntryReferenceLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<DLOpenerFileEntryReference>() {
-
-				@Override
-				public void performAction(
-					DLOpenerFileEntryReference dlOpenerFileEntryReference) {
-
-					Assert.assertNotNull(dlOpenerFileEntryReference);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		DLOpenerFileEntryReference newDLOpenerFileEntryReference =
-			addDLOpenerFileEntryReference();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DLOpenerFileEntryReference.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dlOpenerFileEntryReferenceId",
-				newDLOpenerFileEntryReference.
-					getDlOpenerFileEntryReferenceId()));
-
-		List<DLOpenerFileEntryReference> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		DLOpenerFileEntryReference existingDLOpenerFileEntryReference =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingDLOpenerFileEntryReference, newDLOpenerFileEntryReference);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DLOpenerFileEntryReference.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dlOpenerFileEntryReferenceId", RandomTestUtil.nextLong()));
-
-		List<DLOpenerFileEntryReference> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		DLOpenerFileEntryReference newDLOpenerFileEntryReference =
-			addDLOpenerFileEntryReference();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DLOpenerFileEntryReference.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("dlOpenerFileEntryReferenceId"));
-
-		Object newDlOpenerFileEntryReferenceId =
-			newDLOpenerFileEntryReference.getDlOpenerFileEntryReferenceId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"dlOpenerFileEntryReferenceId",
-				new Object[] {newDlOpenerFileEntryReferenceId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingDlOpenerFileEntryReferenceId = result.get(0);
-
-		Assert.assertEquals(
-			existingDlOpenerFileEntryReferenceId,
-			newDlOpenerFileEntryReferenceId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DLOpenerFileEntryReference.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("dlOpenerFileEntryReferenceId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"dlOpenerFileEntryReferenceId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		DLOpenerFileEntryReference newDLOpenerFileEntryReference =
 			addDLOpenerFileEntryReference();
@@ -499,49 +374,6 @@ public class DLOpenerFileEntryReferencePersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newDLOpenerFileEntryReference.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		DLOpenerFileEntryReference newDLOpenerFileEntryReference =
-			addDLOpenerFileEntryReference();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			DLOpenerFileEntryReference.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"dlOpenerFileEntryReferenceId",
-				newDLOpenerFileEntryReference.
-					getDlOpenerFileEntryReferenceId()));
-
-		List<DLOpenerFileEntryReference> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

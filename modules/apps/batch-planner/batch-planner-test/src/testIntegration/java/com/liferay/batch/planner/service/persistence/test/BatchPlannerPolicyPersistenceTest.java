@@ -8,21 +8,13 @@ package com.liferay.batch.planner.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.planner.exception.NoSuchPolicyException;
 import com.liferay.batch.planner.model.BatchPlannerPolicy;
-import com.liferay.batch.planner.service.BatchPlannerPolicyLocalServiceUtil;
 import com.liferay.batch.planner.service.persistence.BatchPlannerPolicyPersistence;
 import com.liferay.batch.planner.service.persistence.BatchPlannerPolicyUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -336,116 +328,6 @@ public class BatchPlannerPolicyPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			BatchPlannerPolicyLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<BatchPlannerPolicy>() {
-
-				@Override
-				public void performAction(
-					BatchPlannerPolicy batchPlannerPolicy) {
-
-					Assert.assertNotNull(batchPlannerPolicy);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		BatchPlannerPolicy newBatchPlannerPolicy = addBatchPlannerPolicy();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPolicy.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"batchPlannerPolicyId",
-				newBatchPlannerPolicy.getBatchPlannerPolicyId()));
-
-		List<BatchPlannerPolicy> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		BatchPlannerPolicy existingBatchPlannerPolicy = result.get(0);
-
-		Assert.assertEquals(existingBatchPlannerPolicy, newBatchPlannerPolicy);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPolicy.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"batchPlannerPolicyId", RandomTestUtil.nextLong()));
-
-		List<BatchPlannerPolicy> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		BatchPlannerPolicy newBatchPlannerPolicy = addBatchPlannerPolicy();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPolicy.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("batchPlannerPolicyId"));
-
-		Object newBatchPlannerPolicyId =
-			newBatchPlannerPolicy.getBatchPlannerPolicyId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"batchPlannerPolicyId",
-				new Object[] {newBatchPlannerPolicyId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingBatchPlannerPolicyId = result.get(0);
-
-		Assert.assertEquals(
-			existingBatchPlannerPolicyId, newBatchPlannerPolicyId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPolicy.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("batchPlannerPolicyId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"batchPlannerPolicyId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		BatchPlannerPolicy newBatchPlannerPolicy = addBatchPlannerPolicy();
 
@@ -454,47 +336,6 @@ public class BatchPlannerPolicyPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newBatchPlannerPolicy.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		BatchPlannerPolicy newBatchPlannerPolicy = addBatchPlannerPolicy();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			BatchPlannerPolicy.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"batchPlannerPolicyId",
-				newBatchPlannerPolicy.getBatchPlannerPolicyId()));
-
-		List<BatchPlannerPolicy> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(BatchPlannerPolicy batchPlannerPolicy) {

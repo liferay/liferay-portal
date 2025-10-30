@@ -10,11 +10,7 @@ import com.liferay.layout.seo.exception.NoSuchEntryCustomMetaTagException;
 import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTag;
 import com.liferay.layout.seo.service.persistence.LayoutSEOEntryCustomMetaTagPersistence;
 import com.liferay.layout.seo.service.persistence.LayoutSEOEntryCustomMetaTagUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -339,96 +335,6 @@ public class LayoutSEOEntryCustomMetaTagPersistenceTest {
 			newLayoutSEOEntryCustomMetaTag,
 			layoutSEOEntryCustomMetaTags.get(
 				newLayoutSEOEntryCustomMetaTag.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		LayoutSEOEntryCustomMetaTag newLayoutSEOEntryCustomMetaTag =
-			addLayoutSEOEntryCustomMetaTag();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOEntryCustomMetaTag.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutSEOEntryCustomMetaTagId",
-				newLayoutSEOEntryCustomMetaTag.
-					getLayoutSEOEntryCustomMetaTagId()));
-
-		List<LayoutSEOEntryCustomMetaTag> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		LayoutSEOEntryCustomMetaTag existingLayoutSEOEntryCustomMetaTag =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingLayoutSEOEntryCustomMetaTag,
-			newLayoutSEOEntryCustomMetaTag);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOEntryCustomMetaTag.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"layoutSEOEntryCustomMetaTagId", RandomTestUtil.nextLong()));
-
-		List<LayoutSEOEntryCustomMetaTag> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		LayoutSEOEntryCustomMetaTag newLayoutSEOEntryCustomMetaTag =
-			addLayoutSEOEntryCustomMetaTag();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOEntryCustomMetaTag.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("layoutSEOEntryCustomMetaTagId"));
-
-		Object newLayoutSEOEntryCustomMetaTagId =
-			newLayoutSEOEntryCustomMetaTag.getLayoutSEOEntryCustomMetaTagId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"layoutSEOEntryCustomMetaTagId",
-				new Object[] {newLayoutSEOEntryCustomMetaTagId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingLayoutSEOEntryCustomMetaTagId = result.get(0);
-
-		Assert.assertEquals(
-			existingLayoutSEOEntryCustomMetaTagId,
-			newLayoutSEOEntryCustomMetaTagId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			LayoutSEOEntryCustomMetaTag.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("layoutSEOEntryCustomMetaTagId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"layoutSEOEntryCustomMetaTagId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected LayoutSEOEntryCustomMetaTag addLayoutSEOEntryCustomMetaTag()

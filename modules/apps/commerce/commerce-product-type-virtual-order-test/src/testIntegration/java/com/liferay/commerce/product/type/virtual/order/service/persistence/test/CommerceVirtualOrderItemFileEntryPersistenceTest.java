@@ -8,21 +8,13 @@ package com.liferay.commerce.product.type.virtual.order.service.persistence.test
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.type.virtual.order.exception.NoSuchVirtualOrderItemFileEntryException;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntry;
-import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemFileEntryLocalServiceUtil;
 import com.liferay.commerce.product.type.virtual.order.service.persistence.CommerceVirtualOrderItemFileEntryPersistence;
 import com.liferay.commerce.product.type.virtual.order.service.persistence.CommerceVirtualOrderItemFileEntryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -438,129 +430,6 @@ public class CommerceVirtualOrderItemFileEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CommerceVirtualOrderItemFileEntryLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CommerceVirtualOrderItemFileEntry>() {
-
-				@Override
-				public void performAction(
-					CommerceVirtualOrderItemFileEntry
-						commerceVirtualOrderItemFileEntry) {
-
-					Assert.assertNotNull(commerceVirtualOrderItemFileEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CommerceVirtualOrderItemFileEntry newCommerceVirtualOrderItemFileEntry =
-			addCommerceVirtualOrderItemFileEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceVirtualOrderItemFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceVirtualOrderItemFileEntryId",
-				newCommerceVirtualOrderItemFileEntry.
-					getCommerceVirtualOrderItemFileEntryId()));
-
-		List<CommerceVirtualOrderItemFileEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CommerceVirtualOrderItemFileEntry
-			existingCommerceVirtualOrderItemFileEntry = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceVirtualOrderItemFileEntry,
-			newCommerceVirtualOrderItemFileEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceVirtualOrderItemFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceVirtualOrderItemFileEntryId",
-				RandomTestUtil.nextLong()));
-
-		List<CommerceVirtualOrderItemFileEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CommerceVirtualOrderItemFileEntry newCommerceVirtualOrderItemFileEntry =
-			addCommerceVirtualOrderItemFileEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceVirtualOrderItemFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"commerceVirtualOrderItemFileEntryId"));
-
-		Object newCommerceVirtualOrderItemFileEntryId =
-			newCommerceVirtualOrderItemFileEntry.
-				getCommerceVirtualOrderItemFileEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceVirtualOrderItemFileEntryId",
-				new Object[] {newCommerceVirtualOrderItemFileEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCommerceVirtualOrderItemFileEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingCommerceVirtualOrderItemFileEntryId,
-			newCommerceVirtualOrderItemFileEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceVirtualOrderItemFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"commerceVirtualOrderItemFileEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"commerceVirtualOrderItemFileEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CommerceVirtualOrderItemFileEntry newCommerceVirtualOrderItemFileEntry =
 			addCommerceVirtualOrderItemFileEntry();
@@ -570,49 +439,6 @@ public class CommerceVirtualOrderItemFileEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCommerceVirtualOrderItemFileEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CommerceVirtualOrderItemFileEntry newCommerceVirtualOrderItemFileEntry =
-			addCommerceVirtualOrderItemFileEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CommerceVirtualOrderItemFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"commerceVirtualOrderItemFileEntryId",
-				newCommerceVirtualOrderItemFileEntry.
-					getCommerceVirtualOrderItemFileEntryId()));
-
-		List<CommerceVirtualOrderItemFileEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

@@ -10,11 +10,7 @@ import com.liferay.object.exception.NoSuchObjectViewSortColumnException;
 import com.liferay.object.model.ObjectViewSortColumn;
 import com.liferay.object.service.persistence.ObjectViewSortColumnPersistence;
 import com.liferay.object.service.persistence.ObjectViewSortColumnUtil;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -371,92 +367,6 @@ public class ObjectViewSortColumnPersistenceTest {
 		Assert.assertEquals(
 			newObjectViewSortColumn,
 			objectViewSortColumns.get(newObjectViewSortColumn.getPrimaryKey()));
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ObjectViewSortColumn newObjectViewSortColumn =
-			addObjectViewSortColumn();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewSortColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectViewSortColumnId",
-				newObjectViewSortColumn.getObjectViewSortColumnId()));
-
-		List<ObjectViewSortColumn> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ObjectViewSortColumn existingObjectViewSortColumn = result.get(0);
-
-		Assert.assertEquals(
-			existingObjectViewSortColumn, newObjectViewSortColumn);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewSortColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectViewSortColumnId", RandomTestUtil.nextLong()));
-
-		List<ObjectViewSortColumn> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ObjectViewSortColumn newObjectViewSortColumn =
-			addObjectViewSortColumn();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewSortColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectViewSortColumnId"));
-
-		Object newObjectViewSortColumnId =
-			newObjectViewSortColumn.getObjectViewSortColumnId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectViewSortColumnId",
-				new Object[] {newObjectViewSortColumnId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingObjectViewSortColumnId = result.get(0);
-
-		Assert.assertEquals(
-			existingObjectViewSortColumnId, newObjectViewSortColumnId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ObjectViewSortColumn.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("objectViewSortColumnId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"objectViewSortColumnId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ObjectViewSortColumn addObjectViewSortColumn() throws Exception {

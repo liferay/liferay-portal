@@ -8,21 +8,13 @@ package com.liferay.commerce.product.type.virtual.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.type.virtual.exception.NoSuchCPDVirtualSettingFileEntryException;
 import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
-import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryLocalServiceUtil;
 import com.liferay.commerce.product.type.virtual.service.persistence.CPDVirtualSettingFileEntryPersistence;
 import com.liferay.commerce.product.type.virtual.service.persistence.CPDVirtualSettingFileEntryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -411,127 +403,6 @@ public class CPDVirtualSettingFileEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CPDVirtualSettingFileEntryLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CPDVirtualSettingFileEntry>() {
-
-				@Override
-				public void performAction(
-					CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry) {
-
-					Assert.assertNotNull(cpdVirtualSettingFileEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CPDVirtualSettingFileEntry newCPDVirtualSettingFileEntry =
-			addCPDVirtualSettingFileEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDVirtualSettingFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPDefinitionVirtualSettingFileEntryId",
-				newCPDVirtualSettingFileEntry.
-					getCPDefinitionVirtualSettingFileEntryId()));
-
-		List<CPDVirtualSettingFileEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CPDVirtualSettingFileEntry existingCPDVirtualSettingFileEntry =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingCPDVirtualSettingFileEntry, newCPDVirtualSettingFileEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDVirtualSettingFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPDefinitionVirtualSettingFileEntryId",
-				RandomTestUtil.nextLong()));
-
-		List<CPDVirtualSettingFileEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CPDVirtualSettingFileEntry newCPDVirtualSettingFileEntry =
-			addCPDVirtualSettingFileEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDVirtualSettingFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"CPDefinitionVirtualSettingFileEntryId"));
-
-		Object newCPDefinitionVirtualSettingFileEntryId =
-			newCPDVirtualSettingFileEntry.
-				getCPDefinitionVirtualSettingFileEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPDefinitionVirtualSettingFileEntryId",
-				new Object[] {newCPDefinitionVirtualSettingFileEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCPDefinitionVirtualSettingFileEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingCPDefinitionVirtualSettingFileEntryId,
-			newCPDefinitionVirtualSettingFileEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDVirtualSettingFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property(
-				"CPDefinitionVirtualSettingFileEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"CPDefinitionVirtualSettingFileEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		CPDVirtualSettingFileEntry newCPDVirtualSettingFileEntry =
 			addCPDVirtualSettingFileEntry();
@@ -541,49 +412,6 @@ public class CPDVirtualSettingFileEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newCPDVirtualSettingFileEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		CPDVirtualSettingFileEntry newCPDVirtualSettingFileEntry =
-			addCPDVirtualSettingFileEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CPDVirtualSettingFileEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"CPDefinitionVirtualSettingFileEntryId",
-				newCPDVirtualSettingFileEntry.
-					getCPDefinitionVirtualSettingFileEntryId()));
-
-		List<CPDVirtualSettingFileEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

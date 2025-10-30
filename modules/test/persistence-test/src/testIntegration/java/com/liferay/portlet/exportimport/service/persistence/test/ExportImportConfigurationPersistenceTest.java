@@ -8,19 +8,12 @@ package com.liferay.portlet.exportimport.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.exception.NoSuchConfigurationException;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.persistence.ExportImportConfigurationPersistence;
 import com.liferay.exportimport.kernel.service.persistence.ExportImportConfigurationUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -416,122 +409,6 @@ public class ExportImportConfigurationPersistenceTest {
 			newExportImportConfiguration,
 			exportImportConfigurations.get(
 				newExportImportConfiguration.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			ExportImportConfigurationLocalServiceUtil.
-				getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<ExportImportConfiguration>() {
-
-				@Override
-				public void performAction(
-					ExportImportConfiguration exportImportConfiguration) {
-
-					Assert.assertNotNull(exportImportConfiguration);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		ExportImportConfiguration newExportImportConfiguration =
-			addExportImportConfiguration();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ExportImportConfiguration.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"exportImportConfigurationId",
-				newExportImportConfiguration.getExportImportConfigurationId()));
-
-		List<ExportImportConfiguration> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		ExportImportConfiguration existingExportImportConfiguration =
-			result.get(0);
-
-		Assert.assertEquals(
-			existingExportImportConfiguration, newExportImportConfiguration);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ExportImportConfiguration.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"exportImportConfigurationId", RandomTestUtil.nextLong()));
-
-		List<ExportImportConfiguration> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		ExportImportConfiguration newExportImportConfiguration =
-			addExportImportConfiguration();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ExportImportConfiguration.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("exportImportConfigurationId"));
-
-		Object newExportImportConfigurationId =
-			newExportImportConfiguration.getExportImportConfigurationId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"exportImportConfigurationId",
-				new Object[] {newExportImportConfigurationId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingExportImportConfigurationId = result.get(0);
-
-		Assert.assertEquals(
-			existingExportImportConfigurationId,
-			newExportImportConfigurationId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			ExportImportConfiguration.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("exportImportConfigurationId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"exportImportConfigurationId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected ExportImportConfiguration addExportImportConfiguration()

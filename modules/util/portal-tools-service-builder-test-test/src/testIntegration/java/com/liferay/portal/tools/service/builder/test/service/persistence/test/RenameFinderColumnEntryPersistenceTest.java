@@ -6,18 +6,11 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -25,7 +18,6 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.exception.NoSuchRenameFinderColumnEntryException;
 import com.liferay.portal.tools.service.builder.test.model.RenameFinderColumnEntry;
-import com.liferay.portal.tools.service.builder.test.service.RenameFinderColumnEntryLocalServiceUtil;
 import com.liferay.portal.tools.service.builder.test.service.persistence.RenameFinderColumnEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.RenameFinderColumnEntryUtil;
 
@@ -310,119 +302,6 @@ public class RenameFinderColumnEntryPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			RenameFinderColumnEntryLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<RenameFinderColumnEntry>() {
-
-				@Override
-				public void performAction(
-					RenameFinderColumnEntry renameFinderColumnEntry) {
-
-					Assert.assertNotNull(renameFinderColumnEntry);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		RenameFinderColumnEntry newRenameFinderColumnEntry =
-			addRenameFinderColumnEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RenameFinderColumnEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"renameFinderColumnEntryId",
-				newRenameFinderColumnEntry.getRenameFinderColumnEntryId()));
-
-		List<RenameFinderColumnEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		RenameFinderColumnEntry existingRenameFinderColumnEntry = result.get(0);
-
-		Assert.assertEquals(
-			existingRenameFinderColumnEntry, newRenameFinderColumnEntry);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RenameFinderColumnEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"renameFinderColumnEntryId", RandomTestUtil.nextLong()));
-
-		List<RenameFinderColumnEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		RenameFinderColumnEntry newRenameFinderColumnEntry =
-			addRenameFinderColumnEntry();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RenameFinderColumnEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("renameFinderColumnEntryId"));
-
-		Object newRenameFinderColumnEntryId =
-			newRenameFinderColumnEntry.getRenameFinderColumnEntryId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"renameFinderColumnEntryId",
-				new Object[] {newRenameFinderColumnEntryId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingRenameFinderColumnEntryId = result.get(0);
-
-		Assert.assertEquals(
-			existingRenameFinderColumnEntryId, newRenameFinderColumnEntryId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RenameFinderColumnEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("renameFinderColumnEntryId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"renameFinderColumnEntryId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		RenameFinderColumnEntry newRenameFinderColumnEntry =
 			addRenameFinderColumnEntry();
@@ -432,48 +311,6 @@ public class RenameFinderColumnEntryPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newRenameFinderColumnEntry.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		RenameFinderColumnEntry newRenameFinderColumnEntry =
-			addRenameFinderColumnEntry();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RenameFinderColumnEntry.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"renameFinderColumnEntryId",
-				newRenameFinderColumnEntry.getRenameFinderColumnEntryId()));
-
-		List<RenameFinderColumnEntry> result =
-			_persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(

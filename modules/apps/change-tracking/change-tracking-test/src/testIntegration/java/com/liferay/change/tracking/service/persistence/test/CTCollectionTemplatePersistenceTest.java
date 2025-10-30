@@ -8,19 +8,12 @@ package com.liferay.change.tracking.service.persistence.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.exception.NoSuchCollectionTemplateException;
 import com.liferay.change.tracking.model.CTCollectionTemplate;
-import com.liferay.change.tracking.service.CTCollectionTemplateLocalServiceUtil;
 import com.liferay.change.tracking.service.persistence.CTCollectionTemplatePersistence;
 import com.liferay.change.tracking.service.persistence.CTCollectionTemplateUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -325,119 +318,6 @@ public class CTCollectionTemplatePersistenceTest {
 		Assert.assertEquals(
 			newCTCollectionTemplate,
 			ctCollectionTemplates.get(newCTCollectionTemplate.getPrimaryKey()));
-	}
-
-	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			CTCollectionTemplateLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<CTCollectionTemplate>() {
-
-				@Override
-				public void performAction(
-					CTCollectionTemplate ctCollectionTemplate) {
-
-					Assert.assertNotNull(ctCollectionTemplate);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		CTCollectionTemplate newCTCollectionTemplate =
-			addCTCollectionTemplate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTCollectionTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctCollectionTemplateId",
-				newCTCollectionTemplate.getCtCollectionTemplateId()));
-
-		List<CTCollectionTemplate> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		CTCollectionTemplate existingCTCollectionTemplate = result.get(0);
-
-		Assert.assertEquals(
-			existingCTCollectionTemplate, newCTCollectionTemplate);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTCollectionTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"ctCollectionTemplateId", RandomTestUtil.nextLong()));
-
-		List<CTCollectionTemplate> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		CTCollectionTemplate newCTCollectionTemplate =
-			addCTCollectionTemplate();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTCollectionTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctCollectionTemplateId"));
-
-		Object newCtCollectionTemplateId =
-			newCTCollectionTemplate.getCtCollectionTemplateId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctCollectionTemplateId",
-				new Object[] {newCtCollectionTemplateId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingCtCollectionTemplateId = result.get(0);
-
-		Assert.assertEquals(
-			existingCtCollectionTemplateId, newCtCollectionTemplateId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			CTCollectionTemplate.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("ctCollectionTemplateId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"ctCollectionTemplateId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
 	}
 
 	protected CTCollectionTemplate addCTCollectionTemplate() throws Exception {

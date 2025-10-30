@@ -6,23 +6,15 @@
 package com.liferay.portal.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchRecentLayoutBranchException;
 import com.liferay.portal.kernel.model.RecentLayoutBranch;
-import com.liferay.portal.kernel.service.RecentLayoutBranchLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.RecentLayoutBranchPersistence;
 import com.liferay.portal.kernel.service.persistence.RecentLayoutBranchUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -335,116 +327,6 @@ public class RecentLayoutBranchPersistenceTest {
 	}
 
 	@Test
-	public void testActionableDynamicQuery() throws Exception {
-		final IntegerWrapper count = new IntegerWrapper();
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			RecentLayoutBranchLocalServiceUtil.getActionableDynamicQuery();
-
-		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod
-				<RecentLayoutBranch>() {
-
-				@Override
-				public void performAction(
-					RecentLayoutBranch recentLayoutBranch) {
-
-					Assert.assertNotNull(recentLayoutBranch);
-
-					count.increment();
-				}
-
-			});
-
-		actionableDynamicQuery.performActions();
-
-		Assert.assertEquals(count.getValue(), _persistence.countAll());
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyExisting() throws Exception {
-		RecentLayoutBranch newRecentLayoutBranch = addRecentLayoutBranch();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutBranch.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"recentLayoutBranchId",
-				newRecentLayoutBranch.getRecentLayoutBranchId()));
-
-		List<RecentLayoutBranch> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		RecentLayoutBranch existingRecentLayoutBranch = result.get(0);
-
-		Assert.assertEquals(existingRecentLayoutBranch, newRecentLayoutBranch);
-	}
-
-	@Test
-	public void testDynamicQueryByPrimaryKeyMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutBranch.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"recentLayoutBranchId", RandomTestUtil.nextLong()));
-
-		List<RecentLayoutBranch> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionExisting() throws Exception {
-		RecentLayoutBranch newRecentLayoutBranch = addRecentLayoutBranch();
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutBranch.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("recentLayoutBranchId"));
-
-		Object newRecentLayoutBranchId =
-			newRecentLayoutBranch.getRecentLayoutBranchId();
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"recentLayoutBranchId",
-				new Object[] {newRecentLayoutBranchId}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(1, result.size());
-
-		Object existingRecentLayoutBranchId = result.get(0);
-
-		Assert.assertEquals(
-			existingRecentLayoutBranchId, newRecentLayoutBranchId);
-	}
-
-	@Test
-	public void testDynamicQueryByProjectionMissing() throws Exception {
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutBranch.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("recentLayoutBranchId"));
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.in(
-				"recentLayoutBranchId",
-				new Object[] {RandomTestUtil.nextLong()}));
-
-		List<Object> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		Assert.assertEquals(0, result.size());
-	}
-
-	@Test
 	public void testResetOriginalValues() throws Exception {
 		RecentLayoutBranch newRecentLayoutBranch = addRecentLayoutBranch();
 
@@ -453,47 +335,6 @@ public class RecentLayoutBranchPersistenceTest {
 		_assertOriginalValues(
 			_persistence.findByPrimaryKey(
 				newRecentLayoutBranch.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		RecentLayoutBranch newRecentLayoutBranch = addRecentLayoutBranch();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			RecentLayoutBranch.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"recentLayoutBranchId",
-				newRecentLayoutBranch.getRecentLayoutBranchId()));
-
-		List<RecentLayoutBranch> result = _persistence.findWithDynamicQuery(
-			dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
 	}
 
 	private void _assertOriginalValues(RecentLayoutBranch recentLayoutBranch) {
