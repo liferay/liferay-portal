@@ -131,7 +131,11 @@ public class ${schemaName}SerDes {
 
 					<#assign propertyType = properties[propertyName] />
 
-					<#if allSchemas[propertyType]??>
+					<#if enumSchemas?keys?seq_contains(propertyType)>
+						sb.append("\"");
+						sb.append(${schemaVarName}.get${capitalizedPropertyName}());
+						sb.append("\"");
+					<#elseif allSchemas[propertyType]??>
 						sb.append(String.valueOf(${schemaVarName}.get${capitalizedPropertyName}()));
 					<#elseif stringUtil.equals(propertyType, "Object")>
 						if (${schemaVarName}.get${capitalizedPropertyName}() instanceof String) {
@@ -172,15 +176,13 @@ public class ${schemaName}SerDes {
 
 							sb.append("]");
 						<#else>
-							<#if stringUtil.equals(propertyType, "Date") || stringUtil.equals(propertyType, "Object") || stringUtil.equals(propertyType, "String") || enumSchemas?keys?seq_contains(propertyType)>
+							<#if stringUtil.equals(propertyType, "Date") || stringUtil.equals(propertyType, "Object") || stringUtil.equals(propertyType, "String")>
 								sb.append("\"");
 
 								<#if stringUtil.equals(propertyType, "Date")>
 									sb.append(liferayToJSONDateFormat.format(${schemaVarName}.get${capitalizedPropertyName}()));
 								<#elseif stringUtil.equals(propertyType, "Object") || stringUtil.equals(propertyType, "String")>
 									sb.append(_escape(${schemaVarName}.get${capitalizedPropertyName}()));
-								<#else>
-									sb.append(${schemaVarName}.get${capitalizedPropertyName}());
 								</#if>
 
 								sb.append("\"");
