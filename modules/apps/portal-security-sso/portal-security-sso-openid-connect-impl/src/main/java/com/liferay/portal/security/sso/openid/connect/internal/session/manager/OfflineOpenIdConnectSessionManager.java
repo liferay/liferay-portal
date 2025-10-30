@@ -37,6 +37,9 @@ import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnec
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
 
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.oauth2.sdk.util.JSONObjectUtils;
@@ -44,6 +47,8 @@ import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import jakarta.servlet.http.HttpSession;
+
+import java.text.ParseException;
 
 import java.util.Date;
 import java.util.Dictionary;
@@ -336,6 +341,20 @@ public class OfflineOpenIdConnectSessionManager {
 		openIdConnectSession.setAuthServerWellKnownURI(authServerWellKnownURI);
 		openIdConnectSession.setClientId(clientId);
 		openIdConnectSession.setIdToken(idTokenString);
+
+		try {
+			JWT idTokenJWT = JWTParser.parse(idTokenString);
+
+			JWTClaimsSet idTokenClaimsSet = idTokenJWT.getJWTClaimsSet();
+
+			openIdConnectSession.setSid(
+				idTokenClaimsSet.getClaimAsString("sid"));
+		}
+		catch (ParseException parseException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(parseException);
+			}
+		}
 
 		_updateOpenIdConnectSession(
 			accessToken, openIdConnectSession, refreshToken);
