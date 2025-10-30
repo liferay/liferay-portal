@@ -288,7 +288,7 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 				setErrorMessage(exportImportReportEntry::getErrorMessage);
 				setErrorStacktrace(
 					() -> NestedFieldsSupplier.supply(
-						"errorStackTrace",
+						"errorStacktrace",
 						nestedField ->
 							exportImportReportEntry.getErrorStacktrace()));
 				setId(exportImportReportEntry::getExportImportReportEntryId);
