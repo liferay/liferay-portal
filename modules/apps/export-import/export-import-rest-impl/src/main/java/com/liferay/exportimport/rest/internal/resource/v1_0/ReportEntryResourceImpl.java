@@ -45,8 +45,6 @@ import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
-import com.liferay.staging.StagingGroupHelper;
-import com.liferay.staging.StagingGroupHelperUtil;
 
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -181,19 +179,10 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		return null;
 	}
 
-	private Scope _getScope(long groupId) throws Exception {
-		if (groupId == 0) {
-			return null;
-		}
+	private Scope _getScope(long groupId) {
+		Group group = _groupLocalService.fetchGroup(groupId);
 
-		Group group = _groupLocalService.getGroup(groupId);
-
-		StagingGroupHelper stagingGroupHelper =
-			StagingGroupHelperUtil.getStagingGroupHelper();
-
-		if ((group == null) || group.isCompany() ||
-			stagingGroupHelper.isCompanyGroup(group)) {
-
+		if ((group == null) || group.isCompany()) {
 			return null;
 		}
 

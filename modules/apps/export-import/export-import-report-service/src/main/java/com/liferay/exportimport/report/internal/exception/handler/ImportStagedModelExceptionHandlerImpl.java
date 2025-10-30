@@ -11,16 +11,10 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.report.internal.util.ExportImportReportEntryUtil;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.staging.StagingGroupHelper;
-import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -53,41 +47,22 @@ public class ImportStagedModelExceptionHandlerImpl
 
 		Class<?> modelClass = stagedModel.getModelClass();
 
-		try {
-			long groupId = portletDataContext.getGroupId();
+		long groupId = portletDataContext.getGroupId();
 
-			Group group = _groupLocalService.getGroup(groupId);
+		if (ExportImportReportEntryUtil.isCompanyScoped(
+				groupId, _groupLocalService)) {
 
-			StagingGroupHelper stagingGroupHelper =
-				StagingGroupHelperUtil.getStagingGroupHelper();
-
-			if ((group == null) || group.isCompany() ||
-				stagingGroupHelper.isCompanyGroup(group)) {
-
-				groupId = 0;
-			}
-
-			_exportImportReportEntryLocalService.
-				addErrorExportImportReportEntry(
-					groupId, portletDataContext.getCompanyId(),
-					externalReferenceCode,
-					ExportImportClassedModelUtil.getClassNameId(stagedModel),
-					ExportImportClassedModelUtil.getClassPK(stagedModel),
-					GetterUtil.getLong(
-						portletDataContext.getExportImportProcessId()),
-					portletDataException.getMessage(),
-					_getErrorStackTrace(portletDataException),
-					modelClass.getName(),
-					ExportImportReportEntryUtil.getOrigin());
+			groupId = 0;
 		}
-		catch (Exception exception) {
-			_log.error(
-				StringBundler.concat(
-					"Unable to add error export import report entry with ",
-					"external reference code \"", externalReferenceCode,
-					"\" and model name \"", modelClass.getName(), "\""),
-				exception);
-		}
+
+		_exportImportReportEntryLocalService.addErrorExportImportReportEntry(
+			groupId, portletDataContext.getCompanyId(), externalReferenceCode,
+			ExportImportClassedModelUtil.getClassNameId(stagedModel),
+			ExportImportClassedModelUtil.getClassPK(stagedModel),
+			GetterUtil.getLong(portletDataContext.getExportImportProcessId()),
+			portletDataException.getMessage(),
+			_getErrorStackTrace(portletDataException), modelClass.getName(),
+			ExportImportReportEntryUtil.getOrigin());
 	}
 
 	private String _getErrorStackTrace(Throwable throwable) {
@@ -97,9 +72,6 @@ public class ImportStagedModelExceptionHandlerImpl
 
 		return outputStream.toString();
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ImportStagedModelExceptionHandlerImpl.class);
 
 	@Reference
 	private ExportImportReportEntryLocalService

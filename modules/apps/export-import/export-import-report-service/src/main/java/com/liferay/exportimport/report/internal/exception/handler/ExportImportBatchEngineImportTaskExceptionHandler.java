@@ -10,10 +10,12 @@ import com.liferay.batch.engine.exception.handler.BatchEngineImportTaskException
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
+import com.liferay.exportimport.report.internal.util.ExportImportReportEntryUtil;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -44,6 +46,12 @@ public class ExportImportBatchEngineImportTaskExceptionHandler
 
 		long groupId = GetterUtil.getLong(
 			batchEngineImportTask.getParameterValue("siteId"));
+
+		if (ExportImportReportEntryUtil.isCompanyScoped(
+				groupId, _groupLocalService)) {
+
+			groupId = 0;
+		}
 
 		_exportImportReportEntryLocalService.addErrorExportImportReportEntry(
 			groupId, batchEngineImportTask.getCompanyId(),
@@ -109,5 +117,8 @@ public class ExportImportBatchEngineImportTaskExceptionHandler
 	@Reference
 	private ExportImportReportEntryLocalService
 		_exportImportReportEntryLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }

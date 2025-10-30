@@ -7,6 +7,10 @@ package com.liferay.exportimport.report.internal.util;
 
 import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 /**
  * @author Petteri Karttunen
@@ -19,6 +23,27 @@ public class ExportImportReportEntryUtil {
 		}
 
 		return ExportImportReportEntryConstants.ORIGIN_STAGING;
+	}
+
+	public static boolean isCompanyScoped(
+		long groupId, GroupLocalService groupLocalService) {
+
+		if (groupId == 0) {
+			return true;
+		}
+
+		Group group = groupLocalService.fetchGroup(groupId);
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if ((group == null) || group.isCompany() ||
+			stagingGroupHelper.isCompanyGroup(group)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 }
