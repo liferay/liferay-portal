@@ -110,8 +110,14 @@ public class FDSRendererImpl implements FDSRenderer {
 			}
 		}
 		else {
-			Boolean customViewsEnabled = (boolean)props.get(
-				"customViewsEnabled");
+			Boolean customViewsEnabled;
+
+			if (Validator.isNull(props.get("customViewsEnabled"))) {
+				customViewsEnabled = false;
+			}
+			else {
+				customViewsEnabled = (boolean)props.get("customViewsEnabled");
+			}
 
 			props.putAll(
 				HashMapBuilder.<String, Object>put(
