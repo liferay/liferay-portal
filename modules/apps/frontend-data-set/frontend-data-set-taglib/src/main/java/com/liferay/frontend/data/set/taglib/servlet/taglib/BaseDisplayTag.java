@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -249,7 +247,7 @@ public class BaseDisplayTag extends AttributesTagSupport {
 				return null;
 			}
 		).put(
-			"customViews", _getCustomViews()
+			"customViews", new ArrayList<String>()
 		).put(
 			"defaultSelectedItems", _defaultSelectedItems
 		).put(
@@ -332,18 +330,6 @@ public class BaseDisplayTag extends AttributesTagSupport {
 	}
 
 	protected FDSSerializer fdsSerializer;
-
-	private String _getCustomViews() {
-		HttpServletRequest httpServletRequest = getRequest();
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(
-				httpServletRequest);
-
-		return portalPreferences.getValue(
-			ServletContextUtil.getFDSSettingsNamespace(httpServletRequest, _id),
-			"customViews", "{}");
-	}
 
 	private void _setViewsJSONArray() {
 		_viewsJSONArray = fdsSerializer.serializeViews(getId(), getRequest());
