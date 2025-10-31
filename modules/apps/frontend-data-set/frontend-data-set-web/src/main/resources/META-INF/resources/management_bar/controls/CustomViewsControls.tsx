@@ -30,6 +30,7 @@ const RequiredMark = () => (
 		<span className="inline-item-after reference-mark text-warning">
 			<ClayIcon symbol="asterisk" />
 		</span>
+
 		<span className="hide-accessible sr-only">
 			{Liferay.Language.get('required')}
 		</span>
@@ -149,7 +150,7 @@ const CustomViewsControls = () => {
 			});
 		}
 
-		const customViewId = !id ? getRandomId() : id;
+		const customViewId = id ?? getRandomId();
 
 		const viewState = {
 			activeView,

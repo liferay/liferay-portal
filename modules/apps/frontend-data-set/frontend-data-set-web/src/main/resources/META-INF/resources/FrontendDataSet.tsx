@@ -638,12 +638,10 @@ const FrontendDataSetContent = ({
 		}
 
 		const parsedCustomViews = customViews?.map(
-			(customView: ICustomView) => {
-				return {
-					...customView,
-					customViewConfig: JSON.parse(customView.customViewConfig),
-				};
-			}
+			(customView: ICustomView) => ({
+				...customView,
+				customViewConfig: JSON.parse(customView.customViewConfig),
+			})
 		);
 
 		return {
