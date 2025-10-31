@@ -898,6 +898,21 @@ public class SystemObjectRelatedObjectEntriesTest {
 			StringBundler.concat(_getLocation(), StringPool.SLASH, userId),
 			Http.Method.GET);
 
+		if (expectedObjectEntryExternalReferenceCode == null){
+			throw new Exception("expectedObjectEntryExternalReferenceCode is null");
+		}
+
+		Object expectedErc = jsonObject.get(
+			StringBundler.concat(
+				"r_", objectRelationship.getName(), "_",
+				StringUtil.removeLast(
+					_objectDefinition.getPKObjectFieldName(), "Id"),
+				"ERC"));
+
+		if (expectedErc == null){
+			throw new Exception("Object expectedErc is null");
+		}
+
 		Assert.assertEquals(
 			expectedObjectEntryExternalReferenceCode,
 			jsonObject.get(
