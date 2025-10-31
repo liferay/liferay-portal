@@ -38,8 +38,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -74,45 +72,6 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 	service = Application.class
 )
 public class FDSApplication extends Application {
-
-	@DELETE
-	@Path("/fds/{fdsName}/custom-views/{fdsCustomViewId}")
-	public Response deleteFDSCustomView(
-		@PathParam("fdsName") String fdsName,
-		@PathParam("fdsCustomViewId") String fdsCustomViewId,
-		@Context HttpServletRequest httpServletRequest,
-		@Context ThemeDisplay themeDisplay) {
-
-		try {
-			PortalPreferences portalPreferences =
-				PortletPreferencesFactoryUtil.getPortalPreferences(
-					httpServletRequest);
-
-			String fdsSettingsNamespace =
-				ServletContextUtil.getFDSSettingsNamespace(
-					httpServletRequest, fdsName);
-
-			JSONObject customViewsJSONObject = _jsonFactory.createJSONObject(
-				portalPreferences.getValue(
-					fdsSettingsNamespace, "customViews", "{}"));
-
-			customViewsJSONObject.remove(fdsCustomViewId);
-
-			portalPreferences.setValue(
-				fdsSettingsNamespace, "customViews",
-				customViewsJSONObject.toString());
-
-			return Response.noContent(
-			).build();
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return Response.status(
-			Response.Status.INTERNAL_SERVER_ERROR
-		).build();
-	}
 
 	@GET
 	@Path("/data-set/{tableName}/{fdsDataProviderKey}")
@@ -176,57 +135,6 @@ public class FDSApplication extends Application {
 		return singletons;
 	}
 
-	@Path("/fds/{fdsName}/custom-views/{fdsCustomViewId}/label")
-	@POST
-	public Response renameFDSCustomView(
-		@PathParam("fdsName") String fdsName,
-		@PathParam("fdsCustomViewId") String fdsCustomViewId,
-		@FormParam("customViewLabel") String fdsCustomViewLabel,
-		@Context HttpServletRequest httpServletRequest,
-		@Context ThemeDisplay themeDisplay) {
-
-		try {
-			PortalPreferences portalPreferences =
-				PortletPreferencesFactoryUtil.getPortalPreferences(
-					httpServletRequest);
-
-			String fdsSettingsNamespace =
-				ServletContextUtil.getFDSSettingsNamespace(
-					httpServletRequest, fdsName);
-
-			JSONObject customViewsJSONObject = _jsonFactory.createJSONObject(
-				portalPreferences.getValue(
-					fdsSettingsNamespace, "customViews", "{}"));
-
-			JSONObject customViewJSONObject =
-				customViewsJSONObject.getJSONObject(fdsCustomViewId);
-
-			if (customViewJSONObject == null) {
-				return Response.status(
-					Response.Status.NOT_FOUND
-				).build();
-			}
-
-			customViewJSONObject.put("customViewLabel", fdsCustomViewLabel);
-
-			customViewsJSONObject.put(fdsCustomViewId, customViewJSONObject);
-
-			portalPreferences.setValue(
-				fdsSettingsNamespace, "customViews",
-				customViewsJSONObject.toString());
-
-			return Response.ok(
-			).build();
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return Response.status(
-			Response.Status.INTERNAL_SERVER_ERROR
-		).build();
-	}
-
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/data-set/{id}/save-active-view-settings")
 	@POST
@@ -273,50 +181,6 @@ public class FDSApplication extends Application {
 
 		return Response.status(
 			Response.Status.NOT_FOUND
-		).build();
-	}
-
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/fds/{fdsName}/custom-views")
-	@POST
-	public Response saveFDSCustomView(
-		@PathParam("fdsName") String fdsName,
-		@Context HttpServletRequest httpServletRequest,
-		@Context ThemeDisplay themeDisplay, String customViewJSON) {
-
-		try {
-			PortalPreferences portalPreferences =
-				PortletPreferencesFactoryUtil.getPortalPreferences(
-					httpServletRequest);
-
-			String fdsSettingsNamespace =
-				ServletContextUtil.getFDSSettingsNamespace(
-					httpServletRequest, fdsName);
-
-			JSONObject customViewsJSONObject = _jsonFactory.createJSONObject(
-				portalPreferences.getValue(
-					fdsSettingsNamespace, "customViews", "{}"));
-
-			JSONObject customViewJSONObject = _jsonFactory.createJSONObject(
-				customViewJSON);
-
-			customViewsJSONObject.put(
-				String.valueOf(customViewJSONObject.get("customViewId")),
-				customViewJSONObject.get("viewState"));
-
-			portalPreferences.setValue(
-				fdsSettingsNamespace, "customViews",
-				customViewsJSONObject.toString());
-
-			return Response.ok(
-			).build();
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return Response.status(
-			Response.Status.INTERNAL_SERVER_ERROR
 		).build();
 	}
 
