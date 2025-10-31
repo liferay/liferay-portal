@@ -4,6 +4,7 @@
  */
 
 import {IView} from '../utils/types';
+import {ICustomView} from './ViewsContext';
 import getViewComponent from './getViewComponent';
 
 export enum EViewsActionTypes {
@@ -32,15 +33,31 @@ const viewsActions: TViewsActions = {
 	[EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW]: (state, value) => {
 		const {customViews} = state;
 
-		const {id, viewState} = value;
+		const {customViewConfig, customViewERC} = value;
+
+		const newCustomView = customViews.find(
+			(view: ICustomView) => view.customViewERC === customViewERC
+		);
+
+		let updatedCustomViews;
+
+		if (!newCustomView) {
+			updatedCustomViews = customViews.concat([value]);
+		}
+		else {
+			updatedCustomViews = customViews.map((view: ICustomView) => {
+				if (view.customViewERC === customViewERC) {
+					view.customViewConfig = customViewConfig;
+				}
+
+				return view;
+			});
+		}
 
 		return {
 			...state,
-			activeCustomViewId: id,
-			customViews: {
-				...customViews,
-				[id]: viewState,
-			},
+			activeCustomViewId: customViewERC,
+			customViews: updatedCustomViews,
 			viewUpdated: false,
 		};
 	},
@@ -62,7 +79,9 @@ const viewsActions: TViewsActions = {
 	[EViewsActionTypes.DELETE_CUSTOM_VIEW]: (state, value) => {
 		const {customViews, defaultView} = state;
 
-		const {[value.id]: _unusedVar, ...remainingCustomViews} = customViews;
+		const remainingCustomViews = customViews.filter(
+			(view: ICustomView) => view.customViewERC !== value.id
+		);
 
 		return {
 			...state,
@@ -75,16 +94,17 @@ const viewsActions: TViewsActions = {
 	[EViewsActionTypes.RENAME_ACTIVE_CUSTOM_VIEW]: (state, value) => {
 		const {activeCustomViewId, customViews} = state;
 
-		const customView = customViews[activeCustomViewId];
+		const updatedCustomViews = customViews.map((view: ICustomView) => {
+			if (view.customViewERC === activeCustomViewId) {
+				view.customViewLabel = value.label;
+			}
 
-		customView.customViewLabel = value.label;
+			return view;
+		});
 
 		return {
 			...state,
-			customViews: {
-				...customViews,
-				[activeCustomViewId]: customView,
-			},
+			customViews: [...updatedCustomViews],
 		};
 	},
 	[EViewsActionTypes.RESET_TO_DEFAULT_VIEW]: (state) => {
@@ -101,23 +121,26 @@ const viewsActions: TViewsActions = {
 	[EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW]: (state, value) => {
 		const {customViews, defaultView} = state;
 
-		const activeCustomView = customViews[value];
+		const activeCustomView = customViews.find(
+			(view: ICustomView) => view.customViewERC === value
+		);
 
 		if (!activeCustomView) {
 			return state;
 		}
 
-		if (!activeCustomView.activeView) {
-			activeCustomView.activeView = defaultView.activeView;
+		if (!activeCustomView.customViewConfig.activeView) {
+			activeCustomView.customViewConfig.activeView =
+				defaultView.activeView;
 		}
 
-		activeCustomView.activeView.component =
-			getViewComponent(activeCustomView.activeView) ??
-			getViewComponent(defaultView.activeView);
+		activeCustomView.customViewConfig.activeView.component =
+			getViewComponent(activeCustomView.customViewConfig.activeView) ??
+			getViewComponent(defaultView.customViewConfig.activeView);
 
 		return {
 			...state,
-			...activeCustomView,
+			...activeCustomView.customViewConfig,
 			activeCustomViewId: value,
 			modifiedFields: {},
 			viewUpdated: false,
@@ -166,7 +189,6 @@ const viewsActions: TViewsActions = {
 		return {
 			...state,
 			pageNumber: value,
-			viewUpdated: false,
 		};
 	},
 	[EViewsActionTypes.UPDATE_PAGINATION_DELTA]: (state, value) => {
@@ -180,7 +202,6 @@ const viewsActions: TViewsActions = {
 		return {
 			...state,
 			searchParam: value,
-			viewUpdated: false,
 		};
 	},
 	[EViewsActionTypes.UPDATE_SORTING]: (state, value) => {

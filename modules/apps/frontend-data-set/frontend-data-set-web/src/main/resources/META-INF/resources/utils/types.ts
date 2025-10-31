@@ -6,6 +6,8 @@
 import {ModalStatus} from 'frontend-js-components-web';
 import React from 'react';
 
+import {ICustomView} from '../views/ViewsContext';
+
 export declare function FrontendDataSet({
 	actionParameterName,
 	activeViewSettings,
@@ -294,8 +296,9 @@ export interface IFrontendDataSetProps {
 		tableCell?: Array<TRenderer>;
 		views?: Array<TRenderer>;
 	};
-	customViews?: string;
+	customViews?: Array<ICustomView>;
 	customViewsEnabled?: boolean;
+	dataSetERC?: string;
 	defaultSelectedItems?: any[];
 	emptyState?: IEmptyStateConfiguration;
 	enableInlineAddModeSetting?: {

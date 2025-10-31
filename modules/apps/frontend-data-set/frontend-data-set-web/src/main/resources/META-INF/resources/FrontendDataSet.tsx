@@ -83,7 +83,7 @@ import {
 	VisibleFieldNames,
 } from './utils/types';
 import useConfigInURL, {useUpdateConfig} from './utils/useConfigInURL';
-import ViewsContext from './views/ViewsContext';
+import ViewsContext, {ICustomView} from './views/ViewsContext';
 
 // @ts-ignore
 
@@ -108,8 +108,9 @@ const FrontendDataSetContent = ({
 	currentURL,
 	customDataRenderers,
 	customRenderers,
-	customViews = '{}',
+	customViews = [],
 	customViewsEnabled,
+	dataSetERC,
 	defaultSelectedItems,
 	emptyState,
 	filters: initialFilters,
@@ -636,9 +637,18 @@ const FrontendDataSetContent = ({
 			});
 		}
 
+		const parsedCustomViews = customViews?.map(
+			(customView: ICustomView) => {
+				return {
+					...customView,
+					customViewConfig: JSON.parse(customView.customViewConfig),
+				};
+			}
+		);
+
 		return {
 			activeView,
-			customViews: customViews && JSON.parse(customViews),
+			customViews: parsedCustomViews,
 			customViewsEnabled,
 			defaultView: {
 				activeView,
@@ -1714,6 +1724,7 @@ const FrontendDataSetContent = ({
 				createInlineItem,
 				customDataRenderers,
 				customRenderers,
+				dataSetERC,
 				executeAsyncItemAction,
 				formId,
 				formName,

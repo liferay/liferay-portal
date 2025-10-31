@@ -26,6 +26,7 @@ export interface IFrontendDataSetContext {
 		tableCell?: Array<TRenderer>;
 		views?: Array<TRenderer>;
 	};
+	dataSetERC?: string;
 	executeAsyncItemAction: ({
 		errorMessage,
 		method,

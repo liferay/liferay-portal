@@ -13,11 +13,14 @@ import {
 	openModal,
 	openToast,
 } from 'frontend-js-components-web';
-import {fetch, objectToFormData} from 'frontend-js-web';
+import {fetch} from 'frontend-js-web';
 import React, {Ref, useContext, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
-import ViewsContext from '../../views/ViewsContext';
+import {DEFAULT_FETCH_HEADERS} from '../../constants';
+import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
+import getRandomId from '../../utils/getRandomId';
+import ViewsContext, {ICustomView} from '../../views/ViewsContext';
 import {EViewsActionTypes} from '../../views/viewsReducer';
 
 const DEFAULT_VIEW_ID = 'DEFAULT_VIEW';
@@ -63,12 +66,7 @@ const CustomViewsControlsTrigger = React.forwardRef(
 );
 
 const CustomViewsControls = () => {
-	const {
-		appURL,
-		id: fdsName,
-		namespace,
-		portletId,
-	} = useContext(FrontendDataSetContext);
+	const {dataSetERC, namespace} = useContext(FrontendDataSetContext);
 	const [
 		{
 			activeCustomViewId,
@@ -85,6 +83,19 @@ const CustomViewsControls = () => {
 
 	const [actionsDropdownActive, setActionsDropdownActive] = useState(false);
 
+	const defaultCustomView = {
+		customViewERC: DEFAULT_VIEW_ID,
+		customViewLabel: Liferay.Language.get('default-view'),
+	};
+
+	const activeCustomView: ICustomView =
+		(customViews.length &&
+			activeCustomViewId &&
+			customViews.find(
+				(view: ICustomView) => view.customViewERC === activeCustomViewId
+			)) ||
+		defaultCustomView;
+
 	const customViewLabelInputRef =
 		useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -99,8 +110,9 @@ const CustomViewsControls = () => {
 			<ClayInput
 				autoFocus={true}
 				defaultValue={
-					activeCustomViewId &&
-					customViews[activeCustomViewId].customViewLabel
+					activeCustomView?.customViewERC !== DEFAULT_VIEW_ID
+						? activeCustomView?.customViewLabel
+						: ''
 				}
 				id={`${namespace}customViewLabelInput`}
 				ref={customViewLabelInputRef}
@@ -109,50 +121,54 @@ const CustomViewsControls = () => {
 		</ClayForm.Group>
 	);
 
-	const getNextCustomViewId = () => {
-		const ids = Object.keys(customViews);
-
-		let nextId = 1;
-
-		if (ids.length) {
-			nextId = Math.max(...ids.map((item) => Number(item))) + 1;
-		}
-
-		return String(nextId);
-	};
-
 	const saveCustomView = ({
 		id,
 		label,
 		processClose,
 	}: {
-		id: string;
+		id?: string;
 		label?: string;
 		processClose?: Function;
 	}) => {
-		const url = new URL(`${appURL}/fds/${fdsName}/custom-views`);
+		let method;
+		let url: string;
 
-		portletId && url.searchParams.append('portletId', portletId);
+		if (!id) {
+			method = 'POST';
+			url = getDataSetResourceURL({
+				dataSetERC,
+				relationship: 'dataSetToDataSetCustomViews',
+			});
+		}
+		else {
+			method = 'PATCH';
+			url = getDataSetResourceURL({
+				dataSetERC,
+				relatedResourceERC: activeCustomView.customViewERC,
+				relationship: 'dataSetToDataSetCustomViews',
+			});
+		}
+
+		const customViewId = !id ? getRandomId() : id;
 
 		const viewState = {
 			activeView,
-			customViewLabel: label ?? customViews[id].customViewLabel,
 			filters,
 			paginationDelta,
 			sorts,
 			visibleFieldNames,
 		};
 
-		fetch(url.toString(), {
-			body: JSON.stringify({
-				customViewId: id,
-				viewState,
-			}),
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-			method: 'POST',
+		const body = {
+			customViewConfig: JSON.stringify(viewState),
+			externalReferenceCode: customViewId,
+			label: label || activeCustomView.customViewLabel,
+		};
+
+		fetch(url, {
+			body: JSON.stringify(body),
+			headers: DEFAULT_FETCH_HEADERS,
+			method,
 		})
 			.then((response) => {
 				if (response.ok) {
@@ -170,8 +186,9 @@ const CustomViewsControls = () => {
 					viewsDispatch({
 						type: EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW,
 						value: {
-							id,
-							viewState,
+							customViewConfig: viewState,
+							customViewERC: customViewId,
+							customViewLabel: label,
 						},
 					});
 				}
@@ -207,7 +224,6 @@ const CustomViewsControls = () => {
 					label: Liferay.Language.get('save'),
 					onClick: ({processClose}) => {
 						saveCustomView({
-							id: getNextCustomViewId(),
 							label: customViewLabelInputRef.current.value,
 							processClose,
 						});
@@ -225,17 +241,18 @@ const CustomViewsControls = () => {
 		label: string;
 		processClose: Function;
 	}) => {
-		const url = new URL(
-			`${appURL}/fds/${fdsName}/custom-views/${activeCustomViewId}/label`
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relatedResourceERC: activeCustomView.customViewERC,
+			relationship: 'dataSetToDataSetCustomViews',
+		});
 
-		portletId && url.searchParams.append('portletId', portletId);
-
-		fetch(url.toString(), {
-			body: objectToFormData({
-				customViewLabel: label,
+		fetch(url, {
+			body: JSON.stringify({
+				label,
 			}),
-			method: 'POST',
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
 		})
 			.then((response) => {
 				if (response.ok) {
@@ -300,11 +317,13 @@ const CustomViewsControls = () => {
 	};
 
 	const deleteCustomView = ({id}: {id: string}) => {
-		const url = new URL(`${appURL}/fds/${fdsName}/custom-views/${id}`);
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relatedResourceERC: activeCustomView.customViewERC,
+			relationship: 'dataSetToDataSetCustomViews',
+		});
 
-		portletId && url.searchParams.append('portletId', portletId);
-
-		fetch(url.toString(), {
+		fetch(url, {
 			method: 'DELETE',
 		})
 			.then((response) => {
@@ -370,8 +389,8 @@ const CustomViewsControls = () => {
 		});
 	};
 
-	const handleSelectionChange = (id: string) => {
-		if (id === DEFAULT_VIEW_ID) {
+	const handleSelectionChange = (value: React.Key) => {
+		if (value === DEFAULT_VIEW_ID) {
 			viewsDispatch({
 				type: EViewsActionTypes.RESET_TO_DEFAULT_VIEW,
 			});
@@ -379,7 +398,7 @@ const CustomViewsControls = () => {
 		else {
 			viewsDispatch({
 				type: EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW,
-				value: id,
+				value,
 			});
 		}
 	};
@@ -389,7 +408,7 @@ const CustomViewsControls = () => {
 			<ManagementToolbar.Item>
 				<Picker
 					as={CustomViewsControlsTrigger}
-					items={[...Object.keys(customViews), DEFAULT_VIEW_ID]}
+					items={[defaultCustomView, ...customViews]}
 					messages={{
 						itemDescribedby: Liferay.Language.get(
 							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
@@ -400,24 +419,18 @@ const CustomViewsControls = () => {
 						scrollToTopAriaLabel:
 							Liferay.Language.get('scroll-to-top'),
 					}}
-					onSelectionChange={() =>
-						handleSelectionChange(
-							activeCustomViewId ?? DEFAULT_VIEW_ID
-						)
-					}
-					selectedKey={activeCustomViewId ?? DEFAULT_VIEW_ID}
+					onSelectionChange={handleSelectionChange}
+					selectedKey={activeCustomView.customViewERC}
 					triggerLabel={
 						activeCustomViewId
-							? customViews[activeCustomViewId].customViewLabel
+							? activeCustomView.customViewLabel
 							: Liferay.Language.get('default-view')
 					}
 					viewUpdated={viewUpdated}
 				>
-					{(id) => (
-						<Option key={id}>
-							{id === DEFAULT_VIEW_ID
-								? Liferay.Language.get('default-view')
-								: customViews[id].customViewLabel}
+					{(view) => (
+						<Option key={view.customViewERC}>
+							{view.customViewLabel}
 						</Option>
 					)}
 				</Picker>

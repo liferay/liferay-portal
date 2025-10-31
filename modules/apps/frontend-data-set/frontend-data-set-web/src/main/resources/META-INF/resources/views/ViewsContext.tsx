@@ -8,7 +8,7 @@ import {createContext} from 'react';
 export interface IViewsContext {
 	activeCustomViewId: null | string;
 	activeView: any;
-	customViews: any;
+	customViews: Array<ICustomView>;
 	customViewsEnabled: boolean;
 	filters: Array<any>;
 	modifiedFields: any;
@@ -17,6 +17,12 @@ export interface IViewsContext {
 	viewUpdated: boolean;
 	views: Array<any>;
 	visibleFieldNames: any;
+}
+
+export interface ICustomView {
+	customViewConfig?: any;
+	customViewERC: string;
+	customViewLabel: string;
 }
 
 export type TViewsContextDispatch = ({
@@ -31,7 +37,7 @@ const ViewsContext = createContext<[IViewsContext, any]>([
 	{
 		activeCustomViewId: null,
 		activeView: null,
-		customViews: {},
+		customViews: [],
 		customViewsEnabled: false,
 		filters: [],
 		modifiedFields: {},
