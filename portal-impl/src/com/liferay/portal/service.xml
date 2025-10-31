@@ -2543,7 +2543,7 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection" where="type_ = 1">
+		<finder name="CompanyId" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
 		</finder>
 		<finder name="ContactId" return-type="User" unique="true">
@@ -2555,7 +2555,7 @@
 		<finder name="PortraitId" return-type="Collection">
 			<finder-column name="portraitId" />
 		</finder>
-		<finder db-index="false" name="GtU_C" return-type="Collection" where="type_ = 1">
+		<finder db-index="false" name="GtU_C" return-type="Collection" where="type = 1">
 			<finder-column comparator="&gt;" name="userId" />
 			<finder-column name="companyId" />
 		</finder>
@@ -2563,11 +2563,11 @@
 			<finder-column name="companyId" />
 			<finder-column name="userId" />
 		</finder>
-		<finder name="C_CD" return-type="Collection" where="type_ = 1">
+		<finder name="C_CD" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
 			<finder-column name="createDate" />
 		</finder>
-		<finder name="C_MD" return-type="Collection" where="type_ = 1">
+		<finder name="C_MD" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
 			<finder-column name="modifiedDate" />
 		</finder>
@@ -2587,11 +2587,11 @@
 			<finder-column name="companyId" />
 			<finder-column name="type" />
 		</finder>
-		<finder name="C_S" return-type="Collection" where="type_ = 1">
+		<finder name="C_S" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="C_CD_MD" return-type="Collection" where="type_ = 1">
+		<finder name="C_CD_MD" return-type="Collection" where="type = 1">
 			<finder-column name="companyId" />
 			<finder-column name="createDate" />
 			<finder-column name="modifiedDate" />

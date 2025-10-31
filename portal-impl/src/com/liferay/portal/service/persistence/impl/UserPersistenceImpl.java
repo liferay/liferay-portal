@@ -1727,7 +1727,7 @@ public class UserPersistenceImpl
 	}
 
 	private static final String _FINDER_COLUMN_COMPANYID_COMPANYID_2 =
-		"user.companyId = ? AND type_ = 1";
+		"user.companyId = ? AND user.type = 1";
 
 	private FinderPath _finderPathFetchByContactId;
 
@@ -3318,7 +3318,7 @@ public class UserPersistenceImpl
 		"user.userId > ? AND ";
 
 	private static final String _FINDER_COLUMN_GTU_C_COMPANYID_2 =
-		"user.companyId = ? AND type_ = 1";
+		"user.companyId = ? AND user.type = 1";
 
 	private FinderPath _finderPathFetchByC_U;
 
@@ -4084,10 +4084,10 @@ public class UserPersistenceImpl
 		"user.companyId = ? AND ";
 
 	private static final String _FINDER_COLUMN_C_CD_CREATEDATE_1 =
-		"user.createDate IS NULL AND type_ = 1";
+		"user.createDate IS NULL AND user.type = 1";
 
 	private static final String _FINDER_COLUMN_C_CD_CREATEDATE_2 =
-		"user.createDate = ? AND type_ = 1";
+		"user.createDate = ? AND user.type = 1";
 
 	private FinderPath _finderPathWithPaginationFindByC_MD;
 	private FinderPath _finderPathWithoutPaginationFindByC_MD;
@@ -4675,10 +4675,10 @@ public class UserPersistenceImpl
 		"user.companyId = ? AND ";
 
 	private static final String _FINDER_COLUMN_C_MD_MODIFIEDDATE_1 =
-		"user.modifiedDate IS NULL AND type_ = 1";
+		"user.modifiedDate IS NULL AND user.type = 1";
 
 	private static final String _FINDER_COLUMN_C_MD_MODIFIEDDATE_2 =
-		"user.modifiedDate = ? AND type_ = 1";
+		"user.modifiedDate = ? AND user.type = 1";
 
 	private FinderPath _finderPathFetchByC_SN;
 
@@ -6705,7 +6705,7 @@ public class UserPersistenceImpl
 		"user.companyId = ? AND ";
 
 	private static final String _FINDER_COLUMN_C_S_STATUS_2 =
-		"user.status = ? AND type_ = 1";
+		"user.status = ? AND user.type = 1";
 
 	private FinderPath _finderPathWithPaginationFindByC_CD_MD;
 	private FinderPath _finderPathWithoutPaginationFindByC_CD_MD;
@@ -7373,10 +7373,10 @@ public class UserPersistenceImpl
 		"user.createDate = ? AND ";
 
 	private static final String _FINDER_COLUMN_C_CD_MD_MODIFIEDDATE_1 =
-		"user.modifiedDate IS NULL AND type_ = 1";
+		"user.modifiedDate IS NULL AND user.type = 1";
 
 	private static final String _FINDER_COLUMN_C_CD_MD_MODIFIEDDATE_2 =
-		"user.modifiedDate = ? AND type_ = 1";
+		"user.modifiedDate = ? AND user.type = 1";
 
 	private FinderPath _finderPathWithPaginationFindByC_T_S;
 	private FinderPath _finderPathWithoutPaginationFindByC_T_S;
