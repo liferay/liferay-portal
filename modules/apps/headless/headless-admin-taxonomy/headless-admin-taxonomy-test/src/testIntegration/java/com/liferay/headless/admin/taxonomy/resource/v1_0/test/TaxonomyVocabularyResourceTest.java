@@ -7,6 +7,7 @@ package com.liferay.headless.admin.taxonomy.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.depot.constants.DepotConstants;
@@ -291,7 +292,9 @@ public class TaxonomyVocabularyResourceTest
 					assetVocabulary.getGroupId());
 
 		Assert.assertEquals(updatedName, assetVocabulary.getName());
-		Assert.assertEquals(0, assetVocabulary.getVisibilityType());
+		Assert.assertEquals(
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC,
+			assetVocabulary.getVisibilityType());
 	}
 
 	@Override
