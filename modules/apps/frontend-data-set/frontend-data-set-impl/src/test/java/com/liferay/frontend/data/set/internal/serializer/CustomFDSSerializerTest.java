@@ -413,7 +413,9 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 					"clientExtensionFilterURL",
 					"/o/" + cetExternalReferenceCode + "/index.js"
 				).put(
-					"entityFieldType", "string"
+					"entityFieldType", FDSEntityFieldTypes.STRING
+				).put(
+					"entityFieldTypeCollection", false
 				).put(
 					"id", FIELD_NAMES[0]
 				).put(
@@ -570,6 +572,12 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		_mockSerializeFilters(
 			FDS_NAMES[0],
 			HashMapBuilder.<String, Object>put(
+				"autocompleteEnabled", true
+			).put(
+				"entityFieldType", FDSEntityFieldTypes.STRING
+			).put(
+				"entityFieldTypeCollection", false
+			).put(
 				"fieldName", FIELD_NAMES[0]
 			).put(
 				"include", true
@@ -609,7 +617,9 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 				).put(
 					"autocompleteEnabled", true
 				).put(
-					"entityFieldType", "string"
+					"entityFieldType", FDSEntityFieldTypes.STRING
+				).put(
+					"entityFieldTypeCollection", FDSEntityFieldTypes.COLLECTION
 				).put(
 					"id", FIELD_NAMES[0]
 				).put(
