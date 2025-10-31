@@ -38,7 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.engine.jdbc.batch.internal.BatchingBatch;
 import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 
 import org.junit.Assert;
@@ -135,16 +134,6 @@ public class RedirectNotFoundEntryLocalServiceTest {
 					)
 				},
 				level = "ERROR", loggerClass = SqlExceptionHelper.class
-			),
-			@ExpectedLogs(
-				expectedLogs = {
-					@ExpectedLog(
-						expectedDBType = ExpectedDBType.NONE,
-						expectedLog = "HHH000315: Exception executing batch [java.sql.BatchUpdateException",
-						expectedType = ExpectedType.PREFIX
-					)
-				},
-				level = "ERROR", loggerClass = BatchingBatch.class
 			)
 		}
 	)

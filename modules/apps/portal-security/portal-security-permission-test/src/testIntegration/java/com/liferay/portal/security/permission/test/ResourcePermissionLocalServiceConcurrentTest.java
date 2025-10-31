@@ -44,7 +44,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-import org.hibernate.engine.jdbc.batch.internal.BatchingBatch;
 import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 
 import org.junit.Assert;
@@ -187,16 +186,6 @@ public class ResourcePermissionLocalServiceConcurrentTest {
 					)
 				},
 				level = "ERROR", loggerClass = SqlExceptionHelper.class
-			),
-			@ExpectedLogs(
-				expectedLogs = {
-					@ExpectedLog(
-						expectedDBType = ExpectedDBType.NONE,
-						expectedLog = "HHH000315: Exception executing batch [java.sql.BatchUpdateException",
-						expectedType = ExpectedType.PREFIX
-					)
-				},
-				level = "ERROR", loggerClass = BatchingBatch.class
 			)
 		}
 	)
