@@ -145,6 +145,13 @@ public class SystemFDSSerializer
 	}
 
 	@Override
+	public JSONArray serializeCustomViews(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		return JSONUtil.putAll();
+	}
+
+	@Override
 	public JSONArray serializeFilters(
 		List<FDSFilter> fdsFilters, String fdsName,
 		HttpServletRequest httpServletRequest) {

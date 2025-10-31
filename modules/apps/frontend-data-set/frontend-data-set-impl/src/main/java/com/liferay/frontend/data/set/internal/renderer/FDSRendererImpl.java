@@ -110,6 +110,9 @@ public class FDSRendererImpl implements FDSRenderer {
 			}
 		}
 		else {
+			Boolean customViewsEnabled = (boolean)props.get(
+				"customViewsEnabled");
+
 			props.putAll(
 				HashMapBuilder.<String, Object>put(
 					"additionalAPIURLParameters",
@@ -166,6 +169,21 @@ public class FDSRendererImpl implements FDSRenderer {
 					}
 				).put(
 					"currentURL", _portal.getCurrentURL(httpServletRequest)
+				).put(
+					"customViews",
+					() -> {
+						JSONArray customViewsJSONArray =
+							fdsSerializer.serializeCustomViews(
+								fdsName, httpServletRequest);
+
+						if (JSONUtil.isEmpty(customViewsJSONArray)) {
+							return null;
+						}
+
+						return customViewsJSONArray;
+					}
+				).put(
+					"customViewsEnabled", customViewsEnabled
 				).put(
 					"filters",
 					() -> {

@@ -298,6 +298,20 @@ public class CustomFDSSerializer
 	}
 
 	@Override
+	public JSONArray serializeCustomViews(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		try {
+			return _serializeCustomViews(fdsName, httpServletRequest);
+		}
+		catch (Exception exception) {
+			_log.error("Unable to serialize custom views", exception);
+
+			return _jsonFactory.createJSONArray();
+		}
+	}
+
+	@Override
 	public JSONArray serializeFilters(
 		List<FDSFilter> fdsFilters, String fdsName,
 		HttpServletRequest httpServletRequest) {
@@ -965,6 +979,33 @@ public class CustomFDSSerializer
 		}
 
 		return false;
+	}
+
+	private JSONArray _serializeCustomViews(
+			String fdsName, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		List<ObjectEntry> objectEntries = getRelatedObjectEntries(
+			fdsName, httpServletRequest, (Predicate)null,
+			"dataSetToDataSetCustomViews");
+
+		if (objectEntries.isEmpty()) {
+			return null;
+		}
+
+		return JSONUtil.toJSONArray(
+			objectEntries,
+			(ObjectEntry objectEntry) -> {
+				Map<String, Object> properties = objectEntry.getProperties();
+
+				return JSONUtil.put(
+					"customViewConfig", properties.get("customViewConfig")
+				).put(
+					"customViewERC", objectEntry.getExternalReferenceCode()
+				).put(
+					"customViewLabel", String.valueOf(properties.get("label"))
+				);
+			});
 	}
 
 	private JSONObject _serializeFilter(

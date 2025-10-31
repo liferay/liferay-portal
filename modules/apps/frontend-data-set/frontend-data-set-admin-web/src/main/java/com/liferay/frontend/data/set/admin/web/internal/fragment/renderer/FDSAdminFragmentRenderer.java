@@ -52,6 +52,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -183,11 +184,18 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 				return;
 			}
 
+			Map<String, Object> properties = dataSetObjectEntry.getProperties();
+
 			if (!FeatureFlagManagerUtil.isEnabled(
 					_portal.getCompanyId(httpServletRequest), "LPD-38564")) {
 
 				_fdsRenderer.render(
 					HashMapBuilder.<String, Object>put(
+						"customViewsEnabled",
+						properties.get("customViewsEnabled")
+					).put(
+						"dataSetERC", externalReferenceCode
+					).put(
 						"namespace",
 						fragmentRendererContext.getFragmentElementId()
 					).put(
@@ -228,6 +236,11 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 
 				_fdsRenderer.render(
 					HashMapBuilder.<String, Object>put(
+						"customViewsEnabled",
+						properties.get("customViewsEnabled")
+					).put(
+						"dataSetERC", externalReferenceCode
+					).put(
 						"namespace",
 						fragmentRendererContext.getFragmentElementId()
 					).put(

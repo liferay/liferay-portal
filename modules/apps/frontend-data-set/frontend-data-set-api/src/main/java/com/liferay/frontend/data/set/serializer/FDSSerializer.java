@@ -59,6 +59,9 @@ public interface FDSSerializer {
 	public CreationMenu serializeCreationMenu(
 		String fdsName, HttpServletRequest httpServletRequest);
 
+	public JSONArray serializeCustomViews(
+		String fdsName, HttpServletRequest httpServletRequest);
+
 	public JSONArray serializeFilters(
 		List<FDSFilter> fdsFilters, String fdsName,
 		HttpServletRequest httpServletRequest);
