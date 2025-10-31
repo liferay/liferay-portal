@@ -70,13 +70,13 @@ public class EditAssetVocabularyMVCActionCommand extends BaseMVCActionCommand {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			AssetVocabulary.class.getName(), actionRequest);
 
-		int visibilityType = ParamUtil.getInteger(
-			actionRequest, "visibilityType",
-			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
-
 		if (vocabularyId <= 0) {
 
 			// Add vocabulary
+
+			int visibilityType = ParamUtil.getInteger(
+				actionRequest, "visibilityType",
+				AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
 
 			vocabulary = _assetVocabularyService.addVocabulary(
 				serviceContext.getScopeGroupId(), StringPool.BLANK, titleMap,
@@ -87,9 +87,12 @@ public class EditAssetVocabularyMVCActionCommand extends BaseMVCActionCommand {
 
 			// Update vocabulary
 
+			vocabulary = _assetVocabularyService.getVocabulary(vocabularyId);
+
 			vocabulary = _assetVocabularyService.updateVocabulary(
 				vocabularyId, StringPool.BLANK, titleMap, descriptionMap,
-				_getSettings(actionRequest), visibilityType, serviceContext);
+				_getSettings(actionRequest), vocabulary.getVisibilityType(),
+				serviceContext);
 		}
 
 		actionRequest.setAttribute(
