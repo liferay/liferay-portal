@@ -1373,7 +1373,7 @@ public class AssetVocabularyServiceHttp {
 				HttpPrincipal httpPrincipal, long vocabularyId, String title,
 				java.util.Map<java.util.Locale, String> titleMap,
 				java.util.Map<java.util.Locale, String> descriptionMap,
-				String settings,
+				String settings, int visibilityType,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1384,7 +1384,7 @@ public class AssetVocabularyServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, vocabularyId, title, titleMap, descriptionMap,
-				settings, serviceContext);
+				settings, visibilityType, serviceContext);
 
 			Object returnObj = null;
 
@@ -1536,7 +1536,8 @@ public class AssetVocabularyServiceHttp {
 	private static final Class<?>[] _updateVocabularyParameterTypes33 =
 		new Class[] {
 			long.class, String.class, java.util.Map.class, java.util.Map.class,
-			String.class, com.liferay.portal.kernel.service.ServiceContext.class
+			String.class, int.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 
 }
