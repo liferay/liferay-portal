@@ -69,6 +69,23 @@
 					"type": "Clob"
 				},
 				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": false,
+					"externalReferenceCode": "CUSTOM_VIEWS_ENABLED",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Custom Views Enabled"
+					},
+					"localized": false,
+					"name": "customViewsEnabled",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
 					"DBType": "Integer",
 					"businessType": "Integer",
 					"externalReferenceCode": "DEFAULT_ITEMS_PER_PAGE",
@@ -328,6 +345,24 @@
 					"objectDefinitionExternalReferenceCode1": "L_DATA_SET",
 					"objectDefinitionExternalReferenceCode2": "L_DATA_SET_CLIENT_EXTENSION_FILTER",
 					"objectDefinitionName2": "DataSetClientExtensionFilter",
+					"objectDefinitionSystem2": true,
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				},
+				{
+					"deletionType": "cascade",
+					"edge": true,
+					"externalReferenceCode": "L_DATA_SET_TO_DATA_SET_CUSTOM_VIEWS",
+					"label": {
+						"en_US": "Data Set to Data Set Custom Views"
+					},
+					"name": "dataSetToDataSetCustomViews",
+					"objectDefinitionExternalReferenceCode1": "L_DATA_SET",
+					"objectDefinitionExternalReferenceCode2": "L_DATA_SET_CUSTOM_VIEW",
+					"objectDefinitionName2": "DataSetCustomView",
 					"objectDefinitionSystem2": true,
 					"parameterObjectFieldId": 0,
 					"parameterObjectFieldName": "",
@@ -876,6 +911,77 @@
 		},
 		{
 			"enableFormContainer": false,
+			"enableLocalization": true,
+			"externalReferenceCode": "L_DATA_SET_CUSTOM_VIEW",
+			"label": {
+				"en_US": "Data Set Custom View"
+			},
+			"modifiable": true,
+			"name": "DataSetCustomView",
+			"objectFields": [
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": true,
+					"externalReferenceCode": "ACTIVE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Active"
+					},
+					"localized": false,
+					"name": "active",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "LABEL",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Label"
+					},
+					"localized": false,
+					"name": "label",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "CUSTOM_VIEW_CONFIG",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Custom View Config"
+					},
+					"localized": false,
+					"name": "customViewConfig",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Clob"
+				}
+			],
+			"panelCategoryKey": "",
+			"pluralLabel": {
+				"en_US": "Data Set Custom Views"
+			},
+			"portlet": false,
+			"rootObjectDefinitionExternalReferenceCode": "L_DATA_SET",
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true
+		},
+		{
 			"enableLocalization": true,
 			"externalReferenceCode": "L_DATA_SET_DATE_FILTER",
 			"label": {

@@ -149,6 +149,8 @@ public class ObjectDefinitionUtil {
 			"DataSetClientExtensionFilter",
 			"/data-set-admin/client-extension-filters"
 		).put(
+			"DataSetCustomView", "/data-set-admin/custom-views"
+		).put(
 			"DataSetDateFilter", "/data-set-admin/date-filters"
 		).put(
 			"DataSetListSection", "/data-set-admin/list-sections"
