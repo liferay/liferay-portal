@@ -519,7 +519,7 @@ public class AssetVocabularyLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public AssetVocabulary updateVocabulary(
-			long vocabularyId, String name, Map<Locale, String> titleMap,
+			long vocabularyId, String title, Map<Locale, String> titleMap,
 			Map<Locale, String> descriptionMap, String settings,
 			int visibilityType, ServiceContext serviceContext)
 		throws PortalException {
@@ -527,8 +527,12 @@ public class AssetVocabularyLocalServiceImpl
 		AssetVocabulary vocabulary =
 			assetVocabularyPersistence.findByPrimaryKey(vocabularyId);
 
-		vocabulary.setName(name);
 		vocabulary.setTitleMap(_getTrimmedTitleMap(titleMap));
+
+		if (Validator.isNotNull(title)) {
+			vocabulary.setTitle(title);
+		}
+
 		vocabulary.setDescriptionMap(descriptionMap);
 		vocabulary.setSettings(settings);
 		vocabulary.setVisibilityType(visibilityType);
