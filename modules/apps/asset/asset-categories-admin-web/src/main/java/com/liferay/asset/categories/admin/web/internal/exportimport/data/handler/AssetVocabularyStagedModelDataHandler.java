@@ -228,7 +228,7 @@ public class AssetVocabularyStagedModelDataHandler
 				_getVocabularyTitleMap(
 					portletDataContext.getScopeGroupId(), vocabulary, name),
 				vocabulary.getDescriptionMap(), vocabulary.getSettings(),
-				serviceContext);
+				vocabulary.getVisibilityType(), serviceContext);
 		}
 
 		Map<Long, Long> vocabularyIds =
