@@ -10,6 +10,9 @@ import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserU
 import com.liferay.headless.admin.site.client.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ColorPaletteFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ColorPaletteValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContextualMenuNavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemFragmentConfigurationFieldValue;
@@ -154,6 +157,72 @@ public class FragmentConfigurationFieldValueTestUtil {
 	}
 
 	private static FragmentConfigurationFieldValue
+		_getColorPaletteConfigurationFieldValue(
+			boolean localizable, Object object) {
+
+		ColorPaletteFragmentConfigurationFieldValue
+			colorPaletteFragmentConfigurationFieldValue =
+				new ColorPaletteFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.COLOR_PALETTE);
+					}
+				};
+
+		if (localizable) {
+			colorPaletteFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					_getColorPaletteValue((Map<String, String>)object)
+				).build());
+		}
+		else {
+			colorPaletteFragmentConfigurationFieldValue.setValue(
+				_getColorPaletteValue((Map<String, String>)object));
+		}
+
+		return colorPaletteFragmentConfigurationFieldValue;
+	}
+
+	private static ColorPaletteValue _getColorPaletteValue(
+		Map<String, String> map) {
+
+		ColorPaletteValue colorPaletteValue = new ColorPaletteValue();
+
+		colorPaletteValue.setColor(map.get("color"));
+		colorPaletteValue.setCssClass(map.get("cssClass"));
+		colorPaletteValue.setRgbValue(map.get("rgbValue"));
+
+		return colorPaletteValue;
+	}
+
+	private static FragmentConfigurationFieldValue
+		_getColorPickerFragmentConfigurationFieldValue(
+			boolean localizable, Object object) {
+
+		ColorPickerFragmentConfigurationFieldValue
+			colorPickerFragmentConfigurationFieldValue =
+				new ColorPickerFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.COLOR_PICKER);
+					}
+				};
+
+		if (localizable) {
+			colorPickerFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					GetterUtil.getString(object)
+				).build());
+		}
+		else {
+			colorPickerFragmentConfigurationFieldValue.setValue(
+				GetterUtil.getString(object));
+		}
+
+		return colorPickerFragmentConfigurationFieldValue;
+	}
+
+	private static FragmentConfigurationFieldValue
 		_getFragmentConfigurationFieldValue(
 			FragmentConfigurationField fragmentConfigurationField,
 			long scopeGroupId, Object value) {
@@ -175,6 +244,16 @@ public class FragmentConfigurationFieldValueTestUtil {
 			return _getCollectionFragmentConfigurationFieldValue(
 				fragmentConfigurationField.isLocalizable(), value,
 				scopeGroupId);
+		}
+
+		if (Objects.equals(type, "colorPalette")) {
+			return _getColorPaletteConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value);
+		}
+
+		if (Objects.equals(type, "colorPicker")) {
+			return _getColorPickerFragmentConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value);
 		}
 
 		if (Objects.equals(type, "itemSelector")) {
