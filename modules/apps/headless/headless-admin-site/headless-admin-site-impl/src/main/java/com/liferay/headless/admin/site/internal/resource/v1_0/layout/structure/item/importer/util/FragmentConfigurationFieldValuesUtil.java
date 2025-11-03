@@ -13,11 +13,13 @@ import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserUtil;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.CollectionFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.LengthFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.SelectFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.TextFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CollectionUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentConfigurationFieldValueTypeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.LocalizedValueUtil;
@@ -123,6 +125,27 @@ public class FragmentConfigurationFieldValuesUtil {
 				fragmentConfigurationField.isLocalizable(),
 				checkboxFragmentConfigurationFieldValue.getValue(),
 				checkboxFragmentConfigurationFieldValue.getValue_i18n());
+		}
+
+		if (Objects.equals(
+				fragmentConfigurationFieldValue.getType(),
+				FragmentConfigurationFieldValue.Type.COLLECTION)) {
+
+			CollectionFragmentConfigurationFieldValue
+				collectionFragmentConfigurationFieldValue =
+					(CollectionFragmentConfigurationFieldValue)
+						fragmentConfigurationFieldValue;
+
+			return _getConfigurationJSONObject(
+				fragmentConfigurationField.isLocalizable(),
+				collectionReference -> CollectionUtil.getCollectionJSONObject(
+					collectionReference,
+					layoutStructureItemImporterContext.getCompanyId(),
+					layoutStructureItemImporterContext.
+						getInfoItemServiceRegistry(),
+					layoutStructureItemImporterContext.getGroupId()),
+				collectionFragmentConfigurationFieldValue.getValue(),
+				collectionFragmentConfigurationFieldValue.getValue_i18n());
 		}
 
 		if (Objects.equals(
