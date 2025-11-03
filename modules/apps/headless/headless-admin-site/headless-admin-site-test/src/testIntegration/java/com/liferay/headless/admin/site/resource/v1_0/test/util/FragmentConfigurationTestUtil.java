@@ -78,6 +78,8 @@ public class FragmentConfigurationTestUtil {
 		).put(
 			"checkbox", "string"
 		).put(
+			"collectionSelector", "object"
+		).put(
 			"length", "string"
 		).put(
 			"select", "string"

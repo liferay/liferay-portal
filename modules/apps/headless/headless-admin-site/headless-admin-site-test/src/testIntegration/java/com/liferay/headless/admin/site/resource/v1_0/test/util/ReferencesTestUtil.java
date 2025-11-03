@@ -7,8 +7,13 @@ package com.liferay.headless.admin.site.resource.v1_0.test.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.headless.admin.site.client.dto.v1_0.ClassNameReference;
+import com.liferay.headless.admin.site.client.dto.v1_0.CollectionItemExternalReference;
+import com.liferay.headless.admin.site.client.dto.v1_0.CollectionReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.Scope;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Map;
 
@@ -16,6 +21,60 @@ import java.util.Map;
  * @author Lourdes Fernández Besada
  */
 public class ReferencesTestUtil {
+
+	public static CollectionReference getCollectionReference(
+		Object object, long scopeGroupId) {
+
+		if (object == null) {
+			return null;
+		}
+
+		if (object instanceof String) {
+			return new ClassNameReference() {
+				{
+					setClassName(() -> GetterUtil.getString(object));
+					setCollectionType(() -> CollectionType.COLLECTION_PROVIDER);
+				}
+			};
+		}
+
+		if (object instanceof AssetListEntry) {
+			AssetListEntry assetListEntry = (AssetListEntry)object;
+
+			return new CollectionItemExternalReference() {
+				{
+					setCollectionType(() -> CollectionType.COLLECTION);
+					setExternalReferenceCode(
+						assetListEntry::getExternalReferenceCode);
+					setScope(
+						() -> ScopeTestUtil.getItemScope(
+							assetListEntry.getGroupId(), scopeGroupId));
+				}
+			};
+		}
+
+		if (object instanceof Map) {
+			Map<String, String> map = (Map<String, String>)object;
+
+			return new CollectionItemExternalReference() {
+				{
+					setCollectionType(() -> CollectionType.COLLECTION);
+					setExternalReferenceCode(
+						() -> map.get("externalReferenceCode"));
+					setScope(
+						() -> new Scope() {
+							{
+								setExternalReferenceCode(
+									map.get("scopeExternalReferenceCode"));
+								setType(Type.SITE);
+							}
+						});
+				}
+			};
+		}
+
+		return null;
+	}
 
 	public static ItemExternalReference getItemExternalReference(
 		Object object, long scopeGroupId) {

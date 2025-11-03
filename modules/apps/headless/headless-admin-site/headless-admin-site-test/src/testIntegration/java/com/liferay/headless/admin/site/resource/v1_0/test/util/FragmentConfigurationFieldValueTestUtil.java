@@ -9,6 +9,7 @@ import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserUtil;
 import com.liferay.headless.admin.site.client.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.CollectionFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.LengthFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.SelectFragmentConfigurationFieldValue;
@@ -115,6 +116,35 @@ public class FragmentConfigurationFieldValueTestUtil {
 	}
 
 	private static FragmentConfigurationFieldValue
+		_getCollectionFragmentConfigurationFieldValue(
+			boolean localizable, Object object, long scopeGroupId) {
+
+		CollectionFragmentConfigurationFieldValue
+			collectionFragmentConfigurationFieldValue =
+				new CollectionFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.COLLECTION);
+					}
+				};
+
+		if (localizable) {
+			collectionFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					ReferencesTestUtil.getCollectionReference(
+						object, scopeGroupId)
+				).build());
+		}
+		else {
+			collectionFragmentConfigurationFieldValue.setValue(
+				ReferencesTestUtil.getCollectionReference(
+					object, scopeGroupId));
+		}
+
+		return collectionFragmentConfigurationFieldValue;
+	}
+
+	private static FragmentConfigurationFieldValue
 		_getFragmentConfigurationFieldValue(
 			FragmentConfigurationField fragmentConfigurationField,
 			long scopeGroupId, Object value) {
@@ -130,6 +160,12 @@ public class FragmentConfigurationFieldValueTestUtil {
 		if (Objects.equals(type, "checkbox")) {
 			return _getCheckboxFragmentConfigurationFieldValue(
 				fragmentConfigurationField.isLocalizable(), value);
+		}
+
+		if (Objects.equals(type, "collectionSelector")) {
+			return _getCollectionFragmentConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value,
+				scopeGroupId);
 		}
 
 		if (Objects.equals(type, "length")) {
