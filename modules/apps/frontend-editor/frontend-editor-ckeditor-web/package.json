@@ -61,6 +61,8 @@
 		"@ckeditor/ckeditor5-watchdog": "46.0.2",
 		"@ckeditor/ckeditor5-widget": "46.0.2",
 		"@ckeditor/ckeditor5-word-count": "46.0.2",
+		"@clayui/drop-down": "3.151.0",
+		"@clayui/icon": "3.144.1",
 		"@clayui/loading-indicator": "3.144.1",
 		"@liferay/cookies-banner-web": "*",
 		"@liferay/frontend-data-set-web": "*",
@@ -69,11 +71,13 @@
 		"ckeditor4": "4.22.1",
 		"ckeditor4-react": "1.4.2",
 		"ckeditor5": "46.0.2",
+		"eventsource": "^4.0.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"liferay-ckeditor": "4.21.0-liferay.13",
 		"prop-types": "15.7.2",
-		"react": "18.2.0"
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
 	},
 	"main": "js/index.ts",
 	"name": "frontend-editor-ckeditor-web",

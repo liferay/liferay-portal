@@ -50,6 +50,7 @@ import {sub} from 'frontend-js-web';
 import AICreator from '../plugins/AICreator';
 import HeadlessItemSelector from '../plugins/HeadlessItemSelector';
 import ItemSelector from '../plugins/ItemSelector';
+import WriteAssistent from '../plugins/WriteAssistent/WriteAssistent';
 import {EEditorConfigPreset, EEditorVariant} from './types';
 
 const getDefaultEditorConfig = ({
@@ -152,6 +153,10 @@ const getDefaultEditorConfig = ({
 
 	if (editorVariant === EEditorVariant.CLASSIC) {
 		advancedPlugins.push(SourceEditing);
+	}
+
+	if (Liferay.FeatureFlags['LPD-62272']) {
+		advancedPlugins.push(WriteAssistent);
 	}
 
 	const toolbarItems = [
