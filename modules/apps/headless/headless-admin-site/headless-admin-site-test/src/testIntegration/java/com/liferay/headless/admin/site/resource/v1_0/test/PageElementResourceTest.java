@@ -2377,85 +2377,89 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			).build(),
 			Collections.emptyMap());
 
-		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration(
-			FragmentConfigurationTestUtil.getConfiguration(
-				HashMapBuilder.<String, Map<String, Object>>put(
-					categoryFieldName,
+		_testMissingOptionalReference(
+			() ->
+				_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration(
+					FragmentConfigurationTestUtil.getConfiguration(
+						HashMapBuilder.<String, Map<String, Object>>put(
+							categoryFieldName,
+							HashMapBuilder.<String, Object>put(
+								"localized", true
+							).put(
+								"type", "categoryTreeNodeSelector"
+							).build()
+						).put(
+							checkboxFieldName,
+							HashMapBuilder.<String, Object>put(
+								"defaultValue", RandomTestUtil.randomBoolean()
+							).put(
+								"localized", true
+							).put(
+								"type", "checkbox"
+							).build()
+						).put(
+							lengthFieldName,
+							HashMapBuilder.<String, Object>put(
+								"defaultValue", RandomTestUtil.randomString()
+							).put(
+								"localized", true
+							).put(
+								"type", "length"
+							).build()
+						).put(
+							selectFieldName,
+							HashMapBuilder.<String, Object>put(
+								"defaultValue", selectValue3
+							).put(
+								"localized", true
+							).put(
+								"type", "select"
+							).put(
+								"typeOptions", typeOptionsJSONObject
+							).build()
+						).put(
+							textFieldName,
+							HashMapBuilder.<String, Object>put(
+								"defaultValue", RandomTestUtil.randomBoolean()
+							).put(
+								"localized", true
+							).put(
+								"type", "text"
+							).build()
+						).build()),
 					HashMapBuilder.<String, Object>put(
-						"localized", true
+						categoryFieldName,
+						_getAssetCategory(irrelevantGroup.getGroupId())
 					).put(
-						"type", "categoryTreeNodeSelector"
-					).build()
-				).put(
-					checkboxFieldName,
+						checkboxFieldName, RandomTestUtil.randomBoolean()
+					).put(
+						lengthFieldName, RandomTestUtil.randomString()
+					).put(
+						selectFieldName, selectValue1
+					).put(
+						textFieldName, RandomTestUtil.randomString()
+					).build(),
 					HashMapBuilder.<String, Object>put(
-						"defaultValue", RandomTestUtil.randomBoolean()
+						categoryFieldName,
+						HashMapBuilder.put(
+							"className", AssetCategory.class.getName()
+						).put(
+							"externalReferenceCode",
+							RandomTestUtil.randomString()
+						).put(
+							"scopeExternalReferenceCode",
+							RandomTestUtil.randomString()
+						).build()
 					).put(
-						"localized", true
+						checkboxFieldName, RandomTestUtil.randomBoolean()
 					).put(
-						"type", "checkbox"
-					).build()
-				).put(
-					lengthFieldName,
-					HashMapBuilder.<String, Object>put(
-						"defaultValue", RandomTestUtil.randomString()
+						lengthFieldName, RandomTestUtil.randomString()
 					).put(
-						"localized", true
+						selectFieldName, selectValue2
 					).put(
-						"type", "length"
-					).build()
-				).put(
-					selectFieldName,
-					HashMapBuilder.<String, Object>put(
-						"defaultValue", selectValue3
-					).put(
-						"localized", true
-					).put(
-						"type", "select"
-					).put(
-						"typeOptions", typeOptionsJSONObject
-					).build()
-				).put(
-					textFieldName,
-					HashMapBuilder.<String, Object>put(
-						"defaultValue", RandomTestUtil.randomBoolean()
-					).put(
-						"localized", true
-					).put(
-						"type", "text"
-					).build()
-				).build()),
-			HashMapBuilder.<String, Object>put(
-				categoryFieldName,
-				_getAssetCategory(irrelevantGroup.getGroupId())
-			).put(
-				checkboxFieldName, RandomTestUtil.randomBoolean()
-			).put(
-				lengthFieldName, RandomTestUtil.randomString()
-			).put(
-				selectFieldName, selectValue1
-			).put(
-				textFieldName, RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.<String, Object>put(
-				categoryFieldName,
-				HashMapBuilder.put(
-					"className", AssetCategory.class.getName()
-				).put(
-					"externalReferenceCode", RandomTestUtil.randomString()
-				).put(
-					"scopeExternalReferenceCode", RandomTestUtil.randomString()
-				).build()
-			).put(
-				checkboxFieldName, RandomTestUtil.randomBoolean()
-			).put(
-				lengthFieldName, RandomTestUtil.randomString()
-			).put(
-				selectFieldName, selectValue2
-			).put(
-				textFieldName, RandomTestUtil.randomString()
-			).build(),
-			Collections.emptyMap());
+						textFieldName, RandomTestUtil.randomString()
+					).build(),
+					Collections.emptyMap()));
 
 		_assertProblemException(
 			"BAD_REQUEST", null,
