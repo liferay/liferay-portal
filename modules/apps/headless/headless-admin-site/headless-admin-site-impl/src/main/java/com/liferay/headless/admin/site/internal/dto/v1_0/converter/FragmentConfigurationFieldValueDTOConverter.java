@@ -9,6 +9,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.fragment.entry.processor.helper.LayoutReferenceResolver;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
@@ -18,6 +19,7 @@ import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ContextualMenuNavigationMenuValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.HrefURLValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.ItemFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemValue;
@@ -27,9 +29,14 @@ import com.liferay.headless.admin.site.dto.v1_0.NavigationMenuValue;
 import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.headless.admin.site.dto.v1_0.SelectFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.SiteMenuNavigationMenuValue;
+import com.liferay.headless.admin.site.dto.v1_0.SitePageURLValue;
 import com.liferay.headless.admin.site.dto.v1_0.SitePagesNavigationMenuValue;
 import com.liferay.headless.admin.site.dto.v1_0.TemplateReference;
 import com.liferay.headless.admin.site.dto.v1_0.TextFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.URLFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.URLValue;
+import com.liferay.headless.admin.site.dto.v1_0.VideoFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.VideoValue;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CollectionUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ContextualMenuTypeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentConfigurationFieldValueTypeUtil;
@@ -40,6 +47,7 @@ import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -162,6 +170,18 @@ public class FragmentConfigurationFieldValueDTOConverter
 			return _getTextFragmentConfigurationFieldValue(
 				fragmentConfigurationField,
 				fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(type, FragmentConfigurationFieldValue.Type.URL)) {
+			return _getURLFragmentConfigurationFieldValue(
+				dtoConverterContext, fragmentConfigurationField,
+				(JSONObject)fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(type, FragmentConfigurationFieldValue.Type.VIDEO)) {
+			return _getVideoFragmentConfigurationFieldValue(
+				fragmentConfigurationField,
+				(JSONObject)fragmentFragmentConfigurationFieldValue);
 		}
 
 		return null;
@@ -808,6 +828,133 @@ public class FragmentConfigurationFieldValueDTOConverter
 		return textFragmentConfigurationFieldValue;
 	}
 
+	private FragmentConfigurationFieldValue
+		_getURLFragmentConfigurationFieldValue(
+			DTOConverterContext dtoConverterContext,
+			FragmentConfigurationField fragmentConfigurationField,
+			JSONObject jsonObject) {
+
+		Long companyId = (Long)dtoConverterContext.getAttribute("companyId");
+		Long scopeGroupId = (Long)dtoConverterContext.getAttribute(
+			"scopeGroupId");
+
+		if ((companyId == null) || (scopeGroupId == null)) {
+			throw new UnsupportedOperationException();
+		}
+
+		URLFragmentConfigurationFieldValue urlFragmentConfigurationFieldValue =
+			new URLFragmentConfigurationFieldValue() {
+				{
+					setType(Type.URL);
+				}
+			};
+
+		if (fragmentConfigurationField.isLocalizable()) {
+			urlFragmentConfigurationFieldValue.setValue_i18n(
+				() -> LocalizedValueUtil.toLocalizedValues(
+					jsonObject,
+					key -> _getURLValue(
+						companyId, jsonObject.getJSONObject(key),
+						scopeGroupId)));
+		}
+		else {
+			urlFragmentConfigurationFieldValue.setValue(
+				() -> _getURLValue(companyId, jsonObject, scopeGroupId));
+		}
+
+		return urlFragmentConfigurationFieldValue;
+	}
+
+	private URLValue _getURLValue(
+		long companyId, JSONObject jsonObject, long scopeGroupId) {
+
+		if (jsonObject.has("href")) {
+			HrefURLValue hrefURLValue = new HrefURLValue();
+
+			hrefURLValue.setHref(() -> jsonObject.getString("href"));
+
+			return hrefURLValue;
+		}
+
+		JSONObject layoutJSONObject = jsonObject.getJSONObject("layout");
+
+		if (layoutJSONObject == null) {
+			return null;
+		}
+
+		Layout layout = _layoutReferenceResolver.resolve(
+			companyId, layoutJSONObject, scopeGroupId);
+
+		if (layout != null) {
+			SitePageURLValue sitePageURLValue = new SitePageURLValue();
+
+			sitePageURLValue.setSitePage(
+				() -> _getItemExternalReference(
+					Layout.class.getName(), layout.getExternalReferenceCode(),
+					ItemScopeUtil.getItemScope(
+						layout.getGroupId(), scopeGroupId)));
+
+			return sitePageURLValue;
+		}
+
+		if (!layoutJSONObject.has("externalReferenceCode")) {
+			return null;
+		}
+
+		SitePageURLValue sitePageURLValue = new SitePageURLValue();
+
+		sitePageURLValue.setSitePage(
+			() -> _getItemExternalReference(
+				Layout.class.getName(),
+				layoutJSONObject.getString("externalReferenceCode"),
+				ItemScopeUtil.getItemScope(
+					companyId,
+					layoutJSONObject.getString("scopeExternalReferenceCode"),
+					scopeGroupId)));
+
+		return sitePageURLValue;
+	}
+
+	private FragmentConfigurationFieldValue
+		_getVideoFragmentConfigurationFieldValue(
+			FragmentConfigurationField fragmentConfigurationField,
+			JSONObject jsonObject) {
+
+		VideoFragmentConfigurationFieldValue
+			videoFragmentConfigurationFieldValue =
+				new VideoFragmentConfigurationFieldValue() {
+					{
+						setType(Type.VIDEO);
+					}
+				};
+
+		if (fragmentConfigurationField.isLocalizable()) {
+			videoFragmentConfigurationFieldValue.setValue_i18n(
+				() -> LocalizedValueUtil.toLocalizedValues(
+					jsonObject,
+					key -> _getVideoValue(jsonObject.getJSONObject(key))));
+		}
+		else {
+			videoFragmentConfigurationFieldValue.setValue(
+				() -> _getVideoValue(jsonObject));
+		}
+
+		return videoFragmentConfigurationFieldValue;
+	}
+
+	private VideoValue _getVideoValue(JSONObject jsonObject) {
+		if (!jsonObject.has("html") && !jsonObject.has("title")) {
+			return null;
+		}
+
+		return new VideoValue() {
+			{
+				setHtml(() -> jsonObject.getString("html"));
+				setTitle(() -> jsonObject.getString("title"));
+			}
+		};
+	}
+
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
@@ -816,6 +963,9 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
+	@Reference
+	private LayoutReferenceResolver _layoutReferenceResolver;
 
 	@Reference
 	private SiteNavigationMenuItemLocalService
