@@ -74,6 +74,8 @@ public class FragmentConfigurationTestUtil {
 
 	private static final Map<String, String>
 		_fragmentConfigurationFieldDataTypesMap = HashMapBuilder.put(
+			"categoryTreeNodeSelector", "object"
+		).put(
 			"checkbox", "string"
 		).put(
 			"length", "string"

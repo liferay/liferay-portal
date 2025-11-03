@@ -2253,7 +2253,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					externalReferenceCode,
 					PageElementsTestUtil.
 						getFragmentInstancePageElementDefinition(
-							Collections.emptyMap(), fragmentRenderer))));
+							Collections.emptyMap(), fragmentRenderer,
+							testGroup.getGroupId()))));
 	}
 
 	private void _testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration()

@@ -7,6 +7,7 @@ package com.liferay.headless.admin.site.resource.v1_0.test.util;
 
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserUtil;
+import com.liferay.headless.admin.site.client.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.LengthFragmentConfigurationFieldValue;
@@ -28,8 +29,8 @@ public class FragmentConfigurationFieldValueTestUtil {
 
 	public static Map<String, FragmentConfigurationFieldValue>
 		getFragmentConfigurationFieldValuesMap(
-			JSONObject configurationJSONObject,
-			Map<String, Object> objectsMap) {
+			JSONObject configurationJSONObject, Map<String, Object> objectsMap,
+			long scopeGroupId) {
 
 		Map<String, FragmentConfigurationFieldValue> map = new HashMap<>();
 
@@ -51,10 +52,39 @@ public class FragmentConfigurationFieldValueTestUtil {
 			map.put(
 				fragmentConfigurationField.getName(),
 				_getFragmentConfigurationFieldValue(
-					fragmentConfigurationField, object));
+					fragmentConfigurationField, scopeGroupId, object));
 		}
 
 		return map;
+	}
+
+	private static FragmentConfigurationFieldValue
+		_getCategoryFragmentConfigurationFieldValue(
+			boolean localizable, Object object, long scopeGroupId) {
+
+		CategoryFragmentConfigurationFieldValue
+			categoryFragmentConfigurationFieldValue =
+				new CategoryFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.CATEGORY);
+					}
+				};
+
+		if (localizable) {
+			categoryFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					ReferencesTestUtil.getItemExternalReference(
+						object, scopeGroupId)
+				).build());
+		}
+		else {
+			categoryFragmentConfigurationFieldValue.setValue(
+				ReferencesTestUtil.getItemExternalReference(
+					object, scopeGroupId));
+		}
+
+		return categoryFragmentConfigurationFieldValue;
 	}
 
 	private static FragmentConfigurationFieldValue
@@ -87,9 +117,15 @@ public class FragmentConfigurationFieldValueTestUtil {
 	private static FragmentConfigurationFieldValue
 		_getFragmentConfigurationFieldValue(
 			FragmentConfigurationField fragmentConfigurationField,
-			Object value) {
+			long scopeGroupId, Object value) {
 
 		String type = fragmentConfigurationField.getType();
+
+		if (Objects.equals(type, "categoryTreeNodeSelector")) {
+			return _getCategoryFragmentConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value,
+				scopeGroupId);
+		}
 
 		if (Objects.equals(type, "checkbox")) {
 			return _getCheckboxFragmentConfigurationFieldValue(

@@ -77,7 +77,7 @@ public class PageElementsTestUtil {
 							getFragmentConfigurationFieldValuesMap(
 								JSONFactoryUtil.createJSONObject(
 									fragmentEntry.getConfiguration()),
-								configurationValuesMap));
+								configurationValuesMap, scopeGroupId));
 				setFragmentInstanceExternalReferenceCode(
 					RandomTestUtil::randomString);
 				setFragmentReference(
@@ -125,7 +125,7 @@ public class PageElementsTestUtil {
 	public static FragmentInstancePageElementDefinition
 		getFragmentInstancePageElementDefinition(
 			Map<String, Object> configurationValuesMap,
-			FragmentRenderer fragmentRenderer) {
+			FragmentRenderer fragmentRenderer, long scopeGroupId) {
 
 		JSONObject configurationJSONObject =
 			fragmentRenderer.getConfigurationJSONObject(
@@ -145,8 +145,8 @@ public class PageElementsTestUtil {
 					() ->
 						FragmentConfigurationFieldValueTestUtil.
 							getFragmentConfigurationFieldValuesMap(
-								configurationJSONObject,
-								configurationValuesMap));
+								configurationJSONObject, configurationValuesMap,
+								scopeGroupId));
 				setFragmentInstanceExternalReferenceCode(
 					RandomTestUtil::randomString);
 				setFragmentReference(
@@ -189,7 +189,7 @@ public class PageElementsTestUtil {
 
 		if (fragmentRenderer != null) {
 			return getFragmentInstancePageElementDefinition(
-				configurationValuesMap, fragmentRenderer);
+				configurationValuesMap, fragmentRenderer, scopeGroupId);
 		}
 
 		return null;
