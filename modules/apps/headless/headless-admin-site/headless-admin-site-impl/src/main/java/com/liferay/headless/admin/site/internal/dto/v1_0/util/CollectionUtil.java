@@ -208,7 +208,7 @@ public class CollectionUtil {
 		throws Exception {
 
 		LogUtil.logOptionalReference(
-			collectionItemExternalReference.getClassName(),
+			AssetListEntry.class.getName(),
 			collectionItemExternalReference.getExternalReferenceCode(),
 			collectionItemExternalReference.getScope(), groupId);
 
