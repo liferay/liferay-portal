@@ -2338,7 +2338,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				selectFieldName, selectValue2
 			).put(
 				textFieldName, RandomTestUtil.randomString()
-			).build());
+			).build(),
+			Collections.emptyMap());
 
 		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration(
 			FragmentConfigurationTestUtil.getConfiguration(
@@ -2398,7 +2399,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 				selectFieldName, selectValue2
 			).put(
 				textFieldName, RandomTestUtil.randomString()
-			).build());
+			).build(),
+			Collections.emptyMap());
 
 		_assertProblemException(
 			"BAD_REQUEST", null,
