@@ -84,6 +84,8 @@ public class FragmentConfigurationTestUtil {
 		).put(
 			"length", "string"
 		).put(
+			"navigationMenuSelector", "object"
+		).put(
 			"select", "string"
 		).put(
 			"text", "string"

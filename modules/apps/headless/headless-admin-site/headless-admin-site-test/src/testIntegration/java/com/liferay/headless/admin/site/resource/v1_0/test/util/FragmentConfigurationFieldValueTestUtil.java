@@ -10,17 +10,23 @@ import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserU
 import com.liferay.headless.admin.site.client.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ContextualMenuNavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.LengthFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.NavigationMenuFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.NavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.SelectFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.SiteMenuNavigationMenuValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.SitePagesNavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.TemplateReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.TextFragmentConfigurationFieldValue;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -182,6 +188,12 @@ public class FragmentConfigurationFieldValueTestUtil {
 				fragmentConfigurationField.isLocalizable(), value);
 		}
 
+		if (Objects.equals(type, "navigationMenuSelector")) {
+			return _getNavigationMenuConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value,
+				scopeGroupId);
+		}
+
 		if (Objects.equals(type, "select")) {
 			return _getSelectFragmentConfigurationFieldValue(
 				fragmentConfigurationField.isLocalizable(), value);
@@ -276,6 +288,105 @@ public class FragmentConfigurationFieldValueTestUtil {
 		}
 
 		return lengthFragmentConfigurationFieldValue;
+	}
+
+	private static FragmentConfigurationFieldValue
+		_getNavigationMenuConfigurationFieldValue(
+			boolean localizable, Object object, long scopeGroupId) {
+
+		NavigationMenuFragmentConfigurationFieldValue
+			navigationMenuFragmentConfigurationFieldValue =
+				new NavigationMenuFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.NAVIGATION_MENU);
+					}
+				};
+
+		if (localizable) {
+			navigationMenuFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					_getNavigationMenuValue(
+						(Map<String, Object>)object, scopeGroupId)
+				).build());
+		}
+		else {
+			navigationMenuFragmentConfigurationFieldValue.setValue(
+				_getNavigationMenuValue(
+					(Map<String, Object>)object, scopeGroupId));
+		}
+
+		return navigationMenuFragmentConfigurationFieldValue;
+	}
+
+	private static NavigationMenuValue _getNavigationMenuValue(
+		Map<String, Object> map, long scopeGroupId) {
+
+		if (MapUtil.isEmpty(map)) {
+			return null;
+		}
+
+		if (map.containsKey("contextualMenu")) {
+			ContextualMenuNavigationMenuValue
+				contextualMenuNavigationMenuValue =
+					new ContextualMenuNavigationMenuValue() {
+						{
+							setNavigationMenuType(
+								() -> NavigationMenuType.CONTEXTUAL_MENU);
+						}
+					};
+
+			contextualMenuNavigationMenuValue.setContextualMenuType(
+				() ->
+					(ContextualMenuNavigationMenuValue.ContextualMenuType)
+						map.get("contextualMenu"));
+
+			return contextualMenuNavigationMenuValue;
+		}
+
+		if (map.containsKey("siteNavigationMenu")) {
+			SiteMenuNavigationMenuValue siteMenuNavigationMenuValue =
+				new SiteMenuNavigationMenuValue() {
+					{
+						setNavigationMenuType(
+							() -> NavigationMenuType.SITE_MENU);
+					}
+				};
+
+			siteMenuNavigationMenuValue.setNavigationMenuItemExternalReference(
+				() -> ReferencesTestUtil.getItemExternalReference(
+					map.get("siteNavigationMenu"), scopeGroupId));
+
+			siteMenuNavigationMenuValue.setParentMenuItemExternalReferenceCode(
+				() -> GetterUtil.getString(
+					map.get("siteNavigationMenuItemExternalReferenceCode"),
+					null));
+
+			return siteMenuNavigationMenuValue;
+		}
+
+		SitePagesNavigationMenuValue sitePagesNavigationMenuValue =
+			new SitePagesNavigationMenuValue() {
+				{
+					setNavigationMenuType(() -> NavigationMenuType.SITE_PAGES);
+				}
+			};
+
+		sitePagesNavigationMenuValue.setPageSetType(
+			() -> {
+				if (GetterUtil.getBoolean(map.get("privateLayout"))) {
+					return SitePagesNavigationMenuValue.PageSetType.
+						PRIVATE_PAGES;
+				}
+
+				return SitePagesNavigationMenuValue.PageSetType.PUBLIC_PAGES;
+			});
+
+		sitePagesNavigationMenuValue.setParentSitePageExternalReferenceCode(
+			() -> GetterUtil.getString(
+				map.get("parentLayoutExternalReferenceCode"), null));
+
+		return sitePagesNavigationMenuValue;
 	}
 
 	private static FragmentConfigurationFieldValue
