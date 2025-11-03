@@ -14,7 +14,6 @@ import com.liferay.headless.admin.site.dto.v1_0.FragmentMappedValueItemExternalR
 import com.liferay.headless.admin.site.dto.v1_0.FragmentMappedValueItemReference;
 import com.liferay.headless.admin.site.dto.v1_0.Mapping;
 import com.liferay.headless.admin.site.dto.v1_0.Scope;
-import com.liferay.headless.admin.site.internal.util.LogUtil;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,7 +24,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -279,8 +277,11 @@ public class FragmentLinkUtil {
 		if (Objects.equals(className, Layout.class.getName())) {
 			return JSONUtil.put(
 				"layout",
-				_getMappedLayoutJSONObject(
-					companyId, fragmentMappedValueItemExternalReference,
+				LayoutUtil.getMappedLayoutJSONObject(
+					companyId,
+					fragmentMappedValueItemExternalReference.
+						getExternalReferenceCode(),
+					fragmentMappedValueItemExternalReference.getScope(),
 					scopeGroupId));
 		}
 
@@ -314,75 +315,6 @@ public class FragmentLinkUtil {
 		return ItemScopeUtil.getItemScope(
 			companyId, layoutJSONObject.getString("scopeExternalReferenceCode"),
 			scopeGroupId);
-	}
-
-	private static JSONObject _getMappedLayoutJSONObject(
-			long companyId,
-			FragmentMappedValueItemExternalReference
-				fragmentMappedValueItemExternalReference,
-			long scopeGroupId)
-		throws PortalException {
-
-		String scopeExternalReferenceCode =
-			ItemScopeUtil.getItemScopeExternalReferenceCode(
-				fragmentMappedValueItemExternalReference.getScope(),
-				scopeGroupId);
-
-		Long groupId = ItemScopeUtil.getGroupId(
-			companyId, fragmentMappedValueItemExternalReference.getScope(),
-			scopeGroupId);
-
-		JSONObject jsonObject = JSONUtil.put(
-			"externalReferenceCode",
-			fragmentMappedValueItemExternalReference.getExternalReferenceCode()
-		).put(
-			"scopeExternalReferenceCode", scopeExternalReferenceCode
-		);
-
-		if (groupId == null) {
-			LogUtil.logOptionalReference(
-				fragmentMappedValueItemExternalReference.getClassName(),
-				fragmentMappedValueItemExternalReference.
-					getExternalReferenceCode(),
-				fragmentMappedValueItemExternalReference.getScope(),
-				scopeGroupId);
-
-			return jsonObject;
-		}
-
-		Layout layout =
-			LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
-				fragmentMappedValueItemExternalReference.
-					getExternalReferenceCode(),
-				groupId);
-
-		if (layout == null) {
-			LogUtil.logOptionalReference(
-				fragmentMappedValueItemExternalReference.getClassName(),
-				fragmentMappedValueItemExternalReference.
-					getExternalReferenceCode(),
-				fragmentMappedValueItemExternalReference.getScope(),
-				scopeGroupId);
-
-			return jsonObject;
-		}
-
-		return JSONUtil.put(
-			"externalReferenceCode",
-			fragmentMappedValueItemExternalReference.getExternalReferenceCode()
-		).put(
-			"groupId", String.valueOf(layout.getGroupId())
-		).put(
-			"layoutId", String.valueOf(layout.getLayoutId())
-		).put(
-			"layoutUuid", layout.getUuid()
-		).put(
-			"privateLayout", layout.isPrivateLayout()
-		).put(
-			"scopeExternalReferenceCode", scopeExternalReferenceCode
-		).put(
-			"title", layout.getName(LocaleUtil.getMostRelevantLocale())
-		);
 	}
 
 	private static boolean _isMappedValue(JSONObject jsonObject) {
