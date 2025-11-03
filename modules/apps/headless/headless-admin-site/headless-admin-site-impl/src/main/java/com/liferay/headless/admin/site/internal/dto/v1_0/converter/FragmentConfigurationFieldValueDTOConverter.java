@@ -5,22 +5,33 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
+import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.LengthFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.headless.admin.site.dto.v1_0.SelectFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.TextFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentConfigurationFieldValueTypeUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Lourdes Fernández Besada
@@ -61,6 +72,14 @@ public class FragmentConfigurationFieldValueDTOConverter
 				fragmentConfigurationField.getType());
 
 		if (Objects.equals(
+				type, FragmentConfigurationFieldValue.Type.CATEGORY)) {
+
+			return _getCategoryFragmentConfigurationFieldValue(
+				dtoConverterContext, fragmentConfigurationField,
+				(JSONObject)fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(
 				type, FragmentConfigurationFieldValue.Type.CHECKBOX)) {
 
 			return _getCheckboxFragmentConfigurationFieldValue(
@@ -90,6 +109,118 @@ public class FragmentConfigurationFieldValueDTOConverter
 	}
 
 	private FragmentConfigurationFieldValue
+		_getCategoryFragmentConfigurationFieldValue(
+			DTOConverterContext dtoConverterContext,
+			FragmentConfigurationField fragmentConfigurationField,
+			JSONObject jsonObject) {
+
+		Long companyId = (Long)dtoConverterContext.getAttribute("companyId");
+		Long scopeGroupId = (Long)dtoConverterContext.getAttribute(
+			"scopeGroupId");
+
+		if ((companyId == null) || (scopeGroupId == null)) {
+			throw new UnsupportedOperationException();
+		}
+
+		CategoryFragmentConfigurationFieldValue
+			categoryFragmentConfigurationFieldValue =
+				new CategoryFragmentConfigurationFieldValue();
+
+		if (fragmentConfigurationField.isLocalizable()) {
+			categoryFragmentConfigurationFieldValue.setValue_i18n(
+				() -> LocalizedValueUtil.toLocalizedValues(
+					jsonObject,
+					key -> _getCategoryTreeNodeItemExternalReference(
+						companyId, jsonObject.getJSONObject(key),
+						scopeGroupId)));
+		}
+		else {
+			categoryFragmentConfigurationFieldValue.setValue(
+				() -> _getCategoryTreeNodeItemExternalReference(
+					companyId, jsonObject, scopeGroupId));
+		}
+
+		return categoryFragmentConfigurationFieldValue;
+	}
+
+	private ItemExternalReference _getCategoryTreeNodeItemExternalReference(
+			long companyId, JSONObject jsonObject, long scopeGroupId)
+		throws Exception {
+
+		if (JSONUtil.isEmpty(jsonObject)) {
+			return null;
+		}
+
+		long categoryTreeNodeId = jsonObject.getLong("categoryTreeNodeId");
+		String externalReferenceCode = jsonObject.getString(
+			"externalReferenceCode");
+		String type = jsonObject.getString("categoryTreeNodeType");
+
+		if (((categoryTreeNodeId == 0) &&
+			 Validator.isNull(externalReferenceCode)) ||
+			(!Objects.equals(type, "Category") &&
+			 !Objects.equals(type, "Vocabulary"))) {
+
+			return null;
+		}
+
+		if (categoryTreeNodeId == 0) {
+			String className = AssetCategory.class.getName();
+
+			if (Objects.equals(type, "Vocabulary")) {
+				className = AssetVocabulary.class.getName();
+			}
+
+			return _getItemExternalReference(
+				className, externalReferenceCode,
+				ItemScopeUtil.getItemScope(
+					companyId,
+					jsonObject.getString("scopeExternalReferenceCode"),
+					scopeGroupId));
+		}
+
+		if (Objects.equals(type, "Category")) {
+			AssetCategory assetCategory =
+				_assetCategoryLocalService.fetchAssetCategory(
+					categoryTreeNodeId);
+
+			if (assetCategory == null) {
+				return _getItemExternalReference(
+					AssetCategory.class.getName(), externalReferenceCode,
+					ItemScopeUtil.getItemScope(
+						companyId,
+						jsonObject.getString("scopeExternalReferenceCode"),
+						scopeGroupId));
+			}
+
+			return _getItemExternalReference(
+				AssetCategory.class.getName(),
+				assetCategory.getExternalReferenceCode(),
+				ItemScopeUtil.getItemScope(
+					assetCategory.getGroupId(), scopeGroupId));
+		}
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.fetchAssetVocabulary(
+				categoryTreeNodeId);
+
+		if (assetVocabulary == null) {
+			return _getItemExternalReference(
+				AssetVocabulary.class.getName(), externalReferenceCode,
+				ItemScopeUtil.getItemScope(
+					companyId,
+					jsonObject.getString("scopeExternalReferenceCode"),
+					scopeGroupId));
+		}
+
+		return _getItemExternalReference(
+			AssetVocabulary.class.getName(),
+			assetVocabulary.getExternalReferenceCode(),
+			ItemScopeUtil.getItemScope(
+				assetVocabulary.getGroupId(), scopeGroupId));
+	}
+
+	private FragmentConfigurationFieldValue
 		_getCheckboxFragmentConfigurationFieldValue(
 			FragmentConfigurationField fragmentConfigurationField,
 			Object fragmentFragmentConfigurationFieldValue) {
@@ -113,6 +244,20 @@ public class FragmentConfigurationFieldValueDTOConverter
 		}
 
 		return checkboxFragmentConfigurationFieldValue;
+	}
+
+	private ItemExternalReference _getItemExternalReference(
+		String className, String externalReferenceCode, Scope scope) {
+
+		ItemExternalReference itemExternalReference =
+			new ItemExternalReference();
+
+		itemExternalReference.setClassName(() -> className);
+		itemExternalReference.setExternalReferenceCode(
+			() -> externalReferenceCode);
+		itemExternalReference.setScope(() -> scope);
+
+		return itemExternalReference;
 	}
 
 	private FragmentConfigurationFieldValue
@@ -201,5 +346,11 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		return textFragmentConfigurationFieldValue;
 	}
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 }
