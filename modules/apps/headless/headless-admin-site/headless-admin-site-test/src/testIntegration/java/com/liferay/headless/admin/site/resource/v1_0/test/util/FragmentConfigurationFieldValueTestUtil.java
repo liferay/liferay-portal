@@ -11,8 +11,11 @@ import com.liferay.headless.admin.site.client.dto.v1_0.CategoryFragmentConfigura
 import com.liferay.headless.admin.site.client.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ItemFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ItemValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.LengthFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.SelectFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.TemplateReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.TextFragmentConfigurationFieldValue;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -168,6 +171,12 @@ public class FragmentConfigurationFieldValueTestUtil {
 				scopeGroupId);
 		}
 
+		if (Objects.equals(type, "itemSelector")) {
+			return _getItemFragmentConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value,
+				scopeGroupId);
+		}
+
 		if (Objects.equals(type, "length")) {
 			return _getLengthFragmentConfigurationFieldValue(
 				fragmentConfigurationField.isLocalizable(), value);
@@ -184,6 +193,62 @@ public class FragmentConfigurationFieldValueTestUtil {
 		}
 
 		return null;
+	}
+
+	private static FragmentConfigurationFieldValue
+		_getItemFragmentConfigurationFieldValue(
+			boolean localizable, Object object, long scopeGroupId) {
+
+		ItemFragmentConfigurationFieldValue
+			itemFragmentConfigurationFieldValue =
+				new ItemFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.ITEM);
+					}
+				};
+
+		if (localizable) {
+			itemFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					_getItemValue((Map<String, Object>)object, scopeGroupId)
+				).build());
+		}
+		else {
+			itemFragmentConfigurationFieldValue.setValue(
+				_getItemValue((Map<String, Object>)object, scopeGroupId));
+		}
+
+		return itemFragmentConfigurationFieldValue;
+	}
+
+	private static ItemValue _getItemValue(
+		Map<String, Object> map, long scopeGroupId) {
+
+		ItemValue itemValue = new ItemValue();
+
+		itemValue.setItem(
+			() -> ReferencesTestUtil.getItemExternalReference(
+				map.get("item"), scopeGroupId));
+		itemValue.setTemplate(
+			() -> {
+				if (!map.containsKey("template")) {
+					return null;
+				}
+
+				Map<String, String> templateMap = (Map<String, String>)map.get(
+					"template");
+
+				return new TemplateReference() {
+					{
+						setRendererKey(
+							() -> templateMap.get("infoItemRendererKey"));
+						setTemplateKey(() -> templateMap.get("templateKey"));
+					}
+				};
+			});
+
+		return itemValue;
 	}
 
 	private static FragmentConfigurationFieldValue
