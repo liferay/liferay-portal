@@ -37,6 +37,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.CollectionItemPageElement
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContainerPageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.ContextualMenuNavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.DisplayPageFormContainerSubmissionResult;
 import com.liferay.headless.admin.site.client.dto.v1_0.EmbeddedMessageFormContainerSubmissionResult;
 import com.liferay.headless.admin.site.client.dto.v1_0.EmptyCollectionConfig;
@@ -131,6 +132,11 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
+import com.liferay.site.navigation.model.SiteNavigationMenu;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -1448,6 +1454,27 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		};
 	}
 
+	private SiteNavigationMenu _getSiteNavigationMenu(long groupId)
+		throws Exception {
+
+		return _siteNavigationMenuLocalService.addSiteNavigationMenu(
+			null, TestPropsValues.getUserId(), groupId,
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private SiteNavigationMenuItem _getSiteNavigationMenuItem(
+			SiteNavigationMenu siteNavigationMenu)
+		throws Exception {
+
+		return _siteNavigationMenuItemLocalService.addSiteNavigationMenuItem(
+			null, TestPropsValues.getUserId(), siteNavigationMenu.getGroupId(),
+			siteNavigationMenu.getSiteNavigationMenuId(), 0,
+			SiteNavigationMenuItemTypeConstants.NODE, 0, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(
+				siteNavigationMenu.getGroupId()));
+	}
+
 	private SuccessFormContainerSubmissionResult
 			_getSuccessFormContainerSubmissionResult(
 				String className,
@@ -2292,6 +2319,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		String collectionFieldName = RandomTestUtil.randomString();
 		String itemFieldName = RandomTestUtil.randomString();
 		String lengthFieldName = RandomTestUtil.randomString();
+		String navigationMenuFieldName = RandomTestUtil.randomString();
 		String selectFieldName = RandomTestUtil.randomString();
 
 		String selectValue1 = RandomTestUtil.randomString();
@@ -2351,6 +2379,11 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						"type", "length"
 					).build()
 				).put(
+					navigationMenuFieldName,
+					HashMapBuilder.<String, Object>put(
+						"type", "navigationMenuSelector"
+					).build()
+				).put(
 					selectFieldName,
 					HashMapBuilder.<String, Object>put(
 						"defaultValue", selectValue3
@@ -2381,6 +2414,22 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			).put(
 				lengthFieldName, RandomTestUtil.randomString()
 			).put(
+				navigationMenuFieldName,
+				() -> {
+					SiteNavigationMenu siteNavigationMenu =
+						_getSiteNavigationMenu(irrelevantGroup.getGroupId());
+
+					SiteNavigationMenuItem siteNavigationMenuItem =
+						_getSiteNavigationMenuItem(siteNavigationMenu);
+
+					return HashMapBuilder.<String, Object>put(
+						"siteNavigationMenu", siteNavigationMenu
+					).put(
+						"siteNavigationMenuItemExternalReferenceCode",
+						siteNavigationMenuItem.getExternalReferenceCode()
+					).build();
+				}
+			).put(
 				selectFieldName, selectValue1
 			).put(
 				textFieldName, RandomTestUtil.randomString()
@@ -2402,6 +2451,12 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			).put(
 				lengthFieldName, RandomTestUtil.randomString()
 			).put(
+				navigationMenuFieldName,
+				HashMapBuilder.put(
+					"parentLayoutExternalReferenceCode",
+					_layout.getExternalReferenceCode()
+				).build()
+			).put(
 				selectFieldName, selectValue2
 			).put(
 				textFieldName, RandomTestUtil.randomString()
@@ -2409,7 +2464,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			Collections.emptyMap());
 
 		_testMissingOptionalReference(
-			3,
+			4,
 			() ->
 				_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration(
 					FragmentConfigurationTestUtil.getConfiguration(
@@ -2452,6 +2507,13 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 								"localized", true
 							).put(
 								"type", "length"
+							).build()
+						).put(
+							navigationMenuFieldName,
+							HashMapBuilder.<String, Object>put(
+								"localized", true
+							).put(
+								"type", "navigationMenuSelector"
 							).build()
 						).put(
 							selectFieldName,
@@ -2501,6 +2563,13 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					).put(
 						lengthFieldName, RandomTestUtil.randomString()
 					).put(
+						navigationMenuFieldName,
+						HashMapBuilder.put(
+							"contextualMenu",
+							ContextualMenuNavigationMenuValue.
+								ContextualMenuType.CHILDREN
+						).build()
+					).put(
 						selectFieldName, selectValue1
 					).put(
 						textFieldName, RandomTestUtil.randomString()
@@ -2548,6 +2617,20 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 						).build()
 					).put(
 						lengthFieldName, RandomTestUtil.randomString()
+					).put(
+						navigationMenuFieldName,
+						HashMapBuilder.put(
+							"siteNavigationMenu",
+							HashMapBuilder.<String, Object>put(
+								"className", SiteNavigationMenu.class.getName()
+							).put(
+								"externalReferenceCode",
+								RandomTestUtil.randomString()
+							).put(
+								"scopeExternalReferenceCode",
+								RandomTestUtil.randomString()
+							).build()
+						).build()
 					).put(
 						selectFieldName, selectValue2
 					).put(
@@ -2714,5 +2797,12 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
+
+	@Inject
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
+
+	@Inject
+	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
 
 }
