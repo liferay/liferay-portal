@@ -5,19 +5,31 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.util;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParserUtil;
+import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.LengthFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.SelectFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.TextFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentConfigurationFieldValueTypeUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.LocalizedValueUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context.LayoutStructureItemImporterContext;
+import com.liferay.headless.admin.site.internal.util.LogUtil;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +42,9 @@ public class FragmentConfigurationFieldValuesUtil {
 	public static JSONObject getFreeMarkerFragmentEntryProcessorJSONObject(
 			String configuration,
 			Map<String, FragmentConfigurationFieldValue>
-				fragmentConfigurationFieldValuesMap)
+				fragmentConfigurationFieldValuesMap,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext)
 		throws Exception {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
@@ -65,8 +79,8 @@ public class FragmentConfigurationFieldValuesUtil {
 			jsonObject.put(
 				fragmentConfigurationField.getName(),
 				_fromFragmentConfigurationFieldValue(
-					fragmentConfigurationFieldValue,
-					fragmentConfigurationField));
+					fragmentConfigurationFieldValue, fragmentConfigurationField,
+					layoutStructureItemImporterContext));
 		}
 
 		return jsonObject;
@@ -74,8 +88,27 @@ public class FragmentConfigurationFieldValuesUtil {
 
 	private static Object _fromFragmentConfigurationFieldValue(
 			FragmentConfigurationFieldValue fragmentConfigurationFieldValue,
-			FragmentConfigurationField fragmentConfigurationField)
+			FragmentConfigurationField fragmentConfigurationField,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext)
 		throws Exception {
+
+		if (Objects.equals(
+				fragmentConfigurationFieldValue.getType(),
+				FragmentConfigurationFieldValue.Type.CATEGORY)) {
+
+			CategoryFragmentConfigurationFieldValue
+				categoryFragmentConfigurationFieldValue =
+					(CategoryFragmentConfigurationFieldValue)
+						fragmentConfigurationFieldValue;
+
+			return _getConfigurationJSONObject(
+				fragmentConfigurationField.isLocalizable(),
+				itemExternalReference -> _getCategoryTreeNodeJSONObject(
+					itemExternalReference, layoutStructureItemImporterContext),
+				categoryFragmentConfigurationFieldValue.getValue(),
+				categoryFragmentConfigurationFieldValue.getValue_i18n());
+		}
 
 		if (Objects.equals(
 				fragmentConfigurationFieldValue.getType(),
@@ -151,6 +184,127 @@ public class FragmentConfigurationFieldValuesUtil {
 		}
 
 		return null;
+	}
+
+	private static JSONObject _getCategoryTreeNodeJSONObject(
+			ItemExternalReference itemExternalReference,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext)
+		throws PortalException {
+
+		if ((itemExternalReference == null) ||
+			Validator.isNull(
+				itemExternalReference.getExternalReferenceCode())) {
+
+			return null;
+		}
+
+		Long groupId = ItemScopeUtil.getGroupId(
+			layoutStructureItemImporterContext.getCompanyId(),
+			itemExternalReference.getScope(),
+			layoutStructureItemImporterContext.getGroupId());
+
+		if (groupId == null) {
+			if (Objects.equals(
+					itemExternalReference.getClassName(),
+					AssetCategory.class.getName())) {
+
+				return _getCategoryTreeNodeMissingReferenceJSONObject(
+					"Category", layoutStructureItemImporterContext.getGroupId(),
+					itemExternalReference);
+			}
+
+			return _getCategoryTreeNodeMissingReferenceJSONObject(
+				"Vocabulary", layoutStructureItemImporterContext.getGroupId(),
+				itemExternalReference);
+		}
+
+		if (Objects.equals(
+				itemExternalReference.getClassName(),
+				AssetCategory.class.getName())) {
+
+			AssetCategory assetCategory =
+				AssetCategoryLocalServiceUtil.
+					fetchAssetCategoryByExternalReferenceCode(
+						itemExternalReference.getExternalReferenceCode(),
+						groupId);
+
+			if (assetCategory != null) {
+				return JSONUtil.put(
+					"categoryTreeNodeId",
+					String.valueOf(assetCategory.getCategoryId())
+				).put(
+					"categoryTreeNodeType", "Category"
+				).put(
+					"title", assetCategory.getName()
+				);
+			}
+
+			return _getCategoryTreeNodeMissingReferenceJSONObject(
+				"Category", layoutStructureItemImporterContext.getGroupId(),
+				itemExternalReference);
+		}
+
+		if (Objects.equals(
+				itemExternalReference.getClassName(),
+				AssetVocabulary.class.getName())) {
+
+			AssetVocabulary assetVocabulary =
+				AssetVocabularyLocalServiceUtil.
+					fetchAssetVocabularyByExternalReferenceCode(
+						itemExternalReference.getExternalReferenceCode(),
+						groupId);
+
+			if (assetVocabulary != null) {
+				return JSONUtil.put(
+					"categoryTreeNodeId",
+					String.valueOf(assetVocabulary.getVocabularyId())
+				).put(
+					"categoryTreeNodeType", "Vocabulary"
+				).put(
+					"title", assetVocabulary.getName()
+				);
+			}
+
+			return _getCategoryTreeNodeMissingReferenceJSONObject(
+				"Vocabulary", layoutStructureItemImporterContext.getGroupId(),
+				itemExternalReference);
+		}
+
+		throw new UnsupportedOperationException();
+	}
+
+	private static JSONObject _getCategoryTreeNodeMissingReferenceJSONObject(
+			String categoryTreeNodeType, long groupId,
+			ItemExternalReference itemExternalReference)
+		throws PortalException {
+
+		LogUtil.logOptionalReference(itemExternalReference, groupId);
+
+		return JSONUtil.put(
+			"categoryTreeNodeType", categoryTreeNodeType
+		).put(
+			"externalReferenceCode",
+			itemExternalReference.getExternalReferenceCode()
+		).put(
+			"scopeExternalReferenceCode",
+			ItemScopeUtil.getItemScopeExternalReferenceCode(
+				itemExternalReference.getScope(), groupId)
+		);
+	}
+
+	private static <T> JSONObject _getConfigurationJSONObject(
+			boolean localizable,
+			UnsafeFunction<T, JSONObject, Exception> unsafeFunction, T value,
+			Map<String, T> valuesMap)
+		throws Exception {
+
+		if (!localizable) {
+			return unsafeFunction.apply(value);
+		}
+
+		return LocalizedValueUtil.toJSONObject(
+			valuesMap, curValue -> unsafeFunction.apply(curValue));
 	}
 
 	private static <T> Object _getConfigurationObject(

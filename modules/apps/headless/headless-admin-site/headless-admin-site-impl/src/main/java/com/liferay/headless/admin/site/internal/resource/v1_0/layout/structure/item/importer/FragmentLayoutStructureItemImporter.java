@@ -153,7 +153,9 @@ public class FragmentLayoutStructureItemImporter
 					fragmentInstancePageElementDefinition.getJs()),
 				GetterUtil.getString(
 					fragmentInstancePageElementDefinition.getConfiguration()),
-				_getEditableValues(fragmentInstancePageElementDefinition),
+				_getEditableValues(
+					fragmentInstancePageElementDefinition,
+					layoutStructureItemImporterContext),
 				fragmentInstancePageElementDefinition.getNamespace(), 0,
 				fragmentEntryReference.getRendererKey(),
 				_getType(fragmentInstancePageElementDefinition),
@@ -167,7 +169,9 @@ public class FragmentLayoutStructureItemImporter
 
 	private String _getEditableValues(
 			FragmentInstancePageElementDefinition
-				fragmentInstancePageElementDefinition)
+				fragmentInstancePageElementDefinition,
+			LayoutStructureItemImporterContext
+				layoutStructureItemImporterContext)
 		throws Exception {
 
 		return JSONUtil.put(
@@ -177,7 +181,8 @@ public class FragmentLayoutStructureItemImporter
 				getFreeMarkerFragmentEntryProcessorJSONObject(
 					fragmentInstancePageElementDefinition.getConfiguration(),
 					fragmentInstancePageElementDefinition.
-						getFragmentConfigurationFieldValues())
+						getFragmentConfigurationFieldValues(),
+					layoutStructureItemImporterContext)
 		).toString();
 	}
 
@@ -349,7 +354,9 @@ public class FragmentLayoutStructureItemImporter
 			GetterUtil.getString(
 				fragmentInstancePageElementDefinition.getConfiguration()));
 		fragmentEntryLink.setEditableValues(
-			_getEditableValues(fragmentInstancePageElementDefinition));
+			_getEditableValues(
+				fragmentInstancePageElementDefinition,
+				layoutStructureItemImporterContext));
 		fragmentEntryLink.setNamespace(
 			fragmentInstancePageElementDefinition.getNamespace());
 		fragmentEntryLink.setRendererKey(
