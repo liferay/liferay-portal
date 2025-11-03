@@ -172,6 +172,18 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 		return originalFragmentEntryLink.getExternalReferenceCode();
 	}
 
+	private DTOConverterContext _getDTOConverterContext(
+		long companyId, long scopeGroupId) {
+
+		DTOConverterContext dtoConverterContext =
+			new DefaultDTOConverterContext(null, null, null, null, null);
+
+		dtoConverterContext.setAttribute("companyId", companyId);
+		dtoConverterContext.setAttribute("scopeGroupId", scopeGroupId);
+
+		return dtoConverterContext;
+	}
+
 	private Map<String, FragmentConfigurationFieldValue>
 			_getFragmentConfigurationFieldValues(
 				FragmentEntryLink fragmentEntryLink)
@@ -196,8 +208,8 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 			return null;
 		}
 
-		DTOConverterContext dtoConverterContext =
-			new DefaultDTOConverterContext(null, null, null, null, null);
+		DTOConverterContext dtoConverterContext = _getDTOConverterContext(
+			fragmentEntryLink.getCompanyId(), fragmentEntryLink.getGroupId());
 
 		Map<String, FragmentConfigurationFieldValue> map = new HashMap<>();
 
