@@ -4,7 +4,7 @@
  */
 
 import {DropzoneUpload} from '../../../../../../components/DropzoneUpload/DropzoneUpload';
-import {ACCEPT_FILE_TYPES} from '../../../Apps/AppCreationFlow/StorefrontPage/CustomizeAppStorefrontPage';
+import {ACCEPT_FILE_TYPES} from '../../../../../../enums/File';
 import {MAX_SIZE_5MBS} from '../../constants';
 
 const SingleImage = () => {

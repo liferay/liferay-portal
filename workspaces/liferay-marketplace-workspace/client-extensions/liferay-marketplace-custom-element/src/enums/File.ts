@@ -27,3 +27,10 @@ export const DOCUMENT_FOLDER_PERMISSIONS = {
 export const PUBLISH_APP_UPLOAD_MAX_FILES = 10;
 
 export const PUBLISH_APP_UPLOAD_MAX_SIZE = 500_000_000;
+
+export const ACCEPT_FILE_TYPES = {
+	'image/gif': ['.gif'],
+	'image/jpeg': ['.jpeg'],
+	'image/jpg': ['.jpg'],
+	'image/png': ['.png'],
+};

@@ -18,8 +18,6 @@ import PublishedDashboardOutlet from './PublisherDashboardOutlet';
 import Accounts from './pages/Accounts/Accounts';
 import Apps from './pages/Apps';
 import App from './pages/Apps/App';
-import {AppContextProvider} from './pages/Apps/AppCreationFlow/AppContext/AppManageState';
-import {AppCreationFlow} from './pages/Apps/AppCreationFlow/AppCreationFlow';
 import PublishAppOutlet from './pages/NewAppFlow/PublishAppOutlet';
 import {Build, Profile as AppProfile} from './pages/NewAppFlow/pages';
 import Licensing from './pages/NewAppFlow/pages/Licensing';
@@ -114,15 +112,6 @@ const PublisherDashboardRouter = () => {
 						</Route>
 					</Route>
 				</Route>
-
-				<Route
-					element={
-						<AppContextProvider>
-							<AppCreationFlow catalogId={String(catalogId)} />
-						</AppContextProvider>
-					}
-					path="app/create"
-				/>
 
 				<Route
 					element={

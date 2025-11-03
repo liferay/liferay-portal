@@ -5,7 +5,7 @@
 
 import {DropzoneUpload} from '../../../../../../components/DropzoneUpload/DropzoneUpload';
 import Form from '../../../../../../components/MarketplaceForm';
-import {ACCEPT_FILE_TYPES} from '../../../Apps/AppCreationFlow/StorefrontPage/CustomizeAppStorefrontPage';
+import {ACCEPT_FILE_TYPES} from '../../../../../../enums/File';
 
 const ImagesGrid = () => {
 	const handleUpload = (_files: File[]) => null;

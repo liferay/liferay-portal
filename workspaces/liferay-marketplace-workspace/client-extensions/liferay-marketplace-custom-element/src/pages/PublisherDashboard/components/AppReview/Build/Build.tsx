@@ -7,7 +7,7 @@ import ClayIcon from '@clayui/icon';
 
 import {LiferayPackage} from '../../../../../context/NewAppContext';
 import i18n from '../../../../../i18n';
-import {ProductTypeOptions} from '../../../pages/Apps/AppCreationFlow/ProvideAppBuildPage/constants/productTypes';
+import {ProductTypeOptions} from '../../../pages/NewAppFlow/constants/productTypes';
 import {AppReviewProps} from '../AppReview';
 import AppReviewSection from '../AppReviewSection';
 
