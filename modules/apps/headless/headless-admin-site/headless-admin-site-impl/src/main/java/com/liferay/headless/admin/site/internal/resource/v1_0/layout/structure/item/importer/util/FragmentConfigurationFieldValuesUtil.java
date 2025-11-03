@@ -16,11 +16,15 @@ import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFie
 import com.liferay.headless.admin.site.dto.v1_0.CollectionFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
+import com.liferay.headless.admin.site.dto.v1_0.ItemFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ItemValue;
 import com.liferay.headless.admin.site.dto.v1_0.LengthFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.SelectFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.TemplateReference;
 import com.liferay.headless.admin.site.dto.v1_0.TextFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CollectionUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentConfigurationFieldValueTypeUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.InfoItemUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context.LayoutStructureItemImporterContext;
@@ -146,6 +150,23 @@ public class FragmentConfigurationFieldValuesUtil {
 					layoutStructureItemImporterContext.getGroupId()),
 				collectionFragmentConfigurationFieldValue.getValue(),
 				collectionFragmentConfigurationFieldValue.getValue_i18n());
+		}
+
+		if (Objects.equals(
+				fragmentConfigurationFieldValue.getType(),
+				FragmentConfigurationFieldValue.Type.ITEM)) {
+
+			ItemFragmentConfigurationFieldValue
+				itemFragmentConfigurationFieldValue =
+					(ItemFragmentConfigurationFieldValue)
+						fragmentConfigurationFieldValue;
+
+			return _getConfigurationJSONObject(
+				fragmentConfigurationField.isLocalizable(),
+				itemValue -> _getItemJSONObject(
+					itemValue, layoutStructureItemImporterContext),
+				itemFragmentConfigurationFieldValue.getValue(),
+				itemFragmentConfigurationFieldValue.getValue_i18n());
 		}
 
 		if (Objects.equals(
@@ -348,6 +369,40 @@ public class FragmentConfigurationFieldValuesUtil {
 		}
 
 		return LocalizedValueUtil.toJSONObject(valuesMap, unsafeFunction);
+	}
+
+	private static JSONObject _getItemJSONObject(
+		ItemValue itemValue,
+		LayoutStructureItemImporterContext layoutStructureItemImporterContext) {
+
+		if ((itemValue == null) || (itemValue.getItem() == null)) {
+			return null;
+		}
+
+		ItemExternalReference itemExternalReference = itemValue.getItem();
+
+		JSONObject jsonObject = InfoItemUtil.getMappedItemJSONObject(
+			itemExternalReference.getClassName(),
+			itemExternalReference.getExternalReferenceCode(), null,
+			layoutStructureItemImporterContext.getInfoItemServiceRegistry(),
+			itemExternalReference.getScope(),
+			layoutStructureItemImporterContext.getGroupId());
+
+		return jsonObject.put(
+			"template",
+			() -> {
+				TemplateReference templateReference = itemValue.getTemplate();
+
+				if (templateReference == null) {
+					return null;
+				}
+
+				return JSONUtil.put(
+					"infoItemRendererKey", templateReference.getRendererKey()
+				).put(
+					"templateKey", templateReference.getTemplateKey()
+				);
+			});
 	}
 
 	private static boolean _isValidValue(
