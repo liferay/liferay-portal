@@ -13,6 +13,8 @@ import com.liferay.headless.admin.site.client.dto.v1_0.CollectionItemExternalRef
 import com.liferay.headless.admin.site.client.dto.v1_0.CollectionReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.Scope;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Map;
@@ -99,6 +101,23 @@ public class ReferencesTestUtil {
 				AssetVocabulary.class.getName(),
 				assetVocabulary.getExternalReferenceCode(),
 				assetVocabulary.getGroupId(), scopeGroupId);
+		}
+
+		if (object instanceof FileEntry) {
+			FileEntry fileEntry = (FileEntry)object;
+
+			return _getItemExternalReference(
+				FileEntry.class.getName(), fileEntry.getExternalReferenceCode(),
+				fileEntry.getGroupId(), scopeGroupId);
+		}
+
+		if (object instanceof JournalArticle) {
+			JournalArticle journalArticle = (JournalArticle)object;
+
+			return _getItemExternalReference(
+				JournalArticle.class.getName(),
+				journalArticle.getExternalReferenceCode(),
+				journalArticle.getGroupId(), scopeGroupId);
 		}
 
 		if (object instanceof Map) {
