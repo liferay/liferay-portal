@@ -13,6 +13,9 @@ import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.headless.admin.site.dto.v1_0.CategoryFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.CollectionFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ColorPaletteValue;
+import com.liferay.headless.admin.site.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ContextualMenuNavigationMenuValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
@@ -111,6 +114,22 @@ public class FragmentConfigurationFieldValueDTOConverter
 			return _getCollectionFragmentConfigurationFieldValue(
 				dtoConverterContext, fragmentConfigurationField,
 				(JSONObject)fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(
+				type, FragmentConfigurationFieldValue.Type.COLOR_PALETTE)) {
+
+			return _getColorPaletteFragmentConfigurationFieldValue(
+				fragmentConfigurationField,
+				(JSONObject)fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(
+				type, FragmentConfigurationFieldValue.Type.COLOR_PICKER)) {
+
+			return _getColorPickerFragmentConfigurationFieldValue(
+				fragmentConfigurationField,
+				fragmentFragmentConfigurationFieldValue);
 		}
 
 		if (Objects.equals(type, FragmentConfigurationFieldValue.Type.ITEM)) {
@@ -323,6 +342,77 @@ public class FragmentConfigurationFieldValueDTOConverter
 		}
 
 		return collectionFragmentConfigurationFieldValue;
+	}
+
+	private FragmentConfigurationFieldValue
+		_getColorPaletteFragmentConfigurationFieldValue(
+			FragmentConfigurationField fragmentConfigurationField,
+			JSONObject jsonObject) {
+
+		ColorPaletteFragmentConfigurationFieldValue
+			colorPaletteFragmentConfigurationFieldValue =
+				new ColorPaletteFragmentConfigurationFieldValue() {
+					{
+						setType(Type.COLOR_PALETTE);
+					}
+				};
+
+		if (fragmentConfigurationField.isLocalizable()) {
+			colorPaletteFragmentConfigurationFieldValue.setValue_i18n(
+				() -> LocalizedValueUtil.toLocalizedValues(
+					jsonObject,
+					key -> _getColorPaletteValue(
+						jsonObject.getJSONObject(key))));
+		}
+		else {
+			colorPaletteFragmentConfigurationFieldValue.setValue(
+				() -> _getColorPaletteValue(jsonObject));
+		}
+
+		return colorPaletteFragmentConfigurationFieldValue;
+	}
+
+	private ColorPaletteValue _getColorPaletteValue(JSONObject jsonObject) {
+		if (JSONUtil.isEmpty(jsonObject)) {
+			return null;
+		}
+
+		return new ColorPaletteValue() {
+			{
+				setColor(() -> jsonObject.getString("color"));
+				setCssClass(() -> jsonObject.getString("cssClass"));
+				setRgbValue(() -> jsonObject.getString("rgbValue"));
+			}
+		};
+	}
+
+	private FragmentConfigurationFieldValue
+		_getColorPickerFragmentConfigurationFieldValue(
+			FragmentConfigurationField fragmentConfigurationField,
+			Object fragmentFragmentConfigurationFieldValue) {
+
+		ColorPickerFragmentConfigurationFieldValue
+			colorPickerFragmentConfigurationFieldValue =
+				new ColorPickerFragmentConfigurationFieldValue() {
+					{
+						setType(Type.COLOR_PICKER);
+					}
+				};
+
+		if (fragmentConfigurationField.isLocalizable()) {
+			JSONObject jsonObject =
+				(JSONObject)fragmentFragmentConfigurationFieldValue;
+
+			colorPickerFragmentConfigurationFieldValue.setValue_i18n(
+				() -> LocalizedValueUtil.toLocalizedValues(jsonObject));
+		}
+		else {
+			colorPickerFragmentConfigurationFieldValue.setValue(
+				() -> GetterUtil.getString(
+					fragmentFragmentConfigurationFieldValue));
+		}
+
+		return colorPickerFragmentConfigurationFieldValue;
 	}
 
 	private ContextualMenuNavigationMenuValue
