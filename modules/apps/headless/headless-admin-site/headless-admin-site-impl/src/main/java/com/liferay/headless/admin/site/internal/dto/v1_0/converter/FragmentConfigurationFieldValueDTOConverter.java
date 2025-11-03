@@ -15,14 +15,20 @@ import com.liferay.headless.admin.site.dto.v1_0.CheckboxFragmentConfigurationFie
 import com.liferay.headless.admin.site.dto.v1_0.CollectionFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
+import com.liferay.headless.admin.site.dto.v1_0.ItemFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.ItemValue;
 import com.liferay.headless.admin.site.dto.v1_0.LengthFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.Scope;
 import com.liferay.headless.admin.site.dto.v1_0.SelectFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.dto.v1_0.TemplateReference;
 import com.liferay.headless.admin.site.dto.v1_0.TextFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CollectionUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentConfigurationFieldValueTypeUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.InfoItemUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.LocalizedValueUtil;
+import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -93,6 +99,12 @@ public class FragmentConfigurationFieldValueDTOConverter
 				type, FragmentConfigurationFieldValue.Type.COLLECTION)) {
 
 			return _getCollectionFragmentConfigurationFieldValue(
+				dtoConverterContext, fragmentConfigurationField,
+				(JSONObject)fragmentFragmentConfigurationFieldValue);
+		}
+
+		if (Objects.equals(type, FragmentConfigurationFieldValue.Type.ITEM)) {
+			return _getItemFragmentConfigurationFieldValue(
 				dtoConverterContext, fragmentConfigurationField,
 				(JSONObject)fragmentFragmentConfigurationFieldValue);
 		}
@@ -295,6 +307,44 @@ public class FragmentConfigurationFieldValueDTOConverter
 		return collectionFragmentConfigurationFieldValue;
 	}
 
+	private ItemExternalReference _getInfoItemExternalReference(
+		long companyId, JSONObject jsonObject, long scopeGroupId) {
+
+		if (JSONUtil.isEmpty(jsonObject)) {
+			return null;
+		}
+
+		String className = jsonObject.getString("className");
+		long classPK = jsonObject.getLong("classPK");
+		String externalReferenceCode = jsonObject.getString(
+			"externalReferenceCode");
+
+		if (Validator.isNull(className) ||
+			((classPK == 0) && Validator.isNull(externalReferenceCode))) {
+
+			return null;
+		}
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			InfoItemUtil.getERCInfoItemIdentifier(
+				className, classPK, _infoItemServiceRegistry, scopeGroupId);
+
+		if (ercInfoItemIdentifier != null) {
+			return _getItemExternalReference(
+				className, ercInfoItemIdentifier.getExternalReferenceCode(),
+				ItemScopeUtil.getItemScope(
+					companyId,
+					ercInfoItemIdentifier.getScopeExternalReferenceCode(),
+					scopeGroupId));
+		}
+
+		return _getItemExternalReference(
+			className, externalReferenceCode,
+			ItemScopeUtil.getItemScope(
+				companyId, jsonObject.getString("scopeExternalReferenceCode"),
+				scopeGroupId));
+	}
+
 	private ItemExternalReference _getItemExternalReference(
 		String className, String externalReferenceCode, Scope scope) {
 
@@ -307,6 +357,78 @@ public class FragmentConfigurationFieldValueDTOConverter
 		itemExternalReference.setScope(() -> scope);
 
 		return itemExternalReference;
+	}
+
+	private FragmentConfigurationFieldValue
+			_getItemFragmentConfigurationFieldValue(
+				DTOConverterContext dtoConverterContext,
+				FragmentConfigurationField fragmentConfigurationField,
+				JSONObject jsonObject)
+		throws Exception {
+
+		Long companyId = (Long)dtoConverterContext.getAttribute("companyId");
+		Long scopeGroupId = (Long)dtoConverterContext.getAttribute(
+			"scopeGroupId");
+
+		if ((companyId == null) || (scopeGroupId == null)) {
+			throw new UnsupportedOperationException();
+		}
+
+		ItemFragmentConfigurationFieldValue
+			itemFragmentConfigurationFieldValue =
+				new ItemFragmentConfigurationFieldValue();
+
+		if (fragmentConfigurationField.isLocalizable()) {
+			itemFragmentConfigurationFieldValue.setValue_i18n(
+				() -> LocalizedValueUtil.toLocalizedValues(
+					jsonObject,
+					key -> _getItemValue(
+						companyId, jsonObject.getJSONObject(key),
+						scopeGroupId)));
+		}
+		else {
+			itemFragmentConfigurationFieldValue.setValue(
+				() -> _getItemValue(companyId, jsonObject, scopeGroupId));
+		}
+
+		return itemFragmentConfigurationFieldValue;
+	}
+
+	private ItemValue _getItemValue(
+		long companyId, JSONObject jsonObject, long scopeGroupId) {
+
+		ItemExternalReference infoItemExternalReference =
+			_getInfoItemExternalReference(companyId, jsonObject, scopeGroupId);
+
+		if (infoItemExternalReference == null) {
+			return null;
+		}
+
+		ItemValue itemValue = new ItemValue();
+
+		itemValue.setItem(() -> infoItemExternalReference);
+		itemValue.setTemplate(
+			() -> {
+				JSONObject templateJSONObject = jsonObject.getJSONObject(
+					"template");
+
+				if (JSONUtil.isEmpty(templateJSONObject)) {
+					return null;
+				}
+
+				return new TemplateReference() {
+					{
+						setRendererKey(
+							() -> templateJSONObject.getString(
+								"infoItemRendererKey", null));
+						setTemplateKey(
+							() -> templateJSONObject.getString(
+								"templateKey", null));
+					}
+				};
+			});
+
+		return itemValue;
 	}
 
 	private FragmentConfigurationFieldValue
@@ -401,5 +523,8 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 }
