@@ -14,6 +14,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.CollectionReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.Scope;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
@@ -119,6 +120,14 @@ public class ReferencesTestUtil {
 				JournalArticle.class.getName(),
 				journalArticle.getExternalReferenceCode(),
 				journalArticle.getGroupId(), scopeGroupId);
+		}
+
+		if (object instanceof Layout) {
+			Layout layout = (Layout)object;
+
+			return _getItemExternalReference(
+				Layout.class.getName(), layout.getExternalReferenceCode(),
+				layout.getGroupId(), scopeGroupId);
 		}
 
 		if (object instanceof Map) {

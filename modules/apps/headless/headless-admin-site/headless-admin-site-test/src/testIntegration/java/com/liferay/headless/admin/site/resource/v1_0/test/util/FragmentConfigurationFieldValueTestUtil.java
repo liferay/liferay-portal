@@ -15,6 +15,8 @@ import com.liferay.headless.admin.site.client.dto.v1_0.ColorPaletteValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ColorPickerFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContextualMenuNavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.HrefURLValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.LengthFragmentConfigurationFieldValue;
@@ -22,9 +24,14 @@ import com.liferay.headless.admin.site.client.dto.v1_0.NavigationMenuFragmentCon
 import com.liferay.headless.admin.site.client.dto.v1_0.NavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.SelectFragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.SiteMenuNavigationMenuValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.SitePageURLValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.SitePagesNavigationMenuValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.TemplateReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.TextFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.URLFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.URLValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.VideoFragmentConfigurationFieldValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.VideoValue;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -283,6 +290,17 @@ public class FragmentConfigurationFieldValueTestUtil {
 				fragmentConfigurationField.isLocalizable(), value);
 		}
 
+		if (Objects.equals(type, "url")) {
+			return _getURLFragmentConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value,
+				scopeGroupId);
+		}
+
+		if (Objects.equals(type, "videoSelector")) {
+			return _getVideoFragmentConfigurationFieldValue(
+				fragmentConfigurationField.isLocalizable(), value);
+		}
+
 		return null;
 	}
 
@@ -520,6 +538,96 @@ public class FragmentConfigurationFieldValueTestUtil {
 		}
 
 		return textFragmentConfigurationFieldValue;
+	}
+
+	private static FragmentConfigurationFieldValue
+		_getURLFragmentConfigurationFieldValue(
+			boolean localizable, Object object, long scopeGroupId) {
+
+		URLFragmentConfigurationFieldValue urlFragmentConfigurationFieldValue =
+			new URLFragmentConfigurationFieldValue() {
+				{
+					setType(() -> Type.URL);
+				}
+			};
+
+		if (localizable) {
+			urlFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					_getURLValue((Map<String, Object>)object, scopeGroupId)
+				).build());
+		}
+		else {
+			urlFragmentConfigurationFieldValue.setValue(
+				_getURLValue((Map<String, Object>)object, scopeGroupId));
+		}
+
+		return urlFragmentConfigurationFieldValue;
+	}
+
+	private static URLValue _getURLValue(
+		Map<String, Object> map, long scopeGroupId) {
+
+		if (map.containsKey("href")) {
+			return new HrefURLValue() {
+				{
+					setHref(() -> GetterUtil.getString(map.get("href")));
+					setUrlType(() -> UrlType.HREF);
+				}
+			};
+		}
+
+		ItemExternalReference itemExternalReference =
+			ReferencesTestUtil.getItemExternalReference(
+				map.get("layout"), scopeGroupId);
+
+		if (itemExternalReference == null) {
+			return null;
+		}
+
+		return new SitePageURLValue() {
+			{
+				setSitePage(() -> itemExternalReference);
+				setUrlType(() -> UrlType.SITE_PAGE);
+			}
+		};
+	}
+
+	private static FragmentConfigurationFieldValue
+		_getVideoFragmentConfigurationFieldValue(
+			boolean localizable, Object object) {
+
+		VideoFragmentConfigurationFieldValue
+			videoFragmentConfigurationFieldValue =
+				new VideoFragmentConfigurationFieldValue() {
+					{
+						setType(() -> Type.VIDEO);
+					}
+				};
+
+		if (localizable) {
+			videoFragmentConfigurationFieldValue.setValue_i18n(
+				HashMapBuilder.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+					_getVideoValue((Map<String, String>)object)
+				).build());
+		}
+		else {
+			videoFragmentConfigurationFieldValue.setValue(
+				_getVideoValue((Map<String, String>)object));
+		}
+
+		return videoFragmentConfigurationFieldValue;
+	}
+
+	private static VideoValue _getVideoValue(Map<String, String> map) {
+		VideoValue videoValue = new VideoValue();
+
+		videoValue.setHtml(map.get("html"));
+		videoValue.setTitle(map.get("title"));
+
+		return videoValue;
 	}
 
 }

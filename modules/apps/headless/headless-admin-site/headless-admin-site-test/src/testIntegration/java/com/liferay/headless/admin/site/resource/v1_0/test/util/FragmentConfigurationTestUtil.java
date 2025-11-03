@@ -93,6 +93,10 @@ public class FragmentConfigurationTestUtil {
 			"select", "string"
 		).put(
 			"text", "string"
+		).put(
+			"url", "object"
+		).put(
+			"videoSelector", "object"
 		).build();
 
 }
