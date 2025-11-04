@@ -20,4 +20,5 @@ public class FDSEntityFieldTypes {
 
 	public static final String STRING = "string";
 
+	public static final Object BOOLEAN = "boolean";
 }
