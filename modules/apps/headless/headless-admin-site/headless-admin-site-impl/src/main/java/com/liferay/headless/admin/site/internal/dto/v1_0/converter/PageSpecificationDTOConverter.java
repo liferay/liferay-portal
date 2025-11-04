@@ -372,111 +372,111 @@ public class PageSpecificationDTOConverter
 	private PageSpecification _toContentPageSpecification(
 		DTOConverterContext dtoConverterContext, Layout layout) {
 
-		return new ContentPageSpecification() {
-			{
-				setCustomFields(
-					() -> {
-						if (layout.isTypeUtility()) {
-							return null;
-						}
+		ContentPageSpecification contentPageSpecification =
+			new ContentPageSpecification();
 
-						return CustomFieldsUtil.toCustomFields(
-							true, Layout.class.getName(), layout.getPlid(),
-							layout.getCompanyId(), null);
-					});
-				setDraftContentPageSpecificationExternalReferenceCode(
-					() -> {
-						Layout draftLayout = layout.fetchDraftLayout();
+		contentPageSpecification.setCustomFields(
+			() -> {
+				if (layout.isTypeUtility()) {
+					return null;
+				}
 
-						if (draftLayout == null) {
-							return null;
-						}
+				return CustomFieldsUtil.toCustomFields(
+					true, Layout.class.getName(), layout.getPlid(),
+					layout.getCompanyId(), null);
+			});
+		contentPageSpecification.
+			setDraftContentPageSpecificationExternalReferenceCode(
+				() -> {
+					Layout draftLayout = layout.fetchDraftLayout();
 
-						return draftLayout.getExternalReferenceCode();
-					});
-				setExternalReferenceCode(layout::getExternalReferenceCode);
-				setPageExperiences(
-					() -> _getPageExperiences(dtoConverterContext, layout));
-				setSettings(() -> _getSettings(layout));
-				setSiteTemplatePageSpecificationExternalReferenceCode(
-					() -> {
-						Layout layoutSetPrototypeLayout =
-							layout.getLayoutSetPrototypeLayout();
+					if (draftLayout == null) {
+						return null;
+					}
 
-						if (layoutSetPrototypeLayout == null) {
-							return null;
-						}
+					return draftLayout.getExternalReferenceCode();
+				});
+		contentPageSpecification.setExternalReferenceCode(
+			layout::getExternalReferenceCode);
+		contentPageSpecification.setPageExperiences(
+			() -> _getPageExperiences(dtoConverterContext, layout));
+		contentPageSpecification.setSettings(() -> _getSettings(layout));
+		contentPageSpecification.
+			setSiteTemplatePageSpecificationExternalReferenceCode(
+				() -> {
+					Layout layoutSetPrototypeLayout =
+						layout.getLayoutSetPrototypeLayout();
 
-						return layoutSetPrototypeLayout.
-							getExternalReferenceCode();
-					});
-				setStatus(
-					() -> {
-						if (layout.isDraftLayout()) {
-							if (layout.isApproved()) {
-								return Status.APPROVED;
-							}
+					if (layoutSetPrototypeLayout == null) {
+						return null;
+					}
 
-							return Status.DRAFT;
-						}
+					return layoutSetPrototypeLayout.getExternalReferenceCode();
+				});
+		contentPageSpecification.setStatus(
+			() -> {
+				if (layout.isDraftLayout()) {
+					if (layout.isApproved()) {
+						return PageSpecification.Status.APPROVED;
+					}
 
-						if (LayoutUtil.isPublished(layout)) {
-							return Status.APPROVED;
-						}
+					return PageSpecification.Status.DRAFT;
+				}
 
-						return Status.DRAFT;
-					});
-				setType(() -> Type.CONTENT_PAGE_SPECIFICATION);
-			}
-		};
+				if (LayoutUtil.isPublished(layout)) {
+					return PageSpecification.Status.APPROVED;
+				}
+
+				return PageSpecification.Status.DRAFT;
+			});
+
+		return contentPageSpecification;
 	}
 
 	private PageSpecification _toWidgetPageSpecification(
 		DTOConverterContext dtoConverterContext, Layout layout) {
 
-		return new WidgetPageSpecification() {
-			{
-				setCustomFields(
-					() -> CustomFieldsUtil.toCustomFields(
-						true, Layout.class.getName(), layout.getPlid(),
-						layout.getCompanyId(), null));
-				setExternalReferenceCode(
-					() -> {
-						LayoutPageTemplateEntry layoutPageTemplateEntry =
-							_layoutPageTemplateEntryLocalService.
-								fetchLayoutPageTemplateEntryByPlid(
-									layout.getPlid());
+		WidgetPageSpecification widgetPageSpecification =
+			new WidgetPageSpecification();
 
-						if ((layoutPageTemplateEntry == null) ||
-							(layoutPageTemplateEntry.getType() !=
-								LayoutPageTemplateEntryTypeConstants.
-									WIDGET_PAGE)) {
+		widgetPageSpecification.setCustomFields(
+			() -> CustomFieldsUtil.toCustomFields(
+				true, Layout.class.getName(), layout.getPlid(),
+				layout.getCompanyId(), null));
+		widgetPageSpecification.setExternalReferenceCode(
+			() -> {
+				LayoutPageTemplateEntry layoutPageTemplateEntry =
+					_layoutPageTemplateEntryLocalService.
+						fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
 
-							return layout.getExternalReferenceCode();
-						}
+				if ((layoutPageTemplateEntry == null) ||
+					(layoutPageTemplateEntry.getType() !=
+						LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE)) {
 
-						return layoutPageTemplateEntry.
-							getExternalReferenceCode();
-					});
-				setSettings(() -> _getSettings(layout));
-				setSiteTemplatePageSpecificationExternalReferenceCode(
-					() -> {
-						Layout layoutSetPrototypeLayout =
-							layout.getLayoutSetPrototypeLayout();
+					return layout.getExternalReferenceCode();
+				}
 
-						if (layoutSetPrototypeLayout == null) {
-							return null;
-						}
+				return layoutPageTemplateEntry.getExternalReferenceCode();
+			});
+		widgetPageSpecification.setSettings(() -> _getSettings(layout));
+		widgetPageSpecification.
+			setSiteTemplatePageSpecificationExternalReferenceCode(
+				() -> {
+					Layout layoutSetPrototypeLayout =
+						layout.getLayoutSetPrototypeLayout();
 
-						return layoutSetPrototypeLayout.
-							getExternalReferenceCode();
-					});
-				setStatus(() -> Status.APPROVED);
-				setType(() -> Type.WIDGET_PAGE_SPECIFICATION);
-				setWidgetPageSections(
-					() -> _getWidgetPageSections(dtoConverterContext, layout));
-			}
-		};
+					if (layoutSetPrototypeLayout == null) {
+						return null;
+					}
+
+					return layoutSetPrototypeLayout.getExternalReferenceCode();
+				});
+		widgetPageSpecification.setStatus(
+			() -> PageSpecification.Status.APPROVED);
+		widgetPageSpecification.setWidgetPageSections(
+			() -> _getWidgetPageSections(dtoConverterContext, layout));
+
+		return widgetPageSpecification;
 	}
 
 	@Reference

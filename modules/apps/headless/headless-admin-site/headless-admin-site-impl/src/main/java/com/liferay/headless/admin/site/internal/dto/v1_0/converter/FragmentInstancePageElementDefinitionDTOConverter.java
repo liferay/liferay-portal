@@ -14,7 +14,6 @@ import com.liferay.headless.admin.site.dto.v1_0.DefaultFragmentReference;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentConfigurationFieldValue;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentInstancePageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.FragmentItemExternalReference;
-import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -62,91 +61,94 @@ public class FragmentInstancePageElementDefinitionDTOConverter
 			throw new UnsupportedOperationException();
 		}
 
-		return new FragmentInstancePageElementDefinition() {
-			{
-				setConfiguration(fragmentEntryLink::getConfiguration);
-				setCss(fragmentEntryLink::getCss);
-				setCssClasses(
-					() -> {
-						if (SetUtil.isEmpty(
-								fragmentStyledLayoutStructureItem.
-									getCssClasses())) {
+		FragmentInstancePageElementDefinition
+			fragmentInstancePageElementDefinition =
+				new FragmentInstancePageElementDefinition();
 
-							return null;
-						}
+		fragmentInstancePageElementDefinition.setConfiguration(
+			fragmentEntryLink::getConfiguration);
+		fragmentInstancePageElementDefinition.setCss(fragmentEntryLink::getCss);
+		fragmentInstancePageElementDefinition.setCssClasses(
+			() -> {
+				if (SetUtil.isEmpty(
+						fragmentStyledLayoutStructureItem.getCssClasses())) {
 
-						return ArrayUtil.toStringArray(
-							fragmentStyledLayoutStructureItem.getCssClasses());
-					});
-				setCustomCSS(fragmentStyledLayoutStructureItem::getCustomCSS);
-				setDatePropagated(fragmentEntryLink::getLastPropagationDate);
-				setDraftFragmentInstanceExternalReferenceCode(
-					() -> _getDraftFragmentInstanceExternalReferenceCode(
-						fragmentEntryLink));
-				setFragmentConfigurationFieldValues(
-					() -> _getFragmentConfigurationFieldValues(
-						fragmentEntryLink));
-				setFragmentInstanceExternalReferenceCode(
-					fragmentEntryLink::getExternalReferenceCode);
-				setFragmentReference(
-					() -> {
-						if (Validator.isNull(
-								fragmentEntryLink.getFragmentEntryERC()) &&
-							Validator.isNull(
-								fragmentEntryLink.getRendererKey())) {
+					return null;
+				}
 
-							return null;
-						}
+				return ArrayUtil.toStringArray(
+					fragmentStyledLayoutStructureItem.getCssClasses());
+			});
+		fragmentInstancePageElementDefinition.setCustomCSS(
+			fragmentStyledLayoutStructureItem::getCustomCSS);
+		fragmentInstancePageElementDefinition.setDatePropagated(
+			fragmentEntryLink::getLastPropagationDate);
+		fragmentInstancePageElementDefinition.
+			setDraftFragmentInstanceExternalReferenceCode(
+				() -> _getDraftFragmentInstanceExternalReferenceCode(
+					fragmentEntryLink));
+		fragmentInstancePageElementDefinition.
+			setFragmentConfigurationFieldValues(
+				() -> _getFragmentConfigurationFieldValues(fragmentEntryLink));
+		fragmentInstancePageElementDefinition.
+			setFragmentInstanceExternalReferenceCode(
+				fragmentEntryLink::getExternalReferenceCode);
+		fragmentInstancePageElementDefinition.setFragmentReference(
+			() -> {
+				if (Validator.isNull(fragmentEntryLink.getFragmentEntryERC()) &&
+					Validator.isNull(fragmentEntryLink.getRendererKey())) {
 
-						if (Validator.isNotNull(
-								fragmentEntryLink.getFragmentEntryERC())) {
+					return null;
+				}
 
-							return new FragmentItemExternalReference() {
-								{
-									setExternalReferenceCode(
-										fragmentEntryLink::getFragmentEntryERC);
-									setFragmentReferenceType(
-										() ->
-											FragmentReferenceType.
-												FRAGMENT_ITEM_EXTERNAL_REFERENCE);
-									setScope(
-										() -> ItemScopeUtil.getItemScope(
-											fragmentEntryLink.getCompanyId(),
-											fragmentEntryLink.
-												getFragmentEntryScopeERC(),
-											fragmentEntryLink.getGroupId()));
-								}
-							};
-						}
+				if (Validator.isNotNull(
+						fragmentEntryLink.getFragmentEntryERC())) {
 
-						return new DefaultFragmentReference() {
-							{
-								setDefaultFragmentKey(
-									fragmentEntryLink::getRendererKey);
-								setFragmentReferenceType(
-									() ->
-										FragmentReferenceType.
-											DEFAULT_FRAGMENT_REFERENCE);
-							}
-						};
-					});
-				setFragmentType(
-					() -> {
-						if (fragmentEntryLink.isTypeComponent()) {
-							return FragmentType.BASIC;
-						}
+					FragmentItemExternalReference
+						fragmentItemExternalReference =
+							new FragmentItemExternalReference();
 
-						return FragmentType.FORM;
-					});
-				setHtml(fragmentEntryLink::getHtml);
-				setIndexed(fragmentStyledLayoutStructureItem::isIndexed);
-				setJs(fragmentEntryLink::getJs);
-				setName(fragmentStyledLayoutStructureItem::getName);
-				setNamespace(fragmentEntryLink::getNamespace);
-				setType(PageElementDefinition.Type.FRAGMENT);
-				setUuid(fragmentEntryLink::getUuid);
-			}
-		};
+					fragmentItemExternalReference.setExternalReferenceCode(
+						fragmentEntryLink::getFragmentEntryERC);
+					fragmentItemExternalReference.setScope(
+						() -> ItemScopeUtil.getItemScope(
+							fragmentEntryLink.getCompanyId(),
+							fragmentEntryLink.getFragmentEntryScopeERC(),
+							fragmentEntryLink.getGroupId()));
+
+					return fragmentItemExternalReference;
+				}
+
+				DefaultFragmentReference defaultFragmentReference =
+					new DefaultFragmentReference();
+
+				defaultFragmentReference.setDefaultFragmentKey(
+					fragmentEntryLink::getRendererKey);
+
+				return defaultFragmentReference;
+			});
+		fragmentInstancePageElementDefinition.setFragmentType(
+			() -> {
+				if (fragmentEntryLink.isTypeComponent()) {
+					return FragmentInstancePageElementDefinition.FragmentType.
+						BASIC;
+				}
+
+				return FragmentInstancePageElementDefinition.FragmentType.FORM;
+			});
+		fragmentInstancePageElementDefinition.setHtml(
+			fragmentEntryLink::getHtml);
+		fragmentInstancePageElementDefinition.setIndexed(
+			fragmentStyledLayoutStructureItem::isIndexed);
+		fragmentInstancePageElementDefinition.setJs(fragmentEntryLink::getJs);
+		fragmentInstancePageElementDefinition.setName(
+			fragmentStyledLayoutStructureItem::getName);
+		fragmentInstancePageElementDefinition.setNamespace(
+			fragmentEntryLink::getNamespace);
+		fragmentInstancePageElementDefinition.setUuid(
+			fragmentEntryLink::getUuid);
+
+		return fragmentInstancePageElementDefinition;
 	}
 
 	private String _getDraftFragmentInstanceExternalReferenceCode(

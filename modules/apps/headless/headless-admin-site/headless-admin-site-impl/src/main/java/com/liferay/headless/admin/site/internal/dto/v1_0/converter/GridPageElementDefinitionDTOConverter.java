@@ -8,7 +8,6 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 import com.liferay.headless.admin.site.dto.v1_0.GridPageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.GridViewport;
 import com.liferay.headless.admin.site.dto.v1_0.GridViewportDefinition;
-import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ViewportIdUtil;
 import com.liferay.layout.converter.VerticalAlignmentConverter;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
@@ -55,56 +54,59 @@ public class GridPageElementDefinitionDTOConverter
 			throw new UnsupportedOperationException();
 		}
 
-		return new GridPageElementDefinition() {
-			{
-				setCssClasses(
-					() -> {
-						Set<String> cssClasses =
-							rowStyledLayoutStructureItem.getCssClasses();
+		GridPageElementDefinition gridPageElementDefinition =
+			new GridPageElementDefinition();
 
-						if (SetUtil.isEmpty(cssClasses)) {
-							return null;
-						}
+		gridPageElementDefinition.setCssClasses(
+			() -> {
+				Set<String> cssClasses =
+					rowStyledLayoutStructureItem.getCssClasses();
 
-						return ArrayUtil.toStringArray(cssClasses);
-					});
-				setCustomCSS(
-					() -> {
-						String customCSS =
-							rowStyledLayoutStructureItem.getCustomCSS();
+				if (SetUtil.isEmpty(cssClasses)) {
+					return null;
+				}
 
-						if (Validator.isNotNull(customCSS)) {
-							return customCSS;
-						}
+				return ArrayUtil.toStringArray(cssClasses);
+			});
+		gridPageElementDefinition.setCustomCSS(
+			() -> {
+				String customCSS = rowStyledLayoutStructureItem.getCustomCSS();
 
-						return null;
-					});
-				setGridViewports(
-					() -> _toGridViewports(rowStyledLayoutStructureItem));
-				setGutters(rowStyledLayoutStructureItem::isGutters);
-				setIndexed(rowStyledLayoutStructureItem::isIndexed);
-				setModulesPerRow(
-					rowStyledLayoutStructureItem::getModulesPerRow);
-				setName(rowStyledLayoutStructureItem::getName);
-				setNumberOfModules(
-					rowStyledLayoutStructureItem::getNumberOfColumns);
-				setReverseOrder(rowStyledLayoutStructureItem::isReverseOrder);
-				setType(PageElementDefinition.Type.GRID);
-				setVerticalAlignment(
-					() -> {
-						String itemVerticalAlignment =
-							rowStyledLayoutStructureItem.getVerticalAlignment();
+				if (Validator.isNotNull(customCSS)) {
+					return customCSS;
+				}
 
-						if (Validator.isNull(itemVerticalAlignment)) {
-							return null;
-						}
+				return null;
+			});
+		gridPageElementDefinition.setGridViewports(
+			() -> _toGridViewports(rowStyledLayoutStructureItem));
+		gridPageElementDefinition.setGutters(
+			rowStyledLayoutStructureItem::isGutters);
+		gridPageElementDefinition.setIndexed(
+			rowStyledLayoutStructureItem::isIndexed);
+		gridPageElementDefinition.setModulesPerRow(
+			rowStyledLayoutStructureItem::getModulesPerRow);
+		gridPageElementDefinition.setName(
+			rowStyledLayoutStructureItem::getName);
+		gridPageElementDefinition.setNumberOfModules(
+			rowStyledLayoutStructureItem::getNumberOfColumns);
+		gridPageElementDefinition.setReverseOrder(
+			rowStyledLayoutStructureItem::isReverseOrder);
+		gridPageElementDefinition.setVerticalAlignment(
+			() -> {
+				String itemVerticalAlignment =
+					rowStyledLayoutStructureItem.getVerticalAlignment();
 
-						return VerticalAlignment.create(
-							VerticalAlignmentConverter.convertToExternalValue(
-								itemVerticalAlignment));
-					});
-			}
-		};
+				if (Validator.isNull(itemVerticalAlignment)) {
+					return null;
+				}
+
+				return GridPageElementDefinition.VerticalAlignment.create(
+					VerticalAlignmentConverter.convertToExternalValue(
+						itemVerticalAlignment));
+			});
+
+		return gridPageElementDefinition;
 	}
 
 	private GridViewport _toGridViewport(

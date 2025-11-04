@@ -44,14 +44,14 @@ public class ModulePageElementDefinitionDTOConverter
 			ColumnLayoutStructureItem columnLayoutStructureItem)
 		throws Exception {
 
-		return new ModulePageElementDefinition() {
-			{
-				setModuleViewports(
-					() -> _toModuleViewports(columnLayoutStructureItem));
-				setSize(columnLayoutStructureItem::getSize);
-				setType(Type.MODULE);
-			}
-		};
+		ModulePageElementDefinition modulePageElementDefinition =
+			new ModulePageElementDefinition();
+
+		modulePageElementDefinition.setModuleViewports(
+			() -> _toModuleViewports(columnLayoutStructureItem));
+		modulePageElementDefinition.setSize(columnLayoutStructureItem::getSize);
+
+		return modulePageElementDefinition;
 	}
 
 	private ModuleViewport _toModuleViewport(

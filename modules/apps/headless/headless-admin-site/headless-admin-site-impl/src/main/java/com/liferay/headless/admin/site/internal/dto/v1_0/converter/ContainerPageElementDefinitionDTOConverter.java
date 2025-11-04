@@ -7,7 +7,6 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.headless.admin.site.dto.v1_0.ContainerPageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.HtmlProperties;
-import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ContainerLayoutUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentLinkUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentViewportUtil;
@@ -58,65 +57,63 @@ public class ContainerPageElementDefinitionDTOConverter
 			throw new UnsupportedOperationException();
 		}
 
-		return new ContainerPageElementDefinition() {
-			{
-				setContentVisibility(
-					() -> {
-						String contentVisibility =
-							containerStyledLayoutStructureItem.
-								getContentVisibility();
+		ContainerPageElementDefinition containerPageElementDefinition =
+			new ContainerPageElementDefinition();
 
-						if (Validator.isNull(contentVisibility)) {
-							return null;
-						}
+		containerPageElementDefinition.setContentVisibility(
+			() -> {
+				String contentVisibility =
+					containerStyledLayoutStructureItem.getContentVisibility();
 
-						return ContentVisibility.create(
-							ContentVisibilityConverter.convertToExternalValue(
-								contentVisibility));
-					});
-				setCssClasses(
-					() -> {
-						Set<String> cssClasses =
-							containerStyledLayoutStructureItem.getCssClasses();
+				if (Validator.isNull(contentVisibility)) {
+					return null;
+				}
 
-						if (SetUtil.isEmpty(cssClasses)) {
-							return null;
-						}
+				return ContainerPageElementDefinition.ContentVisibility.create(
+					ContentVisibilityConverter.convertToExternalValue(
+						contentVisibility));
+			});
+		containerPageElementDefinition.setCssClasses(
+			() -> {
+				Set<String> cssClasses =
+					containerStyledLayoutStructureItem.getCssClasses();
 
-						return ArrayUtil.toStringArray(cssClasses);
-					});
-				setCustomCSS(
-					() -> {
-						String customCSS =
-							containerStyledLayoutStructureItem.getCustomCSS();
+				if (SetUtil.isEmpty(cssClasses)) {
+					return null;
+				}
 
-						if (Validator.isNotNull(customCSS)) {
-							return customCSS;
-						}
+				return ArrayUtil.toStringArray(cssClasses);
+			});
+		containerPageElementDefinition.setCustomCSS(
+			() -> {
+				String customCSS =
+					containerStyledLayoutStructureItem.getCustomCSS();
 
-						return null;
-					});
-				setFragmentLink(
-					() -> FragmentLinkUtil.toFragmentLink(
-						companyId, _infoItemServiceRegistry,
-						containerStyledLayoutStructureItem.getLinkJSONObject(),
-						scopeGroupId));
-				setFragmentViewports(
-					() -> FragmentViewportUtil.toFragmentViewports(
-						containerStyledLayoutStructureItem.
-							getItemConfigJSONObject()));
-				setHtmlProperties(
-					() -> _toHtmlProperties(
-						containerStyledLayoutStructureItem));
-				setIndexed(containerStyledLayoutStructureItem::isIndexed);
-				setLayout(
-					() -> ContainerLayoutUtil.toLayout(
-						containerStyledLayoutStructureItem.
-							getItemConfigJSONObject()));
-				setName(containerStyledLayoutStructureItem::getName);
-				setType(PageElementDefinition.Type.CONTAINER);
-			}
-		};
+				if (Validator.isNotNull(customCSS)) {
+					return customCSS;
+				}
+
+				return null;
+			});
+		containerPageElementDefinition.setFragmentLink(
+			() -> FragmentLinkUtil.toFragmentLink(
+				companyId, _infoItemServiceRegistry,
+				containerStyledLayoutStructureItem.getLinkJSONObject(),
+				scopeGroupId));
+		containerPageElementDefinition.setFragmentViewports(
+			() -> FragmentViewportUtil.toFragmentViewports(
+				containerStyledLayoutStructureItem.getItemConfigJSONObject()));
+		containerPageElementDefinition.setHtmlProperties(
+			() -> _toHtmlProperties(containerStyledLayoutStructureItem));
+		containerPageElementDefinition.setIndexed(
+			containerStyledLayoutStructureItem::isIndexed);
+		containerPageElementDefinition.setLayout(
+			() -> ContainerLayoutUtil.toLayout(
+				containerStyledLayoutStructureItem.getItemConfigJSONObject()));
+		containerPageElementDefinition.setName(
+			containerStyledLayoutStructureItem::getName);
+
+		return containerPageElementDefinition;
 	}
 
 	private HtmlProperties _toHtmlProperties(

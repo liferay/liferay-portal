@@ -383,11 +383,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		CollectionFragmentConfigurationFieldValue
 			collectionFragmentConfigurationFieldValue =
-				new CollectionFragmentConfigurationFieldValue() {
-					{
-						setType(Type.COLLECTION);
-					}
-				};
+				new CollectionFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			collectionFragmentConfigurationFieldValue.setValue_i18n(
@@ -413,11 +409,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		ColorPaletteFragmentConfigurationFieldValue
 			colorPaletteFragmentConfigurationFieldValue =
-				new ColorPaletteFragmentConfigurationFieldValue() {
-					{
-						setType(Type.COLOR_PALETTE);
-					}
-				};
+				new ColorPaletteFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			colorPaletteFragmentConfigurationFieldValue.setValue_i18n(
@@ -455,11 +447,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		ColorPickerFragmentConfigurationFieldValue
 			colorPickerFragmentConfigurationFieldValue =
-				new ColorPickerFragmentConfigurationFieldValue() {
-					{
-						setType(Type.COLOR_PICKER);
-					}
-				};
+				new ColorPickerFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			JSONObject jsonObject =
@@ -624,11 +612,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		LengthFragmentConfigurationFieldValue
 			lengthFragmentConfigurationFieldValue =
-				new LengthFragmentConfigurationFieldValue() {
-					{
-						setType(Type.LENGTH);
-					}
-				};
+				new LengthFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			JSONObject jsonObject =
@@ -663,11 +647,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		NavigationMenuFragmentConfigurationFieldValue
 			navigationMenuFragmentConfigurationFieldValue =
-				new NavigationMenuFragmentConfigurationFieldValue() {
-					{
-						setType(Type.NAVIGATION_MENU);
-					}
-				};
+				new NavigationMenuFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			navigationMenuFragmentConfigurationFieldValue.setValue_i18n(
@@ -739,11 +719,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		SelectFragmentConfigurationFieldValue
 			selectFragmentConfigurationFieldValue =
-				new SelectFragmentConfigurationFieldValue() {
-					{
-						setType(Type.SELECT);
-					}
-				};
+				new SelectFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			JSONObject jsonObject =
@@ -848,11 +824,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		TextFragmentConfigurationFieldValue
 			textFragmentConfigurationFieldValue =
-				new TextFragmentConfigurationFieldValue() {
-					{
-						setType(Type.TEXT);
-					}
-				};
+				new TextFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			JSONObject jsonObject =
@@ -885,11 +857,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 		}
 
 		URLFragmentConfigurationFieldValue urlFragmentConfigurationFieldValue =
-			new URLFragmentConfigurationFieldValue() {
-				{
-					setType(Type.URL);
-				}
-			};
+			new URLFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			urlFragmentConfigurationFieldValue.setValue_i18n(
@@ -964,11 +932,7 @@ public class FragmentConfigurationFieldValueDTOConverter
 
 		VideoFragmentConfigurationFieldValue
 			videoFragmentConfigurationFieldValue =
-				new VideoFragmentConfigurationFieldValue() {
-					{
-						setType(Type.VIDEO);
-					}
-				};
+				new VideoFragmentConfigurationFieldValue();
 
 		if (fragmentConfigurationField.isLocalizable()) {
 			videoFragmentConfigurationFieldValue.setValue_i18n(
