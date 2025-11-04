@@ -13,7 +13,7 @@ import {
 	openModal,
 	openToast,
 } from 'frontend-js-components-web';
-import {fetch} from 'frontend-js-web';
+import {fetch, sub} from 'frontend-js-web';
 import React, {Ref, useContext, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
@@ -57,6 +57,13 @@ const CustomViewsControlsTrigger = React.forwardRef(
 
 			{viewUpdated && (
 				<span className="inline-item-after reference-mark view-updated-mark">
+					<span className="hide-accessible sr-only">
+						{sub(
+							Liferay.Language.get('custom-view-name-updated'),
+							triggerLabel
+						)}
+					</span>
+
 					<ClayIcon symbol="asterisk" />
 				</span>
 			)}
@@ -375,6 +382,7 @@ const CustomViewsControls = () => {
 				},
 				{
 					autoFocus: true,
+					displayType: 'danger',
 					label: Liferay.Language.get('delete'),
 					onClick: ({processClose}) => {
 						processClose();
@@ -385,7 +393,7 @@ const CustomViewsControls = () => {
 					},
 				},
 			],
-			status: 'warning',
+			status: 'danger',
 			title: Liferay.Language.get('delete-view'),
 		});
 	};
