@@ -16,6 +16,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -57,8 +58,9 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 			_reindexLayout(layout);
 		}
 
-		if (ExportImportThreadLocal.isImportInProcess() ||
-			ExportImportThreadLocal.isStagingInProcess()) {
+		if ((ExportImportThreadLocal.isImportInProcess() ||
+			 ExportImportThreadLocal.isStagingInProcess()) &&
+			!LazyReferencingThreadLocal.isEnabled()) {
 
 			return;
 		}
