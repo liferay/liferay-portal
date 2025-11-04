@@ -14,19 +14,31 @@ import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.headless.batch.engine.entity.TestEntity;
 import com.liferay.headless.batch.engine.util.ExportImportTaskUtil;
+import com.liferay.headless.delivery.client.dto.v1_0.Document;
+import com.liferay.headless.delivery.client.resource.v1_0.DocumentResource;
+import com.liferay.headless.delivery.client.serdes.v1_0.DocumentSerDes;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -36,6 +48,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -175,6 +188,52 @@ public class ImportTaskResourceTest {
 				Assert.assertNull(_externalReferenceCode);
 				Assert.assertNotNull(importTask.getExternalReferenceCode());
 			});
+	}
+
+	@Test
+	public void testPutImportTaskWithDocumentBatchUpdate() throws Exception {
+		Group testGroup = GroupTestUtil.addGroup();
+
+		Company testCompany = CompanyLocalServiceUtil.getCompany(
+			testGroup.getCompanyId());
+
+		User testCompanyAdminUser = UserTestUtil.getAdminUser(
+			testCompany.getCompanyId());
+
+		DocumentResource documentResource = DocumentResource.builder(
+		).authentication(
+			testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		Document document = new Document();
+
+		document.setDescription("Test Description 1");
+		document.setExternalReferenceCode(RandomTestUtil.randomString());
+		document.setSiteId(testGroup.getGroupId());
+		document.setTitle("Test Title 1");
+
+		document = documentResource.postSiteDocument(
+			testGroup.getGroupId(), document,
+			HashMapBuilder.put(
+				"file", () -> FileUtil.createTempFile(new byte[0])
+			).build());
+
+		document.setTitle("Changed Title");
+
+		ImportTask importTask = ExportImportTaskUtil.putImportTask(
+			JSONUtil.put(
+				JSONFactoryUtil.createJSONObject(
+					DocumentSerDes.toJSON(document))
+			).toString(),
+			"com.liferay.headless.delivery.dto.v1_0.Document", "COMPLETED",
+			Collections.emptyMap());
+
+		Assert.assertEquals(1, (int)importTask.getProcessedItemsCount());
 	}
 
 	private void _testPostImportTaskWithExternalReferenceCodes(

@@ -11,6 +11,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-api")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
+	testIntegrationImplementation project(":apps:headless:headless-delivery:headless-delivery-api")
+	testIntegrationImplementation project(":apps:headless:headless-delivery:headless-delivery-client")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")

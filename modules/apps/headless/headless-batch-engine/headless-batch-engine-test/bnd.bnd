@@ -3,5 +3,6 @@ Bundle-SymbolicName: com.liferay.headless.batch.engine.test
 Bundle-Version: 1.0.0
 -includeresource:\
 	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
+	com.liferay.headless.delivery.client.jar=com.liferay.headless.delivery.client-*.jar;lib:=true,\
 	META-INF/module-log4j.xml=src/testIntegration/resources/META-INF/module-log4j.xml,\
 	@jsonassert-[0-9.]*.jar

@@ -37,30 +37,8 @@ public class ExportImportTaskUtil {
 					"/JSON", _getQueryString(parameters)),
 				Http.Method.POST));
 
-		String externalReferenceCode = exportTask.getExternalReferenceCode();
-
-		while (true) {
-			exportTask = ExportTaskSerDes.toDTO(
-				HTTPTestUtil.invokeToString(
-					null,
-					"headless-batch-engine/v1.0/export-task/by-external-" +
-						"reference-code/" + externalReferenceCode,
-					Http.Method.GET));
-
-			if (StringUtil.equals(
-					exportTask.getExecuteStatusAsString(), "COMPLETED") ||
-				StringUtil.equals(
-					exportTask.getExecuteStatusAsString(), "FAILED")) {
-
-				Assert.assertEquals(
-					expectedExecuteStatus,
-					exportTask.getExecuteStatusAsString());
-
-				break;
-			}
-		}
-
-		return exportTask;
+		return _pollExportTask(
+			exportTask.getExternalReferenceCode(), expectedExecuteStatus);
 	}
 
 	public static ImportTask postImportTask(
@@ -76,30 +54,25 @@ public class ExportImportTaskUtil {
 					_getQueryString(parameters)),
 				Http.Method.POST));
 
-		String externalReferenceCode = importTask.getExternalReferenceCode();
+		return _pollImportTask(
+			importTask.getExternalReferenceCode(), expectedExecuteStatus);
+	}
 
-		while (true) {
-			importTask = ImportTaskSerDes.toDTO(
-				HTTPTestUtil.invokeToString(
-					null,
-					"headless-batch-engine/v1.0/import-task/by-external-" +
-						"reference-code/" + externalReferenceCode,
-					Http.Method.GET));
+	public static ImportTask putImportTask(
+			String body, String className, String expectedExecuteStatus,
+			Map<String, String> parameters)
+		throws Exception {
 
-			if (StringUtil.equals(
-					importTask.getExecuteStatusAsString(), "COMPLETED") ||
-				StringUtil.equals(
-					importTask.getExecuteStatusAsString(), "FAILED")) {
+		ImportTask importTask = ImportTaskSerDes.toDTO(
+			HTTPTestUtil.invokeToString(
+				body,
+				StringBundler.concat(
+					"headless-batch-engine/v1.0/import-task/", className,
+					_getQueryString(parameters)),
+				Http.Method.PUT));
 
-				Assert.assertEquals(
-					expectedExecuteStatus,
-					importTask.getExecuteStatusAsString());
-
-				break;
-			}
-		}
-
-		return importTask;
+		return _pollImportTask(
+			importTask.getExternalReferenceCode(), expectedExecuteStatus);
 	}
 
 	private static String _getQueryString(Map<String, String> parameters) {
@@ -121,6 +94,58 @@ public class ExportImportTaskUtil {
 		}
 
 		return sb.toString();
+	}
+
+	private static ExportTask _pollExportTask(
+			String externalReferenceCode, String expectedExecuteStatus)
+		throws Exception {
+
+		while (true) {
+			ExportTask exportTask = ExportTaskSerDes.toDTO(
+				HTTPTestUtil.invokeToString(
+					null,
+					"headless-batch-engine/v1.0/export-task/by-external-" +
+						"reference-code/" + externalReferenceCode,
+					Http.Method.GET));
+
+			if (StringUtil.equals(
+					exportTask.getExecuteStatusAsString(), "COMPLETED") ||
+				StringUtil.equals(
+					exportTask.getExecuteStatusAsString(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus,
+					exportTask.getExecuteStatusAsString());
+
+				return exportTask;
+			}
+		}
+	}
+
+	private static ImportTask _pollImportTask(
+			String externalReferenceCode, String expectedExecuteStatus)
+		throws Exception {
+
+		while (true) {
+			ImportTask importTask = ImportTaskSerDes.toDTO(
+				HTTPTestUtil.invokeToString(
+					null,
+					"headless-batch-engine/v1.0/import-task/by-external-" +
+						"reference-code/" + externalReferenceCode,
+					Http.Method.GET));
+
+			if (StringUtil.equals(
+					importTask.getExecuteStatusAsString(), "COMPLETED") ||
+				StringUtil.equals(
+					importTask.getExecuteStatusAsString(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus,
+					importTask.getExecuteStatusAsString());
+
+				return importTask;
+			}
+		}
 	}
 
 }
