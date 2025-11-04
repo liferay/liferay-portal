@@ -9,10 +9,16 @@ import {
 	FDS_NESTED_FIELD_NAME_DELIMITER,
 	FDS_NESTED_FIELD_NAME_PARENT_SUFFIX,
 } from '@liferay/frontend-data-set-web';
-import {fetch} from 'frontend-js-web';
 
 import openDefaultFailureToast from './openDefaultFailureToast';
-import {EFieldFormat, EFieldType, IField} from './types';
+import {
+	EFieldFormat,
+	EFieldType,
+	IField,
+	IFilterable,
+	IProperties,
+	ISchemas,
+} from './types';
 
 export const BLACKLISTED_FIELDS = [
 	'actions',
@@ -22,25 +28,6 @@ export const BLACKLISTED_FIELDS = [
 ];
 
 const LOCALIZABLE_PROPERTY_SUFFIX = '_i18n';
-
-interface IProperty {
-	$ref?: string;
-	format?: EFieldFormat;
-	items?: any;
-	type?: EFieldType;
-	['x-parent-map']?: string;
-}
-
-interface IProperties {
-	[key: string]: IProperty;
-}
-
-interface ISchemas {
-	[key: string]: {
-		properties: IProperties;
-		type: string;
-	};
-}
 
 const validSchemaPropertyFilter = (propertyKey: string) => {
 	return (
@@ -135,30 +122,12 @@ function getValidFields({
 }
 
 export default async function getFields({
-	restApplication,
 	restSchema,
+	schemas,
 }: {
-	restApplication: string;
 	restSchema: string;
+	schemas: ISchemas;
 }) {
-	const response = await fetch(`/o${restApplication}/openapi.json`);
-
-	if (!response.ok) {
-		openDefaultFailureToast();
-
-		return [];
-	}
-
-	const responseJSON = await response.json();
-
-	const schemas = responseJSON?.components?.schemas;
-
-	if (!schemas?.[restSchema]?.properties) {
-		openDefaultFailureToast();
-
-		return [];
-	}
-
 	return getValidFields({
 		contextPath: '',
 		schemaName: restSchema,
@@ -167,4 +136,54 @@ export default async function getFields({
 	});
 }
 
-export {getValidFields, ISchemas};
+async function getFilterableFields({
+	restSchema,
+	schemas,
+}: {
+	restSchema: string;
+	schemas: ISchemas;
+}): Promise<IField[]> {
+	if (!schemas[restSchema]['x-filterable']) {
+		openDefaultFailureToast();
+
+		return [];
+	}
+
+	const filterablePaths: IFilterable = schemas[restSchema]['x-filterable'];
+	const filterableItemList = Object.keys(filterablePaths);
+
+	if (!filterableItemList) {
+		return [];
+	}
+
+	const filterableFields: Array<IField> = [];
+
+	filterableItemList.forEach((item) => {
+		const type = filterablePaths[item].type;
+		const entityFieldType =
+			type === EFieldType.ARRAY ? filterablePaths[item].items : type;
+
+		const field: IField = {
+			entityFieldType,
+			entityFieldTypeCollection: false,
+			format: type,
+			label: item,
+			name: item,
+			type,
+		};
+
+		if (type === EFieldType.ARRAY) {
+			field.entityFieldTypeCollection = true;
+		}
+
+		if (field.type === EFieldFormat.F_DATE_TIME) {
+			field.entityFieldType = EFieldType.STRING;
+		}
+
+		filterableFields.push(field);
+	});
+
+	return filterableFields;
+}
+
+export {getValidFields, getFilterableFields};

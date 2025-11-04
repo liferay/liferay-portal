@@ -9,4 +9,5 @@ export enum EEntityFieldType {
 	DATE_TIME = 'date-time',
 	INTEGER = 'integer',
 	STRING = 'string',
+	BOOLEAN  = 'boolean',
 }

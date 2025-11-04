@@ -16,7 +16,8 @@ import React, {useEffect, useState} from 'react';
 
 import {DEFAULT_FETCH_HEADERS} from '../utils/constants';
 import getDataSetResourceURL from '../utils/getDataSetResourceURL';
-import getFields from '../utils/getFields';
+import getFields, {getFilterableFields} from '../utils/getFields';
+import getOpenApiData from '../utils/getOpenApiData';
 import openDefaultFailureToast from '../utils/openDefaultFailureToast';
 import {IDataSet, IFieldTreeItem} from '../utils/types';
 import Actions from './actions/Actions';
@@ -64,6 +65,7 @@ export interface IDataSetSectionProps {
 	dataSet: IDataSet;
 	fieldTreeItems: Array<IFieldTreeItem>;
 	filterClientExtensionRenderers: IClientExtensionRenderer[];
+	filterableFieldTreeItems: Array<IFieldTreeItem>;
 	namespace: string;
 	onActiveSectionChange: (section: number) => void;
 	onDataSetUpdate: (data: IDataSet) => void;
@@ -106,6 +108,9 @@ const DataSet = ({
 	const [fieldTreeItems, setFieldTreeItems] = useState<Array<IFieldTreeItem>>(
 		[]
 	);
+	const [filterableFieldTreeItems, setFilterableFieldTreeItems] = useState<
+		Array<IFieldTreeItem>
+	>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -125,11 +130,26 @@ const DataSet = ({
 
 				const {restApplication, restSchema} = responseJSON;
 
-				getFields({restApplication, restSchema}).then((fields) => {
-					setFieldTreeItems(fields);
+				getOpenApiData({restApplication, restSchema}).then(
+					(oApiData) => {
+						if (!oApiData) {
+							return;
+						}
 
-					setLoading(false);
-				});
+						const {restSchema, schemas} = oApiData;
+
+						getFields({restSchema, schemas}).then((fields) => {
+							setFieldTreeItems(fields);
+							setLoading(false);
+						});
+
+						getFilterableFields({restSchema, schemas}).then(
+							(filterableFields) => {
+								setFilterableFieldTreeItems(filterableFields);
+							}
+						);
+					}
+				);
 			}
 			else {
 				openDefaultFailureToast();
@@ -173,6 +193,7 @@ const DataSet = ({
 							filterClientExtensionRenderers={
 								filterClientExtensionRenderers
 							}
+							filterableFieldTreeItems={filterableFieldTreeItems}
 							namespace={namespace}
 							onActiveSectionChange={(tab) => setActiveIndex(tab)}
 							onDataSetUpdate={(updatedDataSet) => {

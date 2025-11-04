@@ -33,6 +33,7 @@ export interface SelectionFilterImplementationArgs
 	apiURL: string;
 	autocompleteEnabled: boolean;
 	entityFieldType: EEntityFieldType;
+	entityFieldTypeCollection: boolean;
 	inputPlaceholder: string;
 	itemKey: string;
 	itemLabel: string;
@@ -104,6 +105,7 @@ function getSelectedItemsLabel({
 
 function getOdataString({
 	entityFieldType,
+	entityFieldTypeCollection,
 	id,
 	multiple,
 	selectedData,
@@ -114,15 +116,22 @@ function getOdataString({
 		return '';
 	}
 
-	const quotedSelectedItems = selectedItems.map((item) =>
-		entityFieldType === EEntityFieldType.STRING ||
-		(typeof item.value === 'string' &&
-			entityFieldType !== EEntityFieldType.INTEGER)
-			? `'${item.value}'`
-			: item.value
-	);
+	const quotedSelectedItems = selectedItems.map((item) => {
+		if(entityFieldType === EEntityFieldType.INTEGER) {
+			return item.value;
+		}
 
-	if (entityFieldType === EEntityFieldType.COLLECTION) {
+		if(entityFieldType === EEntityFieldType.BOOLEAN) {
+			let parsedValue = item.value;
+			item.value === '0' && (parsedValue = `false`);
+			item.value === '1' && (parsedValue = `true`);
+			return parsedValue.toLocaleLowerCase();
+		}
+
+		return `'${item.value}'`;
+	});
+
+	if (entityFieldTypeCollection) {
 		return `${id}/any(x:${quotedSelectedItems
 			.map((value) => `(x ${exclude ? 'ne' : 'eq'} ${value})`)
 			.join(exclude ? ' and ' : ' or ')})`;

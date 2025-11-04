@@ -10,7 +10,6 @@ import {openModal} from 'frontend-js-components-web';
 import {fetch, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {visit} from '../../components/AddDataSourceFieldsModalContent';
 import {
 	DEFAULT_FETCH_HEADERS,
 	OBJECT_RELATIONSHIP,
@@ -59,7 +58,8 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 		Component: DateRangeFilterFormContent,
 		availableFieldsFilter: (item: IField) =>
 			item.format === EFieldFormat.DATE ||
-			item.format === EFieldFormat.DATE_TIME,
+			item.format === EFieldFormat.DATE_TIME ||
+			item.format === EFieldFormat.F_DATE_TIME,
 		displayType: () => Liferay.Language.get('date-filter'),
 		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS,
 		label: Liferay.Language.get('date-range'),
@@ -67,8 +67,10 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 	[EFilterType.SELECTION]: {
 		Component: SelectionFilterFormContent,
 		availableFieldsFilter: (item: IField) =>
-			(item.type === EFieldType.STRING && !item.format) ||
-			item.type === EFieldType.INTEGER,
+			item.type === EFieldType.STRING ||
+			item.type === EFieldType.INTEGER ||
+			item.type === EFieldType.ARRAY ||
+			item.type === EFieldType.BOOLEAN,
 		displayType: (filter: IFilter | undefined) => {
 			if (filter?.sourceType === ESelectionFilterSourceType.ITEM_PROXY) {
 				return Liferay.Language.get('system-filter');
@@ -187,8 +189,8 @@ function FilterFormComponent({
 
 function Filters({
 	dataSet,
-	fieldTreeItems: fields,
 	filterClientExtensionRenderers,
+	filterableFieldTreeItems: filterableFields,
 	namespace,
 	resolvedRESTSchemas,
 	restApplications,
@@ -197,7 +199,7 @@ function Filters({
 	const [activeFilterType, setActiveFilterType] =
 		useState<EFilterType | null>(null);
 	const [activeMode, setActiveMode] = useState(FILTER_MODE.LIST);
-	const [availableFields, setAvailableFields] = useState(fields);
+	const [availableFields, setAvailableFields] = useState(filterableFields);
 	const [fieldNames, setFieldNames] = useState<string[]>([]);
 	const [filters, setFilters] = useState<IFilter[]>([]);
 	const [toggleActiveDisabled, setToogleActiveDisabled] =
@@ -325,28 +327,20 @@ function Filters({
 	};
 
 	const onCreationButtonClick = (filterType: EFilterType) => {
-		let availableFieldsListLength = 0;
+		const currentFilterTypeFields: IFieldTreeItem[] = JSON.parse(
+			JSON.stringify(filterableFields)
+		);
 
-		const availableFilterTypeFields = JSON.parse(JSON.stringify(fields));
-
-		visit(availableFilterTypeFields, (field: IFieldTreeItem) => {
-			if (
-				!FILTER_TYPES[filterType as EFilterType].availableFieldsFilter(
+		const availableFilterTypeFields = currentFilterTypeFields.filter(
+			(field) =>
+				FILTER_TYPES[filterType as EFilterType].availableFieldsFilter(
 					field
 				)
-			) {
-				field.disabled = true;
-			}
-			else {
-				availableFieldsListLength++;
-
-				field.disabled = false;
-			}
-		});
+		);
 
 		setAvailableFields(availableFilterTypeFields);
 
-		if (!availableFieldsListLength) {
+		if (!availableFilterTypeFields.length) {
 			openModal({
 				bodyHTML: Liferay.Language.get(
 					'there-are-no-fields-compatible-with-this-type-of-filter'
