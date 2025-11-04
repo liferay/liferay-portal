@@ -1,0 +1,11 @@
+.write_assistent {
+	&__action-item_container {
+		align-items: center;
+		display: flex;
+	}
+
+	&__loading-indicator {
+		margin-bottom: 0 !important;
+		margin-top: 0 !important;
+	}
+}

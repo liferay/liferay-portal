@@ -1,5 +1,11 @@
 @import 'atlas-variables';
 
+.ai-highlight {
+	background-color: #cce6d3;
+	border-radius: 2px;
+	transition: background-color 0.5s ease;
+}
+
 :root {
 	--ck-font-family: $font-family-base;
 	--ck-icon-font-size: 0.67em;
