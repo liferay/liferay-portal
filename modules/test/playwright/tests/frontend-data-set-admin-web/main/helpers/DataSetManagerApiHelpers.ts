@@ -23,6 +23,7 @@ const DEFAULT_DATA_SET_ERC = 'sampleDataSetERC';
 export class DataSetManagerApiHelpers extends ApiHelpers {
 	async createDataSet({
 		additionalAPIURLParameters,
+		customViewsEnabled,
 		defaultItemsPerPage = 20,
 		defaultVisualizationMode,
 		description = 'Sample description',
@@ -34,6 +35,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		restSchema = 'DataSetTableSection',
 	}: {
 		additionalAPIURLParameters?: string;
+		customViewsEnabled?: boolean;
 		defaultItemsPerPage?: number;
 		defaultVisualizationMode?: string;
 		description?: string;
@@ -48,6 +50,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 		const data = {
 			additionalAPIURLParameters,
+			customViewsEnabled,
 			defaultItemsPerPage,
 			defaultVisualizationMode,
 			description,
@@ -392,6 +395,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 	async updateDataSet({
 		additionalAPIURLParameters,
+		customViewsEnabled,
 		defaultItemsPerPage,
 		defaultVisualizationMode,
 		erc = DEFAULT_DATA_SET_ERC,
@@ -400,6 +404,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		listOfItemsPerPage,
 	}: {
 		additionalAPIURLParameters?: string;
+		customViewsEnabled?: boolean;
 		defaultItemsPerPage?: number;
 		defaultVisualizationMode?: string;
 		erc?: string;
@@ -413,6 +418,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 		const data = {
 			additionalAPIURLParameters,
+			customViewsEnabled,
 			defaultItemsPerPage,
 			defaultVisualizationMode,
 			filtersOrder,

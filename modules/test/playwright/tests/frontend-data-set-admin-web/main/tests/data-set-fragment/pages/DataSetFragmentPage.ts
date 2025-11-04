@@ -16,6 +16,10 @@ export class DataSetFragmentPage {
 	readonly cardsWrapper: Locator;
 	readonly changeDataSetButton: Locator;
 	readonly creationMenuButton: Locator;
+	readonly customViewsActionsButton: Locator;
+	readonly customViewsDeleteAlert: Locator;
+	readonly customViewsSelectorButton: Locator;
+	readonly customViewsSaveModal: Locator;
 	readonly editPageButton: Locator;
 	readonly emptyStateTitle: Locator;
 	readonly filterButton: Locator;
@@ -41,7 +45,9 @@ export class DataSetFragmentPage {
 		bodyRows: Locator;
 		container: Locator;
 		headRow: Locator;
+		headerCells: Locator;
 		itemActionsCells: Locator;
+		manageColumnsVisibilityButton: Locator;
 	};
 
 	constructor(page: Page) {
@@ -56,6 +62,14 @@ export class DataSetFragmentPage {
 			name: 'Change Data Set View',
 		});
 		this.creationMenuButton = page.getByRole('button', {name: 'New'});
+		this.customViewsActionsButton = page.getByLabel('Show View Actions');
+		this.customViewsDeleteAlert = page.getByRole('dialog', {
+			name: 'Delete View',
+		});
+		this.customViewsSelectorButton = page.getByLabel('Views');
+		this.customViewsSaveModal = page.getByRole('dialog', {
+			name: 'Save New View As',
+		});
 		this.emptyStateTitle = page.getByText('No Results Found');
 
 		this.filterButton = page.getByRole('button', {
@@ -108,7 +122,11 @@ export class DataSetFragmentPage {
 			bodyRows: tableContainer.locator('tbody tr'),
 			container: tableContainer,
 			headRow: tableContainer.locator('thead tr'),
+			headerCells: tableContainer.locator('thead th'),
 			itemActionsCells: tableContainer.locator('td.cell-item-actions'),
+			manageColumnsVisibilityButton: tableContainer.getByTitle(
+				'Manage Columns Visibility'
+			),
 		};
 	}
 
