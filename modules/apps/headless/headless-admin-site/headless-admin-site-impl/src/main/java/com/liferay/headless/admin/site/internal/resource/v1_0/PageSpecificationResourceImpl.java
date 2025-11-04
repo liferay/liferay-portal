@@ -11,7 +11,6 @@ import com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplate;
 import com.liferay.headless.admin.site.dto.v1_0.MasterPage;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageTemplate;
-import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPage;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
@@ -214,12 +213,10 @@ public class PageSpecificationResourceImpl
 					layoutPageTemplateEntry.getPlid())));
 	}
 
-	@NestedField(parentClass = SitePage.class, value = "pageSpecifications")
 	@Override
 	public Page<PageSpecification> getSiteSitePagePageSpecificationsPage(
 			String siteExternalReferenceCode,
-			@NestedFieldId(value = "externalReferenceCode") String
-				sitePageExternalReferenceCode)
+			String sitePageExternalReferenceCode)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {

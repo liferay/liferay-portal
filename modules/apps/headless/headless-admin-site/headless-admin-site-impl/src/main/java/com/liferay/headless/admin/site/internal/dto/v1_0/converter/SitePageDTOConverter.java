@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.CustomMetaTag;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.PageSettings;
+import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
@@ -18,12 +19,14 @@ import com.liferay.headless.admin.site.internal.dto.v1_0.util.SitePageTypeUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.NavigationSettingsUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.OpenGraphSettingsUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.SEOSettingsUtil;
+import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationResource;
 import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.model.LayoutSEOEntryCustomMetaTag;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
@@ -37,6 +40,8 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
+import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
@@ -97,6 +102,37 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 					() -> LocalizedMapUtil.getI18nMap(
 						true, layout.getNameMap()));
 				setPageSettings(() -> _toPageSettings(layout));
+				setPageSpecifications(
+					() -> NestedFieldsSupplier.supply(
+						"pageSpecifications",
+						nestedFieldName -> {
+							PageSpecificationResource
+								pageSpecificationResource =
+									_pageSpecificationResourceFactory.create(
+									).httpServletRequest(
+										dtoConverterContext.
+											getHttpServletRequest()
+									).user(
+										dtoConverterContext.getUser()
+									).uriInfo(
+										dtoConverterContext.getUriInfo()
+									).preferredLocale(
+										dtoConverterContext.getLocale()
+									).build();
+
+							Group group = layout.getGroup();
+
+							Page<PageSpecification> page =
+								pageSpecificationResource.
+									getSiteSitePagePageSpecificationsPage(
+										group.getExternalReferenceCode(),
+										layout.getExternalReferenceCode());
+
+							return page.getItems(
+							).toArray(
+								new PageSpecification[0]
+							);
+						}));
 				setParentSitePageExternalReferenceCode(
 					() -> {
 						if (layout.getParentLayoutId() == 0) {
@@ -275,6 +311,9 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 
 	@Reference
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
+
+	@Reference
+	private PageSpecificationResource.Factory _pageSpecificationResourceFactory;
 
 	@Reference
 	private UserLocalService _userLocalService;
