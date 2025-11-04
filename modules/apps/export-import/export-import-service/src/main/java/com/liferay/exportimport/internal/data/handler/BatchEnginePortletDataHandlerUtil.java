@@ -43,12 +43,16 @@ public class BatchEnginePortletDataHandlerUtil {
 		PortletDataContext portletDataContext,
 		String siteExternalReferenceCode) {
 
+		// -Devcon9- How we extract the data from the descriptor to build the parameters
+
 		return HashMapBuilder.<String, Serializable>put(
 			"batchNestedFields",
 			() -> {
 				List<String> batchNestedFields = new ArrayList<>();
 
 				batchNestedFields.add("customFields.attributeType");
+
+				// -Devcon9'- How we adapt things as the keep permissions configuration to something understandable by batch
 
 				if (MapUtil.getBoolean(
 						portletDataContext.getParameterMap(),
@@ -73,6 +77,9 @@ public class BatchEnginePortletDataHandlerUtil {
 		).put(
 			"filter",
 			() -> {
+
+				// -Devcon9''- Same here
+
 				if ((portletDataContext.getEndDate() == null) &&
 					(portletDataContext.getStartDate() == null)) {
 

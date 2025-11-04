@@ -280,6 +280,8 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		PortletDataContext portletDataContext, String portletId,
 		PortletPreferences portletPreferences) {
 
+		// -Devcon6- Exporting data through the BatchEnginePortletDataHandler
+
 		try (SafeCloseable safeCloseable =
 				PortletDataContextThreadLocal.
 					setPortletDataContextWithSafeCloseable(
@@ -300,6 +302,8 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 
 					continue;
 				}
+
+				// -Devcon6'-
 
 				BatchEngineExportTaskExecutor.Result result =
 					_executeExportTask(
@@ -472,6 +476,8 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 	private BatchEngineExportTaskExecutor.Result _executeExportTask(
 		int maxItems, PortletDataContext portletDataContext,
 		Registration registration) {
+
+		// -Devcon7- See the exportData actually ends up calling Batch Engine
 
 		return _batchEngineExportTaskExecutor.execute(
 			_batchEngineExportTaskLocalService.createBatchEngineExportTask(

@@ -48,6 +48,9 @@ public class BatchEnginePortletDataHandlerRegistrar {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+
+		// -Devcon1- The BatchEnginePortletDataHandler is created when the export.import.vulcan.batch.engine.task.item.delegate property is set to true
+
 		_serviceRegistration = bundleContext.registerService(
 			FeatureFlagListener.class,
 			(companyId, featureFlagKey, enabled) -> {
@@ -172,10 +175,14 @@ public class BatchEnginePortletDataHandlerRegistrar {
 			ServiceReference<VulcanBatchEngineTaskItemDelegate>
 				serviceReference) {
 
+			// -Devcon2- We transform it to a ExportImportVulcanBatchEngineTaskItemDelegate
+
 			ExportImportVulcanBatchEngineTaskItemDelegate<?>
 				exportImportVulcanBatchEngineTaskItemDelegate =
 					(ExportImportVulcanBatchEngineTaskItemDelegate<?>)
 						_bundleContext.getService(serviceReference);
+
+			// -Devcon4- Usage of the descriptor
 
 			ExportImportVulcanBatchEngineTaskItemDelegate.ExportImportDescriptor
 				exportImportDescriptor =
@@ -207,6 +214,8 @@ public class BatchEnginePortletDataHandlerRegistrar {
 				BatchEnginePortletDataHandlerRegistryUtil.put(
 					portletId, batchEnginePortletDataHandler);
 			}
+
+			// -Devcon5- Register the ExportImportVulcanBatchEngineTaskItemDelegate
 
 			batchEnginePortletDataHandler.
 				registerExportImportVulcanBatchEngineTaskItemDelegate(

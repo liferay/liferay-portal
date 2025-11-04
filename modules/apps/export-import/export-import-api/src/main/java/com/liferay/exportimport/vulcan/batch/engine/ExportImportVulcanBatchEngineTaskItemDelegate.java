@@ -21,6 +21,8 @@ public interface ExportImportVulcanBatchEngineTaskItemDelegate<T>
 
 	public ExportImportDescriptor getExportImportDescriptor();
 
+	// -Devcon3- Thanks to the descriptor we obtain necessary data for executing the export/import processes
+
 	public interface ExportImportDescriptor {
 
 		public default String getLabelLanguageKey() {

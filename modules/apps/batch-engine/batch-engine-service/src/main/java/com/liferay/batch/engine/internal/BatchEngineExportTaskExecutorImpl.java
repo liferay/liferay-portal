@@ -98,6 +98,8 @@ public class BatchEngineExportTaskExecutorImpl
 	public Result execute(
 		BatchEngineExportTask batchEngineExportTask, Settings settings) {
 
+		// -Devcon8- Quick overview of what the execute does at batch level
+
 		if (!settings.isCompressContent() && settings.isPersist()) {
 			throw new IllegalArgumentException(
 				"Uncompressed content cannot be stored in the database");
@@ -245,6 +247,8 @@ public class BatchEngineExportTaskExecutorImpl
 
 			Sort[] sorts = _getSorts(
 				batchEngineTaskItemDelegate, parameters, user);
+
+			// -Devcon10- In the end, we end up calling the API read method with the proper parameters
 
 			Page<?> page = batchEngineTaskItemDelegate.read(
 				filter, Pagination.of(1, exportBatchSize), sorts,

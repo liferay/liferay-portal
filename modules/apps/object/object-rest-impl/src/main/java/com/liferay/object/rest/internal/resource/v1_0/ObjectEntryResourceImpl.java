@@ -1199,6 +1199,8 @@ public class ObjectEntryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
+		// -Devcon11- The read method is actually an intermediate with the getPage
+
 		ObjectScopeProvider objectScopeProvider =
 			_objectScopeProviderRegistry.getObjectScopeProvider(
 				_objectDefinition.getScope());
