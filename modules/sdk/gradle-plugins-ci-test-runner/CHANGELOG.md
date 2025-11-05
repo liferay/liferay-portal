@@ -1,0 +1,1 @@
+# Liferay Gradle Plugins CI Test Runner Change Log
