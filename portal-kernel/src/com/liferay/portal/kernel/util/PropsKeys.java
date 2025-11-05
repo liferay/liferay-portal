@@ -1113,6 +1113,9 @@ public interface PropsKeys {
 	public static final String HTTP_HEADER_VERSION_VERBOSITY =
 		"http.header.version.verbosity";
 
+	public static final String HTTP_TIMEOUT =
+		"com.liferay.portal.kernel.util.Http.timeout";
+
 	public static final String IFRAME_PASSWORD_PASSWORD_TOKEN_ROLE =
 		"iframe.password.token.role";
 

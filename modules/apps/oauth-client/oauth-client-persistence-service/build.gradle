@@ -28,6 +28,8 @@ dependencies {
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
+	compileOnly project(":core:petra:petra-concurrent")
+	compileOnly project(":core:petra:petra-executor")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")

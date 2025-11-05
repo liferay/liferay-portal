@@ -912,6 +912,9 @@ public class PropsValues {
 	public static final String HTTP_HEADER_VERSION_VERBOSITY = PropsUtil.get(
 		PropsKeys.HTTP_HEADER_VERSION_VERBOSITY);
 
+	public static final int HTTP_TIMEOUT = GetterUtil.getInteger(
+		PropsUtil.get(PropsKeys.HTTP_TIMEOUT));
+
 	public static final String IFRAME_PASSWORD_PASSWORD_TOKEN_ROLE =
 		PropsUtil.get(PropsKeys.IFRAME_PASSWORD_PASSWORD_TOKEN_ROLE);
 
