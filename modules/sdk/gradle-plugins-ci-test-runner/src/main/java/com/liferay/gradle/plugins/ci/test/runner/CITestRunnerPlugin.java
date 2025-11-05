@@ -92,7 +92,7 @@ public class CITestRunnerPlugin implements Plugin<Project> {
 						mirrorsGetTask.execute();
 					}
 					catch (BuildException buildException) {
-						buildException.printStackTrace();
+						throw new RuntimeException(buildException);
 					}
 				}
 
