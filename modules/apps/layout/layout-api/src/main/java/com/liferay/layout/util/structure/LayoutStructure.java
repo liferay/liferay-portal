@@ -1427,8 +1427,21 @@ public class LayoutStructure {
 	private void _updateLayoutStructure(
 		LayoutStructureItem layoutStructureItem, int position) {
 
-		_layoutStructureItems.put(
+		LayoutStructureItem oldLayoutStructureItem = _layoutStructureItems.put(
 			layoutStructureItem.getItemId(), layoutStructureItem);
+
+		if ((oldLayoutStructureItem != null) &&
+			Validator.isNotNull(oldLayoutStructureItem.getParentItemId())) {
+
+			LayoutStructureItem oldParentLayoutStructureItem =
+				getLayoutStructureItem(
+					oldLayoutStructureItem.getParentItemId());
+
+			if (oldParentLayoutStructureItem != null) {
+				oldParentLayoutStructureItem.deleteChildrenItem(
+					oldLayoutStructureItem.getItemId());
+			}
+		}
 
 		if (Validator.isNull(layoutStructureItem.getParentItemId())) {
 			return;
