@@ -5,9 +5,14 @@
 
 package com.liferay.bulk.rest.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -17,6 +22,8 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
+
+import jakarta.validation.Valid;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -33,43 +40,56 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("AssetPermissionAction")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@JsonSubTypes(
+	{
+		@JsonSubTypes.Type(
+			name = "ResetAssetPermissionAction",
+			value = ResetAssetPermissionAction.class
+		)
+	}
+)
+@JsonTypeInfo(
+	include = JsonTypeInfo.As.PROPERTY, property = "type",
+	use = JsonTypeInfo.Id.NAME, visible = true
+)
+@XmlRootElement(name = "AssetPermissionAction")
+public abstract class AssetPermissionAction implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static AssetPermissionAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(AssetPermissionAction.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static AssetPermissionAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AssetPermissionAction.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public String getClassName() {
+		if (_classNameSupplier != null) {
+			className = _classNameSupplier.get();
 
-			_folderIdSupplier = null;
+			_classNameSupplier = null;
 		}
 
-		return folderId;
+		return className;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setClassName(String className) {
+		this.className = className;
 
-		_folderIdSupplier = null;
+		_classNameSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
+	public void setClassName(
+		UnsafeSupplier<String, Exception> classNameUnsafeSupplier) {
 
-		_folderIdSupplier = () -> {
+		_classNameSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return classNameUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,35 +102,35 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected String className;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
+	private Supplier<String> _classNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
+	public Long getClassPK() {
+		if (_classPKSupplier != null) {
+			classPK = _classPKSupplier.get();
 
-			_repositoryIdSupplier = null;
+			_classPKSupplier = null;
 		}
 
-		return repositoryId;
+		return classPK;
 	}
 
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
+	public void setClassPK(Long classPK) {
+		this.classPK = classPK;
 
-		_repositoryIdSupplier = null;
+		_classPKSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
+	public void setClassPK(
+		UnsafeSupplier<Long, Exception> classPKUnsafeSupplier) {
 
-		_repositoryIdSupplier = () -> {
+		_classPKSupplier = () -> {
 			try {
-				return repositoryIdUnsafeSupplier.get();
+				return classPKUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -123,35 +143,46 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
+	protected Long classPK;
 
 	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
+	private Supplier<Long> _classPKSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
+	@JsonGetter("type")
+	@Valid
+	public Type getType() {
+		if (_typeSupplier != null) {
+			type = _typeSupplier.get();
 
-			_selectAllSupplier = null;
+			_typeSupplier = null;
 		}
 
-		return selectAll;
-	}
-
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
-
-		_selectAllSupplier = null;
+		return type;
 	}
 
 	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
+	public String getTypeAsString() {
+		Type type = getType();
 
-		_selectAllSupplier = () -> {
+		if (type == null) {
+			return null;
+		}
+
+		return type.toString();
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+
+		_typeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
+		_typeSupplier = () -> {
 			try {
-				return selectAllUnsafeSupplier.get();
+				return typeUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -164,10 +195,10 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
+	protected Type type;
 
 	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<Type> _typeSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +206,14 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof AssetPermissionAction)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		AssetPermissionAction assetPermissionAction =
+			(AssetPermissionAction)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(toString(), assetPermissionAction.toString());
 	}
 
 	@Override
@@ -196,40 +228,48 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		String className = getClassName();
 
-		if (folderId != null) {
+		if (className != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"className\": ");
 
-			sb.append(folderId);
+			sb.append("\"");
+
+			sb.append(_escape(className));
+
+			sb.append("\"");
 		}
 
-		Long repositoryId = getRepositoryId();
+		Long classPK = getClassPK();
 
-		if (repositoryId != null) {
+		if (classPK != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"classPK\": ");
 
-			sb.append(repositoryId);
+			sb.append(classPK);
 		}
 
-		Boolean selectAll = getSelectAll();
+		Type type = getType();
 
-		if (selectAll != null) {
+		if (type != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"type\": ");
 
-			sb.append(selectAll);
+			sb.append("\"");
+
+			sb.append(type);
+
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -239,10 +279,48 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.AssetPermissionAction",
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("Type")
+	public static enum Type {
+
+		RESET_ASSET_PERMISSION_ACTION("ResetAssetPermissionAction");
+
+		@JsonCreator
+		public static Type create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value)) {
+					return type;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Type(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(

@@ -33,43 +33,41 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("SelectionScope")
+@GraphQLName("AssetUsage")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SelectionScope")
-public class SelectionScope implements Serializable {
+@XmlRootElement(name = "AssetUsage")
+public class AssetUsage implements Serializable {
 
-	public static SelectionScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(SelectionScope.class, json);
+	public static AssetUsage toDTO(String json) {
+		return ObjectMapperUtil.readValue(AssetUsage.class, json);
 	}
 
-	public static SelectionScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	public static AssetUsage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AssetUsage.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getFolderId() {
-		if (_folderIdSupplier != null) {
-			folderId = _folderIdSupplier.get();
+	public String getName() {
+		if (_nameSupplier != null) {
+			name = _nameSupplier.get();
 
-			_folderIdSupplier = null;
+			_nameSupplier = null;
 		}
 
-		return folderId;
+		return name;
 	}
 
-	public void setFolderId(Long folderId) {
-		this.folderId = folderId;
+	public void setName(String name) {
+		this.name = name;
 
-		_folderIdSupplier = null;
+		_nameSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setFolderId(
-		UnsafeSupplier<Long, Exception> folderIdUnsafeSupplier) {
-
-		_folderIdSupplier = () -> {
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+		_nameSupplier = () -> {
 			try {
-				return folderIdUnsafeSupplier.get();
+				return nameUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -82,35 +80,33 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long folderId;
+	protected String name;
 
 	@JsonIgnore
-	private Supplier<Long> _folderIdSupplier;
+	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getRepositoryId() {
-		if (_repositoryIdSupplier != null) {
-			repositoryId = _repositoryIdSupplier.get();
+	public String getType() {
+		if (_typeSupplier != null) {
+			type = _typeSupplier.get();
 
-			_repositoryIdSupplier = null;
+			_typeSupplier = null;
 		}
 
-		return repositoryId;
+		return type;
 	}
 
-	public void setRepositoryId(Long repositoryId) {
-		this.repositoryId = repositoryId;
+	public void setType(String type) {
+		this.type = type;
 
-		_repositoryIdSupplier = null;
+		_typeSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setRepositoryId(
-		UnsafeSupplier<Long, Exception> repositoryIdUnsafeSupplier) {
-
-		_repositoryIdSupplier = () -> {
+	public void setType(UnsafeSupplier<String, Exception> typeUnsafeSupplier) {
+		_typeSupplier = () -> {
 			try {
-				return repositoryIdUnsafeSupplier.get();
+				return typeUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -123,35 +119,33 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long repositoryId;
+	protected String type;
 
 	@JsonIgnore
-	private Supplier<Long> _repositoryIdSupplier;
+	private Supplier<String> _typeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getSelectAll() {
-		if (_selectAllSupplier != null) {
-			selectAll = _selectAllSupplier.get();
+	public String getUrl() {
+		if (_urlSupplier != null) {
+			url = _urlSupplier.get();
 
-			_selectAllSupplier = null;
+			_urlSupplier = null;
 		}
 
-		return selectAll;
+		return url;
 	}
 
-	public void setSelectAll(Boolean selectAll) {
-		this.selectAll = selectAll;
+	public void setUrl(String url) {
+		this.url = url;
 
-		_selectAllSupplier = null;
+		_urlSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSelectAll(
-		UnsafeSupplier<Boolean, Exception> selectAllUnsafeSupplier) {
-
-		_selectAllSupplier = () -> {
+	public void setUrl(UnsafeSupplier<String, Exception> urlUnsafeSupplier) {
+		_urlSupplier = () -> {
 			try {
-				return selectAllUnsafeSupplier.get();
+				return urlUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -164,10 +158,10 @@ public class SelectionScope implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean selectAll;
+	protected String url;
 
 	@JsonIgnore
-	private Supplier<Boolean> _selectAllSupplier;
+	private Supplier<String> _urlSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -175,13 +169,13 @@ public class SelectionScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SelectionScope)) {
+		if (!(object instanceof AssetUsage)) {
 			return false;
 		}
 
-		SelectionScope selectionScope = (SelectionScope)object;
+		AssetUsage assetUsage = (AssetUsage)object;
 
-		return Objects.equals(toString(), selectionScope.toString());
+		return Objects.equals(toString(), assetUsage.toString());
 	}
 
 	@Override
@@ -196,40 +190,52 @@ public class SelectionScope implements Serializable {
 
 		sb.append("{");
 
-		Long folderId = getFolderId();
+		String name = getName();
 
-		if (folderId != null) {
+		if (name != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"name\": ");
 
-			sb.append(folderId);
+			sb.append("\"");
+
+			sb.append(_escape(name));
+
+			sb.append("\"");
 		}
 
-		Long repositoryId = getRepositoryId();
+		String type = getType();
 
-		if (repositoryId != null) {
+		if (type != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"type\": ");
 
-			sb.append(repositoryId);
+			sb.append("\"");
+
+			sb.append(_escape(type));
+
+			sb.append("\"");
 		}
 
-		Boolean selectAll = getSelectAll();
+		String url = getUrl();
 
-		if (selectAll != null) {
+		if (url != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"url\": ");
 
-			sb.append(selectAll);
+			sb.append("\"");
+
+			sb.append(_escape(url));
+
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -239,7 +245,7 @@ public class SelectionScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.bulk.rest.dto.v1_0.SelectionScope",
+		defaultValue = "com.liferay.bulk.rest.dto.v1_0.AssetUsage",
 		name = "x-class-name"
 	)
 	public String xClassName;

@@ -5,7 +5,7 @@
 
 package com.liferay.bulk.rest.client.serdes.v1_0;
 
-import com.liferay.bulk.rest.client.dto.v1_0.SelectionScope;
+import com.liferay.bulk.rest.client.dto.v1_0.AssetUsage;
 import com.liferay.bulk.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -21,24 +21,22 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class SelectionScopeSerDes {
+public class AssetUsageSerDes {
 
-	public static SelectionScope toDTO(String json) {
-		SelectionScopeJSONParser selectionScopeJSONParser =
-			new SelectionScopeJSONParser();
+	public static AssetUsage toDTO(String json) {
+		AssetUsageJSONParser assetUsageJSONParser = new AssetUsageJSONParser();
 
-		return selectionScopeJSONParser.parseToDTO(json);
+		return assetUsageJSONParser.parseToDTO(json);
 	}
 
-	public static SelectionScope[] toDTOs(String json) {
-		SelectionScopeJSONParser selectionScopeJSONParser =
-			new SelectionScopeJSONParser();
+	public static AssetUsage[] toDTOs(String json) {
+		AssetUsageJSONParser assetUsageJSONParser = new AssetUsageJSONParser();
 
-		return selectionScopeJSONParser.parseToDTOs(json);
+		return assetUsageJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(SelectionScope selectionScope) {
-		if (selectionScope == null) {
+	public static String toJSON(AssetUsage assetUsage) {
+		if (assetUsage == null) {
 			return "null";
 		}
 
@@ -46,34 +44,46 @@ public class SelectionScopeSerDes {
 
 		sb.append("{");
 
-		if (selectionScope.getFolderId() != null) {
+		if (assetUsage.getName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"folderId\": ");
+			sb.append("\"name\": ");
 
-			sb.append(selectionScope.getFolderId());
+			sb.append("\"");
+
+			sb.append(_escape(assetUsage.getName()));
+
+			sb.append("\"");
 		}
 
-		if (selectionScope.getRepositoryId() != null) {
+		if (assetUsage.getType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"repositoryId\": ");
+			sb.append("\"type\": ");
 
-			sb.append(selectionScope.getRepositoryId());
+			sb.append("\"");
+
+			sb.append(_escape(assetUsage.getType()));
+
+			sb.append("\"");
 		}
 
-		if (selectionScope.getSelectAll() != null) {
+		if (assetUsage.getUrl() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"selectAll\": ");
+			sb.append("\"url\": ");
 
-			sb.append(selectionScope.getSelectAll());
+			sb.append("\"");
+
+			sb.append(_escape(assetUsage.getUrl()));
+
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -82,67 +92,64 @@ public class SelectionScopeSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		SelectionScopeJSONParser selectionScopeJSONParser =
-			new SelectionScopeJSONParser();
+		AssetUsageJSONParser assetUsageJSONParser = new AssetUsageJSONParser();
 
-		return selectionScopeJSONParser.parseToMap(json);
+		return assetUsageJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(SelectionScope selectionScope) {
-		if (selectionScope == null) {
+	public static Map<String, String> toMap(AssetUsage assetUsage) {
+		if (assetUsage == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (selectionScope.getFolderId() == null) {
-			map.put("folderId", null);
+		if (assetUsage.getName() == null) {
+			map.put("name", null);
 		}
 		else {
-			map.put("folderId", String.valueOf(selectionScope.getFolderId()));
+			map.put("name", String.valueOf(assetUsage.getName()));
 		}
 
-		if (selectionScope.getRepositoryId() == null) {
-			map.put("repositoryId", null);
+		if (assetUsage.getType() == null) {
+			map.put("type", null);
 		}
 		else {
-			map.put(
-				"repositoryId",
-				String.valueOf(selectionScope.getRepositoryId()));
+			map.put("type", String.valueOf(assetUsage.getType()));
 		}
 
-		if (selectionScope.getSelectAll() == null) {
-			map.put("selectAll", null);
+		if (assetUsage.getUrl() == null) {
+			map.put("url", null);
 		}
 		else {
-			map.put("selectAll", String.valueOf(selectionScope.getSelectAll()));
+			map.put("url", String.valueOf(assetUsage.getUrl()));
 		}
 
 		return map;
 	}
 
-	public static class SelectionScopeJSONParser
-		extends BaseJSONParser<SelectionScope> {
+	public static class AssetUsageJSONParser
+		extends BaseJSONParser<AssetUsage> {
 
 		@Override
-		protected SelectionScope createDTO() {
-			return new SelectionScope();
+		protected AssetUsage createDTO() {
+			return new AssetUsage();
 		}
 
 		@Override
-		protected SelectionScope[] createDTOArray(int size) {
-			return new SelectionScope[size];
+		protected AssetUsage[] createDTOArray(int size) {
+			return new AssetUsage[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "folderId")) {
+			if (Objects.equals(jsonParserFieldName, "name")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "repositoryId")) {
+			else if (Objects.equals(jsonParserFieldName, "type")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "url")) {
 				return false;
 			}
 
@@ -151,24 +158,22 @@ public class SelectionScopeSerDes {
 
 		@Override
 		protected void setField(
-			SelectionScope selectionScope, String jsonParserFieldName,
+			AssetUsage assetUsage, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "folderId")) {
+			if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
-					selectionScope.setFolderId(
-						Long.valueOf((String)jsonParserFieldValue));
+					assetUsage.setName((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "repositoryId")) {
+			else if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
-					selectionScope.setRepositoryId(
-						Long.valueOf((String)jsonParserFieldValue));
+					assetUsage.setType((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "selectAll")) {
+			else if (Objects.equals(jsonParserFieldName, "url")) {
 				if (jsonParserFieldValue != null) {
-					selectionScope.setSelectAll((Boolean)jsonParserFieldValue);
+					assetUsage.setUrl((String)jsonParserFieldValue);
 				}
 			}
 		}
