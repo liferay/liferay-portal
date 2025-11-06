@@ -1,3 +1,6 @@
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} .cadmin .lfr-object__code-editor-localized,
 .lfr-object__code-editor-localized {
 	display: flex;
 }

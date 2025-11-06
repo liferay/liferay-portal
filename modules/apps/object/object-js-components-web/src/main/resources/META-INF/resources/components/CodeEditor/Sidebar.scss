@@ -1,5 +1,7 @@
 @import 'atlas-variables';
+@import 'cadmin-variables';
 
+html#{$cadmin-selector} .cadmin .lfr-objects__code-editor-sidebar,
 .lfr-objects__code-editor-sidebar {
 	background-color: $light-l2;
 	border-left: 1px solid $gray-300;

@@ -1,5 +1,7 @@
 @import 'atlas-variables';
+@import 'cadmin-variables';
 
+html#{$cadmin-selector} .cadmin .lfr-objects__code-editor,
 .lfr-objects__code-editor {
 	display: flex;
 	flex-direction: column;
@@ -20,7 +22,10 @@
 	}
 }
 
-.lfr-objects__expression-builder-modal .modal-dialog.modal-lg .modal-content {
-	height: 790px;
-	width: 898px;
+html#{$cadmin-selector} .cadmin .lfr-objects__expression-builder-modal,
+.lfr-objects__expression-builder-modal {
+	.modal-dialog.modal-lg .modal-content {
+		height: 790px;
+		width: 898px;
+	}
 }

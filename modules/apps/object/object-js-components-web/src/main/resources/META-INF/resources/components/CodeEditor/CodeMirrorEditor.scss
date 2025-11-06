@@ -1,5 +1,7 @@
 @import 'atlas-variables';
+@import 'cadmin-variables';
 
+html#{$cadmin-selector} .cadmin .lfr-objects__editor,
 .lfr-objects__editor {
 	width: 100%;
 
@@ -23,12 +25,12 @@
 		cursor: not-allowed;
 		opacity: 0.5;
 	}
-}
 
-.has-error {
-	.lfr-objects__editor {
-		.CodeMirror {
-			background-color: $danger-l2;
+	.has-error & {
+		.lfr-objects__editor {
+			.CodeMirror {
+				background-color: $danger-l2;
+			}
 		}
 	}
 }

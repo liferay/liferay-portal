@@ -33,6 +33,7 @@
 		"@liferay/frontend-js-state-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"@liferay/marketplace-js-components-web": "*",
+		"@liferay/object-js-components-web": "*",
 		"axe-core": "^4.9.1",
 		"classnames": "2.3.1",
 		"frontend-editor-ckeditor-web": "*",
