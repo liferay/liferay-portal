@@ -18,7 +18,6 @@ import React, {Ref, useContext, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {DEFAULT_FETCH_HEADERS} from '../../constants';
-import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import getRandomId from '../../utils/getRandomId';
 import ViewsContext, {ICustomView} from '../../views/ViewsContext';
 import {EViewsActionTypes} from '../../views/viewsReducer';
@@ -59,7 +58,7 @@ const CustomViewsControlsTrigger = React.forwardRef(
 				<span className="inline-item-after reference-mark view-updated-mark">
 					<span className="hide-accessible sr-only">
 						{sub(
-							Liferay.Language.get('custom-view-name-updated'),
+							Liferay.Language.get('custom-view-x-updated'),
 							triggerLabel
 						)}
 					</span>
@@ -74,7 +73,12 @@ const CustomViewsControlsTrigger = React.forwardRef(
 );
 
 const CustomViewsControls = () => {
-	const {dataSetERC, namespace} = useContext(FrontendDataSetContext);
+	const {
+		dataSetERC,
+		id: fdsName,
+		namespace,
+		portletId,
+	} = useContext(FrontendDataSetContext);
 	const [
 		{
 			activeCustomViewId,
@@ -143,18 +147,11 @@ const CustomViewsControls = () => {
 
 		if (!id) {
 			method = 'POST';
-			url = getDataSetResourceURL({
-				dataSetERC,
-				relationship: 'dataSetToDataSetCustomViews',
-			});
+			url = `/o/data-set-admin/user-fds-configs`;
 		}
 		else {
 			method = 'PATCH';
-			url = getDataSetResourceURL({
-				dataSetERC,
-				relatedResourceERC: activeCustomView.customViewERC,
-				relationship: 'dataSetToDataSetCustomViews',
-			});
+			url = `/o/data-set-admin/user-fds-configs/by-external-reference-code/${activeCustomView.customViewERC}`;
 		}
 
 		const customViewId = id ?? getRandomId();
@@ -168,9 +165,11 @@ const CustomViewsControls = () => {
 		};
 
 		const body = {
-			customViewConfig: JSON.stringify(viewState),
 			externalReferenceCode: customViewId,
+			fdsName,
 			label: label || activeCustomView.customViewLabel,
+			portletId,
+			viewConfig: JSON.stringify(viewState),
 		};
 
 		fetch(url, {
@@ -249,11 +248,7 @@ const CustomViewsControls = () => {
 		label: string;
 		processClose: Function;
 	}) => {
-		const url = getDataSetResourceURL({
-			dataSetERC,
-			relatedResourceERC: activeCustomView.customViewERC,
-			relationship: 'dataSetToDataSetCustomViews',
-		});
+		const url = `/o/data-set-admin/user-fds-configs/by-external-reference-code/${activeCustomView.customViewERC}`;
 
 		fetch(url, {
 			body: JSON.stringify({
@@ -325,11 +320,7 @@ const CustomViewsControls = () => {
 	};
 
 	const deleteCustomView = ({id}: {id: string}) => {
-		const url = getDataSetResourceURL({
-			dataSetERC,
-			relatedResourceERC: activeCustomView.customViewERC,
-			relationship: 'dataSetToDataSetCustomViews',
-		});
+		const url = `/o/data-set-admin/user-fds-configs/by-external-reference-code/${activeCustomView.customViewERC}`;
 
 		fetch(url, {
 			method: 'DELETE',
