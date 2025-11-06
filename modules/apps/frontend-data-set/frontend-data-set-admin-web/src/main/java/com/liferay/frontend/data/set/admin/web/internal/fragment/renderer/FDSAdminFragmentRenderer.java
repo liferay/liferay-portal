@@ -194,8 +194,6 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 						"customViewsEnabled",
 						properties.get("customViewsEnabled")
 					).put(
-						"dataSetERC", externalReferenceCode
-					).put(
 						"namespace",
 						fragmentRendererContext.getFragmentElementId()
 					).put(
@@ -238,8 +236,6 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 					HashMapBuilder.<String, Object>put(
 						"customViewsEnabled",
 						properties.get("customViewsEnabled")
-					).put(
-						"dataSetERC", externalReferenceCode
 					).put(
 						"namespace",
 						fragmentRendererContext.getFragmentElementId()
