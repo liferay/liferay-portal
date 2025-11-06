@@ -29,6 +29,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
+import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -985,13 +987,34 @@ public class CustomFDSSerializer
 			String fdsName, HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		List<ObjectEntry> objectEntries = getRelatedObjectEntries(
-			fdsName, httpServletRequest, (Predicate)null,
-			"dataSetToDataSetCustomViews");
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-		if (objectEntries.isEmpty()) {
-			return null;
-		}
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				PortalUtil.getCompanyId(httpServletRequest),
+				"DataSetUserFDSConfig");
+
+		ObjectEntryManager objectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					objectDefinition.getStorageType()));
+
+		Group scopeGroup = themeDisplay.getScopeGroup();
+
+		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+			PortalUtil.getCompanyId(httpServletRequest), objectDefinition,
+			scopeGroup.getGroupKey(), null,
+			new DefaultDTOConverterContext(
+				false, null, null, null, null,
+				LocaleUtil.getMostRelevantLocale(), null, null),
+			StringBundler.concat(
+				"('fdsName' eq '", fdsName, "' and 'creatorId' eq '",
+				themeDisplay.getUserId(), "')"),
+			null, null, null);
+
+		Collection<ObjectEntry> objectEntries = page.getItems();
 
 		return JSONUtil.toJSONArray(
 			objectEntries,
@@ -999,7 +1022,7 @@ public class CustomFDSSerializer
 				Map<String, Object> properties = objectEntry.getProperties();
 
 				return JSONUtil.put(
-					"customViewConfig", properties.get("customViewConfig")
+					"customViewConfig", properties.get("viewConfig")
 				).put(
 					"customViewERC", objectEntry.getExternalReferenceCode()
 				).put(
