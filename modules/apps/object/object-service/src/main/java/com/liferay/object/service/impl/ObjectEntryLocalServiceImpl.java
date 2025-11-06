@@ -7373,22 +7373,14 @@ public class ObjectEntryLocalServiceImpl
 				}
 			}
 
-			if (existingValues == null) {
-				return;
-			}
-
-			ObjectRelationship objectRelationship =
-				_objectRelationshipPersistence.fetchByObjectFieldId2(
-					objectField.getObjectFieldId());
-
-			if (objectRelationship.isEdge() &&
+			if (!objectDefinition.isAccountEntryRestricted() ||
 				!Objects.equals(
-					existingValues.get(objectField.getName()), value)) {
+					objectField.getObjectFieldId(),
+					objectDefinition.
+						getAccountEntryRestrictedObjectFieldId()) ||
+				(existingValues == null)) {
 
-				_handle(
-					new ObjectEntryValuesException.InvalidValue(
-						objectField.getName()),
-					validationErrors);
+				return;
 			}
 
 			if (!objectDefinition.isAccountEntryRestricted() ||

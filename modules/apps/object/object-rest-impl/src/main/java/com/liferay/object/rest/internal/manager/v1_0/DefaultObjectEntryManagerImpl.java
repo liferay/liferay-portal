@@ -3596,11 +3596,11 @@ public class DefaultObjectEntryManagerImpl
 				objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId())) {
 
-			if (relationshipObjectFieldIds.contains(
-					objectField.getObjectFieldId())) {
-
-				continue;
-			}
+//			if (relationshipObjectFieldIds.contains(
+//					objectField.getObjectFieldId())) {
+//
+//				continue;
+//			}
 
 			if (Objects.equals(
 					objectField.getBusinessType(),
