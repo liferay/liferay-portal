@@ -161,6 +161,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"DataSetTableSection", "/data-set-admin/table-sections"
 		).put(
+			"DataSetUserFDSConfig", "/data-set-admin/user-fds-configs"
+		).put(
 			"DSRRoom", "/digital-sales-room/rooms"
 		).put(
 			"FDSAction", "/data-set-manager/actions"
