@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -51,6 +52,9 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 import java.nio.charset.StandardCharsets;
 
@@ -694,7 +698,50 @@ public class LiferayOAuthDataProvider
 
 	@Override
 	public void setClient(Client client) {
-		throw new UnsupportedOperationException();
+		long companyId = _portal.getCompanyId(
+			getMessageContext().getHttpServletRequest());
+
+		OAuth2Application oAuth2Application =
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(
+				companyId, client.getClientId());
+
+		if (oAuth2Application == null) {
+			try {
+				String principalName = getMessageContext(
+				).getSecurityContext(
+				).getUserPrincipal(
+				).getName();
+
+				User user = _userLocalService.fetchUser(
+					GetterUtil.getLong(principalName));
+
+				_oAuth2ApplicationLocalService.addOAuth2Application(
+					companyId, user.getUserId(), user.getFullName(),
+					_getAllowedGrantTypes(client.getAllowedGrantTypes()),
+					client.getTokenEndpointAuthMethod(), user.getUserId(),
+					client.getClientId(), 0, client.getClientSecret(), null,
+					null, client.getApplicationWebUri(), 0, null,
+					client.getApplicationName(), null, client.getRedirectUris(),
+					false, client.getRegisteredScopes(), false,
+					new ServiceContext());
+			}
+			catch (PortalException portalException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("error creating application", portalException);
+				}
+
+				throw new WebApplicationException(
+					Response.status(
+						Response.Status.INTERNAL_SERVER_ERROR
+					).build());
+			}
+		}
+		else {
+			throw new WebApplicationException(
+				Response.status(
+					Response.Status.BAD_REQUEST
+				).build());
+		}
 	}
 
 	public void updateRememberDeviceContent(
@@ -1058,6 +1105,51 @@ public class LiferayOAuthDataProvider
 				serverAccessToken.getClient(), accessToken.getScopes()));
 		serverAccessToken.setTokenKey(accessToken.getTokenKey());
 		serverAccessToken.setTokenType(accessToken.getTokenType());
+	}
+
+	private List<GrantType> _getAllowedGrantTypes(
+		List<String> givenGrantTypes) {
+
+		Set<GrantType> grantTypes = new HashSet<>();
+
+		for (String givenGrantType : givenGrantTypes) {
+			if (OAuthConstants.AUTHORIZATION_CODE_GRANT.equalsIgnoreCase(
+					givenGrantType)) {
+
+				grantTypes.add(GrantType.AUTHORIZATION_CODE);
+			}
+
+			if (OAuthConstants.CLIENT_CREDENTIALS_GRANT.equalsIgnoreCase(
+					givenGrantType)) {
+
+				grantTypes.add(GrantType.CLIENT_CREDENTIALS);
+			}
+
+			if (Constants.JWT_BEARER_GRANT.equalsIgnoreCase(givenGrantType)) {
+				grantTypes.add(GrantType.JWT_BEARER);
+			}
+
+			if (OAuth2ProviderRESTEndpointConstants.
+					AUTHORIZATION_CODE_PKCE_GRANT.equalsIgnoreCase(
+						givenGrantType)) {
+
+				grantTypes.add(GrantType.AUTHORIZATION_CODE_PKCE);
+			}
+
+			if (OAuthConstants.RESOURCE_OWNER_GRANT.equalsIgnoreCase(
+					givenGrantType)) {
+
+				grantTypes.add(GrantType.RESOURCE_OWNER_PASSWORD);
+			}
+
+			if (OAuthConstants.REFRESH_TOKEN_GRANT.equalsIgnoreCase(
+					givenGrantType)) {
+
+				grantTypes.add(GrantType.REFRESH_TOKEN);
+			}
+		}
+
+		return ListUtil.fromCollection(grantTypes);
 	}
 
 	private Collection<LiferayOAuth2Scope> _getLiferayOAuth2Scopes(
