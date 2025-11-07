@@ -74,7 +74,6 @@ const CustomViewsControlsTrigger = React.forwardRef(
 
 const CustomViewsControls = () => {
 	const {
-		dataSetERC,
 		id: fdsName,
 		namespace,
 		portletId,
