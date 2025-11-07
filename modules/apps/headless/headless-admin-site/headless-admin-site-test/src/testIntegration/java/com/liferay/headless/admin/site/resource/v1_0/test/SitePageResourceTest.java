@@ -364,6 +364,39 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			LayoutUtilityPageEntryTestUtil.getLayoutUtilityPageEntryLayout(
 				serviceContext));
 	}
+	@Test
+	public void testGetAndPutSiteSitePage() throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(irrelevantGroup);
+
+		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
+
+		_testPutSiteSitePageExportedFromOtherSite(layout);
+		_testPutSiteSitePageExportedFromOtherSite(layout);
+	}
+
+	private void _testPutSiteSitePageExportedFromOtherSite(Layout layout) throws Exception {
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			irrelevantGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode()
+		);
+
+		SitePage importedSitePage = sitePageResource.putSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode(),
+			sitePage);
+
+		assertEquals(sitePage, importedSitePage);
+		assertValid(importedSitePage);
+
+		_assertSitePage(
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				sitePage.getExternalReferenceCode(), testGroup.getGroupId()),
+			importedSitePage);
+	}
 
 	@Override
 	protected boolean equals(SitePage sitePage1, SitePage sitePage2) {
