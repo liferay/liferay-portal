@@ -13,7 +13,11 @@ import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Jürgen Kappler
@@ -31,14 +35,22 @@ public class OpenGraphSettingsUtil {
 				layout.getLayoutId());
 
 		if (layoutSEOEntry == null) {
-			return null;
+			return new OpenGraphSettings();
 		}
 
 		return new OpenGraphSettings() {
 			{
 				setDescription_i18n(
-					() -> LocalizedMapUtil.getI18nMap(
-						layoutSEOEntry.getOpenGraphDescriptionMap()));
+					() -> {
+						Map<Locale, String> map =
+							layoutSEOEntry.getOpenGraphDescriptionMap();
+
+						if (MapUtil.isEmpty(map)) {
+							return null;
+						}
+
+						return LocalizedMapUtil.getI18nMap(map);
+					});
 				setImage(
 					() -> {
 						long openGraphImageFileEntryId =
@@ -64,11 +76,27 @@ public class OpenGraphSettingsUtil {
 						};
 					});
 				setImageAlt_i18n(
-					() -> LocalizedMapUtil.getI18nMap(
-						layoutSEOEntry.getOpenGraphImageAltMap()));
+					() -> {
+						Map<Locale, String> map =
+							layoutSEOEntry.getOpenGraphImageAltMap();
+
+						if (MapUtil.isEmpty(map)) {
+							return null;
+						}
+
+						return LocalizedMapUtil.getI18nMap(map);
+					});
 				setTitle_i18n(
-					() -> LocalizedMapUtil.getI18nMap(
-						layoutSEOEntry.getOpenGraphTitleMap()));
+					() -> {
+						Map<Locale, String> map =
+							layoutSEOEntry.getOpenGraphTitleMap();
+
+						if (MapUtil.isEmpty(map)) {
+							return null;
+						}
+
+						return LocalizedMapUtil.getI18nMap(map);
+					});
 			}
 		};
 	}

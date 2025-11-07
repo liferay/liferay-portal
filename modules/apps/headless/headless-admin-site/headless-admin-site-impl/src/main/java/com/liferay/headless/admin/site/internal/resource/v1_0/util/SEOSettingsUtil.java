@@ -73,12 +73,6 @@ public class SEOSettingsUtil {
 		String sitemapPriority = unicodeProperties.getProperty(
 			"sitemap-priority");
 
-		if ((sitemapChangeFreq == null) && (sitemapInclude == null) &&
-			(sitemapIncludeChildLayouts == null) && (sitemapPriority == null)) {
-
-			return null;
-		}
-
 		return new SitemapSettings() {
 			{
 				setChangeFrequency(
