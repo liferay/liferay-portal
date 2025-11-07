@@ -1611,8 +1611,8 @@
 					"type": "Boolean"
 				},
 				{
-					"DBType": "String",
-					"businessType": "Text",
+					"DBType": "Clob",
+					"businessType": "LongText",
 					"externalReferenceCode": "FDS_NAME",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -1624,7 +1624,7 @@
 					"required": false,
 					"state": false,
 					"system": true,
-					"type": "String"
+					"type": "Clob"
 				},
 				{
 					"DBType": "String",
@@ -1643,8 +1643,8 @@
 					"type": "String"
 				},
 				{
-					"DBType": "Integer",
-					"businessType": "Integer",
+					"DBType": "Clob",
+					"businessType": "LongText",
 					"externalReferenceCode": "PORTLET_ID",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -1655,7 +1655,7 @@
 					"required": false,
 					"state": false,
 					"system": true,
-					"type": "Integer"
+					"type": "Clob"
 				},
 				{
 					"DBType": "Clob",
