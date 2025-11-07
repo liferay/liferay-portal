@@ -116,6 +116,7 @@ const viewsActions: TViewsActions = {
 			activeCustomViewId: null,
 			modifiedFields: {},
 			viewUpdated: false,
+			visibleFieldNames: defaultView.visibleFieldNames,
 		};
 	},
 	[EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW]: (state, value) => {
