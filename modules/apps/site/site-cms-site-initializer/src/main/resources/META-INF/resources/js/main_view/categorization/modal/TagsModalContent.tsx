@@ -11,12 +11,11 @@ import React, {useCallback, useState} from 'react';
 
 import {IBulkActionTaskStarterDTO} from '../../../common/types/BulkActionTask';
 import {displayErrorToast} from '../../../common/utils/toastUtil';
-import AssetCategories from '../../info_panel/components/AssetCategories';
 import AssetTags from '../../info_panel/components/AssetTags';
 import {EntryCategorizationDTO} from '../../info_panel/services/ObjectEntryService';
 import {triggerAssetBulkAction} from '../../props_transformer/actions/triggerAssetBulkAction';
 
-export default function CategoriesAndTagsModalContent({
+export default function TagsModalContent({
 	apiURL,
 	closeModal,
 	cmsGroupId,
@@ -148,12 +147,6 @@ export default function CategoriesAndTagsModalContent({
 						'adding-categories-and-tags-will-preserve-the-ones-already-applied-to-the-currently-selected-assets'
 					)}
 				</ClayAlert>
-
-				<AssetCategories
-					cmsGroupId={cmsGroupId}
-					objectEntry={categorizationDTO}
-					updateObjectEntry={updateLocalObjectEntry}
-				/>
 
 				<AssetTags
 					cmsGroupId={cmsGroupId}
