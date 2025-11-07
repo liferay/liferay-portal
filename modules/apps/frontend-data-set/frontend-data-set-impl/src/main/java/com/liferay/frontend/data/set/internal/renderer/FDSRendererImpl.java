@@ -178,6 +178,10 @@ public class FDSRendererImpl implements FDSRenderer {
 				).put(
 					"customViews",
 					() -> {
+						if (!customViewsEnabled) {
+							return null;
+						}
+
 						JSONArray customViewsJSONArray =
 							fdsSerializer.serializeCustomViews(
 								fdsName, httpServletRequest);
