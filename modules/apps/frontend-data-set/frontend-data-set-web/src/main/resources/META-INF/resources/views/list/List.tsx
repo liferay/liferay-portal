@@ -194,23 +194,25 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 );
 
 const ListItemOptionalDropTarget = ({
+	className,
 	clayListItemProps,
 	item,
 	items,
 	onItemSelectionChange,
 	schema,
 }: {
+	className?: string;
 	clayListItemProps?: object;
 	item: any;
 	items: any[];
 	onItemSelectionChange: Function;
 	schema: IListSchema;
 }) => {
-	const {className, dropRef} = useFDSDrop({item});
+	const {className: classNameFDSDrop, dropRef} = useFDSDrop({item});
 
 	return (
 		<ListItem
-			className={className}
+			className={classNames(className, classNameFDSDrop)}
 			clayListItemProps={clayListItemProps}
 			item={item}
 			items={items}
