@@ -28,6 +28,7 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 		).build()
 	%>'
 	apiURL="<%= fdsSampleDisplayContext.getAPIURL() %>"
+	customViewsEnabled="<%= true %>"
 	emptyState="<%= fdsSampleDisplayContext.getEmptyState() %>"
 	formId="fm"
 	id="<%= FDSSampleFDSNames.ADVANCED %>"
