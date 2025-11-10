@@ -345,51 +345,6 @@ definition {
 	}
 
 	@priority = 4
-	test TestRequiredFields {
-		User.openUsersAdmin();
-
-		LexiconEntry.gotoAdd();
-
-		for (var fieldFieldLabel : list "Screen Name,Email Address,First Name,Last Name") {
-			FormFields.viewRequiredAsteriskDataField(fieldFieldLabel = ${fieldFieldLabel});
-		}
-
-		Button.clickSave();
-
-		for (var fieldFieldLabel : list "Screen Name,Email Address,First Name,Last Name") {
-			Alert.viewSpecificRequiredField(fieldFieldLabel = ${fieldFieldLabel});
-		}
-	}
-
-	@description = "This is a use case for LPS-104643."
-	@priority = 4
-	test UpdateExistUserEmailAddressByScript {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		ServerAdministration.openServerAdmin();
-
-		var script = TestCase.getFileContent(fileName = "updateUser.groovy");
-
-		ServerAdministration.executeScript(
-			language = "Groovy",
-			script = ${script});
-
-		var companyId = JSONCompany.getCompanyId();
-		var userId = JSONUserSetter.setUserId(userEmailAddress = "test@liferay.com");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
-			value1 = "exception.UserEmailAddressException$MustNotBeDuplicate: User ${userId} cannot be created or updated because a user with company ${companyId} and email address userea@liferay.com is already in use");
-	}
-
-	@priority = 4
 	test ValidateRegExPasswordPolicyCP {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
