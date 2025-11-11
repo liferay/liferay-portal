@@ -991,6 +991,10 @@ public class CustomFDSSerializer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		String filterExpression = StringBundler.concat(
+			"('fdsName' eq '", fdsName, "' and 'creatorId' eq '",
+			themeDisplay.getUserId(), "')");
+
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				PortalUtil.getCompanyId(httpServletRequest),
@@ -1009,10 +1013,7 @@ public class CustomFDSSerializer
 			new DefaultDTOConverterContext(
 				false, null, null, null, null,
 				LocaleUtil.getMostRelevantLocale(), null, null),
-			StringBundler.concat(
-				"('fdsName' eq '", fdsName, "' and 'creatorId' eq '",
-				themeDisplay.getUserId(), "')"),
-			null, null, null);
+			filterExpression, null, null, null);
 
 		Collection<ObjectEntry> objectEntries = page.getItems();
 
