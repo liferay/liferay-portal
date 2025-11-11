@@ -355,24 +355,6 @@
 				{
 					"deletionType": "cascade",
 					"edge": true,
-					"externalReferenceCode": "L_DATA_SET_TO_DATA_SET_CUSTOM_VIEWS",
-					"label": {
-						"en_US": "Data Set to Data Set Custom Views"
-					},
-					"name": "dataSetToDataSetCustomViews",
-					"objectDefinitionExternalReferenceCode1": "L_DATA_SET",
-					"objectDefinitionExternalReferenceCode2": "L_DATA_SET_CUSTOM_VIEW",
-					"objectDefinitionName2": "DataSetCustomView",
-					"objectDefinitionSystem2": true,
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": true,
-					"type": "oneToMany"
-				},
-				{
-					"deletionType": "cascade",
-					"edge": true,
 					"externalReferenceCode": "L_DATA_SET_TO_DATA_SET_DATE_FILTERS",
 					"label": {
 						"en_US": "Data Set to Data Set Date Filters"
