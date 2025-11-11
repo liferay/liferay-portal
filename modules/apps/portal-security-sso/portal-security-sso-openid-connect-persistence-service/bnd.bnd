@@ -13,7 +13,7 @@ Import-Package:\
 	!org.opensaml.*,\
 	\
 	*
-Liferay-Require-SchemaVersion: 2.4.0
+Liferay-Require-SchemaVersion: 2.5.0
 Liferay-Service: true
 -dsannotations-options: inherit
 -fixupmessages: Classes found in the wrong directory: ...;is:=ignore
