@@ -448,7 +448,7 @@ export class ApiHelpers {
 }
 
 export class DataApiHelpers extends ApiHelpers {
-	readonly data: TDataApiHelpersData[];
+	data: TDataApiHelpersData[];
 
 	constructor(page: Page, baseUrl?: string) {
 		super(page, baseUrl);
@@ -679,6 +679,10 @@ export class DataApiHelpers extends ApiHelpers {
 				);
 			}
 		}
+	}
+
+	removeData(id: number, type: string) {
+		this.data = this.data.filter((item) => item.id !== id || item.type !== type);
 	}
 
 	setData(data: TDataApiHelpersData[]) {
