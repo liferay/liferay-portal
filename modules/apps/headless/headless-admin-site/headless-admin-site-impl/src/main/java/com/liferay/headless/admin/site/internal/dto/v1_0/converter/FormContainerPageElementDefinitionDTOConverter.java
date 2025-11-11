@@ -19,9 +19,9 @@ import com.liferay.headless.admin.site.dto.v1_0.StayInPageFormContainerSubmissio
 import com.liferay.headless.admin.site.dto.v1_0.SuccessFormContainerSubmissionResult;
 import com.liferay.headless.admin.site.dto.v1_0.SuccessNotificationMessage;
 import com.liferay.headless.admin.site.dto.v1_0.URLFormContainerSubmissionResult;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ContainerLayoutUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentViewportUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.LocalizedValueUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -107,7 +107,7 @@ public class FormContainerPageElementDefinitionDTOConverter
 		formContainerPageElementDefinition.setIndexed(
 			formStyledLayoutStructureItem::isIndexed);
 		formContainerPageElementDefinition.setLayout(
-			() -> LayoutUtil.toLayout(
+			() -> ContainerLayoutUtil.toLayout(
 				formStyledLayoutStructureItem.getItemConfigJSONObject()));
 		formContainerPageElementDefinition.setName(
 			formStyledLayoutStructureItem::getName);

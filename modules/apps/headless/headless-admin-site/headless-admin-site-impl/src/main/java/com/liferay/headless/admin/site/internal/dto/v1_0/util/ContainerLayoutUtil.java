@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * @author Mikel Lorza
  */
-public class LayoutUtil {
+public class ContainerLayoutUtil {
 
 	public static Layout toLayout(JSONObject jsonObject) {
 		if (JSONUtil.isEmpty(jsonObject) ||

@@ -8,9 +8,9 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 import com.liferay.headless.admin.site.dto.v1_0.ContainerPageElementDefinition;
 import com.liferay.headless.admin.site.dto.v1_0.HtmlProperties;
 import com.liferay.headless.admin.site.dto.v1_0.PageElementDefinition;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.ContainerLayoutUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentLinkUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.FragmentViewportUtil;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.LayoutUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.converter.ContentVisibilityConverter;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
@@ -110,7 +110,7 @@ public class ContainerPageElementDefinitionDTOConverter
 						containerStyledLayoutStructureItem));
 				setIndexed(containerStyledLayoutStructureItem::isIndexed);
 				setLayout(
-					() -> LayoutUtil.toLayout(
+					() -> ContainerLayoutUtil.toLayout(
 						containerStyledLayoutStructureItem.
 							getItemConfigJSONObject()));
 				setName(containerStyledLayoutStructureItem::getName);
