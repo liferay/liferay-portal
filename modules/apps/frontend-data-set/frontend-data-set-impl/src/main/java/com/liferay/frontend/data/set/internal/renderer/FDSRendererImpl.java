@@ -18,10 +18,12 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
 
@@ -112,7 +114,13 @@ public class FDSRendererImpl implements FDSRenderer {
 		else {
 			Boolean customViewsEnabled;
 
-			if (Validator.isNull(props.get("customViewsEnabled"))) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			if (Validator.isNull(props.get("customViewsEnabled")) &&
+				themeDisplay.isSignedIn()) {
+
 				customViewsEnabled = false;
 			}
 			else {
