@@ -58,6 +58,7 @@ export interface IDataSet {
 	active: boolean;
 	additionalAPIURLParameters?: string;
 	creationActionsOrder?: string;
+	customViewsEnabled: boolean;
 	defaultItemsPerPage: number;
 	defaultVisualizationMode?: string;
 	description?: string;

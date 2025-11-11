@@ -38,6 +38,9 @@ const Settings = ({
 	onDataSetUpdate,
 	spritemap,
 }: IDataSetSectionProps) => {
+	const [customViewsEnabled, setCustomViewsEnabled] = useState<boolean>(
+		dataSet.customViewsEnabled
+	);
 	const [defaultVisualizationMode, setDefaultVisualizationMode] = useState<
 		string | undefined
 	>(NOT_CONFIGURED_VISUALIZATION_MODE.type);
@@ -55,6 +58,7 @@ const Settings = ({
 
 	const updateFDSViewSettings = async () => {
 		const body = {
+			customViewsEnabled,
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
 		};
@@ -381,6 +385,44 @@ const Settings = ({
 						</ClayLayout.Col>
 					</ClayLayout.Row>
 				</ClayLayout.SheetSection>
+
+				{Liferay.FeatureFlags['LPD-10683'] && (
+					<ClayLayout.SheetSection>
+						<h3 className="sheet-subtitle">
+							{Liferay.Language.get('user-features')}
+						</h3>
+
+						<ClayLayout.Row className="align-items-center justify-content-between">
+							<ClayLayout.Col
+								className="align-self-start"
+								size={1}
+							>
+								<ClayToggle
+									id="user-custom-views"
+									onToggle={setCustomViewsEnabled}
+									toggled={customViewsEnabled}
+								/>
+							</ClayLayout.Col>
+
+							<ClayLayout.Col size={11}>
+								<div>
+									<label
+										htmlFor="user-custom-views"
+										id="user-views"
+									>
+										{Liferay.Language.get(
+											'enable-user-views'
+										)}
+									</label>
+								</div>
+
+								<div>
+									{Liferay.Language.get('user-views-help')}
+								</div>
+							</ClayLayout.Col>
+						</ClayLayout.Row>
+					</ClayLayout.SheetSection>
+				)}
 
 				<ClayLayout.SheetFooter>
 					<ClayButton.Group spaced>
