@@ -5,6 +5,7 @@
 
 package com.liferay.object.internal.bulk.selection;
 
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionFactory;
 import com.liferay.bulk.selection.EmptyBulkSelection;
@@ -34,9 +35,13 @@ public class ObjectBulkSelectionFactory
 		}
 
 		return new ObjectBulkSelection(
-			_depotEntryLocalService, _objectEntryFolderLocalService,
-			_objectEntryLocalService, parameterMap);
+			_assetEntryLocalService, _depotEntryLocalService,
+			_objectEntryFolderLocalService, _objectEntryLocalService,
+			parameterMap);
 	}
+
+	@Reference
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
