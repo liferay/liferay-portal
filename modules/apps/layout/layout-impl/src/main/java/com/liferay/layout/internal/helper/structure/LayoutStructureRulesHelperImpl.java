@@ -177,7 +177,7 @@ public class LayoutStructureRulesHelperImpl
 		implements DDMExpressionFieldAccessor {
 
 		public LayoutStructureRuleDDMExpressionFieldAccessor(
-			long[] roleIds, long[] segmentsEntryIds, User user) {
+			long[] roleIds, long[] segmentsEntryIds, User user, Map<String, Object> fieldValues) {
 
 			_values = HashMapBuilder.<String, Object>put(
 				"createDate", user.getCreateDate()
@@ -188,14 +188,17 @@ public class LayoutStructureRulesHelperImpl
 			).put(
 				"modifiedDate", user.getModifiedDate()
 			).put(
-				"roleIds", roleIds
+				"roleIds",
+				JSONFactoryUtil.createJSONArray(ArrayUtil.toLongArray(roleIds))
 			).put(
 				"screenName", user.getScreenName()
 			).put(
-				"segmentsEntryIds", segmentsEntryIds
+				"segmentsEntryIds", JSONFactoryUtil.createJSONArray(
+					ArrayUtil.toLongArray(segmentsEntryIds))
 			).put(
 				"userId", user.getUserId()
-			).build();
+			).putAll(fieldValues).build();
+
 		}
 
 		@Override
@@ -429,7 +432,9 @@ public class LayoutStructureRulesHelperImpl
 			JSONObject conditionJSONObject = conditionsJSONArray.getJSONObject(
 				i);
 
-			if (Objects.equals(conditionJSONObject.getString("type"), "user")) {
+			if (Objects.equals(conditionJSONObject.getString("type"), "user") ||
+				layoutStructureRule.isAdvancedRule()) {
+
 				continue;
 			}
 
@@ -537,7 +542,7 @@ public class LayoutStructureRulesHelperImpl
 			_ddmExpressionFieldAccessor =
 				new LayoutStructureRuleDDMExpressionFieldAccessor(
 					getRoleIds(), getSegmentsEntryIds(),
-					_permissionChecker.getUser());
+					_permissionChecker.getUser(), new HashMap<>());
 
 			return _ddmExpressionFieldAccessor;
 		}

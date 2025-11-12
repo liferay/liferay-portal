@@ -23,6 +23,7 @@ export default function addRule({
 	conditionType,
 	conditions,
 	name,
+	script,
 }: Props) {
 	return (
 		dispatch: (
@@ -39,6 +40,7 @@ export default function addRule({
 			name,
 			onNetworkStatus: dispatch,
 			segmentsExperienceId,
+			script,
 		}).then(({addedRuleId, layoutData}) => {
 			dispatch(addRuleAction({layoutData, ruleId: addedRuleId}));
 		});

@@ -29,6 +29,7 @@ function addRule({
 	conditions,
 	name,
 	onNetworkStatus,
+	script,
 	segmentsExperienceId,
 }: AddRuleProps): Promise<{addedRuleId: string; layoutData: LayoutData}> {
 	return draftServiceFetch(
@@ -39,6 +40,7 @@ function addRule({
 				conditionType,
 				conditions: JSON.stringify(conditions),
 				name,
+				script,
 				segmentsExperienceId,
 			},
 		},
@@ -106,6 +108,7 @@ function updateRule({
 	name,
 	onNetworkStatus,
 	ruleId,
+	script,
 	segmentsExperienceId,
 }: UpdateRuleProps): Promise<{layoutData: LayoutData}> {
 	return draftServiceFetch(
@@ -117,6 +120,7 @@ function updateRule({
 				conditions: JSON.stringify(conditions),
 				name,
 				ruleId,
+				script,
 				segmentsExperienceId,
 			},
 		},

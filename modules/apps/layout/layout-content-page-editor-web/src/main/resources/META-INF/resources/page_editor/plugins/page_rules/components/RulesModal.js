@@ -8,13 +8,17 @@ import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
-import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
+import {
+	ScreenReaderAnnouncerContextProvider,
+	isNullOrUndefined,
+} from '@liferay/layout-js-components-web';
 import {CodeEditor} from '@liferay/object-js-components-web';
 import classNames from 'classnames';
 import {openToast, useId} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
+import {config} from '../../../app/config';
 import {useDispatch, useSelector} from '../../../app/contexts/StoreContext';
 import addRule from '../../../app/thunks/addRule';
 import updateRule from '../../../app/thunks/updateRule';
@@ -22,62 +26,6 @@ import {
 	RuleBuilderActionSection,
 	RuleBuilderConditionSection,
 } from './RuleBuilderSection';
-
-const MENU_ITEMS = [
-	{
-		items: [
-			{
-				content: 'createDate',
-				helpText: '',
-				label: 'Create Date',
-			},
-			{
-				content: 'creator',
-				helpText: '',
-				label: 'Author',
-			},
-			{
-				content: 'externalReferenceCode',
-				helpText: '',
-				label: 'External Reference Code',
-			},
-		],
-		label: 'Fields',
-	},
-	{
-		items: [
-			{
-				content: 'currentDate',
-				helpText: '',
-				label: 'Current Date',
-			},
-			{
-				content: 'currentUserId',
-				helpText: '',
-				label: 'Current User',
-			},
-		],
-		label: 'General Variables',
-	},
-	{
-		items: [
-			{
-				content: 'AND',
-				helpText:
-					'This is a type of coordinating conjunction that is commonly used to indicate a dependent relationship.',
-				label: 'And',
-			},
-			{
-				content: 'field_name1 / field_name2',
-				helpText:
-					'Divide one numeric field by another to create an expression.',
-				label: 'Divided By',
-			},
-		],
-		label: 'Operators',
-	},
-];
-
 export default function RulesModal({editingRule, onCloseModal}) {
 	const {observer, onClose} = useModal({
 		onClose: () => onCloseModal(editingRule?.id),
@@ -93,6 +41,8 @@ export default function RulesModal({editingRule, onCloseModal}) {
 	const [name, setName] = useState(
 		editingRule?.name || getDefaultName(rules)
 	);
+
+	const [script, setScript] = useState(editingRule?.script);
 
 	const [nameError, setNameError] = useState(false);
 	const [ruleError, setRuleError] = useState(false);
@@ -114,7 +64,8 @@ export default function RulesModal({editingRule, onCloseModal}) {
 
 		if (
 			actions.some((action) => !action.itemId) ||
-			conditions.some((condition) => !condition.options?.value)
+			(conditions.some((condition) => !condition.options?.value) &&
+				!script)
 		) {
 			setRuleError(true);
 
@@ -129,6 +80,7 @@ export default function RulesModal({editingRule, onCloseModal}) {
 					conditions,
 					name,
 					ruleId: editingRule.id,
+					script,
 				})
 			).then(() =>
 				openToast({
@@ -146,6 +98,7 @@ export default function RulesModal({editingRule, onCloseModal}) {
 					conditionType,
 					conditions,
 					name,
+					script,
 				})
 			).then(() =>
 				openToast({
@@ -227,24 +180,32 @@ export default function RulesModal({editingRule, onCloseModal}) {
 						aria-label={Liferay.Language.get('conditions')}
 						role="group"
 					>
-						<RuleBuilderConditionSection
-							conditionType={conditionType}
-							conditions={conditions}
-							setConditionType={setConditionType}
-							setConditions={(conditions) => {
-								setRuleError(false);
+						{!isNullOrUndefined(script) ? (
+							<CodeEditor
+								error=""
+								onChange={(template) => {
+									setScript(template);
+								}}
+								placeholder="Esto es un test"
+								sidebarElements={
+									config.codeEditorSidebarElements
+								}
+								value={script}
+							/>
+						) : (
+							<RuleBuilderConditionSection
+								conditionType={conditionType}
+								conditions={conditions}
+								setConditionType={setConditionType}
+								setConditions={(conditions) => {
+									setRuleError(false);
 
-								setConditions(conditions);
-							}}
-						/>
+									setConditions(conditions);
+								}}
+								setScript={setScript}
+							/>
+						)}
 					</div>
-
-					<CodeEditor
-						error=""
-						placeholder="Esto es un test"
-						sidebarElements={MENU_ITEMS}
-						value=""
-					/>
 
 					<div
 						aria-label={Liferay.Language.get('actions')}

@@ -25,6 +25,7 @@ export default function updateRule({
 	conditions,
 	name,
 	ruleId,
+	script,
 }: Props) {
 	return (
 		dispatch: (
@@ -41,6 +42,7 @@ export default function updateRule({
 			name,
 			onNetworkStatus: dispatch,
 			ruleId,
+			script,
 			segmentsExperienceId,
 		}).then(({layoutData}) => {
 			dispatch(updateRuleAction({layoutData, ruleId}));

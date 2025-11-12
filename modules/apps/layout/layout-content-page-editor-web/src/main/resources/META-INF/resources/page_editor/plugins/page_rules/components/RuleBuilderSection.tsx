@@ -215,6 +215,7 @@ export function RuleBuilderConditionSection({
 	conditions,
 	setConditionType,
 	setConditions,
+	setScript,
 }: RuleBuilderConditionProps) {
 	const {sendMessage} = useContext(ScreenReaderAnnouncerContext);
 
@@ -367,6 +368,71 @@ export function RuleBuilderConditionSection({
 									'of-the-following-conditions-are-met'
 								)}
 							</span>
+
+							<ClayButton
+								className="mt-2"
+								displayType="secondary"
+								onClick={() => {
+									if (!conditions.length) {
+										setScript('');
+									}
+									else {
+										const conditionScript = conditions.map(
+											(condition) => {
+												if (condition.type === 'user') {
+													if (
+														condition.field ===
+														'role'
+													) {
+														if (
+															condition.options
+																?.type ===
+															'equal'
+														) {
+															return `contains(roleIds, ${condition.options.value})`;
+														}
+														else {
+															return `NOT(contains(roleIds, ${condition.options!.value}))`;
+														}
+													}
+													else if (
+														condition.field ===
+														'segment'
+													) {
+														if (
+															condition.options
+																?.type ===
+															'equal'
+														) {
+															return `contains(segmentsEntryIds, ${condition.options.value})`;
+														}
+														else {
+															return `NOT(contains(segmentsEntryIds, ${condition.options!.value}))`;
+														}
+													}
+													else {
+														return `userId ==  ${condition.options!.value}`;
+													}
+												}
+											}
+										);
+
+										if (conditionType === 'all') {
+											setScript(
+												conditionScript.join(' AND ')
+											);
+										}
+										else {
+											setScript(
+												conditionScript.join(' OR ')
+											);
+										}
+									}
+								}}
+								size="sm"
+							>
+								Advanced rules
+							</ClayButton>
 						</div>
 					</div>
 				</ClayPanel.Title>
