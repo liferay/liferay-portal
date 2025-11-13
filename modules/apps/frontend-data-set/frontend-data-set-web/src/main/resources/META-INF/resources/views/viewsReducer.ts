@@ -35,13 +35,13 @@ const viewsActions: TViewsActions = {
 
 		const {customViewConfig, customViewERC} = value;
 
-		const newCustomView = customViews.find(
+		const existentCustomView = customViews.find(
 			(view: ICustomView) => view.customViewERC === customViewERC
 		);
 
 		let updatedCustomViews;
 
-		if (!newCustomView) {
+		if (!existentCustomView) {
 			updatedCustomViews = customViews.concat([value]);
 		}
 		else {
@@ -114,9 +114,9 @@ const viewsActions: TViewsActions = {
 			...state,
 			...defaultView,
 			activeCustomViewId: null,
-			modifiedFields: {},
+			modifiedFields: defaultView.modifiedFields,
 			viewUpdated: false,
-			visibleFieldNames: defaultView.visibleFieldNames,
+			visibleFields: {},
 		};
 	},
 	[EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW]: (state, value) => {
@@ -137,13 +137,12 @@ const viewsActions: TViewsActions = {
 
 		activeCustomView.customViewConfig.activeView.component =
 			getViewComponent(activeCustomView.customViewConfig.activeView) ??
-			getViewComponent(defaultView.customViewConfig.activeView);
+			getViewComponent(defaultView.activeView);
 
 		return {
 			...state,
 			...activeCustomView.customViewConfig,
 			activeCustomViewId: value,
-			modifiedFields: {},
 			viewUpdated: false,
 		};
 	},
@@ -172,11 +171,15 @@ const viewsActions: TViewsActions = {
 		};
 	},
 	[EViewsActionTypes.UPDATE_FIELD]: (state, value) => {
-		const {modifiedFields} = state;
+		const {defaultView, modifiedFields} = state;
 
 		const {name} = value;
 
 		const fieldAttributes = modifiedFields[name] ?? {};
+
+		if (!defaultView.modifiedFields[name]) {
+			defaultView.modifiedFields[name] = {...fieldAttributes, ...value};
+		}
 
 		return {
 			...state,
