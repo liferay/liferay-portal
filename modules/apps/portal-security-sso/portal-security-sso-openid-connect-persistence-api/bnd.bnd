@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security SSO OpenID Connect Persistence API
 Bundle-SymbolicName: com.liferay.portal.security.sso.openid.connect.persistence.api
-Bundle-Version: 9.2.1
+Bundle-Version: 9.3.0
 Export-Package:\
 	com.liferay.portal.security.sso.openid.connect.persistence.exception,\
 	com.liferay.portal.security.sso.openid.connect.persistence.model,\
