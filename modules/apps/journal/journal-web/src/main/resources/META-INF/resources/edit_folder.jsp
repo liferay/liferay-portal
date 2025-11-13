@@ -331,6 +331,10 @@ renderResponse.setTitle(title);
 							<%
 							WorkflowDefinitionLink workflowDefinitionLink = WorkflowDefinitionLinkLocalServiceUtil.fetchWorkflowDefinitionLink(company.getCompanyId(), scopeGroupId, JournalFolder.class.getName(), folderId, JournalArticleConstants.DDM_STRUCTURE_ID_ALL, true);
 
+							if (workflowDefinitionLink == null) {
+								workflowDefinitionLink = WorkflowDefinitionLinkLocalServiceUtil.fetchWorkflowDefinitionLink(company.getCompanyId(), scopeGroupId, JournalArticle.class.getName(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, JournalArticleConstants.DDM_STRUCTURE_ID_ALL, true);
+							}
+
 							for (WorkflowDefinition workflowDefinition : workflowDefinitions) {
 								boolean selected = false;
 
