@@ -1003,6 +1003,7 @@ public class CustomFDSSerializer
 		ObjectEntryManager objectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
 				_objectEntryManagerRegistry.getObjectEntryManager(
+					objectDefinition.getCompanyId(),
 					objectDefinition.getStorageType()));
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
