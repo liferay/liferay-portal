@@ -177,35 +177,34 @@ const CustomViewsControls = () => {
 			method,
 		})
 			.then((response) => {
-				if (response.ok) {
-					if (processClose) {
-						processClose();
-					}
-
-					openToast({
-						message: Liferay.Language.get(
-							'view-was-saved-successfully'
-						),
-						type: 'success',
-					});
-
-					viewsDispatch({
-						type: EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW,
-						value: {
-							customViewConfig: viewState,
-							customViewERC: customViewId,
-							customViewLabel: label,
-						},
-					});
+				if (!response.ok) {
+					return [];
 				}
-				else {
-					openToast({
-						message: Liferay.Language.get(
-							'an-unexpected-error-occurred'
-						),
-						type: 'danger',
-					});
+
+				const responseJSON = response.json();
+
+				return responseJSON;
+			})
+			.then((customView) => {
+				if (processClose) {
+					processClose();
 				}
+
+				openToast({
+					message: Liferay.Language.get(
+						'view-was-saved-successfully'
+					),
+					type: 'success',
+				});
+
+				viewsDispatch({
+					type: EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW,
+					value: {
+						customViewConfig: JSON.parse(customView.viewConfig),
+						customViewERC: customView.externalReferenceCode,
+						customViewLabel: customView.label,
+					},
+				});
 			})
 			.catch(() => {
 				openToast({
