@@ -19,9 +19,17 @@ import React, {useEffect, useRef, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
 import {config} from '../../../app/config';
+import {FRAGMENT_ENTRY_TYPES} from '../../../app/config/constants/fragmentEntryTypes';
+import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../app/config/constants/freemarkerFragmentEntryProcessor';
+import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
 import {useDispatch, useSelector} from '../../../app/contexts/StoreContext';
+import selectFormConfiguration from '../../../app/selectors/selectFormConfiguration';
+import selectFragmentEntryLink from '../../../app/selectors/selectFragmentEntryLink';
+import FormService from '../../../app/services/FormService';
 import addRule from '../../../app/thunks/addRule';
 import updateRule from '../../../app/thunks/updateRule';
+import {CACHE_KEYS, getCacheKey} from '../../../app/utils/cache';
+import {isLayoutDataItemDeleted} from '../../../app/utils/isLayoutDataItemDeleted';
 import {
 	RuleBuilderActionSection,
 	RuleBuilderConditionSection,
@@ -32,6 +40,7 @@ export default function RulesModal({editingRule, onCloseModal}) {
 	});
 
 	const layoutData = useSelector((state) => state.layoutData);
+	const state = useSelector((state) => state);
 
 	const rules = layoutData.pageRules;
 
@@ -41,6 +50,19 @@ export default function RulesModal({editingRule, onCloseModal}) {
 	const [name, setName] = useState(
 		editingRule?.name || getDefaultName(rules)
 	);
+
+	const [sidebarElements, setSidebarElements] = useState(
+		config.codeEditorSidebarElements
+	);
+
+	useEffect(() => {
+		getFormFieldsSections(state).then((sections) => {
+			setSidebarElements([
+				...config.codeEditorSidebarElements,
+				...sections,
+			]);
+		});
+	}, [state]);
 
 	const [script, setScript] = useState(editingRule?.script);
 
@@ -187,9 +209,7 @@ export default function RulesModal({editingRule, onCloseModal}) {
 									setScript(template);
 								}}
 								placeholder="Esto es un test"
-								sidebarElements={
-									config.codeEditorSidebarElements
-								}
+								sidebarElements={sidebarElements}
 								value={script}
 							/>
 						) : (
@@ -286,4 +306,118 @@ function ErrorAlert({setVisible, visible}) {
 			</ClayAlert>
 		</div>
 	);
+}
+
+export async function getFormFieldsSections(state) {
+	const formItems = Object.values(state.layoutData.items).filter(
+		(item) =>
+			item.type === LAYOUT_DATA_ITEM_TYPES.form &&
+			item.config.classNameId !== '0' &&
+			!isLayoutDataItemDeleted(state.layoutData, item.itemId)
+	);
+
+	const sections = [];
+
+	for (const formItem of formItems) {
+		const selectedInputFields = findSelectedFormInputFields(
+			state,
+			formItem.itemId
+		);
+
+		const {classNameId, classTypeId} = selectFormConfiguration(
+			formItem,
+			state.layoutData
+		);
+
+		const selectedType = config.formTypes.find(
+			({value}) => value === classNameId
+		);
+
+		if (!classNameId) {
+			return false;
+		}
+
+		const cacheKey = getCacheKey([
+			CACHE_KEYS.formFields,
+			classNameId,
+			classTypeId,
+		]);
+
+		const {data: fields} = cacheKey;
+
+		const promise = fields
+			? Promise.resolve(fields)
+			: FormService.getFormFields({
+					classNameId,
+					classTypeId,
+				});
+
+		const formFields = await promise;
+
+		const items = formFields
+			.flatMap((field) => ('fields' in field ? field.fields : []))
+			.filter(
+				(field) =>
+					'key' in field &&
+					selectedInputFields.some(
+						(inputField) => inputField.fieldId === field.key
+					)
+			)
+			.map((field) => {
+				const inputField = selectedInputFields.find(
+					(inputField) => inputField.fieldId === field.key
+				);
+
+				return {
+					content: 'input__' + inputField.itemId.replace(/-/g, '_'),
+					itemId: inputField.itemId,
+					label: field.label,
+				};
+			});
+
+		sections.push({
+			items,
+			label: selectedType.label,
+		});
+	}
+
+	return sections;
+}
+
+const FIELD_ID_CONFIGURATION_KEY = 'inputFieldId';
+
+export function findSelectedFormInputFields(state, formId) {
+	const selectedInputFields = [];
+
+	const findSelectedFields = (itemId) => {
+		const inputItem = state.layoutData.items[itemId];
+
+		if (inputItem?.type === LAYOUT_DATA_ITEM_TYPES.fragment) {
+			const {editableValues, fragmentEntryType} = selectFragmentEntryLink(
+				state,
+				inputItem
+			);
+
+			if (
+				fragmentEntryType === FRAGMENT_ENTRY_TYPES.input &&
+				editableValues[FREEMARKER_FRAGMENT_ENTRY_PROCESSOR]?.[
+					FIELD_ID_CONFIGURATION_KEY
+				]
+			) {
+				selectedInputFields.push({
+					fieldId:
+						editableValues[FREEMARKER_FRAGMENT_ENTRY_PROCESSOR][
+							FIELD_ID_CONFIGURATION_KEY
+						],
+					itemId: inputItem.itemId,
+				});
+			}
+		}
+
+		inputItem?.children.forEach(findSelectedFields);
+	};
+
+	findSelectedFields(formId);
+
+	return selectedInputFields;
 }

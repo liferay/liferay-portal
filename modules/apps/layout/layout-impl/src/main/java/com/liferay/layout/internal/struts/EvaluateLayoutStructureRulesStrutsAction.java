@@ -7,7 +7,9 @@ package com.liferay.layout.internal.struts;
 
 import com.liferay.layout.helper.structure.LayoutStructureRulesHelper;
 import com.liferay.layout.provider.LayoutStructureProvider;
+import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureRule;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -30,6 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,8 +79,8 @@ public class EvaluateLayoutStructureRulesStrutsAction implements StrutsAction {
 		JSONArray jsonArray =
 			_layoutStructureRulesHelper.processLayoutStructureRules(
 				themeDisplay.getScopeGroupId(),
-				_getFieldValuesMap(httpServletRequest), layoutStructureRules,
-				themeDisplay.getPermissionChecker(),
+				_getFieldValuesMap(httpServletRequest, layoutStructure),
+				layoutStructureRules, themeDisplay.getPermissionChecker(),
 				_segmentsEntryRetriever.getSegmentsEntryIds(
 					themeDisplay.getScopeGroupId(), themeDisplay.getUserId(),
 					_requestContextMapper.map(httpServletRequest),
@@ -89,13 +92,30 @@ public class EvaluateLayoutStructureRulesStrutsAction implements StrutsAction {
 	}
 
 	private Map<String, Object> _getFieldValuesMap(
-		HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest,
+		LayoutStructure layoutStructure) {
 
 		try {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
 				ParamUtil.getString(httpServletRequest, "fieldValues"));
 
-			return jsonObject.toMap();
+			Map<String, Object> fieldValues = jsonObject.toMap();
+
+			Map<String, Object> map = new HashMap<>();
+
+			for (Map.Entry<String, Object> entry : fieldValues.entrySet()) {
+				LayoutStructureItem layoutStructureItem =
+					layoutStructure.getLayoutStructureItem(entry.getKey());
+
+				if ((layoutStructureItem != null) &&
+					(layoutStructureItem instanceof
+						FragmentStyledLayoutStructureItem)) {
+
+					map.put("input__" + entry.getKey().replaceAll("-", "_"), entry.getValue());
+				}
+			}
+
+			return map;
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {

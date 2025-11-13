@@ -15,6 +15,7 @@ import com.liferay.dynamic.data.mapping.expression.GetFieldPropertyRequest;
 import com.liferay.dynamic.data.mapping.expression.GetFieldPropertyResponse;
 import com.liferay.layout.helper.structure.LayoutStructureRulesHelper;
 import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureRule;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -40,6 +41,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -66,7 +69,8 @@ public class LayoutStructureRulesHelperImpl
 		for (LayoutStructureRule layoutStructureRule :
 				layoutStructure.getLayoutStructureRules()) {
 
-			List<String> itemIds = _getItemIds(layoutStructureRule);
+			List<String> itemIds = _getItemIds(
+				layoutStructure, layoutStructureRule);
 
 			if (itemIds.isEmpty()) {
 				_processActions(
@@ -177,7 +181,8 @@ public class LayoutStructureRulesHelperImpl
 		implements DDMExpressionFieldAccessor {
 
 		public LayoutStructureRuleDDMExpressionFieldAccessor(
-			long[] roleIds, long[] segmentsEntryIds, User user, Map<String, Object> fieldValues) {
+			long[] roleIds, long[] segmentsEntryIds, User user,
+			Map<String, Object> fieldValues) {
 
 			_values = HashMapBuilder.<String, Object>put(
 				"createDate", user.getCreateDate()
@@ -193,12 +198,14 @@ public class LayoutStructureRulesHelperImpl
 			).put(
 				"screenName", user.getScreenName()
 			).put(
-				"segmentsEntryIds", JSONFactoryUtil.createJSONArray(
+				"segmentsEntryIds",
+				JSONFactoryUtil.createJSONArray(
 					ArrayUtil.toLongArray(segmentsEntryIds))
 			).put(
 				"userId", user.getUserId()
-			).putAll(fieldValues).build();
-
+			).putAll(
+				fieldValues
+			).build();
 		}
 
 		@Override
@@ -287,8 +294,8 @@ public class LayoutStructureRulesHelperImpl
 	}
 
 	private boolean _evaluateDDMExpression(
-		String script,
-		LayoutStructureRulesContext layoutStructureRulesContext) {
+		String script, LayoutStructureRulesContext layoutStructureRulesContext,
+		Map<String, Object> scriptFieldValues) {
 
 		try {
 			DDMExpression<Boolean> ddmExpression =
@@ -297,7 +304,7 @@ public class LayoutStructureRulesHelperImpl
 						script
 					).withDDMExpressionFieldAccessor(
 						layoutStructureRulesContext.
-							getDDMExpressionFieldAccessor()
+							getDDMExpressionFieldAccessor(scriptFieldValues)
 					).withDDMExpressionParameterAccessor(
 						layoutStructureRulesContext.
 							getDDMExpressionParameterAccessor()
@@ -322,7 +329,8 @@ public class LayoutStructureRulesHelperImpl
 
 		if (layoutStructureRule.isAdvancedRule()) {
 			return _evaluateDDMExpression(
-				layoutStructureRule.getScript(), layoutStructureRulesContext);
+				layoutStructureRule.getScript(), layoutStructureRulesContext,
+				fieldValuesMap);
 		}
 
 		JSONArray conditionsJSONArray =
@@ -422,7 +430,10 @@ public class LayoutStructureRulesHelperImpl
 		throw new IllegalArgumentException("Unknown action type: " + type);
 	}
 
-	private List<String> _getItemIds(LayoutStructureRule layoutStructureRule) {
+	private List<String> _getItemIds(
+		LayoutStructure layoutStructure,
+		LayoutStructureRule layoutStructureRule) {
+
 		List<String> itemIds = new ArrayList<>();
 
 		JSONArray conditionsJSONArray =
@@ -439,6 +450,21 @@ public class LayoutStructureRulesHelperImpl
 			}
 
 			itemIds.add(conditionJSONObject.getString("field"));
+		}
+
+		if (layoutStructureRule.isAdvancedRule()) {
+			Pattern pattern = Pattern.compile("input__[A-Za-z0-9_]*");
+
+			Matcher matcher = pattern.matcher(layoutStructureRule.getScript());
+
+			while (matcher.find()) {
+				String fullMatch = matcher.group();
+
+				String itemId =
+					fullMatch.substring(7).replaceAll("_", "-");
+
+				itemIds.add(itemId);
+			}
 		}
 
 		return itemIds;
@@ -534,7 +560,9 @@ public class LayoutStructureRulesHelperImpl
 
 	private class LayoutStructureRulesContext {
 
-		public DDMExpressionFieldAccessor getDDMExpressionFieldAccessor() {
+		public DDMExpressionFieldAccessor getDDMExpressionFieldAccessor(
+			Map<String, Object> fieldValuesMap) {
+
 			if (_ddmExpressionFieldAccessor != null) {
 				return _ddmExpressionFieldAccessor;
 			}
@@ -542,7 +570,7 @@ public class LayoutStructureRulesHelperImpl
 			_ddmExpressionFieldAccessor =
 				new LayoutStructureRuleDDMExpressionFieldAccessor(
 					getRoleIds(), getSegmentsEntryIds(),
-					_permissionChecker.getUser(), new HashMap<>());
+					_permissionChecker.getUser(), fieldValuesMap);
 
 			return _ddmExpressionFieldAccessor;
 		}
