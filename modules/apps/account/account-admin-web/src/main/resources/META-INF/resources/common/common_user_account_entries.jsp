@@ -208,7 +208,7 @@ boolean singleSelect = ParamUtil.getBoolean(request, "singleSelect", true);
 									.replace('TOKEN_TITLE', label);
 
 								searchContainer.addRow(
-									[selectedItem.entityname, '', removeButton],
+									[entityName, '', removeButton],
 									entityId
 								);
 
