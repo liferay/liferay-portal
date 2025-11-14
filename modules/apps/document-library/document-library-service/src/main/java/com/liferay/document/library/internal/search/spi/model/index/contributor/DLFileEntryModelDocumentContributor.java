@@ -45,14 +45,12 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextExtractor;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingDocumentContributor;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.trash.TrashHelper;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.nio.charset.StandardCharsets;
 
@@ -90,7 +88,7 @@ public class DLFileEntryModelDocumentContributor
 
 			_addFile(
 				document, Field.getLocalizedName(defaultLocale, Field.CONTENT),
-				dlFileEntry);
+				dlFileEntry, dlFileVersion);
 
 			document.addKeyword(
 				Field.CLASS_TYPE_ID, dlFileEntry.getFileEntryTypeId());
@@ -183,10 +181,15 @@ public class DLFileEntryModelDocumentContributor
 	}
 
 	private void _addFile(
-		Document document, String fieldName, DLFileEntry dlFileEntry) {
+		Document document, String fieldName, DLFileEntry dlFileEntry,
+		DLFileVersion dlFileVersion) {
+
+		if (!_isIndexContent(dlFileEntry)) {
+			return;
+		}
 
 		try {
-			String text = _extractText(dlFileEntry);
+			String text = _extractText(dlFileEntry, dlFileVersion);
 
 			if (text != null) {
 				document.addText(fieldName, text);
@@ -205,12 +208,14 @@ public class DLFileEntryModelDocumentContributor
 		}
 	}
 
-	private String _extractText(DLFileEntry dlFileEntry)
+	private String _extractText(
+			DLFileEntry dlFileEntry, DLFileVersion dlFileVersion)
 		throws IOException, PortalException {
 
 		int dlFileIndexingMaxSize = GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.DL_FILE_INDEXING_MAX_SIZE));
-		String indexVersionLabel = _getIndexVersionLabel(dlFileEntry);
+
+		String indexVersionLabel = dlFileVersion.getStoreFileName() + ".index";
 
 		if (_dlIndexerConfiguration.cacheTextExtraction() &&
 			_dlStore.hasFile(
@@ -224,6 +229,10 @@ public class DLFileEntryModelDocumentContributor
 					indexVersionLabel));
 
 			if (string.length() <= dlFileIndexingMaxSize) {
+				if (string.isEmpty()) {
+					return null;
+				}
+
 				return string;
 			}
 
@@ -232,17 +241,31 @@ public class DLFileEntryModelDocumentContributor
 				dlFileEntry.getName(), indexVersionLabel);
 		}
 
-		InputStream inputStream = _getInputStream(dlFileEntry);
+		String text = null;
 
-		if (inputStream == null) {
-			return null;
+		try {
+			text = _textExtractor.extractText(
+				_inputStreamSanitizer.sanitize(
+					dlFileVersion.getContentStream(false)),
+				dlFileIndexingMaxSize);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to get input stream", portalException);
+			}
 		}
 
-		String text = _textExtractor.extractText(
-			inputStream, dlFileIndexingMaxSize);
-
 		if (_dlIndexerConfiguration.cacheTextExtraction() &&
-			Validator.isNotNull(text) && !_isReadOnlyCtCollection()) {
+			!_isReadOnlyCtCollection()) {
+
+			byte[] bytes = null;
+
+			if (text == null) {
+				bytes = new byte[0];
+			}
+			else {
+				bytes = text.getBytes(StandardCharsets.UTF_8);
+			}
 
 			_dlStore.addFile(
 				DLStoreRequest.builder(
@@ -251,38 +274,10 @@ public class DLFileEntryModelDocumentContributor
 				).versionLabel(
 					indexVersionLabel
 				).build(),
-				text.getBytes(StandardCharsets.UTF_8));
+				bytes);
 		}
 
 		return text;
-	}
-
-	private String _getIndexVersionLabel(DLFileEntry dlFileEntry)
-		throws PortalException {
-
-		DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
-
-		return dlFileVersion.getStoreFileName() + ".index";
-	}
-
-	private InputStream _getInputStream(DLFileEntry dlFileEntry) {
-		try {
-			if (!_isIndexContent(dlFileEntry)) {
-				return null;
-			}
-
-			DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
-
-			return _inputStreamSanitizer.sanitize(
-				dlFileVersion.getContentStream(false));
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get input stream", portalException);
-			}
-
-			return null;
-		}
 	}
 
 	private boolean _isIndexContent(DLFileEntry dlFileEntry) {
