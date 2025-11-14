@@ -1,12 +1,12 @@
-[#if !themeDisplay.isSignedIn()]
+[#if !themeDisplay.isSignedIn() || configuration.enableFragmentEdition]
 	<div class="banner-sign-in-lesson">
 		<div class="banner-info">
 			<div class="banner-content">
-				<span data-lfr-editable-id="text1" data-lfr-editable-type="text">
+				<span data-lfr-editable-id="sign-in-banner-text" data-lfr-editable-type="text">
 					${languageUtil.get(locale, 'save-your-learning-progress', 'Save your learning progress and start earning Course Badges!')}
 				</span>
 
-				<a class="login-button" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
+				<a class="login-button" data-lfr-editable-id="sign-in-banner-button-text" data-lfr-editable-type="link" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
 					${languageUtil.get(locale, 'login-in-to-liferay-learn', 'Log In to Liferay Learn')}
 				</a>
 			</div>

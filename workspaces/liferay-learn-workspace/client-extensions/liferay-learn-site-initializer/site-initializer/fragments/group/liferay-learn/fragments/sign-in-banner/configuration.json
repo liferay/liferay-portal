@@ -1,4 +1,15 @@
 {
 	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": false,
+					"description": "Note: Disable before publishing.",
+					"label": "Enable Fragment Edition",
+					"name": "enableFragmentEdition",
+					"type": "checkbox"
+				}
+			]
+		}
 	]
 }
