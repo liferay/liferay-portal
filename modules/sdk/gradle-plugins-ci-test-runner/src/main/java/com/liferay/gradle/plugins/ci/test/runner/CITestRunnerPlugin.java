@@ -25,10 +25,7 @@ import org.gradle.api.plugins.ExtensionContainer;
  * @author Calum Ragan
  */
 public class CITestRunnerPlugin implements Plugin<Project> {
-
-	public static final String CI_TEST_RUNNER_CONFIGURATION_NAME =
-		"ciTestRunner";
-
+    
 	public static final String DOWNLOAD_TOMCAT_ZIP_TASK_NAME =
 		"downloadTomcatZip";
 
@@ -46,20 +43,7 @@ public class CITestRunnerPlugin implements Plugin<Project> {
 		TomcatAppServer tomcatAppServer =
 			(TomcatAppServer)liferayExtension.getAppServer("tomcat");
 
-		_addConfigurationCITestRunner(project);
-
 		_addTaskDownloadTomcatZip(project, tomcatAppServer);
-	}
-
-	private Configuration _addConfigurationCITestRunner(Project project) {
-		Configuration configuration = GradleUtil.addConfiguration(
-			project, CI_TEST_RUNNER_CONFIGURATION_NAME);
-
-		configuration.setDescription(
-			"Configures CI Test Runner for this project.");
-		configuration.setVisible(false);
-
-		return configuration;
 	}
 
 	private Task _addTaskDownloadTomcatZip(
