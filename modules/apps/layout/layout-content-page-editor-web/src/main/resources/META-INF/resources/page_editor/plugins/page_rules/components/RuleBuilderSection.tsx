@@ -414,6 +414,23 @@ export function RuleBuilderConditionSection({
 														return `userId ==  ${condition.options!.value}`;
 													}
 												}
+												else if (
+													condition.type === 'form'
+												) {
+													let script = `input__${condition.field?.replaceAll('-', '_')}`;
+
+													if (
+														condition.options
+															?.type === 'equal'
+													) {
+														script += ` == "${condition.options!.value}"`;
+													}
+													else {
+														script += ` != "${condition.options!.value}"`;
+													}
+
+													return script;
+												}
 											}
 										);
 

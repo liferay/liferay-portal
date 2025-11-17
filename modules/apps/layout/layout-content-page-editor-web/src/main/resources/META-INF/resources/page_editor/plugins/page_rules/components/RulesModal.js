@@ -22,14 +22,17 @@ import {config} from '../../../app/config';
 import {FRAGMENT_ENTRY_TYPES} from '../../../app/config/constants/fragmentEntryTypes';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../app/config/constants/freemarkerFragmentEntryProcessor';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../app/config/constants/layoutDataItemTypes';
+import {useSelectItem} from '../../../app/contexts/ControlsContext';
 import {useDispatch, useSelector} from '../../../app/contexts/StoreContext';
 import selectFormConfiguration from '../../../app/selectors/selectFormConfiguration';
 import selectFragmentEntryLink from '../../../app/selectors/selectFragmentEntryLink';
 import FormService from '../../../app/services/FormService';
+import RulesService from '../../../app/services/RulesService';
 import addRule from '../../../app/thunks/addRule';
 import updateRule from '../../../app/thunks/updateRule';
 import {CACHE_KEYS, getCacheKey} from '../../../app/utils/cache';
 import {isLayoutDataItemDeleted} from '../../../app/utils/isLayoutDataItemDeleted';
+import useCache from '../../../app/utils/useCache';
 import {
 	RuleBuilderActionSection,
 	RuleBuilderConditionSection,
@@ -54,6 +57,12 @@ export default function RulesModal({editingRule, onCloseModal}) {
 	const [sidebarElements, setSidebarElements] = useState(
 		config.codeEditorSidebarElements
 	);
+
+	const selectItem = useSelectItem();
+
+	useEffect(() => {
+		selectItem(null);
+	}, [selectItem]);
 
 	useEffect(() => {
 		getFormFieldsSections(state).then((sections) => {
@@ -380,6 +389,24 @@ export async function getFormFieldsSections(state) {
 			label: selectedType.label,
 		});
 	}
+
+	const cacheKey = getCacheKey([CACHE_KEYS.roles]);
+
+	const {data: roles} = cacheKey;
+
+	const rolesPromise = roles
+		? Promise.resolve(roles)
+		: RulesService.getRoles();
+
+	const rolesData = await rolesPromise;
+
+	sections.push({
+		items: rolesData.map((role) => ({
+			content: role.roleId,
+			label: role.name,
+		})),
+		label: Liferay.Language.get('roles'),
+	});
 
 	return sections;
 }
