@@ -22,6 +22,7 @@ export default function SaveButtons({
 	defaultLanguageId: initialDefaultLanguageId,
 	displayDate,
 	editingDefaultValues,
+	isPending,
 	permissionsURL,
 	portletNamespace,
 	publishButtonLabel,
@@ -247,7 +248,7 @@ export default function SaveButtons({
 
 			<ClayButton
 				className="rounded-0-right"
-				disabled={saveButtonDisabled}
+				disabled={saveButtonDisabled || isPending}
 				displayType="primary"
 				onClick={() => onClick(ACTION_PUBLISH, true)}
 				title={sub(
@@ -267,7 +268,7 @@ export default function SaveButtons({
 					<ClayButton
 						aria-label={Liferay.Language.get('publish-options')}
 						className="border-left px-2 rounded-0-left"
-						disabled={saveButtonDisabled}
+						disabled={saveButtonDisabled || isPending}
 						title={Liferay.Language.get('publish-options')}
 					>
 						<span className="inline-item">

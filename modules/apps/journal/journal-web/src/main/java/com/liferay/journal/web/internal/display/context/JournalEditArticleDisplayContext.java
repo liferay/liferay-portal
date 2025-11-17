@@ -1139,6 +1139,8 @@ public class JournalEditArticleDisplayContext {
 			"editingDefaultValues",
 			getClassNameId() != JournalArticleConstants.CLASS_NAME_ID_DEFAULT
 		).put(
+			"isPending", isPending()
+		).put(
 			"permissionsURL", getPermissionsURL()
 		).put(
 			"publishButtonLabel",
