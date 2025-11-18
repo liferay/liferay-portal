@@ -857,7 +857,9 @@ const Table = ({
 					});
 
 					visibleColumns.forEach((value: any, key: any) => {
-						visibleFieldNames[key] = true;
+						if (visibleFieldNames[key] !== undefined) {
+							visibleFieldNames[key] = true;
+						}
 					});
 
 					viewsDispatch(updateVisibleFields(visibleFieldNames));
