@@ -9,7 +9,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.rs.json.basic", version: "3.6.8.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.rs.security.jose", version: "3.6.8.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.rs.security.jose.jaxrs", version: "3.6.8.JAKARTA-LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.rs.security.oauth2", version: "3.2.14.LIFERAY-PATCHED-2"
+	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.rs.security.oauth2", version: "3.6.8.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.security", version: "3.6.8.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.transports.http", version: "3.6.8.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA-LIFERAY-PATCHED-1"
