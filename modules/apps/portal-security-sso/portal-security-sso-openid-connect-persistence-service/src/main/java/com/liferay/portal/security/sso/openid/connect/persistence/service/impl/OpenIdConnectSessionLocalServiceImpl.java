@@ -80,6 +80,14 @@ public class OpenIdConnectSessionLocalServiceImpl
 	}
 
 	@Override
+	public OpenIdConnectSession fetchOpenIdConnectSession(
+		String authServerWellKnownURI, String sid) {
+
+		return openIdConnectSessionPersistence.fetchByA_S(
+			authServerWellKnownURI, sid);
+	}
+
+	@Override
 	public List<OpenIdConnectSession>
 		getAccessTokenExpirationDateOpenIdConnectSessions(
 			Date ltAccessTokenExpirationDate, int start, int end) {
