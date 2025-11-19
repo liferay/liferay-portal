@@ -476,6 +476,76 @@ public class OpenIdConnectSessionUtil {
 	}
 
 	/**
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the matching open ID connect session
+	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
+	 */
+	public static OpenIdConnectSession findByA_S(
+			String authServerWellKnownURI, String sid)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchSessionException {
+
+		return getPersistence().findByA_S(authServerWellKnownURI, sid);
+	}
+
+	/**
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public static OpenIdConnectSession fetchByA_S(
+		String authServerWellKnownURI, String sid) {
+
+		return getPersistence().fetchByA_S(authServerWellKnownURI, sid);
+	}
+
+	/**
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public static OpenIdConnectSession fetchByA_S(
+		String authServerWellKnownURI, String sid, boolean useFinderCache) {
+
+		return getPersistence().fetchByA_S(
+			authServerWellKnownURI, sid, useFinderCache);
+	}
+
+	/**
+	 * Removes the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; from the database.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the open ID connect session that was removed
+	 */
+	public static OpenIdConnectSession removeByA_S(
+			String authServerWellKnownURI, String sid)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchSessionException {
+
+		return getPersistence().removeByA_S(authServerWellKnownURI, sid);
+	}
+
+	/**
+	 * Returns the number of open ID connect sessions where authServerWellKnownURI = &#63; and sid = &#63;.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the number of matching open ID connect sessions
+	 */
+	public static int countByA_S(String authServerWellKnownURI, String sid) {
+		return getPersistence().countByA_S(authServerWellKnownURI, sid);
+	}
+
+	/**
 	 * Returns all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
 	 *
 	 * @param companyId the company ID

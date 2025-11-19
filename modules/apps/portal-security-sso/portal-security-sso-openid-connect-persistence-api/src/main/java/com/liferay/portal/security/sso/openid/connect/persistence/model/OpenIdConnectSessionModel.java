@@ -226,6 +226,21 @@ public interface OpenIdConnectSessionModel
 	 */
 	public void setRefreshToken(String refreshToken);
 
+	/**
+	 * Returns the sid of this open ID connect session.
+	 *
+	 * @return the sid of this open ID connect session
+	 */
+	@AutoEscape
+	public String getSid();
+
+	/**
+	 * Sets the sid of this open ID connect session.
+	 *
+	 * @param sid the sid of this open ID connect session
+	 */
+	public void setSid(String sid);
+
 	@Override
 	public OpenIdConnectSession cloneWithOriginalValues();
 

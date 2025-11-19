@@ -1149,6 +1149,229 @@ public class OpenIdConnectSessionPersistenceImpl
 		_FINDER_COLUMN_LTACCESSTOKENEXPIRATIONDATE_ACCESSTOKENEXPIRATIONDATE_2 =
 			"openIdConnectSession.accessTokenExpirationDate < ?";
 
+	private FinderPath _finderPathFetchByA_S;
+
+	/**
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the matching open ID connect session
+	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
+	 */
+	@Override
+	public OpenIdConnectSession findByA_S(
+			String authServerWellKnownURI, String sid)
+		throws NoSuchSessionException {
+
+		OpenIdConnectSession openIdConnectSession = fetchByA_S(
+			authServerWellKnownURI, sid);
+
+		if (openIdConnectSession == null) {
+			StringBundler sb = new StringBundler(6);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("authServerWellKnownURI=");
+			sb.append(authServerWellKnownURI);
+
+			sb.append(", sid=");
+			sb.append(sid);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchSessionException(sb.toString());
+		}
+
+		return openIdConnectSession;
+	}
+
+	/**
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	@Override
+	public OpenIdConnectSession fetchByA_S(
+		String authServerWellKnownURI, String sid) {
+
+		return fetchByA_S(authServerWellKnownURI, sid, true);
+	}
+
+	/**
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	@Override
+	public OpenIdConnectSession fetchByA_S(
+		String authServerWellKnownURI, String sid, boolean useFinderCache) {
+
+		authServerWellKnownURI = Objects.toString(authServerWellKnownURI, "");
+		sid = Objects.toString(sid, "");
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {authServerWellKnownURI, sid};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(
+				_finderPathFetchByA_S, finderArgs, this);
+		}
+
+		if (result instanceof OpenIdConnectSession) {
+			OpenIdConnectSession openIdConnectSession =
+				(OpenIdConnectSession)result;
+
+			if (!Objects.equals(
+					authServerWellKnownURI,
+					openIdConnectSession.getAuthServerWellKnownURI()) ||
+				!Objects.equals(sid, openIdConnectSession.getSid())) {
+
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_SELECT_OPENIDCONNECTSESSION_WHERE);
+
+			boolean bindAuthServerWellKnownURI = false;
+
+			if (authServerWellKnownURI.isEmpty()) {
+				sb.append(_FINDER_COLUMN_A_S_AUTHSERVERWELLKNOWNURI_3);
+			}
+			else {
+				bindAuthServerWellKnownURI = true;
+
+				sb.append(_FINDER_COLUMN_A_S_AUTHSERVERWELLKNOWNURI_2);
+			}
+
+			boolean bindSid = false;
+
+			if (sid.isEmpty()) {
+				sb.append(_FINDER_COLUMN_A_S_SID_3);
+			}
+			else {
+				bindSid = true;
+
+				sb.append(_FINDER_COLUMN_A_S_SID_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindAuthServerWellKnownURI) {
+					queryPos.add(authServerWellKnownURI);
+				}
+
+				if (bindSid) {
+					queryPos.add(sid);
+				}
+
+				List<OpenIdConnectSession> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByA_S, finderArgs, list);
+					}
+				}
+				else {
+					OpenIdConnectSession openIdConnectSession = list.get(0);
+
+					result = openIdConnectSession;
+
+					cacheResult(openIdConnectSession);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (OpenIdConnectSession)result;
+		}
+	}
+
+	/**
+	 * Removes the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; from the database.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the open ID connect session that was removed
+	 */
+	@Override
+	public OpenIdConnectSession removeByA_S(
+			String authServerWellKnownURI, String sid)
+		throws NoSuchSessionException {
+
+		OpenIdConnectSession openIdConnectSession = findByA_S(
+			authServerWellKnownURI, sid);
+
+		return remove(openIdConnectSession);
+	}
+
+	/**
+	 * Returns the number of open ID connect sessions where authServerWellKnownURI = &#63; and sid = &#63;.
+	 *
+	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param sid the sid
+	 * @return the number of matching open ID connect sessions
+	 */
+	@Override
+	public int countByA_S(String authServerWellKnownURI, String sid) {
+		OpenIdConnectSession openIdConnectSession = fetchByA_S(
+			authServerWellKnownURI, sid);
+
+		if (openIdConnectSession == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String _FINDER_COLUMN_A_S_AUTHSERVERWELLKNOWNURI_2 =
+		"openIdConnectSession.authServerWellKnownURI = ? AND ";
+
+	private static final String _FINDER_COLUMN_A_S_AUTHSERVERWELLKNOWNURI_3 =
+		"(openIdConnectSession.authServerWellKnownURI IS NULL OR openIdConnectSession.authServerWellKnownURI = '') AND ";
+
+	private static final String _FINDER_COLUMN_A_S_SID_2 =
+		"openIdConnectSession.sid = ?";
+
+	private static final String _FINDER_COLUMN_A_S_SID_3 =
+		"(openIdConnectSession.sid IS NULL OR openIdConnectSession.sid = '')";
+
 	private FinderPath _finderPathWithPaginationFindByC_A_C;
 	private FinderPath _finderPathWithoutPaginationFindByC_A_C;
 	private FinderPath _finderPathCountByC_A_C;
@@ -2091,6 +2314,14 @@ public class OpenIdConnectSessionPersistenceImpl
 			openIdConnectSession.getPrimaryKey(), openIdConnectSession);
 
 		finderCache.putResult(
+			_finderPathFetchByA_S,
+			new Object[] {
+				openIdConnectSession.getAuthServerWellKnownURI(),
+				openIdConnectSession.getSid()
+			},
+			openIdConnectSession);
+
+		finderCache.putResult(
 			_finderPathFetchByU_A_C,
 			new Object[] {
 				openIdConnectSession.getUserId(),
@@ -2180,6 +2411,14 @@ public class OpenIdConnectSessionPersistenceImpl
 		OpenIdConnectSessionModelImpl openIdConnectSessionModelImpl) {
 
 		Object[] args = new Object[] {
+			openIdConnectSessionModelImpl.getAuthServerWellKnownURI(),
+			openIdConnectSessionModelImpl.getSid()
+		};
+
+		finderCache.putResult(
+			_finderPathFetchByA_S, args, openIdConnectSessionModelImpl);
+
+		args = new Object[] {
 			openIdConnectSessionModelImpl.getUserId(),
 			openIdConnectSessionModelImpl.getAuthServerWellKnownURI(),
 			openIdConnectSessionModelImpl.getClientId()
@@ -2679,6 +2918,11 @@ public class OpenIdConnectSessionPersistenceImpl
 				"countByLtAccessTokenExpirationDate",
 				new String[] {Date.class.getName()},
 				new String[] {"accessTokenExpirationDate"}, false);
+
+		_finderPathFetchByA_S = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByA_S",
+			new String[] {String.class.getName(), String.class.getName()},
+			new String[] {"authServerWellKnownURI", "sid"}, true);
 
 		_finderPathWithPaginationFindByC_A_C = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_C",

@@ -47,6 +47,7 @@ public class OpenIdConnectSessionWrapper
 		attributes.put("clientId", getClientId());
 		attributes.put("idToken", getIdToken());
 		attributes.put("refreshToken", getRefreshToken());
+		attributes.put("sid", getSid());
 
 		return attributes;
 	}
@@ -120,6 +121,12 @@ public class OpenIdConnectSessionWrapper
 
 		if (refreshToken != null) {
 			setRefreshToken(refreshToken);
+		}
+
+		String sid = (String)attributes.get("sid");
+
+		if (sid != null) {
+			setSid(sid);
 		}
 	}
 
@@ -236,6 +243,16 @@ public class OpenIdConnectSessionWrapper
 	@Override
 	public String getRefreshToken() {
 		return model.getRefreshToken();
+	}
+
+	/**
+	 * Returns the sid of this open ID connect session.
+	 *
+	 * @return the sid of this open ID connect session
+	 */
+	@Override
+	public String getSid() {
+		return model.getSid();
 	}
 
 	/**
@@ -371,6 +388,16 @@ public class OpenIdConnectSessionWrapper
 	@Override
 	public void setRefreshToken(String refreshToken) {
 		model.setRefreshToken(refreshToken);
+	}
+
+	/**
+	 * Sets the sid of this open ID connect session.
+	 *
+	 * @param sid the sid of this open ID connect session
+	 */
+	@Override
+	public void setSid(String sid) {
+		model.setSid(sid);
 	}
 
 	/**

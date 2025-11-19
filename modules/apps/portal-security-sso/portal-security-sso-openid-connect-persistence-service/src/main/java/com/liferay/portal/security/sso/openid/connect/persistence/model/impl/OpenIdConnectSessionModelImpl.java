@@ -66,7 +66,8 @@ public class OpenIdConnectSessionModelImpl
 		{"modifiedDate", Types.TIMESTAMP}, {"accessToken", Types.CLOB},
 		{"accessTokenExpirationDate", Types.TIMESTAMP},
 		{"authServerWellKnownURI", Types.VARCHAR}, {"clientId", Types.VARCHAR},
-		{"idToken", Types.CLOB}, {"refreshToken", Types.VARCHAR}
+		{"idToken", Types.CLOB}, {"refreshToken", Types.VARCHAR},
+		{"sid", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -84,10 +85,11 @@ public class OpenIdConnectSessionModelImpl
 		TABLE_COLUMNS_MAP.put("clientId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("idToken", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("refreshToken", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("sid", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OpenIdConnectSession (mvccVersion LONG default 0 not null,openIdConnectSessionId LONG not null primary key,companyId LONG,userId LONG,modifiedDate DATE null,accessToken TEXT null,accessTokenExpirationDate DATE null,authServerWellKnownURI VARCHAR(256) null,clientId VARCHAR(256) null,idToken TEXT null,refreshToken VARCHAR(2000) null)";
+		"create table OpenIdConnectSession (mvccVersion LONG default 0 not null,openIdConnectSessionId LONG not null primary key,companyId LONG,userId LONG,modifiedDate DATE null,accessToken TEXT null,accessTokenExpirationDate DATE null,authServerWellKnownURI VARCHAR(256) null,clientId VARCHAR(256) null,idToken TEXT null,refreshToken VARCHAR(2000) null,sid VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OpenIdConnectSession";
@@ -132,14 +134,20 @@ public class OpenIdConnectSessionModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 16L;
+	public static final long SID_COLUMN_BITMASK = 16L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long USERID_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long OPENIDCONNECTSESSIONID_COLUMN_BITMASK = 32L;
+	public static final long OPENIDCONNECTSESSIONID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -276,6 +284,7 @@ public class OpenIdConnectSessionModelImpl
 				"idToken", OpenIdConnectSession::getIdToken);
 			attributeGetterFunctions.put(
 				"refreshToken", OpenIdConnectSession::getRefreshToken);
+			attributeGetterFunctions.put("sid", OpenIdConnectSession::getSid);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -339,6 +348,10 @@ public class OpenIdConnectSessionModelImpl
 				"refreshToken",
 				(BiConsumer<OpenIdConnectSession, String>)
 					OpenIdConnectSession::setRefreshToken);
+			attributeSetterBiConsumers.put(
+				"sid",
+				(BiConsumer<OpenIdConnectSession, String>)
+					OpenIdConnectSession::setSid);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -593,6 +606,34 @@ public class OpenIdConnectSessionModelImpl
 		_refreshToken = refreshToken;
 	}
 
+	@Override
+	public String getSid() {
+		if (_sid == null) {
+			return "";
+		}
+		else {
+			return _sid;
+		}
+	}
+
+	@Override
+	public void setSid(String sid) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_sid = sid;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSid() {
+		return getColumnOriginalValue("sid");
+	}
+
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -665,6 +706,7 @@ public class OpenIdConnectSessionModelImpl
 		openIdConnectSessionImpl.setClientId(getClientId());
 		openIdConnectSessionImpl.setIdToken(getIdToken());
 		openIdConnectSessionImpl.setRefreshToken(getRefreshToken());
+		openIdConnectSessionImpl.setSid(getSid());
 
 		openIdConnectSessionImpl.resetOriginalValues();
 
@@ -698,6 +740,8 @@ public class OpenIdConnectSessionModelImpl
 			this.<String>getColumnOriginalValue("idToken"));
 		openIdConnectSessionImpl.setRefreshToken(
 			this.<String>getColumnOriginalValue("refreshToken"));
+		openIdConnectSessionImpl.setSid(
+			this.<String>getColumnOriginalValue("sid"));
 
 		return openIdConnectSessionImpl;
 	}
@@ -851,6 +895,14 @@ public class OpenIdConnectSessionModelImpl
 			openIdConnectSessionCacheModel.refreshToken = null;
 		}
 
+		openIdConnectSessionCacheModel.sid = getSid();
+
+		String sid = openIdConnectSessionCacheModel.sid;
+
+		if ((sid != null) && (sid.length() == 0)) {
+			openIdConnectSessionCacheModel.sid = null;
+		}
+
 		return openIdConnectSessionCacheModel;
 	}
 
@@ -925,6 +977,7 @@ public class OpenIdConnectSessionModelImpl
 	private String _clientId;
 	private String _idToken;
 	private String _refreshToken;
+	private String _sid;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<OpenIdConnectSession, Object> function =
@@ -968,6 +1021,7 @@ public class OpenIdConnectSessionModelImpl
 		_columnOriginalValues.put("clientId", _clientId);
 		_columnOriginalValues.put("idToken", _idToken);
 		_columnOriginalValues.put("refreshToken", _refreshToken);
+		_columnOriginalValues.put("sid", _sid);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -1002,6 +1056,8 @@ public class OpenIdConnectSessionModelImpl
 		columnBitmasks.put("idToken", 512L);
 
 		columnBitmasks.put("refreshToken", 1024L);
+
+		columnBitmasks.put("sid", 2048L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

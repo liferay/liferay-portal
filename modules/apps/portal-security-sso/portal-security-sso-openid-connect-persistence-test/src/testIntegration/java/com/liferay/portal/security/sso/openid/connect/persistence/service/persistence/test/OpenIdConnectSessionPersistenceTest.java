@@ -141,6 +141,8 @@ public class OpenIdConnectSessionPersistenceTest {
 
 		newOpenIdConnectSession.setRefreshToken(RandomTestUtil.randomString());
 
+		newOpenIdConnectSession.setSid(RandomTestUtil.randomString());
+
 		_openIdConnectSessions.add(
 			_persistence.update(newOpenIdConnectSession));
 
@@ -184,6 +186,9 @@ public class OpenIdConnectSessionPersistenceTest {
 		Assert.assertEquals(
 			existingOpenIdConnectSession.getRefreshToken(),
 			newOpenIdConnectSession.getRefreshToken());
+		Assert.assertEquals(
+			existingOpenIdConnectSession.getSid(),
+			newOpenIdConnectSession.getSid());
 	}
 
 	@Test
@@ -200,6 +205,15 @@ public class OpenIdConnectSessionPersistenceTest {
 
 		_persistence.countByLtAccessTokenExpirationDate(
 			RandomTestUtil.nextDate());
+	}
+
+	@Test
+	public void testCountByA_S() throws Exception {
+		_persistence.countByA_S("", "");
+
+		_persistence.countByA_S("null", "null");
+
+		_persistence.countByA_S((String)null, (String)null);
 	}
 
 	@Test
@@ -252,7 +266,7 @@ public class OpenIdConnectSessionPersistenceTest {
 			"openIdConnectSessionId", true, "companyId", true, "userId", true,
 			"modifiedDate", true, "accessTokenExpirationDate", true,
 			"authServerWellKnownURI", true, "clientId", true, "refreshToken",
-			true);
+			true, "sid", true);
 	}
 
 	@Test
@@ -547,6 +561,17 @@ public class OpenIdConnectSessionPersistenceTest {
 		OpenIdConnectSession openIdConnectSession) {
 
 		Assert.assertEquals(
+			openIdConnectSession.getAuthServerWellKnownURI(),
+			ReflectionTestUtil.invoke(
+				openIdConnectSession, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "authServerWellKnownURI"));
+		Assert.assertEquals(
+			openIdConnectSession.getSid(),
+			ReflectionTestUtil.invoke(
+				openIdConnectSession, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "sid"));
+
+		Assert.assertEquals(
 			Long.valueOf(openIdConnectSession.getUserId()),
 			ReflectionTestUtil.<Long>invoke(
 				openIdConnectSession, "getColumnOriginalValue",
@@ -589,6 +614,8 @@ public class OpenIdConnectSessionPersistenceTest {
 		openIdConnectSession.setIdToken(RandomTestUtil.randomString());
 
 		openIdConnectSession.setRefreshToken(RandomTestUtil.randomString());
+
+		openIdConnectSession.setSid(RandomTestUtil.randomString());
 
 		_openIdConnectSessions.add(_persistence.update(openIdConnectSession));
 
