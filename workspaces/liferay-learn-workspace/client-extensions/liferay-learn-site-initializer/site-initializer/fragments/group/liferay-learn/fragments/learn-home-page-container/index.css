@@ -80,9 +80,7 @@
 .learn-home-assets-grid, 
 .learn-home-capabilities-grid {
 	align-items: stretch; 
-	display: flex;
-	flex-wrap: wrap; 
-	gap: 1.5rem; 
+	display: grid; 
 
 	> * {
 		flex: 0 0 100%;
@@ -95,104 +93,29 @@
 		height: 100%;
 	}
 }
+.learn-home-assets-grid {
+	gap: 1rem;
+	grid-template-columns: repeat(3, 1fr);
 
-.learn-home-cards-container {
-	.card-row {
-		gap: 2.5rem;
+}
 
-		@media (max-width: 991px) {
-			flex-direction: column !important;
-		}
+.learn-home-capabilities-grid {
+	gap: 1.125rem;
+	grid-template-columns: repeat(4, 1fr);
+}
 
-		@media (max-width: 1279px) {
-			flex-direction: column !important;
-			gap: 40px;
-		}
-	}
-
-	.learn-home-card {
-		cursor: pointer;
-		height: 100%;
-		min-height: 313px;
-
-		&:hover {
-			background-color: var(--color-action-primary-hover-10, #edf3fe) !important;
-			border-color: var(--color-brand-primary-darken-1, #0053f0) !important;
-			border-radius: 10px !important;
-			border-width: 1px !important;
-		}
-
-		.home-card-cta {
-			font-size: 1.25rem;
-
-			.component-text {
-				align-items: center;
-				display: flex;
-				gap: 0.5rem;
-			}
-
-			p::after {
-				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='lexicon-icon lexicon-icon-order-arrow-right' role='presentation' viewBox='0 0 512 512' fill='%230B5FFF'%3E%3Cpath class='lexicon-icon-outline' d='M367.9,350.3l71.6-71.6c10.8-11.9,11.2-32.9,0-45.8l-71.6-71.6c-33.6-29.8-74.9,15.8-45.8,45.8l16.7,16.7H96c-42.5,0-42.5,64,0,64h242.8l-16.7,16.7C292.2,336.3,337,380,367.9,350.3z'%3E%3C/path%3E%3C/svg%3E");
-				content: '';
-				display: inline-block;
-				height: 1rem;
-				width: 1rem;
-			}
-
-			p:hover {
-				font-size: 1.25rem;
-			}
-		}
-
-		.home-card-description {
-			font-size: 1.25rem;
-			font-weight: 400 !important;
-		}
-
-		.home-card-icon {
-			align-items: center;
-			background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='80' height='80' rx='10' fill='url(%23paint0_linear_3687_24766)'/%3E%3Crect width='80' height='80' rx='10' fill='url(%23paint1_radial_3687_24766)'/%3E%3Crect width='80' height='80' rx='10' fill='url(%23paint2_radial_3687_24766)'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_3687_24766' x1='0' y1='0' x2='81.4669' y2='1.52278' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23001742'/%3E%3Cstop offset='0.246' stop-color='%230011A8'/%3E%3Cstop offset='0.49' stop-color='%230B5FFF'/%3E%3Cstop offset='0.745' stop-color='%230B5FFF'/%3E%3Cstop offset='1' stop-color='%230B5FFF'/%3E%3C/linearGradient%3E%3CradialGradient id='paint1_radial_3687_24766' cx='0' cy='0' r='1' gradientTransform='matrix(21.25 23.4286 -0.722484 35.0578 0 0)' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0.208333' stop-color='%2300256B'/%3E%3Cstop offset='1' stop-color='%2300256B' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='paint2_radial_3687_24766' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(80 27.6809) rotate(180) scale(11.6406 27.6809)'%3E%3Cstop stop-color='%23377CFF' stop-opacity='0.68'/%3E%3Cstop offset='1' stop-color='%23377CFF' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E ");
-			display: flex;
-			justify-content: center;
-		}
-
-		@media (max-width: 1279px) {
-			width: 100% !important;
-		}
-
-		h2 {
-			font-weight: 700;
-		}
+@media (max-width: 1230px) {
+	.learn-home-assets-grid,
+	.learn-home-capabilities-grid {
+		gap: 0.75rem;
+		grid-template-columns: repeat(2, 1fr);
 	}
 }
 
-@media (min-width: 768px) {
-	.learn-home-assets-grid > * {
-		flex-basis: calc(50% - 0.75rem);
-		max-width: calc(50% - 0.75rem);
-	}
-	
-	.learn-home-capabilities-grid > * {
-		flex-basis: calc(50% - 0.75rem);
-		max-width: calc(50% - 0.75rem);
-	}
-}
-
-@media (max-width: 990px) {
-	.card-row {
-		flex-direction: column !important;
-		gap: 40px;
-	}
-}
-
-@media (min-width: 1230px) {
-	.learn-home-assets-grid > * {
-		flex-basis: calc(33.333% - 1rem);
-		max-width: calc(33.333% - 1rem);
-	}
-	
-	.learn-home-capabilities-grid > * {
-		flex-basis: calc(25% - 1.125rem);
-		max-width: calc(25% - 1.125rem);
+@media (max-width: 768px) {
+	.learn-home-assets-grid, 
+	.learn-home-capabilities-grid {
+		gap: 1.5rem;
+		grid-template-columns: 1fr;
 	}
 }
