@@ -1769,6 +1769,7 @@ const FrontendDataSetContent = ({
 				toggleItemInlineEdit,
 				uniformActionsDisplay,
 				updateActiveSorts,
+				updateConfig,
 				updateDataSetItems,
 				updateFilters,
 				updateItem,

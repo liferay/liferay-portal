@@ -10,6 +10,7 @@ export interface IViewsContext {
 	activeView: any;
 	customViews: Array<ICustomView>;
 	customViewsEnabled: boolean;
+	defaultView?: any;
 	filters: Array<any>;
 	modifiedFields: any;
 	paginationDelta: any;

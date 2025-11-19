@@ -19,6 +19,7 @@ import React, {Ref, useContext, useRef, useState} from 'react';
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {DEFAULT_FETCH_HEADERS} from '../../constants';
 import getRandomId from '../../utils/getRandomId';
+import {EConfigInURLKeys} from '../../utils/types';
 import ViewsContext, {ICustomView} from '../../views/ViewsContext';
 import {EViewsActionTypes} from '../../views/viewsReducer';
 
@@ -77,12 +78,14 @@ const CustomViewsControls = () => {
 		id: fdsName,
 		namespace,
 		portletId,
+		updateConfig,
 	} = useContext(FrontendDataSetContext);
 	const [
 		{
 			activeCustomViewId,
 			activeView,
 			customViews,
+			defaultView,
 			filters,
 			paginationDelta,
 			sorts,
@@ -332,6 +335,24 @@ const CustomViewsControls = () => {
 						type: 'success',
 					});
 
+					updateConfig({
+						[EConfigInURLKeys.ACTIVE_FILTERS]: [
+							...defaultView?.filters,
+						],
+						[EConfigInURLKeys.ACTIVE_SORTS]: [...defaultView.sorts],
+						[EConfigInURLKeys.DELTA]: {
+							...defaultView.paginationDelta,
+						},
+						[EConfigInURLKeys.PAGE_NUMBER]: 1,
+						[EConfigInURLKeys.SEARCH_PARAM]: '',
+						[EConfigInURLKeys.VIEW_NAME]: {
+							...defaultView.activeView.name,
+						},
+						[EConfigInURLKeys.VISIBLE_FIELDS]: {
+							...defaultView.visibleFieldNames,
+						},
+					});
+
 					viewsDispatch({
 						type: EViewsActionTypes.DELETE_CUSTOM_VIEW,
 						value: {
@@ -388,12 +409,43 @@ const CustomViewsControls = () => {
 	};
 
 	const handleSelectionChange = (value: React.Key) => {
-		if (value === DEFAULT_VIEW_ID) {
+		if (value === 'DEFAULT_VIEW') {
 			viewsDispatch({
 				type: EViewsActionTypes.RESET_TO_DEFAULT_VIEW,
 			});
+
+			updateConfig({
+				[EConfigInURLKeys.ACTIVE_FILTERS]: [...defaultView?.filters],
+				[EConfigInURLKeys.ACTIVE_SORTS]: [...defaultView.sorts],
+				[EConfigInURLKeys.DELTA]: {...defaultView.paginationDelta},
+				[EConfigInURLKeys.PAGE_NUMBER]: 1,
+				[EConfigInURLKeys.SEARCH_PARAM]: '',
+				[EConfigInURLKeys.VIEW_NAME]: {...defaultView.activeView.name},
+				[EConfigInURLKeys.VISIBLE_FIELDS]: {
+					...defaultView.visibleFieldNames,
+				},
+			});
 		}
 		else {
+			const customView = customViews.find(
+				(view: ICustomView) => view.customViewERC === value
+			);
+
+			updateConfig({
+				[EConfigInURLKeys.ACTIVE_FILTERS]:
+					customView?.customViewConfig.filters,
+				[EConfigInURLKeys.ACTIVE_SORTS]:
+					customView?.customViewConfig.sorts,
+				[EConfigInURLKeys.DELTA]:
+					customView?.customViewConfig.paginationDelta,
+				[EConfigInURLKeys.PAGE_NUMBER]: 1,
+				[EConfigInURLKeys.SEARCH_PARAM]: '',
+				[EConfigInURLKeys.VIEW_NAME]:
+					customView?.customViewConfig.activeView.name,
+				[EConfigInURLKeys.VISIBLE_FIELDS]:
+					customView?.customViewConfig.visibleFieldNames,
+			});
+
 			viewsDispatch({
 				type: EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW,
 				value,
