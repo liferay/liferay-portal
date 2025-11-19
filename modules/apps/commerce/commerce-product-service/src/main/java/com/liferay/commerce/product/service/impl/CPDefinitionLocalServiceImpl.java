@@ -195,8 +195,9 @@ public class CPDefinitionLocalServiceImpl
 			long maxSubscriptionCycles, boolean deliverySubscriptionEnabled,
 			int deliverySubscriptionLength, String deliverySubscriptionType,
 			UnicodeProperties deliverySubscriptionTypeSettingsUnicodeProperties,
-			long deliveryMaxSubscriptionCycles, int status,
-			ServiceContext serviceContext)
+			long deliveryMaxSubscriptionCycles,
+			boolean accountGroupFilterEnabled, boolean channelFilterEnabled,
+			int status, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce product definition
@@ -287,8 +288,8 @@ public class CPDefinitionLocalServiceImpl
 			deliverySubscriptionTypeSettingsUnicodeProperties);
 		cpDefinition.setDeliveryMaxSubscriptionCycles(
 			deliveryMaxSubscriptionCycles);
-		cpDefinition.setAccountGroupFilterEnabled(false);
-		cpDefinition.setChannelFilterEnabled(false);
+		cpDefinition.setAccountGroupFilterEnabled(accountGroupFilterEnabled);
+		cpDefinition.setChannelFilterEnabled(channelFilterEnabled);
 		cpDefinition.setVersion(1);
 
 		if ((expirationDate == null) || expirationDate.after(date)) {
@@ -400,8 +401,9 @@ public class CPDefinitionLocalServiceImpl
 			long maxSubscriptionCycles, boolean deliverySubscriptionEnabled,
 			int deliverySubscriptionLength, String deliverySubscriptionType,
 			UnicodeProperties deliverySubscriptionTypeSettingsUnicodeProperties,
-			long deliveryMaxSubscriptionCycles, int status,
-			ServiceContext serviceContext)
+			long deliveryMaxSubscriptionCycles,
+			boolean accountGroupFilterEnabled, boolean channelFilterEnabled,
+			int status, ServiceContext serviceContext)
 		throws PortalException {
 
 		if (Validator.isNotNull(externalReferenceCode)) {
@@ -426,8 +428,9 @@ public class CPDefinitionLocalServiceImpl
 						displayDateMonth, displayDateDay, displayDateYear,
 						displayDateHour, displayDateMinute, expirationDateMonth,
 						expirationDateDay, expirationDateYear,
-						expirationDateHour, expirationDateMinute, neverExpire,
-						serviceContext);
+						expirationDateHour, expirationDateMinute,
+						accountGroupFilterEnabled, channelFilterEnabled,
+						neverExpire, serviceContext);
 
 				return cpDefinitionLocalService.updateSubscriptionInfo(
 					cpDefinition.getCPDefinitionId(), subscriptionEnabled,
@@ -458,7 +461,8 @@ public class CPDefinitionLocalServiceImpl
 			maxSubscriptionCycles, deliverySubscriptionEnabled,
 			deliverySubscriptionLength, deliverySubscriptionType,
 			deliverySubscriptionTypeSettingsUnicodeProperties,
-			deliveryMaxSubscriptionCycles, status, serviceContext);
+			deliveryMaxSubscriptionCycles, accountGroupFilterEnabled,
+			channelFilterEnabled, status, serviceContext);
 	}
 
 	@Override
@@ -2084,6 +2088,7 @@ public class CPDefinitionLocalServiceImpl
 			int displayDateMinute, int expirationDateMonth,
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
+			boolean accountGroupFilterEnabled, boolean channelFilterEnabled,
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -2155,6 +2160,8 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition.setPublished(published);
 		cpDefinition.setDisplayDate(displayDate);
 		cpDefinition.setExpirationDate(expirationDate);
+		cpDefinition.setAccountGroupFilterEnabled(accountGroupFilterEnabled);
+		cpDefinition.setChannelFilterEnabled(channelFilterEnabled);
 
 		if ((expirationDate == null) || expirationDate.after(date)) {
 			cpDefinition.setStatus(WorkflowConstants.STATUS_DRAFT);
