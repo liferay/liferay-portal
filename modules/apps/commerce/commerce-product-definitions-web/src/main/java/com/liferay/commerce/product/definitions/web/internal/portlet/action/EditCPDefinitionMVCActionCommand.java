@@ -592,17 +592,25 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				expirationDateDay, expirationDateYear, expirationDateHour,
 				expirationDateMinute, neverExpire,
 				CPInstanceConstants.DEFAULT_SKU, false, 1, null, null, 0L,
-				WorkflowConstants.STATUS_DRAFT, serviceContext);
+				false, 1, null, null, 0, WorkflowConstants.STATUS_DRAFT,
+				serviceContext);
 		}
 		else {
 			cpDefinition = _cpDefinitionService.updateCPDefinition(
 				cpDefinition.getCPDefinitionId(), nameMap, shortDescriptionMap,
 				descriptionMap, urlTitleMap, metaTitleMap, metaDescriptionMap,
-				metaKeywordsMap, cpDefinition.isIgnoreSKUCombinations(), null,
-				published, displayDateMonth, displayDateDay, displayDateYear,
-				displayDateHour, displayDateMinute, expirationDateMonth,
-				expirationDateDay, expirationDateYear, expirationDateHour,
-				expirationDateMinute, neverExpire, serviceContext);
+				metaKeywordsMap, cpDefinition.isIgnoreSKUCombinations(),
+				cpDefinition.isShippable(), cpDefinition.isFreeShipping(),
+				cpDefinition.isShipSeparately(),
+				cpDefinition.getShippingExtraPrice(), cpDefinition.getWidth(),
+				cpDefinition.getHeight(), cpDefinition.getDepth(),
+				cpDefinition.getWeight(), cpDefinition.getCPTaxCategoryId(),
+				cpDefinition.isTaxExempt(), cpDefinition.isTelcoOrElectronics(),
+				null, published, displayDateMonth, displayDateDay,
+				displayDateYear, displayDateHour, displayDateMinute,
+				expirationDateMonth, expirationDateDay, expirationDateYear,
+				expirationDateHour, expirationDateMinute, neverExpire,
+				serviceContext);
 		}
 
 		return cpDefinition;
@@ -663,7 +671,12 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			cpDefinition.getMetaTitleMap(),
 			cpDefinition.getMetaDescriptionMap(),
 			cpDefinition.getMetaKeywordsMap(),
-			cpDefinition.isIgnoreSKUCombinations(),
+			cpDefinition.isIgnoreSKUCombinations(), cpDefinition.isShippable(),
+			cpDefinition.isFreeShipping(), cpDefinition.isShipSeparately(),
+			cpDefinition.getShippingExtraPrice(), cpDefinition.getWidth(),
+			cpDefinition.getHeight(), cpDefinition.getDepth(),
+			cpDefinition.getWeight(), cpDefinition.getCPTaxCategoryId(),
+			cpDefinition.isTaxExempt(), cpDefinition.isTelcoOrElectronics(),
 			cpDefinition.getDDMStructureKey(), cpDefinition.isPublished(),
 			displayCalendar.get(Calendar.MONTH),
 			displayCalendar.get(Calendar.DAY_OF_MONTH),
