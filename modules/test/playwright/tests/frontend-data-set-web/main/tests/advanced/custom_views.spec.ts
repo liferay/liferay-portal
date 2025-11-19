@@ -37,7 +37,7 @@ test.beforeEach(async ({fdsSamplePage, page, site}) => {
  * - interactions with client extensions are broken
  * - migration to ClayTable broke column visibility logic
  */
-test.skip(
+test(
 	'Create, edit and delete custom views',
 	{
 		tag: ['@LPS-130101'],
@@ -161,7 +161,7 @@ test.skip(
 
 		await test.step('Confirm that changes in a custom view does not affect Default View', async () => {
 			await expect(fdsSamplePage.customViewsSelectorButton).toHaveText(
-				customView2Name
+				`${customView2Name}${customView2Name} Updated`
 			);
 
 			await expect(fdsSamplePage.table.headerCells).toHaveCount(9);
