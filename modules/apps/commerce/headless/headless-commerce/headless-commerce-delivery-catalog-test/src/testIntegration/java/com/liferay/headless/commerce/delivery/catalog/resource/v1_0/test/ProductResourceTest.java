@@ -196,7 +196,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				cpDefinition1.isTaxExempt(),
 				cpDefinition1.isTelcoOrElectronics(),
 				cpDefinition1.getDDMStructureKey(), cpDefinition1.isPublished(),
-				1, 1, 2022, 12, 0, 0, 0, 0, 0, 0, true, _serviceContext);
+				1, 1, 2022, 12, 0, 0, 0, 0, 0, 0,
+				cpDefinition1.isAccountGroupFilterEnabled(),
+				cpDefinition1.isChannelFilterEnabled(), true, _serviceContext);
 
 		_cpDefinitions.add(cpDefinition2);
 

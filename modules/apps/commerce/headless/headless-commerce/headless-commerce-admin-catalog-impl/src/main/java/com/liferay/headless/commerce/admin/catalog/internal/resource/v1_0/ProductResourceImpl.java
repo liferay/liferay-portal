@@ -742,8 +742,10 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			subscriptionMaxSubscriptionCycles, deliverySubscriptionEnable,
 			deliverySubscriptionLength, deliverySubscriptionTypeValue,
 			deliverySubscriptionTypeSettingsUnicodeProperties,
-			deliverySubscriptionMaxSubscriptionCycles, productStatus,
-			serviceContext);
+			deliverySubscriptionMaxSubscriptionCycles,
+			GetterUtil.getBoolean(product.getProductAccountGroupFilter()),
+			GetterUtil.getBoolean(product.getProductChannelFilter()),
+			productStatus, serviceContext);
 
 		if ((product.getActive() != null) && !product.getActive()) {
 			Map<String, Serializable> workflowContext = new HashMap<>();
@@ -1624,6 +1626,12 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
 			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
+			GetterUtil.getBoolean(
+				product.getProductAccountGroupFilter(),
+				cpDefinition.isAccountGroupFilterEnabled()),
+			GetterUtil.getBoolean(
+				product.getProductChannelFilter(),
+				cpDefinition.isChannelFilterEnabled()),
 			GetterUtil.get(
 				product.getNeverExpire(),
 				cpDefinition.getExpirationDate() == null),

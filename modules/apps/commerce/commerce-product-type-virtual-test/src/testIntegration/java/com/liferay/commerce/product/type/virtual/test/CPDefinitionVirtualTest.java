@@ -199,8 +199,9 @@ public class CPDefinitionVirtualTest {
 			displayDate.getYear(), displayDate.getHours(),
 			displayDate.getMinutes(), expirationDate.getMonth(),
 			expirationDate.getDate(), expirationDate.getYear(),
-			expirationDate.getHours(), expirationDate.getMinutes(), true,
-			_serviceContext);
+			expirationDate.getHours(), expirationDate.getMinutes(),
+			cpDefinition.isAccountGroupFilterEnabled(),
+			cpDefinition.isChannelFilterEnabled(), true, _serviceContext);
 
 		cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);

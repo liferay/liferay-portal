@@ -1081,6 +1081,7 @@ public class CPTestUtil {
 				displayDateHour, displayDateMinute, expirationDateMonth,
 				expirationDateDay, expirationDateYear, expirationDateHour,
 				expirationDateMinute, false, sku, false, 1, null, null, 0L,
+				false, 1, null, null, 0, false, false,
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 		CPDefinitionInventory cpDefinitionInventory =
@@ -1195,7 +1196,7 @@ public class CPTestUtil {
 				displayDateHour, displayDateMinute, expirationDateMonth,
 				expirationDateDay, expirationDateYear, expirationDateHour,
 				expirationDateMinute, false, sku, false, 1, null, null, 0L,
-				status, serviceContext);
+				false, 1, null, null, 0, false, false, status, serviceContext);
 
 		CPDefinitionInventory cpDefinitionInventory =
 			CPDefinitionInventoryLocalServiceUtil.
@@ -1291,7 +1292,8 @@ public class CPTestUtil {
 				displayDateYear, displayDateHour, displayDateMinute,
 				expirationDateMonth, expirationDateDay, expirationDateYear,
 				expirationDateHour, expirationDateMinute, false, sku, false, 1,
-				null, null, 0L, WorkflowConstants.STATUS_DRAFT, serviceContext);
+				null, null, 0L, false, 1, null, null, 0, false, false,
+				WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 		CPDefinitionInventory cpDefinitionInventory =
 			CPDefinitionInventoryLocalServiceUtil.
@@ -1410,8 +1412,8 @@ public class CPTestUtil {
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, expirationDateMonth, expirationDateDay,
 			expirationDateYear, expirationDateHour, expirationDateMinute, false,
-			sku, false, 1, null, null, 0L, WorkflowConstants.STATUS_DRAFT,
-			serviceContext);
+			sku, false, 1, null, null, 0L, false, 1, null, null, 0, false,
+			false, WorkflowConstants.STATUS_DRAFT, serviceContext);
 	}
 
 	private static CPOptionConfiguration _getCPOptionConfiguration()

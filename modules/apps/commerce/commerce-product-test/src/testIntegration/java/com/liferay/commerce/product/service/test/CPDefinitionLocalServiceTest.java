@@ -706,7 +706,9 @@ public class CPDefinitionLocalServiceTest {
 			displayDate.getYear(), displayDate.getHours(),
 			displayDate.getMinutes(), expirationDate.getMonth(),
 			expirationDate.getDate(), expirationDate.getYear(),
-			expirationDate.getHours(), expirationDate.getMinutes(), true,
+			expirationDate.getHours(), expirationDate.getMinutes(),
+			cpDefinition1.isAccountGroupFilterEnabled(),
+			cpDefinition1.isChannelFilterEnabled(), true,
 			ServiceContextTestUtil.getServiceContext());
 
 		cpDefinition1 = _cpDefinitionLocalService.updateCPDefinition(
@@ -726,7 +728,9 @@ public class CPDefinitionLocalServiceTest {
 			displayDate.getYear(), displayDate.getHours(),
 			displayDate.getMinutes(), expirationDate.getMonth(),
 			expirationDate.getDate(), expirationDate.getYear(),
-			expirationDate.getHours(), expirationDate.getMinutes(), true,
+			expirationDate.getHours(), expirationDate.getMinutes(),
+			cpDefinition1.isAccountGroupFilterEnabled(),
+			cpDefinition1.isChannelFilterEnabled(), true,
 			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertTrue(cpDefinition1.isPublished());
@@ -775,7 +779,9 @@ public class CPDefinitionLocalServiceTest {
 					displayDate.getHours(), displayDate.getMinutes(),
 					expirationDate.getMonth(), expirationDate.getDate(),
 					expirationDate.getYear(), expirationDate.getHours(),
-					expirationDate.getMinutes(), true,
+					expirationDate.getMinutes(),
+					cpDefinition1.isAccountGroupFilterEnabled(),
+					cpDefinition1.isChannelFilterEnabled(), true,
 					ServiceContextTestUtil.getServiceContext());
 
 			Assert.assertNotEquals(
@@ -826,7 +832,9 @@ public class CPDefinitionLocalServiceTest {
 					displayDate.getHours(), displayDate.getMinutes(),
 					expirationDate.getMonth(), expirationDate.getDate(),
 					expirationDate.getYear(), expirationDate.getHours(),
-					expirationDate.getMinutes(), true,
+					expirationDate.getMinutes(),
+					cpDefinition2.isAccountGroupFilterEnabled(),
+					cpDefinition2.isChannelFilterEnabled(), true,
 					ServiceContextTestUtil.getServiceContext());
 
 			Assert.assertNotEquals(

@@ -1339,7 +1339,9 @@ public class ObjectActionLocalServiceTest {
 			displayDate.getYear(), displayDate.getHours(),
 			displayDate.getMinutes(), expirationDate.getMonth(),
 			expirationDate.getDate(), expirationDate.getYear(),
-			expirationDate.getHours(), expirationDate.getMinutes(), true,
+			expirationDate.getHours(), expirationDate.getMinutes(),
+			cpDefinition.isAccountGroupFilterEnabled(),
+			cpDefinition.isChannelFilterEnabled(), true,
 			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertEquals(

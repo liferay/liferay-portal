@@ -92,7 +92,7 @@ public class CommerceOSGiCommands implements OSGiCommands {
 				displayDateMonth, displayDateDay, displayDateYear,
 				displayDateHour, displayDateMinute, 0, 0, 0, 0, 0, true,
 				CPInstanceConstants.DEFAULT_SKU, false, 0, null, null, 0, false,
-				1, null, null, 0, WorkflowConstants.STATUS_DRAFT,
+				1, null, null, 0, false, false, WorkflowConstants.STATUS_DRAFT,
 				serviceContext);
 		}
 	}
