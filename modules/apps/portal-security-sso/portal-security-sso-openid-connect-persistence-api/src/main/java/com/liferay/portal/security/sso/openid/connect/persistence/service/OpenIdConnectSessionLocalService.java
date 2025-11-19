@@ -210,6 +210,10 @@ public interface OpenIdConnectSessionLocalService
 		long userId, String authServerWellKnownURI, String clientId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpenIdConnectSession fetchOpenIdConnectSession(
+		String authServerWellKnownURI, String sid);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpenIdConnectSession>
 		getAccessTokenExpirationDateOpenIdConnectSessions(
 			Date ltAccessTokenExpirationDate, int start, int end);
