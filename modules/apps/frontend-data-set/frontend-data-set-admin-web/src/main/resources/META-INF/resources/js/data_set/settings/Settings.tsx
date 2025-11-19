@@ -354,8 +354,8 @@ const Settings = ({
 						{Liferay.Language.get('user-customization')}
 					</h3>
 
-					<ClayLayout.Row className="align-items-center justify-content-between">
-						<ClayLayout.Col size={8}>
+					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
+						<ClayLayout.Col size={11}>
 							<div>
 								<label
 									htmlFor="hide-management-bar-in-empty-state"
@@ -374,7 +374,7 @@ const Settings = ({
 							</div>
 						</ClayLayout.Col>
 
-						<ClayLayout.Col size={4}>
+						<ClayLayout.Col size={1}>
 							<div className="d-flex form-group justify-content-end mr-2">
 								<ClayToggle
 									disabled={loading}
@@ -384,26 +384,9 @@ const Settings = ({
 							</div>
 						</ClayLayout.Col>
 					</ClayLayout.Row>
-				</ClayLayout.SheetSection>
 
-				{Liferay.FeatureFlags['LPD-10683'] && (
-					<ClayLayout.SheetSection>
-						<h3 className="sheet-subtitle">
-							{Liferay.Language.get('user-features')}
-						</h3>
-
-						<ClayLayout.Row className="align-items-center justify-content-between">
-							<ClayLayout.Col
-								className="align-self-start"
-								size={1}
-							>
-								<ClayToggle
-									id="user-custom-views"
-									onToggle={setCustomViewsEnabled}
-									toggled={customViewsEnabled}
-								/>
-							</ClayLayout.Col>
-
+					{Liferay.FeatureFlags['LPD-10683'] && (
+						<ClayLayout.Row className="align-items-center justify-content-between mb-4">
 							<ClayLayout.Col size={11}>
 								<div>
 									<label
@@ -420,9 +403,20 @@ const Settings = ({
 									{Liferay.Language.get('user-views-help')}
 								</div>
 							</ClayLayout.Col>
+
+							<ClayLayout.Col
+								className="align-self-start"
+								size={1}
+							>
+								<ClayToggle
+									id="user-custom-views"
+									onToggle={setCustomViewsEnabled}
+									toggled={customViewsEnabled}
+								/>
+							</ClayLayout.Col>
 						</ClayLayout.Row>
-					</ClayLayout.SheetSection>
-				)}
+					)}
+				</ClayLayout.SheetSection>
 
 				<ClayLayout.SheetFooter>
 					<ClayButton.Group spaced>
