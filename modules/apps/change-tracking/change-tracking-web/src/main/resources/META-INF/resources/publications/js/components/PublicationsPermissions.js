@@ -19,7 +19,7 @@ export default function PublicationsPermissions({
 	updatePermissionsURL,
 }) {
 	const [filteredRoles, setFilteredRoles] = useState(roles);
-	const [permissions, setPermissions] = useState(defaultPermissions);
+	const [permissions, setPermissions] = useState([defaultPermissions]);
 
 	const {observer, onOpenChange, open} = useModal({});
 

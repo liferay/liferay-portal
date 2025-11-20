@@ -55,6 +55,10 @@ public class UpdatePermissionsMVCActionCommand extends BaseMVCActionCommand {
 			(Map<String, List<String>>)_jsonFactory.looseDeserialize(
 				ParamUtil.getString(actionRequest, "permissions"));
 
+		if (permissions.isEmpty()) {
+			return;
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
