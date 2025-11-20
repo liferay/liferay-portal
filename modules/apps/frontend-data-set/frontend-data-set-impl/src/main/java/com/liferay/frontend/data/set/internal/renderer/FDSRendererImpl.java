@@ -112,19 +112,19 @@ public class FDSRendererImpl implements FDSRenderer {
 			}
 		}
 		else {
-			Boolean customViewsEnabled;
+			Boolean snapshotsEnabled;
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			if (Validator.isNull(props.get("customViewsEnabled")) &&
+			if (Validator.isNull(props.get("snapshotsEnabled")) &&
 				themeDisplay.isSignedIn()) {
 
-				customViewsEnabled = false;
+				snapshotsEnabled = false;
 			}
 			else {
-				customViewsEnabled = (boolean)props.get("customViewsEnabled");
+				snapshotsEnabled = (boolean)props.get("snapshotsEnabled");
 			}
 
 			props.putAll(
@@ -184,25 +184,6 @@ public class FDSRendererImpl implements FDSRenderer {
 				).put(
 					"currentURL", _portal.getCurrentURL(httpServletRequest)
 				).put(
-					"customViews",
-					() -> {
-						if (!customViewsEnabled) {
-							return null;
-						}
-
-						JSONArray customViewsJSONArray =
-							fdsSerializer.serializeCustomViews(
-								fdsName, httpServletRequest);
-
-						if (JSONUtil.isEmpty(customViewsJSONArray)) {
-							return null;
-						}
-
-						return customViewsJSONArray;
-					}
-				).put(
-					"customViewsEnabled", customViewsEnabled
-				).put(
 					"filters",
 					() -> {
 						JSONArray filtersJSONArray =
@@ -247,6 +228,25 @@ public class FDSRendererImpl implements FDSRenderer {
 
 						return paginationJSONObject;
 					}
+				).put(
+					"snapshots",
+					() -> {
+						if (!snapshotsEnabled) {
+							return null;
+						}
+
+						JSONArray snapshotsJSONArray =
+							fdsSerializer.serializeSnapshots(
+								fdsName, httpServletRequest);
+
+						if (JSONUtil.isEmpty(snapshotsJSONArray)) {
+							return null;
+						}
+
+						return snapshotsJSONArray;
+					}
+				).put(
+					"snapshotsEnabled", snapshotsEnabled
 				).put(
 					"sorts",
 					() -> {

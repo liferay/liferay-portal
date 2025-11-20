@@ -108,7 +108,7 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 });
 
 test(
-	'Data Set does not show "Custom Views" if they are not enabled',
+	'Data Set does not show "User Views" (snapshots) if they are not enabled',
 	{tag: '@LPD-10683'},
 	async ({dataSetFragmentPage, layout}) => {
 		await test.step('Configure Data Set fragment', async () => {
@@ -118,27 +118,27 @@ test(
 			});
 		});
 
-		await test.step('Check that the Custom Views controls are not present', async () => {
+		await test.step('Check that the User Views (snapshots) controls are not present', async () => {
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
+				dataSetFragmentPage.userViewsSelectorButton
 			).not.toBeInViewport();
 			await expect(
-				dataSetFragmentPage.customViewsActionsButton
+				dataSetFragmentPage.userViewsActionsButton
 			).not.toBeInViewport();
 		});
 	}
 );
 
 test(
-	'Can create, edit and delete Custom Views',
+	'Can create, edit and delete User Views',
 	{tag: '@LPD-10683'},
 	async ({dataSetFragmentPage, dataSetManagerApiHelpers, layout, page}) => {
-		let customViewsActionsDropdown: Locator;
-		let customViewsDropdown: Locator;
+		let userViewsActionsDropdown: Locator;
+		let userViewsDropdown: Locator;
 		let columnsVisibilityDropdown: Locator;
 
-		const customView1Name = getRandomString();
-		const customView2Name = getRandomString();
+		const userView1Name = getRandomString();
+		const userView2Name = getRandomString();
 
 		await test.step('Create collection of Data Sets', async () => {
 			const testDataSetERCs = Array.from(Array(5).keys()).map(() =>
@@ -157,9 +157,9 @@ test(
 			}
 		});
 
-		await test.step('Enable Custom Views', async () => {
+		await test.step('Enable User Views (snapshots)', async () => {
 			await dataSetManagerApiHelpers.updateDataSet({
-				customViewsEnabled: true,
+				snapshotsEnabled: true,
 				erc: dataSetERC,
 			});
 		});
@@ -171,16 +171,16 @@ test(
 			});
 		});
 
-		await test.step('Custom Views controls are present', async () => {
+		await test.step('User Views controls are present', async () => {
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
+				dataSetFragmentPage.userViewsSelectorButton
 			).toBeInViewport();
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
+				dataSetFragmentPage.userViewsSelectorButton
 			).toHaveText('Default View');
 
 			await expect(
-				dataSetFragmentPage.customViewsActionsButton
+				dataSetFragmentPage.userViewsActionsButton
 			).toBeInViewport();
 		});
 
@@ -188,27 +188,27 @@ test(
 
 			// Click on dropdown toggle button adds the aria-controls attribute
 
-			await dataSetFragmentPage.customViewsActionsButton.click();
+			await dataSetFragmentPage.userViewsActionsButton.click();
 
-			const customViewsActionsDropdownId =
-				await dataSetFragmentPage.customViewsActionsButton.getAttribute(
+			const userViewsActionsDropdownId =
+				await dataSetFragmentPage.userViewsActionsButton.getAttribute(
 					'aria-controls'
 				);
 
-			customViewsActionsDropdown = page.locator(
-				`#${customViewsActionsDropdownId}`
+			userViewsActionsDropdown = page.locator(
+				`#${userViewsActionsDropdownId}`
 			);
 
 			page.keyboard.press('Escape');
 
-			await dataSetFragmentPage.customViewsSelectorButton.click();
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			const customViewsDropdownId =
-				await dataSetFragmentPage.customViewsSelectorButton.getAttribute(
+			const userViewsDropdownId =
+				await dataSetFragmentPage.userViewsSelectorButton.getAttribute(
 					'aria-controls'
 				);
 
-			customViewsDropdown = page.locator(`#${customViewsDropdownId}`);
+			userViewsDropdown = page.locator(`#${userViewsDropdownId}`);
 
 			page.keyboard.press('Escape');
 
@@ -217,7 +217,7 @@ test(
 			page.keyboard.press('Escape');
 		});
 
-		await test.step('Changing FDS configuration marks the custom view as updated (* added)', async () => {
+		await test.step('Changing FDS configuration marks the user view as updated (* added)', async () => {
 			const itemsPerPageButton =
 				dataSetFragmentPage.paginationWrapper.getByLabel(
 					'Items Per Page'
@@ -260,18 +260,18 @@ test(
 			page.keyboard.press('Escape');
 
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
+				dataSetFragmentPage.userViewsSelectorButton
 			).toHaveText('Default ViewDefault View Updated');
 		});
 
 		await test.step('Can save changes and create a new view', async () => {
-			await dataSetFragmentPage.customViewsActionsButton.click();
+			await dataSetFragmentPage.userViewsActionsButton.click();
 
-			await customViewsActionsDropdown
+			await userViewsActionsDropdown
 				.filter({has: page.getByRole('menu')})
 				.waitFor();
 
-			const menuItem = customViewsActionsDropdown.getByRole('menuitem', {
+			const menuItem = userViewsActionsDropdown.getByRole('menuitem', {
 				name: 'Save View As...',
 			});
 
@@ -280,44 +280,41 @@ test(
 			await menuItem.click();
 
 			await expect(
-				dataSetFragmentPage.customViewsSaveModal
+				dataSetFragmentPage.userViewsSaveModal
 			).toBeInViewport();
 
-			await dataSetFragmentPage.customViewsSaveModal
+			await dataSetFragmentPage.userViewsSaveModal
 				.getByLabel('NameRequired')
-				.fill(customView1Name);
-
-			await dataSetFragmentPage.customViewsSaveModal
+				.fill(userView1Name);
+			await dataSetFragmentPage.userViewsSaveModal
 				.getByRole('button', {name: 'Save'})
 				.click();
 
 			await waitForAlert(page, 'Success:View was saved successfully.');
 
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
-			).toHaveText(customView1Name);
+				dataSetFragmentPage.userViewsSelectorButton
+			).toHaveText(userView1Name);
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await dataSetFragmentPage.customViewsSelectorButton.click();
-
-			await expect(customViewsDropdown.getByRole('option')).toHaveCount(
+			await expect(userViewsDropdown.getByRole('option')).toHaveCount(
 				2
 			);
 
 			page.keyboard.press('Escape');
 		});
 
-		await test.step('Confirm that changes in a custom view does not affect Default View', async () => {
+		await test.step('Confirm that changes in an user view does not affect Default View', async () => {
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
-			).toHaveText(customView1Name);
-
+				dataSetFragmentPage.userViewsSelectorButton
+			).toHaveText(userView1Name);
 			await expect(dataSetFragmentPage.table.headerCells).toHaveCount(5);
 
-			await dataSetFragmentPage.customViewsSelectorButton.click();
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await customViewsDropdown.waitFor();
+			await userViewsDropdown.waitFor();
 
-			await customViewsDropdown
+			await userViewsDropdown
 				.getByRole('option', {name: 'Default View'})
 				.click();
 
@@ -325,13 +322,13 @@ test(
 		});
 
 		await test.step('Can update the new view', async () => {
-			await dataSetFragmentPage.customViewsSelectorButton.click();
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await customViewsDropdown.waitFor();
+			await userViewsDropdown.waitFor();
 
-			await customViewsDropdown
-				.getByRole('option', {name: customView1Name})
-				.click();
+			await userViewsDropdown
+				.getByRole('option', {name: userView1Name})
+				.click()
 
 			await dataSetFragmentPage.changeVisualizationMode('Cards');
 
@@ -342,16 +339,15 @@ test(
 			await expect(dataSetFragmentPage.cardsWrapper).toBeInViewport();
 
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
-			).toHaveText(`${customView1Name}${customView1Name} Updated`);
+				dataSetFragmentPage.userViewsSelectorButton
+			).toHaveText(`${userView1Name}${userView1Name} Updated`);
+			await dataSetFragmentPage.userViewsActionsButton.click();
 
-			await dataSetFragmentPage.customViewsActionsButton.click();
-
-			await customViewsActionsDropdown
+			await userViewsActionsDropdown
 				.filter({has: page.getByRole('menu')})
 				.waitFor();
 
-			const menuItem = customViewsActionsDropdown.getByRole('menuitem', {
+			const menuItem = userViewsActionsDropdown.getByRole('menuitem', {
 				exact: true,
 				name: 'Save View',
 			});
@@ -363,10 +359,10 @@ test(
 			await waitForAlert(page, 'Success:View was saved successfully.');
 		});
 
-		await test.step('Can restore the default view settings', async () => {
-			await dataSetFragmentPage.customViewsSelectorButton.click();
+		await test.step('Can restore the Default View settings', async () => {
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await customViewsDropdown
+			await userViewsDropdown
 				.getByRole('option', {name: 'Default View'})
 				.click();
 
@@ -377,12 +373,12 @@ test(
 			await expect(dataSetFragmentPage.table.container).toBeInViewport();
 		});
 
-		await test.step('Can rename a custom view', async () => {
-			await dataSetFragmentPage.customViewsSelectorButton.click();
+		await test.step('Can rename a user view', async () => {
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await customViewsDropdown
-				.getByRole('option', {name: customView1Name})
-				.click();
+			await userViewsDropdown
+				.getByRole('option', {name: userView1Name})
+				.click()
 
 			await dataSetFragmentPage.cardsWrapper.waitFor({
 				state: 'visible',
@@ -390,13 +386,13 @@ test(
 
 			await expect(dataSetFragmentPage.cardsWrapper).toBeInViewport();
 
-			await dataSetFragmentPage.customViewsActionsButton.click();
+			await dataSetFragmentPage.userViewsActionsButton.click();
 
-			await customViewsActionsDropdown
+			await userViewsActionsDropdown
 				.filter({has: page.getByRole('menu')})
 				.waitFor();
 
-			const menuItem = customViewsActionsDropdown.getByRole('menuitem', {
+			const menuItem = userViewsActionsDropdown.getByRole('menuitem', {
 				exact: true,
 				name: 'Rename View',
 			});
@@ -406,32 +402,32 @@ test(
 			await menuItem.click();
 
 			await expect(
-				dataSetFragmentPage.customViewsSaveModal
+				dataSetFragmentPage.userViewsSaveModal
 			).toBeInViewport();
 
-			await dataSetFragmentPage.customViewsSaveModal
+			await dataSetFragmentPage.userViewsSaveModal
 				.getByLabel('NameRequired')
-				.fill(customView2Name);
+				.fill(userView2Name);
 
-			await dataSetFragmentPage.customViewsSaveModal
+			await dataSetFragmentPage.userViewsSaveModal
 				.getByRole('button', {name: 'Save'})
 				.click();
 
 			await waitForAlert(page, 'Success:View was renamed successfully.');
 
 			await expect(
-				dataSetFragmentPage.customViewsSelectorButton
-			).toHaveText(customView2Name);
+				dataSetFragmentPage.userViewsSelectorButton
+			).toHaveText(userView2Name);
 		});
 
-		await test.step('Can delete a custom view', async () => {
-			await dataSetFragmentPage.customViewsActionsButton.click();
+		await test.step('Can delete a user view', async () => {
+			await dataSetFragmentPage.userViewsActionsButton.click();
 
-			await customViewsActionsDropdown
+			await userViewsActionsDropdown
 				.filter({has: page.getByRole('menu')})
 				.waitFor();
 
-			const menuItem = customViewsActionsDropdown.getByRole('menuitem', {
+			const menuItem = userViewsActionsDropdown.getByRole('menuitem', {
 				exact: true,
 				name: 'Delete View',
 			});
@@ -441,19 +437,19 @@ test(
 			await menuItem.click();
 
 			await expect(
-				dataSetFragmentPage.customViewsDeleteAlert
+				dataSetFragmentPage.userViewsDeleteAlert
 			).toBeVisible();
 
-			await dataSetFragmentPage.customViewsDeleteAlert
+			await dataSetFragmentPage.userViewsDeleteAlert
 				.getByRole('button', {name: 'Delete'})
 				.click();
 
-			await dataSetFragmentPage.customViewsSelectorButton.click();
+			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await customViewsDropdown.waitFor();
+			await userViewsDropdown.waitFor();
 
 			await expect(
-				customViewsDropdown.getByRole('option', {name: customView2Name})
+				userViewsDropdown.getByRole('option', {name: userView2Name})
 			).not.toBeVisible();
 		});
 	}

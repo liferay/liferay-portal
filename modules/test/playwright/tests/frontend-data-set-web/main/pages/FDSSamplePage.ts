@@ -29,10 +29,6 @@ export class FDSSamplePage {
 		itemActionButtons: Locator;
 		items: Locator;
 	};
-	readonly customViewsActionsButton: Locator;
-	readonly customViewsDeleteAlert: Locator;
-	readonly customViewsSaveModal: Locator;
-	readonly customViewsSelectorButton: Locator;
 	readonly emptyStateContainer: Locator;
 	readonly fdsWrapper: Locator;
 	readonly fileDropModal: Locator;
@@ -70,6 +66,10 @@ export class FDSSamplePage {
 		manageColumnsVisibilityButton: Locator;
 	};
 	readonly toggleInfoPanelButton: Locator;
+	readonly userViewsActionsButton: Locator;
+	readonly userViewsDeleteAlert: Locator;
+	readonly userViewsSaveModal: Locator;
+	readonly userViewsSelectorButton: Locator;
 	readonly visualizationModeSelector: Locator;
 
 	constructor(page: Page) {
@@ -106,18 +106,6 @@ export class FDSSamplePage {
 			itemActionButtons: cardItems.getByLabel('More actions'),
 			items: cardItems,
 		};
-		this.customViewsActionsButton = page.getByLabel('Show View Actions', {
-			exact: true,
-		});
-		this.customViewsDeleteAlert = page.getByRole('dialog', {
-			name: 'Delete View',
-		});
-		this.customViewsSaveModal = page.getByRole('dialog', {
-			name: 'Save New View As',
-		});
-		this.customViewsSelectorButton = page.getByLabel('Views', {
-			exact: true,
-		});
 		this.emptyStateContainer = page.locator('.fds .c-empty-state');
 		this.fdsWrapper = page.locator('div.data-set-wrapper').first();
 		this.fileDropModal = page.getByRole('dialog', {
@@ -199,6 +187,19 @@ export class FDSSamplePage {
 		this.toggleInfoPanelButton = page
 			.getByLabel('Show Info Panel')
 			.or(page.getByLabel('Hide Info Panel'));
+
+		this.userViewsActionsButton = page.getByLabel('Show View Actions', {
+			exact: true,
+		});
+		this.userViewsDeleteAlert = page.getByRole('dialog', {
+			name: 'Delete View',
+		});
+		this.userViewsSaveModal = page.getByRole('dialog', {
+			name: 'Save New View As',
+		});
+		this.userViewsSelectorButton = page.getByLabel('Views', {
+			exact: true,
+		});
 
 		this.visualizationModeSelector = page.getByLabel(/View Selected/);
 	}

@@ -58,7 +58,6 @@ export interface IDataSet {
 	active: boolean;
 	additionalAPIURLParameters?: string;
 	creationActionsOrder?: string;
-	customViewsEnabled: boolean;
 	defaultItemsPerPage: number;
 	defaultVisualizationMode?: string;
 	description?: string;
@@ -72,6 +71,7 @@ export interface IDataSet {
 	restApplication: string;
 	restEndpoint: string;
 	restSchema: string;
+	snapshotsEnabled: boolean;
 	sortsOrder?: string;
 	tableSectionsOrder?: string;
 }

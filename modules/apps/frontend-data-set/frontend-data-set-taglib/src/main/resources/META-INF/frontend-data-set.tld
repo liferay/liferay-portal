@@ -207,6 +207,7 @@
 			<type>com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu</type>
 		</attribute>
 		<attribute>
+			<description>Deprecated as of 7.4.0, replaced by the attribute <![CDATA[<code>snapshotsEnabled</code>]]>.</description>
 			<name>customViewsEnabled</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -338,6 +339,11 @@
 		</attribute>
 		<attribute>
 			<name>showSelectAll</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>snapshotsEnabled</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

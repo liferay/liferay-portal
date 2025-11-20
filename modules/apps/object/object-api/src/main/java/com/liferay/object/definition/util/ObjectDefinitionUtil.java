@@ -149,19 +149,17 @@ public class ObjectDefinitionUtil {
 			"DataSetClientExtensionFilter",
 			"/data-set-admin/client-extension-filters"
 		).put(
-			"DataSetCustomView", "/data-set-admin/custom-views"
-		).put(
 			"DataSetDateFilter", "/data-set-admin/date-filters"
 		).put(
 			"DataSetListSection", "/data-set-admin/list-sections"
 		).put(
 			"DataSetSelectionFilter", "/data-set-admin/selection-filters"
 		).put(
+			"DataSetSnapshotFDSConfig", "/data-set-admin/snapshot-fds-configs"
+		).put(
 			"DataSetSort", "/data-set-admin/sorts"
 		).put(
 			"DataSetTableSection", "/data-set-admin/table-sections"
-		).put(
-			"DataSetUserFDSConfig", "/data-set-admin/user-fds-configs"
 		).put(
 			"DSRRoom", "/digital-sales-room/rooms"
 		).put(

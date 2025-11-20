@@ -247,8 +247,6 @@ public class BaseDisplayTag extends AttributesTagSupport {
 				return null;
 			}
 		).put(
-			"customViews", new ArrayList<String>()
-		).put(
 			"defaultSelectedItems", _defaultSelectedItems
 		).put(
 			"emptyState", _emptyState
@@ -263,6 +261,8 @@ public class BaseDisplayTag extends AttributesTagSupport {
 			).put(
 				"initialPageNumber", _pageNumber
 			).build()
+		).put(
+			"snapshots", new ArrayList<String>()
 		).put(
 			"uniformActionsDisplay", getUniformActionsDisplay()
 		).put(

@@ -23,7 +23,6 @@ const DEFAULT_DATA_SET_ERC = 'sampleDataSetERC';
 export class DataSetManagerApiHelpers extends ApiHelpers {
 	async createDataSet({
 		additionalAPIURLParameters,
-		customViewsEnabled,
 		defaultItemsPerPage = 20,
 		defaultVisualizationMode,
 		description = 'Sample description',
@@ -33,9 +32,9 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		restApplication = API_ENDPOINT_PATH,
 		restEndpoint = `/by-external-reference-code/${erc}/dataSetToDataSetTableSections`,
 		restSchema = 'DataSetTableSection',
+		snapshotsEnabled,
 	}: {
 		additionalAPIURLParameters?: string;
-		customViewsEnabled?: boolean;
 		defaultItemsPerPage?: number;
 		defaultVisualizationMode?: string;
 		description?: string;
@@ -45,12 +44,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		restApplication?: string;
 		restEndpoint?: string;
 		restSchema?: string;
+		snapshotsEnabled?: boolean;
 	}) {
 		const url = getDataSetResourceURL({});
 
 		const data = {
 			additionalAPIURLParameters,
-			customViewsEnabled,
 			defaultItemsPerPage,
 			defaultVisualizationMode,
 			description,
@@ -60,6 +59,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			restApplication,
 			restEndpoint,
 			restSchema,
+			snapshotsEnabled,
 		};
 
 		return this.post(url, {data});
@@ -395,22 +395,22 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 	async updateDataSet({
 		additionalAPIURLParameters,
-		customViewsEnabled,
 		defaultItemsPerPage,
 		defaultVisualizationMode,
 		erc = DEFAULT_DATA_SET_ERC,
 		filtersOrder,
 		label,
 		listOfItemsPerPage,
+		snapshotsEnabled,
 	}: {
 		additionalAPIURLParameters?: string;
-		customViewsEnabled?: boolean;
 		defaultItemsPerPage?: number;
 		defaultVisualizationMode?: string;
 		erc?: string;
 		filtersOrder?: string;
 		label?: string;
 		listOfItemsPerPage?: string;
+		snapshotsEnabled?: boolean;
 	}) {
 		const url = getDataSetResourceURL({
 			dataSetERC: erc,
@@ -418,12 +418,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 		const data = {
 			additionalAPIURLParameters,
-			customViewsEnabled,
 			defaultItemsPerPage,
 			defaultVisualizationMode,
 			filtersOrder,
 			label,
 			listOfItemsPerPage,
+			snapshotsEnabled,
 		};
 
 		return this.patch(url, data);

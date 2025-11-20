@@ -59,9 +59,6 @@ public interface FDSSerializer {
 	public CreationMenu serializeCreationMenu(
 		String fdsName, HttpServletRequest httpServletRequest);
 
-	public JSONArray serializeCustomViews(
-		String fdsName, HttpServletRequest httpServletRequest);
-
 	public JSONArray serializeFilters(
 		List<FDSFilter> fdsFilters, String fdsName,
 		HttpServletRequest httpServletRequest);
@@ -79,6 +76,9 @@ public interface FDSSerializer {
 		String fdsName, HttpServletRequest httpServletRequest);
 
 	public String serializePropsTransformer(
+		String fdsName, HttpServletRequest httpServletRequest);
+
+	public JSONArray serializeSnapshots(
 		String fdsName, HttpServletRequest httpServletRequest);
 
 	public List<FDSSortItem> serializeSorts(

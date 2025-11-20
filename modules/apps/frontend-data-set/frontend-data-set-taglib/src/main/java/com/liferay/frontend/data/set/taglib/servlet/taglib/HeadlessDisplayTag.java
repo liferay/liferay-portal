@@ -119,10 +119,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		return _style;
 	}
 
-	public boolean isCustomViewsEnabled() {
-		return _customViewsEnabled;
-	}
-
 	public boolean isShowBulkActionsManagementBar() {
 		return _showBulkActionsManagementBar;
 	}
@@ -147,6 +143,10 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		return _showSelectAll;
 	}
 
+	public boolean isSnapshotsEnabled() {
+		return _snapshotsEnabled;
+	}
+
 	public void setActionParameterName(String actionParameterName) {
 		_actionParameterName = actionParameterName;
 	}
@@ -163,10 +163,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 
 	public void setCreationMenu(CreationMenu creationMenu) {
 		_creationMenu = creationMenu;
-	}
-
-	public void setCustomViewsEnabled(boolean customViewsEnabled) {
-		_customViewsEnabled = customViewsEnabled;
 	}
 
 	public void setFdsActionDropdownItems(
@@ -243,6 +239,10 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		_showSelectAll = showSelectAll;
 	}
 
+	public void setSnapshotsEnabled(boolean snapshotsEnabled) {
+		_snapshotsEnabled = snapshotsEnabled;
+	}
+
 	public void setStyle(String style) {
 		_style = style;
 	}
@@ -257,7 +257,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		_appURL = null;
 		_bulkActionDropdownItems = new ArrayList<>();
 		_creationMenu = new CreationMenu();
-		_customViewsEnabled = false;
 		_fdsActionDropdownItems = new ArrayList<>();
 		_fdsFilters = new ArrayList<>();
 		_fdsSortItemList = new FDSSortItemList();
@@ -274,6 +273,7 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		_showPagination = true;
 		_showSearch = true;
 		_showSelectAll = false;
+		_snapshotsEnabled = false;
 		_style = "default";
 	}
 
@@ -297,8 +297,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 				"creationMenu", _creationMenu
 			).put(
 				"currentURL", PortalUtil.getCurrentURL(getRequest())
-			).put(
-				"customViewsEnabled", _customViewsEnabled
 			).put(
 				"filters", _filtersJSONArray
 			).put(
@@ -333,6 +331,8 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 				"showSearch", _showSearch
 			).put(
 				"showSelectAll", _showSelectAll
+			).put(
+				"snapshotsEnabled", _snapshotsEnabled
 			).put(
 				"sorts", _fdsSortItemList
 			).put(
@@ -375,7 +375,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 	private String _appURL;
 	private List<DropdownItem> _bulkActionDropdownItems = new ArrayList<>();
 	private CreationMenu _creationMenu = new CreationMenu();
-	private boolean _customViewsEnabled;
 	private List<FDSActionDropdownItem> _fdsActionDropdownItems =
 		new ArrayList<>();
 	private List<FDSFilter> _fdsFilters = new ArrayList<>();
@@ -393,6 +392,7 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 	private boolean _showPagination = true;
 	private boolean _showSearch = true;
 	private boolean _showSelectAll;
+	private boolean _snapshotsEnabled;
 	private String _style = "default";
 
 }

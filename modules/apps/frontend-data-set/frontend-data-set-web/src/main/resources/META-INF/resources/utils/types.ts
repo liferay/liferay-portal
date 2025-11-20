@@ -6,7 +6,7 @@
 import {ModalStatus} from 'frontend-js-components-web';
 import React from 'react';
 
-import {ICustomView} from '../views/ViewsContext';
+import {ISnapshot} from '../views/ViewsContext';
 
 export declare function FrontendDataSet({
 	actionParameterName,
@@ -17,8 +17,6 @@ export declare function FrontendDataSet({
 	creationMenu,
 	currentURL,
 	customDataRenderers,
-	customViews,
-	customViewsEnabled,
 	emptyState,
 	filters,
 	formId,
@@ -45,6 +43,8 @@ export declare function FrontendDataSet({
 	showPagination,
 	showSearch,
 	sidePanelId,
+	snapshots,
+	snapshotsEnabled,
 	sorts,
 	style,
 	views,
@@ -296,8 +296,6 @@ export interface IFrontendDataSetProps {
 		tableCell?: Array<TRenderer>;
 		views?: Array<TRenderer>;
 	};
-	customViews?: Array<ICustomView>;
-	customViewsEnabled?: boolean;
 	dataSetERC?: string;
 	defaultSelectedItems?: any[];
 	emptyState?: IEmptyStateConfiguration;
@@ -344,6 +342,8 @@ export interface IFrontendDataSetProps {
 	showSearch?: boolean;
 	showSelectAll?: boolean;
 	sidePanelId?: string;
+	snapshots?: Array<ISnapshot>;
+	snapshotsEnabled?: boolean;
 	sorts?: TSort[];
 	style?: 'default' | 'fluid' | 'stacked';
 	uniformActionsDisplay?: boolean;

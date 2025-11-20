@@ -4,16 +4,16 @@
  */
 
 import {IView} from '../utils/types';
-import {ICustomView} from './ViewsContext';
+import {ISnapshot} from './ViewsContext';
 import getViewComponent from './getViewComponent';
 
 export enum EViewsActionTypes {
-	ADD_OR_UPDATE_CUSTOM_VIEW = 'ADD_OR_UPDATE_CUSTOM_VIEW',
+	ADD_OR_UPDATE_SNAPSHOT = 'ADD_OR_UPDATE_SNAPSHOT',
 	BATCH_UPDATE = 'BATCH_UPDATE',
-	DELETE_CUSTOM_VIEW = 'DELETE_CUSTOM_VIEW',
-	RENAME_ACTIVE_CUSTOM_VIEW = 'RENAME_ACTIVE_CUSTOM_VIEW',
-	RESET_TO_DEFAULT_VIEW = 'RESET_TO_DEFAULT_VIEW',
-	UPDATE_ACTIVE_CUSTOM_VIEW = 'UPDATE_ACTIVE_CUSTOM_VIEW',
+	DELETE_SNAPSHOT = 'DELETE_SNAPSHOT',
+	RENAME_ACTIVE_SNAPSHOT = 'RENAME_ACTIVE_SNAPSHOT',
+	RESET_TO_DEFAULT_SNAPSHOT = 'RESET_TO_DEFAULT_SNAPSHOT',
+	UPDATE_ACTIVE_SNAPSHOT = 'UPDATE_ACTIVE_SNAPSHOT',
 	UPDATE_ACTIVE_VIEW = 'UPDATE_ACTIVE_VIEW',
 	UPDATE_FIELD = 'UPDATE_FIELD',
 	UPDATE_FILTERS = 'UPDATE_FILTERS',
@@ -30,34 +30,34 @@ type TViewsActions = {
 };
 
 const viewsActions: TViewsActions = {
-	[EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW]: (state, value) => {
-		const {customViews} = state;
+	[EViewsActionTypes.ADD_OR_UPDATE_SNAPSHOT]: (state, value) => {
+		const {snapshots} = state;
 
-		const {customViewConfig, customViewERC} = value;
+		const {snapshotConfig, snapshotERC} = value;
 
-		const existentCustomView = customViews.find(
-			(view: ICustomView) => view.customViewERC === customViewERC
+		const existentSnapshot = snapshots.find(
+			(snapshot: ISnapshot) => snapshot.snapshotERC === snapshotERC
 		);
 
-		let updatedCustomViews;
+		let updatedSnapshots;
 
-		if (!existentCustomView) {
-			updatedCustomViews = customViews.concat([value]);
+		if (!existentSnapshot) {
+			updatedSnapshots = snapshots.concat([value]);
 		}
 		else {
-			updatedCustomViews = customViews.map((view: ICustomView) => {
-				if (view.customViewERC === customViewERC) {
-					view.customViewConfig = customViewConfig;
+			updatedSnapshots = snapshots.map((snapshot: ISnapshot) => {
+				if (snapshot.snapshotERC === snapshotERC) {
+					snapshot.snapshotConfig = snapshotConfig;
 				}
 
-				return view;
+				return snapshot;
 			});
 		}
 
 		return {
 			...state,
-			activeCustomViewId: customViewERC,
-			customViews: updatedCustomViews,
+			activeSnapshotId: snapshotERC,
+			snapshots: updatedSnapshots,
 			viewUpdated: false,
 		};
 	},
@@ -76,71 +76,70 @@ const viewsActions: TViewsActions = {
 			return viewsActions[type](acc, value);
 		}, state);
 	},
-	[EViewsActionTypes.DELETE_CUSTOM_VIEW]: (state, value) => {
-		const {customViews, defaultView} = state;
+	[EViewsActionTypes.DELETE_SNAPSHOT]: (state, value) => {
+		const {defaultView, snapshots} = state;
 
-		const remainingCustomViews = customViews.filter(
-			(view: ICustomView) => view.customViewERC !== value.id
+		const remainingSnapshots = snapshots.filter(
+			(snapshot: ISnapshot) => snapshot.snapshotERC !== value.id
 		);
 
 		return {
 			...state,
 			...defaultView,
-			activeCustomViewId: null,
-			customViews: remainingCustomViews,
+			activeSnapshotId: null,
+			snapshots: remainingSnapshots,
 			viewUpdated: false,
 		};
 	},
-	[EViewsActionTypes.RENAME_ACTIVE_CUSTOM_VIEW]: (state, value) => {
-		const {activeCustomViewId, customViews} = state;
+	[EViewsActionTypes.RENAME_ACTIVE_SNAPSHOT]: (state, value) => {
+		const {activeSnapshotId, snapshots} = state;
 
-		const updatedCustomViews = customViews.map((view: ICustomView) => {
-			if (view.customViewERC === activeCustomViewId) {
-				view.customViewLabel = value.label;
+		const updatedSnapshots = snapshots.map((snapshot: ISnapshot) => {
+			if (snapshot.snapshotERC === activeSnapshotId) {
+				snapshot.snapshotLabel = value.label;
 			}
 
-			return view;
+			return snapshot;
 		});
 
 		return {
 			...state,
-			customViews: [...updatedCustomViews],
+			snapshots: [...updatedSnapshots],
 		};
 	},
-	[EViewsActionTypes.RESET_TO_DEFAULT_VIEW]: (state) => {
+	[EViewsActionTypes.RESET_TO_DEFAULT_SNAPSHOT]: (state) => {
 		const {defaultView} = state;
 
 		return {
 			...state,
 			...defaultView,
-			activeCustomViewId: null,
+			activeSnapshotId: null,
 			viewUpdated: false,
 		};
 	},
-	[EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW]: (state, value) => {
-		const {customViews, defaultView} = state;
+	[EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT]: (state, value) => {
+		const {defaultView, snapshots} = state;
 
-		const activeCustomView = customViews.find(
-			(view: ICustomView) => view.customViewERC === value
+		const activeSnapshot = snapshots.find(
+			(view: ISnapshot) => view.snapshotERC === value
 		);
 
-		if (!activeCustomView) {
+		if (!activeSnapshot) {
 			return state;
 		}
 
-		if (!activeCustomView.customViewConfig.activeView) {
-			activeCustomView.customViewConfig.activeView =
-				defaultView.activeView;
+		if (!activeSnapshot.snapshotConfig.activeView) {
+			activeSnapshot.snapshotConfig.activeView = defaultView.activeView;
 		}
 
-		activeCustomView.customViewConfig.activeView.component =
-			getViewComponent(activeCustomView.customViewConfig.activeView) ??
+		activeSnapshot.snapshotConfig.activeView.component =
+			getViewComponent(activeSnapshot.snapshotConfig.activeView) ??
 			getViewComponent(defaultView.activeView);
 
 		return {
 			...state,
-			...activeCustomView.customViewConfig,
-			activeCustomViewId: value,
+			...activeSnapshot.snapshotConfig,
+			activeSnapshotId: value,
 			viewUpdated: false,
 		};
 	},

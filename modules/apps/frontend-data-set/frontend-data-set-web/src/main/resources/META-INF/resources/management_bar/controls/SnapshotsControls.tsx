@@ -20,7 +20,7 @@ import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {DEFAULT_FETCH_HEADERS} from '../../constants';
 import getRandomId from '../../utils/getRandomId';
 import {EConfigInURLKeys} from '../../utils/types';
-import ViewsContext, {ICustomView} from '../../views/ViewsContext';
+import ViewsContext, {ISnapshot} from '../../views/ViewsContext';
 import {EViewsActionTypes} from '../../views/viewsReducer';
 
 const DEFAULT_VIEW_ID = 'DEFAULT_VIEW';
@@ -37,7 +37,7 @@ const RequiredMark = () => (
 	</>
 );
 
-const CustomViewsControlsTrigger = React.forwardRef(
+const SnapshotsControlsTrigger = React.forwardRef(
 	(
 		{
 			triggerLabel,
@@ -49,7 +49,7 @@ const CustomViewsControlsTrigger = React.forwardRef(
 		<ClayButton
 			{...otherProps}
 			aria-label={Liferay.Language.get('views')}
-			className="custom-views-selection dropdown-toggle"
+			className="dropdown-toggle snapshot-selection"
 			displayType="unstyled"
 			ref={ref}
 		>
@@ -59,7 +59,7 @@ const CustomViewsControlsTrigger = React.forwardRef(
 				<span className="inline-item-after reference-mark view-updated-mark">
 					<span className="hide-accessible sr-only">
 						{sub(
-							Liferay.Language.get('custom-view-x-updated'),
+							Liferay.Language.get('snapshot-x-updated'),
 							triggerLabel
 						)}
 					</span>
@@ -73,7 +73,7 @@ const CustomViewsControlsTrigger = React.forwardRef(
 	)
 );
 
-const CustomViewsControls = () => {
+const SnapshotsControls = () => {
 	const {
 		id: fdsName,
 		namespace,
@@ -82,12 +82,12 @@ const CustomViewsControls = () => {
 	} = useContext(FrontendDataSetContext);
 	const [
 		{
-			activeCustomViewId,
+			activeSnapshotId,
 			activeView,
-			customViews,
 			defaultView,
 			filters,
 			paginationDelta,
+			snapshots,
 			sorts,
 			viewUpdated,
 			visibleFieldNames,
@@ -97,25 +97,25 @@ const CustomViewsControls = () => {
 
 	const [actionsDropdownActive, setActionsDropdownActive] = useState(false);
 
-	const defaultCustomView = {
-		customViewERC: DEFAULT_VIEW_ID,
-		customViewLabel: Liferay.Language.get('default-view'),
+	const defaultSnapshot = {
+		snapshotERC: DEFAULT_VIEW_ID,
+		snapshotLabel: Liferay.Language.get('default-view'),
 	};
 
-	const activeCustomView: ICustomView =
-		(customViews.length &&
-			activeCustomViewId &&
-			customViews.find(
-				(view: ICustomView) => view.customViewERC === activeCustomViewId
+	const activeSnapshot: ISnapshot =
+		(snapshots.length &&
+			activeSnapshotId &&
+			snapshots.find(
+				(view: ISnapshot) => view.snapshotERC === activeSnapshotId
 			)) ||
-		defaultCustomView;
+		defaultSnapshot;
 
-	const customViewLabelInputRef =
+	const snapshotLabelInputRef =
 		useRef() as React.MutableRefObject<HTMLInputElement>;
 
-	const SaveCustomViewModalBody = () => (
+	const SaveSnapshotModalBody = () => (
 		<ClayForm.Group>
-			<label htmlFor={`${namespace}customViewLabelInput`}>
+			<label htmlFor={`${namespace}snapshotLabelInput`}>
 				{Liferay.Language.get('name')}
 
 				<RequiredMark />
@@ -124,18 +124,18 @@ const CustomViewsControls = () => {
 			<ClayInput
 				autoFocus={true}
 				defaultValue={
-					activeCustomView?.customViewERC !== DEFAULT_VIEW_ID
-						? activeCustomView?.customViewLabel
+					activeSnapshot?.snapshotERC !== DEFAULT_VIEW_ID
+						? activeSnapshot?.snapshotLabel
 						: ''
 				}
-				id={`${namespace}customViewLabelInput`}
-				ref={customViewLabelInputRef}
+				id={`${namespace}snapshotLabelInput`}
+				ref={snapshotLabelInputRef}
 				type="text"
 			/>
 		</ClayForm.Group>
 	);
 
-	const saveCustomView = ({
+	const saveSnapshot = ({
 		id,
 		label,
 		processClose,
@@ -149,14 +149,14 @@ const CustomViewsControls = () => {
 
 		if (!id) {
 			method = 'POST';
-			url = `/o/data-set-admin/user-fds-configs`;
+			url = `/o/data-set-admin/snapshot-fds-configs`;
 		}
 		else {
 			method = 'PATCH';
-			url = `/o/data-set-admin/user-fds-configs/by-external-reference-code/${activeCustomView.customViewERC}`;
+			url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.snapshotERC}`;
 		}
 
-		const customViewId = id ?? getRandomId();
+		const snapshotId = id ?? getRandomId();
 
 		const viewState = {
 			activeView,
@@ -167,9 +167,9 @@ const CustomViewsControls = () => {
 		};
 
 		const body = {
-			externalReferenceCode: customViewId,
+			externalReferenceCode: snapshotId,
 			fdsName,
-			label: label || activeCustomView.customViewLabel,
+			label: label || activeSnapshot.snapshotLabel,
 			portletId,
 			viewConfig: JSON.stringify(viewState),
 		};
@@ -188,7 +188,7 @@ const CustomViewsControls = () => {
 
 				return responseJSON;
 			})
-			.then((customView) => {
+			.then((snapshot) => {
 				if (processClose) {
 					processClose();
 				}
@@ -201,11 +201,11 @@ const CustomViewsControls = () => {
 				});
 
 				viewsDispatch({
-					type: EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW,
+					type: EViewsActionTypes.ADD_OR_UPDATE_SNAPSHOT,
 					value: {
-						customViewConfig: JSON.parse(customView.viewConfig),
-						customViewERC: customView.externalReferenceCode,
-						customViewLabel: customView.label,
+						snapshotConfig: JSON.parse(snapshot.viewConfig),
+						snapshotERC: snapshot.externalReferenceCode,
+						snapshotLabel: snapshot.label,
 					},
 				});
 			})
@@ -219,9 +219,9 @@ const CustomViewsControls = () => {
 			});
 	};
 
-	const openSaveCustomViewModal = () => {
+	const openSaveSnapshotModal = () => {
 		openModal({
-			bodyComponent: SaveCustomViewModalBody,
+			bodyComponent: SaveSnapshotModalBody,
 			buttons: [
 				{
 					displayType: 'secondary',
@@ -231,8 +231,8 @@ const CustomViewsControls = () => {
 				{
 					label: Liferay.Language.get('save'),
 					onClick: ({processClose}) => {
-						saveCustomView({
-							label: customViewLabelInputRef.current.value,
+						saveSnapshot({
+							label: snapshotLabelInputRef.current.value,
 							processClose,
 						});
 					},
@@ -242,14 +242,14 @@ const CustomViewsControls = () => {
 		});
 	};
 
-	const renameActiveCustomView = ({
+	const renameActiveSnapshot = ({
 		label,
 		processClose,
 	}: {
 		label: string;
 		processClose: Function;
 	}) => {
-		const url = `/o/data-set-admin/user-fds-configs/by-external-reference-code/${activeCustomView.customViewERC}`;
+		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.snapshotERC}`;
 
 		fetch(url, {
 			body: JSON.stringify({
@@ -272,7 +272,7 @@ const CustomViewsControls = () => {
 					});
 
 					viewsDispatch({
-						type: EViewsActionTypes.RENAME_ACTIVE_CUSTOM_VIEW,
+						type: EViewsActionTypes.RENAME_ACTIVE_SNAPSHOT,
 						value: {
 							label,
 						},
@@ -297,9 +297,9 @@ const CustomViewsControls = () => {
 			});
 	};
 
-	const openRenameCustomViewModal = () => {
+	const openRenameSnapshotModal = () => {
 		openModal({
-			bodyComponent: SaveCustomViewModalBody,
+			bodyComponent: SaveSnapshotModalBody,
 			buttons: [
 				{
 					displayType: 'secondary',
@@ -309,8 +309,8 @@ const CustomViewsControls = () => {
 				{
 					label: Liferay.Language.get('save'),
 					onClick: ({processClose}) => {
-						renameActiveCustomView({
-							label: customViewLabelInputRef.current?.value,
+						renameActiveSnapshot({
+							label: snapshotLabelInputRef.current?.value,
 							processClose,
 						});
 					},
@@ -320,8 +320,8 @@ const CustomViewsControls = () => {
 		});
 	};
 
-	const deleteCustomView = ({id}: {id: string}) => {
-		const url = `/o/data-set-admin/user-fds-configs/by-external-reference-code/${activeCustomView.customViewERC}`;
+	const deleteSnapshot = ({id}: {id: string}) => {
+		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.snapshotERC}`;
 
 		fetch(url, {
 			method: 'DELETE',
@@ -354,7 +354,7 @@ const CustomViewsControls = () => {
 					});
 
 					viewsDispatch({
-						type: EViewsActionTypes.DELETE_CUSTOM_VIEW,
+						type: EViewsActionTypes.DELETE_SNAPSHOT,
 						value: {
 							id,
 						},
@@ -379,7 +379,7 @@ const CustomViewsControls = () => {
 			});
 	};
 
-	const openDeleteCustomViewModal = ({id}: {id: string}) => {
+	const openDeleteSnapshotModal = ({id}: {id: string}) => {
 		openModal({
 			bodyHTML: Liferay.Language.get(
 				'are-you-sure-you-want-to-delete-this'
@@ -397,7 +397,7 @@ const CustomViewsControls = () => {
 					onClick: ({processClose}) => {
 						processClose();
 
-						deleteCustomView({
+						deleteSnapshot({
 							id,
 						});
 					},
@@ -411,7 +411,7 @@ const CustomViewsControls = () => {
 	const handleSelectionChange = (value: React.Key) => {
 		if (value === 'DEFAULT_VIEW') {
 			viewsDispatch({
-				type: EViewsActionTypes.RESET_TO_DEFAULT_VIEW,
+				type: EViewsActionTypes.RESET_TO_DEFAULT_SNAPSHOT,
 			});
 
 			updateConfig({
@@ -427,27 +427,26 @@ const CustomViewsControls = () => {
 			});
 		}
 		else {
-			const customView = customViews.find(
-				(view: ICustomView) => view.customViewERC === value
+			const snapshot = snapshots.find(
+				(view: ISnapshot) => view.snapshotERC === value
 			);
 
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]:
-					customView?.customViewConfig.filters,
-				[EConfigInURLKeys.ACTIVE_SORTS]:
-					customView?.customViewConfig.sorts,
+					snapshot?.snapshotConfig.filters,
+				[EConfigInURLKeys.ACTIVE_SORTS]: snapshot?.snapshotConfig.sorts,
 				[EConfigInURLKeys.DELTA]:
-					customView?.customViewConfig.paginationDelta,
+					snapshot?.snapshotConfig.paginationDelta,
 				[EConfigInURLKeys.PAGE_NUMBER]: 1,
 				[EConfigInURLKeys.SEARCH_PARAM]: '',
 				[EConfigInURLKeys.VIEW_NAME]:
-					customView?.customViewConfig.activeView.name,
+					snapshot?.snapshotConfig.activeView.name,
 				[EConfigInURLKeys.VISIBLE_FIELDS]:
-					customView?.customViewConfig.visibleFieldNames,
+					snapshot?.snapshotConfig.visibleFieldNames,
 			});
 
 			viewsDispatch({
-				type: EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW,
+				type: EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT,
 				value,
 			});
 		}
@@ -457,8 +456,8 @@ const CustomViewsControls = () => {
 		<>
 			<ManagementToolbar.Item>
 				<Picker
-					as={CustomViewsControlsTrigger}
-					items={[defaultCustomView, ...customViews]}
+					as={SnapshotsControlsTrigger}
+					items={[defaultSnapshot, ...snapshots]}
 					messages={{
 						itemDescribedby: Liferay.Language.get(
 							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
@@ -470,17 +469,17 @@ const CustomViewsControls = () => {
 							Liferay.Language.get('scroll-to-top'),
 					}}
 					onSelectionChange={handleSelectionChange}
-					selectedKey={activeCustomView.customViewERC}
+					selectedKey={activeSnapshot.snapshotERC}
 					triggerLabel={
-						activeCustomViewId
-							? activeCustomView.customViewLabel
+						activeSnapshotId
+							? activeSnapshot.snapshotLabel
 							: Liferay.Language.get('default-view')
 					}
 					viewUpdated={viewUpdated}
 				>
 					{(view) => (
-						<Option key={view.customViewERC}>
-							{view.customViewLabel}
+						<Option key={view.snapshotERC}>
+							{view.snapshotLabel}
 						</Option>
 					)}
 				</Picker>
@@ -489,7 +488,7 @@ const CustomViewsControls = () => {
 			<ManagementToolbar.Item>
 				<ClayDropDown
 					active={actionsDropdownActive}
-					className="custom-views-actions"
+					className="snapshot-actions"
 					hasLeftSymbols
 					onActiveChange={setActionsDropdownActive}
 					trigger={
@@ -505,11 +504,11 @@ const CustomViewsControls = () => {
 					}
 				>
 					<ClayDropDown.ItemList>
-						{activeCustomViewId && (
+						{activeSnapshotId && (
 							<ClayDropDown.Item
 								onClick={() => {
-									saveCustomView({
-										id: activeCustomViewId,
+									saveSnapshot({
+										id: activeSnapshotId,
 									});
 
 									setActionsDropdownActive(false);
@@ -521,16 +520,16 @@ const CustomViewsControls = () => {
 						)}
 
 						<ClayDropDown.Item
-							onClick={openSaveCustomViewModal}
+							onClick={openSaveSnapshotModal}
 							symbolLeft="disk"
 						>
 							{Liferay.Language.get('save-view-as')}
 						</ClayDropDown.Item>
 
-						{activeCustomViewId && (
+						{activeSnapshotId && (
 							<>
 								<ClayDropDown.Item
-									onClick={openRenameCustomViewModal}
+									onClick={openRenameSnapshotModal}
 									symbolLeft="pencil"
 								>
 									{Liferay.Language.get('rename-view')}
@@ -538,8 +537,8 @@ const CustomViewsControls = () => {
 
 								<ClayDropDown.Item
 									onClick={() =>
-										openDeleteCustomViewModal({
-											id: activeCustomViewId,
+										openDeleteSnapshotModal({
+											id: activeSnapshotId,
 										})
 									}
 									symbolLeft="trash"
@@ -555,4 +554,4 @@ const CustomViewsControls = () => {
 	);
 };
 
-export default CustomViewsControls;
+export default SnapshotsControls;

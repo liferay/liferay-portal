@@ -69,23 +69,6 @@
 					"type": "Clob"
 				},
 				{
-					"DBType": "Boolean",
-					"businessType": "Boolean",
-					"defaultValue": false,
-					"externalReferenceCode": "CUSTOM_VIEWS_ENABLED",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Custom Views Enabled"
-					},
-					"localized": false,
-					"name": "customViewsEnabled",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Boolean"
-				},
-				{
 					"DBType": "Integer",
 					"businessType": "Integer",
 					"externalReferenceCode": "DEFAULT_ITEMS_PER_PAGE",
@@ -265,6 +248,23 @@
 					"state": false,
 					"system": true,
 					"type": "String"
+				},
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": false,
+					"externalReferenceCode": "SNAPSHOTS_ENABLED",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Snapshots Enabled"
+					},
+					"localized": false,
+					"name": "snapshotsEnabled",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
 				},
 				{
 					"DBType": "Clob",
@@ -1568,12 +1568,12 @@
 			"system": true
 		},
 		{
-			"externalReferenceCode": "L_DATA_SET_USER_FDS_CONFIG",
+			"externalReferenceCode": "L_DATA_SET_SNAPSHOT_FDS_CONFIG",
 			"label": {
-				"en_US": "Data Set User FDS Config"
+				"en_US": "Data Set Snapshot FDS Config"
 			},
 			"modifiable": true,
-			"name": "DataSetUserFDSConfig",
+			"name": "DataSetSnapshotFDSConfig",
 			"objectFields": [
 				{
 					"DBType": "Boolean",
@@ -1658,7 +1658,7 @@
 			],
 			"panelCategoryKey": "",
 			"pluralLabel": {
-				"en_US": "Data Set User FDS Configs"
+				"en_US": "Data Set Snapshot FDS Configs"
 			},
 			"portlet": false,
 			"scope": "company",

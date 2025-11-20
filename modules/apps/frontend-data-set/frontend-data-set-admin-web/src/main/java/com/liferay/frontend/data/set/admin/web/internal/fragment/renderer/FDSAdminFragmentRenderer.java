@@ -191,11 +191,10 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 
 				_fdsRenderer.render(
 					HashMapBuilder.<String, Object>put(
-						"customViewsEnabled",
-						properties.get("customViewsEnabled")
-					).put(
 						"namespace",
 						fragmentRendererContext.getFragmentElementId()
+					).put(
+						"snapshotsEnabled", properties.get("snapshotsEnabled")
 					).put(
 						"style", "fluid"
 					).build(),
@@ -234,11 +233,10 @@ public class FDSAdminFragmentRenderer implements FragmentRenderer {
 
 				_fdsRenderer.render(
 					HashMapBuilder.<String, Object>put(
-						"customViewsEnabled",
-						properties.get("customViewsEnabled")
-					).put(
 						"namespace",
 						fragmentRendererContext.getFragmentElementId()
+					).put(
+						"snapshotsEnabled", properties.get("snapshotsEnabled")
 					).put(
 						"style", "fluid"
 					).put(

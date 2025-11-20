@@ -83,7 +83,7 @@ import {
 	VisibleFieldNames,
 } from './utils/types';
 import useConfigInURL, {useUpdateConfig} from './utils/useConfigInURL';
-import ViewsContext, {ICustomView} from './views/ViewsContext';
+import ViewsContext, {ISnapshot} from './views/ViewsContext';
 
 // @ts-ignore
 
@@ -108,8 +108,6 @@ const FrontendDataSetContent = ({
 	currentURL,
 	customDataRenderers,
 	customRenderers,
-	customViews = [],
-	customViewsEnabled,
 	dataSetERC,
 	defaultSelectedItems,
 	emptyState,
@@ -144,6 +142,8 @@ const FrontendDataSetContent = ({
 	showSearch = true,
 	showSelectAll = false,
 	sidePanelId,
+	snapshots = [],
+	snapshotsEnabled,
 	sorts: sortsProp = [],
 	style = 'default',
 	uniformActionsDisplay,
@@ -637,17 +637,13 @@ const FrontendDataSetContent = ({
 			});
 		}
 
-		const parsedCustomViews = customViews?.map(
-			(customView: ICustomView) => ({
-				...customView,
-				customViewConfig: JSON.parse(customView.customViewConfig),
-			})
-		);
+		const parsedSnapshots = snapshots?.map((snapshot: ISnapshot) => ({
+			...snapshot,
+			snapshotConfig: JSON.parse(snapshot.snapshotConfig),
+		}));
 
 		return {
 			activeView,
-			customViews: parsedCustomViews,
-			customViewsEnabled,
 			defaultView: {
 				activeView,
 				filters,
@@ -661,6 +657,8 @@ const FrontendDataSetContent = ({
 			pageNumber,
 			paginationDelta,
 			searchParam,
+			snapshots: parsedSnapshots,
+			snapshotsEnabled,
 			sorts,
 			views: [...views, ...customInternalViews],
 			visibleFieldNames: initialVisibleFieldNames,

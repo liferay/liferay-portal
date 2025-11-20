@@ -16,10 +16,6 @@ export class DataSetFragmentPage {
 	readonly cardsWrapper: Locator;
 	readonly changeDataSetButton: Locator;
 	readonly creationMenuButton: Locator;
-	readonly customViewsActionsButton: Locator;
-	readonly customViewsDeleteAlert: Locator;
-	readonly customViewsSelectorButton: Locator;
-	readonly customViewsSaveModal: Locator;
 	readonly editPageButton: Locator;
 	readonly emptyStateTitle: Locator;
 	readonly filterButton: Locator;
@@ -49,6 +45,10 @@ export class DataSetFragmentPage {
 		itemActionsCells: Locator;
 		manageColumnsVisibilityButton: Locator;
 	};
+	readonly userViewsActionsButton: Locator;
+	readonly userViewsDeleteAlert: Locator;
+	readonly userViewsSelectorButton: Locator;
+	readonly userViewsSaveModal: Locator;
 
 	constructor(page: Page) {
 		this.activeViewSelector = page.getByLabel(/View Selected/);
@@ -62,14 +62,6 @@ export class DataSetFragmentPage {
 			name: 'Change Data Set View',
 		});
 		this.creationMenuButton = page.getByRole('button', {name: 'New'});
-		this.customViewsActionsButton = page.getByLabel('Show View Actions');
-		this.customViewsDeleteAlert = page.getByRole('dialog', {
-			name: 'Delete View',
-		});
-		this.customViewsSelectorButton = page.getByLabel('Views');
-		this.customViewsSaveModal = page.getByRole('dialog', {
-			name: 'Save New View As',
-		});
 		this.emptyStateTitle = page.getByText('No Results Found');
 
 		this.filterButton = page.getByRole('button', {
@@ -128,6 +120,15 @@ export class DataSetFragmentPage {
 				'Manage Columns Visibility'
 			),
 		};
+
+		this.userViewsActionsButton = page.getByLabel('Show View Actions');
+		this.userViewsDeleteAlert = page.getByRole('dialog', {
+			name: 'Delete View',
+		});
+		this.userViewsSelectorButton = page.getByLabel('Views');
+		this.userViewsSaveModal = page.getByRole('dialog', {
+			name: 'Save New View As',
+		});
 	}
 
 	async goto() {

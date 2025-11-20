@@ -28,7 +28,6 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 		).build()
 	%>'
 	apiURL="<%= fdsSampleDisplayContext.getAPIURL() %>"
-	customViewsEnabled="<%= true %>"
 	emptyState="<%= fdsSampleDisplayContext.getEmptyState() %>"
 	formId="fm"
 	id="<%= FDSSampleFDSNames.ADVANCED %>"
@@ -37,5 +36,6 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 	selectedItemsKey="id"
 	selectionType="multiple"
 	showSelectAll="<%= true %>"
+	snapshotsEnabled="<%= true %>"
 	style="fluid"
 />

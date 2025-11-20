@@ -161,20 +161,6 @@ public class SystemFDSSerializer
 	}
 
 	@Override
-	public JSONArray serializeCustomViews(
-		String fdsName, HttpServletRequest httpServletRequest) {
-
-		try {
-			return _serializeCustomViews(fdsName, httpServletRequest);
-		}
-		catch (Exception exception) {
-			_log.error("Unable to serialize custom views", exception);
-
-			return JSONUtil.putAll();
-		}
-	}
-
-	@Override
 	public JSONArray serializeFilters(
 		List<FDSFilter> fdsFilters, String fdsName,
 		HttpServletRequest httpServletRequest) {
@@ -285,6 +271,20 @@ public class SystemFDSSerializer
 	}
 
 	@Override
+	public JSONArray serializeSnapshots(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		try {
+			return _serializeSnapshots(fdsName, httpServletRequest);
+		}
+		catch (Exception exception) {
+			_log.error("Unable to serialize snapshots", exception);
+
+			return JSONUtil.putAll();
+		}
+	}
+
+	@Override
 	public List<FDSSortItem> serializeSorts(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
@@ -381,56 +381,6 @@ public class SystemFDSSerializer
 	@Reference
 	protected SystemFDSEntryRegistry systemFDSEntryRegistry;
 
-	private JSONArray _serializeCustomViews(
-			String fdsName, HttpServletRequest httpServletRequest)
-		throws Exception {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		String filterExpression = StringBundler.concat(
-			"'fdsName' eq '", fdsName, "' and 'creatorId' eq '",
-			themeDisplay.getUserId(), "'");
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				PortalUtil.getCompanyId(httpServletRequest),
-				"DataSetUserFDSConfig");
-
-		ObjectEntryManager objectEntryManager =
-			DefaultObjectEntryManagerProvider.provide(
-				_objectEntryManagerRegistry.getObjectEntryManager(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getStorageType()));
-
-		Group scopeGroup = themeDisplay.getScopeGroup();
-
-		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
-			PortalUtil.getCompanyId(httpServletRequest), objectDefinition,
-			scopeGroup.getGroupKey(), null,
-			new DefaultDTOConverterContext(
-				false, null, null, null, null,
-				LocaleUtil.getMostRelevantLocale(), null, null),
-			filterExpression, null, null, null);
-
-		Collection<ObjectEntry> objectEntries = page.getItems();
-
-		return JSONUtil.toJSONArray(
-			objectEntries,
-			(ObjectEntry objectEntry) -> {
-				Map<String, Object> properties = objectEntry.getProperties();
-
-				return JSONUtil.put(
-					"customViewConfig", properties.get("viewConfig")
-				).put(
-					"customViewERC", objectEntry.getExternalReferenceCode()
-				).put(
-					"customViewLabel", String.valueOf(properties.get("label"))
-				);
-			});
-	}
-
 	private void _serializeFilters(
 		List<FDSFilter> fdsFilters, JSONArray jsonArray, Locale locale) {
 
@@ -478,6 +428,56 @@ public class SystemFDSSerializer
 
 			jsonArray.put(jsonObject);
 		}
+	}
+
+	private JSONArray _serializeSnapshots(
+			String fdsName, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		String filterExpression = StringBundler.concat(
+			"'fdsName' eq '", fdsName, "' and 'creatorId' eq '",
+			themeDisplay.getUserId(), "'");
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				PortalUtil.getCompanyId(httpServletRequest),
+				"DataSetSnapshotFDSConfig");
+
+		ObjectEntryManager objectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					objectDefinition.getCompanyId(),
+					objectDefinition.getStorageType()));
+
+		Group scopeGroup = themeDisplay.getScopeGroup();
+
+		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+			PortalUtil.getCompanyId(httpServletRequest), objectDefinition,
+			scopeGroup.getGroupKey(), null,
+			new DefaultDTOConverterContext(
+				false, null, null, null, null,
+				LocaleUtil.getMostRelevantLocale(), null, null),
+			filterExpression, null, null, null);
+
+		Collection<ObjectEntry> objectEntries = page.getItems();
+
+		return JSONUtil.toJSONArray(
+			objectEntries,
+			(ObjectEntry objectEntry) -> {
+				Map<String, Object> properties = objectEntry.getProperties();
+
+				return JSONUtil.put(
+					"snapshotConfig", properties.get("viewConfig")
+				).put(
+					"snapshotERC", objectEntry.getExternalReferenceCode()
+				).put(
+					"snapshotLabel", String.valueOf(properties.get("label"))
+				);
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

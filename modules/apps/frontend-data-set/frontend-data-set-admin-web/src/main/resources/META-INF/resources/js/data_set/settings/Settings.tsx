@@ -38,8 +38,8 @@ const Settings = ({
 	onDataSetUpdate,
 	spritemap,
 }: IDataSetSectionProps) => {
-	const [customViewsEnabled, setCustomViewsEnabled] = useState<boolean>(
-		dataSet.customViewsEnabled
+	const [snapshotsEnabled, setSnapshotsEnabled] = useState<boolean>(
+		dataSet.snapshotsEnabled
 	);
 	const [defaultVisualizationMode, setDefaultVisualizationMode] = useState<
 		string | undefined
@@ -58,9 +58,9 @@ const Settings = ({
 
 	const updateFDSViewSettings = async () => {
 		const body = {
-			customViewsEnabled,
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
+			snapshotsEnabled,
 		};
 
 		const url = getDataSetResourceURL({
@@ -389,10 +389,7 @@ const Settings = ({
 						<ClayLayout.Row className="align-items-center justify-content-between mb-4">
 							<ClayLayout.Col size={11}>
 								<div>
-									<label
-										htmlFor="user-custom-views"
-										id="user-views"
-									>
+									<label htmlFor="user-views">
 										{Liferay.Language.get(
 											'enable-user-views'
 										)}
@@ -409,9 +406,9 @@ const Settings = ({
 								size={1}
 							>
 								<ClayToggle
-									id="user-custom-views"
-									onToggle={setCustomViewsEnabled}
-									toggled={customViewsEnabled}
+									id="user-views"
+									onToggle={setSnapshotsEnabled}
+									toggled={snapshotsEnabled}
 								/>
 							</ClayLayout.Col>
 						</ClayLayout.Row>
