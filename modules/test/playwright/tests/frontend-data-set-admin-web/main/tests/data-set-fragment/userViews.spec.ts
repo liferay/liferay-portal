@@ -159,8 +159,8 @@ test(
 
 		await test.step('Enable User Views (snapshots)', async () => {
 			await dataSetManagerApiHelpers.updateDataSet({
-				snapshotsEnabled: true,
 				erc: dataSetERC,
+				snapshotsEnabled: true,
 			});
 		});
 
@@ -297,9 +297,7 @@ test(
 			).toHaveText(userView1Name);
 			await dataSetFragmentPage.userViewsSelectorButton.click();
 
-			await expect(userViewsDropdown.getByRole('option')).toHaveCount(
-				2
-			);
+			await expect(userViewsDropdown.getByRole('option')).toHaveCount(2);
 
 			page.keyboard.press('Escape');
 		});
@@ -328,7 +326,7 @@ test(
 
 			await userViewsDropdown
 				.getByRole('option', {name: userView1Name})
-				.click()
+				.click();
 
 			await dataSetFragmentPage.changeVisualizationMode('Cards');
 
@@ -378,7 +376,7 @@ test(
 
 			await userViewsDropdown
 				.getByRole('option', {name: userView1Name})
-				.click()
+				.click();
 
 			await dataSetFragmentPage.cardsWrapper.waitFor({
 				state: 'visible',

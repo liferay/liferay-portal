@@ -41,6 +41,7 @@ test(
 		let userViewsDropdown: Locator;
 		let columnsVisibilityDropdown: Locator;
 
+		const newUserViewName = getRandomString();
 		const userView1Name = getRandomString();
 		const userView2Name = getRandomString();
 
@@ -134,9 +135,7 @@ test(
 
 			await fdsSamplePage.userViewsSelectorButton.click();
 
-			await expect(userViewsDropdown.getByRole('option')).toHaveCount(
-				3
-			);
+			await expect(userViewsDropdown.getByRole('option')).toHaveCount(3);
 		});
 
 		await test.step('Edit user view, by changing visibility of one column', async () => {
@@ -194,18 +193,16 @@ test(
 
 			await expect(fdsSamplePage.userViewsSaveModal).toBeInViewport();
 
-			const newCustomViewName = getRandomString();
-
 			await fdsSamplePage.userViewsSaveModal
 				.getByLabel('NameRequired')
-				.fill(newCustomViewName);
+				.fill(newUserViewName);
 
 			await fdsSamplePage.userViewsSaveModal
 				.getByRole('button', {name: 'Save'})
 				.click();
 
 			await expect(fdsSamplePage.userViewsSelectorButton).toHaveText(
-				newCustomViewName
+				newUserViewName
 			);
 		});
 
@@ -242,6 +239,32 @@ test(
 
 			await expect(
 				userViewsDropdown.getByRole('option', {name: userView1Name})
+			).not.toBeVisible();
+
+			await userViewsDropdown
+				.getByRole('option', {name: newUserViewName})
+				.click();
+
+			await fdsSamplePage.userViewsActionsButton.click();
+
+			await actionsDropdown.waitFor();
+
+			await expect(menuItem).toBeVisible();
+
+			await menuItem.click();
+
+			await expect(fdsSamplePage.userViewsDeleteAlert).toBeVisible();
+
+			await fdsSamplePage.userViewsDeleteAlert
+				.getByRole('button', {name: 'Delete'})
+				.click();
+
+			await fdsSamplePage.userViewsSelectorButton.click();
+
+			await userViewsDropdown.waitFor();
+
+			await expect(
+				userViewsDropdown.getByRole('option', {name: newUserViewName})
 			).not.toBeVisible();
 		});
 	}
