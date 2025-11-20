@@ -389,7 +389,7 @@ const Settings = ({
 						<ClayLayout.Row className="align-items-center justify-content-between mb-4">
 							<ClayLayout.Col size={11}>
 								<div>
-									<label htmlFor="user-views">
+									<label htmlFor="user-views-toggle">
 										{Liferay.Language.get(
 											'enable-user-views'
 										)}
@@ -406,7 +406,7 @@ const Settings = ({
 								size={1}
 							>
 								<ClayToggle
-									id="user-views"
+									id="user-views-toggle"
 									onToggle={setSnapshotsEnabled}
 									toggled={snapshotsEnabled}
 								/>
