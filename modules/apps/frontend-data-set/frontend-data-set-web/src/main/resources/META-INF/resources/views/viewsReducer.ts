@@ -105,6 +105,7 @@ const viewsActions: TViewsActions = {
 		return {
 			...state,
 			snapshots: [...updatedSnapshots],
+			viewUpdated: false,
 		};
 	},
 	[EViewsActionTypes.RESET_TO_DEFAULT_SNAPSHOT]: (state) => {
