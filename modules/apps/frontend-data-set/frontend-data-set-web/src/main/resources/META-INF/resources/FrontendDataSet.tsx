@@ -1582,6 +1582,57 @@ const FrontendDataSetContent = ({
 		});
 	}
 
+	const handleSnapshotChange = ({defaultView, snapshots, value}: any) => {
+		if (value === 'DEFAULT_VIEW') {
+			updateConfig({
+				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
+					newFilters: getFilters(),
+					oldFilters: defaultView.filters,
+				}),
+				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
+					newSorts: getActiveSorts(),
+					oldSorts: defaultView.sorts,
+				}),
+				[EConfigInURLKeys.DELTA]: {...defaultView.paginationDelta},
+				[EConfigInURLKeys.VIEW_NAME]: {...defaultView.activeView.name},
+				[EConfigInURLKeys.VISIBLE_FIELDS]: {
+					...defaultView.visibleFieldNames,
+				},
+			});
+
+			viewsDispatch({
+				type: EViewsActionTypes.RESET_TO_DEFAULT_SNAPSHOT,
+			});
+		}
+		else {
+			const snapshot = snapshots.find(
+				(view: ISnapshot) => view.snapshotERC === value
+			);
+
+			updateConfig({
+				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
+					newFilters: getFilters(),
+					oldFilters: snapshot.snapshotConfig.filters,
+				}),
+				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
+					newSorts: getActiveSorts(),
+					oldSorts: snapshot.snapshotConfig.sorts,
+				}),
+				[EConfigInURLKeys.DELTA]:
+					snapshot.snapshotConfig.paginationDelta,
+				[EConfigInURLKeys.VIEW_NAME]:
+					snapshot.snapshotConfig.activeView.name,
+				[EConfigInURLKeys.VISIBLE_FIELDS]:
+					snapshot.snapshotConfig.visibleFieldNames,
+			});
+
+			viewsDispatch({
+				type: EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT,
+				value,
+			});
+		}
+	};
+
 	function toggleItemInlineEdit(itemKey: any) {
 		setItemsChanges(({[itemKey]: foundItem, ...itemsChanges}) => {
 			return foundItem
@@ -1725,6 +1776,7 @@ const FrontendDataSetContent = ({
 				executeAsyncItemAction,
 				formId,
 				formName,
+				handleSnapshotChange,
 				hideManagementBarInEmptyState,
 				highlightItems,
 				highlightedItemsValue,
@@ -1767,7 +1819,6 @@ const FrontendDataSetContent = ({
 				toggleItemInlineEdit,
 				uniformActionsDisplay,
 				updateActiveSorts,
-				updateConfig,
 				updateDataSetItems,
 				updateFilters,
 				updateItem,

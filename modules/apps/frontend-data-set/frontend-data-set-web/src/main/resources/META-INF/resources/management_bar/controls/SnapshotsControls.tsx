@@ -19,7 +19,6 @@ import React, {Ref, useContext, useRef, useState} from 'react';
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {DEFAULT_FETCH_HEADERS} from '../../constants';
 import getRandomId from '../../utils/getRandomId';
-import {EConfigInURLKeys} from '../../utils/types';
 import ViewsContext, {ISnapshot} from '../../views/ViewsContext';
 import {EViewsActionTypes} from '../../views/viewsReducer';
 
@@ -75,10 +74,10 @@ const SnapshotsControlsTrigger = React.forwardRef(
 
 const SnapshotsControls = () => {
 	const {
+		handleSnapshotChange,
 		id: fdsName,
 		namespace,
 		portletId,
-		updateConfig,
 	} = useContext(FrontendDataSetContext);
 	const [
 		{
@@ -335,24 +334,6 @@ const SnapshotsControls = () => {
 						type: 'success',
 					});
 
-					updateConfig({
-						[EConfigInURLKeys.ACTIVE_FILTERS]: [
-							...defaultView?.filters,
-						],
-						[EConfigInURLKeys.ACTIVE_SORTS]: [...defaultView.sorts],
-						[EConfigInURLKeys.DELTA]: {
-							...defaultView.paginationDelta,
-						},
-						[EConfigInURLKeys.PAGE_NUMBER]: 1,
-						[EConfigInURLKeys.SEARCH_PARAM]: '',
-						[EConfigInURLKeys.VIEW_NAME]: {
-							...defaultView.activeView.name,
-						},
-						[EConfigInURLKeys.VISIBLE_FIELDS]: {
-							...defaultView.visibleFieldNames,
-						},
-					});
-
 					viewsDispatch({
 						type: EViewsActionTypes.DELETE_SNAPSHOT,
 						value: {
@@ -409,47 +390,7 @@ const SnapshotsControls = () => {
 	};
 
 	const handleSelectionChange = (value: React.Key) => {
-		if (value === 'DEFAULT_VIEW') {
-			viewsDispatch({
-				type: EViewsActionTypes.RESET_TO_DEFAULT_SNAPSHOT,
-			});
-
-			updateConfig({
-				[EConfigInURLKeys.ACTIVE_FILTERS]: [...defaultView?.filters],
-				[EConfigInURLKeys.ACTIVE_SORTS]: [...defaultView.sorts],
-				[EConfigInURLKeys.DELTA]: {...defaultView.paginationDelta},
-				[EConfigInURLKeys.PAGE_NUMBER]: 1,
-				[EConfigInURLKeys.SEARCH_PARAM]: '',
-				[EConfigInURLKeys.VIEW_NAME]: {...defaultView.activeView.name},
-				[EConfigInURLKeys.VISIBLE_FIELDS]: {
-					...defaultView.visibleFieldNames,
-				},
-			});
-		}
-		else {
-			const snapshot = snapshots.find(
-				(view: ISnapshot) => view.snapshotERC === value
-			);
-
-			updateConfig({
-				[EConfigInURLKeys.ACTIVE_FILTERS]:
-					snapshot?.snapshotConfig.filters,
-				[EConfigInURLKeys.ACTIVE_SORTS]: snapshot?.snapshotConfig.sorts,
-				[EConfigInURLKeys.DELTA]:
-					snapshot?.snapshotConfig.paginationDelta,
-				[EConfigInURLKeys.PAGE_NUMBER]: 1,
-				[EConfigInURLKeys.SEARCH_PARAM]: '',
-				[EConfigInURLKeys.VIEW_NAME]:
-					snapshot?.snapshotConfig.activeView.name,
-				[EConfigInURLKeys.VISIBLE_FIELDS]:
-					snapshot?.snapshotConfig.visibleFieldNames,
-			});
-
-			viewsDispatch({
-				type: EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT,
-				value,
-			});
-		}
+		handleSnapshotChange({defaultView, snapshots, value});
 	};
 
 	return (
