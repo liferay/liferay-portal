@@ -27,33 +27,21 @@ import com.liferay.frontend.data.set.view.FDSViewContextContributor;
 import com.liferay.frontend.data.set.view.FDSViewContextContributorRegistry;
 import com.liferay.frontend.data.set.view.FDSViewRegistry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
-import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.rest.dto.v1_0.ObjectEntry;
-import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
-import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
-import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -275,7 +263,9 @@ public class SystemFDSSerializer
 		String fdsName, HttpServletRequest httpServletRequest) {
 
 		try {
-			return _serializeSnapshots(fdsName, httpServletRequest);
+			return serializeSnapshots(
+				fdsName, httpServletRequest, _objectDefinitionLocalService,
+				_objectEntryManagerRegistry);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to serialize snapshots", exception);
@@ -428,56 +418,6 @@ public class SystemFDSSerializer
 
 			jsonArray.put(jsonObject);
 		}
-	}
-
-	private JSONArray _serializeSnapshots(
-			String fdsName, HttpServletRequest httpServletRequest)
-		throws Exception {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		String filterExpression = StringBundler.concat(
-			"'fdsName' eq '", fdsName, "' and 'creatorId' eq '",
-			themeDisplay.getUserId(), "'");
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				PortalUtil.getCompanyId(httpServletRequest),
-				"DataSetSnapshotFDSConfig");
-
-		ObjectEntryManager objectEntryManager =
-			DefaultObjectEntryManagerProvider.provide(
-				_objectEntryManagerRegistry.getObjectEntryManager(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getStorageType()));
-
-		Group scopeGroup = themeDisplay.getScopeGroup();
-
-		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
-			PortalUtil.getCompanyId(httpServletRequest), objectDefinition,
-			scopeGroup.getGroupKey(), null,
-			new DefaultDTOConverterContext(
-				false, null, null, null, null,
-				LocaleUtil.getMostRelevantLocale(), null, null),
-			filterExpression, null, null, null);
-
-		Collection<ObjectEntry> objectEntries = page.getItems();
-
-		return JSONUtil.toJSONArray(
-			objectEntries,
-			(ObjectEntry objectEntry) -> {
-				Map<String, Object> properties = objectEntry.getProperties();
-
-				return JSONUtil.put(
-					"snapshotConfig", properties.get("viewConfig")
-				).put(
-					"snapshotERC", objectEntry.getExternalReferenceCode()
-				).put(
-					"snapshotLabel", String.valueOf(properties.get("label"))
-				);
-			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
