@@ -414,6 +414,10 @@ public interface Http {
 			return false;
 		}
 
+		public boolean isSocketTimeout() {
+			return _socketTimeout;
+		}
+
 		public void setAuth(Http.Auth auth) {
 			setAuth(
 				auth.getHost(), auth.getPort(), auth.getRealm(),
@@ -538,6 +542,10 @@ public interface Http {
 			_response = response;
 		}
 
+		public void setSocketTimeout(boolean socketTimeout) {
+			_socketTimeout = socketTimeout;
+		}
+
 		public void setTimeout(int timeout) {
 			_timeout = timeout;
 		}
@@ -555,6 +563,7 @@ public interface Http {
 		private boolean _normalizeURI = true;
 		private Map<String, String> _parts;
 		private Response _response = new Response();
+		private boolean _socketTimeout;
 		private int _timeout;
 
 	}
