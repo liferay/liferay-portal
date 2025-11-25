@@ -157,7 +157,11 @@ public class CalendarBookingLocalServiceImpl
 		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
 			String description = null;
 
-			if (!FeatureFlagManagerUtil.isEnabled("LPD-31212")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					calendar.getCompanyId(), "LPD-11235") &&
+				!FeatureFlagManagerUtil.isEnabled(
+					calendar.getCompanyId(), "LPD-31212")) {
+
 				description = SanitizerUtil.sanitize(
 					calendar.getCompanyId(), calendar.getGroupId(), userId,
 					CalendarBooking.class.getName(), calendarBookingId,
@@ -1207,7 +1211,11 @@ public class CalendarBookingLocalServiceImpl
 		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
 			String description = null;
 
-			if (!FeatureFlagManagerUtil.isEnabled("LPD-31212")) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					calendar.getCompanyId(), "LPD-11235") &&
+				!FeatureFlagManagerUtil.isEnabled(
+					calendar.getCompanyId(), "LPD-31212")) {
+
 				description = SanitizerUtil.sanitize(
 					calendar.getCompanyId(), calendar.getGroupId(), userId,
 					CalendarBooking.class.getName(), calendarBookingId,
