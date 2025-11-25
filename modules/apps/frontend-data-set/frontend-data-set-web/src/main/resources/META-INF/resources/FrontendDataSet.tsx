@@ -666,7 +666,31 @@ const FrontendDataSetContent = ({
 	};
 
 	const [viewsState, viewsDispatch] = useThunk(
-		useReducer(viewsReducer, getInitialViewsState())
+		useReducer(
+			viewsReducer,
+			{
+				activeView: {},
+				defaultView: {
+					activeView: {},
+					filters: [],
+					modifiedFields: {},
+					paginationDelta: DEFAULT_PAGINATION_DELTA,
+					sorts: [],
+					visibleFieldNames: {},
+				},
+				filters: [],
+				modifiedFields: {},
+				pageNumber: DEFAULT_PAGINATION_PAGE_NUMBER,
+				paginationDelta: DEFAULT_PAGINATION_PAGE_NUMBER,
+				searchParam: '',
+				snapshots: [],
+				snapshotsEnabled: false,
+				sorts: [],
+				views: [],
+				visibleFieldNames: {},
+			},
+			getInitialViewsState
+		)
 	);
 
 	const {
