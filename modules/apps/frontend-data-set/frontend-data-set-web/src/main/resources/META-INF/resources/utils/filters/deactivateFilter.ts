@@ -4,11 +4,11 @@
  */
 
 export function deactivateFilter(filter: any) {
-	filter.active = false;
-	filter.odataFilterString = undefined;
-	filter.selectedData = undefined;
+	const updatedFilter = JSON.parse(JSON.stringify(filter));
 
-	return {
-		...filter,
-	};
+	updatedFilter.active = false;
+	updatedFilter.odataFilterString = undefined;
+	updatedFilter.selectedData = undefined;
+
+	return updatedFilter;
 }
