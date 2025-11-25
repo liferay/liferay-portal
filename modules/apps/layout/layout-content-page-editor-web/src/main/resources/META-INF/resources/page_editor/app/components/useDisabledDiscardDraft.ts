@@ -8,20 +8,26 @@ import {useEffect, useState} from 'react';
 import {SERVICE_NETWORK_STATUS_TYPES} from '../config/constants/serviceNetworkStatusTypes';
 import {config} from '../config/index';
 import {useSelector} from '../contexts/StoreContext';
+import selectHasAnyUpdatePermission from '../selectors/selectHasAnyUpdatePermission';
 
 export default function useDisabledDiscardDraft() {
-	const [enableDiscard, setEnableDiscard] = useState(false);
+	const canDiscardDraft = useSelector(selectHasAnyUpdatePermission);
+	const [enableDiscard, setEnableDiscard] = useState(() => canDiscardDraft);
 
 	const draft = useSelector((state) => state.draft);
 	const network = useSelector((state) => state.network);
 
 	useEffect(() => {
+		if (!canDiscardDraft) {
+			return;
+		}
+
 		setEnableDiscard(
 			network.status === SERVICE_NETWORK_STATUS_TYPES.draftSaved ||
 				draft ||
 				config.isConversionDraft
 		);
-	}, [network, draft]);
+	}, [canDiscardDraft, network, draft]);
 
 	return !enableDiscard;
 }
