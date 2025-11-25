@@ -507,46 +507,39 @@ public class CalendarBookingLocalServiceTest {
 		Assert.assertTrue(secondChildCalendarBooking.isDenied());
 	}
 
+	@FeatureFlag("LPD-11235")
+	@Test
+	public void testAddCalendarBookingWithVideoDescriptionCKEditor5()
+		throws Exception {
+
+		_testAddCalendarBookingWithVideoDescription(
+			StringBundler.concat(
+				"<figure class=\"media\"><div data-oembed-url=\"",
+				"https://www.youtube.com/watch?v=6LjQ7Z99N74\">",
+				"<div style=\"height: 0; padding-bottom: 56.2493%; position: ",
+				"relative;\"><iframe allow=\"autoplay; encrypted-media\" ",
+				"allowfullscreen=\"\" frameborder=\"0\" ",
+				"src=\"https://www.youtube.com/embed/6LjQ7Z99N74\" ",
+				"style=\"height: 100%; left: 0; position: absolute; top: 0; ",
+				"width: 100%;\"></iframe></div></div></figure>"));
+	}
+
 	@FeatureFlag("LPD-31212")
 	@Test
-	public void testAddCalendarBookingWithVideoDescription() throws Exception {
-		ServiceContext serviceContext = createServiceContext();
+	public void testAddCalendarBookingWithVideoDescriptionWithCKEditor4()
+		throws Exception {
 
-		Calendar calendar = CalendarTestUtil.addCalendar(_user, serviceContext);
-
-		long startTime = System.currentTimeMillis();
-
-		String html = StringBundler.concat(
-			"<div class=\"embed-responsive embed-responsive-16by9\" ",
-			"data-embed-id=",
-			"\"https://www.youtube.com/embed/6LjQ7Z99N74?rel=0\" ",
-			"data-styles=\"{&quot;width&quot;:&quot;81%&quot;}\" ",
-			"style=\"width:81%\"><iframe allow=\"autoplay; encrypted-media\" ",
-			"allowfullscreen=\"\" frameborder=\"0\" height=\"315\" src=",
-			"\"https://www.youtube.com/embed/6LjQ7Z99N74?rel=0\" width=\"",
-			"560\"></iframe></div><p>&nbsp;</p>");
-
-		CalendarBooking calendarBooking =
-			CalendarBookingTestUtil.addCalendarBooking(
-				_user, calendar, new long[0],
-				RandomTestUtil.randomLocaleStringMap(),
-				HashMapBuilder.create(
-					HashMapBuilder.put(
-						LocaleUtil.getDefault(),
-						html + "<script type=\"text/javascript\">alert('xss " +
-							"vulnerability test');</script>"
-					).build()
-				).build(),
-				startTime, startTime + (Time.HOUR * 10), null, (int)startTime,
-				NotificationType.EMAIL, 0, NotificationType.EMAIL,
-				serviceContext);
-
-		String sanitizedVulnerability =
-			"<script type=\"text/javascript\">;</script>";
-
-		Assert.assertEquals(
-			html + sanitizedVulnerability,
-			calendarBooking.getDescription(LocaleUtil.getDefault()));
+		_testAddCalendarBookingWithVideoDescription(
+			StringBundler.concat(
+				"<div class=\"embed-responsive embed-responsive-16by9\" ",
+				"data-embed-id=",
+				"\"https://www.youtube.com/embed/6LjQ7Z99N74?rel=0\" ",
+				"data-styles=\"{&quot;width&quot;:&quot;81%&quot;}",
+				"\" style=\"width:81%\"><iframe allow=\"autoplay; ",
+				"encrypted-media\" allowfullscreen=\"\" frameborder=\"0\" ",
+				"height=\"315\" src=",
+				"\"https://www.youtube.com/embed/6LjQ7Z99N74?rel=0\" ",
+				"width=\"560\"></iframe></div><p>&nbsp;</p>"));
 	}
 
 	@Test
@@ -3432,6 +3425,40 @@ public class CalendarBookingLocalServiceTest {
 				false, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 
 		return workflowTasks;
+	}
+
+	private void _testAddCalendarBookingWithVideoDescription(
+			String expectedValues)
+		throws Exception {
+
+		ServiceContext serviceContext = createServiceContext();
+
+		Calendar calendar = CalendarTestUtil.addCalendar(_user, serviceContext);
+
+		long startTime = System.currentTimeMillis();
+
+		CalendarBooking calendarBooking =
+			CalendarBookingTestUtil.addCalendarBooking(
+				_user, calendar, new long[0],
+				RandomTestUtil.randomLocaleStringMap(),
+				HashMapBuilder.create(
+					HashMapBuilder.put(
+						LocaleUtil.getDefault(),
+						expectedValues +
+							"<script type=\"text/javascript\">alert('xss " +
+								"vulnerability test');</script>"
+					).build()
+				).build(),
+				startTime, startTime + (Time.HOUR * 10), null, (int)startTime,
+				NotificationType.EMAIL, 0, NotificationType.EMAIL,
+				serviceContext);
+
+		String sanitizedVulnerability =
+			"<script type=\"text/javascript\">;</script>";
+
+		Assert.assertEquals(
+			expectedValues + sanitizedVulnerability,
+			calendarBooking.getDescription(LocaleUtil.getDefault()));
 	}
 
 	private static final TimeZone _losAngelesTimeZone = TimeZone.getTimeZone(
