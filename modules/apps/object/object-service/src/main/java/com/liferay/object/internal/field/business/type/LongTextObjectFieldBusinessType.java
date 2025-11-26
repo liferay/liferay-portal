@@ -39,6 +39,8 @@ public class LongTextObjectFieldBusinessType
 	@Override
 	public Set<String> getAllowedObjectFieldSettingsNames() {
 		return SetUtil.fromArray(
+			ObjectFieldSettingConstants.NAME_DEFAULT_VALUE,
+			ObjectFieldSettingConstants.NAME_DEFAULT_VALUE_TYPE,
 			ObjectFieldSettingConstants.NAME_MAX_LENGTH,
 			ObjectFieldSettingConstants.NAME_SHOW_COUNTER);
 	}
