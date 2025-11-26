@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.backchannel.logout;
+package com.liferay.portal.security.sso.openid.connect.internal.servlet;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -33,8 +32,8 @@ import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -52,69 +51,22 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"servlet-context-name=",
-		"servlet-filter-name=OpenId Connect Backchannel Logout Filter",
-		"url-pattern=/open_id_connect/backchannel_logout"
+		"osgi.http.whiteboard.context.path=/open_id_connect/backchannel_logout",
+		"osgi.http.whiteboard.servlet.name=com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.backchannel.logout.OpenIdConnectBackchannelLogoutFilter",
+		"osgi.http.whiteboard.servlet.pattern=/open_id_connect/backchannel_logout/*"
 	},
-	service = Filter.class
+	service = Servlet.class
 )
-public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
+public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 	@Override
-	public boolean isFilterEnabled(
+	protected void doPost(
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		return _openIdConnect.isEnabled(CompanyThreadLocal.getCompanyId());
-	}
-
-	protected String getJWKSURI(Issuer issuer) throws Exception {
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			StringBundler.concat(
-				"(", ConfigurationAdmin.SERVICE_FACTORYPID, "=",
-				OpenIdConnectProviderConfiguration.class.getName(),
-				".scoped)"));
-
-		if (ArrayUtil.isEmpty(configurations)) {
-			return StringPool.BLANK;
+		if (!_openIdConnect.isEnabled(CompanyThreadLocal.getCompanyId())) {
+			return;
 		}
-
-		for (Configuration configuration : configurations) {
-			Dictionary<String, Object> properties =
-				configuration.getProperties();
-
-			String discoveryEndPoint = (String)properties.get(
-				"discoveryEndPoint");
-			String issuerURL = (String)properties.get("issuerURL");
-			String jwksURI = (String)properties.get("jwksURI");
-
-			if (discoveryEndPoint != null) {
-				OIDCProviderMetadata metadata = _resolveOIDCProviderMetadata(
-					discoveryEndPoint);
-
-				issuerURL = metadata.getIssuer(
-				).getValue();
-				jwksURI = metadata.getJWKSetURI(
-				).toString();
-			}
-
-			if (issuerURL.equals(issuer.getValue())) {
-				return jwksURI;
-			}
-		}
-
-		return StringPool.BLANK;
-	}
-
-	@Override
-	protected Log getLog() {
-		return _log;
-	}
-
-	@Override
-	protected void processFilter(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, FilterChain filterChain) {
 
 		String logoutToken = ParamUtil.get(
 			httpServletRequest, "logout_token", StringPool.BLANK);
@@ -200,6 +152,44 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 		}
 	}
 
+	protected String getJWKSURI(Issuer issuer) throws Exception {
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			StringBundler.concat(
+				"(", ConfigurationAdmin.SERVICE_FACTORYPID, "=",
+				OpenIdConnectProviderConfiguration.class.getName(),
+				".scoped)"));
+
+		if (ArrayUtil.isEmpty(configurations)) {
+			return StringPool.BLANK;
+		}
+
+		for (Configuration configuration : configurations) {
+			Dictionary<String, Object> properties =
+				configuration.getProperties();
+
+			String discoveryEndPoint = (String)properties.get(
+				"discoveryEndPoint");
+			String issuerURL = (String)properties.get("issuerURL");
+			String jwksURI = (String)properties.get("jwksURI");
+
+			if (discoveryEndPoint != null) {
+				OIDCProviderMetadata metadata = _resolveOIDCProviderMetadata(
+					discoveryEndPoint);
+
+				issuerURL = metadata.getIssuer(
+				).getValue();
+				jwksURI = metadata.getJWKSetURI(
+				).toString();
+			}
+
+			if (issuerURL.equals(issuer.getValue())) {
+				return jwksURI;
+			}
+		}
+
+		return StringPool.BLANK;
+	}
+
 	private OIDCProviderMetadata _resolveOIDCProviderMetadata(
 			String discoveryEndPointURI)
 		throws Exception {
@@ -218,7 +208,7 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		OpenIdConnectBackchannelLogoutFilter.class);
+		OpenIdConnectBackchannelLogoutServlet.class);
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;

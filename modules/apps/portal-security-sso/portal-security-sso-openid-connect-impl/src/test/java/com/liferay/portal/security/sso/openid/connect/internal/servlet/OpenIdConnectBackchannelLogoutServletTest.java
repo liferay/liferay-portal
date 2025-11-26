@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.backchannel.logout;
+package com.liferay.portal.security.sso.openid.connect.internal.servlet;
 
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -24,7 +25,6 @@ import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Collections;
@@ -46,7 +46,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 /**
  * @author Lucas Miranda
  */
-public class OpenIdConnectBackchannelLogoutFilterTest {
+public class OpenIdConnectBackchannelLogoutServletTest {
 
 	@ClassRule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
@@ -54,25 +54,37 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_openIdConnectBackchannelLogoutFilter = Mockito.spy(
-			new OpenIdConnectBackchannelLogoutFilter());
+		_openIdConnectBackchannelLogoutServlet = Mockito.spy(
+			new OpenIdConnectBackchannelLogoutServlet());
+
+		OpenIdConnect openIdConnect = Mockito.mock(OpenIdConnect.class);
+
+		Mockito.when(
+			openIdConnect.isEnabled(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
 
 		ReflectionTestUtils.setField(
-			_openIdConnectBackchannelLogoutFilter,
+			_openIdConnectBackchannelLogoutServlet, "_openIdConnect",
+			openIdConnect);
+
+		ReflectionTestUtils.setField(
+			_openIdConnectBackchannelLogoutServlet,
 			"_openIdConnectSessionLocalService",
 			_openIdConnectSessionLocalService);
 
 		Mockito.doReturn(
 			"http://mocked.jwks.uri/key-set.json"
 		).when(
-			_openIdConnectBackchannelLogoutFilter
+			_openIdConnectBackchannelLogoutServlet
 		).getJWKSURI(
 			new Issuer(_ISSUER_URL)
 		);
 	}
 
 	@Test
-	public void testProcessFilter() throws Exception {
+	public void testDoPost() throws Exception {
 		OpenIdConnectSession openIdConnectSession = _mockOpenIdConnectSession(
 			_createSignedJWT(false));
 
@@ -118,9 +130,8 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 						logoutTokenClaimsSet
 					))) {
 
-			_openIdConnectBackchannelLogoutFilter.processFilter(
-				mockHttpServletRequest, httpServletResponse,
-				Mockito.mock(FilterChain.class));
+			_openIdConnectBackchannelLogoutServlet.doPost(
+				mockHttpServletRequest, httpServletResponse);
 
 			List<LogoutTokenValidator> logoutTokenValidators =
 				mockedConstruction.constructed();
@@ -146,14 +157,14 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 	}
 
 	@Test
-	public void testProcessFilterWithInvalidToken() throws Exception {
-		_testProcessFilterWithInvalidToken(RandomTestUtil.randomString());
+	public void testDoPostWithInvalidToken() throws Exception {
+		_testDoPostWithInvalidToken(RandomTestUtil.randomString());
 
 		_mockOpenIdConnectSession(_createSignedJWT(false));
 
 		SignedJWT signedJWT = _createSignedJWT(true);
 
-		_testProcessFilterWithInvalidToken(signedJWT.serialize());
+		_testDoPostWithInvalidToken(signedJWT.serialize());
 	}
 
 	private SignedJWT _createSignedJWT(boolean logoutToken) throws Exception {
@@ -236,7 +247,7 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 		return openIdConnectSession;
 	}
 
-	private void _testProcessFilterWithInvalidToken(String logoutToken)
+	private void _testDoPostWithInvalidToken(String logoutToken)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -248,9 +259,8 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 			HttpServletResponse.class);
 
 		try {
-			_openIdConnectBackchannelLogoutFilter.processFilter(
-				mockHttpServletRequest, httpServletResponse,
-				Mockito.mock(FilterChain.class));
+			_openIdConnectBackchannelLogoutServlet.doPost(
+				mockHttpServletRequest, httpServletResponse);
 
 			Assert.fail();
 		}
@@ -278,8 +288,8 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 	private static final String _SUBJECT =
 		"98259e32-a701-41fa-9dc5-719e00182326";
 
-	private OpenIdConnectBackchannelLogoutFilter
-		_openIdConnectBackchannelLogoutFilter;
+	private OpenIdConnectBackchannelLogoutServlet
+		_openIdConnectBackchannelLogoutServlet;
 	private final OpenIdConnectSessionLocalService
 		_openIdConnectSessionLocalService = Mockito.mock(
 			OpenIdConnectSessionLocalService.class);
