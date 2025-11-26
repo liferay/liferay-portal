@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.servlet.BaseFilter;
-import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
@@ -20,9 +20,7 @@ import com.liferay.portal.security.sso.openid.connect.internal.configuration.Ope
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
 
-import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
@@ -40,14 +38,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
 import java.net.URL;
 
 import java.util.Dictionary;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -75,60 +68,42 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 		return _openIdConnect.isEnabled(CompanyThreadLocal.getCompanyId());
 	}
 
-	protected Map<String, String> getJWKSUrisFromOIDCProvider() {
-		try {
-			Configuration[] configurations =
-				_configurationAdmin.listConfigurations(
-					StringBundler.concat(
-						"(", ConfigurationAdmin.SERVICE_FACTORYPID, "=",
-						OpenIdConnectProviderConfiguration.class.getName(),
-						".scoped)"));
+	protected String getJWKSURI(Issuer issuer) throws Exception {
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			StringBundler.concat(
+				"(", ConfigurationAdmin.SERVICE_FACTORYPID, "=",
+				OpenIdConnectProviderConfiguration.class.getName(),
+				".scoped)"));
 
-			if (configurations != null) {
-				Map<String, String> jwksUriMap = new ConcurrentHashMap<>();
+		if (ArrayUtil.isEmpty(configurations)) {
+			return StringPool.BLANK;
+		}
 
-				for (Configuration configuration : configurations) {
-					Dictionary<String, Object> properties =
-						configuration.getProperties();
+		for (Configuration configuration : configurations) {
+			Dictionary<String, Object> properties =
+				configuration.getProperties();
 
-					String discoveryEndPoint = (String)properties.get(
-						"discoveryEndPoint");
-					String issuerURL = (String)properties.get("issuerURL");
-					String jwksURI = (String)properties.get("jwksURI");
+			String discoveryEndPoint = (String)properties.get(
+				"discoveryEndPoint");
+			String issuerURL = (String)properties.get("issuerURL");
+			String jwksURI = (String)properties.get("jwksURI");
 
-					if (_log.isDebugEnabled()) {
-						_log.debug("Reading OIDC Connection metadata...");
-						_log.debug("discoveryEndPoint: " + discoveryEndPoint);
-					}
+			if (discoveryEndPoint != null) {
+				OIDCProviderMetadata metadata = _resolveOIDCProviderMetadata(
+					discoveryEndPoint);
 
-					if (discoveryEndPoint != null) {
-						OIDCProviderMetadata metadata =
-							_resolveOIDCProviderMetadata(discoveryEndPoint);
+				issuerURL = metadata.getIssuer(
+				).getValue();
+				jwksURI = metadata.getJWKSetURI(
+				).toString();
+			}
 
-						issuerURL = metadata.getIssuer(
-						).getValue();
-						jwksURI = metadata.getJWKSetURI(
-						).toString();
-					}
-
-					if ((jwksURI != null) && (issuerURL != null)) {
-						jwksUriMap.put(issuerURL, jwksURI);
-					}
-
-					if (_log.isDebugEnabled()) {
-						_log.debug("issuerURL: " + issuerURL);
-						_log.debug("jwksURI: " + jwksURI);
-					}
-				}
-
-				return jwksUriMap;
+			if (issuerURL.equals(issuer.getValue())) {
+				return jwksURI;
 			}
 		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
 
-		return new ConcurrentHashMap<>();
+		return StringPool.BLANK;
 	}
 
 	@Override
@@ -156,97 +131,61 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 		try {
 			JWT logoutTokenJWT = JWTParser.parse(logoutToken);
 
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Parsed Logout Token: " + logoutTokenJWT.getParsedString());
-			}
-
-			JWTClaimsSet logoutTokenJWTClaimsSet =
-				logoutTokenJWT.getJWTClaimsSet();
-
-			List<String> clientIdList =
-				logoutTokenJWTClaimsSet.getStringListClaim("aud");
-
-			if (ListUtil.isEmpty(clientIdList)) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("Failed to find oidc session");
-				}
-
-				return;
-			}
-
-			String sid = logoutTokenJWTClaimsSet.getClaimAsString("sid");
+			JWTClaimsSet jwtClaimsSet = logoutTokenJWT.getJWTClaimsSet();
 
 			OpenIdConnectSession oidcSession =
 				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
-					logoutTokenJWTClaimsSet.getClaimAsString("iss") +
+					jwtClaimsSet.getClaimAsString("iss") +
 						"/.well-known/openid-configuration",
-					sid);
+					jwtClaimsSet.getClaimAsString("sid"));
 
 			if (oidcSession == null) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						"There is no active Open ID session for the " +
-							"specified sid");
+							"specified sid " +
+								jwtClaimsSet.getClaimAsString("sid"));
 				}
 
 				return;
 			}
 
-			String idTokenJWT = oidcSession.getIdToken();
+			JWT idToken = JWTParser.parse(oidcSession.getIdToken());
 
-			try {
-				JWT idToken = JWTParser.parse(idTokenJWT);
+			jwtClaimsSet = idToken.getJWTClaimsSet();
 
-				JWTClaimsSet jwtClaimsSet = idToken.getJWTClaimsSet();
+			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
 
-				String jwtClaimsSetIssuer = jwtClaimsSet.getIssuer();
+			String jwksURI = getJWKSURI(issuer);
 
-				Issuer expectedIssuer = new Issuer(jwtClaimsSetIssuer);
-
-				Map<String, String> jwksUriMap = getJWKSUrisFromOIDCProvider();
-
-				String jwksURIString = jwksUriMap.get(jwtClaimsSetIssuer);
-
-				if (jwksURIString == null) {
-					if (_log.isWarnEnabled()) {
-						_log.warn("URI is null");
-					}
-
-					return;
+			if (jwksURI == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("JWKS URI is null");
 				}
 
-				if (_log.isDebugEnabled()) {
-					_log.debug("OIDC Provider JWKS " + jwksURIString);
-				}
-
-				SignedJWT signedLogoutToken = SignedJWT.parse(logoutToken);
-
-				JWSHeader logoutTokenHeader = signedLogoutToken.getHeader();
-
-				LogoutTokenValidator validator = new LogoutTokenValidator(
-					expectedIssuer, new ClientID(oidcSession.getClientId()),
-					logoutTokenHeader.getAlgorithm(), new URL(jwksURIString));
-
-				validator.validate(logoutTokenJWT);
-
-				_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
-					oidcSession);
-
-				httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
-				if (_log.isInfoEnabled()) {
-					_log.info(
-						StringBundler.concat(
-							"Terminating oidc session ", sid, " for userId ",
-							oidcSession.getUserId()));
-				}
+				return;
 			}
-			catch (BadJOSEException | JOSEException exception) {
-				httpServletResponse.setStatus(
-					HttpServletResponse.SC_BAD_REQUEST);
 
-				throw new Exception("Failed to parse token", exception);
+			SignedJWT signedLogoutToken = SignedJWT.parse(logoutToken);
+
+			JWSHeader logoutTokenHeader = signedLogoutToken.getHeader();
+
+			LogoutTokenValidator validator = new LogoutTokenValidator(
+				issuer, new ClientID(oidcSession.getClientId()),
+				logoutTokenHeader.getAlgorithm(), new URL(jwksURI));
+
+			validator.validate(logoutTokenJWT);
+
+			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
+				oidcSession);
+
+			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					StringBundler.concat(
+						"Terminating oidc session ", oidcSession.getSid(),
+						" for userId ", oidcSession.getUserId()));
 			}
 		}
 		catch (java.text.ParseException parseException) {
@@ -257,8 +196,7 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 
 	private OIDCProviderMetadata _resolveOIDCProviderMetadata(
 			String discoveryEndPointURI)
-		throws IOException, OpenIdConnectServiceException.ProviderException,
-			   ParseException {
+		throws Exception {
 
 		HTTPRequest httpRequest = new HTTPRequest(
 			HTTPRequest.Method.GET, new URL(discoveryEndPointURI));

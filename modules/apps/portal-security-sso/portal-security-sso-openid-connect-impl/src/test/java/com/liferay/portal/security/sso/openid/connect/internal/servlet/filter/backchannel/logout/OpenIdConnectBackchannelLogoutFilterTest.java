@@ -19,6 +19,7 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 
@@ -29,7 +30,6 @@ import java.text.ParseException;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import org.json.JSONException;
@@ -56,7 +56,7 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		ReflectionTestUtils.setField(
 			_openIdConnectBackchannelLogoutFilter,
 			"_openIdConnectSessionLocalService",
@@ -264,16 +264,14 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 		return token;
 	}
 
-	private void _setupJwksUriMap() {
-		Map<String, String> mockJwksUriMap = HashMapBuilder.put(
-			_ISSUER_URL, "http://mocked.jwks.uri/key-set.json"
-		).build();
-
+	private void _setupJwksUriMap() throws Exception {
 		Mockito.doReturn(
-			mockJwksUriMap
+			"http://mocked.jwks.uri/key-set.json"
 		).when(
 			_openIdConnectBackchannelLogoutFilter
-		).getJWKSUrisFromOIDCProvider();
+		).getJWKSURI(
+			new Issuer(_ISSUER_URL)
+		);
 	}
 
 	private OpenIdConnectSession _setupOpenIdConnectSession(SignedJWT idToken) {
