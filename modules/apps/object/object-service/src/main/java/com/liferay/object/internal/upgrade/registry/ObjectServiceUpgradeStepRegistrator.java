@@ -673,6 +673,11 @@ public class ObjectServiceUpgradeStepRegistrator
 			"10.24.0", "10.25.0",
 			new com.liferay.object.internal.upgrade.v10_25_0.
 				SchemaUpgradeProcess());
+
+		registry.register(
+			"10.25.0", "10.25.1",
+			UpgradeProcessFactory.alterColumnType(
+				"ObjectDefinitionSetting", "value", "TEXT"));
 	}
 
 	@Reference
