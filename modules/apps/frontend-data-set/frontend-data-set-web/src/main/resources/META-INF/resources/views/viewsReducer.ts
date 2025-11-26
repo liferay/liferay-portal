@@ -57,7 +57,7 @@ const viewsActions: TViewsActions = {
 
 		return {
 			...state,
-			activeSnapshotId: erc,
+			activeSnapshotERC: erc,
 			snapshots: updatedSnapshots,
 			viewUpdated: false,
 		};
@@ -81,22 +81,22 @@ const viewsActions: TViewsActions = {
 		const {defaultView, snapshots} = state;
 
 		const remainingSnapshots = snapshots.filter(
-			(snapshot: ISnapshot) => snapshot.erc !== value.id
+			(snapshot: ISnapshot) => snapshot.erc !== value.snapshotERC
 		);
 
 		return {
 			...state,
 			...defaultView,
-			activeSnapshotId: null,
+			activeSnapshotERC: null,
 			snapshots: remainingSnapshots,
 			viewUpdated: false,
 		};
 	},
 	[EViewsActionTypes.RENAME_ACTIVE_SNAPSHOT]: (state, value) => {
-		const {activeSnapshotId, snapshots} = state;
+		const {activeSnapshotERC, snapshots} = state;
 
 		const updatedSnapshots = snapshots.map((snapshot: ISnapshot) => {
-			if (snapshot.erc === activeSnapshotId) {
+			if (snapshot.erc === activeSnapshotERC) {
 				snapshot.label = value.label;
 			}
 
@@ -115,7 +115,7 @@ const viewsActions: TViewsActions = {
 		return {
 			...state,
 			...defaultView,
-			activeSnapshotId: null,
+			activeSnapshotERC: null,
 			viewUpdated: false,
 		};
 	},
@@ -141,7 +141,7 @@ const viewsActions: TViewsActions = {
 		return {
 			...state,
 			...activeSnapshot.configuration,
-			activeSnapshotId: value,
+			activeSnapshotERC: value,
 			viewUpdated: false,
 		};
 	},

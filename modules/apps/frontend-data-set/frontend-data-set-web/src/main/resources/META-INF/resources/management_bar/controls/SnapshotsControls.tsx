@@ -81,7 +81,7 @@ const SnapshotsControls = () => {
 	} = useContext(FrontendDataSetContext);
 	const [
 		{
-			activeSnapshotId,
+			activeSnapshotERC,
 			activeView,
 			defaultView,
 			filters,
@@ -103,9 +103,9 @@ const SnapshotsControls = () => {
 
 	const activeSnapshot: ISnapshot =
 		(snapshots.length &&
-			activeSnapshotId &&
+			activeSnapshotERC &&
 			snapshots.find(
-				(view: ISnapshot) => view.erc === activeSnapshotId
+				(view: ISnapshot) => view.erc === activeSnapshotERC
 			)) ||
 		defaultSnapshot;
 
@@ -134,27 +134,27 @@ const SnapshotsControls = () => {
 	);
 
 	const saveSnapshot = ({
-		id,
 		label,
 		processClose,
+		snapshotERC,
 	}: {
-		id?: string;
 		label?: string;
 		processClose?: Function;
+		snapshotERC?: string;
 	}) => {
 		let method;
 		let url: string;
 
-		if (!id) {
+		if (!snapshotERC) {
 			method = 'POST';
 			url = `/o/data-set-admin/snapshot-fds-configs`;
 		}
 		else {
 			method = 'PATCH';
-			url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.erc}`;
+			url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${snapshotERC}`;
 		}
 
-		const snapshotId = id ?? getRandomId();
+		const externalReferenceCode = snapshotERC ?? getRandomId();
 
 		const viewState = {
 			activeView,
@@ -165,7 +165,7 @@ const SnapshotsControls = () => {
 		};
 
 		const body = {
-			externalReferenceCode: snapshotId,
+			externalReferenceCode,
 			fdsName,
 			label: label || activeSnapshot.label,
 			portletId,
@@ -318,8 +318,8 @@ const SnapshotsControls = () => {
 		});
 	};
 
-	const deleteSnapshot = ({id}: {id: string}) => {
-		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.erc}`;
+	const deleteSnapshot = ({snapshotERC}: {snapshotERC: string}) => {
+		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${snapshotERC}`;
 
 		fetch(url, {
 			method: 'DELETE',
@@ -336,7 +336,7 @@ const SnapshotsControls = () => {
 					viewsDispatch({
 						type: EViewsActionTypes.DELETE_SNAPSHOT,
 						value: {
-							id,
+							snapshotERC,
 						},
 					});
 				}
@@ -359,7 +359,7 @@ const SnapshotsControls = () => {
 			});
 	};
 
-	const openDeleteSnapshotModal = ({id}: {id: string}) => {
+	const openDeleteSnapshotModal = ({snapshotERC}: {snapshotERC: string}) => {
 		openModal({
 			bodyHTML: Liferay.Language.get(
 				'are-you-sure-you-want-to-delete-this'
@@ -378,7 +378,7 @@ const SnapshotsControls = () => {
 						processClose();
 
 						deleteSnapshot({
-							id,
+							snapshotERC,
 						});
 					},
 				},
@@ -411,7 +411,7 @@ const SnapshotsControls = () => {
 					onSelectionChange={handleSelectionChange}
 					selectedKey={activeSnapshot.erc}
 					triggerLabel={
-						activeSnapshotId
+						activeSnapshotERC
 							? activeSnapshot.label
 							: Liferay.Language.get('default-view')
 					}
@@ -440,11 +440,11 @@ const SnapshotsControls = () => {
 					}
 				>
 					<ClayDropDown.ItemList>
-						{activeSnapshotId && (
+						{activeSnapshotERC && (
 							<ClayDropDown.Item
 								onClick={() => {
 									saveSnapshot({
-										id: activeSnapshotId,
+										snapshotERC: activeSnapshotERC,
 									});
 
 									setActionsDropdownActive(false);
@@ -462,7 +462,7 @@ const SnapshotsControls = () => {
 							{Liferay.Language.get('save-view-as')}
 						</ClayDropDown.Item>
 
-						{activeSnapshotId && (
+						{activeSnapshotERC && (
 							<>
 								<ClayDropDown.Item
 									onClick={openRenameSnapshotModal}
@@ -474,7 +474,7 @@ const SnapshotsControls = () => {
 								<ClayDropDown.Item
 									onClick={() =>
 										openDeleteSnapshotModal({
-											id: activeSnapshotId,
+											snapshotERC: activeSnapshotERC,
 										})
 									}
 									symbolLeft="trash"

@@ -6,7 +6,7 @@
 import {createContext} from 'react';
 
 export interface IViewsContext {
-	activeSnapshotId: null | string;
+	activeSnapshotERC: null | string;
 	activeView: any;
 	defaultView?: any;
 	filters: Array<any>;
@@ -36,7 +36,7 @@ export type TViewsContextDispatch = ({
 
 const ViewsContext = createContext<[IViewsContext, any]>([
 	{
-		activeSnapshotId: null,
+		activeSnapshotERC: null,
 		activeView: null,
 		filters: [],
 		modifiedFields: {},
