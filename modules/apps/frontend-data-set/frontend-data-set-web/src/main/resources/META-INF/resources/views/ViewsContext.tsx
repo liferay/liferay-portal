@@ -21,9 +21,9 @@ export interface IViewsContext {
 }
 
 export interface ISnapshot {
-	snapshotConfig?: any;
-	snapshotERC: string;
-	snapshotLabel: string;
+	configuration?: any;
+	erc: string;
+	label: string;
 }
 
 export type TViewsContextDispatch = ({

@@ -34,10 +34,10 @@ const viewsActions: TViewsActions = {
 	[EViewsActionTypes.ADD_OR_UPDATE_SNAPSHOT]: (state, value) => {
 		const {snapshots} = state;
 
-		const {snapshotConfig, snapshotERC} = value;
+		const {configuration, erc} = value;
 
 		const existentSnapshot = snapshots.find(
-			(snapshot: ISnapshot) => snapshot.snapshotERC === snapshotERC
+			(snapshot: ISnapshot) => snapshot.erc === erc
 		);
 
 		let updatedSnapshots;
@@ -47,8 +47,8 @@ const viewsActions: TViewsActions = {
 		}
 		else {
 			updatedSnapshots = snapshots.map((snapshot: ISnapshot) => {
-				if (snapshot.snapshotERC === snapshotERC) {
-					snapshot.snapshotConfig = snapshotConfig;
+				if (snapshot.erc === erc) {
+					snapshot.configuration = configuration;
 				}
 
 				return snapshot;
@@ -57,7 +57,7 @@ const viewsActions: TViewsActions = {
 
 		return {
 			...state,
-			activeSnapshotId: snapshotERC,
+			activeSnapshotId: erc,
 			snapshots: updatedSnapshots,
 			viewUpdated: false,
 		};
@@ -81,7 +81,7 @@ const viewsActions: TViewsActions = {
 		const {defaultView, snapshots} = state;
 
 		const remainingSnapshots = snapshots.filter(
-			(snapshot: ISnapshot) => snapshot.snapshotERC !== value.id
+			(snapshot: ISnapshot) => snapshot.erc !== value.id
 		);
 
 		return {
@@ -96,8 +96,8 @@ const viewsActions: TViewsActions = {
 		const {activeSnapshotId, snapshots} = state;
 
 		const updatedSnapshots = snapshots.map((snapshot: ISnapshot) => {
-			if (snapshot.snapshotERC === activeSnapshotId) {
-				snapshot.snapshotLabel = value.label;
+			if (snapshot.erc === activeSnapshotId) {
+				snapshot.label = value.label;
 			}
 
 			return snapshot;
@@ -123,24 +123,24 @@ const viewsActions: TViewsActions = {
 		const {defaultView, snapshots} = state;
 
 		const activeSnapshot = snapshots.find(
-			(view: ISnapshot) => view.snapshotERC === value
+			(view: ISnapshot) => view.erc === value
 		);
 
 		if (!activeSnapshot) {
 			return state;
 		}
 
-		if (!activeSnapshot.snapshotConfig.activeView) {
-			activeSnapshot.snapshotConfig.activeView = defaultView.activeView;
+		if (!activeSnapshot.configuration.activeView) {
+			activeSnapshot.configuration.activeView = defaultView.activeView;
 		}
 
-		activeSnapshot.snapshotConfig.activeView.component =
-			getViewComponent(activeSnapshot.snapshotConfig.activeView) ??
+		activeSnapshot.configuration.activeView.component =
+			getViewComponent(activeSnapshot.configuration.activeView) ??
 			getViewComponent(defaultView.activeView);
 
 		return {
 			...state,
-			...activeSnapshot.snapshotConfig,
+			...activeSnapshot.configuration,
 			activeSnapshotId: value,
 			viewUpdated: false,
 		};

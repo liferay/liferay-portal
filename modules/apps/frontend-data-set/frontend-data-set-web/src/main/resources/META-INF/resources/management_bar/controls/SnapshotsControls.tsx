@@ -97,24 +97,23 @@ const SnapshotsControls = () => {
 	const [actionsDropdownActive, setActionsDropdownActive] = useState(false);
 
 	const defaultSnapshot = {
-		snapshotERC: DEFAULT_VIEW_ID,
-		snapshotLabel: Liferay.Language.get('default-view'),
+		erc: DEFAULT_VIEW_ID,
+		label: Liferay.Language.get('default-view'),
 	};
 
 	const activeSnapshot: ISnapshot =
 		(snapshots.length &&
 			activeSnapshotId &&
 			snapshots.find(
-				(view: ISnapshot) => view.snapshotERC === activeSnapshotId
+				(view: ISnapshot) => view.erc === activeSnapshotId
 			)) ||
 		defaultSnapshot;
 
-	const snapshotLabelInputRef =
-		useRef() as React.MutableRefObject<HTMLInputElement>;
+	const labelInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
 	const SaveSnapshotModalBody = () => (
 		<ClayForm.Group>
-			<label htmlFor={`${namespace}snapshotLabelInput`}>
+			<label htmlFor={`${namespace}labelInput`}>
 				{Liferay.Language.get('name')}
 
 				<RequiredMark />
@@ -123,12 +122,12 @@ const SnapshotsControls = () => {
 			<ClayInput
 				autoFocus={true}
 				defaultValue={
-					activeSnapshot?.snapshotERC !== DEFAULT_VIEW_ID
-						? activeSnapshot?.snapshotLabel
+					activeSnapshot?.erc !== DEFAULT_VIEW_ID
+						? activeSnapshot?.label
 						: ''
 				}
-				id={`${namespace}snapshotLabelInput`}
-				ref={snapshotLabelInputRef}
+				id={`${namespace}labelInput`}
+				ref={labelInputRef}
 				type="text"
 			/>
 		</ClayForm.Group>
@@ -152,7 +151,7 @@ const SnapshotsControls = () => {
 		}
 		else {
 			method = 'PATCH';
-			url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.snapshotERC}`;
+			url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.erc}`;
 		}
 
 		const snapshotId = id ?? getRandomId();
@@ -168,7 +167,7 @@ const SnapshotsControls = () => {
 		const body = {
 			externalReferenceCode: snapshotId,
 			fdsName,
-			label: label || activeSnapshot.snapshotLabel,
+			label: label || activeSnapshot.label,
 			portletId,
 			viewConfig: JSON.stringify(viewState),
 		};
@@ -202,9 +201,9 @@ const SnapshotsControls = () => {
 				viewsDispatch({
 					type: EViewsActionTypes.ADD_OR_UPDATE_SNAPSHOT,
 					value: {
-						snapshotConfig: JSON.parse(snapshot.viewConfig),
-						snapshotERC: snapshot.externalReferenceCode,
-						snapshotLabel: snapshot.label,
+						configuration: JSON.parse(snapshot.viewConfig),
+						erc: snapshot.externalReferenceCode,
+						label: snapshot.label,
 					},
 				});
 			})
@@ -231,7 +230,7 @@ const SnapshotsControls = () => {
 					label: Liferay.Language.get('save'),
 					onClick: ({processClose}) => {
 						saveSnapshot({
-							label: snapshotLabelInputRef.current.value,
+							label: labelInputRef.current.value,
 							processClose,
 						});
 					},
@@ -248,7 +247,7 @@ const SnapshotsControls = () => {
 		label: string;
 		processClose: Function;
 	}) => {
-		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.snapshotERC}`;
+		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.erc}`;
 
 		fetch(url, {
 			body: JSON.stringify({
@@ -309,7 +308,7 @@ const SnapshotsControls = () => {
 					label: Liferay.Language.get('save'),
 					onClick: ({processClose}) => {
 						renameActiveSnapshot({
-							label: snapshotLabelInputRef.current?.value,
+							label: labelInputRef.current?.value,
 							processClose,
 						});
 					},
@@ -320,7 +319,7 @@ const SnapshotsControls = () => {
 	};
 
 	const deleteSnapshot = ({id}: {id: string}) => {
-		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.snapshotERC}`;
+		const url = `/o/data-set-admin/snapshot-fds-configs/by-external-reference-code/${activeSnapshot.erc}`;
 
 		fetch(url, {
 			method: 'DELETE',
@@ -410,19 +409,15 @@ const SnapshotsControls = () => {
 							Liferay.Language.get('scroll-to-top'),
 					}}
 					onSelectionChange={handleSelectionChange}
-					selectedKey={activeSnapshot.snapshotERC}
+					selectedKey={activeSnapshot.erc}
 					triggerLabel={
 						activeSnapshotId
-							? activeSnapshot.snapshotLabel
+							? activeSnapshot.label
 							: Liferay.Language.get('default-view')
 					}
 					viewUpdated={viewUpdated}
 				>
-					{(view) => (
-						<Option key={view.snapshotERC}>
-							{view.snapshotLabel}
-						</Option>
-					)}
+					{(view) => <Option key={view.erc}>{view.label}</Option>}
 				</Picker>
 			</ManagementToolbar.Item>
 

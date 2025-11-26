@@ -88,11 +88,11 @@ public abstract class BaseFDSSerializer {
 				Map<String, Object> properties = objectEntry.getProperties();
 
 				return JSONUtil.put(
-					"snapshotConfig", properties.get("viewConfig")
+					"configuration", properties.get("viewConfig")
 				).put(
-					"snapshotERC", objectEntry.getExternalReferenceCode()
+					"erc", objectEntry.getExternalReferenceCode()
 				).put(
-					"snapshotLabel", String.valueOf(properties.get("label"))
+					"label", String.valueOf(properties.get("label"))
 				);
 			});
 	}

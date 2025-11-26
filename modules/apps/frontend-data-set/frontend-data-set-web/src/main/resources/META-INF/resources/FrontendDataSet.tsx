@@ -639,7 +639,7 @@ const FrontendDataSetContent = ({
 
 		const parsedSnapshots = snapshots?.map((snapshot: ISnapshot) => ({
 			...snapshot,
-			snapshotConfig: JSON.parse(snapshot.snapshotConfig),
+			configuration: JSON.parse(snapshot.configuration),
 		}));
 
 		return {
@@ -1637,26 +1637,26 @@ const FrontendDataSetContent = ({
 		}
 		else {
 			const snapshot = snapshots.find(
-				(view: ISnapshot) => view.snapshotERC === value
+				(view: ISnapshot) => view.erc === value
 			);
 
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
-					newFilters: snapshot.snapshotConfig.filters.filter(
+					newFilters: snapshot.configuration.filters.filter(
 						(filter: any) => filter.active
 					),
 					oldFilters: filters,
 				}),
 				[EConfigInURLKeys.ACTIVE_SORTS]: updateSortsActivation({
-					newSorts: snapshot.snapshotConfig.sorts,
+					newSorts: snapshot.configuration.sorts,
 					oldSorts: sorts,
 				}),
 				[EConfigInURLKeys.DELTA]:
-					snapshot.snapshotConfig.paginationDelta,
+					snapshot.configuration.paginationDelta,
 				[EConfigInURLKeys.VIEW_NAME]:
-					snapshot.snapshotConfig.activeView.name,
+					snapshot.configuration.activeView.name,
 				[EConfigInURLKeys.VISIBLE_FIELDS]:
-					snapshot.snapshotConfig.visibleFieldNames,
+					snapshot.configuration.visibleFieldNames,
 			});
 
 			viewsDispatch({
