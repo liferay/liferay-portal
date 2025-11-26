@@ -12,21 +12,19 @@ export function activateFilter({
 	filter: any;
 	selectedData?: any;
 }) {
-	const updatedFilter = JSON.parse(JSON.stringify(filter));
-	updatedFilter.active = true;
+	filter.active = true;
 
 	if (selectedData) {
-		updatedFilter.selectedData = selectedData;
+		filter.selectedData = selectedData;
 	}
 
-	const filterType: keyof typeof FILTER_IMPLEMENTATIONS = updatedFilter.type;
+	const filterType: keyof typeof FILTER_IMPLEMENTATIONS = filter.type;
 
 	const filterImplementation = FILTER_IMPLEMENTATIONS[filterType];
 
-	updatedFilter.odataFilterString =
-		filterImplementation.getOdataString(updatedFilter);
-	updatedFilter.selectedItemsLabel =
-		filterImplementation.getSelectedItemsLabel(updatedFilter);
+	filter.odataFilterString = filterImplementation.getOdataString(filter);
+	filter.selectedItemsLabel =
+		filterImplementation.getSelectedItemsLabel(filter);
 
-	return updatedFilter;
+	return filter;
 }
