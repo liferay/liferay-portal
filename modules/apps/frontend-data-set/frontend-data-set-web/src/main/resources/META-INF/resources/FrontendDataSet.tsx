@@ -1612,7 +1612,11 @@ const FrontendDataSetContent = ({
 	}
 
 	const handleSnapshotChange = ({defaultView, snapshots, value}: any) => {
-		if (value === 'DEFAULT_VIEW') {
+		const snapshot = snapshots.find(
+			(view: ISnapshot) => view.erc === value
+		);
+
+		if (!snapshot || value === 'DEFAULT_VIEW') {
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
 					newFilters: defaultView.filters.filter(
@@ -1636,10 +1640,6 @@ const FrontendDataSetContent = ({
 			});
 		}
 		else {
-			const snapshot = snapshots.find(
-				(view: ISnapshot) => view.erc === value
-			);
-
 			updateConfig({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: updateFilterActivation({
 					newFilters: snapshot.configuration.filters.filter(
