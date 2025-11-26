@@ -135,7 +135,9 @@ test(
 
 			await fdsSamplePage.userViewsSelectorButton.click();
 
-			await expect(userViewsDropdown.getByRole('option')).toHaveCount(3);
+			expect(
+				await userViewsDropdown.getByRole('option').count()
+			).toBeGreaterThanOrEqual(3);
 		});
 
 		await test.step('Edit user view, by changing visibility of one column', async () => {

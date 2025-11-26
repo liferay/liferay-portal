@@ -153,12 +153,8 @@ test(
 		});
 
 		await test.step('Check that no filters were found message is displayed', async () => {
-			await test.step('Refresh the page', async () => {
-				await page.reload();
-
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+			await test.step('Refresh contents', async () => {
+				await fdsSamplePage.selectTab('Advanced');
 			});
 
 			await test.step('Open filter dropdown', async () => {
@@ -183,12 +179,8 @@ test(
 		});
 
 		await test.step('Check selecting a filter', async () => {
-			await test.step('Refresh the page', async () => {
-				await page.reload();
-
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+			await test.step('Refresh contents', async () => {
+				await fdsSamplePage.selectTab('Advanced');
 			});
 
 			await test.step('Select "Red" color in the filters dropdown', async () => {
@@ -222,22 +214,16 @@ test(
 			});
 
 			await test.step('Check the results are filtered by checking all results appear', async () => {
-				page.getByRole('cell', {name: 'Yellow'});
-
-				expect.soft(await blueCells.count()).toBeGreaterThan(0);
-				expect.soft(await greenCells.count()).toBeGreaterThan(0);
-				expect.soft(await redCells.count()).toBeGreaterThan(0);
-				expect.soft(await yellowCells.count()).toBeGreaterThan(0);
+				expect(await blueCells.count()).toBeGreaterThan(0);
+				expect(await greenCells.count()).toBeGreaterThan(0);
+				expect(await redCells.count()).toBeGreaterThan(0);
+				expect(await yellowCells.count()).toBeGreaterThan(0);
 			});
 		});
 
 		await test.step('Check excluding a filter', async () => {
-			await test.step('Refresh the page', async () => {
-				await page.reload();
-
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+			await test.step('Refresh contents', async () => {
+				await fdsSamplePage.selectTab('Advanced');
 			});
 
 			await test.step('Check exclude switch for "Blue", "Green", "Yellow" colors', async () => {
@@ -259,20 +245,16 @@ test(
 			});
 
 			await test.step('Check the only Red results are displayed', async () => {
-				expect.soft(await blueCells.count()).toEqual(0);
-				expect.soft(await greenCells.count()).toEqual(0);
-				expect.soft(await redCells.count()).toBeGreaterThan(0);
-				expect.soft(await yellowCells.count()).toEqual(0);
+				expect(await blueCells.count()).toEqual(0);
+				expect(await greenCells.count()).toEqual(0);
+				expect(await redCells.count()).toBeGreaterThan(0);
+				expect(await yellowCells.count()).toEqual(0);
 			});
 		});
 
 		await test.step('Check editing a filter summary box', async () => {
-			await test.step('Refresh the page', async () => {
-				await page.reload();
-
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+			await test.step('Refresh contents', async () => {
+				await fdsSamplePage.selectTab('Advanced');
 			});
 
 			await test.step('Open the "Color" filter summary box', async () => {
@@ -318,12 +300,8 @@ test(
 		});
 
 		await test.step('Check filter can be removed using delete button', async () => {
-			await test.step('Refresh the page', async () => {
-				await page.reload();
-
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+			await test.step('Refresh contents', async () => {
+				await fdsSamplePage.selectTab('Advanced');
 			});
 
 			await test.step('Open the "Color" filter summary box', async () => {
@@ -353,12 +331,8 @@ test(
 		});
 
 		await test.step('Assert the synchronization of the filters', async () => {
-			await test.step('Refresh the page', async () => {
-				await page.reload();
-
-				await page
-					.getByText('This is a description for sample 1.')
-					.waitFor();
+			await test.step('Refresh contents', async () => {
+				await fdsSamplePage.selectTab('Advanced');
 			});
 
 			await test.step('Open the "Color" filter summary box', async () => {
