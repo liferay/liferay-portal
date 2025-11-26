@@ -113,9 +113,8 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 
 	@Override
 	protected void processFilter(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, FilterChain filterChain)
-		throws Exception {
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse, FilterChain filterChain) {
 
 		String logoutToken = ParamUtil.get(
 			httpServletRequest, "logout_token", StringPool.BLANK);
@@ -158,7 +157,7 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 
 			String jwksURI = getJWKSURI(issuer);
 
-			if (jwksURI == null) {
+			if (Validator.isNull(jwksURI)) {
 				if (_log.isWarnEnabled()) {
 					_log.warn("JWKS URI is null");
 				}

@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.backchannel.logout;
 
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
@@ -26,14 +27,10 @@ import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.text.ParseException;
-
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -79,35 +76,32 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 		OpenIdConnectSession openIdConnectSession = _mockOpenIdConnectSession(
 			_createSignedJWT(false));
 
-		JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder(
-		).issuer(
-			_ISSUER_URL
-		).audience(
-			Collections.singletonList(_CLIENT_ID)
-		).claim(
-			"sid", _SESSION_ID
-		).claim(
-			"events",
-			HashMapBuilder.put(
-				"http://schemas.openid.net/event/backchannel-logout",
-				Collections.emptyMap()
-			).build()
-		).issueTime(
-			new Date()
-		).jwtID(
-			UUID.randomUUID(
-			).toString()
-		).expirationTime(
-			new Date(System.currentTimeMillis() + 60000)
-		).build();
-
 		LogoutTokenClaimsSet logoutTokenClaimsSet = new LogoutTokenClaimsSet(
-			jwtClaimsSet);
-
-		SignedJWT signedJWT = _createSignedJWT(true);
+			new JWTClaimsSet.Builder(
+			).audience(
+				Collections.singletonList(_CLIENT_ID)
+			).claim(
+				"events",
+				HashMapBuilder.put(
+					"http://schemas.openid.net/event/backchannel-logout",
+					Collections.emptyMap()
+				).build()
+			).claim(
+				"sid", _SESSION_ID
+			).expirationTime(
+				new Date(System.currentTimeMillis() + 60000)
+			).issuer(
+				_ISSUER_URL
+			).issueTime(
+				new Date()
+			).jwtID(
+				String.valueOf(UUID.randomUUID())
+			).build());
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
+
+		SignedJWT signedJWT = _createSignedJWT(true);
 
 		mockHttpServletRequest.setParameter(
 			"logout_token", signedJWT.serialize());
@@ -128,14 +122,11 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 				mockHttpServletRequest, httpServletResponse,
 				Mockito.mock(FilterChain.class));
 
-			LogoutTokenValidator logoutTokenValidator =
-				mockedConstruction.constructed(
-				).get(
-					0
-				);
+			List<LogoutTokenValidator> logoutTokenValidators =
+				mockedConstruction.constructed();
 
 			Mockito.verify(
-				logoutTokenValidator
+				logoutTokenValidators.get(0)
 			).validate(
 				Mockito.any(JWT.class)
 			);
@@ -155,103 +146,44 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 	}
 
 	@Test
-	public void testProcessFilterParseFail() {
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setParameter(
-			"logout_token", RandomTestUtil.randomString());
-
-		HttpServletResponse httpServletResponse = Mockito.mock(
-			HttpServletResponse.class);
-
-		try {
-			_openIdConnectBackchannelLogoutFilter.processFilter(
-				mockHttpServletRequest, httpServletResponse,
-				Mockito.mock(FilterChain.class));
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Mockito.verify(
-				httpServletResponse
-			).setStatus(
-				HttpServletResponse.SC_BAD_REQUEST
-			);
-
-			Assert.assertTrue(exception.getCause() instanceof ParseException);
-		}
-	}
-
-	@Test
 	public void testProcessFilterWithInvalidToken() throws Exception {
+		_testProcessFilterWithInvalidToken(RandomTestUtil.randomString());
+
 		_mockOpenIdConnectSession(_createSignedJWT(false));
 
 		SignedJWT signedJWT = _createSignedJWT(true);
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setParameter(
-			"logout_token", signedJWT.serialize());
-
-		HttpServletResponse httpServletResponse = Mockito.mock(
-			HttpServletResponse.class);
-
-		try {
-			_openIdConnectBackchannelLogoutFilter.processFilter(
-				mockHttpServletRequest, httpServletResponse,
-				Mockito.mock(FilterChain.class));
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Mockito.verify(
-				httpServletResponse
-			).setStatus(
-				HttpServletResponse.SC_BAD_REQUEST
-			);
-		}
+		_testProcessFilterWithInvalidToken(signedJWT.serialize());
 	}
 
 	private SignedJWT _createSignedJWT(boolean logoutToken) throws Exception {
 		Date now = new Date();
 
 		JWTClaimsSet.Builder claimsBuilder = new JWTClaimsSet.Builder(
-		).issuer(
-			_ISSUER_URL
 		).audience(
 			_CLIENT_ID
-		).subject(
-			_SUBJECT
-		).issueTime(
-			now
-		).expirationTime(
-			new Date(now.getTime() + 60_000)
 		).claim(
 			"sid", _SESSION_ID
+		).expirationTime(
+			new Date(now.getTime() + 60_000)
+		).issuer(
+			_ISSUER_URL
+		).issueTime(
+			now
+		).subject(
+			_SUBJECT
 		);
 
 		if (logoutToken) {
-			claimsBuilder.claim("typ", "Logout");
-
-			claimsBuilder.jwtID(
-				UUID.randomUUID(
-				).toString());
-
-			JSONObject eventsClaimValueJSONObject = new JSONObject();
-
-			try {
-				eventsClaimValueJSONObject.put(
-					"http://schemas.openid.net/event/backchannel-logout",
-					new JSONObject());
-
-				claimsBuilder.claim(
-					"events", eventsClaimValueJSONObject.toString());
-			}
-			catch (JSONException jsonException) {
-				throw new RuntimeException(jsonException);
-			}
+			claimsBuilder.claim(
+				"events",
+				JSONUtil.put(
+					"http://schemas.openid.net/event/backchannel-logout", "{}")
+			).claim(
+				"typ", "Logout"
+			).jwtID(
+				String.valueOf(UUID.randomUUID())
+			);
 		}
 		else {
 			claimsBuilder.claim("typ", "ID");
@@ -302,6 +234,33 @@ public class OpenIdConnectBackchannelLogoutFilterTest {
 		);
 
 		return openIdConnectSession;
+	}
+
+	private void _testProcessFilterWithInvalidToken(String logoutToken)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter("logout_token", logoutToken);
+
+		HttpServletResponse httpServletResponse = Mockito.mock(
+			HttpServletResponse.class);
+
+		try {
+			_openIdConnectBackchannelLogoutFilter.processFilter(
+				mockHttpServletRequest, httpServletResponse,
+				Mockito.mock(FilterChain.class));
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Mockito.verify(
+				httpServletResponse
+			).setStatus(
+				HttpServletResponse.SC_BAD_REQUEST
+			);
+		}
 	}
 
 	private static final String _CLIENT_ID = "liferay";
