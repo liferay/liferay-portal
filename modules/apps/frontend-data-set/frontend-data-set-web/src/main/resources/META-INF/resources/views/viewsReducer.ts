@@ -17,6 +17,7 @@ export enum EViewsActionTypes {
 	UPDATE_ACTIVE_VIEW = 'UPDATE_ACTIVE_VIEW',
 	UPDATE_FIELD = 'UPDATE_FIELD',
 	UPDATE_FILTERS = 'UPDATE_FILTERS',
+	UPDATE_FILTERS_CX = 'UPDATE_FILTERS_CX',
 	UPDATE_PAGE_NUMBER = 'UPDATE_PAGE_NUMBER',
 	UPDATE_PAGINATION_DELTA = 'UPDATE_PAGINATION_DELTA',
 	UPDATE_SEARCH_PARAM = 'UPDATE_SEARCH_PARAM',
@@ -166,6 +167,17 @@ const viewsActions: TViewsActions = {
 			...state,
 			filters: value,
 			viewUpdated: true,
+		};
+	},
+	[EViewsActionTypes.UPDATE_FILTERS_CX]: (state, value) => {
+		const {defaultView} = state;
+
+		defaultView.filters = JSON.parse(JSON.stringify(value));
+
+		return {
+			...state,
+			defaultView,
+			filters: value,
 		};
 	},
 	[EViewsActionTypes.UPDATE_FIELD]: (state, value) => {

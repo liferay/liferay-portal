@@ -861,7 +861,10 @@ const FrontendDataSetContent = ({
 						return filter;
 					});
 
-					viewsDispatch(updateFilters(newFilters || []));
+					viewsDispatch({
+						type: 'UPDATE_FILTERS_CX',
+						value: newFilters,
+					});
 				},
 			},
 			{
