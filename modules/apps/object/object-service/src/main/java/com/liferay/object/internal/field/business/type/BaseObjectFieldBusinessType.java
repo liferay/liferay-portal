@@ -6,12 +6,14 @@
 package com.liferay.object.internal.field.business.type;
 
 import com.liferay.document.library.kernel.util.DLValidatorUtil;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.exception.ObjectFieldSettingNameException;
 import com.liferay.object.exception.ObjectFieldSettingValueException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.render.ObjectFieldRenderingContext;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
@@ -19,6 +21,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -30,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -53,6 +57,40 @@ public abstract class BaseObjectFieldBusinessType
 				objectFieldSettingLocalService.
 					getObjectFieldObjectFieldSettings(
 						objectField.getObjectFieldId()))
+		).put(
+			"predefinedValue",
+			() -> {
+				if (!FeatureFlagManagerUtil.isEnabled(
+						objectField.getCompanyId(), "LPD-32050")) {
+
+					return null;
+				}
+
+				LocalizedValue localizedValue = new LocalizedValue(
+					objectFieldRenderingContext.getLocale());
+
+				Locale defaultLocale = objectFieldRenderingContext.getLocale();
+				String defaultValue = String.valueOf(
+					ObjectFieldSettingUtil.getDefaultValue(
+						null, objectField, null));
+
+				if (objectField.isLocalized() &&
+					Validator.isNotNull(defaultValue)) {
+
+					localizedValue.addString(
+						defaultLocale,
+						jsonFactory.createJSONObject(
+							HashMapBuilder.put(
+								defaultLocale, defaultValue
+							).build()
+						).toJSONString());
+				}
+				else {
+					localizedValue.addString(defaultLocale, defaultValue);
+				}
+
+				return localizedValue;
+			}
 		).putAll(
 			ObjectFieldBusinessType.super.getProperties(
 				objectField, objectFieldRenderingContext)
