@@ -7,6 +7,7 @@ package com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.b
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -25,7 +26,6 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
@@ -129,9 +129,9 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 		}
 
 		try {
-			JWT logoutTokenJWT = JWTParser.parse(logoutToken);
+			JWT jwt = JWTParser.parse(logoutToken);
 
-			JWTClaimsSet jwtClaimsSet = logoutTokenJWT.getJWTClaimsSet();
+			JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
 
 			OpenIdConnectSession oidcSession =
 				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
@@ -150,9 +150,9 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 				return;
 			}
 
-			JWT idToken = JWTParser.parse(oidcSession.getIdToken());
+			jwt = JWTParser.parse(oidcSession.getIdToken());
 
-			jwtClaimsSet = idToken.getJWTClaimsSet();
+			jwtClaimsSet = jwt.getJWTClaimsSet();
 
 			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
 
@@ -166,15 +166,16 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 				return;
 			}
 
-			SignedJWT signedLogoutToken = SignedJWT.parse(logoutToken);
+			SignedJWT signedJWT = SignedJWT.parse(logoutToken);
 
-			JWSHeader logoutTokenHeader = signedLogoutToken.getHeader();
+			JWSHeader jwsHeader = signedJWT.getHeader();
 
-			LogoutTokenValidator validator = new LogoutTokenValidator(
-				issuer, new ClientID(oidcSession.getClientId()),
-				logoutTokenHeader.getAlgorithm(), new URL(jwksURI));
+			LogoutTokenValidator logoutTokenValidator =
+				new LogoutTokenValidator(
+					issuer, new ClientID(oidcSession.getClientId()),
+					jwsHeader.getAlgorithm(), new URL(jwksURI));
 
-			validator.validate(logoutTokenJWT);
+			logoutTokenValidator.validate(jwt);
 
 			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
 				oidcSession);
@@ -188,9 +189,15 @@ public class OpenIdConnectBackchannelLogoutFilter extends BaseFilter {
 						" for userId ", oidcSession.getUserId()));
 			}
 		}
-		catch (java.text.ParseException parseException) {
-			throw new java.text.ParseException(
-				"Failed to parse token", parseException.getErrorOffset());
+		catch (Exception exception) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			throw new SystemException(
+				"OpenId Connect backchannel logout failed", exception);
 		}
 	}
 
