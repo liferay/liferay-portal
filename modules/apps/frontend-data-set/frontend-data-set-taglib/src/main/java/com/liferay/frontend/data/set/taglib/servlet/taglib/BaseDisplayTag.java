@@ -262,8 +262,6 @@ public class BaseDisplayTag extends AttributesTagSupport {
 				"initialPageNumber", _pageNumber
 			).build()
 		).put(
-			"snapshots", new ArrayList<String>()
-		).put(
 			"uniformActionsDisplay", getUniformActionsDisplay()
 		).put(
 			"views", _viewsJSONArray
