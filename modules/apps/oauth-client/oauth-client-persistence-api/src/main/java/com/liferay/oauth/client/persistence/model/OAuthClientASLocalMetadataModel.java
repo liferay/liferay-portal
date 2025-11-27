@@ -180,34 +180,130 @@ public interface OAuthClientASLocalMetadataModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the local well known uri of this o auth client as local metadata.
+	 * Returns the allowed grant types of this o auth client as local metadata.
 	 *
-	 * @return the local well known uri of this o auth client as local metadata
+	 * @return the allowed grant types of this o auth client as local metadata
 	 */
 	@AutoEscape
-	public String getLocalWellKnownURI();
+	public String getAllowedGrantTypes();
 
 	/**
-	 * Sets the local well known uri of this o auth client as local metadata.
+	 * Sets the allowed grant types of this o auth client as local metadata.
 	 *
-	 * @param localWellKnownURI the local well known uri of this o auth client as local metadata
+	 * @param allowedGrantTypes the allowed grant types of this o auth client as local metadata
 	 */
-	public void setLocalWellKnownURI(String localWellKnownURI);
+	public void setAllowedGrantTypes(String allowedGrantTypes);
 
 	/**
-	 * Returns the metadata json of this o auth client as local metadata.
+	 * Returns the allowed scopes of this o auth client as local metadata.
 	 *
-	 * @return the metadata json of this o auth client as local metadata
+	 * @return the allowed scopes of this o auth client as local metadata
 	 */
 	@AutoEscape
-	public String getMetadataJSON();
+	public String getAllowedScopes();
 
 	/**
-	 * Sets the metadata json of this o auth client as local metadata.
+	 * Sets the allowed scopes of this o auth client as local metadata.
 	 *
-	 * @param metadataJSON the metadata json of this o auth client as local metadata
+	 * @param allowedScopes the allowed scopes of this o auth client as local metadata
 	 */
-	public void setMetadataJSON(String metadataJSON);
+	public void setAllowedScopes(String allowedScopes);
+
+	/**
+	 * Returns the issuer of this o auth client as local metadata.
+	 *
+	 * @return the issuer of this o auth client as local metadata
+	 */
+	@AutoEscape
+	public String getIssuer();
+
+	/**
+	 * Sets the issuer of this o auth client as local metadata.
+	 *
+	 * @param issuer the issuer of this o auth client as local metadata
+	 */
+	public void setIssuer(String issuer);
+
+	/**
+	 * Returns the local well known enabled of this o auth client as local metadata.
+	 *
+	 * @return the local well known enabled of this o auth client as local metadata
+	 */
+	public boolean getLocalWellKnownEnabled();
+
+	/**
+	 * Returns <code>true</code> if this o auth client as local metadata is local well known enabled.
+	 *
+	 * @return <code>true</code> if this o auth client as local metadata is local well known enabled; <code>false</code> otherwise
+	 */
+	public boolean isLocalWellKnownEnabled();
+
+	/**
+	 * Sets whether this o auth client as local metadata is local well known enabled.
+	 *
+	 * @param localWellKnownEnabled the local well known enabled of this o auth client as local metadata
+	 */
+	public void setLocalWellKnownEnabled(boolean localWellKnownEnabled);
+
+	/**
+	 * Returns the local well known urioas of this o auth client as local metadata.
+	 *
+	 * @return the local well known urioas of this o auth client as local metadata
+	 */
+	@AutoEscape
+	public String getLocalWellKnownURIOAS();
+
+	/**
+	 * Sets the local well known urioas of this o auth client as local metadata.
+	 *
+	 * @param localWellKnownURIOAS the local well known urioas of this o auth client as local metadata
+	 */
+	public void setLocalWellKnownURIOAS(String localWellKnownURIOAS);
+
+	/**
+	 * Returns the local well known urioic of this o auth client as local metadata.
+	 *
+	 * @return the local well known urioic of this o auth client as local metadata
+	 */
+	@AutoEscape
+	public String getLocalWellKnownURIOIC();
+
+	/**
+	 * Sets the local well known urioic of this o auth client as local metadata.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic of this o auth client as local metadata
+	 */
+	public void setLocalWellKnownURIOIC(String localWellKnownURIOIC);
+
+	/**
+	 * Returns the metadata jsonas of this o auth client as local metadata.
+	 *
+	 * @return the metadata jsonas of this o auth client as local metadata
+	 */
+	@AutoEscape
+	public String getMetadataJSONAS();
+
+	/**
+	 * Sets the metadata jsonas of this o auth client as local metadata.
+	 *
+	 * @param metadataJSONAS the metadata jsonas of this o auth client as local metadata
+	 */
+	public void setMetadataJSONAS(String metadataJSONAS);
+
+	/**
+	 * Returns the metadata jsonoic of this o auth client as local metadata.
+	 *
+	 * @return the metadata jsonoic of this o auth client as local metadata
+	 */
+	@AutoEscape
+	public String getMetadataJSONOIC();
+
+	/**
+	 * Sets the metadata jsonoic of this o auth client as local metadata.
+	 *
+	 * @param metadataJSONOIC the metadata jsonoic of this o auth client as local metadata
+	 */
+	public void setMetadataJSONOIC(String metadataJSONOIC);
 
 	@Override
 	public OAuthClientASLocalMetadata cloneWithOriginalValues();

@@ -8,7 +8,6 @@ package com.liferay.oauth.client.persistence.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
-import java.sql.Clob;
 import java.sql.Types;
 
 import java.util.Date;
@@ -48,12 +47,34 @@ public class OAuthClientASLocalMetadataTable
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<OAuthClientASLocalMetadataTable, String>
-		localWellKnownURI = createColumn(
-			"localWellKnownURI", String.class, Types.VARCHAR,
+		allowedGrantTypes = createColumn(
+			"allowedGrantTypes", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
-	public final Column<OAuthClientASLocalMetadataTable, Clob> metadataJSON =
+	public final Column<OAuthClientASLocalMetadataTable, String> allowedScopes =
 		createColumn(
-			"metadataJSON", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+			"allowedScopes", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, String> issuer =
+		createColumn(
+			"issuer", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, Boolean>
+		localWellKnownEnabled = createColumn(
+			"localWellKnownEnabled", Boolean.class, Types.BOOLEAN,
+			Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, String>
+		localWellKnownURIOAS = createColumn(
+			"localWellKnownURIOAS", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, String>
+		localWellKnownURIOIC = createColumn(
+			"localWellKnownURIOIC", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, String>
+		metadataJSONAS = createColumn(
+			"metadataJSONAS", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, String>
+		metadataJSONOIC = createColumn(
+			"metadataJSONOIC", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 
 	private OAuthClientASLocalMetadataTable() {
 		super(

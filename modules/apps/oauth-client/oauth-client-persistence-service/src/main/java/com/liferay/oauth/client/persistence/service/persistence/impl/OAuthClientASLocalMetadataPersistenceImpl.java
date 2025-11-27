@@ -1925,30 +1925,30 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	private static final String _FINDER_COLUMN_USERID_USERID_2 =
 		"oAuthClientASLocalMetadata.userId = ?";
 
-	private FinderPath _finderPathFetchByLocalWellKnownURI;
+	private FinderPath _finderPathFetchByLocalWellKnownURIOAS;
 
 	/**
-	 * Returns the o auth client as local metadata where localWellKnownURI = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
+	 * Returns the o auth client as local metadata where localWellKnownURIOAS = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
 	 *
-	 * @param localWellKnownURI the local well known uri
+	 * @param localWellKnownURIOAS the local well known urioas
 	 * @return the matching o auth client as local metadata
 	 * @throws NoSuchOAuthClientASLocalMetadataException if a matching o auth client as local metadata could not be found
 	 */
 	@Override
-	public OAuthClientASLocalMetadata findByLocalWellKnownURI(
-			String localWellKnownURI)
+	public OAuthClientASLocalMetadata findByLocalWellKnownURIOAS(
+			String localWellKnownURIOAS)
 		throws NoSuchOAuthClientASLocalMetadataException {
 
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			fetchByLocalWellKnownURI(localWellKnownURI);
+			fetchByLocalWellKnownURIOAS(localWellKnownURIOAS);
 
 		if (oAuthClientASLocalMetadata == null) {
 			StringBundler sb = new StringBundler(4);
 
 			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-			sb.append("localWellKnownURI=");
-			sb.append(localWellKnownURI);
+			sb.append("localWellKnownURIOAS=");
+			sb.append(localWellKnownURIOAS);
 
 			sb.append("}");
 
@@ -1963,42 +1963,42 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where localWellKnownURI = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the o auth client as local metadata where localWellKnownURIOAS = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
-	 * @param localWellKnownURI the local well known uri
+	 * @param localWellKnownURIOAS the local well known urioas
 	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
 	 */
 	@Override
-	public OAuthClientASLocalMetadata fetchByLocalWellKnownURI(
-		String localWellKnownURI) {
+	public OAuthClientASLocalMetadata fetchByLocalWellKnownURIOAS(
+		String localWellKnownURIOAS) {
 
-		return fetchByLocalWellKnownURI(localWellKnownURI, true);
+		return fetchByLocalWellKnownURIOAS(localWellKnownURIOAS, true);
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where localWellKnownURI = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the o auth client as local metadata where localWellKnownURIOAS = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
-	 * @param localWellKnownURI the local well known uri
+	 * @param localWellKnownURIOAS the local well known urioas
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
 	 */
 	@Override
-	public OAuthClientASLocalMetadata fetchByLocalWellKnownURI(
-		String localWellKnownURI, boolean useFinderCache) {
+	public OAuthClientASLocalMetadata fetchByLocalWellKnownURIOAS(
+		String localWellKnownURIOAS, boolean useFinderCache) {
 
-		localWellKnownURI = Objects.toString(localWellKnownURI, "");
+		localWellKnownURIOAS = Objects.toString(localWellKnownURIOAS, "");
 
 		Object[] finderArgs = null;
 
 		if (useFinderCache) {
-			finderArgs = new Object[] {localWellKnownURI};
+			finderArgs = new Object[] {localWellKnownURIOAS};
 		}
 
 		Object result = null;
 
 		if (useFinderCache) {
 			result = finderCache.getResult(
-				_finderPathFetchByLocalWellKnownURI, finderArgs, this);
+				_finderPathFetchByLocalWellKnownURIOAS, finderArgs, this);
 		}
 
 		if (result instanceof OAuthClientASLocalMetadata) {
@@ -2006,8 +2006,8 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 				(OAuthClientASLocalMetadata)result;
 
 			if (!Objects.equals(
-					localWellKnownURI,
-					oAuthClientASLocalMetadata.getLocalWellKnownURI())) {
+					localWellKnownURIOAS,
+					oAuthClientASLocalMetadata.getLocalWellKnownURIOAS())) {
 
 				result = null;
 			}
@@ -2018,15 +2018,17 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 
 			sb.append(_SQL_SELECT_OAUTHCLIENTASLOCALMETADATA_WHERE);
 
-			boolean bindLocalWellKnownURI = false;
+			boolean bindLocalWellKnownURIOAS = false;
 
-			if (localWellKnownURI.isEmpty()) {
-				sb.append(_FINDER_COLUMN_LOCALWELLKNOWNURI_LOCALWELLKNOWNURI_3);
+			if (localWellKnownURIOAS.isEmpty()) {
+				sb.append(
+					_FINDER_COLUMN_LOCALWELLKNOWNURIOAS_LOCALWELLKNOWNURIOAS_3);
 			}
 			else {
-				bindLocalWellKnownURI = true;
+				bindLocalWellKnownURIOAS = true;
 
-				sb.append(_FINDER_COLUMN_LOCALWELLKNOWNURI_LOCALWELLKNOWNURI_2);
+				sb.append(
+					_FINDER_COLUMN_LOCALWELLKNOWNURIOAS_LOCALWELLKNOWNURIOAS_2);
 			}
 
 			String sql = sb.toString();
@@ -2040,8 +2042,8 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 
 				QueryPos queryPos = QueryPos.getInstance(query);
 
-				if (bindLocalWellKnownURI) {
-					queryPos.add(localWellKnownURI);
+				if (bindLocalWellKnownURIOAS) {
+					queryPos.add(localWellKnownURIOAS);
 				}
 
 				List<OAuthClientASLocalMetadata> list = query.list();
@@ -2049,7 +2051,7 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 				if (list.isEmpty()) {
 					if (useFinderCache) {
 						finderCache.putResult(
-							_finderPathFetchByLocalWellKnownURI, finderArgs,
+							_finderPathFetchByLocalWellKnownURIOAS, finderArgs,
 							list);
 					}
 				}
@@ -2079,32 +2081,32 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	}
 
 	/**
-	 * Removes the o auth client as local metadata where localWellKnownURI = &#63; from the database.
+	 * Removes the o auth client as local metadata where localWellKnownURIOAS = &#63; from the database.
 	 *
-	 * @param localWellKnownURI the local well known uri
+	 * @param localWellKnownURIOAS the local well known urioas
 	 * @return the o auth client as local metadata that was removed
 	 */
 	@Override
-	public OAuthClientASLocalMetadata removeByLocalWellKnownURI(
-			String localWellKnownURI)
+	public OAuthClientASLocalMetadata removeByLocalWellKnownURIOAS(
+			String localWellKnownURIOAS)
 		throws NoSuchOAuthClientASLocalMetadataException {
 
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			findByLocalWellKnownURI(localWellKnownURI);
+			findByLocalWellKnownURIOAS(localWellKnownURIOAS);
 
 		return remove(oAuthClientASLocalMetadata);
 	}
 
 	/**
-	 * Returns the number of o auth client as local metadatas where localWellKnownURI = &#63;.
+	 * Returns the number of o auth client as local metadatas where localWellKnownURIOAS = &#63;.
 	 *
-	 * @param localWellKnownURI the local well known uri
+	 * @param localWellKnownURIOAS the local well known urioas
 	 * @return the number of matching o auth client as local metadatas
 	 */
 	@Override
-	public int countByLocalWellKnownURI(String localWellKnownURI) {
+	public int countByLocalWellKnownURIOAS(String localWellKnownURIOAS) {
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			fetchByLocalWellKnownURI(localWellKnownURI);
+			fetchByLocalWellKnownURIOAS(localWellKnownURIOAS);
 
 		if (oAuthClientASLocalMetadata == null) {
 			return 0;
@@ -2114,12 +2116,210 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	}
 
 	private static final String
-		_FINDER_COLUMN_LOCALWELLKNOWNURI_LOCALWELLKNOWNURI_2 =
-			"oAuthClientASLocalMetadata.localWellKnownURI = ?";
+		_FINDER_COLUMN_LOCALWELLKNOWNURIOAS_LOCALWELLKNOWNURIOAS_2 =
+			"oAuthClientASLocalMetadata.localWellKnownURIOAS = ?";
 
 	private static final String
-		_FINDER_COLUMN_LOCALWELLKNOWNURI_LOCALWELLKNOWNURI_3 =
-			"(oAuthClientASLocalMetadata.localWellKnownURI IS NULL OR oAuthClientASLocalMetadata.localWellKnownURI = '')";
+		_FINDER_COLUMN_LOCALWELLKNOWNURIOAS_LOCALWELLKNOWNURIOAS_3 =
+			"(oAuthClientASLocalMetadata.localWellKnownURIOAS IS NULL OR oAuthClientASLocalMetadata.localWellKnownURIOAS = '')";
+
+	private FinderPath _finderPathFetchByLocalWellKnownURIOIC;
+
+	/**
+	 * Returns the o auth client as local metadata where localWellKnownURIOIC = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic
+	 * @return the matching o auth client as local metadata
+	 * @throws NoSuchOAuthClientASLocalMetadataException if a matching o auth client as local metadata could not be found
+	 */
+	@Override
+	public OAuthClientASLocalMetadata findByLocalWellKnownURIOIC(
+			String localWellKnownURIOIC)
+		throws NoSuchOAuthClientASLocalMetadataException {
+
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			fetchByLocalWellKnownURIOIC(localWellKnownURIOIC);
+
+		if (oAuthClientASLocalMetadata == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("localWellKnownURIOIC=");
+			sb.append(localWellKnownURIOIC);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchOAuthClientASLocalMetadataException(sb.toString());
+		}
+
+		return oAuthClientASLocalMetadata;
+	}
+
+	/**
+	 * Returns the o auth client as local metadata where localWellKnownURIOIC = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic
+	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
+	 */
+	@Override
+	public OAuthClientASLocalMetadata fetchByLocalWellKnownURIOIC(
+		String localWellKnownURIOIC) {
+
+		return fetchByLocalWellKnownURIOIC(localWellKnownURIOIC, true);
+	}
+
+	/**
+	 * Returns the o auth client as local metadata where localWellKnownURIOIC = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
+	 */
+	@Override
+	public OAuthClientASLocalMetadata fetchByLocalWellKnownURIOIC(
+		String localWellKnownURIOIC, boolean useFinderCache) {
+
+		localWellKnownURIOIC = Objects.toString(localWellKnownURIOIC, "");
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {localWellKnownURIOIC};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(
+				_finderPathFetchByLocalWellKnownURIOIC, finderArgs, this);
+		}
+
+		if (result instanceof OAuthClientASLocalMetadata) {
+			OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+				(OAuthClientASLocalMetadata)result;
+
+			if (!Objects.equals(
+					localWellKnownURIOIC,
+					oAuthClientASLocalMetadata.getLocalWellKnownURIOIC())) {
+
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_SELECT_OAUTHCLIENTASLOCALMETADATA_WHERE);
+
+			boolean bindLocalWellKnownURIOIC = false;
+
+			if (localWellKnownURIOIC.isEmpty()) {
+				sb.append(
+					_FINDER_COLUMN_LOCALWELLKNOWNURIOIC_LOCALWELLKNOWNURIOIC_3);
+			}
+			else {
+				bindLocalWellKnownURIOIC = true;
+
+				sb.append(
+					_FINDER_COLUMN_LOCALWELLKNOWNURIOIC_LOCALWELLKNOWNURIOIC_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindLocalWellKnownURIOIC) {
+					queryPos.add(localWellKnownURIOIC);
+				}
+
+				List<OAuthClientASLocalMetadata> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByLocalWellKnownURIOIC, finderArgs,
+							list);
+					}
+				}
+				else {
+					OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+						list.get(0);
+
+					result = oAuthClientASLocalMetadata;
+
+					cacheResult(oAuthClientASLocalMetadata);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (OAuthClientASLocalMetadata)result;
+		}
+	}
+
+	/**
+	 * Removes the o auth client as local metadata where localWellKnownURIOIC = &#63; from the database.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic
+	 * @return the o auth client as local metadata that was removed
+	 */
+	@Override
+	public OAuthClientASLocalMetadata removeByLocalWellKnownURIOIC(
+			String localWellKnownURIOIC)
+		throws NoSuchOAuthClientASLocalMetadataException {
+
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			findByLocalWellKnownURIOIC(localWellKnownURIOIC);
+
+		return remove(oAuthClientASLocalMetadata);
+	}
+
+	/**
+	 * Returns the number of o auth client as local metadatas where localWellKnownURIOIC = &#63;.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic
+	 * @return the number of matching o auth client as local metadatas
+	 */
+	@Override
+	public int countByLocalWellKnownURIOIC(String localWellKnownURIOIC) {
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			fetchByLocalWellKnownURIOIC(localWellKnownURIOIC);
+
+		if (oAuthClientASLocalMetadata == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String
+		_FINDER_COLUMN_LOCALWELLKNOWNURIOIC_LOCALWELLKNOWNURIOIC_2 =
+			"oAuthClientASLocalMetadata.localWellKnownURIOIC = ?";
+
+	private static final String
+		_FINDER_COLUMN_LOCALWELLKNOWNURIOIC_LOCALWELLKNOWNURIOIC_3 =
+			"(oAuthClientASLocalMetadata.localWellKnownURIOIC IS NULL OR oAuthClientASLocalMetadata.localWellKnownURIOIC = '')";
 
 	public OAuthClientASLocalMetadataPersistenceImpl() {
 		setModelClass(OAuthClientASLocalMetadata.class);
@@ -2145,8 +2345,13 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 			oAuthClientASLocalMetadata);
 
 		finderCache.putResult(
-			_finderPathFetchByLocalWellKnownURI,
-			new Object[] {oAuthClientASLocalMetadata.getLocalWellKnownURI()},
+			_finderPathFetchByLocalWellKnownURIOAS,
+			new Object[] {oAuthClientASLocalMetadata.getLocalWellKnownURIOAS()},
+			oAuthClientASLocalMetadata);
+
+		finderCache.putResult(
+			_finderPathFetchByLocalWellKnownURIOIC,
+			new Object[] {oAuthClientASLocalMetadata.getLocalWellKnownURIOIC()},
 			oAuthClientASLocalMetadata);
 	}
 
@@ -2238,11 +2443,19 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 			oAuthClientASLocalMetadataModelImpl) {
 
 		Object[] args = new Object[] {
-			oAuthClientASLocalMetadataModelImpl.getLocalWellKnownURI()
+			oAuthClientASLocalMetadataModelImpl.getLocalWellKnownURIOAS()
 		};
 
 		finderCache.putResult(
-			_finderPathFetchByLocalWellKnownURI, args,
+			_finderPathFetchByLocalWellKnownURIOAS, args,
+			oAuthClientASLocalMetadataModelImpl);
+
+		args = new Object[] {
+			oAuthClientASLocalMetadataModelImpl.getLocalWellKnownURIOIC()
+		};
+
+		finderCache.putResult(
+			_finderPathFetchByLocalWellKnownURIOIC, args,
 			oAuthClientASLocalMetadataModelImpl);
 	}
 
@@ -2764,10 +2977,15 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 			new String[] {Long.class.getName()}, new String[] {"userId"},
 			false);
 
-		_finderPathFetchByLocalWellKnownURI = new FinderPath(
-			FINDER_CLASS_NAME_ENTITY, "fetchByLocalWellKnownURI",
+		_finderPathFetchByLocalWellKnownURIOAS = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByLocalWellKnownURIOAS",
 			new String[] {String.class.getName()},
-			new String[] {"localWellKnownURI"}, true);
+			new String[] {"localWellKnownURIOAS"}, true);
+
+		_finderPathFetchByLocalWellKnownURIOIC = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByLocalWellKnownURIOIC",
+			new String[] {String.class.getName()},
+			new String[] {"localWellKnownURIOIC"}, true);
 
 		OAuthClientASLocalMetadataUtil.setPersistence(this);
 	}

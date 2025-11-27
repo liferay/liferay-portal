@@ -6,8 +6,14 @@ create table OAuthClientASLocalMetadata (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	localWellKnownURI VARCHAR(256) null,
-	metadataJSON TEXT null
+	allowedGrantTypes VARCHAR(75) null,
+	allowedScopes VARCHAR(75) null,
+	issuer VARCHAR(75) null,
+	localWellKnownEnabled BOOLEAN,
+	localWellKnownURIOAS VARCHAR(75) null,
+	localWellKnownURIOIC VARCHAR(75) null,
+	metadataJSONAS VARCHAR(75) null,
+	metadataJSONOIC VARCHAR(75) null
 );
 
 create table OAuthClientEntry (

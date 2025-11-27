@@ -72,7 +72,7 @@ public class OAuthClientASLocalMetadataCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -88,10 +88,22 @@ public class OAuthClientASLocalMetadataCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", localWellKnownURI=");
-		sb.append(localWellKnownURI);
-		sb.append(", metadataJSON=");
-		sb.append(metadataJSON);
+		sb.append(", allowedGrantTypes=");
+		sb.append(allowedGrantTypes);
+		sb.append(", allowedScopes=");
+		sb.append(allowedScopes);
+		sb.append(", issuer=");
+		sb.append(issuer);
+		sb.append(", localWellKnownEnabled=");
+		sb.append(localWellKnownEnabled);
+		sb.append(", localWellKnownURIOAS=");
+		sb.append(localWellKnownURIOAS);
+		sb.append(", localWellKnownURIOIC=");
+		sb.append(localWellKnownURIOIC);
+		sb.append(", metadataJSONAS=");
+		sb.append(metadataJSONAS);
+		sb.append(", metadataJSONOIC=");
+		sb.append(metadataJSONOIC);
 		sb.append("}");
 
 		return sb.toString();
@@ -130,19 +142,59 @@ public class OAuthClientASLocalMetadataCacheModel
 				new Date(modifiedDate));
 		}
 
-		if (localWellKnownURI == null) {
-			oAuthClientASLocalMetadataImpl.setLocalWellKnownURI("");
+		if (allowedGrantTypes == null) {
+			oAuthClientASLocalMetadataImpl.setAllowedGrantTypes("");
 		}
 		else {
-			oAuthClientASLocalMetadataImpl.setLocalWellKnownURI(
-				localWellKnownURI);
+			oAuthClientASLocalMetadataImpl.setAllowedGrantTypes(
+				allowedGrantTypes);
 		}
 
-		if (metadataJSON == null) {
-			oAuthClientASLocalMetadataImpl.setMetadataJSON("");
+		if (allowedScopes == null) {
+			oAuthClientASLocalMetadataImpl.setAllowedScopes("");
 		}
 		else {
-			oAuthClientASLocalMetadataImpl.setMetadataJSON(metadataJSON);
+			oAuthClientASLocalMetadataImpl.setAllowedScopes(allowedScopes);
+		}
+
+		if (issuer == null) {
+			oAuthClientASLocalMetadataImpl.setIssuer("");
+		}
+		else {
+			oAuthClientASLocalMetadataImpl.setIssuer(issuer);
+		}
+
+		oAuthClientASLocalMetadataImpl.setLocalWellKnownEnabled(
+			localWellKnownEnabled);
+
+		if (localWellKnownURIOAS == null) {
+			oAuthClientASLocalMetadataImpl.setLocalWellKnownURIOAS("");
+		}
+		else {
+			oAuthClientASLocalMetadataImpl.setLocalWellKnownURIOAS(
+				localWellKnownURIOAS);
+		}
+
+		if (localWellKnownURIOIC == null) {
+			oAuthClientASLocalMetadataImpl.setLocalWellKnownURIOIC("");
+		}
+		else {
+			oAuthClientASLocalMetadataImpl.setLocalWellKnownURIOIC(
+				localWellKnownURIOIC);
+		}
+
+		if (metadataJSONAS == null) {
+			oAuthClientASLocalMetadataImpl.setMetadataJSONAS("");
+		}
+		else {
+			oAuthClientASLocalMetadataImpl.setMetadataJSONAS(metadataJSONAS);
+		}
+
+		if (metadataJSONOIC == null) {
+			oAuthClientASLocalMetadataImpl.setMetadataJSONOIC("");
+		}
+		else {
+			oAuthClientASLocalMetadataImpl.setMetadataJSONOIC(metadataJSONOIC);
 		}
 
 		oAuthClientASLocalMetadataImpl.resetOriginalValues();
@@ -151,9 +203,7 @@ public class OAuthClientASLocalMetadataCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput)
-		throws ClassNotFoundException, IOException {
-
+	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
 
 		oAuthClientASLocalMetadataId = objectInput.readLong();
@@ -164,8 +214,15 @@ public class OAuthClientASLocalMetadataCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		localWellKnownURI = objectInput.readUTF();
-		metadataJSON = (String)objectInput.readObject();
+		allowedGrantTypes = objectInput.readUTF();
+		allowedScopes = objectInput.readUTF();
+		issuer = objectInput.readUTF();
+
+		localWellKnownEnabled = objectInput.readBoolean();
+		localWellKnownURIOAS = objectInput.readUTF();
+		localWellKnownURIOIC = objectInput.readUTF();
+		metadataJSONAS = objectInput.readUTF();
+		metadataJSONOIC = objectInput.readUTF();
 	}
 
 	@Override
@@ -188,18 +245,55 @@ public class OAuthClientASLocalMetadataCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		if (localWellKnownURI == null) {
+		if (allowedGrantTypes == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(localWellKnownURI);
+			objectOutput.writeUTF(allowedGrantTypes);
 		}
 
-		if (metadataJSON == null) {
-			objectOutput.writeObject("");
+		if (allowedScopes == null) {
+			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeObject(metadataJSON);
+			objectOutput.writeUTF(allowedScopes);
+		}
+
+		if (issuer == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(issuer);
+		}
+
+		objectOutput.writeBoolean(localWellKnownEnabled);
+
+		if (localWellKnownURIOAS == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(localWellKnownURIOAS);
+		}
+
+		if (localWellKnownURIOIC == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(localWellKnownURIOIC);
+		}
+
+		if (metadataJSONAS == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(metadataJSONAS);
+		}
+
+		if (metadataJSONOIC == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(metadataJSONOIC);
 		}
 	}
 
@@ -210,7 +304,13 @@ public class OAuthClientASLocalMetadataCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public String localWellKnownURI;
-	public String metadataJSON;
+	public String allowedGrantTypes;
+	public String allowedScopes;
+	public String issuer;
+	public boolean localWellKnownEnabled;
+	public String localWellKnownURIOAS;
+	public String localWellKnownURIOIC;
+	public String metadataJSONAS;
+	public String metadataJSONOIC;
 
 }

@@ -44,8 +44,14 @@ public class OAuthClientASLocalMetadataWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("localWellKnownURI", getLocalWellKnownURI());
-		attributes.put("metadataJSON", getMetadataJSON());
+		attributes.put("allowedGrantTypes", getAllowedGrantTypes());
+		attributes.put("allowedScopes", getAllowedScopes());
+		attributes.put("issuer", getIssuer());
+		attributes.put("localWellKnownEnabled", isLocalWellKnownEnabled());
+		attributes.put("localWellKnownURIOAS", getLocalWellKnownURIOAS());
+		attributes.put("localWellKnownURIOIC", getLocalWellKnownURIOIC());
+		attributes.put("metadataJSONAS", getMetadataJSONAS());
+		attributes.put("metadataJSONOIC", getMetadataJSONOIC());
 
 		return attributes;
 	}
@@ -95,22 +101,81 @@ public class OAuthClientASLocalMetadataWrapper
 			setModifiedDate(modifiedDate);
 		}
 
-		String localWellKnownURI = (String)attributes.get("localWellKnownURI");
+		String allowedGrantTypes = (String)attributes.get("allowedGrantTypes");
 
-		if (localWellKnownURI != null) {
-			setLocalWellKnownURI(localWellKnownURI);
+		if (allowedGrantTypes != null) {
+			setAllowedGrantTypes(allowedGrantTypes);
 		}
 
-		String metadataJSON = (String)attributes.get("metadataJSON");
+		String allowedScopes = (String)attributes.get("allowedScopes");
 
-		if (metadataJSON != null) {
-			setMetadataJSON(metadataJSON);
+		if (allowedScopes != null) {
+			setAllowedScopes(allowedScopes);
+		}
+
+		String issuer = (String)attributes.get("issuer");
+
+		if (issuer != null) {
+			setIssuer(issuer);
+		}
+
+		Boolean localWellKnownEnabled = (Boolean)attributes.get(
+			"localWellKnownEnabled");
+
+		if (localWellKnownEnabled != null) {
+			setLocalWellKnownEnabled(localWellKnownEnabled);
+		}
+
+		String localWellKnownURIOAS = (String)attributes.get(
+			"localWellKnownURIOAS");
+
+		if (localWellKnownURIOAS != null) {
+			setLocalWellKnownURIOAS(localWellKnownURIOAS);
+		}
+
+		String localWellKnownURIOIC = (String)attributes.get(
+			"localWellKnownURIOIC");
+
+		if (localWellKnownURIOIC != null) {
+			setLocalWellKnownURIOIC(localWellKnownURIOIC);
+		}
+
+		String metadataJSONAS = (String)attributes.get("metadataJSONAS");
+
+		if (metadataJSONAS != null) {
+			setMetadataJSONAS(metadataJSONAS);
+		}
+
+		String metadataJSONOIC = (String)attributes.get("metadataJSONOIC");
+
+		if (metadataJSONOIC != null) {
+			setMetadataJSONOIC(metadataJSONOIC);
 		}
 	}
 
 	@Override
 	public OAuthClientASLocalMetadata cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
+	}
+
+	/**
+	 * Returns the allowed grant types of this o auth client as local metadata.
+	 *
+	 * @return the allowed grant types of this o auth client as local metadata
+	 */
+	@Override
+	public String getAllowedGrantTypes() {
+		return model.getAllowedGrantTypes();
+	}
+
+	/**
+	 * Returns the allowed scopes of this o auth client as local metadata.
+	 *
+	 * @return the allowed scopes of this o auth client as local metadata
+	 */
+	@Override
+	public String getAllowedScopes() {
+		return model.getAllowedScopes();
 	}
 
 	/**
@@ -134,23 +199,63 @@ public class OAuthClientASLocalMetadataWrapper
 	}
 
 	/**
-	 * Returns the local well known uri of this o auth client as local metadata.
+	 * Returns the issuer of this o auth client as local metadata.
 	 *
-	 * @return the local well known uri of this o auth client as local metadata
+	 * @return the issuer of this o auth client as local metadata
 	 */
 	@Override
-	public String getLocalWellKnownURI() {
-		return model.getLocalWellKnownURI();
+	public String getIssuer() {
+		return model.getIssuer();
 	}
 
 	/**
-	 * Returns the metadata json of this o auth client as local metadata.
+	 * Returns the local well known enabled of this o auth client as local metadata.
 	 *
-	 * @return the metadata json of this o auth client as local metadata
+	 * @return the local well known enabled of this o auth client as local metadata
 	 */
 	@Override
-	public String getMetadataJSON() {
-		return model.getMetadataJSON();
+	public boolean getLocalWellKnownEnabled() {
+		return model.getLocalWellKnownEnabled();
+	}
+
+	/**
+	 * Returns the local well known urioas of this o auth client as local metadata.
+	 *
+	 * @return the local well known urioas of this o auth client as local metadata
+	 */
+	@Override
+	public String getLocalWellKnownURIOAS() {
+		return model.getLocalWellKnownURIOAS();
+	}
+
+	/**
+	 * Returns the local well known urioic of this o auth client as local metadata.
+	 *
+	 * @return the local well known urioic of this o auth client as local metadata
+	 */
+	@Override
+	public String getLocalWellKnownURIOIC() {
+		return model.getLocalWellKnownURIOIC();
+	}
+
+	/**
+	 * Returns the metadata jsonas of this o auth client as local metadata.
+	 *
+	 * @return the metadata jsonas of this o auth client as local metadata
+	 */
+	@Override
+	public String getMetadataJSONAS() {
+		return model.getMetadataJSONAS();
+	}
+
+	/**
+	 * Returns the metadata jsonoic of this o auth client as local metadata.
+	 *
+	 * @return the metadata jsonoic of this o auth client as local metadata
+	 */
+	@Override
+	public String getMetadataJSONOIC() {
+		return model.getMetadataJSONOIC();
 	}
 
 	/**
@@ -223,9 +328,39 @@ public class OAuthClientASLocalMetadataWrapper
 		return model.getUserUuid();
 	}
 
+	/**
+	 * Returns <code>true</code> if this o auth client as local metadata is local well known enabled.
+	 *
+	 * @return <code>true</code> if this o auth client as local metadata is local well known enabled; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isLocalWellKnownEnabled() {
+		return model.isLocalWellKnownEnabled();
+	}
+
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the allowed grant types of this o auth client as local metadata.
+	 *
+	 * @param allowedGrantTypes the allowed grant types of this o auth client as local metadata
+	 */
+	@Override
+	public void setAllowedGrantTypes(String allowedGrantTypes) {
+		model.setAllowedGrantTypes(allowedGrantTypes);
+	}
+
+	/**
+	 * Sets the allowed scopes of this o auth client as local metadata.
+	 *
+	 * @param allowedScopes the allowed scopes of this o auth client as local metadata
+	 */
+	@Override
+	public void setAllowedScopes(String allowedScopes) {
+		model.setAllowedScopes(allowedScopes);
 	}
 
 	/**
@@ -249,23 +384,63 @@ public class OAuthClientASLocalMetadataWrapper
 	}
 
 	/**
-	 * Sets the local well known uri of this o auth client as local metadata.
+	 * Sets the issuer of this o auth client as local metadata.
 	 *
-	 * @param localWellKnownURI the local well known uri of this o auth client as local metadata
+	 * @param issuer the issuer of this o auth client as local metadata
 	 */
 	@Override
-	public void setLocalWellKnownURI(String localWellKnownURI) {
-		model.setLocalWellKnownURI(localWellKnownURI);
+	public void setIssuer(String issuer) {
+		model.setIssuer(issuer);
 	}
 
 	/**
-	 * Sets the metadata json of this o auth client as local metadata.
+	 * Sets whether this o auth client as local metadata is local well known enabled.
 	 *
-	 * @param metadataJSON the metadata json of this o auth client as local metadata
+	 * @param localWellKnownEnabled the local well known enabled of this o auth client as local metadata
 	 */
 	@Override
-	public void setMetadataJSON(String metadataJSON) {
-		model.setMetadataJSON(metadataJSON);
+	public void setLocalWellKnownEnabled(boolean localWellKnownEnabled) {
+		model.setLocalWellKnownEnabled(localWellKnownEnabled);
+	}
+
+	/**
+	 * Sets the local well known urioas of this o auth client as local metadata.
+	 *
+	 * @param localWellKnownURIOAS the local well known urioas of this o auth client as local metadata
+	 */
+	@Override
+	public void setLocalWellKnownURIOAS(String localWellKnownURIOAS) {
+		model.setLocalWellKnownURIOAS(localWellKnownURIOAS);
+	}
+
+	/**
+	 * Sets the local well known urioic of this o auth client as local metadata.
+	 *
+	 * @param localWellKnownURIOIC the local well known urioic of this o auth client as local metadata
+	 */
+	@Override
+	public void setLocalWellKnownURIOIC(String localWellKnownURIOIC) {
+		model.setLocalWellKnownURIOIC(localWellKnownURIOIC);
+	}
+
+	/**
+	 * Sets the metadata jsonas of this o auth client as local metadata.
+	 *
+	 * @param metadataJSONAS the metadata jsonas of this o auth client as local metadata
+	 */
+	@Override
+	public void setMetadataJSONAS(String metadataJSONAS) {
+		model.setMetadataJSONAS(metadataJSONAS);
+	}
+
+	/**
+	 * Sets the metadata jsonoic of this o auth client as local metadata.
+	 *
+	 * @param metadataJSONOIC the metadata jsonoic of this o auth client as local metadata
+	 */
+	@Override
+	public void setMetadataJSONOIC(String metadataJSONOIC) {
+		model.setMetadataJSONOIC(metadataJSONOIC);
 	}
 
 	/**
