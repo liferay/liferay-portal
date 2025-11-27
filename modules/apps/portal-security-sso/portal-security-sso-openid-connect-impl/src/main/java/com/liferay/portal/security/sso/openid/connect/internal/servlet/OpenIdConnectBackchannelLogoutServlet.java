@@ -75,33 +75,28 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			return;
 		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug("Backchannel OIDC logout with token: " + logoutToken);
-		}
-
 		try {
 			JWT jwt = JWTParser.parse(logoutToken);
 
 			JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
 
-			OpenIdConnectSession oidcSession =
+			OpenIdConnectSession openIdConnectSession =
 				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
 					jwtClaimsSet.getClaimAsString("iss") +
 						"/.well-known/openid-configuration",
 					jwtClaimsSet.getClaimAsString("sid"));
 
-			if (oidcSession == null) {
+			if (openIdConnectSession == null) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
-						"There is no active Open ID session for the " +
-							"specified sid " +
-								jwtClaimsSet.getClaimAsString("sid"));
+						"There is no OIDC session for the specified sid " +
+							jwtClaimsSet.getClaimAsString("sid"));
 				}
 
 				return;
 			}
 
-			jwt = JWTParser.parse(oidcSession.getIdToken());
+			jwt = JWTParser.parse(openIdConnectSession.getIdToken());
 
 			jwtClaimsSet = jwt.getJWTClaimsSet();
 
@@ -123,21 +118,22 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 			LogoutTokenValidator logoutTokenValidator =
 				new LogoutTokenValidator(
-					issuer, new ClientID(oidcSession.getClientId()),
+					issuer, new ClientID(openIdConnectSession.getClientId()),
 					jwsHeader.getAlgorithm(), new URL(jwksURI));
 
 			logoutTokenValidator.validate(jwt);
 
 			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
-				oidcSession);
+				openIdConnectSession);
 
 			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
 			if (_log.isInfoEnabled()) {
 				_log.info(
 					StringBundler.concat(
-						"Terminating oidc session ", oidcSession.getSid(),
-						" for userId ", oidcSession.getUserId()));
+						"OIDC session ", openIdConnectSession.getSid(),
+						" has been terminated for user ",
+						openIdConnectSession.getUserId()));
 			}
 		}
 		catch (Exception exception) {
@@ -148,7 +144,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			}
 
 			throw new SystemException(
-				"OpenId Connect backchannel logout failed", exception);
+				"OIDC backchannel logout failed", exception);
 		}
 	}
 
@@ -173,12 +169,12 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			String jwksURI = (String)properties.get("jwksURI");
 
 			if (discoveryEndPoint != null) {
-				OIDCProviderMetadata metadata = _resolveOIDCProviderMetadata(
-					discoveryEndPoint);
+				OIDCProviderMetadata oidcProviderMetadata =
+					_resolveOIDCProviderMetadata(discoveryEndPoint);
 
-				issuerURL = metadata.getIssuer(
+				issuerURL = oidcProviderMetadata.getIssuer(
 				).getValue();
-				jwksURI = metadata.getJWKSetURI(
+				jwksURI = oidcProviderMetadata.getJWKSetURI(
 				).toString();
 			}
 
