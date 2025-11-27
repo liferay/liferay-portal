@@ -88,7 +88,9 @@ export default function propsTransformer({
 		return props;
 	};
 
-	const tableView = views.find((view) => view.name === 'customizedTable')!;
+	const tableView = views.find((view) =>
+		view.name?.toLowerCase().includes('table')
+	)!;
 
 	tableView.setItemComponentProps = ({
 		item,
