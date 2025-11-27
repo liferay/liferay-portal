@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"osgi.http.whiteboard.context.path=/open_id_connect/backchannel_logout",
-		"osgi.http.whiteboard.servlet.name=com.liferay.portal.security.sso.openid.connect.internal.servlet.filter.backchannel.logout.OpenIdConnectBackchannelLogoutFilter",
+		"osgi.http.whiteboard.servlet.name=com.liferay.portal.security.sso.openid.connect.internal.servlet.OpenIdConnectBackchannelLogoutServlet",
 		"osgi.http.whiteboard.servlet.pattern=/open_id_connect/backchannel_logout/*"
 	},
 	service = Servlet.class
