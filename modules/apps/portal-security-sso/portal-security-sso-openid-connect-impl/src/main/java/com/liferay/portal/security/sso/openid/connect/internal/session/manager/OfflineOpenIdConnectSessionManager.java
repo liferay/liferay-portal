@@ -347,7 +347,7 @@ public class OfflineOpenIdConnectSessionManager {
 
 			JWTClaimsSet idTokenClaimsSet = idTokenJWT.getJWTClaimsSet();
 
-			openIdConnectSession.setSid(
+			openIdConnectSession.setSessionId(
 				idTokenClaimsSet.getClaimAsString("sid"));
 		}
 		catch (ParseException parseException) {

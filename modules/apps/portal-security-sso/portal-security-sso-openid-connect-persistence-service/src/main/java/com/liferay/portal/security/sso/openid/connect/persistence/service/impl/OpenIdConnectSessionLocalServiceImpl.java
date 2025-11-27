@@ -81,10 +81,10 @@ public class OpenIdConnectSessionLocalServiceImpl
 
 	@Override
 	public OpenIdConnectSession fetchOpenIdConnectSession(
-		String authServerWellKnownURI, String sid) {
+		String authServerWellKnownURI, String sessionId) {
 
 		return openIdConnectSessionPersistence.fetchByA_S(
-			authServerWellKnownURI, sid);
+			authServerWellKnownURI, sessionId);
 	}
 
 	@Override

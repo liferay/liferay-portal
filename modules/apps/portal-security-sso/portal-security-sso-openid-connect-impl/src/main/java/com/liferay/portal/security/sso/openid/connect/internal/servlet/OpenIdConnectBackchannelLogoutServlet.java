@@ -89,7 +89,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			if (openIdConnectSession == null) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
-						"There is no OIDC session for the specified sid " +
+						"There is no OIDC session with sessionId " +
 							jwtClaimsSet.getClaimAsString("sid"));
 				}
 
@@ -131,7 +131,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			if (_log.isInfoEnabled()) {
 				_log.info(
 					StringBundler.concat(
-						"OIDC session ", openIdConnectSession.getSid(),
+						"OIDC session ", openIdConnectSession.getSessionId(),
 						" has been terminated for user ",
 						openIdConnectSession.getUserId()));
 			}
