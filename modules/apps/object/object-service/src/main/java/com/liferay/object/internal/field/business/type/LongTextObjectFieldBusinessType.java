@@ -12,7 +12,9 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.render.ObjectFieldRenderingContext;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
+import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -109,6 +111,31 @@ public class LongTextObjectFieldBusinessType
 			objectField, ObjectFieldSettingConstants.NAME_SHOW_COUNTER,
 			ObjectFieldSettingConstants.NAME_MAX_LENGTH,
 			getObjectFieldSettingsValues(objectFieldSettings));
+	}
+
+	@Override
+	public void validateObjectFieldSettingsDefaultValue(
+			ObjectField objectField,
+			Map<String, String> objectFieldSettingsValuesMap)
+		throws PortalException {
+
+		super.validateObjectFieldSettingsDefaultValue(
+			objectField, objectFieldSettingsValuesMap);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				objectField.getCompanyId(), "LPD-46451")) {
+
+			String defaultValue = objectFieldSettingsValuesMap.get(
+				ObjectFieldSettingConstants.NAME_DEFAULT_VALUE);
+
+			if (defaultValue != null) {
+				validateMaxLength(
+					DynamicObjectDefinitionTableUtil.getMaxLength(
+						objectField.getBusinessType()),
+					ObjectFieldSettingConstants.NAME_DEFAULT_VALUE,
+					defaultValue);
+			}
+		}
 	}
 
 	@Reference

@@ -89,8 +89,13 @@ public class DynamicObjectDefinitionTableUtil {
 
 	public static int getMaxLength(String businessType) {
 		if (StringUtil.equals(
-				businessType,
-				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT)) {
+
+			return 65000;
+		}
+		else if (StringUtil.equals(
+					businessType,
+					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
 
 			if (DBManagerUtil.getDBType() == DBType.SQLSERVER) {
 				return 4000;

@@ -97,6 +97,34 @@ public abstract class BaseObjectFieldBusinessType
 		).build();
 	}
 
+	@Override
+	public void validateObjectFieldSettingsDefaultValue(
+			ObjectField objectField,
+			Map<String, String> objectFieldSettingsValuesMap)
+		throws PortalException {
+
+		if (objectFieldSettingsValuesMap.isEmpty()) {
+			return;
+		}
+
+		ObjectFieldBusinessType.super.validateObjectFieldSettingsDefaultValue(
+			objectField, objectFieldSettingsValuesMap);
+
+		String defaultValueType = objectFieldSettingsValuesMap.get(
+			ObjectFieldSettingConstants.NAME_DEFAULT_VALUE_TYPE);
+
+		if (com.liferay.portal.kernel.util.StringUtil.equals(
+				defaultValueType,
+				ObjectFieldSettingConstants.VALUE_EXPRESSION_BUILDER) &&
+			objectField.isState()) {
+
+			throw new ObjectFieldSettingValueException.InvalidValue(
+				objectField.getName(),
+				ObjectFieldSettingConstants.NAME_DEFAULT_VALUE_TYPE,
+				defaultValueType);
+		}
+	}
+
 	protected Map<String, String> getObjectFieldSettingsValues(
 		List<ObjectFieldSetting> objectFieldSettings) {
 
