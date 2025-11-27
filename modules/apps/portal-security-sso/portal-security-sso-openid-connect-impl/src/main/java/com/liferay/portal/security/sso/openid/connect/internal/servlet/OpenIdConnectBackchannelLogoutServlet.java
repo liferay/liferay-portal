@@ -20,9 +20,7 @@ import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdCo
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
 
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -75,13 +73,13 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		}
 
 		try {
-			JWT jwt = JWTParser.parse(logoutToken);
+			SignedJWT signedJWT = SignedJWT.parse(logoutToken);
 
-			JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
+			JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
 			OpenIdConnectSession openIdConnectSession =
 				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
-					jwtClaimsSet.getClaimAsString("iss") +
+					jwtClaimsSet.getIssuer() +
 						"/.well-known/openid-configuration",
 					jwtClaimsSet.getClaimAsString("sid"));
 
@@ -95,10 +93,6 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 				return;
 			}
 
-			jwt = JWTParser.parse(openIdConnectSession.getIdToken());
-
-			jwtClaimsSet = jwt.getJWTClaimsSet();
-
 			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
 
 			String jwksURI = getJWKSURI(issuer);
@@ -111,8 +105,6 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 				return;
 			}
 
-			SignedJWT signedJWT = SignedJWT.parse(logoutToken);
-
 			JWSHeader jwsHeader = signedJWT.getHeader();
 
 			LogoutTokenValidator logoutTokenValidator =
@@ -120,7 +112,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 					issuer, new ClientID(openIdConnectSession.getClientId()),
 					jwsHeader.getAlgorithm(), new URL(jwksURI));
 
-			logoutTokenValidator.validate(jwt);
+			logoutTokenValidator.validate(signedJWT);
 
 			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
 				openIdConnectSession);
