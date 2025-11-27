@@ -170,7 +170,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 			if (discoveryEndpoint != null) {
 				OIDCProviderMetadata oidcProviderMetadata =
-					_resolveOIDCProviderMetadata(discoveryEndpoint);
+					_getOIDCProviderMetadata(discoveryEndpoint);
 
 				issuerURL = oidcProviderMetadata.getIssuer(
 				).getValue();
@@ -186,7 +186,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		return StringPool.BLANK;
 	}
 
-	private OIDCProviderMetadata _resolveOIDCProviderMetadata(
+	private OIDCProviderMetadata _getOIDCProviderMetadata(
 			String discoveryEndpoint)
 		throws Exception {
 
