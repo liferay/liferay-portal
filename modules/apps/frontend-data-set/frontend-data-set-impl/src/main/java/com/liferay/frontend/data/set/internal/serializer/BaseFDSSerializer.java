@@ -7,6 +7,7 @@ package com.liferay.frontend.data.set.internal.serializer;
 
 import com.liferay.frontend.data.set.internal.url.FDSAPIURLBuilder;
 import com.liferay.frontend.data.set.url.FDSAPIURLResolverRegistry;
+import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
@@ -16,7 +17,8 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -56,48 +58,68 @@ public abstract class BaseFDSSerializer {
 				WebKeys.THEME_DISPLAY);
 
 		String filterExpression = StringBundler.concat(
-			"('fdsName' eq '", fdsName, "' and 'creatorId' eq '",
-			themeDisplay.getUserId(), "')");
+			"(fdsName eq '", fdsName, "' and creatorId eq ",
+			themeDisplay.getUserId(), ")");
 
-		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.fetchObjectDefinition(
-				PortalUtil.getCompanyId(httpServletRequest),
-				"DataSetSnapshotFDSConfig");
+		ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
 
-		ObjectEntryManager objectEntryManager =
-			DefaultObjectEntryManagerProvider.provide(
-				objectEntryManagerRegistry.getObjectEntryManager(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getStorageType()));
+		JSONArray jsonArray = JSONUtil.putAll();
 
-		Group scopeGroup = themeDisplay.getScopeGroup();
+		try {
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.fetchObjectDefinition(
+					PortalUtil.getCompanyId(httpServletRequest),
+					"DataSetSnapshotFDSConfig");
 
-		Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
-			PortalUtil.getCompanyId(httpServletRequest), objectDefinition,
-			scopeGroup.getGroupKey(), null,
-			new DefaultDTOConverterContext(
-				false, null, null, null, null,
-				LocaleUtil.getMostRelevantLocale(), null, null),
-			filterExpression, null, null, null);
+			ObjectEntryManager objectEntryManager =
+				DefaultObjectEntryManagerProvider.provide(
+					objectEntryManagerRegistry.getObjectEntryManager(
+						objectDefinition.getCompanyId(),
+						objectDefinition.getStorageType()));
 
-		Collection<ObjectEntry> objectEntries = page.getItems();
+			Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+				PortalUtil.getCompanyId(httpServletRequest), objectDefinition,
+				null, null,
+				new DefaultDTOConverterContext(
+					false, null, null, null, null,
+					LocaleUtil.getMostRelevantLocale(), null, null),
+				filterExpression, null, null, null);
 
-		return JSONUtil.toJSONArray(
-			objectEntries,
-			(ObjectEntry objectEntry) -> {
-				Map<String, Object> properties = objectEntry.getProperties();
+			Collection<ObjectEntry> objectEntries = page.getItems();
 
-				return JSONUtil.put(
-					"configuration", properties.get("viewConfig")
-				).put(
-					"erc", objectEntry.getExternalReferenceCode()
-				).put(
-					"label", String.valueOf(properties.get("label"))
-				);
-			});
+			jsonArray = JSONUtil.toJSONArray(
+				objectEntries,
+				(ObjectEntry objectEntry) -> {
+					Map<String, Object> properties =
+						objectEntry.getProperties();
+
+					return JSONUtil.put(
+						"configuration", properties.get("viewConfig")
+					).put(
+						"erc", objectEntry.getExternalReferenceCode()
+					).put(
+						"label", String.valueOf(properties.get("label"))
+					);
+				});
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get snapshot FDS config object entries",
+					exception);
+			}
+		}
+		finally {
+			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(false);
+		}
+
+		return jsonArray;
 	}
 
 	@Reference
 	protected FDSAPIURLResolverRegistry fdsAPIURLResolverRegistry;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseFDSSerializer.class);
 
 }
