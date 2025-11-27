@@ -60,8 +60,9 @@ public class OpenIdConnectSessionTable
 	public final Column<OpenIdConnectSessionTable, String> refreshToken =
 		createColumn(
 			"refreshToken", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<OpenIdConnectSessionTable, String> sid = createColumn(
-		"sid", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<OpenIdConnectSessionTable, String> sessionId =
+		createColumn(
+			"sessionId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private OpenIdConnectSessionTable() {
 		super("OpenIdConnectSession", OpenIdConnectSessionTable::new);

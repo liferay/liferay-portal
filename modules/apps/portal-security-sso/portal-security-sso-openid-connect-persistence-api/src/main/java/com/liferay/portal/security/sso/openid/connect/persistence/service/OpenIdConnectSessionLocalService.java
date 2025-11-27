@@ -211,7 +211,7 @@ public interface OpenIdConnectSessionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpenIdConnectSession fetchOpenIdConnectSession(
-		String authServerWellKnownURI, String sid);
+		String authServerWellKnownURI, String sessionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpenIdConnectSession>

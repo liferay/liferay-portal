@@ -1152,20 +1152,20 @@ public class OpenIdConnectSessionPersistenceImpl
 	private FinderPath _finderPathFetchByA_S;
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
 	 *
 	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param sid the sid
+	 * @param sessionId the session ID
 	 * @return the matching open ID connect session
 	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
 	 */
 	@Override
 	public OpenIdConnectSession findByA_S(
-			String authServerWellKnownURI, String sid)
+			String authServerWellKnownURI, String sessionId)
 		throws NoSuchSessionException {
 
 		OpenIdConnectSession openIdConnectSession = fetchByA_S(
-			authServerWellKnownURI, sid);
+			authServerWellKnownURI, sessionId);
 
 		if (openIdConnectSession == null) {
 			StringBundler sb = new StringBundler(6);
@@ -1175,8 +1175,8 @@ public class OpenIdConnectSessionPersistenceImpl
 			sb.append("authServerWellKnownURI=");
 			sb.append(authServerWellKnownURI);
 
-			sb.append(", sid=");
-			sb.append(sid);
+			sb.append(", sessionId=");
+			sb.append(sessionId);
 
 			sb.append("}");
 
@@ -1191,38 +1191,39 @@ public class OpenIdConnectSessionPersistenceImpl
 	}
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param sid the sid
+	 * @param sessionId the session ID
 	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
 	 */
 	@Override
 	public OpenIdConnectSession fetchByA_S(
-		String authServerWellKnownURI, String sid) {
+		String authServerWellKnownURI, String sessionId) {
 
-		return fetchByA_S(authServerWellKnownURI, sid, true);
+		return fetchByA_S(authServerWellKnownURI, sessionId, true);
 	}
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param sid the sid
+	 * @param sessionId the session ID
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
 	 */
 	@Override
 	public OpenIdConnectSession fetchByA_S(
-		String authServerWellKnownURI, String sid, boolean useFinderCache) {
+		String authServerWellKnownURI, String sessionId,
+		boolean useFinderCache) {
 
 		authServerWellKnownURI = Objects.toString(authServerWellKnownURI, "");
-		sid = Objects.toString(sid, "");
+		sessionId = Objects.toString(sessionId, "");
 
 		Object[] finderArgs = null;
 
 		if (useFinderCache) {
-			finderArgs = new Object[] {authServerWellKnownURI, sid};
+			finderArgs = new Object[] {authServerWellKnownURI, sessionId};
 		}
 
 		Object result = null;
@@ -1239,7 +1240,8 @@ public class OpenIdConnectSessionPersistenceImpl
 			if (!Objects.equals(
 					authServerWellKnownURI,
 					openIdConnectSession.getAuthServerWellKnownURI()) ||
-				!Objects.equals(sid, openIdConnectSession.getSid())) {
+				!Objects.equals(
+					sessionId, openIdConnectSession.getSessionId())) {
 
 				result = null;
 			}
@@ -1261,15 +1263,15 @@ public class OpenIdConnectSessionPersistenceImpl
 				sb.append(_FINDER_COLUMN_A_S_AUTHSERVERWELLKNOWNURI_2);
 			}
 
-			boolean bindSid = false;
+			boolean bindSessionId = false;
 
-			if (sid.isEmpty()) {
-				sb.append(_FINDER_COLUMN_A_S_SID_3);
+			if (sessionId.isEmpty()) {
+				sb.append(_FINDER_COLUMN_A_S_SESSIONID_3);
 			}
 			else {
-				bindSid = true;
+				bindSessionId = true;
 
-				sb.append(_FINDER_COLUMN_A_S_SID_2);
+				sb.append(_FINDER_COLUMN_A_S_SESSIONID_2);
 			}
 
 			String sql = sb.toString();
@@ -1287,8 +1289,8 @@ public class OpenIdConnectSessionPersistenceImpl
 					queryPos.add(authServerWellKnownURI);
 				}
 
-				if (bindSid) {
-					queryPos.add(sid);
+				if (bindSessionId) {
+					queryPos.add(sessionId);
 				}
 
 				List<OpenIdConnectSession> list = query.list();
@@ -1324,34 +1326,34 @@ public class OpenIdConnectSessionPersistenceImpl
 	}
 
 	/**
-	 * Removes the open ID connect session where authServerWellKnownURI = &#63; and sid = &#63; from the database.
+	 * Removes the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; from the database.
 	 *
 	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param sid the sid
+	 * @param sessionId the session ID
 	 * @return the open ID connect session that was removed
 	 */
 	@Override
 	public OpenIdConnectSession removeByA_S(
-			String authServerWellKnownURI, String sid)
+			String authServerWellKnownURI, String sessionId)
 		throws NoSuchSessionException {
 
 		OpenIdConnectSession openIdConnectSession = findByA_S(
-			authServerWellKnownURI, sid);
+			authServerWellKnownURI, sessionId);
 
 		return remove(openIdConnectSession);
 	}
 
 	/**
-	 * Returns the number of open ID connect sessions where authServerWellKnownURI = &#63; and sid = &#63;.
+	 * Returns the number of open ID connect sessions where authServerWellKnownURI = &#63; and sessionId = &#63;.
 	 *
 	 * @param authServerWellKnownURI the auth server well known uri
-	 * @param sid the sid
+	 * @param sessionId the session ID
 	 * @return the number of matching open ID connect sessions
 	 */
 	@Override
-	public int countByA_S(String authServerWellKnownURI, String sid) {
+	public int countByA_S(String authServerWellKnownURI, String sessionId) {
 		OpenIdConnectSession openIdConnectSession = fetchByA_S(
-			authServerWellKnownURI, sid);
+			authServerWellKnownURI, sessionId);
 
 		if (openIdConnectSession == null) {
 			return 0;
@@ -1366,11 +1368,11 @@ public class OpenIdConnectSessionPersistenceImpl
 	private static final String _FINDER_COLUMN_A_S_AUTHSERVERWELLKNOWNURI_3 =
 		"(openIdConnectSession.authServerWellKnownURI IS NULL OR openIdConnectSession.authServerWellKnownURI = '') AND ";
 
-	private static final String _FINDER_COLUMN_A_S_SID_2 =
-		"openIdConnectSession.sid = ?";
+	private static final String _FINDER_COLUMN_A_S_SESSIONID_2 =
+		"openIdConnectSession.sessionId = ?";
 
-	private static final String _FINDER_COLUMN_A_S_SID_3 =
-		"(openIdConnectSession.sid IS NULL OR openIdConnectSession.sid = '')";
+	private static final String _FINDER_COLUMN_A_S_SESSIONID_3 =
+		"(openIdConnectSession.sessionId IS NULL OR openIdConnectSession.sessionId = '')";
 
 	private FinderPath _finderPathWithPaginationFindByC_A_C;
 	private FinderPath _finderPathWithoutPaginationFindByC_A_C;
@@ -2317,7 +2319,7 @@ public class OpenIdConnectSessionPersistenceImpl
 			_finderPathFetchByA_S,
 			new Object[] {
 				openIdConnectSession.getAuthServerWellKnownURI(),
-				openIdConnectSession.getSid()
+				openIdConnectSession.getSessionId()
 			},
 			openIdConnectSession);
 
@@ -2412,7 +2414,7 @@ public class OpenIdConnectSessionPersistenceImpl
 
 		Object[] args = new Object[] {
 			openIdConnectSessionModelImpl.getAuthServerWellKnownURI(),
-			openIdConnectSessionModelImpl.getSid()
+			openIdConnectSessionModelImpl.getSessionId()
 		};
 
 		finderCache.putResult(
@@ -2922,7 +2924,7 @@ public class OpenIdConnectSessionPersistenceImpl
 		_finderPathFetchByA_S = new FinderPath(
 			FINDER_CLASS_NAME_ENTITY, "fetchByA_S",
 			new String[] {String.class.getName(), String.class.getName()},
-			new String[] {"authServerWellKnownURI", "sid"}, true);
+			new String[] {"authServerWellKnownURI", "sessionId"}, true);
 
 		_finderPathWithPaginationFindByC_A_C = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_A_C",

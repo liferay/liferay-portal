@@ -10,7 +10,7 @@ create table OpenIdConnectSession (
 	clientId VARCHAR(256) null,
 	idToken TEXT null,
 	refreshToken VARCHAR(2000) null,
-	sid VARCHAR(75) null
+	sessionId VARCHAR(75) null
 );
 
 create table OpenIdConnectUser (

@@ -1,6 +1,6 @@
 create index IX_396C5BCB on OpenIdConnectSession (accessTokenExpirationDate);
 create index IX_AE077141 on OpenIdConnectSession (authServerWellKnownURI[$COLUMN_LENGTH:256$], clientId[$COLUMN_LENGTH:256$], companyId);
-create unique index IX_1EEEA291 on OpenIdConnectSession (authServerWellKnownURI[$COLUMN_LENGTH:256$], sid[$COLUMN_LENGTH:75$]);
+create unique index IX_8741BE94 on OpenIdConnectSession (authServerWellKnownURI[$COLUMN_LENGTH:256$], sessionId[$COLUMN_LENGTH:75$]);
 create unique index IX_43108341 on OpenIdConnectSession (authServerWellKnownURI[$COLUMN_LENGTH:256$], userId, clientId[$COLUMN_LENGTH:256$]);
 create index IX_2C256391 on OpenIdConnectSession (userId);
 

@@ -93,8 +93,8 @@ public class OpenIdConnectSessionCacheModel
 		sb.append(idToken);
 		sb.append(", refreshToken=");
 		sb.append(refreshToken);
-		sb.append(", sid=");
-		sb.append(sid);
+		sb.append(", sessionId=");
+		sb.append(sessionId);
 		sb.append("}");
 
 		return sb.toString();
@@ -162,11 +162,11 @@ public class OpenIdConnectSessionCacheModel
 			openIdConnectSessionImpl.setRefreshToken(refreshToken);
 		}
 
-		if (sid == null) {
-			openIdConnectSessionImpl.setSid("");
+		if (sessionId == null) {
+			openIdConnectSessionImpl.setSessionId("");
 		}
 		else {
-			openIdConnectSessionImpl.setSid(sid);
+			openIdConnectSessionImpl.setSessionId(sessionId);
 		}
 
 		openIdConnectSessionImpl.resetOriginalValues();
@@ -192,7 +192,7 @@ public class OpenIdConnectSessionCacheModel
 		clientId = objectInput.readUTF();
 		idToken = (String)objectInput.readObject();
 		refreshToken = objectInput.readUTF();
-		sid = objectInput.readUTF();
+		sessionId = objectInput.readUTF();
 	}
 
 	@Override
@@ -243,11 +243,11 @@ public class OpenIdConnectSessionCacheModel
 			objectOutput.writeUTF(refreshToken);
 		}
 
-		if (sid == null) {
+		if (sessionId == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(sid);
+			objectOutput.writeUTF(sessionId);
 		}
 	}
 
@@ -262,6 +262,6 @@ public class OpenIdConnectSessionCacheModel
 	public String clientId;
 	public String idToken;
 	public String refreshToken;
-	public String sid;
+	public String sessionId;
 
 }
