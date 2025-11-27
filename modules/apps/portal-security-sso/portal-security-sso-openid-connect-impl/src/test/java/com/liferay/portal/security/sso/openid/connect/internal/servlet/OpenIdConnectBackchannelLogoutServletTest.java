@@ -41,6 +41,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
@@ -255,22 +256,15 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 
 		mockHttpServletRequest.setParameter("logout_token", logoutToken);
 
-		HttpServletResponse httpServletResponse = Mockito.mock(
-			HttpServletResponse.class);
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
 
-		try {
-			_openIdConnectBackchannelLogoutServlet.doPost(
-				mockHttpServletRequest, httpServletResponse);
+		_openIdConnectBackchannelLogoutServlet.doPost(
+			mockHttpServletRequest, mockHttpServletResponse);
 
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Mockito.verify(
-				httpServletResponse
-			).setStatus(
-				HttpServletResponse.SC_BAD_REQUEST
-			);
-		}
+		Assert.assertEquals(
+			HttpServletResponse.SC_BAD_REQUEST,
+			mockHttpServletResponse.getStatus());
 	}
 
 	private static final String _CLIENT_ID = "liferay";

@@ -7,7 +7,6 @@ package com.liferay.portal.security.sso.openid.connect.internal.servlet;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -140,11 +139,9 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
 			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
+				_log.debug(
+					"OpenId Connect backchannel logout failed", exception);
 			}
-
-			throw new SystemException(
-				"OIDC backchannel logout failed", exception);
 		}
 	}
 
