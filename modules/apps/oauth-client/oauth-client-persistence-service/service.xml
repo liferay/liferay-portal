@@ -19,8 +19,14 @@
 
 		<!-- Other fields -->
 
-		<column name="localWellKnownURI" type="String" />
-		<column name="metadataJSON" type="String" />
+		<column name="allowedGrantTypes" type="String" />
+		<column name="allowedScopes" type="String" />
+		<column name="issuer" type="String" />
+		<column name="localWellKnownEnabled" type="boolean" />
+		<column name="localWellKnownURIOAS" type="String" />
+		<column name="localWellKnownURIOIC" type="String" />
+		<column name="metadataJSONAS" type="String" />
+		<column name="metadataJSONOIC" type="String" />
 
 		<!-- Finder methods -->
 
@@ -30,8 +36,11 @@
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
-		<finder name="LocalWellKnownURI" return-type="OAuthClientASLocalMetadata" unique="true">
-			<finder-column name="localWellKnownURI" />
+		<finder name="LocalWellKnownURIOAS" return-type="OAuthClientASLocalMetadata" unique="true">
+			<finder-column name="localWellKnownURIOAS" />
+		</finder>
+		<finder name="LocalWellKnownURIOIC" return-type="OAuthClientASLocalMetadata" unique="true">
+			<finder-column name="localWellKnownURIOIC" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="OAuthClientEntry" remote-service="true">
