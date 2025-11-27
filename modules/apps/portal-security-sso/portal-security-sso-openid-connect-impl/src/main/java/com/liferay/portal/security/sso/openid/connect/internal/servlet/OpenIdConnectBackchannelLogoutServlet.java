@@ -163,14 +163,14 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			Dictionary<String, Object> properties =
 				configuration.getProperties();
 
-			String discoveryEndPoint = (String)properties.get(
-				"discoveryEndPoint");
+			String discoveryEndpoint = (String)properties.get(
+				"discoveryEndpoint");
 			String issuerURL = (String)properties.get("issuerURL");
 			String jwksURI = (String)properties.get("jwksURI");
 
-			if (discoveryEndPoint != null) {
+			if (discoveryEndpoint != null) {
 				OIDCProviderMetadata oidcProviderMetadata =
-					_resolveOIDCProviderMetadata(discoveryEndPoint);
+					_resolveOIDCProviderMetadata(discoveryEndpoint);
 
 				issuerURL = oidcProviderMetadata.getIssuer(
 				).getValue();
@@ -187,11 +187,11 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 	}
 
 	private OIDCProviderMetadata _resolveOIDCProviderMetadata(
-			String discoveryEndPointURI)
+			String discoveryEndpoint)
 		throws Exception {
 
 		HTTPRequest httpRequest = new HTTPRequest(
-			HTTPRequest.Method.GET, new URL(discoveryEndPointURI));
+			HTTPRequest.Method.GET, new URL(discoveryEndpoint));
 
 		HTTPResponse httpResponse = httpRequest.send();
 
