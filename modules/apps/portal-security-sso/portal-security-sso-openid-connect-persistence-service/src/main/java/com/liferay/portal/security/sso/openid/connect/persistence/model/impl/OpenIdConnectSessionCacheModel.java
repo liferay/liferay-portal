@@ -69,7 +69,7 @@ public class OpenIdConnectSessionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -89,6 +89,8 @@ public class OpenIdConnectSessionCacheModel
 		sb.append(authServerWellKnownURI);
 		sb.append(", clientId=");
 		sb.append(clientId);
+		sb.append(", issuer=");
+		sb.append(issuer);
 		sb.append(", idToken=");
 		sb.append(idToken);
 		sb.append(", refreshToken=");
@@ -148,6 +150,13 @@ public class OpenIdConnectSessionCacheModel
 			openIdConnectSessionImpl.setClientId(clientId);
 		}
 
+		if (issuer == null) {
+			openIdConnectSessionImpl.setIssuer("");
+		}
+		else {
+			openIdConnectSessionImpl.setIssuer(issuer);
+		}
+
 		if (idToken == null) {
 			openIdConnectSessionImpl.setIdToken("");
 		}
@@ -190,6 +199,7 @@ public class OpenIdConnectSessionCacheModel
 		accessTokenExpirationDate = objectInput.readLong();
 		authServerWellKnownURI = objectInput.readUTF();
 		clientId = objectInput.readUTF();
+		issuer = objectInput.readUTF();
 		idToken = (String)objectInput.readObject();
 		refreshToken = objectInput.readUTF();
 		sessionId = objectInput.readUTF();
@@ -229,6 +239,13 @@ public class OpenIdConnectSessionCacheModel
 			objectOutput.writeUTF(clientId);
 		}
 
+		if (issuer == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(issuer);
+		}
+
 		if (idToken == null) {
 			objectOutput.writeObject("");
 		}
@@ -260,6 +277,7 @@ public class OpenIdConnectSessionCacheModel
 	public long accessTokenExpirationDate;
 	public String authServerWellKnownURI;
 	public String clientId;
+	public String issuer;
 	public String idToken;
 	public String refreshToken;
 	public String sessionId;

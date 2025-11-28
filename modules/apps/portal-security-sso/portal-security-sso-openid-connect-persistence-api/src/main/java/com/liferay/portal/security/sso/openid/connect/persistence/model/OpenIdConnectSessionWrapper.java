@@ -45,6 +45,7 @@ public class OpenIdConnectSessionWrapper
 			"accessTokenExpirationDate", getAccessTokenExpirationDate());
 		attributes.put("authServerWellKnownURI", getAuthServerWellKnownURI());
 		attributes.put("clientId", getClientId());
+		attributes.put("issuer", getIssuer());
 		attributes.put("idToken", getIdToken());
 		attributes.put("refreshToken", getRefreshToken());
 		attributes.put("sessionId", getSessionId());
@@ -109,6 +110,12 @@ public class OpenIdConnectSessionWrapper
 
 		if (clientId != null) {
 			setClientId(clientId);
+		}
+
+		String issuer = (String)attributes.get("issuer");
+
+		if (issuer != null) {
+			setIssuer(issuer);
 		}
 
 		String idToken = (String)attributes.get("idToken");
@@ -193,6 +200,16 @@ public class OpenIdConnectSessionWrapper
 	@Override
 	public String getIdToken() {
 		return model.getIdToken();
+	}
+
+	/**
+	 * Returns the issuer of this open ID connect session.
+	 *
+	 * @return the issuer of this open ID connect session
+	 */
+	@Override
+	public String getIssuer() {
+		return model.getIssuer();
 	}
 
 	/**
@@ -338,6 +355,16 @@ public class OpenIdConnectSessionWrapper
 	@Override
 	public void setIdToken(String idToken) {
 		model.setIdToken(idToken);
+	}
+
+	/**
+	 * Sets the issuer of this open ID connect session.
+	 *
+	 * @param issuer the issuer of this open ID connect session
+	 */
+	@Override
+	public void setIssuer(String issuer) {
+		model.setIssuer(issuer);
 	}
 
 	/**

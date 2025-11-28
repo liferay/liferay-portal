@@ -66,8 +66,8 @@ public class OpenIdConnectSessionModelImpl
 		{"modifiedDate", Types.TIMESTAMP}, {"accessToken", Types.CLOB},
 		{"accessTokenExpirationDate", Types.TIMESTAMP},
 		{"authServerWellKnownURI", Types.VARCHAR}, {"clientId", Types.VARCHAR},
-		{"idToken", Types.CLOB}, {"refreshToken", Types.VARCHAR},
-		{"sessionId", Types.VARCHAR}
+		{"issuer", Types.VARCHAR}, {"idToken", Types.CLOB},
+		{"refreshToken", Types.VARCHAR}, {"sessionId", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -83,13 +83,14 @@ public class OpenIdConnectSessionModelImpl
 		TABLE_COLUMNS_MAP.put("accessTokenExpirationDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("authServerWellKnownURI", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("clientId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("issuer", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("idToken", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("refreshToken", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("sessionId", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OpenIdConnectSession (mvccVersion LONG default 0 not null,openIdConnectSessionId LONG not null primary key,companyId LONG,userId LONG,modifiedDate DATE null,accessToken TEXT null,accessTokenExpirationDate DATE null,authServerWellKnownURI VARCHAR(256) null,clientId VARCHAR(256) null,idToken TEXT null,refreshToken VARCHAR(2000) null,sessionId VARCHAR(75) null)";
+		"create table OpenIdConnectSession (mvccVersion LONG default 0 not null,openIdConnectSessionId LONG not null primary key,companyId LONG,userId LONG,modifiedDate DATE null,accessToken TEXT null,accessTokenExpirationDate DATE null,authServerWellKnownURI VARCHAR(256) null,clientId VARCHAR(256) null,issuer VARCHAR(75) null,idToken TEXT null,refreshToken VARCHAR(2000) null,sessionId VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OpenIdConnectSession";
@@ -134,20 +135,26 @@ public class OpenIdConnectSessionModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SESSIONID_COLUMN_BITMASK = 16L;
+	public static final long ISSUER_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 32L;
+	public static final long SESSIONID_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long USERID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long OPENIDCONNECTSESSIONID_COLUMN_BITMASK = 64L;
+	public static final long OPENIDCONNECTSESSIONID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -281,6 +288,8 @@ public class OpenIdConnectSessionModelImpl
 			attributeGetterFunctions.put(
 				"clientId", OpenIdConnectSession::getClientId);
 			attributeGetterFunctions.put(
+				"issuer", OpenIdConnectSession::getIssuer);
+			attributeGetterFunctions.put(
 				"idToken", OpenIdConnectSession::getIdToken);
 			attributeGetterFunctions.put(
 				"refreshToken", OpenIdConnectSession::getRefreshToken);
@@ -341,6 +350,10 @@ public class OpenIdConnectSessionModelImpl
 				"clientId",
 				(BiConsumer<OpenIdConnectSession, String>)
 					OpenIdConnectSession::setClientId);
+			attributeSetterBiConsumers.put(
+				"issuer",
+				(BiConsumer<OpenIdConnectSession, String>)
+					OpenIdConnectSession::setIssuer);
 			attributeSetterBiConsumers.put(
 				"idToken",
 				(BiConsumer<OpenIdConnectSession, String>)
@@ -570,6 +583,34 @@ public class OpenIdConnectSessionModelImpl
 	}
 
 	@Override
+	public String getIssuer() {
+		if (_issuer == null) {
+			return "";
+		}
+		else {
+			return _issuer;
+		}
+	}
+
+	@Override
+	public void setIssuer(String issuer) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_issuer = issuer;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalIssuer() {
+		return getColumnOriginalValue("issuer");
+	}
+
+	@Override
 	public String getIdToken() {
 		if (_idToken == null) {
 			return "";
@@ -705,6 +746,7 @@ public class OpenIdConnectSessionModelImpl
 		openIdConnectSessionImpl.setAuthServerWellKnownURI(
 			getAuthServerWellKnownURI());
 		openIdConnectSessionImpl.setClientId(getClientId());
+		openIdConnectSessionImpl.setIssuer(getIssuer());
 		openIdConnectSessionImpl.setIdToken(getIdToken());
 		openIdConnectSessionImpl.setRefreshToken(getRefreshToken());
 		openIdConnectSessionImpl.setSessionId(getSessionId());
@@ -737,6 +779,8 @@ public class OpenIdConnectSessionModelImpl
 			this.<String>getColumnOriginalValue("authServerWellKnownURI"));
 		openIdConnectSessionImpl.setClientId(
 			this.<String>getColumnOriginalValue("clientId"));
+		openIdConnectSessionImpl.setIssuer(
+			this.<String>getColumnOriginalValue("issuer"));
 		openIdConnectSessionImpl.setIdToken(
 			this.<String>getColumnOriginalValue("idToken"));
 		openIdConnectSessionImpl.setRefreshToken(
@@ -880,6 +924,14 @@ public class OpenIdConnectSessionModelImpl
 			openIdConnectSessionCacheModel.clientId = null;
 		}
 
+		openIdConnectSessionCacheModel.issuer = getIssuer();
+
+		String issuer = openIdConnectSessionCacheModel.issuer;
+
+		if ((issuer != null) && (issuer.length() == 0)) {
+			openIdConnectSessionCacheModel.issuer = null;
+		}
+
 		openIdConnectSessionCacheModel.idToken = getIdToken();
 
 		String idToken = openIdConnectSessionCacheModel.idToken;
@@ -976,6 +1028,7 @@ public class OpenIdConnectSessionModelImpl
 	private Date _accessTokenExpirationDate;
 	private String _authServerWellKnownURI;
 	private String _clientId;
+	private String _issuer;
 	private String _idToken;
 	private String _refreshToken;
 	private String _sessionId;
@@ -1020,6 +1073,7 @@ public class OpenIdConnectSessionModelImpl
 		_columnOriginalValues.put(
 			"authServerWellKnownURI", _authServerWellKnownURI);
 		_columnOriginalValues.put("clientId", _clientId);
+		_columnOriginalValues.put("issuer", _issuer);
 		_columnOriginalValues.put("idToken", _idToken);
 		_columnOriginalValues.put("refreshToken", _refreshToken);
 		_columnOriginalValues.put("sessionId", _sessionId);
@@ -1054,11 +1108,13 @@ public class OpenIdConnectSessionModelImpl
 
 		columnBitmasks.put("clientId", 256L);
 
-		columnBitmasks.put("idToken", 512L);
+		columnBitmasks.put("issuer", 512L);
 
-		columnBitmasks.put("refreshToken", 1024L);
+		columnBitmasks.put("idToken", 1024L);
 
-		columnBitmasks.put("sessionId", 2048L);
+		columnBitmasks.put("refreshToken", 2048L);
+
+		columnBitmasks.put("sessionId", 4096L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

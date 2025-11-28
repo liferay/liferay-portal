@@ -197,6 +197,21 @@ public interface OpenIdConnectSessionModel
 	public void setClientId(String clientId);
 
 	/**
+	 * Returns the issuer of this open ID connect session.
+	 *
+	 * @return the issuer of this open ID connect session
+	 */
+	@AutoEscape
+	public String getIssuer();
+
+	/**
+	 * Sets the issuer of this open ID connect session.
+	 *
+	 * @param issuer the issuer of this open ID connect session
+	 */
+	public void setIssuer(String issuer);
+
+	/**
 	 * Returns the id token of this open ID connect session.
 	 *
 	 * @return the id token of this open ID connect session

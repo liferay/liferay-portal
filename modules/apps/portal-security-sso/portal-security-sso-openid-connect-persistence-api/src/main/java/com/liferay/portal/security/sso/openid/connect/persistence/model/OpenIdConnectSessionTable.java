@@ -55,6 +55,9 @@ public class OpenIdConnectSessionTable
 	public final Column<OpenIdConnectSessionTable, String> clientId =
 		createColumn(
 			"clientId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<OpenIdConnectSessionTable, String> issuer =
+		createColumn(
+			"issuer", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<OpenIdConnectSessionTable, Clob> idToken = createColumn(
 		"idToken", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<OpenIdConnectSessionTable, String> refreshToken =

@@ -476,76 +476,137 @@ public class OpenIdConnectSessionUtil {
 	}
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 * Returns the open ID connect session where userId = &#63; and issuer = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the matching open ID connect session
+	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
+	 */
+	public static OpenIdConnectSession findByU_I(long userId, String issuer)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchSessionException {
+
+		return getPersistence().findByU_I(userId, issuer);
+	}
+
+	/**
+	 * Returns the open ID connect session where userId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public static OpenIdConnectSession fetchByU_I(long userId, String issuer) {
+		return getPersistence().fetchByU_I(userId, issuer);
+	}
+
+	/**
+	 * Returns the open ID connect session where userId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public static OpenIdConnectSession fetchByU_I(
+		long userId, String issuer, boolean useFinderCache) {
+
+		return getPersistence().fetchByU_I(userId, issuer, useFinderCache);
+	}
+
+	/**
+	 * Removes the open ID connect session where userId = &#63; and issuer = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the open ID connect session that was removed
+	 */
+	public static OpenIdConnectSession removeByU_I(long userId, String issuer)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchSessionException {
+
+		return getPersistence().removeByU_I(userId, issuer);
+	}
+
+	/**
+	 * Returns the number of open ID connect sessions where userId = &#63; and issuer = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the number of matching open ID connect sessions
+	 */
+	public static int countByU_I(long userId, String issuer) {
+		return getPersistence().countByU_I(userId, issuer);
+	}
+
+	/**
+	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 *
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the matching open ID connect session
 	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
 	 */
-	public static OpenIdConnectSession findByA_S(
-			String authServerWellKnownURI, String sessionId)
+	public static OpenIdConnectSession findByI_S(
+			String issuer, String sessionId)
 		throws com.liferay.portal.security.sso.openid.connect.persistence.
 			exception.NoSuchSessionException {
 
-		return getPersistence().findByA_S(authServerWellKnownURI, sessionId);
+		return getPersistence().findByI_S(issuer, sessionId);
 	}
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
 	 */
-	public static OpenIdConnectSession fetchByA_S(
-		String authServerWellKnownURI, String sessionId) {
+	public static OpenIdConnectSession fetchByI_S(
+		String issuer, String sessionId) {
 
-		return getPersistence().fetchByA_S(authServerWellKnownURI, sessionId);
+		return getPersistence().fetchByI_S(issuer, sessionId);
 	}
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
 	 */
-	public static OpenIdConnectSession fetchByA_S(
-		String authServerWellKnownURI, String sessionId,
-		boolean useFinderCache) {
+	public static OpenIdConnectSession fetchByI_S(
+		String issuer, String sessionId, boolean useFinderCache) {
 
-		return getPersistence().fetchByA_S(
-			authServerWellKnownURI, sessionId, useFinderCache);
+		return getPersistence().fetchByI_S(issuer, sessionId, useFinderCache);
 	}
 
 	/**
-	 * Removes the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; from the database.
+	 * Removes the open ID connect session where issuer = &#63; and sessionId = &#63; from the database.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the open ID connect session that was removed
 	 */
-	public static OpenIdConnectSession removeByA_S(
-			String authServerWellKnownURI, String sessionId)
+	public static OpenIdConnectSession removeByI_S(
+			String issuer, String sessionId)
 		throws com.liferay.portal.security.sso.openid.connect.persistence.
 			exception.NoSuchSessionException {
 
-		return getPersistence().removeByA_S(authServerWellKnownURI, sessionId);
+		return getPersistence().removeByI_S(issuer, sessionId);
 	}
 
 	/**
-	 * Returns the number of open ID connect sessions where authServerWellKnownURI = &#63; and sessionId = &#63;.
+	 * Returns the number of open ID connect sessions where issuer = &#63; and sessionId = &#63;.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the number of matching open ID connect sessions
 	 */
-	public static int countByA_S(
-		String authServerWellKnownURI, String sessionId) {
-
-		return getPersistence().countByA_S(authServerWellKnownURI, sessionId);
+	public static int countByI_S(String issuer, String sessionId) {
+		return getPersistence().countByI_S(issuer, sessionId);
 	}
 
 	/**

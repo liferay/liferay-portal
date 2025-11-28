@@ -327,58 +327,104 @@ public interface OpenIdConnectSessionPersistence
 		Date accessTokenExpirationDate);
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 * Returns the open ID connect session where userId = &#63; and issuer = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the matching open ID connect session
+	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
+	 */
+	public OpenIdConnectSession findByU_I(long userId, String issuer)
+		throws NoSuchSessionException;
+
+	/**
+	 * Returns the open ID connect session where userId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public OpenIdConnectSession fetchByU_I(long userId, String issuer);
+
+	/**
+	 * Returns the open ID connect session where userId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public OpenIdConnectSession fetchByU_I(
+		long userId, String issuer, boolean useFinderCache);
+
+	/**
+	 * Removes the open ID connect session where userId = &#63; and issuer = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the open ID connect session that was removed
+	 */
+	public OpenIdConnectSession removeByU_I(long userId, String issuer)
+		throws NoSuchSessionException;
+
+	/**
+	 * Returns the number of open ID connect sessions where userId = &#63; and issuer = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @param issuer the issuer
+	 * @return the number of matching open ID connect sessions
+	 */
+	public int countByU_I(long userId, String issuer);
+
+	/**
+	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
+	 *
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the matching open ID connect session
 	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
 	 */
-	public OpenIdConnectSession findByA_S(
-			String authServerWellKnownURI, String sessionId)
+	public OpenIdConnectSession findByI_S(String issuer, String sessionId)
 		throws NoSuchSessionException;
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
 	 */
-	public OpenIdConnectSession fetchByA_S(
-		String authServerWellKnownURI, String sessionId);
+	public OpenIdConnectSession fetchByI_S(String issuer, String sessionId);
 
 	/**
-	 * Returns the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
 	 */
-	public OpenIdConnectSession fetchByA_S(
-		String authServerWellKnownURI, String sessionId,
-		boolean useFinderCache);
+	public OpenIdConnectSession fetchByI_S(
+		String issuer, String sessionId, boolean useFinderCache);
 
 	/**
-	 * Removes the open ID connect session where authServerWellKnownURI = &#63; and sessionId = &#63; from the database.
+	 * Removes the open ID connect session where issuer = &#63; and sessionId = &#63; from the database.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the open ID connect session that was removed
 	 */
-	public OpenIdConnectSession removeByA_S(
-			String authServerWellKnownURI, String sessionId)
+	public OpenIdConnectSession removeByI_S(String issuer, String sessionId)
 		throws NoSuchSessionException;
 
 	/**
-	 * Returns the number of open ID connect sessions where authServerWellKnownURI = &#63; and sessionId = &#63;.
+	 * Returns the number of open ID connect sessions where issuer = &#63; and sessionId = &#63;.
 	 *
-	 * @param authServerWellKnownURI the auth server well known uri
+	 * @param issuer the issuer
 	 * @param sessionId the session ID
 	 * @return the number of matching open ID connect sessions
 	 */
-	public int countByA_S(String authServerWellKnownURI, String sessionId);
+	public int countByI_S(String issuer, String sessionId);
 
 	/**
 	 * Returns all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
