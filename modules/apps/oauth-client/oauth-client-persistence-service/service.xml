@@ -19,17 +19,18 @@
 
 		<!-- Other fields -->
 
-		<column name="allowedGrantTypes" type="String" />
-		<column name="allowedScopes" type="String" />
 		<column name="issuer" type="String" />
 		<column name="localWellKnownEnabled" type="boolean" />
 		<column name="localWellKnownURIOAS" type="String" />
 		<column name="localWellKnownURIOIC" type="String" />
-		<column name="metadataJSONAS" type="String" />
+		<column name="metadataJSONOAS" type="String" />
 		<column name="metadataJSONOIC" type="String" />
 
 		<!-- Finder methods -->
 
+		<finder name="Issuer" return-type="OAuthClientASLocalMetadata" unique="true">
+			<finder-column name="issuer" />
+		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
