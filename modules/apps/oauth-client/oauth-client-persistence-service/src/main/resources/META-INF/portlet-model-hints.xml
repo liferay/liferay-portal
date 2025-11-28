@@ -9,13 +9,11 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="allowedGrantTypes" type="String" />
-		<field name="allowedScopes" type="String" />
 		<field name="issuer" type="String" />
 		<field name="localWellKnownEnabled" type="boolean" />
 		<field name="localWellKnownURIOAS" type="String" />
 		<field name="localWellKnownURIOIC" type="String" />
-		<field name="metadataJSONAS" type="String" />
+		<field name="metadataJSONOAS" type="String" />
 		<field name="metadataJSONOIC" type="String" />
 	</model>
 	<model name="com.liferay.oauth.client.persistence.model.OAuthClientEntry">

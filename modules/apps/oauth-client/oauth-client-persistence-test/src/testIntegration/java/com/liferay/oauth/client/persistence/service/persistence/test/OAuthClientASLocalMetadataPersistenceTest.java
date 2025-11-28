@@ -135,12 +135,6 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 		newOAuthClientASLocalMetadata.setModifiedDate(
 			RandomTestUtil.nextDate());
 
-		newOAuthClientASLocalMetadata.setAllowedGrantTypes(
-			RandomTestUtil.randomString());
-
-		newOAuthClientASLocalMetadata.setAllowedScopes(
-			RandomTestUtil.randomString());
-
 		newOAuthClientASLocalMetadata.setIssuer(RandomTestUtil.randomString());
 
 		newOAuthClientASLocalMetadata.setLocalWellKnownEnabled(
@@ -152,7 +146,7 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 		newOAuthClientASLocalMetadata.setLocalWellKnownURIOIC(
 			RandomTestUtil.randomString());
 
-		newOAuthClientASLocalMetadata.setMetadataJSONAS(
+		newOAuthClientASLocalMetadata.setMetadataJSONOAS(
 			RandomTestUtil.randomString());
 
 		newOAuthClientASLocalMetadata.setMetadataJSONOIC(
@@ -192,12 +186,6 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 			Time.getShortTimestamp(
 				newOAuthClientASLocalMetadata.getModifiedDate()));
 		Assert.assertEquals(
-			existingOAuthClientASLocalMetadata.getAllowedGrantTypes(),
-			newOAuthClientASLocalMetadata.getAllowedGrantTypes());
-		Assert.assertEquals(
-			existingOAuthClientASLocalMetadata.getAllowedScopes(),
-			newOAuthClientASLocalMetadata.getAllowedScopes());
-		Assert.assertEquals(
 			existingOAuthClientASLocalMetadata.getIssuer(),
 			newOAuthClientASLocalMetadata.getIssuer());
 		Assert.assertEquals(
@@ -210,11 +198,20 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 			existingOAuthClientASLocalMetadata.getLocalWellKnownURIOIC(),
 			newOAuthClientASLocalMetadata.getLocalWellKnownURIOIC());
 		Assert.assertEquals(
-			existingOAuthClientASLocalMetadata.getMetadataJSONAS(),
-			newOAuthClientASLocalMetadata.getMetadataJSONAS());
+			existingOAuthClientASLocalMetadata.getMetadataJSONOAS(),
+			newOAuthClientASLocalMetadata.getMetadataJSONOAS());
 		Assert.assertEquals(
 			existingOAuthClientASLocalMetadata.getMetadataJSONOIC(),
 			newOAuthClientASLocalMetadata.getMetadataJSONOIC());
+	}
+
+	@Test
+	public void testCountByIssuer() throws Exception {
+		_persistence.countByIssuer("");
+
+		_persistence.countByIssuer("null");
+
+		_persistence.countByIssuer((String)null);
 	}
 
 	@Test
@@ -282,10 +279,9 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 			"OAuthClientASLocalMetadata", "mvccVersion", true,
 			"oAuthClientASLocalMetadataId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
-			"allowedGrantTypes", true, "allowedScopes", true, "issuer", true,
-			"localWellKnownEnabled", true, "localWellKnownURIOAS", true,
-			"localWellKnownURIOIC", true, "metadataJSONAS", true,
-			"metadataJSONOIC", true);
+			"issuer", true, "localWellKnownEnabled", true,
+			"localWellKnownURIOAS", true, "localWellKnownURIOIC", true,
+			"metadataJSONOAS", true, "metadataJSONOIC", true);
 	}
 
 	@Test
@@ -592,6 +588,12 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata) {
 
 		Assert.assertEquals(
+			oAuthClientASLocalMetadata.getIssuer(),
+			ReflectionTestUtil.invoke(
+				oAuthClientASLocalMetadata, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "issuer"));
+
+		Assert.assertEquals(
 			oAuthClientASLocalMetadata.getLocalWellKnownURIOAS(),
 			ReflectionTestUtil.invoke(
 				oAuthClientASLocalMetadata, "getColumnOriginalValue",
@@ -624,12 +626,6 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 
 		oAuthClientASLocalMetadata.setModifiedDate(RandomTestUtil.nextDate());
 
-		oAuthClientASLocalMetadata.setAllowedGrantTypes(
-			RandomTestUtil.randomString());
-
-		oAuthClientASLocalMetadata.setAllowedScopes(
-			RandomTestUtil.randomString());
-
 		oAuthClientASLocalMetadata.setIssuer(RandomTestUtil.randomString());
 
 		oAuthClientASLocalMetadata.setLocalWellKnownEnabled(
@@ -641,7 +637,7 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 		oAuthClientASLocalMetadata.setLocalWellKnownURIOIC(
 			RandomTestUtil.randomString());
 
-		oAuthClientASLocalMetadata.setMetadataJSONAS(
+		oAuthClientASLocalMetadata.setMetadataJSONOAS(
 			RandomTestUtil.randomString());
 
 		oAuthClientASLocalMetadata.setMetadataJSONOIC(

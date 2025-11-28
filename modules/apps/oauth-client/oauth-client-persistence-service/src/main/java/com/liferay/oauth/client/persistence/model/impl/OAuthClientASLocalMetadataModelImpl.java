@@ -67,12 +67,11 @@ public class OAuthClientASLocalMetadataModelImpl
 		{"oAuthClientASLocalMetadataId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"allowedGrantTypes", Types.VARCHAR},
-		{"allowedScopes", Types.VARCHAR}, {"issuer", Types.VARCHAR},
+		{"modifiedDate", Types.TIMESTAMP}, {"issuer", Types.VARCHAR},
 		{"localWellKnownEnabled", Types.BOOLEAN},
 		{"localWellKnownURIOAS", Types.VARCHAR},
 		{"localWellKnownURIOIC", Types.VARCHAR},
-		{"metadataJSONAS", Types.VARCHAR}, {"metadataJSONOIC", Types.VARCHAR}
+		{"metadataJSONOAS", Types.VARCHAR}, {"metadataJSONOIC", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -86,18 +85,16 @@ public class OAuthClientASLocalMetadataModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("allowedGrantTypes", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("allowedScopes", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("issuer", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("localWellKnownEnabled", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("localWellKnownURIOAS", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("localWellKnownURIOIC", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("metadataJSONAS", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("metadataJSONOAS", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("metadataJSONOIC", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OAuthClientASLocalMetadata (mvccVersion LONG default 0 not null,oAuthClientASLocalMetadataId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,allowedGrantTypes VARCHAR(75) null,allowedScopes VARCHAR(75) null,issuer VARCHAR(75) null,localWellKnownEnabled BOOLEAN,localWellKnownURIOAS VARCHAR(75) null,localWellKnownURIOIC VARCHAR(75) null,metadataJSONAS VARCHAR(75) null,metadataJSONOIC VARCHAR(75) null)";
+		"create table OAuthClientASLocalMetadata (mvccVersion LONG default 0 not null,oAuthClientASLocalMetadataId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,issuer VARCHAR(75) null,localWellKnownEnabled BOOLEAN,localWellKnownURIOAS VARCHAR(75) null,localWellKnownURIOIC VARCHAR(75) null,metadataJSONOAS VARCHAR(75) null,metadataJSONOIC VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OAuthClientASLocalMetadata";
@@ -127,26 +124,32 @@ public class OAuthClientASLocalMetadataModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LOCALWELLKNOWNURIOAS_COLUMN_BITMASK = 2L;
+	public static final long ISSUER_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LOCALWELLKNOWNURIOIC_COLUMN_BITMASK = 4L;
+	public static final long LOCALWELLKNOWNURIOAS_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 8L;
+	public static final long LOCALWELLKNOWNURIOIC_COLUMN_BITMASK = 8L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long USERID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long OAUTHCLIENTASLOCALMETADATAID_COLUMN_BITMASK = 16L;
+	public static final long OAUTHCLIENTASLOCALMETADATAID_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -278,11 +281,6 @@ public class OAuthClientASLocalMetadataModelImpl
 			attributeGetterFunctions.put(
 				"modifiedDate", OAuthClientASLocalMetadata::getModifiedDate);
 			attributeGetterFunctions.put(
-				"allowedGrantTypes",
-				OAuthClientASLocalMetadata::getAllowedGrantTypes);
-			attributeGetterFunctions.put(
-				"allowedScopes", OAuthClientASLocalMetadata::getAllowedScopes);
-			attributeGetterFunctions.put(
 				"issuer", OAuthClientASLocalMetadata::getIssuer);
 			attributeGetterFunctions.put(
 				"localWellKnownEnabled",
@@ -294,8 +292,8 @@ public class OAuthClientASLocalMetadataModelImpl
 				"localWellKnownURIOIC",
 				OAuthClientASLocalMetadata::getLocalWellKnownURIOIC);
 			attributeGetterFunctions.put(
-				"metadataJSONAS",
-				OAuthClientASLocalMetadata::getMetadataJSONAS);
+				"metadataJSONOAS",
+				OAuthClientASLocalMetadata::getMetadataJSONOAS);
 			attributeGetterFunctions.put(
 				"metadataJSONOIC",
 				OAuthClientASLocalMetadata::getMetadataJSONOIC);
@@ -348,14 +346,6 @@ public class OAuthClientASLocalMetadataModelImpl
 				(BiConsumer<OAuthClientASLocalMetadata, Date>)
 					OAuthClientASLocalMetadata::setModifiedDate);
 			attributeSetterBiConsumers.put(
-				"allowedGrantTypes",
-				(BiConsumer<OAuthClientASLocalMetadata, String>)
-					OAuthClientASLocalMetadata::setAllowedGrantTypes);
-			attributeSetterBiConsumers.put(
-				"allowedScopes",
-				(BiConsumer<OAuthClientASLocalMetadata, String>)
-					OAuthClientASLocalMetadata::setAllowedScopes);
-			attributeSetterBiConsumers.put(
 				"issuer",
 				(BiConsumer<OAuthClientASLocalMetadata, String>)
 					OAuthClientASLocalMetadata::setIssuer);
@@ -372,9 +362,9 @@ public class OAuthClientASLocalMetadataModelImpl
 				(BiConsumer<OAuthClientASLocalMetadata, String>)
 					OAuthClientASLocalMetadata::setLocalWellKnownURIOIC);
 			attributeSetterBiConsumers.put(
-				"metadataJSONAS",
+				"metadataJSONOAS",
 				(BiConsumer<OAuthClientASLocalMetadata, String>)
-					OAuthClientASLocalMetadata::setMetadataJSONAS);
+					OAuthClientASLocalMetadata::setMetadataJSONOAS);
 			attributeSetterBiConsumers.put(
 				"metadataJSONOIC",
 				(BiConsumer<OAuthClientASLocalMetadata, String>)
@@ -541,46 +531,6 @@ public class OAuthClientASLocalMetadataModelImpl
 
 	@JSON
 	@Override
-	public String getAllowedGrantTypes() {
-		if (_allowedGrantTypes == null) {
-			return "";
-		}
-		else {
-			return _allowedGrantTypes;
-		}
-	}
-
-	@Override
-	public void setAllowedGrantTypes(String allowedGrantTypes) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_allowedGrantTypes = allowedGrantTypes;
-	}
-
-	@JSON
-	@Override
-	public String getAllowedScopes() {
-		if (_allowedScopes == null) {
-			return "";
-		}
-		else {
-			return _allowedScopes;
-		}
-	}
-
-	@Override
-	public void setAllowedScopes(String allowedScopes) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_allowedScopes = allowedScopes;
-	}
-
-	@JSON
-	@Override
 	public String getIssuer() {
 		if (_issuer == null) {
 			return "";
@@ -597,6 +547,15 @@ public class OAuthClientASLocalMetadataModelImpl
 		}
 
 		_issuer = issuer;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalIssuer() {
+		return getColumnOriginalValue("issuer");
 	}
 
 	@JSON
@@ -680,22 +639,22 @@ public class OAuthClientASLocalMetadataModelImpl
 
 	@JSON
 	@Override
-	public String getMetadataJSONAS() {
-		if (_metadataJSONAS == null) {
+	public String getMetadataJSONOAS() {
+		if (_metadataJSONOAS == null) {
 			return "";
 		}
 		else {
-			return _metadataJSONAS;
+			return _metadataJSONOAS;
 		}
 	}
 
 	@Override
-	public void setMetadataJSONAS(String metadataJSONAS) {
+	public void setMetadataJSONOAS(String metadataJSONOAS) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_metadataJSONAS = metadataJSONAS;
+		_metadataJSONOAS = metadataJSONOAS;
 	}
 
 	@JSON
@@ -784,9 +743,6 @@ public class OAuthClientASLocalMetadataModelImpl
 		oAuthClientASLocalMetadataImpl.setUserName(getUserName());
 		oAuthClientASLocalMetadataImpl.setCreateDate(getCreateDate());
 		oAuthClientASLocalMetadataImpl.setModifiedDate(getModifiedDate());
-		oAuthClientASLocalMetadataImpl.setAllowedGrantTypes(
-			getAllowedGrantTypes());
-		oAuthClientASLocalMetadataImpl.setAllowedScopes(getAllowedScopes());
 		oAuthClientASLocalMetadataImpl.setIssuer(getIssuer());
 		oAuthClientASLocalMetadataImpl.setLocalWellKnownEnabled(
 			isLocalWellKnownEnabled());
@@ -794,7 +750,7 @@ public class OAuthClientASLocalMetadataModelImpl
 			getLocalWellKnownURIOAS());
 		oAuthClientASLocalMetadataImpl.setLocalWellKnownURIOIC(
 			getLocalWellKnownURIOIC());
-		oAuthClientASLocalMetadataImpl.setMetadataJSONAS(getMetadataJSONAS());
+		oAuthClientASLocalMetadataImpl.setMetadataJSONOAS(getMetadataJSONOAS());
 		oAuthClientASLocalMetadataImpl.setMetadataJSONOIC(getMetadataJSONOIC());
 
 		oAuthClientASLocalMetadataImpl.resetOriginalValues();
@@ -821,10 +777,6 @@ public class OAuthClientASLocalMetadataModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		oAuthClientASLocalMetadataImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
-		oAuthClientASLocalMetadataImpl.setAllowedGrantTypes(
-			this.<String>getColumnOriginalValue("allowedGrantTypes"));
-		oAuthClientASLocalMetadataImpl.setAllowedScopes(
-			this.<String>getColumnOriginalValue("allowedScopes"));
 		oAuthClientASLocalMetadataImpl.setIssuer(
 			this.<String>getColumnOriginalValue("issuer"));
 		oAuthClientASLocalMetadataImpl.setLocalWellKnownEnabled(
@@ -833,8 +785,8 @@ public class OAuthClientASLocalMetadataModelImpl
 			this.<String>getColumnOriginalValue("localWellKnownURIOAS"));
 		oAuthClientASLocalMetadataImpl.setLocalWellKnownURIOIC(
 			this.<String>getColumnOriginalValue("localWellKnownURIOIC"));
-		oAuthClientASLocalMetadataImpl.setMetadataJSONAS(
-			this.<String>getColumnOriginalValue("metadataJSONAS"));
+		oAuthClientASLocalMetadataImpl.setMetadataJSONOAS(
+			this.<String>getColumnOriginalValue("metadataJSONOAS"));
 		oAuthClientASLocalMetadataImpl.setMetadataJSONOIC(
 			this.<String>getColumnOriginalValue("metadataJSONOIC"));
 
@@ -956,25 +908,6 @@ public class OAuthClientASLocalMetadataModelImpl
 			oAuthClientASLocalMetadataCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
-		oAuthClientASLocalMetadataCacheModel.allowedGrantTypes =
-			getAllowedGrantTypes();
-
-		String allowedGrantTypes =
-			oAuthClientASLocalMetadataCacheModel.allowedGrantTypes;
-
-		if ((allowedGrantTypes != null) && (allowedGrantTypes.length() == 0)) {
-			oAuthClientASLocalMetadataCacheModel.allowedGrantTypes = null;
-		}
-
-		oAuthClientASLocalMetadataCacheModel.allowedScopes = getAllowedScopes();
-
-		String allowedScopes =
-			oAuthClientASLocalMetadataCacheModel.allowedScopes;
-
-		if ((allowedScopes != null) && (allowedScopes.length() == 0)) {
-			oAuthClientASLocalMetadataCacheModel.allowedScopes = null;
-		}
-
 		oAuthClientASLocalMetadataCacheModel.issuer = getIssuer();
 
 		String issuer = oAuthClientASLocalMetadataCacheModel.issuer;
@@ -1010,14 +943,14 @@ public class OAuthClientASLocalMetadataModelImpl
 			oAuthClientASLocalMetadataCacheModel.localWellKnownURIOIC = null;
 		}
 
-		oAuthClientASLocalMetadataCacheModel.metadataJSONAS =
-			getMetadataJSONAS();
+		oAuthClientASLocalMetadataCacheModel.metadataJSONOAS =
+			getMetadataJSONOAS();
 
-		String metadataJSONAS =
-			oAuthClientASLocalMetadataCacheModel.metadataJSONAS;
+		String metadataJSONOAS =
+			oAuthClientASLocalMetadataCacheModel.metadataJSONOAS;
 
-		if ((metadataJSONAS != null) && (metadataJSONAS.length() == 0)) {
-			oAuthClientASLocalMetadataCacheModel.metadataJSONAS = null;
+		if ((metadataJSONOAS != null) && (metadataJSONOAS.length() == 0)) {
+			oAuthClientASLocalMetadataCacheModel.metadataJSONOAS = null;
 		}
 
 		oAuthClientASLocalMetadataCacheModel.metadataJSONOIC =
@@ -1101,13 +1034,11 @@ public class OAuthClientASLocalMetadataModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private String _allowedGrantTypes;
-	private String _allowedScopes;
 	private String _issuer;
 	private boolean _localWellKnownEnabled;
 	private String _localWellKnownURIOAS;
 	private String _localWellKnownURIOIC;
-	private String _metadataJSONAS;
+	private String _metadataJSONOAS;
 	private String _metadataJSONOIC;
 
 	public <T> T getColumnValue(String columnName) {
@@ -1146,8 +1077,6 @@ public class OAuthClientASLocalMetadataModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
-		_columnOriginalValues.put("allowedGrantTypes", _allowedGrantTypes);
-		_columnOriginalValues.put("allowedScopes", _allowedScopes);
 		_columnOriginalValues.put("issuer", _issuer);
 		_columnOriginalValues.put(
 			"localWellKnownEnabled", _localWellKnownEnabled);
@@ -1155,7 +1084,7 @@ public class OAuthClientASLocalMetadataModelImpl
 			"localWellKnownURIOAS", _localWellKnownURIOAS);
 		_columnOriginalValues.put(
 			"localWellKnownURIOIC", _localWellKnownURIOIC);
-		_columnOriginalValues.put("metadataJSONAS", _metadataJSONAS);
+		_columnOriginalValues.put("metadataJSONOAS", _metadataJSONOAS);
 		_columnOriginalValues.put("metadataJSONOIC", _metadataJSONOIC);
 	}
 
@@ -1184,21 +1113,17 @@ public class OAuthClientASLocalMetadataModelImpl
 
 		columnBitmasks.put("modifiedDate", 64L);
 
-		columnBitmasks.put("allowedGrantTypes", 128L);
+		columnBitmasks.put("issuer", 128L);
 
-		columnBitmasks.put("allowedScopes", 256L);
+		columnBitmasks.put("localWellKnownEnabled", 256L);
 
-		columnBitmasks.put("issuer", 512L);
+		columnBitmasks.put("localWellKnownURIOAS", 512L);
 
-		columnBitmasks.put("localWellKnownEnabled", 1024L);
+		columnBitmasks.put("localWellKnownURIOIC", 1024L);
 
-		columnBitmasks.put("localWellKnownURIOAS", 2048L);
+		columnBitmasks.put("metadataJSONOAS", 2048L);
 
-		columnBitmasks.put("localWellKnownURIOIC", 4096L);
-
-		columnBitmasks.put("metadataJSONAS", 8192L);
-
-		columnBitmasks.put("metadataJSONOIC", 16384L);
+		columnBitmasks.put("metadataJSONOIC", 4096L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

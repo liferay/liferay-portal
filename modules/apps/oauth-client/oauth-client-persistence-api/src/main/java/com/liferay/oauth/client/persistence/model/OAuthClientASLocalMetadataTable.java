@@ -46,13 +46,6 @@ public class OAuthClientASLocalMetadataTable
 	public final Column<OAuthClientASLocalMetadataTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<OAuthClientASLocalMetadataTable, String>
-		allowedGrantTypes = createColumn(
-			"allowedGrantTypes", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
-	public final Column<OAuthClientASLocalMetadataTable, String> allowedScopes =
-		createColumn(
-			"allowedScopes", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<OAuthClientASLocalMetadataTable, String> issuer =
 		createColumn(
 			"issuer", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
@@ -69,8 +62,9 @@ public class OAuthClientASLocalMetadataTable
 			"localWellKnownURIOIC", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
 	public final Column<OAuthClientASLocalMetadataTable, String>
-		metadataJSONAS = createColumn(
-			"metadataJSONAS", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+		metadataJSONOAS = createColumn(
+			"metadataJSONOAS", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<OAuthClientASLocalMetadataTable, String>
 		metadataJSONOIC = createColumn(
 			"metadataJSONOIC", String.class, Types.VARCHAR,

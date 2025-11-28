@@ -1,4 +1,5 @@
 create index IX_51E47B3C on OAuthClientASLocalMetadata (companyId);
+create unique index IX_DA54D59 on OAuthClientASLocalMetadata (issuer[$COLUMN_LENGTH:75$]);
 create unique index IX_5AF68FF on OAuthClientASLocalMetadata (localWellKnownURIOAS[$COLUMN_LENGTH:75$]);
 create unique index IX_5B2CFE7 on OAuthClientASLocalMetadata (localWellKnownURIOIC[$COLUMN_LENGTH:75$]);
 create index IX_D41859A6 on OAuthClientASLocalMetadata (userId);

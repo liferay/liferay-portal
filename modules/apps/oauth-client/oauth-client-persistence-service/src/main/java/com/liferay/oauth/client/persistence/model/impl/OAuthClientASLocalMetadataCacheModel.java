@@ -72,7 +72,7 @@ public class OAuthClientASLocalMetadataCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -88,10 +88,6 @@ public class OAuthClientASLocalMetadataCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", allowedGrantTypes=");
-		sb.append(allowedGrantTypes);
-		sb.append(", allowedScopes=");
-		sb.append(allowedScopes);
 		sb.append(", issuer=");
 		sb.append(issuer);
 		sb.append(", localWellKnownEnabled=");
@@ -100,8 +96,8 @@ public class OAuthClientASLocalMetadataCacheModel
 		sb.append(localWellKnownURIOAS);
 		sb.append(", localWellKnownURIOIC=");
 		sb.append(localWellKnownURIOIC);
-		sb.append(", metadataJSONAS=");
-		sb.append(metadataJSONAS);
+		sb.append(", metadataJSONOAS=");
+		sb.append(metadataJSONOAS);
 		sb.append(", metadataJSONOIC=");
 		sb.append(metadataJSONOIC);
 		sb.append("}");
@@ -142,21 +138,6 @@ public class OAuthClientASLocalMetadataCacheModel
 				new Date(modifiedDate));
 		}
 
-		if (allowedGrantTypes == null) {
-			oAuthClientASLocalMetadataImpl.setAllowedGrantTypes("");
-		}
-		else {
-			oAuthClientASLocalMetadataImpl.setAllowedGrantTypes(
-				allowedGrantTypes);
-		}
-
-		if (allowedScopes == null) {
-			oAuthClientASLocalMetadataImpl.setAllowedScopes("");
-		}
-		else {
-			oAuthClientASLocalMetadataImpl.setAllowedScopes(allowedScopes);
-		}
-
 		if (issuer == null) {
 			oAuthClientASLocalMetadataImpl.setIssuer("");
 		}
@@ -183,11 +164,11 @@ public class OAuthClientASLocalMetadataCacheModel
 				localWellKnownURIOIC);
 		}
 
-		if (metadataJSONAS == null) {
-			oAuthClientASLocalMetadataImpl.setMetadataJSONAS("");
+		if (metadataJSONOAS == null) {
+			oAuthClientASLocalMetadataImpl.setMetadataJSONOAS("");
 		}
 		else {
-			oAuthClientASLocalMetadataImpl.setMetadataJSONAS(metadataJSONAS);
+			oAuthClientASLocalMetadataImpl.setMetadataJSONOAS(metadataJSONOAS);
 		}
 
 		if (metadataJSONOIC == null) {
@@ -214,14 +195,12 @@ public class OAuthClientASLocalMetadataCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		allowedGrantTypes = objectInput.readUTF();
-		allowedScopes = objectInput.readUTF();
 		issuer = objectInput.readUTF();
 
 		localWellKnownEnabled = objectInput.readBoolean();
 		localWellKnownURIOAS = objectInput.readUTF();
 		localWellKnownURIOIC = objectInput.readUTF();
-		metadataJSONAS = objectInput.readUTF();
+		metadataJSONOAS = objectInput.readUTF();
 		metadataJSONOIC = objectInput.readUTF();
 	}
 
@@ -244,20 +223,6 @@ public class OAuthClientASLocalMetadataCacheModel
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
-
-		if (allowedGrantTypes == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(allowedGrantTypes);
-		}
-
-		if (allowedScopes == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(allowedScopes);
-		}
 
 		if (issuer == null) {
 			objectOutput.writeUTF("");
@@ -282,11 +247,11 @@ public class OAuthClientASLocalMetadataCacheModel
 			objectOutput.writeUTF(localWellKnownURIOIC);
 		}
 
-		if (metadataJSONAS == null) {
+		if (metadataJSONOAS == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(metadataJSONAS);
+			objectOutput.writeUTF(metadataJSONOAS);
 		}
 
 		if (metadataJSONOIC == null) {
@@ -304,13 +269,11 @@ public class OAuthClientASLocalMetadataCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public String allowedGrantTypes;
-	public String allowedScopes;
 	public String issuer;
 	public boolean localWellKnownEnabled;
 	public String localWellKnownURIOAS;
 	public String localWellKnownURIOIC;
-	public String metadataJSONAS;
+	public String metadataJSONOAS;
 	public String metadataJSONOIC;
 
 }

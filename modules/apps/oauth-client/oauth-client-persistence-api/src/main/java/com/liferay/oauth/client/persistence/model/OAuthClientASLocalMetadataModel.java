@@ -180,36 +180,6 @@ public interface OAuthClientASLocalMetadataModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the allowed grant types of this o auth client as local metadata.
-	 *
-	 * @return the allowed grant types of this o auth client as local metadata
-	 */
-	@AutoEscape
-	public String getAllowedGrantTypes();
-
-	/**
-	 * Sets the allowed grant types of this o auth client as local metadata.
-	 *
-	 * @param allowedGrantTypes the allowed grant types of this o auth client as local metadata
-	 */
-	public void setAllowedGrantTypes(String allowedGrantTypes);
-
-	/**
-	 * Returns the allowed scopes of this o auth client as local metadata.
-	 *
-	 * @return the allowed scopes of this o auth client as local metadata
-	 */
-	@AutoEscape
-	public String getAllowedScopes();
-
-	/**
-	 * Sets the allowed scopes of this o auth client as local metadata.
-	 *
-	 * @param allowedScopes the allowed scopes of this o auth client as local metadata
-	 */
-	public void setAllowedScopes(String allowedScopes);
-
-	/**
 	 * Returns the issuer of this o auth client as local metadata.
 	 *
 	 * @return the issuer of this o auth client as local metadata
@@ -276,19 +246,19 @@ public interface OAuthClientASLocalMetadataModel
 	public void setLocalWellKnownURIOIC(String localWellKnownURIOIC);
 
 	/**
-	 * Returns the metadata jsonas of this o auth client as local metadata.
+	 * Returns the metadata jsonoas of this o auth client as local metadata.
 	 *
-	 * @return the metadata jsonas of this o auth client as local metadata
+	 * @return the metadata jsonoas of this o auth client as local metadata
 	 */
 	@AutoEscape
-	public String getMetadataJSONAS();
+	public String getMetadataJSONOAS();
 
 	/**
-	 * Sets the metadata jsonas of this o auth client as local metadata.
+	 * Sets the metadata jsonoas of this o auth client as local metadata.
 	 *
-	 * @param metadataJSONAS the metadata jsonas of this o auth client as local metadata
+	 * @param metadataJSONOAS the metadata jsonoas of this o auth client as local metadata
 	 */
-	public void setMetadataJSONAS(String metadataJSONAS);
+	public void setMetadataJSONOAS(String metadataJSONOAS);
 
 	/**
 	 * Returns the metadata jsonoic of this o auth client as local metadata.

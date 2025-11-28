@@ -44,13 +44,11 @@ public class OAuthClientASLocalMetadataWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("allowedGrantTypes", getAllowedGrantTypes());
-		attributes.put("allowedScopes", getAllowedScopes());
 		attributes.put("issuer", getIssuer());
 		attributes.put("localWellKnownEnabled", isLocalWellKnownEnabled());
 		attributes.put("localWellKnownURIOAS", getLocalWellKnownURIOAS());
 		attributes.put("localWellKnownURIOIC", getLocalWellKnownURIOIC());
-		attributes.put("metadataJSONAS", getMetadataJSONAS());
+		attributes.put("metadataJSONOAS", getMetadataJSONOAS());
 		attributes.put("metadataJSONOIC", getMetadataJSONOIC());
 
 		return attributes;
@@ -101,18 +99,6 @@ public class OAuthClientASLocalMetadataWrapper
 			setModifiedDate(modifiedDate);
 		}
 
-		String allowedGrantTypes = (String)attributes.get("allowedGrantTypes");
-
-		if (allowedGrantTypes != null) {
-			setAllowedGrantTypes(allowedGrantTypes);
-		}
-
-		String allowedScopes = (String)attributes.get("allowedScopes");
-
-		if (allowedScopes != null) {
-			setAllowedScopes(allowedScopes);
-		}
-
 		String issuer = (String)attributes.get("issuer");
 
 		if (issuer != null) {
@@ -140,10 +126,10 @@ public class OAuthClientASLocalMetadataWrapper
 			setLocalWellKnownURIOIC(localWellKnownURIOIC);
 		}
 
-		String metadataJSONAS = (String)attributes.get("metadataJSONAS");
+		String metadataJSONOAS = (String)attributes.get("metadataJSONOAS");
 
-		if (metadataJSONAS != null) {
-			setMetadataJSONAS(metadataJSONAS);
+		if (metadataJSONOAS != null) {
+			setMetadataJSONOAS(metadataJSONOAS);
 		}
 
 		String metadataJSONOIC = (String)attributes.get("metadataJSONOIC");
@@ -156,26 +142,6 @@ public class OAuthClientASLocalMetadataWrapper
 	@Override
 	public OAuthClientASLocalMetadata cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
-	}
-
-	/**
-	 * Returns the allowed grant types of this o auth client as local metadata.
-	 *
-	 * @return the allowed grant types of this o auth client as local metadata
-	 */
-	@Override
-	public String getAllowedGrantTypes() {
-		return model.getAllowedGrantTypes();
-	}
-
-	/**
-	 * Returns the allowed scopes of this o auth client as local metadata.
-	 *
-	 * @return the allowed scopes of this o auth client as local metadata
-	 */
-	@Override
-	public String getAllowedScopes() {
-		return model.getAllowedScopes();
 	}
 
 	/**
@@ -239,13 +205,13 @@ public class OAuthClientASLocalMetadataWrapper
 	}
 
 	/**
-	 * Returns the metadata jsonas of this o auth client as local metadata.
+	 * Returns the metadata jsonoas of this o auth client as local metadata.
 	 *
-	 * @return the metadata jsonas of this o auth client as local metadata
+	 * @return the metadata jsonoas of this o auth client as local metadata
 	 */
 	@Override
-	public String getMetadataJSONAS() {
-		return model.getMetadataJSONAS();
+	public String getMetadataJSONOAS() {
+		return model.getMetadataJSONOAS();
 	}
 
 	/**
@@ -344,26 +310,6 @@ public class OAuthClientASLocalMetadataWrapper
 	}
 
 	/**
-	 * Sets the allowed grant types of this o auth client as local metadata.
-	 *
-	 * @param allowedGrantTypes the allowed grant types of this o auth client as local metadata
-	 */
-	@Override
-	public void setAllowedGrantTypes(String allowedGrantTypes) {
-		model.setAllowedGrantTypes(allowedGrantTypes);
-	}
-
-	/**
-	 * Sets the allowed scopes of this o auth client as local metadata.
-	 *
-	 * @param allowedScopes the allowed scopes of this o auth client as local metadata
-	 */
-	@Override
-	public void setAllowedScopes(String allowedScopes) {
-		model.setAllowedScopes(allowedScopes);
-	}
-
-	/**
 	 * Sets the company ID of this o auth client as local metadata.
 	 *
 	 * @param companyId the company ID of this o auth client as local metadata
@@ -424,13 +370,13 @@ public class OAuthClientASLocalMetadataWrapper
 	}
 
 	/**
-	 * Sets the metadata jsonas of this o auth client as local metadata.
+	 * Sets the metadata jsonoas of this o auth client as local metadata.
 	 *
-	 * @param metadataJSONAS the metadata jsonas of this o auth client as local metadata
+	 * @param metadataJSONOAS the metadata jsonoas of this o auth client as local metadata
 	 */
 	@Override
-	public void setMetadataJSONAS(String metadataJSONAS) {
-		model.setMetadataJSONAS(metadataJSONAS);
+	public void setMetadataJSONOAS(String metadataJSONOAS) {
+		model.setMetadataJSONOAS(metadataJSONOAS);
 	}
 
 	/**

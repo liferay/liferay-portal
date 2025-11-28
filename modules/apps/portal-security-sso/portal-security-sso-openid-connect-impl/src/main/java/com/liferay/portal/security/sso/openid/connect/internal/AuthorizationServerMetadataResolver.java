@@ -38,7 +38,7 @@ public class AuthorizationServerMetadataResolver {
 					getOAuthClientASLocalMetadata(authServerWellKnownURI);
 
 			return OIDCProviderMetadata.parse(
-				oAuthClientASLocalMetadata.getMetadataJSON());
+				oAuthClientASLocalMetadata.getMetadataJSONOIC());
 		}
 
 		OIDCProviderMetadata oidcProviderMetadata =
