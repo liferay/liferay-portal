@@ -1915,6 +1915,7 @@ components:
                     anyOf:
                         -   $ref: "#/components/schemas/FragmentFieldAction"
                         -   $ref: "#/components/schemas/FragmentFieldBackgroundImage"
+                        -   $ref: "#/components/schemas/FragmentFieldDate"
                         -   $ref: "#/components/schemas/FragmentFieldHTML"
                         -   $ref: "#/components/schemas/FragmentFieldImage"
                         -   $ref: "#/components/schemas/FragmentFieldText"
@@ -1977,6 +1978,27 @@ components:
                                 -   $ref: "#/components/schemas/FragmentInlineValue"
                                 -   $ref: "#/components/schemas/FragmentMappedValue"
                     type: object
+            type: object
+        FragmentFieldDate:
+            # @review
+            description:
+                Represents a fragment field with text.
+            properties:
+                date:
+                    $ref: "#/components/schemas/FragmentMappedValue"
+                    # @review
+                    description:
+                        The fragment field's date.
+                dateFormat:
+                    $ref: "#/components/schemas/FragmentInlineValue"
+                    # @review
+                    description:
+                        The fragment editable element's action. Must be mapped to an external value.
+                fragmentLink:
+                    $ref: "#/components/schemas/FragmentLink"
+                    # @review
+                    description:
+                        A link to a fragment.
             type: object
         FragmentFieldHTML:
             # @review
