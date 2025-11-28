@@ -103,7 +103,8 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
 
-			String jwksURI = getJWKSURI(issuer);
+			String jwksURI = getJWKSURI(
+				openIdConnectSession.getCompanyId(), issuer);
 
 			if (Validator.isNull(jwksURI)) {
 				if (_log.isWarnEnabled()) {
@@ -145,12 +146,15 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		}
 	}
 
-	protected String getJWKSURI(Issuer issuer) throws Exception {
+	protected String getJWKSURI(long companyId, Issuer issuer)
+		throws Exception {
+
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			StringBundler.concat(
-				"(", ConfigurationAdmin.SERVICE_FACTORYPID, "=",
+				"(&(companyId=", companyId, ")(",
+				ConfigurationAdmin.SERVICE_FACTORYPID, "=",
 				OpenIdConnectProviderConfiguration.class.getName(),
-				".scoped)"));
+				".scoped))"));
 
 		if (ArrayUtil.isEmpty(configurations)) {
 			return StringPool.BLANK;
