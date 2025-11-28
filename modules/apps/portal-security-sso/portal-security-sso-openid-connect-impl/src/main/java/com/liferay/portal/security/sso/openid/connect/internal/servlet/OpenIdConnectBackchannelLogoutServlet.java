@@ -17,7 +17,9 @@ import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
 import com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
+import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
+import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectUserLocalService;
 
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -77,20 +79,26 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 			JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
-			OpenIdConnectSession openIdConnectSession =
-				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
-					jwtClaimsSet.getIssuer() +
-						"/.well-known/openid-configuration",
-					jwtClaimsSet.getClaimAsString("sid"));
+			String sessionId = jwtClaimsSet.getClaimAsString("sid");
 
-			if (openIdConnectSession == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"There is no OIDC session with sessionId " +
-							jwtClaimsSet.getClaimAsString("sid"));
-				}
+			OpenIdConnectSession openIdConnectSession;
 
-				return;
+			if (Validator.isNull(sessionId)) {
+				OpenIdConnectUser openIdConnectUser =
+					_openIdConnectUserLocalService.getOpenIdConnectUser(
+						CompanyThreadLocal.getCompanyId(),
+						jwtClaimsSet.getIssuer(),
+						jwtClaimsSet.getClaimAsString("sub"));
+
+				openIdConnectSession =
+					_openIdConnectSessionLocalService.getOpenIdConnectSession(
+						openIdConnectUser.getUserId(),
+						jwtClaimsSet.getIssuer());
+			}
+			else {
+				openIdConnectSession =
+					_openIdConnectSessionLocalService.getOpenIdConnectSession(
+						jwtClaimsSet.getIssuer(), sessionId);
 			}
 
 			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
@@ -203,5 +211,8 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 	@Reference
 	private OpenIdConnectSessionLocalService _openIdConnectSessionLocalService;
+
+	@Reference
+	private OpenIdConnectUserLocalService _openIdConnectUserLocalService;
 
 }
