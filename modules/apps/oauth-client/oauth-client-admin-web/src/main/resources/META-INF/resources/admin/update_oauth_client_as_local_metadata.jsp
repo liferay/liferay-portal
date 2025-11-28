@@ -40,32 +40,85 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 					<liferay-ui:message arguments="<%= HtmlUtil.escape(((OAuthClientASLocalMetadataJSONException)errorException).getMessage()) %>" key="oauth-client-as-local-metadata-invalid-metadata-json-x" />
 				</liferay-ui:error>
 
-				<aui:input helpMessage="oauth-client-as-local-well-known-uri-help" label="oauth-client-as-local-well-known-uri" name="localWellKnownURI" readonly="true" type="text" />
+				<aui:fieldset label="general">
+					<aui:input helpMessage="oauth-client-as-local-metadata-issuer-help" label="oauth-client-as-local-metadata-issuer" name="issuer" required="<%= true %>" type="text" />
 
-				<aui:input helpMessage='<%= LanguageUtil.format(request, "oauth-client-as-local-well-known-uri-suffix-help", "openid-configuration", false) %>' label="oauth-client-as-local-well-known-uri-suffix" name="oAuthClientASLocalWellKnowURISuffix" readonly="true" type="text" value="openid-configuration" />
+					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-scopes-help" label="oauth-client-as-local-metadata-allowed-scopes" name="supported-scopes" type="text" />
 
-				<aui:input
-					helpMessage="oauth-client-as-local-metadata-json-help"
-					label="oauth-client-as-local-metadata-json"
-					name="metadataJSON"
-					style="min-height: 600px;"
-					type="textarea"
-					value='<%=
-						JSONUtil.put(
-							"authorization_endpoint", ""
-						).put(
-							"issuer", ""
-						).put(
-							"jwks_uri", ""
-						).put(
-							"subject_types_supported", JSONUtil.put("public")
-						).put(
-							"token_endpoint", ""
-						).put(
-							"userinfo_endpoint", ""
-						)
-					%>'
-				/>
+					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-grant-types-help" label="oauth-client-as-local-metadata-allowed-grant-types" name="supported-grant-types" type="text" />
+
+					<aui:input label="oauth-client-as-local-metadata-authorization_endpoint" name="authorization_endpoint" type="text" />
+
+					<aui:input label="oauth-client-as-local-metadata-jwks_uri" name="jwks_uri" type="text" />
+
+					<aui:input label="oauth-client-as-local-metadata-token_endpoint" name="token_endpoint" type="text" />
+				</aui:fieldset>
+
+				<aui:fieldset label="oauth-client-as-local-oauth-authorization-server">
+					<aui:input checked="<%= false %>" label="enable" name="enabled" type="checkbox" />
+
+					<aui:input helpMessage="oauth-client-as-local-well-known-uri-oauth-authorization-server-help" label="oauth-client-as-local-well-known-uri-oauth-authorization-server" name="localWellKnownURIOAS" readonly="true" type="text" />
+
+					<%--
+									<aui:input helpMessage='<%= LanguageUtil.format(request, "oauth-client-as-local-well-known-uri-suffix-help", "openid-configuration", false) %>' label="oauth-client-as-local-well-known-uri-suffix" name="oAuthClientASLocalWellKnowURISuffix" readonly="true" type="text" value="openid-configuration" />
+					--%>
+
+					<aui:input
+						helpMessage="oauth-client-as-local-metadata-json-oauth-authorization-server-help"
+						label="oauth-client-as-local-metadata-json-oauth-authorization-server"
+						name="metadataJSONOAS"
+						readonly="true"
+						style="min-height: 600px;"
+						type="textarea"
+						value='<%=
+							JSONUtil.put(
+								"authorization_endpoint", ""
+							).put(
+								"issuer", ""
+							).put(
+								"jwks_uri", ""
+							).put(
+								"token_endpoint", ""
+							)
+						%>'
+					/>
+				</aui:fieldset>
+
+				<aui:fieldset label="oauth-client-as-local--openid-configuration">
+					<aui:input label="oauth-client-as-local-metadata-subject_types_supported" name="subject_types_supported" type="text" />
+
+					<aui:input label="oauth-client-as-local-metadata-userinfo_endpoint" name="userinfo_endpoint" type="text" />
+
+					<aui:input helpMessage="oauth-client-as-local-well-known-uri-openid-configuration-help" label="oauth-client-as-local-well-known-uri-openid-configuration" name="localWellKnownURIOIC" readonly="true" type="text" />
+
+					<%--
+									<aui:input helpMessage='<%= LanguageUtil.format(request, "oauth-client-as-local-well-known-uri-suffix-help", "openid-configuration", false) %>' label="oauth-client-as-local-well-known-uri-suffix" name="oAuthClientASLocalWellKnowURISuffix" readonly="true" type="text" value="openid-configuration" />
+					--%>
+
+					<aui:input
+						helpMessage="oauth-client-as-local-metadata-json-openid-configuration-help"
+						label="oauth-client-as-local-metadata-json-openid-configuration"
+						name="metadataJSONOIC"
+						readonly="true"
+						style="min-height: 600px;"
+						type="textarea"
+						value='<%=
+							JSONUtil.put(
+								"authorization_endpoint", ""
+							).put(
+								"issuer", ""
+							).put(
+								"jwks_uri", ""
+							).put(
+								"subject_types_supported", JSONUtil.put("public")
+							).put(
+								"token_endpoint", ""
+							).put(
+								"userinfo_endpoint", ""
+							)
+						%>'
+					/>
+				</aui:fieldset>
 
 				<aui:button-row>
 					<aui:button onClick='<%= liferayPortletResponse.getNamespace() + "doSubmit();" %>' type="submit" />
@@ -84,31 +137,56 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 			'<portlet:namespace />oauth-client-as-fm'
 		);
 
-		var metadataJSON = document.getElementById(
-			'<portlet:namespace />metadataJSON'
+		var metadataJSONOAS = document.getElementById(
+			'<portlet:namespace />metadataJSONOAS'
 		).value;
 
 		try {
-			metadataJSON = JSON.stringify(JSON.parse(metadataJSON), null, 0);
+			metadataJSONOAS = JSON.stringify(JSON.parse(metadataJSONOAS), null, 0);
 		}
 		catch (e) {
 			alert('Ill-formatted Metadata JSON');
 			return;
 		}
 
-		document.getElementById('<portlet:namespace />metadataJSON').value =
-			metadataJSON;
+		document.getElementById('<portlet:namespace />metadataJSONOAS').value =
+			metadataJSONOAS;
+
+		var metadataJSONOIC = document.getElementById(
+			'<portlet:namespace />metadataJSONOIC'
+		).value;
+
+		try {
+			metadataJSONOIC = JSON.stringify(JSON.parse(metadataJSONOIC), null, 0);
+		}
+		catch (e) {
+			alert('Ill-formatted Metadata JSON');
+			return;
+		}
+
+		document.getElementById('<portlet:namespace />metadataJSONOIC').value =
+			metadataJSONOIC;
 
 		submitForm(form);
 	}
 
 	function <portlet:namespace />init() {
-		var metadataJSON = document.getElementById(
-			'<portlet:namespace />metadataJSON'
+		var metadataJSONOAS = document.getElementById(
+			'<portlet:namespace />metadataJSONOAS'
 		);
 
-		metadataJSON.value = JSON.stringify(
-			JSON.parse(metadataJSON.value),
+		metadataJSONOAS.value = JSON.stringify(
+			JSON.parse(metadataJSONOAS.value),
+			null,
+			4
+		);
+
+		var metadataJSONOIC = document.getElementById(
+			'<portlet:namespace />metadataJSONOIC'
+		);
+
+		metadataJSONOIC.value = JSON.stringify(
+			JSON.parse(metadataJSONOIC.value),
 			null,
 			4
 		);
