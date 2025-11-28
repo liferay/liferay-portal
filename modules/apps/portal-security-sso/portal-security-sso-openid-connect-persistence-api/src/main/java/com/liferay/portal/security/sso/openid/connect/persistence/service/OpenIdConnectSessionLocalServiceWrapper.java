@@ -273,15 +273,6 @@ public class OpenIdConnectSessionLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.security.sso.openid.connect.persistence.model.
-		OpenIdConnectSession fetchOpenIdConnectSession(
-			String authServerWellKnownURI, String sessionId) {
-
-		return _openIdConnectSessionLocalService.fetchOpenIdConnectSession(
-			authServerWellKnownURI, sessionId);
-	}
-
-	@Override
 	public java.util.List
 		<com.liferay.portal.security.sso.openid.connect.persistence.model.
 			OpenIdConnectSession>
@@ -324,6 +315,27 @@ public class OpenIdConnectSessionLocalServiceWrapper
 
 		return _openIdConnectSessionLocalService.getOpenIdConnectSession(
 			openIdConnectSessionId);
+	}
+
+	@Override
+	public com.liferay.portal.security.sso.openid.connect.persistence.model.
+		OpenIdConnectSession getOpenIdConnectSession(long userId, String issuer)
+			throws com.liferay.portal.security.sso.openid.connect.persistence.
+				exception.NoSuchSessionException {
+
+		return _openIdConnectSessionLocalService.getOpenIdConnectSession(
+			userId, issuer);
+	}
+
+	@Override
+	public com.liferay.portal.security.sso.openid.connect.persistence.model.
+		OpenIdConnectSession getOpenIdConnectSession(
+				String issuer, String sessionId)
+			throws com.liferay.portal.security.sso.openid.connect.persistence.
+				exception.NoSuchSessionException {
+
+		return _openIdConnectSessionLocalService.getOpenIdConnectSession(
+			issuer, sessionId);
 	}
 
 	/**

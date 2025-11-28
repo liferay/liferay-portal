@@ -232,13 +232,6 @@ public class OpenIdConnectSessionLocalServiceUtil {
 			userId, authServerWellKnownURI, clientId);
 	}
 
-	public static OpenIdConnectSession fetchOpenIdConnectSession(
-		String authServerWellKnownURI, String sessionId) {
-
-		return getService().fetchOpenIdConnectSession(
-			authServerWellKnownURI, sessionId);
-	}
-
 	public static List<OpenIdConnectSession>
 		getAccessTokenExpirationDateOpenIdConnectSessions(
 			java.util.Date ltAccessTokenExpirationDate, int start, int end) {
@@ -272,6 +265,22 @@ public class OpenIdConnectSessionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getOpenIdConnectSession(openIdConnectSessionId);
+	}
+
+	public static OpenIdConnectSession getOpenIdConnectSession(
+			long userId, String issuer)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchSessionException {
+
+		return getService().getOpenIdConnectSession(userId, issuer);
+	}
+
+	public static OpenIdConnectSession getOpenIdConnectSession(
+			String issuer, String sessionId)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchSessionException {
+
+		return getService().getOpenIdConnectSession(issuer, sessionId);
 	}
 
 	/**

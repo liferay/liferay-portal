@@ -288,6 +288,17 @@ public class OpenIdConnectUserLocalServiceWrapper
 			openIdConnectUserId);
 	}
 
+	@Override
+	public com.liferay.portal.security.sso.openid.connect.persistence.model.
+		OpenIdConnectUser getOpenIdConnectUser(
+				long companyId, String issuer, String subject)
+			throws com.liferay.portal.security.sso.openid.connect.persistence.
+				exception.NoSuchUserException {
+
+		return _openIdConnectUserLocalService.getOpenIdConnectUser(
+			companyId, issuer, subject);
+	}
+
 	/**
 	 * Returns a range of all the open ID connect users.
 	 *

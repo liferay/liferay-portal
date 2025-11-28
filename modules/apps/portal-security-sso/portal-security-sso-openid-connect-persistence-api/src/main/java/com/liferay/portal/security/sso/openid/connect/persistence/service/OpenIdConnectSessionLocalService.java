@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.security.sso.openid.connect.persistence.exception.NoSuchSessionException;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 
 import java.io.Serializable;
@@ -210,10 +211,6 @@ public interface OpenIdConnectSessionLocalService
 		long userId, String authServerWellKnownURI, String clientId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OpenIdConnectSession fetchOpenIdConnectSession(
-		String authServerWellKnownURI, String sessionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpenIdConnectSession>
 		getAccessTokenExpirationDateOpenIdConnectSessions(
 			Date ltAccessTokenExpirationDate, int start, int end);
@@ -235,6 +232,16 @@ public interface OpenIdConnectSessionLocalService
 	public OpenIdConnectSession getOpenIdConnectSession(
 			long openIdConnectSessionId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpenIdConnectSession getOpenIdConnectSession(
+			long userId, String issuer)
+		throws NoSuchSessionException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpenIdConnectSession getOpenIdConnectSession(
+			String issuer, String sessionId)
+		throws NoSuchSessionException;
 
 	/**
 	 * Returns a range of all the open ID connect sessions.

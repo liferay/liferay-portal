@@ -249,6 +249,14 @@ public class OpenIdConnectUserLocalServiceUtil {
 		return getService().getOpenIdConnectUser(openIdConnectUserId);
 	}
 
+	public static OpenIdConnectUser getOpenIdConnectUser(
+			long companyId, String issuer, String subject)
+		throws com.liferay.portal.security.sso.openid.connect.persistence.
+			exception.NoSuchUserException {
+
+		return getService().getOpenIdConnectUser(companyId, issuer, subject);
+	}
+
 	/**
 	 * Returns a range of all the open ID connect users.
 	 *

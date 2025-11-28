@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.security.sso.openid.connect.persistence.exception.NoSuchUserException;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser;
 
 import java.io.Serializable;
@@ -216,6 +217,11 @@ public interface OpenIdConnectUserLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OpenIdConnectUser getOpenIdConnectUser(long openIdConnectUserId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OpenIdConnectUser getOpenIdConnectUser(
+			long companyId, String issuer, String subject)
+		throws NoSuchUserException;
 
 	/**
 	 * Returns a range of all the open ID connect users.
