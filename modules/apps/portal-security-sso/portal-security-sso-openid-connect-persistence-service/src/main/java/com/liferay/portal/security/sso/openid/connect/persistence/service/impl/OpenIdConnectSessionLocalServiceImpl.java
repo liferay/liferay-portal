@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
+import com.liferay.portal.security.sso.openid.connect.persistence.exception.NoSuchSessionException;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.base.OpenIdConnectSessionLocalServiceBaseImpl;
 
@@ -80,14 +81,6 @@ public class OpenIdConnectSessionLocalServiceImpl
 	}
 
 	@Override
-	public OpenIdConnectSession fetchOpenIdConnectSession(
-		String authServerWellKnownURI, String sessionId) {
-
-		return openIdConnectSessionPersistence.fetchByA_S(
-			authServerWellKnownURI, sessionId);
-	}
-
-	@Override
 	public List<OpenIdConnectSession>
 		getAccessTokenExpirationDateOpenIdConnectSessions(
 			Date ltAccessTokenExpirationDate, int start, int end) {
@@ -95,6 +88,22 @@ public class OpenIdConnectSessionLocalServiceImpl
 		return openIdConnectSessionPersistence.
 			findByLtAccessTokenExpirationDate(
 				ltAccessTokenExpirationDate, start, end);
+	}
+
+	@Override
+	public OpenIdConnectSession getOpenIdConnectSession(
+			long userId, String issuer)
+		throws NoSuchSessionException {
+
+		return openIdConnectSessionPersistence.findByU_I(userId, issuer);
+	}
+
+	@Override
+	public OpenIdConnectSession getOpenIdConnectSession(
+			String issuer, String sessionId)
+		throws NoSuchSessionException {
+
+		return openIdConnectSessionPersistence.findByI_S(issuer, sessionId);
 	}
 
 }

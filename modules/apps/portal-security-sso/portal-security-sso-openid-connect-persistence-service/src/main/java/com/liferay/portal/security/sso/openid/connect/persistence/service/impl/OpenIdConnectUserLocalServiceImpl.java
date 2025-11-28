@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.persistence.exception.DuplicateOpenIdConnectUserException;
+import com.liferay.portal.security.sso.openid.connect.persistence.exception.NoSuchUserException;
 import com.liferay.portal.security.sso.openid.connect.persistence.exception.OpenIdConnectUserIssuerException;
 import com.liferay.portal.security.sso.openid.connect.persistence.exception.OpenIdConnectUserSubjectException;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser;
@@ -73,6 +74,15 @@ public class OpenIdConnectUserLocalServiceImpl
 		long companyId, String issuer, String subject) {
 
 		return openIdConnectUserPersistence.fetchByC_I_S(
+			companyId, issuer, subject);
+	}
+
+	@Override
+	public OpenIdConnectUser getOpenIdConnectUser(
+			long companyId, String issuer, String subject)
+		throws NoSuchUserException {
+
+		return openIdConnectUserPersistence.findByC_I_S(
 			companyId, issuer, subject);
 	}
 
