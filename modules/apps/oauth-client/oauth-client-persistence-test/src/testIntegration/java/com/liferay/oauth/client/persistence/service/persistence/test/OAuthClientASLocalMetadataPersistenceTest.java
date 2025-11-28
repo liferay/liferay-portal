@@ -280,8 +280,7 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 			"oAuthClientASLocalMetadataId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
 			"issuer", true, "localWellKnownEnabled", true,
-			"localWellKnownURIOAS", true, "localWellKnownURIOIC", true,
-			"metadataJSONOAS", true, "metadataJSONOIC", true);
+			"localWellKnownURIOAS", true, "localWellKnownURIOIC", true);
 	}
 
 	@Test

@@ -8,6 +8,7 @@ package com.liferay.oauth.client.persistence.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.sql.Clob;
 import java.sql.Types;
 
 import java.util.Date;
@@ -61,14 +62,12 @@ public class OAuthClientASLocalMetadataTable
 		localWellKnownURIOIC = createColumn(
 			"localWellKnownURIOIC", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
-	public final Column<OAuthClientASLocalMetadataTable, String>
-		metadataJSONOAS = createColumn(
-			"metadataJSONOAS", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
-	public final Column<OAuthClientASLocalMetadataTable, String>
-		metadataJSONOIC = createColumn(
-			"metadataJSONOIC", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, Clob> metadataJSONOAS =
+		createColumn(
+			"metadataJSONOAS", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<OAuthClientASLocalMetadataTable, Clob> metadataJSONOIC =
+		createColumn(
+			"metadataJSONOIC", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 
 	private OAuthClientASLocalMetadataTable() {
 		super(

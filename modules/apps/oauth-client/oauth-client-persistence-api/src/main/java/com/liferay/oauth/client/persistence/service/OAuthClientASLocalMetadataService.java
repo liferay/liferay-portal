@@ -43,7 +43,9 @@ public interface OAuthClientASLocalMetadataService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.oauth.client.persistence.service.impl.OAuthClientASLocalMetadataServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the o auth client as local metadata remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link OAuthClientASLocalMetadataServiceUtil} if injection and service tracking are not available.
 	 */
 	public OAuthClientASLocalMetadata addOAuthClientASLocalMetadata(
-			long userId, String metadataJSON, String wellKnownURISuffix)
+			long userId, Boolean enabled, String issuerString, String jwksUri,
+			String[] supportedGrantTypes, String[] supportedScopes,
+			String tokenEndpointString)
 		throws PortalException;
 
 	public OAuthClientASLocalMetadata deleteOAuthClientASLocalMetadata(

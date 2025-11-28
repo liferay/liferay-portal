@@ -184,7 +184,9 @@ public class OAuthClientASLocalMetadataCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		oAuthClientASLocalMetadataId = objectInput.readLong();
@@ -200,8 +202,8 @@ public class OAuthClientASLocalMetadataCacheModel
 		localWellKnownEnabled = objectInput.readBoolean();
 		localWellKnownURIOAS = objectInput.readUTF();
 		localWellKnownURIOIC = objectInput.readUTF();
-		metadataJSONOAS = objectInput.readUTF();
-		metadataJSONOIC = objectInput.readUTF();
+		metadataJSONOAS = (String)objectInput.readObject();
+		metadataJSONOIC = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -248,17 +250,17 @@ public class OAuthClientASLocalMetadataCacheModel
 		}
 
 		if (metadataJSONOAS == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadataJSONOAS);
+			objectOutput.writeObject(metadataJSONOAS);
 		}
 
 		if (metadataJSONOIC == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadataJSONOIC);
+			objectOutput.writeObject(metadataJSONOIC);
 		}
 	}
 

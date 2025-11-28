@@ -31,11 +31,14 @@ public class OAuthClientASLocalMetadataServiceWrapper
 	@Override
 	public com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			addOAuthClientASLocalMetadata(
-				long userId, String metadataJSON, String wellKnownURISuffix)
+				long userId, Boolean enabled, String issuerString,
+				String jwksUri, String[] supportedGrantTypes,
+				String[] supportedScopes, String tokenEndpointString)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _oAuthClientASLocalMetadataService.addOAuthClientASLocalMetadata(
-			userId, metadataJSON, wellKnownURISuffix);
+			userId, enabled, issuerString, jwksUri, supportedGrantTypes,
+			supportedScopes, tokenEndpointString);
 	}
 
 	@Override

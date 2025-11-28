@@ -71,7 +71,7 @@ public class OAuthClientASLocalMetadataModelImpl
 		{"localWellKnownEnabled", Types.BOOLEAN},
 		{"localWellKnownURIOAS", Types.VARCHAR},
 		{"localWellKnownURIOIC", Types.VARCHAR},
-		{"metadataJSONOAS", Types.VARCHAR}, {"metadataJSONOIC", Types.VARCHAR}
+		{"metadataJSONOAS", Types.CLOB}, {"metadataJSONOIC", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -89,12 +89,12 @@ public class OAuthClientASLocalMetadataModelImpl
 		TABLE_COLUMNS_MAP.put("localWellKnownEnabled", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("localWellKnownURIOAS", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("localWellKnownURIOIC", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("metadataJSONOAS", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("metadataJSONOIC", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("metadataJSONOAS", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("metadataJSONOIC", Types.CLOB);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OAuthClientASLocalMetadata (mvccVersion LONG default 0 not null,oAuthClientASLocalMetadataId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,issuer VARCHAR(75) null,localWellKnownEnabled BOOLEAN,localWellKnownURIOAS VARCHAR(75) null,localWellKnownURIOIC VARCHAR(75) null,metadataJSONOAS VARCHAR(75) null,metadataJSONOIC VARCHAR(75) null)";
+		"create table OAuthClientASLocalMetadata (mvccVersion LONG default 0 not null,oAuthClientASLocalMetadataId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,issuer VARCHAR(75) null,localWellKnownEnabled BOOLEAN,localWellKnownURIOAS VARCHAR(256) null,localWellKnownURIOIC VARCHAR(256) null,metadataJSONOAS TEXT null,metadataJSONOIC TEXT null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OAuthClientASLocalMetadata";

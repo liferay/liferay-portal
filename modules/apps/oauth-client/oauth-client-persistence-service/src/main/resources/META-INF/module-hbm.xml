@@ -18,8 +18,8 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="localWellKnownEnabled" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="localWellKnownURIOAS" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="localWellKnownURIOIC" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="metadataJSONOAS" type="com.liferay.portal.dao.orm.hibernate.StringType" />
-		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="metadataJSONOIC" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="metadataJSONOAS" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="metadataJSONOIC" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
 	</class>
 	<class dynamic-update="true" name="com.liferay.oauth.client.persistence.model.impl.OAuthClientEntryImpl" table="OAuthClientEntry">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="oAuthClientEntryId" type="long">

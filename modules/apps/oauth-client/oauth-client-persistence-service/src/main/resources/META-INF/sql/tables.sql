@@ -8,10 +8,10 @@ create table OAuthClientASLocalMetadata (
 	modifiedDate DATE null,
 	issuer VARCHAR(75) null,
 	localWellKnownEnabled BOOLEAN,
-	localWellKnownURIOAS VARCHAR(75) null,
-	localWellKnownURIOIC VARCHAR(75) null,
-	metadataJSONOAS VARCHAR(75) null,
-	metadataJSONOIC VARCHAR(75) null
+	localWellKnownURIOAS VARCHAR(256) null,
+	localWellKnownURIOIC VARCHAR(256) null,
+	metadataJSONOAS TEXT null,
+	metadataJSONOIC TEXT null
 );
 
 create table OAuthClientEntry (

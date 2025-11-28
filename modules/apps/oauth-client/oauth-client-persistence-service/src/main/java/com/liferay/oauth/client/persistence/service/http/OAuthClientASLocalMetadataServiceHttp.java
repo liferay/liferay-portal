@@ -44,8 +44,10 @@ public class OAuthClientASLocalMetadataServiceHttp {
 	public static
 		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 				addOAuthClientASLocalMetadata(
-					HttpPrincipal httpPrincipal, long userId,
-					String metadataJSON, String wellKnownURISuffix)
+					HttpPrincipal httpPrincipal, long userId, Boolean enabled,
+					String issuerString, String jwksUri,
+					String[] supportedGrantTypes, String[] supportedScopes,
+					String tokenEndpointString)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -55,7 +57,8 @@ public class OAuthClientASLocalMetadataServiceHttp {
 				_addOAuthClientASLocalMetadataParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, userId, metadataJSON, wellKnownURISuffix);
+				methodKey, userId, enabled, issuerString, jwksUri,
+				supportedGrantTypes, supportedScopes, tokenEndpointString);
 
 			Object returnObj = null;
 
@@ -419,7 +422,8 @@ public class OAuthClientASLocalMetadataServiceHttp {
 
 	private static final Class<?>[]
 		_addOAuthClientASLocalMetadataParameterTypes0 = new Class[] {
-			long.class, String.class, String.class
+			long.class, Boolean.class, String.class, String.class,
+			String[].class, String[].class, String.class
 		};
 	private static final Class<?>[]
 		_deleteOAuthClientASLocalMetadataParameterTypes1 = new Class[] {
