@@ -219,7 +219,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 
 		if (!issuerString.equals(
 				String.valueOf(oAuthClientASLocalMetadata.getIssuer())) ||
-			!currentLocalWellKnownURIOIC.contains("openid-configuration")) {
+			currentLocalWellKnownURIOIC.contains("openid-configuration")) {
 
 			String metadataJSONOIC = _buildOpenIdConfigurationJSON(authorizationEndpoint,
 				issuerString, jwksUri, supportedGrantTypes, supportedScopes,
@@ -278,7 +278,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			return metadata.toJSONObject(
 			).toJSONString();
 		}
-		catch (ParseException | URISyntaxException exception) {
+		catch (Exception exception) {
 			throw new OAuthClientASLocalMetadataJSONException(
 				exception.getMessage(), exception);
 		}
@@ -328,7 +328,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			return metadata.toJSONObject(
 			).toJSONString();
 		}
-		catch (ParseException | URISyntaxException exception) {
+		catch (Exception exception) {
 			throw new OAuthClientASLocalMetadataJSONException(
 				exception.getMessage(), exception);
 		}
