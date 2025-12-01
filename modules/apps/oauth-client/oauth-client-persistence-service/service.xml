@@ -28,14 +28,14 @@
 
 		<!-- Finder methods -->
 
-		<finder name="Issuer" return-type="OAuthClientASLocalMetadata" unique="true">
-			<finder-column name="issuer" />
-		</finder>
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
 		</finder>
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
+		</finder>
+		<finder name="Issuer" return-type="OAuthClientASLocalMetadata" unique="true">
+			<finder-column name="issuer" />
 		</finder>
 		<finder name="LocalWellKnownURIOAS" return-type="OAuthClientASLocalMetadata" unique="true">
 			<finder-column name="localWellKnownURIOAS" />
