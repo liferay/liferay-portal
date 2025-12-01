@@ -63,7 +63,8 @@ public class OpenIdConnectServiceUpgradeStepRegistrator
 		registry.register(
 			"2.4.0", "2.5.0",
 			UpgradeProcessFactory.addColumns(
-				"OpenIdConnectSession", "sessionId VARCHAR(75) null"));
+				"OpenIdConnectSession", "issuer VARCHAR(75) null",
+				"sessionId VARCHAR(75) null"));
 	}
 
 	@Reference
