@@ -91,6 +91,13 @@ public class DDMFacetTemplateUpgradeProcess extends UpgradeProcess {
 					"update DDMTemplate set classNameId = ", newClassNameId,
 					" where classNameId = ", oldClassNameId,
 					" and resourceClassNameId = ", resourceClassNameId));
+
+			runSQL(
+				StringBundler.concat(
+					"update DDMTemplateVersion set classNameId = ",
+					newClassNameId, " where classNameId = ", oldClassNameId,
+					" and templateId in (select templateId from DDMTemplate ",
+					"where resourceClassNameId = ", resourceClassNameId, ")"));
 		}
 	}
 
