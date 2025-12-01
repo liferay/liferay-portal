@@ -33,51 +33,6 @@ public interface OAuthClientASLocalMetadataPersistence
 	 */
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
-	 *
-	 * @param issuer the issuer
-	 * @return the matching o auth client as local metadata
-	 * @throws NoSuchOAuthClientASLocalMetadataException if a matching o auth client as local metadata could not be found
-	 */
-	public OAuthClientASLocalMetadata findByIssuer(String issuer)
-		throws NoSuchOAuthClientASLocalMetadataException;
-
-	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param issuer the issuer
-	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
-	 */
-	public OAuthClientASLocalMetadata fetchByIssuer(String issuer);
-
-	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param issuer the issuer
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
-	 */
-	public OAuthClientASLocalMetadata fetchByIssuer(
-		String issuer, boolean useFinderCache);
-
-	/**
-	 * Removes the o auth client as local metadata where issuer = &#63; from the database.
-	 *
-	 * @param issuer the issuer
-	 * @return the o auth client as local metadata that was removed
-	 */
-	public OAuthClientASLocalMetadata removeByIssuer(String issuer)
-		throws NoSuchOAuthClientASLocalMetadataException;
-
-	/**
-	 * Returns the number of o auth client as local metadatas where issuer = &#63;.
-	 *
-	 * @param issuer the issuer
-	 * @return the number of matching o auth client as local metadatas
-	 */
-	public int countByIssuer(String issuer);
-
-	/**
 	 * Returns all the o auth client as local metadatas where companyId = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -493,6 +448,51 @@ public interface OAuthClientASLocalMetadataPersistence
 	 * @return the number of matching o auth client as local metadatas that the user has permission to view
 	 */
 	public int filterCountByUserId(long userId);
+
+	/**
+	 * Returns the o auth client as local metadata where issuer = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
+	 *
+	 * @param issuer the issuer
+	 * @return the matching o auth client as local metadata
+	 * @throws NoSuchOAuthClientASLocalMetadataException if a matching o auth client as local metadata could not be found
+	 */
+	public OAuthClientASLocalMetadata findByIssuer(String issuer)
+		throws NoSuchOAuthClientASLocalMetadataException;
+
+	/**
+	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param issuer the issuer
+	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
+	 */
+	public OAuthClientASLocalMetadata fetchByIssuer(String issuer);
+
+	/**
+	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param issuer the issuer
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
+	 */
+	public OAuthClientASLocalMetadata fetchByIssuer(
+		String issuer, boolean useFinderCache);
+
+	/**
+	 * Removes the o auth client as local metadata where issuer = &#63; from the database.
+	 *
+	 * @param issuer the issuer
+	 * @return the o auth client as local metadata that was removed
+	 */
+	public OAuthClientASLocalMetadata removeByIssuer(String issuer)
+		throws NoSuchOAuthClientASLocalMetadataException;
+
+	/**
+	 * Returns the number of o auth client as local metadatas where issuer = &#63;.
+	 *
+	 * @param issuer the issuer
+	 * @return the number of matching o auth client as local metadatas
+	 */
+	public int countByIssuer(String issuer);
 
 	/**
 	 * Returns the o auth client as local metadata where localWellKnownURIOAS = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.

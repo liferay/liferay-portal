@@ -45,7 +45,8 @@ public interface OAuthClientASLocalMetadataService extends BaseService {
 	public OAuthClientASLocalMetadata addOAuthClientASLocalMetadata(
 			long userId, Boolean enabled, String issuerString, String jwksUri,
 			String[] supportedGrantTypes, String[] supportedScopes,
-			String tokenEndpointString)
+			String[] supportedSubjectTypes, String tokenEndpointString,
+			String userinfoEndpoint)
 		throws PortalException;
 
 	public OAuthClientASLocalMetadata deleteOAuthClientASLocalMetadata(
@@ -86,8 +87,10 @@ public interface OAuthClientASLocalMetadataService extends BaseService {
 		long userId, int start, int end);
 
 	public OAuthClientASLocalMetadata updateOAuthClientASLocalMetadata(
-			long oAuthClientASLocalMetadataId, String metadataJSON,
-			String wellKnownURISuffix)
+			long oAuthClientASLocalMetadataId, Boolean enabled,
+			String issuerString, String jwksUri, String[] supportedGrantTypes,
+			String[] supportedScopes, String[] supportedSubjectTypes,
+			String tokenEndpointString, String userinfoEndpoint)
 		throws PortalException;
 
 }

@@ -206,15 +206,6 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 	}
 
 	@Test
-	public void testCountByIssuer() throws Exception {
-		_persistence.countByIssuer("");
-
-		_persistence.countByIssuer("null");
-
-		_persistence.countByIssuer((String)null);
-	}
-
-	@Test
 	public void testCountByCompanyId() throws Exception {
 		_persistence.countByCompanyId(RandomTestUtil.nextLong());
 
@@ -226,6 +217,15 @@ public class OAuthClientASLocalMetadataPersistenceTest {
 		_persistence.countByUserId(RandomTestUtil.nextLong());
 
 		_persistence.countByUserId(0L);
+	}
+
+	@Test
+	public void testCountByIssuer() throws Exception {
+		_persistence.countByIssuer("");
+
+		_persistence.countByIssuer("null");
+
+		_persistence.countByIssuer((String)null);
 	}
 
 	@Test
