@@ -53,7 +53,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 
 	@Override
 	public OAuthClientASLocalMetadata addOAuthClientASLocalMetadata(
-			long userId, Boolean enabled, String issuerString, String jwksUri,
+			long userId, String authorizationEndpoint, Boolean enabled, String issuerString, String jwksUri,
 			String[] supportedGrantTypes, String[] supportedScopes,
 			String[] supportedSubjectTypes, String tokenEndpointString,
 			String userinfoEndpoint)
@@ -70,11 +70,11 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			throw new DuplicateOAuthClientASLocalMetadataException();
 		}
 
-		String metadataJSONOIC = _buildOpenIdConfigurationJSON(
+		String metadataJSONOIC = _buildOpenIdConfigurationJSON(authorizationEndpoint,
 			issuerString, jwksUri, supportedGrantTypes, supportedScopes,
 			supportedSubjectTypes, tokenEndpointString, userinfoEndpoint);
 
-		String metadataJSONOAS = _buildAuthorizationServerJSON(
+		String metadataJSONOAS = _buildAuthorizationServerJSON(authorizationEndpoint,
 			issuerString, jwksUri, supportedScopes, supportedGrantTypes,
 			tokenEndpointString);
 
@@ -204,8 +204,8 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 
 	@Override
 	public OAuthClientASLocalMetadata updateOAuthClientASLocalMetadata(
-			long oAuthClientASLocalMetadataId, Boolean enabled,
-			String issuerString, String jwksUri, String[] supportedGrantTypes,
+			long oAuthClientASLocalMetadataId, String authorizationEndpoint, Boolean enabled,
+			 String issuerString, String jwksUri, String[] supportedGrantTypes,
 			String[] supportedScopes, String[] supportedSubjectTypes,
 			String tokenEndpointString, String userinfoEndpoint)
 		throws PortalException {
@@ -221,11 +221,11 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 				String.valueOf(oAuthClientASLocalMetadata.getIssuer())) ||
 			!currentLocalWellKnownURIOIC.contains("openid-configuration")) {
 
-			String metadataJSONOIC = _buildOpenIdConfigurationJSON(
+			String metadataJSONOIC = _buildOpenIdConfigurationJSON(authorizationEndpoint,
 				issuerString, jwksUri, supportedGrantTypes, supportedScopes,
 				supportedSubjectTypes, tokenEndpointString, userinfoEndpoint);
 
-			String metadataJSONOAS = _buildAuthorizationServerJSON(
+			String metadataJSONOAS = _buildAuthorizationServerJSON(authorizationEndpoint,
 				issuerString, jwksUri, supportedScopes, supportedGrantTypes,
 				tokenEndpointString);
 
@@ -246,7 +246,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 	}
 
 	private String _buildAuthorizationServerJSON(
-			String issuerStr, String jwksUri, String[] supportedScopes,
+			String authorizationEndpoint, String issuerStr, String jwksUri, String[] supportedScopes,
 			String[] supportedGrantTypes, String tokenEndpoint)
 		throws PortalException {
 
@@ -256,9 +256,9 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			AuthorizationServerMetadata metadata =
 				new AuthorizationServerMetadata(issuer);
 
+			metadata.setAuthorizationEndpointURI(new URI(authorizationEndpoint));
 			metadata.setJWKSetURI(new URI(jwksUri));
 			metadata.setTokenEndpointURI(new URI(tokenEndpoint));
-
 			Scope scope = new Scope();
 
 			for (String s : supportedScopes) {
@@ -275,11 +275,6 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 
 			metadata.setGrantTypes(Arrays.asList(grantTypes));
 
-			metadata.setTokenEndpointAuthMethods(
-				Arrays.asList(
-					ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
-					ClientAuthenticationMethod.CLIENT_SECRET_POST));
-
 			return metadata.toJSONObject(
 			).toJSONString();
 		}
@@ -290,7 +285,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 	}
 
 	private String _buildOpenIdConfigurationJSON(
-			String issuerStr, String jwksUri, String[] supportedGrantTypes,
+			String authorizationEndpoint, String issuerStr, String jwksUri, String[] supportedGrantTypes,
 			String[] supportedScopes, String[] supportedSubjectTypes,
 			String tokenEndpoint, String userinfoEndpoint)
 		throws PortalException {
@@ -309,6 +304,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			OIDCProviderMetadata metadata = new OIDCProviderMetadata(
 				issuer, subjectTypes, new URI(jwksUri));
 
+			metadata.setAuthorizationEndpointURI(new URI(authorizationEndpoint));
 			metadata.setTokenEndpointURI(new URI(tokenEndpoint));
 
 			Scope scope = new Scope();
