@@ -12,6 +12,13 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 OAuthClientASLocalMetadata oAuthClientASLocalMetadata = (OAuthClientASLocalMetadata)request.getAttribute(OAuthClientASLocalMetadata.class.getName());
 
+String authorizationEndpoint = (String)request.getAttribute("authorization_endpoint");
+String jwksUri = (String)request.getAttribute("jwks_uri");
+String supportedGrantTypes = (String)request.getAttribute("supported-grant-types");
+String supportedSubjectTypes = (String)request.getAttribute("supported_subject_types");
+String tokenEndpoint = (String)request.getAttribute("token_endpoint");
+String userinfoEndpoint = (String)request.getAttribute("userinfo_endpoint");
+
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
@@ -41,27 +48,21 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 				</liferay-ui:error>
 
 				<aui:fieldset label="general">
-					<aui:input helpMessage="oauth-client-as-local-metadata-issuer-help" label="oauth-client-as-local-metadata-issuer" name="issuer" required="<%= true %>" type="text" />
+					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-scopes-help" label="oauth-client-as-local-metadata-allowed-scopes" name="supported-scopes" type="text" value="<%= jwksUri %>" />
 
-					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-scopes-help" label="oauth-client-as-local-metadata-allowed-scopes" name="supported-scopes" type="text" />
+					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-grant-types-help" label="oauth-client-as-local-metadata-allowed-grant-types" name="supported-grant-types" type="text" value="<%= supportedGrantTypes %>" />
 
-					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-grant-types-help" label="oauth-client-as-local-metadata-allowed-grant-types" name="supported-grant-types" type="text" />
+					<aui:input label="oauth-client-as-local-metadata-authorization_endpoint" name="authorization_endpoint" type="text" value="<%= authorizationEndpoint %>" />
 
-					<aui:input label="oauth-client-as-local-metadata-authorization_endpoint" name="authorization_endpoint" type="text" />
+					<aui:input label="oauth-client-as-local-metadata-jwks_uri" name="jwks_uri" type="text" value="<%= jwksUri %>" />
 
-					<aui:input label="oauth-client-as-local-metadata-jwks_uri" name="jwks_uri" type="text" />
-
-					<aui:input label="oauth-client-as-local-metadata-token_endpoint" name="token_endpoint" type="text" />
+					<aui:input label="oauth-client-as-local-metadata-token_endpoint" name="token_endpoint" type="text" value="<%= tokenEndpoint %>" />
 				</aui:fieldset>
 
 				<aui:fieldset label="oauth-client-as-local-oauth-authorization-server">
-					<aui:input checked="<%= false %>" label="enable" name="enabled" type="checkbox" />
+					<aui:input checked="<%= (oAuthClientASLocalMetadata != null) ? oAuthClientASLocalMetadata.getLocalWellKnownEnabled() : false %>" label="enable" name="enabled" type="checkbox" />
 
 					<aui:input helpMessage="oauth-client-as-local-well-known-uri-oauth-authorization-server-help" label="oauth-client-as-local-well-known-uri-oauth-authorization-server" name="localWellKnownURIOAS" readonly="true" type="text" />
-
-					<%--
-									<aui:input helpMessage='<%= LanguageUtil.format(request, "oauth-client-as-local-well-known-uri-suffix-help", "openid-configuration", false) %>' label="oauth-client-as-local-well-known-uri-suffix" name="oAuthClientASLocalWellKnowURISuffix" readonly="true" type="text" value="openid-configuration" />
-					--%>
 
 					<aui:input
 						helpMessage="oauth-client-as-local-metadata-json-oauth-authorization-server-help"
@@ -85,15 +86,11 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 				</aui:fieldset>
 
 				<aui:fieldset label="oauth-client-as-local--openid-configuration">
-					<aui:input label="oauth-client-as-local-metadata-subject_types_supported" name="subject_types_supported" type="text" />
+					<aui:input label="oauth-client-as-local-metadata-subject_types_supported" name="supported_subject_types" type="text" value="<%= supportedSubjectTypes %>" />
 
-					<aui:input label="oauth-client-as-local-metadata-userinfo_endpoint" name="userinfo_endpoint" type="text" />
+					<aui:input label="oauth-client-as-local-metadata-userinfo_endpoint" name="userinfo_endpoint" type="text" value="<%= userinfoEndpoint %>" />
 
 					<aui:input helpMessage="oauth-client-as-local-well-known-uri-openid-configuration-help" label="oauth-client-as-local-well-known-uri-openid-configuration" name="localWellKnownURIOIC" readonly="true" type="text" />
-
-					<%--
-									<aui:input helpMessage='<%= LanguageUtil.format(request, "oauth-client-as-local-well-known-uri-suffix-help", "openid-configuration", false) %>' label="oauth-client-as-local-well-known-uri-suffix" name="oAuthClientASLocalWellKnowURISuffix" readonly="true" type="text" value="openid-configuration" />
-					--%>
 
 					<aui:input
 						helpMessage="oauth-client-as-local-metadata-json-openid-configuration-help"

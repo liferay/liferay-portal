@@ -46,19 +46,19 @@ OAuthClientASLocalMetadataManagementToolbarDisplayContext oAuthClientASLocalMeta
 		<liferay-ui:search-container-row
 			className="com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata"
 			escapedModel="<%= true %>"
-			keyProperty="localWellKnownURI"
+			keyProperty="localWellKnownURIOIC"
 			modelVar="oAuthClientASLocalMetadata"
 		>
 			<portlet:renderURL var="editURL">
 				<portlet:param name="mvcRenderCommandName" value="/oauth_client_admin/update_oauth_client_as_local_metadata" />
-				<portlet:param name="localWellKnownURI" value="<%= oAuthClientASLocalMetadata.getLocalWellKnownURI() %>" />
+				<portlet:param name="localWellKnownURIOIC" value="<%= oAuthClientASLocalMetadata.getLocalWellKnownURIOIC() %>" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 			</portlet:renderURL>
 
 			<liferay-ui:search-container-column-text
 				href="<%= editURL %>"
 				name="oauth-client-as-local-well-known-uri"
-				property="localWellKnownURI"
+				property="localWellKnownURIOIC"
 			/>
 
 			<liferay-ui:search-container-column-jsp

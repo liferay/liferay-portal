@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import com.nimbusds.oauth2.sdk.ParseException;
+import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -40,19 +43,85 @@ public class UpdateOAuthClientASLocalMetadataMVCRenderCommand
 
 		try {
 			String localWellKnownURI = ParamUtil.getString(
-				renderRequest, "localWellKnownURI");
+				renderRequest, "localWellKnownURIOIC");
 
 			if (Validator.isNotNull(localWellKnownURI)) {
+				OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+					_oAuthClientASLocalMetadataService.
+						getOAuthClientASLocalMetadata(localWellKnownURI);
+
+				String metadataJSON =
+					oAuthClientASLocalMetadata.getMetadataJSONOIC();
+
+				OIDCProviderMetadata authorizationServerMetadata =
+					OIDCProviderMetadata.parse(metadataJSON);
+
 				renderRequest.setAttribute(
 					OAuthClientASLocalMetadata.class.getName(),
 					_oAuthClientASLocalMetadataService.
 						getOAuthClientASLocalMetadata(localWellKnownURI));
+
+				if (authorizationServerMetadata.getAuthorizationEndpointURI() !=
+						null) {
+
+					renderRequest.setAttribute(
+						"authorization_endpoint",
+						authorizationServerMetadata.getAuthorizationEndpointURI(
+						).toString());
+				}
+
+				if (authorizationServerMetadata.getJWKSetURI() != null) {
+					renderRequest.setAttribute(
+						"jwks_uri",
+						authorizationServerMetadata.getJWKSetURI(
+						).toString());
+				}
+
+				if (authorizationServerMetadata.getGrantTypes() != null) {
+					renderRequest.setAttribute(
+						"supported-grant-types",
+						authorizationServerMetadata.getGrantTypes(
+						).toString());
+				}
+
+				if (authorizationServerMetadata.getScopes() != null) {
+					renderRequest.setAttribute(
+						"supported-scopes",
+						authorizationServerMetadata.getScopes(
+						).toString());
+				}
+
+				if (authorizationServerMetadata.getSubjectTypes() != null) {
+					renderRequest.setAttribute(
+						"supported_subject_types",
+						authorizationServerMetadata.getSubjectTypes(
+						).toString());
+				}
+
+				if (authorizationServerMetadata.getTokenEndpointURI() != null) {
+					renderRequest.setAttribute(
+						"token_endpoint",
+						authorizationServerMetadata.getTokenEndpointURI(
+						).toString());
+				}
+
+				if (authorizationServerMetadata.getUserInfoEndpointURI() !=
+						null) {
+
+					renderRequest.setAttribute(
+						"userinfo_endpoint",
+						authorizationServerMetadata.getUserInfoEndpointURI(
+						).toString());
+				}
 			}
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(portalException);
 			}
+		}
+		catch (ParseException parseException) {
+			throw new RuntimeException(parseException);
 		}
 
 		return "/admin/update_oauth_client_as_local_metadata.jsp";
