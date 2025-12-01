@@ -106,14 +106,6 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			String jwksURI = getJWKSURI(
 				openIdConnectSession.getCompanyId(), issuer);
 
-			if (Validator.isNull(jwksURI)) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("JWKS URI is null");
-				}
-
-				return;
-			}
-
 			JWSHeader jwsHeader = signedJWT.getHeader();
 
 			LogoutTokenValidator logoutTokenValidator =
@@ -139,6 +131,8 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		catch (Exception exception) {
 			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
+			_log.error("OpenId Connect backchannel logout failed");
+
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"OpenId Connect backchannel logout failed", exception);
@@ -157,7 +151,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 				".scoped))"));
 
 		if (ArrayUtil.isEmpty(configurations)) {
-			return StringPool.BLANK;
+			throw new IllegalStateException("Configuration is empty");
 		}
 
 		for (Configuration configuration : configurations) {
@@ -184,7 +178,7 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			}
 		}
 
-		return StringPool.BLANK;
+		throw new IllegalStateException("JWKS URI is null");
 	}
 
 	private OIDCProviderMetadata _getOIDCProviderMetadata(
