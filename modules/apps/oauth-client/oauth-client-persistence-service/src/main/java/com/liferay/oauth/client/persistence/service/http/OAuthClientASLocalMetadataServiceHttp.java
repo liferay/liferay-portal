@@ -44,7 +44,8 @@ public class OAuthClientASLocalMetadataServiceHttp {
 	public static
 		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 				addOAuthClientASLocalMetadata(
-					HttpPrincipal httpPrincipal, long userId, Boolean enabled,
+					HttpPrincipal httpPrincipal, long userId,
+					String authorizationEndpoint, Boolean enabled,
 					String issuerString, String jwksUri,
 					String[] supportedGrantTypes, String[] supportedScopes,
 					String[] supportedSubjectTypes, String tokenEndpointString,
@@ -58,9 +59,9 @@ public class OAuthClientASLocalMetadataServiceHttp {
 				_addOAuthClientASLocalMetadataParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, userId, enabled, issuerString, jwksUri,
-				supportedGrantTypes, supportedScopes, supportedSubjectTypes,
-				tokenEndpointString, userinfoEndpoint);
+				methodKey, userId, authorizationEndpoint, enabled, issuerString,
+				jwksUri, supportedGrantTypes, supportedScopes,
+				supportedSubjectTypes, tokenEndpointString, userinfoEndpoint);
 
 			Object returnObj = null;
 
@@ -376,7 +377,8 @@ public class OAuthClientASLocalMetadataServiceHttp {
 		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 				updateOAuthClientASLocalMetadata(
 					HttpPrincipal httpPrincipal,
-					long oAuthClientASLocalMetadataId, Boolean enabled,
+					long oAuthClientASLocalMetadataId,
+					String authorizationEndpoint, Boolean enabled,
 					String issuerString, String jwksUri,
 					String[] supportedGrantTypes, String[] supportedScopes,
 					String[] supportedSubjectTypes, String tokenEndpointString,
@@ -390,9 +392,10 @@ public class OAuthClientASLocalMetadataServiceHttp {
 				_updateOAuthClientASLocalMetadataParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, oAuthClientASLocalMetadataId, enabled, issuerString,
-				jwksUri, supportedGrantTypes, supportedScopes,
-				supportedSubjectTypes, tokenEndpointString, userinfoEndpoint);
+				methodKey, oAuthClientASLocalMetadataId, authorizationEndpoint,
+				enabled, issuerString, jwksUri, supportedGrantTypes,
+				supportedScopes, supportedSubjectTypes, tokenEndpointString,
+				userinfoEndpoint);
 
 			Object returnObj = null;
 
@@ -428,7 +431,7 @@ public class OAuthClientASLocalMetadataServiceHttp {
 
 	private static final Class<?>[]
 		_addOAuthClientASLocalMetadataParameterTypes0 = new Class[] {
-			long.class, Boolean.class, String.class, String.class,
+			long.class, String.class, Boolean.class, String.class, String.class,
 			String[].class, String[].class, String[].class, String.class,
 			String.class
 		};
@@ -462,7 +465,7 @@ public class OAuthClientASLocalMetadataServiceHttp {
 		};
 	private static final Class<?>[]
 		_updateOAuthClientASLocalMetadataParameterTypes8 = new Class[] {
-			long.class, Boolean.class, String.class, String.class,
+			long.class, String.class, Boolean.class, String.class, String.class,
 			String[].class, String[].class, String[].class, String.class,
 			String.class
 		};

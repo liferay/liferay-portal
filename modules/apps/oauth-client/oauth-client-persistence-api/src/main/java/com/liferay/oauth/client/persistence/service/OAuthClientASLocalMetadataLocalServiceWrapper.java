@@ -34,17 +34,18 @@ public class OAuthClientASLocalMetadataLocalServiceWrapper
 	@Override
 	public com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			addOAuthClientASLocalMetadata(
-				long userId, Boolean enabled, String issuerString,
-				String jwksUri, String[] supportedGrantTypes,
-				String[] supportedScopes, String[] supportedSubjectTypes,
-				String tokenEndpointString, String userinfoEndpoint)
+				long userId, String authorizationEndpoint, Boolean enabled,
+				String issuerString, String jwksUri,
+				String[] supportedGrantTypes, String[] supportedScopes,
+				String[] supportedSubjectTypes, String tokenEndpointString,
+				String userinfoEndpoint)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _oAuthClientASLocalMetadataLocalService.
 			addOAuthClientASLocalMetadata(
-				userId, enabled, issuerString, jwksUri, supportedGrantTypes,
-				supportedScopes, supportedSubjectTypes, tokenEndpointString,
-				userinfoEndpoint);
+				userId, authorizationEndpoint, enabled, issuerString, jwksUri,
+				supportedGrantTypes, supportedScopes, supportedSubjectTypes,
+				tokenEndpointString, userinfoEndpoint);
 	}
 
 	/**
@@ -412,8 +413,8 @@ public class OAuthClientASLocalMetadataLocalServiceWrapper
 	@Override
 	public com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			updateOAuthClientASLocalMetadata(
-				long oAuthClientASLocalMetadataId, Boolean enabled,
-				String issuerString, String jwksUri,
+				long oAuthClientASLocalMetadataId, String authorizationEndpoint,
+				Boolean enabled, String issuerString, String jwksUri,
 				String[] supportedGrantTypes, String[] supportedScopes,
 				String[] supportedSubjectTypes, String tokenEndpointString,
 				String userinfoEndpoint)
@@ -421,9 +422,9 @@ public class OAuthClientASLocalMetadataLocalServiceWrapper
 
 		return _oAuthClientASLocalMetadataLocalService.
 			updateOAuthClientASLocalMetadata(
-				oAuthClientASLocalMetadataId, enabled, issuerString, jwksUri,
-				supportedGrantTypes, supportedScopes, supportedSubjectTypes,
-				tokenEndpointString, userinfoEndpoint);
+				oAuthClientASLocalMetadataId, authorizationEndpoint, enabled,
+				issuerString, jwksUri, supportedGrantTypes, supportedScopes,
+				supportedSubjectTypes, tokenEndpointString, userinfoEndpoint);
 	}
 
 	/**
