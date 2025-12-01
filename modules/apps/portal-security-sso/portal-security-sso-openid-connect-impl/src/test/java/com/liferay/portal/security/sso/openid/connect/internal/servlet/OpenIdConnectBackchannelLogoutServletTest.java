@@ -80,7 +80,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		).when(
 			_openIdConnectBackchannelLogoutServlet
 		).getJWKSURI(
-			new Issuer(_ISSUER_URL)
+			0, new Issuer(_ISSUER_URL)
 		);
 	}
 
@@ -220,14 +220,14 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		return token;
 	}
 
-	private OpenIdConnectSession _mockOpenIdConnectSession(
-		SignedJWT signedJWT) {
+	private OpenIdConnectSession _mockOpenIdConnectSession(SignedJWT signedJWT)
+		throws Exception {
 
 		OpenIdConnectSession openIdConnectSession = Mockito.mock(
 			OpenIdConnectSession.class);
 
 		Mockito.when(
-			_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
+			_openIdConnectSessionLocalService.getOpenIdConnectSession(
 				Mockito.any(), Mockito.eq(_SESSION_ID))
 		).thenReturn(
 			openIdConnectSession
@@ -248,9 +248,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		return openIdConnectSession;
 	}
 
-	private void _testDoPostWithInvalidToken(String logoutToken)
-		throws Exception {
-
+	private void _testDoPostWithInvalidToken(String logoutToken) {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
