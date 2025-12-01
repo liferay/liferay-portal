@@ -37,7 +37,8 @@ public class OAuthClientASLocalMetadataServiceImpl
 	public OAuthClientASLocalMetadata addOAuthClientASLocalMetadata(
 			long userId, Boolean enabled, String issuerString, String jwksUri,
 			String[] supportedGrantTypes, String[] supportedScopes,
-			String tokenEndpointString)
+			String[] supportedSubjectTypes, String tokenEndpointString,
+			String userinfoEndpoint)
 		throws PortalException {
 
 		ModelResourcePermissionUtil.check(
@@ -49,7 +50,8 @@ public class OAuthClientASLocalMetadataServiceImpl
 		return oAuthClientASLocalMetadataLocalService.
 			addOAuthClientASLocalMetadata(
 				userId, enabled, issuerString, jwksUri, supportedGrantTypes,
-				supportedScopes, tokenEndpointString);
+				supportedScopes, supportedSubjectTypes, tokenEndpointString,
+				userinfoEndpoint);
 	}
 
 	@Override
@@ -136,8 +138,10 @@ public class OAuthClientASLocalMetadataServiceImpl
 
 	@Override
 	public OAuthClientASLocalMetadata updateOAuthClientASLocalMetadata(
-			long oAuthClientASLocalMetadataId, String metadataJSON,
-			String wellKnownURISuffix)
+			long oAuthClientASLocalMetadataId, Boolean enabled,
+			String issuerString, String jwksUri, String[] supportedGrantTypes,
+			String[] supportedScopes, String[] supportedSubjectTypes,
+			String tokenEndpointString, String userinfoEndpoint)
 		throws PortalException {
 
 		_oAuthClientASLocalMetadataModelResourcePermission.check(
@@ -148,7 +152,9 @@ public class OAuthClientASLocalMetadataServiceImpl
 
 		return oAuthClientASLocalMetadataLocalService.
 			updateOAuthClientASLocalMetadata(
-				oAuthClientASLocalMetadataId, metadataJSON, wellKnownURISuffix);
+				oAuthClientASLocalMetadataId, enabled, issuerString, jwksUri,
+				supportedGrantTypes, supportedScopes, supportedSubjectTypes,
+				tokenEndpointString, userinfoEndpoint);
 	}
 
 	@Reference(
