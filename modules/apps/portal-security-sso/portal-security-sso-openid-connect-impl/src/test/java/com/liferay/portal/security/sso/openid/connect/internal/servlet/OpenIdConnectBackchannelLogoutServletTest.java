@@ -56,9 +56,6 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_openIdConnectBackchannelLogoutServlet = Mockito.spy(
-			new OpenIdConnectBackchannelLogoutServlet());
-
 		OpenIdConnect openIdConnect = Mockito.mock(OpenIdConnect.class);
 
 		Mockito.when(
@@ -184,7 +181,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		).issueTime(
 			now
 		).subject(
-			_SUBJECT
+			RandomTestUtil.randomString()
 		);
 
 		if (logoutToken) {
@@ -203,7 +200,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		}
 
 		JWSHeader jwsHeader = new JWSHeader.Builder(
-			_JWS_ALGORITHM
+			JWSAlgorithm.RS256
 		).keyID(
 			_KEY_ID
 		).build();
@@ -266,23 +263,17 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 			mockHttpServletResponse.getStatus());
 	}
 
-	private static final String _CLIENT_ID = "liferay";
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
-	private static final String _ISSUER_URL =
-		"http://localhost:8180/realms/lucas";
+	private static final String _ISSUER_URL = RandomTestUtil.randomString();
 
-	private static final JWSAlgorithm _JWS_ALGORITHM = JWSAlgorithm.RS256;
+	private static final String _KEY_ID = RandomTestUtil.randomString();
 
-	private static final String _KEY_ID = "test-kid-logout";
+	private static final String _SESSION_ID = RandomTestUtil.randomString();
 
-	private static final String _SESSION_ID =
-		"055bbd56-a07a-43a4-bb57-03bb42543e7d";
-
-	private static final String _SUBJECT =
-		"98259e32-a701-41fa-9dc5-719e00182326";
-
-	private OpenIdConnectBackchannelLogoutServlet
-		_openIdConnectBackchannelLogoutServlet;
+	private final OpenIdConnectBackchannelLogoutServlet
+		_openIdConnectBackchannelLogoutServlet = Mockito.spy(
+			new OpenIdConnectBackchannelLogoutServlet());
 	private final OpenIdConnectSessionLocalService
 		_openIdConnectSessionLocalService = Mockito.mock(
 			OpenIdConnectSessionLocalService.class);
