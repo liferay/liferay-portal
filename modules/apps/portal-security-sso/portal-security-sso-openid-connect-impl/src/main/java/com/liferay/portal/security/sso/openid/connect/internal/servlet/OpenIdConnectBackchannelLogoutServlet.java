@@ -5,17 +5,17 @@
 
 package com.liferay.portal.security.sso.openid.connect.internal.servlet;
 
+import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
+import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
-import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
-import com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration;
+import com.liferay.portal.security.sso.openid.connect.internal.AuthorizationServerMetadataResolver;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
@@ -24,8 +24,6 @@ import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenId
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
@@ -38,10 +36,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.net.URL;
 
-import java.util.Dictionary;
-
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -103,15 +97,12 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
 
-			String jwksURI = getJWKSURI(
-				openIdConnectSession.getCompanyId(), issuer);
-
 			JWSHeader jwsHeader = signedJWT.getHeader();
 
 			LogoutTokenValidator logoutTokenValidator =
 				new LogoutTokenValidator(
 					issuer, new ClientID(openIdConnectSession.getClientId()),
-					jwsHeader.getAlgorithm(), new URL(jwksURI));
+					jwsHeader.getAlgorithm(), getJWKSURL(openIdConnectSession));
 
 			logoutTokenValidator.validate(signedJWT);
 
@@ -140,69 +131,34 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		}
 	}
 
-	protected String getJWKSURI(long companyId, Issuer issuer)
+	protected URL getJWKSURL(OpenIdConnectSession openIdConnectSession)
 		throws Exception {
 
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			StringBundler.concat(
-				"(&(companyId=", companyId, ")(",
-				ConfigurationAdmin.SERVICE_FACTORYPID, "=",
-				OpenIdConnectProviderConfiguration.class.getName(),
-				".scoped))"));
+		OAuthClientEntry oAuthClientEntry =
+			_oAuthClientEntryLocalService.getOAuthClientEntry(
+				openIdConnectSession.getCompanyId(),
+				openIdConnectSession.getAuthServerWellKnownURI(),
+				openIdConnectSession.getClientId());
 
-		if (ArrayUtil.isEmpty(configurations)) {
-			throw new IllegalStateException("Configuration is empty");
-		}
+		OIDCProviderMetadata oidcProviderMetadata =
+			_authorizationServerMetadataResolver.resolveOIDCProviderMetadata(
+				oAuthClientEntry.getAuthServerWellKnownURI(),
+				oAuthClientEntry.getMetadataCacheInSeconds(),
+				oAuthClientEntry.getOAuthClientEntryId());
 
-		for (Configuration configuration : configurations) {
-			Dictionary<String, Object> properties =
-				configuration.getProperties();
-
-			String discoveryEndpoint = (String)properties.get(
-				"discoveryEndpoint");
-			String issuerURL = (String)properties.get("issuerURL");
-			String jwksURI = (String)properties.get("jwksURI");
-
-			if (discoveryEndpoint != null) {
-				OIDCProviderMetadata oidcProviderMetadata =
-					_getOIDCProviderMetadata(discoveryEndpoint);
-
-				issuerURL = oidcProviderMetadata.getIssuer(
-				).getValue();
-				jwksURI = oidcProviderMetadata.getJWKSetURI(
-				).toString();
-			}
-
-			if (issuerURL.equals(issuer.getValue())) {
-				return jwksURI;
-			}
-		}
-
-		throw new IllegalStateException("JWKS URI is null");
-	}
-
-	private OIDCProviderMetadata _getOIDCProviderMetadata(
-			String discoveryEndpoint)
-		throws Exception {
-
-		HTTPRequest httpRequest = new HTTPRequest(
-			HTTPRequest.Method.GET, new URL(discoveryEndpoint));
-
-		HTTPResponse httpResponse = httpRequest.send();
-
-		if (httpResponse.getStatusCode() != HTTPResponse.SC_OK) {
-			throw new OpenIdConnectServiceException.ProviderException(
-				httpResponse.getStatusMessage());
-		}
-
-		return OIDCProviderMetadata.parse(httpResponse.getBody());
+		return oidcProviderMetadata.getJWKSetURI(
+		).toURL();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OpenIdConnectBackchannelLogoutServlet.class);
 
 	@Reference
-	private ConfigurationAdmin _configurationAdmin;
+	private AuthorizationServerMetadataResolver
+		_authorizationServerMetadataResolver;
+
+	@Reference
+	private OAuthClientEntryLocalService _oAuthClientEntryLocalService;
 
 	@Reference
 	private OpenIdConnect _openIdConnect;

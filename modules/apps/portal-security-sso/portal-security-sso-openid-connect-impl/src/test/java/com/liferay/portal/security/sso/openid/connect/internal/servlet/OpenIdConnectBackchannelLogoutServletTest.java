@@ -21,11 +21,12 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.claims.LogoutTokenClaimsSet;
 import com.nimbusds.openid.connect.sdk.validators.LogoutTokenValidator;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.net.URL;
 
 import java.util.Collections;
 import java.util.Date;
@@ -76,11 +77,11 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 			_openIdConnectSessionLocalService);
 
 		Mockito.doReturn(
-			"http://mocked.jwks.uri/key-set.json"
+			new URL("http://mocked.jwks.uri/key-set.json")
 		).when(
 			_openIdConnectBackchannelLogoutServlet
-		).getJWKSURI(
-			0, new Issuer(_ISSUER_URL)
+		).getJWKSURL(
+			Mockito.any(OpenIdConnectSession.class)
 		);
 	}
 
