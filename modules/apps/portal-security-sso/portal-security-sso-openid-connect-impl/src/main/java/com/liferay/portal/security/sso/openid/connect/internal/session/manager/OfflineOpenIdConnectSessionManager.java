@@ -343,15 +343,14 @@ public class OfflineOpenIdConnectSessionManager {
 		openIdConnectSession.setIdToken(idTokenString);
 
 		try {
-			JWT idTokenJWT = JWTParser.parse(idTokenString);
+			JWT jwt = JWTParser.parse(idTokenString);
 
-			JWTClaimsSet idTokenClaimsSet = idTokenJWT.getJWTClaimsSet();
+			JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
 
 			openIdConnectSession.setIssuer(
-				idTokenClaimsSet.getClaimAsString("iss"));
-
+				jwtClaimsSet.getClaimAsString("iss"));
 			openIdConnectSession.setSessionId(
-				idTokenClaimsSet.getClaimAsString("sid"));
+				jwtClaimsSet.getClaimAsString("sid"));
 		}
 		catch (ParseException parseException) {
 			if (_log.isWarnEnabled()) {

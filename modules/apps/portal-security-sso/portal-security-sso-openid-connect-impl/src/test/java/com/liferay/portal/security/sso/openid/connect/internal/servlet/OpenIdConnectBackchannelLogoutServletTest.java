@@ -169,7 +169,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 	private SignedJWT _createSignedJWT(boolean logoutToken) throws Exception {
 		Date now = new Date();
 
-		JWTClaimsSet.Builder claimsBuilder = new JWTClaimsSet.Builder(
+		JWTClaimsSet.Builder jwtClaimsSetBuilder = new JWTClaimsSet.Builder(
 		).audience(
 			_CLIENT_ID
 		).claim(
@@ -185,7 +185,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		);
 
 		if (logoutToken) {
-			claimsBuilder.claim(
+			jwtClaimsSetBuilder.claim(
 				"events",
 				JSONUtil.put(
 					"http://schemas.openid.net/event/backchannel-logout", "{}")
@@ -196,7 +196,7 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 			);
 		}
 		else {
-			claimsBuilder.claim("typ", "ID");
+			jwtClaimsSetBuilder.claim("typ", "ID");
 		}
 
 		JWSHeader jwsHeader = new JWSHeader.Builder(
@@ -205,7 +205,8 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 			_KEY_ID
 		).build();
 
-		SignedJWT token = new SignedJWT(jwsHeader, claimsBuilder.build());
+		SignedJWT signedJWT = new SignedJWT(
+			jwsHeader, jwtClaimsSetBuilder.build());
 
 		RSAKey rsaKey = new RSAKeyGenerator(
 			2048
@@ -213,9 +214,9 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 			_KEY_ID
 		).generate();
 
-		token.sign(new RSASSASigner(rsaKey.toPrivateKey()));
+		signedJWT.sign(new RSASSASigner(rsaKey.toPrivateKey()));
 
-		return token;
+		return signedJWT;
 	}
 
 	private OpenIdConnectSession _mockOpenIdConnectSession(SignedJWT signedJWT)
