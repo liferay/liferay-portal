@@ -23,6 +23,7 @@ import com.liferay.headless.delivery.dto.v1_0.Fragment;
 import com.liferay.headless.delivery.dto.v1_0.FragmentField;
 import com.liferay.headless.delivery.dto.v1_0.FragmentFieldAction;
 import com.liferay.headless.delivery.dto.v1_0.FragmentFieldBackgroundImage;
+import com.liferay.headless.delivery.dto.v1_0.FragmentFieldDate;
 import com.liferay.headless.delivery.dto.v1_0.FragmentFieldHTML;
 import com.liferay.headless.delivery.dto.v1_0.FragmentFieldImage;
 import com.liferay.headless.delivery.dto.v1_0.FragmentFieldText;
@@ -774,6 +775,11 @@ public class PageFragmentInstanceDefinitionMapper {
 								textJSONObject, saveInlineContent, saveMapping);
 						}
 
+						if (Objects.equals(type, "date-time")) {
+							return _toFragmentFieldDate(
+								textJSONObject, saveMapping);
+						}
+
 						if (Objects.equals(type, "html")) {
 							return _toFragmentFieldHTML(
 								textJSONObject, saveMapping);
@@ -890,6 +896,71 @@ public class PageFragmentInstanceDefinitionMapper {
 		};
 	}
 
+	private FragmentFieldDate _toFragmentFieldDate(
+		JSONObject jsonObject, boolean saveMapping) {
+
+		return new FragmentFieldDate() {
+			{
+				setDate(
+					() -> {
+						if (FragmentMappedValueUtil.isSaveFragmentMappedValue(
+								jsonObject, saveMapping)) {
+
+							return _toFragmentMappedValue(
+								_toDefaultMappingValue(jsonObject, null),
+								jsonObject);
+						}
+
+						Map<String, String> localizedValues =
+							LocalizedValueUtil.toLocalizedValues(jsonObject);
+
+						if (MapUtil.isEmpty(localizedValues)) {
+							return null;
+						}
+
+						FragmentInlineValue fragmentInlineValue =
+							new FragmentInlineValue() {
+								{
+									setValue_i18n(() -> localizedValues);
+								}
+							};
+
+						return new FragmentMappedValue() {
+							{
+								setDefaultFragmentInlineValue(
+									() -> fragmentInlineValue);
+							}
+						};
+					});
+				setDateFormat(
+					() -> {
+						JSONObject configJSONObject = jsonObject.getJSONObject(
+							"config");
+
+						if (configJSONObject == null) {
+							return null;
+						}
+
+						JSONObject dateFormatJSONObject =
+							configJSONObject.getJSONObject("dateFormat");
+
+						if (dateFormatJSONObject == null) {
+							return null;
+						}
+
+						return new FragmentInlineValue() {
+							{
+								setValue_i18n(
+									() -> JSONUtil.toStringMap(
+										dateFormatJSONObject));
+							}
+						};
+					});
+				setFragmentLink(() -> _toFragmentLink(jsonObject, saveMapping));
+			}
+		};
+	}
+
 	private FragmentFieldHTML _toFragmentFieldHTML(
 		JSONObject jsonObject, boolean saveMapping) {
 
@@ -983,7 +1054,6 @@ public class PageFragmentInstanceDefinitionMapper {
 		return new FragmentFieldText() {
 			{
 				setFragmentLink(() -> _toFragmentLink(jsonObject, saveMapping));
-
 				setText(
 					() -> {
 						if (FragmentMappedValueUtil.isSaveFragmentMappedValue(
