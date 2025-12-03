@@ -1302,14 +1302,49 @@ public class FragmentLayoutStructureItemImporter
 					layoutStructureItemImporterContext,
 					(Map<String, Object>)valueMap.get("text"));
 
-			if (Objects.equals(editableTypes.get(fragmentFieldId), "html")) {
+			if (Objects.equals(
+					editableTypes.get(fragmentFieldId), "date-time")) {
+
+				baseFragmentFieldJSONObject =
+					_createBaseFragmentFieldJSONObject(
+						layoutStructureItemImporterContext,
+						(Map<String, Object>)valueMap.get("date"));
+
+				Map<String, Object> dateFormatMap =
+					(Map<String, Object>)valueMap.get("dateFormat");
+
+				if (dateFormatMap != null) {
+					Map<String, Object> valueI18nMap =
+						(Map<String, Object>)dateFormatMap.get("value_i18n");
+
+					if (valueI18nMap != null) {
+						try {
+							editableFieldConfigJSONObject = JSONUtil.merge(
+								editableFieldConfigJSONObject,
+								JSONUtil.put(
+									"dateFormat",
+									JSONFactoryUtil.createJSONObject(
+										valueI18nMap)));
+						}
+						catch (JSONException jsonException) {
+							if (_log.isWarnEnabled()) {
+								_log.warn(jsonException);
+							}
+						}
+					}
+				}
+			}
+			else if (Objects.equals(
+						editableTypes.get(fragmentFieldId), "html")) {
+
 				baseFragmentFieldJSONObject =
 					_createBaseFragmentFieldJSONObject(
 						layoutStructureItemImporterContext,
 						(Map<String, Object>)valueMap.get("html"));
 			}
+			else if (Objects.equals(
+						editableTypes.get(fragmentFieldId), "image")) {
 
-			if (Objects.equals(editableTypes.get(fragmentFieldId), "image")) {
 				Map<String, Object> fragmentImageMap =
 					(Map<String, Object>)valueMap.get("fragmentImage");
 
