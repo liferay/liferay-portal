@@ -6,7 +6,7 @@
 --%>
 
 <clay:sheet-header>
-	<h2 class="sheet-title"><liferay-ui:message key="settings" /></h2>
+	<h2 class="sheet-title"><liferay-ui:message key="publications" /></h2>
 </clay:sheet-header>
 
 <clay:sheet-section>
