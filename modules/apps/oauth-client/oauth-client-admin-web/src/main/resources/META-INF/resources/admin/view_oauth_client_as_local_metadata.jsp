@@ -29,47 +29,57 @@ OAuthClientASLocalMetadataManagementToolbarDisplayContext oAuthClientASLocalMeta
 	viewTypeItems="<%= oAuthClientASLocalMetadataManagementToolbarDisplayContext.getViewTypes() %>"
 />
 
-<clay:container-fluid
-	cssClass="closed"
->
-	<liferay-ui:search-container
-		emptyResultsMessage="no-oauth-client-as-local-metadata-were-found"
-		id="oAuthClientASLocalMetadataSearchContainer"
-		iteratorURL="<%= currentURLObj %>"
-		rowChecker="<%= new EmptyOnClickRowChecker(renderResponse) %>"
-		total="<%= oAuthClientASLocalMetadatasCount %>"
-	>
-		<liferay-ui:search-container-results
-			results="<%= OAuthClientASLocalMetadataServiceUtil.getCompanyOAuthClientASLocalMetadata(themeDisplay.getCompanyId(), searchContainer.getStart(), searchContainer.getEnd()) %>"
-		/>
+<%
+String navigation = ParamUtil.getString(request, "navigation", "oauth-client-as-local-metadata-oic");
+%>
 
-		<liferay-ui:search-container-row
-			className="com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata"
-			escapedModel="<%= true %>"
-			keyProperty="localWellKnownURIOIC"
-			modelVar="oAuthClientASLocalMetadata"
-		>
-			<portlet:renderURL var="editURL">
-				<portlet:param name="mvcRenderCommandName" value="/oauth_client_admin/update_oauth_client_as_local_metadata" />
-				<portlet:param name="localWellKnownURIOIC" value="<%= oAuthClientASLocalMetadata.getLocalWellKnownURIOIC() %>" />
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-			</portlet:renderURL>
+<clay:navigation-bar
+	navigationItems='<%=
+		new JSPNavigationItemList(pageContext) {
+			{
+				add(
+					navigationItem -> {
+						navigationItem.setActive(navigation.equals("oauth-client-as-local-metadata-oic") || navigation.equals("oauth-client-as-local-metadata"));
 
-			<liferay-ui:search-container-column-text
-				href="<%= editURL %>"
-				name="oauth-client-as-local-well-known-uri"
-				property="localWellKnownURIOIC"
-			/>
+						PortletURL portletURL = PortletURLBuilder.createRenderURL(
+							renderResponse
+						).setMVCRenderCommandName(
+							"/oauth_client_admin/view_oauth_client_as_local_metadata"
+						).setNavigation(
+							"oauth-client-as-local-metadata-oic"
+						).buildPortletURL();
 
-			<liferay-ui:search-container-column-jsp
-				align="right"
-				path="/admin/oauth_client_as_local_metadata_actions.jsp"
-			/>
-		</liferay-ui:search-container-row>
+						navigationItem.setHref(portletURL.toString());
 
-		<liferay-ui:search-iterator
-			displayStyle="list"
-			markupView="lexicon"
-		/>
-	</liferay-ui:search-container>
-</clay:container-fluid>
+						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "oauth-client-as-local--openid-configuration"));
+					});
+
+				add(
+					navigationItem -> {
+						navigationItem.setActive(navigation.equals("oauth-client-as-local-metadata-oas"));
+
+						PortletURL portletURL = PortletURLBuilder.createRenderURL(
+							renderResponse
+						).setMVCRenderCommandName(
+							"/oauth_client_admin/view_oauth_client_as_local_metadata"
+						).setNavigation(
+							"oauth-client-as-local-metadata-oas"
+						).buildPortletURL();
+
+						navigationItem.setHref(portletURL.toString());
+
+						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "oauth-client-as-local-oauth-authorization-server"));
+					});
+			}
+		}
+	%>'
+/>
+
+<c:choose>
+	<c:when test='<%= navigation.equals("oauth-client-as-local-metadata") || navigation.equals("oauth-client-as-local-metadata-oic") %>'>
+		<liferay-util:include page="/admin/view_oauth_client_as_local_metadata_oic.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:when test='<%= navigation.equals("oauth-client-as-local-metadata-oas") %>'>
+		<liferay-util:include page="/admin/view_oauth_client_as_local_metadata_oas.jsp" servletContext="<%= application %>" />
+	</c:when>
+</c:choose>
