@@ -269,6 +269,14 @@ public class OAuthClientASLocalMetadataLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static OAuthClientASLocalMetadata getIssuerAuthClientASLocalMetadata(
+			long companyId, String issuer)
+		throws PortalException {
+
+		return getService().getIssuerAuthClientASLocalMetadata(
+			companyId, issuer);
+	}
+
 	/**
 	 * Returns the o auth client as local metadata with the primary key.
 	 *

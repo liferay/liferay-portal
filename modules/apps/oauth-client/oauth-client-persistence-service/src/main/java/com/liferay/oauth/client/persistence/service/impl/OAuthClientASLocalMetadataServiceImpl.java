@@ -122,6 +122,22 @@ public class OAuthClientASLocalMetadataServiceImpl
 	}
 
 	@Override
+	public OAuthClientASLocalMetadata getIssuerAuthClientASLocalMetadata(
+		long companyId, String issuer) throws PortalException {
+
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			oAuthClientASLocalMetadataLocalService.getIssuerAuthClientASLocalMetadata(companyId, issuer);
+
+		_oAuthClientASLocalMetadataModelResourcePermission.check(
+			getPermissionChecker(), oAuthClientASLocalMetadata,
+			ActionKeys.VIEW);
+
+		return oAuthClientASLocalMetadata;
+
+
+	}
+
+	@Override
 	public List<OAuthClientASLocalMetadata> getUserOAuthClientASLocalMetadata(
 		long userId) {
 

@@ -300,6 +300,50 @@ public class OAuthClientASLocalMetadataServiceHttp {
 		}
 	}
 
+	public static
+		com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
+				getIssuerAuthClientASLocalMetadata(
+					HttpPrincipal httpPrincipal, long companyId, String issuer)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				OAuthClientASLocalMetadataServiceUtil.class,
+				"getIssuerAuthClientASLocalMetadata",
+				_getIssuerAuthClientASLocalMetadataParameterTypes6);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, issuer);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.oauth.client.persistence.model.
+				OAuthClientASLocalMetadata)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static java.util.List
 		<com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata>
 			getUserOAuthClientASLocalMetadata(
@@ -309,7 +353,7 @@ public class OAuthClientASLocalMetadataServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				OAuthClientASLocalMetadataServiceUtil.class,
 				"getUserOAuthClientASLocalMetadata",
-				_getUserOAuthClientASLocalMetadataParameterTypes6);
+				_getUserOAuthClientASLocalMetadataParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, userId);
 
@@ -345,7 +389,7 @@ public class OAuthClientASLocalMetadataServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				OAuthClientASLocalMetadataServiceUtil.class,
 				"getUserOAuthClientASLocalMetadata",
-				_getUserOAuthClientASLocalMetadataParameterTypes7);
+				_getUserOAuthClientASLocalMetadataParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, userId, start, end);
@@ -389,7 +433,7 @@ public class OAuthClientASLocalMetadataServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				OAuthClientASLocalMetadataServiceUtil.class,
 				"updateOAuthClientASLocalMetadata",
-				_updateOAuthClientASLocalMetadataParameterTypes8);
+				_updateOAuthClientASLocalMetadataParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, oAuthClientASLocalMetadataId, authorizationEndpoint,
@@ -456,15 +500,19 @@ public class OAuthClientASLocalMetadataServiceHttp {
 			String.class
 		};
 	private static final Class<?>[]
-		_getUserOAuthClientASLocalMetadataParameterTypes6 = new Class[] {
-			long.class
+		_getIssuerAuthClientASLocalMetadataParameterTypes6 = new Class[] {
+			long.class, String.class
 		};
 	private static final Class<?>[]
 		_getUserOAuthClientASLocalMetadataParameterTypes7 = new Class[] {
+			long.class
+		};
+	private static final Class<?>[]
+		_getUserOAuthClientASLocalMetadataParameterTypes8 = new Class[] {
 			long.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_updateOAuthClientASLocalMetadataParameterTypes8 = new Class[] {
+		_updateOAuthClientASLocalMetadataParameterTypes9 = new Class[] {
 			long.class, String.class, Boolean.class, String.class, String.class,
 			String[].class, String[].class, String[].class, String.class,
 			String.class

@@ -227,6 +227,11 @@ public interface OAuthClientASLocalMetadataLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OAuthClientASLocalMetadata getIssuerAuthClientASLocalMetadata(
+			long companyId, String issuer)
+		throws PortalException;
+
 	/**
 	 * Returns the o auth client as local metadata with the primary key.
 	 *

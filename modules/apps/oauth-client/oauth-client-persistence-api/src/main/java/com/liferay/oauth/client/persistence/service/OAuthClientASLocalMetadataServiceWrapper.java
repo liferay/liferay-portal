@@ -83,6 +83,15 @@ public class OAuthClientASLocalMetadataServiceWrapper
 
 	@Override
 	public com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
+			getIssuerAuthClientASLocalMetadata(long companyId, String issuer)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _oAuthClientASLocalMetadataService.
+			getIssuerAuthClientASLocalMetadata(companyId, issuer);
+	}
+
+	@Override
+	public com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
 			getOAuthClientASLocalMetadata(String localWellKnownURI)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

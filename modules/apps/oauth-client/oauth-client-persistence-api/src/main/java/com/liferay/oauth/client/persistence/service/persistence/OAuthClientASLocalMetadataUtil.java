@@ -628,63 +628,72 @@ public class OAuthClientASLocalMetadataUtil {
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
+	 * Returns the o auth client as local metadata where companyId = &#63; and issuer = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the matching o auth client as local metadata
 	 * @throws NoSuchOAuthClientASLocalMetadataException if a matching o auth client as local metadata could not be found
 	 */
-	public static OAuthClientASLocalMetadata findByIssuer(String issuer)
+	public static OAuthClientASLocalMetadata findByC_I(
+			long companyId, String issuer)
 		throws com.liferay.oauth.client.persistence.exception.
 			NoSuchOAuthClientASLocalMetadataException {
 
-		return getPersistence().findByIssuer(issuer);
+		return getPersistence().findByC_I(companyId, issuer);
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the o auth client as local metadata where companyId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
 	 */
-	public static OAuthClientASLocalMetadata fetchByIssuer(String issuer) {
-		return getPersistence().fetchByIssuer(issuer);
+	public static OAuthClientASLocalMetadata fetchByC_I(
+		long companyId, String issuer) {
+
+		return getPersistence().fetchByC_I(companyId, issuer);
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the o auth client as local metadata where companyId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
 	 */
-	public static OAuthClientASLocalMetadata fetchByIssuer(
-		String issuer, boolean useFinderCache) {
+	public static OAuthClientASLocalMetadata fetchByC_I(
+		long companyId, String issuer, boolean useFinderCache) {
 
-		return getPersistence().fetchByIssuer(issuer, useFinderCache);
+		return getPersistence().fetchByC_I(companyId, issuer, useFinderCache);
 	}
 
 	/**
-	 * Removes the o auth client as local metadata where issuer = &#63; from the database.
+	 * Removes the o auth client as local metadata where companyId = &#63; and issuer = &#63; from the database.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the o auth client as local metadata that was removed
 	 */
-	public static OAuthClientASLocalMetadata removeByIssuer(String issuer)
+	public static OAuthClientASLocalMetadata removeByC_I(
+			long companyId, String issuer)
 		throws com.liferay.oauth.client.persistence.exception.
 			NoSuchOAuthClientASLocalMetadataException {
 
-		return getPersistence().removeByIssuer(issuer);
+		return getPersistence().removeByC_I(companyId, issuer);
 	}
 
 	/**
-	 * Returns the number of o auth client as local metadatas where issuer = &#63;.
+	 * Returns the number of o auth client as local metadatas where companyId = &#63; and issuer = &#63;.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the number of matching o auth client as local metadatas
 	 */
-	public static int countByIssuer(String issuer) {
-		return getPersistence().countByIssuer(issuer);
+	public static int countByC_I(long companyId, String issuer) {
+		return getPersistence().countByC_I(companyId, issuer);
 	}
 
 	/**

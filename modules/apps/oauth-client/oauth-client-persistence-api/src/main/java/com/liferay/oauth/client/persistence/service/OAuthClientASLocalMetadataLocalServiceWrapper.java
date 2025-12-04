@@ -313,6 +313,15 @@ public class OAuthClientASLocalMetadataLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata
+			getIssuerAuthClientASLocalMetadata(long companyId, String issuer)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _oAuthClientASLocalMetadataLocalService.
+			getIssuerAuthClientASLocalMetadata(companyId, issuer);
+	}
+
 	/**
 	 * Returns the o auth client as local metadata with the primary key.
 	 *

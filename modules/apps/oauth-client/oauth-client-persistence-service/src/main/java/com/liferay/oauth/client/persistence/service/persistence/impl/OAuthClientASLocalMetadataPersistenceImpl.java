@@ -1925,28 +1925,32 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	private static final String _FINDER_COLUMN_USERID_USERID_2 =
 		"oAuthClientASLocalMetadata.userId = ?";
 
-	private FinderPath _finderPathFetchByIssuer;
+	private FinderPath _finderPathFetchByC_I;
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
+	 * Returns the o auth client as local metadata where companyId = &#63; and issuer = &#63; or throws a <code>NoSuchOAuthClientASLocalMetadataException</code> if it could not be found.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the matching o auth client as local metadata
 	 * @throws NoSuchOAuthClientASLocalMetadataException if a matching o auth client as local metadata could not be found
 	 */
 	@Override
-	public OAuthClientASLocalMetadata findByIssuer(String issuer)
+	public OAuthClientASLocalMetadata findByC_I(long companyId, String issuer)
 		throws NoSuchOAuthClientASLocalMetadataException {
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata = fetchByIssuer(
-			issuer);
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata = fetchByC_I(
+			companyId, issuer);
 
 		if (oAuthClientASLocalMetadata == null) {
-			StringBundler sb = new StringBundler(4);
+			StringBundler sb = new StringBundler(6);
 
 			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-			sb.append("issuer=");
+			sb.append("companyId=");
+			sb.append(companyId);
+
+			sb.append(", issuer=");
 			sb.append(issuer);
 
 			sb.append("}");
@@ -1962,47 +1966,52 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the o auth client as local metadata where companyId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
 	 */
 	@Override
-	public OAuthClientASLocalMetadata fetchByIssuer(String issuer) {
-		return fetchByIssuer(issuer, true);
+	public OAuthClientASLocalMetadata fetchByC_I(
+		long companyId, String issuer) {
+
+		return fetchByC_I(companyId, issuer, true);
 	}
 
 	/**
-	 * Returns the o auth client as local metadata where issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the o auth client as local metadata where companyId = &#63; and issuer = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching o auth client as local metadata, or <code>null</code> if a matching o auth client as local metadata could not be found
 	 */
 	@Override
-	public OAuthClientASLocalMetadata fetchByIssuer(
-		String issuer, boolean useFinderCache) {
+	public OAuthClientASLocalMetadata fetchByC_I(
+		long companyId, String issuer, boolean useFinderCache) {
 
 		issuer = Objects.toString(issuer, "");
 
 		Object[] finderArgs = null;
 
 		if (useFinderCache) {
-			finderArgs = new Object[] {issuer};
+			finderArgs = new Object[] {companyId, issuer};
 		}
 
 		Object result = null;
 
 		if (useFinderCache) {
 			result = finderCache.getResult(
-				_finderPathFetchByIssuer, finderArgs, this);
+				_finderPathFetchByC_I, finderArgs, this);
 		}
 
 		if (result instanceof OAuthClientASLocalMetadata) {
 			OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
 				(OAuthClientASLocalMetadata)result;
 
-			if (!Objects.equals(
+			if ((companyId != oAuthClientASLocalMetadata.getCompanyId()) ||
+				!Objects.equals(
 					issuer, oAuthClientASLocalMetadata.getIssuer())) {
 
 				result = null;
@@ -2010,19 +2019,21 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 		}
 
 		if (result == null) {
-			StringBundler sb = new StringBundler(3);
+			StringBundler sb = new StringBundler(4);
 
 			sb.append(_SQL_SELECT_OAUTHCLIENTASLOCALMETADATA_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_I_COMPANYID_2);
 
 			boolean bindIssuer = false;
 
 			if (issuer.isEmpty()) {
-				sb.append(_FINDER_COLUMN_ISSUER_ISSUER_3);
+				sb.append(_FINDER_COLUMN_C_I_ISSUER_3);
 			}
 			else {
 				bindIssuer = true;
 
-				sb.append(_FINDER_COLUMN_ISSUER_ISSUER_2);
+				sb.append(_FINDER_COLUMN_C_I_ISSUER_2);
 			}
 
 			String sql = sb.toString();
@@ -2036,6 +2047,8 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 
 				QueryPos queryPos = QueryPos.getInstance(query);
 
+				queryPos.add(companyId);
+
 				if (bindIssuer) {
 					queryPos.add(issuer);
 				}
@@ -2045,7 +2058,7 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 				if (list.isEmpty()) {
 					if (useFinderCache) {
 						finderCache.putResult(
-							_finderPathFetchByIssuer, finderArgs, list);
+							_finderPathFetchByC_I, finderArgs, list);
 					}
 				}
 				else {
@@ -2074,31 +2087,33 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 	}
 
 	/**
-	 * Removes the o auth client as local metadata where issuer = &#63; from the database.
+	 * Removes the o auth client as local metadata where companyId = &#63; and issuer = &#63; from the database.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the o auth client as local metadata that was removed
 	 */
 	@Override
-	public OAuthClientASLocalMetadata removeByIssuer(String issuer)
+	public OAuthClientASLocalMetadata removeByC_I(long companyId, String issuer)
 		throws NoSuchOAuthClientASLocalMetadataException {
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata = findByIssuer(
-			issuer);
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata = findByC_I(
+			companyId, issuer);
 
 		return remove(oAuthClientASLocalMetadata);
 	}
 
 	/**
-	 * Returns the number of o auth client as local metadatas where issuer = &#63;.
+	 * Returns the number of o auth client as local metadatas where companyId = &#63; and issuer = &#63;.
 	 *
+	 * @param companyId the company ID
 	 * @param issuer the issuer
 	 * @return the number of matching o auth client as local metadatas
 	 */
 	@Override
-	public int countByIssuer(String issuer) {
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata = fetchByIssuer(
-			issuer);
+	public int countByC_I(long companyId, String issuer) {
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata = fetchByC_I(
+			companyId, issuer);
 
 		if (oAuthClientASLocalMetadata == null) {
 			return 0;
@@ -2107,10 +2122,13 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 		return 1;
 	}
 
-	private static final String _FINDER_COLUMN_ISSUER_ISSUER_2 =
+	private static final String _FINDER_COLUMN_C_I_COMPANYID_2 =
+		"oAuthClientASLocalMetadata.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_I_ISSUER_2 =
 		"oAuthClientASLocalMetadata.issuer = ?";
 
-	private static final String _FINDER_COLUMN_ISSUER_ISSUER_3 =
+	private static final String _FINDER_COLUMN_C_I_ISSUER_3 =
 		"(oAuthClientASLocalMetadata.issuer IS NULL OR oAuthClientASLocalMetadata.issuer = '')";
 
 	private FinderPath _finderPathFetchByLocalWellKnownURIOAS;
@@ -2533,8 +2551,11 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 			oAuthClientASLocalMetadata);
 
 		finderCache.putResult(
-			_finderPathFetchByIssuer,
-			new Object[] {oAuthClientASLocalMetadata.getIssuer()},
+			_finderPathFetchByC_I,
+			new Object[] {
+				oAuthClientASLocalMetadata.getCompanyId(),
+				oAuthClientASLocalMetadata.getIssuer()
+			},
 			oAuthClientASLocalMetadata);
 
 		finderCache.putResult(
@@ -2636,12 +2657,12 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 			oAuthClientASLocalMetadataModelImpl) {
 
 		Object[] args = new Object[] {
+			oAuthClientASLocalMetadataModelImpl.getCompanyId(),
 			oAuthClientASLocalMetadataModelImpl.getIssuer()
 		};
 
 		finderCache.putResult(
-			_finderPathFetchByIssuer, args,
-			oAuthClientASLocalMetadataModelImpl);
+			_finderPathFetchByC_I, args, oAuthClientASLocalMetadataModelImpl);
 
 		args = new Object[] {
 			oAuthClientASLocalMetadataModelImpl.getLocalWellKnownURIOAS()
@@ -3178,10 +3199,10 @@ public class OAuthClientASLocalMetadataPersistenceImpl
 			new String[] {Long.class.getName()}, new String[] {"userId"},
 			false);
 
-		_finderPathFetchByIssuer = new FinderPath(
-			FINDER_CLASS_NAME_ENTITY, "fetchByIssuer",
-			new String[] {String.class.getName()}, new String[] {"issuer"},
-			true);
+		_finderPathFetchByC_I = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByC_I",
+			new String[] {Long.class.getName(), String.class.getName()},
+			new String[] {"companyId", "issuer"}, true);
 
 		_finderPathFetchByLocalWellKnownURIOAS = new FinderPath(
 			FINDER_CLASS_NAME_ENTITY, "fetchByLocalWellKnownURIOAS",

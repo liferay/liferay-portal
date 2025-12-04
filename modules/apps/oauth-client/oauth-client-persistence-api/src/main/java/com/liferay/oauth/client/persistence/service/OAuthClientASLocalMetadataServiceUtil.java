@@ -72,6 +72,14 @@ public class OAuthClientASLocalMetadataServiceUtil {
 			companyId, start, end);
 	}
 
+	public static OAuthClientASLocalMetadata getIssuerAuthClientASLocalMetadata(
+			long companyId, String issuer)
+		throws PortalException {
+
+		return getService().getIssuerAuthClientASLocalMetadata(
+			companyId, issuer);
+	}
+
 	public static OAuthClientASLocalMetadata getOAuthClientASLocalMetadata(
 			String localWellKnownURI)
 		throws PortalException {
