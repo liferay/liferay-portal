@@ -347,8 +347,7 @@ public class OfflineOpenIdConnectSessionManager {
 
 			JWTClaimsSet jwtClaimsSet = jwt.getJWTClaimsSet();
 
-			openIdConnectSession.setIssuer(
-				jwtClaimsSet.getClaimAsString("iss"));
+			openIdConnectSession.setIssuer(jwtClaimsSet.getIssuer());
 			openIdConnectSession.setSessionId(
 				jwtClaimsSet.getClaimAsString("sid"));
 		}

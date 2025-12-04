@@ -34,6 +34,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.net.URI;
 import java.net.URL;
 
 import org.osgi.service.component.annotations.Component;
@@ -95,13 +96,12 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 						jwtClaimsSet.getIssuer(), sessionId);
 			}
 
-			Issuer issuer = new Issuer(jwtClaimsSet.getIssuer());
-
 			JWSHeader jwsHeader = signedJWT.getHeader();
 
 			LogoutTokenValidator logoutTokenValidator =
 				new LogoutTokenValidator(
-					issuer, new ClientID(openIdConnectSession.getClientId()),
+					new Issuer(jwtClaimsSet.getIssuer()),
+					new ClientID(openIdConnectSession.getClientId()),
 					jwsHeader.getAlgorithm(), getJWKSURL(openIdConnectSession));
 
 			logoutTokenValidator.validate(signedJWT);
@@ -144,8 +144,9 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 				oAuthClientEntry.getMetadataCacheInSeconds(),
 				oAuthClientEntry.getOAuthClientEntryId());
 
-		return oidcProviderMetadata.getJWKSetURI(
-		).toURL();
+		URI uri = oidcProviderMetadata.getJWKSetURI();
+
+		return uri.toURL();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
