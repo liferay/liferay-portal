@@ -17,10 +17,10 @@
 		<field name="clientId" type="String">
 			<hint name="max-length">256</hint>
 		</field>
-		<field name="issuer" type="String" />
 		<field name="idToken" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field name="issuer" type="String" />
 		<field name="refreshToken" type="String">
 			<hint name="max-length">2000</hint>
 		</field>

@@ -8,8 +8,8 @@ create table OpenIdConnectSession (
 	accessTokenExpirationDate DATE null,
 	authServerWellKnownURI VARCHAR(256) null,
 	clientId VARCHAR(256) null,
-	issuer VARCHAR(75) null,
 	idToken TEXT null,
+	issuer VARCHAR(75) null,
 	refreshToken VARCHAR(2000) null,
 	sessionId VARCHAR(75) null
 );

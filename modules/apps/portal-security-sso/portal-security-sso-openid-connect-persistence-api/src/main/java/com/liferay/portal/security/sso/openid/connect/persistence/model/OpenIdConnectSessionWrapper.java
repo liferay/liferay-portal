@@ -45,8 +45,8 @@ public class OpenIdConnectSessionWrapper
 			"accessTokenExpirationDate", getAccessTokenExpirationDate());
 		attributes.put("authServerWellKnownURI", getAuthServerWellKnownURI());
 		attributes.put("clientId", getClientId());
-		attributes.put("issuer", getIssuer());
 		attributes.put("idToken", getIdToken());
+		attributes.put("issuer", getIssuer());
 		attributes.put("refreshToken", getRefreshToken());
 		attributes.put("sessionId", getSessionId());
 
@@ -112,16 +112,16 @@ public class OpenIdConnectSessionWrapper
 			setClientId(clientId);
 		}
 
-		String issuer = (String)attributes.get("issuer");
-
-		if (issuer != null) {
-			setIssuer(issuer);
-		}
-
 		String idToken = (String)attributes.get("idToken");
 
 		if (idToken != null) {
 			setIdToken(idToken);
+		}
+
+		String issuer = (String)attributes.get("issuer");
+
+		if (issuer != null) {
+			setIssuer(issuer);
 		}
 
 		String refreshToken = (String)attributes.get("refreshToken");
