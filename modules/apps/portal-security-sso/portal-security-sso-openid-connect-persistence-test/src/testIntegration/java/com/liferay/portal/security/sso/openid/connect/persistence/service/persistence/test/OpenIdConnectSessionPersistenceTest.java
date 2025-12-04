@@ -137,9 +137,9 @@ public class OpenIdConnectSessionPersistenceTest {
 
 		newOpenIdConnectSession.setClientId(RandomTestUtil.randomString());
 
-		newOpenIdConnectSession.setIssuer(RandomTestUtil.randomString());
-
 		newOpenIdConnectSession.setIdToken(RandomTestUtil.randomString());
+
+		newOpenIdConnectSession.setIssuer(RandomTestUtil.randomString());
 
 		newOpenIdConnectSession.setRefreshToken(RandomTestUtil.randomString());
 
@@ -183,11 +183,11 @@ public class OpenIdConnectSessionPersistenceTest {
 			existingOpenIdConnectSession.getClientId(),
 			newOpenIdConnectSession.getClientId());
 		Assert.assertEquals(
-			existingOpenIdConnectSession.getIssuer(),
-			newOpenIdConnectSession.getIssuer());
-		Assert.assertEquals(
 			existingOpenIdConnectSession.getIdToken(),
 			newOpenIdConnectSession.getIdToken());
+		Assert.assertEquals(
+			existingOpenIdConnectSession.getIssuer(),
+			newOpenIdConnectSession.getIssuer());
 		Assert.assertEquals(
 			existingOpenIdConnectSession.getRefreshToken(),
 			newOpenIdConnectSession.getRefreshToken());
@@ -636,9 +636,9 @@ public class OpenIdConnectSessionPersistenceTest {
 
 		openIdConnectSession.setClientId(RandomTestUtil.randomString());
 
-		openIdConnectSession.setIssuer(RandomTestUtil.randomString());
-
 		openIdConnectSession.setIdToken(RandomTestUtil.randomString());
+
+		openIdConnectSession.setIssuer(RandomTestUtil.randomString());
 
 		openIdConnectSession.setRefreshToken(RandomTestUtil.randomString());
 
