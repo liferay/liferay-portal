@@ -15,6 +15,7 @@ OAuthClientASLocalMetadata oAuthClientASLocalMetadata = (OAuthClientASLocalMetad
 String authorizationEndpoint = (String)request.getAttribute("authorization_endpoint");
 String jwksUri = (String)request.getAttribute("jwks_uri");
 String supportedGrantTypes = (String)request.getAttribute("supported-grant-types");
+String supportedScopes = (String)request.getAttribute("supported-scopes");
 String supportedSubjectTypes = (String)request.getAttribute("supported_subject_types");
 String tokenEndpoint = (String)request.getAttribute("token_endpoint");
 String userinfoEndpoint = (String)request.getAttribute("userinfo_endpoint");
@@ -48,7 +49,8 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 				</liferay-ui:error>
 
 				<aui:fieldset label="general">
-					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-scopes-help" label="oauth-client-as-local-metadata-allowed-scopes" name="supported-scopes" type="text" value="<%= jwksUri %>" />
+					<aui:input helpMessage="oauth-client-as-local-metadata-issuer-help" label="oauth-client-as-local-metadata-issuer" name="issuer" required="<%= true %>" type="text" />
+					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-scopes-help" label="oauth-client-as-local-metadata-allowed-scopes" name="supported-scopes" type="text" value="<%= supportedScopes %>" />
 
 					<aui:input helpMessage="oauth-client-as-local-metadata-allowed-grant-types-help" label="oauth-client-as-local-metadata-allowed-grant-types" name="supported-grant-types" type="text" value="<%= supportedGrantTypes %>" />
 

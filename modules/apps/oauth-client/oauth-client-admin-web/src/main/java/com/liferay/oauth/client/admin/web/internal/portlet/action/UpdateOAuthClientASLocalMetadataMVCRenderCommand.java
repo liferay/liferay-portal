@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -80,8 +81,8 @@ public class UpdateOAuthClientASLocalMetadataMVCRenderCommand
 				if (authorizationServerMetadata.getGrantTypes() != null) {
 					renderRequest.setAttribute(
 						"supported-grant-types",
-						authorizationServerMetadata.getGrantTypes(
-						).toString());
+						StringUtil.merge(
+							authorizationServerMetadata.getGrantTypes()));
 				}
 
 				if (authorizationServerMetadata.getScopes() != null) {
@@ -94,8 +95,8 @@ public class UpdateOAuthClientASLocalMetadataMVCRenderCommand
 				if (authorizationServerMetadata.getSubjectTypes() != null) {
 					renderRequest.setAttribute(
 						"supported_subject_types",
-						authorizationServerMetadata.getSubjectTypes(
-						).toString());
+						StringUtil.merge(
+							authorizationServerMetadata.getSubjectTypes()));
 				}
 
 				if (authorizationServerMetadata.getTokenEndpointURI() != null) {

@@ -54,6 +54,7 @@ public class UpdateOAuthClientASLocalMetadataMVCActionCommand
 				actionRequest, "authorization_endpoint");
 
 			String issuer = ParamUtil.getString(actionRequest, "issuer");
+
 			String jwksUri = ParamUtil.getString(actionRequest, "jwks_uri");
 			String supportedScopes = ParamUtil.getString(
 				actionRequest, "supported-scopes");
