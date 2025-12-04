@@ -22,8 +22,8 @@
 		<column name="accessTokenExpirationDate" type="Date" />
 		<column name="authServerWellKnownURI" type="String" />
 		<column name="clientId" type="String" />
-		<column name="issuer" type="String" />
 		<column name="idToken" type="String" />
+		<column name="issuer" type="String" />
 		<column name="refreshToken" type="String" />
 		<column name="sessionId" type="String" />
 
