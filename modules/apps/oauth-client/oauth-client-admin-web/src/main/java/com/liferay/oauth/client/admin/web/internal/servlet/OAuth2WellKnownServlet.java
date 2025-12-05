@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.URLDecoder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,9 +51,78 @@ public class OAuth2WellKnownServlet extends HttpServlet {
 
 		httpServletResponse.setContentType("application/json");
 		httpServletResponse.setCharacterEncoding("UTF-8");
-		httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-		httpServletResponse.
-			getWriter().write("Works!");
+
+		String issuer = _extractIssuerFromRequest(httpServletRequest);
+
+		long companyId = GetterUtil.getLong(
+			httpServletRequest.getAttribute(WebKeys.COMPANY_ID));
+
+		if (issuer == null) {
+
+			// Default value
+
+		}
+		else {
+			try {
+				OAuthClientASLocalMetadata meta =
+					_oAuthClientASLocalMetadataService.
+						getIssuerAuthClientASLocalMetadata(
+							companyId, "https://" + issuer);
+
+				if (meta.isLocalWellKnownEnabled()) {
+					httpServletResponse.setContentType(
+						ContentTypes.APPLICATION_JSON);
+					httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+
+					ServletResponseUtil.write(
+						httpServletResponse, meta.getMetadataJSONOAS());
+				}
+				else {
+					httpServletResponse.setStatus(
+						HttpServletResponse.SC_NOT_FOUND);
+				}
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
 	}
+
+	private String _extractIssuerFromRequest(
+		HttpServletRequest httpServletRequest) {
+
+		String requestURI = httpServletRequest.getRequestURI();
+
+		String contextPath = httpServletRequest.getContextPath();
+
+		String basePath =
+			contextPath + "/.well-known/oauth-authorization-server";
+
+		if (requestURI.length() == basePath.length()) {
+			return null;
+		}
+
+		String extra = requestURI.substring(basePath.length());
+
+		if (extra.startsWith("/")) {
+			extra = extra.substring(1);
+		}
+
+		if (extra.isEmpty()) {
+			return null;
+		}
+
+		return URLDecoder.decode(extra, StandardCharsets.UTF_8);
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		OAuth2WellKnownServlet.class);
+
+	@Reference
+	private OAuthClientASLocalMetadataService
+		_oAuthClientASLocalMetadataService;
 
 }
