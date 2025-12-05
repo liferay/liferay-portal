@@ -42,6 +42,8 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 			<aui:fieldset>
 				<liferay-ui:error exception="<%= DuplicateOAuthClientASLocalMetadataException.class %>" message="oauth-client-as-local-metadata-duplicate-as-local-metadata" />
 
+				<liferay-ui:error exception="<%= DuplicateOAuthClientASIssuerException.class %>" message="oauth-client-as-local-metadata-invalid-local-well-known-uri" />
+
 				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataLocalWellKnownURIException.class %>" message="oauth-client-as-local-metadata-invalid-local-well-known-uri" />
 
 				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataJSONException.class %>">

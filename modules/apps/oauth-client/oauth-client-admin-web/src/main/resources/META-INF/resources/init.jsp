@@ -20,6 +20,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientASLocalMetadataManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientEntriesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants" %><%@
+page import="com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientASIssuerException" %><%@
 page import="com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientASLocalMetadataException" %><%@
 page import="com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientEntryException" %><%@
 page import="com.liferay.oauth.client.persistence.exception.OAuthClientASLocalMetadataJSONException" %><%@
