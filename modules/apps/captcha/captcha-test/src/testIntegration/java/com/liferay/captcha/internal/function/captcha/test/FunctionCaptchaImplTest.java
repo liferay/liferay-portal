@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -80,6 +81,9 @@ public class FunctionCaptchaImplTest {
 
 		String servicePid = StringUtil.extractLast(pid, StringPool.TILDE);
 
+		String captchaEnforceDisabled = PropsUtil.get(
+			"captcha.enforce.disabled");
+
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
@@ -90,12 +94,23 @@ public class FunctionCaptchaImplTest {
 							"captchaEngine",
 							"com.liferay.captcha.internal.function.captcha." +
 								"FunctionCaptchaImpl#" + servicePid
+						).put(
+							"createAccountCaptchaEnabled", true
+						).put(
+							"maxChallenges", 1
+						).put(
+							"sendPasswordCaptchaEnabled", true
 						).build())) {
+
+			PropsUtil.set("captcha.enforce.disabled", "false");
 
 			Assert.assertTrue(
 				CaptchaTestUtil.isCaptchaRendered(
 					StringPool.LESS_THAN +
 						customElementCET.getHTMLElementName()));
+		}
+		finally {
+			PropsUtil.set("captcha.enforce.disabled", captchaEnforceDisabled);
 		}
 
 		_cetManager.deleteCET(customElementCET);

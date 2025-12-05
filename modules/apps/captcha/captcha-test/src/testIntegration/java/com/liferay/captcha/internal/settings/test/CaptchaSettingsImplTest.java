@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -39,6 +40,8 @@ public class CaptchaSettingsImplTest {
 	@Test
 	public void test() throws Exception {
 		Company company = CompanyTestUtil.addCompany(false);
+		String captchaEnforceDisabled = PropsUtil.get(
+			"captcha.enforce.disabled");
 		long companyId = company.getCompanyId();
 		long testCompanyId = TestPropsValues.getCompanyId();
 
@@ -50,6 +53,10 @@ public class CaptchaSettingsImplTest {
 						new HashMapDictionaryBuilder(
 						).<String, Object>put(
 							"createAccountCaptchaEnabled", true
+						).put(
+							"maxChallenges", 1
+						).put(
+							"sendPasswordCaptchaEnabled", true
 						).build());
 			CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper2 =
@@ -59,8 +66,13 @@ public class CaptchaSettingsImplTest {
 						new HashMapDictionaryBuilder(
 						).<String, Object>put(
 							"createAccountCaptchaEnabled", false
+						).put(
+							"maxChallenges", 1
+						).put(
+							"sendPasswordCaptchaEnabled", true
 						).build())) {
 
+			PropsUtil.set("captcha.enforce.disabled", "false");
 			Assert.assertEquals(testCompanyId, CompanyThreadLocal.getCompanyId().longValue());
 			Assert.assertFalse(
 				_captchaSettings.isCreateAccountCaptchaEnabled());
@@ -73,6 +85,9 @@ public class CaptchaSettingsImplTest {
 				Assert.assertTrue(
 					_captchaSettings.isCreateAccountCaptchaEnabled());
 			}
+		}
+		finally {
+			PropsUtil.set("captcha.enforce.disabled", captchaEnforceDisabled);
 		}
 	}
 
