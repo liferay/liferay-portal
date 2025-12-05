@@ -796,6 +796,23 @@ public class ExportImportLayoutPageTemplateEntriesTest {
 	}
 
 	@Test
+	public void testImportExportLayoutPageTemplateEntryFragmentDateField()
+		throws Exception {
+
+		_addDateFragmentEntry();
+
+		File expectedFile = _generateZipFile(
+			"fragment/date_field/mapped/expected", null,
+			HashMapBuilder.put(
+				"SITE_KEY", _group1.getGroupKey()
+			).build());
+		File inputFile = _generateZipFile(
+			"fragment/date_field/mapped/input", null, null);
+
+		_validateImportExport(expectedFile, inputFile);
+	}
+
+	@Test
 	public void testImportExportLayoutPageTemplateEntryFragmentHidden()
 		throws Exception {
 
@@ -1362,6 +1379,17 @@ public class ExportImportLayoutPageTemplateEntriesTest {
 			RandomTestUtil.randomString(),
 			AssetListEntryTypeConstants.TYPE_MANUAL,
 			ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private void _addDateFragmentEntry() throws Exception {
+		String html =
+			"<div data-lfr-editable-id=\"element-date\" " +
+			"data-lfr-editable-type=\"date-time\">" +
+			"01/01/2025 00:00 AM</div>";
+
+		_addFragmentEntry(
+			_group1.getGroupId(), "test-date-fragment", "Test Date Fragment",
+			html);
 	}
 
 	private void _addDisplayPageTemplate(JournalArticle journalArticle)

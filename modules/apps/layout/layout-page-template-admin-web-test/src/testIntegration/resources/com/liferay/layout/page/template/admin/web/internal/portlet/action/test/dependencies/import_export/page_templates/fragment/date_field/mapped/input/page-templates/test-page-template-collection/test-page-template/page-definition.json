@@ -1,0 +1,44 @@
+{
+	"pageElement": {
+		"id": "item1",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "BASIC_COMPONENT-date",
+						"siteKey": "£{SITE_KEY}"
+					},
+					"fragmentFields": [
+						{
+							"id": "element-date",
+							"value": {
+								"date": {
+									"mapping": {
+										"fieldKey": "JournalArticle_modifiedDate",
+										"itemReference": {
+											"contextSource": "DisplayPageItem"
+										}
+									}
+								},
+								"dateFormat": {
+									"value_i18n": {
+										"en_US": "MM/dd/yyyy"
+									}
+								},
+								"fragmentLink": {}
+							}
+						}
+					]
+				},
+				"type": "Fragment",
+				"id": "item2"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "Classic"
+	},
+	"version": 1.1
+}
