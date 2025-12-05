@@ -29,7 +29,7 @@
 		>
 			<portlet:renderURL var="editURL">
 				<portlet:param name="mvcRenderCommandName" value="/oauth_client_admin/update_oauth_client_as_local_metadata" />
-				<portlet:param name="localWellKnownURIOAS" value="<%= oAuthClientASLocalMetadata.getLocalWellKnownURIOAS() %>" />
+				<portlet:param name="issuer" value="<%= oAuthClientASLocalMetadata.getIssuer() %>" />
 				<portlet:param name="redirect" value="<%= currentURL %>" />
 			</portlet:renderURL>
 
