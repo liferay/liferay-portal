@@ -123,11 +123,12 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 				return osArchitecture;
 			}
 
-			return _batchTestClassGroup.getOSArchitecture();
 		}
 		catch (IOException ioException) {
-			return _batchTestClassGroup.getOSArchitecture();
+			ioException.printStackTrace();
 		}
+
+		return _batchTestClassGroup.getOSArchitecture();
 	}
 
 	public String getSegmentName() {

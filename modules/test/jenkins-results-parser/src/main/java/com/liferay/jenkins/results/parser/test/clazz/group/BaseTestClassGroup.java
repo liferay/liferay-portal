@@ -37,28 +37,30 @@ public abstract class BaseTestClassGroup implements TestClassGroup {
 		try {
 			String osArchitecture = getOSArchitecture();
 
-			if (Objects.equals(osArchitecture, "arm")) {
+			if (Objects.equals(osArchitecture, "arm") ||
+				Objects.equals(osArchitecture, "x86")) {
+
+				StringBuilder sb = new StringBuilder();
+
+				sb.append("slave.label.");
+				sb.append(osArchitecture);
+				sb.append("[");
+				sb.append(baseSlaveLabel);
+				sb.append("]");
+
 				String slaveLabel = JenkinsResultsParserUtil.getBuildProperty(
-					"slave.label.arm[" + baseSlaveLabel + "]");
+					sb.toString());
 
 				if (!JenkinsResultsParserUtil.isNullOrEmpty(slaveLabel)) {
 					return slaveLabel;
 				}
 			}
-			else if (Objects.equals(osArchitecture, "x86")) {
-				String osSlaveLabel = JenkinsResultsParserUtil.getBuildProperty(
-					"slave.label.x86[" + baseSlaveLabel + "]");
-
-				if (!JenkinsResultsParserUtil.isNullOrEmpty(osSlaveLabel)) {
-					return osSlaveLabel;
-				}
-			}
-
-			return baseSlaveLabel;
 		}
 		catch (IOException ioException) {
-			return baseSlaveLabel;
+			ioException.printStackTrace();
 		}
+
+		return baseSlaveLabel;
 	}
 
 	@Override
