@@ -8,6 +8,7 @@ package com.liferay.document.library.internal.search.spi.model.index.contributor
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.document.library.internal.configuration.DLIndexerConfiguration;
+import com.liferay.document.library.kernel.exception.NoSuchFileException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadataTable;
@@ -242,28 +243,34 @@ public class DLFileEntryModelDocumentContributor
 
 		String indexVersionLabel = dlFileVersion.getStoreFileName() + ".index";
 
-		if (_dlIndexerConfiguration.cacheTextExtraction() &&
-			_dlStore.hasFile(
-				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
-				dlFileEntry.getName(), indexVersionLabel)) {
+		if (_dlIndexerConfiguration.cacheTextExtraction()) {
+			try {
+				String string = StreamUtil.toString(
+					_dlStore.getFileAsStream(
+						dlFileEntry.getCompanyId(),
+						dlFileEntry.getDataRepositoryId(),
+						dlFileEntry.getName(), indexVersionLabel));
 
-			String string = StreamUtil.toString(
-				_dlStore.getFileAsStream(
-					dlFileEntry.getCompanyId(),
-					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
-					indexVersionLabel));
+				if (string.length() <= dlFileIndexingMaxSize) {
+					if (string.isEmpty()) {
+						return null;
+					}
 
-			if (string.length() <= dlFileIndexingMaxSize) {
-				if (string.isEmpty()) {
-					return null;
+					return string;
 				}
 
-				return string;
+				_dlStore.deleteFile(
+					dlFileEntry.getCompanyId(),
+					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
+					indexVersionLabel);
 			}
-
-			_dlStore.deleteFile(
-				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
-				dlFileEntry.getName(), indexVersionLabel);
+			catch (NoSuchFileException noSuchFileException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Unable to get cached text extraction" +
+							noSuchFileException);
+				}
+			}
 		}
 
 		String text = null;
