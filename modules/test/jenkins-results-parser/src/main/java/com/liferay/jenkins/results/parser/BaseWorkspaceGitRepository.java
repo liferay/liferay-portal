@@ -1044,20 +1044,12 @@ public abstract class BaseWorkspaceGitRepository
 				return true;
 			}
 
-			BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+			String distType = System.getenv("DIST_TYPE");
 
-			for (Job job : buildDatabase.getJobs()) {
-				if (job instanceof PortalAcceptanceTestSuiteJob) {
-					PortalAcceptanceTestSuiteJob portalAcceptanceTestSuiteJob =
-						(PortalAcceptanceTestSuiteJob)job;
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(distType) &&
+				distType.equals("release")) {
 
-					Job.DistType distType =
-						portalAcceptanceTestSuiteJob.getDistType();
-
-					if (distType.equals(Job.DistType.RELEASE)) {
-						return true;
-					}
-				}
+				return true;
 			}
 		}
 
