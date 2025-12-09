@@ -1570,6 +1570,7 @@ public class DLFileEntryLocalServiceTest {
 		Date expirationDate = new Date(
 			System.currentTimeMillis() + Time.MINUTE);
 		Date reviewDate = new Date();
+		String version = dlFileEntry.getVersion();
 
 		dlFileEntry = DLFileEntryLocalServiceUtil.updateFileEntry(
 			dlFileEntry.getUserId(), dlFileEntry.getFileEntryId(),
@@ -1580,6 +1581,8 @@ public class DLFileEntryLocalServiceTest {
 			dlFileEntry.getFileEntryTypeId(), new HashMap<>(), null,
 			new ByteArrayInputStream(content.getBytes()), 0, displayDate,
 			expirationDate, reviewDate, serviceContext);
+
+		Assert.assertEquals(version, dlFileEntry.getVersion());
 
 		dlFileVersion = dlFileEntry.getFileVersion();
 
