@@ -26,6 +26,10 @@ public class TomcatAppServer extends AppServer {
 		return GradleUtil.toString(_managerUserName);
 	}
 
+	public String getZipName() {
+		return GradleUtil.toString(_zipName);
+	}
+
 	public void setManagerPassword(Object managerPassword) {
 		_managerPassword = managerPassword;
 	}
@@ -34,7 +38,12 @@ public class TomcatAppServer extends AppServer {
 		_managerUserName = managerUserName;
 	}
 
+	public void setZipName(Object zipName) {
+		_zipName = zipName;
+	}
+
 	private Object _managerPassword;
 	private Object _managerUserName;
+	private Object _zipName;
 
 }

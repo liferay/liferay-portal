@@ -68,6 +68,7 @@ liferay {
 			startExecutableArgs = ["run"]
 			stopExecutable = project.properties["app.server.tomcat.stop.executable"] ?: "shutdown${->fileSuffixBat}"
 			version = project.properties["app.server.tomcat.version"] ?: "10.1.48"
+			zipName = project.properties["app.server.tomcat.zip.name"] ?: "apache-tomcat-${->liferay.appServers.tomcat.version}.zip"
 			zipUrl = project.properties["app.server.tomcat.zip.url"] ?: "http://archive.apache.org/dist/tomcat/tomcat-10/v${->liferay.appServers.tomcat.version}/bin/apache-tomcat-${->liferay.appServers.tomcat.version}.zip"
 		}
 
