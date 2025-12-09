@@ -443,6 +443,21 @@ public class CTCollectionServiceTest {
 			null, _user.getCompanyId(), _user.getUserId(), 0,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
+		_assertPublishCTCollection();
+
+		_ctCollection = _ctCollectionService.addCTCollection(
+			null, _user.getCompanyId(), _user.getUserId(), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		_ctCollection.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
+
+		_ctCollection = _ctCollectionLocalService.updateCTCollection(
+			_ctCollection);
+
+		_assertPublishCTCollection();
+	}
+
+	private void _assertPublishCTCollection() throws Exception {
 		Assert.assertEquals(
 			1,
 			_ctCollectionService.getCTCollectionsCount(
