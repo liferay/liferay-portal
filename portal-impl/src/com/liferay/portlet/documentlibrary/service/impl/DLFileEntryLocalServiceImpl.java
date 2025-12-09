@@ -2110,13 +2110,11 @@ public class DLFileEntryLocalServiceImpl
 
 		// File entry
 
-		if ((status == WorkflowConstants.STATUS_APPROVED) ||
-			(status == WorkflowConstants.STATUS_SCHEDULED)) {
-
+		if (status == WorkflowConstants.STATUS_APPROVED) {
 			int compare = DLUtil.compareVersions(
 				dlFileEntry.getVersion(), dlFileVersion.getVersion());
 
-			if ((compare <= 0) || (oldStatus != status)) {
+			if (compare <= 0) {
 				dlFileEntry.setModifiedDate(dlFileVersion.getModifiedDate());
 				dlFileEntry.setFileName(dlFileVersion.getFileName());
 				dlFileEntry.setExtension(dlFileVersion.getExtension());
