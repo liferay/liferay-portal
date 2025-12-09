@@ -79,7 +79,7 @@ public class DLFileEntryModelIndexerWriterContributor
 		}
 
 		if (!dlFileEntry.isInTrash() && !dlFileVersion.isApproved() &&
-			!dlFileVersion.isExpired() && !dlFileVersion.isScheduled()) {
+			!dlFileVersion.isExpired()) {
 
 			return IndexerWriterMode.SKIP;
 		}
