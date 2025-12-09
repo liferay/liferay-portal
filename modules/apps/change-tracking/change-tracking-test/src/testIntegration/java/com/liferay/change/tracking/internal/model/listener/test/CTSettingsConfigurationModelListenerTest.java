@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -65,17 +66,31 @@ public class CTSettingsConfigurationModelListenerTest {
 		try {
 			UserTestUtil.setUser(_user);
 
-			CTCollection ctCollection =
+			CTCollection ctCollection1 =
 				_ctCollectionLocalService.addCTCollection(
 					null, TestPropsValues.getCompanyId(), _user.getUserId(), 0,
 					RandomTestUtil.randomString(), null);
+
+			CTCollection ctCollection2 =
+				_ctCollectionLocalService.addCTCollection(
+					null, TestPropsValues.getCompanyId(), _user.getUserId(), 0,
+					RandomTestUtil.randomString(), null);
+
+			ctCollection2.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
+
+			ctCollection2 = _ctCollectionLocalService.updateCTCollection(
+				ctCollection2);
 
 			PermissionChecker permissionChecker =
 				PermissionThreadLocal.getPermissionChecker();
 
 			Assert.assertTrue(
 				_ctCollectionModelResourcePermission.contains(
-					permissionChecker, ctCollection, CTActionKeys.PUBLISH));
+					permissionChecker, ctCollection1, CTActionKeys.PUBLISH));
+
+			Assert.assertTrue(
+				_ctCollectionModelResourcePermission.contains(
+					permissionChecker, ctCollection2, CTActionKeys.PUBLISH));
 
 			pid = ConfigurationTestUtil.createFactoryConfiguration(
 				CTSettingsConfiguration.class.getName(),
@@ -91,17 +106,21 @@ public class CTSettingsConfigurationModelListenerTest {
 
 			Assert.assertFalse(
 				_ctCollectionModelResourcePermission.contains(
-					permissionChecker, ctCollection, CTActionKeys.PUBLISH));
+					permissionChecker, ctCollection1, CTActionKeys.PUBLISH));
+
+			Assert.assertFalse(
+				_ctCollectionModelResourcePermission.contains(
+					permissionChecker, ctCollection2, CTActionKeys.PUBLISH));
 
 			ConfigurationTestUtil.deleteConfiguration(pid);
 
 			int initialCTEntriesCount =
 				_ctEntryLocalService.getCTCollectionCTEntriesCount(
-					ctCollection.getCtCollectionId());
+					ctCollection1.getCtCollectionId());
 
 			try (SafeCloseable safeCloseable =
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-						ctCollection.getCtCollectionId())) {
+						ctCollection1.getCtCollectionId())) {
 
 				pid = ConfigurationTestUtil.createFactoryConfiguration(
 					CTSettingsConfiguration.class.getName(),
@@ -118,7 +137,7 @@ public class CTSettingsConfigurationModelListenerTest {
 
 			int finalCTEntriesCount =
 				_ctEntryLocalService.getCTCollectionCTEntriesCount(
-					ctCollection.getCtCollectionId());
+					ctCollection1.getCtCollectionId());
 
 			Assert.assertEquals(0, finalCTEntriesCount - initialCTEntriesCount);
 		}
