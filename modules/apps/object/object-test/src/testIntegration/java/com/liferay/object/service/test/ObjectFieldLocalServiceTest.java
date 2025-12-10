@@ -1196,7 +1196,7 @@ public class ObjectFieldLocalServiceTest {
 		ObjectField localizedSystemObjectField = _addOrUpdateSystemObjectField(
 			null, modifiableSystemObjectDefinition.getObjectDefinitionId(),
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			"col" + RandomTestUtil.randomString(), "tbl" + RandomTestUtil.randomString(),
 			ObjectFieldConstants.DB_TYPE_STRING, false, false,
 			LocalizedMapUtil.getLocalizedMap("Charlie"), true, "charlie",
 			false);
@@ -1221,8 +1221,8 @@ public class ObjectFieldLocalServiceTest {
 					systemObjectField.getExternalReferenceCode(),
 					modifiableSystemObjectDefinition.getObjectDefinitionId(),
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(),
+					"col" + RandomTestUtil.randomString(),
+					"tbl" + RandomTestUtil.randomString(), 
 					ObjectFieldConstants.DB_TYPE_STRING, false, false,
 					LocalizedMapUtil.getLocalizedMap("Dog"), false, "able",
 					false));
