@@ -47,4 +47,32 @@
 
 		<lstopwatch action="total" name="run.weblogic" />
 	</target>
+
+	<target name="setup-weblogic-playwright">
+		<lstopwatch action="start" name="setup.weblogic" />
+
+		<app-server-properties-update>
+			app.server.type=weblogic
+		</app-server-properties-update>
+
+		<set-app-server-version-number app.server.type="weblogic" app.server.version="15.1.1" />
+
+		<antcall target="prepare-osgi-module-configurations" />
+
+		<antcall target="prepare-portal-properties" />
+
+		<antcall target="prepare-portal-ext-properties" />
+
+		<antcall target="prepare-portlet-ext-properties" />
+
+		<antcall target="prepare-system-ext-properties" />
+
+		<prepare-app-server-configuration />
+
+		<prepare-database-jndi />
+
+		<antcall target="clean-app-server-deploy-dir" />
+
+		<lstopwatch action="total" name="setup.weblogic" />
+	</target>
 </project>
