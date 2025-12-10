@@ -568,6 +568,8 @@ function start_app_server {
 		/bin/bash catalina.sh run &
 	elif [[ "${APP_SERVER_TYPE}" == "weblogic" ]]
 	then
+		ant -f build-test-weblogic.xml setup-weblogic-playwright
+
 		cd ${app_server_dir}/domains/liferay
 
 		/bin/bash startWeblogic.sh
@@ -676,19 +678,13 @@ function stop_app_server {
 
 	cd $(get_app_server_dir ${liferay_home})/bin
 
-	if [[ "${APP_SERVER_TYPE}" == "jboss" || "${APP_SERVER_TYPE}" == "wildfly" ]]
+	if [[ "${APP_SERVER_TYPE}" == "tomcat" ]]
 	then
+		/bin/bash shutdown.sh &
+	else
 		cd ${_PORTAL_PROJECT_DIR}
 
 		ant -f build-test.xml stop-app-server
-	elif [[ "${APP_SERVER_TYPE}" == "tomcat" ]]
-	then
-		/bin/bash shutdown.sh &
-	elif [[ "${APP_SERVER_TYPE}" == "weblogic" ]]
-	then
-		cd ${app_server_dir}/domains/liferay
-
-		/bin/bash startWeblogic.sh
 	fi
 
 	local portal_url=${2}
