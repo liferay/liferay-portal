@@ -1180,6 +1180,37 @@ public class LayoutCTTest {
 		}
 
 		Assert.assertTrue(hasConflict);
+
+		otherCTCollection.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
+
+		_ctCollectionLocalService.updateCTCollection(
+			otherCTCollection);
+
+		Map<Long, List<ConflictInfo>> incompleteConflictInfoMap =
+			_ctCollectionLocalService.checkConflicts(_ctCollection);
+
+		Assert.assertFalse(incompleteConflictInfoMap.isEmpty());
+
+		List<ConflictInfo> incompleteConflictInfos = incompleteConflictInfoMap.get(
+			_classNameLocalService.getClassNameId(Layout.class));
+
+		hasConflict = false;
+
+		for (ConflictInfo conflictInfo : incompleteConflictInfos) {
+			if ((conflictInfo.getSourcePrimaryKey() == layout.getPlid()) &&
+				Objects.equals(
+					conflictInfo.getResolutionDescription(
+						conflictInfo.getResourceBundle(LocaleUtil.ENGLISH)),
+					_language.get(
+						LocaleUtil.ENGLISH,
+						"deletion-conflicts-with-modifications-in-another-" +
+						"publication"))) {
+
+				hasConflict = true;
+			}
+		}
+
+		Assert.assertTrue(hasConflict);
 	}
 
 	@Test
