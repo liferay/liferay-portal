@@ -39,6 +39,8 @@ public class CaptchaSettingsImplTest {
 	@Test
 	public void test() throws Exception {
 		Company company = CompanyTestUtil.addCompany(false);
+		long companyId = company.getCompanyId();
+		long testCompanyId = TestPropsValues.getCompanyId();
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper1 =
@@ -59,6 +61,7 @@ public class CaptchaSettingsImplTest {
 							"createAccountCaptchaEnabled", false
 						).build())) {
 
+			Assert.assertEquals(testCompanyId, CompanyThreadLocal.getCompanyId().longValue());
 			Assert.assertFalse(
 				_captchaSettings.isCreateAccountCaptchaEnabled());
 
@@ -66,6 +69,7 @@ public class CaptchaSettingsImplTest {
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						company.getCompanyId())) {
 
+				Assert.assertEquals(companyId, CompanyThreadLocal.getCompanyId().longValue());
 				Assert.assertTrue(
 					_captchaSettings.isCreateAccountCaptchaEnabled());
 			}
