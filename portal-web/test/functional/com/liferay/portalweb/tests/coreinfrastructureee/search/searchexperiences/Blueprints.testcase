@@ -2581,8 +2581,6 @@ definition {
 
 	@priority = 3
 	test SearchViaBlueprintsPreviewWithAttributes {
-		property portal.acceptance = "quarantine";
-
 		JSONCategory.addVocabulary(
 			groupName = "Guest",
 			title = "Test Vocabulary");
