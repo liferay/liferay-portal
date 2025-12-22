@@ -4,18 +4,23 @@
  */
 
 import ApiHelper, {RequestResult} from '../../../common/services/ApiHelper';
-import {IAssetObjectEntry} from '../../../common/types/AssetType';
+import {
+	IAssetObjectEntry,
+	ITaxonomyCategoryBrief,
+} from '../../../common/types/AssetType';
 
-export type EntryCategorizationDTO = {
-	keywords?: IAssetObjectEntry['keywords'];
-	lastAddedBrief?: any;
-	taxonomyCategoryBriefs?: IAssetObjectEntry['taxonomyCategoryBriefs'];
-	taxonomyCategoryIds?: IAssetObjectEntry['taxonomyCategoryIds'];
-};
+export interface EntryCategorizationDTO extends IAssetObjectEntry {
+	keywordsToAdd?: string[];
+	keywordsToRemove?: string[];
+	lastAddedBrief?: ITaxonomyCategoryBrief;
+	lastRemovedBrief?: ITaxonomyCategoryBrief;
+	taxonomyCategoryIdsToAdd?: number[];
+	taxonomyCategoryIdsToRemove?: number[];
+}
 
 async function getObjectEntry(
 	url: string,
-	nestedFields = 'embeddedTaxonomyCategory'
+	nestedFields = 'embeddedTaxonomyCategory,systemProperties.objectDefinitionBrief'
 ): Promise<RequestResult<IAssetObjectEntry>> {
 	const getURL: URL = new URL(url, window.location.origin);
 
@@ -27,13 +32,17 @@ async function getObjectEntry(
 }
 
 async function patchObjectEntry(
-	data: EntryCategorizationDTO,
-	url: string
+	data: IAssetObjectEntry,
+	url: string,
+	nestedFields = 'embeddedTaxonomyCategory,systemProperties.objectDefinitionBrief'
 ): Promise<RequestResult<IAssetObjectEntry>> {
-	return await ApiHelper.patch(
-		data,
-		`${url}?nestedFields=embeddedTaxonomyCategory`
-	);
+	const patchURL: URL = new URL(url, window.location.origin);
+
+	if (nestedFields) {
+		patchURL.searchParams.append('nestedFields', nestedFields);
+	}
+
+	return await ApiHelper.patch(data, patchURL.toString());
 }
 
 export default {
