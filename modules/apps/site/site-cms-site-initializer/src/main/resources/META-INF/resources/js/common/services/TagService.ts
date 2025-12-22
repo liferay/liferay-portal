@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {composeCreateTaskDTO} from '../../main_view/bulk_actions_monitor/util';
+import {IBulkActionFDSData} from '../types/BulkActionTask';
 import {Tag} from '../types/Tag';
 import ApiHelper from './ApiHelper';
 
@@ -33,6 +35,14 @@ async function createTag({
 	);
 }
 
+async function getCommonTags(selectedData: IBulkActionFDSData) {
+	return await ApiHelper.post<any>(
+		`/o/bulk/v1.0/keywords/common`,
+		composeCreateTaskDTO('KeywordBulkAction', {}, selectedData)
+	);
+}
+
 export default {
 	createTag,
+	getCommonTags,
 };
