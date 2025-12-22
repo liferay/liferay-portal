@@ -17,7 +17,8 @@ import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../common/utils/constants';
 import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
 import {openCMSModal} from '../../common/utils/openCMSModal';
-import CategoriesAndTagsModalContent from '../categorization/modal/CategoriesAndTagsModalContent';
+import EditAssetCategoriesModalContent from '../categorization/modal/EditAssetCategoriesModalContent';
+import EditAssetTagsModalContent from '../categorization/modal/EditAssetTagsModalContent';
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
 import {permissionsBulkAction} from '../default_permission/BulkPermissionModalContent';
 import DefaultPermissionModalContent from '../default_permission/DefaultPermissionModalContent';
@@ -392,7 +393,7 @@ export default function AssetsFDSPropsTransformer({
 			action: any;
 			selectedData: any;
 		}) => {
-			if (action?.data?.id === 'categoriesAndTags') {
+			if (action?.data?.id === 'edit-categories') {
 				openCMSModal({
 					center: true,
 					containerProps: {
@@ -403,8 +404,30 @@ export default function AssetsFDSPropsTransformer({
 					}: {
 						closeModal: () => void;
 					}) =>
-						CategoriesAndTagsModalContent({
+						EditAssetCategoriesModalContent({
 							apiURL: otherProps.apiURL,
+							assetLibraries: additionalProps.assetLibraries,
+							closeModal,
+							cmsGroupId: additionalProps.cmsGroupId as number,
+							selectedData,
+						}),
+					size: 'md',
+				});
+			}
+			else if (action?.data?.id === 'edit-tags') {
+				openModal({
+					center: true,
+					containerProps: {
+						className: 'modal-height-lg',
+					},
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						EditAssetTagsModalContent({
+							apiURL: otherProps?.apiURL,
+							assetLibraries: additionalProps.assetLibraries,
 							closeModal,
 							cmsGroupId: additionalProps.cmsGroupId as number,
 							selectedData,
