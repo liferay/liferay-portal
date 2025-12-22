@@ -439,14 +439,63 @@ paths:
     "/keywords/common":
         post:
             operationId: postKeywordsCommonPage
+            parameters:
+                -   in: query
+                    name: blueprintExternalReferenceCode
+                    schema:
+                        type: string
+                -   in: query
+                    name: emptySearch
+                    schema:
+                        type: boolean
+                -   in: query
+                    description:
+                        Model class names to be searched for. Defaults to all.
+                    name: entryClassNames
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The list of fields to be returned.
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: scope
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/DocumentBulkSelection"
+                            oneOf:
+                                -   $ref: "#/components/schemas/DocumentBulkSelection"
+                                -   $ref: "#/components/schemas/BulkAction"
                     application/xml:
                         schema:
-                            $ref: "#/components/schemas/DocumentBulkSelection"
+                            oneOf:
+                                -   $ref: "#/components/schemas/DocumentBulkSelection"
+                                -   $ref: "#/components/schemas/BulkAction"
             responses:
                 200:
                     content:
@@ -471,14 +520,62 @@ paths:
                     schema:
                         format: int64
                         type: integer
+                -   in: query
+                    name: blueprintExternalReferenceCode
+                    schema:
+                        type: string
+                -   in: query
+                    name: emptySearch
+                    schema:
+                        type: boolean
+                -   in: query
+                    description:
+                        Model class names to be searched for. Defaults to all.
+                    name: entryClassNames
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        The list of fields to be returned.
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: scope
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/DocumentBulkSelection"
+                            oneOf:
+                                -   $ref: "#/components/schemas/DocumentBulkSelection"
+                                -   $ref: "#/components/schemas/BulkAction"
                     application/xml:
                         schema:
-                            $ref: "#/components/schemas/DocumentBulkSelection"
+                            oneOf:
+                                -   $ref: "#/components/schemas/DocumentBulkSelection"
+                                -   $ref: "#/components/schemas/BulkAction"
             responses:
                 200:
                     content:
