@@ -8,47 +8,31 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayPanel from '@clayui/panel';
-import {dateUtils, sub} from 'frontend-js-web';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {sub} from 'frontend-js-web';
+import React, {
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 
 import SpaceService from '../../../common/services/SpaceService';
-import {
-	IAssetObjectEntry,
-	ISearchAssetObjectEntry,
-} from '../../../common/types/AssetType';
 import {Space} from '../../../common/types/Space';
-import {getScopeExternalReferenceCode} from '../../../common/utils/getScopeExternalReferenceCode';
+import {displayErrorToast} from '../../../common/utils/toastUtil';
 import {SpaceSticker} from '../../../index';
 import {
 	AssetTypeInfoPanelContext,
 	IAssetTypeInfoPanelContext,
 } from '../context';
 import ObjectEntryService from '../services/ObjectEntryService';
+import {formatDate, getAssetLanguages} from '../util';
 import {ASSET_TYPE, L_FILES} from '../util/constants';
 
-const getAssetLanguages = (title_i18n: {[key: string]: string} = {}) => {
-	const assetLanguages = Object.keys(title_i18n);
-
-	if (assetLanguages.length) {
-		return Object.keys(title_i18n).map((key) => key.replace('_', '-'));
-	}
-
-	return [];
-};
-
-const formatDate = (date: string) => {
-	return dateUtils.format(new Date(date), 'P p');
-};
-
 const AssetMetadata = () => {
-	const {
-		objectEntries = [],
-		type,
-		title_i18n = {},
-	}: IAssetTypeInfoPanelContext = useContext(AssetTypeInfoPanelContext);
-
-	const [{actions, embedded: objectEntry}]: ISearchAssetObjectEntry[] =
-		objectEntries;
+	const {actions, asset, type}: IAssetTypeInfoPanelContext = useContext(
+		AssetTypeInfoPanelContext
+	);
 
 	const copyText = useCallback(
 		(event: any) => {
@@ -56,43 +40,63 @@ const AssetMetadata = () => {
 
 			if (window?.navigator?.clipboard) {
 				window.navigator.clipboard.writeText(
-					objectEntry.file?.link?.href as string
+					asset.file?.link?.href as string
 				);
 			}
 		},
-		[objectEntry]
+		[asset]
 	);
 
-	const assetLanguages = getAssetLanguages(title_i18n);
+	const assetLanguages = useMemo(
+		() => getAssetLanguages(asset.title_i18n),
+		[asset.title_i18n]
+	);
 
-	const [objectEntryWithNestedFields, setObjectEntryWithNestedFields] =
-		useState<IAssetObjectEntry>(objectEntry as IAssetObjectEntry);
+	const [numberOfAssets, setNumberOfAssets] = useState<number>(0);
 	const [space, setSpace] = useState<Space>({} as Space);
 
 	useEffect(() => {
-		if (type === ASSET_TYPE.FOLDER && actions?.get?.href) {
-			ObjectEntryService.getObjectEntry(
-				actions.get.href,
-				'numberOfObjectEntries,numberOfObjectEntryFolders'
-			).then((result) => {
-				if (result.data) {
-					setObjectEntryWithNestedFields(
-						result.data as IAssetObjectEntry
+		const getNumberOfAssets = async () => {
+			if (actions?.get?.href && type === ASSET_TYPE.FOLDER) {
+				const {data} = await ObjectEntryService.getObjectEntry(
+					actions.get.href,
+					'numberOfObjectEntries,numberOfObjectEntryFolders'
+				);
+
+				if (
+					data?.numberOfObjectEntries &&
+					data?.numberOfObjectEntryFolders
+				) {
+					setNumberOfAssets(
+						data.numberOfObjectEntries +
+							data.numberOfObjectEntryFolders
 					);
 				}
-			});
-		}
-	}, [actions?.get?.href, type]);
+			}
+		};
 
-	useEffect(() => {
-		SpaceService.getSpace(
-			getScopeExternalReferenceCode(objectEntries[0])
-		).then((space) => {
+		const getSpace = async () => {
+			const externalReferenceCode =
+				asset?.systemProperties?.scope?.externalReferenceCode ||
+				asset.scope?.externalReferenceCode ||
+				'';
+
+			const space = await SpaceService.getSpace(externalReferenceCode);
+
 			if (space) {
 				setSpace(space);
 			}
-		});
-	}, [objectEntries]);
+		};
+
+		try {
+			getNumberOfAssets();
+
+			getSpace();
+		}
+		catch (_error) {
+			displayErrorToast();
+		}
+	}, [actions, asset, type]);
 
 	return (
 		<ClayPanel
@@ -119,16 +123,14 @@ const AssetMetadata = () => {
 							<ClayInput.GroupItem prepend>
 								<ClayInput
 									disabled={true}
-									placeholder={objectEntry.file?.link?.href}
+									placeholder={asset.file?.link?.href}
 									type="text"
 								/>
 							</ClayInput.GroupItem>
 
 							<ClayInput.GroupItem append shrink>
 								<ClayButtonWithIcon
-									data-clipboard-text={
-										objectEntry.file?.link?.href
-									}
+									data-clipboard-text={asset.file?.link?.href}
 									displayType="secondary"
 									onClick={copyText}
 									symbol="copy"
@@ -147,10 +149,7 @@ const AssetMetadata = () => {
 							{Liferay.Language.get('number-of-assets')}
 						</p>
 
-						<p className="d-block">
-							{objectEntryWithNestedFields.numberOfObjectEntries +
-								objectEntryWithNestedFields.numberOfObjectEntryFolders}
-						</p>
+						<p className="d-block">{numberOfAssets}</p>
 					</div>
 				)}
 
@@ -179,7 +178,7 @@ const AssetMetadata = () => {
 								},
 								{
 									label:
-										objectEntry.objectEntryFolderExternalReferenceCode ===
+										asset.objectEntryFolderExternalReferenceCode ===
 										L_FILES
 											? Liferay.Language.get('files')
 											: Liferay.Language.get('content'),
@@ -194,7 +193,7 @@ const AssetMetadata = () => {
 						{Liferay.Language.get('author')}
 					</p>
 
-					<p className="d-block">{objectEntry?.creator?.name}</p>
+					<p className="d-block">{asset?.creator?.name}</p>
 				</div>
 
 				<div className="asset-metadata-section mt-3">
@@ -204,8 +203,8 @@ const AssetMetadata = () => {
 
 					<p className="d-block">
 						{sub(Liferay.Language.get('x-by-x'), [
-							formatDate(objectEntry.dateCreated as string),
-							objectEntry.creator?.name,
+							formatDate(asset.dateCreated as string),
+							asset.creator?.name,
 						])}
 					</p>
 				</div>
@@ -216,20 +215,20 @@ const AssetMetadata = () => {
 					</p>
 
 					<p className="d-block">
-						{formatDate(objectEntry.dateModified as string)}
+						{formatDate(asset.dateModified as string)}
 					</p>
 				</div>
 
 				{type !== ASSET_TYPE.FOLDER && (
 					<>
-						{objectEntry?.displayDate && (
+						{asset?.displayDate && (
 							<div className="asset-metadata-section mt-3">
 								<p className="d-block font-weight-bold mb-0">
 									{Liferay.Language.get('display-date')}
 								</p>
 
 								<p className="d-block">
-									{formatDate(objectEntry?.displayDate)}
+									{formatDate(asset?.displayDate)}
 								</p>
 							</div>
 						)}
@@ -240,8 +239,8 @@ const AssetMetadata = () => {
 							</p>
 
 							<p className="d-block">
-								{objectEntry?.expirationDate
-									? formatDate(objectEntry?.expirationDate)
+								{asset?.expirationDate
+									? formatDate(asset?.expirationDate)
 									: Liferay.Language.get('never-expire')}
 							</p>
 						</div>
@@ -252,8 +251,8 @@ const AssetMetadata = () => {
 							</p>
 
 							<p className="d-block">
-								{objectEntry?.reviewDate
-									? formatDate(objectEntry?.reviewDate)
+								{asset?.reviewDate
+									? formatDate(asset?.reviewDate)
 									: Liferay.Language.get('never-review')}
 							</p>
 						</div>

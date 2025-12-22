@@ -6,27 +6,25 @@
 import ClayCard from '@clayui/card';
 import React, {useContext} from 'react';
 
-import {ISearchAssetObjectEntry} from '../../../common/types/AssetType';
 import AssetMetadata from '../components/AssetMetadata';
 import {AssetTypeInfoPanelContext} from '../context';
 import {ASSET_TYPE} from '../util/constants';
 
 const DetailsTabContent = () => {
-	const {objectEntries = [], type} = useContext(AssetTypeInfoPanelContext);
-
-	const [{embedded: objectEntry}]: ISearchAssetObjectEntry[] = objectEntries;
+	const {asset, type} = useContext(AssetTypeInfoPanelContext);
 
 	return (
 		<>
-			{type === ASSET_TYPE.FILES && objectEntry.file?.thumbnailURL && (
+			{type === ASSET_TYPE.FILES && asset?.file?.thumbnailURL && (
 				<ClayCard>
 					<img
 						alt="thumbnail"
 						className="card-image w-100"
-						src={objectEntry.file?.thumbnailURL}
+						src={asset.file.thumbnailURL}
 					/>
 				</ClayCard>
 			)}
+
 			<AssetMetadata />
 		</>
 	);

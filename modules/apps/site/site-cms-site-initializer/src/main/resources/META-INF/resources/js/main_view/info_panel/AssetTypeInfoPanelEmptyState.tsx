@@ -4,15 +4,12 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
-import React, {useContext} from 'react';
+import React from 'react';
 
 import {getImage} from '../../common/utils/getImage';
-import {AssetTypeInfoPanelContext} from './context';
 
-const AssetTypeInfoPanelDefaultView = () => {
-	const {objectEntries = []} = useContext(AssetTypeInfoPanelContext);
-
-	const props: {
+const AssetTypeInfoPanelEmptyState = ({selected = 0}: {selected: number}) => {
+	const emptyStateProps: {
 		className: string;
 		description?: string | undefined;
 		imgSrc: string;
@@ -29,24 +26,28 @@ const AssetTypeInfoPanelDefaultView = () => {
 		title: null,
 	};
 
-	if (!objectEntries.length) {
-		props.description = Liferay.Language.get(
+	if (!selected) {
+		emptyStateProps.description = Liferay.Language.get(
 			'click-on-an-asset-to-see-its-details'
 		);
-		props.imgSrc = getImage('empty_selection_state.svg');
-		props.imgSrcReducedMotion = getImage('empty_selection_state.svg');
+		emptyStateProps.imgSrc = getImage('empty_selection_state.svg');
+		emptyStateProps.imgSrcReducedMotion = getImage(
+			'empty_selection_state.svg'
+		);
 	}
-	else if (objectEntries.length > 1) {
-		props.className = `${props.className} asset-multi-selection w-100`;
-		props.imgSrc = getImage('multiselection_state.svg');
-		props.imgSrcReducedMotion = getImage('multiselection_state.svg');
+	else if (selected > 1) {
+		emptyStateProps.className = `${emptyStateProps.className} asset-multi-selection w-100`;
+		emptyStateProps.imgSrc = getImage('multiselection_state.svg');
+		emptyStateProps.imgSrcReducedMotion = getImage(
+			'multiselection_state.svg'
+		);
 	}
 
 	return (
 		<div className="asset-type-default-view autofit-col">
-			<ClayEmptyState {...props} />
+			<ClayEmptyState {...emptyStateProps} />
 		</div>
 	);
 };
 
-export default AssetTypeInfoPanelDefaultView;
+export default AssetTypeInfoPanelEmptyState;

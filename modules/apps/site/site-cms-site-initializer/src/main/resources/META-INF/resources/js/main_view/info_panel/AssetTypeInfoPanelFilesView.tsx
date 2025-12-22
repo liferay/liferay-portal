@@ -10,40 +10,18 @@ import React, {useState} from 'react';
 
 import {TABS} from './tab_content';
 
-const DropDownWithState = ({
-	children,
-	trigger,
-	...others
-}: {
-	children: any;
-	trigger: any;
-}) => {
-	return (
-		<DropDown
-			alignmentPosition={Align.BottomLeft}
-			closeOnClick={true}
-			hasRightSymbols
-			trigger={trigger}
-			{...others}
-		>
-			{children}
-		</DropDown>
-	);
-};
+const DROPDOWN_TABS = [TABS.VERSIONS, TABS.COMMENTS];
+const MAIN_TABS = [TABS.DETAILS, TABS.CATEGORIZATION, TABS.PERFORMANCE];
+
+const ALL_TABS = [...MAIN_TABS, ...DROPDOWN_TABS];
 
 const AssetTypeInfoPanelFilesView = () => {
 	const [active, setActive] = useState(0);
 
-	const dropdownTabsItems = [TABS.VERSIONS, TABS.COMMENTS];
-
-	const tabs = [TABS.DETAILS, TABS.CATEGORIZATION, TABS.PERFORMANCE];
-
-	const allTabs = [...tabs, ...dropdownTabsItems];
-
 	return (
 		<>
 			<Tabs active={active} justified={false} onActiveChange={setActive}>
-				{tabs.map((tab) => (
+				{MAIN_TABS.map((tab) => (
 					<Tabs.Item
 						innerProps={{
 							'aria-controls': `tabpanel-${tab.id}`,
@@ -55,10 +33,13 @@ const AssetTypeInfoPanelFilesView = () => {
 				))}
 
 				<div onClick={(event) => event.stopPropagation()}>
-					<DropDownWithState
+					<DropDown
+						alignmentPosition={Align.BottomLeft}
+						closeOnClick={true}
+						hasRightSymbols
 						trigger={
 							<Tabs.Item
-								active={active >= tabs.length}
+								active={active >= MAIN_TABS.length}
 								innerProps={{
 									'aria-controls': 'tabpanel-4',
 								}}
@@ -71,8 +52,8 @@ const AssetTypeInfoPanelFilesView = () => {
 							</Tabs.Item>
 						}
 					>
-						{dropdownTabsItems.map((tab) => {
-							const tabIndex = allTabs.findIndex(
+						{DROPDOWN_TABS.map((tab) => {
+							const tabIndex = ALL_TABS.findIndex(
 								(item) => item.id === tab.id
 							);
 
@@ -87,14 +68,14 @@ const AssetTypeInfoPanelFilesView = () => {
 								</DropDown.Item>
 							);
 						})}
-					</DropDownWithState>
+					</DropDown>
 				</div>
 			</Tabs>
 
 			<Tabs.Content active={active} fade>
-				{allTabs.map((tab) => (
+				{ALL_TABS.map((tab, index) => (
 					<Tabs.TabPane className="p-4" key={tab.id}>
-						<tab.component />
+						{active === index ? <tab.component /> : null}
 					</Tabs.TabPane>
 				))}
 			</Tabs.Content>

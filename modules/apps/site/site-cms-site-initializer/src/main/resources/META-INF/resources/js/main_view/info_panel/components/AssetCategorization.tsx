@@ -7,16 +7,17 @@ import {ClayInput} from '@clayui/form';
 import React, {ComponentProps, useEffect, useState} from 'react';
 
 import CategoryService from '../../../common/services/CategoryService';
-import {IAssetObjectEntry} from '../../../common/types/AssetType';
-import ObjectEntryService, {
-	EntryCategorizationDTO,
-} from '../services/ObjectEntryService';
+import {
+	IAssetObjectEntry,
+	ITaxonomyCategoryBrief,
+} from '../../../common/types/AssetType';
+import ObjectEntryService from '../services/ObjectEntryService';
 import AssetCategories from './AssetCategories';
 import AssetTags from './AssetTags';
 
 type Categorization = Pick<
 	IAssetObjectEntry,
-	'keywords' | 'taxonomyCategoryBriefs'
+	'keywords' | 'taxonomyCategoryBriefs' | 'systemProperties'
 >;
 
 export type CategorizationInputSize = ComponentProps<
@@ -31,10 +32,9 @@ export default function AssetCategorization({
 	hasUpdatePermission,
 	inputSize,
 	onUpdateCategorization,
-	updateObjectEntryURL = '',
 }: {
 	assetLibraryId: number | string;
-	categorization?: Categorization;
+	categorization: Categorization;
 	cmsGroupId: number | string;
 	getObjectEntryURL: string;
 	hasUpdatePermission: boolean;
@@ -49,64 +49,50 @@ export default function AssetCategorization({
 	const updateObjectEntry = async ({
 		keywords,
 		taxonomyCategoryIds,
-	}: EntryCategorizationDTO): Promise<void> => {
-		let newObjectEntry: IAssetObjectEntry | null = null;
-		let error: string | null = null;
+	}: Partial<IAssetObjectEntry>): Promise<void> => {
+		const error: string | null = null;
+		let newObjectEntry = {
+			...objectEntry,
+			keywords: keywords || objectEntry.keywords,
+		};
 
-		if (updateObjectEntryURL && !categorization) {
-			({data: newObjectEntry, error} =
-				await ObjectEntryService.patchObjectEntry(
-					{
-						keywords: keywords || objectEntry?.keywords!,
-						...(taxonomyCategoryIds ? {taxonomyCategoryIds} : {}),
-					},
-					updateObjectEntryURL
-				));
-		}
-		else {
-			newObjectEntry = {
-				...objectEntry,
-				keywords: keywords || objectEntry.keywords,
-			};
+		if (taxonomyCategoryIds) {
+			if (
+				objectEntry.taxonomyCategoryBriefs.length >
+				taxonomyCategoryIds.length
+			) {
+				newObjectEntry = {
+					...newObjectEntry,
+					taxonomyCategoryBriefs:
+						objectEntry.taxonomyCategoryBriefs.filter(
+							({taxonomyCategoryId: id}) =>
+								taxonomyCategoryIds.includes(id)
+						),
+				};
+			}
+			else {
+				const addedCategoryId: number =
+					taxonomyCategoryIds[taxonomyCategoryIds.length - 1];
 
-			if (taxonomyCategoryIds) {
-				if (
-					objectEntry.taxonomyCategoryBriefs.length >
-					taxonomyCategoryIds.length
-				) {
+				const {data: newCategory} =
+					await CategoryService.getCategoryById(addedCategoryId);
+
+				if (newCategory) {
 					newObjectEntry = {
 						...newObjectEntry,
-						taxonomyCategoryBriefs:
-							objectEntry.taxonomyCategoryBriefs.filter(
-								({taxonomyCategoryId: id}) =>
-									taxonomyCategoryIds.includes(id)
-							),
+						taxonomyCategoryBriefs: [
+							...objectEntry.taxonomyCategoryBriefs,
+							{
+								embeddedTaxonomyCategory: newCategory,
+								taxonomyCategoryId: Number(newCategory.id),
+							},
+						] as ITaxonomyCategoryBrief[],
 					};
 				}
-				else {
-					const addedCategoryId: number =
-						taxonomyCategoryIds[taxonomyCategoryIds.length - 1];
-
-					const {data: newCategory} =
-						await CategoryService.getCategoryById(addedCategoryId);
-
-					if (newCategory) {
-						newObjectEntry = {
-							...newObjectEntry,
-							taxonomyCategoryBriefs: [
-								...objectEntry.taxonomyCategoryBriefs,
-								{
-									embeddedTaxonomyCategory: newCategory,
-									taxonomyCategoryId: Number(newCategory.id),
-								},
-							],
-						};
-					}
-				}
 			}
-
-			onUpdateCategorization?.(newObjectEntry);
 		}
+
+		onUpdateCategorization?.(newObjectEntry);
 
 		if (newObjectEntry) {
 			setObjectEntry(newObjectEntry);
@@ -138,11 +124,11 @@ export default function AssetCategorization({
 							keywords: getUnique([
 								...data.keywords,
 								...keywords,
-							]),
+							]) as string[],
 							taxonomyCategoryBriefs: getUnique([
 								...data.taxonomyCategoryBriefs,
 								...taxonomyCategoryBriefs,
-							]),
+							]) as ITaxonomyCategoryBrief[],
 						};
 					}
 
@@ -190,11 +176,14 @@ function getUnique(
 		| IAssetObjectEntry['taxonomyCategoryBriefs']
 ) {
 	if (typeof categorization[0] === 'string') {
-		return [...new Set(categorization)];
+		return [...new Set(categorization as string[])];
 	}
 	else {
 		return [
 			...new Map(
+
+				// @ts-ignore
+
 				categorization.map((item) => [item.taxonomyCategoryId, item])
 			).values(),
 		];

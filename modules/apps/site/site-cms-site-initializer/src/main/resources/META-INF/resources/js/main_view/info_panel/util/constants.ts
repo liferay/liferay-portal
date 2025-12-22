@@ -10,6 +10,13 @@ export const ASSET_TYPE = {
 	FOLDER: 'folder',
 };
 
+export const ASSET_TYPE_ERC = {
+	BASIC_DOCUMENT: 'L_CMS_BASIC_DOCUMENT',
+	BASIC_WEB_CONTENT: 'L_CMS_BASIC_WEB_CONTENT',
+	BLOG: 'L_CMS_BLOG',
+	EXTERNAL_VIDEO: 'L_CMS_EXTERNAL_VIDEO',
+};
+
 export const COPY = 'copy';
 export const DELETE_VERSION = 'delete';
 export const EXPIRE = 'expire';

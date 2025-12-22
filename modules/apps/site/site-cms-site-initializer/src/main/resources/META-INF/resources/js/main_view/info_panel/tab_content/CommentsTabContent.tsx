@@ -14,13 +14,13 @@ import {
 
 const CommentsTabContent = () => {
 	const {
+		asset: {id},
 		commentsProps,
-		id,
-		objectEntries = [],
+		selectedAssets = [],
 	}: IAssetTypeInfoPanelContext = useContext(AssetTypeInfoPanelContext);
 
 	const {addCommentURL, editCommentURL, getCommentsURL} = commentsProps;
-	const [{entryClassName}]: ISearchAssetObjectEntry[] = objectEntries;
+	const [{entryClassName}]: ISearchAssetObjectEntry[] = selectedAssets;
 
 	const dynamicURL = `?className=${encodeURIComponent(
 		entryClassName

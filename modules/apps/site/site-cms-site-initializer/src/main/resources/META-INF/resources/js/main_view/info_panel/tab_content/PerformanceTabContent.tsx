@@ -13,29 +13,31 @@ import {
 } from '../context';
 
 const PerformanceTabContent = () => {
-	const selectedAsset = useContext<IAssetTypeInfoPanelContext>(
-		AssetTypeInfoPanelContext
-	);
-	const {embedded} = selectedAsset?.objectEntries?.[0] ?? {};
+	const {
+		asset: {
+			externalReferenceCode,
+			objectEntryFolderExternalReferenceCode,
+			scopeId,
+		},
+		assetLibrary: {externalReferenceCode: assetLibraryERC = ''} = {},
+	} = useContext<IAssetTypeInfoPanelContext>(AssetTypeInfoPanelContext);
 
 	return (
 		<CMSPerformance
-			externalReferenceCode={embedded?.externalReferenceCode}
+			externalReferenceCode={externalReferenceCode}
 			objectEntryFolderExternalReferenceCode={
-				embedded?.objectEntryFolderExternalReferenceCode
+				objectEntryFolderExternalReferenceCode
 			}
 			onConnectSites={(loadData) =>
 				manageConnectedSitesAction(
 					{
-						externalReferenceCode:
-							selectedAsset.assetLibrary?.externalReferenceCode ??
-							'',
+						externalReferenceCode: assetLibraryERC,
 						hasConnectSitesPermission: true,
 					},
 					loadData
 				)
 			}
-			scopeId={embedded?.scopeId}
+			scopeId={scopeId}
 		/>
 	);
 };
