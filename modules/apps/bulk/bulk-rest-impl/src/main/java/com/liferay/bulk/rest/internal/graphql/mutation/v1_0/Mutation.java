@@ -162,17 +162,29 @@ public class Mutation {
 	}
 
 	@GraphQLField
-	public java.util.Collection<Keyword> createKeywordsCommonPage(
-			@GraphQLName("documentBulkSelection") DocumentBulkSelection
-				documentBulkSelection)
+	public java.util.Collection<Keyword> createKeywordsCommonPageObject(
+			@GraphQLName("blueprintExternalReferenceCode") String
+				blueprintExternalReferenceCode,
+			@GraphQLName("emptySearch") Boolean emptySearch,
+			@GraphQLName("entryClassNames") String entryClassNames,
+			@GraphQLName("scope") String scope,
+			@GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("sort") String sortsString,
+			@GraphQLName("object") Object object)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
 			_keywordResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			keywordResource -> {
-				Page paginationPage = keywordResource.postKeywordsCommonPage(
-					documentBulkSelection);
+				Page paginationPage =
+					keywordResource.postKeywordsCommonPageObject(
+						blueprintExternalReferenceCode, emptySearch,
+						entryClassNames, scope, search,
+						_filterBiFunction.apply(keywordResource, filterString),
+						_sortsBiFunction.apply(keywordResource, sortsString),
+						object);
 
 				return paginationPage.getItems();
 			});
@@ -240,10 +252,17 @@ public class Mutation {
 
 	@GraphQLField
 	public java.util.Collection<TaxonomyVocabulary>
-			createSiteTaxonomyVocabulariesCommonPage(
+			createSiteTaxonomyVocabulariesCommonPageObject(
 				@GraphQLName("siteKey") @NotEmpty String siteKey,
-				@GraphQLName("documentBulkSelection") DocumentBulkSelection
-					documentBulkSelection)
+				@GraphQLName("blueprintExternalReferenceCode") String
+					blueprintExternalReferenceCode,
+				@GraphQLName("emptySearch") Boolean emptySearch,
+				@GraphQLName("entryClassNames") String entryClassNames,
+				@GraphQLName("scope") String scope,
+				@GraphQLName("search") String search,
+				@GraphQLName("filter") String filterString,
+				@GraphQLName("sort") String sortsString,
+				@GraphQLName("object") Object object)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
@@ -252,8 +271,15 @@ public class Mutation {
 			taxonomyVocabularyResource -> {
 				Page paginationPage =
 					taxonomyVocabularyResource.
-						postSiteTaxonomyVocabulariesCommonPage(
-							Long.valueOf(siteKey), documentBulkSelection);
+						postSiteTaxonomyVocabulariesCommonPageObject(
+							Long.valueOf(siteKey),
+							blueprintExternalReferenceCode, emptySearch,
+							entryClassNames, scope, search,
+							_filterBiFunction.apply(
+								taxonomyVocabularyResource, filterString),
+							_sortsBiFunction.apply(
+								taxonomyVocabularyResource, sortsString),
+							object);
 
 				return paginationPage.getItems();
 			});

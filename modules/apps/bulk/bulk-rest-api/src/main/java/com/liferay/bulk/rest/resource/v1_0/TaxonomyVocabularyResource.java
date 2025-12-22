@@ -5,7 +5,6 @@
 
 package com.liferay.bulk.rest.resource.v1_0;
 
-import com.liferay.bulk.rest.dto.v1_0.DocumentBulkSelection;
 import com.liferay.bulk.rest.dto.v1_0.TaxonomyVocabulary;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,8 +42,13 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TaxonomyVocabularyResource {
 
-	public Page<TaxonomyVocabulary> postSiteTaxonomyVocabulariesCommonPage(
-			Long siteId, DocumentBulkSelection documentBulkSelection)
+	public Page<TaxonomyVocabulary>
+			postSiteTaxonomyVocabulariesCommonPageObject(
+				Long siteId, String blueprintExternalReferenceCode,
+				Boolean emptySearch, String entryClassNames, String scope,
+				String search,
+				com.liferay.portal.kernel.search.filter.Filter filter,
+				com.liferay.portal.kernel.search.Sort[] sorts, Object object)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

@@ -5,7 +5,6 @@
 
 package com.liferay.bulk.rest.client.resource.v1_0;
 
-import com.liferay.bulk.rest.client.dto.v1_0.DocumentBulkSelection;
 import com.liferay.bulk.rest.client.dto.v1_0.Keyword;
 import com.liferay.bulk.rest.client.dto.v1_0.KeywordBulkSelection;
 import com.liferay.bulk.rest.client.http.HttpInvoker;
@@ -43,11 +42,15 @@ public interface KeywordResource {
 		throws Exception;
 
 	public Page<Keyword> postKeywordsCommonPage(
-			DocumentBulkSelection documentBulkSelection)
+			String blueprintExternalReferenceCode, Boolean emptySearch,
+			String entryClassNames, String scope, String search,
+			String filterString, String sortString, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postKeywordsCommonPageHttpResponse(
-			DocumentBulkSelection documentBulkSelection)
+			String blueprintExternalReferenceCode, Boolean emptySearch,
+			String entryClassNames, String scope, String search,
+			String filterString, String sortString, Object object)
 		throws Exception;
 
 	public void putKeywordBatch(KeywordBulkSelection keywordBulkSelection)
@@ -272,11 +275,16 @@ public interface KeywordResource {
 		}
 
 		public Page<Keyword> postKeywordsCommonPage(
-				DocumentBulkSelection documentBulkSelection)
+				String blueprintExternalReferenceCode, Boolean emptySearch,
+				String entryClassNames, String scope, String search,
+				String filterString, String sortString, Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postKeywordsCommonPageHttpResponse(documentBulkSelection);
+				postKeywordsCommonPageHttpResponse(
+					blueprintExternalReferenceCode, emptySearch,
+					entryClassNames, scope, search, filterString, sortString,
+					object);
 
 			String content = httpResponse.getContent();
 
@@ -338,13 +346,14 @@ public interface KeywordResource {
 		}
 
 		public HttpInvoker.HttpResponse postKeywordsCommonPageHttpResponse(
-				DocumentBulkSelection documentBulkSelection)
+				String blueprintExternalReferenceCode, Boolean emptySearch,
+				String entryClassNames, String scope, String search,
+				String filterString, String sortString, Object object)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 
-			httpInvoker.body(
-				documentBulkSelection.toString(), "application/json");
+			httpInvoker.body(object.toString(), "application/json");
 
 			if (_builder._locale != null) {
 				httpInvoker.header(
@@ -364,6 +373,38 @@ public interface KeywordResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (blueprintExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"blueprintExternalReferenceCode",
+					String.valueOf(blueprintExternalReferenceCode));
+			}
+
+			if (emptySearch != null) {
+				httpInvoker.parameter(
+					"emptySearch", String.valueOf(emptySearch));
+			}
+
+			if (entryClassNames != null) {
+				httpInvoker.parameter(
+					"entryClassNames", String.valueOf(entryClassNames));
+			}
+
+			if (scope != null) {
+				httpInvoker.parameter("scope", String.valueOf(scope));
+			}
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +

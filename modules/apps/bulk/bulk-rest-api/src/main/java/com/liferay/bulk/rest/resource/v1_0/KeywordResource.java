@@ -5,7 +5,6 @@
 
 package com.liferay.bulk.rest.resource.v1_0;
 
-import com.liferay.bulk.rest.dto.v1_0.DocumentBulkSelection;
 import com.liferay.bulk.rest.dto.v1_0.Keyword;
 import com.liferay.bulk.rest.dto.v1_0.KeywordBulkSelection;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -47,8 +46,11 @@ public interface KeywordResource {
 	public void patchKeywordBatch(KeywordBulkSelection keywordBulkSelection)
 		throws Exception;
 
-	public Page<Keyword> postKeywordsCommonPage(
-			DocumentBulkSelection documentBulkSelection)
+	public Page<Keyword> postKeywordsCommonPageObject(
+			String blueprintExternalReferenceCode, Boolean emptySearch,
+			String entryClassNames, String scope, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, Object object)
 		throws Exception;
 
 	public void putKeywordBatch(KeywordBulkSelection keywordBulkSelection)
