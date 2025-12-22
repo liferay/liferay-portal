@@ -127,6 +127,7 @@ public class SectionDisplayContextHelper {
 		}
 
 		sb.append("&nestedFields=embedded,file.metadata,");
+		sb.append("embeddedTaxonomyCategory,");
 		sb.append("file.previewURL,file.thumbnailURL,");
 		sb.append("numberOfObjectEntries,numberOfObjectEntryFolders,");
 		sb.append("systemProperties.objectDefinitionBrief");
