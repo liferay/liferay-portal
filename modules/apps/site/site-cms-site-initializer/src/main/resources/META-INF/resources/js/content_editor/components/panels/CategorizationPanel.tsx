@@ -14,6 +14,7 @@ import {
 
 export default function CategorizationPanel({
 	assetLibraryId,
+	assetType,
 	categorizationFields,
 	cmsGroupId,
 	contentAPIURL,
@@ -21,6 +22,7 @@ export default function CategorizationPanel({
 	onUpdateCategorization,
 }: {
 	assetLibraryId: number | string;
+	assetType: number;
 	categorizationFields: CategorizationFields;
 	cmsGroupId: number | string;
 	contentAPIURL: string;
@@ -57,6 +59,11 @@ export default function CategorizationPanel({
 				assetLibraryId={assetLibraryId}
 				categorization={{
 					keywords: assetTagNames.value,
+					systemProperties: {
+						objectDefinitionBrief: {
+							classNameId: assetType,
+						},
+					} as IAssetObjectEntry['systemProperties'],
 					taxonomyCategoryBriefs: assetCategoryIds.value,
 				}}
 				cmsGroupId={cmsGroupId}

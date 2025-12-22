@@ -102,7 +102,7 @@ public class SectionDisplayContextHelper {
 			httpServletRequest.getAttribute(InfoDisplayWebKeys.INFO_ITEM),
 			rootObjectEntryFolderExternalReferenceCode);
 
-		StringBundler sb = new StringBundler(10);
+		StringBundler sb = new StringBundler(11);
 
 		sb.append("emptySearch=true&filter=");
 

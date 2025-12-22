@@ -211,8 +211,8 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			StringBundler.concat(
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 				GroupConstants.CMS_FRIENDLY_URL,
-				"/edit_content_item_comment?classNameId=",
-				classNameId, "&classPK=", objectEntry.getObjectEntryId())
+				"/edit_content_item_comment?classNameId=", classNameId,
+				"&classPK=", objectEntry.getObjectEntryId())
 		).put(
 			"editorConfig",
 			() -> {
