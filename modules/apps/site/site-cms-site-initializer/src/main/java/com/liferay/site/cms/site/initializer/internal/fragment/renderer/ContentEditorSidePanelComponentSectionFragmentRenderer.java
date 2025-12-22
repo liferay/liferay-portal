@@ -115,6 +115,8 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 
 		ObjectEntry objectEntry = (ObjectEntry)displayObject;
 
+		long classNameId = _classNameLocalService.getClassNameId(
+			objectEntry.getModelClassName());
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				objectEntry.getObjectDefinitionId());
@@ -136,9 +138,7 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 					return StringBundler.concat(
 						themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 						GroupConstants.CMS_FRIENDLY_URL,
-						"/add_content_item_comment?classNameId=",
-						_classNameLocalService.getClassNameId(
-							objectEntry.getModelClassName()),
+						"/add_content_item_comment?classNameId=", classNameId,
 						"&classPK=", objectEntry.getObjectEntryId());
 				}
 
@@ -146,6 +146,8 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			}
 		).put(
 			"assetLibraryId", objectEntry.getGroupId()
+		).put(
+			"assetType", classNameId
 		).put(
 			"cmsGroupId", themeDisplay.getScopeGroupId()
 		).put(
@@ -210,9 +212,7 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 				GroupConstants.CMS_FRIENDLY_URL,
 				"/edit_content_item_comment?classNameId=",
-				_classNameLocalService.getClassNameId(
-					objectEntry.getModelClassName()),
-				"&classPK=", objectEntry.getObjectEntryId())
+				classNameId, "&classPK=", objectEntry.getObjectEntryId())
 		).put(
 			"editorConfig",
 			() -> {
@@ -276,9 +276,7 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			StringBundler.concat(
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 				GroupConstants.CMS_FRIENDLY_URL,
-				"/subscribe_content_item?classNameId=",
-				_classNameLocalService.getClassNameId(
-					objectEntry.getModelClassName()),
+				"/subscribe_content_item?classNameId=", classNameId,
 				"&classPK=", objectEntry.getObjectEntryId(),
 				"&objectDefinitionId=", objectEntry.getObjectDefinitionId())
 		).put(
