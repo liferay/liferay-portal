@@ -28,6 +28,7 @@ const renderComponent = ({isSubscribed = false} = {}) => {
 		<ContentEditorSidePanel
 			addCommentURL="addCommentURL"
 			assetLibraryId="123"
+			assetType={30982}
 			cmsGroupId="21000"
 			comments={[]}
 			contentAPIURL="contentAPIURL"

@@ -18,6 +18,7 @@ import performLogin, {
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
+import {waitForModal} from '../../../utils/waitFor';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {structureBuilderPagesTest} from '../structure-builder/fixtures/structureBuilderPagesTest';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
@@ -1337,6 +1338,214 @@ test(
 			await apiHelpers.objectEntry.deleteObjectEntry(
 				applicationName,
 				String(objectEntry.id)
+			);
+		}
+	}
+);
+
+test(
+	'Edit Categories in bulk',
+	{tag: '@LPD-57835'},
+	async ({apiHelpers, assetsPage, infoPanelPage, page}) => {
+		const vocabularyName = getRandomString();
+
+		const siteId = await apiHelpers.headlessAdminUser
+			.getSiteByFriendlyUrlPath('cms')
+			.then((response) => response.id);
+
+		const vocabularyId = await apiHelpers.headlessAdminTaxonomy
+			.postSiteTaxonomyVocabulary({
+				assetLibraries: [{id: -1}],
+				assetTypes: [
+					{
+						required: false,
+						subtype: 'AllAssetSubtypes',
+						type: 'AllAssetTypes',
+					},
+				],
+				name: vocabularyName,
+				siteId,
+				visibilityType: 'PUBLIC',
+			})
+			.then((response) => response.id);
+
+		const categoryName = getRandomString();
+
+		await apiHelpers.headlessAdminTaxonomy
+			.postTaxonomyVocabularyTaxonomyCategory({
+				name: categoryName,
+				vocabularyId,
+			})
+			.then((response) => response.id);
+
+		const basicWebContent = 'cms/basic-web-contents';
+		const bulkActionTasks = 'cms/bulk-action-tasks';
+		const bulkActionTasksItems = 'cms/bulk-action-task-items';
+
+		const createdFiles = [];
+
+		const fileNames = [
+			getRandomString(),
+			getRandomString(),
+			getRandomString(),
+		];
+
+		let tasks;
+
+		for (const fileName of fileNames) {
+			const file = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: fileName,
+				},
+				basicWebContent,
+				'Default'
+			);
+
+			createdFiles.push(file);
+		}
+		try {
+			await test.step('Select 3 assets and bulk edit their categories', async () => {
+				await assetsPage.gotoAll();
+
+				await expect(assetsPage.taskStatusFormsButton).toBeHidden();
+
+				await assetsPage
+					.getItem(fileNames[0])
+					.locator('input[title="Select Item"]')
+					.check();
+				await assetsPage
+					.getItem(fileNames[1])
+					.locator('input[title="Select Item"]')
+					.check();
+				await assetsPage
+					.getItem(fileNames[2])
+					.locator('input[title="Select Item"]')
+					.check();
+
+				await assetsPage.execBulkItemAction('Edit Categories');
+
+				await waitForModal({
+					page,
+				});
+			});
+
+			await test.step('Add a new category to the selected assets', async () => {
+				const categoriesAutocomplete =
+					page.getByPlaceholder('Add category');
+
+				await categoriesAutocomplete.fill(categoryName);
+
+				const option = page.getByRole('option', {name: categoryName});
+
+				await option.waitFor();
+				await option.click();
+
+				const categoryLabel = page.locator('.label-item', {
+					hasText: categoryName,
+				});
+
+				await expect(categoryLabel).toBeAttached();
+
+				await page.getByRole('button', {name: 'Save'}).click();
+
+				await waitForAlert(
+					page,
+					'Info:Categories update action started for 3 assets.',
+					{
+						autoClose: true,
+						type: 'info',
+					}
+				);
+			});
+
+			await test.step('Check that the "Processing Task" button appears and click on it', async () => {
+				await expect(assetsPage.processingTasksButton).toBeVisible();
+
+				await assetsPage.processingTasksButton.click();
+
+				expect.poll(
+					async () => {
+						await expect(
+							assetsPage.processingTasksButton
+						).toBeHidden();
+					},
+					{
+						timeout: 5000,
+					}
+				);
+
+				await expect(assetsPage.taskStatusDropdownList).toContainText(
+					'Completed'
+				);
+			});
+
+			await test.step('After the click, the dropdown component is shown and 1 task with details is visible', async () => {
+				await expect(
+					assetsPage
+						.taskStatusDropdownItemButton('Assets Categorization')
+						.nth(0)
+				).toBeVisible();
+
+				await expect(assetsPage.taskStatusDropdownList).toContainText(
+					'3 Items'
+				);
+			});
+
+			await test.step('Verify the category has been correctly applied.', async () => {
+				await page.reload();
+
+				await assetsPage.execItemAction({
+					action: 'Show Details',
+					filter: fileNames[0],
+				});
+
+				await expect(
+					page.getByRole('heading', {name: fileNames[0]})
+				).toBeVisible();
+
+				await infoPanelPage.selectTab('Categorization').click();
+
+				await expect(
+					page.getByText(categoryName, {exact: true})
+				).toBeVisible();
+			});
+		}
+		finally {
+			const tasksItems =
+				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+					bulkActionTasksItems
+				);
+
+			tasks =
+				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+					bulkActionTasks
+				);
+
+			for (let i = 0; i < tasksItems.totalCount; i++) {
+				await apiHelpers.objectEntry.deleteObjectEntry(
+					bulkActionTasksItems,
+					tasksItems.items[i].id
+				);
+			}
+			for (let i = 0; i < tasks.totalCount; i++) {
+				await apiHelpers.objectEntry.deleteObjectEntry(
+					bulkActionTasks,
+					tasks.items[i].id
+				);
+			}
+
+			if (createdFiles.length) {
+				for (const file of createdFiles) {
+					await apiHelpers.objectEntry.deleteObjectEntry(
+						basicWebContent,
+						file.id
+					);
+				}
+			}
+
+			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
+				vocabularyId
 			);
 		}
 	}

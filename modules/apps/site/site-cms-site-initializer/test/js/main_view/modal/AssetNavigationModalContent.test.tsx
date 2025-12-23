@@ -134,12 +134,15 @@ const DEFAULT_PROPS = {
 };
 
 const renderComponent = (props = DEFAULT_PROPS) => {
-	return render(<AssetNavigationModalContent {...props} />);
+	return render(<AssetNavigationModalContent {...(props as any)} />);
 };
 
 const renderComponentInSharing = (props = DEFAULT_PROPS) => {
 	return render(
-		<AssetNavigationModalContent {...props} showInfoPanel={false} />
+		<AssetNavigationModalContent
+			{...(props as any)}
+			showInfoPanel={false}
+		/>
 	);
 };
 

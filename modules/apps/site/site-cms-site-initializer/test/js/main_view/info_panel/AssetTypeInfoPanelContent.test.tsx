@@ -65,7 +65,7 @@ describe.skip('CMS Asset Type Info Panel', () => {
 		const {container} = render(
 			<AssetTypeInfoPanelContent
 				additionalProps={{}}
-				items={[DOCUMENT_OBJECT_ENTRY]}
+				items={[DOCUMENT_OBJECT_ENTRY] as any}
 			/>
 		);
 		let href = null;
