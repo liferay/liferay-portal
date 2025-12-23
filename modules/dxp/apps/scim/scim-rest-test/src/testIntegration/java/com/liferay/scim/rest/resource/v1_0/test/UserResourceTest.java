@@ -160,6 +160,32 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 		assertHttpResponseStatusCode(200, httpResponse);
 		assertValid(User.toDTO(httpResponse.getContent()));
 
+		user.setActive(false);
+
+		PatchOp patchOp = new PatchOp();
+
+		patchOp.setOperations(
+			new Operation[] {
+				new Operation() {
+					{
+						setOp("replace");
+						setPath("active");
+						setValue("false");
+					}
+				}
+			});
+
+		patchOp.setSchemas(
+			new String[] {"\"urn:ietf:params:scim:api:messages:2.0:PatchOp\""});
+
+		userResource.patchV2UserHttpResponse(user.getId(), patchOp);
+
+		Object userObject = userResource.getV2UserById(user.getId());
+
+		User inactiveUser = User.toDTO(userObject.toString());
+
+		Assert.assertEquals(user.getId(), inactiveUser.getId());
+
 		ConfigurationTestUtil.deleteConfiguration(_pid);
 
 		assertHttpResponseStatusCode(
