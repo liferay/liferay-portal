@@ -76,6 +76,13 @@ public class BatchBuildTestrayCaseResult
 	}
 
 	public String getAxisName() {
+		DownstreamBuildReport downstreamBuildReport =
+			getDownstreamBuildReport();
+
+		if (downstreamBuildReport != null) {
+			return downstreamBuildReport.getAxisName();
+		}
+
 		return _axisTestClassGroup.getAxisName();
 	}
 
