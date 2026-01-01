@@ -68,7 +68,7 @@ definition {
 
 	@priority = 5
 	test CanAutoUpgradePartitionedDatabase7413U33WithExhaustedPool {
-		property custom.properties = "jdbc.default.maximumPoolSize=10${line.separator}jdbc.default.minimumIdle=5${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
+		property custom.properties = "jdbc.default.maximumPoolSize=100${line.separator}jdbc.default.minimumIdle=50${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
 		property data.archive.type = "data-archive-portal-partition";
 		property database.auto.upgrade.enabled = "true";
 		property portal.version = "7.4.13.u33";
