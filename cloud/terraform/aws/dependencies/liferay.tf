@@ -1,6 +1,7 @@
 locals {
 	bucket_active=local.is_active_data_blue ? module.s3_bucket_blue : module.s3_bucket_green
 	bucket_inactive=local.is_active_data_blue ? module.s3_bucket_green : module.s3_bucket_blue
+	bucket_extensions=module.s3_bucket_liferay_extensions
 	data_inactive=local.is_active_data_blue ? "green" : "blue"
 	db_active=local.is_active_data_blue ? module.postgres_blue[0] : module.postgres_green[0]
 	is_active_data_blue=var.data_active=="blue"
@@ -48,6 +49,70 @@ module "s3_bucket_green" {
 		"Active"=tostring(local.is_active_data_green)
 	}
 	source="../modules/s3-bucket"
+}
+module "s3_bucket_liferay_extensions" {
+	block_public_acls=true
+	block_public_policy=true
+	bucket_prefix="${var.deployment_name}-extensions-"
+	control_object_ownership=true
+	force_destroy=true
+	ignore_public_acls=true
+	object_ownership="BucketOwnerPreferred"
+	restrict_public_buckets=true
+	server_side_encryption_configuration={
+		rule={
+			apply_server_side_encryption_by_default={
+				sse_algorithm="aws:kms"
+			}
+			bucket_key_enabled=true
+		}
+	}
+	source="terraform-aws-modules/s3-bucket/aws"
+	version="~> 4.1.1"
+	versioning={
+		enabled=true
+	}
+}
+resource "aws_iam_access_key" "ci_uploader" {
+	user=aws_iam_user.ci_uploader.name
+}
+resource "aws_iam_policy" "ci_upload_only" {
+	name="${var.deployment_name}-ci_upload_only"
+	policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action="s3:ListBucket",
+					Effect="Allow",
+					Resource="arn:${var.arn_partition}:s3:::${var.deployment_name}-extensions-*",
+					Sid="AllowListBucket",
+				},
+				{
+					Action="s3:PutObject",
+					Effect="Allow",
+					Resource="arn:${var.arn_partition}:s3:::${var.deployment_name}-extensions-*/*",
+					Sid="AllowPutObject",
+				},
+				{
+					Action=[
+						"s3:DeleteObject",
+						"s3:DeleteObjectVersion"
+					],
+					Effect="Deny",
+					Resource="arn:${var.arn_partition}:s3:::${var.deployment_name}-extensions-*/*",
+					Sid="DenyDelete",
+				}
+			]
+			Version = "2012-10-17",
+		}
+	)
+}
+resource "aws_iam_user" "ci_uploader" {
+	name="${var.deployment_name}-ci_uploader"
+}
+resource "aws_iam_user_policy_attachment" "ci_uploader_attachment" {
+	policy_arn=aws_iam_policy.ci_upload_only.arn
+	user=aws_iam_user.ci_uploader.name
 }
 resource "aws_db_subnet_group" "rds" {
 	name="${var.deployment_name}-rds-sub-grp"
