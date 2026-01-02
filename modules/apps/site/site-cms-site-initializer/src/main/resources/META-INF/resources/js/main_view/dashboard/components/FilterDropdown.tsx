@@ -96,7 +96,7 @@ const FilterDropdown: React.FC<IFilterDropdown> = ({
 					}}
 					size="sm"
 				>
-					{icon && <ClayIcon aria-label={title} symbol={icon} />}
+					{icon && <ClayIcon symbol={icon} />}
 
 					<span className={triggerLabelClass}>
 						{selectedItem.label}
