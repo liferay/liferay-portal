@@ -15,6 +15,7 @@ import React, {useEffect, useState} from 'react';
 import TimelineDropdownMenu from './TimelineDropdownMenu';
 import {
 	WORKFLOW_STATUS_DRAFT,
+	WORKFLOW_STATUS_INCOMPLETE,
 	WorkflowStatusLabel,
 } from './WorkflowStatusLabel';
 
@@ -50,8 +51,10 @@ const PublicationTimeline = ({
 							</span>
 
 							{!!warningIcon &&
-							timelineItem.ctCollectionStatus.code ===
-								WORKFLOW_STATUS_DRAFT ? (
+							(timelineItem.ctCollectionStatus.code ===
+								WORKFLOW_STATUS_DRAFT ||
+								timelineItem.ctCollectionStatus.code ===
+									WORKFLOW_STATUS_INCOMPLETE) ? (
 								<ClayIcon
 									className={warningIcon.conflictIconClass}
 									style={{fontSize: 'medium'}}

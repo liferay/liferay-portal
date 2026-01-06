@@ -11,6 +11,7 @@ export const WORKFLOW_STATUS_DENIED = 4;
 export const WORKFLOW_STATUS_DRAFT = 2;
 export const WORKFLOW_STATUS_EXPIRED = 3;
 export const WORKFLOW_STATUS_IN_TRASH = 8;
+export const WORKFLOW_STATUS_INCOMPLETE = 6;
 export const WORKFLOW_STATUS_PENDING = 1;
 export const WORKFLOW_STATUS_SCHEDULED = 7;
 
@@ -33,6 +34,10 @@ export function WorkflowStatusLabel({workflowStatus}) {
 	else if (workflowStatus === WORKFLOW_STATUS_IN_TRASH) {
 		displayType = 'secondary';
 		label = Liferay.Language.get('in-trash');
+	}
+	else if (workflowStatus === WORKFLOW_STATUS_INCOMPLETE) {
+		displayType = 'secondary';
+		label = Liferay.Language.get('pending-approval');
 	}
 	else if (workflowStatus === WORKFLOW_STATUS_PENDING) {
 		displayType = 'info';

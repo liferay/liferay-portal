@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
+import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
@@ -21,11 +22,12 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 
 export const test = mergeTests(
-	documentLibraryPagesTest,
-	isolatedSiteTest,
-	journalPagesTest,
 	apiHelpersTest,
-	changeTrackingPagesTest
+	changeTrackingPagesTest,
+    documentLibraryPagesTest,
+    isolatedSiteTest,
+    journalPagesTest,
+    workflowPagesTest
 );
 
 const folderTitle1 = getRandomString();
@@ -545,4 +547,63 @@ test('LPD-39412 Assert publication timeline history is enabled for templates', a
 	await timelineButton.click();
 
 	await expect(timelineActionsButton).toBeVisible();
+});
+
+test('LPD-73283 Conflict warning is visible when content is edited in more than one publication', async ({
+apiHelpers,
+    changeTrackingPage,
+    ctCollection,
+    journalEditArticlePage,
+    journalPage,
+    page,
+    site,
+    workflowPage,
+}) => {
+    await changeTrackingPage.workOnProduction();
+
+    let journalArticleTitle1= getRandomString();
+
+    await journalEditArticlePage.goto();
+
+    await journalEditArticlePage.fillTitle(journalArticleTitle1);
+
+    await journalEditArticlePage.publishArticle();
+
+    await waitForAlert(page, `Success:${journalArticleTitle1} was created successfully.`);
+
+    const incompleteCTCollection =
+        await apiHelpers.headlessChangeTracking.createCTCollection(
+            getRandomString()
+        );
+
+    await changeTrackingPage.workOnPublication(incompleteCTCollection);
+
+    await workflowPage.goto();
+    await workflowPage.changeWorkflow(
+        'Web Content Article',
+        'Single Approver'
+    );
+
+    await journalPage.goto();
+
+    await journalEditArticlePage.editArticle(journalArticleTitle1);
+
+    await journalEditArticlePage.fillTitle(getRandomString());
+    
+    await page.getByRole('button', { name: 'Submit for Workflow' }).click();
+
+    await changeTrackingPage.workOnPublication(ctCollection);
+
+    await journalPage.goto();
+
+    await journalEditArticlePage.editArticle(journalArticleTitle1);
+
+    let journalArticleTitle2 = getRandomString();
+
+    await journalEditArticlePage.fillTitle(journalArticleTitle2);
+
+    await journalEditArticlePage.publishArticle();
+
+    await waitForAlert(page, `Success:${journalArticleTitle1} was updated successfully.`);
+
 });
