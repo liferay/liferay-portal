@@ -96,30 +96,20 @@ export default function SaveButtons({
 	}, [portletNamespace]);
 
 	const onClick = async (action, directSubmit = false) => {
-		const titleInputComponent = Liferay.component(
-			`${portletNamespace}titleMapAsXML`
-		);
-
-		if (!titleInputComponent?.getValue(defaultLanguageId)) {
-			await validateRequiredFields(formId);
-
+		if (!(await validateRequiredFields(formId))) {
 			return;
 		}
 
 		if (directSubmit || (articleId && !showPublishModal)) {
 			handleButtonClick(action);
 
-			await validateRequiredFields(formId);
-
 			return;
 		}
 
-		if (await validateRequiredFields(formId)) {
-			setPublishModalState({
-				publishModalAction: action,
-				publishModalVisible: true,
-			});
-		}
+		setPublishModalState({
+			publishModalAction: action,
+			publishModalVisible: true,
+		});
 	};
 
 	const handleButtonClick = (action) => {
@@ -209,7 +199,9 @@ export default function SaveButtons({
 			`${portletNamespace}dataEngineLayoutRenderer`
 		);
 
-		return renderer.reactComponentRef.current.validate();
+		const fields = await renderer.reactComponentRef.current.getFields();
+
+		return fields.every((isValid, field) => isValid && field.valid);
 	};
 
 	useEffect(() => {
