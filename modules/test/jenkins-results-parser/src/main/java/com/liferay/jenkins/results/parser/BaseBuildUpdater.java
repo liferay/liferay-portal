@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.testray.TestrayImporter;
+
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -146,6 +148,21 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 			DownstreamBuild downstreamBuild = (DownstreamBuild)_build;
 
 			downstreamBuild.generateBuildReport();
+
+			BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+
+			TempTopLevelBuildReport tempTopLevelBuildReport =
+				BuildReportFactory.newTempTopLevelBuildReport(
+					downstreamBuild.getTopLevelBuild());
+
+			tempTopLevelBuildReport.addDownstreamBuildReport(
+				BuildReportFactory.newDownstreamBuildReport(downstreamBuild));
+
+			TestrayImporter testrayImporter = new TestrayImporter(
+				buildDatabase, tempTopLevelBuildReport);
+
+			testrayImporter.recordAxisTestClassGroup(
+				downstreamBuild.getAxisTestClassGroup());
 		}
 	}
 
