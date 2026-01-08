@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -630,6 +632,15 @@ public class TestrayServer {
 
 		testrayCloudBucket.createTestrayCloudObject(
 			"inbox/" + resultsTarGzFile.getName(), resultsTarGzFile);
+
+		try {
+			FileUtils.cleanDirectory(getResultsDir());
+
+			FileUtils.cleanDirectory(gcpResultsDir);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
 	}
 
 	private void _sendCommunicationFailureNotification(String message) {
