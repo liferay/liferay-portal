@@ -23,6 +23,7 @@ import com.liferay.jenkins.results.parser.PortalWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.PullRequest;
 import com.liferay.jenkins.results.parser.QAWebsitesGitRepositoryJob;
 import com.liferay.jenkins.results.parser.QAWebsitesWorkspaceGitRepository;
+import com.liferay.jenkins.results.parser.TempTopLevelBuildReport;
 import com.liferay.jenkins.results.parser.TestSuiteJob;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.Workspace;
@@ -65,6 +66,20 @@ import org.dom4j.Element;
  * @author Michael Hashimoto
  */
 public class TestrayImporter {
+
+	public TestrayImporter(
+		BuildDatabase buildDatabase,
+		TempTopLevelBuildReport tempTopLevelBuildReport) {
+
+		_topLevelBuildReport = tempTopLevelBuildReport;
+
+		_jobs = buildDatabase.getJobs();
+		_portalFixpackReleases = buildDatabase.getPortalFixpackReleases();
+		_portalHotfixReleases = buildDatabase.getPortalHotfixReleases();
+		_portalReleases = buildDatabase.getPortalReleases();
+		_pullRequests = buildDatabase.getPullRequests();
+		_workspaces = buildDatabase.getWorkspaces();
+	}
 
 	public TestrayImporter(
 		BuildDatabase buildDatabase, TopLevelBuildReport topLevelBuildReport) {
