@@ -1238,22 +1238,6 @@ public class TestrayImporter {
 				analyticsCloudAppServerBundleStandaloneBuildTestrayCaseResult.
 					recordTestrayCaseResult(job);
 			}
-
-			for (final AxisTestClassGroup axisTestClassGroup :
-					axisTestClassGroups) {
-
-				callables.add(
-					new Callable<Void>() {
-
-						@Override
-						public Void call() throws Exception {
-							_recordAxisTestClassGroup(axisTestClassGroup);
-
-							return null;
-						}
-
-					});
-			}
 		}
 
 		ParallelExecutor<Void> parallelExecutor = new ParallelExecutor<>(
