@@ -768,4 +768,4 @@ ApplicationsMenu.propTypes = {
 	virtualInstance: PropTypes.object,
 };
 
-export {ApplicationsMenu};
+export default ApplicationsMenu;
