@@ -1238,6 +1238,12 @@ public class TestrayImporter {
 				analyticsCloudAppServerBundleStandaloneBuildTestrayCaseResult.
 					recordTestrayCaseResult(job);
 			}
+
+			for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
+				if (axisTestClassGroup.isResultsCached()) {
+					recordAxisTestClassGroup(axisTestClassGroup);
+				}
+			}
 		}
 
 		ParallelExecutor<Void> parallelExecutor = new ParallelExecutor<>(
