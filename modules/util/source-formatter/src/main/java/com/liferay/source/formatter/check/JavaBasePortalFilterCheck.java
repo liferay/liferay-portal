@@ -51,7 +51,8 @@ public class JavaBasePortalFilterCheck extends BaseJavaTermCheck {
 
 			addMessage(
 				fileName,
-				"Do not override method \"isFilterEnabled\", see LPD-69645");
+				"Do not override method \"isFilterEnabled\", see LPD-69645",
+				javaMethod.getLineNumber());
 		}
 
 		return javaTerm.getContent();
