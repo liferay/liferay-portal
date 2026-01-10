@@ -5,8 +5,6 @@
 
 package com.liferay.source.formatter.check;
 
-import com.liferay.source.formatter.parser.JavaClass;
-import com.liferay.source.formatter.parser.JavaMethod;
 import com.liferay.source.formatter.parser.JavaTerm;
 
 import java.util.Objects;
@@ -29,38 +27,24 @@ public class JavaBasePortalFilterCheck extends BaseJavaTermCheck {
 		if (!fileName.endsWith("Filter.java") ||
 			!isDerivedFrom(
 				absolutePath, fileContent,
-				"com.liferay.portal.servlet.filters.BasePortalFilter")) {
+				"com.liferay.portal.servlet.filters.BasePortalFilter") ||
+			!javaTerm.hasAnnotation("Override") ||
+			!Objects.equals(javaTerm.getName(), "isFilterEnabled")) {
 
 			return javaTerm.getContent();
 		}
 
-		JavaClass javaClass = (JavaClass)javaTerm;
-
-		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
-			if (!childJavaTerm.isJavaMethod()) {
-				continue;
-			}
-
-			JavaMethod javaMethod = (JavaMethod)childJavaTerm;
-
-			if (!javaMethod.hasAnnotation("Override") ||
-				!Objects.equals(javaMethod.getName(), "isFilterEnabled")) {
-
-				continue;
-			}
-
-			addMessage(
-				fileName,
-				"Do not override method \"isFilterEnabled\", see LPD-69645",
-				javaMethod.getLineNumber());
-		}
+		addMessage(
+			fileName,
+			"Do not override method \"isFilterEnabled\", see LPD-69645",
+			javaTerm.getLineNumber());
 
 		return javaTerm.getContent();
 	}
 
 	@Override
 	protected String[] getCheckableJavaTermNames() {
-		return new String[] {JAVA_CLASS};
+		return new String[] {JAVA_METHOD};
 	}
 
 }
