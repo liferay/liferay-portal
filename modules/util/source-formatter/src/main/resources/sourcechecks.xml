@@ -762,6 +762,10 @@
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on anonymous classes." />
 		</check>
+		<check name="JavaBasePortalFilterCheck">
+			<category name="Bug Prevention" />
+			<description name="Performs several checks on classes derived from `BasePortalFilter`." />
+		</check>
 		<check name="JavaCleanUpMethodSuperCleanUpCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that `cleanUp` method in `*Tag` class with `@Override` annotation calls the `cleanUp` method of the superclass." />
