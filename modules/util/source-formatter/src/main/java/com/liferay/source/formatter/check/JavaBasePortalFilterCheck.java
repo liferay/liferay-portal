@@ -5,8 +5,11 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.source.formatter.parser.JavaParameter;
+import com.liferay.source.formatter.parser.JavaSignature;
 import com.liferay.source.formatter.parser.JavaTerm;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,6 +34,14 @@ public class JavaBasePortalFilterCheck extends BaseJavaTermCheck {
 			!javaTerm.hasAnnotation("Override") ||
 			!Objects.equals(javaTerm.getName(), "isFilterEnabled")) {
 
+			return javaTerm.getContent();
+		}
+
+		JavaSignature javaSignature = javaTerm.getSignature();
+
+		List<JavaParameter> javaParameters = javaSignature.getParameters();
+
+		if (!javaParameters.isEmpty()) {
 			return javaTerm.getContent();
 		}
 
