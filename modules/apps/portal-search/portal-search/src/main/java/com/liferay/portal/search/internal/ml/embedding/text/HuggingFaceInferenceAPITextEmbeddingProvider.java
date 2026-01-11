@@ -112,7 +112,7 @@ public class HuggingFaceInferenceAPITextEmbeddingProvider
 			StringPool.UTF8);
 		options.setCookieSpec(Http.CookieSpec.STANDARD);
 		options.setLocation(
-			"https://api-inference.huggingface.co/models/" +
+			"https://router.huggingface.co/hf-inference/models/" +
 				MapUtil.getString(attributes, "model"));
 		options.setPost(true);
 
