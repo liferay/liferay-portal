@@ -764,7 +764,7 @@
 		</check>
 		<check name="JavaBasePortalFilterCheck">
 			<category name="Bug Prevention" />
-			<description name="Performs several checks on classes derived from `BasePortalFilter`." />
+			<description name="Verifies that subclasses of `BasePortalFilter` do not override `isFilterEnabled()`." />
 			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaCleanUpMethodSuperCleanUpCheck">
