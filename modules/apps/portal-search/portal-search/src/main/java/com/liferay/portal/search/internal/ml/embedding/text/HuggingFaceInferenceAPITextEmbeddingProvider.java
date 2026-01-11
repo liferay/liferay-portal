@@ -77,16 +77,9 @@ public class HuggingFaceInferenceAPITextEmbeddingProvider
 				throw new IllegalArgumentException(responseJSON);
 			}
 
-			JSONArray jsonArray1 = JSONFactoryUtil.createJSONArray(
-				responseJSON);
+			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(responseJSON);
 
-			JSONArray jsonArray2 = jsonArray1.getJSONArray(0);
-
-			if (jsonArray2 == null) {
-				throw new IllegalArgumentException(responseJSON);
-			}
-
-			List<Double> list = JSONUtil.toDoubleList(jsonArray2);
+			List<Double> list = JSONUtil.toDoubleList(jsonArray);
 
 			return list.toArray(new Double[0]);
 		}
