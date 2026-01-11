@@ -813,6 +813,10 @@
 			<category name="Styling" />
 			<description name="Sorts the values in `@FeatureFlags` and `@TestInfo` annotation." />
 		</check>
+		<check name="JavaFilterConfigurationCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that filter classes are configured in the `portal.properties` file." />
+		</check>
 		<check name="JavaFinderCacheCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that the method `BasePersistenceImpl.fetchByPrimaryKey` is overridden, when using `FinderPath`." />
