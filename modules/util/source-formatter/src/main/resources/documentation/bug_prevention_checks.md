@@ -90,6 +90,7 @@ JSPTaglibMissingAttributesCheck | .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Check
 JavaAbstractMethodCheck | .java | Finds incorrect `abstract` methods in `interface`. |
 JavaAnnotationsCheck | .java | Performs several checks on annotations. |
 [JavaAnonymousInnerClassCheck](check/java_anonymous_inner_class_check.md#javaanonymousinnerclasscheck) | .java | Performs several checks on anonymous classes. |
+JavaBasePortalFilterCheck | .java | Verifies that subclasses of `BasePortalFilter` do not override `isFilterEnabled()`. |
 JavaBooleanStatementCheck | .java | Performs several checks on variable declaration of type `Boolean`. |
 JavaBooleanUsageCheck | .java | Finds incorrect use of passing boolean values in `setAttribute` calls. |
 JavaCleanUpMethodSuperCleanUpCheck | .java | Checks that `cleanUp` method in `*Tag` class with `@Override` annotation calls the `cleanUp` method of the superclass. |
