@@ -49,6 +49,11 @@ liferay-learn-etc-spring-boot-object-action-exam-results-synchronization:
     oAuth2ApplicationExternalReferenceCode: liferay-learn-etc-spring-boot-oaua
     resourcePath: /object/action/exam/results/synchronization
     type: objectAction
+liferay-learn-etc-spring-boot-object-action-p2s3-friendly-url:
+    name: Liferay Learn Etc Spring Boot Object Action P2S3 Friendly URL
+    oAuth2ApplicationExternalReferenceCode: liferay-learn-etc-spring-boot-oaua
+    resourcePath: /object/action/p2s3-friendly-url
+    type: objectAction
 liferay-learn-etc-spring-boot-object-action-permission:
     name: Liferay Learn Etc Spring Boot Object Action Permission
     oAuth2ApplicationExternalReferenceCode: liferay-learn-etc-spring-boot-oaua
