@@ -247,6 +247,7 @@ JavaEntityFieldsMapOrderCheck | [Styling](styling_checks.md#styling-checks) | .j
 JavaExceptionCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java | Checks that variable names of exceptions in `catch` statements follow naming conventions. |
 JavaFeatureFlagManagerUtilCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds cases where `FeatureFlagManagerUtil.isEnabled` should be used and incorrect use of it. |
 JavaFeatureFlagsAndTestInfoAnnotationCheck | [Styling](styling_checks.md#styling-checks) | .java | Sorts the values in `@FeatureFlags` and `@TestInfo` annotation. |
+JavaFilterConfigurationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that filter classes are configured in the `portal.properties` file. |
 JavaFinalVariableCheck | [Styling](styling_checks.md#styling-checks) | .java | Finds cases of unneeded `final` modifiers for variables and parameters. |
 [JavaFinderCacheCheck](check/java_finder_cache_check.md#javafindercachecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that the method `BasePersistenceImpl.fetchByPrimaryKey` is overridden, when using `FinderPath`. |
 JavaFinderImplCustomSQLCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that hardcoded SQL values in `*FinderImpl` classes match the SQL in the `.xml` file in the `custom-sql` directory. |
