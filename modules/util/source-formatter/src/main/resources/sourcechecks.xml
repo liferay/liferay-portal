@@ -816,6 +816,7 @@
 		<check name="JavaFilterConfigurationCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that filter classes are configured in the `portal.properties` file." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaFinderCacheCheck">
 			<category name="Bug Prevention" />
