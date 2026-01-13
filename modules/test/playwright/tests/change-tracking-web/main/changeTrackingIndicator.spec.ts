@@ -9,9 +9,11 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 import {featureFlagPagesTest} from '../../feature-flag-web/main/fixtures/featureFlagPagesTest';
+import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -20,7 +22,9 @@ export const test = mergeTests(
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
 	}),
-	loginTest()
+	journalPagesTest,
+	loginTest(),
+	workflowPagesTest
 );
 
 test('LPD-31710 Publication bar disappears when trying to select a publication', async ({
@@ -108,4 +112,71 @@ test('LPD-44274 Assert cursor type is pointer when hover over a not selected pub
 	await apiHelpers.headlessChangeTracking.deleteCTCollection(
 		ctCollection2.body.id
 	);
+});
+
+test.describe('Publications with incomplete status tests', () => {
+	let incompleteCTCollection;
+
+	test.beforeEach(
+		async ({
+			apiHelpers,
+			changeTrackingPage,
+			journalEditArticlePage,
+			workflowPage,
+		}) => {
+			incompleteCTCollection =
+				await apiHelpers.headlessChangeTracking.createCTCollection(
+					getRandomString()
+				);
+
+			await changeTrackingPage.workOnPublication(incompleteCTCollection);
+
+			await workflowPage.goto();
+			await workflowPage.changeWorkflow(
+				'Web Content Article',
+				'Single Approver'
+			);
+
+			await journalEditArticlePage.goto();
+			await journalEditArticlePage.submitArticleForWorkflow(
+				getRandomString()
+			);
+		}
+	);
+
+	test.afterEach(async ({apiHelpers}) => {
+		await apiHelpers.headlessChangeTracking.deleteCTCollection(
+			incompleteCTCollection.body.id
+		);
+	});
+
+	test('LPD-73459', async ({changeTrackingPage, ctCollection, page}) => {
+		await changeTrackingPage.workOnPublication(ctCollection);
+
+		const changeTrackingIndicatorButton = page.locator(
+			'.change-tracking-indicator-button'
+		);
+
+		await changeTrackingIndicatorButton.click();
+
+		const selectPublicationMenuItem = page.getByRole('menuitem', {
+			name: 'Select a Publication',
+		});
+
+		await expect(selectPublicationMenuItem).toBeVisible();
+
+		await selectPublicationMenuItem.click();
+
+		const incompleteCTCollectionSelector = page
+			.locator('li')
+			.filter({hasText: incompleteCTCollection.body.name});
+
+		await expect(incompleteCTCollectionSelector).toBeVisible();
+
+		await incompleteCTCollectionSelector.click();
+
+		await expect(
+			page.getByRole('button', {name: incompleteCTCollection.body.name})
+		).toBeVisible();
+	});
 });
