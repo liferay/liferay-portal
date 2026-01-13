@@ -118,7 +118,9 @@ public class P2S3FriendlyURLService extends BaseService {
 		String jwt, String apiPath, long id) {
 
 		URI uri = UriComponentsBuilder.fromPath(
-			apiPath + id
+			apiPath
+		).pathSegment(
+			String.valueOf(id)
 		).build(
 		).toUri();
 

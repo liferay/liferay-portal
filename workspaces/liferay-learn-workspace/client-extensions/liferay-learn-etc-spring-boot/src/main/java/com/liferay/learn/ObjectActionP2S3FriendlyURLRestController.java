@@ -8,9 +8,6 @@ package com.liferay.learn;
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.learn.service.P2S3FriendlyURLService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,32 +41,31 @@ public class ObjectActionP2S3FriendlyURLRestController
 
 		String token = "Bearer " + jwt.getTokenValue();
 
-		if (objectERC.equals("P2S3_COURSE")) {
+		if (objectERC.equals(_P2S3_COURSE_ERC)) {
 			_p2s3FriendlyURLService.handleCourseUpdate(
 				token, entryPayloadJSONObject);
 		}
-		else if (objectERC.equals("P2S3_MODULE")) {
+		else if (objectERC.equals(_P2S3_MODULE_ERC)) {
 			_p2s3FriendlyURLService.handleModuleUpdate(
 				token, entryPayloadJSONObject);
 		}
-		else if (objectERC.equals("P2S3_LESSON")) {
+		else if (objectERC.equals(_P2S3_LESSON_ERC)) {
 			_p2s3FriendlyURLService.handleLessonUpdate(
 				token, entryPayloadJSONObject);
 		}
 		else {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Unsupported object ERC: " + objectERC);
-			}
-
 			return new ResponseEntity<>(
 				"Unsupported Object Type", HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<>(json, HttpStatus.OK);
+		return new ResponseEntity<>(json, HttpStatus.ACCEPTED);
 	}
 
-	private static final Log _log = LogFactory.getLog(
-		ObjectActionP2S3FriendlyURLRestController.class);
+	private static final String _P2S3_COURSE_ERC = "P2S3_COURSE";
+
+	private static final String _P2S3_LESSON_ERC = "P2S3_LESSON";
+
+	private static final String _P2S3_MODULE_ERC = "P2S3_MODULE";
 
 	@Autowired
 	private P2S3FriendlyURLService _p2s3FriendlyURLService;
