@@ -7,6 +7,7 @@ import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
+import defaultWorkflowStructureAction from './actions/defaultWorkflowStructureAction';
 import deleteStructureAction from './actions/deleteStructureAction';
 import importStructureAction from './actions/importStructureAction';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
@@ -91,6 +92,9 @@ export default function StructuresFDSPropsTransformer({
 					status: itemData.status.code,
 					structureId: itemData.id,
 				});
+			}
+			else if (action.data.id === 'assign-workflow') {
+				defaultWorkflowStructureAction(['structureId1']);
 			}
 		},
 	};
