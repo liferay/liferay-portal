@@ -36,7 +36,7 @@ public class JavaFilterConfigurationCheck extends BaseFileCheck {
 
 		Pattern pattern = Pattern.compile(
 			" class " + JavaSourceUtil.getClassName(absolutePath) +
-				"\\s+extends\\s+(\\w+)\\b");
+				"\\s+extends\\s+([\\w.]+)\\b");
 
 		Matcher matcher = pattern.matcher(content);
 
