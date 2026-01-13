@@ -153,8 +153,6 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 				return;
 			}
 
-			BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
-
 			DownstreamResultsTopLevelBuildReport
 				downstreamResultsTopLevelBuildReport =
 					BuildReportFactory.newDownstreamResultsTopLevelBuildReport(
@@ -163,8 +161,20 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 			downstreamResultsTopLevelBuildReport.addDownstreamBuildReport(
 				BuildReportFactory.newDownstreamBuildReport(downstreamBuild));
 
-			TestrayImporter testrayImporter = new TestrayImporter(
-				buildDatabase, downstreamResultsTopLevelBuildReport);
+			TopLevelBuild topLevelBuild = downstreamBuild.getTopLevelBuild();
+
+			TestrayImporter testrayImporter =
+				topLevelBuild.getTestrayImporter();
+
+			if (testrayImporter == null) {
+				BuildDatabase buildDatabase =
+					BuildDatabaseUtil.getBuildDatabase();
+
+				testrayImporter = new TestrayImporter(
+					buildDatabase, downstreamResultsTopLevelBuildReport);
+
+				topLevelBuild.setTestrayImporter(testrayImporter);
+			}
 
 			testrayImporter.recordAxisTestClassGroup(
 				downstreamBuild.getAxisTestClassGroup());
