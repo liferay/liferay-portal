@@ -9640,19 +9640,33 @@ war.path=${app.server.portal.dir}/</echo>
 						</or>
 					</and>
 					<then>
+						<local name="database.charset" />
+
+						<get-testcase-property property.name="portal.version" />
+
+						<if>
+							<isset property="portal.version" />
+							<then>
+								<property name="database.charset" value="utf8mb3" />
+							</then>
+							<else>
+								<property name="database.charset" value="utf8mb4" />
+							</else>
+						</if>
+
 						<var name="database.index" value="1" />
 
 						<echo file="create.sql">
 drop database if exists lportal;
 
-create database lportal character set utf8mb4;</echo>
+create database lportal character set ${database.charset};</echo>
 
 						<antelope:repeat count="${databases.size}">
 							<echo append="true" file="create.sql">
 
 drop database if exists lportal${database.index};
 
-create database lportal${database.index} character set utf8mb4;</echo>
+create database lportal${database.index} character set ${database.charset};</echo>
 
 							<math
 								datatype="int"
