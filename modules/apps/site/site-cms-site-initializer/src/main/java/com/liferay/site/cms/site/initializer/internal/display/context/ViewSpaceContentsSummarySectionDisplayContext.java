@@ -13,6 +13,7 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSpaceConstants;
@@ -53,6 +54,15 @@ public class ViewSpaceContentsSummarySectionDisplayContext
 
 		_groupId = groupId;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
+	}
+
+	@Override
+	public Map<String, Object> getAdditionalProps() {
+		return new HashMapBuilder<>().putAll(
+			super.getAdditionalProps()
+		).put(
+			"showAdditionalItemInfo", true
+		).build();
 	}
 
 	@Override
