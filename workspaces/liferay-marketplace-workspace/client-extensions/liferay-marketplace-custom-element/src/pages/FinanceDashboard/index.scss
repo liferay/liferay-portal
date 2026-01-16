@@ -4,6 +4,16 @@
 	min-width: 300px;
 	padding: 0;
 
+	.export-csv-button {
+		font-size: 14px;
+
+		.lexicon-icon {
+			height: 16px;
+			margin-right: 4px;
+			width: 16px;
+		}
+	}
+
 	.dashboard-navigation-container {
 		min-width: 280px;
 	}

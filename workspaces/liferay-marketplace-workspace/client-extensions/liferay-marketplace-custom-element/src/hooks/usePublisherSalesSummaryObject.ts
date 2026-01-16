@@ -18,6 +18,8 @@ type ExtendedOrderItems = OrderItem & {
 		type: string;
 	};
 	currencyCode: string;
+	finalPrice?: number;
+	finalPriceWithTaxAmount?: number;
 };
 
 type ExtendedPlacedOrderItems = PlacedOrderItems & {

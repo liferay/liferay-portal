@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayButton from '@clayui/button';
+import ClayIcon from '@clayui/icon';
 import ClayTable from '@clayui/table';
 import {useParams} from 'react-router-dom';
 
@@ -73,6 +75,37 @@ const PaymentDetails = () => {
 		paymentStatus === PublisherPayoutStatus.PAID
 			? PaymentStatusCode.PAID
 			: PaymentStatusCode.PENDING;
+
+	async function exportOrdersCSV() {
+		let csv = 'App Name,Account,Quantity,Net Price,VAT,Total\n';
+
+		completeOrderItems?.forEach(({orderItem, placedOrderItem}) => {
+			const finalPrice = orderItem.finalPrice ?? 0;
+			const finalPriceWithTax = orderItem.finalPriceWithTaxAmount ?? 0;
+			const vat = finalPriceWithTax - finalPrice;
+
+			csv +=
+				`"${placedOrderItem.name}",` +
+				`"${orderItem.account.name}",` +
+				`${placedOrderItem.quantity},` +
+				`"${formatCurrency(orderItem.currencyCode, finalPrice)}",` +
+				`"${formatCurrency(orderItem.currencyCode, vat)}",` +
+				`"${formatCurrency(orderItem.currencyCode, finalPriceWithTax)}"\n`;
+		});
+
+		const blob = new Blob(['\uFEFF', csv], {
+			type: 'text/csv;charset=utf-8;',
+		});
+
+		const url = URL.createObjectURL(blob);
+
+		const downloadLink = document.createElement('a');
+		downloadLink.href = url;
+		downloadLink.download = 'orders.csv';
+		downloadLink.click();
+
+		URL.revokeObjectURL(url);
+	}
 
 	return (
 		<PageRenderer
@@ -238,6 +271,23 @@ const PaymentDetails = () => {
 				cardTitle={i18n.translate('order-details')}
 				className="mt-5 pb-0 w-100"
 				clayIcon="price-tag"
+				headerActions={
+					<ClayButton
+						className="export-csv-button"
+						displayType="unstyled"
+						onClick={exportOrdersCSV}
+					>
+						<ClayIcon
+							aria-hidden="true"
+							className="inline-item inline-item-before"
+							symbol="download"
+						/>
+
+						<span className="font-weight-semi-bold">
+							Export CSV
+						</span>
+					</ClayButton>
+				}
 			>
 				<Table
 					className="table-borderless"

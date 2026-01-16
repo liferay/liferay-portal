@@ -15,6 +15,7 @@ type DetailedCardProps = {
 	children: ReactNode;
 	className?: string;
 	clayIcon?: string;
+	headerActions?: ReactNode;
 	sizing?: 'lg';
 };
 
@@ -25,12 +26,19 @@ export function DetailedCard({
 	children,
 	className,
 	clayIcon,
+	headerActions,
 }: DetailedCardProps) {
 	return (
 		<div className={className}>
 			<div className="detailed-card-container">
 				<div className="detailed-card-header">
 					<h2>{cardTitle}</h2>
+
+					{headerActions && (
+						<div className="align-items-center d-flex ml-auto mr-4">
+							{headerActions}
+						</div>
+					)}
 
 					<div className="detailed-card-header-icon-container">
 						{clayIcon ? (
