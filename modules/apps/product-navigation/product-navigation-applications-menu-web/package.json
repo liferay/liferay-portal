@@ -1,6 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/button": "*",
+		"@clayui/drop-down": "*",
 		"@clayui/icon": "*",
 		"@clayui/label": "*",
 		"@clayui/layout": "*",
