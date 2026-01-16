@@ -131,6 +131,7 @@ export default function GlobalMenu({
 							{(item) => (
 								<ClayDropdown.Item
 									{...item}
+									active={item.current}
 									href={item.url}
 									key={item.key}
 								>
