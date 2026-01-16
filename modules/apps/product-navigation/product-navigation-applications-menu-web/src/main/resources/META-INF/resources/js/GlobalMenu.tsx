@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayBadge from '@clayui/badge';
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropdown from '@clayui/drop-down';
 import {openSelectionModal} from 'frontend-js-components-web';
@@ -11,6 +12,7 @@ import React, {useEffect, useState} from 'react';
 
 type CategoryItem = {
 	childCategories?: {panelApps: {portletId: string}[]}[];
+	firstTimeAccess?: boolean;
 	homeURL: string;
 	key: string;
 	label: string;
@@ -98,8 +100,13 @@ export default function GlobalMenu({
 		>
 			<ClayDropdown.ItemList items={items.categories}>
 				{(item) => {
-					const {childCategories, homeURL, key, label} =
-						item as CategoryItem;
+					const {
+						childCategories,
+						firstTimeAccess,
+						homeURL,
+						key,
+						label,
+					} = item as CategoryItem;
 
 					return (
 						<ClayDropdown.Item
@@ -113,6 +120,16 @@ export default function GlobalMenu({
 							key={key}
 						>
 							{label}
+
+							{key === 'cms' && firstTimeAccess ? (
+								<ClayBadge
+									className="c-ml-3"
+									displayType="primary"
+									label={Liferay.Language.get(
+										'new'
+									).toUpperCase()}
+								/>
+							) : null}
 						</ClayDropdown.Item>
 					);
 				}}
