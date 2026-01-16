@@ -156,6 +156,14 @@ public class BatchEngineImportTaskLocalServiceImpl
 		return batchEngineImportTaskPersistence.countByCompanyId(companyId);
 	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public BatchEngineImportTask updateBatchEngineImportTask(
+		BatchEngineImportTask batchEngineImportTask) {
+
+		return super.updateBatchEngineImportTask(batchEngineImportTask);
+	}
+
 	private void _validateDelimiter(String delimiter)
 		throws BatchEngineImportTaskParametersException {
 
