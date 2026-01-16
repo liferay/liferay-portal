@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -264,6 +265,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 				return !bridge.hasAttribute("cmsFirstTimeAccess");
 			}
+		).put(
+			"label", LanguageUtil.get(httpServletRequest, "cms")
 		).put(
 			"logoURL",
 			StringBundler.concat(
