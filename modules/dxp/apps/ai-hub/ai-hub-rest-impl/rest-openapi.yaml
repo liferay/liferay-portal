@@ -41,8 +41,19 @@ components:
             type: object
         TaskDefinition:
             properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    readOnly: true
+                    type: object
                 description:
                     type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 name:
                     type: string
                 version:
@@ -145,6 +156,22 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/TaskDefinition"
                                 type: array
+            tags: ["TaskDefinition"]
+    "/task-definitions/{taskDefinitionId}":
+        delete:
+            operationId: deleteTaskDefinition
+            parameters:
+                -   in: path
+                    name: taskDefinitionId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
             tags: ["TaskDefinition"]
     "/tasks":
         post:
