@@ -12,8 +12,8 @@ import {
 	UserAccount,
 	UserGroup,
 } from '../../../../../src/main/resources/META-INF/resources/js/common/types/UserAccount';
-import {SelectOptions} from '../../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceMembersInputWithSelect';
 import {SPACE_MEMBER_ROLE_NAME} from '../../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceMembersPermissionSelect';
+import {SelectOptions} from '../../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceMembersSelectOptions';
 import {useSpaceMembers} from '../../../../../src/main/resources/META-INF/resources/js/main_view/spaces/hooks/useSpaceMembers';
 
 jest.mock('frontend-js-components-web', () => ({
@@ -256,11 +256,155 @@ describe('useSpaceMembers', () => {
 	});
 
 	it('does not load more if on the last page', async () => {
+		getSpaceUserGroupsSpy.mockResolvedValue({...mockGroups, lastPage: 1});
+
 		const {result} = renderHook(() =>
 			useSpaceMembers(externalReferenceCode, pageSize)
 		);
+
+		await waitFor(() =>
+			expect(result.current.state.isFetching).toBe(false)
+		);
+
 		await act(async () => result.current.loadMore(SelectOptions.GROUPS));
 		expect(getSpaceUserGroupsSpy).toHaveBeenCalledTimes(1);
+	});
+
+	describe('search', () => {
+		it('searches for users with a keyword', async () => {
+			const {result} = renderHook(() =>
+				useSpaceMembers(externalReferenceCode, pageSize)
+			);
+			await waitFor(() =>
+				expect(result.current.state.isFetching).toBe(false)
+			);
+
+			const searchKeywords = 'John';
+			const searchResults = {items: [testUsers[0]], lastPage: 1};
+			getSpaceUsersSpy.mockResolvedValue(searchResults);
+
+			await act(async () => {
+				await result.current.search(
+					SelectOptions.USERS,
+					searchKeywords
+				);
+			});
+
+			expect(getSpaceUsersSpy).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					keywords: searchKeywords,
+					page: 1,
+				})
+			);
+
+			await waitFor(() => {
+				expect(result.current.state.isSearching).toBe(false);
+			});
+
+			expect(result.current.state.users.items).toEqual(
+				searchResults.items
+			);
+			expect(result.current.state.keywords).toBe(searchKeywords);
+		});
+
+		it('searches for groups with a keyword', async () => {
+			const {result} = renderHook(() =>
+				useSpaceMembers(externalReferenceCode, pageSize)
+			);
+			await waitFor(() =>
+				expect(result.current.state.isFetching).toBe(false)
+			);
+
+			const searchKeywords = 'Group';
+			const searchResults = {items: [testUserGroups[0]], lastPage: 1};
+			getSpaceUserGroupsSpy.mockResolvedValue(searchResults);
+
+			await act(async () => {
+				await result.current.search(
+					SelectOptions.GROUPS,
+					searchKeywords
+				);
+			});
+
+			expect(getSpaceUserGroupsSpy).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					keywords: searchKeywords,
+					page: 1,
+				})
+			);
+
+			await waitFor(() => {
+				expect(result.current.state.isSearching).toBe(false);
+			});
+
+			expect(result.current.state.groups.items).toEqual(
+				searchResults.items
+			);
+			expect(result.current.state.keywords).toBe(searchKeywords);
+		});
+
+		it('clears search when keyword is empty', async () => {
+			const {result} = renderHook(() =>
+				useSpaceMembers(externalReferenceCode, pageSize)
+			);
+			await waitFor(() =>
+				expect(result.current.state.isFetching).toBe(false)
+			);
+
+			expect(getSpaceUsersSpy).toHaveBeenCalledTimes(1);
+			expect(getSpaceUserGroupsSpy).toHaveBeenCalledTimes(1);
+
+			const searchKeyword = 'John';
+			getSpaceUsersSpy.mockResolvedValue({
+				items: [testUsers[0]],
+				lastPage: 1,
+			});
+			await act(async () => {
+				await result.current.search(SelectOptions.USERS, searchKeyword);
+			});
+			expect(getSpaceUsersSpy).toHaveBeenCalledTimes(2);
+
+			getSpaceUsersSpy.mockResolvedValue(mockUsers);
+			getSpaceUserGroupsSpy.mockResolvedValue(mockGroups);
+
+			await act(async () => {
+				await result.current.search(SelectOptions.USERS, '');
+			});
+
+			expect(getSpaceUsersSpy).toHaveBeenCalledTimes(3);
+			expect(getSpaceUserGroupsSpy).toHaveBeenCalledTimes(2);
+
+			await waitFor(() => {
+				expect(result.current.state.users.items).toEqual(
+					mockUsers.items
+				);
+			});
+			expect(result.current.state.keywords).toBe('');
+		});
+
+		it('handles search error', async () => {
+			const {result} = renderHook(() =>
+				useSpaceMembers(externalReferenceCode, pageSize)
+			);
+			await waitFor(() =>
+				expect(result.current.state.isFetching).toBe(false)
+			);
+
+			const error = new Error('Search failed');
+			getSpaceUsersSpy.mockRejectedValue(error);
+
+			await act(async () => {
+				await result.current.search(
+					SelectOptions.USERS,
+					'some-keyword'
+				);
+			});
+
+			await waitFor(() => {
+				expect(result.current.state.error).toBe(error);
+				expect(result.current.state.isSearching).toBe(false);
+			});
+		});
 	});
 
 	describe('addMember', () => {

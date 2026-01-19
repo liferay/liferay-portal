@@ -11,7 +11,7 @@ import AdminUserService from '../../../common/services/AdminUserService';
 import SpaceService from '../../../common/services/SpaceService';
 import {Role} from '../../../common/types/Role';
 import {UserAccount, UserGroup} from '../../../common/types/UserAccount';
-import {SelectOptions} from '../SpaceMembersInputWithSelect';
+import {SelectOptions} from '../SpaceMembersSelectOptions';
 
 enum ActionTypes {
 	FetchStart = 'FETCH_START',
@@ -28,6 +28,10 @@ enum ActionTypes {
 	RemoveMemberFailure = 'REMOVE_MEMBER_FAILURE',
 	UpdateRolesSuccess = 'UPDATE_ROLES_SUCCESS',
 	UpdateRolesFailure = 'UPDATE_ROLES_FAILURE',
+	SearchStart = 'SEARCH_START',
+	SearchSuccess = 'SEARCH_SUCCESS',
+	SearchError = 'SEARCH_ERROR',
+	SetKeywords = 'SET_KEYWORDS',
 }
 
 interface State {
@@ -38,6 +42,8 @@ interface State {
 		page: number;
 	};
 	isFetching: boolean;
+	isSearching: boolean;
+	keywords: string;
 	roles: Role[];
 	users: {
 		items: UserAccount[];
@@ -66,7 +72,8 @@ type Action =
 			type:
 				| ActionTypes.FetchError
 				| ActionTypes.LoadMoreError
-				| ActionTypes.AddMemberError;
+				| ActionTypes.AddMemberError
+				| ActionTypes.SearchError;
 	  }
 	| {
 			payload: {item: UserAccount | UserGroup; type: SelectOptions};
@@ -99,7 +106,22 @@ type Action =
 				type: SelectOptions;
 			};
 			type: ActionTypes.LoadMoreSuccess;
-	  };
+	  }
+	| {
+			payload: {
+				type: SelectOptions;
+			};
+			type: ActionTypes.SearchStart;
+	  }
+	| {
+			payload: {
+				items: (UserAccount | UserGroup)[];
+				lastPage: number;
+				type: SelectOptions;
+			};
+			type: ActionTypes.SearchSuccess;
+	  }
+	| {payload: string; type: ActionTypes.SetKeywords};
 
 const initialState: State = {
 	error: null,
@@ -109,6 +131,8 @@ const initialState: State = {
 		page: 1,
 	},
 	isFetching: false,
+	isSearching: false,
+	keywords: '',
 	roles: [],
 	users: {
 		items: [],
@@ -257,6 +281,43 @@ function reducer(state: State, action: Action): State {
 		case ActionTypes.LoadMoreError:
 		case ActionTypes.AddMemberError:
 			return {...state, error: action.payload, isFetching: false};
+		case ActionTypes.SetKeywords:
+			return {
+				...state,
+				keywords: action.payload,
+			};
+		case ActionTypes.SearchStart: {
+			const {type} = action.payload;
+			const key = type === SelectOptions.USERS ? 'users' : 'groups';
+
+			return {
+				...state,
+				isSearching: true,
+				[key]: {
+					...state[key],
+					items: [],
+					page: 1,
+				},
+			};
+		}
+		case ActionTypes.SearchSuccess: {
+			const {items, lastPage, type} = action.payload;
+
+			const key = type === SelectOptions.USERS ? 'users' : 'groups';
+
+			return {
+				...state,
+				isSearching: false,
+				[key]: {
+					...state[key],
+					items,
+					lastPage,
+					page: 1,
+				},
+			};
+		}
+		case ActionTypes.SearchError:
+			return {...state, error: action.payload, isSearching: false};
 		default:
 			return state;
 	}
@@ -268,50 +329,69 @@ export function useSpaceMembers(
 ) {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	useEffect(() => {
-		const fetchMembers = async () => {
-			dispatch({type: ActionTypes.FetchStart});
+	const fetchInitialData = useCallback(async () => {
+		dispatch({type: ActionTypes.FetchStart});
 
-			try {
-				const [spaceUsers, spaceUserGroups, userRoles] =
-					await Promise.all([
-						SpaceService.getSpaceUsers({
-							externalReferenceCode,
-							nestedFields: 'roles',
-							page: 1,
-							pageSize,
-						}),
-						SpaceService.getSpaceUserGroups({
-							externalReferenceCode,
-							nestedFields: 'numberOfUserAccounts,roles',
-							page: 1,
-							pageSize,
-						}),
-						AdminUserService.getUserRoles({
-							filter: "name ne 'Asset Library Connected Site Member' and type eq 5",
-						}),
-					]);
+		try {
+			const [spaceUsers, spaceUserGroups, userRoles] = await Promise.all([
+				SpaceService.getSpaceUsers({
+					externalReferenceCode,
+					nestedFields: 'roles',
+					page: 1,
+					pageSize,
+				}),
+				SpaceService.getSpaceUserGroups({
+					externalReferenceCode,
+					nestedFields: 'numberOfUserAccounts,roles',
+					page: 1,
+					pageSize,
+				}),
+				AdminUserService.getUserRoles({
+					filter: "name ne 'Asset Library Connected Site Member' and type eq 5",
+				}),
+			]);
 
-				dispatch({
-					payload: {
-						groups: spaceUserGroups,
-						roles: userRoles.items,
-						users: spaceUsers,
-					},
-					type: ActionTypes.FetchSuccess,
-				});
-			}
-			catch (error) {
-				console.error(error);
-				dispatch({
-					payload: error as Error,
-					type: ActionTypes.FetchError,
-				});
-			}
-		};
-
-		fetchMembers();
+			dispatch({
+				payload: {
+					groups: spaceUserGroups,
+					roles: userRoles.items,
+					users: spaceUsers,
+				},
+				type: ActionTypes.FetchSuccess,
+			});
+		}
+		catch (error) {
+			console.error(error);
+			dispatch({
+				payload: error as Error,
+				type: ActionTypes.FetchError,
+			});
+		}
 	}, [externalReferenceCode, pageSize]);
+
+	useEffect(() => {
+		fetchInitialData();
+	}, [fetchInitialData]);
+
+	const fetchPage = useCallback(
+		(type: SelectOptions, page: number, keywords: string) => {
+			const isUser = type === SelectOptions.USERS;
+
+			const params = {
+				externalReferenceCode,
+				keywords,
+				nestedFields: isUser ? 'roles' : 'numberOfUserAccounts,roles',
+				page,
+				pageSize,
+			};
+
+			return isUser
+				? SpaceService.getSpaceUsers(params)
+				: SpaceService.getSpaceUserGroups(params);
+		},
+
+		[externalReferenceCode, pageSize]
+	);
 
 	const loadMore = useCallback(
 		async (type: SelectOptions) => {
@@ -330,19 +410,7 @@ export function useSpaceMembers(
 			dispatch({type: ActionTypes.LoadMoreStart});
 
 			try {
-				const {items} = isUser
-					? await SpaceService.getSpaceUsers({
-							externalReferenceCode,
-							nestedFields: 'roles',
-							page: newPage,
-							pageSize,
-						})
-					: await SpaceService.getSpaceUserGroups({
-							externalReferenceCode,
-							nestedFields: 'numberOfUserAccounts,roles',
-							page: newPage,
-							pageSize,
-						});
+				const {items} = await fetchPage(type, newPage, state.keywords);
 
 				dispatch({
 					payload: {items, page: newPage, type},
@@ -356,7 +424,43 @@ export function useSpaceMembers(
 				});
 			}
 		},
-		[externalReferenceCode, pageSize, state]
+
+		[state, fetchPage]
+	);
+
+	const search = useCallback(
+		async (type: SelectOptions, keywords: string) => {
+			if (state.isSearching) {
+				return;
+			}
+
+			dispatch({payload: keywords, type: ActionTypes.SetKeywords});
+
+			if (!keywords) {
+				fetchInitialData();
+
+				return;
+			}
+
+			dispatch({payload: {type}, type: ActionTypes.SearchStart});
+
+			try {
+				const {items, lastPage} = await fetchPage(type, 1, keywords);
+
+				dispatch({
+					payload: {items, lastPage, type},
+					type: ActionTypes.SearchSuccess,
+				});
+			}
+			catch (error) {
+				dispatch({
+					payload: error as Error,
+					type: ActionTypes.SearchError,
+				});
+			}
+		},
+
+		[state.isSearching, fetchInitialData, fetchPage]
 	);
 
 	const addMember = useCallback(
@@ -564,6 +668,7 @@ export function useSpaceMembers(
 		addMember,
 		loadMore,
 		removeMember,
+		search,
 		state,
 		updateMemberRoles,
 	};
