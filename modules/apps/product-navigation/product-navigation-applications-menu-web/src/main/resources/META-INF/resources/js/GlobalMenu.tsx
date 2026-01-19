@@ -6,6 +6,8 @@
 import ClayBadge from '@clayui/badge';
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropdown from '@clayui/drop-down';
+import ClayIcon from '@clayui/icon';
+import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
@@ -46,6 +48,7 @@ type SiteItem = {
 	current?: boolean;
 	key: string;
 	label: string;
+	logoURL?: string;
 	onClick?: () => void;
 	url?: string;
 };
@@ -134,7 +137,15 @@ export default function GlobalMenu({
 							href={homeURL}
 							key={key}
 						>
-							{label}
+							<img
+								alt=""
+								className="c-mx-1"
+								src={`${Liferay.ThemeDisplay.getPathThemeImages()}/global_menu/${key}_sm.svg`}
+							/>
+
+							<span className="c-ml-2 c-pl-1 text-dark">
+								{label}
+							</span>
 
 							{key === 'cms' && firstTimeAccess ? (
 								<ClayBadge
@@ -171,6 +182,22 @@ export default function GlobalMenu({
 									href={item.url}
 									key={item.key}
 								>
+									{item.key !== 'view-all' ? (
+										<ClaySticker
+											className="c-mr-2"
+											size="sm"
+										>
+											{item.logoURL ? (
+												<ClaySticker.Image
+													alt=""
+													src={item.logoURL}
+												/>
+											) : (
+												<ClayIcon symbol="sites" />
+											)}
+										</ClaySticker>
+									) : null}
+
 									{item.label}
 								</ClayDropdown.Item>
 							)}
