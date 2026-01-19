@@ -56,6 +56,16 @@ public class TaskDefinitionSerDes {
 			sb.append(_toJSON(taskDefinition.getActions()));
 		}
 
+		if (taskDefinition.getActive() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"active\": ");
+
+			sb.append(taskDefinition.getActive());
+		}
+
 		if (taskDefinition.getDescription() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -66,6 +76,20 @@ public class TaskDefinitionSerDes {
 			sb.append("\"");
 
 			sb.append(_escape(taskDefinition.getDescription()));
+
+			sb.append("\"");
+		}
+
+		if (taskDefinition.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(taskDefinition.getExternalReferenceCode()));
 
 			sb.append("\"");
 		}
@@ -130,12 +154,28 @@ public class TaskDefinitionSerDes {
 			map.put("actions", String.valueOf(taskDefinition.getActions()));
 		}
 
+		if (taskDefinition.getActive() == null) {
+			map.put("active", null);
+		}
+		else {
+			map.put("active", String.valueOf(taskDefinition.getActive()));
+		}
+
 		if (taskDefinition.getDescription() == null) {
 			map.put("description", null);
 		}
 		else {
 			map.put(
 				"description", String.valueOf(taskDefinition.getDescription()));
+		}
+
+		if (taskDefinition.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(taskDefinition.getExternalReferenceCode()));
 		}
 
 		if (taskDefinition.getId() == null) {
@@ -180,7 +220,15 @@ public class TaskDefinitionSerDes {
 			if (Objects.equals(jsonParserFieldName, "actions")) {
 				return true;
 			}
+			else if (Objects.equals(jsonParserFieldName, "active")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "description")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -207,9 +255,22 @@ public class TaskDefinitionSerDes {
 						(Map<String, Map<String, String>>)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "active")) {
+				if (jsonParserFieldValue != null) {
+					taskDefinition.setActive((Boolean)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "description")) {
 				if (jsonParserFieldValue != null) {
 					taskDefinition.setDescription((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					taskDefinition.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
