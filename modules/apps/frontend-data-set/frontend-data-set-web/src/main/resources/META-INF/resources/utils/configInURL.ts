@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import JsonURL from '@jsonurl/jsonurl';
+
 import {EConfigInURLBehavior, IConfigInURL} from './types';
 
 export const FDS_CONFIG_PARAM_NAME = '_fdsConfig';
@@ -27,7 +29,7 @@ export function readConfigFromURL(id: string): Partial<IConfigInURL> | null {
 	let config = {};
 
 	try {
-		config = JSON.parse(configParam);
+		config = JsonURL.parse(configParam);
 	}
 	catch (error) {
 		return null;
@@ -73,10 +75,14 @@ export function writeConfigInURL(
 
 	params.set(
 		getConfigParamName(id),
-		JSON.stringify(sortObjectKeys({...(currentConfig || {}), ...config}))
+		JsonURL.stringify(
+			sortObjectKeys({...(currentConfig || {}), ...config})
+		) || ''
 	);
 
-	const path = `${window.location.pathname}?${params.toString()}`;
+	const path = decodeURIComponent(
+		`${window.location.pathname}?${params.toString()}`
+	);
 
 	const replaceState =
 		configInURLBehavior === EConfigInURLBehavior.REPLACE || !currentConfig;

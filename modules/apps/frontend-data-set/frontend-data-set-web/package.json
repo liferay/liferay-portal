@@ -22,6 +22,7 @@
 		"@clayui/sticker": "*",
 		"@clayui/table": "*",
 		"@clayui/tooltip": "*",
+		"@jsonurl/jsonurl": "1.1.8",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
 		"@liferay/js-api": "0.6.2",
