@@ -58,6 +58,10 @@ public interface TaskDefinitionResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public TaskDefinition patchTaskDefinitionUpdateActive(
+			Long taskDefinitionId, Boolean active)
+		throws Exception;
+
 	public Response postTaskDefinitionsPageExportBatch(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
