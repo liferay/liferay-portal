@@ -13,6 +13,7 @@ import {loginTest} from '../../../../../fixtures/loginTest';
 import {EFDSVisualizationMode, waitForFDS} from '../../../../../utils/waitFor';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 import {FDSSamplePage} from '../../pages/FDSSamplePage';
+import JsonURL from '@jsonurl/jsonurl';
 
 interface IConfigInURL {
 	delta: number;
@@ -53,7 +54,7 @@ const getConfigFromURL = (
 	let config = {};
 
 	try {
-		config = JSON.parse(configParam);
+		config = JsonURL.parse(configParam);
 	}
 	catch (error) {
 		return null;
