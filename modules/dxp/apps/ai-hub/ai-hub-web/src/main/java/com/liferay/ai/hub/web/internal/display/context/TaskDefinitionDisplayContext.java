@@ -73,7 +73,12 @@ public class TaskDefinitionDisplayContext {
 				HttpComponentsUtil.addParameter(
 					_getBaseURL(_themeDisplay.getCompany(), namespace),
 					namespace + "name", "{name}"),
-				"view", "view", "view", "get", null, null));
+				"view", "view", LanguageUtil.get(_httpServletRequest, "view"),
+				"get", null, null),
+			new FDSActionDropdownItem(
+				getAPIURL() + "/{id}", "trash", "delete",
+				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
+				"delete", "async"));
 	}
 
 	private String _getBaseURL(Company company, String namespace)
@@ -91,7 +96,7 @@ public class TaskDefinitionDisplayContext {
 			PortletMode.VIEW.toString(), namespace + "mvcPath",
 			"/designer/edit_workflow_definition.jsp", namespace + "redirect",
 			_portal.getPortalURL(_httpServletRequest) +
-				_portal.getCurrentURL(_httpServletRequest),
+			_portal.getCurrentURL(_httpServletRequest),
 			namespace + "clearSessionMessage", true);
 	}
 
