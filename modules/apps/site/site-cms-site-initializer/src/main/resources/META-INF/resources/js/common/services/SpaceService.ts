@@ -60,11 +60,13 @@ async function getSpaceWithCache(
 
 async function getSpaceUserGroups({
 	externalReferenceCode,
+	keywords,
 	nestedFields,
 	page,
 	pageSize,
 }: {
 	externalReferenceCode: string;
+	keywords?: string;
 	nestedFields?: string;
 	page?: number;
 	pageSize?: number;
@@ -82,6 +84,10 @@ async function getSpaceUserGroups({
 
 	if (pageSize) {
 		urlParams.set('pageSize', String(pageSize));
+	}
+
+	if (keywords) {
+		urlParams.set('keywords', keywords);
 	}
 
 	const {data, error} = await ApiHelper.get<{
@@ -102,11 +108,13 @@ async function getSpaceUserGroups({
 
 async function getSpaceUsers({
 	externalReferenceCode,
+	keywords,
 	nestedFields,
 	page,
 	pageSize,
 }: {
 	externalReferenceCode: string;
+	keywords?: string;
 	nestedFields?: string;
 	page?: number;
 	pageSize?: number;
@@ -124,6 +132,10 @@ async function getSpaceUsers({
 
 	if (pageSize) {
 		urlParams.set('pageSize', String(pageSize));
+	}
+
+	if (keywords) {
+		urlParams.set('keywords', keywords);
 	}
 
 	const {data, error} = await ApiHelper.get<{
