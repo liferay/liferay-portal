@@ -551,7 +551,7 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 			}
 		}
 
-		if (max < 0) {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-36105") || (max < 0)) {
 			sitesJSONObject.put(
 				"viewAllURL",
 				_getViewAllURL(resourceRequest, resourceResponse));
