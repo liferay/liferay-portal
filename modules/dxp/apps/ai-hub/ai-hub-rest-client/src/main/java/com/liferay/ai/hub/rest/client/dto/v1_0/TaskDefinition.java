@@ -12,6 +12,7 @@ import jakarta.annotation.Generated;
 
 import java.io.Serializable;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -24,6 +25,28 @@ public class TaskDefinition implements Cloneable, Serializable {
 	public static TaskDefinition toDTO(String json) {
 		return TaskDefinitionSerDes.toDTO(json);
 	}
+
+	public Map<String, Map<String, String>> getActions() {
+		return actions;
+	}
+
+	public void setActions(Map<String, Map<String, String>> actions) {
+		this.actions = actions;
+	}
+
+	public void setActions(
+		UnsafeSupplier<Map<String, Map<String, String>>, Exception>
+			actionsUnsafeSupplier) {
+
+		try {
+			actions = actionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, Map<String, String>> actions;
 
 	public String getDescription() {
 		return description;
@@ -45,6 +68,25 @@ public class TaskDefinition implements Cloneable, Serializable {
 	}
 
 	protected String description;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setId(UnsafeSupplier<Long, Exception> idUnsafeSupplier) {
+		try {
+			id = idUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long id;
 
 	public String getName() {
 		return name;

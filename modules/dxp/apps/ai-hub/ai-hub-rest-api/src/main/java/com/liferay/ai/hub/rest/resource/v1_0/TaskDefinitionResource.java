@@ -46,6 +46,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TaskDefinitionResource {
 
+	public void deleteTaskDefinition(Long taskDefinitionId) throws Exception;
+
+	public Response deleteTaskDefinitionBatch(String callbackURL, Object object)
+		throws Exception;
+
 	public Page<TaskDefinition> getTaskDefinitionsPage(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
