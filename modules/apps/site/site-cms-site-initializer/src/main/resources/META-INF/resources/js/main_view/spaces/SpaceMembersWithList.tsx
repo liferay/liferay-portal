@@ -10,11 +10,8 @@ import classNames from 'classnames';
 import React, {useEffect, useId, useMemo, useRef, useState} from 'react';
 
 import {MembersListItem} from './MemberListItem';
-import {
-	SelectOptions,
-	SpaceMembersInputWithSelect,
-} from './SpaceMembersInputWithSelect';
-import {useSpaceMembers} from './hooks/useSpaceMembers';
+import {SearcheableSpaceMembersList} from './SearcheableSpaceMembersList';
+import {SpaceMembersInputWithSelect} from './SpaceMembersInputWithSelect';
 export interface SpaceMembersWithListProps {
 	assetLibraryCreatorUserId: string;
 	className?: string;
@@ -23,6 +20,9 @@ export interface SpaceMembersWithListProps {
 	onHasSelectedMembersChange?: (hasSelectedMembers: boolean) => void;
 	pageSize?: number;
 }
+
+import {SelectOptions} from './SpaceMembersSelectOptions';
+import {useSpaceMembers} from './hooks/useSpaceMembers';
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -36,14 +36,23 @@ export function SpaceMembersWithList({
 }: SpaceMembersWithListProps) {
 	const listLabelId = useId();
 	const currentUserId = Liferay.ThemeDisplay.getUserId();
-	const {addMember, loadMore, removeMember, state, updateMemberRoles} =
-		useSpaceMembers(externalReferenceCode, pageSize);
+	const {
+		addMember,
+		loadMore,
+		removeMember,
+		search,
+		state,
+		updateMemberRoles,
+	} = useSpaceMembers(externalReferenceCode, pageSize);
 	const {
 		groups,
 		isFetching: isFetchingMembers,
+		isSearching,
 		roles: spacePermissionsRoles,
 		users,
 	} = state;
+
+	const isLoading = isFetchingMembers || isSearching;
 
 	const [selectedOption, setSelectedOption] = useState(SelectOptions.USERS);
 	const sentinelRef = useRef(null);
@@ -55,7 +64,7 @@ export function SpaceMembersWithList({
 
 		const observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting && !isFetchingMembers) {
+				if (entries[0].isIntersecting && !isLoading) {
 					loadMore(selectedOption);
 				}
 			},
@@ -69,7 +78,7 @@ export function SpaceMembersWithList({
 		return () => {
 			observer.disconnect();
 		};
-	}, [sentinelRef, loadMore, selectedOption, isFetchingMembers]);
+	}, [sentinelRef, loadMore, selectedOption, isFetchingMembers, isSearching]);
 
 	useEffect(() => {
 		const hasMembers = !!users.items.length || !!groups.items.length;
@@ -94,17 +103,26 @@ export function SpaceMembersWithList({
 
 	return (
 		<div className={classNames('space-members-with-list', className)}>
-			<SpaceMembersInputWithSelect
-				disabled={!hasAssignMembersPermission}
-				excludeMembers={excludeMembers}
-				onAutocompleteItemSelected={(item) =>
-					addMember(item, selectedOption)
-				}
-				onSelectChange={(value) => {
-					setSelectedOption(value);
-				}}
-				selectValue={selectedOption}
-			/>
+			{hasAssignMembersPermission ? (
+				<SpaceMembersInputWithSelect
+					excludeMembers={excludeMembers}
+					onAutocompleteItemSelected={(item) =>
+						addMember(item, selectedOption)
+					}
+					onSelectChange={(value) => {
+						setSelectedOption(value);
+					}}
+					selectValue={selectedOption}
+				/>
+			) : (
+				<SearcheableSpaceMembersList
+					onSearch={(value) => search(selectedOption, value)}
+					onSelectChange={(value) => {
+						setSelectedOption(value);
+					}}
+					selectValue={selectedOption}
+				/>
+			)}
 
 			{!hasMembersSelected ? (
 				<div className="border-top c-ml-n4 c-mr-n4 c-p-4 c-pb-0 text-center">
@@ -169,7 +187,7 @@ export function SpaceMembersWithList({
 							/>
 						)}
 
-						{isFetchingMembers && (
+						{isLoading && (
 							<li className="d-flex justify-content-center">
 								<LoadingIndicator
 									displayType="secondary"
