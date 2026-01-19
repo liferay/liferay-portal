@@ -8,10 +8,11 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropdown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
+import {useEventListener} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import '../css/GlobalMenu.scss';
 
@@ -62,7 +63,27 @@ export default function GlobalMenu({
 	panelAppsURL: string;
 	selectedPortletId: string;
 }) {
+	const [active, setActive] = useState<boolean>(false);
 	const [data, setData] = useState<Data>(null);
+
+	const openButtonTitle = useMemo(() => getOpenMenuTooltipMarkup(), []);
+
+	useEventListener(
+		'keydown',
+		(event) => {
+			const {altKey, ctrlKey, key} = event as KeyboardEvent;
+
+			const AKey = Liferay.Browser.isMac() ? 'å' : 'a';
+
+			if (ctrlKey && altKey && key.toLowerCase() === AKey) {
+				event.preventDefault();
+
+				setActive(true);
+			}
+		},
+		true,
+		document
+	);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -92,14 +113,17 @@ export default function GlobalMenu({
 
 	return (
 		<ClayDropdown
+			active={active}
 			menuElementAttrs={{
 				className: 'cadmin global-menu pb-0 pt-3',
 			}}
+			onActiveChange={setActive}
 			trigger={
 				<ClayButtonWithIcon
 					aria-haspopup="dialog"
 					className="control-menu-nav-link dropdown-toggle lfr-portal-tooltip"
 					data-qa-id="globalMenu"
+					data-title={openButtonTitle}
 					data-title-set-as-html
 					data-tooltip-align="bottom-left"
 					displayType="unstyled"
@@ -207,6 +231,27 @@ export default function GlobalMenu({
 			</ClayDropdown.ItemList>
 		</ClayDropdown>
 	);
+}
+
+function getOpenMenuTooltipMarkup() {
+	const altKey = Liferay.Browser.isMac() ? '⌥' : 'Alt';
+
+	return `
+	<div>${Liferay.Language.get('open-applications-menu')}</div>
+	<kbd class="c-kbd c-kbd-dark mt-1">
+		<kbd class="c-kbd">Ctrl</kbd>
+
+		<span class="c-kbd-separator">+</span>
+
+		<kbd class="c-kbd">${altKey}</kbd>
+
+		<span class="c-kbd-separator">+</span>
+
+		<kbd class="c-kbd">A</kbd>
+	</kbd>
+`
+		.replaceAll('\n', '')
+		.replaceAll('\t', '');
 }
 
 function normalizeCategoryItems({
