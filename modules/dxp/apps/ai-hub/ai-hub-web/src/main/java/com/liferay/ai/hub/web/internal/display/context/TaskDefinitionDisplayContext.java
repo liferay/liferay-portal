@@ -96,7 +96,7 @@ public class TaskDefinitionDisplayContext {
 			PortletMode.VIEW.toString(), namespace + "mvcPath",
 			"/designer/edit_workflow_definition.jsp", namespace + "redirect",
 			_portal.getPortalURL(_httpServletRequest) +
-				_portal.getCurrentURL(_httpServletRequest),
+			_portal.getCurrentURL(_httpServletRequest),
 			namespace + "clearSessionMessage", true);
 	}
 
