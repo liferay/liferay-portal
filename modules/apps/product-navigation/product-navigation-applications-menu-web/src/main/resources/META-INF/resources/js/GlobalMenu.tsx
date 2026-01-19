@@ -6,12 +6,16 @@
 import ClayBadge from '@clayui/badge';
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropdown from '@clayui/drop-down';
+import classNames from 'classnames';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
+import '../css/GlobalMenu.scss';
+
 type CategoryItem = {
 	childCategories?: {panelApps: {portletId: string}[]}[];
+	className?: string;
 	firstTimeAccess?: boolean;
 	homeURL: string;
 	key: string;
@@ -85,6 +89,9 @@ export default function GlobalMenu({
 
 	return (
 		<ClayDropdown
+			menuElementAttrs={{
+				className: 'cadmin global-menu pb-0 pt-3',
+			}}
 			trigger={
 				<ClayButtonWithIcon
 					aria-haspopup="dialog"
@@ -98,10 +105,14 @@ export default function GlobalMenu({
 				/>
 			}
 		>
-			<ClayDropdown.ItemList items={items.categories}>
+			<ClayDropdown.ItemList
+				className="categories-list text-4"
+				items={items.categories}
+			>
 				{(item) => {
 					const {
 						childCategories,
+						className,
 						firstTimeAccess,
 						homeURL,
 						key,
@@ -115,6 +126,10 @@ export default function GlobalMenu({
 									(panelApp) =>
 										panelApp.portletId === selectedPortletId
 								)
+							)}
+							className={classNames(
+								'align-items-center c-mb-2 d-inline-flex',
+								className
 							)}
 							href={homeURL}
 							key={key}
@@ -135,7 +150,10 @@ export default function GlobalMenu({
 				}}
 			</ClayDropdown.ItemList>
 
-			<ClayDropdown.ItemList items={items.sites}>
+			<ClayDropdown.ItemList
+				className="border-top c-pb-3 c-pt-2 sites-list"
+				items={items.sites}
+			>
 				{(item) => {
 					const groupItem = item as GroupItem;
 
@@ -149,6 +167,7 @@ export default function GlobalMenu({
 								<ClayDropdown.Item
 									{...item}
 									active={item.current}
+									className="c-py-1 text-primary"
 									href={item.url}
 									key={item.key}
 								>
@@ -170,9 +189,13 @@ function normalizeCategoryItems({
 	cms: {key: string; label: string; url: string};
 	items: CategoryItem[];
 }): CategoryItem[] {
-	items.splice(2, 0, {...cms, homeURL: cms.url});
+	const categoryItems = items.map((item) =>
+		item.key === 'control_panel' ? {...item, className: 'c-mt-2'} : item
+	);
 
-	return [...items];
+	categoryItems.splice(2, 0, {...cms, homeURL: cms.url});
+
+	return categoryItems;
 }
 
 function normalizeSiteItems({

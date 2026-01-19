@@ -1,0 +1,31 @@
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} .cadmin.global-menu {
+	max-height: none;
+
+	.categories-list li:last-child {
+		border-top: 1px solid $cadmin-secondary-l3;
+	}
+
+	.dropdown-item.active {
+		background-image: linear-gradient(
+			to right,
+			$cadmin-primary-l0 0,
+			$cadmin-primary-l0 4px,
+			transparent 2px
+		);
+	}
+
+	.sites-list {
+		background-color: $cadmin-light-l1;
+
+		.dropdown-item {
+			min-height: 32px;
+		}
+
+		.dropdown-subheader {
+			color: $cadmin-secondary;
+			font-size: 10px;
+		}
+	}
+}
