@@ -19,6 +19,9 @@ import com.liferay.ai.hub.rest.client.pagination.Page;
 import com.liferay.ai.hub.rest.client.pagination.Pagination;
 import com.liferay.ai.hub.rest.client.resource.v1_0.TaskDefinitionResource;
 import com.liferay.ai.hub.rest.client.serdes.v1_0.TaskDefinitionSerDes;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -112,6 +115,16 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	@After
@@ -184,6 +197,61 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteTaskDefinition() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaskDefinition taskDefinition =
+			testDeleteTaskDefinition_addTaskDefinition();
+
+		assertHttpResponseStatusCode(
+			204,
+			taskDefinitionResource.deleteTaskDefinitionHttpResponse(
+				taskDefinition.getId()));
+	}
+
+	protected TaskDefinition testDeleteTaskDefinition_addTaskDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testDeleteTaskDefinitionBatch() throws Exception {
+		TaskDefinition taskDefinition1 =
+			testDeleteTaskDefinitionBatch_addTaskDefinition();
+
+		testDeleteTaskDefinitionBatch_deleteTaskDefinition(
+			202, null, taskDefinition1.getId());
+	}
+
+	protected TaskDefinition testDeleteTaskDefinitionBatch_addTaskDefinition()
+		throws Exception {
+
+		return testDeleteTaskDefinition_addTaskDefinition();
+	}
+
+	protected void testDeleteTaskDefinitionBatch_deleteTaskDefinition(
+			int expectedStatusCode, String externalReferenceCode, Long id)
+		throws Exception {
+
+		HttpInvoker.HttpResponse httpResponse =
+			taskDefinitionResource.deleteTaskDefinitionBatchHttpResponse(
+				null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
 	public void testGetTaskDefinitionsPage() throws Exception {
 		Page<TaskDefinition> page =
 			taskDefinitionResource.getTaskDefinitionsPage(
@@ -207,6 +275,10 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 		assertContains(taskDefinition1, (List<TaskDefinition>)page.getItems());
 		assertContains(taskDefinition2, (List<TaskDefinition>)page.getItems());
 		assertValid(page, testGetTaskDefinitionsPage_getExpectedActions());
+
+		taskDefinitionResource.deleteTaskDefinition(taskDefinition1.getId());
+
+		taskDefinitionResource.deleteTaskDefinition(taskDefinition2.getId());
 	}
 
 	protected Map<String, Map<String, String>>
@@ -557,7 +629,52 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
-		Assert.assertTrue(true);
+		TaskDefinition taskDefinition1 =
+			testBatchEngineDeleteImportTask_addTaskDefinition();
+
+		testBatchEngineDeleteImportTask_deleteTaskDefinition(
+			200, null, taskDefinition1.getId());
+	}
+
+	protected TaskDefinition testBatchEngineDeleteImportTask_addTaskDefinition()
+		throws Exception {
+
+		return testDeleteTaskDefinition_addTaskDefinition();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteTaskDefinition(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.ai.hub.rest.dto.v1_0.TaskDefinition", null, null,
+				null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Rule
@@ -636,8 +753,20 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 	protected void assertValid(TaskDefinition taskDefinition) throws Exception {
 		boolean valid = true;
 
+		if (taskDefinition.getId() == null) {
+			valid = false;
+		}
+
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (taskDefinition.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (taskDefinition.getDescription() == null) {
@@ -721,6 +850,8 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("id"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.ai.hub.rest.dto.v1_0.TaskDefinition.class)) {
@@ -781,10 +912,31 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)taskDefinition1.getActions(),
+						(Map)taskDefinition2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						taskDefinition1.getDescription(),
 						taskDefinition2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("id", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						taskDefinition1.getId(), taskDefinition2.getId())) {
 
 					return false;
 				}
@@ -921,6 +1073,11 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("description")) {
 			Object object = taskDefinition.getDescription();
 
@@ -965,6 +1122,11 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("id")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("name")) {
@@ -1066,6 +1228,7 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 			{
 				description = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				version = RandomTestUtil.randomInt();
 			}
@@ -1082,7 +1245,30 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 		return randomTaskDefinition();
 	}
 
+	protected final JSONObject waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			ImportTask.ExecuteStatus executeStatus =
+				importTask.getExecuteStatus();
+
+			if (StringUtil.equals(executeStatus.getValue(), "COMPLETED") ||
+				StringUtil.equals(executeStatus.getValue(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus, executeStatus.getValue());
+
+				return jsonObject;
+			}
+		}
+	}
+
 	protected TaskDefinitionResource taskDefinitionResource;
+	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
