@@ -12,7 +12,7 @@ import {useEventListener} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 
 import '../css/GlobalMenu.scss';
 
@@ -65,30 +65,19 @@ export default function GlobalMenu({
 }) {
 	const [active, setActive] = useState<boolean>(false);
 	const [data, setData] = useState<Data>(null);
+	const fetchedRef = useRef<boolean>(false);
 
 	const openButtonTitle = useMemo(() => getOpenMenuTooltipMarkup(), []);
 
-	useEventListener(
-		'keydown',
-		(event) => {
-			const {altKey, ctrlKey, key} = event as KeyboardEvent;
+	const fetchData = useCallback(async () => {
+		if (data || fetchedRef.current) {
+			return;
+		}
 
-			const AKey = Liferay.Browser.isMac() ? 'å' : 'a';
+		fetchedRef.current = true;
 
-			if (ctrlKey && altKey && key.toLowerCase() === AKey) {
-				event.preventDefault();
-
-				setActive(true);
-			}
-		},
-		true,
-		document
-	);
-
-	useEffect(() => {
-		const fetchData = async () => {
+		try {
 			const response = await fetch(panelAppsURL);
-
 			const {cms, items, portletNamespace, sites} = await response.json();
 
 			setData({
@@ -100,16 +89,30 @@ export default function GlobalMenu({
 				selectedPortletId,
 				sites,
 			});
-		};
+		}
+		finally {
+			fetchedRef.current = false;
+		}
+	}, [data, panelAppsURL, selectedPortletId]);
 
-		fetchData();
-	}, [panelAppsURL, selectedPortletId]);
+	useEventListener(
+		'keydown',
+		async (event) => {
+			const {altKey, ctrlKey, key} = event as KeyboardEvent;
 
-	if (!data) {
-		return null;
-	}
+			const AKey = Liferay.Browser.isMac() ? 'å' : 'a';
 
-	const {items} = data;
+			if (ctrlKey && altKey && key.toLowerCase() === AKey) {
+				event.preventDefault();
+
+				await fetchData();
+
+				setActive(true);
+			}
+		},
+		true,
+		document
+	);
 
 	return (
 		<ClayDropdown
@@ -127,6 +130,9 @@ export default function GlobalMenu({
 					data-title-set-as-html
 					data-tooltip-align="bottom-left"
 					displayType="unstyled"
+					onClick={fetchData}
+					onFocus={fetchData}
+					onMouseOver={fetchData}
 					size="sm"
 					symbol="grid"
 				/>
@@ -134,7 +140,7 @@ export default function GlobalMenu({
 		>
 			<ClayDropdown.ItemList
 				className="categories-list text-4"
-				items={items.categories}
+				items={data?.items.categories}
 			>
 				{(item) => {
 					const {
@@ -187,7 +193,7 @@ export default function GlobalMenu({
 
 			<ClayDropdown.ItemList
 				className="border-top c-pb-3 c-pt-2 sites-list"
-				items={items.sites}
+				items={data?.items.sites}
 			>
 				{(item) => {
 					const groupItem = item as GroupItem;
