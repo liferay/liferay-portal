@@ -4915,6 +4915,14 @@
 	},
 	{
 		"classNames": [
+			"FFDocumentLibraryDDMEditorConfigurationUtil"
+		],
+		"from": "useDataEngineEditor()",
+		"hasMessage": true,
+		"issueKey": "LPD-57072"
+	},
+	{
+		"classNames": [
 			"DDMTemplateLocalService",
 			"DDMTemplateLocalServiceUtil"
 		],
