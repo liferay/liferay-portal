@@ -163,6 +163,47 @@ public class TaskDefinitionResourceTest
 	public void testGetTaskDefinitionsPageWithPagination() {
 	}
 
+	@Test
+	public void testPatchTaskDefinitionUpdateActive() throws Exception {
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.liberalGetLatestWorkflowDefinition(
+				TestPropsValues.getCompanyId(),
+				WorkflowDefinitionConstants.NAME_MAKE_SHORTER);
+
+		long workflowDefinitionId =
+			workflowDefinition.getWorkflowDefinitionId();
+
+		List<WorkflowDefinition> activeWorkflowDefinitions =
+			_workflowDefinitionManager.getActiveWorkflowDefinitions(-1, -1);
+
+		taskDefinitionResource.patchTaskDefinitionUpdateActive(
+			workflowDefinitionId, false);
+
+		for (WorkflowDefinition activeWorkflowDefinition :
+			activeWorkflowDefinitions) {
+
+			Assert.assertNotEquals(
+				"Deactivated task definition should not be in the active list",
+				activeWorkflowDefinition.getWorkflowDefinitionId(),
+				workflowDefinitionId);
+		}
+
+		taskDefinitionResource.patchTaskDefinitionUpdateActive(
+			workflowDefinitionId, true);
+
+		activeWorkflowDefinitions =
+			_workflowDefinitionManager.getActiveWorkflowDefinitions(-1, -1);
+
+		for (WorkflowDefinition activeWorkflowDefinition :
+			activeWorkflowDefinitions) {
+
+			Assert.assertEquals(
+				"Reactivated task definition should be present in the active list",
+				activeWorkflowDefinition.getWorkflowDefinitionId(),
+				workflowDefinitionId);
+		}
+	}
+
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"name", "version"};
