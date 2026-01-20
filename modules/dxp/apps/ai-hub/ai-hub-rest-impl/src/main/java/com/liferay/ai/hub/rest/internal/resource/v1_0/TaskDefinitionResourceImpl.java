@@ -92,6 +92,29 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 					GetterUtil.getInteger(document.get(Field.VERSION)))));
 	}
 
+	@Override
+	public TaskDefinition patchTaskDefinitionUpdateActive(
+			Long taskDefinitionId, Boolean active)
+		throws Exception {
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.getWorkflowDefinition(taskDefinitionId);
+
+		_workflowDefinitionManager.updateActive(
+			contextCompany.getCompanyId(), contextUser.getUserId(),
+			workflowDefinition.getName(), workflowDefinition.getVersion(),
+			active);
+
+		return new TaskDefinition() {
+			{
+				setActive(workflowDefinition::isActive);
+				setDescription(workflowDefinition::getDescription);
+				setName(workflowDefinition::getName);
+				setVersion(workflowDefinition::getVersion);
+			}
+		};
+	}
+
 	private TaskDefinition _toTaskDefinition(
 			WorkflowDefinition workflowDefinition)
 		throws PortalException {
@@ -116,6 +139,14 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 								"deleteTaskDefinition",
 								_workflowDefinitionModelResourcePermission);
 						}
+					).put(
+						workflowDefinition.isActive() ? "disable" : "enable",
+						addAction(
+							workflowDefinition.isActive() ?
+								ActionKeys.DEACTIVATE : ActionKeys.ACTIVATE,
+							workflowDefinition.getWorkflowDefinitionId(),
+							"patchTaskDefinitionUpdateActive",
+							_workflowDefinitionModelResourcePermission)
 					).build());
 				setDescription(workflowDefinition::getDescription);
 				setId(workflowDefinition::getWorkflowDefinitionId);
