@@ -78,7 +78,15 @@ public class TaskDefinitionDisplayContext {
 			new FDSActionDropdownItem(
 				getAPIURL() + "/{id}", "trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
-				"delete", "async"));
+				"delete", "async"),
+			new FDSActionDropdownItem(
+				getAPIURL() + "/{id}/update-active?active=false", null,
+				"disable", LanguageUtil.get(_httpServletRequest, "disable"),
+				"patch", "disable", "async"),
+			new FDSActionDropdownItem(
+				getAPIURL() + "/{id}/update-active?active=true", null, "enable",
+				LanguageUtil.get(_httpServletRequest, "enable"), "patch",
+				"enable", "async"));
 	}
 
 	private String _getBaseURL(Company company, String namespace)
@@ -96,7 +104,7 @@ public class TaskDefinitionDisplayContext {
 			PortletMode.VIEW.toString(), namespace + "mvcPath",
 			"/designer/edit_workflow_definition.jsp", namespace + "redirect",
 			_portal.getPortalURL(_httpServletRequest) +
-			_portal.getCurrentURL(_httpServletRequest),
+				_portal.getCurrentURL(_httpServletRequest),
 			namespace + "clearSessionMessage", true);
 	}
 
