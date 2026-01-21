@@ -24,12 +24,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface CTConfiguration {
 
 	@Meta.AD(
-		description = "show-all-data-when-reviewing-changes-help",
-		name = "show-all-data-when-reviewing-changes", required = false
-	)
-	public boolean showAllData();
-
-	@Meta.AD(
 		description = "hidden-applications-help", name = "hidden-applications",
 		required = false
 	)
@@ -41,6 +35,12 @@ public interface CTConfiguration {
 		name = "production-only-application", required = false
 	)
 	public String[] productionOnlyApplication();
+
+	@Meta.AD(
+		description = "show-all-data-when-reviewing-changes-help",
+		name = "show-all-data-when-reviewing-changes", required = false
+	)
+	public boolean showAllData();
 
 	@Meta.AD(
 		deflt = "com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet, com_liferay_batch_planner_web_internal_portlet_BatchPlannerPortlet",

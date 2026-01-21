@@ -39,16 +39,6 @@ public interface LayoutSEOCompanyConfiguration {
 	public String canonicalURL();
 
 	/**
-	 * Sets if open graph is enabled.
-	 */
-	@Meta.AD(
-		deflt = "true",
-		description = "layout-seo-configuration-enable-open-graph-description",
-		name = "enable-open-graph", required = false
-	)
-	public boolean enableOpenGraph();
-
-	/**
 	 * Sets the configuration to allow the site admins to configure if hreflang
 	 * tags in pages are filled only for the translated languages.
 	 *
@@ -61,5 +51,15 @@ public interface LayoutSEOCompanyConfiguration {
 		required = false
 	)
 	public boolean enableLayoutTranslatedLanguages();
+
+	/**
+	 * Sets if open graph is enabled.
+	 */
+	@Meta.AD(
+		deflt = "true",
+		description = "layout-seo-configuration-enable-open-graph-description",
+		name = "enable-open-graph", required = false
+	)
+	public boolean enableOpenGraph();
 
 }

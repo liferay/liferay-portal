@@ -28,8 +28,12 @@ public interface LayoutSEODynamicRenderingConfiguration {
 	)
 	public boolean enabled();
 
-	@Meta.AD(deflt = "", name = "service-url", required = false)
-	public String serviceURL();
+	@Meta.AD(
+		deflt = ".ai,.avi,.css,.dat,.dmg,.doc,.doc,.eot,.exe,.flv,.gif,.ico,.iso,.jpeg,.jpg,.js,.less,.m4a,.m4v,.mov,.mp3,.mp4,.mpeg,.mpg,.pdf,.png,.ppt,.psd,.rar,.rss,.svg,.swf,.tif,.torrent,.ttf,.txt,.wav,.wmv,.woff,.xls,.xml,.zip",
+		name = "layout-seo-dynamic-rendering-configuration-ignored-extensions",
+		required = false
+	)
+	public String[] ignoredExtensions();
 
 	@Meta.AD(
 		deflt = "",
@@ -38,11 +42,7 @@ public interface LayoutSEODynamicRenderingConfiguration {
 	)
 	public String[] includedPaths();
 
-	@Meta.AD(
-		deflt = ".ai,.avi,.css,.dat,.dmg,.doc,.doc,.eot,.exe,.flv,.gif,.ico,.iso,.jpeg,.jpg,.js,.less,.m4a,.m4v,.mov,.mp3,.mp4,.mpeg,.mpg,.pdf,.png,.ppt,.psd,.rar,.rss,.svg,.swf,.tif,.torrent,.ttf,.txt,.wav,.wmv,.woff,.xls,.xml,.zip",
-		name = "layout-seo-dynamic-rendering-configuration-ignored-extensions",
-		required = false
-	)
-	public String[] ignoredExtensions();
+	@Meta.AD(deflt = "", name = "service-url", required = false)
+	public String serviceURL();
 
 }

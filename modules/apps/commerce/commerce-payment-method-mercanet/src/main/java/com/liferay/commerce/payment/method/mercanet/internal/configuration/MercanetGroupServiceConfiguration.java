@@ -22,16 +22,16 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface MercanetGroupServiceConfiguration {
 
-	@Meta.AD(name = "merchant-id", required = false)
-	public String merchantId();
-
 	@Meta.AD(name = "environment", required = false)
 	public String environment();
 
-	@Meta.AD(name = "secret-key", required = false, type = Meta.Type.Password)
-	public String secretKey();
-
 	@Meta.AD(name = "key-version", required = false)
 	public String keyVersion();
+
+	@Meta.AD(name = "merchant-id", required = false)
+	public String merchantId();
+
+	@Meta.AD(name = "secret-key", required = false, type = Meta.Type.Password)
+	public String secretKey();
 
 }

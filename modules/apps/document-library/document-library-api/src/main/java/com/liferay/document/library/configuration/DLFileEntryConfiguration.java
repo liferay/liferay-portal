@@ -22,10 +22,10 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface DLFileEntryConfiguration {
 
-	@Meta.AD(deflt = "20971520", name = "maximum-file-size", required = false)
-	public long previewableProcessorMaxSize();
-
 	@Meta.AD(deflt = "3", name = "maximum-number-of-pages", required = false)
 	public int maxNumberOfPages();
+
+	@Meta.AD(deflt = "20971520", name = "maximum-file-size", required = false)
+	public long previewableProcessorMaxSize();
 
 }

@@ -24,9 +24,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface LayoutReportsGooglePageSpeedGroupConfiguration {
 
-	@Meta.AD(deflt = "true", name = "enable-google-pagespeed", required = false)
-	public boolean enabled();
-
 	@ExtendedAttributeDefinition(
 		descriptionArguments = "https://developers.google.com/speed/docs/insights/v5/get-started"
 	)
@@ -35,6 +32,9 @@ public interface LayoutReportsGooglePageSpeedGroupConfiguration {
 		required = false
 	)
 	public String apiKey();
+
+	@Meta.AD(deflt = "true", name = "enable-google-pagespeed", required = false)
+	public boolean enabled();
 
 	@Meta.AD(
 		deflt = "MOBILE", description = "strategy-description",

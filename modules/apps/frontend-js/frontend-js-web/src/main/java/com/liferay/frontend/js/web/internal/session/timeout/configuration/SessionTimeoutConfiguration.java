@@ -24,15 +24,15 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface SessionTimeoutConfiguration {
 
 	@Meta.AD(
-		deflt = "70", description = "auto-extend-offset-description",
-		name = "auto-extend-offset", required = false
-	)
-	public int autoExtendOffset();
-
-	@Meta.AD(
 		deflt = "false", description = "auto-extend-description",
 		name = "auto-extend", required = false
 	)
 	public boolean autoExtend();
+
+	@Meta.AD(
+		deflt = "70", description = "auto-extend-offset-description",
+		name = "auto-extend-offset", required = false
+	)
+	public int autoExtendOffset();
 
 }

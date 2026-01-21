@@ -84,18 +84,6 @@ public interface AssetPublisherWebConfiguration {
 	public int dynamicSubscriptionLimit();
 
 	/**
-	 * Set this to <code>true</code> to enable exporting contents related to
-	 * asset entries for manual selection.
-	 *
-	 * @return <code>true</code> if manual export is enabled.
-	 */
-	@Meta.AD(
-		deflt = "false", description = "manual-export-enabled-key-description",
-		name = "manual-export-enabled", required = false
-	)
-	public boolean manualExportEnabled();
-
-	/**
 	 * Set this to <code>true</code> to disable autoscroll when opening
 	 * an asset.
 	 *
@@ -108,17 +96,16 @@ public interface AssetPublisherWebConfiguration {
 	public boolean enableAutoscroll();
 
 	/**
-	 * Set this to <code>true</code> to search assets in Asset Publisher from
-	 * the index. Set this to <code>false</code> to search assets in Asset
-	 * Publisher from the database.
+	 * Set this to <code>true</code> to enable exporting contents related to
+	 * asset entries for manual selection.
 	 *
-	 * @return <code>true</code> search with index is enabled.
+	 * @return <code>true</code> if manual export is enabled.
 	 */
 	@Meta.AD(
-		deflt = "true", description = "search-with-index-key-description",
-		name = "search-with-index", required = false
+		deflt = "false", description = "manual-export-enabled-key-description",
+		name = "manual-export-enabled", required = false
 	)
-	public boolean searchWithIndex();
+	public boolean manualExportEnabled();
 
 	/**
 	 * Set this to <code>true</code> to allow users to configure Asset
@@ -135,5 +122,18 @@ public interface AssetPublisherWebConfiguration {
 		name = "permission-checking-configurable", required = false
 	)
 	public boolean permissionCheckingConfigurable();
+
+	/**
+	 * Set this to <code>true</code> to search assets in Asset Publisher from
+	 * the index. Set this to <code>false</code> to search assets in Asset
+	 * Publisher from the database.
+	 *
+	 * @return <code>true</code> search with index is enabled.
+	 */
+	@Meta.AD(
+		deflt = "true", description = "search-with-index-key-description",
+		name = "search-with-index", required = false
+	)
+	public boolean searchWithIndex();
 
 }

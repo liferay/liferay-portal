@@ -25,15 +25,15 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface LayoutSetPrototypeConfiguration {
 
 	@Meta.AD(
-		deflt = "false", description = "trigger-propagation-help",
-		name = "trigger-propagation", required = false
-	)
-	public boolean triggerPropagation();
-
-	@Meta.AD(
 		deflt = "true", description = "cancel-propagation-import-task-help",
 		name = "cancel-propagation-import-task", required = false
 	)
 	public boolean cancelPropagationImportTask();
+
+	@Meta.AD(
+		deflt = "false", description = "trigger-propagation-help",
+		name = "trigger-propagation", required = false
+	)
+	public boolean triggerPropagation();
 
 }

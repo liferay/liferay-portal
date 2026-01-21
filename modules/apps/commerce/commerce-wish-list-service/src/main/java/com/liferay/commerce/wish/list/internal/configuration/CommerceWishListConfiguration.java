@@ -32,17 +32,17 @@ public interface CommerceWishListConfiguration {
 	public int deleteInterval();
 
 	@Meta.AD(
-		deflt = "10000",
-		name = "commerce-wish-list-guest-wish-list-max-allowed",
-		required = false
-	)
-	public int guestWishListMaxAllowed();
-
-	@Meta.AD(
 		deflt = "1000",
 		name = "commerce-wish-list-guest-wish-list-item-max-allowed",
 		required = false
 	)
 	public int guestWishListItemMaxAllowed();
+
+	@Meta.AD(
+		deflt = "10000",
+		name = "commerce-wish-list-guest-wish-list-max-allowed",
+		required = false
+	)
+	public int guestWishListMaxAllowed();
 
 }

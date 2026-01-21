@@ -21,15 +21,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface AMConfiguration {
 
 	/**
-	 * Sets the maximum size of workers to process adaptive media.
-	 */
-	@Meta.AD(
-		deflt = "5", description = "workers-max-size-key-description",
-		name = "workers-max-size", required = false
-	)
-	public int workersMaxSize();
-
-	/**
 	 * Sets the size of core workers to process adaptive media.
 	 */
 	@Meta.AD(
@@ -37,5 +28,14 @@ public interface AMConfiguration {
 		name = "workers-core-size", required = false
 	)
 	public int workersCoreSize();
+
+	/**
+	 * Sets the maximum size of workers to process adaptive media.
+	 */
+	@Meta.AD(
+		deflt = "5", description = "workers-max-size-key-description",
+		name = "workers-max-size", required = false
+	)
+	public int workersMaxSize();
 
 }

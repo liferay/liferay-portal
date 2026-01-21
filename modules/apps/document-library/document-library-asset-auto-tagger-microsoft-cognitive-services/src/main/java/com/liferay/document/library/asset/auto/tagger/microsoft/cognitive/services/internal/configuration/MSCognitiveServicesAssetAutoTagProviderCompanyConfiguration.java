@@ -26,19 +26,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface MSCognitiveServicesAssetAutoTagProviderCompanyConfiguration {
 
 	/**
-	 * Sets the API Key for the Computer Vision API V2.
-	 */
-	@ExtendedAttributeDefinition(
-		descriptionArguments = MSCognitiveServicesAssetAutoTagProviderConstants.API_KEY_DOCS_URL,
-		requiredInput = true
-	)
-	@Meta.AD(
-		description = "set-the-api-key-for-the-computer-vision-api-v2",
-		name = "api-key", required = false
-	)
-	public String apiKey();
-
-	/**
 	 * Sets the Computer Vision API V2 endpoint.
 	 */
 	@ExtendedAttributeDefinition(
@@ -54,6 +41,19 @@ public interface MSCognitiveServicesAssetAutoTagProviderCompanyConfiguration {
 		required = false
 	)
 	public String apiEndpoint();
+
+	/**
+	 * Sets the API Key for the Computer Vision API V2.
+	 */
+	@ExtendedAttributeDefinition(
+		descriptionArguments = MSCognitiveServicesAssetAutoTagProviderConstants.API_KEY_DOCS_URL,
+		requiredInput = true
+	)
+	@Meta.AD(
+		description = "set-the-api-key-for-the-computer-vision-api-v2",
+		name = "api-key", required = false
+	)
+	public String apiKey();
 
 	/**
 	 * Enables auto tagging of images using the Microsoft Cognitive Services

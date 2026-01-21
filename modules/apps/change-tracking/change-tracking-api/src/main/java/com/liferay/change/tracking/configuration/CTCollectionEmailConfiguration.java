@@ -31,17 +31,17 @@ public interface CTCollectionEmailConfiguration {
 	public String emailFromName();
 
 	@Meta.AD(
-		deflt = "${resource:com/liferay/change/tracking/dependencies/email_change_tracking_collection_invitation_subject.tmpl}",
-		description = "invitation-email-subject-description",
-		name = "invitation-email-subject", required = false
-	)
-	public LocalizedValuesMap invitationEmailSubject();
-
-	@Meta.AD(
 		deflt = "${resource:com/liferay/change/tracking/dependencies/email_change_tracking_collection_invitation_body.tmpl}",
 		description = "invitation-email-body-description",
 		name = "invitation-email-body", required = false
 	)
 	public LocalizedValuesMap invitationEmailBody();
+
+	@Meta.AD(
+		deflt = "${resource:com/liferay/change/tracking/dependencies/email_change_tracking_collection_invitation_subject.tmpl}",
+		description = "invitation-email-subject-description",
+		name = "invitation-email-subject", required = false
+	)
+	public LocalizedValuesMap invitationEmailSubject();
 
 }

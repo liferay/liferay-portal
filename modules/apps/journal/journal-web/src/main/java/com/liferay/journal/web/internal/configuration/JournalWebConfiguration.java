@@ -27,21 +27,15 @@ public interface JournalWebConfiguration {
 	public boolean changeableDefaultLanguage();
 
 	@Meta.AD(
-		deflt = "true", description = "structure-field-indexable-enable-help",
-		name = "structure-field-indexable-enable", required = false
+		deflt = "true", name = "journal-article-force-autogenerate-id",
+		required = false
 	)
-	public boolean structureFieldIndexableEnable();
+	public boolean journalArticleForceAutogenerateId();
 
 	@Meta.AD(
 		deflt = "false", name = "journal-article-show-id", required = false
 	)
 	public boolean journalArticleShowId();
-
-	@Meta.AD(
-		deflt = "true", name = "journal-article-force-autogenerate-id",
-		required = false
-	)
-	public boolean journalArticleForceAutogenerateId();
 
 	@Meta.AD(
 		deflt = "true",
@@ -67,5 +61,11 @@ public interface JournalWebConfiguration {
 
 	@Meta.AD(deflt = "false", name = "show-feeds", required = false)
 	public boolean showFeeds();
+
+	@Meta.AD(
+		deflt = "true", description = "structure-field-indexable-enable-help",
+		name = "structure-field-indexable-enable", required = false
+	)
+	public boolean structureFieldIndexableEnable();
 
 }

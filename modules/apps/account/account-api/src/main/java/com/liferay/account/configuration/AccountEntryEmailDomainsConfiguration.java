@@ -24,12 +24,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface AccountEntryEmailDomainsConfiguration {
 
 	@Meta.AD(
-		deflt = "false", description = "enable-email-domain-validation-help",
-		name = "enable-email-domain-validation", required = false
-	)
-	public boolean enableEmailDomainValidation();
-
-	@Meta.AD(
 		description = "blocked-email-domains-help",
 		name = "blocked-email-domains", required = false
 	)
@@ -40,5 +34,11 @@ public interface AccountEntryEmailDomainsConfiguration {
 		required = false
 	)
 	public String[] customTLDs();
+
+	@Meta.AD(
+		deflt = "false", description = "enable-email-domain-validation-help",
+		name = "enable-email-domain-validation", required = false
+	)
+	public boolean enableEmailDomainValidation();
 
 }

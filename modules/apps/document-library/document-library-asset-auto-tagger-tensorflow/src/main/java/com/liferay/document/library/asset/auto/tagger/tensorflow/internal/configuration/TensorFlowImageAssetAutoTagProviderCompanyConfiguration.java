@@ -24,15 +24,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface TensorFlowImageAssetAutoTagProviderCompanyConfiguration {
 
 	/**
-	 * Enables auto tagging of images using a pre-trained tensorflow model.
-	 */
-	@Meta.AD(
-		deflt = "false", description = "enabled-description[tensorflow]",
-		name = "enabled[tensorflow]", required = false
-	)
-	public boolean enabled();
-
-	/**
 	 * Sets the confidence threshold for the returned tags.
 	 */
 	@Meta.AD(
@@ -40,5 +31,14 @@ public interface TensorFlowImageAssetAutoTagProviderCompanyConfiguration {
 		name = "confidence-threshold", required = false
 	)
 	public float confidenceThreshold();
+
+	/**
+	 * Enables auto tagging of images using a pre-trained tensorflow model.
+	 */
+	@Meta.AD(
+		deflt = "false", description = "enabled-description[tensorflow]",
+		name = "enabled[tensorflow]", required = false
+	)
+	public boolean enabled();
 
 }

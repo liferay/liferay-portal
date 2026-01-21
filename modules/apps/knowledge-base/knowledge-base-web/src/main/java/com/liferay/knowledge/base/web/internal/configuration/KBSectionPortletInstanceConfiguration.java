@@ -24,24 +24,16 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface KBSectionPortletInstanceConfiguration {
 
-	@Meta.AD(
-		deflt = "true", name = "show-kb-articles-sections-title",
-		required = false
-	)
-	public boolean showKBArticlesSectionsTitle();
+	@Meta.AD(name = "admin-kb-article-sections", required = false)
+	public String[] adminKBArticleSections();
 
-	@Meta.AD(deflt = "general", name = "kb-articles-sections", required = false)
-	public String[] kbArticlesSections();
+	@Meta.AD(name = "admin-kb-article-sections-default", required = false)
+	public String[] adminKBArticleSectionsDefault();
 
 	@Meta.AD(
-		deflt = "title", name = "kb-article-display-style", required = false
+		deflt = "true", name = "enable-kb-article-asset-links", required = false
 	)
-	public String kbArticleDisplayStyle();
-
-	@Meta.AD(
-		deflt = "true", name = "show-kb-articles-pagination", required = false
-	)
-	public boolean showKBArticlesPagination();
+	public boolean enableKBArticleAssetLinks();
 
 	@Meta.AD(
 		deflt = "false", name = "enable-kb-article-description",
@@ -50,30 +42,17 @@ public interface KBSectionPortletInstanceConfiguration {
 	public boolean enableKBArticleDescription();
 
 	@Meta.AD(
+		deflt = "true", name = "enable-kb-article-history", required = false
+	)
+	public boolean enableKBArticleHistory();
+
+	@Meta.AD(deflt = "true", name = "enable-kb-article-print", required = false)
+	public boolean enableKBArticlePrint();
+
+	@Meta.AD(
 		deflt = "true", name = "enable-kb-article-ratings", required = false
 	)
 	public boolean enableKBArticleRatings();
-
-	@Meta.AD(
-		deflt = "true", name = "show-kb-article-attachments", required = false
-	)
-	public boolean showKBArticleAttachments();
-
-	@Meta.AD(
-		deflt = "true", name = "show-kb-article-asset-entries", required = false
-	)
-	public boolean showKBArticleAssetEntries();
-
-	@Meta.AD(
-		deflt = "true", name = "enable-kb-article-asset-links", required = false
-	)
-	public boolean enableKBArticleAssetLinks();
-
-	@Meta.AD(
-		deflt = "true", name = "enable-kb-article-view-count-increment",
-		required = false
-	)
-	public boolean enableKBArticleViewCountIncrement();
 
 	@Meta.AD(
 		deflt = "true", name = "enable-kb-article-subscriptions",
@@ -82,12 +61,39 @@ public interface KBSectionPortletInstanceConfiguration {
 	public boolean enableKBArticleSubscriptions();
 
 	@Meta.AD(
-		deflt = "true", name = "enable-kb-article-history", required = false
+		deflt = "true", name = "enable-kb-article-view-count-increment",
+		required = false
 	)
-	public boolean enableKBArticleHistory();
+	public boolean enableKBArticleViewCountIncrement();
 
-	@Meta.AD(deflt = "true", name = "enable-kb-article-print", required = false)
-	public boolean enableKBArticlePrint();
+	@Meta.AD(
+		deflt = "title", name = "kb-article-display-style", required = false
+	)
+	public String kbArticleDisplayStyle();
+
+	@Meta.AD(deflt = "general", name = "kb-articles-sections", required = false)
+	public String[] kbArticlesSections();
+
+	@Meta.AD(
+		deflt = "true", name = "show-kb-article-asset-entries", required = false
+	)
+	public boolean showKBArticleAssetEntries();
+
+	@Meta.AD(
+		deflt = "true", name = "show-kb-article-attachments", required = false
+	)
+	public boolean showKBArticleAttachments();
+
+	@Meta.AD(
+		deflt = "true", name = "show-kb-articles-pagination", required = false
+	)
+	public boolean showKBArticlesPagination();
+
+	@Meta.AD(
+		deflt = "true", name = "show-kb-articles-sections-title",
+		required = false
+	)
+	public boolean showKBArticlesSectionsTitle();
 
 	@Meta.AD(
 		deflt = "menu", name = "social-bookmarks-display-style",
@@ -100,11 +106,5 @@ public interface KBSectionPortletInstanceConfiguration {
 		required = false
 	)
 	public String socialBookmarksTypes();
-
-	@Meta.AD(name = "admin-kb-article-sections", required = false)
-	public String[] adminKBArticleSections();
-
-	@Meta.AD(name = "admin-kb-article-sections-default", required = false)
-	public String[] adminKBArticleSectionsDefault();
 
 }

@@ -26,28 +26,22 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 public interface CommentGroupServiceConfiguration {
 
 	@Meta.AD(
-		deflt = "${server-property://com.liferay.portal/admin.email.from.name}",
-		name = "email-from-name", required = false
+		deflt = "false", description = "always-editable-by-owner-description",
+		name = "always-editable-by-owner", required = false
 	)
-	public String emailFromName();
-
-	@Meta.AD(
-		deflt = "${server-property://com.liferay.portal/admin.email.from.address}",
-		name = "email-from-address", required = false
-	)
-	public String emailFromAddress();
-
-	@Meta.AD(
-		deflt = "true", name = "email-discussion-comment-added-enabled",
-		required = false
-	)
-	public boolean discussionEmailCommentsAddedEnabled();
+	public boolean alwaysEditableByOwner();
 
 	@Meta.AD(
 		deflt = "${resource:com/liferay/comment/configuration/dependencies/discussion_email_added_body.tmpl}",
 		name = "email-discussion-comment-added-body", required = false
 	)
 	public LocalizedValuesMap discussionEmailBody();
+
+	@Meta.AD(
+		deflt = "true", name = "email-discussion-comment-added-enabled",
+		required = false
+	)
+	public boolean discussionEmailCommentsAddedEnabled();
 
 	@Meta.AD(
 		deflt = "${resource:com/liferay/comment/configuration/dependencies/discussion_email_added_subject.tmpl}",
@@ -68,10 +62,16 @@ public interface CommentGroupServiceConfiguration {
 	public LocalizedValuesMap discussionEmailUpdatedSubject();
 
 	@Meta.AD(
-		deflt = "false", description = "always-editable-by-owner-description",
-		name = "always-editable-by-owner", required = false
+		deflt = "${server-property://com.liferay.portal/admin.email.from.address}",
+		name = "email-from-address", required = false
 	)
-	public boolean alwaysEditableByOwner();
+	public String emailFromAddress();
+
+	@Meta.AD(
+		deflt = "${server-property://com.liferay.portal/admin.email.from.name}",
+		name = "email-from-name", required = false
+	)
+	public String emailFromName();
 
 	@Meta.AD(
 		deflt = "true", description = "subscribe-help", name = "subscribe",

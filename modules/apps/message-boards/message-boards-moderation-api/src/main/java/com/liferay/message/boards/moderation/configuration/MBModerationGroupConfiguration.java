@@ -24,16 +24,16 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface MBModerationGroupConfiguration {
 
 	@Meta.AD(
-		deflt = "false", description = "enable-message-boards-moderation-help",
-		name = "enable-message-boards-moderation", required = false
-	)
-	public boolean enableMessageBoardsModeration();
-
-	@Meta.AD(
 		description = "authorized-domain-names-help",
 		name = "authorized-domain-names", required = false
 	)
 	public String[] authorizedDomainNames();
+
+	@Meta.AD(
+		deflt = "false", description = "enable-message-boards-moderation-help",
+		name = "enable-message-boards-moderation", required = false
+	)
+	public boolean enableMessageBoardsModeration();
 
 	@Meta.AD(
 		deflt = "1", description = "minimum-contributed-messages-help",

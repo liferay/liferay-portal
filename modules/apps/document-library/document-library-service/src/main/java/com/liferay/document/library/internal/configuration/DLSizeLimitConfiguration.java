@@ -28,10 +28,10 @@ public interface DLSizeLimitConfiguration {
 	)
 	public long fileMaxSize();
 
-	@Meta.AD(deflt = "", name = "mime-type-size-limit-name", required = false)
-	public String[] mimeTypeSizeLimit();
-
 	@Meta.AD(deflt = "52428800", name = "max-size-to-copy", required = false)
 	public long maxSizeToCopy();
+
+	@Meta.AD(deflt = "", name = "mime-type-size-limit-name", required = false)
+	public String[] mimeTypeSizeLimit();
 
 }

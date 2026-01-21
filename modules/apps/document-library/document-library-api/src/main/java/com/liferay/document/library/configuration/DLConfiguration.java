@@ -66,6 +66,12 @@ public interface DLConfiguration {
 	public String[] fileExtensions();
 
 	@Meta.AD(
+		deflt = "0", description = "maximum-number-of-versions-help",
+		name = "maximum-number-of-versions", required = false
+	)
+	public int maximumNumberOfVersions();
+
+	@Meta.AD(
 		deflt = "audio|image|video", name = "multimedia-file-mime-types",
 		required = false
 	)
@@ -113,11 +119,5 @@ public interface DLConfiguration {
 		name = "versioning-strategy-overridable", required = false
 	)
 	public boolean versioningStrategyOverridable();
-
-	@Meta.AD(
-		deflt = "0", description = "maximum-number-of-versions-help",
-		name = "maximum-number-of-versions", required = false
-	)
-	public int maximumNumberOfVersions();
 
 }

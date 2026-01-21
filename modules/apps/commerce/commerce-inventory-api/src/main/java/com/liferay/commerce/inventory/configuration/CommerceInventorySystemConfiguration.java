@@ -23,18 +23,18 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface CommerceInventorySystemConfiguration {
 
 	@Meta.AD(
+		deflt = "60", min = "1", name = "check-inventory-audit-interval",
+		required = false
+	)
+	public int checkCommerceInventoryAuditQuantityInterval();
+
+	@Meta.AD(
 		deflt = "60",
 		description = "check-temporary-booked-quantity-interval-description",
 		min = "1", name = "check-temporary-booked-quantity-interval",
 		required = false
 	)
 	public int checkCommerceInventoryTemporaryBookedQuantityInterval();
-
-	@Meta.AD(
-		deflt = "60", min = "1", name = "check-inventory-audit-interval",
-		required = false
-	)
-	public int checkCommerceInventoryAuditQuantityInterval();
 
 	@Meta.AD(
 		deflt = "12", name = "delete-inventory-audit-month-interval",

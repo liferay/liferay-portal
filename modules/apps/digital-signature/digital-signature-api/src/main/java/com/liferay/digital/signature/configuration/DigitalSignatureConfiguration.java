@@ -23,15 +23,15 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface DigitalSignatureConfiguration {
 
-	public boolean enabled();
-
-	public String apiUsername();
+	public String accountBaseURI();
 
 	public String apiAccountId();
 
-	public String environment();
+	public String apiUsername();
 
-	public String accountBaseURI();
+	public boolean enabled();
+
+	public String environment();
 
 	public String integrationKey();
 

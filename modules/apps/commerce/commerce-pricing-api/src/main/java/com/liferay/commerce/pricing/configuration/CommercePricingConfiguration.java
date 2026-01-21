@@ -24,22 +24,10 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface CommercePricingConfiguration {
 
 	@Meta.AD(
-		deflt = CommercePricingConstants.VERSION_2_0,
-		name = "pricing-calculation-key", required = false
+		deflt = "" + CommercePricingConstants.DISCOUNT_CHAIN_METHOD,
+		name = "discount-application-strategy", required = false
 	)
-	public String commercePricingCalculationKey();
-
-	@Meta.AD(
-		deflt = CommercePricingConstants.ORDER_BY_HIERARCHY,
-		name = "price-list-discovery-method", required = false
-	)
-	public String commercePriceListDiscovery();
-
-	@Meta.AD(
-		deflt = CommercePricingConstants.ORDER_BY_HIERARCHY,
-		name = "promotion-discovery-method", required = false
-	)
-	public String commercePromotionDiscovery();
+	public String commerceDiscountApplicationStrategy();
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x)
@@ -56,9 +44,21 @@ public interface CommercePricingConfiguration {
 	public int commerceDisplayTax();
 
 	@Meta.AD(
-		deflt = "" + CommercePricingConstants.DISCOUNT_CHAIN_METHOD,
-		name = "discount-application-strategy", required = false
+		deflt = CommercePricingConstants.ORDER_BY_HIERARCHY,
+		name = "price-list-discovery-method", required = false
 	)
-	public String commerceDiscountApplicationStrategy();
+	public String commercePriceListDiscovery();
+
+	@Meta.AD(
+		deflt = CommercePricingConstants.VERSION_2_0,
+		name = "pricing-calculation-key", required = false
+	)
+	public String commercePricingCalculationKey();
+
+	@Meta.AD(
+		deflt = CommercePricingConstants.ORDER_BY_HIERARCHY,
+		name = "promotion-discovery-method", required = false
+	)
+	public String commercePromotionDiscovery();
 
 }

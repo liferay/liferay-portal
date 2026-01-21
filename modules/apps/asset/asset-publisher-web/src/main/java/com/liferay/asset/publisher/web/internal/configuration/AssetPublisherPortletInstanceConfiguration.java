@@ -50,6 +50,18 @@ public interface AssetPublisherPortletInstanceConfiguration {
 	public String[] displayStyles();
 
 	/**
+	 * Localized template for new asset entry added email message body.
+	 *
+	 * @return message body template for asset entry added email.
+	 */
+	@Meta.AD(
+		deflt = "${resource:com/liferay/asset/publisher/web/portlet/email/dependencies/email_asset_entry_added_body.tmpl}",
+		description = "email-asset-entry-added-body-description",
+		name = "email-asset-entry-added-body", required = false
+	)
+	public LocalizedValuesMap emailAssetEntryAddedBody();
+
+	/**
 	 * Set this to <code>true</code> if you want to enable asset entry added
 	 * email.
 	 *
@@ -61,29 +73,6 @@ public interface AssetPublisherPortletInstanceConfiguration {
 		name = "email-asset-entry-added-enabled", required = false
 	)
 	public boolean emailAssetEntryAddedEnabled();
-
-	/**
-	 * Set a sender name to use in asset entry added email.
-	 *
-	 * @return default sender name to use in asset entry added email.
-	 */
-	@Meta.AD(
-		deflt = "", description = "email-from-name-description",
-		name = "email-from-name", required = false
-	)
-	public String emailFromName();
-
-	/**
-	 * Set an email address to use in asset entry added email.
-	 *
-	 * @return default email address to use in asset entry added email.
-	 */
-	@Meta.AD(
-		deflt = "",
-		description = "set-the-address-from-which-asset-entry-added-emails-will-be-sent",
-		name = "email-from-address", required = false
-	)
-	public String emailFromAddress();
 
 	/**
 	 * Localized template for new asset entry added email message subject.
@@ -98,15 +87,26 @@ public interface AssetPublisherPortletInstanceConfiguration {
 	public LocalizedValuesMap emailAssetEntryAddedSubject();
 
 	/**
-	 * Localized template for new asset entry added email message body.
+	 * Set an email address to use in asset entry added email.
 	 *
-	 * @return message body template for asset entry added email.
+	 * @return default email address to use in asset entry added email.
 	 */
 	@Meta.AD(
-		deflt = "${resource:com/liferay/asset/publisher/web/portlet/email/dependencies/email_asset_entry_added_body.tmpl}",
-		description = "email-asset-entry-added-body-description",
-		name = "email-asset-entry-added-body", required = false
+		deflt = "",
+		description = "set-the-address-from-which-asset-entry-added-emails-will-be-sent",
+		name = "email-from-address", required = false
 	)
-	public LocalizedValuesMap emailAssetEntryAddedBody();
+	public String emailFromAddress();
+
+	/**
+	 * Set a sender name to use in asset entry added email.
+	 *
+	 * @return default sender name to use in asset entry added email.
+	 */
+	@Meta.AD(
+		deflt = "", description = "email-from-name-description",
+		name = "email-from-name", required = false
+	)
+	public String emailFromName();
 
 }

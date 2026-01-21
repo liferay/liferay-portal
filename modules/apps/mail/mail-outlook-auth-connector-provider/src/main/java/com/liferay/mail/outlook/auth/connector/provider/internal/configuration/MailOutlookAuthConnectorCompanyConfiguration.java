@@ -37,16 +37,6 @@ public interface MailOutlookAuthConnectorCompanyConfiguration {
 	)
 	public String clientSecret();
 
-	@ExtendedAttributeDefinition(
-		descriptionArguments = "https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant",
-		requiredInput = true
-	)
-	@Meta.AD(
-		description = "outlook-auth-connector-tenant-id-description",
-		name = "tenant-id", required = false
-	)
-	public String tenantId();
-
 	@ExtendedAttributeDefinition(requiredInput = true)
 	@Meta.AD(
 		deflt = "false",
@@ -64,5 +54,15 @@ public interface MailOutlookAuthConnectorCompanyConfiguration {
 		required = false
 	)
 	public boolean smtpConnectionEnabled();
+
+	@ExtendedAttributeDefinition(
+		descriptionArguments = "https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant",
+		requiredInput = true
+	)
+	@Meta.AD(
+		description = "outlook-auth-connector-tenant-id-description",
+		name = "tenant-id", required = false
+	)
+	public String tenantId();
 
 }

@@ -25,6 +25,13 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 public interface AccountEntryEmailConfiguration {
 
 	@Meta.AD(
+		deflt = "${resource:com/liferay/account/dependencies/account_entry_invite_user_body.tmpl}",
+		description = "invitation-email-body-description",
+		name = "invitation-email-body", required = false
+	)
+	public LocalizedValuesMap invitationEmailBody();
+
+	@Meta.AD(
 		description = "invitation-email-sender-email-address-description",
 		name = "invitation-email-sender-email-address", required = false
 	)
@@ -42,13 +49,6 @@ public interface AccountEntryEmailConfiguration {
 		name = "invitation-email-subject", required = false
 	)
 	public LocalizedValuesMap invitationEmailSubject();
-
-	@Meta.AD(
-		deflt = "${resource:com/liferay/account/dependencies/account_entry_invite_user_body.tmpl}",
-		description = "invitation-email-body-description",
-		name = "invitation-email-body", required = false
-	)
-	public LocalizedValuesMap invitationEmailBody();
 
 	@Meta.AD(
 		deflt = "48",

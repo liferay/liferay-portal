@@ -30,6 +30,12 @@ public interface SPAConfiguration {
 	public long cacheExpirationTime();
 
 	@Meta.AD(
+		description = "custom-excluded-paths-description",
+		name = "custom-excluded-paths-name", required = false
+	)
+	public String[] customExcludedPaths();
+
+	@Meta.AD(
 		deflt = "true", description = "enable-spa-description",
 		name = "enable-spa-name", required = false
 	)
@@ -41,12 +47,6 @@ public interface SPAConfiguration {
 		name = "navigation-exception-selectors-name", required = false
 	)
 	public String[] navigationExceptionSelectors();
-
-	@Meta.AD(
-		description = "custom-excluded-paths-description",
-		name = "custom-excluded-paths-name", required = false
-	)
-	public String[] customExcludedPaths();
 
 	@Meta.AD(
 		deflt = "false", description = "preload-css-description",

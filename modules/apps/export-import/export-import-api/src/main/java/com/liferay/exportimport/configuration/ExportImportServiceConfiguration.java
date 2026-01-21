@@ -43,6 +43,12 @@ public interface ExportImportServiceConfiguration {
 	public boolean includeThumbnailsAndPreviewsDuringStaging();
 
 	@Meta.AD(
+		deflt = "false", description = "publish-permissions-by-default-help",
+		name = "publish-permissions-by-default", required = false
+	)
+	public boolean publishPermissionsByDefault();
+
+	@Meta.AD(
 		deflt = "false",
 		description = "replicate-individual-deletions-by-default-help",
 		name = "replicate-individual-deletions-by-default", required = false
@@ -50,10 +56,12 @@ public interface ExportImportServiceConfiguration {
 	public boolean replicateIndividualDeletionsByDefault();
 
 	@Meta.AD(
-		deflt = "false", description = "publish-permissions-by-default-help",
-		name = "publish-permissions-by-default", required = false
+		deflt = "false",
+		description = "if-checked-then-the-advanced-publication-configuration-screen-will-be-displayed-by-default-when-publishing-pages",
+		name = "show-advanced-staging-configuration-by-default",
+		required = false
 	)
-	public boolean publishPermissionsByDefault();
+	public boolean showAdvancedStagingConfigurationByDefault();
 
 	@Meta.AD(
 		deflt = "true", description = "validate-file-entry-references-help",
@@ -85,13 +93,5 @@ public interface ExportImportServiceConfiguration {
 		name = "validate-missing-references", required = false
 	)
 	public boolean validateMissingReferences();
-
-	@Meta.AD(
-		deflt = "false",
-		description = "if-checked-then-the-advanced-publication-configuration-screen-will-be-displayed-by-default-when-publishing-pages",
-		name = "show-advanced-staging-configuration-by-default",
-		required = false
-	)
-	public boolean showAdvancedStagingConfigurationByDefault();
 
 }

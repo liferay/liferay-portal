@@ -24,11 +24,10 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface KBArticlePortletInstanceConfiguration {
 
-	@Meta.AD(deflt = "0", name = "resource-prim-key", required = false)
-	public long resourcePrimKey();
-
-	@Meta.AD(deflt = "0", name = "resource-class-name-id", required = false)
-	public long resourceClassNameId();
+	@Meta.AD(
+		deflt = "true", name = "enable-kb-article-asset-links", required = false
+	)
+	public boolean enableKBArticleAssetLinks();
 
 	@Meta.AD(
 		deflt = "false", name = "enable-kb-article-description",
@@ -37,9 +36,35 @@ public interface KBArticlePortletInstanceConfiguration {
 	public boolean enableKBArticleDescription();
 
 	@Meta.AD(
+		deflt = "true", name = "enable-kb-article-history", required = false
+	)
+	public boolean enableKBArticleHistory();
+
+	@Meta.AD(deflt = "true", name = "enable-kb-article-print", required = false)
+	public boolean enableKBArticlePrint();
+
+	@Meta.AD(
 		deflt = "true", name = "enable-kb-article-ratings", required = false
 	)
 	public boolean enableKBArticleRatings();
+
+	@Meta.AD(
+		deflt = "true", name = "enable-kb-article-subscriptions",
+		required = false
+	)
+	public boolean enableKBArticleSubscriptions();
+
+	@Meta.AD(
+		deflt = "false", name = "enable-kb-article-view-count-increment",
+		required = false
+	)
+	public boolean enableKBArticleViewCountIncrement();
+
+	@Meta.AD(deflt = "0", name = "resource-class-name-id", required = false)
+	public long resourceClassNameId();
+
+	@Meta.AD(deflt = "0", name = "resource-prim-key", required = false)
+	public long resourcePrimKey();
 
 	@Meta.AD(
 		deflt = "true", name = "show-kb-article-asset-entries", required = false
@@ -50,31 +75,6 @@ public interface KBArticlePortletInstanceConfiguration {
 		deflt = "true", name = "show-kb-article-attachments", required = false
 	)
 	public boolean showKBArticleAttachments();
-
-	@Meta.AD(
-		deflt = "true", name = "enable-kb-article-asset-links", required = false
-	)
-	public boolean enableKBArticleAssetLinks();
-
-	@Meta.AD(
-		deflt = "false", name = "enable-kb-article-view-count-increment",
-		required = false
-	)
-	public boolean enableKBArticleViewCountIncrement();
-
-	@Meta.AD(
-		deflt = "true", name = "enable-kb-article-subscriptions",
-		required = false
-	)
-	public boolean enableKBArticleSubscriptions();
-
-	@Meta.AD(
-		deflt = "true", name = "enable-kb-article-history", required = false
-	)
-	public boolean enableKBArticleHistory();
-
-	@Meta.AD(deflt = "true", name = "enable-kb-article-print", required = false)
-	public boolean enableKBArticlePrint();
 
 	@Meta.AD(
 		deflt = "menu", name = "social-bookmarks-display-style",

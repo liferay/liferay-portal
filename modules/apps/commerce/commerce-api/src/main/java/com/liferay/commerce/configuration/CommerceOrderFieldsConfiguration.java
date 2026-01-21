@@ -24,12 +24,12 @@ public interface CommerceOrderFieldsConfiguration {
 	@Meta.AD(deflt = "0", name = "account-cart-max-allowed", required = false)
 	public int accountCartMaxAllowed();
 
+	@Meta.AD(deflt = "false", name = "request-quote-enabled", required = false)
+	public boolean requestQuoteEnabled();
+
 	@Meta.AD(
 		deflt = "true", name = "show-purchase-order-number", required = false
 	)
 	public boolean showPurchaseOrderNumber();
-
-	@Meta.AD(deflt = "false", name = "request-quote-enabled", required = false)
-	public boolean requestQuoteEnabled();
 
 }

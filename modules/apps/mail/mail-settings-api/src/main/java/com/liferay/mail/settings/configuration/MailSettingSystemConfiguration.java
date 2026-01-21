@@ -35,13 +35,6 @@ public interface MailSettingSystemConfiguration {
 	public String batchSize();
 
 	@Meta.AD(
-		deflt = "noreply@liferay.com|test@liferay.com|noreply@domain.invalid|test@domain.invalid",
-		description = "send-blacklist-description", name = "send-blacklist",
-		required = false
-	)
-	public String[] sendBlacklist();
-
-	@Meta.AD(
 		deflt = "", description = "jndi-name-description", name = "jndi-name",
 		required = false
 	)
@@ -52,6 +45,13 @@ public interface MailSettingSystemConfiguration {
 		name = "pop-server-subdomain", required = false
 	)
 	public String popServerSubdomain();
+
+	@Meta.AD(
+		deflt = "noreply@liferay.com|test@liferay.com|noreply@domain.invalid|test@domain.invalid",
+		description = "send-blacklist-description", name = "send-blacklist",
+		required = false
+	)
+	public String[] sendBlacklist();
 
 	@Meta.AD(
 		deflt = "false",

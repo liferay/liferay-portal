@@ -29,31 +29,31 @@ public interface JournalContentPortletInstanceConfiguration {
 	@Meta.AD(name = "article-id", required = false)
 	public String articleId();
 
+	@Meta.AD(name = "content-metadata-asset-addon-entry-keys", required = false)
+	public String contentMetadataAssetAddonEntryKeys();
+
+	@Meta.AD(name = "ddm-template-external-reference-code", required = false)
+	public String ddmTemplateExternalReferenceCode();
+
+	@Meta.AD(name = "ddm-template-key", required = false)
+	public String ddmTemplateKey();
+
+	@Meta.AD(name = "enable-view-count-increment", required = false)
+	public boolean enableViewCountIncrement();
+
 	@Meta.AD(name = "group-external-reference-code", required = false)
 	public String groupExternalReferenceCode();
 
 	@Meta.AD(deflt = "0", name = "group-id", required = false)
 	public long groupId();
 
-	@Meta.AD(name = "ddm-template-key", required = false)
-	public String ddmTemplateKey();
-
-	@Meta.AD(name = "ddm-template-external-reference-code", required = false)
-	public String ddmTemplateExternalReferenceCode();
-
-	@Meta.AD(name = "user-tool-asset-addon-entry-keys", required = false)
-	public String userToolAssetAddonEntryKeys();
-
-	@Meta.AD(name = "content-metadata-asset-addon-entry-keys", required = false)
-	public String contentMetadataAssetAddonEntryKeys();
-
-	@Meta.AD(name = "enable-view-count-increment", required = false)
-	public boolean enableViewCountIncrement();
-
 	@Meta.AD(
 		deflt = "false", description = "sort-structures-by-name-help",
 		name = "sort-structures-by-name", required = false
 	)
 	public boolean sortStructuresByByName();
+
+	@Meta.AD(name = "user-tool-asset-addon-entry-keys", required = false)
+	public String userToolAssetAddonEntryKeys();
 
 }
