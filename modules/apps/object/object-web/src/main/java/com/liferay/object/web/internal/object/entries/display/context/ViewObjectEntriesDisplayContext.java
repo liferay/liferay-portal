@@ -10,6 +10,7 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -86,6 +87,14 @@ public class ViewObjectEntriesDisplayContext {
 
 	public String getAPIURL() {
 		return _apiURL + _getQueryString();
+	}
+
+	public List<DropdownItem> getBulkActionDropdownItems() {
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				null, "trash", "delete",
+				LanguageUtil.get(_httpServletRequest, "delete"), null, null,
+				null));
 	}
 
 	public String getByExternalReferenceCodePath() {

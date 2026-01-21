@@ -17,6 +17,7 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 	<c:when test="<%= objectDefinition.isPortlet() || Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTROL_PANEL) %>">
 		<frontend-data-set:headless-display
 			apiURL="<%= viewObjectEntriesDisplayContext.getAPIURL() %>"
+			bulkActionDropdownItems="<%= viewObjectEntriesDisplayContext.getBulkActionDropdownItems() %>"
 			creationMenu="<%= viewObjectEntriesDisplayContext.getCreationMenu() %>"
 			fdsActionDropdownItems="<%= viewObjectEntriesDisplayContext.getFDSActionDropdownItems() %>"
 			fdsFilters="<%= viewObjectEntriesDisplayContext.getFDSFilters() %>"
@@ -28,6 +29,8 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 			pageNumber="<%= 1 %>"
 			portletURL="<%= liferayPortletResponse.createRenderURL() %>"
 			propsTransformer="{ViewObjectEntriesFDSPropsTransformer} from object-web"
+			selectionType="multiple"
+			showSelectAll="<%= true %>"
 			style="fluid"
 		/>
 
