@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -108,6 +109,24 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 		return _toTaskDefinition(workflowDefinition);
 	}
 
+	public TaskDefinition postTaskDefinitionCopy(Long taskDefinitionId)
+		throws Exception {
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.getWorkflowDefinition(taskDefinitionId);
+
+		workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				null,
+				workflowDefinition.getCompanyId(),
+				workflowDefinition.getUserId(), workflowDefinition.getTitle(),
+				StringUtil.randomString(),
+				"ai",
+				workflowDefinition.getContent().getBytes());
+
+		return _toTaskDefinition(workflowDefinition);
+	}
+
 	private TaskDefinition _toTaskDefinition(
 			WorkflowDefinition workflowDefinition)
 		throws PortalException {
@@ -146,6 +165,13 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 								"patchTaskDefinitionUpdateActive",
 								_workflowDefinitionModelResourcePermission);
 						}
+					).put(
+						"copy",
+						addAction(
+							ActionKeys.UPDATE,
+							workflowDefinition.getWorkflowDefinitionId(),
+							"postTaskDefinitionCopy",
+							_workflowDefinitionModelResourcePermission)
 					).build());
 
 				setDescription(workflowDefinition::getDescription);
