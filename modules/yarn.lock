@@ -4070,6 +4070,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@jsonurl/jsonurl@1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@jsonurl/jsonurl/-/jsonurl-1.1.8.tgz#37a466a79984154cd13288aec0dfca555ec430f1"
+  integrity sha512-0D6VFTWahCZymjTA33qmTOgo3sjePaYFalOura76kN/CKJ3HtS4lyxdNLklhrnDrqjWHqgZEqPMwuTGUqDL/+w==
+
 "@jspm/core@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@jspm/core/-/core-2.0.1.tgz"
