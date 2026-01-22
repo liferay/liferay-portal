@@ -13,10 +13,10 @@ import {
 	UserGroup,
 } from '../../../../src/main/resources/META-INF/resources/js/common/types/UserAccount';
 import {
-	SelectOptions,
 	SpaceMembersInputWithSelect,
 	SpaceMembersInputWithSelectProps,
 } from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceMembersInputWithSelect';
+import {SelectOptions} from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceMembersSelectOptions';
 import {createMockFetchMembersImplementation} from '../../__mocks__/createMockFetchMembersImplementation';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
 

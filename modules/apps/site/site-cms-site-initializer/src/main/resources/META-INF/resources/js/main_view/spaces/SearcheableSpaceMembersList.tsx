@@ -4,10 +4,9 @@
  */
 
 import {ClayInput} from '@clayui/form';
-import {debounce, sub} from 'frontend-js-web';
+import {debounce} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
-import {UserAccount, UserGroup} from '../../common/types/UserAccount';
 import {
 	SelectOptions,
 	SpaceMembersSelectOptions,
@@ -15,9 +14,9 @@ import {
 
 interface SearcheableSpaceMembersListProps {
 	className?: string;
+	onSearch: (value: string) => void;
 	onSelectChange: (value: SelectOptions) => void;
 	selectValue: SelectOptions;
-	onSearch: (value: string) => void;
 }
 
 export function SearcheableSpaceMembersList(

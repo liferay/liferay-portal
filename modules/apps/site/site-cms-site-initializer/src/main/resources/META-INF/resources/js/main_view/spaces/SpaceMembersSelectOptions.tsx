@@ -13,11 +13,11 @@ export enum SelectOptions {
 }
 
 export interface SpaceMembersSelectOptionsProps {
+	children: React.ReactNode;
 	className?: string;
+	label?: string;
 	onSelectChange?: (value: SelectOptions) => void;
 	selectValue: SelectOptions;
-	children: React.ReactNode;
-	label?: string;
 }
 
 export function SpaceMembersSelectOptions(

@@ -26,7 +26,7 @@ describe('SpaceMembersSelectOptions', () => {
 		);
 
 		expect(screen.getByText('Child Element')).toBeInTheDocument();
-		expect(screen.getByRole('combobox', {name: label}));
+		expect(screen.getByRole('combobox', {name: label})).toBeInTheDocument();
 	});
 
 	it('renders with a custom className', () => {

@@ -425,7 +425,7 @@ export function useSpaceMembers(
 			}
 		},
 
-		[state, fetchPage]
+		[state.isFetching, state.users, state.groups, state.keywords, fetchPage]
 	);
 
 	const search = useCallback(

@@ -12,6 +12,9 @@ import React, {useEffect, useId, useMemo, useRef, useState} from 'react';
 import {MembersListItem} from './MemberListItem';
 import {SearcheableSpaceMembersList} from './SearcheableSpaceMembersList';
 import {SpaceMembersInputWithSelect} from './SpaceMembersInputWithSelect';
+import {SelectOptions} from './SpaceMembersSelectOptions';
+import {useSpaceMembers} from './hooks/useSpaceMembers';
+
 export interface SpaceMembersWithListProps {
 	assetLibraryCreatorUserId: string;
 	className?: string;
@@ -20,9 +23,6 @@ export interface SpaceMembersWithListProps {
 	onHasSelectedMembersChange?: (hasSelectedMembers: boolean) => void;
 	pageSize?: number;
 }
-
-import {SelectOptions} from './SpaceMembersSelectOptions';
-import {useSpaceMembers} from './hooks/useSpaceMembers';
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -78,7 +78,7 @@ export function SpaceMembersWithList({
 		return () => {
 			observer.disconnect();
 		};
-	}, [sentinelRef, loadMore, selectedOption, isFetchingMembers, isSearching]);
+	}, [loadMore, selectedOption, isFetchingMembers, isSearching, isLoading]);
 
 	useEffect(() => {
 		const hasMembers = !!users.items.length || !!groups.items.length;
