@@ -131,7 +131,7 @@ describe('SpaceMembersModal', () => {
 	});
 
 	describe('when hasAssignMembersPermission is false', () => {
-		it('renders a disabled add members input and does not render remove buttons', async () => {
+		it('renders a search input instead of the add members input and does not render remove buttons', async () => {
 			render(
 				<SpaceMembersModal
 					{...props}
@@ -140,14 +140,18 @@ describe('SpaceMembersModal', () => {
 			);
 
 			expect(
-				screen.getByRole('combobox', {
+				screen.queryByRole('combobox', {
 					name: 'add-people-to-collaborate',
 				})
+			).not.toBeInTheDocument();
+
+			expect(
+				screen.getByPlaceholderText('search-for-name-or-email')
 			).toBeInTheDocument();
 
 			expect(
-				screen.getByPlaceholderText('enter-name-or-email')
-			).toBeDisabled();
+				screen.getByPlaceholderText('search-for-name-or-email')
+			).not.toBeDisabled();
 
 			await waitFor(() => {
 				expect(screen.getByText(mockUsers[1].name)).toBeInTheDocument();

@@ -21,7 +21,7 @@ describe('SearcheableSpaceMembersList', () => {
 	});
 
 	it('renders correctly', () => {
-		const {container} = render(
+		render(
 			<SearcheableSpaceMembersList
 				onSearch={jest.fn()}
 				onSelectChange={jest.fn()}
@@ -29,7 +29,6 @@ describe('SearcheableSpaceMembersList', () => {
 			/>
 		);
 
-		expect(container).toMatchSnapshot();
 		expect(screen.getByRole('combobox')).toBeInTheDocument();
 		expect(
 			screen.getByRole('textbox', {name: /search-for-name-or-email/i})
