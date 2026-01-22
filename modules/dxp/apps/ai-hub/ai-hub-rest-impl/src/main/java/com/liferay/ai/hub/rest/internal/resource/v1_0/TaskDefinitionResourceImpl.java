@@ -100,24 +100,21 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 		WorkflowDefinition workflowDefinition =
 			_workflowDefinitionManager.getWorkflowDefinition(taskDefinitionId);
 
-		_workflowDefinitionManager.updateActive(
+		workflowDefinition = _workflowDefinitionManager.updateActive(
 			contextCompany.getCompanyId(), contextUser.getUserId(),
 			workflowDefinition.getName(), workflowDefinition.getVersion(),
 			active);
 
-		return new TaskDefinition() {
-			{
-				setActive(workflowDefinition::isActive);
-				setDescription(workflowDefinition::getDescription);
-				setName(workflowDefinition::getName);
-				setVersion(workflowDefinition::getVersion);
-			}
-		};
+		return _toTaskDefinition(workflowDefinition);
 	}
 
 	private TaskDefinition _toTaskDefinition(
 			WorkflowDefinition workflowDefinition)
 		throws PortalException {
+
+		Boolean isSystemWorkflowDefinition = ArrayUtil.contains(
+			WorkflowDefinitionConstants.SYSTEM_WORKFLOW_DEFINITION_NAMES,
+			workflowDefinition.getName());
 
 		return new TaskDefinition() {
 			{
@@ -125,11 +122,7 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 					() -> HashMapBuilder.put(
 						"delete",
 						() -> {
-							if (ArrayUtil.contains(
-									WorkflowDefinitionConstants.
-										SYSTEM_WORKFLOW_DEFINITION_NAMES,
-									workflowDefinition.getName())) {
-
+							if (isSystemWorkflowDefinition) {
 								return null;
 							}
 
@@ -141,13 +134,20 @@ public class TaskDefinitionResourceImpl extends BaseTaskDefinitionResourceImpl {
 						}
 					).put(
 						workflowDefinition.isActive() ? "disable" : "enable",
-						addAction(
-							workflowDefinition.isActive() ?
-								ActionKeys.DEACTIVATE : ActionKeys.ACTIVATE,
-							workflowDefinition.getWorkflowDefinitionId(),
-							"patchTaskDefinitionUpdateActive",
-							_workflowDefinitionModelResourcePermission)
+						() -> {
+							if (isSystemWorkflowDefinition) {
+								return null;
+							}
+
+							return addAction(
+								workflowDefinition.isActive() ?
+									ActionKeys.DEACTIVATE : ActionKeys.ACTIVATE,
+								workflowDefinition.getWorkflowDefinitionId(),
+								"patchTaskDefinitionUpdateActive",
+								_workflowDefinitionModelResourcePermission);
+						}
 					).build());
+
 				setDescription(workflowDefinition::getDescription);
 				setId(workflowDefinition::getWorkflowDefinitionId);
 				setName(workflowDefinition::getName);
