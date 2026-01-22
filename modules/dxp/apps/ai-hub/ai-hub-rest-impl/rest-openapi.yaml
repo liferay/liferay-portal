@@ -179,6 +179,26 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["TaskDefinition"]
+    "/task-definitions/{taskDefinitionId}/copy":
+        post:
+            operationId: postTaskDefinitionCopy
+            parameters:
+                - in: path
+                  name: taskDefinitionId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TaskDefinition"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/TaskDefinition"
+            tags: [ "TaskDefinition" ]
     "/task-definitions/{taskDefinitionId}/update-active":
         patch:
             operationId: patchTaskDefinitionUpdateActive
