@@ -31,6 +31,7 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 import java.util.List;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -78,17 +79,8 @@ public class TaskDefinitionResourceTest
 
 	@Test
 	public void testDeleteTaskDefinition() throws Exception {
-		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.getLatestWorkflowDefinition(
-				TestPropsValues.getCompanyId(), "Single Approver");
 
-		String content = workflowDefinition.getContent();
-
-		workflowDefinition =
-			_workflowDefinitionManager.deployWorkflowDefinition(
-				null, workflowDefinition.getCompanyId(),
-				workflowDefinition.getUserId(), workflowDefinition.getTitle(),
-				RandomTestUtil.randomString(), content.getBytes());
+		WorkflowDefinition workflowDefinition = _generateWorkflowDefinition();
 
 		long workflowDefinitionId =
 			workflowDefinition.getWorkflowDefinitionId();
@@ -163,43 +155,20 @@ public class TaskDefinitionResourceTest
 
 	@Test
 	public void testPatchTaskDefinitionUpdateActive() throws Exception {
-		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.liberalGetLatestWorkflowDefinition(
-				TestPropsValues.getCompanyId(),
-				WorkflowDefinitionConstants.NAME_MAKE_SHORTER);
+		WorkflowDefinition workflowDefinition = _generateWorkflowDefinition();
 
 		long workflowDefinitionId =
 			workflowDefinition.getWorkflowDefinitionId();
 
-		List<WorkflowDefinition> activeWorkflowDefinitions =
-			_workflowDefinitionManager.getActiveWorkflowDefinitions(-1, -1);
-
-		taskDefinitionResource.patchTaskDefinitionUpdateActive(
+		TaskDefinition taskDefinition = taskDefinitionResource.patchTaskDefinitionUpdateActive(
 			workflowDefinitionId, false);
 
-		for (WorkflowDefinition activeWorkflowDefinition :
-				activeWorkflowDefinitions) {
+		Assert.assertFalse(taskDefinition.getActive());
 
-			Assert.assertNotEquals(
-				"Deactivated task definition should not be in the active list",
-				activeWorkflowDefinition.getWorkflowDefinitionId(),
-				workflowDefinitionId);
-		}
-
-		taskDefinitionResource.patchTaskDefinitionUpdateActive(
+		taskDefinition = taskDefinitionResource.patchTaskDefinitionUpdateActive(
 			workflowDefinitionId, true);
 
-		activeWorkflowDefinitions =
-			_workflowDefinitionManager.getActiveWorkflowDefinitions(-1, -1);
-
-		for (WorkflowDefinition activeWorkflowDefinition :
-				activeWorkflowDefinitions) {
-
-			Assert.assertEquals(
-				"Reactivated task definition should be present in the active list",
-				activeWorkflowDefinition.getWorkflowDefinitionId(),
-				workflowDefinitionId);
-		}
+		Assert.assertTrue(taskDefinition.getActive());
 	}
 
 	@Override
@@ -212,6 +181,19 @@ public class TaskDefinitionResourceTest
 		TaskDefinition taskDefinition) {
 
 		return taskDefinition;
+	}
+
+	private WorkflowDefinition _generateWorkflowDefinition() throws Exception {
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.getLatestWorkflowDefinition(
+				TestPropsValues.getCompanyId(), "Single Approver");
+
+		String content = workflowDefinition.getContent();
+
+		return _workflowDefinitionManager.deployWorkflowDefinition(
+			null, workflowDefinition.getCompanyId(),
+			workflowDefinition.getUserId(), workflowDefinition.getTitle(),
+			RandomTestUtil.randomString(), content.getBytes());
 	}
 
 	private static String _originalName;
