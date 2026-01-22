@@ -53,9 +53,7 @@ public class TaskDefinitionDisplayContext {
 		return CreationMenuBuilder.addDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(
-					HttpComponentsUtil.addParameter(
-						_getBaseURL(_themeDisplay.getCompany(), namespace),
-						namespace + "scope", "ai"));
+					_getBaseURL(_themeDisplay.getCompany(), namespace));
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "new-workflow"));
 			}
@@ -92,7 +90,7 @@ public class TaskDefinitionDisplayContext {
 			"/designer/edit_workflow_definition.jsp", namespace + "redirect",
 			_portal.getPortalURL(_httpServletRequest) +
 				_portal.getCurrentURL(_httpServletRequest),
-			namespace + "clearSessionMessage", true);
+			namespace + "clearSessionMessage", true, namespace + "scope", "ai");
 	}
 
 	private final HttpServletRequest _httpServletRequest;
