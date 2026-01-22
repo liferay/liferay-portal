@@ -84,9 +84,9 @@ export function writeConfigInURL(
 		) || ''
 	);
 
-	const path = decodeURIComponent(
-		`${window.location.pathname}?${params.toString()}`
-	);
+	const path = `${window.location.pathname}?${decodeURIComponent(
+		params.toString()
+	)}`;
 
 	const replaceState =
 		configInURLBehavior === EConfigInURLBehavior.REPLACE || !currentConfig;
