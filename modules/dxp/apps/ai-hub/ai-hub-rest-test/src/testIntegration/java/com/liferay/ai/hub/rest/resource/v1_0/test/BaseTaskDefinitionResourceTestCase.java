@@ -635,6 +635,25 @@ public abstract class BaseTaskDefinitionResourceTestCase {
 	}
 
 	@Test
+	public void testPostTaskDefinitionCopy() throws Exception {
+		TaskDefinition randomTaskDefinition = randomTaskDefinition();
+
+		TaskDefinition postTaskDefinition =
+			testPostTaskDefinitionCopy_addTaskDefinition(randomTaskDefinition);
+
+		assertEquals(randomTaskDefinition, postTaskDefinition);
+		assertValid(postTaskDefinition);
+	}
+
+	protected TaskDefinition testPostTaskDefinitionCopy_addTaskDefinition(
+			TaskDefinition taskDefinition)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		TaskDefinition taskDefinition1 =
 			testBatchEngineDeleteImportTask_addTaskDefinition();

@@ -62,6 +62,9 @@ public interface TaskDefinitionResource {
 			Long taskDefinitionId, Boolean active)
 		throws Exception;
 
+	public TaskDefinition postTaskDefinitionCopy(Long taskDefinitionId)
+		throws Exception;
+
 	public Response postTaskDefinitionsPageExportBatch(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
