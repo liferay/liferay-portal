@@ -16,6 +16,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":dxp:apps:ai-hub:ai-hub-api")
 	testIntegrationImplementation project(":dxp:apps:ai-hub:ai-hub-rest-api")

@@ -14,13 +14,16 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.workflow.NoSuchWorkflowDefinitionException;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchDefinitionException;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
@@ -28,7 +31,6 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 import java.util.List;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -77,33 +79,29 @@ public class TaskDefinitionResourceTest
 	@Test
 	public void testDeleteTaskDefinition() throws Exception {
 		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.liberalGetLatestWorkflowDefinition(
+			_workflowDefinitionManager.getLatestWorkflowDefinition(
 				TestPropsValues.getCompanyId(), "Single Approver");
+
+		String content = workflowDefinition.getContent();
 
 		workflowDefinition =
 			_workflowDefinitionManager.deployWorkflowDefinition(
 				null, workflowDefinition.getCompanyId(),
 				workflowDefinition.getUserId(), workflowDefinition.getTitle(),
-				RandomTestUtil.randomString(),
-				workflowDefinition.getContent(
-				).getBytes());
+				RandomTestUtil.randomString(), content.getBytes());
 
 		long workflowDefinitionId =
 			workflowDefinition.getWorkflowDefinitionId();
 
 		taskDefinitionResource.deleteTaskDefinition(workflowDefinitionId);
 
-		List<WorkflowDefinition> activeWorkflowDefinitions =
-			_workflowDefinitionManager.getActiveWorkflowDefinitions(-1, -1);
-
-		for (WorkflowDefinition activeWorkflowDefinition :
-				activeWorkflowDefinitions) {
-
-			Assert.assertNotEquals(
-				"The deleted task definition ID should not exist in the list",
-				activeWorkflowDefinition.getWorkflowDefinitionId(),
-				workflowDefinitionId);
-		}
+		AssertUtils.assertFailure(
+			NoSuchWorkflowDefinitionException.class,
+			NoSuchDefinitionException.class.getName() +
+				": No KaleoDefinition exists with the primary key " +
+					workflowDefinitionId,
+			() -> _workflowDefinitionManager.getWorkflowDefinition(
+				workflowDefinitionId));
 	}
 
 	@Test
