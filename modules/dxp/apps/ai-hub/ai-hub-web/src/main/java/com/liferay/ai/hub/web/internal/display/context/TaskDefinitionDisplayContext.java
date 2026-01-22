@@ -76,6 +76,10 @@ public class TaskDefinitionDisplayContext {
 				"view", "view", LanguageUtil.get(_httpServletRequest, "view"),
 				"get", null, null),
 			new FDSActionDropdownItem(
+				getAPIURL() + "/{id}/copy", "copy",
+				"copy", LanguageUtil.get(_httpServletRequest, "duplicate"),
+				"post", "copy", "async"),
+			new FDSActionDropdownItem(
 				getAPIURL() + "/{id}", "trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
 				"delete", "async"),
