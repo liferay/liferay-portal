@@ -73,7 +73,6 @@ import {loadData} from './utils/loadData';
 // @ts-ignore
 
 import {logError} from './utils/logError';
-import {saveViewSettings} from './utils/saveViewSettings';
 import {
 	EConfigInURLBehavior,
 	EConfigInURLKeys,
@@ -129,7 +128,6 @@ const getAtom = ({
 
 const FrontendDataSetContent = ({
 	actionParameterName,
-	activeViewSettings,
 	additionalAPIURLParameters: initialAdditionalAPIURLParameters,
 	apiURL,
 	appURL,
@@ -591,25 +589,6 @@ const FrontendDataSetContent = ({
 
 		let initialVisibleFieldNames = {};
 
-		if (!snapshotsEnabled && activeViewSettings) {
-			const {name: activeViewName, visibleFieldNames} =
-				JSON.parse(activeViewSettings);
-
-			if (activeViewName) {
-				const activeView = views.find(
-					({name}) => name === activeViewName
-				);
-
-				if (activeView) {
-					initialActiveView = activeView;
-				}
-			}
-
-			if (visibleFieldNames) {
-				initialVisibleFieldNames = visibleFieldNames;
-			}
-		}
-
 		const visibleFieldNames = getVisibleFields();
 
 		defaultSnapshot.visibleFieldNames = initialVisibleFieldNames;
@@ -684,20 +663,6 @@ const FrontendDataSetContent = ({
 			[EConfigInURLKeys.VIEW_NAME]: activeView.name,
 			[EConfigInURLKeys.VISIBLE_FIELDS]: initialVisibleFieldNames,
 		});
-
-		if (saveVisibleFieldNames || saveViewName) {
-			saveViewSettings({
-				appURL,
-				id,
-				portletId,
-				settings: {
-					...(saveViewName && {name: activeView.name}),
-					...(saveVisibleFieldNames && {
-						visibleFieldNames: initialVisibleFieldNames,
-					}),
-				},
-			});
-		}
 
 		const parsedSnapshots = snapshots?.map((snapshot: ISnapshot) => ({
 			...snapshot,
@@ -1232,13 +1197,6 @@ const FrontendDataSetContent = ({
 		const view = getView();
 
 		if (view) {
-			saveViewSettings({
-				appURL,
-				id,
-				portletId,
-				settings: {name: view},
-			});
-
 			stateUpdates.push({
 				type: EViewsActionTypes.UPDATE_ACTIVE_VIEW,
 				value: view,
@@ -1256,13 +1214,6 @@ const FrontendDataSetContent = ({
 			stateUpdates.push({
 				type: EViewsActionTypes.UPDATE_VISIBLE_FIELD_NAMES,
 				value: visibleFields,
-			});
-
-			saveViewSettings({
-				appURL,
-				id,
-				portletId,
-				settings: {visibleFieldNames: visibleFields},
 			});
 		}
 

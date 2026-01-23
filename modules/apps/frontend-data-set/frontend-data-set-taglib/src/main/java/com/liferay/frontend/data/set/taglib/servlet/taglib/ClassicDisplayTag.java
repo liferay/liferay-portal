@@ -85,8 +85,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 			if (_creationMenu == null) {
 				_creationMenu = new CreationMenu();
 			}
-
-			_setActiveViewSettingsJSON();
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -279,7 +277,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		super.cleanUp();
 
 		_actionParameterName = null;
-		_activeViewSettingsJSON = null;
 		_apiURL = null;
 		_appURL = null;
 		_bulkActionDropdownItems = new ArrayList<>();
@@ -311,8 +308,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 			).put(
 				"actionParameterName",
 				GetterUtil.getString(_actionParameterName)
-			).put(
-				"activeViewSettings", _activeViewSettingsJSON
 			).put(
 				"apiURL", _apiURL
 			).put(
@@ -362,19 +357,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 			).build());
 	}
 
-	private void _setActiveViewSettingsJSON() {
-		HttpServletRequest httpServletRequest = getRequest();
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(
-				httpServletRequest);
-
-		_activeViewSettingsJSON = portalPreferences.getValue(
-			ServletContextUtil.getFDSSettingsNamespace(
-				httpServletRequest, getId()),
-			"activeViewSettingsJSON");
-	}
-
 	private Object _toNullOrObject(Object object) {
 		if (Validator.isNull(object)) {
 			return null;
@@ -387,7 +369,6 @@ public class ClassicDisplayTag extends BaseDisplayTag {
 		ClassicDisplayTag.class);
 
 	private String _actionParameterName;
-	private String _activeViewSettingsJSON;
 	private String _apiURL;
 	private String _appURL;
 	private List<DropdownItem> _bulkActionDropdownItems = new ArrayList<>();

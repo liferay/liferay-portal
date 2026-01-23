@@ -48,7 +48,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 				_creationMenu = new CreationMenu();
 			}
 
-			_setActiveViewSettingsJSON();
 			_setFiltersJSONArray();
 		}
 		catch (Exception exception) {
@@ -252,7 +251,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		super.cleanUp();
 
 		_actionParameterName = null;
-		_activeViewSettingsJSON = null;
 		_apiURL = null;
 		_appURL = null;
 		_bulkActionDropdownItems = new ArrayList<>();
@@ -285,8 +283,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 			).put(
 				"actionParameterName",
 				GetterUtil.getString(_actionParameterName)
-			).put(
-				"activeViewSettings", _activeViewSettingsJSON
 			).put(
 				"apiURL", _apiURL
 			).put(
@@ -340,19 +336,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 			).build());
 	}
 
-	private void _setActiveViewSettingsJSON() {
-		HttpServletRequest httpServletRequest = getRequest();
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(
-				httpServletRequest);
-
-		_activeViewSettingsJSON = portalPreferences.getValue(
-			ServletContextUtil.getFDSSettingsNamespace(
-				httpServletRequest, getId()),
-			"activeViewSettingsJSON");
-	}
-
 	private void _setFiltersJSONArray() {
 		_filtersJSONArray = fdsSerializer.serializeFilters(
 			getFdsFilters(), getId(), getRequest());
@@ -370,7 +353,6 @@ public class HeadlessDisplayTag extends BaseDisplayTag {
 		HeadlessDisplayTag.class);
 
 	private String _actionParameterName;
-	private String _activeViewSettingsJSON;
 	private String _apiURL;
 	private String _appURL;
 	private List<DropdownItem> _bulkActionDropdownItems = new ArrayList<>();

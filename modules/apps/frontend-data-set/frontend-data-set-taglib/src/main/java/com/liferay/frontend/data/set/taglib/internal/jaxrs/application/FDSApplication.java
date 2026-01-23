@@ -135,55 +135,6 @@ public class FDSApplication extends Application {
 		return singletons;
 	}
 
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/data-set/{id}/save-active-view-settings")
-	@POST
-	public Response saveActiveFDSViewSettings(
-		@PathParam("id") String id,
-		@Context HttpServletRequest httpServletRequest,
-		@Context HttpServletResponse httpServletResponse,
-		@Context ThemeDisplay themeDisplay, @Context UriInfo uriInfo,
-		String activeViewSettingsJSON) {
-
-		try {
-			PortalPreferences portalPreferences =
-				PortletPreferencesFactoryUtil.getPortalPreferences(
-					httpServletRequest);
-
-			String currentActiveViewSettingsJSON = portalPreferences.getValue(
-				ServletContextUtil.getFDSSettingsNamespace(
-					httpServletRequest, id),
-				"activeViewSettingsJSON", "{}");
-
-			JSONObject currentActiveViewSettingsJSONObject =
-				_jsonFactory.createJSONObject(currentActiveViewSettingsJSON);
-
-			JSONObject activeViewSettingsJSONObject =
-				_jsonFactory.createJSONObject(activeViewSettingsJSON);
-
-			for (String key : activeViewSettingsJSONObject.keySet()) {
-				currentActiveViewSettingsJSONObject.put(
-					key, activeViewSettingsJSONObject.get(key));
-			}
-
-			portalPreferences.setValue(
-				ServletContextUtil.getFDSSettingsNamespace(
-					httpServletRequest, id),
-				"activeViewSettingsJSON",
-				currentActiveViewSettingsJSONObject.toString());
-
-			return Response.ok(
-			).build();
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return Response.status(
-			Response.Status.NOT_FOUND
-		).build();
-	}
-
 	private List<FDSDataRow> _getFDSTableRows(
 			List<Object> items, String tableName,
 			HttpServletRequest httpServletRequest, long groupId)
