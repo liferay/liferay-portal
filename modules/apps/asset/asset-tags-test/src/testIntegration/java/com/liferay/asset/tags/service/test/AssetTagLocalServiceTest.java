@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -524,11 +525,16 @@ public class AssetTagLocalServiceTest {
 	private List<AssetTag> _addAssetTags(String[] tagNames)
 		throws PortalException {
 
-		return TransformUtil.transformToList(
-			tagNames,
-			tagName -> _assetTagLocalService.addTag(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), tagName,
-				_serviceContext));
+		List<AssetTag> assetTags = new ArrayList<>();
+
+		for (String tagName : tagNames) {
+			assetTags.add(
+				_assetTagLocalService.addTag(
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					tagName, _serviceContext));
+		}
+
+		return assetTags;
 	}
 
 	private void _addBlogsEntry(String[] tagNames) throws Exception {
