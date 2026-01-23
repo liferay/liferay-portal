@@ -772,6 +772,29 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
+		const unfrozenGlobalFDSState = deepClone(globalFDSState);
+
+		const configInURL: Partial<IConfigInURL> | null = readConfigFromURL(id);
+
+		unfrozenGlobalFDSState.filters.forEach((filter: IBaseFilterState) => {
+			if (filter.preloadedData) {
+				const preloadedData = JSON.stringify(filter.preloadedData);
+				const selectedData = JSON.stringify(filter.selectedData);
+
+				if (
+					preloadedData !== selectedData ||
+					(preloadedData === selectedData && configInURL)
+				) {
+					updateConfigInURL({
+						[EConfigInURLKeys.ACTIVE_FILTERS]:
+							unfrozenGlobalFDSState.filters,
+						[EConfigInURLKeys.SEARCH_PARAM]:
+							unfrozenGlobalFDSState.search.query,
+					});
+				}
+			}
+		});
+
 		if (skipSnapshotsUpdatedChangeRef.current) {
 			skipSnapshotsUpdatedChangeRef.current = false;
 		}
