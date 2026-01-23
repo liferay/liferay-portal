@@ -12,7 +12,6 @@ import {ISnapshot} from '../views/ViewsContext';
 
 export declare function FrontendDataSet({
 	actionParameterName,
-	activeViewSettings,
 	apiURL,
 	appURL,
 	bulkActions,
@@ -283,7 +282,6 @@ export interface IFileDropSettings {
 
 export interface IFrontendDataSetProps {
 	actionParameterName?: string;
-	activeViewSettings?: string;
 	additionalAPIURLParameters?: string;
 	apiURL?: string;
 	appURL?: string;
