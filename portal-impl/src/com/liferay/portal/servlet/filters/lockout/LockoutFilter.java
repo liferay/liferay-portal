@@ -9,11 +9,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.auth.session.AuthenticatedSessionManagerUtil;
-import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,12 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * @author Norbert Kocsis
  */
-public class LockoutFilter extends BasePortalFilter {
+public class LockoutFilter extends BaseFilter {
+
+	@Override
+	protected Log getLog() {
+		return _log;
+	}
 
 	@Override
 	protected void processFilter(
