@@ -783,7 +783,10 @@ const FrontendDataSetContent = ({
 
 				if (
 					preloadedData !== selectedData ||
-					(preloadedData === selectedData && configInURL)
+					(preloadedData === selectedData &&
+						configInURL?.filters?.some(
+							(obj) => obj.id === filter.id
+						))
 				) {
 					updateConfigInURL({
 						[EConfigInURLKeys.ACTIVE_FILTERS]:
