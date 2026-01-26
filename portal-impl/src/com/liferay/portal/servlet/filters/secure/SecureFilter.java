@@ -5,6 +5,9 @@
 
 package com.liferay.portal.servlet.filters.secure;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import jakarta.servlet.FilterConfig;
 
 /**
@@ -24,5 +27,12 @@ public class SecureFilter extends BaseAuthFilter {
 	public boolean isFilterEnabled() {
 		return true;
 	}
+
+	@Override
+	protected Log getLog() {
+		return _log;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(SecureFilter.class);
 
 }

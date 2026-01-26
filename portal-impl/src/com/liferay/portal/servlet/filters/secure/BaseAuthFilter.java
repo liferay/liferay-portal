@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.security.auth.http.HttpAuthorizationHeader;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.ProtectedServletRequest;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -29,7 +30,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.auth.http.HttpAuthManagerUtil;
-import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -48,7 +48,7 @@ import java.util.Set;
  * @author Raymond Augé
  * @author Alexander Chow
  */
-public abstract class BaseAuthFilter extends BasePortalFilter {
+public abstract class BaseAuthFilter extends BaseFilter {
 
 	@Override
 	public void init(FilterConfig filterConfig) {

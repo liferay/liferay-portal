@@ -5,9 +5,12 @@
 
 package com.liferay.portal.sharepoint;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.servlet.filters.secure.BaseAuthFilter;
 
 import jakarta.servlet.FilterChain;
@@ -26,6 +29,21 @@ public class SharepointFilter extends BaseAuthFilter {
 		super.init(filterConfig);
 
 		setUsePermissionChecker(true);
+	}
+
+	@Override
+	public boolean isFilterEnabled() {
+		return _filterEnabled;
+	}
+
+	@Override
+	public void setFilterEnabled(boolean filterEnabled) {
+		_filterEnabled = filterEnabled;
+	}
+
+	@Override
+	protected Log getLog() {
+		return _log;
 	}
 
 	protected boolean isSharepointRequest(String uri) {
@@ -133,5 +151,11 @@ public class SharepointFilter extends BaseAuthFilter {
 	private static final String[] _PREFIXES = {
 		"/_vti_inf.html", "/_vti_bin", "/sharepoint", "/history", "/resources"
 	};
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SharepointFilter.class);
+
+	private boolean _filterEnabled = GetterUtil.getBoolean(
+		PropsUtil.get(getClass().getName()), true);
 
 }

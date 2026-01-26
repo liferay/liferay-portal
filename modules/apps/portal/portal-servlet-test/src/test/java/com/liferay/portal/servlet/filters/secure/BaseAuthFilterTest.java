@@ -5,6 +5,8 @@
 
 package com.liferay.portal.servlet.filters.secure;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.access.control.AccessControl;
@@ -407,6 +409,15 @@ public class BaseAuthFilterTest {
 	}
 
 	private static class TestAuthFilter extends BaseAuthFilter {
+
+		@Override
+		protected Log getLog() {
+			return _log;
+		}
+
+		private static final Log _log = LogFactoryUtil.getLog(
+			TestAuthFilter.class);
+
 	}
 
 	private static class TestPortalImpl extends PortalImpl {
