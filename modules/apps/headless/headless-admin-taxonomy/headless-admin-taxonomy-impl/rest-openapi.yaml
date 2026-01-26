@@ -290,6 +290,11 @@ components:
                             readOnly: true
                             type: object
                     type: object
+                path:
+                    description:
+                        The path of the category.
+                    readOnly: true
+                    type: string
                 permissions:
                     items:
                         type: permission

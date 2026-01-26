@@ -193,6 +193,9 @@ public class TaxonomyCategoryDTOConverter
 							}
 						};
 					});
+				setPath(
+					() -> assetCategory.getPath(
+						dtoConverterContext.getLocale(), true));
 				setSiteId(assetCategory::getGroupId);
 				setTaxonomyCategoryProperties(
 					() -> TransformUtil.transformToArray(
