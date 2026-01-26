@@ -249,6 +249,20 @@ public class TaxonomyCategorySerDes {
 				String.valueOf(taxonomyCategory.getParentTaxonomyVocabulary()));
 		}
 
+		if (taxonomyCategory.getPath() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"path\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(taxonomyCategory.getPath()));
+
+			sb.append("\"");
+		}
+
 		if (taxonomyCategory.getPermissions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -504,6 +518,13 @@ public class TaxonomyCategorySerDes {
 				String.valueOf(taxonomyCategory.getParentTaxonomyVocabulary()));
 		}
 
+		if (taxonomyCategory.getPath() == null) {
+			map.put("path", null);
+		}
+		else {
+			map.put("path", String.valueOf(taxonomyCategory.getPath()));
+		}
+
 		if (taxonomyCategory.getPermissions() == null) {
 			map.put("permissions", null);
 		}
@@ -638,6 +659,9 @@ public class TaxonomyCategorySerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "parentTaxonomyVocabulary")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "path")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {
@@ -776,6 +800,11 @@ public class TaxonomyCategorySerDes {
 					taxonomyCategory.setParentTaxonomyVocabulary(
 						ParentTaxonomyVocabularySerDes.toDTO(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "path")) {
+				if (jsonParserFieldValue != null) {
+					taxonomyCategory.setPath((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "permissions")) {

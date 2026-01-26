@@ -723,6 +723,47 @@ public class TaxonomyCategory implements Serializable {
 	private Supplier<ParentTaxonomyVocabulary>
 		_parentTaxonomyVocabularySupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The path of the category."
+	)
+	public String getPath() {
+		if (_pathSupplier != null) {
+			path = _pathSupplier.get();
+
+			_pathSupplier = null;
+		}
+
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+
+		_pathSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPath(UnsafeSupplier<String, Exception> pathUnsafeSupplier) {
+		_pathSupplier = () -> {
+			try {
+				return pathUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The path of the category.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String path;
+
+	@JsonIgnore
+	private Supplier<String> _pathSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
 	public com.liferay.portal.vulcan.permission.Permission[] getPermissions() {
@@ -1311,6 +1352,22 @@ public class TaxonomyCategory implements Serializable {
 			sb.append("\"parentTaxonomyVocabulary\": ");
 
 			sb.append(String.valueOf(parentTaxonomyVocabulary));
+		}
+
+		String path = getPath();
+
+		if (path != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"path\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(path));
+
+			sb.append("\"");
 		}
 
 		com.liferay.portal.vulcan.permission.Permission[] permissions =

@@ -283,7 +283,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryTaxonomyCategoryByExternalReferenceCode(assetLibraryId: ___, externalReferenceCode: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {assetLibraryTaxonomyCategoryByExternalReferenceCode(assetLibraryId: ___, externalReferenceCode: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, path, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the asset library's taxonomy category by external reference code."
@@ -336,7 +336,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxonomyCategoryByExternalReferenceCode(externalReferenceCode: ___, siteKey: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxonomyCategoryByExternalReferenceCode(externalReferenceCode: ___, siteKey: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, path, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the site's taxonomy category by external reference code."
@@ -378,7 +378,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxonomyCategory(taxonomyCategoryId: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxonomyCategory(taxonomyCategoryId: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, path, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(description = "Retrieves a taxonomy category.")
 	public TaxonomyCategory taxonomyCategory(
@@ -485,7 +485,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(externalReferenceCode: ___, taxonomyVocabularyId: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(externalReferenceCode: ___, taxonomyVocabularyId: ___){actions, assetLibraryKey, availableLanguages, creator, dateCreated, dateModified, description, description_i18n, externalReferenceCode, id, name, name_i18n, numberOfTaxonomyCategories, parentTaxonomyCategory, parentTaxonomyVocabulary, path, permissions, siteExternalReferenceCode, siteId, taxonomyCategoryProperties, taxonomyCategoryUsageCount, taxonomyVocabularyId, viewableBy}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves the site's taxonomy category by external reference code."
