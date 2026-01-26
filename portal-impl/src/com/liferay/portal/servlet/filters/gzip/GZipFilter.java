@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.servlet.BrowserSnifferUtil;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
 
@@ -26,28 +25,6 @@ public class GZipFilter extends BasePortalFilter {
 
 	public static final String SKIP_FILTER =
 		GZipFilter.class.getName() + "#SKIP_FILTER";
-
-	public GZipFilter() {
-
-		// The compression filter will work on JBoss, Tomcat, WebLogic,
-		// but may break on other servers
-
-		boolean filterEnabled = false;
-
-		if (super.isFilterEnabled() &&
-			(ServerDetector.isJBoss() || ServerDetector.isTomcat() ||
-			 ServerDetector.isWebLogic())) {
-
-			filterEnabled = true;
-		}
-
-		_filterEnabled = filterEnabled;
-	}
-
-	@Override
-	public boolean isFilterEnabled() {
-		return _filterEnabled;
-	}
 
 	@Override
 	public boolean isFilterEnabled(
@@ -114,7 +91,5 @@ public class GZipFilter extends BasePortalFilter {
 	private static final String _COMPRESS = "compress";
 
 	private static final Log _log = LogFactoryUtil.getLog(GZipFilter.class);
-
-	private final boolean _filterEnabled;
 
 }
