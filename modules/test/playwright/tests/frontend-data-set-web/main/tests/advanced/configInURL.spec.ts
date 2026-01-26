@@ -1143,5 +1143,108 @@ for (const spaConfiguration of spaConfigurations) {
 				});
 			}
 		);
+
+		test(
+			'View state URL params are not added on initial render',
+			{tag: '@LPD-73128'},
+			async ({page}) => {
+				await waitForFDS({page, visualizationMode: EFDSVisualizationMode.TABLE});
+
+				await expect(() => {
+					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					expect(config).toBeNull();
+				}).toPass();
+			}
+		);
+
+		test(
+			'Whenever one param is changed, only that one will be added to the URL params',
+			{tag: '@LPD-73128'},
+			async ({page}) => {
+				const fdsSamplePage = new FDSSamplePage(page);
+
+				await fdsSamplePage.changeVisualizationMode({
+					page,
+					visualizationMode: EFDSVisualizationMode.CARDS,
+				});
+
+				await expect(() => {
+					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
+					expect(Object.keys(config)).toHaveLength(1);
+				}).toPass();
+			}
+		);
+
+		test(
+			'When one param that has been changed, goes back to the initial value, it will remain in URL',
+			{tag: '@LPD-73128'},
+			async ({page}) => {
+				const fdsSamplePage = new FDSSamplePage(page);
+
+				await fdsSamplePage.changeVisualizationMode({
+					page,
+					visualizationMode: EFDSVisualizationMode.CARDS,
+				});
+
+				await fdsSamplePage.changeVisualizationMode({
+					page,
+					visualizationMode: EFDSVisualizationMode.TABLE,
+				});
+
+				await expect(() => {
+					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					expect(config.view).toBe('customizedTable');
+					expect(Object.keys(config)).toHaveLength(1);
+				}).toPass();
+			}
+		)
+
+		test(
+			'Refreshing the page restores the view state correctly',
+			{tag: '@LPD-73128'},
+			async ({page}) => {
+				const fdsSamplePage = new FDSSamplePage(page);
+
+				await fdsSamplePage.changeVisualizationMode({
+					page,
+					visualizationMode: EFDSVisualizationMode.CARDS,
+				});
+
+				await page.reload();
+
+				await waitForFDS({page, visualizationMode: EFDSVisualizationMode.CARDS});
+
+				await expect(() => {
+					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
+					expect(Object.keys(config)).toHaveLength(1);
+				}).toPass();
+			}
+		)
+
+		test(
+			'Pasting the URL in a new browser tab reproduces the same state',
+			{tag: '@LPD-73128'},
+			async ({page}) => {
+				const fdsSamplePage = new FDSSamplePage(page);
+
+				await fdsSamplePage.changeVisualizationMode({
+					page,
+					visualizationMode: EFDSVisualizationMode.CARDS,
+				});
+
+				const url = page.url();
+				await page.goto(url);
+
+				await waitForFDS({page, visualizationMode: EFDSVisualizationMode.CARDS});
+
+				await expect(() => {
+					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
+					expect(Object.keys(config)).toHaveLength(1);
+				}).toPass();
+			}
+		)
 	});
 }
