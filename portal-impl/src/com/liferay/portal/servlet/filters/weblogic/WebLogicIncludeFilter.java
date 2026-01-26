@@ -5,10 +5,12 @@
 
 package com.liferay.portal.servlet.filters.weblogic;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.WrapHttpServletResponseFilter;
 import com.liferay.portal.kernel.util.ServerDetector;
-import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Minhchau Dang
  */
 public class WebLogicIncludeFilter
-	extends BasePortalFilter implements WrapHttpServletResponseFilter {
+	extends BaseFilter implements WrapHttpServletResponseFilter {
 
 	@Override
 	public HttpServletResponse getWrappedHttpServletResponse(
@@ -40,6 +42,14 @@ public class WebLogicIncludeFilter
 	public boolean isFilterEnabled() {
 		return ServerDetector.isWebLogic();
 	}
+
+	@Override
+	protected Log getLog() {
+		return _log;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		WebLogicIncludeFilter.class);
 
 	private static final Snapshot<WebLogicIncludeServletResponseFactory>
 		_webLogicIncludeServletResponseFactorySnapshot = new Snapshot<>(
