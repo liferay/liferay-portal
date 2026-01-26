@@ -58,7 +58,7 @@ import Modal from './modal/Modal';
 
 import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
-import {contains, readConfigFromURL} from './utils/configInURL';
+import {readConfigFromURL} from './utils/configInURL';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
@@ -589,17 +589,9 @@ const FrontendDataSetContent = ({
 
 		defaultSnapshot.visibleFieldNames = initialVisibleFieldNames;
 
-		let saveVisibleFieldNames = false;
-
 		if (visibleFieldNames) {
-			if (!contains(visibleFieldNames, initialVisibleFieldNames)) {
-				saveVisibleFieldNames = true;
-			}
-
 			initialVisibleFieldNames = visibleFieldNames;
 		}
-
-		let saveViewName = false;
 
 		const view = getView();
 
@@ -607,10 +599,6 @@ const FrontendDataSetContent = ({
 			const activeView = views.find(({name}) => name === view);
 
 			if (activeView) {
-				if (initialActiveView !== activeView) {
-					saveViewName = true;
-				}
-
 				initialActiveView = activeView;
 			}
 		}
@@ -781,7 +769,7 @@ const FrontendDataSetContent = ({
 					preloadedData !== selectedData ||
 					(preloadedData === selectedData &&
 						configInURL?.filters?.some(
-							(obj) => obj.id === filter.id
+							(filterURL) => filterURL.id === filter.id
 						))
 				) {
 					updateConfigInURL({
@@ -806,6 +794,7 @@ const FrontendDataSetContent = ({
 	}, [
 		globalFDSState,
 		globalFDSStateInitialized,
+		id,
 		updateConfigInURL,
 		viewsDispatch,
 	]);
@@ -1230,7 +1219,6 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
-		appURL,
 		getActiveSorts,
 		getDelta,
 		getFilters,
@@ -1239,9 +1227,7 @@ const FrontendDataSetContent = ({
 		getView,
 		getVisibleFields,
 		globalFDSState,
-		id,
 		paginationDelta,
-		portletId,
 		setGlobalFDSState,
 		sorts,
 		viewsDispatch,
