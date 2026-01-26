@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	IInternalRenderer,
-	IView,
-	replaceTokens,
-} from '@liferay/frontend-data-set-web';
+import {IInternalRenderer, IView} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
 import StatusLabel from '../../common/components/StatusLabel';
@@ -348,15 +344,6 @@ export default function AssetsFDSPropsTransformer({
 				});
 			}
 			else if (action?.data?.id === 'import-translation') {
-				event?.preventDefault();
-
-				openCMSModal({
-					size: 'full-screen',
-					title: action.label,
-					url: replaceTokens(action.href, itemData),
-				});
-			}
-			else if (action?.data?.id === 'import-translation-multiple') {
 				ACTIONS.importTranslation(itemData, loadData);
 			}
 			else if (action?.data?.id === 'reset-to-default-permissions') {

@@ -288,22 +288,7 @@ public class SectionDisplayContextHelper {
 				LanguageUtil.get(httpServletRequest, "export-for-translation"),
 				null, "get", null),
 			new FDSActionDropdownItem(
-				PortletURLBuilder.create(
-					_portal.getControlPanelPortletURL(
-						httpServletRequest, TranslationPortletKeys.TRANSLATION,
-						ActionRequest.RENDER_PHASE)
-				).setMVCRenderCommandName(
-					"/translation/import_translation"
-				).setParameter(
-					"className", "{entryClassName}"
-				).setParameter(
-					"classPK", "{embedded.id}"
-				).setParameter(
-					"groupId", "{embedded.scopeId}"
-				).setWindowState(
-					LiferayWindowState.POP_UP
-				).buildString(),
-				"download", "import-translation",
+				null, "download", "import-translation",
 				LanguageUtil.get(httpServletRequest, "import-translation"),
 				null, "update", null),
 			new FDSActionDropdownItem(
