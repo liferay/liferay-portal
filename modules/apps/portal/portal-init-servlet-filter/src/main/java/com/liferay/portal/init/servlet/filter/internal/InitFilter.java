@@ -5,8 +5,10 @@
 
 package com.liferay.portal.init.servlet.filter.internal;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
-import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -20,7 +22,7 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * @author Matthew Tambara
  */
-public class InitFilter extends BasePortalFilter {
+public class InitFilter extends BaseFilter {
 
 	public void setServiceRegistration(
 		ServiceRegistration<Filter> serviceRegistration) {
@@ -28,6 +30,11 @@ public class InitFilter extends BasePortalFilter {
 		_serviceRegistration = serviceRegistration;
 
 		_countDownLatch.countDown();
+	}
+
+	@Override
+	protected Log getLog() {
+		return _log;
 	}
 
 	@Override
@@ -55,6 +62,8 @@ public class InitFilter extends BasePortalFilter {
 			}
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(InitFilter.class);
 
 	private final CountDownLatch _countDownLatch = new CountDownLatch(1);
 	private ServiceRegistration<Filter> _serviceRegistration;
