@@ -5,10 +5,13 @@
 
 import ClayModal from '@clayui/modal';
 import {openToast} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
+import ApiHelper from '../../common/services/ApiHelper';
 import {AssetLibrary} from '../../common/types/AssetLibrary';
 import MultipleFileUploader, {
+	FileData,
 	UploadMessages,
 } from '../multiple_file_uploader/MultipleFileUploader';
 
@@ -26,15 +29,26 @@ const IMPORT_MESSAGES: UploadMessages = {
 
 export default function ImportTranslationModalContent({
 	groupId,
+	itemId,
+	itemName,
 	loadData,
 	onModalClose,
 }: {
 	groupId: number;
+	itemId: number;
+	itemName: string;
 	loadData?: () => void;
 	onModalClose: () => void;
 }) {
-	const uploadRequest = async () => {
-		return true;
+	const uploadRequest = async ({fileData}: {fileData: FileData}) => {
+		const formData = new FormData();
+
+		formData.append('file', fileData.file);
+
+		return await ApiHelper.postFormData(
+			formData,
+			`/o/cms/basic-web-contents/${itemId}/translations`
+		);
 	};
 
 	const onUploadComplete = ({
@@ -48,8 +62,25 @@ export default function ImportTranslationModalContent({
 		if (successFiles.length) {
 			loadData?.();
 
+			let toastMessage;
+
+			if (successFiles.length === 1) {
+				toastMessage = sub(
+					Liferay.Language.get(
+						'x-file-was-successfully-imported-x-is-now-published-with-new-translations'
+					),
+					['1', `<strong>${itemName}</strong>`]
+				);
+			}
+			else {
+				toastMessage = sub(
+					Liferay.Language.get('x-files-were-successfully-imported'),
+					[String(successFiles.length)]
+				);
+			}
+
 			openToast({
-				message: 'suscess',
+				message: toastMessage,
 				type: 'success',
 			});
 		}
