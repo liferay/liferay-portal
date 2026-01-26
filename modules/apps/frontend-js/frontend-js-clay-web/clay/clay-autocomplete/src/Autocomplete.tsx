@@ -116,6 +116,11 @@ export interface IProps<T>
 	direction?: 'bottom' | 'top';
 
 	/**
+	 * Estimate size for virtualize.
+	 */
+	estimateSize?: number;
+
+	/**
 	 * Defines the name of the property key that is used in the items filter
 	 * test (Dynamic content).
 	 */
@@ -239,6 +244,7 @@ function AutocompleteInner<T extends Item>(
 		defaultItems,
 		defaultValue,
 		direction = 'bottom',
+		estimateSize,
 		filterKey,
 		items: externalItems,
 		loadingState,
@@ -399,7 +405,7 @@ function AutocompleteInner<T extends Item>(
 			: filteredItems;
 
 	const virtualizer = useVirtual({
-		estimateSize: 37,
+		estimateSize: estimateSize ? estimateSize : 37,
 		items: filteredItemsWithPrimaryAction,
 		parentRef: menuRef,
 	});

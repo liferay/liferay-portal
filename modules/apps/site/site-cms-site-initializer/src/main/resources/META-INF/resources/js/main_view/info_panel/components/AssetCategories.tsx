@@ -168,6 +168,7 @@ const AssetCategories = ({
 				<ItemSelector<any>
 					apiURL={apiURL}
 					disabled={!hasUpdatePermission}
+					estimateSize={49}
 					locator={{
 						id: 'id',
 						label: 'name',
@@ -195,7 +196,18 @@ const AssetCategories = ({
 							key={item.name}
 							textValue={item.name}
 						>
-							{item.name}
+							<div>
+								<span className="font-weight-bold text-truncate">
+									{item?.name}
+								</span>
+
+								<span
+									className="text-1 text-secondary text-truncate text-uppercase"
+									title={item?.path}
+								>
+									{item?.path}
+								</span>
+							</div>
 						</ItemSelector.Item>
 					)}
 				</ItemSelector>
