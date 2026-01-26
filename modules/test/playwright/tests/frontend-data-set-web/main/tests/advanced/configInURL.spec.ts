@@ -1148,10 +1148,16 @@ for (const spaConfiguration of spaConfigurations) {
 			'View state URL params are not added on initial render',
 			{tag: '@LPD-73128'},
 			async ({page}) => {
-				await waitForFDS({page, visualizationMode: EFDSVisualizationMode.TABLE});
+				await waitForFDS({
+					page,
+					visualizationMode: EFDSVisualizationMode.TABLE,
+				});
 
 				await expect(() => {
-					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					const config = getConfigFromURL(
+						new URL(page.url()).search,
+						'advanced'
+					);
 					expect(config).toBeNull();
 				}).toPass();
 			}
@@ -1169,7 +1175,10 @@ for (const spaConfiguration of spaConfigurations) {
 				});
 
 				await expect(() => {
-					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					const config = getConfigFromURL(
+						new URL(page.url()).search,
+						'advanced'
+					);
 					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
 					expect(Object.keys(config)).toHaveLength(1);
 				}).toPass();
@@ -1193,12 +1202,15 @@ for (const spaConfiguration of spaConfigurations) {
 				});
 
 				await expect(() => {
-					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					const config = getConfigFromURL(
+						new URL(page.url()).search,
+						'advanced'
+					);
 					expect(config.view).toBe('customizedTable');
 					expect(Object.keys(config)).toHaveLength(1);
 				}).toPass();
 			}
-		)
+		);
 
 		test(
 			'Refreshing the page restores the view state correctly',
@@ -1213,15 +1225,21 @@ for (const spaConfiguration of spaConfigurations) {
 
 				await page.reload();
 
-				await waitForFDS({page, visualizationMode: EFDSVisualizationMode.CARDS});
+				await waitForFDS({
+					page,
+					visualizationMode: EFDSVisualizationMode.CARDS,
+				});
 
 				await expect(() => {
-					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					const config = getConfigFromURL(
+						new URL(page.url()).search,
+						'advanced'
+					);
 					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
 					expect(Object.keys(config)).toHaveLength(1);
 				}).toPass();
 			}
-		)
+		);
 
 		test(
 			'Pasting the URL in a new browser tab reproduces the same state',
@@ -1237,14 +1255,20 @@ for (const spaConfiguration of spaConfigurations) {
 				const url = page.url();
 				await page.goto(url);
 
-				await waitForFDS({page, visualizationMode: EFDSVisualizationMode.CARDS});
+				await waitForFDS({
+					page,
+					visualizationMode: EFDSVisualizationMode.CARDS,
+				});
 
 				await expect(() => {
-					const config = getConfigFromURL(new URL(page.url()).search, 'advanced');
+					const config = getConfigFromURL(
+						new URL(page.url()).search,
+						'advanced'
+					);
 					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
 					expect(Object.keys(config)).toHaveLength(1);
 				}).toPass();
 			}
-		)
+		);
 	});
 }
