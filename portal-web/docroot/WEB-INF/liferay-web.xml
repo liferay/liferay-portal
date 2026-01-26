@@ -74,10 +74,6 @@
 		</init-param>
 	</filter>
 	<filter>
-		<filter-name>Fragment Filter</filter-name>
-		<filter-class>com.liferay.portal.servlet.filters.fragment.FragmentFilter</filter-class>
-	</filter>
-	<filter>
 		<filter-name>GZip Filter</filter-name>
 		<filter-class>com.liferay.portal.servlet.filters.gzip.GZipFilter</filter-class>
 		<init-param>
@@ -712,12 +708,6 @@
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
-	<!--<filter-mapping>
-		<filter-name>Fragment Filter</filter-name>
-		<url-pattern>/c/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>-->
 	<filter-mapping>
 		<filter-name>Strip Filter</filter-name>
 		<url-pattern>/c/*</url-pattern>

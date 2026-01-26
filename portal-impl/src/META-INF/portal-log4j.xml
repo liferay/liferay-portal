@@ -140,7 +140,6 @@
 		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.dynamiccss" />
 		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.dynamiccss.DynamicCSSFilter" />
 		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.dynamiccss.DynamicCSSUtil" />
-		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.fragment" />
 		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.gzip" />
 		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.language" />
 		<Logger level="ERROR" name="com.liferay.portal.servlet.filters.sessionid.SessionIdFilter" />
