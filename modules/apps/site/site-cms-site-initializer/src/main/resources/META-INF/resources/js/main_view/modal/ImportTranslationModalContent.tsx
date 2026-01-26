@@ -27,6 +27,17 @@ const IMPORT_MESSAGES: UploadMessages = {
 	xFilesNotUploaded: Liferay.Language.get('x-files-could-not-be-imported'),
 };
 
+interface FailedImportMessage {
+	container: string;
+	errorMessage: string;
+	fileName: string;
+}
+
+interface ImportTranslationResultData {
+	failureMessagesJSON: string[];
+	successMessages: string[];
+}
+
 export default function ImportTranslationModalContent({
 	groupId,
 	itemId,
@@ -45,10 +56,32 @@ export default function ImportTranslationModalContent({
 
 		formData.append('file', fileData.file);
 
-		return await ApiHelper.postFormData(
-			formData,
-			`/o/cms/basic-web-contents/${itemId}/translations`
-		);
+		const response =
+			await ApiHelper.postFormData<ImportTranslationResultData>(
+				formData,
+				`/o/cms/basic-web-contents/${itemId}/translations`
+			);
+
+		const errors = response.data?.failureMessagesJSON.map((item) => {
+			const jsonItem = JSON.parse(item) as FailedImportMessage;
+
+			return {
+				errorMessage: jsonItem.errorMessage,
+				name: jsonItem.fileName,
+			};
+		});
+
+		const responseObject: {
+			errors?: {errorMessage: string; name: string}[];
+			multipleErrors: boolean;
+			successFiles: string[];
+		} = {
+			errors,
+			multipleErrors: !!errors?.length,
+			successFiles: response.data?.successMessages || [],
+		};
+
+		return responseObject;
 	};
 
 	const onUploadComplete = ({

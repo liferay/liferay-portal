@@ -157,16 +157,26 @@ export default function MultipleFileUploader({
 
 			Promise.allSettled(
 				filesToUpload.map(async (fileData: FileData) => {
-					const {error} = await uploadRequest({
+					const response = await uploadRequest({
 						fileData,
 						groupId: String(values.groupId),
 					});
+
+					const {error} = response;
 
 					if (error) {
 						failedFiles.push({
 							...fileData,
 							errorMessage: error,
 							failed: true,
+						});
+					}
+					else if (response.multipleErrors) {
+						response.errors.map((item: any) => {
+							failedFiles.push({
+								...item,
+								failed: true,
+							});
 						});
 					}
 					else {

@@ -48,11 +48,13 @@ export default function FailedFiles({
 								{fileData.name}
 							</span>
 
-							<span className="text-secondary">
-								{Liferay.Util.formatStorage(fileData.size, {
-									addSpaceBeforeSuffix: true,
-								})}
-							</span>
+							{fileData.size && (
+								<span className="text-secondary">
+									{Liferay.Util.formatStorage(fileData.size, {
+										addSpaceBeforeSuffix: true,
+									})}
+								</span>
+							)}
 						</ClayLayout.ContentCol>
 					</ClayLayout.ContentRow>
 
