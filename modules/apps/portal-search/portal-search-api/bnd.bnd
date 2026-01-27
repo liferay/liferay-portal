@@ -49,7 +49,7 @@ Export-Package:\
 	com.liferay.portal.search.localization,\
 	com.liferay.portal.search.ml.embedding,\
 	com.liferay.portal.search.ml.embedding.text,\
-	com.liferay.portal.search.ml.embedding.text.util,\
+	com.liferay.portal.search.ml.embedding.text.helper,\
 	com.liferay.portal.search.model.uid,\
 	com.liferay.portal.search.permission,\
 	com.liferay.portal.search.pit,\
