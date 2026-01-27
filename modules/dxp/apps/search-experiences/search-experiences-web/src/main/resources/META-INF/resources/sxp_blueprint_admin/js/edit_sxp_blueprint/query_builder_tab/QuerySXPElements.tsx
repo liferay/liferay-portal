@@ -8,6 +8,8 @@ import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React, {useState} from 'react';
 
+import CustomPanel from '../../shared/CustomPanel';
+
 // @ts-ignore
 
 import JSONSXPElement from '../../shared/JSONSXPElement';
@@ -26,7 +28,6 @@ import {
 	IIndexField,
 	ISearchableType,
 } from '../../utils/types';
-import CustomPanel from './shared/CustomPanel';
 
 function QuerySXPElements({
 	elementInstances,

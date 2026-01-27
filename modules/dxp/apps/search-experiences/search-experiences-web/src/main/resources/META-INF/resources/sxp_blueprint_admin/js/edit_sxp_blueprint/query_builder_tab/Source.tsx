@@ -10,13 +10,13 @@ import ClayPanel from '@clayui/panel';
 import ClaySticker from '@clayui/sticker';
 import React, {useState} from 'react';
 
+import CustomPanel from '../../shared/CustomPanel';
 import {
 	IFrameworkConfiguration,
 	ISearchableType,
 	ISelectedSubtype,
 } from '../../utils/types';
-import SelectTypes from './../query_builder_tab/SelectTypes';
-import CustomPanel from './shared/CustomPanel';
+import SelectTypes from './SelectTypes';
 
 const QUERY_CONTRIBUTORS_OPTIONS = {
 	CUSTOMIZE: 'customize',

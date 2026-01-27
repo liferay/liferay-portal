@@ -63,7 +63,7 @@ import AddSXPElementSidebar from './add_sxp_element_sidebar/index';
 import ClauseContributorsSidebar from './clause_contributors_sidebar/index';
 import ConfigurationTab from './configuration_tab/index';
 import PreviewSidebar from './preview_sidebar/index';
-import QueryBuilderTab from './unified_query_builder/QueryBuilderTab';
+import QueryBuilderTab from './query_builder_tab/index';
 
 // Tabs in display order
 

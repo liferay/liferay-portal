@@ -10,12 +10,13 @@ import ClayLabel from '@clayui/label';
 import {openSelectionModal} from 'frontend-js-components-web';
 import React, {useContext, useMemo, useState} from 'react';
 
+import CustomPanel from '../../shared/CustomPanel';
+
 // @ts-ignore
 
 import ThemeContext from '../../shared/ThemeContext';
 import {ACTIVE, INACTIVE, STATUS} from '../../utils/constants';
 import {IScope, ISorting} from '../../utils/types';
-import CustomPanel from './shared/CustomPanel';
 
 export default function ScopeSelector({
 	scope,
