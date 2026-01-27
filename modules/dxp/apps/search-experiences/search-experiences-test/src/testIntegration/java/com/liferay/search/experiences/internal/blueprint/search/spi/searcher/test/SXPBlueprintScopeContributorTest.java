@@ -55,7 +55,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Joshua Cords
  */
-@FeatureFlag("LPD-37320")
 @RunWith(Arquillian.class)
 public class SXPBlueprintScopeContributorTest {
 
