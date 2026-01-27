@@ -39,7 +39,7 @@ public class TextEmbeddingContentHelper<T extends BaseModel<T>> {
 		_append(_nonlocalizedContentSB, value);
 
 		for (StringBundler localizedContentSB :
-				_languageContentSBMap.values()) {
+				_localizedContentSBMap.values()) {
 
 			_append(localizedContentSB, value);
 		}
@@ -73,14 +73,15 @@ public class TextEmbeddingContentHelper<T extends BaseModel<T>> {
 	}
 
 	public String getLocalizedContent(String languageId) {
-		StringBundler languageContentSB = _languageContentSBMap.get(languageId);
+		StringBundler languageContentSB = _localizedContentSBMap.get(
+			languageId);
 
 		if ((languageContentSB != null) && (languageContentSB.length() != 0)) {
 			return languageContentSB.toString();
 		}
 
 		if (!_defaultLanguageId.equals(languageId)) {
-			StringBundler defaultLanguageContentSB = _languageContentSBMap.get(
+			StringBundler defaultLanguageContentSB = _localizedContentSBMap.get(
 				_defaultLanguageId);
 
 			if ((defaultLanguageContentSB != null) &&
@@ -96,12 +97,12 @@ public class TextEmbeddingContentHelper<T extends BaseModel<T>> {
 	public Map<String, String> getLocalizedContentMap() {
 		Map<String, String> languageContentMap = new TreeMap<>();
 
-		if (_languageContentSBMap.isEmpty()) {
+		if (_localizedContentSBMap.isEmpty()) {
 			return languageContentMap;
 		}
 
 		for (Map.Entry<String, StringBundler> entry :
-				_languageContentSBMap.entrySet()) {
+				_localizedContentSBMap.entrySet()) {
 
 			StringBundler languageContentSB = entry.getValue();
 
@@ -133,7 +134,7 @@ public class TextEmbeddingContentHelper<T extends BaseModel<T>> {
 	}
 
 	private StringBundler _getLanguageContentStringBundler(String languageId) {
-		return _languageContentSBMap.computeIfAbsent(
+		return _localizedContentSBMap.computeIfAbsent(
 			languageId,
 			key -> {
 				StringBundler sb = new StringBundler(_size);
@@ -149,7 +150,7 @@ public class TextEmbeddingContentHelper<T extends BaseModel<T>> {
 	private final long _companyId;
 	private final String _defaultLanguageId;
 	private final String _delimiter;
-	private final Map<String, StringBundler> _languageContentSBMap =
+	private final Map<String, StringBundler> _localizedContentSBMap =
 		new TreeMap<>();
 	private final T _model;
 	private final StringBundler _nonlocalizedContentSB;
