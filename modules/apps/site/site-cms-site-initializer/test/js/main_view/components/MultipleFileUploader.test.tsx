@@ -289,6 +289,51 @@ describe('MultipleFileUploader', () => {
 		});
 	});
 
+	it('can show multiple errors per request', async () => {
+		const mockUploadRequestFail = jest.fn().mockResolvedValue({
+			errors: [
+				{errorMessage: 'first error message', name: 'file1.xlf'},
+				{errorMessage: 'second error message', name: 'file2.xlf'},
+			],
+			multipleErrors: true,
+		});
+
+		const {container, getByText} = render(
+			<MultipleFileUploader
+				{...DEFAULT_PROPS}
+				assetLibraries={[
+					{
+						externalReferenceCode: 'erc-2',
+						groupId: 2,
+						name: 'Library A',
+					},
+				]}
+				uploadRequest={mockUploadRequestFail}
+			/>
+		);
+
+		const input =
+			container.querySelector<HTMLInputElement>('input[type="file"]')!;
+		const file1 = createFile('upload1.zip', 1024);
+
+		fireEvent.change(input, {target: {files: [file1]}});
+
+		expect(await screen.findByText('upload1.zip')).toBeInTheDocument();
+
+		const uploadButton = screen.getByRole('button', {name: /upload/i});
+		fireEvent.click(uploadButton);
+
+		await waitFor(() => {
+			expect(mockUploadRequestFail).toHaveBeenCalledTimes(1);
+			expect(
+				getByText('2-files-could-not-be-uploaded')
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole('button', {name: 'upload-another-file'})
+			).toBeInTheDocument();
+		});
+	});
+
 	it('can show custom button label and messages', async () => {
 		const {container, findByText, getByRole, getByText} = render(
 			<MultipleFileUploader
