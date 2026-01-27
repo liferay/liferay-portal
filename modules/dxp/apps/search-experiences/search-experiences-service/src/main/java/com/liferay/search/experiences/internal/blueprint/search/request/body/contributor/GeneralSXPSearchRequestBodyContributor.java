@@ -145,10 +145,7 @@ public class GeneralSXPSearchRequestBodyContributor
 					"assetSubtypeIdentifiersMap", assetSubtypeIdentifiersMap));
 		}
 
-		if (ArrayUtil.isNotEmpty(generalConfiguration.getScope()) &&
-			FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-37320")) {
-
+		if (ArrayUtil.isNotEmpty(generalConfiguration.getScope())) {
 			TermsQuery termsQuery = _queries.terms(
 				"scopeGroupExternalReferenceCode");
 
