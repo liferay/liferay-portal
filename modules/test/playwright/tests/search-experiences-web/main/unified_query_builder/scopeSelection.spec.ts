@@ -23,7 +23,6 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true}, // CMS 2.0
-		'LPD-37320': {enabled: true}, // Unified Query Builder
 		'LPD-41306': {enabled: true}, // Headless Site API
 		'LPS-178052': {enabled: true}, // Headless Site Page API
 	}),
