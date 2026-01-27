@@ -288,7 +288,12 @@ public class SectionDisplayContextHelper {
 				LanguageUtil.get(httpServletRequest, "export-for-translation"),
 				null, "get", null),
 			new FDSActionDropdownItem(
-				null, "download", "import-translation",
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={embedded.id}&",
+					"redirect=", themeDisplay.getURLCurrent()),
+				"download", "import-translation",
 				LanguageUtil.get(httpServletRequest, "import-translation"),
 				null, "update", null),
 			new FDSActionDropdownItem(

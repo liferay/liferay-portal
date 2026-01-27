@@ -39,18 +39,24 @@ interface ImportTranslationResultData {
 }
 
 export default function ImportTranslationModalContent({
+	actionLink,
 	groupId,
 	itemId,
 	itemName,
 	loadData,
 	onModalClose,
 }: {
+	actionLink: string;
 	groupId: number;
 	itemId: number;
 	itemName: string;
 	loadData?: () => void;
 	onModalClose: () => void;
 }) {
+	const getItemLink = () => {
+		return `<a href="${actionLink}" class="alert-link lead"><strong>${itemName}</strong></a>`;
+	};
+
 	const uploadRequest = async ({fileData}: {fileData: FileData}) => {
 		const formData = new FormData();
 
@@ -102,7 +108,7 @@ export default function ImportTranslationModalContent({
 					Liferay.Language.get(
 						'x-file-was-successfully-imported-x-is-now-published-with-new-translations'
 					),
-					['1', `<strong>${itemName}</strong>`]
+					['1', getItemLink()]
 				);
 			}
 			else {

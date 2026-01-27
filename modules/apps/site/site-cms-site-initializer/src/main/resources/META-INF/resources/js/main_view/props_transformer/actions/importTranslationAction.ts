@@ -8,11 +8,13 @@ import ImportTranslationModalContent from '../../modal/ImportTranslationModalCon
 
 export default function importTranslationAction(
 	data: ItemData,
+	actionLink: string,
 	loadData?: () => void
 ) {
 	openCMSModal({
 		contentComponent: ({closeModal}: {closeModal: () => void}) =>
 			ImportTranslationModalContent({
+				actionLink,
 				groupId: data.embedded.scopeId,
 				itemId: data.embedded.id,
 				itemName: data.embedded.title,
