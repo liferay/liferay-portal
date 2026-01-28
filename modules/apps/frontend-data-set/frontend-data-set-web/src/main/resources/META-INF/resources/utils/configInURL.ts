@@ -84,9 +84,7 @@ export function writeConfigInURL(
 		) || ''
 	);
 
-	const path = `${window.location.pathname}?${decodeURIComponent(
-		params.toString()
-	)}`;
+	const path = `${window.location.pathname}?${decodeURLParams(params)}`;
 
 	const replaceState =
 		configInURLBehavior === EConfigInURLBehavior.REPLACE || !currentConfig;
@@ -134,6 +132,15 @@ export function contains(
 	}
 
 	return deepContains(a, b);
+}
+
+function decodeURLParams(params: URLSearchParams) {
+	return params
+		.toString()
+		.replace(/%28/g, '(')
+		.replace(/%29/g, ')')
+		.replace(/%3A/g, ':')
+		.replace(/%2C/g, ',');
 }
 
 function deepContains(subset: any, superset: any) {
