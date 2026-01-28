@@ -70,13 +70,17 @@ const assertDelta = async (
 	delta: number,
 	fdsId: string,
 	fdsSamplePage: FDSSamplePage,
+	paramInURL: boolean = false,
 	page: Page
 ) => {
-	await expect(() => {
-		const config = getConfigFromURL(new URL(page.url()).search, fdsId);
+	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
 
-		expect(config.delta).toBe(delta);
-	}).toPass();
+	if (paramInURL) {
+		await expect(config.delta).toBe(delta);
+	}
+	else if (config) {
+		expect(config.delta).toBeUndefined();
+	}
 
 	await expect(fdsSamplePage.paginator.itemsPerPageSelector).toHaveText(
 		`${delta} Items`
@@ -88,7 +92,12 @@ const assertNoActiveFiltersInURL = async (fdsId: string, page: Page) => {
 
 	await expect(() => {
 		const config = getConfigFromURL(new URL(page.url()).search, fdsId);
-		expect(config.filters.length).toBe(0);
+
+		config
+			? expect(
+					config.filters === undefined || !config.filters.length
+				).toBeTruthy()
+			: expect(config).toBeNull();
 	}).toPass();
 };
 
@@ -96,19 +105,29 @@ const assertActiveFiltersInURL = async (
 	active: boolean,
 	ids: string[],
 	fdsId: string,
+	paramInURL: boolean,
 	page: Page
 ) => {
 	await waitForFDS({page, visualizationMode: EFDSVisualizationMode.TABLE});
 
-	await expect(() => {
-		const config = getConfigFromURL(new URL(page.url()).search, fdsId);
+	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
 
-		for (const id of ids) {
-			expect(config.filters.some((filter: any) => filter.id === id)).toBe(
-				active
-			);
-		}
-	}).toPass();
+	if (paramInURL) {
+		await expect(() => {
+			if (paramInURL) {
+				for (const id of ids) {
+					expect(
+						config.filters.some((filter: any) => filter.id === id)
+					).toBe(active);
+				}
+			}
+			else if (config) {
+				expect(
+					config.filters === undefined || !config.filters.length
+				).toBeTruthy();
+			}
+		}).toPass();
+	}
 };
 
 const assertActiveFilter = async (
@@ -116,9 +135,12 @@ const assertActiveFilter = async (
 	id: string,
 	fdsId: string,
 	filterResumeExpectedText: string,
+	paramInURL: boolean = false,
 	page: Page
 ) => {
-	await assertActiveFiltersInURL(active, [id], fdsId, page);
+	if (paramInURL) {
+		await assertActiveFiltersInURL(active, [id], fdsId, true, page);
+	}
 
 	const filterResumeLocator = page.getByRole('button', {
 		name: filterResumeExpectedText,
@@ -199,19 +221,46 @@ const changeFilterSelections = async (
 	await waitForFDS({page});
 };
 
+const assertPageNumber = async (
+	pageNumber: number,
+	fdsId: string,
+	page: Page,
+	paramInURL: boolean
+) => {
+	const pageSelector = page.getByLabel(`Go to page, ${pageNumber}`);
+
+	await page
+		.locator('li.page-item.active', {has: pageSelector})
+		.waitFor({state: 'visible'});
+
+	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
+
+	if (paramInURL) {
+		await expect(() => {
+			expect(config.page).toBe(pageNumber);
+		}).toPass();
+	}
+	else if (config) {
+		expect(config.page).toBeUndefined();
+	}
+};
+
 const assertView = async (
 	fdsId: string,
 	page: Page,
 	visualizationMode: EFDSVisualizationMode,
+	paramInURL: boolean = false,
 	viewName?: string
 ) => {
 	await waitForFDS({page, visualizationMode});
 
-	await expect(() => {
-		const config = getConfigFromURL(new URL(page.url()).search, fdsId);
-
+	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
+	if (paramInURL) {
 		expect(config.view).toBe(viewName ? viewName : visualizationMode);
-	}).toPass();
+	}
+	else if (config) {
+		expect(config.view).toBeUndefined();
+	}
 };
 
 const changeDelta = async (
@@ -224,7 +273,14 @@ const changeDelta = async (
 
 	await waitForFDS({page, visualizationMode: EFDSVisualizationMode.TABLE});
 
-	await assertDelta(delta, fdsId, fdsSamplePage, page);
+	await assertDelta(delta, fdsId, fdsSamplePage, true, page);
+};
+
+const assertNoConfigInURL = async (fdsId: string, page: Page) => {
+	await expect(() => {
+		const config = getConfigFromURL(new URL(page.url()).search, fdsId);
+		expect(config).toBeNull();
+	}).toPass();
 };
 
 const spaConfigurations = [
@@ -277,8 +333,14 @@ for (const spaConfiguration of spaConfigurations) {
 				const setDelta = (delta) =>
 					changeDelta(delta, 'advanced', fdsSamplePage, page);
 
-				const checkDelta = (delta) =>
-					assertDelta(delta, 'advanced', fdsSamplePage, page);
+				const checkDelta = (delta, paramInURL = true) =>
+					assertDelta(
+						delta,
+						'advanced',
+						fdsSamplePage,
+						paramInURL,
+						page
+					);
 
 				await test.step('Change delta via UI several times', async () => {
 					await setDelta(40);
@@ -295,7 +357,11 @@ for (const spaConfiguration of spaConfigurations) {
 					// initial delta is 20
 
 					await page.goBack();
-					await checkDelta(20);
+					await checkDelta(20, false);
+
+					await expect(
+						fdsSamplePage.paginator.itemsPerPageSelector
+					).toHaveText(`20 Items`);
 				});
 
 				await test.step('Check forward navigation', async () => {
@@ -326,11 +392,15 @@ for (const spaConfiguration of spaConfigurations) {
 			'push history, view name',
 			{tag: '@LPD-20947'},
 			async ({fdsSamplePage, page}) => {
-				const checkView = (visualizationMode: EFDSVisualizationMode) =>
+				const checkView = (
+					visualizationMode: EFDSVisualizationMode,
+					paramInURL: boolean = true
+				) =>
 					assertView(
 						'advanced',
 						page,
 						visualizationMode,
+						paramInURL,
 						visualizationMode === EFDSVisualizationMode.TABLE
 							? 'customizedTable'
 							: undefined
@@ -363,7 +433,7 @@ for (const spaConfiguration of spaConfigurations) {
 					// initial view is table
 
 					await page.goBack();
-					await checkView(EFDSVisualizationMode.TABLE);
+					await checkView(EFDSVisualizationMode.TABLE, false);
 				});
 
 				await test.step('Check forward navigation', async () => {
@@ -401,32 +471,44 @@ for (const spaConfiguration of spaConfigurations) {
 				const checkFilter = (
 					active: boolean,
 					id: string,
-					filterResumeText: string
+					filterResumeText: string,
+					paramInURL: boolean
 				) =>
 					assertActiveFilter(
 						active,
 						id,
 						'advanced',
 						filterResumeText,
+						paramInURL,
 						page
 					);
 
-				const checkFiltersInURL = (active: boolean, ids: string[]) =>
-					assertActiveFiltersInURL(active, ids, 'advanced', page);
+				const checkFiltersInURL = (
+					active: boolean,
+					ids: string[],
+					paramInURL: boolean = true
+				) =>
+					assertActiveFiltersInURL(
+						active,
+						ids,
+						'advanced',
+						paramInURL,
+						page
+					);
 
 				await test.step('Check color filter is pre-applied, and no other else', async () => {
 					await checkFilter(
 						true,
 						'color',
-						'Color: Blue, Green, Yellow'
+						'Color: Blue, Green, Yellow',
+						false
 					);
 
-					await checkFiltersInURL(false, [
-						'date',
-						'size',
-						'status',
-						'title',
-					]);
+					await checkFiltersInURL(
+						false,
+						['date', 'size', 'status', 'title'],
+						false
+					);
 				});
 
 				await test.step('Deactivate color filter', async () => {
@@ -434,7 +516,8 @@ for (const spaConfiguration of spaConfigurations) {
 					await checkFilter(
 						false,
 						'color',
-						'Color: Blue, Green, Yellow'
+						'Color: Blue, Green, Yellow',
+						true
 					);
 					await assertNoActiveFiltersInURL('advanced', page);
 				});
@@ -447,7 +530,12 @@ for (const spaConfiguration of spaConfigurations) {
 						page
 					);
 
-					await checkFilter(true, 'color', 'Color: Blue, Yellow');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Blue, Yellow',
+						true
+					);
 
 					await changeFilterSelections(
 						['Green'],
@@ -456,7 +544,12 @@ for (const spaConfiguration of spaConfigurations) {
 						['Blue']
 					);
 
-					await checkFilter(true, 'color', 'Color: Yellow, Green');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Yellow, Green',
+						true
+					);
 
 					await changeFilterSelections(
 						['Red'],
@@ -465,24 +558,35 @@ for (const spaConfiguration of spaConfigurations) {
 						['Yellow']
 					);
 
-					await checkFilter(true, 'color', 'Color: Green, Red');
+					await checkFilter(true, 'color', 'Color: Green, Red', true);
 				});
 
 				await test.step('Check back navigation', async () => {
 					await page.goBack();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Yellow, Green');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Yellow, Green',
+						true
+					);
 
 					await page.goBack();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Blue, Yellow');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Blue, Yellow',
+						true
+					);
 
 					await page.goBack();
 					await waitForFDS({page});
 					await checkFilter(
 						false,
 						'color',
-						'Color: Blue, Green, Yellow'
+						'Color: Blue, Green, Yellow',
+						true
 					);
 
 					// initial, pre-applied filter
@@ -492,7 +596,8 @@ for (const spaConfiguration of spaConfigurations) {
 					await checkFilter(
 						true,
 						'color',
-						'Color: Blue, Green, Yellow'
+						'Color: Blue, Green, Yellow',
+						false
 					);
 				});
 
@@ -502,26 +607,42 @@ for (const spaConfiguration of spaConfigurations) {
 					await checkFilter(
 						false,
 						'color',
-						'Color: Blue, Green, Yellow'
+						'Color: Blue, Green, Yellow',
+						true
 					);
 
 					await page.goForward();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Blue, Yellow');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Blue, Yellow',
+						true
+					);
 
 					await page.goForward();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Yellow, Green');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Yellow, Green',
+						true
+					);
 
 					await page.goForward();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Green, Red');
+					await checkFilter(true, 'color', 'Color: Green, Red', true);
 				});
 
 				await test.step('Mix navigation and change via UI', async () => {
 					await page.goBack();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Yellow, Green');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Yellow, Green',
+						true
+					);
 
 					await changeFilterSelections(
 						['Blue'],
@@ -534,12 +655,16 @@ for (const spaConfiguration of spaConfigurations) {
 
 					await page.goBack();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Yellow, Green');
+					await checkFilter(
+						true,
+						'color',
+						'Color: Yellow, Green',
+						true
+					);
 
 					await page.goForward();
 					await waitForFDS({page});
-					await checkFilter(true, 'color', 'Color: Blue');
-
+					await checkFilter(true, 'color', 'Color: Blue', true);
 					await checkFiltersInURL(false, [
 						'date',
 						'size',
@@ -551,7 +676,7 @@ for (const spaConfiguration of spaConfigurations) {
 				});
 
 				await test.step('Operating with several filters', async () => {
-					await checkFilter(true, 'color', 'Color: Blue');
+					await checkFilter(true, 'color', 'Color: Blue', true);
 
 					await activateFilter(
 						['Approved', 'Draft'],
@@ -559,11 +684,12 @@ for (const spaConfiguration of spaConfigurations) {
 						fdsSamplePage,
 						page
 					);
-					await checkFilter(true, 'color', 'Color: Blue');
+					await checkFilter(true, 'color', 'Color: Blue', true);
 					await checkFilter(
 						true,
 						'status',
-						'Status: Approved, Draft'
+						'Status: Approved, Draft',
+						true
 					);
 					await checkFiltersInURL(false, ['date', 'size', 'title']);
 
@@ -571,7 +697,8 @@ for (const spaConfiguration of spaConfigurations) {
 					await checkFilter(
 						true,
 						'status',
-						'Status: Approved, Draft'
+						'Status: Approved, Draft',
+						true
 					);
 					await checkFiltersInURL(false, [
 						'color',
@@ -595,11 +722,20 @@ for (const spaConfiguration of spaConfigurations) {
 						delta,
 						'customInternalView',
 						fdsSamplePage,
+						true,
 						page
 					);
 
-				const checkView = (visualizationMode: EFDSVisualizationMode) =>
-					assertView('customInternalView', page, visualizationMode);
+				const checkView = (
+					visualizationMode: EFDSVisualizationMode,
+					paramInURL: boolean = true
+				) =>
+					assertView(
+						'customInternalView',
+						page,
+						visualizationMode,
+						paramInURL
+					);
 
 				const setDelta = (delta) =>
 					changeDelta(
@@ -633,14 +769,22 @@ for (const spaConfiguration of spaConfigurations) {
 						'advanced',
 						page,
 						EFDSVisualizationMode.TABLE,
+						false,
 						'customizedTable'
 					);
-					await assertDelta(20, 'advanced', fdsSamplePage, page);
+					await assertDelta(
+						20,
+						'advanced',
+						fdsSamplePage,
+						false,
+						page
+					);
 					await assertActiveFilter(
 						true,
 						'color',
 						'advanced',
 						'Color: Blue, Green, Yellow',
+						false,
 						page
 					);
 				});
@@ -661,29 +805,6 @@ for (const spaConfiguration of spaConfigurations) {
 			'push history, page number',
 			{tag: '@LPD-20947'},
 			async ({page}) => {
-				const assertPageNumber = async (
-					pageNumber: number,
-					fdsId: string,
-					page: Page
-				) => {
-					const pageSelector = page.getByLabel(
-						`Go to page, ${pageNumber}`
-					);
-
-					await page
-						.locator('li.page-item.active', {has: pageSelector})
-						.waitFor({state: 'visible'});
-
-					await expect(() => {
-						const config = getConfigFromURL(
-							new URL(page.url()).search,
-							fdsId
-						);
-
-						expect(config.page).toBe(pageNumber);
-					}).toPass();
-				};
-
 				const changePageNumber = async (
 					pageNumber: number,
 					fdsId: string,
@@ -691,14 +812,16 @@ for (const spaConfiguration of spaConfigurations) {
 				) => {
 					await page.getByLabel(`Go to page, ${pageNumber}`).click();
 
-					await assertPageNumber(pageNumber, fdsId, page);
+					await assertPageNumber(pageNumber, fdsId, page, true);
 				};
 
 				const setPageNumber = (pageNumber: number) =>
 					changePageNumber(pageNumber, 'advanced', page);
 
-				const checkPageNumber = (pageNumber: number) =>
-					assertPageNumber(pageNumber, 'advanced', page);
+				const checkPageNumber = (
+					pageNumber: number,
+					paramInURL: boolean = true
+				) => assertPageNumber(pageNumber, 'advanced', page, paramInURL);
 
 				await test.step('Change page number via UI several times', async () => {
 					await setPageNumber(2);
@@ -714,7 +837,7 @@ for (const spaConfiguration of spaConfigurations) {
 					await checkPageNumber(2);
 
 					await page.goBack();
-					await checkPageNumber(1);
+					await checkPageNumber(1, false);
 				});
 
 				await test.step('Check forward navigation', async () => {
@@ -871,56 +994,64 @@ for (const spaConfiguration of spaConfigurations) {
 				const assertSearchParam = async (
 					searchParam: string,
 					fdsId: string,
+					paramInURL: boolean,
 					page: Page
 				) => {
-					await expect(() => {
-						const config = getConfigFromURL(
-							new URL(page.url()).search,
-							fdsId
-						);
+					const config = getConfigFromURL(
+						new URL(page.url()).search,
+						fdsId
+					);
+					if (paramInURL) {
+						await expect(() => {
+							if (searchParam) {
+								expect(config.q).toBe(searchParam);
+							}
+							else {
+								expect(config.q).toBeUndefined();
+							}
+						}).toPass();
 
-						if (searchParam) {
-							expect(config.q).toBe(searchParam);
-						}
-						else {
-							expect(config.q).toBeUndefined();
-						}
-					}).toPass();
-
-					await expect(
-						fdsSamplePage.managementToolbar.searchInput
-					).toHaveValue(searchParam);
+						await expect(
+							fdsSamplePage.managementToolbar.searchInput
+						).toHaveValue(searchParam);
+					}
+					else if (config) {
+						expect(config.q).toBeUndefined();
+					}
 				};
 
-				const changeSearchParam = async (
+				const setSearchParam = async (
 					searchParam: string,
-					fdsId: string,
-					fdsSamplePage: FDSSamplePage,
-					page: Page
+					fdsId?: string
 				) => {
 					await fdsSamplePage.managementToolbar.searchInput.fill(
 						searchParam
 					);
 					await fdsSamplePage.managementToolbar.searchButton.click();
 
-					await assertSearchParam(searchParam, fdsId, page);
-				};
-
-				const setSearchParam = (searchParam: string) =>
-					changeSearchParam(
+					await assertSearchParam(
 						searchParam,
-						'advanced',
-						fdsSamplePage,
+						fdsId || 'advanced',
+						true,
 						page
 					);
+				};
 
-				const checkSearchParam = (searchParam: string) =>
-					assertSearchParam(searchParam, 'advanced', page);
+				const checkSearchParam = (
+					searchParam: string,
+					paramInURL: boolean = true
+				) =>
+					assertSearchParam(
+						searchParam,
+						'advanced',
+						paramInURL,
+						page
+					);
 
 				const clearSearchParam = async () => {
 					await fdsSamplePage.activeFiltersToolbar.clearSearchButton.click();
 
-					await assertSearchParam('', 'advanced', page);
+					await assertSearchParam('', 'advanced', true, page);
 				};
 				await test.step('Change search parameter via UI several times', async () => {
 					await setSearchParam('test1');
@@ -944,7 +1075,7 @@ for (const spaConfiguration of spaConfigurations) {
 
 					await page.goBack();
 					await waitForFDS({page});
-					await checkSearchParam('');
+					await checkSearchParam('', false);
 				});
 
 				await test.step('Check forward navigation', async () => {
@@ -994,14 +1125,7 @@ for (const spaConfiguration of spaConfigurations) {
 					});
 				});
 
-				await test.step('Assert there is no config in URL', async () => {
-					expect(
-						getConfigFromURL(
-							new URL(page.url()).search,
-							'singleSelection'
-						)
-					).toBeNull();
-				});
+				assertNoConfigInURL('singleSelection', page);
 			}
 		);
 
@@ -1013,28 +1137,6 @@ for (const spaConfiguration of spaConfigurations) {
 					Author: 'creator,name',
 					ID: 'id',
 					Title: 'title',
-				};
-
-				const assertAllFieldsAreVisible = async () => {
-					await expect(fdsSamplePage.table.headerCells).toHaveCount(
-						10
-					);
-
-					await expect(() => {
-						const config = getConfigFromURL(
-							new URL(page.url()).search,
-							'advanced'
-						);
-
-						expect(config.vf).toBeDefined();
-						expect(
-							Object.keys(config.vf).reduce(
-								(acc: boolean, key: string) =>
-									acc && config.vf[key],
-								true
-							)
-						).toBeTruthy();
-					}).toPass();
 				};
 
 				const assertFieldVisibility = async (
@@ -1096,7 +1198,7 @@ for (const spaConfiguration of spaConfigurations) {
 
 					await page.goBack();
 
-					await assertAllFieldsAreVisible();
+					assertNoConfigInURL('advanced', page);
 				});
 
 				await test.step('Check forward navigation', async () => {
@@ -1153,13 +1255,7 @@ for (const spaConfiguration of spaConfigurations) {
 					visualizationMode: EFDSVisualizationMode.TABLE,
 				});
 
-				await expect(() => {
-					const config = getConfigFromURL(
-						new URL(page.url()).search,
-						'advanced'
-					);
-					expect(config).toBeNull();
-				}).toPass();
+				await assertNoConfigInURL('advanced', page);
 			}
 		);
 
