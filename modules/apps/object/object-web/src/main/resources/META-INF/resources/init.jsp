@@ -56,6 +56,7 @@ page import="com.liferay.object.web.internal.object.definitions.display.context.
 page import="com.liferay.object.web.internal.object.definitions.display.context.util.LocalizedJSONArrayUtil" %><%@
 page import="com.liferay.object.web.internal.object.entries.constants.ObjectEntriesFDSNames" %><%@
 page import="com.liferay.object.web.internal.object.entries.display.context.ViewObjectEntriesDisplayContext" %><%@
+page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.LayoutConstants" %><%@
 page import="com.liferay.portal.kernel.model.ModelHintsConstants" %><%@

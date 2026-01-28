@@ -11,6 +11,8 @@
 ViewObjectEntriesDisplayContext viewObjectEntriesDisplayContext = (ViewObjectEntriesDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDefinition();
+
+boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-69713");
 %>
 
 <c:choose>
@@ -29,8 +31,8 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 			pageNumber="<%= 1 %>"
 			portletURL="<%= liferayPortletResponse.createRenderURL() %>"
 			propsTransformer="{ViewObjectEntriesFDSPropsTransformer} from object-web"
-			selectionType="multiple"
-			showSelectAll="<%= true %>"
+			selectionType='<%= multiSelectEnabled ? "multiple" : "" %>'
+			showSelectAll="<%= multiSelectEnabled %>"
 			style="fluid"
 		/>
 

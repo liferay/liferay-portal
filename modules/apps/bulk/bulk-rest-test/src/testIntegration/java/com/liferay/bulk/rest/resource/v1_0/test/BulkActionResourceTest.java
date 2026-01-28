@@ -126,7 +126,10 @@ import org.junit.runner.RunWith;
  * @author Alejandro Tardín
  */
 @FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594")}
+	featureFlags = {
+		@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594"),
+		@FeatureFlag("LPD-69713")
+	}
 )
 @RunWith(Arquillian.class)
 public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
