@@ -1156,14 +1156,42 @@ const FrontendDataSetContent = ({
 		}
 	}, [dataSetWrapperRef]);
 
+	const getInitialActiveFilters = useCallback(() => {
+		return initialFilters
+			?.filter((filter: any) => filter.preloadedData)
+			.map((filter: any) => {
+				return {
+					id: filter.id,
+					selectedData: filter.preloadedData
+						? {...filter.preloadedData}
+						: [],
+				};
+			});
+	}, [initialFilters]);
+
 	const handlePopState = useCallback(() => {
 		const stateUpdates: Array<{
 			type: EViewsActionTypes;
 			value: IConfigInURL[keyof IConfigInURL];
 		}> = [];
 
-		const activeFilters = getFilters();
+		const initialActiveFilters = getInitialActiveFilters();
 		const searchParam = getSearchParam();
+		const urlFilters = getFilters();
+
+		const activeFilters = [...(urlFilters || [])];
+
+		if (!urlFilters || urlFilters?.length) {
+			initialActiveFilters?.forEach((initialFilter) => {
+				const isFilterInURL = urlFilters?.some(
+					(urlFilter) => urlFilter.id === initialFilter.id
+				);
+
+				if (!isFilterInURL) {
+					activeFilters.push(initialFilter);
+				}
+			});
+		}
 
 		if (activeFilters || searchParam) {
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
@@ -1233,6 +1261,7 @@ const FrontendDataSetContent = ({
 	}, [
 		getActiveSorts,
 		getDelta,
+		getInitialActiveFilters,
 		getFilters,
 		getPageNumber,
 		getSearchParam,
