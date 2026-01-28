@@ -5,6 +5,7 @@
 
 package com.liferay.product.analytics.web.internal.display.context;
 
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.kernel.provider.LayoutUtilityPageEntryLayoutProvider;
 import com.liferay.petra.string.StringPool;
@@ -16,10 +17,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutSet;
-import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -165,20 +163,25 @@ public abstract class BaseDisplayContext {
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
 
-			LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
-				themeDisplay.getServerName());
+			String portletId = themeDisplay.getPpid();
 
-			if (layoutSet != null) {
-				Group group = layoutSet.getGroup();
+			if (portletId.equals(
+					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
+
+				return ConfigurationProviderUtil.getCompanyConfiguration(
+					ProductAnalyticsConfiguration.class,
+					themeDisplay.getCompanyId());
+			}
+			else if (portletId.equals(
+						ConfigurationAdminPortletKeys.SITE_SETTINGS)) {
 
 				return ConfigurationProviderUtil.getGroupConfiguration(
-					ProductAnalyticsConfiguration.class, group.getCompanyId(),
-					group.getGroupId());
+					ProductAnalyticsConfiguration.class,
+					themeDisplay.getScopeGroupId());
 			}
 
-			return ConfigurationProviderUtil.getCompanyConfiguration(
-				ProductAnalyticsConfiguration.class,
-				themeDisplay.getCompanyId());
+			return ConfigurationProviderUtil.getSystemConfiguration(
+				ProductAnalyticsConfiguration.class);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
