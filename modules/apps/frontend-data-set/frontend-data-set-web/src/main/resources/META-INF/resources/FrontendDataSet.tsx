@@ -760,25 +760,31 @@ const FrontendDataSetContent = ({
 
 		const configInURL: Partial<IConfigInURL> | null = readConfigFromURL(id);
 
-		unfrozenGlobalFDSState.filters.forEach((filter: IBaseFilterState) => {
-			if (filter.preloadedData || filter.selectedData) {
-				const preloadedData = JSON.stringify(filter.preloadedData);
-				const selectedData = JSON.stringify(filter.selectedData);
+		const shouldUpdateFilters = unfrozenGlobalFDSState.filters.some(
+			(filter: IBaseFilterState) => {
+				if (filter.preloadedData || filter.selectedData) {
+					const preloadedData = JSON.stringify(filter.preloadedData);
+					const selectedData = JSON.stringify(filter.selectedData);
 
-				if (
-					preloadedData !== selectedData ||
-					(preloadedData === selectedData &&
-						configInURL?.filters?.some(
-							(filterURL) => filterURL.id === filter.id
-						))
-				) {
-					updateConfigInURL({
-						[EConfigInURLKeys.ACTIVE_FILTERS]:
-							unfrozenGlobalFDSState.filters,
-					});
+					return (
+						preloadedData !== selectedData ||
+						(preloadedData === selectedData &&
+							configInURL?.filters?.some(
+								(filterURL) => filterURL.id === filter.id
+							))
+					);
 				}
+
+				return false;
 			}
-		});
+		);
+
+		if (shouldUpdateFilters) {
+			updateConfigInURL({
+				[EConfigInURLKeys.ACTIVE_FILTERS]:
+					unfrozenGlobalFDSState.filters,
+			});
+		}
 
 		if (
 			(unfrozenGlobalFDSState.search.query || configInURL?.q) &&
