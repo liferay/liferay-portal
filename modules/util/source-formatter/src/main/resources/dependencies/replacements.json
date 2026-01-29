@@ -5010,6 +5010,14 @@
 	},
 	{
 		"classNames": [
+			"ModelListener"
+		],
+		"from": "regex:(?<variableName>\\w+)\\.onAfterUpdate\\((?<className>\\w+)\\)",
+		"issueKey": "LPD-58402",
+		"to": "${variableName}.onAfterUpdate(${className}.cloneWithOriginalValues(), ${className})"
+	},
+	{
+		"classNames": [
 			"MBMessageLocalService",
 			"MBMessageLocalServiceUtil"
 		],
