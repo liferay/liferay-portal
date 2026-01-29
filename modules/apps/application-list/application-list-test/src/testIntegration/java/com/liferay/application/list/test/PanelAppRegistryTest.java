@@ -8,15 +8,22 @@ package com.liferay.application.list.test;
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.PanelAppRegistry;
+import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.application.list.display.context.logic.test.application.list.ApplicationsMenuTestPanelApp;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Dictionary;
@@ -44,6 +51,17 @@ public class PanelAppRegistryTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testGetFirstAvailablePanelApp() throws PortalException {
+		User user = TestPropsValues.getUser();
+
+		PanelApp panelApp = _panelAppRegistry.getFirstAvailablePanelApp(
+			PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS,
+			PermissionCheckerFactoryUtil.create(user), user.getGroup());
+
+		Assert.assertTrue(panelApp instanceof ApplicationsMenuTestPanelApp);
+	}
 
 	@Test
 	public void testGetServiceReferenceComparator() {
@@ -95,6 +113,9 @@ public class PanelAppRegistryTest {
 			}
 		}
 	}
+
+	@Inject
+	private PanelAppRegistry _panelAppRegistry;
 
 	private static class TestPanelApp1 extends BasePanelApp {
 
