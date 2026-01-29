@@ -5,6 +5,7 @@
 
 package com.liferay.application.list;
 
+import com.liferay.application.list.util.PanelCategoryRegistryUtil;
 import com.liferay.application.list.util.comparator.PanelEntryServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
@@ -44,6 +45,32 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 @Component(service = PanelAppRegistry.class)
 public class PanelAppRegistry {
+
+	public PanelApp getFirstAvailablePanelApp(
+		String parentPanelCategoryKey, PermissionChecker permissionChecker,
+		Group group) {
+
+		PanelApp panelApp = getFirstPanelApp(
+			parentPanelCategoryKey, permissionChecker, group);
+
+		if (panelApp != null) {
+			return panelApp;
+		}
+
+		for (PanelCategory panelCategory :
+				PanelCategoryRegistryUtil.getChildPanelCategories(
+					parentPanelCategoryKey)) {
+
+			panelApp = getFirstAvailablePanelApp(
+				panelCategory.getKey(), permissionChecker, group);
+
+			if (panelApp != null) {
+				return panelApp;
+			}
+		}
+
+		return null;
+	}
 
 	public PanelApp getFirstPanelApp(
 		String parentPanelCategoryKey, PermissionChecker permissionChecker,
