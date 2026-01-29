@@ -133,6 +133,17 @@ public class PanelCategoryHelper {
 		return count;
 	}
 
+	public PanelCategory getPanelCategory(String portletId) {
+		PanelCategory panelCategory = _getPanelCategory(
+			PanelCategoryKeys.APPLICATIONS_MENU, portletId);
+
+		if (panelCategory != null) {
+			return panelCategory;
+		}
+
+		return _getPanelCategory(PanelCategoryKeys.ROOT, portletId);
+	}
+
 	public boolean hasPanelApp(String portletId) {
 		if (containsPortlet(portletId, PanelCategoryKeys.APPLICATIONS_MENU) ||
 			containsPortlet(portletId, PanelCategoryKeys.ROOT)) {
@@ -178,6 +189,29 @@ public class PanelCategoryHelper {
 		}
 
 		return false;
+	}
+
+	private PanelCategory _getPanelCategory(
+		String parentCategoryKey, String portletId) {
+
+		if (hasPortlet(portletId, parentCategoryKey)) {
+			return PanelCategoryRegistryUtil.getPanelCategory(
+				parentCategoryKey);
+		}
+
+		for (PanelCategory panelCategory1 :
+				PanelCategoryRegistryUtil.getChildPanelCategories(
+					parentCategoryKey)) {
+
+			PanelCategory panelCategory2 = _getPanelCategory(
+				panelCategory1.getKey(), portletId);
+
+			if (panelCategory2 != null) {
+				return panelCategory2;
+			}
+		}
+
+		return null;
 	}
 
 	private final PanelAppRegistry _panelAppRegistry;
