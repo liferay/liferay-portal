@@ -14,6 +14,9 @@
 			"@liferay/frontend-data-set-web": [
 				"../../../../../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/index.ts"
 			],
+			"@liferay/frontend-js-item-selector-web": [
+				"../../../../../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
+			],
 			"@liferay/object-js-components-web": [
 				"../../../../../../object-js-components-web/src/main/resources/META-INF/resources/index.ts"
 			],

@@ -215,6 +215,17 @@ public class AttachmentObjectFieldBusinessType
 				ObjectFieldSettingConstants.NAME_STORAGE_DL_FOLDER_PATH,
 				objectFieldSettingsValues);
 		}
+		else if (Objects.equals(
+			fileSource,
+			ObjectFieldSettingConstants.VALUE_CMS_FILES)) {
+
+			validateNotAllowedObjectFieldSettingNames(
+				SetUtil.fromArray(
+					ObjectFieldSettingConstants.
+						NAME_SHOW_FILES_IN_DOCS_AND_MEDIA,
+					ObjectFieldSettingConstants.NAME_STORAGE_DL_FOLDER_PATH),
+				objectField.getName(), objectFieldSettingsValues);
+		}
 		else {
 			throw new ObjectFieldSettingValueException.InvalidValue(
 				objectField.getName(),

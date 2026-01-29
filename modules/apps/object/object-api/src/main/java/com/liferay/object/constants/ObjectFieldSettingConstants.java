@@ -64,6 +64,8 @@ public class ObjectFieldSettingConstants {
 
 	public static final String VALUE_COUNT = "COUNT";
 
+	public static final String VALUE_CMS_FILES = "cmsFiles";
+
 	public static final String VALUE_DOCS_AND_MEDIA = "documentsAndMedia";
 
 	public static final String VALUE_EXPRESSION_BUILDER = "expressionBuilder";

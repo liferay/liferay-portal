@@ -322,6 +322,10 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
 
+		if (Objects.equals(fileSource, "cmsFiles")) {
+			return "http://localhost:8080/o/headless-asset-library/v1.0/asset-libraries?nestedFields=numberOfConnectedSites%2CnumberOfUserAccounts%2CnumberOfUserGroups&currentURL=%2Fweb%2Fcms%2Fall-spaces&filter=type+eq+%27Space%27&page=1&pageSize=10";
+		}
+
 		if (Objects.equals(fileSource, "documentsAndMedia")) {
 			return _getItemSelectorURL(
 				_getGroupId(

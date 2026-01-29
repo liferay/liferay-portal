@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -17,6 +17,10 @@ import {validateFileExtension, validateFileSize} from './util/attachment';
 
 import './Attachment.scss';
 
+import {useModal} from '@clayui/modal';
+
+import CMSFilesItemSelectorModal from './util/CMSFilesItemSelectorModal';
+
 import type {LocalizedValue} from 'dynamic-data-mapping-form-field-type';
 
 export type AttachmentFile = {
@@ -29,6 +33,17 @@ type File = {
 	contentURL: string;
 	fileEntryId: string;
 	readOnly: boolean;
+	title: string;
+};
+
+type CMSFile = {
+	embedded: {
+		file: {
+			fileURL: string;
+		};
+		id: number;
+	};
+	id: number;
 	title: string;
 };
 
@@ -61,10 +76,36 @@ export default function AttachmentBase({
 	url,
 }: AttachmentBaseProps<string | LocalizedValue<string>>) {
 	const {portletNamespace} = useConfig();
-
 	const inputRef = useRef<HTMLInputElement>(null);
-
 	const [isLoading, setLoading] = useState(false);
+	const [cmsFiles, setCMSFiles] = useState<CMSFile[]>([]);
+
+	const {
+		observer: spaceItemSelectorObserver,
+		onOpenChange: spaceItemSelectorOpenChange,
+		open: spaceItemSelectorOpen,
+	} = useModal();
+
+	const handleCMSItemsChange = (items: any[]) => {
+		setCMSFiles(items);
+
+		if (!items || !items.length) {
+			return;
+		}
+
+		const selectedItem = items[0];
+
+		const formattedAttachment: AttachmentFile = {
+			contentURL: selectedItem.embedded.file.fileURL,
+			fileEntryId: String(selectedItem.embedded.id),
+			title: selectedItem.title,
+		};
+
+		onAttachmentChange(
+			formattedAttachment,
+			String(selectedItem.embedded.id)
+		);
+	};
 
 	const handleSelectedItem = (selectedItem: any) => {
 		if (!selectedItem) {
@@ -175,6 +216,9 @@ export default function AttachmentBase({
 									filePicker.click();
 								}
 							}
+							else if (fileSource === 'cmsFiles') {
+								spaceItemSelectorOpenChange(true);
+							}
 						}}
 					>
 						{Liferay.Language.get('select-file')}
@@ -188,6 +232,16 @@ export default function AttachmentBase({
 					readOnly={readOnly}
 				/>
 			</div>
+
+			{fileSource === 'cmsFiles' && (
+				<CMSFilesItemSelectorModal
+					items={cmsFiles}
+					observer={spaceItemSelectorObserver}
+					onItemsChange={handleCMSItemsChange}
+					onOpenChange={spaceItemSelectorOpenChange}
+					open={spaceItemSelectorOpen}
+				/>
+			)}
 
 			<input
 				accept={acceptedFileExtensions

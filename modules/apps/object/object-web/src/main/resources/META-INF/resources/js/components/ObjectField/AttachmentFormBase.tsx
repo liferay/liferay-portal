@@ -24,6 +24,13 @@ interface IAttachmentFormBaseProps {
 const attachmentSources = [
 	{
 		description: Liferay.Language.get(
+			'users-can-upload-or-select-existing-files-from-cms-files'
+		),
+		label: 'Upload or select from cms files',
+		value: 'cmsFiles',
+	},
+	{
+		description: Liferay.Language.get(
 			'files-can-be-stored-in-an-object-entry-or-in-a-specific-folder-in-documents-and-media'
 		),
 		label: Liferay.Language.get('upload-directly-from-users-computer'),
@@ -35,6 +42,21 @@ const attachmentSources = [
 		),
 		label: Liferay.Language.get(
 			'upload-or-select-from-documents-and-media-item-selector'
+		),
+		value: 'documentsAndMedia',
+	},
+];
+
+const libraryOptions = [
+	{
+		label: Liferay.Language.get(
+			'cms-files'
+		),
+		value: 'cmsFiles',
+	},
+	{
+		label: Liferay.Language.get(
+			'documents-and-media'
 		),
 		value: 'documentsAndMedia',
 	},
@@ -84,6 +106,27 @@ export function AttachmentFormBase({
 		}
 	};
 
+	const handleLibraryChange = (value: string) => {
+		const updatedSettings = objectFieldSettings.filter(
+			(setting) => setting.name !== 'librarySource'
+		);
+	
+		updatedSettings.push({
+			name: 'librarySource',
+			value,
+		});
+	
+		setValues({objectFieldSettings: updatedSettings});
+	
+		if (onSubmit) {
+			onSubmit({
+				...values,
+				objectFieldSettings: updatedSettings,
+			});
+		}
+	};
+	
+
 	const toggleShowFiles = (value: boolean) => {
 		const updatedSettings = objectFieldSettings.filter(
 			(setting) =>
@@ -105,6 +148,8 @@ export function AttachmentFormBase({
 
 		setValues({objectFieldSettings: updatedSettings});
 	};
+
+	const isToggled = !!settings.showFilesInDocumentsAndMedia;
 
 	return (
 		<>
@@ -136,12 +181,26 @@ export function AttachmentFormBase({
 							}
 						}}
 						onToggle={toggleShowFiles}
-						toggled={!!settings.showFilesInDocumentsAndMedia}
+						toggled={isToggled}
 						tooltip={Liferay.Language.get(
 							'when-activated-users-can-define-a-folder-within-documents-and-media-to-display-the-files-leave-it-unchecked-for-files-to-be-stored-individually-per-entry'
 						)}
 						tooltipAlign="top"
 					/>
+
+				{isToggled && (
+							<SingleSelect
+								error={error}
+								items={libraryOptions}
+								label={Liferay.Language.get('select-library')}
+								onSelectionChange={(value) =>
+									handleLibraryChange(value as string)
+								}
+								required
+								selectedKey={attachmentSource?.value}
+							/>
+				)}
+
 				</ClayForm.Group>
 			)}
 		</>
