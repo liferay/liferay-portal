@@ -40,5 +40,18 @@ export default function ViewObjectEntriesFDSPropsTransformer({...otherProps}) {
 				});
 			}
 		},
+		onBulkActionItemClick: async ({
+			action,
+			selectedData,
+		}: {
+			action: {data: {id: string}};
+			selectedData: any;
+		}) => {
+			if (action?.data?.id === 'delete') {
+				Liferay.fire('openModalBulkDeleteObjectEntries', {
+					selectedData,
+				});
+			}
+		},
 	};
 }

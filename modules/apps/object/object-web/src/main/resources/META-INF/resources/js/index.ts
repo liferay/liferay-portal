@@ -17,6 +17,7 @@ export {default as ModalDeleteListType} from './components/ListTypeDefinition/Mo
 export {default as ModalAddListTypeDefinition} from './components/ModalAddListTypeDefinition';
 export {default as ModalAddObjectCustomView} from './components/ModalAddObjectCustomView';
 export {default as ModalAddObjectLayout} from './components/ModalAddObjectLayout';
+export {default as ModalBulkDeleteObjectEntries} from './components/ModalBulkDeleteObjectEntries';
 export {default as ModalDeleteObjectEntry} from './components/ModalDeleteObjectEntry';
 export {default as ModalDeletionNotAllowed} from './components/ModalDeletionNotAllowed';
 export {default as ModalImport} from './components/ModalImport/ModalImport';

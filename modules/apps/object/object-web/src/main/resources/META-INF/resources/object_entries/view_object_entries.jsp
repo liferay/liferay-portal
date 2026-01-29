@@ -46,6 +46,17 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 				%>'
 			/>
 		</div>
+
+		<div>
+			<react:component
+				module="{ModalBulkDeleteObjectEntries} from object-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"objectDefinition", objectDefinition
+					).build()
+				%>'
+			/>
+		</div>
 	</c:when>
 	<c:otherwise>
 		<clay:alert
