@@ -189,6 +189,87 @@ test(
 );
 
 test(
+	'Verify Consent Renewal Period field is only enabled when Product Analytics is enabled',
+	{tag: '@LPD-74662'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Privacy',
+			'Product Analytics'
+		);
+
+		const consentRenewalPeriod = await page.getByLabel(
+			'Consent Renewal Period'
+		);
+		const enabledButton = await page.getByLabel('Enabled');
+
+		const isChecked = await enabledButton.isChecked();
+
+		if (isChecked) {
+			await expect(consentRenewalPeriod).toBeEditable();
+
+			await enabledButton.click();
+
+			if (
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Update'})
+					.isVisible()
+			) {
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Update'})
+					.click();
+			}
+			else {
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Save'})
+					.click();
+			}
+
+			await expect(consentRenewalPeriod).not.toBeEditable();
+		}
+		else {
+			await expect(consentRenewalPeriod).not.toBeEditable();
+
+			await enabledButton.click();
+
+			if (
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Update'})
+					.isVisible()
+			) {
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Update'})
+					.click();
+			}
+			else {
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Save'})
+					.click();
+			}
+
+			await expect(consentRenewalPeriod).toBeEditable();
+		}
+	}
+);
+
+test(
+	'Verify Enable button is above Consent Renewal Period field',
+	{tag: '@LPD-74662'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Privacy',
+			'Product Analytics'
+		);
+
+		const consentRenewalPeriod = await page
+			.getByText('Consent Renewal Period')
+			.boundingBox();
+		const enabledButton = await page.getByLabel('Enabled').boundingBox();
+
+		await expect(enabledButton.y).toBeLessThan(consentRenewalPeriod.y);
+	}
+);
+
+test(
 	'Verify Product Analytics Consent Panel buttons and order from Account Settings',
 	{tag: '@LPD-67119'},
 	async ({
