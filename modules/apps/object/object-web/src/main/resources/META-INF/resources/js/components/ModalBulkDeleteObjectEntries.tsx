@@ -6,6 +6,7 @@
 import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
 import {openToast} from '@liferay/object-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import AssetBulkActionTaskService from '../common/services/AssetBulkActionTaskService';
@@ -25,6 +26,44 @@ type ObjectDefinition = {
 	scope: 'company' | 'depot' | 'site';
 };
 
+function getBulkDeleteMessage(
+	isSelectAll: boolean,
+	selectedData: any
+): {
+	modalConfirmationMessage: string;
+	modalConfirmationTitle: string;
+} {
+	if (!selectedData) {
+		return {modalConfirmationMessage: '', modalConfirmationTitle: ''};
+	}
+
+	if (isSelectAll) {
+		return {
+			modalConfirmationMessage: Liferay.Language.get(
+				'delete-all-entries-confirmation'
+			),
+			modalConfirmationTitle: Liferay.Language.get('delete-all-entries'),
+		};
+	}
+
+	if (selectedData.items?.length > 1) {
+		return {
+			modalConfirmationMessage: sub(
+				Liferay.Language.get('delete-entries-confirmation'),
+				[selectedData.items?.length]
+			),
+			modalConfirmationTitle: Liferay.Language.get('delete-entries'),
+		};
+	}
+
+	return {
+		modalConfirmationMessage: Liferay.Language.get(
+			'delete-entry-confirmation'
+		),
+		modalConfirmationTitle: Liferay.Language.get('delete-entry'),
+	};
+}
+
 export default function ModalBulkDeleteObjectEntries({
 	objectDefinition,
 }: ModalBulkDeleteObjectEntriesProps) {
@@ -39,6 +78,14 @@ export default function ModalBulkDeleteObjectEntries({
 			selectedData: null,
 			visible: false,
 		});
+
+	const isSelectAll =
+		!!modalDeleteObjectsEntriesState.selectedData?.selectAll;
+
+	const {modalConfirmationMessage, modalConfirmationTitle} = getBulkDeleteMessage(
+		isSelectAll,
+		modalDeleteObjectsEntriesState.selectedData
+	);
 
 	const [deleteButtonDisabled, setDeleteButtonDisabled] =
 		useState<boolean>(false);
@@ -56,13 +103,10 @@ export default function ModalBulkDeleteObjectEntries({
 	});
 
 	const onSubmit = async () => {
-		const isAllSelected =
-			!!modalDeleteObjectsEntriesState.selectedData?.selectAll;
-
 		const getBulkActionUrl = () => {
 			const baseUrl = `${Liferay.ThemeDisplay.getPortalURL()}/o/bulk/v1.0/bulk-action`;
 
-			if (!isAllSelected) {
+			if (!isSelectAll) {
 				return baseUrl;
 			}
 
@@ -88,7 +132,7 @@ export default function ModalBulkDeleteObjectEntries({
 				{
 					bulkActionItems,
 					selectionScope: {
-						selectAll: isAllSelected,
+						selectAll: isSelectAll,
 					},
 					type: 'DeleteBulkAction',
 				},
@@ -149,12 +193,12 @@ export default function ModalBulkDeleteObjectEntries({
 			>
 				{modalDeleteObjectsEntriesState.deletionErrorMessage
 					? Liferay.Language.get('deletion-not-possible')
-					: Liferay.Language.get('delete-entries')}
+					: modalConfirmationTitle}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{modalDeleteObjectsEntriesState.deletionErrorMessage ??
-					Liferay.Language.get('delete-entries-confirmation')}
+					modalConfirmationMessage}
 			</ClayModal.Body>
 
 			<ClayModal.Footer
