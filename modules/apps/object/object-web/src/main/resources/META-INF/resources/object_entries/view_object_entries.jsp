@@ -6,9 +6,6 @@
 --%>
 
 <%@ include file="/init.jsp" %>
-<%@ page import="com.liferay.bulk.selection.BulkSelectionRunner" %>
-<%@ page import="com.liferay.object.web.internal.bulk.selection.BulkSelectionRunnerUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
 <%
 ViewObjectEntriesDisplayContext viewObjectEntriesDisplayContext = (ViewObjectEntriesDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
@@ -20,6 +17,7 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 
 <c:choose>
 	<c:when test="<%= objectDefinition.isPortlet() || Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTROL_PANEL) %>">
+
 		<%
 		BulkSelectionRunner bulkSelectionRunner = BulkSelectionRunnerUtil.getBulkSelectionRunner();
 		%>
@@ -38,7 +36,7 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 				%>'
 			/>
 		</div>
-		
+
 		<frontend-data-set:headless-display
 			apiURL="<%= viewObjectEntriesDisplayContext.getAPIURL() %>"
 			bulkActionDropdownItems="<%= viewObjectEntriesDisplayContext.getBulkActionDropdownItems() %>"
@@ -81,7 +79,6 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 				%>'
 			/>
 		</div>
-		
 	</c:when>
 	<c:otherwise>
 		<clay:alert

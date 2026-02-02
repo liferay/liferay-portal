@@ -27,7 +27,7 @@ export function saveAndReload() {
 }
 
 export function openToast(options: {
-	autoClose?: boolean,
+	autoClose?: boolean;
 	message: string;
 	type?: 'danger' | 'info' | 'success';
 }) {

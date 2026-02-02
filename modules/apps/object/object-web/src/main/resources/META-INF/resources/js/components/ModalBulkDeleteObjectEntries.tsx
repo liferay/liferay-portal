@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -84,12 +84,8 @@ export default function ModalBulkDeleteObjectEntries({
 	namespace,
 	objectDefinition,
 }: ModalBulkDeleteObjectEntriesProps) {
-	const bulkStatusComponent = Liferay.component(`${namespace}BulkStatus`);
-
-	const scope =
-		objectDefinition.scope === 'company'
-			? '0'
-			: String(Liferay.ThemeDisplay.getScopeGroupId());
+	const [deleteButtonDisabled, setDeleteButtonDisabled] =
+		useState<boolean>(false);
 
 	const [modalDeleteObjectsEntriesState, setModalDeleteObjectsEntriesState] =
 		useState<ModalBulkDeleteObjectEntriesState>({
@@ -98,8 +94,15 @@ export default function ModalBulkDeleteObjectEntries({
 			visible: false,
 		});
 
+	const bulkStatusComponent = Liferay.component(`${namespace}BulkStatus`);
+
 	const isSelectAll =
 		!!modalDeleteObjectsEntriesState.selectedData?.selectAll;
+
+	const scope =
+		objectDefinition.scope === 'company'
+			? '0'
+			: String(Liferay.ThemeDisplay.getScopeGroupId());
 
 	const {
 		modalConfirmationMessage,
@@ -109,9 +112,6 @@ export default function ModalBulkDeleteObjectEntries({
 		isSelectAll,
 		modalDeleteObjectsEntriesState.selectedData
 	);
-
-	const [deleteButtonDisabled, setDeleteButtonDisabled] =
-		useState<boolean>(false);
 
 	const {observer, onClose} = useModal({
 		onClose: () => {
