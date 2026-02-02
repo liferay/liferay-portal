@@ -9850,6 +9850,10 @@ ${output.content}</echo>
 		<run-playwright-js-test app.server.type="wildfly" database.type="mariadb" />
 	</target>
 
+	<target name="playwright-js-tomcat101-hypersonic20">
+		<run-playwright-js-test database.type="hypersonic" />
+	</target>
+
 	<target name="playwright-js-tomcat101-mysql84">
 		<run-playwright-js-test database.type="mysql" />
 	</target>
