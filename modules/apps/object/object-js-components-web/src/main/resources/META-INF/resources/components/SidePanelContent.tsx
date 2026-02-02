@@ -27,8 +27,9 @@ export function saveAndReload() {
 }
 
 export function openToast(options: {
+	autoClose?: boolean,
 	message: string;
-	type?: 'danger' | 'success';
+	type?: 'danger' | 'info' | 'success';
 }) {
 	const parentWindow = Liferay.Util.getOpener();
 	parentWindow.Liferay.Util.openToast(options);

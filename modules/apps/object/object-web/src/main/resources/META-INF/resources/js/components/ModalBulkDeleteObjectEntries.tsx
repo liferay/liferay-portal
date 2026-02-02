@@ -12,6 +12,7 @@ import React, {useEffect, useState} from 'react';
 import AssetBulkActionTaskService from '../common/services/AssetBulkActionTaskService';
 
 interface ModalBulkDeleteObjectEntriesProps {
+	namespace: string;
 	objectDefinition: ObjectDefinition;
 }
 
@@ -32,9 +33,14 @@ function getBulkDeleteMessage(
 ): {
 	modalConfirmationMessage: string;
 	modalConfirmationTitle: string;
+	toastDeletionStartMessage: string;
 } {
 	if (!selectedData) {
-		return {modalConfirmationMessage: '', modalConfirmationTitle: ''};
+		return {
+			modalConfirmationMessage: '',
+			modalConfirmationTitle: '',
+			toastDeletionStartMessage: '',
+		};
 	}
 
 	if (isSelectAll) {
@@ -43,6 +49,9 @@ function getBulkDeleteMessage(
 				'delete-all-entries-confirmation'
 			),
 			modalConfirmationTitle: Liferay.Language.get('delete-all-entries'),
+			toastDeletionStartMessage: Liferay.Language.get(
+				'deletion-started-for-all-entries'
+			),
 		};
 	}
 
@@ -53,6 +62,10 @@ function getBulkDeleteMessage(
 				[selectedData.items?.length]
 			),
 			modalConfirmationTitle: Liferay.Language.get('delete-entries'),
+			toastDeletionStartMessage: sub(
+				Liferay.Language.get('deletion-started-for-x-entries'),
+				[selectedData.items?.length]
+			),
 		};
 	}
 
@@ -61,12 +74,18 @@ function getBulkDeleteMessage(
 			'delete-entry-confirmation'
 		),
 		modalConfirmationTitle: Liferay.Language.get('delete-entry'),
+		toastDeletionStartMessage: Liferay.Language.get(
+			'deletion-started-for-one-entry'
+		),
 	};
 }
 
 export default function ModalBulkDeleteObjectEntries({
+	namespace,
 	objectDefinition,
 }: ModalBulkDeleteObjectEntriesProps) {
+	const bulkStatusComponent = Liferay.component(`${namespace}BulkStatus`);
+
 	const scope =
 		objectDefinition.scope === 'company'
 			? '0'
@@ -82,7 +101,11 @@ export default function ModalBulkDeleteObjectEntries({
 	const isSelectAll =
 		!!modalDeleteObjectsEntriesState.selectedData?.selectAll;
 
-	const {modalConfirmationMessage, modalConfirmationTitle} = getBulkDeleteMessage(
+	const {
+		modalConfirmationMessage,
+		modalConfirmationTitle,
+		toastDeletionStartMessage,
+	} = getBulkDeleteMessage(
 		isSelectAll,
 		modalDeleteObjectsEntriesState.selectedData
 	);
@@ -137,13 +160,16 @@ export default function ModalBulkDeleteObjectEntries({
 					type: 'DeleteBulkAction',
 				},
 				getBulkActionUrl()
-			);
+			).then(() => {
+				if (bulkStatusComponent) {
+					(bulkStatusComponent as any).startWatch();
+				}
+			});
 
 			openToast({
-				message: Liferay.Language.get(
-					'your-request-completed-successfully'
-				),
-				type: 'success',
+				autoClose: false,
+				message: toastDeletionStartMessage,
+				type: 'info',
 			});
 
 			onClose();

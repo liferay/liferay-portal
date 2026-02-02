@@ -7,10 +7,19 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {useTimeout} from '@liferay/frontend-js-react-web';
 import {openToast} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
-import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useReducer} from 'react';
 
+import './BulkStatus.scss';
 import reducer, {STATES} from './reducer';
+
+interface BulkStatusProps {
+	bulkComponentId: string;
+	bulkInProgress: boolean;
+	bulkStatusUrl: string;
+	intervalSpeed: number;
+	pathModule: string;
+	waitingTime: number;
+}
 
 /**
  * Shows the bulk actions status
@@ -22,7 +31,7 @@ export default function BulkStatus({
 	intervalSpeed = 1000,
 	pathModule,
 	waitingTime = 1000,
-}) {
+}: BulkStatusProps) {
 	const delay = useTimeout();
 
 	const [state, dispatch] = useReducer(
@@ -62,7 +71,7 @@ export default function BulkStatus({
 		else if (state.current === STATES.LONG_POLLING) {
 			statusCallback();
 		}
-		else if (state.current === STATES.NOTIFY) {
+		else if (state.current === STATES.NOTIFY && state.toast) {
 			openToast(state.toast);
 
 			dispatch({type: 'notificationCompleted'});
@@ -85,24 +94,15 @@ export default function BulkStatus({
 		);
 	}
 
-	// return (
-	// 	<div className="bulk-status-container">
-	// 		<div className={`bulk-status ${!state.current.show && 'closed'}`}>
-	// 			<div className="bulk-status-content">
-	// 				<ClayLoadingIndicator light small />
-
-	// 				<span>{Liferay.Language.get('processing-actions')}</span>
-	// 			</div>
-	// 		</div>
-	// 	</div>
-	// );
-
+	return (
+		<div className="bulk-status-container">
+			<div
+				className={`bulk-status ${!state.current.running && 'closed'}`}
+			>
+				<div className="bulk-status-content">
+					<ClayLoadingIndicator />
+				</div>
+			</div>
+		</div>
+	);
 }
-
-BulkStatus.propTypes = {
-	bulkInProgress: PropTypes.bool,
-	bulkStatusUrl: PropTypes.string,
-	intervalSpeed: PropTypes.number,
-	pathModule: PropTypes.string.isRequired,
-	waitingTime: PropTypes.number,
-};

@@ -20,25 +20,6 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 
 <c:choose>
 	<c:when test="<%= objectDefinition.isPortlet() || Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTROL_PANEL) %>">
-		<frontend-data-set:headless-display
-			apiURL="<%= viewObjectEntriesDisplayContext.getAPIURL() %>"
-			bulkActionDropdownItems="<%= viewObjectEntriesDisplayContext.getBulkActionDropdownItems() %>"
-			creationMenu="<%= viewObjectEntriesDisplayContext.getCreationMenu() %>"
-			fdsActionDropdownItems="<%= viewObjectEntriesDisplayContext.getFDSActionDropdownItems() %>"
-			fdsFilters="<%= viewObjectEntriesDisplayContext.getFDSFilters() %>"
-			fdsSortItemList="<%= viewObjectEntriesDisplayContext.getFDSSortItemList() %>"
-			formName="fm"
-			id="<%= viewObjectEntriesDisplayContext.getFDSId() %>"
-			itemsPerPage="<%= 20 %>"
-			namespace="<%= liferayPortletResponse.getNamespace() %>"
-			pageNumber="<%= 1 %>"
-			portletURL="<%= liferayPortletResponse.createRenderURL() %>"
-			propsTransformer="{ViewObjectEntriesFDSPropsTransformer} from object-web"
-			selectionType='<%= multiSelectEnabled ? "multiple" : "" %>'
-			showSelectAll="<%= multiSelectEnabled %>"
-			style="fluid"
-		/>
-
 		<%
 		BulkSelectionRunner bulkSelectionRunner = BulkSelectionRunnerUtil.getBulkSelectionRunner();
 		%>
@@ -57,6 +38,25 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 				%>'
 			/>
 		</div>
+		
+		<frontend-data-set:headless-display
+			apiURL="<%= viewObjectEntriesDisplayContext.getAPIURL() %>"
+			bulkActionDropdownItems="<%= viewObjectEntriesDisplayContext.getBulkActionDropdownItems() %>"
+			creationMenu="<%= viewObjectEntriesDisplayContext.getCreationMenu() %>"
+			fdsActionDropdownItems="<%= viewObjectEntriesDisplayContext.getFDSActionDropdownItems() %>"
+			fdsFilters="<%= viewObjectEntriesDisplayContext.getFDSFilters() %>"
+			fdsSortItemList="<%= viewObjectEntriesDisplayContext.getFDSSortItemList() %>"
+			formName="fm"
+			id="<%= viewObjectEntriesDisplayContext.getFDSId() %>"
+			itemsPerPage="<%= 20 %>"
+			namespace="<%= liferayPortletResponse.getNamespace() %>"
+			pageNumber="<%= 1 %>"
+			portletURL="<%= liferayPortletResponse.createRenderURL() %>"
+			propsTransformer="{ViewObjectEntriesFDSPropsTransformer} from object-web"
+			selectionType='<%= multiSelectEnabled ? "multiple" : "" %>'
+			showSelectAll="<%= multiSelectEnabled %>"
+			style="fluid"
+		/>
 
 		<div>
 			<react:component
