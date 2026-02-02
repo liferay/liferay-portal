@@ -77,6 +77,13 @@ const test = mergeTests(
 
 const assigneeTest = test;
 
+const bulkTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-69713': {enabled: true},
+	})
+);
+
 const cmsTest = mergeTests(
 	test,
 	featureFlagsTest({
@@ -270,6 +277,94 @@ assigneeTest(
 		});
 	}
 );
+
+bulkTest.describe('can use bulk on object entries', () => {
+	bulkTest(
+		'can bulk delete object entries',
+		{tag: ['@LPD-69713']},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+					titleObjectFieldName: 'textField',
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectEntries = [];
+
+			for (let i = 0; i < 25; i++) {
+				const {objectEntry} = await generateObjectEntryValues({
+					objectEntryFormat: 'API',
+					objectFields: [objectDefinition.objectFields.at(-1)],
+				});
+				objectEntries.push(objectEntry);
+			}
+
+			await apiHelpers.objectEntry.postObjectEntriesBatch(
+				'c/' + objectDefinition.name.toLowerCase() + 's',
+				objectEntries
+			);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await expect(
+				page.getByText('Showing 1 to 20 of 25 entries.')
+			).toBeVisible();
+
+			const rowCheckboxes = page.locator('tbody').getByRole('checkbox', {
+				name: 'Select',
+			});
+
+			await rowCheckboxes.nth(0).check();
+
+			await rowCheckboxes.nth(1).check();
+
+			await rowCheckboxes.nth(2).check();
+
+			await viewObjectEntriesPage.bulkActionButton.click();
+
+			await viewObjectEntriesPage.deleteMenuItem.click();
+
+			await expect(
+				viewObjectEntriesPage.deleteConfirmationModal
+			).toBeVisible();
+
+			await viewObjectEntriesPage.deleteConfirmationModal.click();
+
+			await page.waitForLoadState('networkidle');
+
+			await page.reload();
+
+			await expect(
+				page.getByText('Showing 1 to 20 of 22 entries.')
+			).toBeVisible();
+
+			await viewObjectEntriesPage.selectAllPage.check();
+
+			await page.getByRole('button', {name: 'Select All'}).click();
+
+			await viewObjectEntriesPage.bulkActionButton.click();
+
+			await viewObjectEntriesPage.deleteMenuItem.click();
+
+			await expect(
+				viewObjectEntriesPage.deleteAllConfirmationModal
+			).toBeVisible();
+
+			await viewObjectEntriesPage.deleteAllConfirmationModal.click();
+
+			await page.waitForLoadState('networkidle');
+
+			await page.reload();
+
+			await expect(page.getByText('No Results Found')).toBeVisible();
+		}
+	);
+});
 
 test.describe('Manage object entries through Friendly URL', () => {
 	let _objectDefinition: ObjectDefinition;

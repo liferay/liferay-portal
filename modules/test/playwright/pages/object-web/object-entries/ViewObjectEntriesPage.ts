@@ -14,10 +14,14 @@ import type {SupportedBusinessType} from '../../../tests/object-web/main/utils/g
 
 export class ViewObjectEntriesPage {
 	readonly backButton: Locator;
+	readonly bulkActionButton: Locator;
 	readonly cancelObjectEntryButton: Locator;
 	readonly dateTimeInput: Locator;
+	readonly deleteAllConfirmationModal: Locator;
+	readonly deleteConfirmationModal: Locator;
 	readonly deletionConfirmationModal: Locator;
 	readonly deleteFileButton: Locator;
+	readonly deleteMenuItem: Locator;
 	readonly downloadFileButton: Locator;
 	readonly duplicateEntryErrorMessage: Locator;
 	readonly editObjectEntryForm: Locator;
@@ -46,6 +50,7 @@ export class ViewObjectEntriesPage {
 	readonly searchBar: Locator;
 	readonly searchButton: Locator;
 	readonly searchContainer: Locator;
+	readonly selectAllPage: Locator;
 	readonly selectFileButton: Locator;
 	readonly selectFileButtonArabic: Locator;
 	readonly selectFileIframe: FrameLocator;
@@ -55,11 +60,21 @@ export class ViewObjectEntriesPage {
 
 	constructor(page: Page) {
 		this.backButton = page.getByTitle('Back');
+		this.bulkActionButton = page
+			.locator('.management-bar')
+			.getByRole('button', {name: 'Actions'});
 		this.cancelObjectEntryButton = page.getByRole('button', {
 			name: 'Cancel',
 		});
 		this.dateTimeInput = page.getByPlaceholder('__/__/____ __:__ _');
+		this.deleteAllConfirmationModal = page
+			.getByRole('dialog', {name: 'Delete All Entries'})
+			.getByRole('button', {name: 'Delete'});
+		this.deleteConfirmationModal = page
+			.getByRole('dialog', {name: 'Delete Entries'})
+			.getByRole('button', {name: 'Delete'});
 		this.deleteFileButton = page.getByRole('button', {name: 'Delete'});
+		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
 		this.deletionConfirmationModal = page
 			.getByRole('dialog')
 			.and(page.getByLabel('Delete Entry'));
@@ -123,6 +138,9 @@ export class ViewObjectEntriesPage {
 		this.saveObjectEntryButton = page.getByRole('button', {name: 'Save'});
 		this.saveObjectEntryButtonArabic = page.getByRole('button', {
 			name: 'حفظ',
+		});
+		this.selectAllPage = page.getByRole('checkbox', {
+			name: 'Select All Items on the Page',
 		});
 		this.selectFileButton = page.getByRole('button', {name: 'Select File'});
 		this.selectFileButtonArabic = page.getByRole('button', {

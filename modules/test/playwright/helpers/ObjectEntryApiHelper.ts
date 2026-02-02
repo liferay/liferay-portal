@@ -113,6 +113,24 @@ export class ObjectEntryApiHelper {
 		);
 	}
 
+	async postObjectEntriesBatch(
+		applicationName: string,
+		data: DataObject[],
+		scopeKey?: string
+	): Promise<ObjectEntry[]> {
+		if (scopeKey) {
+			return this.apiHelpers.post(
+				`${this.apiHelpers.baseUrl}${applicationName}/scopes/${scopeKey}/batch`,
+				{data}
+			);
+		}
+
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${applicationName}/batch/`,
+			{data}
+		);
+	}
+
 	async postObjectEntry(
 		data: DataObject,
 		applicationName: string,
