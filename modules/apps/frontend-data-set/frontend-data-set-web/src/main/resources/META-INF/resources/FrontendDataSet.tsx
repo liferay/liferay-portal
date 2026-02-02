@@ -760,22 +760,19 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
-		const unfrozenGlobalFDSState = deepClone(globalFDSState);
-
 		const configInURL: Partial<IConfigInURL> | null = readConfigFromURL(id);
 
-		const shouldUpdateFilters = unfrozenGlobalFDSState.filters.some(
+		const updatedSearch = globalFDSState.search.query;
+		const urlSearch = configInURL?.q;
+
+		const shouldUpdateFilters = globalFDSState.filters.some(
 			(filter: IBaseFilterState) => {
 				if (filter.preloadedData || filter.selectedData) {
 					const preloadedData = JSON.stringify(filter.preloadedData);
 					const selectedData = JSON.stringify(filter.selectedData);
 
 					return (
-						preloadedData !== selectedData ||
-						(preloadedData === selectedData &&
-							configInURL?.filters?.some(
-								(filterURL) => filterURL.id === filter.id
-							))
+						preloadedData !== selectedData || configInURL?.filters
 					);
 				}
 
@@ -783,21 +780,24 @@ const FrontendDataSetContent = ({
 			}
 		);
 
+		const shouldUpdateSearch =
+			(urlSearch ?? '') !== (updatedSearch ?? '') &&
+			(urlSearch || updatedSearch);
+
+		const updateConfig: {[key: string]: any} = {};
+
 		if (shouldUpdateFilters) {
-			updateConfigInURL({
-				[EConfigInURLKeys.ACTIVE_FILTERS]:
-					unfrozenGlobalFDSState.filters,
-			});
+			updateConfig[EConfigInURLKeys.ACTIVE_FILTERS] =
+				globalFDSState.filters;
 		}
 
-		if (
-			(unfrozenGlobalFDSState.search.query || configInURL?.q) &&
-			unfrozenGlobalFDSState.search.query !== configInURL?.q
-		) {
-			updateConfigInURL({
-				[EConfigInURLKeys.SEARCH_PARAM]:
-					unfrozenGlobalFDSState.search.query,
-			});
+		if (shouldUpdateSearch) {
+			updateConfig[EConfigInURLKeys.SEARCH_PARAM] =
+				globalFDSState.search.query;
+		}
+
+		if (Object.keys(updateConfig).length) {
+			updateConfigInURL(updateConfig);
 		}
 
 		if (skipSnapshotsUpdatedChangeRef.current) {
