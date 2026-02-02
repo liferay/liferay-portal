@@ -139,8 +139,8 @@ function decodeURLParams(params: URLSearchParams) {
 		.toString()
 		.replace(/%28/g, '(')
 		.replace(/%29/g, ')')
-		.replace(/%3A/g, ':')
-		.replace(/%2C/g, ',');
+		.replace(/%2C/g, ',')
+		.replace(/%3A/g, ':');
 }
 
 function deepContains(subset: any, superset: any) {
