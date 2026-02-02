@@ -1,0 +1,51 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Paulo Pereira
+ */
+public class LPD_47411 {
+
+	public void method(
+		long userId, long fileEntryId, String sourceFileName, String mimeType,
+		String title, String description, String changeLog,
+		DLVersionNumberIncrease dlVersionNumberIncrease, long fileEntryTypeId,
+		Map<String, DDMFormValues> ddmFormValuesMap, File file,
+		InputStream inputStream, long size, ServiceContext serviceContext) {
+
+		DLFileEntryLocalServiceUtil.updateFileEntry(
+			123, fileEntryId, sourceFileName, mimeType, title, description,
+			changeLog, dlVersionNumberIncrease, fileEntryTypeId,
+			ddmFormValuesMap, file, inputStream, size, serviceContext);
+		DLFileEntryLocalServiceUtil.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, null, null, null, serviceContext);
+		_dlFileEntryLocalService.updateFileEntry(userId, fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, null, null, null, serviceContext);
+	}
+
+	public void method(
+		long fileEntryId, String sourceFileName, String mimeType, String title,
+		String description, String changeLog,
+		DLVersionNumberIncrease dlVersionNumberIncrease, long fileEntryTypeId,
+		Map<String, DDMFormValues> ddmFormValuesMap, File file,
+		InputStream inputStream, long size, ServiceContext serviceContext) {
+
+		DLFileEntryServiceUtil.updateFileEntry(
+			123, sourceFileName, mimeType, title, description, changeLog,
+			dlVersionNumberIncrease, fileEntryTypeId, ddmFormValuesMap, file,
+			inputStream, size, serviceContext);
+		DLFileEntryServiceUtil.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, null, null, null, serviceContext);
+		_dlFileEntryService.updateFileEntry(fileEntryId, sourceFileName, mimeType, title, null, description, changeLog, dlVersionNumberIncrease, fileEntryTypeId, ddmFormValuesMap, file, inputStream, size, null, null, null, serviceContext);
+	}
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLFileEntryService _dlFileEntryService;
+
+}
