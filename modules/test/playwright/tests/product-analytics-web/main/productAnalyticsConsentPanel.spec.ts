@@ -200,7 +200,9 @@ test(
 		const consentRenewalPeriod = await page.getByLabel(
 			'Consent Renewal Period'
 		);
-		const enabledButton = await page.getByLabel('Enabled');
+		const enabledButton = page.getByLabel('Enabled');
+
+		await enabledButton.waitFor({state: 'visible'});
 
 		const isChecked = await enabledButton.isChecked();
 
@@ -211,17 +213,17 @@ test(
 
 			if (
 				await systemSettingsPage.page
-					.getByRole('button', {name: 'Update'})
+					.getByRole('button', {name: 'Save'})
 					.isVisible()
 			) {
 				await systemSettingsPage.page
-					.getByRole('button', {name: 'Update'})
-					.click();
+					.getByRole('button', {name: 'Save'})
+					.dispatchEvent('click');
 			}
 			else {
 				await systemSettingsPage.page
-					.getByRole('button', {name: 'Save'})
-					.click();
+					.getByRole('button', {name: 'Update'})
+					.dispatchEvent('click');
 			}
 
 			await expect(consentRenewalPeriod).not.toBeEditable();
@@ -233,17 +235,17 @@ test(
 
 			if (
 				await systemSettingsPage.page
-					.getByRole('button', {name: 'Update'})
+					.getByRole('button', {name: 'Save'})
 					.isVisible()
 			) {
 				await systemSettingsPage.page
-					.getByRole('button', {name: 'Update'})
-					.click();
+					.getByRole('button', {name: 'Save'})
+					.dispatchEvent('click');
 			}
 			else {
 				await systemSettingsPage.page
-					.getByRole('button', {name: 'Save'})
-					.click();
+					.getByRole('button', {name: 'Update'})
+					.dispatchEvent('click');
 			}
 
 			await expect(consentRenewalPeriod).toBeEditable();

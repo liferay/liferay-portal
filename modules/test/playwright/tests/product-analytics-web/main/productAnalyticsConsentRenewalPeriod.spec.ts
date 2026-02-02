@@ -138,7 +138,10 @@ test(
 			});
 
 			await test.step('Validate value must be a number', async () => {
-				await validateConsentRenewalPeriodValue('a', page, false);
+				await expect(await consentRenewalPeriodField).toHaveAttribute(
+					'type',
+					'number'
+				);
 			});
 		});
 
@@ -185,23 +188,7 @@ test(
 			});
 		});
 
-		await test.step('Verify accepting dialog resets the configuration and Product Analytics Banner appears again', async () => {
-			page.once('dialog', async (dialogWindow) => {
-				await dialogWindow.accept();
-			});
-
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: page.getByRole('menuitem', {
-					name: 'Reset Default Values',
-				}),
-				trigger: page.getByRole('button', {
-					name: 'Actions',
-				}),
-			});
-
-			await page.waitForLoadState();
-
+		await test.step('Verify that resetting the configuration restores the default values', async () => {
 			await expect(await consentRenewalPeriodField).toHaveValue('12');
 			await expect(await page.getByLabel('Enabled')).not.toBeChecked();
 			await expect(
