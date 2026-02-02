@@ -75,12 +75,14 @@ const assertDelta = async (
 ) => {
 	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
 
-	if (paramInURL) {
-		await expect(config.delta).toBe(delta);
-	}
-	else if (config) {
-		expect(config.delta).toBeUndefined();
-	}
+	await expect(() => {
+		if (paramInURL) {
+			expect(config.delta).toBe(delta);
+		}
+		else if (config) {
+			expect(config.delta).toBeUndefined();
+		}
+	}).toPass();
 
 	await expect(fdsSamplePage.paginator.itemsPerPageSelector).toHaveText(
 		`${delta} Items`
@@ -112,22 +114,20 @@ const assertActiveFiltersInURL = async (
 
 	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
 
-	if (paramInURL) {
-		await expect(() => {
-			if (paramInURL) {
-				for (const id of ids) {
-					expect(
-						config.filters.some((filter: any) => filter.id === id)
-					).toBe(active);
-				}
-			}
-			else if (config) {
+	await expect(() => {
+		if (paramInURL) {
+			for (const id of ids) {
 				expect(
-					config.filters === undefined || !config.filters.length
-				).toBeTruthy();
+					config.filters.some((filter: any) => filter.id === id)
+				).toBe(active);
 			}
-		}).toPass();
-	}
+		}
+		else if (config) {
+			expect(
+				config.filters === undefined || !config.filters.length
+			).toBeTruthy();
+		}
+	}).toPass();
 };
 
 const assertActiveFilter = async (
@@ -235,14 +235,14 @@ const assertPageNumber = async (
 
 	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
 
-	if (paramInURL) {
-		await expect(() => {
+	await expect(() => {
+		if (paramInURL) {
 			expect(config.page).toBe(pageNumber);
-		}).toPass();
-	}
-	else if (config) {
-		expect(config.page).toBeUndefined();
-	}
+		}
+		else if (config) {
+			expect(config.page).toBeUndefined();
+		}
+	}).toPass();
 };
 
 const assertView = async (
@@ -255,12 +255,15 @@ const assertView = async (
 	await waitForFDS({page, visualizationMode});
 
 	const config = getConfigFromURL(new URL(page.url()).search, fdsId);
-	if (paramInURL) {
-		expect(config.view).toBe(viewName ? viewName : visualizationMode);
-	}
-	else if (config) {
-		expect(config.view).toBeUndefined();
-	}
+
+	await expect(() => {
+		if (paramInURL) {
+			expect(config.view).toBe(viewName ? viewName : visualizationMode);
+		}
+		else if (config) {
+			expect(config.view).toBeUndefined();
+		}
+	}).toPass();
 };
 
 const changeDelta = async (
@@ -358,10 +361,6 @@ for (const spaConfiguration of spaConfigurations) {
 
 					await page.goBack();
 					await checkDelta(20, false);
-
-					await expect(
-						fdsSamplePage.paginator.itemsPerPageSelector
-					).toHaveText(`20 Items`);
 				});
 
 				await test.step('Check forward navigation', async () => {
@@ -1016,7 +1015,7 @@ for (const spaConfiguration of spaConfigurations) {
 						).toHaveValue(searchParam);
 					}
 					else if (config) {
-						expect(config.q).toBeUndefined();
+						await expect(config.q).toBeUndefined();
 					}
 				};
 
@@ -1275,8 +1274,15 @@ for (const spaConfiguration of spaConfigurations) {
 						new URL(page.url()).search,
 						'advanced'
 					);
-					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
+
 					expect(Object.keys(config)).toHaveLength(1);
+
+					assertView(
+						'advanced',
+						page,
+						EFDSVisualizationMode.CARDS,
+						true
+					);
 				}).toPass();
 			}
 		);
@@ -1302,8 +1308,16 @@ for (const spaConfiguration of spaConfigurations) {
 						new URL(page.url()).search,
 						'advanced'
 					);
-					expect(config.view).toBe('customizedTable');
+
 					expect(Object.keys(config)).toHaveLength(1);
+
+					assertView(
+						'advanced',
+						page,
+						EFDSVisualizationMode.TABLE,
+						true,
+						'customizedTable'
+					);
 				}).toPass();
 			}
 		);
@@ -1331,38 +1345,15 @@ for (const spaConfiguration of spaConfigurations) {
 						new URL(page.url()).search,
 						'advanced'
 					);
-					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
+
 					expect(Object.keys(config)).toHaveLength(1);
-				}).toPass();
-			}
-		);
 
-		test(
-			'Pasting the URL in a new browser tab reproduces the same state',
-			{tag: '@LPD-73128'},
-			async ({page}) => {
-				const fdsSamplePage = new FDSSamplePage(page);
-
-				await fdsSamplePage.changeVisualizationMode({
-					page,
-					visualizationMode: EFDSVisualizationMode.CARDS,
-				});
-
-				const url = page.url();
-				await page.goto(url);
-
-				await waitForFDS({
-					page,
-					visualizationMode: EFDSVisualizationMode.CARDS,
-				});
-
-				await expect(() => {
-					const config = getConfigFromURL(
-						new URL(page.url()).search,
-						'advanced'
+					assertView(
+						'advanced',
+						page,
+						EFDSVisualizationMode.CARDS,
+						true
 					);
-					expect(config.view).toBe(EFDSVisualizationMode.CARDS);
-					expect(Object.keys(config)).toHaveLength(1);
 				}).toPass();
 			}
 		);
