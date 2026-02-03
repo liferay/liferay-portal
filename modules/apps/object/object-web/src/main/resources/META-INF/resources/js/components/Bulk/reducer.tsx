@@ -34,7 +34,7 @@ const TOASTS = {
 		type: 'danger',
 	},
 	SUCCESS: {
-		message: Liferay.Language.get('changes-saved'),
+		message: Liferay.Language.get('deletion-process-has-been-finished'),
 	},
 };
 
