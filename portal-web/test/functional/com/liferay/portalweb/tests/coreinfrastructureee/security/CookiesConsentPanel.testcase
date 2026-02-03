@@ -32,7 +32,7 @@ definition {
 				functionalCookies = "true",
 				performanceCookies = "true");
 
-			CookieConsentPanel.cookiesConfirmSelected();
+			CookieConsentPanel.cookiesAcceptSelected();
 		}
 
 		task ("Then: Only selected cookie category related cookies are saved, and nothing more") {
@@ -258,8 +258,8 @@ definition {
 			CookieBanner.openCookieConsentPanel();
 		}
 
-		task ("When: User click on Decline all") {
-			CookieConsentPanel.cookiesDeclineAll();
+		task ("When: User click on Use Necessary Cookies Only") {
+			CookieConsentPanel.cookiesUseNecessaryCookiesOnly();
 		}
 
 		task ("Then: All cookie consent category related cookies are created and saved with 'declined' as value.") {

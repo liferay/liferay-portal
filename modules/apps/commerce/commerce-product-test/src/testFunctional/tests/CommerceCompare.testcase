@@ -96,13 +96,19 @@ definition {
 		task ("Given cookie preference handling is enabled and functional cookies are declined") {
 			CookieNavigator.gotoInstanceSettings(portlet = "Preference Handling");
 
+			var assertConfirmation = "false";
+
+			if (IsChecked(key_fieldName = "Enabled", locator1 = "FormFields#CHECKBOX")) {
+				var assertConfirmation = "true";
+			}
+
 			FormFields.enableCheckbox(fieldName = "Enabled");
 
-			CookiePreferenceHandlingAdmin.saveConfiguration();
+			CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
 
 			CookieBanner.openCookieConsentPanel();
 
-			CookieConsentPanel.cookiesDeclineAll();
+			CookieConsentPanel.cookiesUseNecessaryCookiesOnly();
 
 			CookieHelper.checkAllCookieAreDeclinedAndSaved();
 		}
@@ -133,7 +139,7 @@ definition {
 		}
 
 		task ("When functional cookies are declined") {
-			CookieConsentPanel.cookiesDeclineAll();
+			CookieConsentPanel.cookiesUseNecessaryCookiesOnly();
 
 			Alert.viewWarningSpecific(warningMessage = "Cookies Not Allowed:You cannot compare products when functional cookies are not allowed.");
 		}

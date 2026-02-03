@@ -30,6 +30,14 @@ definition {
 		Click(locator1 = "CookieConsentPanel#ACCEPT_ALL_BUTTON");
 	}
 
+	@description = "Accept selected cookies on Cookie Consent Panel"
+	@summary = "Default summary"
+	macro cookiesAcceptSelected() {
+		CookieConsentPanel._selectPanelOuterFrame();
+
+		Click(locator1 = "CookieConsentPanel#ACCEPT_SELECTED_BUTTON");
+	}
+
 	@description = "Select all cookies on Cookie Consent Panel"
 	@summary = "Default summary"
 	macro cookiesCheckAll() {
@@ -41,23 +49,15 @@ definition {
 
 		CookieConsentPanel._selectPanelOuterFrame();
 
-		CookieConsentPanel.cookiesConfirmSelected();
+		CookieConsentPanel.cookiesAcceptSelected();
 	}
 
-	@description = "Confirm selected cookies on Cookie Consent Panel"
+	@description = "Use necessary cookies only on Cookie Consent Panel"
 	@summary = "Default summary"
-	macro cookiesConfirmSelected() {
+	macro cookiesUseNecessaryCookiesOnly() {
 		CookieConsentPanel._selectPanelOuterFrame();
 
-		Click(locator1 = "CookieConsentPanel#CONFIRM_BUTTON");
-	}
-
-	@description = "Decline all cookies on Cookie Consent Panel"
-	@summary = "Default summary"
-	macro cookiesDeclineAll() {
-		CookieConsentPanel._selectPanelOuterFrame();
-
-		Click(locator1 = "CookieConsentPanel#DECLINE_ALL_BUTTON");
+		Click(locator1 = "CookieConsentPanel#USE_NECESSARY_COOKIES_ONLY_BUTTON");
 	}
 
 	@description = "Customized select of cookie consents"
@@ -92,8 +92,8 @@ definition {
 		Check.checkToggleSwitch(locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
 
 		AssertClick(
-			locator1 = "CookieConsentPanel#CONFIRM_BUTTON",
-			value1 = "Confirm");
+			locator1 = "CookieConsentPanel#ACCEPT_SELECTED_BUTTON",
+			value1 = "Accept Selected");
 	}
 
 	@description = "Verify that all Cookie Consent portlet elements are present on the Cookie Consent Popup"
@@ -107,9 +107,9 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CookieConsentPanel#COOKIES_CONSENT_PANEL");
 
-		WaitForElementPresent(locator1 = "CookieConsentPanel#DECLINE_ALL_BUTTON");
+		WaitForElementPresent(locator1 = "CookieConsentPanel#USE_NECESSARY_COOKIES_ONLY_BUTTON");
 
-		WaitForElementPresent(locator1 = "CookieConsentPanel#CONFIRM_BUTTON");
+		WaitForElementPresent(locator1 = "CookieConsentPanel#ACCEPT_SELECTED_BUTTON");
 
 		WaitForElementPresent(locator1 = "CookieConsentPanel#ACCEPT_ALL_BUTTON");
 
@@ -127,7 +127,7 @@ definition {
 
 		WaitForElementPresent(locator1 = "CookieConsentPanel#DECLINE_ALL_BUTTON");
 
-		WaitForElementPresent(locator1 = "CookieConsentPanel#CONFIRM_BUTTON");
+		WaitForElementPresent(locator1 = "CookieConsentPanel#ACCEPT_SELECTED_BUTTON");
 
 		WaitForElementPresent(locator1 = "CookieConsentPanel#ACCEPT_ALL_BUTTON");
 	}

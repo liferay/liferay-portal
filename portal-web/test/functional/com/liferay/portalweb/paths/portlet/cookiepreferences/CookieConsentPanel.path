@@ -81,8 +81,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CONFIRM_BUTTON</td>
-	<td>//div[contains(@id,'cookiesBannerConfiguration')]//button[contains(.,'Confirm')]</td>
+	<td>ACCEPT_SELECTED_BUTTON</td>
+	<td>//div[contains(@id,'cookiesBannerConfiguration')]//button[contains(.,'Accept Selected')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -93,6 +93,11 @@
 <tr>
 	<td>CLOSE_BUTTON</td>
 	<td>//div[contains(@id,'cookiesBannerConfiguration')]//button[contains(@class,'close')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>USE_NECESSARY_COOKIES_ONLY_BUTTON</td>
+	<td>//div[contains(@id,'cookiesBannerConfiguration')]//button[contains(.,'Use Necessary Cookies Only')]</td>
 	<td></td>
 </tr>
 </tbody>
