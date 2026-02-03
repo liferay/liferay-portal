@@ -110,6 +110,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -171,8 +172,8 @@ public class CommercePriceListLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		_validate(
-			user.getCompanyId(), groupId, commerceCurrencyCode,
-			parentCommercePriceListId, catalogBasePriceList, 0, type);
+			catalogBasePriceList, commerceCurrencyCode, 0, user.getCompanyId(),
+			groupId, neverExpire, parentCommercePriceListId, type);
 
 		Date expirationDate = null;
 		Date date = new Date();
@@ -1159,9 +1160,9 @@ public class CommercePriceListLocalServiceImpl
 			commercePriceListPersistence.findByPrimaryKey(commercePriceListId);
 
 		_validate(
+			catalogBasePriceList, commerceCurrencyCode, commercePriceListId,
 			commercePriceList.getCompanyId(), commercePriceList.getGroupId(),
-			commerceCurrencyCode, parentCommercePriceListId,
-			catalogBasePriceList, commercePriceListId, type);
+			neverExpire, parentCommercePriceListId, type);
 
 		Date expirationDate = null;
 		Date date = new Date();
@@ -1783,9 +1784,9 @@ public class CommercePriceListLocalServiceImpl
 	}
 
 	private void _validate(
-			long companyId, long groupId, String commerceCurrencyCode,
-			long parentCommercePriceListId, boolean catalogBasePriceList,
-			long commercePriceListId, String type)
+			boolean catalogBasePriceList, String commerceCurrencyCode,
+			long commercePriceListId, long companyId, long groupId,
+			boolean neverExpire, long parentCommercePriceListId, String type)
 		throws PortalException {
 
 		if (catalogBasePriceList) {
@@ -1798,6 +1799,13 @@ public class CommercePriceListLocalServiceImpl
 					commercePriceListId)) {
 
 				throw new DuplicateCommerceBasePriceListException();
+			}
+
+			if (!neverExpire &&
+				Objects.equals(
+					type, CommercePriceListConstants.TYPE_PRICE_LIST)) {
+
+				throw new CommercePriceListExpirationDateException();
 			}
 		}
 

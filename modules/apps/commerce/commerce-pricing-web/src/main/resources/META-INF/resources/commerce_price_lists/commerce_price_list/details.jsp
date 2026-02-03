@@ -123,17 +123,19 @@ if ((commercePriceList != null) && (commercePriceList.getExpirationDate() != nul
 		</div>
 
 		<div class="col-4">
-			<commerce-ui:panel
-				title='<%= LanguageUtil.get(request, "schedule") %>'
-			>
-				<liferay-ui:error exception="<%= CommercePriceListExpirationDateException.class %>" message="please-enter-a-valid-expiration-date" />
+			<c:if test="<%= !(commercePriceList.isCatalogBasePriceList() && Objects.equals(commercePriceList.getType(), CommercePriceListConstants.TYPE_PRICE_LIST)) %>">
+				<commerce-ui:panel
+					title='<%= LanguageUtil.get(request, "schedule") %>'
+				>
+					<liferay-ui:error exception="<%= CommercePriceListExpirationDateException.class %>" message="please-enter-a-valid-expiration-date" />
 
-				<aui:fieldset>
-					<aui:input formName="fm" label="publish-date" name="displayDate" />
+					<aui:fieldset>
+						<aui:input formName="fm" label="publish-date" name="displayDate" />
 
-					<aui:input dateTogglerCheckboxLabel="never-expire" disabled="<%= neverExpire %>" formName="fm" name="expirationDate" />
-				</aui:fieldset>
-			</commerce-ui:panel>
+						<aui:input dateTogglerCheckboxLabel="never-expire" disabled="<%= neverExpire %>" formName="fm" name="expirationDate" />
+					</aui:fieldset>
+				</commerce-ui:panel>
+			</c:if>
 
 			<c:if test="<%= commercePriceListDisplayContext.hasCustomAttributesAvailable(CommercePriceList.class.getName(), commercePriceListId) %>">
 				<commerce-ui:panel
