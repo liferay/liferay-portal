@@ -47,11 +47,19 @@ public abstract class BaseDisplayContext {
 			httpServletRequest);
 	}
 
+	public int getConsentRenewalPeriod() {
+		return productAnalyticsConfiguration.consentRenewalPeriod();
+	}
+
 	public String getCookieTitle(
 		String cookie, HttpServletRequest httpServletRequest) {
 
 		return LanguageUtil.get(
 			httpServletRequest, "cookies-title[" + cookie + "]");
+	}
+
+	public long getLastModified() {
+		return productAnalyticsConfiguration.lastModified();
 	}
 
 	public List<ConsentCookieType> getOptionalConsentCookieTypes() {
@@ -130,16 +138,8 @@ public abstract class BaseDisplayContext {
 		return consentCookieTypeNamesJSONArray;
 	}
 
-	protected int getConsentRenewalPeriod() {
-		return productAnalyticsConfiguration.consentRenewalPeriod();
-	}
-
 	protected HttpServletRequest getHttpServletRequest() {
 		return _httpServletRequest;
-	}
-
-	protected long getLastModified() {
-		return productAnalyticsConfiguration.lastModified();
 	}
 
 	protected ProductAnalyticsConfiguration productAnalyticsConfiguration;

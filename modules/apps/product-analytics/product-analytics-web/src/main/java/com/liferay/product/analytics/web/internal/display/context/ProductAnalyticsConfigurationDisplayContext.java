@@ -6,12 +6,8 @@
 package com.liferay.product.analytics.web.internal.display.context;
 
 import com.liferay.layout.utility.page.kernel.provider.LayoutUtilityPageEntryLayoutProvider;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author Lucas Miranda
@@ -27,26 +23,8 @@ public class ProductAnalyticsConfigurationDisplayContext
 		super(httpServletRequest, layoutUtilityPageEntryLayoutProvider);
 	}
 
-	public int getConsentRenewalPeriod() {
-		return productAnalyticsConfiguration.consentRenewalPeriod();
-	}
-
-	public Map<String, Object> getContext(Locale locale) {
-		return HashMapBuilder.<String, Object>put(
-			"consentRenewalPeriod", getConsentRenewalPeriod()
-		).put(
-			"enabled", getEnabled()
-		).put(
-			"lastModified", getLastModified()
-		).build();
-	}
-
 	public boolean getEnabled() {
 		return productAnalyticsConfiguration.enabled();
-	}
-
-	public long getLastModified() {
-		return productAnalyticsConfiguration.lastModified();
 	}
 
 }
