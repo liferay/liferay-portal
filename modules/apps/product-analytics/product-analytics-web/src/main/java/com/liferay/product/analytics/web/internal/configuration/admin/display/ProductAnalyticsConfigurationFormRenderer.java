@@ -79,15 +79,15 @@ public class ProductAnalyticsConfigurationFormRenderer
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher(
-				"/product_analytics_configuration/view.jsp");
-
 		httpServletRequest.setAttribute(
 			ProductAnalyticsWebKeys.
 				PRODUCT_ANALYTICS_CONFIGURATION_DISPLAY_CONTEXT,
 			new ProductAnalyticsConfigurationDisplayContext(
 				httpServletRequest, _layoutUtilityPageEntryLayoutProvider));
+
+		RequestDispatcher requestDispatcher =
+			_servletContext.getRequestDispatcher(
+				"/product_analytics_configuration/view.jsp");
 
 		requestDispatcher.include(httpServletRequest, httpServletResponse);
 	}
