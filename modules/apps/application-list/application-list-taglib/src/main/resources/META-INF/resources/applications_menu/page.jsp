@@ -11,30 +11,37 @@
 ApplicationsMenuDisplayContext applicationsMenuDisplayContext = new ApplicationsMenuDisplayContext(request);
 %>
 
-<div class="applications-menu-sidebar-wrapper <%= applicationsMenuDisplayContext.isVisible() ? "visible" : "hidden" %>">
-	<div class="applications-menu-sidebar">
-		<div class="align-items-center c-px-3 c-py-4 d-flex flex-row">
-			<div>
-				<%-- TODO: replace the icon below with the panel icon --%>
-				<clay:icon
-					symbol="grid"
-				/>
+<div>
+	<div class="applications-menu-sidebar-wrapper <%= applicationsMenuDisplayContext.isVisible() ? "visible" : "hidden" %>">
+		<div class="applications-menu-sidebar">
+			<div class="align-items-center c-px-3 c-py-4 d-flex flex-row">
+				<div>
+					<%-- TODO: replace the icon below with the panel icon --%>
+					<clay:icon
+						symbol="grid"
+					/>
+				</div>
+
+				<div class="c-px-2 flex-grow-1 text-4 text-weight-bold">
+					<%= applicationsMenuDisplayContext.getPanelCategoryLabel() %>
+				</div>
+
+				<button class="close lfr-portal-tooltip rounded-lg" title="<%= LanguageUtil.get(request, "close-product-menu") %>" type="button">
+					<clay:icon
+						symbol="times"
+					/>
+				</button>
 			</div>
 
-			<div class="c-px-2 flex-grow-1 text-4 text-weight-bold">
-				<%= applicationsMenuDisplayContext.getPanelCategoryLabel() %>
-			</div>
-
-			<button class="close lfr-portal-tooltip rounded-lg" title="<%= LanguageUtil.get(request, "close-product-menu") %>" type="button">
-				<clay:icon
-					symbol="times"
-				/>
-			</button>
+			<clay:vertical-nav
+				active="<%= applicationsMenuDisplayContext.getPortletId() %>"
+				verticalNavItems="<%= applicationsMenuDisplayContext.getVerticalNavItems() %>"
+			/>
 		</div>
-
-		<clay:vertical-nav
-			active="<%= applicationsMenuDisplayContext.getPortletId() %>"
-			verticalNavItems="<%= applicationsMenuDisplayContext.getVerticalNavItems() %>"
-		/>
 	</div>
+
+	<react:component
+		module="{ApplicationsMenu} from application-list-taglib"
+		props="<%= applicationsMenuDisplayContext.getProps() %>"
+	/>
 </div>

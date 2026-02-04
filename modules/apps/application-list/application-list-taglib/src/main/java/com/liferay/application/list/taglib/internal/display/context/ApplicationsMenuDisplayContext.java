@@ -17,13 +17,16 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Thiago Buarque
@@ -76,6 +79,33 @@ public class ApplicationsMenuDisplayContext {
 		return _portletId;
 	}
 
+	public Map<String, Object> getProps() throws Exception {
+		PanelCategory panelCategory = getPanelCategory();
+
+		if (panelCategory == null) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"items", _getPropsItems()
+		).put(
+			"label", getPanelCategoryLabel()
+		).put(
+			"portletId", _portletId
+		).put(
+			"visibility",
+			HashMapBuilder.<String, Object>put(
+				"hidden", _STATE_HIDDEN
+			).put(
+				"initialState", isVisible()
+			).put(
+				"stateKey", _STATE_KEY
+			).put(
+				"visible", _STATE_VISIBLE
+			).build()
+		).build();
+	}
+
 	public List<VerticalNavItem> getVerticalNavItems() throws Exception {
 		List<VerticalNavItem> verticalNavItems = new ArrayList<>();
 
@@ -124,6 +154,76 @@ public class ApplicationsMenuDisplayContext {
 			_httpServletRequest, _STATE_KEY, _STATE_DEFAULT);
 
 		return state.equals(_STATE_VISIBLE);
+	}
+
+	private List<Map<String, Object>> _getPropsItems() throws Exception {
+		List<Map<String, Object>> propsItems = new ArrayList<>();
+
+		PanelCategory panelCategory = getPanelCategory();
+
+		propsItems.add(HashMapBuilder.<String, Object>put(
+			"href", "/" // TODO: add actual href
+		).put(
+			"id", panelCategory.getKey()
+		).put(
+			"label", LanguageUtil.get(_httpServletRequest, "home")
+		).put(
+			"leadingIcon", "home"
+		).build());
+
+		for (PanelCategory childPanelCategory :
+				_panelCategoryHelper.getChildPanelCategories(
+					panelCategory.getKey(), _themeDisplay)) {
+
+			List<Map<String, Object>> childrenPropsItems = _getPropsItems(
+				childPanelCategory);
+
+			if (childrenPropsItems.isEmpty()) {
+				continue;
+			}
+
+			propsItems.add(
+				HashMapBuilder.<String, Object>put(
+					"id", childPanelCategory.getKey()
+				).put(
+					"items", childrenPropsItems
+				).put(
+					"label",
+					childPanelCategory.getLabel(_themeDisplay.getLocale())
+				).build());
+		}
+
+		return propsItems;
+	}
+
+	private List<Map<String, Object>> _getPropsItems(
+			PanelCategory panelCategory)
+		throws Exception {
+
+		List<Map<String, Object>> propsItems = new ArrayList<>();
+
+		for (PanelApp panelApp :
+				_panelAppRegistry.getPanelApps(
+					panelCategory.getKey(),
+					_themeDisplay.getPermissionChecker(),
+					_themeDisplay.getScopeGroup())) {
+
+			propsItems.add(
+				HashMapBuilder.<String, Object>put(
+					"href",
+					panelApp.getPortletURL(
+						_httpServletRequest
+					).toString()
+				).put(
+					"id", panelApp.getPortletId()
+				).put(
+					"label", panelApp.getLabel(_themeDisplay.getLocale())
+				).put(
+					"leadingIcon", "home"
+				).build());
+		}
+
+		return propsItems;
 	}
 
 	private List<VerticalNavItem> _getVerticalNavItems(
