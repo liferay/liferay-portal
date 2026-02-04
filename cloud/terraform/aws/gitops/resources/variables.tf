@@ -130,5 +130,5 @@ variable "liferay_helm_chart_version" {
 	type=string
 }
 variable "region" {
-	default="us-west-2"
+	type=string
 }
