@@ -9,7 +9,16 @@
 
 <%
 PanelAppContentHelper panelAppContentHelper = new PanelAppContentHelper(request, response);
+
+boolean applicationsMenuEnabled = true;
 %>
+
+<c:if test="<%= applicationsMenuEnabled %>">
+	<div class="d-flex">
+		<%@ include file="/applications_menu/page.jsp" %>
+
+		<div class="flex-grow-1">
+</c:if>
 
 <c:choose>
 	<c:when test="<%= panelAppContentHelper.isValidPortletSelected() %>">
@@ -25,3 +34,8 @@ PanelAppContentHelper panelAppContentHelper = new PanelAppContentHelper(request,
 		</div>
 	</c:otherwise>
 </c:choose>
+
+<c:if test="<%= applicationsMenuEnabled %>">
+		</div>
+	</div>
+</c:if>

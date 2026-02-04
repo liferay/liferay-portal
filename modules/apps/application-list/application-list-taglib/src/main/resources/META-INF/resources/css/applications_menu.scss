@@ -1,0 +1,71 @@
+@import 'cadmin-variables';
+
+.applications-menu-sidebar-wrapper {
+	--applications-menu-sidebar-height: 100vh;
+	--applications-menu-sidebar-width: 280px;
+
+	height: var(--applications-menu-sidebar-height);
+	position: relative;
+	width: 0;
+
+	&.visible {
+		width: var(--applications-menu-sidebar-width);
+
+		& > .applications-menu-sidebar {
+			left: 0;
+		}
+	}
+
+	& > .applications-menu-sidebar {
+		border-right: 0.5px solid $cadmin-secondary-l0;
+
+		@media (max-resolution: 1dppx) {
+			border-right-color: $cadmin-secondary-l2;
+		}
+
+		left: calc(-1 * var(--applications-menu-sidebar-width));
+
+		max-height: var(--applications-menu-sidebar-height);
+		max-width: var(--applications-menu-sidebar-width);
+		min-height: var(--applications-menu-sidebar-height);
+		min-width: var(--applications-menu-sidebar-width);
+
+		overflow-y: auto;
+		position: fixed;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		transition: var(--applications-menu-transition-duration) ease-in-out;
+
+		.c-prefers-reduced-motion & {
+			transition: none;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	& .menubar .nav-link[aria-expanded] {
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: uppercase;
+	}
+
+	&,
+	& > .applications-menu-sidebar {
+		transition: 400ms ease-in-out;
+
+		.c-prefers-reduced-motion & {
+			transition: none;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+}
