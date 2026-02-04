@@ -1,0 +1,24 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Jessyca Ferreira
+ */
+public class LPD_58402 {
+
+	public void method(User user) {
+		_modelListener.onAfterUpdate(user.cloneWithOriginalValues(), user);
+	}
+
+	@Reference(
+		target = "(component.name=com.liferay.portal.security.ldap.internal.model.listener.UserModelListener)"
+	)
+	private ModelListener<User> _modelListener;
+
+}
