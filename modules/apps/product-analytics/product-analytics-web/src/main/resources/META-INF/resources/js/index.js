@@ -12,5 +12,4 @@ export {
 } from '../product_analytics_banner/js/ProductAnalyticsBanner';
 
 export {default as ProductAnalyticsConsentPanel} from '../product_analytics_consent_panel/js/ProductAnalyticsConsentPanel';
-
 export {default as ConfigurationFormEventHandler} from './ConfigurationFormEventHandler';
