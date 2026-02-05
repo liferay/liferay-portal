@@ -65,31 +65,23 @@ public class ProductAnalyticsConfigurationFormRenderer
 		throws IOException {
 
 		try {
-			_render(httpServletRequest, httpServletResponse);
+			httpServletRequest.setAttribute(
+				ProductAnalyticsWebKeys.
+					PRODUCT_ANALYTICS_CONFIGURATION_DISPLAY_CONTEXT,
+				new ProductAnalyticsConfigurationDisplayContext(
+					httpServletRequest, _layoutUtilityPageEntryLayoutProvider));
+
+			RequestDispatcher requestDispatcher =
+				_servletContext.getRequestDispatcher(
+					"/product_analytics_configuration/view.jsp");
+
+			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 		catch (Exception exception) {
 			throw new IOException(
 				"Unable to render /product_analytics_configuration/view.jsp",
 				exception);
 		}
-	}
-
-	private void _render(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws Exception {
-
-		httpServletRequest.setAttribute(
-			ProductAnalyticsWebKeys.
-				PRODUCT_ANALYTICS_CONFIGURATION_DISPLAY_CONTEXT,
-			new ProductAnalyticsConfigurationDisplayContext(
-				httpServletRequest, _layoutUtilityPageEntryLayoutProvider));
-
-		RequestDispatcher requestDispatcher =
-			_servletContext.getRequestDispatcher(
-				"/product_analytics_configuration/view.jsp");
-
-		requestDispatcher.include(httpServletRequest, httpServletResponse);
 	}
 
 	@Reference
