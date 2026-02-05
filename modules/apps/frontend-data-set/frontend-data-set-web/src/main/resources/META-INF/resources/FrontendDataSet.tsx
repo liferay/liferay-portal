@@ -762,8 +762,8 @@ const FrontendDataSetContent = ({
 
 		const configInURL: Partial<IConfigInURL> | null = readConfigFromURL(id);
 
-		const updatedSearch = globalFDSState.search.query;
-		const urlSearch = configInURL?.q;
+		const globalFDSStateSearchQuery = globalFDSState.search.query;
+		const urlSearchQuery = configInURL?.q;
 
 		const shouldUpdateFilters = globalFDSState.filters.some(
 			(filter: IBaseFilterState) => {
@@ -781,14 +781,14 @@ const FrontendDataSetContent = ({
 		);
 
 		const shouldUpdateSearch =
-			(urlSearch ?? '') !== (updatedSearch ?? '') &&
-			(urlSearch || updatedSearch);
+			(urlSearchQuery ?? '') !== (globalFDSStateSearchQuery ?? '') &&
+			(urlSearchQuery || globalFDSStateSearchQuery);
 
-		const updateConfig: {[key: string]: any} = {};
+		const updateConfig: Partial<IConfigInURL> = {};
 
 		if (shouldUpdateFilters) {
 			updateConfig[EConfigInURLKeys.ACTIVE_FILTERS] =
-				globalFDSState.filters;
+				globalFDSState.filters as Array<any>;
 		}
 
 		if (shouldUpdateSearch) {
@@ -1162,7 +1162,7 @@ const FrontendDataSetContent = ({
 		}
 	}, [dataSetWrapperRef]);
 
-	const getInitialFilters = useCallback(() => {
+	const mappedInitialFilters = useMemo(() => {
 		return initialFilters
 			?.filter((filter: any) => filter.preloadedData)
 			.map((filter: any) => {
@@ -1181,7 +1181,6 @@ const FrontendDataSetContent = ({
 			value: IConfigInURL[keyof IConfigInURL];
 		}> = [];
 
-		const initialFilters = getInitialFilters();
 		const searchParam = getSearchParam();
 		const urlFilters = getFilters();
 
@@ -1190,7 +1189,7 @@ const FrontendDataSetContent = ({
 		const initialFiltersRemoved = urlFilters && !urlFilters.length;
 
 		if (!initialFiltersRemoved) {
-			initialFilters?.forEach((initialFilter) => {
+			mappedInitialFilters?.forEach((initialFilter) => {
 				const isFilterInURL = urlFilters?.some(
 					(urlFilter) => urlFilter.id === initialFilter.id
 				);
@@ -1269,7 +1268,7 @@ const FrontendDataSetContent = ({
 	}, [
 		getActiveSorts,
 		getDelta,
-		getInitialFilters,
+		mappedInitialFilters,
 		getFilters,
 		getPageNumber,
 		getSearchParam,

@@ -95,11 +95,11 @@ const assertNoActiveFiltersInURL = async (fdsId: string, page: Page) => {
 	await expect(() => {
 		const config = getConfigFromURL(new URL(page.url()).search, fdsId);
 
-		config
-			? expect(
-					config.filters === undefined || !config.filters.length
-				).toBeTruthy()
-			: expect(config).toBeNull();
+		if (config) {
+			expect(
+				config.filters === undefined || !config.filters.length
+			).toBeTruthy();
+		}
 	}).toPass();
 };
 

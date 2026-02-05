@@ -75,16 +75,18 @@ export function writeConfigInURL(
 	}
 
 	const params = new URLSearchParams(window.location.search);
+	const configParamName = getConfigParamName(id);
 
 	params.set(
-		getConfigParamName(id),
+		configParamName,
 		JsonURL.stringify(
 			sortObjectKeys({...(currentConfig || {}), ...config}),
 			{AQF: true, noEmptyComposite: true}
 		) || ''
 	);
 
-	const path = `${window.location.pathname}?${decodeURLParams(params)}`;
+	const urlParams = decodeURLParam(configParamName, params);
+	const path = `${window.location.pathname}?${urlParams}`;
 
 	const replaceState =
 		configInURLBehavior === EConfigInURLBehavior.REPLACE || !currentConfig;
@@ -134,13 +136,22 @@ export function contains(
 	return deepContains(a, b);
 }
 
-function decodeURLParams(params: URLSearchParams) {
+function decodeURLParam(
+	configParamName: string,
+	params: URLSearchParams
+): string {
 	return params
 		.toString()
-		.replace(/%28/g, '(')
-		.replace(/%29/g, ')')
-		.replace(/%2C/g, ',')
-		.replace(/%3A/g, ':');
+		.replace(
+			new RegExp(`(${configParamName}=)([^&]+)`),
+			(_, key, value) =>
+				key +
+				value
+					.replace(/%28/g, '(')
+					.replace(/%29/g, ')')
+					.replace(/%2C/g, ',')
+					.replace(/%3A/g, ':')
+		);
 }
 
 function deepContains(subset: any, superset: any) {
