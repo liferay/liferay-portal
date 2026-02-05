@@ -447,9 +447,25 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 				ServiceContextThreadLocal.getServiceContext());
 		}
 
+		String classTypeKey = null;
+
+		if (classTypeId > 0) {
+			InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
+				_infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemFormVariationsProvider.class,
+					_portal.getClassName(classNameId));
+
+			InfoItemFormVariation infoItemFormVariation =
+				infoItemFormVariationsProvider.getInfoItemFormVariation(
+					groupId, String.valueOf(classTypeId));
+
+			classTypeKey = infoItemFormVariation.getExternalReferenceCode();
+		}
+
 		return _layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 			null, groupId, layoutPageTemplateCollectionId, null, classNameId,
-			classTypeId, name, 0, WorkflowConstants.STATUS_APPROVED,
+			classTypeId, classTypeKey, name, 0,
+			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextThreadLocal.getServiceContext());
 	}
 

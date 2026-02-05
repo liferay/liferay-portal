@@ -129,11 +129,11 @@ public class ObjectDefinitionModelListenerTest {
 			"LFR_CMS_TRANSLATION_" + classNameId;
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			_group.getGroupId(), classNameId, 0, false,
+			_group.getGroupId(), classNameId, 0, null, false,
 			layoutPageTemplateEntryKey, WorkflowConstants.STATUS_APPROVED);
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			_group.getGroupId(), classNameId, 0, true,
+			_group.getGroupId(), classNameId, 0, null, true,
 			_objectDefinition.getName(), WorkflowConstants.STATUS_APPROVED);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);

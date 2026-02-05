@@ -63,9 +63,9 @@ public class LayoutUpgradeProcessTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, null,
-				0, 0, name, LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
-				0, true, 0, 0, 0, WorkflowConstants.STATUS_APPROVED,
-				new ServiceContext());
+				0, 0, null, name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,
+				0, 0, WorkflowConstants.STATUS_APPROVED, new ServiceContext());
 
 		Layout layoutPageTemplateEntryLayout = _layoutLocalService.fetchLayout(
 			layoutPageTemplateEntry.getPlid());

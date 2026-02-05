@@ -79,11 +79,11 @@ public class UpgradeAssetDisplayPageEntryTest {
 
 		_layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId(), _classNameId, 0, false,
+				_group.getGroupId(), _classNameId, 0, null, false,
 				WorkflowConstants.STATUS_APPROVED);
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			_group.getGroupId(), _classNameId, 0, true,
+			_group.getGroupId(), _classNameId, 0, null, true,
 			WorkflowConstants.STATUS_APPROVED);
 	}
 

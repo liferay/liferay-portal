@@ -271,7 +271,7 @@ public class LayoutsImporterTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group1.getGroupId(),
-				_portal.getClassNameId(AssetCategory.class.getName()), 0);
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null);
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());

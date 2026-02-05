@@ -189,8 +189,8 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemTest {
 		try {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
 				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-					_group.getGroupId(), _className.getClassNameId(), 0, true,
-					WorkflowConstants.STATUS_APPROVED);
+					_group.getGroupId(), _className.getClassNameId(), 0, null,
+					true, WorkflowConstants.STATUS_APPROVED);
 
 			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
 				TestPropsValues.getUserId(), _group.getGroupId(),
@@ -322,8 +322,8 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemTest {
 		try {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
 				DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-					_group.getGroupId(), _className.getClassNameId(), 0, true,
-					WorkflowConstants.STATUS_APPROVED);
+					_group.getGroupId(), _className.getClassNameId(), 0, null,
+					true, WorkflowConstants.STATUS_APPROVED);
 
 			AssetDisplayPageEntry assetDisplayPageEntry =
 				_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(

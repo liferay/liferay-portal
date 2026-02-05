@@ -147,7 +147,7 @@ public class ObjectEntrySitemapURLProviderTest {
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
 				_portal.getClassNameId(_objectDefinition.getClassName()), 0,
-				true, WorkflowConstants.STATUS_APPROVED);
+				null, true, WorkflowConstants.STATUS_APPROVED);
 
 		_assertRootElement(
 			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),

@@ -289,7 +289,7 @@ public class AssetUsageResourceTest extends BaseAssetUsageResourceTestCase {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 				null, TestPropsValues.getUserId(), testGroup.getGroupId(), 0,
-				null, 0, 0, name, type, 0, true, 0, 0, 0,
+				null, 0, 0, null, name, type, 0, true, 0, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(

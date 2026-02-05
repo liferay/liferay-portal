@@ -259,8 +259,8 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 	public void testHasAssetDisplayPage() throws Exception {
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(),
-			_portal.getClassNameId(AssetCategory.class.getName()), 0, true,
-			WorkflowConstants.STATUS_APPROVED);
+			_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
+			true, WorkflowConstants.STATUS_APPROVED);
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			UnicodePropertiesBuilder.put(
@@ -421,8 +421,8 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 	public void testSiteNavigationMenuItemDisplayPageURL() throws Exception {
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(),
-			_portal.getClassNameId(AssetCategory.class.getName()), 0, true,
-			WorkflowConstants.STATUS_APPROVED);
+			_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
+			true, WorkflowConstants.STATUS_APPROVED);
 
 		SiteNavigationMenu siteNavigationMenu =
 			_siteNavigationMenuLocalService.addSiteNavigationMenu(

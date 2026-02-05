@@ -59,6 +59,7 @@ public class LayoutPageTemplateEntryStagedModelRepository
 			layoutPageTemplateEntry.getLayoutPageTemplateCollectionId(), null,
 			layoutPageTemplateEntry.getClassNameId(),
 			layoutPageTemplateEntry.getClassTypeId(),
+			layoutPageTemplateEntry.getClassTypeKey(),
 			layoutPageTemplateEntry.getName(),
 			layoutPageTemplateEntry.getType(),
 			layoutPageTemplateEntry.getPreviewFileEntryId(),

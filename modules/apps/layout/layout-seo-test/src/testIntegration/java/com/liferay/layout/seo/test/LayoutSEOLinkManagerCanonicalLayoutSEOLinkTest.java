@@ -307,7 +307,8 @@ public class LayoutSEOLinkManagerCanonicalLayoutSEOLinkTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(), classNameId,
-				journalArticle.getDDMStructureId(), true,
+				journalArticle.getDDMStructureId(),
+				journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		return _assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(

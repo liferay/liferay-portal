@@ -1412,7 +1412,8 @@ public class ExportImportLayoutPageTemplateEntriesTest {
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group1.getGroupId(),
 				_portal.getClassNameId(JournalArticle.class.getName()),
-				journalArticle.getDDMStructureId(), true,
+				journalArticle.getDDMStructureId(),
+				journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(

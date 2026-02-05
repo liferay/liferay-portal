@@ -142,7 +142,7 @@ public class ResetTranslationDisplayPageStrutsActionTest {
 			"LFR_CMS_TRANSLATION_" + classNameId;
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			_group.getGroupId(), classNameId, 0, false,
+			_group.getGroupId(), classNameId, 0, null, false,
 			layoutPageTemplateEntryKey, WorkflowConstants.STATUS_APPROVED);
 
 		_resetStructureDisplayPageStrutsAction.execute(

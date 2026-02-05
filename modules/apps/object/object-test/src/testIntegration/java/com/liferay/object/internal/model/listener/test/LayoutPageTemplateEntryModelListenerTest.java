@@ -30,8 +30,8 @@ public class LayoutPageTemplateEntryModelListenerTest
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				group.getGroupId(), objectDefinition1ClassNameId, 0, false,
-				WorkflowConstants.STATUS_APPROVED);
+				group.getGroupId(), objectDefinition1ClassNameId, 0, null,
+				false, WorkflowConstants.STATUS_APPROVED);
 
 		Assert.assertEquals(
 			objectDefinition2ClassNameId,

@@ -91,7 +91,7 @@ public class AssetDisplayPageFormProcessorTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId(), classNameId, 0, true,
+				_group.getGroupId(), classNameId, 0, null, true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		_withAndWithoutAssetEntry(
@@ -183,7 +183,7 @@ public class AssetDisplayPageFormProcessorTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId(), classNameId, 0, true,
+				_group.getGroupId(), classNameId, 0, null, true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		_withAndWithoutAssetEntry(

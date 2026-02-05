@@ -126,8 +126,8 @@ public class BlogsEntryAnalyticsReportsInfoItemTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
-				_portal.getClassNameId(BlogsEntry.class.getName()), 0, true,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(BlogsEntry.class.getName()), 0, null,
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
 			TestPropsValues.getUserId(), _group.getGroupId(),
@@ -222,8 +222,8 @@ public class BlogsEntryAnalyticsReportsInfoItemTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
-				_portal.getClassNameId(BlogsEntry.class.getName()), 0, true,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(BlogsEntry.class.getName()), 0, null,
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(

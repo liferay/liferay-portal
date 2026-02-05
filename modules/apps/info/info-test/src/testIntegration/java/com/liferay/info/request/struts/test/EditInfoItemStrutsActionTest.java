@@ -449,7 +449,7 @@ public class EditInfoItemStrutsActionTest {
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
 				_portal.getClassNameId(_objectDefinition.getClassName()), 0,
-				true, WorkflowConstants.STATUS_APPROVED);
+				null, true, WorkflowConstants.STATUS_APPROVED);
 
 		InfoItemFormProvider<?> infoItemFormProvider =
 			_infoItemServiceRegistry.getFirstInfoItemService(

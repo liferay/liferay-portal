@@ -58,7 +58,7 @@ public class GetMappingFieldsMVCResourceCommandTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId(), classNameId, 0, true,
+				_group.getGroupId(), classNameId, 0, null, true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		JSONArray jsonArray = ReflectionTestUtil.invoke(

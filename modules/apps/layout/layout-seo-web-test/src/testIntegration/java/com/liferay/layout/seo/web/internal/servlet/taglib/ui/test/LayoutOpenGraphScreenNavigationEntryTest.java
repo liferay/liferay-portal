@@ -58,7 +58,7 @@ public class LayoutOpenGraphScreenNavigationEntryTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_APPROVED,
 				ServiceContextTestUtil.getServiceContext());

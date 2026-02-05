@@ -65,8 +65,8 @@ public class DisplayPageTemplateResourceTest
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				testGroup.getGroupId(),
-				_portal.getClassNameId(BlogsEntry.class.getName()), 0, true,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(BlogsEntry.class.getName()), 0, null,
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		Assert.assertNotNull(
 			displayPageTemplateResource.getSiteDisplayPageTemplate(
@@ -158,7 +158,7 @@ public class DisplayPageTemplateResourceTest
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				siteId, _portal.getClassNameId(BlogsEntry.class.getName()), 0,
-				true, WorkflowConstants.STATUS_APPROVED);
+				null, true, WorkflowConstants.STATUS_APPROVED);
 
 		displayPageTemplate.setDateCreated(
 			layoutPageTemplateEntry.getCreateDate());

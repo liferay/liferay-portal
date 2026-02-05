@@ -709,8 +709,8 @@ public class FileEntryContentDashboardItemTest {
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(),
 			_portal.getClassNameId(FileEntry.class.getName()),
-			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, true,
-			WorkflowConstants.STATUS_APPROVED);
+			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, null,
+			true, WorkflowConstants.STATUS_APPROVED);
 
 		if (numVersions > 1) {
 			for (int i = 1; i < numVersions; i++) {

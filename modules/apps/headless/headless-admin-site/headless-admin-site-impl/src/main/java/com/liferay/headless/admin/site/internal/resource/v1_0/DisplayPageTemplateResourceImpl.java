@@ -419,14 +419,16 @@ public class DisplayPageTemplateResourceImpl
 
 		long classNameId = _portal.getClassNameId(
 			contentTypeReference.getClassName());
-		long classTypeId = _getClassTypeId(contentTypeReference, groupId);
+		String classTypeKey = _getClassTypeKey(contentTypeReference);
 
 		if ((classNameId != layoutPageTemplateEntry.getClassNameId()) ||
-			(classTypeId != layoutPageTemplateEntry.getClassTypeId())) {
+			!StringUtil.equals(
+				classTypeKey, layoutPageTemplateEntry.getClassTypeKey())) {
 
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				classNameId, classTypeId);
+				classNameId, _getClassTypeId(contentTypeReference, groupId),
+				classTypeKey);
 		}
 
 		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
@@ -596,6 +598,7 @@ public class DisplayPageTemplateResourceImpl
 				layoutPageTemplateCollectionId, displayPageTemplate.getKey(),
 				_portal.getClassNameId(contentTypeReference.getClassName()),
 				_getClassTypeId(contentTypeReference, groupId),
+				_getClassTypeKey(contentTypeReference),
 				displayPageTemplate.getName(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				FileEntryUtil.getPreviewFileEntryId(
@@ -646,6 +649,19 @@ public class DisplayPageTemplateResourceImpl
 		}
 
 		return -1;
+	}
+
+	private String _getClassTypeKey(
+		ClassSubtypeReference contentTypeReference) {
+
+		ItemExternalReference itemExternalReference =
+			contentTypeReference.getSubTypeExternalReference();
+
+		if (itemExternalReference == null) {
+			return null;
+		}
+
+		return itemExternalReference.getExternalReferenceCode();
 	}
 
 	private long _getLayoutPageTemplateCollectionId(

@@ -97,7 +97,7 @@ public class GroupDataCleanupPreupgradeProcessTest
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			group.getGroupId(),
-			_portal.getClassNameId(BlogsEntry.class.getName()), 0, true,
+			_portal.getClassNameId(BlogsEntry.class.getName()), 0, null, true,
 			WorkflowConstants.STATUS_APPROVED);
 
 		runSQL("delete from Group_ where groupId = " + group.getGroupId());

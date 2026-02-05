@@ -2135,7 +2135,7 @@ public class EditableFragmentEntryProcessorTest {
 		throws Exception {
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			objectEntry.getGroupId(), classNameId, 0, true,
+			objectEntry.getGroupId(), classNameId, 0, null, true,
 			WorkflowConstants.STATUS_APPROVED);
 
 		InfoItemFieldValuesProvider infoItemFieldValuesProvider =

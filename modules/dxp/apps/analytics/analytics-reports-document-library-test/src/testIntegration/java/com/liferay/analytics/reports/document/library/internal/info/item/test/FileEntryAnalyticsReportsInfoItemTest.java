@@ -125,8 +125,8 @@ public class FileEntryAnalyticsReportsInfoItemTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
-				_portal.getClassNameId(FileEntry.class.getName()), 0, true,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(FileEntry.class.getName()), 0, null,
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
 			TestPropsValues.getUserId(), _group.getGroupId(),

@@ -73,8 +73,8 @@ public class LayoutPageTemplateEntryStagedModelDataHandlerTest
 		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				stagingGroup.getGroupId(),
-				_portal.getClassNameId(FileEntry.class.getName()), 0, false,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(FileEntry.class.getName()), 0, null,
+				false, WorkflowConstants.STATUS_APPROVED);
 
 		layoutPageTemplateEntry1 =
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
@@ -102,8 +102,8 @@ public class LayoutPageTemplateEntryStagedModelDataHandlerTest
 		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				stagingGroup.getGroupId(),
-				_portal.getClassNameId(FileEntry.class.getName()), 0, false,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(FileEntry.class.getName()), 0, null,
+				false, WorkflowConstants.STATUS_APPROVED);
 
 		layoutPageTemplateEntry2 =
 			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(

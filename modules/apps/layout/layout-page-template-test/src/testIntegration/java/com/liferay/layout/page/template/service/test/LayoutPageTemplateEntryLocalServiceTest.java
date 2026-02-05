@@ -114,7 +114,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0, true, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
@@ -132,7 +132,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0, true, 0,
 				0, 0, WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -152,7 +152,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				TestPropsValues.getUserId(), _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -172,7 +172,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				_layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId(),
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.BASIC, 0, false, 0, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext));
 		_assertLayoutPageTemplateEntry(
@@ -181,7 +181,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext));
 
@@ -201,7 +201,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				displayPageLayoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId(),
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext));
 
@@ -211,7 +211,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				_layoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId(),
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext));
 
@@ -249,7 +249,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), companyGroup.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, 0, 0, RandomTestUtil.randomString(),
+				null, 0, 0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext));
 
@@ -291,7 +291,8 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				layoutPageTemplateEntryKey, 0, 0, RandomTestUtil.randomString(),
+				layoutPageTemplateEntryKey, 0, 0, null,
+				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
@@ -699,8 +700,8 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), groupId,
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, 0, 0, RandomTestUtil.randomString(), type, 0, false, 0, 0,
-				0, WorkflowConstants.STATUS_APPROVED, _serviceContext);
+				null, 0, 0, null, RandomTestUtil.randomString(), type, 0, false,
+				0, 0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 			Assert.fail();
 		}
@@ -721,7 +722,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		try {
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 				null, TestPropsValues.getUserId(), groupId,
-				layoutPageTemplateCollectionId, null, 0, 0,
+				layoutPageTemplateCollectionId, null, 0, 0, null,
 				RandomTestUtil.randomString(), type, 0, false, 0, 0, 0,
 				WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
@@ -807,7 +808,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				_group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				RandomTestUtil.randomString(), 0, 0,
+				RandomTestUtil.randomString(), 0, 0, null,
 				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext);
@@ -837,7 +838,8 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				layoutPageTemplateEntryKey, 0, 0, RandomTestUtil.randomString(),
+				layoutPageTemplateEntryKey, 0, 0, null,
+				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0, false, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, _serviceContext);
 

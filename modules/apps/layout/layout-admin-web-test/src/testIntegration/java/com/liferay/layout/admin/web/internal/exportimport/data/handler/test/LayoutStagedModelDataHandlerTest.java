@@ -337,8 +337,8 @@ public class LayoutStagedModelDataHandlerTest
 		LayoutPageTemplateEntry displayPageLayoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				stagingGroup.getGroupId(),
-				_portal.getClassNameId(AssetCategory.class.getName()), 0, true,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
@@ -892,7 +892,8 @@ public class LayoutStagedModelDataHandlerTest
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 				null, serviceContext.getUserId(),
 				serviceContext.getScopeGroupId(), 0, null, classNameId,
-				classTypeId, RandomTestUtil.randomString(),
+				classTypeId, infoItemFormVariation.getExternalReferenceCode(),
+				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				masterLayout.getPlid(), WorkflowConstants.STATUS_APPROVED,
 				serviceContext);
@@ -901,7 +902,8 @@ public class LayoutStagedModelDataHandlerTest
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 				null, serviceContext.getUserId(),
 				serviceContext.getScopeGroupId(), 0, null, classNameId,
-				classTypeId, RandomTestUtil.randomString(),
+				classTypeId, infoItemFormVariation.getExternalReferenceCode(),
+				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				masterLayout.getPlid(), WorkflowConstants.STATUS_APPROVED,
 				serviceContext);

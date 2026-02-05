@@ -78,7 +78,7 @@ public class LayoutPageTemplateEntryTestUtil {
 				null,
 				PortalUtil.getClassNameId(
 					"com.liferay.asset.kernel.model.AssetCategory"),
-				0, RandomTestUtil.randomString(),
+				0, null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
 	}

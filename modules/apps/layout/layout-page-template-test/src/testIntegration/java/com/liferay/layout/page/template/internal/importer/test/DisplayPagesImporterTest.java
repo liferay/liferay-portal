@@ -131,7 +131,7 @@ public class DisplayPagesImporterTest {
 					null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
 					null,
 					_portal.getClassNameId(objectDefinition.getClassName()), 0,
-					RandomTestUtil.randomString(),
+					null, RandomTestUtil.randomString(),
 					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
 					WorkflowConstants.STATUS_APPROVED, serviceContext);
 
@@ -230,7 +230,7 @@ public class DisplayPagesImporterTest {
 					null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
 					null,
 					_portal.getClassNameId(objectDefinition.getClassName()), 0,
-					RandomTestUtil.randomString(),
+					null, RandomTestUtil.randomString(),
 					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
 					WorkflowConstants.STATUS_APPROVED, serviceContext);
 
@@ -347,7 +347,7 @@ public class DisplayPagesImporterTest {
 				_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 					null, TestPropsValues.getUserId(), _group.getGroupId(), 0,
 					null, _portal.getClassNameId(FileEntry.class.getName()), 0,
-					RandomTestUtil.randomString(),
+					null, RandomTestUtil.randomString(),
 					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 					masterLayoutPageTemplateEntry.getPlid(),
 					WorkflowConstants.STATUS_APPROVED, serviceContext);

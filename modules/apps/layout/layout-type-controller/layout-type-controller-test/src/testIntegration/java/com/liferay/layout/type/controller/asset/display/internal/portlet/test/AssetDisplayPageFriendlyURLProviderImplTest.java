@@ -84,7 +84,8 @@ public class AssetDisplayPageFriendlyURLProviderImplTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(), classNameId,
-				_journalArticle.getDDMStructureId(), true,
+				_journalArticle.getDDMStructureId(),
+				_journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		_assetDisplayPageEntry =
@@ -122,7 +123,8 @@ public class AssetDisplayPageFriendlyURLProviderImplTest {
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
-			journalArticle.getDDMStructureId(), true,
+			journalArticle.getDDMStructureId(),
+			journalArticle.getDDMStructureKey(), true,
 			WorkflowConstants.STATUS_APPROVED);
 
 		_setUpThemeDisplay(

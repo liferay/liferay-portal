@@ -109,7 +109,8 @@ public class UpdateDisplayPageEntryContentTypeMVCActionCommandTest {
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, serviceContext.getScopeGroupId(), 0, null,
 				_portal.getClassNameId(JournalArticle.class.getName()),
-				ddmStructure.getStructureId(), RandomTestUtil.randomString(), 0,
+				ddmStructure.getStructureId(), ddmStructure.getStructureKey(),
+				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 		String redirect = RandomTestUtil.randomString();
@@ -172,7 +173,8 @@ public class UpdateDisplayPageEntryContentTypeMVCActionCommandTest {
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, serviceContext.getScopeGroupId(), 0, null,
 				_portal.getClassNameId(JournalArticle.class.getName()),
-				ddmStructure.getStructureId(), RandomTestUtil.randomString(), 0,
+				ddmStructure.getStructureId(), ddmStructure.getStructureKey(),
+				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 		User user = UserTestUtil.addCompanyAdminUser(
@@ -226,6 +228,7 @@ public class UpdateDisplayPageEntryContentTypeMVCActionCommandTest {
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, serviceContext.getScopeGroupId(), 0, null, classNameId,
 				journalArticle.getDDMStructureId(),
+				journalArticle.getDDMStructureKey(),
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
 

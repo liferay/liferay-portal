@@ -308,7 +308,8 @@ public class ExportDisplayPagesMVCResourceCommandTest {
 		return _layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 			null, _serviceContext.getUserId(),
 			_serviceContext.getScopeGroupId(), 0, null,
-			_portal.getClassNameId(className), _getClassTypeId(className), name,
+			_portal.getClassNameId(className), _getClassTypeId(className),
+			_getClassTypeKey(className), name,
 			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, status,
 			_serviceContext);
 	}
@@ -318,6 +319,13 @@ public class ExportDisplayPagesMVCResourceCommandTest {
 			_getFirstInfoItemFormVariation(className);
 
 		return GetterUtil.getLong(infoItemFormVariation.getKey());
+	}
+
+	private String _getClassTypeKey(String className) {
+		InfoItemFormVariation infoItemFormVariation =
+			_getFirstInfoItemFormVariation(className);
+
+		return infoItemFormVariation.getExternalReferenceCode();
 	}
 
 	private InfoItemFormVariation _getFirstInfoItemFormVariation(

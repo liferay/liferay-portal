@@ -81,7 +81,8 @@ public class AssetEntryInfoItemFieldValuesProviderTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(), _classNameId,
-				journalArticle.getDDMStructureId(), true,
+				journalArticle.getDDMStructureId(),
+				journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
 		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(

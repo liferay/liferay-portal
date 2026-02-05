@@ -1079,9 +1079,9 @@ public class ActionUtil {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			LayoutPageTemplateEntryLocalServiceUtil.addLayoutPageTemplateEntry(
 				null, serviceContext.getUserId(), groupId, 0, null, classNameId,
-				0, name, LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
-				true, 0, 0, 0, WorkflowConstants.STATUS_APPROVED,
-				serviceContext);
+				0, null, name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,
+				0, 0, WorkflowConstants.STATUS_APPROVED, serviceContext);
 
 		Layout layout = LayoutLocalServiceUtil.getLayout(
 			layoutPageTemplateEntry.getPlid());
@@ -1400,7 +1400,7 @@ public class ActionUtil {
 				null, serviceContext.getUserId(), groupId, 0,
 				_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX +
 					classNameId,
-				classNameId, 0,
+				classNameId, 0, null,
 				_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX +
 					objectDefinitionName,
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,

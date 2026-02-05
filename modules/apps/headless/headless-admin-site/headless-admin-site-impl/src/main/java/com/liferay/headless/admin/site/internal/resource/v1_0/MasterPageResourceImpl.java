@@ -422,7 +422,7 @@ public class MasterPageResourceImpl
 				masterPage.getExternalReferenceCode(), groupId,
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				masterPage.getKey(), 0, 0, masterPage.getName(),
+				masterPage.getKey(), 0, 0, null, masterPage.getName(),
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, getResourceName(), serviceContext,

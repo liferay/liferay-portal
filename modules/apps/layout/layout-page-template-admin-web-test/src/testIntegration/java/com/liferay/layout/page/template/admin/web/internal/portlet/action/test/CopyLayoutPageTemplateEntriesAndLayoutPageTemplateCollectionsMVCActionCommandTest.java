@@ -139,8 +139,8 @@ public class
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
-				_portal.getClassNameId(BlogsEntry.class.getName()), 0, false,
-				WorkflowConstants.STATUS_DRAFT);
+				_portal.getClassNameId(BlogsEntry.class.getName()), 0, null,
+				false, WorkflowConstants.STATUS_DRAFT);
 
 		_mvcActionCommand.processAction(
 			_getMockLiferayPortletActionRequest(

@@ -6,8 +6,10 @@
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
 import com.liferay.info.item.InfoItemClassDetails;
+import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
+import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
@@ -73,10 +75,29 @@ public class UpdateDisplayPageEntryContentTypeMVCActionCommand
 
 			_layoutLockManager.getLock(draftLayout, themeDisplay.getUserId());
 
+			long classNameId = ParamUtil.getLong(actionRequest, "classNameId");
+			long classTypeId = ParamUtil.getLong(actionRequest, "classTypeId");
+
+			String classTypeKey = null;
+
+			if (classTypeId > 0) {
+				InfoItemFormVariationsProvider<?>
+					infoItemFormVariationsProvider =
+						_infoItemServiceRegistry.getFirstInfoItemService(
+							InfoItemFormVariationsProvider.class,
+							_portal.getClassName(classNameId));
+
+				InfoItemFormVariation infoItemFormVariation =
+					infoItemFormVariationsProvider.getInfoItemFormVariation(
+						themeDisplay.getScopeGroupId(),
+						String.valueOf(classTypeId));
+
+				classTypeKey = infoItemFormVariation.getExternalReferenceCode();
+			}
+
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				ParamUtil.getLong(actionRequest, "classNameId"),
-				ParamUtil.getLong(actionRequest, "classTypeId"));
+				classNameId, classTypeId, classTypeKey);
 
 			hideDefaultSuccessMessage(actionRequest);
 

@@ -81,8 +81,8 @@ public class AssetDisplayPageUsagesDisplayContextTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
-				_portal.getClassNameId(BlogsEntry.class.getName()), 0, true,
-				WorkflowConstants.STATUS_APPROVED);
+				_portal.getClassNameId(BlogsEntry.class.getName()), 0, null,
+				true, WorkflowConstants.STATUS_APPROVED);
 
 		BlogsEntry blogsEntry1 = BlogsTestUtil.addEntryWithWorkflow(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(), true,

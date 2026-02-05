@@ -98,7 +98,7 @@ public class DLAppHelperLocalServiceTest {
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			TestPropsValues.getGroupId(),
-			PortalUtil.getClassNameId(FileEntry.class.getName()), 0, true,
+			PortalUtil.getClassNameId(FileEntry.class.getName()), 0, null, true,
 			WorkflowConstants.STATUS_APPROVED);
 
 		String fileEntryContent = StringUtil.randomString();

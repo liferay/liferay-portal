@@ -534,7 +534,7 @@ public class PageTemplateResourceImpl
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				contentPageTemplate.getExternalReferenceCode(), groupId,
 				layoutPageTemplateCollectionId, contentPageTemplate.getKey(), 0,
-				0, contentPageTemplate.getName(),
+				0, null, contentPageTemplate.getName(),
 				LayoutPageTemplateEntryTypeConstants.BASIC,
 				FileEntryUtil.getPreviewFileEntryId(
 					groupId, getResourceName(), serviceContext,

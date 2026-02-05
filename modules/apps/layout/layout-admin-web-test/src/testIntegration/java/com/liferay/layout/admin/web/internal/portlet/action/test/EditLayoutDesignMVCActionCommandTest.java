@@ -112,8 +112,8 @@ public class EditLayoutDesignMVCActionCommandTest {
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
 				_portal.getClassNameId(JournalArticle.class.getName()),
-				ddmStructure.getStructureId(), false,
-				WorkflowConstants.STATUS_DRAFT);
+				ddmStructure.getStructureId(), ddmStructure.getStructureKey(),
+				false, WorkflowConstants.STATUS_DRAFT);
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());

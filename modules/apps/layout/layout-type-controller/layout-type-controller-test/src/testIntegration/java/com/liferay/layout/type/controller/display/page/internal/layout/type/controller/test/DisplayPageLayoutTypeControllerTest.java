@@ -155,7 +155,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -197,7 +197,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -221,7 +221,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -290,7 +290,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -321,7 +321,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -374,7 +374,7 @@ public class DisplayPageLayoutTypeControllerTest {
 				_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 					null, _group.getGroupId(), 0, null,
 					_portal.getClassNameId(AssetCategory.class.getName()), 0,
-					RandomTestUtil.randomString(), 0,
+					null, RandomTestUtil.randomString(), 0,
 					WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
 			Layout layout = _layoutLocalService.getLayout(
@@ -435,7 +435,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -476,7 +476,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
@@ -560,7 +560,7 @@ public class DisplayPageLayoutTypeControllerTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null,
-				_portal.getClassNameId(AssetCategory.class.getName()), 0,
+				_portal.getClassNameId(AssetCategory.class.getName()), 0, null,
 				RandomTestUtil.randomString(), 0,
 				WorkflowConstants.STATUS_DRAFT, _serviceContext);
 
