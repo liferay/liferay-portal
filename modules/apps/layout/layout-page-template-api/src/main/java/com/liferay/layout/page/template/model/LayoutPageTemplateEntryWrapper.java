@@ -57,6 +57,7 @@ public class LayoutPageTemplateEntryWrapper
 			"layoutPageTemplateEntryKey", getLayoutPageTemplateEntryKey());
 		attributes.put("classNameId", getClassNameId());
 		attributes.put("classTypeId", getClassTypeId());
+		attributes.put("classTypeKey", getClassTypeKey());
 		attributes.put("name", getName());
 		attributes.put("type", getType());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
@@ -168,6 +169,12 @@ public class LayoutPageTemplateEntryWrapper
 			setClassTypeId(classTypeId);
 		}
 
+		String classTypeKey = (String)attributes.get("classTypeKey");
+
+		if (classTypeKey != null) {
+			setClassTypeKey(classTypeKey);
+		}
+
 		String name = (String)attributes.get("name");
 
 		if (name != null) {
@@ -268,6 +275,16 @@ public class LayoutPageTemplateEntryWrapper
 	@Override
 	public long getClassTypeId() {
 		return model.getClassTypeId();
+	}
+
+	/**
+	 * Returns the class type key of this layout page template entry.
+	 *
+	 * @return the class type key of this layout page template entry
+	 */
+	@Override
+	public String getClassTypeKey() {
+		return model.getClassTypeKey();
 	}
 
 	/**
@@ -665,6 +682,16 @@ public class LayoutPageTemplateEntryWrapper
 	@Override
 	public void setClassTypeId(long classTypeId) {
 		model.setClassTypeId(classTypeId);
+	}
+
+	/**
+	 * Sets the class type key of this layout page template entry.
+	 *
+	 * @param classTypeKey the class type key of this layout page template entry
+	 */
+	@Override
+	public void setClassTypeKey(String classTypeKey) {
+		model.setClassTypeKey(classTypeKey);
 	}
 
 	/**

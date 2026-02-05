@@ -76,8 +76,8 @@ public class LayoutPageTemplateEntryModelImpl
 		{"layoutPageTemplateCollectionId", Types.BIGINT},
 		{"layoutPageTemplateEntryKey", Types.VARCHAR},
 		{"classNameId", Types.BIGINT}, {"classTypeId", Types.BIGINT},
-		{"name", Types.VARCHAR}, {"type_", Types.INTEGER},
-		{"previewFileEntryId", Types.BIGINT},
+		{"classTypeKey", Types.VARCHAR}, {"name", Types.VARCHAR},
+		{"type_", Types.INTEGER}, {"previewFileEntryId", Types.BIGINT},
 		{"defaultTemplate", Types.BOOLEAN}, {"layoutPrototypeId", Types.BIGINT},
 		{"plid", Types.BIGINT}, {"lastPublishDate", Types.TIMESTAMP},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
@@ -103,6 +103,7 @@ public class LayoutPageTemplateEntryModelImpl
 		TABLE_COLUMNS_MAP.put("layoutPageTemplateEntryKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("classNameId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classTypeId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("classTypeKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("previewFileEntryId", Types.BIGINT);
@@ -117,7 +118,7 @@ public class LayoutPageTemplateEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LayoutPageTemplateEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,layoutPageTemplateEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutPageTemplateCollectionId LONG,layoutPageTemplateEntryKey VARCHAR(75) null,classNameId LONG,classTypeId LONG,name VARCHAR(75) null,type_ INTEGER,previewFileEntryId LONG,defaultTemplate BOOLEAN,layoutPrototypeId LONG,plid LONG,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (layoutPageTemplateEntryId, ctCollectionId))";
+		"create table LayoutPageTemplateEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,layoutPageTemplateEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutPageTemplateCollectionId LONG,layoutPageTemplateEntryKey VARCHAR(75) null,classNameId LONG,classTypeId LONG,classTypeKey VARCHAR(75) null,name VARCHAR(75) null,type_ INTEGER,previewFileEntryId LONG,defaultTemplate BOOLEAN,layoutPrototypeId LONG,plid LONG,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (layoutPageTemplateEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LayoutPageTemplateEntry";
@@ -369,6 +370,8 @@ public class LayoutPageTemplateEntryModelImpl
 			attributeGetterFunctions.put(
 				"classTypeId", LayoutPageTemplateEntry::getClassTypeId);
 			attributeGetterFunctions.put(
+				"classTypeKey", LayoutPageTemplateEntry::getClassTypeKey);
+			attributeGetterFunctions.put(
 				"name", LayoutPageTemplateEntry::getName);
 			attributeGetterFunctions.put(
 				"type", LayoutPageTemplateEntry::getType);
@@ -472,6 +475,10 @@ public class LayoutPageTemplateEntryModelImpl
 				"classTypeId",
 				(BiConsumer<LayoutPageTemplateEntry, Long>)
 					LayoutPageTemplateEntry::setClassTypeId);
+			attributeSetterBiConsumers.put(
+				"classTypeKey",
+				(BiConsumer<LayoutPageTemplateEntry, String>)
+					LayoutPageTemplateEntry::setClassTypeKey);
 			attributeSetterBiConsumers.put(
 				"name",
 				(BiConsumer<LayoutPageTemplateEntry, String>)
@@ -893,6 +900,26 @@ public class LayoutPageTemplateEntryModelImpl
 
 	@JSON
 	@Override
+	public String getClassTypeKey() {
+		if (_classTypeKey == null) {
+			return "";
+		}
+		else {
+			return _classTypeKey;
+		}
+	}
+
+	@Override
+	public void setClassTypeKey(String classTypeKey) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_classTypeKey = classTypeKey;
+	}
+
+	@JSON
+	@Override
 	public String getName() {
 		if (_name == null) {
 			return "";
@@ -1310,6 +1337,7 @@ public class LayoutPageTemplateEntryModelImpl
 			getLayoutPageTemplateEntryKey());
 		layoutPageTemplateEntryImpl.setClassNameId(getClassNameId());
 		layoutPageTemplateEntryImpl.setClassTypeId(getClassTypeId());
+		layoutPageTemplateEntryImpl.setClassTypeKey(getClassTypeKey());
 		layoutPageTemplateEntryImpl.setName(getName());
 		layoutPageTemplateEntryImpl.setType(getType());
 		layoutPageTemplateEntryImpl.setPreviewFileEntryId(
@@ -1365,6 +1393,8 @@ public class LayoutPageTemplateEntryModelImpl
 			this.<Long>getColumnOriginalValue("classNameId"));
 		layoutPageTemplateEntryImpl.setClassTypeId(
 			this.<Long>getColumnOriginalValue("classTypeId"));
+		layoutPageTemplateEntryImpl.setClassTypeKey(
+			this.<String>getColumnOriginalValue("classTypeKey"));
 		layoutPageTemplateEntryImpl.setName(
 			this.<String>getColumnOriginalValue("name"));
 		layoutPageTemplateEntryImpl.setType(
@@ -1543,6 +1573,14 @@ public class LayoutPageTemplateEntryModelImpl
 
 		layoutPageTemplateEntryCacheModel.classTypeId = getClassTypeId();
 
+		layoutPageTemplateEntryCacheModel.classTypeKey = getClassTypeKey();
+
+		String classTypeKey = layoutPageTemplateEntryCacheModel.classTypeKey;
+
+		if ((classTypeKey != null) && (classTypeKey.length() == 0)) {
+			layoutPageTemplateEntryCacheModel.classTypeKey = null;
+		}
+
 		layoutPageTemplateEntryCacheModel.name = getName();
 
 		String name = layoutPageTemplateEntryCacheModel.name;
@@ -1675,6 +1713,7 @@ public class LayoutPageTemplateEntryModelImpl
 	private String _layoutPageTemplateEntryKey;
 	private long _classNameId;
 	private long _classTypeId;
+	private String _classTypeKey;
 	private String _name;
 	private int _type;
 	private long _previewFileEntryId;
@@ -1736,6 +1775,7 @@ public class LayoutPageTemplateEntryModelImpl
 			"layoutPageTemplateEntryKey", _layoutPageTemplateEntryKey);
 		_columnOriginalValues.put("classNameId", _classNameId);
 		_columnOriginalValues.put("classTypeId", _classTypeId);
+		_columnOriginalValues.put("classTypeKey", _classTypeKey);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("previewFileEntryId", _previewFileEntryId);
@@ -1801,27 +1841,29 @@ public class LayoutPageTemplateEntryModelImpl
 
 		columnBitmasks.put("classTypeId", 16384L);
 
-		columnBitmasks.put("name", 32768L);
+		columnBitmasks.put("classTypeKey", 32768L);
 
-		columnBitmasks.put("type_", 65536L);
+		columnBitmasks.put("name", 65536L);
 
-		columnBitmasks.put("previewFileEntryId", 131072L);
+		columnBitmasks.put("type_", 131072L);
 
-		columnBitmasks.put("defaultTemplate", 262144L);
+		columnBitmasks.put("previewFileEntryId", 262144L);
 
-		columnBitmasks.put("layoutPrototypeId", 524288L);
+		columnBitmasks.put("defaultTemplate", 524288L);
 
-		columnBitmasks.put("plid", 1048576L);
+		columnBitmasks.put("layoutPrototypeId", 1048576L);
 
-		columnBitmasks.put("lastPublishDate", 2097152L);
+		columnBitmasks.put("plid", 2097152L);
 
-		columnBitmasks.put("status", 4194304L);
+		columnBitmasks.put("lastPublishDate", 4194304L);
 
-		columnBitmasks.put("statusByUserId", 8388608L);
+		columnBitmasks.put("status", 8388608L);
 
-		columnBitmasks.put("statusByUserName", 16777216L);
+		columnBitmasks.put("statusByUserId", 16777216L);
 
-		columnBitmasks.put("statusDate", 33554432L);
+		columnBitmasks.put("statusByUserName", 33554432L);
+
+		columnBitmasks.put("statusDate", 67108864L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

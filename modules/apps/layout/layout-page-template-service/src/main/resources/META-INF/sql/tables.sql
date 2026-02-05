@@ -35,6 +35,7 @@ create table LayoutPageTemplateEntry (
 	layoutPageTemplateEntryKey VARCHAR(75) null,
 	classNameId LONG,
 	classTypeId LONG,
+	classTypeKey VARCHAR(75) null,
 	name VARCHAR(75) null,
 	type_ INTEGER,
 	previewFileEntryId LONG,

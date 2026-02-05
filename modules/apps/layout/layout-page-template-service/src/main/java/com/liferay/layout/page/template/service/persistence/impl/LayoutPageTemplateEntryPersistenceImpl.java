@@ -29628,6 +29628,7 @@ public class LayoutPageTemplateEntryPersistenceImpl
 		ctMergeColumnNames.add("layoutPageTemplateEntryKey");
 		ctStrictColumnNames.add("classNameId");
 		ctMergeColumnNames.add("classTypeId");
+		ctMergeColumnNames.add("classTypeKey");
 		ctMergeColumnNames.add("name");
 		ctMergeColumnNames.add("type_");
 		ctMergeColumnNames.add("previewFileEntryId");

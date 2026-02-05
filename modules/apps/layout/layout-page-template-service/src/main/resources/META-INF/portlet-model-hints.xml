@@ -40,6 +40,7 @@
 		<field name="layoutPageTemplateEntryKey" type="String" />
 		<field name="classNameId" type="long" />
 		<field name="classTypeId" type="long" />
+		<field name="classTypeKey" type="String" />
 		<field name="name" type="String" />
 		<field name="type" type="int" />
 		<field name="previewFileEntryId" type="long" />

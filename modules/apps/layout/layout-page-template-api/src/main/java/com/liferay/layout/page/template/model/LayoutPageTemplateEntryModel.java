@@ -324,6 +324,21 @@ public interface LayoutPageTemplateEntryModel
 	public void setClassTypeId(long classTypeId);
 
 	/**
+	 * Returns the class type key of this layout page template entry.
+	 *
+	 * @return the class type key of this layout page template entry
+	 */
+	@AutoEscape
+	public String getClassTypeKey();
+
+	/**
+	 * Sets the class type key of this layout page template entry.
+	 *
+	 * @param classTypeKey the class type key of this layout page template entry
+	 */
+	public void setClassTypeKey(String classTypeKey);
+
+	/**
 	 * Returns the name of this layout page template entry.
 	 *
 	 * @return the name of this layout page template entry

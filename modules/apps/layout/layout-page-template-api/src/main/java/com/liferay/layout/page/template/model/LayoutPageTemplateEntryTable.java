@@ -71,6 +71,9 @@ public class LayoutPageTemplateEntryTable
 	public final Column<LayoutPageTemplateEntryTable, Long> classTypeId =
 		createColumn(
 			"classTypeId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<LayoutPageTemplateEntryTable, String> classTypeKey =
+		createColumn(
+			"classTypeKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<LayoutPageTemplateEntryTable, String> name =
 		createColumn("name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<LayoutPageTemplateEntryTable, Integer> type =
