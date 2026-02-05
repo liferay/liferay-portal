@@ -10,7 +10,11 @@
 <%
 PanelAppContentHelper panelAppContentHelper = new PanelAppContentHelper(request, response);
 
-boolean applicationsMenuEnabled = true;
+PanelAppRegistry panelAppRegistry = (PanelAppRegistry)request.getAttribute(ApplicationListWebKeys.PANEL_APP_REGISTRY);
+
+PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(panelAppRegistry);
+
+boolean applicationsMenuEnabled = FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-36105") && panelCategoryHelper.containsPortlet(themeDisplay.getPpid(), "applications_menu");
 %>
 
 <c:if test="<%= applicationsMenuEnabled %>">
