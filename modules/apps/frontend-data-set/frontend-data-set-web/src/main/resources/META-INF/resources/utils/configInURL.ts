@@ -74,18 +74,18 @@ export function writeConfigInURL(
 		return;
 	}
 
+	const fdsConfigParamName = getConfigParamName(id);
 	const params = new URLSearchParams(window.location.search);
-	const configParamName = getConfigParamName(id);
 
 	params.set(
-		configParamName,
+		fdsConfigParamName,
 		JsonURL.stringify(
 			sortObjectKeys({...(currentConfig || {}), ...config}),
 			{AQF: true, noEmptyComposite: true}
 		) || ''
 	);
 
-	const urlParams = decodeURLParam(configParamName, params);
+	const urlParams = decodeFdsConfigParam(fdsConfigParamName, params);
 	const path = `${window.location.pathname}?${urlParams}`;
 
 	const replaceState =
@@ -136,14 +136,14 @@ export function contains(
 	return deepContains(a, b);
 }
 
-function decodeURLParam(
-	configParamName: string,
+function decodeFdsConfigParam(
+	fdsConfigParamName: string,
 	params: URLSearchParams
 ): string {
 	return params
 		.toString()
 		.replace(
-			new RegExp(`(${configParamName}=)([^&]+)`),
+			new RegExp(`(${fdsConfigParamName}=)([^&]+)`),
 			(_, key, value) =>
 				key +
 				value
