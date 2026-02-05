@@ -82,9 +82,9 @@ public class LayoutPageTemplateEntryServiceImpl
 		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 			externalReferenceCode, getUserId(), groupId,
 			layoutPageTemplateCollectionId, layoutPageTemplateEntryKey,
-			classNameId, classTypeId, name, type, previewFileEntryId,
-			defaultTemplate, layoutPrototypeId, plid, masterLayoutPlid, status,
-			serviceContext);
+			classNameId, classTypeId, classTypeKey, name, type,
+			previewFileEntryId, defaultTemplate, layoutPrototypeId, plid,
+			masterLayoutPlid, status, serviceContext);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 			externalReferenceCode, getUserId(), groupId,
 			layoutPageTemplateCollectionId, layoutPageTemplateEntryKey,
-			classNameId, classTypeId, name,
+			classNameId, classTypeId, classTypeKey, name,
 			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, masterLayoutPlid,
 			status, serviceContext);
 	}
@@ -171,8 +171,9 @@ public class LayoutPageTemplateEntryServiceImpl
 				null, getUserId(), sourceLayout.getGroupId(),
 				targetLayoutPageTemplateCollection.
 					getLayoutPageTemplateCollectionId(),
-				null, 0, 0, name, LayoutPageTemplateEntryTypeConstants.BASIC, 0,
-				false, 0, 0, sourceLayout.getMasterLayoutPlid(),
+				null, 0, 0, null, name,
+				LayoutPageTemplateEntryTypeConstants.BASIC, 0, false, 0, 0,
+				sourceLayout.getMasterLayoutPlid(),
 				WorkflowConstants.STATUS_DRAFT, serviceContext);
 
 		Layout layout = _layoutLocalService.getLayout(
@@ -1001,7 +1002,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		return layoutPageTemplateEntryLocalService.
 			updateLayoutPageTemplateEntry(
 				getUserId(), layoutPageTemplateEntryId, classNameId,
-				classTypeId);
+				classTypeId, classTypeKey);
 	}
 
 	@Override
