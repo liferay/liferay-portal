@@ -6,7 +6,7 @@
 import ClayIcon from '@clayui/icon';
 import {ClayVerticalNav} from '@clayui/nav';
 import classNames from 'classnames';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 type VerticalNavItem = React.ComponentProps<
 	typeof ClayVerticalNav
@@ -36,6 +36,7 @@ interface Props {
 
 function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 	const [visible, setVisible] = useState(visibility.initialState);
+	const visibilityRef = useRef(visibility);
 
 	function buildNavigationItem(item: ApplicationsMenuItem): VerticalNavItem {
 		return {
@@ -57,11 +58,6 @@ function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 		};
 	}
 
-	async function closeMenu() {
-		await Liferay.Util.Session.set(visibility.stateKey, visibility.hidden);
-		setVisible(false);
-	}
-
 	function itemContainsPortletId(item: ApplicationsMenuItem): boolean {
 		if (!item.items) {
 			return item.id === portletId;
@@ -69,6 +65,33 @@ function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 
 		return item.items.some((child) => itemContainsPortletId(child));
 	}
+
+	const updateVisibleState = useCallback(async (visible: boolean) => {
+		await Liferay.Util.Session.set(
+			visibilityRef.current.stateKey,
+			visible
+				? visibilityRef.current.visible
+				: visibilityRef.current.hidden
+		);
+
+		setVisible(visible);
+
+		Liferay.fire('applicationsMenuStateChanged', {visible});
+	}, []);
+
+	useEffect(() => {
+		async function handleStateRequest({visible}: {visible: boolean}) {
+			await updateVisibleState(visible);
+		}
+
+		Liferay.on('applicationsMenuStateRequested', handleStateRequest);
+
+		return () =>
+			Liferay.detach(
+				'applicationsMenuStateRequested',
+				handleStateRequest
+			);
+	}, [updateVisibleState]);
 
 	return (
 		<div
@@ -91,7 +114,7 @@ function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 
 					<button
 						className="close lfr-portal-tooltip rounded-lg"
-						onClick={closeMenu}
+						onClick={() => updateVisibleState(false)}
 						title={Liferay.Language.get('close-product-menu')}
 						type="button"
 					>

@@ -4,5 +4,6 @@
  */
 
 export {default as ApplicationsMenu} from './ApplicationsMenu';
+export {default as ApplicationsMenuToggle} from './ApplicationsMenuToggle';
 export {default as PanelKeyboardHandler} from './PanelKeyboardHandler';
 export {default as ScopeDropdown} from './ScopeDropdown';
