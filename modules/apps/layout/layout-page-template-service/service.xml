@@ -100,6 +100,7 @@
 		<column name="layoutPageTemplateEntryKey" type="String" />
 		<column name="classNameId" type="long" />
 		<column name="classTypeId" type="long" />
+		<column name="classTypeKey" type="String" />
 		<column accessor="true" name="name" type="String" />
 		<column name="type" type="int" />
 		<column name="previewFileEntryId" type="long" />
