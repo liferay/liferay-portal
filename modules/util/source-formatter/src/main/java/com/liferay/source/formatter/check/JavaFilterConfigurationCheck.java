@@ -5,69 +5,49 @@
 
 package com.liferay.source.formatter.check;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
+import com.liferay.source.formatter.parser.JavaClass;
+import com.liferay.source.formatter.parser.JavaTerm;
 
 import java.io.IOException;
 
+import java.util.List;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Alan Huang
  */
-public class JavaFilterConfigurationCheck extends BaseFileCheck {
+public class JavaFilterConfigurationCheck extends BaseJavaTermCheck {
 
 	@Override
 	public boolean isLiferaySourceCheck() {
 		return true;
 	}
 
-	@Override
 	protected String doProcess(
-			String fileName, String absolutePath, String content)
+			String fileName, String absolutePath, JavaTerm javaTerm,
+			String fileContent)
 		throws IOException {
 
-		if (!fileName.endsWith("Filter.java")) {
-			return content;
+		JavaClass javaClass = (JavaClass)javaTerm;
+
+		if (!fileName.endsWith("Filter.java") || javaClass.isAbstract() ||
+			javaClass.isInterface() ||
+			(javaClass.getParentJavaClass() != null)) {
+
+			return javaTerm.getContent();
 		}
 
-		Pattern pattern = Pattern.compile(
-			" class " + JavaSourceUtil.getClassName(absolutePath) +
-				"\\s+extends\\s+([\\w.]+)\\b");
+		List<String> extendedClassNames = javaClass.getExtendedClassNames(true);
 
-		Matcher matcher = pattern.matcher(content);
-
-		if (!matcher.find()) {
-			return content;
+		if (extendedClassNames.size() != 1) {
+			return javaTerm.getContent();
 		}
 
-		String extendedClassName = matcher.group(1);
-
-		if (!extendedClassName.contains(StringPool.PERIOD)) {
-			pattern = Pattern.compile(
-				"\nimport (.*\\." + extendedClassName + ");");
-
-			matcher = pattern.matcher(content);
-
-			if (matcher.find()) {
-				extendedClassName = matcher.group(1);
-			}
-			else {
-				extendedClassName =
-					JavaSourceUtil.getPackageName(content) + StringPool.PERIOD +
-						extendedClassName;
-			}
-		}
-
-		if (!extendedClassName.startsWith("com.liferay.")) {
-			return content;
-		}
-
+		String extendedClassName = extendedClassNames.get(0);
 		String fullyQualifiedClassName =
-			JavaSourceUtil.getPackageName(content) + "." +
+			javaClass.getPackageName() + "." +
 				JavaSourceUtil.getClassName(fileName);
 
 		Properties properties = new Properties();
@@ -85,23 +65,23 @@ public class JavaFilterConfigurationCheck extends BaseFileCheck {
 				fileName,
 				"Do not add property \"" + fullyQualifiedClassName +
 					"\" in portal.properties, see LPD-69645");
-
-			return content;
 		}
-
-		if (extendedClassName.equals(
-				"com.liferay.portal.servlet.filters.BasePortalFilter") &&
-			(properties.getProperty(fullyQualifiedClassName) == null)) {
+		else if (extendedClassName.equals(
+					"com.liferay.portal.servlet.filters.BasePortalFilter") &&
+				 (properties.getProperty(fullyQualifiedClassName) == null)) {
 
 			addMessage(
 				fileName,
 				"Missing property \"" + fullyQualifiedClassName +
 					"\" in portal.properties, see LPD-69645");
-
-			return content;
 		}
 
-		return content;
+		return javaTerm.getContent();
+	}
+
+	@Override
+	protected String[] getCheckableJavaTermNames() {
+		return new String[] {JAVA_CLASS};
 	}
 
 }
