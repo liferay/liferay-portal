@@ -40,7 +40,7 @@ const fdsCellRenderer: FDSTableCellHTMLElementBuilder = ({itemData, value}) => {
 	const element = document.createElement('div');
 	const badgeTitle = badges[value as keyof typeof badges];
 
-	element.innerHTML =
+	element.textContent =
 		badgeTitle || value.toString();
 
 	return element;
