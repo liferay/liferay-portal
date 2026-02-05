@@ -44,12 +44,10 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -419,23 +417,16 @@ public class DisplayPageTemplateResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
-		ClassName className = _classNameLocalService.fetchClassName(
+		long classNameId = _portal.getClassNameId(
 			contentTypeReference.getClassName());
-
-		if (className == null) {
-			throw new UnsupportedOperationException();
-		}
-
 		long classTypeId = _getClassTypeId(contentTypeReference, groupId);
 
-		if (!Objects.equals(
-				className.getClassName(),
-				layoutPageTemplateEntry.getClassName()) ||
+		if ((classNameId != layoutPageTemplateEntry.getClassNameId()) ||
 			(classTypeId != layoutPageTemplateEntry.getClassTypeId())) {
 
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				className.getClassNameId(), classTypeId);
+				classNameId, classTypeId);
 		}
 
 		long previewFileEntryId = FileEntryUtil.getPreviewFileEntryId(
@@ -812,9 +803,6 @@ public class DisplayPageTemplateResourceImpl
 
 	@Reference
 	private CETManager _cetManager;
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.DisplayPageTemplateDTOConverter)"
