@@ -5,6 +5,8 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.source.formatter.parser.JavaClass;
+import com.liferay.source.formatter.parser.JavaMethod;
 import com.liferay.source.formatter.parser.JavaParameter;
 import com.liferay.source.formatter.parser.JavaSignature;
 import com.liferay.source.formatter.parser.JavaTerm;
@@ -27,35 +29,50 @@ public class JavaBasePortalFilterCheck extends BaseJavaTermCheck {
 		String fileName, String absolutePath, JavaTerm javaTerm,
 		String fileContent) {
 
-		if (!fileName.endsWith("Filter.java") ||
+		JavaClass javaClass = (JavaClass)javaTerm;
+
+		if ((javaClass.getParentJavaClass() != null) ||
+			!fileName.endsWith("Filter.java") ||
 			!isDerivedFrom(
 				absolutePath, fileContent,
-				"com.liferay.portal.servlet.filters.BasePortalFilter") ||
-			!javaTerm.hasAnnotation("Override") ||
-			!Objects.equals(javaTerm.getName(), "isFilterEnabled")) {
+				"com.liferay.portal.servlet.filters.BasePortalFilter")) {
 
 			return javaTerm.getContent();
 		}
 
-		JavaSignature javaSignature = javaTerm.getSignature();
+		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
+			if (!childJavaTerm.isJavaMethod()) {
+				continue;
+			}
 
-		List<JavaParameter> javaParameters = javaSignature.getParameters();
+			JavaMethod javaMethod = (JavaMethod)childJavaTerm;
 
-		if (!javaParameters.isEmpty()) {
-			return javaTerm.getContent();
+			if (!javaMethod.hasAnnotation("Override") ||
+				!Objects.equals(javaMethod.getName(), "isFilterEnabled")) {
+
+				continue;
+			}
+
+			JavaSignature javaSignature = javaMethod.getSignature();
+
+			List<JavaParameter> javaParameters = javaSignature.getParameters();
+
+			if (!javaParameters.isEmpty()) {
+				continue;
+			}
+
+			addMessage(
+				fileName,
+				"Do not override method \"isFilterEnabled\", see LPD-69645",
+				javaMethod.getLineNumber());
 		}
-
-		addMessage(
-			fileName,
-			"Do not override method \"isFilterEnabled\", see LPD-69645",
-			javaTerm.getLineNumber());
 
 		return javaTerm.getContent();
 	}
 
 	@Override
 	protected String[] getCheckableJavaTermNames() {
-		return new String[] {JAVA_METHOD};
+		return new String[] {JAVA_CLASS};
 	}
 
 }
