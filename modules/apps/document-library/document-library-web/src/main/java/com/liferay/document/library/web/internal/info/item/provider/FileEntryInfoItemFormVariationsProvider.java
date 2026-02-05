@@ -44,17 +44,8 @@ public class FileEntryInfoItemFormVariationsProvider
 				groupId, formVariationKey);
 
 		if (dlFileEntryType != null) {
-			return new InfoItemFormVariation(
-				dlFileEntryType.getFileEntryTypeKey(), groupId,
-				String.valueOf(dlFileEntryType.getFileEntryTypeId()),
-				InfoLocalizedValue.<String>builder(
-				).defaultLocale(
-					LocaleUtil.fromLanguageId(
-						dlFileEntryType.getDefaultLanguageId())
-				).values(
-					_localization.getLocalizationMap(
-						dlFileEntryType.getName(), true)
-				).build());
+			return _getInfoItemFormVariation(
+				dlFileEntryType, dlFileEntryType.getGroupId());
 		}
 
 		long dlFileEntryTypeId = GetterUtil.getLong(formVariationKey, -1);
@@ -76,17 +67,7 @@ public class FileEntryInfoItemFormVariationsProvider
 			return null;
 		}
 
-		return new InfoItemFormVariation(
-			dlFileEntryType.getFileEntryTypeKey(), groupId,
-			String.valueOf(dlFileEntryType.getFileEntryTypeId()),
-			InfoLocalizedValue.<String>builder(
-			).defaultLocale(
-				LocaleUtil.fromLanguageId(
-					dlFileEntryType.getDefaultLanguageId())
-			).values(
-				_localization.getLocalizationMap(
-					dlFileEntryType.getName(), true)
-			).build());
+		return _getInfoItemFormVariation(dlFileEntryType, groupId);
 	}
 
 	@Override
@@ -108,18 +89,8 @@ public class FileEntryInfoItemFormVariationsProvider
 					externalReferenceCode, groupId);
 
 			if (dlFileEntryType != null) {
-				return new InfoItemFormVariation(
-					dlFileEntryType.getFileEntryTypeKey(),
-					dlFileEntryType.getGroupId(),
-					String.valueOf(dlFileEntryType.getFileEntryTypeId()),
-					InfoLocalizedValue.<String>builder(
-					).defaultLocale(
-						LocaleUtil.fromLanguageId(
-							dlFileEntryType.getDefaultLanguageId())
-					).values(
-						_localization.getLocalizationMap(
-							dlFileEntryType.getName(), true)
-					).build());
+				return _getInfoItemFormVariation(
+					dlFileEntryType, dlFileEntryType.getGroupId());
 			}
 		}
 		catch (PortalException portalException) {
@@ -240,6 +211,22 @@ public class FileEntryInfoItemFormVariationsProvider
 		}
 
 		return null;
+	}
+
+	private InfoItemFormVariation _getInfoItemFormVariation(
+		DLFileEntryType dlFileEntryType, long groupId) {
+
+		return new InfoItemFormVariation(
+			dlFileEntryType.getFileEntryTypeKey(), groupId,
+			String.valueOf(dlFileEntryType.getFileEntryTypeId()),
+			InfoLocalizedValue.<String>builder(
+			).defaultLocale(
+				LocaleUtil.fromLanguageId(
+					dlFileEntryType.getDefaultLanguageId())
+			).values(
+				_localization.getLocalizationMap(
+					dlFileEntryType.getName(), true)
+			).build());
 	}
 
 	@Reference
