@@ -229,6 +229,15 @@ public class DisplayPageTemplateDTOConverter
 	private ItemExternalReference _getSubtypeItemExternalReference(
 		LayoutPageTemplateEntry layoutPageTemplateEntry) {
 
+		if (Validator.isNotNull(layoutPageTemplateEntry.getClassTypeKey())) {
+			return new ItemExternalReference() {
+				{
+					setExternalReferenceCode(
+						layoutPageTemplateEntry::getClassTypeKey);
+				}
+			};
+		}
+
 		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
 			_infoItemServiceRegistry.getFirstInfoItemService(
 				InfoItemFormVariationsProvider.class,
