@@ -34,6 +34,54 @@ export type RequestResult<T> =
 			status?: string | null;
 	  };
 
+async function batch({
+	data,
+	method,
+	url,
+}: {
+	data: Record<string, any>[];
+	method: 'DELETE' | 'POST' | 'PUT';
+	url: string;
+}): Promise<{error: string} | void> {
+	const response = await handleRequest<{id: number}>(() =>
+		fetch(url, {
+			body: JSON.stringify(data),
+			headers: HEADERS,
+			method,
+		})
+	);
+
+	if (response.error || !response.data) {
+		return {error: UNEXPECTED_ERROR_MESSAGE};
+	}
+
+	const taskId = response.data.id;
+
+	while (true) {
+		const result = await get<{
+			executeStatus: string;
+		}>(`/o/headless-batch-engine/v1.0/import-task/${taskId}`);
+
+		if (result.error) {
+			return {error: UNEXPECTED_ERROR_MESSAGE};
+		}
+
+		const status = result.data?.executeStatus;
+
+		if (status === 'FAILED') {
+			return {error: UNEXPECTED_ERROR_MESSAGE};
+		}
+
+		if (status === 'COMPLETED') {
+			return;
+		}
+
+		// Wait 200 ms before polling again
+
+		await new Promise((resolve) => setTimeout(resolve, 200));
+	}
+}
+
 async function deleteRequest(url: string) {
 	return handleRequest<null>(() =>
 		fetch(url, {
@@ -41,6 +89,52 @@ async function deleteRequest(url: string) {
 			method: 'DELETE',
 		})
 	);
+}
+
+async function get<T>(url: string) {
+	return handleRequest<T>(() =>
+		fetch(url, {
+			headers: HEADERS_ALL_LANGUAGES,
+			method: 'GET',
+		})
+	);
+}
+
+/**
+ * Fetches all items from a paginated API endpoint. It will keep requesting pages
+ * until it reaches the last one, accumulating all items into a single array
+ */
+
+async function getAll<T>({
+	filter,
+	url,
+}: {
+	filter?: string;
+	url: string;
+}): Promise<T[]> {
+	const items: T[] = [];
+
+	let page = 1;
+	let lastPage = 1;
+
+	while (page <= lastPage) {
+		const {data, error} = await get<{
+			items: T[];
+			lastPage: number;
+		}>(`${url}?pageSize=-1&page=${page}&filter=${filter || ''}`);
+
+		if (error !== null) {
+			return Promise.reject(error);
+		}
+
+		lastPage = data.lastPage;
+
+		items.push(...data.items);
+
+		page = page + 1;
+	}
+
+	return items;
 }
 
 async function handleRequest<T>(
@@ -102,98 +196,14 @@ async function handleRequest<T>(
 	}
 }
 
-async function get<T>(url: string) {
+async function patch<T>(data: any, url: string) {
 	return handleRequest<T>(() =>
-		fetch(url, {
-			headers: HEADERS_ALL_LANGUAGES,
-			method: 'GET',
-		})
-	);
-}
-
-/**
- * Fetches all items from a paginated API endpoint. It will keep requesting pages
- * until it reaches the last one, accumulating all items into a single array
- */
-
-async function getAll<T>({
-	filter,
-	url,
-}: {
-	filter?: string;
-	url: string;
-}): Promise<T[]> {
-	const items: T[] = [];
-
-	let page = 1;
-	let lastPage = 1;
-
-	while (page <= lastPage) {
-		const {data, error} = await get<{
-			items: T[];
-			lastPage: number;
-		}>(`${url}?pageSize=-1&page=${page}&filter=${filter || ''}`);
-
-		if (error !== null) {
-			return Promise.reject(error);
-		}
-
-		lastPage = data.lastPage;
-
-		items.push(...data.items);
-
-		page = page + 1;
-	}
-
-	return items;
-}
-
-async function batch({
-	data,
-	method,
-	url,
-}: {
-	data: Record<string, any>[];
-	method: 'DELETE' | 'POST' | 'PUT';
-	url: string;
-}): Promise<{error: string} | void> {
-	const response = await handleRequest<{id: number}>(() =>
 		fetch(url, {
 			body: JSON.stringify(data),
 			headers: HEADERS,
-			method,
+			method: 'PATCH',
 		})
 	);
-
-	if (response.error || !response.data) {
-		return {error: UNEXPECTED_ERROR_MESSAGE};
-	}
-
-	const taskId = response.data.id;
-
-	while (true) {
-		const result = await get<{
-			executeStatus: string;
-		}>(`/o/headless-batch-engine/v1.0/import-task/${taskId}`);
-
-		if (result.error) {
-			return {error: UNEXPECTED_ERROR_MESSAGE};
-		}
-
-		const status = result.data?.executeStatus;
-
-		if (status === 'FAILED') {
-			return {error: UNEXPECTED_ERROR_MESSAGE};
-		}
-
-		if (status === 'COMPLETED') {
-			return;
-		}
-
-		// Wait 200 ms before polling again
-
-		await new Promise((resolve) => setTimeout(resolve, 200));
-	}
 }
 
 async function post<T>(
@@ -223,16 +233,6 @@ async function post<T>(
 	);
 }
 
-async function put<T>(url: string, data?: Record<string, any>) {
-	return handleRequest<T>(() =>
-		fetch(url, {
-			body: JSON.stringify(data),
-			headers: HEADERS,
-			method: 'PUT',
-		})
-	);
-}
-
 async function postFormData<T>(formData: FormData, url: string) {
 	return handleRequest<T>(() =>
 		fetch(url, {
@@ -242,12 +242,12 @@ async function postFormData<T>(formData: FormData, url: string) {
 	);
 }
 
-async function patch<T>(data: any, url: string) {
+async function put<T>(url: string, data?: Record<string, any>) {
 	return handleRequest<T>(() =>
 		fetch(url, {
 			body: JSON.stringify(data),
 			headers: HEADERS,
-			method: 'PATCH',
+			method: 'PUT',
 		})
 	);
 }

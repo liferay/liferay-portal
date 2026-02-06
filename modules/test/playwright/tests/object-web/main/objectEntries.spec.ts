@@ -366,6 +366,595 @@ bulkTest.describe('can use bulk on object entries', () => {
 	);
 });
 
+cmsTest.describe('Manage attachment ObjectField download permission', () => {
+	cmsTest(
+		'Verify file download restrictions',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const ATTACHMENT_FILE_NAME = 'astronaut.png';
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: ['Attachment'],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const company =
+				await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+					'liferay.com'
+				);
+
+			const user = await createUserWithPermissions({
+				apiHelpers,
+				rolePermissions: [
+					{
+						actionIds: ['VIEW_CONTROL_PANEL'],
+						primaryKey: company.companyId,
+						resourceName: '90',
+						scope: 1,
+					},
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+						primaryKey: company.companyId,
+						resourceName:
+							'com_liferay_users_admin_web_portlet_UsersAdminPortlet',
+						scope: 1,
+					},
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+						primaryKey: company.companyId,
+						resourceName: `com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinition.className.split('#')[1]}`,
+						scope: 1,
+					},
+					{
+						actionIds: ['VIEW'],
+						primaryKey: company.companyId,
+						resourceName: `${objectDefinition.className}`,
+						scope: 1,
+					},
+				],
+			});
+
+			let entryUrl: string;
+
+			await test.step('go to entry page, upload a file, save the entry and check download button is present', async () => {
+				await viewObjectEntriesPage.goto(objectDefinition.className);
+
+				await viewObjectEntriesPage.clickAddObjectEntry(
+					objectDefinition.label['en_US']
+				);
+
+				await viewObjectEntriesPage.selectFileButton.click();
+
+				await viewObjectEntriesPage.selectFileFromDocumentsAndMedia(
+					ATTACHMENT_FILE_NAME
+				);
+
+				await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+				await expect(
+					viewObjectEntriesPage.successMessage
+				).toBeVisible();
+
+				entryUrl = page.url();
+
+				await expect(
+					viewObjectEntriesPage.downloadFileButton
+				).toBeVisible();
+			});
+
+			await test.step('login user with only view permission, then check the user is unable to perform the file download', async () => {
+				await performUserSwitch(page, user.alternateName);
+
+				await viewObjectEntriesPage.goto(objectDefinition.className);
+
+				await page
+					.getByRole('link', {name: ATTACHMENT_FILE_NAME})
+					.click();
+
+				try {
+					await page.waitForEvent('download', {timeout: 1000});
+				}
+				catch (error) {
+					expect(error.message.includes('Timeout')).toBeTruthy();
+				}
+
+				await page.goto(entryUrl);
+
+				await expect(
+					viewObjectEntriesPage.downloadFileButton
+				).not.toBeVisible();
+			});
+
+			await test.step('add download permission to the user then check the user is able to perform the file download', async () => {
+				await performUserSwitch(page, 'test');
+
+				await viewObjectEntriesPage.goto(objectDefinition.className);
+
+				await viewObjectEntriesPage.frontendDatasetActions.click();
+
+				await viewObjectEntriesPage.frontendDatasetPermissionsAction.click();
+
+				const iframeLocator = page.frameLocator(
+					'iframe[title="Permissions"]'
+				);
+
+				const objectField = objectFields[0];
+
+				const objectFieldActionCheckbox = iframeLocator.locator(
+					'#guest_ACTION_DOWNLOAD_' + objectField.name.toUpperCase()
+				);
+
+				await page.waitForTimeout(500);
+
+				await objectFieldActionCheckbox.check();
+
+				await expect(objectFieldActionCheckbox).toBeChecked();
+
+				await iframeLocator.getByRole('button', {name: 'Save'}).click();
+
+				await expect(
+					iframeLocator.getByText('Success:Your request')
+				).toBeVisible();
+
+				await performUserSwitch(page, user.alternateName);
+
+				await viewObjectEntriesPage.goto(objectDefinition.className);
+
+				const downloadPromise = page.waitForEvent('download');
+
+				await page.getByRole('link', {name: 'astronaut.png'}).click();
+
+				expect(
+					(await downloadPromise).suggestedFilename()
+				).toStrictEqual(`${ATTACHMENT_FILE_NAME}`);
+
+				await page.goto(entryUrl);
+
+				await expect(
+					viewObjectEntriesPage.downloadFileButton
+				).toBeVisible();
+			});
+		}
+	);
+});
+
+cmsTest.describe('Manage object entries schedule properties', () => {
+	let _objectDefinition: ObjectDefinition;
+
+	cmsTest.afterEach(async ({accountSettingsPage}) => {
+		await accountSettingsPage.goToDisplaySettings();
+
+		await accountSettingsPage.setTimeZone('UTC');
+	});
+
+	cmsTest.beforeEach(async ({accountSettingsPage, apiHelpers, page}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		_objectDefinition = objectDefinition;
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const shouldEnableConfiguration = !cmsTest
+			.info()
+			.tags.includes('@enableObjectEntryScheduleFalse');
+
+		if (shouldEnableConfiguration) {
+			await objectDefinitionAPIClient.patchObjectDefinition(
+				_objectDefinition.id,
+				{
+					enableObjectEntrySchedule: true,
+				}
+			);
+		}
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const utcOffsetFormatted = getUTCOffsetFormatted(new Date());
+
+		await accountSettingsPage.goToDisplaySettings();
+
+		if (utcOffsetFormatted === 'UTC') {
+			return await accountSettingsPage.setTimeZone('UTC');
+		}
+
+		const timeZoneValue = await page
+			.locator('select option', {hasText: utcOffsetFormatted})
+			.first()
+			.getAttribute('value');
+
+		await accountSettingsPage.setTimeZone(timeZoneValue);
+	});
+
+	cmsTest(
+		'can create, read, update, and delete a displayDate of an object entry',
+		async ({page, viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			await viewObjectEntriesPage.scheduleForCurrentDate('Publish');
+
+			await page.keyboard.press('Escape');
+
+			await viewObjectEntriesPage.schedulePublicationButton.click();
+
+			await waitForAlert(page);
+
+			const date = new Date();
+
+			const today = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
+				today
+			);
+
+			date.setDate(date.getDate() + 1);
+
+			const tomorrow = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.publishDateInput.fill(tomorrow);
+
+			await viewObjectEntriesPage.schedulePublicationButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
+				tomorrow
+			);
+
+			await page.getByRole('button', {name: 'Close'}).click();
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
+				''
+			);
+
+			await page.getByRole('button', {name: 'Close'}).click();
+		}
+	);
+
+	cmsTest(
+		'can create, read, update, and delete a expirationDate of an object entry',
+		async ({page, viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverExpire.uncheck();
+
+			const date = new Date();
+
+			// Add a few minutes since expiration cant be scheduled for current dateTime
+
+			date.setMinutes(date.getMinutes() + 2);
+
+			const today = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.expirationDateInput.fill(today);
+
+			await page.keyboard.press('Escape');
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.expirationDateInput).toHaveValue(
+				today
+			);
+
+			date.setDate(date.getDate() + 1);
+
+			const tomorrow = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.expirationDateInput.fill(tomorrow);
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.expirationDateInput).toHaveValue(
+				tomorrow
+			);
+
+			await viewObjectEntriesPage.neverExpire.check();
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.expirationDateInput).toHaveValue(
+				''
+			);
+		}
+	);
+
+	cmsTest(
+		'can create, read, update, and delete a reviewDate of an object entry',
+		async ({page, viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverReview.uncheck();
+
+			await viewObjectEntriesPage.scheduleForCurrentDate('Review');
+
+			await page.keyboard.press('Escape');
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			const date = new Date();
+
+			const today = getObjectEntryUIDateTimeFormat(date);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
+				today
+			);
+
+			date.setDate(date.getDate() + 1);
+
+			const tomorrow = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.reviewDateInput.fill(tomorrow);
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
+				tomorrow
+			);
+
+			await viewObjectEntriesPage.neverReview.check();
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue('');
+		}
+	);
+
+	cmsTest(
+		'can see approved and scheduled labels for entry with a display date versioning enabled and at least one version approved',
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinitionAPIClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+			await objectDefinitionAPIClient.patchObjectDefinition(
+				_objectDefinition.id,
+				{
+					enableObjectEntryVersioning: true,
+				}
+			);
+
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.backButton.click();
+
+			await expect(page.getByText('Approved')).toBeVisible();
+
+			await expect(page.getByText('Scheduled')).not.toBeVisible();
+
+			const applicationName =
+				'c/' + _objectDefinition.name.toLowerCase() + 's';
+
+			const {items} =
+				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+					applicationName
+				);
+
+			const objectEntryId = items[0].id;
+
+			await page.getByRole('link', {name: objectEntryId}).click();
+
+			const date = new Date();
+
+			date.setDate(date.getDate() + 1);
+
+			const tomorrow = getObjectEntryUIDateTimeFormat(date);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			await viewObjectEntriesPage.publishDateInput.fill(tomorrow);
+
+			await viewObjectEntriesPage.schedulePublicationButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.backButton.click();
+
+			await expect(page.getByText('Approved')).toBeVisible();
+
+			await expect(page.getByText('Scheduled')).toBeVisible();
+		}
+	);
+
+	cmsTest(
+		'cannot submit an empty displayDate',
+		async ({page, viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.choosePublicationOption('schedule');
+
+			let requestWasMade = false;
+
+			page.on('request', (request) => {
+				if (request.url().includes(_objectDefinition.restContextPath)) {
+					requestWasMade = true;
+				}
+			});
+
+			await viewObjectEntriesPage.schedulePublicationButton.click();
+
+			// Wait a second before doing the assertion to simulate the time needed for the request to happen
+
+			await page.waitForTimeout(1000);
+
+			expect(requestWasMade).toBe(false);
+
+			await expect(
+				page.getByText('This field is required')
+			).toBeVisible();
+
+			await viewObjectEntriesPage.schedulePublicationCloseButton.click();
+		}
+	);
+
+	cmsTest(
+		'cannot submit an empty expirationDate and reviewDate when it is enabled',
+		async ({page, viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			for (const scheduleProperty of ['Expire', 'Review']) {
+				await viewObjectEntriesPage.page
+					.getByLabel(`Never ${scheduleProperty}`, {exact: true})
+					.uncheck();
+
+				let requestWasMade = false;
+
+				page.on('request', (request) => {
+					if (
+						request
+							.url()
+							.includes(_objectDefinition.restContextPath)
+					) {
+						requestWasMade = true;
+					}
+				});
+
+				await viewObjectEntriesPage.choosePublicationOption('publish');
+
+				// Wait a second before doing the assertion to simulate the time needed for the request to happen
+
+				await page.waitForTimeout(1000);
+
+				expect(requestWasMade).toBe(false);
+
+				await expect(
+					page.getByText('This field is required')
+				).toBeVisible();
+
+				await viewObjectEntriesPage.page
+					.getByLabel(`Never ${scheduleProperty}`, {exact: true})
+					.check();
+			}
+		}
+	);
+
+	cmsTest(
+		'cannot submit a past expirationDate',
+		async ({page, viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.neverExpire.uncheck();
+
+			await viewObjectEntriesPage.scheduleForCurrentDate('Expiration');
+
+			await viewObjectEntriesPage.page.keyboard.press('Escape');
+
+			let requestWasMade = false;
+
+			page.on('request', (request) => {
+				if (request.url().includes(_objectDefinition.restContextPath)) {
+					requestWasMade = true;
+				}
+			});
+
+			await viewObjectEntriesPage.choosePublicationOption('publish');
+
+			// Wait a second before doing the assertion to simulate the time needed for the request to happen
+
+			await page.waitForTimeout(1000);
+
+			expect(requestWasMade).toBe(false);
+
+			await expect(
+				page.getByText('The date entered is in the past')
+			).toBeVisible();
+		}
+	);
+
+	cmsTest(
+		'schedule container is not visible when enableObjectEntrySchedule is disabled',
+		{tag: '@enableObjectEntryScheduleFalse'},
+		async ({viewObjectEntriesPage}) => {
+			await viewObjectEntriesPage.goto(_objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				_objectDefinition.label['en_US']
+			);
+
+			await expect(
+				viewObjectEntriesPage.schedulePanelButton
+			).not.toBeVisible();
+
+			await expect(
+				viewObjectEntriesPage.expirationDateInput
+			).not.toBeVisible();
+
+			await expect(
+				viewObjectEntriesPage.reviewDateInput
+			).not.toBeVisible();
+		}
+	);
+});
+
 test.describe('Manage object entries through Friendly URL', () => {
 	let _objectDefinition: ObjectDefinition;
 	let _objectEntryFriendlyURLPath: string;
@@ -3419,595 +4008,6 @@ test.describe('Manage object entries through Workflow', () => {
 					'input[placeholder="__/__/____ __:__ _"][value="10/05/2025 09:00 AM"]'
 				)
 			).toHaveValue('10/05/2025 09:00 AM');
-		}
-	);
-});
-
-cmsTest.describe('Manage attachment ObjectField download permission', () => {
-	cmsTest(
-		'Verify file download restrictions',
-		async ({apiHelpers, page, viewObjectEntriesPage}) => {
-			const ATTACHMENT_FILE_NAME = 'astronaut.png';
-
-			const objectFields = generateObjectFields({
-				objectFieldBusinessTypes: ['Attachment'],
-			});
-
-			const objectDefinition =
-				await apiHelpers.objectAdmin.postRandomObjectDefinition({
-					objectFields,
-					status: {code: 0},
-				});
-
-			apiHelpers.data.push({
-				id: objectDefinition.id,
-				type: 'objectDefinition',
-			});
-
-			const company =
-				await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
-					'liferay.com'
-				);
-
-			const user = await createUserWithPermissions({
-				apiHelpers,
-				rolePermissions: [
-					{
-						actionIds: ['VIEW_CONTROL_PANEL'],
-						primaryKey: company.companyId,
-						resourceName: '90',
-						scope: 1,
-					},
-					{
-						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
-						primaryKey: company.companyId,
-						resourceName:
-							'com_liferay_users_admin_web_portlet_UsersAdminPortlet',
-						scope: 1,
-					},
-					{
-						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
-						primaryKey: company.companyId,
-						resourceName: `com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_${objectDefinition.className.split('#')[1]}`,
-						scope: 1,
-					},
-					{
-						actionIds: ['VIEW'],
-						primaryKey: company.companyId,
-						resourceName: `${objectDefinition.className}`,
-						scope: 1,
-					},
-				],
-			});
-
-			let entryUrl: string;
-
-			await test.step('go to entry page, upload a file, save the entry and check download button is present', async () => {
-				await viewObjectEntriesPage.goto(objectDefinition.className);
-
-				await viewObjectEntriesPage.clickAddObjectEntry(
-					objectDefinition.label['en_US']
-				);
-
-				await viewObjectEntriesPage.selectFileButton.click();
-
-				await viewObjectEntriesPage.selectFileFromDocumentsAndMedia(
-					ATTACHMENT_FILE_NAME
-				);
-
-				await viewObjectEntriesPage.saveObjectEntryButton.click();
-
-				await expect(
-					viewObjectEntriesPage.successMessage
-				).toBeVisible();
-
-				entryUrl = page.url();
-
-				await expect(
-					viewObjectEntriesPage.downloadFileButton
-				).toBeVisible();
-			});
-
-			await test.step('login user with only view permission, then check the user is unable to perform the file download', async () => {
-				await performUserSwitch(page, user.alternateName);
-
-				await viewObjectEntriesPage.goto(objectDefinition.className);
-
-				await page
-					.getByRole('link', {name: ATTACHMENT_FILE_NAME})
-					.click();
-
-				try {
-					await page.waitForEvent('download', {timeout: 1000});
-				}
-				catch (error) {
-					expect(error.message.includes('Timeout')).toBeTruthy();
-				}
-
-				await page.goto(entryUrl);
-
-				await expect(
-					viewObjectEntriesPage.downloadFileButton
-				).not.toBeVisible();
-			});
-
-			await test.step('add download permission to the user then check the user is able to perform the file download', async () => {
-				await performUserSwitch(page, 'test');
-
-				await viewObjectEntriesPage.goto(objectDefinition.className);
-
-				await viewObjectEntriesPage.frontendDatasetActions.click();
-
-				await viewObjectEntriesPage.frontendDatasetPermissionsAction.click();
-
-				const iframeLocator = page.frameLocator(
-					'iframe[title="Permissions"]'
-				);
-
-				const objectField = objectFields[0];
-
-				const objectFieldActionCheckbox = iframeLocator.locator(
-					'#guest_ACTION_DOWNLOAD_' + objectField.name.toUpperCase()
-				);
-
-				await page.waitForTimeout(500);
-
-				await objectFieldActionCheckbox.check();
-
-				await expect(objectFieldActionCheckbox).toBeChecked();
-
-				await iframeLocator.getByRole('button', {name: 'Save'}).click();
-
-				await expect(
-					iframeLocator.getByText('Success:Your request')
-				).toBeVisible();
-
-				await performUserSwitch(page, user.alternateName);
-
-				await viewObjectEntriesPage.goto(objectDefinition.className);
-
-				const downloadPromise = page.waitForEvent('download');
-
-				await page.getByRole('link', {name: 'astronaut.png'}).click();
-
-				expect(
-					(await downloadPromise).suggestedFilename()
-				).toStrictEqual(`${ATTACHMENT_FILE_NAME}`);
-
-				await page.goto(entryUrl);
-
-				await expect(
-					viewObjectEntriesPage.downloadFileButton
-				).toBeVisible();
-			});
-		}
-	);
-});
-
-cmsTest.describe('Manage object entries schedule properties', () => {
-	let _objectDefinition: ObjectDefinition;
-
-	cmsTest.afterEach(async ({accountSettingsPage}) => {
-		await accountSettingsPage.goToDisplaySettings();
-
-		await accountSettingsPage.setTimeZone('UTC');
-	});
-
-	cmsTest.beforeEach(async ({accountSettingsPage, apiHelpers, page}) => {
-		const objectDefinition =
-			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				status: {code: 0},
-			});
-
-		_objectDefinition = objectDefinition;
-
-		const objectDefinitionAPIClient =
-			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
-
-		const shouldEnableConfiguration = !cmsTest
-			.info()
-			.tags.includes('@enableObjectEntryScheduleFalse');
-
-		if (shouldEnableConfiguration) {
-			await objectDefinitionAPIClient.patchObjectDefinition(
-				_objectDefinition.id,
-				{
-					enableObjectEntrySchedule: true,
-				}
-			);
-		}
-
-		apiHelpers.data.push({
-			id: objectDefinition.id,
-			type: 'objectDefinition',
-		});
-
-		const utcOffsetFormatted = getUTCOffsetFormatted(new Date());
-
-		await accountSettingsPage.goToDisplaySettings();
-
-		if (utcOffsetFormatted === 'UTC') {
-			return await accountSettingsPage.setTimeZone('UTC');
-		}
-
-		const timeZoneValue = await page
-			.locator('select option', {hasText: utcOffsetFormatted})
-			.first()
-			.getAttribute('value');
-
-		await accountSettingsPage.setTimeZone(timeZoneValue);
-	});
-
-	cmsTest(
-		'can create, read, update, and delete a displayDate of an object entry',
-		async ({page, viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await viewObjectEntriesPage.choosePublicationOption('schedule');
-
-			await viewObjectEntriesPage.scheduleForCurrentDate('Publish');
-
-			await page.keyboard.press('Escape');
-
-			await viewObjectEntriesPage.schedulePublicationButton.click();
-
-			await waitForAlert(page);
-
-			const date = new Date();
-
-			const today = getObjectEntryUIDateTimeFormat(date);
-
-			await viewObjectEntriesPage.choosePublicationOption('schedule');
-
-			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
-				today
-			);
-
-			date.setDate(date.getDate() + 1);
-
-			const tomorrow = getObjectEntryUIDateTimeFormat(date);
-
-			await viewObjectEntriesPage.publishDateInput.fill(tomorrow);
-
-			await viewObjectEntriesPage.schedulePublicationButton.click();
-
-			await waitForAlert(page);
-
-			await viewObjectEntriesPage.choosePublicationOption('schedule');
-
-			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
-				tomorrow
-			);
-
-			await page.getByRole('button', {name: 'Close'}).click();
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await viewObjectEntriesPage.choosePublicationOption('schedule');
-
-			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
-				''
-			);
-
-			await page.getByRole('button', {name: 'Close'}).click();
-		}
-	);
-
-	cmsTest(
-		'can create, read, update, and delete a expirationDate of an object entry',
-		async ({page, viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await viewObjectEntriesPage.neverExpire.uncheck();
-
-			const date = new Date();
-
-			// Add a few minutes since expiration cant be scheduled for current dateTime
-
-			date.setMinutes(date.getMinutes() + 2);
-
-			const today = getObjectEntryUIDateTimeFormat(date);
-
-			await viewObjectEntriesPage.expirationDateInput.fill(today);
-
-			await page.keyboard.press('Escape');
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await expect(viewObjectEntriesPage.expirationDateInput).toHaveValue(
-				today
-			);
-
-			date.setDate(date.getDate() + 1);
-
-			const tomorrow = getObjectEntryUIDateTimeFormat(date);
-
-			await viewObjectEntriesPage.expirationDateInput.fill(tomorrow);
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await expect(viewObjectEntriesPage.expirationDateInput).toHaveValue(
-				tomorrow
-			);
-
-			await viewObjectEntriesPage.neverExpire.check();
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await expect(viewObjectEntriesPage.expirationDateInput).toHaveValue(
-				''
-			);
-		}
-	);
-
-	cmsTest(
-		'can create, read, update, and delete a reviewDate of an object entry',
-		async ({page, viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await viewObjectEntriesPage.neverReview.uncheck();
-
-			await viewObjectEntriesPage.scheduleForCurrentDate('Review');
-
-			await page.keyboard.press('Escape');
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			const date = new Date();
-
-			const today = getObjectEntryUIDateTimeFormat(date);
-
-			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
-				today
-			);
-
-			date.setDate(date.getDate() + 1);
-
-			const tomorrow = getObjectEntryUIDateTimeFormat(date);
-
-			await viewObjectEntriesPage.reviewDateInput.fill(tomorrow);
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
-				tomorrow
-			);
-
-			await viewObjectEntriesPage.neverReview.check();
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue('');
-		}
-	);
-
-	cmsTest(
-		'can see approved and scheduled labels for entry with a display date versioning enabled and at least one version approved',
-		async ({apiHelpers, page, viewObjectEntriesPage}) => {
-			const objectDefinitionAPIClient =
-				await apiHelpers.buildRestClient(ObjectDefinitionAPI);
-
-			await objectDefinitionAPIClient.patchObjectDefinition(
-				_objectDefinition.id,
-				{
-					enableObjectEntryVersioning: true,
-				}
-			);
-
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			await waitForAlert(page);
-
-			await viewObjectEntriesPage.backButton.click();
-
-			await expect(page.getByText('Approved')).toBeVisible();
-
-			await expect(page.getByText('Scheduled')).not.toBeVisible();
-
-			const applicationName =
-				'c/' + _objectDefinition.name.toLowerCase() + 's';
-
-			const {items} =
-				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
-					applicationName
-				);
-
-			const objectEntryId = items[0].id;
-
-			await page.getByRole('link', {name: objectEntryId}).click();
-
-			const date = new Date();
-
-			date.setDate(date.getDate() + 1);
-
-			const tomorrow = getObjectEntryUIDateTimeFormat(date);
-
-			await viewObjectEntriesPage.choosePublicationOption('schedule');
-
-			await viewObjectEntriesPage.publishDateInput.fill(tomorrow);
-
-			await viewObjectEntriesPage.schedulePublicationButton.click();
-
-			await waitForAlert(page);
-
-			await viewObjectEntriesPage.backButton.click();
-
-			await expect(page.getByText('Approved')).toBeVisible();
-
-			await expect(page.getByText('Scheduled')).toBeVisible();
-		}
-	);
-
-	cmsTest(
-		'cannot submit an empty displayDate',
-		async ({page, viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await viewObjectEntriesPage.choosePublicationOption('schedule');
-
-			let requestWasMade = false;
-
-			page.on('request', (request) => {
-				if (request.url().includes(_objectDefinition.restContextPath)) {
-					requestWasMade = true;
-				}
-			});
-
-			await viewObjectEntriesPage.schedulePublicationButton.click();
-
-			// Wait a second before doing the assertion to simulate the time needed for the request to happen
-
-			await page.waitForTimeout(1000);
-
-			expect(requestWasMade).toBe(false);
-
-			await expect(
-				page.getByText('This field is required')
-			).toBeVisible();
-
-			await viewObjectEntriesPage.schedulePublicationCloseButton.click();
-		}
-	);
-
-	cmsTest(
-		'cannot submit an empty expirationDate and reviewDate when it is enabled',
-		async ({page, viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			for (const scheduleProperty of ['Expire', 'Review']) {
-				await viewObjectEntriesPage.page
-					.getByLabel(`Never ${scheduleProperty}`, {exact: true})
-					.uncheck();
-
-				let requestWasMade = false;
-
-				page.on('request', (request) => {
-					if (
-						request
-							.url()
-							.includes(_objectDefinition.restContextPath)
-					) {
-						requestWasMade = true;
-					}
-				});
-
-				await viewObjectEntriesPage.choosePublicationOption('publish');
-
-				// Wait a second before doing the assertion to simulate the time needed for the request to happen
-
-				await page.waitForTimeout(1000);
-
-				expect(requestWasMade).toBe(false);
-
-				await expect(
-					page.getByText('This field is required')
-				).toBeVisible();
-
-				await viewObjectEntriesPage.page
-					.getByLabel(`Never ${scheduleProperty}`, {exact: true})
-					.check();
-			}
-		}
-	);
-
-	cmsTest(
-		'cannot submit a past expirationDate',
-		async ({page, viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await viewObjectEntriesPage.neverExpire.uncheck();
-
-			await viewObjectEntriesPage.scheduleForCurrentDate('Expiration');
-
-			await viewObjectEntriesPage.page.keyboard.press('Escape');
-
-			let requestWasMade = false;
-
-			page.on('request', (request) => {
-				if (request.url().includes(_objectDefinition.restContextPath)) {
-					requestWasMade = true;
-				}
-			});
-
-			await viewObjectEntriesPage.choosePublicationOption('publish');
-
-			// Wait a second before doing the assertion to simulate the time needed for the request to happen
-
-			await page.waitForTimeout(1000);
-
-			expect(requestWasMade).toBe(false);
-
-			await expect(
-				page.getByText('The date entered is in the past')
-			).toBeVisible();
-		}
-	);
-
-	cmsTest(
-		'schedule container is not visible when enableObjectEntrySchedule is disabled',
-		{tag: '@enableObjectEntryScheduleFalse'},
-		async ({viewObjectEntriesPage}) => {
-			await viewObjectEntriesPage.goto(_objectDefinition.className);
-
-			await viewObjectEntriesPage.clickAddObjectEntry(
-				_objectDefinition.label['en_US']
-			);
-
-			await expect(
-				viewObjectEntriesPage.schedulePanelButton
-			).not.toBeVisible();
-
-			await expect(
-				viewObjectEntriesPage.expirationDateInput
-			).not.toBeVisible();
-
-			await expect(
-				viewObjectEntriesPage.reviewDateInput
-			).not.toBeVisible();
 		}
 	);
 });
