@@ -6,13 +6,19 @@
 package com.liferay.layout.page.template.model.impl;
 
 import com.liferay.document.library.util.DLURLHelperUtil;
+import com.liferay.info.item.InfoItemFormVariation;
+import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Jürgen Kappler
@@ -27,6 +33,45 @@ public class LayoutPageTemplateEntryImpl
 		}
 
 		return PortalUtil.fetchClassName(getClassNameId());
+	}
+
+	@Override
+	public long getClassTypeId() {
+		if (super.getClassTypeId() > 0) {
+			return super.getClassTypeId();
+		}
+
+		String classTypeKey = getClassTypeKey();
+
+		if (Validator.isNull(classTypeKey)) {
+			return 0;
+		}
+
+		InfoItemServiceRegistry infoItemServiceRegistry =
+			_infoItemServiceRegistrySnapshot.get();
+
+		if (infoItemServiceRegistry == null) {
+			return 0;
+		}
+
+		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
+			infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormVariationsProvider.class, getClassName());
+
+		if (infoItemFormVariationsProvider == null) {
+			return 0;
+		}
+
+		InfoItemFormVariation infoItemFormVariation =
+			infoItemFormVariationsProvider.
+				getInfoItemFormVariationByExternalReferenceCode(
+					classTypeKey, getGroupId());
+
+		if (infoItemFormVariation == null) {
+			return 0;
+		}
+
+		return GetterUtil.getLong(infoItemFormVariation.getKey());
 	}
 
 	@Override
@@ -54,5 +99,9 @@ public class LayoutPageTemplateEntryImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutPageTemplateEntryImpl.class);
+
+	private static final Snapshot<InfoItemServiceRegistry>
+		_infoItemServiceRegistrySnapshot = new Snapshot<>(
+			LayoutPageTemplateEntryImpl.class, InfoItemServiceRegistry.class);
 
 }
