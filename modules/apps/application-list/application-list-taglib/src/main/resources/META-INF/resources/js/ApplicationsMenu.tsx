@@ -122,10 +122,13 @@ function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 					</button>
 				</div>
 
-				<ClayVerticalNav
-					active={portletId}
-					items={items.map(buildNavigationItem)}
-				/>
+				<div className="applications-menu-sidebar-body">
+					<ClayVerticalNav
+						active={portletId}
+						itemAriaCurrent={true}
+						items={items.map(buildNavigationItem)}
+					/>
+				</div>
 			</div>
 		</div>
 	);

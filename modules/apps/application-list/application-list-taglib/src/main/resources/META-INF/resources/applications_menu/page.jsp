@@ -33,10 +33,12 @@ ApplicationsMenuDisplayContext applicationsMenuDisplayContext = new Applications
 				</button>
 			</div>
 
-			<clay:vertical-nav
-				active="<%= applicationsMenuDisplayContext.getPortletId() %>"
-				verticalNavItems="<%= applicationsMenuDisplayContext.getVerticalNavItems() %>"
-			/>
+			<div class="applications-menu-sidebar-body">
+				<clay:vertical-nav
+					active="<%= applicationsMenuDisplayContext.getPortletId() %>"
+					verticalNavItems="<%= applicationsMenuDisplayContext.getVerticalNavItems() %>"
+				/>
+			</div>
 		</div>
 	</div>
 
