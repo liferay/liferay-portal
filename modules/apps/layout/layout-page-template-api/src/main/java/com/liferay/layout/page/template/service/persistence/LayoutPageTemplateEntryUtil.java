@@ -4987,23 +4987,23 @@ public class LayoutPageTemplateEntryUtil {
 	}
 
 	/**
-	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @return the matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type) {
+		long groupId, long classNameId, String classTypeKey, int type) {
 
 		return getPersistence().findByG_C_C_T(
-			groupId, classNameId, classTypeId, type);
+			groupId, classNameId, classTypeKey, type);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5011,22 +5011,22 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
 	 * @return the range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type, int start,
-		int end) {
+		long groupId, long classNameId, String classTypeKey, int type,
+		int start, int end) {
 
 		return getPersistence().findByG_C_C_T(
-			groupId, classNameId, classTypeId, type, start, end);
+			groupId, classNameId, classTypeKey, type, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5034,7 +5034,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
@@ -5042,16 +5042,17 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type, int start,
-		int end, OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+		long groupId, long classNameId, String classTypeKey, int type,
+		int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().findByG_C_C_T(
-			groupId, classNameId, classTypeId, type, start, end,
+			groupId, classNameId, classTypeKey, type, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5059,7 +5060,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
@@ -5068,100 +5069,101 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type, int start,
-		int end, OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
+		long groupId, long classNameId, String classTypeKey, int type,
+		int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
 		boolean useFinderCache) {
 
 		return getPersistence().findByG_C_C_T(
-			groupId, classNameId, classTypeId, type, start, end,
+			groupId, classNameId, classTypeKey, type, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_T_First(
-			long groupId, long classNameId, long classTypeId, int type,
+			long groupId, long classNameId, String classTypeKey, int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_T_First(
-			groupId, classNameId, classTypeId, type, orderByComparator);
+			groupId, classNameId, classTypeKey, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_T_First(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_T_First(
-			groupId, classNameId, classTypeId, type, orderByComparator);
+			groupId, classNameId, classTypeKey, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_T_Last(
-			long groupId, long classNameId, long classTypeId, int type,
+			long groupId, long classNameId, String classTypeKey, int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_T_Last(
-			groupId, classNameId, classTypeId, type, orderByComparator);
+			groupId, classNameId, classTypeKey, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_T_Last(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_T_Last(
-			groupId, classNameId, classTypeId, type, orderByComparator);
+			groupId, classNameId, classTypeKey, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout page template entry
@@ -5169,34 +5171,34 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] findByG_C_C_T_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, int type,
+			String classTypeKey, int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_T_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, type,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, type,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @return the matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type) {
+		long groupId, long classNameId, String classTypeKey, int type) {
 
 		return getPersistence().filterFindByG_C_C_T(
-			groupId, classNameId, classTypeId, type);
+			groupId, classNameId, classTypeKey, type);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5204,22 +5206,22 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
 	 * @return the range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type, int start,
-		int end) {
+		long groupId, long classNameId, String classTypeKey, int type,
+		int start, int end) {
 
 		return getPersistence().filterFindByG_C_C_T(
-			groupId, classNameId, classTypeId, type, start, end);
+			groupId, classNameId, classTypeKey, type, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5227,7 +5229,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
@@ -5235,21 +5237,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type, int start,
-		int end, OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+		long groupId, long classNameId, String classTypeKey, int type,
+		int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().filterFindByG_C_C_T(
-			groupId, classNameId, classTypeId, type, start, end,
+			groupId, classNameId, classTypeKey, type, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout page template entry
@@ -5257,82 +5260,82 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] filterFindByG_C_C_T_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, int type,
+			String classTypeKey, int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().filterFindByG_C_C_T_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, type,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, type,
 			orderByComparator);
 	}
 
 	/**
-	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; from the database.
+	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 */
 	public static void removeByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type) {
+		long groupId, long classNameId, String classTypeKey, int type) {
 
 		getPersistence().removeByG_C_C_T(
-			groupId, classNameId, classTypeId, type);
+			groupId, classNameId, classTypeKey, type);
 	}
 
 	/**
-	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @return the number of matching layout page template entries
 	 */
 	public static int countByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type) {
+		long groupId, long classNameId, String classTypeKey, int type) {
 
 		return getPersistence().countByG_C_C_T(
-			groupId, classNameId, classTypeId, type);
+			groupId, classNameId, classTypeKey, type);
 	}
 
 	/**
-	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63;.
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @return the number of matching layout page template entries that the user has permission to view
 	 */
 	public static int filterCountByG_C_C_T(
-		long groupId, long classNameId, long classTypeId, int type) {
+		long groupId, long classNameId, String classTypeKey, int type) {
 
 		return getPersistence().filterCountByG_C_C_T(
-			groupId, classNameId, classTypeId, type);
+			groupId, classNameId, classTypeKey, type);
 	}
 
 	/**
-	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @return the matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate) {
 
 		return getPersistence().findByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate);
+			groupId, classNameId, classTypeKey, defaultTemplate);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5340,22 +5343,22 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
 	 * @return the range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int start, int end) {
 
 		return getPersistence().findByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate, start, end);
+			groupId, classNameId, classTypeKey, defaultTemplate, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5363,7 +5366,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
@@ -5371,17 +5374,17 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().findByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate, start, end,
+			groupId, classNameId, classTypeKey, defaultTemplate, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5389,7 +5392,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
@@ -5398,109 +5401,109 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
 		boolean useFinderCache) {
 
 		return getPersistence().findByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate, start, end,
+			groupId, classNameId, classTypeKey, defaultTemplate, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_D_First(
-			long groupId, long classNameId, long classTypeId,
+			long groupId, long classNameId, String classTypeKey,
 			boolean defaultTemplate,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_D_First(
-			groupId, classNameId, classTypeId, defaultTemplate,
+			groupId, classNameId, classTypeKey, defaultTemplate,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_D_First(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_D_First(
-			groupId, classNameId, classTypeId, defaultTemplate,
+			groupId, classNameId, classTypeKey, defaultTemplate,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_D_Last(
-			long groupId, long classNameId, long classTypeId,
+			long groupId, long classNameId, String classTypeKey,
 			boolean defaultTemplate,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_D_Last(
-			groupId, classNameId, classTypeId, defaultTemplate,
+			groupId, classNameId, classTypeKey, defaultTemplate,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_D_Last(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_D_Last(
-			groupId, classNameId, classTypeId, defaultTemplate,
+			groupId, classNameId, classTypeKey, defaultTemplate,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout page template entry
@@ -5508,35 +5511,35 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] findByG_C_C_D_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, boolean defaultTemplate,
+			String classTypeKey, boolean defaultTemplate,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_D_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey,
 			defaultTemplate, orderByComparator);
 	}
 
 	/**
-	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @return the matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate) {
 
 		return getPersistence().filterFindByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate);
+			groupId, classNameId, classTypeKey, defaultTemplate);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5544,22 +5547,22 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
 	 * @return the range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int start, int end) {
 
 		return getPersistence().filterFindByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate, start, end);
+			groupId, classNameId, classTypeKey, defaultTemplate, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -5567,7 +5570,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param start the lower bound of the range of layout page template entries
 	 * @param end the upper bound of the range of layout page template entries (not inclusive)
@@ -5575,22 +5578,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().filterFindByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate, start, end,
+			groupId, classNameId, classTypeKey, defaultTemplate, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout page template entry
@@ -5598,64 +5601,64 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] filterFindByG_C_C_D_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, boolean defaultTemplate,
+			String classTypeKey, boolean defaultTemplate,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().filterFindByG_C_C_D_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey,
 			defaultTemplate, orderByComparator);
 	}
 
 	/**
-	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; from the database.
+	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 */
 	public static void removeByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate) {
 
 		getPersistence().removeByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate);
+			groupId, classNameId, classTypeKey, defaultTemplate);
 	}
 
 	/**
-	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @return the number of matching layout page template entries
 	 */
 	public static int countByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate) {
 
 		return getPersistence().countByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate);
+			groupId, classNameId, classTypeKey, defaultTemplate);
 	}
 
 	/**
-	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63;.
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @return the number of matching layout page template entries that the user has permission to view
 	 */
 	public static int filterCountByG_C_C_D(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate) {
 
 		return getPersistence().filterCountByG_C_C_D(
-			groupId, classNameId, classTypeId, defaultTemplate);
+			groupId, classNameId, classTypeKey, defaultTemplate);
 	}
 
 	/**
@@ -6827,25 +6830,25 @@ public class LayoutPageTemplateEntryUtil {
 	}
 
 	/**
-	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @return the matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name,
+		long groupId, long classNameId, String classTypeKey, String name,
 		int type) {
 
 		return getPersistence().findByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type);
+			groupId, classNameId, classTypeKey, name, type);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -6853,7 +6856,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
@@ -6861,15 +6864,15 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int start, int end) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int start, int end) {
 
 		return getPersistence().findByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type, start, end);
+			groupId, classNameId, classTypeKey, name, type, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -6877,7 +6880,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
@@ -6886,17 +6889,17 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int start, int end,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().findByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type, start, end,
+			groupId, classNameId, classTypeKey, name, type, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -6904,7 +6907,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
@@ -6914,22 +6917,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int start, int end,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
 		boolean useFinderCache) {
 
 		return getPersistence().findByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type, start, end,
+			groupId, classNameId, classTypeKey, name, type, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -6937,41 +6940,42 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_LikeN_T_First(
-			long groupId, long classNameId, long classTypeId, String name,
+			long groupId, long classNameId, String classTypeKey, String name,
 			int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_LikeN_T_First(
-			groupId, classNameId, classTypeId, name, type, orderByComparator);
+			groupId, classNameId, classTypeKey, name, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_LikeN_T_First(
-		long groupId, long classNameId, long classTypeId, String name, int type,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_LikeN_T_First(
-			groupId, classNameId, classTypeId, name, type, orderByComparator);
+			groupId, classNameId, classTypeKey, name, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -6979,42 +6983,43 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_LikeN_T_Last(
-			long groupId, long classNameId, long classTypeId, String name,
+			long groupId, long classNameId, String classTypeKey, String name,
 			int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_LikeN_T_Last(
-			groupId, classNameId, classTypeId, name, type, orderByComparator);
+			groupId, classNameId, classTypeKey, name, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_LikeN_T_Last(
-		long groupId, long classNameId, long classTypeId, String name, int type,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_LikeN_T_Last(
-			groupId, classNameId, classTypeId, name, type, orderByComparator);
+			groupId, classNameId, classTypeKey, name, type, orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7023,36 +7028,36 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] findByG_C_C_LikeN_T_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, String name, int type,
+			String classTypeKey, String name, int type,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_LikeN_T_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, name,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, name,
 			type, orderByComparator);
 	}
 
 	/**
-	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @return the matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name,
+		long groupId, long classNameId, String classTypeKey, String name,
 		int type) {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type);
+			groupId, classNameId, classTypeKey, name, type);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7060,7 +7065,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
@@ -7068,15 +7073,15 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int start, int end) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int start, int end) {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type, start, end);
+			groupId, classNameId, classTypeKey, name, type, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7084,7 +7089,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param start the lower bound of the range of layout page template entries
@@ -7093,22 +7098,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int start, int end,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type, start, end,
+			groupId, classNameId, classTypeKey, name, type, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7118,89 +7123,89 @@ public class LayoutPageTemplateEntryUtil {
 	public static LayoutPageTemplateEntry[]
 			filterFindByG_C_C_LikeN_T_PrevAndNext(
 				long layoutPageTemplateEntryId, long groupId, long classNameId,
-				long classTypeId, String name, int type,
+				String classTypeKey, String name, int type,
 				OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, name,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, name,
 			type, orderByComparator);
 	}
 
 	/**
-	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; from the database.
+	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 */
 	public static void removeByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name,
+		long groupId, long classNameId, String classTypeKey, String name,
 		int type) {
 
 		getPersistence().removeByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type);
+			groupId, classNameId, classTypeKey, name, type);
 	}
 
 	/**
-	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @return the number of matching layout page template entries
 	 */
 	public static int countByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name,
+		long groupId, long classNameId, String classTypeKey, String name,
 		int type) {
 
 		return getPersistence().countByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type);
+			groupId, classNameId, classTypeKey, name, type);
 	}
 
 	/**
-	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63;.
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @return the number of matching layout page template entries that the user has permission to view
 	 */
 	public static int filterCountByG_C_C_LikeN_T(
-		long groupId, long classNameId, long classTypeId, String name,
+		long groupId, long classNameId, String classTypeKey, String name,
 		int type) {
 
 		return getPersistence().filterCountByG_C_C_LikeN_T(
-			groupId, classNameId, classTypeId, name, type);
+			groupId, classNameId, classTypeKey, name, type);
 	}
 
 	/**
-	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @return the matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		int status) {
 
 		return getPersistence().findByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status);
+			groupId, classNameId, classTypeKey, type, status);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7208,7 +7213,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7216,15 +7221,15 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type, int status,
-		int start, int end) {
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status, int start, int end) {
 
 		return getPersistence().findByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status, start, end);
+			groupId, classNameId, classTypeKey, type, status, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7232,7 +7237,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7241,17 +7246,17 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type, int status,
-		int start, int end,
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().findByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status, start, end,
+			groupId, classNameId, classTypeKey, type, status, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7259,7 +7264,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7269,22 +7274,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type, int status,
-		int start, int end,
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
 		boolean useFinderCache) {
 
 		return getPersistence().findByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status, start, end,
+			groupId, classNameId, classTypeKey, type, status, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7292,41 +7297,44 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_T_S_First(
-			long groupId, long classNameId, long classTypeId, int type,
+			long groupId, long classNameId, String classTypeKey, int type,
 			int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_T_S_First(
-			groupId, classNameId, classTypeId, type, status, orderByComparator);
+			groupId, classNameId, classTypeKey, type, status,
+			orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_T_S_First(
-		long groupId, long classNameId, long classTypeId, int type, int status,
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_T_S_First(
-			groupId, classNameId, classTypeId, type, status, orderByComparator);
+			groupId, classNameId, classTypeKey, type, status,
+			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7334,42 +7342,45 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_T_S_Last(
-			long groupId, long classNameId, long classTypeId, int type,
+			long groupId, long classNameId, String classTypeKey, int type,
 			int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_T_S_Last(
-			groupId, classNameId, classTypeId, type, status, orderByComparator);
+			groupId, classNameId, classTypeKey, type, status,
+			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_T_S_Last(
-		long groupId, long classNameId, long classTypeId, int type, int status,
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_T_S_Last(
-			groupId, classNameId, classTypeId, type, status, orderByComparator);
+			groupId, classNameId, classTypeKey, type, status,
+			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7378,36 +7389,36 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] findByG_C_C_T_S_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, int type, int status,
+			String classTypeKey, int type, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_T_S_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, type,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, type,
 			status, orderByComparator);
 	}
 
 	/**
-	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @return the matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		int status) {
 
 		return getPersistence().filterFindByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status);
+			groupId, classNameId, classTypeKey, type, status);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7415,7 +7426,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7423,15 +7434,15 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type, int status,
-		int start, int end) {
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status, int start, int end) {
 
 		return getPersistence().filterFindByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status, start, end);
+			groupId, classNameId, classTypeKey, type, status, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7439,7 +7450,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7448,22 +7459,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type, int status,
-		int start, int end,
+		long groupId, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().filterFindByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status, start, end,
+			groupId, classNameId, classTypeKey, type, status, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7472,89 +7483,89 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] filterFindByG_C_C_T_S_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, int type, int status,
+			String classTypeKey, int type, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().filterFindByG_C_C_T_S_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, type,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, type,
 			status, orderByComparator);
 	}
 
 	/**
-	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63; from the database.
+	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 */
 	public static void removeByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		int status) {
 
 		getPersistence().removeByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status);
+			groupId, classNameId, classTypeKey, type, status);
 	}
 
 	/**
-	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @return the number of matching layout page template entries
 	 */
 	public static int countByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		int status) {
 
 		return getPersistence().countByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status);
+			groupId, classNameId, classTypeKey, type, status);
 	}
 
 	/**
-	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and type = &#63; and status = &#63;.
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param type the type
 	 * @param status the status
 	 * @return the number of matching layout page template entries that the user has permission to view
 	 */
 	public static int filterCountByG_C_C_T_S(
-		long groupId, long classNameId, long classTypeId, int type,
+		long groupId, long classNameId, String classTypeKey, int type,
 		int status) {
 
 		return getPersistence().filterCountByG_C_C_T_S(
-			groupId, classNameId, classTypeId, type, status);
+			groupId, classNameId, classTypeKey, type, status);
 	}
 
 	/**
-	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @return the matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status) {
 
 		return getPersistence().findByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status);
+			groupId, classNameId, classTypeKey, defaultTemplate, status);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7562,7 +7573,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7570,16 +7581,16 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status, int start, int end) {
 
 		return getPersistence().findByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status, start,
+			groupId, classNameId, classTypeKey, defaultTemplate, status, start,
 			end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7587,7 +7598,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7596,17 +7607,17 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().findByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status, start,
+			groupId, classNameId, classTypeKey, defaultTemplate, status, start,
 			end, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7614,7 +7625,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7624,22 +7635,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
 		boolean useFinderCache) {
 
 		return getPersistence().findByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status, start,
+			groupId, classNameId, classTypeKey, defaultTemplate, status, start,
 			end, orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7647,44 +7658,44 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_D_S_First(
-			long groupId, long classNameId, long classTypeId,
+			long groupId, long classNameId, String classTypeKey,
 			boolean defaultTemplate, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_D_S_First(
-			groupId, classNameId, classTypeId, defaultTemplate, status,
+			groupId, classNameId, classTypeKey, defaultTemplate, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_D_S_First(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_D_S_First(
-			groupId, classNameId, classTypeId, defaultTemplate, status,
+			groupId, classNameId, classTypeKey, defaultTemplate, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7692,45 +7703,45 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_D_S_Last(
-			long groupId, long classNameId, long classTypeId,
+			long groupId, long classNameId, String classTypeKey,
 			boolean defaultTemplate, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_D_S_Last(
-			groupId, classNameId, classTypeId, defaultTemplate, status,
+			groupId, classNameId, classTypeKey, defaultTemplate, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_D_S_Last(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_D_S_Last(
-			groupId, classNameId, classTypeId, defaultTemplate, status,
+			groupId, classNameId, classTypeKey, defaultTemplate, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7739,36 +7750,36 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] findByG_C_C_D_S_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, boolean defaultTemplate, int status,
+			String classTypeKey, boolean defaultTemplate, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_D_S_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey,
 			defaultTemplate, status, orderByComparator);
 	}
 
 	/**
-	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @return the matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status) {
 
 		return getPersistence().filterFindByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status);
+			groupId, classNameId, classTypeKey, defaultTemplate, status);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7776,7 +7787,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7784,16 +7795,16 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status, int start, int end) {
 
 		return getPersistence().filterFindByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status, start,
+			groupId, classNameId, classTypeKey, defaultTemplate, status, start,
 			end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7801,7 +7812,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param start the lower bound of the range of layout page template entries
@@ -7810,22 +7821,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().filterFindByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status, start,
+			groupId, classNameId, classTypeKey, defaultTemplate, status, start,
 			end, orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
@@ -7834,90 +7845,90 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] filterFindByG_C_C_D_S_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, boolean defaultTemplate, int status,
+			String classTypeKey, boolean defaultTemplate, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().filterFindByG_C_C_D_S_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey,
 			defaultTemplate, status, orderByComparator);
 	}
 
 	/**
-	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63; from the database.
+	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 */
 	public static void removeByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status) {
 
 		getPersistence().removeByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status);
+			groupId, classNameId, classTypeKey, defaultTemplate, status);
 	}
 
 	/**
-	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @return the number of matching layout page template entries
 	 */
 	public static int countByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status) {
 
 		return getPersistence().countByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status);
+			groupId, classNameId, classTypeKey, defaultTemplate, status);
 	}
 
 	/**
-	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and defaultTemplate = &#63; and status = &#63;.
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param defaultTemplate the default template
 	 * @param status the status
 	 * @return the number of matching layout page template entries that the user has permission to view
 	 */
 	public static int filterCountByG_C_C_D_S(
-		long groupId, long classNameId, long classTypeId,
+		long groupId, long classNameId, String classTypeKey,
 		boolean defaultTemplate, int status) {
 
 		return getPersistence().filterCountByG_C_C_D_S(
-			groupId, classNameId, classTypeId, defaultTemplate, status);
+			groupId, classNameId, classTypeKey, defaultTemplate, status);
 	}
 
 	/**
-	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
 	 * @return the matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status) {
 
 		return getPersistence().findByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status);
+			groupId, classNameId, classTypeKey, name, type, status);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns a range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7925,7 +7936,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -7934,15 +7945,15 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status, int start, int end) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end) {
 
 		return getPersistence().findByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status, start, end);
+			groupId, classNameId, classTypeKey, name, type, status, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7950,7 +7961,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -7960,17 +7971,17 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status, int start, int end,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().findByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status, start, end,
+			groupId, classNameId, classTypeKey, name, type, status, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -7978,7 +7989,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -7989,22 +8000,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries
 	 */
 	public static List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status, int start, int end,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator,
 		boolean useFinderCache) {
 
 		return getPersistence().findByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status, start, end,
+			groupId, classNameId, classTypeKey, name, type, status, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8013,23 +8024,23 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_LikeN_T_S_First(
-			long groupId, long classNameId, long classTypeId, String name,
+			long groupId, long classNameId, String classTypeKey, String name,
 			int type, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_LikeN_T_S_First(
-			groupId, classNameId, classTypeId, name, type, status,
+			groupId, classNameId, classTypeKey, name, type, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the first layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8037,21 +8048,21 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the first matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_LikeN_T_S_First(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_LikeN_T_S_First(
-			groupId, classNameId, classTypeId, name, type, status,
+			groupId, classNameId, classTypeKey, name, type, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8060,23 +8071,23 @@ public class LayoutPageTemplateEntryUtil {
 	 * @throws NoSuchPageTemplateEntryException if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry findByG_C_C_LikeN_T_S_Last(
-			long groupId, long classNameId, long classTypeId, String name,
+			long groupId, long classNameId, String classTypeKey, String name,
 			int type, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_LikeN_T_S_Last(
-			groupId, classNameId, classTypeId, name, type, status,
+			groupId, classNameId, classTypeKey, name, type, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the last layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8084,22 +8095,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the last matching layout page template entry, or <code>null</code> if a matching layout page template entry could not be found
 	 */
 	public static LayoutPageTemplateEntry fetchByG_C_C_LikeN_T_S_Last(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().fetchByG_C_C_LikeN_T_S_Last(
-			groupId, classNameId, classTypeId, name, type, status,
+			groupId, classNameId, classTypeKey, name, type, status,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8109,37 +8120,37 @@ public class LayoutPageTemplateEntryUtil {
 	 */
 	public static LayoutPageTemplateEntry[] findByG_C_C_LikeN_T_S_PrevAndNext(
 			long layoutPageTemplateEntryId, long groupId, long classNameId,
-			long classTypeId, String name, int type, int status,
+			String classTypeKey, String name, int type, int status,
 			OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().findByG_C_C_LikeN_T_S_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, name,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, name,
 			type, status, orderByComparator);
 	}
 
 	/**
-	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
 	 * @return the matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status) {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status);
+			groupId, classNameId, classTypeKey, name, type, status);
 	}
 
 	/**
-	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -8147,7 +8158,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8156,15 +8167,15 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status, int start, int end) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end) {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status, start, end);
+			groupId, classNameId, classTypeKey, name, type, status, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns an ordered range of all the layout page template entries that the user has permissions to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutPageTemplateEntryModelImpl</code>.
@@ -8172,7 +8183,7 @@ public class LayoutPageTemplateEntryUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8182,22 +8193,22 @@ public class LayoutPageTemplateEntryUtil {
 	 * @return the ordered range of matching layout page template entries that the user has permission to view
 	 */
 	public static List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status, int start, int end,
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status, start, end,
+			groupId, classNameId, classTypeKey, name, type, status, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the layout page template entries before and after the current layout page template entry in the ordered set of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param layoutPageTemplateEntryId the primary key of the current layout page template entry
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
@@ -8208,70 +8219,70 @@ public class LayoutPageTemplateEntryUtil {
 	public static LayoutPageTemplateEntry[]
 			filterFindByG_C_C_LikeN_T_S_PrevAndNext(
 				long layoutPageTemplateEntryId, long groupId, long classNameId,
-				long classTypeId, String name, int type, int status,
+				String classTypeKey, String name, int type, int status,
 				OrderByComparator<LayoutPageTemplateEntry> orderByComparator)
 		throws com.liferay.layout.page.template.exception.
 			NoSuchPageTemplateEntryException {
 
 		return getPersistence().filterFindByG_C_C_LikeN_T_S_PrevAndNext(
-			layoutPageTemplateEntryId, groupId, classNameId, classTypeId, name,
+			layoutPageTemplateEntryId, groupId, classNameId, classTypeKey, name,
 			type, status, orderByComparator);
 	}
 
 	/**
-	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63; from the database.
+	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
 	 */
 	public static void removeByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status) {
 
 		getPersistence().removeByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status);
+			groupId, classNameId, classTypeKey, name, type, status);
 	}
 
 	/**
-	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the number of layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
 	 * @return the number of matching layout page template entries
 	 */
 	public static int countByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status) {
 
 		return getPersistence().countByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status);
+			groupId, classNameId, classTypeKey, name, type, status);
 	}
 
 	/**
-	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeId = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
-	 * @param classTypeId the class type ID
+	 * @param classTypeKey the class type key
 	 * @param name the name
 	 * @param type the type
 	 * @param status the status
 	 * @return the number of matching layout page template entries that the user has permission to view
 	 */
 	public static int filterCountByG_C_C_LikeN_T_S(
-		long groupId, long classNameId, long classTypeId, String name, int type,
-		int status) {
+		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status) {
 
 		return getPersistence().filterCountByG_C_C_LikeN_T_S(
-			groupId, classNameId, classTypeId, name, type, status);
+			groupId, classNameId, classTypeKey, name, type, status);
 	}
 
 	/**

@@ -148,7 +148,7 @@ public class LayoutPageTemplateEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CLASSTYPEID_COLUMN_BITMASK = 2L;
+	public static final long CLASSTYPEKEY_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
@@ -888,16 +888,6 @@ public class LayoutPageTemplateEntryModelImpl
 		_classTypeId = classTypeId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalClassTypeId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("classTypeId"));
-	}
-
 	@JSON
 	@Override
 	public String getClassTypeKey() {
@@ -916,6 +906,15 @@ public class LayoutPageTemplateEntryModelImpl
 		}
 
 		_classTypeKey = classTypeKey;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalClassTypeKey() {
+		return getColumnOriginalValue("classTypeKey");
 	}
 
 	@JSON
