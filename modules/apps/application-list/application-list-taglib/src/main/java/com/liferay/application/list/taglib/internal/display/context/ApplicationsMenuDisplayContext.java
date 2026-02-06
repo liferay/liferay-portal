@@ -11,10 +11,10 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
-import com.liferay.application.list.util.PanelCategoryRegistryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -49,20 +49,35 @@ public class ApplicationsMenuDisplayContext {
 		_portletId = _themeDisplay.getPpid();
 	}
 
-	public PanelCategory getPanelCategory() {
-		List<PanelCategory> childPanelCategories =
-			PanelCategoryRegistryUtil.getChildPanelCategories(
-				PanelCategoryKeys.APPLICATIONS_MENU);
+	public List<String> getExpandedKeys() {
+		List<String> expandedKeys = new ArrayList<>();
 
-		for (PanelCategory panelCategory : childPanelCategories) {
-			if (_panelCategoryHelper.containsPortlet(
-					_portletId, panelCategory.getKey())) {
+		PanelCategory panelCategory = getPanelCategory();
 
-				return panelCategory;
-			}
+		PanelCategory childPanelCategory = _getActivePanelCategory(
+			panelCategory.getKey());
+
+		if (childPanelCategory != null) {
+			expandedKeys.add(childPanelCategory.getKey());
 		}
 
-		return null;
+		String storedExpandedKeysAsString = SessionClicks.get(
+			_httpServletRequest, getExpandedKeysKey(), StringPool.BLANK);
+
+		Collections.addAll(
+			expandedKeys, storedExpandedKeysAsString.split(StringPool.COMMA));
+
+		return expandedKeys;
+	}
+
+	public String getExpandedKeysKey() {
+		PanelCategory panelCategory = getPanelCategory();
+
+		return String.format(_EXPANDED_KEYS_KEY, panelCategory.getKey());
+	}
+
+	public PanelCategory getPanelCategory() {
+		return _getActivePanelCategory(PanelCategoryKeys.APPLICATIONS_MENU);
 	}
 
 	public String getPanelCategoryLabel() {
@@ -87,6 +102,13 @@ public class ApplicationsMenuDisplayContext {
 		}
 
 		return HashMapBuilder.<String, Object>put(
+			"expandedKeys",
+			HashMapBuilder.<String, Object>put(
+				"initialState", getExpandedKeys()
+			).put(
+				"stateKey", getExpandedKeysKey()
+			).build()
+		).put(
 			"items", _getPropsItems()
 		).put(
 			"label", getPanelCategoryLabel()
@@ -154,6 +176,21 @@ public class ApplicationsMenuDisplayContext {
 			_httpServletRequest, _STATE_KEY, _STATE_DEFAULT);
 
 		return state.equals(_STATE_VISIBLE);
+	}
+
+	private PanelCategory _getActivePanelCategory(String parentKey) {
+		for (PanelCategory childPanelCategory :
+				_panelCategoryHelper.getChildPanelCategories(
+					parentKey, _themeDisplay)) {
+
+			if (_panelCategoryHelper.containsPortlet(
+					_portletId, childPanelCategory.getKey())) {
+
+				return childPanelCategory;
+			}
+		}
+
+		return null;
 	}
 
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
@@ -255,13 +292,16 @@ public class ApplicationsMenuDisplayContext {
 		return verticalNavItems;
 	}
 
+	private static final String _EXPANDED_KEYS_KEY =
+		"com_liferay_application_list_taglib_ApplicationsMenuExpanded_%sKeys";
+
 	private static final String _STATE_DEFAULT =
 		ApplicationsMenuDisplayContext._STATE_VISIBLE;
 
 	private static final String _STATE_HIDDEN = "hidden";
 
 	private static final String _STATE_KEY =
-		"com_liferay_application_list_taglib_ApplicationsMenuSideMenuState";
+		"com_liferay_application_list_taglib_ApplicationsMenuState";
 
 	private static final String _STATE_VISIBLE = "visible";
 

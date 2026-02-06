@@ -23,6 +23,10 @@ interface ApplicationsMenuItem {
 }
 
 interface Props {
+	expandedKeys: {
+		initialState: Array<string>;
+		stateKey: string;
+	};
 	items: Array<ApplicationsMenuItem>;
 	label: string;
 	portletId: string;
@@ -34,15 +38,24 @@ interface Props {
 	};
 }
 
-function ApplicationsMenu({items, label, portletId, visibility}: Props) {
-	const [visible, setVisible] = useState(visibility.initialState);
+function ApplicationsMenu({
+	expandedKeys: externalExpandedKeys,
+	items,
+	label,
+	portletId,
+	visibility,
+}: Props) {
 	const visibilityRef = useRef(visibility);
+
+	const [visible, setVisible] = useState(visibility.initialState);
+	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(() => {
+		return new Set(externalExpandedKeys.initialState);
+	});
 
 	function buildNavigationItem(item: ApplicationsMenuItem): VerticalNavItem {
 		return {
 			...item,
 			...(item.items && {
-				initialExpanded: itemContainsPortletId(item),
 				items: item.items.map((child) => buildNavigationItem(child)),
 			}),
 			...(item.leadingIcon && {
@@ -58,12 +71,13 @@ function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 		};
 	}
 
-	function itemContainsPortletId(item: ApplicationsMenuItem): boolean {
-		if (!item.items) {
-			return item.id === portletId;
-		}
+	async function updateExpandedKeys(expandedKeys: Set<React.Key>) {
+		await Liferay.Util.Session.set(
+			externalExpandedKeys.stateKey,
+			Array.from(expandedKeys).join(',')
+		);
 
-		return item.items.some((child) => itemContainsPortletId(child));
+		setExpandedKeys(expandedKeys);
 	}
 
 	const updateVisibleState = useCallback(async (visible: boolean) => {
@@ -125,8 +139,10 @@ function ApplicationsMenu({items, label, portletId, visibility}: Props) {
 				<div className="applications-menu-sidebar-body">
 					<ClayVerticalNav
 						active={portletId}
+						expandedKeys={expandedKeys}
 						itemAriaCurrent={true}
 						items={items.map(buildNavigationItem)}
+						onExpandedChange={updateExpandedKeys}
 					/>
 				</div>
 			</div>

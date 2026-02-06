@@ -36,6 +36,7 @@ ApplicationsMenuDisplayContext applicationsMenuDisplayContext = new Applications
 			<div class="applications-menu-sidebar-body">
 				<clay:vertical-nav
 					active="<%= applicationsMenuDisplayContext.getPortletId() %>"
+					defaultExpandedKeys="<%= applicationsMenuDisplayContext.getExpandedKeys() %>"
 					verticalNavItems="<%= applicationsMenuDisplayContext.getVerticalNavItems() %>"
 				/>
 			</div>
