@@ -8,11 +8,7 @@ import {ClayVerticalNav} from '@clayui/nav';
 import classNames from 'classnames';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
-type VerticalNavItem = React.ComponentProps<
-	typeof ClayVerticalNav
->['items'][0] & {
-	textValue: string;
-};
+type VerticalNavItem = React.ComponentProps<typeof ClayVerticalNav>['items'][0];
 
 interface ApplicationsMenuItem {
 	href?: string;

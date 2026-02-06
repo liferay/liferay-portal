@@ -30,6 +30,11 @@ interface IItem extends React.ComponentProps<typeof Nav.Item> {
 	 * Callback for when item is clicked.
 	 */
 	onClick?: () => void;
+
+	/**
+	 * Text value when the label isn't a string.
+	 */
+	textValue?: string;
 }
 
 interface IItemWithItems extends IItem {
@@ -136,6 +141,7 @@ function ClayVerticalNav({
 					initialExpanded={item.initialExpanded}
 					items={item.items}
 					onClick={item.onClick}
+					textValue={item.textValue}
 				>
 					{item.label}
 				</VerticalNav.Item>
