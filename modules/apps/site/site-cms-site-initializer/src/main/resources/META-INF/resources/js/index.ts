@@ -4,9 +4,11 @@
  */
 
 export {default as Breadcrumb} from './common/components/Breadcrumb';
+export {default as SpaceSelector} from './common/components/SpaceSelector';
 export {default as SpaceSticker} from './common/components/SpaceSticker';
 export {default as Toolbar} from './common/components/Toolbar';
 export {IAssetObjectEntry} from './common/types/AssetType';
+export {type Space} from './common/types/Space';
 
 export {default as ContentEditorSidePanel} from './content_editor/components/ContentEditorSidePanel';
 
