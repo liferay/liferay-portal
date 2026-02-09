@@ -12,6 +12,8 @@ import {
 import React, {useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
+import {FileUploaderComponentExample} from './FilesUploaderComponentExample';
+
 const OBJECT_ENTRY_FOLDER_CLASS_NAME =
 	'com.liferay.object.model.ObjectEntryFolder';
 
@@ -240,6 +242,7 @@ function CMSFilesItemSelectorModal({
 					},
 				] as IView[],
 			}}
+			filesUploaderComponent={FileUploaderComponentExample}
 			itemTypeLabel={Liferay.Language.get('files')}
 			locator={{
 				id: 'embedded.id',
