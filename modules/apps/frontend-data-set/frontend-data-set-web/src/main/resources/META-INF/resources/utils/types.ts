@@ -107,11 +107,11 @@ export interface IBaseActions {
 }
 
 interface IBulkActionItem {
-	href: string;
-	icon: string;
-	label: string;
+	href?: string;
+	icon?: string;
+	label?: string;
 	method?: string;
-	target: 'modal' | 'sidePanel';
+	target?: 'modal' | 'sidePanel';
 }
 export interface ICreationActionItem {
 	data?: {
