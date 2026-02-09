@@ -5,6 +5,7 @@
 
 export {default as ObjectEntryFooter} from '../object_entries/object_entry/ObjectEntryFooter';
 export {default as ScheduleContainer} from '../object_entries/object_entry/ScheduleContainer';
+export {default as BulkStatus} from './components/Bulk/BulkStatus';
 export {default as EditObjectStateField} from './components/EditObjectStateField';
 export {default as ExpressionBuilderModal} from './components/ExpressionBuilderModal';
 export {default as ViewListTypeDefinitionsFDSPropsTransformer} from './components/FDSPropsTransformer/ViewListTypeDefinitionsFDSPropsTransformer';

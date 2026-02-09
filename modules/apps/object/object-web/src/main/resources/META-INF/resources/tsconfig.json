@@ -1,5 +1,5 @@
 {
-	"@generated": "3c0cc39f0b1c3f74fd868c6f67aca652455f12ee",
+	"@generated": "45d07a63119673f57d6f81616a51697236318c37",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -19,6 +19,9 @@
 			],
 			"@liferay/frontend-js-codemirror-web": [
 				"../../../../../../../frontend-js/frontend-js-codemirror-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/frontend-js-react-web": [
+				"../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"@liferay/object-js-components-web": [
 				"../../../../../../object-js-components-web/src/main/resources/META-INF/resources/index.ts"
@@ -57,6 +60,9 @@
 		},
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-codemirror-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../object-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"

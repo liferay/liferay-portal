@@ -147,8 +147,6 @@ export default function ModalBulkDeleteObjectEntries({
 			});
 
 			onClose();
-
-			setTimeout(() => window.location.reload(), 1000);
 		}
 		catch (error) {
 			setModalDeleteObjectsEntriesState((prevState) => ({
