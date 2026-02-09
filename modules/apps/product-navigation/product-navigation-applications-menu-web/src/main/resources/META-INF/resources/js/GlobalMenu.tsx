@@ -17,7 +17,7 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import '../css/GlobalMenu.scss';
 
 type CategoryItem = {
-	childCategories?: {panelApps: {portletId: string}[]}[];
+	active: boolean;
 	className?: string;
 	firstTimeAccess?: boolean;
 	homeURL: string;
@@ -144,7 +144,7 @@ export default function GlobalMenu({
 			>
 				{(item) => {
 					const {
-						childCategories,
+						active,
 						className,
 						firstTimeAccess,
 						homeURL,
@@ -154,12 +154,7 @@ export default function GlobalMenu({
 
 					return (
 						<ClayDropdown.Item
-							active={childCategories?.some((category) =>
-								category.panelApps.some(
-									(panelApp) =>
-										panelApp.portletId === selectedPortletId
-								)
-							)}
+							active={active}
 							className={classNames(
 								'align-items-center c-mb-2 d-inline-flex',
 								className
@@ -264,7 +259,7 @@ function normalizeCategoryItems({
 	cms,
 	items,
 }: {
-	cms: {key: string; label: string; url: string};
+	cms: {active: boolean; key: string; label: string; url: string};
 	items: CategoryItem[];
 }): CategoryItem[] {
 	const categoryItems = items.map((item) =>
