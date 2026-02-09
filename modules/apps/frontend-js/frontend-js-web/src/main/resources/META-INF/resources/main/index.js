@@ -93,3 +93,4 @@ export {default as printPage} from './util/print_page';
 export {default as dateUtils} from './utils/date_time/index';
 export {getObjectValueFromPath} from './utils/object/getObjectValueFromPath';
 export {default as pkceChallenge} from './utils/pkceChallenge';
+export {getFileAsBase64} from './utils/string/getFileAsBase64';
