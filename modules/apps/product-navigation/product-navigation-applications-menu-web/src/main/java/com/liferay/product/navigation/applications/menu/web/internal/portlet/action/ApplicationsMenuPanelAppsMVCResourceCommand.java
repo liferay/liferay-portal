@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletToken;
@@ -111,11 +112,10 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 			"cms", _getCMSJSONObject(httpServletRequest, themeDisplay)
 		).put(
 			"items",
-			_getPanelCategoriesJSONArray(httpServletRequest, themeDisplay)
+			_getPanelCategoriesJSONArray(
+				httpServletRequest, resourceRequest, themeDisplay)
 		).put(
 			"portletNamespace", resourceResponse.getNamespace()
-		).put(
-			"selectedCategoryKey", () -> _getSelectedCategoryKey(themeDisplay)
 		).put(
 			"sites",
 			_getSitesJSONObject(
@@ -158,7 +158,9 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 	private Page<AssetLibrary> _getAssetLibrariesPage(ThemeDisplay themeDisplay)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-17564")) {
+
 			return null;
 		}
 
@@ -245,6 +247,12 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		Company company = themeDisplay.getCompany();
 
 		return JSONUtil.put(
+			"active",
+			StringUtil.startsWith(
+				themeDisplay.getURLCurrent(),
+				themeDisplay.getPathFriendlyURLPublic() +
+					GroupConstants.CMS_FRIENDLY_URL)
+		).put(
 			"allSpacesCount",
 			() -> {
 				if (assetLibraryPage == null) {
@@ -400,7 +408,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 	}
 
 	private JSONArray _getPanelCategoriesJSONArray(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
+			HttpServletRequest httpServletRequest,
+			ResourceRequest resourceRequest, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		JSONArray panelCategoriesJSONArray = _jsonFactory.createJSONArray();
@@ -414,7 +423,9 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 			_processPanelCategories(
 				applicationsMenuPanelCategories, httpServletRequest,
-				panelCategoriesJSONArray, themeDisplay);
+				panelCategoriesJSONArray,
+				ParamUtil.getString(resourceRequest, "selectedPortletId"),
+				themeDisplay);
 
 			return panelCategoriesJSONArray;
 		}
@@ -443,10 +454,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		return panelCategoriesJSONArray;
 	}
 
-	private String _getSelectedCategoryKey(ThemeDisplay themeDisplay) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-36105")) {
-
+	private String _getSelectedCategoryKey(long companyId, String portletId) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-36105")) {
 			return null;
 		}
 
@@ -456,7 +465,7 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 		for (PanelCategory panelCategory : childPanelCategories) {
 			if (_panelCategoryHelper.containsPortlet(
-					themeDisplay.getPpid(), panelCategory.getKey())) {
+					portletId, panelCategory.getKey())) {
 
 				return panelCategory.getKey();
 			}
@@ -551,7 +560,10 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 			}
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-36105") || (max < 0)) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-36105") ||
+			(max < 0)) {
+
 			sitesJSONObject.put(
 				"viewAllURL",
 				_getViewAllURL(resourceRequest, resourceResponse));
@@ -613,8 +625,12 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 	private void _processPanelCategories(
 			List<PanelCategory> applicationsMenuPanelCategories,
 			HttpServletRequest httpServletRequest,
-			JSONArray panelCategoriesJSONArray, ThemeDisplay themeDisplay)
+			JSONArray panelCategoriesJSONArray, String selectedPortletId,
+			ThemeDisplay themeDisplay)
 		throws Exception {
+
+		String selectedCategoryKey = _getSelectedCategoryKey(
+			themeDisplay.getCompanyId(), selectedPortletId);
 
 		for (PanelCategory panelCategory : applicationsMenuPanelCategories) {
 			PanelApp panelApp = _panelAppRegistry.getFirstAvailablePanelApp(
@@ -623,6 +639,10 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 			panelCategoriesJSONArray.put(
 				JSONUtil.put(
+					"active",
+					StringUtil.equals(
+						panelCategory.getKey(), selectedCategoryKey)
+				).put(
 					"homeURL", panelApp.getPortletURL(httpServletRequest)
 				).put(
 					"key", panelCategory.getKey()
