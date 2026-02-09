@@ -341,7 +341,7 @@ public class PullRequestPortalTopLevelBuild
 
 		String stableJobResult = getStableJobResult();
 
-		if (stableJobResult.equals("SUCCESS")) {
+		if ((stableJobResult != null) && stableJobResult.equals("SUCCESS")) {
 			sb.append(":heavy_check_mark: ");
 		}
 		else {
