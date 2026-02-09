@@ -281,11 +281,6 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 	}
 
 	private void _downloadTestrayBuildReportJSONFiles() {
-		TestrayCloudBucket testrayCloudBucket =
-			TestrayCloudBucket.getInstance();
-
-		List<String> keys = new ArrayList<>();
-
 		LocalDate currentLocalDate = LocalDate.now();
 
 		String currentMonthString = currentLocalDate.format(
@@ -318,6 +313,11 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+
+		TestrayCloudBucket testrayCloudBucket =
+			TestrayCloudBucket.getInstance();
+
+		List<String> keys = new ArrayList<>();
 
 		for (String jenkinsMasterName : jenkinsMasterNames) {
 			String jobName = "test-portal-acceptance-pullrequest(master)";
