@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.document.library.web.internal.bulk.selection;
+package com.liferay.bulk.selection;
 
-import com.liferay.bulk.selection.BulkSelectionRunner;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
 /**

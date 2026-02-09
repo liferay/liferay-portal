@@ -12,6 +12,7 @@ taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/user" prefix="liferay-user" %>
 
 <%@ page import="com.liferay.bulk.selection.BulkSelectionRunner" %><%@
+page import="com.liferay.bulk.selection.BulkSelectionRunnerUtil" %><%@
 page import="com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil" %><%@
 page import="com.liferay.digital.signature.constants.DigitalSignaturePortletKeys" %><%@
 page import="com.liferay.document.library.configuration.DLConfiguration" %><%@
@@ -27,7 +28,6 @@ page import="com.liferay.document.library.kernel.model.DLVersionNumberIncrease" 
 page import="com.liferay.document.library.kernel.processor.DLProcessorHelperUtil" %><%@
 page import="com.liferay.document.library.kernel.util.DLValidatorUtil" %><%@
 page import="com.liferay.document.library.util.DLFileEntryTypeUtil" %><%@
-page import="com.liferay.document.library.web.internal.bulk.selection.BulkSelectionRunnerUtil" %><%@
 page import="com.liferay.document.library.web.internal.display.context.CopyDLObjectsDisplayContext" %><%@
 page import="com.liferay.document.library.web.internal.display.context.DLAccessFromDesktopDisplayContext" %><%@
 page import="com.liferay.document.library.web.internal.display.context.DLAdminDisplayContextProvider" %><%@

@@ -6,6 +6,9 @@
 --%>
 
 <%@ include file="/init.jsp" %>
+<%@ page import="com.liferay.bulk.selection.BulkSelectionRunner" %>
+<%@ page import="com.liferay.object.web.internal.bulk.selection.BulkSelectionRunnerUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 
 <%
 ViewObjectEntriesDisplayContext viewObjectEntriesDisplayContext = (ViewObjectEntriesDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
@@ -36,6 +39,25 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 			style="fluid"
 		/>
 
+		<%
+		BulkSelectionRunner bulkSelectionRunner = BulkSelectionRunnerUtil.getBulkSelectionRunner();
+		%>
+
+		<div>
+			<react:component
+				module="{BulkStatus} from object-web"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"bulkComponentId", liferayPortletResponse.getNamespace() + "BulkStatus"
+					).put(
+						"bulkInProgress", bulkSelectionRunner.isBusy(user)
+					).put(
+						"pathModule", PortalUtil.getPathModule()
+					).build()
+				%>'
+			/>
+		</div>
+
 		<div>
 			<react:component
 				module="{ModalDeleteObjectEntry} from object-web"
@@ -52,11 +74,14 @@ boolean multiSelectEnabled = FeatureFlagManagerUtil.isEnabled(company.getCompany
 				module="{ModalBulkDeleteObjectEntries} from object-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
+						"namespace", liferayPortletResponse.getNamespace()
+					).put(
 						"objectDefinition", objectDefinition
 					).build()
 				%>'
 			/>
 		</div>
+		
 	</c:when>
 	<c:otherwise>
 		<clay:alert
