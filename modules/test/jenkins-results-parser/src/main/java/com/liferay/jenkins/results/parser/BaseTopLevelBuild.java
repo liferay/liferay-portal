@@ -1970,7 +1970,9 @@ public abstract class BaseTopLevelBuild
 
 		int successCount = getDownstreamBuildCountByResult("SUCCESS");
 
-		if ((result != null) && result.matches("(APPROVED|SUCCESS)")) {
+		if ((result != null) && result.matches("(APPROVED|SUCCESS)") &&
+			(successCount != 0)) {
+
 			successCount++;
 
 			sb.append(":heavy_check_mark: ");
