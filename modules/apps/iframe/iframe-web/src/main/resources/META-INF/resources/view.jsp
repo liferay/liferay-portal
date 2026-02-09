@@ -163,6 +163,7 @@
 				}
 			}
 			catch (e) {
+				console.error('Error parsing iframe URL for autosizing:', e);
 			}
 		}
 
