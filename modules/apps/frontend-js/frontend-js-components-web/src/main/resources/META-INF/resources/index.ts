@@ -44,6 +44,12 @@ export {default as openTagSelectionModal} from './modal/commands/openTagSelectio
 
 export {ModalStatus} from './modal/components/Modal';
 
+export {default as MultipleFileUploader} from './multiple_file_uploader/MultipleFileUploader';
+export {
+	type FileData,
+	type UploadRequestCallback,
+} from './multiple_file_uploader/types';
+
 export {default as openToast} from './toast/openToast';
 export type {OpenToastProps} from './toast/openToast';
 
