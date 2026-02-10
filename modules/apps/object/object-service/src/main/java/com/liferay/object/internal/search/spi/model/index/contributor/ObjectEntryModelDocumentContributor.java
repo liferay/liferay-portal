@@ -447,12 +447,7 @@ public class ObjectEntryModelDocumentContributor
 					values, "r_cmpProjectToCMPTasks_c_cmpProjectId"));
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPS-122920")) {
-
-			_contributeTextEmbeddings(
-				document, objectContentHelper, objectEntry);
-		}
+		_contributeTextEmbeddings(document, objectContentHelper, objectEntry);
 	}
 
 	private void _contributeFile(Document document, long fileEntryId) {
@@ -774,12 +769,6 @@ public class ObjectEntryModelDocumentContributor
 			TextEmbeddingDocumentContributor textEmbeddingDocumentContributor) {
 
 			_contentSB = new StringBundler(objectFields.size());
-
-			if (!FeatureFlagManagerUtil.isEnabled(
-					objectEntry.getCompanyId(), "LPS-122920")) {
-
-				return;
-			}
 
 			for (String languageId :
 					textEmbeddingDocumentContributor.getLanguageIds(
