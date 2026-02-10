@@ -6,15 +6,25 @@
 package com.liferay.document.library.web.internal.info.item.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
+import com.liferay.document.library.kernel.model.DLFileEntryType;
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -31,6 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,6 +59,44 @@ public class FileEntryInfoItemFormVariationsProviderTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	public void setUp() throws Exception {
+		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testGetInfoItemFormVariation() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		DLFileEntryType dlFileEntryType =
+			DLFileEntryTypeLocalServiceUtil.addFileEntryType(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				ddmStructure.getStructureId(), null,
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
+				new ServiceContext());
+
+		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormVariationsProvider.class,
+				FileEntry.class.getName());
+
+		_assertInfoItemFormVariation(
+			dlFileEntryType,
+			infoItemFormVariationsProvider.getInfoItemFormVariation(
+				_group.getGroupId(),
+				String.valueOf(dlFileEntryType.getFileEntryTypeId())));
+		_assertInfoItemFormVariation(
+			dlFileEntryType,
+			infoItemFormVariationsProvider.getInfoItemFormVariation(
+				_group.getGroupId(), dlFileEntryType.getFileEntryTypeKey()));
+		Assert.assertNull(
+			infoItemFormVariationsProvider.getInfoItemFormVariation(
+				_group.getGroupId(), RandomTestUtil.randomString()));
+	}
 
 	@Test
 	@TestInfo("LPD-56469")
@@ -145,8 +194,23 @@ public class FileEntryInfoItemFormVariationsProviderTest {
 		}
 	}
 
+	private void _assertInfoItemFormVariation(
+		DLFileEntryType dlFileEntryType,
+		InfoItemFormVariation infoItemFormVariation) {
+
+		Assert.assertNotNull(infoItemFormVariation);
+		Assert.assertEquals(
+			String.valueOf(dlFileEntryType.getFileEntryTypeId()),
+			infoItemFormVariation.getKey());
+		Assert.assertEquals(
+			dlFileEntryType.getFileEntryTypeKey(),
+			infoItemFormVariation.getExternalReferenceCode());
+	}
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	private Group _group;
 
 	@Inject
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
