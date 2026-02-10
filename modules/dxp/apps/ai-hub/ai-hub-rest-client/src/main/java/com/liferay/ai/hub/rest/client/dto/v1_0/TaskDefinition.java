@@ -149,6 +149,27 @@ public class TaskDefinition implements Cloneable, Serializable {
 
 	protected String name;
 
+	public TagsList[] getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(TagsList[] tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public void setTagsList(
+		UnsafeSupplier<TagsList[], Exception> tagsListUnsafeSupplier) {
+
+		try {
+			tagsList = tagsListUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected TagsList[] tagsList;
+
 	public String getTitle() {
 		return title;
 	}

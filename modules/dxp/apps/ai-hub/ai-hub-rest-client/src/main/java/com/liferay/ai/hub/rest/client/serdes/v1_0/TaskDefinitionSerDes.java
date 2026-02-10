@@ -5,6 +5,7 @@
 
 package com.liferay.ai.hub.rest.client.serdes.v1_0;
 
+import com.liferay.ai.hub.rest.client.dto.v1_0.TagsList;
 import com.liferay.ai.hub.rest.client.dto.v1_0.TaskDefinition;
 import com.liferay.ai.hub.rest.client.json.BaseJSONParser;
 
@@ -118,6 +119,26 @@ public class TaskDefinitionSerDes {
 			sb.append("\"");
 		}
 
+		if (taskDefinition.getTagsList() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"tagsList\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < taskDefinition.getTagsList().length; i++) {
+				sb.append(String.valueOf(taskDefinition.getTagsList()[i]));
+
+				if ((i + 1) < taskDefinition.getTagsList().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (taskDefinition.getTitle() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -206,6 +227,13 @@ public class TaskDefinitionSerDes {
 			map.put("name", String.valueOf(taskDefinition.getName()));
 		}
 
+		if (taskDefinition.getTagsList() == null) {
+			map.put("tagsList", null);
+		}
+		else {
+			map.put("tagsList", String.valueOf(taskDefinition.getTagsList()));
+		}
+
 		if (taskDefinition.getTitle() == null) {
 			map.put("title", null);
 		}
@@ -258,6 +286,9 @@ public class TaskDefinitionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "tagsList")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "title")) {
 				return false;
 			}
@@ -306,6 +337,22 @@ public class TaskDefinitionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					taskDefinition.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "tagsList")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					TagsList[] tagsListArray =
+						new TagsList[jsonParserFieldValues.length];
+
+					for (int i = 0; i < tagsListArray.length; i++) {
+						tagsListArray[i] = TagsListSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					taskDefinition.setTagsList(tagsListArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "title")) {

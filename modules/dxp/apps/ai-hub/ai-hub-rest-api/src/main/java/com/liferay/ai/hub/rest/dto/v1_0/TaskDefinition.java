@@ -293,6 +293,48 @@ public class TaskDefinition implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public TagsList[] getTagsList() {
+		if (_tagsListSupplier != null) {
+			tagsList = _tagsListSupplier.get();
+
+			_tagsListSupplier = null;
+		}
+
+		return tagsList;
+	}
+
+	public void setTagsList(TagsList[] tagsList) {
+		this.tagsList = tagsList;
+
+		_tagsListSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTagsList(
+		UnsafeSupplier<TagsList[], Exception> tagsListUnsafeSupplier) {
+
+		_tagsListSupplier = () -> {
+			try {
+				return tagsListUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected TagsList[] tagsList;
+
+	@JsonIgnore
+	private Supplier<TagsList[]> _tagsListSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getTitle() {
 		if (_titleSupplier != null) {
 			title = _titleSupplier.get();
@@ -483,6 +525,28 @@ public class TaskDefinition implements Serializable {
 			sb.append(_escape(name));
 
 			sb.append("\"");
+		}
+
+		TagsList[] tagsList = getTagsList();
+
+		if (tagsList != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"tagsList\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < tagsList.length; i++) {
+				sb.append(String.valueOf(tagsList[i]));
+
+				if ((i + 1) < tagsList.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		String title = getTitle();
