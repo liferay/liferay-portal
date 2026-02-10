@@ -27,6 +27,7 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
+import com.liferay.headless.admin.site.internal.util.LogUtil;
 import com.liferay.headless.admin.site.resource.v1_0.DisplayPageTemplateResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.info.item.InfoItemFormVariation;
@@ -419,7 +420,7 @@ public class DisplayPageTemplateResourceImpl
 
 		long classNameId = _portal.getClassNameId(
 			contentTypeReference.getClassName());
-		String classTypeKey = _getClassTypeKey(contentTypeReference);
+		String classTypeKey = _getClassTypeKey(contentTypeReference, groupId);
 
 		if ((classNameId != layoutPageTemplateEntry.getClassNameId()) ||
 			!StringUtil.equals(
@@ -598,7 +599,7 @@ public class DisplayPageTemplateResourceImpl
 				layoutPageTemplateCollectionId, displayPageTemplate.getKey(),
 				_portal.getClassNameId(contentTypeReference.getClassName()),
 				_getClassTypeId(contentTypeReference, groupId),
-				_getClassTypeKey(contentTypeReference),
+				_getClassTypeKey(contentTypeReference, layout.getGroupId()),
 				displayPageTemplate.getName(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 				FileEntryUtil.getPreviewFileEntryId(
@@ -652,13 +653,39 @@ public class DisplayPageTemplateResourceImpl
 	}
 
 	private String _getClassTypeKey(
-		ClassSubtypeReference contentTypeReference) {
+		ClassSubtypeReference contentTypeReference, long groupId) {
 
 		ItemExternalReference itemExternalReference =
 			contentTypeReference.getSubTypeExternalReference();
 
 		if (itemExternalReference == null) {
 			return null;
+		}
+
+		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormVariationsProvider.class,
+				contentTypeReference.getClassName());
+
+		if (infoItemFormVariationsProvider == null) {
+			LogUtil.logOptionalReference(
+				contentTypeReference.getClassName(),
+				itemExternalReference.getExternalReferenceCode(),
+				itemExternalReference.getScope(), groupId);
+
+			return itemExternalReference.getExternalReferenceCode();
+		}
+
+		InfoItemFormVariation infoItemFormVariation =
+			infoItemFormVariationsProvider.
+				getInfoItemFormVariationByExternalReferenceCode(
+					itemExternalReference.getExternalReferenceCode(), groupId);
+
+		if (infoItemFormVariation == null) {
+			LogUtil.logOptionalReference(
+				infoItemFormVariationsProvider.getSubtypeClassName(),
+				itemExternalReference.getExternalReferenceCode(),
+				itemExternalReference.getScope(), groupId);
 		}
 
 		return itemExternalReference.getExternalReferenceCode();
