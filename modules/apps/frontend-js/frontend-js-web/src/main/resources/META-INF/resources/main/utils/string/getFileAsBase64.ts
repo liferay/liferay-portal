@@ -14,7 +14,9 @@ export const getFileAsBase64 = function (file: File): Promise<string> {
 				reject(new Error('FileReader did not return a string.'));
 			}
 		};
-		reader.onerror = reject;
+		reader.onerror = (event) => {
+			reject(event.target?.error || new Error('File not readable.'));
+		};
 		reader.readAsDataURL(file);
 	});
 };
