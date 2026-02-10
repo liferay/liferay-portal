@@ -59,7 +59,7 @@ export const FileUploaderComponentExample: FilesUploaderComponent = function ({
 			}
 		);
 
-		return (await response.json()) as ReturnType<UploadRequestCallback>;
+		return await response.json();
 	};
 
 	const onUploadComplete = ({
