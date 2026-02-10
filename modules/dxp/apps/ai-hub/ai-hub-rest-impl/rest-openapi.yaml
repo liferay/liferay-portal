@@ -61,6 +61,15 @@ components:
                     type: integer
                 name:
                     type: string
+                tagsList:
+                    items:
+                        properties:
+                            displayType:
+                                type: string
+                            label:
+                                type: string
+                        type: object
+                    type: array
                 title:
                     type: string
                 version:
@@ -85,7 +94,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.ai.hub.rest.client', and version '1.0.5'."
+        'com.liferay.ai.hub.rest.client', and version '1.0.6'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
