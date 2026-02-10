@@ -7,7 +7,6 @@ package com.liferay.search.experiences.internal.util;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.framework.Bundle;
@@ -52,16 +50,6 @@ public class SXPElementUtil {
 		}
 
 		for (SXPElement sxpElement : _getOrCreateSXPElements()) {
-			if ((!FeatureFlagManagerUtil.isEnabled("LPS-122920") &&
-				 Objects.equals(
-					 sxpElement.getExternalReferenceCode(),
-					 "RESCORE_BY_TEXT_EMBEDDING")) ||
-				externalReferenceCodes.contains(
-					sxpElement.getExternalReferenceCode())) {
-
-				continue;
-			}
-
 			User user = company.getGuestUser();
 
 			sxpElementLocalService.addSXPElement(

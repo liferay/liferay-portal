@@ -7,7 +7,6 @@ package com.liferay.search.experiences.internal.blueprint.parameter.contributor;
 
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -102,9 +101,7 @@ public class MLSXPParameterContributor implements SXPParameterContributor {
 		ExceptionListener exceptionListener,
 		SemanticSearchConfiguration semanticSearchConfiguration) {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920") ||
-			!semanticSearchConfiguration.textEmbeddingsEnabled()) {
-
+		if (!semanticSearchConfiguration.textEmbeddingsEnabled()) {
 			return null;
 		}
 
