@@ -12,7 +12,11 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeResponse;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
@@ -33,6 +37,7 @@ import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.journal.constants.JournalArticleConstants;
+import com.liferay.journal.constants.JournalConstants;
 import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -55,6 +60,8 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -74,10 +81,13 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.test.rule.Inject;
@@ -86,11 +96,14 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.portlet.PortletPreferences;
 
+import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -1006,6 +1019,120 @@ public class JournalArticleStagedModelDataHandlerTest
 	}
 
 	@Test
+	public void testRenameDLFolder() throws Exception {
+		initExport();
+
+		JournalArticle article = null;
+
+		StringBundler sb1 = new StringBundler(15);
+
+		sb1.append("{\"availableLanguageIds\":[\"en_US\"],");
+		sb1.append("\"defaultLanguageId\":\"en_US\",");
+		sb1.append("\"definitionSchemaVersion\":\"2.0\",");
+		sb1.append("\"fields\":[{\"dataType\":\"image\",");
+		sb1.append("\"fieldNamespace\":\"ddm\",");
+		sb1.append("\"fieldReference\":\"image\",");
+		sb1.append("\"indexType\":\"text\",");
+		sb1.append("\"label\":{\"en_US\":\"Image\"},");
+		sb1.append("\"localizable\":true,\"name\":\"image\",");
+		sb1.append("\"predefinedValue\":{\"en_US\":\"\"},");
+		sb1.append("\"readOnly\":false,\"repeatable\":false,");
+		sb1.append("\"required\":false,\"showLabel\":true,");
+		sb1.append("\"tip\":{\"en_US\":\"\"},\"type\":\"image\"}],");
+		sb1.append("\"successPage\":{\"body\":{},");
+		sb1.append("\"enabled\":false,\"title\":{}}}");
+
+		DDMFormDeserializerDeserializeRequest.Builder builder =
+			DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
+				sb1.toString());
+
+		DDMFormDeserializerDeserializeResponse
+			ddmFormDeserializerDeserializeResponse =
+				_ddmFormDeserializer.deserialize(builder.build());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			stagingGroup.getGroupId(), JournalArticle.class.getName(),
+			ddmFormDeserializerDeserializeResponse.getDDMForm());
+
+		Class<?> clazz = getClass();
+
+		try (InputStream inputStream = clazz.getResourceAsStream(
+				"/com/liferay/journal/dependencies/liferay.png")) {
+
+			FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
+				String.valueOf(UUID.randomUUID()), stagingGroup.getGroupId(),
+				TestPropsValues.getUserId(), JournalArticle.class.getName(),
+				"image.png", inputStream, ContentTypes.IMAGE_PNG);
+
+			StringBundler sb2 = new StringBundler(15);
+
+			sb2.append("<?xml version=\"1.0\"?>");
+			sb2.append("<root available-locales=\"en_US,es_ES\" ");
+			sb2.append("default-locale=\"en_US\">");
+			sb2.append("<dynamic-element index-type=\"text\" ");
+			sb2.append("instance-id=\"dqqn\" name=\"image\" ");
+			sb2.append("type=\"image\">");
+			sb2.append("<dynamic-content language-id=\"en_US\">");
+			sb2.append("<![CDATA[{\"alt\": \"alt text\",\"groupId\": \"");
+			sb2.append(String.valueOf(stagingGroup.getGroupId()));
+			sb2.append("\",\"uuid\": \"");
+			sb2.append(tempFileEntry.getUuid());
+			sb2.append("\"}]]>");
+			sb2.append("</dynamic-content>");
+			sb2.append("</dynamic-element>");
+			sb2.append("</root>");
+
+			article = JournalTestUtil.addArticleWithXMLContent(
+				stagingGroup.getGroupId(), sb2.toString(),
+				ddmStructure.getStructureKey(), null);
+		}
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, article);
+
+		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
+			StagedModel exportedArticleStagedModel = readExportedStagedModel(
+				article);
+
+			ExportImportThreadLocal.setPortletImportInProcess(true);
+
+			try {
+				StagedModelDataHandlerUtil.importStagedModel(
+					portletDataContext, exportedArticleStagedModel);
+			}
+			finally {
+				ExportImportThreadLocal.setPortletImportInProcess(false);
+			}
+
+			JournalArticle importedArticle =
+				_journalArticleLocalService.fetchJournalArticleByUuidAndGroupId(
+					article.getUuid(), liveGroup.getGroupId());
+
+			Assert.assertNotNull(importedArticle);
+			Assert.assertNotEquals(
+				article.getResourcePrimKey(),
+				importedArticle.getResourcePrimKey());
+
+			DLFolder defaultParentDLFolder = _dlFolderLocalService.getFolder(
+				importedArticle.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				JournalConstants.RESOURCE_NAME);
+
+			DLFolder renamedDLFolder = _dlFolderLocalService.fetchFolder(
+				liveGroup.getGroupId(), defaultParentDLFolder.getFolderId(),
+				String.valueOf(importedArticle.getResourcePrimKey()));
+
+			Assert.assertNotNull(renamedDLFolder);
+
+			DLFolder oldDLFolder = _dlFolderLocalService.fetchFolder(
+				liveGroup.getGroupId(), defaultParentDLFolder.getFolderId(),
+				String.valueOf(article.getResourcePrimKey()));
+
+			Assert.assertNull(oldDLFolder);
+		}
+	}
+
+	@Test
 	public void testStatusByUserIdAndStatusByUserName() throws Exception {
 		initExport();
 
@@ -1541,11 +1668,17 @@ public class JournalArticleStagedModelDataHandlerTest
 	@Inject
 	private AssetEntryLocalService _assetEntryLocalService;
 
+	@Inject(filter = "ddm.form.deserializer.type=json")
+	private DDMFormDeserializer _ddmFormDeserializer;
+
 	@Inject
 	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Inject
+	private DLFolderLocalService _dlFolderLocalService;
 
 	@Inject
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
