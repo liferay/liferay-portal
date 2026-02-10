@@ -7,6 +7,8 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.ClassSubtypeReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
@@ -30,6 +32,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.SettingsTestUtil;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -471,6 +474,7 @@ public class DisplayPageTemplateResourceTest
 		_testPutSiteDisplayPageTemplateContentTypeReference();
 		_testPutSiteDisplayPageTemplateMarkedAsDefault();
 		_testPutSiteDisplayPageTemplateSettings();
+		_testPutSiteDisplayPageTemplateWithSubtype();
 		_testPutSiteDisplayPageTemplateWithThumbnail();
 
 		_testPutSiteDisplayPageTemplate(randomDisplayPageTemplate());
@@ -766,6 +770,15 @@ public class DisplayPageTemplateResourceTest
 		InfoItemFormVariation infoItemFormVariation =
 			infoItemFormVariations.get(0);
 
+		return _getClassSubtypeReference(
+			classSubtypeReferenceClassName,
+			infoItemFormVariation.getExternalReferenceCode());
+	}
+
+	private ClassSubtypeReference _getClassSubtypeReference(
+		String classSubtypeReferenceClassName,
+		String subtypeExternalReferenceCode) {
+
 		return new ClassSubtypeReference() {
 			{
 				setClassName(classSubtypeReferenceClassName);
@@ -773,8 +786,7 @@ public class DisplayPageTemplateResourceTest
 					() -> new ItemExternalReference() {
 						{
 							setExternalReferenceCode(
-								infoItemFormVariation::
-									getExternalReferenceCode);
+								subtypeExternalReferenceCode);
 						}
 					});
 			}
@@ -854,13 +866,21 @@ public class DisplayPageTemplateResourceTest
 			Boolean markedAsDefault)
 		throws Exception {
 
+		return _randomDisplayPageTemplate(
+			_getRandomClassSubtypeReference(), markedAsDefault);
+	}
+
+	private DisplayPageTemplate _randomDisplayPageTemplate(
+			ClassSubtypeReference classSubtypeReference,
+			Boolean markedAsDefault)
+		throws Exception {
+
 		DisplayPageTemplate displayPageTemplate =
 			super.randomDisplayPageTemplate();
 
-		displayPageTemplate.setContentTypeReference(
-			() -> _getRandomClassSubtypeReference());
+		displayPageTemplate.setContentTypeReference(classSubtypeReference);
 		displayPageTemplate.setDisplayPageTemplateSettings(
-			() -> _randomDisplayPageTemplateSettings());
+			this::_randomDisplayPageTemplateSettings);
 		displayPageTemplate.setFriendlyUrlPath_i18n(
 			() -> HashMapBuilder.put(
 				LocaleUtil.toBCP47LanguageId(LocaleUtil.SPAIN),
@@ -1930,6 +1950,56 @@ public class DisplayPageTemplateResourceTest
 				displayPageTemplate.getExternalReferenceCode(),
 				displayPageTemplate),
 			draftContentPageSpecification, publishedContentPageSpecification);
+	}
+
+	private void _testPutSiteDisplayPageTemplateWithSubtype() throws Exception {
+		ClassSubtypeReference classSubtypeReference = _getClassSubtypeReference(
+			JournalArticle.class.getName(), RandomTestUtil.randomString());
+
+		DisplayPageTemplate displayPageTemplate = _randomDisplayPageTemplate(
+			classSubtypeReference, Boolean.FALSE);
+
+		DisplayPageTemplate putDisplayPageTemplate =
+			displayPageTemplateResource.putSiteDisplayPageTemplate(
+				testGroup.getExternalReferenceCode(),
+				displayPageTemplate.getExternalReferenceCode(),
+				displayPageTemplate);
+
+		Assert.assertEquals(
+			classSubtypeReference,
+			putDisplayPageTemplate.getContentTypeReference());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			testGroup.getGroupId(), JournalArticle.class.getName());
+
+		InfoItemFormVariationsProvider<?> infoItemFormVariationsProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormVariationsProvider.class,
+				JournalArticle.class.getName());
+
+		InfoItemFormVariation infoItemFormVariation =
+			infoItemFormVariationsProvider.getInfoItemFormVariation(
+				testGroup.getGroupId(),
+				String.valueOf(ddmStructure.getStructureId()));
+
+		Assert.assertNotNull(infoItemFormVariation);
+
+		classSubtypeReference = _getClassSubtypeReference(
+			JournalArticle.class.getName(),
+			infoItemFormVariation.getExternalReferenceCode());
+
+		displayPageTemplate = _randomDisplayPageTemplate(
+			classSubtypeReference, Boolean.FALSE);
+
+		putDisplayPageTemplate =
+			displayPageTemplateResource.putSiteDisplayPageTemplate(
+				testGroup.getExternalReferenceCode(),
+				displayPageTemplate.getExternalReferenceCode(),
+				displayPageTemplate);
+
+		Assert.assertEquals(
+			classSubtypeReference,
+			putDisplayPageTemplate.getContentTypeReference());
 	}
 
 	private void _testPutSiteDisplayPageTemplateWithThumbnail()
