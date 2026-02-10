@@ -17,7 +17,7 @@ import DragZoneBackground from './DragZoneBackground';
 import FailedFiles from './FailedFiles';
 import {LoadingMessage} from './LoadingMessage';
 import {
-	FaildFile,
+	FailedFile,
 	FileData,
 	UploadMessages,
 	UploadRequestCallback,
@@ -80,7 +80,7 @@ export default function MultipleFileUploader({
 	const [filesToUpload, setFilesToUpload] = useState<FileData[]>(
 		initialFilesToUpload || []
 	);
-	const [failedFiles, setFiledFiles] = useState<FaildFile[]>([]);
+	const [failedFiles, setFailedFiles] = useState<FailedFile[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const {getInputProps, getRootProps, isDragActive} = useDropzone({
@@ -131,39 +131,54 @@ export default function MultipleFileUploader({
 
 		setIsLoading(true);
 
-		const failedFiles: FaildFile[] = [];
+		const failedFiles: FailedFile[] = [];
 		const uploadedFiles: string[] = [];
 
 		Promise.allSettled(
 			filesToUpload.map(async (fileData: FileData) => {
-				const response = await uploadRequest({fileData});
+				try {
+					const response = await uploadRequest({fileData});
 
-				if ('error' in response) {
+					if ('error' in response) {
+						failedFiles.push({
+							...fileData,
+							errorMessage: response.error,
+							failed: true,
+						});
+					}
+					else if ('multipleErrors' in response) {
+						response.errors.map((item) => {
+							failedFiles.push({
+								...item,
+								failed: true,
+							});
+						});
+					}
+					else {
+						uploadedFiles.push(fileData.name);
+					}
+				}
+				catch (error) {
+					let errorMessage = Liferay.Language.get(
+						'there-was-an-unknown-error'
+					);
+
+					if (error instanceof Error) {
+						errorMessage = error.message;
+					}
+
 					failedFiles.push({
 						...fileData,
-						errorMessage: response.error,
+						errorMessage,
 						failed: true,
 					});
 				}
-				else if ('multipleErrors' in response) {
-					response.errors.map((item) => {
-						failedFiles.push({
-							...item,
-							failed: true,
-						});
-					});
-				}
-				else {
-					uploadedFiles.push(fileData.name);
-				}
-
-				return true;
 			})
 		).then(() => {
 			setIsLoading(false);
 
 			setFilesToUpload([]);
-			setFiledFiles(failedFiles);
+			setFailedFiles(failedFiles);
 
 			if (onUploadComplete) {
 				onUploadComplete({
@@ -330,7 +345,7 @@ export default function MultipleFileUploader({
 						<ClayButton.Group spaced>
 							<ClayButton
 								displayType="secondary"
-								onClick={() => setFiledFiles([])}
+								onClick={() => setFailedFiles([])}
 							>
 								{mergedMessages.anotherFileButton}
 							</ClayButton>

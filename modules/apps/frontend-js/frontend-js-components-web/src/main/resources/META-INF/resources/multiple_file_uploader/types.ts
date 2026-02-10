@@ -11,7 +11,7 @@ export interface FileData {
 	size: number;
 }
 
-export interface FaildFile {
+export interface FailedFile {
 	errorMessage: string;
 	failed: boolean;
 	name: string;

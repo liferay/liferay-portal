@@ -27,10 +27,9 @@ export default function FailedFiles({
 			</p>
 
 			{failedFiles.map((fileData) => (
-				<>
+				<React.Fragment key={fileData.name}>
 					<ClayLayout.ContentRow
 						className="align-items-center border-left-0 border-right-0 border-top-0 form-control mt-2 rounded-0"
-						key={fileData.name}
 						padded
 					>
 						<ClayLayout.ContentCol>
@@ -67,7 +66,7 @@ export default function FailedFiles({
 							{fileData.errorMessage}
 						</span>
 					)}
-				</>
+				</React.Fragment>
 			))}
 		</div>
 	);
