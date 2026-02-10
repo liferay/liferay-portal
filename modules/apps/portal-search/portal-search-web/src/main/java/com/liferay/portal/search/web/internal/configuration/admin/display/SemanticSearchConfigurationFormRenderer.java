@@ -11,7 +11,6 @@ import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.CharPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -37,7 +36,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,16 +88,6 @@ public class SemanticSearchConfigurationFormRenderer
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws IOException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920")) {
-			PrintWriter printWriter = httpServletResponse.getWriter();
-
-			printWriter.print(
-				"<div class=\"alert alert-info\">This feature is not " +
-					"available.</div>");
-
-			return;
-		}
 
 		SemanticSearchCompanyConfigurationDisplayContext
 			semanticSearchCompanyConfigurationDisplayContext =

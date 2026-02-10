@@ -6,7 +6,6 @@
 package com.liferay.portal.search.ml.embedding.text.helper;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingDocumentContributor;
@@ -48,10 +47,6 @@ public class TextEmbeddingContentHelper<T extends BaseModel<T>> {
 	}
 
 	public void contribute(Document document) {
-		if (!FeatureFlagManagerUtil.isEnabled(_companyId, "LPS-122920")) {
-			return;
-		}
-
 		for (String languageId :
 				_textEmbeddingDocumentContributor.getLanguageIds(_model)) {
 

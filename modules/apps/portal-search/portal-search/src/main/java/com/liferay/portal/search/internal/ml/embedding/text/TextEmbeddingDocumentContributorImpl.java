@@ -8,7 +8,6 @@ package com.liferay.portal.search.internal.ml.embedding.text;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -139,9 +138,7 @@ public class TextEmbeddingDocumentContributorImpl
 
 		long companyId = _getCompanyId(model);
 
-		if ((companyId == 0) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPS-122920")) {
-
+		if (companyId == 0) {
 			return null;
 		}
 

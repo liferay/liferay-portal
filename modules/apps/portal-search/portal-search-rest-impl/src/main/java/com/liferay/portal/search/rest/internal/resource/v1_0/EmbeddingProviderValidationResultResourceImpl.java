@@ -5,15 +5,12 @@
 
 package com.liferay.portal.search.rest.internal.resource.v1_0;
 
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.ml.embedding.EmbeddingProviderStatus;
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingRetriever;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderValidationResult;
 import com.liferay.portal.search.rest.resource.v1_0.EmbeddingProviderValidationResultResource;
-
-import jakarta.ws.rs.NotFoundException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,10 +31,6 @@ public class EmbeddingProviderValidationResultResourceImpl
 	public EmbeddingProviderValidationResult
 		postEmbeddingValidateProviderConfiguration(
 			EmbeddingProviderConfiguration embeddingProviderConfiguration) {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920")) {
-			throw new NotFoundException();
-		}
 
 		try {
 			EmbeddingProviderStatus embeddingProviderStatus =

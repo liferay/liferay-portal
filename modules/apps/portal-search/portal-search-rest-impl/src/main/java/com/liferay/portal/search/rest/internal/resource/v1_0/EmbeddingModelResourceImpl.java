@@ -6,7 +6,6 @@
 package com.liferay.portal.search.rest.internal.resource.v1_0;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -16,8 +15,6 @@ import com.liferay.portal.search.rest.dto.v1_0.EmbeddingModel;
 import com.liferay.portal.search.rest.resource.v1_0.EmbeddingModelResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-
-import jakarta.ws.rs.NotFoundException;
 
 import java.util.Collections;
 
@@ -38,10 +35,6 @@ public class EmbeddingModelResourceImpl extends BaseEmbeddingModelResourceImpl {
 	public Page<EmbeddingModel> getEmbeddingEmbeddingModelsPage(
 			String provider, String search, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920")) {
-			throw new NotFoundException();
-		}
 
 		if (Validator.isBlank(provider)) {
 			return null;
