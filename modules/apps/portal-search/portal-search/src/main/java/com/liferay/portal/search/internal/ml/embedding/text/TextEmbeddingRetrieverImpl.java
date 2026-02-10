@@ -6,7 +6,6 @@
 package com.liferay.portal.search.internal.ml.embedding.text;
 
 import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -49,10 +48,6 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 	@Override
 	public EmbeddingProviderStatus getEmbeddingProviderStatus(
 		String embeddingProviderConfigurationJSON) {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920")) {
-			return null;
-		}
 
 		EmbeddingProviderConfiguration embeddingProviderConfiguration = null;
 
@@ -106,10 +101,6 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 
 	@Override
 	public EmbeddingProviderStatus[] getEmbeddingProviderStatuses() {
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920")) {
-			return new EmbeddingProviderStatus[0];
-		}
-
 		List<EmbeddingProviderStatus> embeddingProviderStatuses =
 			new ArrayList<>();
 
@@ -127,9 +118,7 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 
 	@Override
 	public Double[] getTextEmbedding(String providerName, String text) {
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-122920") ||
-			Validator.isBlank(text)) {
-
+		if (Validator.isBlank(text)) {
 			return new Double[0];
 		}
 
@@ -174,16 +163,50 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 		String[] disabledProviders = (String[])properties.get(
 			"disabledProviders");
 
-		_addTextEmbeddingProvider(
-			disabledProviders, "huggingFaceInferenceAPI",
-			new HuggingFaceInferenceAPITextEmbeddingProvider());
-		_addTextEmbeddingProvider(
-			disabledProviders, "huggingFaceInferenceEndpoint",
-			new HuggingFaceInferenceEndpointTextEmbeddingProvider());
+		_serviceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class,
+			(companyId, featureFlagKey, enabled) -> {
+				if (enabled) {
+					_addTextEmbeddingProvider(
+						"huggingFaceInferenceAPI",
+						new HuggingFaceInferenceAPITextEmbeddingProvider());
+				}
+				else {
+					_removeTextEmbeddingProvider("huggingFaceInferenceAPI");
+				}
+			},
+			MapUtil.singletonDictionary("feature.flag.key", "LPS-122920"));
+
+		_serviceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class,
+			(companyId, featureFlagKey, enabled) -> {
+				if (enabled) {
+					_addTextEmbeddingProvider(
+						"huggingFaceInferenceEndpoint",
+						new HuggingFaceInferenceEndpointTextEmbeddingProvider());
+				}
+				else {
+					_removeTextEmbeddingProvider(
+						"huggingFaceInferenceEndpoint");
+				}
+			},
+			MapUtil.singletonDictionary("feature.flag.key", "LPS-122920"));
+
 		_addTextEmbeddingProvider(
 			disabledProviders, "openai", new OpenAITextEmbeddingProvider());
-		_addTextEmbeddingProvider(
-			disabledProviders, "txtai", new TXTAITextEmbeddingProvider());
+
+		_serviceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class,
+			(companyId, featureFlagKey, enabled) -> {
+				if (enabled) {
+					_addTextEmbeddingProvider(
+						"txtai", new TXTAITextEmbeddingProvider());
+				}
+				else {
+					_removeTextEmbeddingProvider("txtai");
+				}
+			},
+			MapUtil.singletonDictionary("feature.flag.key", "LPS-122920"));
 
 		_serviceRegistration = bundleContext.registerService(
 			FeatureFlagListener.class,
