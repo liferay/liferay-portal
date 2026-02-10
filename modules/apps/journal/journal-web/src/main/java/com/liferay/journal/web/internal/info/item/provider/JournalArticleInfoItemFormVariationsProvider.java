@@ -154,6 +154,11 @@ public class JournalArticleInfoItemFormVariationsProvider
 		return infoItemFormVariations;
 	}
 
+	@Override
+	public String getSubtypeClassName() {
+		return DDMStructure.class.getName();
+	}
+
 	private long[] _getCurrentAndAncestorSiteGroupIds(long groupId)
 		throws PortalException {
 
