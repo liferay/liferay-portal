@@ -3776,6 +3776,19 @@
 			"UpgradeProcess"
 		],
 		"classStructurePattern": true,
+		"issueKey": "LPD-35263",
+		"methodsToFormat": [
+			{
+				"from": "regex:alter\\(\\s*?(?<tableClass>\\w*),\\s*?new\\s*?AlterColumnType\\(\\s*?(?<columnName>\\w*?)[\\s,]*?(?<newColumnType>\\w*)\\)\\);",
+				"to": "alterColumnType((String)${tableClass}.getField(\\\"TABLE_NAME\\\").get(null), ${columnName}, ${newColumnType});"
+			}
+		]
+	},
+	{
+		"classNames": [
+			"UpgradeProcess"
+		],
+		"classStructurePattern": true,
 		"issueKey": "LPD-35264",
 		"methodsToFormat": [
 			{
