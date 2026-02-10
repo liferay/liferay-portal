@@ -45,10 +45,12 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -418,8 +420,8 @@ public class DisplayPageTemplateResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
-		long classNameId = _portal.getClassNameId(
-			contentTypeReference.getClassName());
+		long classNameId = _getContentTypeReferenceClassNameId(
+			contentTypeReference);
 		String classTypeKey = _getClassTypeKey(contentTypeReference, groupId);
 
 		if ((classNameId != layoutPageTemplateEntry.getClassNameId()) ||
@@ -597,7 +599,7 @@ public class DisplayPageTemplateResourceImpl
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				displayPageTemplate.getExternalReferenceCode(), groupId,
 				layoutPageTemplateCollectionId, displayPageTemplate.getKey(),
-				_portal.getClassNameId(contentTypeReference.getClassName()),
+				_getContentTypeReferenceClassNameId(contentTypeReference),
 				_getClassTypeId(contentTypeReference, groupId),
 				_getClassTypeKey(contentTypeReference, layout.getGroupId()),
 				displayPageTemplate.getName(),
@@ -689,6 +691,21 @@ public class DisplayPageTemplateResourceImpl
 		}
 
 		return itemExternalReference.getExternalReferenceCode();
+	}
+
+	private long _getContentTypeReferenceClassNameId(
+		ClassSubtypeReference classSubtypeReference) {
+
+		ClassName className = _classNameLocalService.fetchClassName(
+			classSubtypeReference.getClassName());
+
+		if ((className != null) && (className.getClassNameId() != 0)) {
+			return className.getClassNameId();
+		}
+
+		LogUtil.logOptionalReference(classSubtypeReference.getClassName());
+
+		return _portal.getClassNameId(classSubtypeReference.getClassName());
 	}
 
 	private long _getLayoutPageTemplateCollectionId(
@@ -846,6 +863,9 @@ public class DisplayPageTemplateResourceImpl
 
 	@Reference
 	private CETManager _cetManager;
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.DisplayPageTemplateDTOConverter)"

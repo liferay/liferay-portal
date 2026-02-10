@@ -43,6 +43,17 @@ public class LogUtil {
 			itemExternalReference.getScope(), scopeId);
 	}
 
+	public static void logOptionalReference(String className) {
+		if (_log.isWarnEnabled()) {
+			StringBundler sb = new StringBundler(2);
+
+			sb.append("Optional reference generated for missing className ");
+			sb.append(className);
+
+			_log.warn(sb.toString());
+		}
+	}
+
 	public static void logOptionalReference(
 		String className, String externalReferenceCode, Scope scope,
 		long scopeId) {
