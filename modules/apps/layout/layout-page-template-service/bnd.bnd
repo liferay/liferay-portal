@@ -5,6 +5,6 @@ Import-Package:\
 	com.liferay.layout.page.template.util.comparator,\
 	\
 	*
-Liferay-Require-SchemaVersion: 5.7.1
+Liferay-Require-SchemaVersion: 5.8.0
 Liferay-Service: true
 -dsannotations-options: inherit
