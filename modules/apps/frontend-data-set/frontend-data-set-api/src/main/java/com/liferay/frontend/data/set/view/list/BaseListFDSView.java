@@ -43,6 +43,10 @@ public abstract class BaseListFDSView implements FDSView {
 		return StringPool.BLANK;
 	}
 
+	public String getTags() {
+		return FDSConstants.LIST;
+	}
+
 	@Override
 	public String getThumbnail() {
 		return FDSConstants.LIST;

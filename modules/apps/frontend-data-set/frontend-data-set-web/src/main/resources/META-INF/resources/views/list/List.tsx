@@ -5,6 +5,7 @@
 
 import {ClayCheckbox, ClayRadio} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
@@ -83,8 +84,10 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 		const {
 			description,
 			image,
+			label,
 			sticker,
 			symbol,
+			tags,
 			title,
 			titleRenderer,
 			tooltip,
@@ -180,6 +183,21 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 						<ClayList.ItemText>
 							{getLocalizedValue(item, description)?.value}
 						</ClayList.ItemText>
+					)}
+
+					{tags && (
+						<div>
+							{item[tags].map((tag, index) => (
+								<ClayLabel
+									className="text-uppercase"
+									displayType={tag.displayType}
+									key={index}
+									large
+								>
+									{(item, tag.label)}
+								</ClayLabel>
+							))}
+						</div>
 					)}
 				</ClayList.ItemField>
 

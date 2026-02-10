@@ -52,6 +52,8 @@ public class ListFDSViewContextContributor
 			).put(
 				"symbol", baseListFDSView.getSymbol()
 			).put(
+				"tags", baseListFDSView.getTags()
+			).put(
 				"title",
 				() -> {
 					String title = baseListFDSView.getTitle();
