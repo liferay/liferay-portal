@@ -20,7 +20,6 @@ import com.liferay.portal.search.configuration.SemanticSearchConfigurationProvid
 import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.ml.embedding.text.TextEmbeddingRetriever;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Locale;
@@ -35,7 +34,6 @@ import org.mockito.Mockito;
 /**
  * @author Petteri Karttunen
  */
-@FeatureFlag("LPS-122920")
 public class TextEmbeddingDocumentContributorTest {
 
 	@ClassRule
