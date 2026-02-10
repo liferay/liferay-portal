@@ -5,6 +5,7 @@
 
 package com.liferay.ai.hub.rest.internal.manager.v1_0;
 
+import com.liferay.ai.hub.rest.dto.v1_0.TagsList;
 import com.liferay.ai.hub.rest.dto.v1_0.TaskDefinition;
 import com.liferay.ai.hub.rest.internal.resource.v1_0.TaskDefinitionResourceImpl;
 import com.liferay.ai.hub.rest.manager.v1_0.TaskDefinitionManager;
@@ -30,6 +31,8 @@ import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -161,6 +164,41 @@ public class TaskDefinitionManagerImpl implements TaskDefinitionManager {
 			dtoConverterContext.getUriInfo());
 	}
 
+	private TagsList[] _getTaskDefinitionTagsList(
+		DTOConverterContext dtoConverterContext,
+		WorkflowDefinition workflowDefinition) {
+
+		List<TagsList> tagList = new ArrayList<>();
+
+		Locale locale = dtoConverterContext.getLocale();
+
+		tagList.add(
+			new TagsList() {
+				{
+					if (workflowDefinition.isActive()) {
+						setDisplayType("success");
+						setLabel(LanguageUtil.get(locale, "active"));
+					}
+					else {
+						setDisplayType("danger");
+						setLabel(LanguageUtil.get(locale, "inactive"));
+					}
+				}
+			});
+
+		if (workflowDefinition.isSystem()) {
+			tagList.add(
+				new TagsList() {
+					{
+						setDisplayType("info");
+						setLabel(LanguageUtil.get(locale, "system"));
+					}
+				});
+		}
+
+		return tagList.toArray(new TagsList[0]);
+	}
+
 	private TaskDefinition _toTaskDefinition(
 			DTOConverterContext dtoConverterContext,
 			WorkflowDefinition workflowDefinition)
@@ -213,6 +251,9 @@ public class TaskDefinitionManagerImpl implements TaskDefinitionManager {
 					workflowDefinition::getExternalReferenceCode);
 				setId(workflowDefinition::getWorkflowDefinitionId);
 				setName(workflowDefinition::getName);
+				setTagsList(
+					_getTaskDefinitionTagsList(
+						dtoConverterContext, workflowDefinition));
 				setTitle(
 					() -> {
 						if (dtoConverterContext == null) {

@@ -26,6 +26,11 @@ public class TaskDefinitionListFDSView extends BaseListFDSView {
 	}
 
 	@Override
+	public String getTags() {
+		return "tagsList";
+	}
+
+	@Override
 	public String getTitle() {
 		return "title";
 	}
