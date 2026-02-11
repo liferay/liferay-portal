@@ -17,13 +17,15 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.service.ThemeLocalService;
+import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.servlet.filters.BasePortalFilter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -54,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = Filter.class
 )
-public class FrontendResourceFilter extends BasePortalFilter {
+public class FrontendResourceFilter extends BaseFilter {
 
 	@Override
 	public boolean isFilterEnabled(
@@ -106,6 +108,11 @@ public class FrontendResourceFilter extends BasePortalFilter {
 	@Deactivate
 	protected void deactivate() {
 		_frontendResourceRequestHandlers.set(Collections.emptyList());
+	}
+
+	@Override
+	protected Log getLog() {
+		return _log;
 	}
 
 	@Override
@@ -202,6 +209,9 @@ public class FrontendResourceFilter extends BasePortalFilter {
 				inputStream, httpServletResponse.getOutputStream(), false);
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FrontendResourceFilter.class);
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
