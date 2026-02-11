@@ -71,6 +71,7 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CopyLayoutThreadLocal;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -1052,7 +1053,18 @@ public class LayoutLocalServiceWrapper
 					originalFragmentEntryLink.getExternalReferenceCode(),
 					targetLayout.getPlid());
 
+			int value = -1;
+
 			if (targetLayoutFragmentEntryLink != null) {
+				value = DateUtil.compareTo(
+					targetLayoutFragmentEntryLink.getModifiedDate(),
+					sourceLayoutFragmentEntryLink.getModifiedDate());
+			}
+
+			if ((targetLayoutFragmentEntryLink != null) && (value >= 0)) {
+				newFragmentEntryLink = targetLayoutFragmentEntryLink;
+			}
+			else if (targetLayoutFragmentEntryLink != null) {
 				targetLayoutFragmentEntryLink.setUserId(user.getUserId());
 				targetLayoutFragmentEntryLink.setUserName(user.getFullName());
 				targetLayoutFragmentEntryLink.setModifiedDate(
