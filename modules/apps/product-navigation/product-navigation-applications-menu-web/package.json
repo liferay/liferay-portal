@@ -2,6 +2,7 @@
 	"dependencies": {
 		"@clayui/badge": "^3.159.0",
 		"@clayui/button": "^3.159.0",
+		"@clayui/card": "^3.159.0",
 		"@clayui/drop-down": "^3.159.0",
 		"@clayui/icon": "^3.159.0",
 		"@clayui/label": "^3.159.0",
