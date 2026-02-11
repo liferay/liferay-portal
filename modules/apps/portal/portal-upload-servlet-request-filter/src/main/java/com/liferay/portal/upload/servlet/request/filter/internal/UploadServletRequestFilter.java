@@ -5,19 +5,21 @@
 
 package com.liferay.portal.upload.servlet.request.filter.internal;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.InvokerPortlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.upload.UploadServletRequest;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.servlet.filters.BasePortalFilter;
 import com.liferay.portal.upload.LiferayInputStream;
 
 import jakarta.servlet.Filter;
@@ -39,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = Filter.class
 )
-public class UploadServletRequestFilter extends BasePortalFilter {
+public class UploadServletRequestFilter extends BaseFilter {
 
 	@Override
 	public boolean isFilterEnabled(
@@ -109,6 +111,14 @@ public class UploadServletRequestFilter extends BasePortalFilter {
 			uploadServletRequest.cleanUp();
 		}
 	}
+
+	@Override
+	protected Log getLog() {
+		return _log;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UploadServletRequestFilter.class);
 
 	@Reference
 	private Portal _portal;
