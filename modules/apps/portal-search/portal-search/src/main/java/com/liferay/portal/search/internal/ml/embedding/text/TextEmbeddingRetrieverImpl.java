@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -28,8 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -46,7 +44,13 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 
 	@Override
 	public List<String> getAvailableProviderNames() {
-		return ListUtil.fromCollection(_textEmbeddingProviders.keySet());
+		List<TextEmbeddingProvider> textEmbeddingProviders =
+			_textEmbeddingProviderServiceTrackerList.toList();
+
+		return textEmbeddingProviders.stream(
+		).map(
+			TextEmbeddingProvider::getProviderName
+		).toList();
 	}
 
 	@Override
@@ -71,7 +75,7 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 
 		try {
 			TextEmbeddingProvider textEmbeddingProvider =
-				_textEmbeddingProviders.get(providerName);
+				_getTextEmbeddingProvider(providerName);
 
 			if (textEmbeddingProvider == null) {
 				return new EmbeddingProviderStatus.
@@ -126,8 +130,8 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 			return new Double[0];
 		}
 
-		TextEmbeddingProvider textEmbeddingProvider =
-			_textEmbeddingProviders.get(providerName);
+		TextEmbeddingProvider textEmbeddingProvider = _getTextEmbeddingProvider(
+			providerName);
 
 		if (textEmbeddingProvider == null) {
 			return new Double[0];
@@ -164,9 +168,9 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 	protected void activate(
 		Map<String, Object> properties, BundleContext bundleContext) {
 
-		_disabledProviderNames.removeAllElements();
-
 		Object disabledProviders = properties.get("disabledProviders");
+
+		_disabledProviderNames.clear();
 
 		if (disabledProviders != null) {
 			Collections.addAll(
@@ -177,26 +181,15 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 			ServiceTrackerListFactory.open(
 				bundleContext, TextEmbeddingProvider.class);
 
-		for (TextEmbeddingProvider textEmbeddingProvider :
-				_textEmbeddingProviderServiceTrackerList.toList()) {
-
-			if (!_disabledProviderNames.contains(
-					textEmbeddingProvider.getProviderName())) {
-
-				_enabledProviders.add(textEmbeddingProvider);
-			}
-		}
-
 		_serviceRegistration = bundleContext.registerService(
 			FeatureFlagListener.class,
-			(companyId, featureFlagKey, enabled) -> {
-			},
+			(companyId, featureFlagKey, enabled) ->
+				_betaTextEmbeddingsEnabled = true,
 			MapUtil.singletonDictionary("feature.flag.key", "LPD-31789"));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_textEmbeddingProviders.clear();
 		_serviceRegistration.unregister();
 	}
 
@@ -229,6 +222,37 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 			textEmbeddingProviderConfigurationJSONs();
 	}
 
+	private TextEmbeddingProvider _getTextEmbeddingProvider(
+		String providerName) {
+
+		if ((null == providerName) ||
+			_disabledProviderNames.contains(providerName)) {
+
+			return null;
+		}
+
+		if (!_betaTextEmbeddingsEnabled &&
+			Objects.equals(providerName, "OpenAI")) {
+
+			return null;
+		}
+
+		List<TextEmbeddingProvider> textEmbeddingProviders =
+			_textEmbeddingProviderServiceTrackerList.toList();
+
+		for (TextEmbeddingProvider textEmbeddingProvider :
+				textEmbeddingProviders) {
+
+			if (Objects.equals(
+					textEmbeddingProvider.getProviderName(), providerName)) {
+
+				return textEmbeddingProvider;
+			}
+		}
+
+		return null;
+	}
+
 	private String _getTextExcerpt(
 		EmbeddingProviderConfiguration embeddingProviderConfiguration,
 		String text) {
@@ -256,17 +280,14 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 	private static final Log _log = LogFactoryUtil.getLog(
 		TextEmbeddingRetrieverImpl.class);
 
-	private final Vector<String> _disabledProviderNames = new Vector<>();
-	private final ArrayList<TextEmbeddingProvider> _enabledProviders =
-		new ArrayList<>();
+	private volatile boolean _betaTextEmbeddingsEnabled;
+	private final List<String> _disabledProviderNames = new ArrayList<>();
 
 	@Reference
 	private SemanticSearchConfigurationProvider
 		_semanticSearchConfigurationProvider;
 
 	private ServiceRegistration<?> _serviceRegistration;
-	private final Map<String, TextEmbeddingProvider> _textEmbeddingProviders =
-		new ConcurrentHashMap<>();
 	private ServiceTrackerList<TextEmbeddingProvider>
 		_textEmbeddingProviderServiceTrackerList;
 
