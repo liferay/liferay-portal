@@ -9,7 +9,7 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.search.internal.ml.embedding.text.util.ConfigurationValidationUtil;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
@@ -30,9 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Petteri Karttunen
  */
+@Component(
+	property = "provider.name=VertexAI", service = TextEmbeddingProvider.class
+)
 public class VertexAITextEmbeddingProvider implements TextEmbeddingProvider {
 
 	@Override
@@ -92,8 +97,8 @@ public class VertexAITextEmbeddingProvider implements TextEmbeddingProvider {
 		Map<String, Object> attributes, String text) {
 
 		try {
-			JSONObject responseJSONObject = JSONFactoryUtil.createJSONObject(
-				HttpUtil.URLtoString(_getOptions(attributes, text)));
+			JSONObject responseJSONObject = _jsonFactory.createJSONObject(
+				_http.URLtoString(_getOptions(attributes, text)));
 
 			JSONArray predictionsJSONArray = responseJSONObject.getJSONArray(
 				"predictions");
@@ -165,7 +170,7 @@ public class VertexAITextEmbeddingProvider implements TextEmbeddingProvider {
 		return String.valueOf(
 			JSONUtil.put(
 				"instances",
-				JSONFactoryUtil.createJSONArray(
+				_jsonFactory.createJSONArray(
 				).put(
 					JSONUtil.put("content", text)
 				)
@@ -188,5 +193,11 @@ public class VertexAITextEmbeddingProvider implements TextEmbeddingProvider {
 				add("print-access-token");
 			}
 		};
+
+	@Reference
+	private Http _http;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }

@@ -8,14 +8,13 @@ package com.liferay.portal.search.internal.ml.embedding.text;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.search.internal.ml.embedding.text.util.ConfigurationValidationUtil;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
@@ -23,9 +22,16 @@ import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Petteri Karttunen
  */
+@Component(
+	property = "provider.name=HuggingFaceInferenceEndpoint",
+	service = TextEmbeddingProvider.class
+)
 public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 	implements TextEmbeddingProvider {
 
@@ -50,7 +56,7 @@ public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 		Map<String, Object> attributes, String text) {
 
 		try {
-			String responseJSON = HttpUtil.URLtoString(
+			String responseJSON = _http.URLtoString(
 				_getOptions(attributes, text));
 
 			if (_log.isDebugEnabled()) {
@@ -61,8 +67,7 @@ public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 				throw new IllegalArgumentException(responseJSON);
 			}
 
-			JSONArray jsonArray1 = JSONFactoryUtil.createJSONArray(
-				responseJSON);
+			JSONArray jsonArray1 = _jsonFactory.createJSONArray(responseJSON);
 
 			JSONArray jsonArray2 = jsonArray1.getJSONArray(0);
 
@@ -103,5 +108,11 @@ public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		HuggingFaceInferenceEndpointTextEmbeddingProvider.class);
+
+	@Reference
+	private Http _http;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }

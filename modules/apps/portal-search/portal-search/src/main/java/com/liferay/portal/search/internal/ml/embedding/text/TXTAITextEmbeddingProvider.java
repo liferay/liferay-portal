@@ -8,11 +8,10 @@ package com.liferay.portal.search.internal.ml.embedding.text;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
@@ -22,9 +21,15 @@ import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Petteri Karttunen
  */
+@Component(
+	property = "provider.name=TxtAIText", service = TextEmbeddingProvider.class
+)
 public class TXTAITextEmbeddingProvider implements TextEmbeddingProvider {
 
 	@Override
@@ -48,7 +53,7 @@ public class TXTAITextEmbeddingProvider implements TextEmbeddingProvider {
 		Map<String, Object> attributes, String text) {
 
 		try {
-			String responseJSON = HttpUtil.URLtoString(
+			String responseJSON = _http.URLtoString(
 				_getOptions(attributes, text));
 
 			if (!JSONUtil.isJSONArray(responseJSON)) {
@@ -56,7 +61,7 @@ public class TXTAITextEmbeddingProvider implements TextEmbeddingProvider {
 			}
 
 			List<Double> list = JSONUtil.toDoubleList(
-				JSONFactoryUtil.createJSONArray(responseJSON));
+				_jsonFactory.createJSONArray(responseJSON));
 
 			return list.toArray(new Double[0]);
 		}
@@ -96,5 +101,11 @@ public class TXTAITextEmbeddingProvider implements TextEmbeddingProvider {
 
 		return options;
 	}
+
+	@Reference
+	private Http _http;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }

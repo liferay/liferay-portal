@@ -7,8 +7,6 @@ package com.liferay.portal.search.internal.ml.embedding.text;
 
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -16,7 +14,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.search.internal.ml.embedding.text.util.ConfigurationValidationUtil;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
@@ -26,9 +23,16 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Petteri Karttunen
  */
+@Component(
+	property = "provider.name=HuggingFaceInferenceAPI",
+	service = TextEmbeddingProvider.class
+)
 public class HuggingFaceInferenceAPITextEmbeddingProvider
 	implements TextEmbeddingProvider {
 
@@ -55,7 +59,7 @@ public class HuggingFaceInferenceAPITextEmbeddingProvider
 		try {
 			Http.Options options = _getOptions(attributes, text);
 
-			String responseJSON = HttpUtil.URLtoString(options);
+			String responseJSON = _http.URLtoString(options);
 
 			Http.Response response = options.getResponse();
 
@@ -66,7 +70,7 @@ public class HuggingFaceInferenceAPITextEmbeddingProvider
 				options.setTimeout(
 					MapUtil.getInteger(attributes, "modelTimeout", 30) * 1000);
 
-				responseJSON = HttpUtil.URLtoString(options);
+				responseJSON = _http.URLtoString(options);
 			}
 
 			if (_log.isDebugEnabled()) {
@@ -76,8 +80,6 @@ public class HuggingFaceInferenceAPITextEmbeddingProvider
 			if (!JSONUtil.isJSONArray(responseJSON)) {
 				throw new IllegalArgumentException(responseJSON);
 			}
-
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(responseJSON);
 
 			List<Double> list = JSONUtil.toDoubleList(jsonArray);
 
@@ -114,5 +116,8 @@ public class HuggingFaceInferenceAPITextEmbeddingProvider
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		HuggingFaceInferenceAPITextEmbeddingProvider.class);
+
+	@Reference
+	private Http _http;
 
 }
