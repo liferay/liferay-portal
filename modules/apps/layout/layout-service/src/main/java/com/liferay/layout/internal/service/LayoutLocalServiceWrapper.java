@@ -455,11 +455,15 @@ public class LayoutLocalServiceWrapper
 				_segmentsExperienceLocalService.fetchSegmentsExperience(
 					entry.getKey());
 
-			targetSegmentsExperience.setPriority(
-				sourceSegmentsExperience.getPriority());
+			if (targetSegmentsExperience.getPriority() !=
+					sourceSegmentsExperience.getPriority()) {
 
-			_segmentsExperienceLocalService.updateSegmentsExperience(
-				targetSegmentsExperience);
+				targetSegmentsExperience.setPriority(
+					sourceSegmentsExperience.getPriority());
+
+				_segmentsExperienceLocalService.updateSegmentsExperience(
+					targetSegmentsExperience);
+			}
 		}
 
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLinks(
