@@ -11,13 +11,8 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
