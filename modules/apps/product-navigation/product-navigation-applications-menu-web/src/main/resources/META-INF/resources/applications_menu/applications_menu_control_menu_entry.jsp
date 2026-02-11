@@ -5,7 +5,7 @@
  */
 --%>
 
-<%@ include file="/applications_menu/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <li class="control-menu-nav-item control-menu-nav-item-separator">
 	<%@ include file="/applications_menu/applications_menu.jspf" %>

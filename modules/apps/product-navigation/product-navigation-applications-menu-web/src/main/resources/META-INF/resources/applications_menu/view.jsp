@@ -5,6 +5,6 @@
  */
 --%>
 
-<%@ include file="/applications_menu/init.jsp" %>
+<%@ include file="/init.jsp" %>
 
 <%@ include file="/applications_menu/applications_menu.jspf" %>
