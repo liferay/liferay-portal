@@ -32,6 +32,7 @@ const HomePageLayout = ({
 	return (
 		<ClayLayout.ContainerFluid
 			className="px-2 px-md-3 px-sm-2 px-xl-4"
+			size="lg"
 			view
 		>
 			<ClayLayout.Row className="my-5">
