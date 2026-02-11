@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.show-portlet-access-denied=false",
 		"com.liferay.portlet.system=true",
 		"com.liferay.portlet.use-default-template=false",
-		"jakarta.portlet.display-name=Control Panel - Home",
+		"jakarta.portlet.display-name=Home",
 		"jakarta.portlet.init-param.view-template=/homes/control_panel_home.jsp",
 		"jakarta.portlet.name=" + ControlPanelHomePortletKeys.CONTROL_PANEL_HOME,
 		"jakarta.portlet.resource-bundle=content.Language",
