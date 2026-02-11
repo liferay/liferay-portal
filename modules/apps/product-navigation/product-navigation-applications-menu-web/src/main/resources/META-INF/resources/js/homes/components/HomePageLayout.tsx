@@ -14,7 +14,7 @@ type Props = {
 	children: React.ReactNode;
 	logo: string;
 	title: string;
-	titleContralized?: boolean;
+	titleCentralized?: boolean;
 };
 
 const LARGE_BREAKPOINT = 992;
@@ -23,7 +23,7 @@ const HomePageLayout = ({
 	children,
 	logo,
 	title,
-	titleContralized = false,
+	titleCentralized = false,
 }: Props) => {
 	const {width} = useWindowSize();
 
@@ -42,15 +42,15 @@ const HomePageLayout = ({
 							'font-family-source-sans-pro font-weight-bold text-truncate',
 							{
 								'd-flex align-items-center text-left':
-									!titleContralized,
-								'text-center': titleContralized,
+									!titleCentralized,
+								'text-center': titleCentralized,
 							}
 						)}
 					>
 						<div
 							className={classNames({
-								'mb-3': titleContralized,
-								'mr-3': !titleContralized,
+								'mb-3': titleCentralized,
+								'mr-3': !titleCentralized,
 							})}
 						>
 							<ClaySticker
