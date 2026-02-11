@@ -10,6 +10,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:application-list:application-list-taglib")
+	compileOnly project(":apps:commerce:commerce-application-list")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
