@@ -32,6 +32,9 @@ public interface PanelCategoryKeys {
 	public static final String APPLICATIONS_MENU_APPLICATIONS_CUSTOM_APPS =
 		"applications_menu.applications.custom.apps";
 
+	public static final String APPLICATIONS_MENU_APPLICATIONS_HOME =
+		"applications_menu.applications.home";
+
 	public static final String APPLICATIONS_MENU_APPLICATIONS_PUBLICATIONS =
 		"applications_menu.applications.publications";
 
