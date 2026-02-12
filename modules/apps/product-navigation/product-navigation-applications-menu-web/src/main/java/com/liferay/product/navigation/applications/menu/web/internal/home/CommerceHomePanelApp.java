@@ -18,7 +18,7 @@ import java.util.Locale;
 
 
 /**
- * @author Iván Zaera Avellón
+ * @author Mario Leandro
  */
 @Component(
 	property = {

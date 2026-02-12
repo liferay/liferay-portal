@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Thiago Buarque
+ * @author Mario Leandro
  */
 public class HomeDisplayContext {
 

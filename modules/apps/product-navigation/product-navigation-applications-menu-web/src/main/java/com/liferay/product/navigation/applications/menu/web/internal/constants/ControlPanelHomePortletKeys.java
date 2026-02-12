@@ -6,7 +6,7 @@
 package com.liferay.product.navigation.applications.menu.web.internal.constants;
 
 /**
- * @author Iván Zaera
+ * @author Mario Leandro
  */
 public class ControlPanelHomePortletKeys {
 

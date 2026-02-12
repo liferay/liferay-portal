@@ -13,7 +13,7 @@ import jakarta.portlet.Portlet;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Eudaldo Alonso
+ * @author Mario Leandro
  */
 @Component(
 	property = {
