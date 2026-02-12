@@ -17,19 +17,23 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
-		"com.liferay.portlet.instanceable=false",
+		"com.liferay.portlet.header-portlet-css=/admin/css/main.css",
 		"com.liferay.portlet.preferences-owned-by-group=true",
+		"com.liferay.portlet.preferences-unique-per-layout=false",
 		"com.liferay.portlet.private-request-attributes=false",
-		"com.liferay.portlet.show-portlet-access-denied=false",
-		"com.liferay.portlet.system=true",
-		"com.liferay.portlet.use-default-template=false",
+		"com.liferay.portlet.private-session-attributes=false",
+		"com.liferay.portlet.scopeable=true",
+		"com.liferay.portlet.use-default-template=true",
+		"jakarta.portlet.expiration-cache=0",
+		"jakarta.portlet.init-param.mvc-command-names-default-views=/admin/view",
+		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
+		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.display-name=Home",
 		"jakarta.portlet.init-param.view-template=/homes/commerce_home.jsp",
 		"jakarta.portlet.name=" + CommerceHomePortletKeys.COMMERCE_HOME,
 		"jakarta.portlet.resource-bundle=content.Language",
-		"jakarta.portlet.security-role-ref=power-user,user",
+		"jakarta.portlet.security-role-ref=administrator",
 		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
