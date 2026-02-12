@@ -6,5 +6,6 @@ Export-Package:\
 	com.liferay.portal.search.rest.dto.v1_0,\
 	com.liferay.portal.search.rest.pagination,\
 	com.liferay.portal.search.rest.resource.v1_0,\
+	com.liferay.portal.search.rest.text.embeddings.configuration,\
 	com.liferay.portal.search.rest.util
 -fixupmessages: Classes found in the wrong directory: ...;is:=ignore
