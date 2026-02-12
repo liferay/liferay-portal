@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
 import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
 import com.liferay.portal.search.configuration.SemanticSearchConfiguration;
-import com.liferay.portal.search.internal.ml.embedding.text.TextEmbeddingProvider;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
+import com.liferay.portal.search.rest.text.embeddings.configuration.TextEmbeddingProvider;
 
 /**
  * @author Petteri Karttunen
