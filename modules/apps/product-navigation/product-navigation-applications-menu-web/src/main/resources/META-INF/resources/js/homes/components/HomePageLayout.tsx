@@ -29,6 +29,14 @@ const HomePageLayout = ({
 
 	const isLargeBreakpoint = width >= LARGE_BREAKPOINT;
 
+	const imageStyle = React.useMemo(
+		() => ({
+			height: isLargeBreakpoint ? '40px' : '22px',
+			width: isLargeBreakpoint ? '40px' : '22px',
+		}),
+		[isLargeBreakpoint]
+	);
+
 	return (
 		<ClayLayout.ContainerFluid
 			className="px-2 px-md-3 px-sm-2 px-xl-4"
@@ -60,14 +68,7 @@ const HomePageLayout = ({
 								<ClaySticker.Image
 									alt={`${title} logo`}
 									src={logo}
-									style={{
-										height: isLargeBreakpoint
-											? '40px'
-											: '22px',
-										width: isLargeBreakpoint
-											? '40px'
-											: '22px',
-									}}
+									style={imageStyle}
 								/>
 							</ClaySticker>
 						</div>
