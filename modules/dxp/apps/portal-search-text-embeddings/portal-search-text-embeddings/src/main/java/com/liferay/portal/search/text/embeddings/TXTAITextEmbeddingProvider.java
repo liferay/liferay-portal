@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.search.internal.ml.embedding.text;
+package com.liferay.portal.search.text.embeddings;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.HttpHeaders;
-import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.search.internal.ml.embedding.text.util.ConfigurationValidationUtil;
+import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.ml.embedding.util.ConfigurationValidationUtil;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
+import com.liferay.portal.search.rest.text.embeddings.configuration.TextEmbeddingProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -28,12 +28,8 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Petteri Karttunen
  */
-@Component(
-	property = "provider.name=HuggingFaceInferenceEndpoint",
-	service = TextEmbeddingProvider.class
-)
-public class HuggingFaceInferenceEndpointTextEmbeddingProvider
-	implements TextEmbeddingProvider {
+@Component(service = TextEmbeddingProvider.class)
+public class TXTAITextEmbeddingProvider implements TextEmbeddingProvider {
 
 	@Override
 	public Double[] getEmbedding(
@@ -44,12 +40,17 @@ public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 			(Map<String, Object>)embeddingProviderConfiguration.getAttributes();
 
 		if (!ConfigurationValidationUtil.validateAttributes(
-				attributes, new String[] {"accessToken", "hostAddress"})) {
+				attributes, new String[] {"hostAddress"})) {
 
 			return new Double[0];
 		}
 
 		return _getEmbedding(attributes, text);
+	}
+
+	@Override
+	public String getProviderName() {
+		return _PROVIDE_NAME;
 	}
 
 	private Double[] _getEmbedding(
@@ -59,23 +60,12 @@ public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 			String responseJSON = _http.URLtoString(
 				_getOptions(attributes, text));
 
-			if (_log.isDebugEnabled()) {
-				_log.debug("Response: " + responseJSON);
-			}
-
 			if (!JSONUtil.isJSONArray(responseJSON)) {
 				throw new IllegalArgumentException(responseJSON);
 			}
 
-			JSONArray jsonArray1 = _jsonFactory.createJSONArray(responseJSON);
-
-			JSONArray jsonArray2 = jsonArray1.getJSONArray(0);
-
-			if (jsonArray2 == null) {
-				throw new IllegalArgumentException(responseJSON);
-			}
-
-			List<Double> list = JSONUtil.toDoubleList(jsonArray2);
+			List<Double> list = JSONUtil.toDoubleList(
+				_jsonFactory.createJSONArray(responseJSON));
 
 			return list.toArray(new Double[0]);
 		}
@@ -84,30 +74,39 @@ public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 		}
 	}
 
+	private String _getLocation(String hostAddress, String text) {
+		if (!hostAddress.endsWith("/")) {
+			hostAddress += "/";
+		}
+
+		return StringBundler.concat(
+			hostAddress, "transform?text=", URLCodec.encodeURL(text, false));
+	}
+
 	private Http.Options _getOptions(
 		Map<String, Object> attributes, String text) {
 
 		Http.Options options = new Http.Options();
 
-		options.addHeader(
-			HttpHeaders.AUTHORIZATION,
-			"Bearer " + MapUtil.getString(attributes, "accessToken"));
-		options.addHeader(
-			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-		options.setBody(
-			JSONUtil.put(
-				"inputs", text
-			).toString(),
-			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
-		options.setCookieSpec(Http.CookieSpec.STANDARD);
-		options.setLocation(MapUtil.getString(attributes, "hostAddress"));
-		options.setPost(true);
+		String hostAddress = MapUtil.getString(attributes, "hostAddress");
+
+		String basicAuthUsername = MapUtil.getString(
+			attributes, "basicAuthUsername");
+
+		if (!Validator.isBlank(basicAuthUsername)) {
+			options.setAuth(
+				HttpComponentsUtil.getDomain(hostAddress), -1, null,
+				basicAuthUsername,
+				MapUtil.getString(
+					attributes, "basicAuthPassword", StringPool.BLANK));
+		}
+
+		options.setLocation(_getLocation(hostAddress, text));
 
 		return options;
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		HuggingFaceInferenceEndpointTextEmbeddingProvider.class);
+	private static final String _PROVIDE_NAME = "TxtAIText";
 
 	@Reference
 	private Http _http;

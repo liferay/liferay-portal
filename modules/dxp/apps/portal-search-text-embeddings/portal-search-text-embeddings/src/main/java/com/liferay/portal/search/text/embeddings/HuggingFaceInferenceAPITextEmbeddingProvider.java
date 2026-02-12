@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.search.internal.ml.embedding.text;
+package com.liferay.portal.search.text.embeddings;
 
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
@@ -17,8 +17,11 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.search.internal.ml.embedding.text.util.ConfigurationValidationUtil;
+import com.liferay.portal.search.ml.embedding.util.ConfigurationValidationUtil;
 import com.liferay.portal.search.rest.dto.v1_0.EmbeddingProviderConfiguration;
+import com.liferay.portal.search.rest.text.embeddings.configuration.TextEmbeddingProvider;
+
+import java.net.HttpURLConnection;
 
 import java.util.List;
 import java.util.Map;
@@ -29,10 +32,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Petteri Karttunen
  */
-@Component(
-	property = "provider.name=OpenAI", service = TextEmbeddingProvider.class
-)
-public class OpenAITextEmbeddingProvider implements TextEmbeddingProvider {
+@Component(service = TextEmbeddingProvider.class)
+public class HuggingFaceInferenceAPITextEmbeddingProvider
+	implements TextEmbeddingProvider {
 
 	@Override
 	public Double[] getEmbedding(
@@ -43,7 +45,7 @@ public class OpenAITextEmbeddingProvider implements TextEmbeddingProvider {
 			(Map<String, Object>)embeddingProviderConfiguration.getAttributes();
 
 		if (!ConfigurationValidationUtil.validateAttributes(
-				attributes, new String[] {"apiKey", "model"})) {
+				attributes, new String[] {"accessToken", "model"})) {
 
 			return new Double[0];
 		}
@@ -51,31 +53,50 @@ public class OpenAITextEmbeddingProvider implements TextEmbeddingProvider {
 		return _getEmbedding(attributes, text);
 	}
 
+	@Override
+	public String getProviderName() {
+		return _PROVIDE_NAME;
+	}
+
 	private Double[] _getEmbedding(
 		Map<String, Object> attributes, String text) {
 
 		try {
-			JSONObject responseJSONObject = _jsonFactory.createJSONObject(
-				_http.URLtoString(_getOptions(attributes, text)));
+			Http.Options options = _getOptions(attributes, text);
 
-			JSONArray dataJSONArray = responseJSONObject.getJSONArray("data");
+			String responseJSON = _http.URLtoString(options);
 
-			if (JSONUtil.isEmpty(dataJSONArray)) {
-				throw new IllegalArgumentException(
-					responseJSONObject.toString());
+			Http.Response response = options.getResponse();
+
+			if (response.getResponseCode() ==
+					HttpURLConnection.HTTP_UNAVAILABLE) {
+
+				options.addHeader("x-wait-for-model", "true");
+				options.setTimeout(
+					MapUtil.getInteger(attributes, "modelTimeout", 30) * 1000);
+
+				responseJSON = _http.URLtoString(options);
 			}
-
-			JSONObject dataJSONObject = dataJSONArray.getJSONObject(0);
-
-			List<Double> embedding = JSONUtil.toDoubleList(
-				dataJSONObject.getJSONArray("embedding"));
 
 			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Usage: " + responseJSONObject.getJSONObject("usage"));
+				_log.debug("Response: " + responseJSON);
 			}
 
-			return embedding.toArray(new Double[0]);
+			if (!JSONUtil.isJSONArray(responseJSON)) {
+				throw new IllegalArgumentException(responseJSON);
+			}
+
+			JSONArray jsonArray1 = _jsonFactory.createJSONArray(responseJSON);
+
+			JSONArray jsonArray2 = jsonArray1.getJSONArray(0);
+
+			if (jsonArray2 == null) {
+				throw new IllegalArgumentException(responseJSON);
+			}
+
+			List<Double> list = JSONUtil.toDoubleList(jsonArray2);
+
+			return list.toArray(new Double[0]);
 		}
 		catch (Exception exception) {
 			return ReflectionUtil.throwException(exception);
@@ -87,45 +108,29 @@ public class OpenAITextEmbeddingProvider implements TextEmbeddingProvider {
 
 		Http.Options options = new Http.Options();
 
+		JSONObject jsonObject = JSONUtil.put("inputs", text);
+
 		options.addHeader(
 			HttpHeaders.AUTHORIZATION,
-			"Bearer " + MapUtil.getString(attributes, "apiKey"));
+			"Bearer " + MapUtil.getString(attributes, "accessToken"));
 		options.addHeader(
 			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
 		options.setBody(
-			_getRequestBody(attributes, text), ContentTypes.APPLICATION_JSON,
+			jsonObject.toString(), ContentTypes.APPLICATION_JSON,
 			StringPool.UTF8);
 		options.setCookieSpec(Http.CookieSpec.STANDARD);
-		options.setLocation("https://api.openai.com/v1/embeddings");
+		options.setLocation(
+			"https://router.huggingface.co/hf-inference/models/" +
+				MapUtil.getString(attributes, "model"));
 		options.setPost(true);
 
 		return options;
 	}
 
-	private String _getRequestBody(
-		Map<String, Object> attributes, String text) {
-
-		JSONObject requestBodyJSONObject = JSONUtil.put(
-			"input", text
-		).put(
-			"model", MapUtil.getString(attributes, "model")
-		);
-
-		if (attributes.containsKey("dimensions")) {
-			requestBodyJSONObject.put(
-				"dimensions", MapUtil.getInteger(attributes, "dimensions"));
-		}
-
-		if (attributes.containsKey("user")) {
-			requestBodyJSONObject.put(
-				"user", MapUtil.getString(attributes, "user"));
-		}
-
-		return requestBodyJSONObject.toString();
-	}
+	private static final String _PROVIDE_NAME = "HuggingFaceInferenceAPI";
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		OpenAITextEmbeddingProvider.class);
+		HuggingFaceInferenceAPITextEmbeddingProvider.class);
 
 	@Reference
 	private Http _http;
