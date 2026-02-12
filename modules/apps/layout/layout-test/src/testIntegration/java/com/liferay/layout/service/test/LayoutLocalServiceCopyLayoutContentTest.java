@@ -14,7 +14,10 @@ import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTEntryLocalService;
+import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
@@ -688,6 +691,118 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			}
 			finally {
 				_ctCollectionLocalService.deleteCTCollection(ctCollection);
+			}
+		}
+	}
+
+	@Test
+	public void testCopyLayoutContentWithMultiplePublications()
+		throws Exception {
+
+		CTCollection ctCollection1 = null;
+		CTCollection ctCollection2 = null;
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CTSettingsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			Assert.assertNotNull(draftLayout);
+
+			String content1 = RandomTestUtil.randomString();
+
+			_layoutLocalService.copyLayoutContent(
+				_addFragmentEntryLinkAndGetLayout(content1, draftLayout),
+				layout);
+
+			_assertLayoutContent(
+				content1, _portal.getSiteDefaultLocale(_group), 1,
+				layout.getPlid());
+
+			ctCollection1 = _ctCollectionLocalService.addCTCollection(
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), 0, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString());
+
+			try (SafeCloseable safeCloseable =
+					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+						ctCollection1.getCtCollectionId())) {
+
+				String content2 = RandomTestUtil.randomString();
+
+				_layoutLocalService.copyLayoutContent(
+					_addFragmentEntryLinkAndGetLayout(content2, draftLayout),
+					layout);
+
+				String layoutContent = _getLayoutContent(
+					layout, _portal.getSiteDefaultLocale(_group));
+
+				Assert.assertTrue(layoutContent.contains(content2));
+
+				List<CTEntry> ctEntries = _ctEntryLocalService.getCTEntries(
+					ctCollection1.getCtCollectionId(),
+					_portal.getClassNameId(FragmentEntryLink.class));
+
+				Assert.assertEquals(ctEntries.toString(), 2, ctEntries.size());
+			}
+
+			ctCollection2 = _ctCollectionLocalService.addCTCollection(
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), 0, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString());
+
+			LayoutStructure layoutStructure =
+				_layoutStructureProvider.getLayoutStructure(
+					draftLayout.getPlid(),
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(
+							draftLayout.getPlid()));
+
+			Map<Long, LayoutStructureItem> layoutStructureItemsMap =
+				layoutStructure.getFragmentLayoutStructureItems();
+
+			List<LayoutStructureItem> layoutStructureItems =
+				ListUtil.fromCollection(layoutStructureItemsMap.values());
+
+			try (SafeCloseable safeCloseable =
+					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+						ctCollection2.getCtCollectionId())) {
+
+				LayoutStructureItem layoutStructureItem =
+					layoutStructureItems.get(0);
+
+				ContentLayoutTestUtil.markItemForDeletionFromLayout(
+					layoutStructureItem.getItemId(), draftLayout,
+					StringPool.BLANK);
+
+				_layoutLocalService.copyLayoutContent(draftLayout, layout);
+
+				_assertLayoutContent(
+					StringPool.BLANK, _portal.getSiteDefaultLocale(_group), 0,
+					layout.getPlid());
+			}
+
+			_ctProcessLocalService.addCTProcess(
+				TestPropsValues.getUserId(), ctCollection2.getCtCollectionId());
+
+			_ctProcessLocalService.addCTProcess(
+				TestPropsValues.getUserId(), ctCollection1.getCtCollectionId());
+		}
+		finally {
+			if (ctCollection1 != null) {
+				_ctCollectionLocalService.deleteCTCollection(ctCollection1);
+			}
+
+			if (ctCollection2 != null) {
+				_ctCollectionLocalService.deleteCTCollection(ctCollection2);
 			}
 		}
 	}
@@ -1625,6 +1740,12 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTEntryLocalService _ctEntryLocalService;
+
+	@Inject
+	private CTProcessLocalService _ctProcessLocalService;
 
 	@Inject
 	private EntityCache _entityCache;
