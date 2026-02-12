@@ -140,9 +140,24 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 	}
 
 	@Override
+	public List<SegmentsEntry> getSegmentsEntries(
+		long groupId, String source, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryLocalService.getSegmentsEntries(
+			groupId, source, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getSegmentsEntriesCount(long groupId) {
 		return segmentsEntryPersistence.filterCountByGroupId(
 			_portal.getCurrentAndAncestorSiteGroupIds(groupId));
+	}
+
+	@Override
+	public int getSegmentsEntriesCount(long groupId, String source) {
+		return segmentsEntryPersistence.filterCountByG_SRC(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), source);
 	}
 
 	@Override
