@@ -7,6 +7,7 @@ package com.liferay.portal.search.elasticsearch8.internal.configuration;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Bryan Engler
@@ -305,5 +307,10 @@ public class ElasticsearchConfigurationWrapper
 	private volatile ElasticsearchConfiguration
 		_propsElasticsearchConfiguration;
 	private volatile Map<String, Object> _propsMap = Collections.emptyMap();
+
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.portal.search.elasticsearch8.impl)(release.schema.version>=1.0.0))"
+	)
+	private Release _release;
 
 }

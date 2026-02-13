@@ -7,5 +7,6 @@
 		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.index.CompanyIndexHelper" />
 		<Logger level="WARN" name="com.liferay.portal.search.elasticsearch8.internal.index.MappingsHelperImpl" />
 		<Logger level="INFO" name="com.liferay.portal.search.elasticsearch8.internal.sidecar" />
+		<Logger level="INFO" name="com.liferay.portal.search.elasticsearch8.internal.upgrade.v1_0_0.ElasticsearchConfigurationUpgradeProcess" />
 	</Loggers>
 </Configuration>
