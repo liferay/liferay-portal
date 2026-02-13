@@ -104,3 +104,57 @@ test(
 		).toHaveValue(`${price}.00`);
 	}
 );
+
+test(
+	'Verify base price lists do not have UI option for schedule',
+	{tag: ['@LPD-78018']},
+	async ({
+		apiHelpers,
+		commerceAdminPriceListDetailsPage,
+		commerceAdminPriceListsPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: 'Catalog',
+			});
+
+		const currencies =
+			await apiHelpers.headlessCommerceAdminCatalog.getCurrenciesPage(
+				'USD'
+			);
+
+		const priceList =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: currencies.items[0].code,
+				name: 'Price List' + getRandomInt(),
+				type: 'price-list',
+			});
+
+		await commerceAdminPriceListsPage.goto();
+
+		await (
+			await commerceAdminPriceListsPage.tableRowLink({
+				colIndex: 0,
+				rowValue: 'Catalog Base Price List',
+			})
+		).click();
+
+		await expect(
+			commerceAdminPriceListDetailsPage.scheduleLabel
+		).not.toBeVisible();
+
+		await commerceAdminPriceListsPage.goto();
+
+		await (
+			await commerceAdminPriceListsPage.tableRowLink({
+				colIndex: 0,
+				rowValue: priceList.name,
+			})
+		).click();
+
+		await expect(
+			commerceAdminPriceListDetailsPage.scheduleLabel
+		).toBeVisible();
+	}
+);

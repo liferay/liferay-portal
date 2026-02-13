@@ -18,6 +18,7 @@ export class CommerceAdminPriceListDetailsPage extends CommerceDNDTablePage {
 	readonly entriesTab: Locator;
 	readonly findSkuInput: Locator;
 	readonly page: Page;
+	readonly scheduleLabel: Locator;
 	readonly selectButton: Locator;
 	readonly skuLink: (price: string) => Locator;
 	readonly skusTableRowLink: (skuName: string) => Locator;
@@ -49,6 +50,7 @@ export class CommerceAdminPriceListDetailsPage extends CommerceDNDTablePage {
 		this.entriesTab = page.getByRole('link', {name: 'Entries'});
 		this.findSkuInput = page.getByPlaceholder('Find a SKU');
 		this.page = page;
+		this.scheduleLabel = page.getByText('Schedule');
 		this.selectButton = page.getByRole('button', {name: 'Select'});
 		this.skuLink = (price: string) =>
 			page
