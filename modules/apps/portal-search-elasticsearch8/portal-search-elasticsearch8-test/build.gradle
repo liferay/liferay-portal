@@ -1,0 +1,6 @@
+dependencies {
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation project(":apps:portal-search-elasticsearch8:portal-search-elasticsearch8-api")
+	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
