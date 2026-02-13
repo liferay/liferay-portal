@@ -19,7 +19,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import useKeyboardNavigation from './hooks/useKeyboardNavigation';
 
-import '../../css/ApplicationsMenu.scss';
+import '../css/ApplicationsMenu.scss';
 
 function getImage(filename) {
 	return `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/site-cms-site-initializer/images/${filename}`;

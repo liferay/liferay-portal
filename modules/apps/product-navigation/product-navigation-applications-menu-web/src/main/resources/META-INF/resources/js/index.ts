@@ -5,12 +5,11 @@
 
 // @ts-ignore
 
-/**
- * @author João Victor Alves
- */
-public interface AgentsFactory {
+export {default as ApplicationsMenu} from './ApplicationsMenu';
 
-	public Object[] create(AgentContext agentContext);
+export {default as GlobalMenu} from './GlobalMenu';
+
+export {default as ApplicationsHome} from './homes/ApplicationsHome';
 
 export {default as CommerceHome} from './homes/CommerceHome';
 

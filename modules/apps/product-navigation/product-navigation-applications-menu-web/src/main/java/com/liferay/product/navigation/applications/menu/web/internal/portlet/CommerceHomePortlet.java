@@ -18,7 +18,6 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"com.liferay.portlet.display-category=category.hidden",
-		"com.liferay.portlet.header-portlet-css=/admin/css/main.css",
 		"com.liferay.portlet.preferences-owned-by-group=true",
 		"com.liferay.portlet.preferences-unique-per-layout=false",
 		"com.liferay.portlet.private-request-attributes=false",
