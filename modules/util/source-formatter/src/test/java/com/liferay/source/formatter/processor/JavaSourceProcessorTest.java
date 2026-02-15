@@ -239,6 +239,20 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testExecuteBatchWithoutAutoBatchPreparedStatementUtil()
+		throws Exception {
+
+		test(
+			"ExecuteBatchWithoutAutoBatchPreparedStatementUtil.testjava",
+			StringBundler.concat(
+				"Use \"AutoBatchPreparedStatementUtil.autoBatch\" or \"",
+				"AutoBatchPreparedStatementUtil.concurrentAutoBatch\" to ",
+				"create a prepared statement when using \"preparedStatement.",
+				"executeBatch()\""),
+			20);
+	}
+
+	@Test
 	public void testFeatureFlagsAnnotationTest() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
