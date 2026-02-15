@@ -257,6 +257,7 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.AutoBatchPreparedStatementUtilCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Checks that a prepared statement is executed without any batches being added." />
+			<property name="enabled" value="false" />
 			<message key="auto.batch.prepared.statement.util.use" value="Use &quot;AutoBatchPreparedStatementUtil.autoBatch&quot; or &quot;AutoBatchPreparedStatementUtil.concurrentAutoBatch&quot; to create a prepared statement when using &quot;preparedStatement.executeBatch()&quot;" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.BrandNameCheck">
