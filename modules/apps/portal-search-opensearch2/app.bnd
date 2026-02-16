@@ -5,7 +5,7 @@ Liferay-Releng-Category: Utility
 Liferay-Releng-Demo-Url:
 Liferay-Releng-Deprecated: false
 Liferay-Releng-Fix-Delivery-Method:
-Liferay-Releng-Labs: true
+Liferay-Releng-Labs: false
 Liferay-Releng-Marketplace: true
 Liferay-Releng-Portal-Required: false
 Liferay-Releng-Public: ${liferay.releng.public}
