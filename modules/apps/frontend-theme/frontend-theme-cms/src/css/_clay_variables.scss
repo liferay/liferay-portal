@@ -1,25 +1,17 @@
 @import 'clay/atlas/variables/_globals';
 
 $border-radius: 0.5rem;
+
 $border-radius-lg: 0.5rem;
 $border-radius-sm: 0.5rem;
 
 $breadcrumb-divider-svg-icon: clay-icon(slash, $gray-600);
+
 $breadcrumb-divider-svg-icon-height: 15px;
+
 $breadcrumb-font-size: 18px !default;
 
 $btn-xs-border-radius: 0.25rem;
-
-$custom-checkbox-indicator-border-radius: 0.25rem;
-
-$label-border-radius: 0.25rem;
-
-$nav-divider-color: $secondary-l1;
-
-$sticker-sm-border-radius: 0.25rem;
-
-$label-font-size: 0.75rem;
-$label-text-transform: capitalize;
 
 $btn-sizes: () !default;
 $btn-sizes: map-deep-merge(
@@ -29,6 +21,102 @@ $btn-sizes: map-deep-merge(
 		),
 	),
 	$btn-sizes
+);
+
+$custom-checkbox-indicator-border-radius: 0.25rem;
+
+$label-border-radius: 0.25rem;
+
+$label-danger-close: () !default;
+$label-danger-close: map-deep-merge(
+	(
+		focus: (
+			color: $danger,
+		),
+
+		hover: (
+			color: $danger,
+		),
+	),
+	$label-danger-close
+);
+
+$label-danger: () !default;
+$label-danger: map-deep-merge(
+	(
+		background-color: $danger-l2,
+		border-color: $danger-l2,
+		close: $label-danger-close,
+		color: $danger,
+
+		href: (
+			focus: (
+				color: $danger,
+			),
+
+			hover: (
+				background-color: $danger-l2,
+				border-color: $danger-l2,
+				color: $danger,
+			),
+		),
+
+		link: (
+			color: $danger,
+
+			hover: (
+				color: $danger,
+			),
+		),
+	),
+	$label-danger
+);
+
+$label-font-size: 0.75rem;
+
+$label-info-close: () !default;
+$label-info-close: map-deep-merge(
+	(
+		focus: (
+			color: $info,
+		),
+
+		hover: (
+			color: $info,
+		),
+	),
+	$label-info-close
+);
+
+$label-info: () !default;
+$label-info: map-deep-merge(
+	(
+		background-color: $info-l2,
+		border-color: $info-l2,
+		close: $label-info-close,
+		color: $info,
+
+		href: (
+			focus: (
+				color: $info,
+			),
+
+			hover: (
+				background-color: $info-l2,
+				border-color: $info-l2,
+				color: $info,
+			),
+		),
+
+		link: (
+			color: $info,
+
+			hover: (
+				color: $info,
+			),
+		),
+	),
+	$label-info
 );
 
 $label-lg: () !default;
@@ -42,10 +130,11 @@ $label-lg: map-deep-merge(
 $label-primary-close: () !default;
 $label-primary-close: map-deep-merge(
 	(
-		hover: (
+		focus: (
 			color: $info,
 		),
-		focus: (
+
+		hover: (
 			color: $info,
 		),
 	),
@@ -57,24 +146,28 @@ $label-primary: map-deep-merge(
 	(
 		background-color: $info-l2,
 		border-color: $info-l2,
+		close: $label-primary-close,
 		color: $info,
+
 		href: (
+			focus: (
+				color: $info,
+			),
+
 			hover: (
 				background-color: $info-l2,
 				border-color: $info-l2,
 				color: $info,
 			),
-			focus: (
-				color: $info,
-			),
 		),
+
 		link: (
 			color: $info,
+
 			hover: (
 				color: $info,
 			),
 		),
-		close: $label-primary-close,
 	),
 	$label-primary
 );
@@ -82,10 +175,11 @@ $label-primary: map-deep-merge(
 $label-secondary-close: () !default;
 $label-secondary-close: map-deep-merge(
 	(
-		hover: (
+		focus: (
 			color: $dark,
 		),
-		focus: (
+
+		hover: (
 			color: $dark,
 		),
 	),
@@ -97,24 +191,28 @@ $label-secondary: map-deep-merge(
 	(
 		background-color: $secondary-l3,
 		border-color: $secondary-l3,
+		close: $label-secondary-close,
 		color: $dark,
+
 		href: (
+			focus: (
+				color: $dark,
+			),
+
 			hover: (
 				background-color: $secondary-l3,
 				border-color: $secondary-l3,
 				color: $dark,
 			),
-			focus: (
-				color: $dark,
-			),
 		),
+
 		link: (
 			color: $dark,
+
 			hover: (
 				color: $dark,
 			),
 		),
-		close: $label-secondary-close,
 	),
 	$label-secondary
 );
@@ -122,10 +220,11 @@ $label-secondary: map-deep-merge(
 $label-success-close: () !default;
 $label-success-close: map-deep-merge(
 	(
-		hover: (
+		focus: (
 			color: $success,
 		),
-		focus: (
+
+		hover: (
 			color: $success,
 		),
 	),
@@ -137,75 +236,42 @@ $label-success: map-deep-merge(
 	(
 		background-color: $success-l2,
 		border-color: $success-l2,
+		close: $label-success-close,
 		color: $success,
+
 		href: (
+			focus: (
+				color: $success,
+			),
+
 			hover: (
 				background-color: $success-l2,
 				border-color: $success-l2,
 				color: $success,
 			),
-			focus: (
-				color: $success,
-			),
 		),
+
 		link: (
 			color: $success,
+
 			hover: (
 				color: $success,
 			),
 		),
-		close: $label-success-close,
 	),
 	$label-success
 );
 
-$label-info-close: () !default;
-$label-info-close: map-deep-merge(
-	(
-		hover: (
-			color: $info,
-		),
-		focus: (
-			color: $info,
-		),
-	),
-	$label-info-close
-);
-
-$label-info: () !default;
-$label-info: map-deep-merge(
-	(
-		background-color: $info-l2,
-		border-color: $info-l2,
-		color: $info,
-		href: (
-			hover: (
-				background-color: $info-l2,
-				border-color: $info-l2,
-				color: $info,
-			),
-			focus: (
-				color: $info,
-			),
-		),
-		link: (
-			color: $info,
-			hover: (
-				color: $info,
-			),
-		),
-		close: $label-info-close,
-	),
-	$label-info
-);
+$label-text-transform: capitalize;
 
 $label-warning-close: () !default;
 $label-warning-close: map-deep-merge(
 	(
-		hover: (
+		focus: (
 			color: $warning,
 		),
-		focus: (
+
+		hover: (
 			color: $warning,
 		),
 	),
@@ -217,67 +283,35 @@ $label-warning: map-deep-merge(
 	(
 		background-color: $warning-l2,
 		border-color: $warning-l2,
+		close: $label-warning-close,
 		color: $warning,
+
 		href: (
+			focus: (
+				color: $warning,
+			),
+
 			hover: (
 				background-color: $warning-l2,
 				border-color: $warning-l2,
 				color: $warning,
 			),
-			focus: (
-				color: $warning,
-			),
 		),
+
 		link: (
-			color: warning,
+			color: $warning,
+
 			hover: (
 				color: $warning,
 			),
 		),
-		close: $label-warning-close,
 	),
 	$label-warning
 );
 
-$label-danger-close: () !default;
-$label-danger-close: map-deep-merge(
-	(
-		hover: (
-			color: $danger,
-		),
-		focus: (
-			color: $danger,
-		),
-	),
-	$label-danger-close
-);
+$nav-divider-color: $secondary-l1;
 
-$label-danger: () !default;
-$label-danger: map-deep-merge(
-	(
-		background-color: $danger-l2,
-		border-color: $danger-l2,
-		color: $danger,
-		href: (
-			hover: (
-				background-color: $danger-l2,
-				border-color: $danger-l2,
-				color: $danger,
-			),
-			focus: (
-				color: $danger,
-			),
-		),
-		link: (
-			color: $danger,
-			hover: (
-				color: $danger,
-			),
-		),
-		close: $label-danger-close,
-	),
-	$label-danger
-);
+$sticker-sm-border-radius: 0.25rem;
 
 $sticker-sizes: () !default;
 $sticker-sizes: map-deep-merge(
