@@ -444,6 +444,32 @@ public class JournalConverterImpl implements JournalConverter {
 			Serializable serializable = _getFieldValue(
 				ddmFormField, dynamicContentElement);
 
+			String value = String.valueOf(
+				serializable
+			).trim();
+
+			if ((serializable == null) ||
+				StringUtil.equals(value, StringPool.BLANK)) {
+
+				continue;
+			}
+
+			LocalizedValue predefinedValue = ddmFormField.getPredefinedValue();
+
+			if ((predefinedValue != null) && Validator.isNotNull(languageId)) {
+				Locale currentLocale = LocaleUtil.fromLanguageId(languageId);
+
+				String defaultValueString = predefinedValue.getString(
+					currentLocale);
+
+				if (Validator.isNotNull(defaultValueString) &&
+					StringUtil.equals(value, defaultValueString.trim()) &&
+					!StringUtil.equals(languageId, defaultLanguageId)) {
+
+					continue;
+				}
+			}
+
 			ddmField.addValue(locale, serializable);
 		}
 
