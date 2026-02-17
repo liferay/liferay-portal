@@ -1,0 +1,33 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+/**
+ * @author Alan Huang
+ */
+public class IncorrectExecuteUpdateCall {
+
+	protected void method(Connection connection) throws Exception {
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				"select configurationId, dictionary from Configuration_");
+			PreparedStatement preparedStatement2 = connection.prepareStatement(
+				"delete from Configuration_ where configurationId = ?");
+			ResultSet resultSet = preparedStatement1.executeQuery()) {
+
+			while (resultSet.next()) {
+				preparedStatement2.setString(
+					1, resultSet.getString("configurationId"));
+
+				preparedStatement2.executeUpdate();
+			}
+		}
+	}
+
+}
