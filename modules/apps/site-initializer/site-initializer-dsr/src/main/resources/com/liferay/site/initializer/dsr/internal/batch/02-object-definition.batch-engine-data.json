@@ -13,229 +13,140 @@
 	},
 	"items": [
 		{
-			"accountEntryRestricted": false,
+			"accountEntryRestricted": true,
+			"accountEntryRestrictedObjectFieldName": "r_accountToDSRRooms_accountEntryId",
 			"className": "com.liferay.object.model.ObjectDefinition#D1S2",
-			"enableCategorization": false,
-			"enableComments": false,
-			"enableFormContainer": false,
-			"enableFriendlyURLCustomization": false,
-			"enableIndexSearch": false,
+			"enableCategorization": true,
+			"enableComments": true,
+			"enableFriendlyURLCustomization": true,
+			"enableIndexSearch": true,
 			"enableLocalization": true,
 			"enableObjectEntryDraft": false,
 			"enableObjectEntryHistory": false,
 			"enableObjectEntrySchedule": false,
 			"enableObjectEntrySubscription": false,
-			"enableObjectEntryVersioning": false,
 			"externalReferenceCode": "L_DSR_ROOM",
 			"label": {
 				"en_US": "Room"
 			},
-			"modifiable": false,
+			"modifiable": true,
 			"name": "DSRRoom",
 			"objectActions": [
+			],
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
 			],
 			"objectFields": [
 				{
 					"DBType": "Long",
-					"businessType": "LongInteger",
-					"externalReferenceCode": "ACCOUNT_ID",
-					"indexed": false,
-					"indexedAsKeyword": false,
+					"businessType": "Relationship",
+					"externalReferenceCode": "ACCOUNT_TO_DSR_ROOMS",
+					"indexed": true,
 					"label": {
-						"en_US": "Account ID"
+						"en_US": "Account"
 					},
-					"name": "accountId",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Long",
-					"unique": false
-				},
-				{
-					"DBType": "Long",
-					"businessType": "Attachment",
-					"defaultValue": "null",
-					"externalReferenceCode": "BANNER",
-					"indexed": false,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Banner"
-					},
-					"name": "banner",
+					"name": "r_accountToDSRRooms_accountEntryId",
+					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
 					"objectFieldSettings": [
 						{
-							"name": "acceptedFileExtensions",
-							"value": "*"
+							"name": "objectDefinition1ShortName",
+							"value": "AccountEntry"
 						},
 						{
-							"name": "maximumFileSize",
-							"value": 100
-						},
-						{
-							"name": "fileSource",
-							"value": "userComputer"
-						},
-						{
-							"name": "showFilesInDocumentsAndMedia",
-							"value": false
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_accountToDSRRooms_accountEntryERC"
 						}
 					],
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
+					"objectRelationshipExternalReferenceCode": "L_ACCOUNT_TO_L_DSR_ROOMS",
+					"relationshipType": "oneToMany",
+					"system": true
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "DESCRIPTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Description"
+					},
+					"name": "description",
+					"system": true
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "FRIENDLY_URL",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Friendly URL"
+					},
+					"name": "friendlyURL",
 					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Long",
-					"unique": false
+					"system": true
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"required": true,
+					"system": true
 				},
 				{
 					"DBType": "Long",
 					"businessType": "LongInteger",
-					"externalReferenceCode": "CHANNEL_ID",
+					"externalReferenceCode": "SITE_ID",
 					"indexed": false,
 					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
 					"label": {
-						"en_US": "Channel ID"
+						"en_US": "Site Id"
 					},
-					"name": "channelId",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
+					"name": "siteId",
 					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Long",
-					"unique": false
+					"system": true
 				},
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "CHANNEL_NAME",
+					"externalReferenceCode": "SITE_INITIALIZER_KEY",
 					"indexed": false,
 					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
 					"label": {
-						"en_US": "Channel Name"
+						"en_US": "Site Initializer Key"
 					},
-					"name": "channelName",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
+					"name": "siteInitializerKey",
 					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String",
-					"unique": false
-				},
-				{
-					"DBType": "Long",
-					"businessType": "Attachment",
-					"defaultValue": "null",
-					"externalReferenceCode": "CLIENT_LOGO",
-					"indexed": false,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Client Logo"
-					},
-					"name": "clientLogo",
-					"objectFieldSettings": [
-						{
-							"name": "acceptedFileExtensions",
-							"value": "*"
-						},
-						{
-							"name": "maximumFileSize",
-							"value": 100
-						},
-						{
-							"name": "fileSource",
-							"value": "userComputer"
-						},
-						{
-							"name": "showFilesInDocumentsAndMedia",
-							"value": false
-						}
-					],
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Long",
-					"unique": false
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "CLIENT_NAME",
-					"indexed": false,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Client Name"
-					},
-					"name": "clientName",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String",
-					"unique": false
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "PRIMARY_COLOR",
-					"indexed": false,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Primary Color"
-					},
-					"name": "primaryColor",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String",
-					"unique": false
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "SECONDARY_COLOR",
-					"indexed": false,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Secondary Color"
-					},
-					"name": "secondaryColor",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String",
-					"unique": false
+					"system": true
 				}
 			],
 			"objectFolderExternalReferenceCode": "L_DSR_STRUCTURES",
+			"objectRelationships": [
+			],
 			"panelCategoryKey": "",
-			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "Rooms"
 			},
-			"portlet": false,
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0
 			},
 			"system": true,
-			"titleObjectFieldName": "title"
+			"titleObjectFieldName": "name"
 		},
 		{
 			"accountEntryRestricted": false,
@@ -401,7 +312,7 @@
 				"en_US": "Templates"
 			},
 			"portlet": false,
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0
 			},
