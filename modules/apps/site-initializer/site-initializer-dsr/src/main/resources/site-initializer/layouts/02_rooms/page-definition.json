@@ -2,6 +2,25 @@
 	"pageElement": {
 		"id": "7a813efa-c2e5-4621-0912-a25fbdc5cbc6",
 		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewRoomsJSPSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"fragmentStyle": {
+						"paddingBottom": "3",
+						"paddingLeft": "3",
+						"paddingRight": "3",
+						"paddingTop": "3"
+					},
+					"indexed": true
+				},
+				"type": "Fragment"
+			}
 		],
 		"type": "Root"
 	},
