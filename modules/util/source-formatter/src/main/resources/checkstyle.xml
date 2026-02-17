@@ -254,6 +254,11 @@
 			<message key="variable.move.after.branching.statement" value="For better performance, the variable assignment for &quot;{0}&quot; should come after the &quot;{1}&quot; statement on line &quot;{2}&quot;" />
 			<message key="variable.move.inside.if.statement" value="For better performance, the variable assignment for &quot;{0}&quot; should be moved inside the {1}-statement on line &quot;{2}&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.BatchableUpdateCheck">
+			<property name="category" value="Performance" />
+			<property name="description" value="Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls." />
+			<message key="add.batch.use" value="Use &quot;addBatch()&quot; and &quot;executeBatch()&quot; instead of &quot;executeUpdate()&quot; inside loops" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.BrandNameCheck">
 			<property name="category" value="Naming Conventions" />
 			<property name="description" value="Checks the correct brand name." />
