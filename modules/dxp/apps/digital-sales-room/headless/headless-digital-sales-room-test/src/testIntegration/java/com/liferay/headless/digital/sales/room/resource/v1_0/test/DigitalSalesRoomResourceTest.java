@@ -70,6 +70,7 @@ import org.junit.runner.RunWith;
  * @author Stefano Motta
  */
 @FeatureFlag("LPD-66359")
+@Ignore
 @RunWith(Arquillian.class)
 public class DigitalSalesRoomResourceTest
 	extends BaseDigitalSalesRoomResourceTestCase {

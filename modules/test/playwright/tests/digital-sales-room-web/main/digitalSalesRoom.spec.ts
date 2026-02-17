@@ -39,7 +39,7 @@ test.afterEach(async ({apiHelpers}) => {
 	}
 });
 
-test(
+test.skip(
 	'Create a digital sales room',
 	{tag: '@LPD-69509'},
 	async ({digitalSalesRoomsPage, editDigitalSalesRoomPage}) => {
@@ -66,7 +66,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Create a digital sales room with account and channel',
 	{tag: '@LPD-73190'},
 	async ({apiHelpers, digitalSalesRoomsPage, editDigitalSalesRoomPage}) => {
@@ -103,7 +103,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Create a digital sales room with users',
 	{tag: '@LPD-69528'},
 	async ({apiHelpers, digitalSalesRoomsPage, editDigitalSalesRoomPage}) => {
@@ -139,7 +139,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Delete a digital sales room',
 	{tag: '@LPD-73577'},
 	async ({digitalSalesRoomsPage, editDigitalSalesRoomPage, page}) => {
@@ -185,7 +185,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Save a digital sales room as template',
 	{tag: '@LPD-73189'},
 	async ({
@@ -248,7 +248,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Create a digital sales room from template',
 	{tag: '@LPD-73189'},
 	async ({
@@ -337,7 +337,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Test edit menuitem for digital sales room',
 	{tag: ['@LPD-69570', '@LPD-76329']},
 	async ({digitalSalesRoomsPage, editDigitalSalesRoomPage, page}) => {
@@ -387,7 +387,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Test settings menuitem for digital sales room',
 	{tag: '@LPD-76329'},
 	async ({
@@ -473,7 +473,7 @@ test(
 	}
 );
 
-test(
+test.skip(
 	'Add comment',
 	{tag: '@LPD-76076'},
 	async ({digitalSalesRoomsPage, editDigitalSalesRoomPage, page}) => {

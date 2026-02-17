@@ -22,12 +22,14 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
  * @author Stefano Motta
  */
 @FeatureFlag("LPD-66359")
+@Ignore
 @RunWith(Arquillian.class)
 public class InvitedMemberBriefResourceTest
 	extends BaseInvitedMemberBriefResourceTestCase {

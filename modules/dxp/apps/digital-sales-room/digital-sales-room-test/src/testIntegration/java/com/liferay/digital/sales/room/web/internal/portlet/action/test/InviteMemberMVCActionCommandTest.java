@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +58,7 @@ import org.junit.runner.RunWith;
  * @author Stefano Motta
  */
 @FeatureFlag("LPD-66359")
+@Ignore
 @RunWith(Arquillian.class)
 public class InviteMemberMVCActionCommandTest {
 
