@@ -1,5 +1,6 @@
 dependencies {
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-test-util")
 	testIntegrationImplementation project(":apps:depot:depot-api")

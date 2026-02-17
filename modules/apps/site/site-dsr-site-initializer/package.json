@@ -31,6 +31,7 @@
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"@liferay/object-js-components-web": "*",
+		"@liferay/site-cms-site-initializer": "*",
 		"classnames": "2.3.1",
 		"eventsource": "^4.0.0",
 		"formik": "2.1.4",
