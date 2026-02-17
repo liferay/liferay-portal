@@ -340,6 +340,15 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testIncorrectExecuteUpdateCall() throws Exception {
+		test(
+			"IncorrectExecuteUpdateCall.testjava",
+			"Use \"addBatch()\" and \"executeBatch()\" instead of \"" +
+				"executeUpdate()\" inside loops",
+			28);
+	}
+
+	@Test
 	public void testIncorrectImports() throws Exception {
 		test("IncorrectImports1.testjava");
 		test(
