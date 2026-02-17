@@ -37,6 +37,7 @@ BNDStylingCheck | [Styling](styling_checks.md#styling-checks) | .bnd | Applies r
 [BNDSuiteCheck](check/bnd_suite_check.md#bndsuitecheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | .bnd | Checks that deprecated apps are moved to the `archived` folder. |
 [BNDWebContextPathCheck](check/bnd_web_context_path_check.md#bndwebcontextpathcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .bnd | Checks if the property value for `Web-ContextPath` matches the module directory. |
 BNDWhitespaceCheck | [Styling](styling_checks.md#styling-checks) | .bnd | Finds missing and unnecessary whitespace in `.bnd` files. |
+[BatchableUpdateCheck](check/batchable_update_check.md#batchableupdatecheck) | [Performance](performance_checks.md#performance-checks) | .java | Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls. |
 BrandNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks the correct brand name. |
 CDNCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | | Checks the URL in `artifact.properties` files. |
 CIMergeAndGitRepoFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .gitrepo or ci-merge | Checks that `ci-merge` and `.gitrepo` files can not be added or modified. |
