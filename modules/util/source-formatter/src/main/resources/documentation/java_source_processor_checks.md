@@ -15,6 +15,7 @@ AssignAsUsedCheck | [Performance](performance_checks.md#performance-checks) | Fi
 AutoBatchPreparedStatementUtilCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `AutoBatchPreparedStatementUtil.autoBatch` or `AutoBatchPreparedStatementUtil.concurrentAutoBatch` should be used. |
 [AvoidNestedBlocksCheck](https://checkstyle.sourceforge.io/checks/blocks/avoidnestedblocks.html) | [Styling](styling_checks.md#styling-checks) | Finds nested blocks (blocks that are used freely in the code). |
 [AvoidStarImportCheck](https://checkstyle.sourceforge.io/checks/imports/avoidstarimport.html) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that there are no import statements that use the * notation. |
+[BatchableUpdateCheck](check/batchable_update_check.md#batchableupdatecheck) | [Performance](performance_checks.md#performance-checks) | Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls. |
 BrandNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks the correct brand name. |
 [CamelCaseNameCheck](check/camel_case_name_check.md#camelcasenamecheck) | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks variable names for correct use of `CamelCase`. |
 CapsNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks the correct caps name. |
