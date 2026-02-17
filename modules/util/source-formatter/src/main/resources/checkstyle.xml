@@ -257,6 +257,7 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.BatchableUpdateCheck">
 			<property name="category" value="Performance" />
 			<property name="description" value="Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls." />
+			<property name="enabled" value="false" />
 			<message key="add.batch.use" value="Use &quot;addBatch()&quot; and &quot;executeBatch()&quot; instead of &quot;executeUpdate()&quot; inside loops" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.BrandNameCheck">
