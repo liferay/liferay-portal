@@ -121,7 +121,7 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 		}
 
 		_updateFragmentEntryLinks(
-			defaultSegmentsExperienceId, draftClassPK, publishedClassPK);
+			defaultSegmentsExperienceId, layout.getPlid());
 
 		_updateLayoutPageTemplateStructureRels(
 			defaultSegmentsExperienceId, layoutPageTemplateStructureId);
@@ -134,17 +134,15 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateFragmentEntryLinks(
-			long defaultSegmentsExperienceId, long draftPlid,
-			long publishedPlid)
+			long defaultSegmentsExperienceId, long layoutPLid)
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"update FragmentEntryLink set segmentsExperienceId = ? where " +
-					"segmentsExperienceId = 0 and (plid = ? or plid = ?)")) {
+					"segmentsExperienceId = 0 and plid = ?")) {
 
 			preparedStatement.setLong(1, defaultSegmentsExperienceId);
-			preparedStatement.setLong(2, draftPlid);
-			preparedStatement.setLong(3, publishedPlid);
+			preparedStatement.setLong(2, layoutPLid);
 
 			preparedStatement.executeUpdate();
 		}
