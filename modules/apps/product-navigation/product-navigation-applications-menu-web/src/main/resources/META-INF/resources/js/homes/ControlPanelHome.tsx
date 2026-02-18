@@ -12,7 +12,7 @@ import {CategoryItemGrouped, HomeProps} from './types';
 
 const ControlPanelHome = ({icon, items, title}: HomeProps) => {
 	return (
-		<HomePageLayout icon={icon} title={title}>
+		<HomePageLayout displayType="horizontal" icon={icon} title={title}>
 			{(items as Array<CategoryItemGrouped>).map((group) => (
 				<ClayLayout.ContainerFluid className="mb-4" key={group.label}>
 					<ClayLayout.ContentRow className="mb-2 pb-2">
