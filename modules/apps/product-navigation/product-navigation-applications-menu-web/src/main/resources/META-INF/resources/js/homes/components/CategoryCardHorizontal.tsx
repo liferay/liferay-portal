@@ -17,16 +17,22 @@ const CategoryCardHorizontal = ({
 	item: CategoryItem;
 }) => {
 	return (
-		<ClayCard className="mb-3" horizontal href={href} interactive>
-			<ClayCard.Body className="p-2">
+		<ClayCard
+			className="c-mb-2 c-mb-lg-3 home-card"
+			horizontal
+			href={href}
+			interactive
+		>
+			<ClayCard.Body className="c-p-1 c-p-lg-2">
 				<ClayCard.Row>
 					<ClayLayout.ContentCol>
 						<ClaySticker
 							className="border-0"
 							displayType="outline"
 							inline
+							size="sm"
 						>
-							<ClayIcon fontSize={16} symbol={leadingIcon} />
+							<ClayIcon fontSize={12} symbol={leadingIcon} />
 						</ClaySticker>
 					</ClayLayout.ContentCol>
 
@@ -34,11 +40,6 @@ const CategoryCardHorizontal = ({
 						<ClayCard.Description
 							className="text-4 text-dark"
 							displayType="title"
-
-							// aria-label={ariaLabel ?? title}
-							// disabled={disabled}
-							// href={href}
-
 						>
 							{label}
 						</ClayCard.Description>

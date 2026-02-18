@@ -1,0 +1,75 @@
+@import 'atlas-variables';
+
+.home-title {
+	font-size: 24px;
+
+	@include media-breakpoint-up(lg, $grid-breakpoints) {
+		font-size: 40px;
+	}
+}
+
+.home-sticker {
+	@include media-breakpoint-up(lg, $grid-breakpoints) {
+		height: 5rem;
+		width: 5rem;
+	}
+
+	img {
+		@include media-breakpoint-up(lg, $grid-breakpoints) {
+			height: 2.5rem;
+			width: 2.5rem;
+		}
+	}
+}
+
+.home-horizontal {
+	.card-title {
+		font-size: 14px;
+
+		@include media-breakpoint-up(lg, $grid-breakpoints) {
+			font-size: 16px;
+		}
+	}
+
+	@include media-breakpoint-up(lg, $grid-breakpoints) {
+		.home-subtitle {
+			font-size: 14px;
+		}
+
+		.home-card .sticker {
+			height: 2rem;
+			width: 2rem;
+
+			.lexicon-icon {
+				height: 1rem;
+				width: 1rem;
+			}
+		}
+	}
+}
+
+.home-vertical {
+	.card-title {
+		font-size: 12px;
+
+		@include media-breakpoint-up(lg, $grid-breakpoints) {
+			font-size: 14px;
+		}
+	}
+
+	@include media-breakpoint-down(md, $grid-breakpoints) {
+		.home-card {
+			margin-bottom: 0.75rem;
+
+			.sticker {
+				height: 2.5rem;
+				width: 2.5rem;
+
+				.lexicon-icon {
+					height: 1.25rem;
+					width: 1.25rem;
+				}
+			}
+		}
+	}
+}

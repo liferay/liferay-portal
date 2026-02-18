@@ -16,21 +16,17 @@ const CategoryCard = ({
 	item: CategoryItem;
 }) => {
 	return (
-		<ClayCard href={href} interactive>
-			<ClayCard.Body>
-				<div className="pt-4 text-center">
-					<div className="mb-3">
-						<ClaySticker
-							className="border-0"
-							displayType="outline"
-							size="xl"
-						>
+		<ClayCard className="home-card" href={href} interactive>
+			<ClayCard.Body className="c-pb-1 c-pb-lg-3">
+				<div className="c-mt-1 c-mt-lg-0 c-pt-2 c-pt-lg-4">
+					<div className="c-pb-2">
+						<ClaySticker borderless displayType="outline" size="xl">
 							<ClayIcon symbol={leadingIcon} />
 						</ClaySticker>
 					</div>
 
 					<ClayCard.Description
-						className="font-weight-semi-bold text-3 text-dark text-truncate"
+						className="c-mt-lg-2 font-weight-semi-bold text-dark text-truncate"
 						displayType="title"
 					>
 						{label}
