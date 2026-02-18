@@ -23,7 +23,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.asset.kernel.model.AssetVocabularyConstants" %><%@
 page import="com.liferay.bulk.selection.BulkSelectionRunner" %><%@
-page import="com.liferay.bulk.selection.BulkSelectionRunnerUtil" %><%@
+page import="com.liferay.bulk.selection.util.BulkSelectionRunnerUtil" %><%@
 page import="com.liferay.dynamic.data.mapping.util.NumericDDMFormFieldUtil" %><%@
 page import="com.liferay.learn.LearnMessageUtil" %><%@
 page import="com.liferay.list.type.model.ListTypeDefinition" %><%@
