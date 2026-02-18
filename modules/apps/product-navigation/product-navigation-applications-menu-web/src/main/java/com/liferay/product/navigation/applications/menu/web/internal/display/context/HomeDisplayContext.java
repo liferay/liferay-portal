@@ -71,8 +71,9 @@ public class HomeDisplayContext {
 		).put(
 			"label", getPanelCategoryLabel()
 		).put(
-            "logo", "http://localhost:8080/image/layout_set_logo?img_id=31401&t=1769625079933"
-        ).put(
+			"logo",
+			"http://localhost:8080/image/layout_set_logo?img_id=31401&t=1769625079933"
+		).put(
 			"portletId", _portletId
 		).build();
 	}
