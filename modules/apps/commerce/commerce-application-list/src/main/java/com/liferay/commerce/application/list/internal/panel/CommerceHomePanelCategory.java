@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -10,14 +10,12 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.commerce.application.list.constants.CommercePanelCategoryKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Mario Leandro
@@ -45,15 +43,8 @@ public class CommerceHomePanelCategory extends BasePanelCategory {
 	public boolean isShow(PermissionChecker permissionChecker, Group group)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				permissionChecker.getCompanyId(), "LPD-36105")) {
-			return true;
-		}
-
-		return false;
+		return FeatureFlagManagerUtil.isEnabled(
+			permissionChecker.getCompanyId(), "LPD-36105");
 	}
-
-	@Reference
-	private Language _language;
 
 }

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -24,11 +24,11 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.scopeable=true",
 		"com.liferay.portlet.use-default-template=true",
+		"jakarta.portlet.display-name=Home",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.mvc-command-names-default-views=/admin/view",
 		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
-		"jakarta.portlet.display-name=Home",
 		"jakarta.portlet.init-param.view-template=/homes/applications_home.jsp",
 		"jakarta.portlet.name=" + ApplicationsHomePortletKeys.APPLICATIONS_HOME,
 		"jakarta.portlet.resource-bundle=content.Language",
