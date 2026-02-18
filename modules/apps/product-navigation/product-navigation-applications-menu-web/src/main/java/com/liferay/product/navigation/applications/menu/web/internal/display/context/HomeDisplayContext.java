@@ -104,6 +104,12 @@ public class HomeDisplayContext {
 				_panelCategoryHelper.getChildPanelCategories(
 					panelCategory.getKey(), _themeDisplay)) {
 
+			String childPanelCategoryKey = childPanelCategory.getKey();
+
+			if (childPanelCategoryKey.endsWith(".home")) {
+				continue;
+			}
+
 			List<Map<String, Object>> childrenPropsItems = _getPropsItems(
 				childPanelCategory);
 
@@ -113,7 +119,7 @@ public class HomeDisplayContext {
 
 			propsItems.add(
 				HashMapBuilder.<String, Object>put(
-					"id", childPanelCategory.getKey()
+					"id", childPanelCategoryKey
 				).put(
 					"items", childrenPropsItems
 				).put(
