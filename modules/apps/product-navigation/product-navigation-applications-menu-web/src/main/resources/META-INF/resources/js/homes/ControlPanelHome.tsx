@@ -10,9 +10,9 @@ import CategoryCardHorizontal from './components/CategoryCardHorizontal';
 import HomePageLayout from './components/HomePageLayout';
 import {CategoryItemGrouped, HomeProps} from './types';
 
-const ControlPanelHome = ({items, label, logo}: HomeProps) => {
+const ControlPanelHome = ({icon, items, title}: HomeProps) => {
 	return (
-		<HomePageLayout logo={logo} title={label}>
+		<HomePageLayout icon={icon} title={title}>
 			{(items as Array<CategoryItemGrouped>).map((group) => (
 				<ClayLayout.ContainerFluid className="mb-4" key={group.label}>
 					<ClayLayout.ContentRow className="mb-2 pb-2">

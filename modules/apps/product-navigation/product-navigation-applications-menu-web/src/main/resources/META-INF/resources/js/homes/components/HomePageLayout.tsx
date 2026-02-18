@@ -12,7 +12,7 @@ import {useWindowSize} from '../utils/useWindowSize';
 
 type Props = {
 	children: React.ReactNode;
-	logo: string;
+	icon: string;
 	title: string;
 	titleCentralized?: boolean;
 };
@@ -21,7 +21,7 @@ const LARGE_BREAKPOINT = 992;
 
 const HomePageLayout = ({
 	children,
-	logo,
+	icon,
 	title,
 	titleCentralized = false,
 }: Props) => {
@@ -67,7 +67,7 @@ const HomePageLayout = ({
 							>
 								<ClaySticker.Image
 									alt={`${title} logo`}
-									src={logo}
+									src={icon}
 									style={imageStyle}
 								/>
 							</ClaySticker>
