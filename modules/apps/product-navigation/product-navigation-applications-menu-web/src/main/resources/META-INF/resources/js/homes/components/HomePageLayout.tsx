@@ -61,7 +61,7 @@ const HomePageLayout = ({
 							</ClaySticker>
 						</div>
 
-						<span
+						<h2
 							className={classNames(
 								'font-weight-bold home-title text-11',
 								{
@@ -70,7 +70,7 @@ const HomePageLayout = ({
 							)}
 						>
 							{title}
-						</span>
+						</h2>
 					</div>
 				</ClayLayout.Col>
 			</ClayLayout.Row>
@@ -84,8 +84,10 @@ const HomePageLayout = ({
 				{items.map((group) =>
 					isHorizontal ? (
 						<ClayLayout.ContainerFluid
+							aria-label={group.label}
 							className="c-mb-3 c-mb-lg-4"
 							key={group.label}
+							role="group"
 						>
 							<ClayLayout.ContentRow className="c-mb-1 c-mb-lg-2 c-pb-2">
 								<ClayLayout.ContentCol expand>
