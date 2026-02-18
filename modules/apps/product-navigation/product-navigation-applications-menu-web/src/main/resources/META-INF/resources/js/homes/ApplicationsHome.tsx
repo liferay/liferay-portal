@@ -12,7 +12,7 @@ import {CategoryItem, HomeProps} from './types';
 
 const ApplicationsHome = ({icon, items, title}: HomeProps) => {
 	return (
-		<HomePageLayout icon={icon} title={title} titleCentralized>
+		<HomePageLayout icon={icon} title={title}>
 			{(items.flatMap((group) => group.items) as Array<CategoryItem>).map(
 				(item) => (
 					<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>

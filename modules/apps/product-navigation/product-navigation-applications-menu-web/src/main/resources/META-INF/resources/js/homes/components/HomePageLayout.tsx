@@ -12,18 +12,18 @@ import {useWindowSize} from '../utils/useWindowSize';
 
 type Props = {
 	children: React.ReactNode;
+	displayType?: 'horizontal' | 'vertical';
 	icon: string;
 	title: string;
-	titleCentralized?: boolean;
 };
 
 const LARGE_BREAKPOINT = 992;
 
 const HomePageLayout = ({
 	children,
+	displayType = 'vertical',
 	icon,
 	title,
-	titleCentralized = false,
 }: Props) => {
 	const {width} = useWindowSize();
 
@@ -36,10 +36,11 @@ const HomePageLayout = ({
 		}),
 		[isLargeBreakpoint]
 	);
+	const isHorizontal = displayType === 'horizontal';
 
 	return (
 		<ClayLayout.ContainerFluid
-			className="px-2 px-md-3 px-sm-2 px-xl-4"
+			className={`px-2 px-md-3 px-sm-2 px-xl-4 home-${displayType}`}
 			size="lg"
 		>
 			<ClayLayout.Row className="my-5">
@@ -49,15 +50,14 @@ const HomePageLayout = ({
 							'font-family-source-sans-pro font-weight-bold text-truncate',
 							{
 								'd-flex align-items-center text-left':
-									!titleCentralized,
-								'text-center': titleCentralized,
+									isHorizontal,
+								'text-center': !isHorizontal,
 							}
 						)}
 					>
 						<div
 							className={classNames({
-								'mb-3': titleCentralized,
-								'mr-3': !titleCentralized,
+								'c-mb-2': !isHorizontal,
 							})}
 						>
 							<ClaySticker
