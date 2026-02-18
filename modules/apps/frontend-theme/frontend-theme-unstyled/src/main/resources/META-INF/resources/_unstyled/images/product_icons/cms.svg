@@ -1,0 +1,19 @@
+<svg fill="none" height="40" viewBox="0 0 40 40" width="40" xmlns="http://www.w3.org/2000/svg">
+	<g clip-path="url(#a)">
+		<path d="m22 0 12 12v24a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4h14Z" fill="#B3CDFF" />
+		<path d="M22 8V0l12 12h-8a4 4 0 0 1-4-4Z" fill="#004AD7" />
+		<path d="M40 24a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z" fill="#0B5FFF" />
+		<path d="M34 18a6 6 0 0 1 0 12V18.008h-.309c.103-.005.206-.008.309-.008ZM4 4a4 4 0 0 1 4-4v40a4 4 0 0 1-4-4V4Z" fill="#80ACFF" />
+		<path d="M0 23a3 3 0 0 1 3-3h6a3 3 0 1 1 0 6H3a3 3 0 0 1-3-3Z" fill="#0B5FFF" />
+		<path d="M0 23a3 3 0 0 1 3-3h1v6H3a3 3 0 0 1-3-3Z" fill="#80ACFF" />
+		<path d="m10.12 16.387 4.883-9.77a1.114 1.114 0 0 1 1.994 0l4.884 9.77A1.115 1.115 0 0 1 20.884 18h-9.768a1.115 1.115 0 0 1-.997-1.613Z" fill="#0B5FFF" />
+		<path d="M0 33a3 3 0 0 1 3-3h18a3 3 0 1 1 0 6H3a3 3 0 0 1-3-3Z" fill="#80ACFF" />
+		<path d="M0 33a3 3 0 0 1 3-3h1v6H3a3 3 0 0 1-3-3Z" fill="#80ACFF" />
+		<path d="M4 30h17a3 3 0 1 1 0 6H4v-6Z" fill="#0B5FFF" />
+	</g>
+	<defs>
+		<clipPath id="a">
+			<path d="M0 0h40v40H0z" fill="#fff" />
+		</clipPath>
+	</defs>
+</svg>
