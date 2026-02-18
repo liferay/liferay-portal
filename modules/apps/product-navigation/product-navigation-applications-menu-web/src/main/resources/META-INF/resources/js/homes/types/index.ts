@@ -18,10 +18,10 @@ export type CategoryItemGrouped = {
 
 export type HomeProps = {
 	componentId?: string | null;
+	icon: string;
 	items: Array<CategoryItemGrouped>;
-	label: string;
 	locale: string;
-	logo: string;
 	portletId: string;
 	portletNamespace: string;
+	title: string;
 };

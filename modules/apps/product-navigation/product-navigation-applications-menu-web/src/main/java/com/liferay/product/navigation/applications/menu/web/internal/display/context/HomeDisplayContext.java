@@ -67,16 +67,14 @@ public class HomeDisplayContext {
 		}
 
 		return HashMapBuilder.<String, Object>put(
-			"items", _getPropsItems()
-		).put(
-			"label", getPanelCategoryLabel()
-		).put(
-			"logo",
+			"icon",
 			String.format(
 				"%s/product_icons/%s.svg", _themeDisplay.getPathThemeImages(),
 				panelCategory.getKey())
 		).put(
 			"portletId", _portletId
+		).put(
+			"title", getPanelCategoryLabel()
 		).build();
 	}
 

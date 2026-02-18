@@ -10,9 +10,9 @@ import CategoryCard from './components/CategoryCard';
 import HomePageLayout from './components/HomePageLayout';
 import {CategoryItem, HomeProps} from './types';
 
-const ApplicationsHome = ({items, label, logo}: HomeProps) => {
+const ApplicationsHome = ({icon, items, title}: HomeProps) => {
 	return (
-		<HomePageLayout logo={logo} title={label} titleCentralized>
+		<HomePageLayout icon={icon} title={title} titleCentralized>
 			{(items.flatMap((group) => group.items) as Array<CategoryItem>).map(
 				(item) => (
 					<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>
