@@ -72,7 +72,9 @@ public class HomeDisplayContext {
 			"label", getPanelCategoryLabel()
 		).put(
 			"logo",
-			"http://localhost:8080/image/layout_set_logo?img_id=31401&t=1769625079933"
+			String.format(
+				"%s/product_icons/%s.svg", _themeDisplay.getPathThemeImages(),
+				panelCategory.getKey())
 		).put(
 			"portletId", _portletId
 		).build();
