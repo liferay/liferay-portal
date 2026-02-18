@@ -72,6 +72,8 @@ public class HomeDisplayContext {
 				"%s/product_icons/%s.svg", _themeDisplay.getPathThemeImages(),
 				panelCategory.getKey())
 		).put(
+			"items", _getPropsItems()
+		).put(
 			"portletId", _portletId
 		).put(
 			"title", getPanelCategoryLabel()
