@@ -10,7 +10,6 @@ import React from 'react';
 
 import '../../../css/Home.scss';
 import {CategoryItemGrouped} from '../types';
-import {useWindowSize} from '../utils/useWindowSize';
 import CategoryCard from './CategoryCard';
 import CategoryCardHorizontal from './CategoryCardHorizontal';
 
@@ -21,25 +20,12 @@ type Props = {
 	title: string;
 };
 
-const LARGE_BREAKPOINT = 992;
-
 const HomePageLayout = ({
 	displayType = 'vertical',
 	icon,
 	items,
 	title,
 }: Props) => {
-	const {width} = useWindowSize();
-
-	const isLargeBreakpoint = width >= LARGE_BREAKPOINT;
-
-	const imageStyle = React.useMemo(
-		() => ({
-			height: isLargeBreakpoint ? '40px' : '22px',
-			width: isLargeBreakpoint ? '40px' : '22px',
-		}),
-		[isLargeBreakpoint]
-	);
 	const isHorizontal = displayType === 'horizontal';
 
 	return (
@@ -47,42 +33,39 @@ const HomePageLayout = ({
 			className={`px-2 px-md-3 px-sm-2 px-xl-4 home-${displayType}`}
 			size="lg"
 		>
-			<ClayLayout.Row className="my-5">
+			<ClayLayout.Row
+				className={classNames({
+					'c-mb-3 c-mb-lg-4 c-mt-4 c-mt-lg-5': !isHorizontal,
+					'c-mt-4 c-mt-lg-5 c-mb-4 c-mb-lg-5': isHorizontal,
+				})}
+			>
 				<ClayLayout.Col>
 					<div
-						className={classNames(
-							'font-family-source-sans-pro font-weight-bold text-truncate',
-							{
-								'd-flex align-items-center text-left':
-									isHorizontal,
-								'text-center': !isHorizontal,
-							}
-						)}
+						className={classNames('font-weight-bold', {
+							'd-flex align-items-center text-left': isHorizontal,
+							'text-center': !isHorizontal,
+						})}
 					>
 						<div
 							className={classNames({
-								'c-mb-2': !isHorizontal,
+								'c-mb-3 c-mb-lg-2': !isHorizontal,
 							})}
 						>
 							<ClaySticker
-								className="border-0"
+								borderless
+								className="home-sticker"
 								displayType="outline"
-								size={isLargeBreakpoint ? 'xxl' : 'xl'}
+								size="xl"
 							>
-								<ClaySticker.Image
-									alt={`${title} logo`}
-									src={icon}
-									style={imageStyle}
-								/>
+								<ClaySticker.Image alt="" src={icon} />
 							</ClaySticker>
 						</div>
 
 						<span
 							className={classNames(
-								'font-family-source-sans-pro font-weight-bold text-truncate text-dark',
+								'font-weight-bold home-title text-11',
 								{
-									'text-7': !isLargeBreakpoint,
-									'text-11': isLargeBreakpoint,
+									'c-ml-3 c-ml-lg-4': isHorizontal,
 								}
 							)}
 						>
@@ -92,16 +75,21 @@ const HomePageLayout = ({
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 
-			<ClayLayout.Row className="mb-7">
+			<ClayLayout.Row
+				className={classNames({
+					'c-pt-1': isHorizontal,
+					'c-pt-lg-4': !isHorizontal,
+				})}
+			>
 				{items.map((group) =>
 					isHorizontal ? (
 						<ClayLayout.ContainerFluid
-							className="mb-4"
+							className="c-mb-3 c-mb-lg-4"
 							key={group.label}
 						>
-							<ClayLayout.ContentRow className="mb-2 pb-2">
+							<ClayLayout.ContentRow className="c-mb-1 c-mb-lg-2 c-pb-2">
 								<ClayLayout.ContentCol expand>
-									<p className="font-weight-semi-bold mb-0 text-3 text-secondary text-uppercase">
+									<p className="font-weight-semi-bold home-subtitle mb-0 text-2 text-secondary text-uppercase">
 										{group.label}
 									</p>
 								</ClayLayout.ContentCol>
