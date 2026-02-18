@@ -6,6 +6,7 @@
 		"@clayui/breadcrumb": "^3.159.0",
 		"@clayui/button": "^3.159.0",
 		"@clayui/card": "^3.159.0",
+		"@clayui/color-picker": "^3.159.0",
 		"@clayui/core": "^3.159.0",
 		"@clayui/data-provider": "^3.159.0",
 		"@clayui/drop-down": "^3.159.0",
@@ -18,6 +19,8 @@
 		"@clayui/list": "^3.159.0",
 		"@clayui/loading-indicator": "^3.159.0",
 		"@clayui/management-toolbar": "^3.159.0",
+		"@clayui/modal": "^3.159.0",
+		"@clayui/multi-select": "^3.159.0",
 		"@clayui/nav": "^3.159.0",
 		"@clayui/navigation-bar": "^3.159.0",
 		"@clayui/pagination-bar": "^3.159.0",
@@ -40,6 +43,7 @@
 		"moment": "2.29.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
+		"react-dropzone": "11.2.4",
 		"uuid": "^9.0.1"
 	},
 	"jest": {

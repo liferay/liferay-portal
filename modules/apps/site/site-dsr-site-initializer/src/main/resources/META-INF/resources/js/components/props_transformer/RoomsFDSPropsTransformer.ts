@@ -4,20 +4,55 @@
  */
 
 import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
+import {openModal} from 'frontend-js-components-web';
 
 import {openFDSDeleteConfirmationModal} from '../../common/utils/openModalUtil';
 import {IRoom} from '../../common/utils/types';
+import DSRInitializer from '../DSRInitializer';
 import RoomNameRenderer from './cell_renderers/RoomNameRenderer';
 
 export default function RoomsFDSPropsTransformer({
+	creationMenu,
 	itemsActions,
 	...otherProps
 }: {
+	creationMenu: any;
 	itemsActions: IItemsActions[];
 	otherProps: any;
 }) {
 	return {
 		...otherProps,
+		creationMenu: {
+			...creationMenu,
+			primaryItems: creationMenu?.primaryItems?.map(
+				(item: {data?: {action?: string}}) => {
+					return {
+						...item,
+						onClick() {
+							const action = item?.data?.action;
+
+							if (action === 'createDigitalSalesRoom') {
+								return openModal({
+									containerProps: {
+										className: '',
+									},
+									contentComponent: ({
+										closeModal,
+									}: {
+										closeModal: () => void;
+									}) =>
+										DSRInitializer({
+											closeModal,
+											numberOfSteps: 3,
+										}),
+									size: 'md',
+								});
+							}
+						},
+					};
+				}
+			),
+		},
 		customRenderers: {
 			tableCell: [
 				{

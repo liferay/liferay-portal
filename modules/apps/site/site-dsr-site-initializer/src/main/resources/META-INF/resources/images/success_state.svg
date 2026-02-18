@@ -1,0 +1,411 @@
+<svg viewBox="0 0 250 250" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<style>.smoke{fill:#fff;transform-origin:bottom}@media (prefers-reduced-motion:reduce){.d2{transform:translate(0,2px) scale(.8);opacity:.8}.d3{transform:translate(0,5px) scale(.65);opacity:.6}.d4{transform:translate(0,8px) scale(.5);opacity:.3}}@media (prefers-reduced-motion:no-preference){.smoke{animation:.6s ease-out infinite engine}.d2{animation-delay:.15s}.d3{animation-delay:.3s}.d4{animation-delay:.45s}@keyframes engine{to{transform:translate(0,20px) scale(.5);opacity:0}}}.st27{opacity:.3}.st53{fill:#7b7c8e}</style>
+	<circle cx="125" cy="125" fill="#e6e6eb" r="125" />
+	<defs>
+		<path d="M217 72h8.1v8.1H217z" id="a" />
+	</defs>
+	<clipPath id="ci">
+		<use xlink:href="#a" />
+	</clipPath>
+	<g clip-path="url(#ci)">
+		<defs>
+			<path d="M217 72h8.1v8.1H217z" id="cu" />
+		</defs>
+		<clipPath id="f">
+			<use xlink:href="#cu" />
+		</clipPath>
+		<path clip-path="url(#f)" d="m220.8 79.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M169 35h8.1v8.1H169z" id="ac" />
+	</defs>
+	<clipPath id="cm">
+		<use xlink:href="#ac" />
+	</clipPath>
+	<g clip-path="url(#cm)">
+		<defs>
+			<path d="M169 35h8.1v8.1H169z" id="n" />
+		</defs>
+		<clipPath id="cd">
+			<use xlink:href="#n" />
+		</clipPath>
+		<path clip-path="url(#cd)" d="m172.8 42.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M53 48h8.1v8.1H53z" id="r" />
+	</defs>
+	<clipPath id="cf">
+		<use xlink:href="#r" />
+	</clipPath>
+	<g clip-path="url(#cf)">
+		<defs>
+			<path d="M53 48h8.1v8.1H53z" id="aw" />
+		</defs>
+		<clipPath id="b">
+			<use xlink:href="#aw" />
+		</clipPath>
+		<path clip-path="url(#b)" d="m56.8 55.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M207 127h8.1v8.1H207z" id="s" />
+	</defs>
+	<clipPath id="bh">
+		<use xlink:href="#s" />
+	</clipPath>
+	<g clip-path="url(#bh)">
+		<defs>
+			<path d="M207 127h8.1v8.1H207z" id="ap" />
+		</defs>
+		<clipPath id="i">
+			<use xlink:href="#ap" />
+		</clipPath>
+		<path clip-path="url(#i)" d="m210.8 134.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M54 171h8.1v8.1H54z" id="ay" />
+	</defs>
+	<clipPath id="ag">
+		<use xlink:href="#ay" />
+	</clipPath>
+	<g clip-path="url(#ag)">
+		<defs>
+			<path d="M54 171h8.1v8.1H54z" id="cc" />
+		</defs>
+		<clipPath id="bw">
+			<use xlink:href="#cc" />
+		</clipPath>
+		<path clip-path="url(#bw)" d="m57.8 178.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M13 141h8.1v8.1H13z" id="aa" />
+	</defs>
+	<clipPath id="ca">
+		<use xlink:href="#aa" />
+	</clipPath>
+	<g clip-path="url(#ca)">
+		<defs>
+			<path d="M13 141h8.1v8.1H13z" id="bb" />
+		</defs>
+		<clipPath id="av">
+			<use xlink:href="#bb" />
+		</clipPath>
+		<path clip-path="url(#av)" d="m16.8 148.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M36 97h8.1v8.1H36z" id="bj" />
+	</defs>
+	<clipPath id="bz">
+		<use xlink:href="#bj" />
+	</clipPath>
+	<g clip-path="url(#bz)">
+		<defs>
+			<path d="M36 97h8.1v8.1H36z" id="y" />
+		</defs>
+		<clipPath id="ck">
+			<use xlink:href="#y" />
+		</clipPath>
+		<path clip-path="url(#ck)" d="m39.8 104.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M192 183h8.1v8.1H192z" id="ar" />
+	</defs>
+	<clipPath id="bc">
+		<use xlink:href="#ar" />
+	</clipPath>
+	<g clip-path="url(#bc)">
+		<defs>
+			<path d="M192 183h8.1v8.1H192z" id="am" />
+		</defs>
+		<clipPath id="bf">
+			<use xlink:href="#am" />
+		</clipPath>
+		<path clip-path="url(#bf)" d="m195.8 190.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M155 112h8.1v8.1H155z" id="bi" />
+	</defs>
+	<clipPath id="ao">
+		<use xlink:href="#bi" />
+	</clipPath>
+	<g clip-path="url(#ao)">
+		<defs>
+			<path d="M155 112h8.1v8.1H155z" id="bg" />
+		</defs>
+		<clipPath id="bx">
+			<use xlink:href="#bg" />
+		</clipPath>
+		<path clip-path="url(#bx)" d="m158.8 119.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M107.1 26h8.1v8.1h-8.1z" id="az" />
+	</defs>
+	<clipPath id="bp">
+		<use xlink:href="#az" />
+	</clipPath>
+	<g clip-path="url(#bp)">
+		<defs>
+			<path d="M107.1 26h8.1v8.1h-8.1z" id="j" />
+		</defs>
+		<clipPath id="u">
+			<use xlink:href="#j" />
+		</clipPath>
+		<path clip-path="url(#u)" d="m110.9 33.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.5.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M95 81h8.1v8.1H95z" id="ce" />
+	</defs>
+	<clipPath id="ah">
+		<use xlink:href="#ce" />
+	</clipPath>
+	<g clip-path="url(#ah)">
+		<defs>
+			<path d="M95 81h8.1v8.1H95z" id="t" />
+		</defs>
+		<clipPath id="bn">
+			<use xlink:href="#t" />
+		</clipPath>
+		<path clip-path="url(#bn)" d="m98.8 88.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M163 224h8.1v8.1H163z" id="v" />
+	</defs>
+	<clipPath id="as">
+		<use xlink:href="#v" />
+	</clipPath>
+	<g clip-path="url(#as)">
+		<defs>
+			<path d="M163 224h8.1v8.1H163z" id="at" />
+		</defs>
+		<clipPath id="c">
+			<use xlink:href="#at" />
+		</clipPath>
+		<path clip-path="url(#c)" d="m166.8 231.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<defs>
+		<path d="M83 219h8.1v8.1H83z" id="ax" />
+	</defs>
+	<clipPath id="l">
+		<use xlink:href="#ax" />
+	</clipPath>
+	<g clip-path="url(#l)">
+		<defs>
+			<path d="M83 219h8.1v8.1H83z" id="aj" />
+		</defs>
+		<clipPath id="ak">
+			<use xlink:href="#aj" />
+		</clipPath>
+		<path clip-path="url(#ak)" d="m86.8 226.9-.6-2.3c-.1-.4-.4-.7-.8-.8l-2.3-.6c-.2-.1-.2-.4 0-.5l2.3-.6c.4-.1.7-.4.8-.8l.6-2.3c.1-.2.4-.2.5 0l.6 2.3c.1.4.4.7.8.8l2.3.6c.2.1.2.4 0 .5l-2.3.6c-.4.1-.7.4-.8.8l-.6 2.3c-.1.2-.4.2-.5 0" fill="#7b7c8e" />
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M206 50h4v4h-4z" id="cl" />
+		</defs>
+		<clipPath id="be">
+			<use xlink:href="#cl" />
+		</clipPath>
+		<g clip-path="url(#be)">
+			<defs>
+				<path d="M206 50h4v4h-4z" id="aq" />
+			</defs>
+			<clipPath id="an">
+				<use xlink:href="#aq" />
+			</clipPath>
+			<path clip-path="url(#an)" d="m207.9 53.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M216 110h4v4h-4z" id="cg" />
+		</defs>
+		<clipPath id="ct">
+			<use xlink:href="#cg" />
+		</clipPath>
+		<g clip-path="url(#ct)">
+			<defs>
+				<path d="M216 110h4v4h-4z" id="bm" />
+			</defs>
+			<clipPath id="cr">
+				<use xlink:href="#bm" />
+			</clipPath>
+			<path clip-path="url(#cr)" d="m217.9 113.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M216 170h4v4h-4z" id="au" />
+		</defs>
+		<clipPath id="bl">
+			<use xlink:href="#au" />
+		</clipPath>
+		<g clip-path="url(#bl)">
+			<defs>
+				<path d="M216 170h4v4h-4z" id="k" />
+			</defs>
+			<clipPath id="bu">
+				<use xlink:href="#k" />
+			</clipPath>
+			<path clip-path="url(#bu)" d="m217.9 173.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M186 210h4v4h-4z" id="ad" />
+		</defs>
+		<clipPath id="bk">
+			<use xlink:href="#ad" />
+		</clipPath>
+		<g clip-path="url(#bk)">
+			<defs>
+				<path d="M186 210h4v4h-4z" id="ai" />
+			</defs>
+			<clipPath id="cj">
+				<use xlink:href="#ai" />
+			</clipPath>
+			<path clip-path="url(#cj)" d="m187.9 213.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M116 230h4v4h-4z" id="br" />
+		</defs>
+		<clipPath id="by">
+			<use xlink:href="#br" />
+		</clipPath>
+		<g clip-path="url(#by)">
+			<defs>
+				<path d="M116 230h4v4h-4z" id="bt" />
+			</defs>
+			<clipPath id="cn">
+				<use xlink:href="#bt" />
+			</clipPath>
+			<path clip-path="url(#cn)" d="m117.9 233.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M56 200h4v4h-4z" id="co" />
+		</defs>
+		<clipPath id="cb">
+			<use xlink:href="#co" />
+		</clipPath>
+		<g clip-path="url(#cb)">
+			<defs>
+				<path d="M56 200h4v4h-4z" id="cq" />
+			</defs>
+			<clipPath id="bq">
+				<use xlink:href="#cq" />
+			</clipPath>
+			<path clip-path="url(#bq)" d="m57.9 203.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M16 160h4v4h-4z" id="al" />
+		</defs>
+		<clipPath id="ch">
+			<use xlink:href="#al" />
+		</clipPath>
+		<g clip-path="url(#ch)">
+			<defs>
+				<path d="M16 160h4v4h-4z" id="af" />
+			</defs>
+			<clipPath id="x">
+				<use xlink:href="#af" />
+			</clipPath>
+			<path clip-path="url(#x)" d="m17.9 163.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M26 80h4v4h-4z" id="bo" />
+		</defs>
+		<clipPath id="p">
+			<use xlink:href="#bo" />
+		</clipPath>
+		<g clip-path="url(#p)">
+			<defs>
+				<path d="M26 80h4v4h-4z" id="d" />
+			</defs>
+			<clipPath id="m">
+				<use xlink:href="#d" />
+			</clipPath>
+			<path clip-path="url(#m)" d="m27.9 83.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M66 50h4v4h-4z" id="g" />
+		</defs>
+		<clipPath id="bd">
+			<use xlink:href="#g" />
+		</clipPath>
+		<g clip-path="url(#bd)">
+			<defs>
+				<path d="M66 50h4v4h-4z" id="cp" />
+			</defs>
+			<clipPath id="h">
+				<use xlink:href="#cp" />
+			</clipPath>
+			<path clip-path="url(#h)" d="m67.9 53.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M106 10h4v4h-4z" id="cs" />
+		</defs>
+		<clipPath id="bv">
+			<use xlink:href="#cs" />
+		</clipPath>
+		<g clip-path="url(#bv)">
+			<defs>
+				<path d="M106 10h4v4h-4z" id="z" />
+			</defs>
+			<clipPath id="ba">
+				<use xlink:href="#z" />
+			</clipPath>
+			<path clip-path="url(#ba)" d="m107.9 13.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M156 50h4v4h-4z" id="o" />
+		</defs>
+		<clipPath id="ae">
+			<use xlink:href="#o" />
+		</clipPath>
+		<g clip-path="url(#ae)">
+			<defs>
+				<path d="M156 50h4v4h-4z" id="w" />
+			</defs>
+			<clipPath id="e">
+				<use xlink:href="#w" />
+			</clipPath>
+			<path clip-path="url(#e)" d="m157.9 53.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<g class="st27">
+		<defs>
+			<path d="M116 100h4v4h-4z" id="q" />
+		</defs>
+		<clipPath id="ab">
+			<use xlink:href="#q" />
+		</clipPath>
+		<g clip-path="url(#ab)">
+			<defs>
+				<path d="M116 100h4v4h-4z" id="bs" />
+			</defs>
+			<clipPath id="cv">
+				<use xlink:href="#bs" />
+			</clipPath>
+			<path clip-path="url(#cv)" d="m117.9 103.9-.3-1.1c0-.2-.2-.3-.4-.4l-1.1-.3c-.1 0-.1-.2 0-.2l1.1-.3c.2 0 .3-.2.4-.4l.3-1.1c0-.1.2-.1.2 0l.3 1.1c0 .2.2.3.4.4l1.1.3c.1 0 .1.2 0 .2l-1.1.3c-.2 0-.3.2-.4.4l-.3 1.1c0 .1-.2.1-.2 0" fill="#7b7c8e" />
+		</g>
+	</g>
+	<path d="M140.6 179.3c-6.5 6.5-15.3 7-15.3 7s-8.2-.5-14.7-7-5-40-5-51 15-33 20-33 20 20 20 31 1.5 46.5-5 53z" fill="#f1f2f5" />
+	<path class="st53" d="M158.6 166.3c-1.5-4.5-7.5-10.1-10.4-12.7.3-3.9.4-8.4.4-13.3 0-28-18-47-23-47s-23 19-23 47c0 4.9.1 9.3.4 13.3-2.9 2.5-9 8.2-10.5 12.7-2 6 0 16 0 16s7-5.2 14.4-5.9c2.7 7.7 5.7 8.9 5.7 8.9s.7.5 2.1 1.1c-.1.2-.1.4-.1.6v.5c0 1.5 1.2 2.7 2.7 2.7h16.5c1.5 0 2.7-1.2 2.7-2.7v-.5c0-.2 0-.4-.1-.6 1.4-.6 2.1-1.1 2.1-1.1s3-1.2 5.7-8.9c7.4.7 14.3 5.9 14.3 5.9s2.1-10 .1-16zm-21.7 15.4-.2.1-.4.4c-.4.2-3.7 2.2-10.6 2.2s-10.2-2-10.6-2.2l-.3-.3-.3-.1c-.8-.7-7.8-7.5-7.8-41.4 0-24.5 14.8-41.1 19-42.9 4.2 1.8 19 18.4 19 42.9-.1 33.2-6.8 40.4-7.8 41.3z" />
+	<path class="st53" d="M126.5 182.3h-1.9c-.6 0-1.1-.5-1-1.1l.9-28.9c0-.6.5-1 1-1 .6 0 1 .4 1 1l.9 28.9c.2.7-.3 1.1-.9 1.1zM126.1 121.3c3.6 0 6.5 2.9 6.5 6.5s-2.9 6.5-6.5 6.5-6.5-2.9-6.5-6.5c0-3.5 2.9-6.5 6.5-6.5m0-4c-5.8 0-10.5 4.7-10.5 10.5s4.7 10.5 10.5 10.5 10.5-4.7 10.5-10.5-4.7-10.5-10.5-10.5z" />
+	<circle cx="126.1" cy="201.8" fill="#fff" r="10.4" />
+	<circle class="smoke d2" cx="126.1" cy="201.8" r="10.4" />
+	<circle class="smoke d3" cx="126.1" cy="201.8" r="10.4" />
+	<circle class="smoke d4" cx="126.1" cy="201.8" r="10.4" />
+	<circle class="smoke" cx="126.1" cy="201.8" r="10.4" />
+</svg>
