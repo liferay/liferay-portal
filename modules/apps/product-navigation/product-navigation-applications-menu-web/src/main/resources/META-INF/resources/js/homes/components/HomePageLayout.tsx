@@ -8,21 +8,25 @@ import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
 import React from 'react';
 
+import '../../../css/Home.scss';
+import {CategoryItemGrouped} from '../types';
 import {useWindowSize} from '../utils/useWindowSize';
+import CategoryCard from './CategoryCard';
+import CategoryCardHorizontal from './CategoryCardHorizontal';
 
 type Props = {
-	children: React.ReactNode;
 	displayType?: 'horizontal' | 'vertical';
 	icon: string;
+	items: CategoryItemGrouped[];
 	title: string;
 };
 
 const LARGE_BREAKPOINT = 992;
 
 const HomePageLayout = ({
-	children,
 	displayType = 'vertical',
 	icon,
+	items,
 	title,
 }: Props) => {
 	const {width} = useWindowSize();
@@ -88,7 +92,38 @@ const HomePageLayout = ({
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 
-			<ClayLayout.Row className="mb-7">{children}</ClayLayout.Row>
+			<ClayLayout.Row className="mb-7">
+				{items.map((group) =>
+					isHorizontal ? (
+						<ClayLayout.ContainerFluid
+							className="mb-4"
+							key={group.label}
+						>
+							<ClayLayout.ContentRow className="mb-2 pb-2">
+								<ClayLayout.ContentCol expand>
+									<p className="font-weight-semi-bold mb-0 text-3 text-secondary text-uppercase">
+										{group.label}
+									</p>
+								</ClayLayout.ContentCol>
+							</ClayLayout.ContentRow>
+
+							<ClayLayout.Row>
+								{group.items.map((app) => (
+									<ClayLayout.Col key={app.id} md={4} sm={6}>
+										<CategoryCardHorizontal item={app} />
+									</ClayLayout.Col>
+								))}
+							</ClayLayout.Row>
+						</ClayLayout.ContainerFluid>
+					) : (
+						group.items.map((item) => (
+							<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>
+								<CategoryCard item={item} />
+							</ClayLayout.Col>
+						))
+					)
+				)}
+			</ClayLayout.Row>
 		</ClayLayout.ContainerFluid>
 	);
 };
