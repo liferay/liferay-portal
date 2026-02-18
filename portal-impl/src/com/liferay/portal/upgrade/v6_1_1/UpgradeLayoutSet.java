@@ -25,12 +25,13 @@ public class UpgradeLayoutSet extends UpgradeProcess {
 
 	protected void updateLayoutSets() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			StringBundler sb = new StringBundler(4);
+			StringBundler sb = new StringBundler(5);
 
-			sb.append("select Group_.groupId, Group_.liveGroupId, ");
-			sb.append("LayoutSet.layoutSetId from LayoutSet inner join ");
-			sb.append("Group_ on (LayoutSet.groupId = Group_.groupId and ");
-			sb.append("Group_.liveGroupId > 0 and LayoutSet.logo = ?)");
+			sb.append("select Group_.groupId as groupId, Group_.liveGroupId, ");
+			sb.append("LayoutSet.layoutSetId as layoutSetId from LayoutSet ");
+			sb.append("inner join Group_ on (LayoutSet.groupId = Group_.");
+			sb.append("groupId and Group_.liveGroupId > 0 and LayoutSet.logo ");
+			sb.append("= ?)");
 
 			try (PreparedStatement preparedStatement =
 					connection.prepareStatement(sb.toString())) {
@@ -39,9 +40,8 @@ public class UpgradeLayoutSet extends UpgradeProcess {
 
 				try (ResultSet resultSet = preparedStatement.executeQuery()) {
 					while (resultSet.next()) {
-						long groupId = resultSet.getLong("Group_.groupId");
-						long layoutSetId = resultSet.getLong(
-							"LayoutSet.layoutSetId");
+						long groupId = resultSet.getLong("groupId");
+						long layoutSetId = resultSet.getLong("layoutSetId");
 
 						runSQL(
 							StringBundler.concat(
