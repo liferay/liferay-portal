@@ -10,6 +10,7 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.commerce.application.list.constants.CommercePanelCategoryKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
@@ -36,7 +37,7 @@ public class CommerceHomePanelCategory extends BasePanelCategory {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return "Home";
+		return LanguageUtil.get(locale, "home");
 	}
 
 	@Override
