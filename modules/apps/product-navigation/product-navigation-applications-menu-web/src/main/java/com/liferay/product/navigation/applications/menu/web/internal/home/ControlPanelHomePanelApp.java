@@ -8,6 +8,7 @@ package com.liferay.product.navigation.applications.menu.web.internal.home;
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.product.navigation.applications.menu.web.internal.constants.ControlPanelHomePortletKeys;
 
@@ -30,7 +31,7 @@ public class ControlPanelHomePanelApp extends BasePanelApp {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return "Home";
+		return LanguageUtil.get(locale, "home");
 	}
 
 	@Override
