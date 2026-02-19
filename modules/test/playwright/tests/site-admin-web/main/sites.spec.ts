@@ -108,86 +108,69 @@ test('Inactivate and reactivate site', async ({
 		name: getRandomString(),
 	});
 
-	try {
+	apiHelpers.data.push({id: site.id, type: 'site'});
 
-		// Activate 'Show Inactive Request Message' configuration in system settings
+	// Activate 'Show Inactive Request Message' configuration in system settings
 
-		await systemSettingsPage.goToSystemSetting(
-			'Infrastructure',
-			'Inactive Request Handler'
-		);
+	await systemSettingsPage.goToSystemSetting(
+		'Infrastructure',
+		'Inactive Request Handler'
+	);
 
-		const showInactiveRequestCheckbox = page.getByLabel(
-			'Show Inactive Request Message'
-		);
+	const showInactiveRequestCheckbox = page.getByLabel(
+		'Show Inactive Request Message'
+	);
 
-		if ((await showInactiveRequestCheckbox.isChecked()) === false) {
-			await showInactiveRequestCheckbox.check();
-			await page.getByRole('button', {name: 'Save'}).click();
-		}
-
-		// Create Layout
-
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			title: getRandomString(),
-		});
-
-		// Deactivate Site
-
-		await sitesAdminPage.goto();
-
-		await page
-			.getByRole('row', {name: site.name})
-			.getByLabel('Show Actions')
-			.click();
-
-		page.once('dialog', async (dialog) => {
-			await dialog.accept();
-		});
-
-		await page.getByRole('menuitem', {name: 'Deactivate'}).click();
-
-		await waitForAlert(page);
-
-		// Verify that the message alerting that the Site is deactivated appears
-
-		await widgetPagePage.goto(layout, site.friendlyUrlPath);
-
-		await expect(
-			page.getByText(
-				'This site is inactive. Please contact the administrator.',
-				{exact: true}
-			)
-		).toBeVisible();
-
-		// Activate Site
-
-		await sitesAdminPage.goto();
-
-		await page
-			.getByRole('row', {name: site.name})
-			.getByLabel('Show Actions')
-			.click();
-
-		await page.getByRole('menuitem', {name: 'Activate'}).click();
-
-		await waitForAlert(page);
-
-		// Verify that the message alerting that the Site is deactivated does not appears
-
-		await widgetPagePage.goto(layout, site.friendlyUrlPath);
-
-		await expect(
-			page.getByText(
-				'This site is inactive. Please contact the administrator.',
-				{exact: true}
-			)
-		).not.toBeVisible();
+	if ((await showInactiveRequestCheckbox.isChecked()) === false) {
+		await showInactiveRequestCheckbox.check();
+		await page.getByRole('button', {name: 'Save'}).click();
 	}
-	finally {
-		await apiHelpers.headlessSite.deleteSite(site.id);
-	}
+
+	// Create Layout
+
+	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+		groupId: site.id,
+		title: getRandomString(),
+	});
+
+	// Verify that the message alerting that the Site is deactivated does not appears
+
+	await widgetPagePage.goto(layout, site.friendlyUrlPath);
+
+	await expect(
+		page.getByText(
+			'This site is inactive. Please contact the administrator.',
+			{exact: true}
+		)
+	).not.toBeVisible();
+
+	// Deactivate Site
+
+	await sitesAdminPage.goto();
+
+	await page
+		.getByRole('row', {name: site.name})
+		.getByLabel('Show Actions')
+		.click();
+
+	page.once('dialog', async (dialog) => {
+		await dialog.accept();
+	});
+
+	await page.getByRole('menuitem', {name: 'Deactivate'}).click();
+
+	await waitForAlert(page);
+
+	// Verify that the message alerting that the Site is deactivated appears
+
+	await widgetPagePage.goto(layout, site.friendlyUrlPath);
+
+	await expect(
+		page.getByText(
+			'This site is inactive. Please contact the administrator.',
+			{exact: true}
+		)
+	).toBeVisible();
 });
 
 test('Could edit site name', async ({
