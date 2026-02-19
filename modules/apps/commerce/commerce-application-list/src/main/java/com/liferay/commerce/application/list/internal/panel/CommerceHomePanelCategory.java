@@ -7,7 +7,7 @@ package com.liferay.commerce.application.list.internal.panel;
 
 import com.liferay.application.list.BasePanelCategory;
 import com.liferay.application.list.PanelCategory;
-import com.liferay.commerce.application.list.constants.CommercePanelCategoryKeys;
+import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"panel.category.key=" + CommercePanelCategoryKeys.COMMERCE,
+		"panel.category.key=" + PanelCategoryKeys.COMMERCE,
 		"panel.category.order:Integer=50"
 	},
 	service = PanelCategory.class
@@ -32,7 +32,7 @@ public class CommerceHomePanelCategory extends BasePanelCategory {
 
 	@Override
 	public String getKey() {
-		return CommercePanelCategoryKeys.COMMERCE_HOME;
+		return PanelCategoryKeys.COMMERCE_HOME;
 	}
 
 	@Override

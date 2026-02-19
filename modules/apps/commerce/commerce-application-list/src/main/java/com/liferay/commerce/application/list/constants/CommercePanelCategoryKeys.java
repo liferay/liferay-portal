@@ -15,8 +15,6 @@ public class CommercePanelCategoryKeys {
 
 	public static final String COMMERCE = PanelCategoryKeys.COMMERCE;
 
-	public static final String COMMERCE_HOME = "commerce.home";
-
 	public static final String COMMERCE_INVENTORY_MANAGEMENT =
 		"commerce.inventory_management";
 
