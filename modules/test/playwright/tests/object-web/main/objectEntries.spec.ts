@@ -335,9 +335,7 @@ bulkTest.describe('can use bulk on object entries', () => {
 
 			await viewObjectEntriesPage.deleteConfirmationModal.click();
 
-			await page.waitForLoadState('networkidle');
-
-			await page.reload();
+			await waitForAlert(page, 'Deletion process has been finished.');
 
 			await expect(
 				page.getByText('Showing 1 to 20 of 22 entries.')
@@ -357,9 +355,7 @@ bulkTest.describe('can use bulk on object entries', () => {
 
 			await viewObjectEntriesPage.deleteAllConfirmationModal.click();
 
-			await page.waitForLoadState('networkidle');
-
-			await page.reload();
+			await waitForAlert(page, 'Deletion process has been finished.');
 
 			await expect(page.getByText('No Results Found')).toBeVisible();
 		}
