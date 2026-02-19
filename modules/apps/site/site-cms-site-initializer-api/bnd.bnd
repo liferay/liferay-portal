@@ -2,5 +2,6 @@ Bundle-Name: Liferay Site CMS Site Initializer API
 Bundle-SymbolicName: com.liferay.site.cms.site.initializer.api
 Bundle-Version: 4.1.0
 Export-Package:\
+	com.liferay.site.cms.site.initializer.bulk.selection,\
 	com.liferay.site.cms.site.initializer.configuration,\
 	com.liferay.site.cms.site.initializer.util
