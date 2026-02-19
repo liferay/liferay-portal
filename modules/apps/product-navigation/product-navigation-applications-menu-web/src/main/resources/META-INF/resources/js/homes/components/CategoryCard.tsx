@@ -19,11 +19,17 @@ const CategoryCard = ({
 		<ClayCard className="home-card" href={href} interactive>
 			<ClayCard.Body className="c-pb-1 c-pb-lg-3">
 				<div className="c-mt-1 c-mt-lg-0 c-pt-2 c-pt-lg-4">
-					<div className="c-pb-2">
-						<ClaySticker borderless displayType="outline" size="xl">
-							<ClayIcon symbol={leadingIcon} />
-						</ClaySticker>
-					</div>
+					{leadingIcon ? (
+						<div className="c-pb-2">
+							<ClaySticker
+								borderless
+								displayType="outline"
+								size="xl"
+							>
+								<ClayIcon symbol={leadingIcon} />
+							</ClaySticker>
+						</div>
+					) : null}
 
 					<ClayCard.Description
 						className="c-mt-lg-2 font-weight-semi-bold text-dark text-truncate"
