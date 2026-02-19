@@ -26,11 +26,11 @@ test(
 		await test.step('Click on a navigation item and check if it navigates to the correct page', async () => {
 			await globalMenuPage.goToControlPanel();
 
-			const usersAndOrganizationsItem = page.getByRole('menuitem', {
-				name: 'Users and Organizations',
+			const homeItem = page.getByRole('menuitem', {
+				name: 'Home',
 			});
 
-			await expect(usersAndOrganizationsItem).toHaveClass(/active/);
+			await expect(homeItem).toHaveClass(/active/);
 
 			const userGroupsItem = page.getByRole('menuitem', {
 				name: 'User Groups',
@@ -43,7 +43,7 @@ test(
 			await expect(
 				page.getByRole('heading', {name: 'User Groups'})
 			).toBeAttached();
-			await expect(usersAndOrganizationsItem).not.toHaveClass(/active/);
+			await expect(homeItem).not.toHaveClass(/active/);
 			await expect(userGroupsItem).toHaveClass(/active/);
 		});
 	}
@@ -88,7 +88,7 @@ test(
 		});
 
 		await test.step('Click the toggle button and check if navigation is open/hidden', async () => {
-			const menu = page.getByLabel('Applications Menu');
+			const menu = page.getByLabel('Applications Menu', {exact: true});
 
 			await globalMenuPage.openProductMenu('Applications');
 
@@ -109,7 +109,7 @@ test(
 			await globalMenuPage.goToApplications();
 		});
 
-		const menu = page.getByLabel('Applications Menu');
+		const menu = page.getByLabel('Applications Menu', {exact: true});
 		const toggler = page.getByTestId('sideNavigationToggler');
 
 		const testCases = [
@@ -147,7 +147,7 @@ test(
 	async ({globalMenuPage, page}) => {
 		await globalMenuPage.goToApplications();
 
-		const workflowItem = page.getByText('Workflow');
+		const workflowItem = page.getByRole('menuitem', {name: 'Workflow'});
 
 		try {
 			const categories = page.locator('button.collapse-icon');
