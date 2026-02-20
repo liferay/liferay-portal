@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.object.internal.bulk.selection;
+package com.liferay.site.cms.site.initializer.internal.bulk.selection;
 
 import com.liferay.bulk.selection.BulkSelectionAction;
 import com.liferay.object.model.ObjectDefinition;
@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.site.cms.site.initializer.bulk.selection.BaseObjectBulkSelectionAction;
 
 import java.io.Serializable;
 

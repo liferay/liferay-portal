@@ -9,6 +9,7 @@ dependencies {
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	compileOnly project(":apps:bulk:bulk-selection-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:fragment:fragment-api")
