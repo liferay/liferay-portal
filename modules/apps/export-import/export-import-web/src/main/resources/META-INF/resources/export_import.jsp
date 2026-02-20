@@ -12,6 +12,8 @@ String tabs2 = ParamUtil.getString(request, "tabs2", "export");
 
 String returnToFullPageURL = ParamUtil.getString(request, "returnToFullPageURL");
 
+String sourceModule = ParamUtil.getString(request, "sourceModule", "");
+
 PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	renderResponse
 ).setMVCRenderCommandName(
@@ -22,6 +24,8 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	portletResource
 ).setParameter(
 	"returnToFullPageURL", returnToFullPageURL
+).setParameter(
+	"sourceModule", sourceModule
 ).buildPortletURL();
 %>
 
@@ -60,7 +64,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 			/>
 		</c:if>
 
-		<div class="portlet-export-import-container" id="<portlet:namespace />exportImportPortletContainer">
+		<div class="portlet-export-import-container <%= Validator.isNotNull(sourceModule) ? "site-cms-export-import-dialog" : "" %>" id="<portlet:namespace />exportImportPortletContainer">
 			<liferay-util:include page="/export_import_error.jsp" servletContext="<%= application %>" />
 
 			<c:choose>

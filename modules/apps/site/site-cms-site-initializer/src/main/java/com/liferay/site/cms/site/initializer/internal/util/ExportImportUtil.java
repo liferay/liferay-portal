@@ -82,6 +82,8 @@ public class ExportImportUtil {
 			portletResource
 		).setParameter(
 			"returnToFullPageURL", PortalUtil.getCurrentURL(httpServletRequest)
+		).setParameter(
+			"sourceModule", "site-cms-site-initializer"
 		).setWindowState(
 			LiferayWindowState.POP_UP
 		).buildString();
