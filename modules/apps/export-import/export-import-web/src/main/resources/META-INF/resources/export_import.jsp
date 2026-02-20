@@ -64,7 +64,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 			/>
 		</c:if>
 
-		<div class="portlet-export-import-container <%= Validator.isNotNull(sourceModule) ? "site-cms-export-import-dialog" : "" %>" id="<portlet:namespace />exportImportPortletContainer">
+		<div class="portlet-export-import-container <%= !Validator.isBlank(sourceModule) ? "site-cms-export-import-dialog" : "" %>" id="<portlet:namespace />exportImportPortletContainer">
 			<liferay-util:include page="/export_import_error.jsp" servletContext="<%= application %>" />
 
 			<c:choose>
