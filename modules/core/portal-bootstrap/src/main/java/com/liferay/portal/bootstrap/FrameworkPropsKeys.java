@@ -15,4 +15,5 @@ public interface FrameworkPropsKeys {
 
 	public static final String OSGI_INSTALL_AREA = "osgi.install.area";
 
+	
 }

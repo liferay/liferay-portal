@@ -112,6 +112,7 @@ public abstract class BaseDigitalSalesRoomResourceTestCase {
 		_format = FastDateFormatFactoryUtil.getSimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss'Z'");
 	}
+	
 
 	@Before
 	public void setUp() throws Exception {
