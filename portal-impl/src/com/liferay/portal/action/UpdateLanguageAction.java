@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -40,6 +41,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -131,7 +133,7 @@ public class UpdateLanguageAction implements Action {
 		int questionIndex = redirect.indexOf(StringPool.QUESTION);
 
 		if (questionIndex != -1) {
-			queryString = redirect.substring(questionIndex);
+			queryString = redirect.substring(questionIndex + 1);
 			layoutURL = redirect.substring(0, questionIndex);
 		}
 
@@ -281,7 +283,15 @@ public class UpdateLanguageAction implements Action {
 		}
 
 		if (Validator.isNotNull(queryString)) {
-			redirect = redirect + queryString;
+			Map<String, String[]> queryStringMap =
+				HttpComponentsUtil.parameterMapFromString(queryString);
+
+			for (Map.Entry<String, String[]> entry :
+					queryStringMap.entrySet()) {
+
+				redirect = HttpComponentsUtil.setParameter(
+					redirect, entry.getKey(), entry.getValue()[0]);
+			}
 		}
 
 		return redirect;
