@@ -12811,6 +12811,9 @@ admin.email.from.address=test@liferay.com
 announcements.email.to.address=noreply@liferay.com
 login.secure.forgot.password=false
 captcha.enforce.disabled=true
+configuration.override.com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration_service.bundleLocation="?"
+configuration.override.com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration_sidecarJVMOptions=["-XX:+AlwaysPreTouch", "-Xms1g", "-Xmx4g"]
+configuration.override.com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration_sidecarShutdownTimeout=I"60000"
 		</echo>
 
 		<mkdir dir="${liferay.home}/osgi/configs" />
