@@ -163,8 +163,8 @@ public class SideNavigationDisplayContext {
 
 		PanelCategory panelCategory = _getPanelCategory();
 
-		List<VerticalNavItem> homeVerticalNavItems =
-			_getVerticalNavItems(panelCategory);
+		List<VerticalNavItem> homeVerticalNavItems = _getVerticalNavItems(
+			panelCategory);
 
 		if (!homeVerticalNavItems.isEmpty()) {
 			verticalNavItems.addAll(homeVerticalNavItems);
