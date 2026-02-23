@@ -405,6 +405,14 @@ public class SegmentsExperienceLocalServiceImpl
 
 	@Override
 	public List<SegmentsExperience> getSegmentsExperiences(
+			long groupId, boolean active)
+		throws PortalException {
+
+		return segmentsExperiencePersistence.findByG_A(groupId, active);
+	}
+
+	@Override
+	public List<SegmentsExperience> getSegmentsExperiences(
 		long groupId, long plid) {
 
 		return segmentsExperiencePersistence.findByG_P(groupId, plid);
