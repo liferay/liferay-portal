@@ -59,7 +59,9 @@ export class GlobalMenuPage {
 			trigger: this.globalMenuButton,
 		});
 
-		const menu = this.page.getByLabel(`${categoryName} Menu`);
+		const menu = this.page.getByLabel(`${categoryName} Menu`, {
+			exact: true,
+		});
 
 		await expect(menu).toBeAttached();
 

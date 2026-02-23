@@ -191,7 +191,7 @@ test(
 	'Escape key does not close the side navigation menu',
 	{tag: '@LPD-79543'},
 	async ({globalMenuPage, page}) => {
-		const menu = page.getByLabel('Applications Menu');
+		const menu = page.getByLabel('Applications Menu', {exact: true});
 
 		await test.step('Go to an Applications Panel page', async () => {
 			await globalMenuPage.goToApplications();
