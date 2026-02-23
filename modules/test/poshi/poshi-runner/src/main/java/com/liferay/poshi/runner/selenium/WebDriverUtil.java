@@ -147,6 +147,8 @@ public class WebDriverUtil {
 
 		ChromeOptions chromeOptions = _getDefaultChromeOptions();
 
+        chromeOptions.setCapability("selenium:sessionTimeout", poshiProperties.timeoutPageLoadWait);
+
 		if (Validator.isNotNull(poshiProperties.browserChromeBinFile)) {
 			chromeOptions.setBinary(poshiProperties.browserChromeBinFile);
 		}
