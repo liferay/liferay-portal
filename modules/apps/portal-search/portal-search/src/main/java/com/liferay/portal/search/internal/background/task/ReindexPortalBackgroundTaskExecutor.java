@@ -15,14 +15,12 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.background.task.ReindexBackgroundTaskConstants;
 import com.liferay.portal.kernel.search.background.task.ReindexStatusMessageSenderUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.search.index.ConcurrentReindexManager;
 import com.liferay.portal.search.index.SyncReindexManager;
 import com.liferay.portal.search.internal.SearchEngineInitializer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -47,13 +45,8 @@ public class ReindexPortalBackgroundTaskExecutor
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
-
-		_parallelIndexing = GetterUtil.getBoolean(
-			properties.get("parallelIndexing"), true);
 	}
 
 	@Override
@@ -61,72 +54,67 @@ public class ReindexPortalBackgroundTaskExecutor
 			String className, long[] companyIds, String executionMode)
 		throws Exception {
 
-		if (_parallelIndexing) {
-			ExecutorService executorService =
-				_portalExecutorManager.getPortalExecutor(
-					ReindexPortalBackgroundTaskExecutor.class.getName());
+		ExecutorService executorService =
+			_portalExecutorManager.getPortalExecutor(
+				ReindexPortalBackgroundTaskExecutor.class.getName());
 
-			List<Future<?>> futures = new ArrayList<>();
+		List<Future<?>> futures = new ArrayList<>();
 
-			try (SafeCloseable safeCloseable = SearchContext.openBatchMode()) {
-				for (long companyId : companyIds) {
-					futures.add(
-						executorService.submit(
-							() -> {
-								_reindex(companyId, companyIds, executionMode);
-
-								return null;
-							}));
-				}
-
-				for (Future<?> future : futures) {
-					future.get();
-				}
-			}
-		}
-		else {
+		try (SafeCloseable safeCloseable = SearchContext.openBatchMode()) {
 			for (long companyId : companyIds) {
-				_reindex(companyId, companyIds, executionMode);
+				futures.add(
+					executorService.submit(
+						() -> {
+							ReindexStatusMessageSenderUtil.sendStatusMessage(
+								ReindexBackgroundTaskConstants.PORTAL_START,
+								companyId, companyIds);
+
+							if (_log.isInfoEnabled()) {
+								_log.info(
+									StringBundler.concat(
+										"Start reindexing company ", companyId,
+										" with execution mode ",
+										executionMode));
+							}
+
+							try {
+								SearchEngineInitializer
+									searchEngineInitializer =
+										new SearchEngineInitializer(
+											_bundleContext, companyId,
+											_concurrentReindexManagerSnapshot.
+												get(),
+											executionMode,
+											_portalExecutorManager,
+											_syncReindexManagerSnapshot.get());
+
+								searchEngineInitializer.reindex();
+							}
+							catch (Exception exception) {
+								_log.error(exception);
+							}
+							finally {
+								ReindexStatusMessageSenderUtil.
+									sendStatusMessage(
+										ReindexBackgroundTaskConstants.
+											PORTAL_END,
+										companyId, companyIds);
+
+								if (_log.isInfoEnabled()) {
+									_log.info(
+										StringBundler.concat(
+											"Finished reindexing company ",
+											companyId, " with execution mode ",
+											executionMode));
+								}
+							}
+
+							return null;
+						}));
 			}
-		}
-	}
 
-	private void _reindex(
-			long companyId, long[] companyIds, String executionMode)
-		throws Exception {
-
-		ReindexStatusMessageSenderUtil.sendStatusMessage(
-			ReindexBackgroundTaskConstants.PORTAL_START, companyId, companyIds);
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				StringBundler.concat(
-					"Start reindexing company ", companyId,
-					" with execution mode ", executionMode));
-		}
-
-		try {
-			SearchEngineInitializer searchEngineInitializer =
-				new SearchEngineInitializer(
-					_bundleContext, companyId,
-					_concurrentReindexManagerSnapshot.get(), executionMode,
-					_portalExecutorManager, _syncReindexManagerSnapshot.get());
-
-			searchEngineInitializer.reindex();
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-		finally {
-			ReindexStatusMessageSenderUtil.sendStatusMessage(
-				ReindexBackgroundTaskConstants.PORTAL_END, companyId,
-				companyIds);
-
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					StringBundler.concat(
-						"Finished reindexing company ", companyId,
-						" with execution mode ", executionMode));
+			for (Future<?> future : futures) {
+				future.get();
 			}
 		}
 	}
@@ -144,7 +132,6 @@ public class ReindexPortalBackgroundTaskExecutor
 			null, true);
 
 	private BundleContext _bundleContext;
-	private boolean _parallelIndexing;
 
 	@Reference
 	private PortalExecutorManager _portalExecutorManager;
