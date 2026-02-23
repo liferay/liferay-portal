@@ -163,12 +163,8 @@ public class SideNavigationDisplayContext {
 
 		PanelCategory panelCategory = _getPanelCategory();
 
-		List<VerticalNavItem> homeVerticalNavItems = _getVerticalNavItems(
-			panelCategory);
-
-		if (!homeVerticalNavItems.isEmpty()) {
-			verticalNavItems.addAll(homeVerticalNavItems);
-		}
+		verticalNavItems.addAll(_getVerticalNavItems(
+			panelCategory));
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
@@ -245,12 +241,7 @@ public class SideNavigationDisplayContext {
 
 		PanelCategory panelCategory = _getPanelCategory();
 
-		List<Map<String, Object>> homePropsItems = _getPropsItems(
-			panelCategory);
-
-		if (!homePropsItems.isEmpty()) {
-			propsItems.addAll(homePropsItems);
-		}
+		propsItems.addAll(_getPropsItems(panelCategory));
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
