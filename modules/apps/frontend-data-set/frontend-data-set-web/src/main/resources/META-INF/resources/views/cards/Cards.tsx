@@ -22,9 +22,9 @@ import isLink from '../../utils/isLink';
 import {
 	DisplayType,
 	EItemActionsType,
-	ICardLabelSchema,
 	ICardSchema,
 	IItemsActions,
+	ILabelSchema,
 	IView,
 } from '../../utils/types';
 import ViewsContext from '../ViewsContext';
@@ -105,7 +105,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 				return [];
 			}
 
-			return labels.flatMap((label: ICardLabelSchema) => {
+			return labels.flatMap((label: ILabelSchema) => {
 				const {displayTypeKey, displayTypeValues} = label;
 				let {displayType} = label;
 

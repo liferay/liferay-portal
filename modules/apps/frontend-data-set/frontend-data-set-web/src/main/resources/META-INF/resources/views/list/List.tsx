@@ -5,6 +5,7 @@
 
 import {ClayCheckbox, ClayRadio} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
@@ -20,7 +21,9 @@ import FDSDndProvider from '../../dnd/FDSDndProvider';
 import useFDSDrop from '../../dnd/useFDSDrop';
 import {getLocalizedValue} from '../../utils/getLocalizedValue';
 import {
+	DisplayType,
 	IHeader,
+	ILabelSchema,
 	IListSchema,
 	IListTitleRenderer,
 	IView,
@@ -84,6 +87,7 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 			accessibleNameField,
 			description,
 			image,
+			labels,
 			sticker,
 			symbol,
 			title,
@@ -105,6 +109,44 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 		const accessibleName =
 			getLocalizedValue(item, accessibleNameItemKey)?.value ||
 			Liferay.Language.get('item');
+
+		const getLabels = (
+			item: any
+		): Array<{
+			displayType: DisplayType;
+			value: string;
+		}> => {
+			if (!labels) {
+				return [];
+			}
+
+			return labels.flatMap((label: ILabelSchema) => {
+				const {displayTypeKey, displayTypeValues} = label;
+				let {displayType} = label;
+
+				if (!displayType && displayTypeValues && displayTypeKey) {
+					const keyValue = getLocalizedValue(
+						item,
+						displayTypeKey
+					)?.value;
+
+					displayType = displayTypeValues[keyValue!];
+				}
+
+				const value = getLocalizedValue(item, label.value)?.value;
+
+				if (!value) {
+					return [];
+				}
+
+				return [
+					{
+						displayType: displayType || DisplayType.UNSTYLED,
+						value,
+					},
+				];
+			});
+		};
 
 		return (
 			<ClayList.Item
@@ -186,6 +228,21 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 						<ClayList.ItemText>
 							{getLocalizedValue(item, description)?.value}
 						</ClayList.ItemText>
+					)}
+
+					{labels && (
+						<ClayLayout.ContentRow className="mt-1">
+							{getLabels(item).map((label, index: number) => (
+								<ClayLabel
+									className="text-uppercase"
+									displayType={label.displayType}
+									key={index}
+									large
+								>
+									{label.value}
+								</ClayLabel>
+							))}
+						</ClayLayout.ContentRow>
 					)}
 				</ClayList.ItemField>
 

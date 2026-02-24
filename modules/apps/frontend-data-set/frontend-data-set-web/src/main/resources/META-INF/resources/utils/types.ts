@@ -221,29 +221,29 @@ export interface ITableSchema {
 	fields: Array<IField>;
 }
 
-export interface IBaseCardLabelSchema {
+export interface IBaseLabelSchema {
 	value: string;
 }
 
-export interface IStaticCardLabelSchema extends IBaseCardLabelSchema {
+export interface IStaticLabelSchema extends IBaseLabelSchema {
 	displayType: DisplayType;
 	displayTypeKey?: never;
 	displayTypeValues?: never;
 }
 
-export interface IDynamicCardLabelSchema extends IBaseCardLabelSchema {
+export interface IDynamicLabelSchema extends IBaseLabelSchema {
 	displayType?: never;
 	displayTypeKey: string;
 	displayTypeValues: Record<string, DisplayType>;
 }
 
-export type ICardLabelSchema = IStaticCardLabelSchema | IDynamicCardLabelSchema;
+export type ILabelSchema = IStaticLabelSchema | IDynamicLabelSchema;
 
 export interface ICardSchema {
 	accessibleNameField?: string;
 	description: string;
 	image?: string;
-	labels?: ICardLabelSchema[];
+	labels?: ILabelSchema[];
 	link?: string;
 	sticker?: string;
 	symbol: string;
@@ -254,19 +254,20 @@ export interface IHeader {
 	title?: string;
 }
 
-export interface IListTitleRenderer {
-	component: ({itemData}: {itemData: any}) => JSX.Element;
-}
-
 export interface IListSchema {
 	accessibleNameField?: string;
 	description: string;
 	image?: string;
+	labels?: ILabelSchema[];
 	sticker?: string;
 	symbol?: string;
 	title: string;
 	titleRenderer: IListTitleRenderer;
 	tooltip?: string;
+}
+
+export interface IListTitleRenderer {
+	component: ({itemData}: {itemData: any}) => JSX.Element;
 }
 
 export type ISchema = ITableSchema | ICardSchema | IListSchema;
