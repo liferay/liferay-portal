@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class ServerAdminPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "suitcase";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

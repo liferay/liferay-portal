@@ -11,6 +11,7 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.item.selector.ItemSelector;
@@ -288,6 +289,8 @@ public class SideNavigationDisplayContext {
 					"id", panelApp.getPortletId()
 				).put(
 					"label", panelApp.getLabel(_themeDisplay.getLocale())
+				).put(
+					"leadingIcon", panelApp.getIcon()
 				).build());
 		}
 
@@ -313,6 +316,8 @@ public class SideNavigationDisplayContext {
 			verticalNavItem.setId(panelApp.getPortletId());
 			verticalNavItem.setLabel(
 				panelApp.getLabel(_themeDisplay.getLocale()));
+			verticalNavItem.setLeadingIcon(
+				IconItem.of(panelApp.getIcon(), null));
 
 			verticalNavItems.add(verticalNavItem);
 		}

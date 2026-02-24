@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class ContentDashboardAdminPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "display-content";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

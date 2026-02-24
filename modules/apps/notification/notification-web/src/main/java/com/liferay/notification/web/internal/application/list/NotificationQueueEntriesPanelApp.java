@@ -30,6 +30,11 @@ import org.osgi.service.component.annotations.Reference;
 public class NotificationQueueEntriesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "list";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

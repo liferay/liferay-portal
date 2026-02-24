@@ -33,6 +33,11 @@ import org.osgi.service.component.annotations.Reference;
 public class ObjectDefinitionsPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "braces";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

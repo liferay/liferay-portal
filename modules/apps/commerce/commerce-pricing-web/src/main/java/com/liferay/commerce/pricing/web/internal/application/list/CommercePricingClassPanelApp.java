@@ -28,6 +28,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CommercePricingClassPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "archive";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

@@ -37,6 +37,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceDiscountPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "percentage-banner";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

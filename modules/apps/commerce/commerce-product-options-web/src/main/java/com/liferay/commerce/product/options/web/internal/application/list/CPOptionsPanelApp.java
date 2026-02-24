@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CPOptionsPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "list-ul-rtl";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

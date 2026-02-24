@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class COREntryPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "order-form-pencil";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class RolesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "organizations";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceInventoryWarehousePanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "warehouse";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

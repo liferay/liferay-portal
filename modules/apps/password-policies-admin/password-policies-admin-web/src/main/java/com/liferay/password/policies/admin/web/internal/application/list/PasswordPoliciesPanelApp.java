@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class PasswordPoliciesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "password-policies";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

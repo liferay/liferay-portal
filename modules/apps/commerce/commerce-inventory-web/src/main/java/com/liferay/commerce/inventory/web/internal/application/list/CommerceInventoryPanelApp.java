@@ -28,6 +28,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceInventoryPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "squares";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

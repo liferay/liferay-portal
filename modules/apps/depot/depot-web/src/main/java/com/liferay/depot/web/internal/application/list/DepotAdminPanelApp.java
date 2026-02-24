@@ -36,6 +36,11 @@ import org.osgi.service.component.annotations.Reference;
 public class DepotAdminPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "books";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

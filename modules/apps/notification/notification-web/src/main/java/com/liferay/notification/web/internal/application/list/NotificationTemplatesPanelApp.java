@@ -30,6 +30,11 @@ import org.osgi.service.component.annotations.Reference;
 public class NotificationTemplatesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "bell-on";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

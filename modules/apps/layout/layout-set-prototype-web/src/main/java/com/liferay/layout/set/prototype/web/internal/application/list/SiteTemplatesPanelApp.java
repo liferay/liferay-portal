@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class SiteTemplatesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "site-template";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

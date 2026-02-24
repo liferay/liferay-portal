@@ -35,6 +35,11 @@ import org.osgi.service.component.annotations.Reference;
 public class ExportPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "export";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

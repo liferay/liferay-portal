@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceCurrencyPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "coin";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
