@@ -9,11 +9,18 @@ import com.liferay.frontend.data.set.constants.FDSConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.FDSViewContextContributor;
 import com.liferay.frontend.data.set.view.list.BaseListFDSView;
+import com.liferay.frontend.data.set.view.list.FDSListSchema;
+import com.liferay.frontend.data.set.view.list.FDSListSchemaLabelField;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,20 +40,48 @@ public class ListFDSViewContextContributor
 	public Map<String, Object> getFDSViewContext(
 		FDSView fdsView, Locale locale) {
 
-		if (fdsView instanceof BaseListFDSView) {
-			return _serialize((BaseListFDSView)fdsView);
+		if (fdsView instanceof BaseListFDSView baseListFDSView) {
+			return _serialize(baseListFDSView, locale);
 		}
 
 		return Collections.emptyMap();
 	}
 
-	private Map<String, Object> _serialize(BaseListFDSView baseListFDSView) {
+	private Map<String, Object> _serialize(
+		BaseListFDSView baseListFDSView, Locale locale) {
+
 		return HashMapBuilder.<String, Object>put(
 			"schema",
-			HashMapBuilder.<String, Object>put(
+			JSONUtil.put(
 				"description", baseListFDSView.getDescription()
 			).put(
 				"image", baseListFDSView.getImage()
+			).put(
+				"labels",
+				() -> {
+					FDSListSchema fdsListSchema =
+						baseListFDSView.getFDSListSchema(locale);
+
+					if (fdsListSchema == null) {
+						return null;
+					}
+
+					List<FDSListSchemaLabelField> fdsListSchemaLabelFieldList =
+						fdsListSchema.getFDSListSchemaLabelFieldsList();
+
+					if (ListUtil.isEmpty(fdsListSchemaLabelFieldList)) {
+						return null;
+					}
+
+					JSONArray jsonArray = JSONUtil.putAll();
+
+					TransformUtil.transform(
+						fdsListSchemaLabelFieldList,
+						fdsListSchemaLabelField -> jsonArray.put(
+							fdsListSchemaLabelField.toJSONObject()));
+
+					return jsonArray;
+				}
 			).put(
 				"sticker", baseListFDSView.getSticker()
 			).put(
@@ -62,7 +97,7 @@ public class ListFDSViewContextContributor
 
 					return title;
 				}
-			).build()
+			)
 		).build();
 	}
 
