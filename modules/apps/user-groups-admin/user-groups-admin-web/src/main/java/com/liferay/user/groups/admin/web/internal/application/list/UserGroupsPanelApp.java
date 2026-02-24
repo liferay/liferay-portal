@@ -27,6 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class UserGroupsPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() { return "community"; }
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
