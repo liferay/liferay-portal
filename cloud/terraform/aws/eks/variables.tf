@@ -6,7 +6,7 @@ variable "demo_mode" {
 	type=bool
 }
 variable "deployment_name" {
-	default="liferay-self-hosted"
+	type=string
 	validation {
 		condition=can(regex("^[a-z0-9-]*$", var.deployment_name))
 		error_message="The deployment_name must contain only lowercase letters, numbers, and hyphens."
@@ -30,7 +30,7 @@ variable "public_subnets" {
 	default=["10.0.101.0/24", "10.0.102.0/24"]
 }
 variable "region" {
-	default="us-west-2"
+	type=string
 }
 variable "vpc_cidr" {
 	default="10.0.0.0/16"
