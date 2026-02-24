@@ -13,7 +13,9 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Raymond Augé
  */
 @ExtendedObjectClassDefinition(
-	category = "segments", factoryInstanceLabelAttribute = "entityFieldName"
+	category = "segments", deprecated = true,
+	factoryInstanceLabelAttribute = "entityFieldName",
+	featureFlagKey = "LPD-78863"
 )
 @Meta.OCD(
 	description = "segments-context-vocabulary-configuration-description",
