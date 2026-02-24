@@ -163,8 +163,7 @@ public class SideNavigationDisplayContext {
 
 		PanelCategory panelCategory = _getPanelCategory();
 
-		verticalNavItems.addAll(_getVerticalNavItems(
-			panelCategory));
+		verticalNavItems.addAll(_getVerticalNavItems(panelCategory));
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
