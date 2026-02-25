@@ -125,12 +125,62 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 				let {displayType} = label;
 
 				if (!displayType && displayTypeValues && displayTypeKey) {
-					const keyValue = getLocalizedValue(
-						item,
-						displayTypeKey
-					)?.value;
+					const displayTypeKeyPath = displayTypeKey.substring(
+						0,
+						displayTypeKey.lastIndexOf('.')
+					);
+					const displayTypeFromItem = item[displayTypeKeyPath];
 
-					displayType = displayTypeValues[keyValue!];
+					if (Array.isArray(displayTypeFromItem)) {
+						const displayTypeKeyProperty = displayTypeKey
+							.split('.')
+							.pop();
+
+						const baseValue = label.value.split('.');
+
+						const valuePath = baseValue.slice(0, -1).join('.');
+						const valueProperty = baseValue.pop();
+
+						if (!displayTypeKeyProperty || !valueProperty) {
+							return [];
+						}
+
+						if (valuePath === displayTypeKeyPath) {
+							return displayTypeFromItem.reduce(
+								(list, currentDisplayType) => {
+									const value = getLocalizedValue(
+										currentDisplayType,
+										valueProperty
+									)?.value;
+
+									if (value) {
+										const keyValue = getLocalizedValue(
+											currentDisplayType,
+											displayTypeKeyProperty
+										)?.value;
+
+										list.push({
+											displayType:
+												displayTypeValues[keyValue!] ||
+												DisplayType.UNSTYLED,
+											value,
+										});
+									}
+
+									return list;
+								},
+								[]
+							);
+						}
+					}
+					else {
+						const keyValue = getLocalizedValue(
+							item,
+							displayTypeKey
+						)?.value;
+
+						displayType = displayTypeValues[keyValue!];
+					}
 				}
 
 				const value = getLocalizedValue(item, label.value)?.value;
@@ -236,7 +286,7 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 								<ClayLabel
 									className="text-uppercase"
 									displayType={label.displayType}
-									key={index}
+									key={`${label.value}-${index}`}
 									large
 								>
 									{label.value}
