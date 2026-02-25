@@ -75,7 +75,7 @@ function getBulkDeleteMessage(
 		),
 		modalConfirmationTitle: Liferay.Language.get('delete-entry'),
 		toastDeletionStartMessage: Liferay.Language.get(
-			'deletion-started-for-one-entry'
+			'deletion-started-for-1-entry'
 		),
 	};
 }
