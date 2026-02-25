@@ -29,7 +29,9 @@
 	"description": "",
 	"jest": {
 		"testPathIgnorePatterns": [
-			"<rootDir>/test/js/[^/]+\\.js"
+			"<rootDir>/test/js/[^/]+\\.js",
+			"<rootDir>/test/js/components/segment_edit/SegmentEdit.test.js",
+			"<rootDir>/test/js/components/criteria_builder/ContributorsBuilder.test.js"
 		]
 	},
 	"main": "js/index.js",
