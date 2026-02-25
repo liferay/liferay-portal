@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceTermEntryPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "signature"; }
+	public String getIcon() {
+		return "signature";
+	}
 
 	@Override
 	public Portlet getPortlet() {

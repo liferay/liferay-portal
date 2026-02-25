@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class SAPPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "shield-asterisk"; }
+	public String getIcon() {
+		return "shield-asterisk";
+	}
 
 	@Override
 	public Portlet getPortlet() {

@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ControlPanelWorkflowInstancePanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "submission"; }
+	public String getIcon() {
+		return "submission";
+	}
 
 	@Override
 	public Portlet getPortlet() {

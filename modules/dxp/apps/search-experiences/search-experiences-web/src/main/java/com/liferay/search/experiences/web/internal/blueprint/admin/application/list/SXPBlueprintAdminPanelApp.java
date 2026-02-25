@@ -34,7 +34,9 @@ import org.osgi.service.component.annotations.Reference;
 public class SXPBlueprintAdminPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "blue-print"; }
+	public String getIcon() {
+		return "blue-print";
+	}
 
 	@Override
 	public Portlet getPortlet() {

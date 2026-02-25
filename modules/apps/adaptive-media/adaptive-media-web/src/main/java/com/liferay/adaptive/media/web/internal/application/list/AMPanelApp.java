@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class AMPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "picture"; }
+	public String getIcon() {
+		return "picture";
+	}
 
 	@Override
 	public Portlet getPortlet() {

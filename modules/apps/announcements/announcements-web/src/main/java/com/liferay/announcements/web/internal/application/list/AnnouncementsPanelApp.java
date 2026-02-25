@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class AnnouncementsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "megaphone"; }
+	public String getIcon() {
+		return "megaphone";
+	}
 
 	@Override
 	public Portlet getPortlet() {

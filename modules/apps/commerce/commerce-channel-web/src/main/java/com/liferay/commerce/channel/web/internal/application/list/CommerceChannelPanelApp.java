@@ -28,7 +28,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceChannelPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "nodes"; }
+	public String getIcon() {
+		return "nodes";
+	}
 
 	@Override
 	public Portlet getPortlet() {

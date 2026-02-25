@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class PushNotificationsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "bell-on"; }
+	public String getIcon() {
+		return "bell-on";
+	}
 
 	@Override
 	public Portlet getPortlet() {

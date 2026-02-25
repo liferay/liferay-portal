@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ClientExtensionAdminPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "puzzle"; }
+	public String getIcon() {
+		return "puzzle";
+	}
 
 	@Override
 	public Portlet getPortlet() {

@@ -33,7 +33,9 @@ import org.osgi.service.component.annotations.Reference;
 public class DispatchPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "sheets"; }
+	public String getIcon() {
+		return "sheets";
+	}
 
 	@Override
 	public String getKey() {

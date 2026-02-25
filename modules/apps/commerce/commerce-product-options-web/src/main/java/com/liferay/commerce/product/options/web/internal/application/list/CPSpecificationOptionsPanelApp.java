@@ -30,7 +30,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CPSpecificationOptionsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "search-experiences"; }
+	public String getIcon() {
+		return "search-experiences";
+	}
 
 	@Override
 	public String getLabel(Locale locale) {

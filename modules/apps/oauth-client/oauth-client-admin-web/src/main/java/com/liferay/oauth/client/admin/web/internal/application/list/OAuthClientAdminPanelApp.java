@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class OAuthClientAdminPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "oauth"; }
+	public String getIcon() {
+		return "oauth";
+	}
 
 	@Override
 	public Portlet getPortlet() {

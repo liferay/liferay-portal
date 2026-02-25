@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CustomFieldsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "custom-field"; }
+	public String getIcon() {
+		return "custom-field";
+	}
 
 	@Override
 	public Portlet getPortlet() {

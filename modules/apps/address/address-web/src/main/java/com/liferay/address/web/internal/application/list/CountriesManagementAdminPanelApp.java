@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CountriesManagementAdminPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "flag-full"; }
+	public String getIcon() {
+		return "flag-full";
+	}
 
 	@Override
 	public Portlet getPortlet() {

@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class SitesPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "sites"; }
+	public String getIcon() {
+		return "sites";
+	}
 
 	@Override
 	public Portlet getPortlet() {

@@ -32,7 +32,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ListTypeDefinitionsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "list-ol"; }
+	public String getIcon() {
+		return "list-ol";
+	}
 
 	@Override
 	public Portlet getPortlet() {

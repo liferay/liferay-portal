@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class AccountGroupsAdminPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "myspace"; }
+	public String getIcon() {
+		return "myspace";
+	}
 
 	@Override
 	public Portlet getPortlet() {

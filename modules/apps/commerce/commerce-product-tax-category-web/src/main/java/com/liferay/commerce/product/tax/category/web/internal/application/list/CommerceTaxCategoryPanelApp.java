@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceTaxCategoryPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "calculator"; }
+	public String getIcon() {
+		return "calculator";
+	}
 
 	@Override
 	public Portlet getPortlet() {

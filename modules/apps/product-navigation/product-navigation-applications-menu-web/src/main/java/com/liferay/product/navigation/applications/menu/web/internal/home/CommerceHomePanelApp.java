@@ -30,7 +30,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceHomePanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "home"; }
+	public String getIcon() {
+		return "home";
+	}
 
 	@Override
 	public String getLabel(Locale locale) {

@@ -36,7 +36,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ControlPanelWorkflowPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "process-builder"; }
+	public String getIcon() {
+		return "process-builder";
+	}
 
 	@Override
 	public Portlet getPortlet() {

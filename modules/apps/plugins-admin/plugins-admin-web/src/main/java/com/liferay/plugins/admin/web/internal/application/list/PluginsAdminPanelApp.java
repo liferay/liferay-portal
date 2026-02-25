@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class PluginsAdminPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "box-container"; }
+	public String getIcon() {
+		return "box-container";
+	}
 
 	@Override
 	public Portlet getPortlet() {

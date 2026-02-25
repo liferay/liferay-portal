@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceAvailabilityEstimatePanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "date"; }
+	public String getIcon() {
+		return "date";
+	}
 
 	@Override
 	public Portlet getPortlet() {

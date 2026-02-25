@@ -55,7 +55,9 @@ import java.util.ResourceBundle;
 public abstract class BasePanelApp implements PanelApp {
 
 	@Override
-	public String getIcon() { return StringPool.BLANK; }
+	public String getIcon() {
+		return StringPool.BLANK;
+	}
 
 	@Override
 	public String getKey() {

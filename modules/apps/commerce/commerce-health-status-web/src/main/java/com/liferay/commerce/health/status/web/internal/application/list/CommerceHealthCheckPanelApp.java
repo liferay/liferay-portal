@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceHealthCheckPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "heart"; }
+	public String getIcon() {
+		return "heart";
+	}
 
 	@Override
 	public Portlet getPortlet() {

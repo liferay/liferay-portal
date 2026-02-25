@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommercePaymentPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "square-hole"; }
+	public String getIcon() {
+		return "square-hole";
+	}
 
 	@Override
 	public Portlet getPortlet() {

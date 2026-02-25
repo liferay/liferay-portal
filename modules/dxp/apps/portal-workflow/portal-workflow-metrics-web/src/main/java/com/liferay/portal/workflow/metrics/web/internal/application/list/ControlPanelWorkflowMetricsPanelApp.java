@@ -31,7 +31,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ControlPanelWorkflowMetricsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "polls"; }
+	public String getIcon() {
+		return "polls";
+	}
 
 	@Override
 	public Portlet getPortlet() {

@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceOrderPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "order-form"; }
+	public String getIcon() {
+		return "order-form";
+	}
 
 	@Override
 	public Portlet getPortlet() {

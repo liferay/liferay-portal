@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CPConfigurationListPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "product-configuration"; }
+	public String getIcon() {
+		return "product-configuration";
+	}
 
 	@Override
 	public Portlet getPortlet() {

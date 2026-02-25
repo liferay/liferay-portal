@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class InstanceSettingsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "cog"; }
+	public String getIcon() {
+		return "cog";
+	}
 
 	@Override
 	public Portlet getPortlet() {

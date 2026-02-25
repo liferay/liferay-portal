@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceMeasurementUnitPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "decimal"; }
+	public String getIcon() {
+		return "decimal";
+	}
 
 	@Override
 	public Portlet getPortlet() {

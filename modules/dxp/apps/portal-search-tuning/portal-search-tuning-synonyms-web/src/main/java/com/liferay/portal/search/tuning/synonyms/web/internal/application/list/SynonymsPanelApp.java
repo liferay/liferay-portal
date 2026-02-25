@@ -33,7 +33,9 @@ import org.osgi.service.component.annotations.Reference;
 public class SynonymsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "synonyms"; }
+	public String getIcon() {
+		return "synonyms";
+	}
 
 	@Override
 	public Portlet getPortlet() {

@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class PLOPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "automatic-translate"; }
+	public String getIcon() {
+		return "automatic-translate";
+	}
 
 	@Override
 	public Portlet getPortlet() {

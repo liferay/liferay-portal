@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class UsersPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "users"; }
+	public String getIcon() {
+		return "users";
+	}
 
 	@Override
 	public Portlet getPortlet() {

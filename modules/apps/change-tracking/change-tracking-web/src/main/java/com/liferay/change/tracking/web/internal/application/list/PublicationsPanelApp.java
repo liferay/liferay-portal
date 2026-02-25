@@ -39,7 +39,9 @@ import org.osgi.service.component.annotations.Reference;
 public class PublicationsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "publications"; }
+	public String getIcon() {
+		return "publications";
+	}
 
 	@Override
 	public Portlet getPortlet() {

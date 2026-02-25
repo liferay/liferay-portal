@@ -27,7 +27,9 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceShipmentPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "truck"; }
+	public String getIcon() {
+		return "truck";
+	}
 
 	@Override
 	public Portlet getPortlet() {

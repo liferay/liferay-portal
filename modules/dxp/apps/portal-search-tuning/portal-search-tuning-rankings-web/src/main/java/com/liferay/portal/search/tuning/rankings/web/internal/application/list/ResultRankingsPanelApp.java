@@ -33,7 +33,9 @@ import org.osgi.service.component.annotations.Reference;
 public class ResultRankingsPanelApp extends BasePanelApp {
 
 	@Override
-	public String getIcon() { return "medal"; }
+	public String getIcon() {
+		return "medal";
+	}
 
 	@Override
 	public Portlet getPortlet() {
