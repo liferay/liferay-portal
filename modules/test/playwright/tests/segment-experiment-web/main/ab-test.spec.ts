@@ -27,6 +27,7 @@ import {openABTesSidebar} from './utils/ab-test';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
+		'LPD-78863': {enabled: true, system: true},
 		'LPS-178052': {enabled: true},
 	}),
 	loginAnalyticsCloudTest(),
