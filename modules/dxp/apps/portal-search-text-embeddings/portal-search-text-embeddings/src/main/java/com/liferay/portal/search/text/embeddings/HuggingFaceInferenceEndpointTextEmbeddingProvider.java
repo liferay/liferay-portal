@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Petteri Karttunen
  */
-@Component(service = TextEmbeddingProvider.class)
+@Component(enabled = false, service = TextEmbeddingProvider.class)
 public class HuggingFaceInferenceEndpointTextEmbeddingProvider
 	implements TextEmbeddingProvider {
 
