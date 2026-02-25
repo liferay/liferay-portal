@@ -12,7 +12,9 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -98,10 +100,12 @@ public class SegmentsManagementToolbarDisplayContext
 
 	@Override
 	public Boolean isShowCreationMenu() {
-		return SegmentsResourcePermission.contains(
-			_themeDisplay.getPermissionChecker(),
-			_themeDisplay.getScopeGroupId(),
-			SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
+		return FeatureFlagManagerUtil.isEnabled(
+			CompanyConstants.SYSTEM, "LPD-78863") &&
+			   SegmentsResourcePermission.contains(
+				   _themeDisplay.getPermissionChecker(),
+				   _themeDisplay.getScopeGroupId(),
+				   SegmentsActionKeys.MANAGE_SEGMENTS_ENTRIES);
 	}
 
 	@Override

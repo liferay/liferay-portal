@@ -8,6 +8,7 @@ import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import classNames from 'classnames';
+import {FeatureIndicator, LearnMessage} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 import {DndProvider} from 'react-dnd';
@@ -26,6 +27,7 @@ export default function ContributorsBuilder({
 	emptyContributors,
 	isSegmentationDisabledAlertDismissed,
 	isSegmentationEnabled,
+	learnResourceContext,
 	membersCount = 0,
 	membersCountLoading = false,
 	onAlertClose = () => {},
@@ -105,10 +107,36 @@ export default function ContributorsBuilder({
 
 						<ClayLayout.ContainerFluid>
 							<div className="c-p-4 content-wrapper">
+								<ClayAlert
+									displayType="warning"
+									title={
+										Liferay.Language.get('warning') + ':'
+									}
+								>
+									{Liferay.Language.get(
+										'segments-deprecation-warning-message'
+									) + ' '}
+
+									<LearnMessage
+										resource="segments-web"
+										resourceKey="analytics-cloud"
+									/>
+								</ClayAlert>
+
 								<ClayLayout.Sheet className="c-pb-4">
 									<div className="c-mb-4 d-flex flex-wrap justify-content-between mb-4">
 										<h2 className="c-mb-2 sheet-title">
 											{Liferay.Language.get('conditions')}
+
+											<span className="inline-item inline-item-after">
+												<FeatureIndicator
+													interactive={true}
+													learnResourceContext={
+														learnResourceContext
+													}
+													type="deprecated"
+												/>
+											</span>
 										</h2>
 
 										<div className="c-ml-2 criterion-string">

@@ -20,6 +20,8 @@ dependencies {
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-content-page-editor-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
+	compileOnly project(":apps:learn:learn-api")
+	compileOnly project(":apps:learn:learn-taglib")
 	compileOnly project(":apps:organizations:organizations-item-selector-api")
 	compileOnly project(":apps:portal-template:portal-template-react-renderer-api")
 	compileOnly project(":apps:product-navigation:product-navigation-control-menu-api")
