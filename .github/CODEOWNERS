@@ -418,6 +418,7 @@ modules/dxp/apps/osb/osb-site-initializer/    @liferay-site-management
 modules/dxp/apps/osb/osb-testray/
 modules/dxp/apps/portal/
 modules/dxp/apps/portal/portal-dao-db    @liferay-database-infra
+modules/dxp/apps/portal/portal-properties-swapper/    @liferay-core-infra
 modules/dxp/apps/portal-reports-engine-console/    @liferay-bpm
 modules/dxp/apps/portal-rules-engine-drools/    @liferay-bpm
 modules/dxp/apps/portal-search-elasticsearch-cross-cluster-replication/    @liferay-search
