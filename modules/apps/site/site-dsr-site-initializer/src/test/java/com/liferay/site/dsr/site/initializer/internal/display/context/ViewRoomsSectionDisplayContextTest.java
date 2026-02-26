@@ -86,6 +86,13 @@ public class ViewRoomsSectionDisplayContextTest {
 			"New Digital Sales Room"
 		);
 
+		_languageUtilMockedStatic.when(
+			() -> LanguageUtil.get(
+				Mockito.any(HttpServletRequest.class), Mockito.eq("share"))
+		).thenReturn(
+			"Share"
+		);
+
 		_layoutSetPrototypeLocalServiceUtilMockedStatic.when(
 			() -> LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototypes(
 				Mockito.anyLong())
@@ -267,7 +274,7 @@ public class ViewRoomsSectionDisplayContextTest {
 			viewRoomsSectionDisplayContext.getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 2,
+			fdsActionDropdownItems.toString(), 3,
 			fdsActionDropdownItems.size());
 
 		_assertFDSActionDropdownItem(
@@ -277,8 +284,11 @@ public class ViewRoomsSectionDisplayContextTest {
 			"pencil", "edit", "Edit", null, "update", null,
 			fdsActionDropdownItems.get(0));
 		_assertFDSActionDropdownItem(
-			"#", "trash", "delete", "Delete", "delete", "delete", null,
+			"#", "share", "share", "Share", null, "update", null,
 			fdsActionDropdownItems.get(1));
+		_assertFDSActionDropdownItem(
+			"#", "trash", "delete", "Delete", "delete", "delete", null,
+			fdsActionDropdownItems.get(2));
 	}
 
 	private void _assertEquals(
