@@ -48,6 +48,9 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				sql);
+			PreparedStatement preparedStatement2 = connection.prepareStatement(
+				"update PortalPreferences set preferences = ? where " +
+					"portalPreferencesId = ?");
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {
@@ -96,19 +99,15 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 				}
 
 				if (updatedDocument) {
-					try (PreparedStatement preparedStatement2 =
-							connection.prepareStatement(
-								"update PortalPreferences set preferences = " +
-									"? where portalPreferencesId = ?")) {
+					preparedStatement2.setString(1, document.asXML());
+					preparedStatement2.setLong(
+						2, resultSet.getLong("portalPreferencesId"));
 
-						preparedStatement2.setString(1, document.asXML());
-						preparedStatement2.setLong(
-							2, resultSet.getLong("portalPreferencesId"));
-
-						preparedStatement2.executeUpdate();
-					}
+					preparedStatement2.addBatch();
 				}
 			}
+
+			preparedStatement2.executeBatch();
 		}
 	}
 

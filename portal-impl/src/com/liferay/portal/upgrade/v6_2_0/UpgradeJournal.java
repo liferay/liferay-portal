@@ -560,7 +560,7 @@ public class UpgradeJournal extends BaseUpgradePortletPreferences {
 							preparedStatement3.setLong(1, groupId);
 							preparedStatement3.setString(2, articleId);
 
-							preparedStatement3.executeUpdate();
+							preparedStatement3.addBatch();
 
 							preparedStatement4.setLong(1, increment());
 							preparedStatement4.setLong(2, companyId);
@@ -571,9 +571,13 @@ public class UpgradeJournal extends BaseUpgradePortletPreferences {
 								6, journalContentSearchPortletId);
 							preparedStatement4.setString(7, articleId);
 
-							preparedStatement4.executeUpdate();
+							preparedStatement4.addBatch();
 						}
 					}
+
+					preparedStatement3.executeBatch();
+
+					preparedStatement4.executeBatch();
 				}
 			}
 		}

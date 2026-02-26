@@ -68,8 +68,10 @@ public class UpgradeOrganization extends UpgradeProcess {
 					preparedStatement3.setLong(1, logoId);
 					preparedStatement3.setLong(2, classPK);
 
-					preparedStatement3.executeUpdate();
+					preparedStatement3.addBatch();
 				}
+
+				preparedStatement3.executeBatch();
 			}
 		}
 	}

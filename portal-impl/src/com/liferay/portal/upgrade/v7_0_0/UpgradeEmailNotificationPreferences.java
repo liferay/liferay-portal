@@ -88,8 +88,10 @@ public class UpgradeEmailNotificationPreferences extends UpgradeProcess {
 						preparedStatement2.setLong(
 							2, resultSet.getLong("portalPreferencesId"));
 
-						preparedStatement2.executeUpdate();
+						preparedStatement2.addBatch();
 					}
+
+					preparedStatement2.executeBatch();
 				}
 			}
 		}

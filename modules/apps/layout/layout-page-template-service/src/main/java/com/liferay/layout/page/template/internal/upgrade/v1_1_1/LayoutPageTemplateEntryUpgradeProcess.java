@@ -91,16 +91,20 @@ public class LayoutPageTemplateEntryUpgradeProcess extends UpgradeProcess {
 					updatePreparedStatement.setLong(
 						3, layoutPageTemplateEntryId);
 
-					updatePreparedStatement.executeUpdate();
+					updatePreparedStatement.addBatch();
 
 					deletePreparedStatement.setLong(1, company.getGroupId());
 					deletePreparedStatement.setInt(
 						2, LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
 					deletePreparedStatement.setLong(3, layoutPrototypeId);
 
-					deletePreparedStatement.executeUpdate();
+					deletePreparedStatement.addBatch();
 				}
 			}
+
+			updatePreparedStatement.executeBatch();
+
+			deletePreparedStatement.executeBatch();
 		}
 	}
 

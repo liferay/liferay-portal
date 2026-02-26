@@ -19,7 +19,10 @@ public class UpgradeUserGroupRoleUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select roleId from Role_ where name in (?, ?, ?)")) {
+				"select roleId from Role_ where name in (?, ?, ?)");
+			PreparedStatement updatePreparedStatement =
+				connection.prepareStatement(
+					"delete from UserGroupRole where roleId = ?")) {
 
 			preparedStatement.setString(1, RoleConstants.SITE_ADMINISTRATOR);
 			preparedStatement.setString(2, RoleConstants.SITE_MEMBER);
@@ -28,15 +31,12 @@ public class UpgradeUserGroupRoleUpgradeProcess extends UpgradeProcess {
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				try (PreparedStatement updatePreparedStatement =
-						connection.prepareStatement(
-							"delete from UserGroupRole where roleId = ?")) {
+				updatePreparedStatement.setLong(1, resultSet.getLong(1));
 
-					updatePreparedStatement.setLong(1, resultSet.getLong(1));
-
-					updatePreparedStatement.executeUpdate();
-				}
+				updatePreparedStatement.addBatch();
 			}
+
+			updatePreparedStatement.executeBatch();
 		}
 	}
 

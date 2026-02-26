@@ -57,7 +57,7 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 						deletePreparedStatement.setLong(
 							2, layoutPageTemplateStructureId);
 
-						deletePreparedStatement.executeUpdate();
+						deletePreparedStatement.addBatch();
 
 						continue;
 					}
@@ -71,6 +71,8 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 
 					preparedStatement2.addBatch();
 				}
+
+				deletePreparedStatement.executeBatch();
 
 				preparedStatement2.executeBatch();
 			}

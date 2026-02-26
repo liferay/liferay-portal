@@ -156,9 +156,11 @@ public class AssetListEntryAssetEntryRelUpgradeProcess extends UpgradeProcess {
 					preparedStatement1.setLong(
 						3, resultSet.getLong("assetListEntryAssetEntryRelId"));
 
-					preparedStatement1.executeUpdate();
+					preparedStatement1.addBatch();
 				}
 			}
+
+			preparedStatement1.executeBatch();
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

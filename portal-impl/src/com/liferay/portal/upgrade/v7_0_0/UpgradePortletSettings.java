@@ -53,7 +53,15 @@ public abstract class UpgradePortletSettings extends UpgradeProcess {
 			selectPreparedStatement.setInt(1, ownerType);
 			selectPreparedStatement.setString(2, portletId);
 
-			try (ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+			try (PreparedStatement insertPreparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"insert into PortletPreferences (",
+							"mvccVersion, ctCollectionId, ownerType, plid, ",
+							"portletPreferencesId, ownerId, portletId) values ",
+							"(0, 0, ?, ?, ?, ?, ?)"));
+				ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+
 				while (resultSet.next()) {
 					long oldPortletPreferencesId = resultSet.getLong(1);
 
@@ -71,15 +79,7 @@ public abstract class UpgradePortletSettings extends UpgradeProcess {
 
 					long newPortletPreferencesId = increment();
 
-					try (PreparedStatement insertPreparedStatement =
-							connection.prepareStatement(
-								StringBundler.concat(
-									"insert into PortletPreferences (",
-									"mvccVersion, ctCollectionId, ",
-									"portletPreferencesId, ownerId, ",
-									"ownerType, plid, portletId) values (0, ",
-									"0, ?, ?, ?, ?, ?)"))) {
-
+					try {
 						insertPreparedStatement.setLong(
 							1, newPortletPreferencesId);
 						insertPreparedStatement.setLong(2, ownerId);
@@ -88,7 +88,7 @@ public abstract class UpgradePortletSettings extends UpgradeProcess {
 						insertPreparedStatement.setLong(4, plid);
 						insertPreparedStatement.setString(5, serviceName);
 
-						insertPreparedStatement.executeUpdate();
+						insertPreparedStatement.addBatch();
 
 						_copyPortletPreferenceValues(
 							oldPortletPreferencesId, newPortletPreferencesId);
@@ -102,6 +102,8 @@ public abstract class UpgradePortletSettings extends UpgradeProcess {
 						}
 					}
 				}
+
+				insertPreparedStatement.executeBatch();
 			}
 		}
 	}

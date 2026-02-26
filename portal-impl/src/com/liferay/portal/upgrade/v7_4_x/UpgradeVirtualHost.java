@@ -46,7 +46,7 @@ public class UpgradeVirtualHost extends UpgradeProcess {
 				preparedStatement2.setLong(3, virtualHostId);
 
 				try {
-					preparedStatement2.executeUpdate();
+					preparedStatement2.addBatch();
 				}
 				catch (Exception exception) {
 					if (_log.isWarnEnabled()) {
@@ -62,6 +62,8 @@ public class UpgradeVirtualHost extends UpgradeProcess {
 							virtualHostId);
 				}
 			}
+
+			preparedStatement2.executeBatch();
 		}
 	}
 
