@@ -10,6 +10,17 @@ package com.liferay.product.navigation.applications.menu.web.internal.constants;
  */
 public class ProductNavigationApplicationsMenuPortletKeys {
 
+	public static final String APPLICATIONS_HOME =
+		"com_liferay_applications_home_web_internal_portlet_" +
+			"ApplicationsHomePortlet";
+
+	public static final String COMMERCE_HOME =
+		"com_liferay_commerce_home_web_internal_portlet_CommerceHomePortlet";
+
+	public static final String CONTROL_PANEL_HOME =
+		"com_liferay_control_panel_home_web_internal_portlet_" +
+			"ControlPanelHomePortlet";
+
 	public static final String PRODUCT_NAVIGATION_APPLICATIONS_MENU =
 		"com_liferay_product_navigation_applications_menu_web_internal_" +
 			"portlet_ProductNavigationApplicationsMenuPortlet";

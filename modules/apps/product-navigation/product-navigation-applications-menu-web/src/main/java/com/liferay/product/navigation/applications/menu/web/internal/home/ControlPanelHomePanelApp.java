@@ -10,7 +10,7 @@ import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.product.navigation.applications.menu.web.internal.constants.ControlPanelHomePortletKeys;
+import com.liferay.product.navigation.applications.menu.web.internal.constants.ProductNavigationApplicationsMenuPortletKeys;
 
 import java.util.Locale;
 
@@ -41,11 +41,12 @@ public class ControlPanelHomePanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return ControlPanelHomePortletKeys.CONTROL_PANEL_HOME;
+		return ProductNavigationApplicationsMenuPortletKeys.CONTROL_PANEL_HOME;
 	}
 
 	@Reference(
-		target = "(jakarta.portlet.name=" + ControlPanelHomePortletKeys.CONTROL_PANEL_HOME + ")"
+		target = "(jakarta.portlet.name=" +
+			ProductNavigationApplicationsMenuPortletKeys.CONTROL_PANEL_HOME + ")"
 	)
 	private Portlet _portlet;
 

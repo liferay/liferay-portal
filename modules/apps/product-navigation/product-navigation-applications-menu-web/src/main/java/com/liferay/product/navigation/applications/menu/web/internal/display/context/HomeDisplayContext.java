@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,20 +38,14 @@ public class HomeDisplayContext {
 			WebKeys.THEME_DISPLAY);
 
 		_portletId = _themeDisplay.getPpid();
-	}
 
-	public PanelCategory getPanelCategory() {
-		return _getActivePanelCategory(PanelCategoryKeys.APPLICATIONS_MENU);
+		_panelCategory = _getActivePanelCategory(
+			_panelCategoryHelper, PanelCategoryKeys.APPLICATIONS_MENU,
+			_portletId, _themeDisplay);
 	}
 
 	public String getPanelCategoryLabel() {
-		PanelCategory panelCategory = getPanelCategory();
-
-		if (panelCategory == null) {
-			return null;
-		}
-
-		return panelCategory.getLabel(_themeDisplay.getLocale());
+		return _panelCategory.getLabel(_themeDisplay.getLocale());
 	}
 
 	public String getPortletId() {
@@ -60,17 +53,12 @@ public class HomeDisplayContext {
 	}
 
 	public Map<String, Object> getProps() throws Exception {
-		PanelCategory panelCategory = getPanelCategory();
-
-		if (panelCategory == null) {
-			return Collections.emptyMap();
-		}
 
 		return HashMapBuilder.<String, Object>put(
 			"icon",
 			String.format(
 				"%s/product_icons/%s.svg", _themeDisplay.getPathThemeImages(),
-				panelCategory.getKey())
+				_panelCategory.getKey())
 		).put(
 			"items", _getPropsItems()
 		).put(
@@ -80,13 +68,16 @@ public class HomeDisplayContext {
 		).build();
 	}
 
-	private PanelCategory _getActivePanelCategory(String parentKey) {
-		for (PanelCategory childPanelCategory :
-				_panelCategoryHelper.getChildPanelCategories(
-					parentKey, _themeDisplay)) {
+	private PanelCategory _getActivePanelCategory(
+		PanelCategoryHelper panelCategoryHelper, String parentKey,
+		String portletId, ThemeDisplay themeDisplay) {
 
-			if (_panelCategoryHelper.containsPortlet(
-					_portletId, childPanelCategory.getKey())) {
+		for (PanelCategory childPanelCategory :
+			panelCategoryHelper.getChildPanelCategories(
+				parentKey, themeDisplay)) {
+
+			if (panelCategoryHelper.containsPortlet(
+				portletId, childPanelCategory.getKey())) {
 
 				return childPanelCategory;
 			}
@@ -98,17 +89,11 @@ public class HomeDisplayContext {
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
 
-		PanelCategory panelCategory = getPanelCategory();
-
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
-					panelCategory.getKey(), _themeDisplay)) {
+					_panelCategory.getKey(), _themeDisplay)) {
 
 			String childPanelCategoryKey = childPanelCategory.getKey();
-
-			if (childPanelCategoryKey.endsWith(".home")) {
-				continue;
-			}
 
 			List<Map<String, Object>> childrenPropsItems = _getPropsItems(
 				childPanelCategory);
@@ -161,6 +146,7 @@ public class HomeDisplayContext {
 
 	private final HttpServletRequest _httpServletRequest;
 	private final PanelAppRegistry _panelAppRegistry;
+	private final PanelCategory _panelCategory;
 	private final PanelCategoryHelper _panelCategoryHelper;
 	private final String _portletId;
 	private final ThemeDisplay _themeDisplay;

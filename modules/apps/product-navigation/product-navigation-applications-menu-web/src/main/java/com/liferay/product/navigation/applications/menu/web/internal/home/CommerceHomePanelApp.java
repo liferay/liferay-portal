@@ -10,7 +10,7 @@ import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.product.navigation.applications.menu.web.internal.constants.CommerceHomePortletKeys;
+import com.liferay.product.navigation.applications.menu.web.internal.constants.ProductNavigationApplicationsMenuPortletKeys;
 
 import java.util.Locale;
 
@@ -41,11 +41,12 @@ public class CommerceHomePanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return CommerceHomePortletKeys.COMMERCE_HOME;
+		return ProductNavigationApplicationsMenuPortletKeys.COMMERCE_HOME;
 	}
 
 	@Reference(
-		target = "(jakarta.portlet.name=" + CommerceHomePortletKeys.COMMERCE_HOME + ")"
+		target = "(jakarta.portlet.name=" +
+			ProductNavigationApplicationsMenuPortletKeys.COMMERCE_HOME + ")"
 	)
 	private Portlet _portlet;
 

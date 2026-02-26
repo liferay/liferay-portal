@@ -6,7 +6,7 @@
 package com.liferay.product.navigation.applications.menu.web.internal.portlet;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.product.navigation.applications.menu.web.internal.constants.ControlPanelHomePortletKeys;
+import com.liferay.product.navigation.applications.menu.web.internal.constants.ProductNavigationApplicationsMenuPortletKeys;
 
 import jakarta.portlet.Portlet;
 
@@ -30,7 +30,8 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/homes/control_panel_home.jsp",
-		"jakarta.portlet.name=" + ControlPanelHomePortletKeys.CONTROL_PANEL_HOME,
+		"jakarta.portlet.name=" +
+			ProductNavigationApplicationsMenuPortletKeys.CONTROL_PANEL_HOME,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",
 		"jakarta.portlet.version=4.0"
