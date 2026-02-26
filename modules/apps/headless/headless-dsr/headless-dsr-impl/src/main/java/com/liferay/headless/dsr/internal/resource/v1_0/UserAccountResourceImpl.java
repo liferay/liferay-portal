@@ -173,10 +173,19 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			throw new ValidationException("Email Address is null");
 		}
 
-		Group group = _getGroup(roomId);
+		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(roomId);
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Group group = _groupService.getGroup(
+			GetterUtil.getLong(values.get("siteId")));
 
 		Ticket ticket = _addInviteMemberTicket(
-			group.getCompanyId(), group, userAccount);
+			group.getCompanyId(), group,
+			GetterUtil.getString(
+				values.get("name"),
+				group.getName(contextAcceptLanguage.getPreferredLocale())),
+			userAccount);
 
 		User user = _userLocalService.fetchUserByEmailAddress(
 			ticket.getCompanyId(), userAccount.getEmailAddress());
@@ -217,7 +226,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	}
 
 	private Ticket _addInviteMemberTicket(
-			long companyId, Group group, UserAccount userAccount)
+			long companyId, Group group, String name, UserAccount userAccount)
 		throws Exception {
 
 		Ticket ticket = _ticketLocalService.addTicket(
@@ -257,8 +266,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				notificationTemplate
 			).termValues(
 				HashMapBuilder.<String, Object>put(
-					"[%DIGITAL_SALES_ROOM_NAME%]",
-					group.getName(contextAcceptLanguage.getPreferredLocale())
+					"[%DIGITAL_SALES_ROOM_NAME%]", name
 				).put(
 					"[%DIGITAL_SALES_ROOM_URL%]",
 					() -> {

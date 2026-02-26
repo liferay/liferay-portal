@@ -22,6 +22,20 @@ export interface IAccounts {
 	totalCount: number;
 }
 
+export interface IInvitedMember {
+	emailAddress: string;
+	id: number;
+	roleKey?: string;
+}
+
+export interface IInvitedMembersDTO {
+	items: Array<IInvitedMember>;
+	lastPage: number;
+	page: number;
+	pageSize: number;
+	totalCount: number;
+}
+
 export interface IRoom {
 	actions: {
 		[action: string]: {
@@ -104,6 +118,11 @@ export interface IRoomObjectEntry {
 	};
 }
 
+export interface IRoomShareProps {
+	closeModal?: () => void;
+	roomId: number;
+}
+
 export interface IRoomStepProps {
 	setHandleStepSubmit(
 		callback: SetStateAction<(event: Event) => Promise<boolean>>
@@ -120,3 +139,22 @@ export interface ISiteTemplate {
 	name: string;
 	uuid: string;
 }
+
+export interface IUserAccount {
+	alternateName?: string;
+	emailAddress: string;
+	externalReferenceCode?: string;
+	id: number;
+	image?: string;
+	isInvitedMember?: boolean;
+	name: string;
+	roleKey?: string;
+}
+
+export type IUserAccountsDTO = {
+	items: Array<IUserAccount>;
+	lastPage: number;
+	page: number;
+	pageSize: number;
+	totalCount: number;
+};

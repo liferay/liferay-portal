@@ -17,13 +17,17 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -129,6 +133,16 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				true, false, true,
 				_getServiceContext(company.getCompanyId(), user.getUserId()));
 
+			Role role = _roleLocalService.getRole(
+				group.getCompanyId(), RoleConstants.SITE_OWNER);
+
+			_userGroupRoleLocalService.addUserGroupRoles(
+				user.getUserId(), group.getGroupId(),
+				new long[] {role.getRoleId()});
+
+			_userLocalService.addGroupUsers(
+				group.getGroupId(), new long[] {user.getUserId()});
+
 			LiveUsers.joinGroup(
 				group.getCompanyId(), group.getGroupId(), user.getUserId());
 
@@ -214,7 +228,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
+	private RoleLocalService _roleLocalService;
+
+	@Reference
 	private Sites _sites;
+
+	@Reference
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

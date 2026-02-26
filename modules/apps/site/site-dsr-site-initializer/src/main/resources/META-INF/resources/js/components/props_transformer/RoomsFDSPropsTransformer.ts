@@ -9,6 +9,7 @@ import {openModal} from 'frontend-js-components-web';
 import {openFDSDeleteConfirmationModal} from '../../common/utils/openModalUtil';
 import {IRoom} from '../../common/utils/types';
 import RoomInitializer from '../RoomInitializer';
+import RoomShare from '../RoomShare';
 import RoomNameRenderer from './cell_renderers/RoomNameRenderer';
 
 export default function RoomsFDSPropsTransformer({
@@ -107,6 +108,25 @@ export default function RoomsFDSPropsTransformer({
 						'delete-digital-sales-room-confirmation-title'
 					),
 					url: itemData.actions?.delete?.href,
+				});
+			}
+			else if (action.data.id === 'share') {
+				event?.preventDefault();
+
+				openModal({
+					containerProps: {
+						className: '',
+					},
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						RoomShare({
+							closeModal,
+							roomId: itemData.embedded.id,
+						}),
+					size: 'lg',
 				});
 			}
 		},

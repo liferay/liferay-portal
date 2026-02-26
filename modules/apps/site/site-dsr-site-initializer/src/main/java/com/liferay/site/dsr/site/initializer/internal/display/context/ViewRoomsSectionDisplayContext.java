@@ -111,6 +111,17 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 			FDSActionDropdownItemBuilder.setHref(
 				"#"
 			).setIcon(
+				"share"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "share")
+			).setPermissionKey(
+				"update"
+			).build(
+				"share"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				"#"
+			).setIcon(
 				"trash"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "delete")
