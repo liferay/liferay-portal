@@ -61,8 +61,7 @@ public class ApplicationsMenuDisplayContext {
 		).put(
 			"liferayName",
 			GetterUtil.getString(
-				PropsValues.APPLICATIONS_MENU_DEFAULT_LIFERAY_NAME,
-				"Liferay DXP")
+				PropsValues.APPLICATIONS_MENU_DEFAULT_LIFERAY_NAME, "Liferay")
 		).put(
 			"panelAppsURL",
 			() -> {
