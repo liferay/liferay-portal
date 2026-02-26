@@ -30,8 +30,7 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/homes/applications_home.jsp",
-		"jakarta.portlet.name=" +
-			ProductNavigationApplicationsMenuPortletKeys.APPLICATIONS_HOME,
+		"jakarta.portlet.name=" + ProductNavigationApplicationsMenuPortletKeys.APPLICATIONS_HOME,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",
 		"jakarta.portlet.version=4.0"

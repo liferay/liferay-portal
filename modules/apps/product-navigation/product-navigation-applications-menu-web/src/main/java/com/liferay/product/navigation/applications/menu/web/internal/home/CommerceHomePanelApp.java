@@ -50,8 +50,7 @@ public class CommerceHomePanelApp extends BasePanelApp {
 	}
 
 	@Reference(
-		target = "(jakarta.portlet.name=" +
-			ProductNavigationApplicationsMenuPortletKeys.COMMERCE_HOME + ")"
+		target = "(jakarta.portlet.name=" + ProductNavigationApplicationsMenuPortletKeys.COMMERCE_HOME + ")"
 	)
 	private Portlet _portlet;
 

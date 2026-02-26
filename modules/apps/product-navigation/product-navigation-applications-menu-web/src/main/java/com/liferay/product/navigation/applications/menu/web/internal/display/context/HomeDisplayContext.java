@@ -81,11 +81,11 @@ public class HomeDisplayContext {
 		String portletId, ThemeDisplay themeDisplay) {
 
 		for (PanelCategory childPanelCategory :
-			panelCategoryHelper.getChildPanelCategories(
-				parentKey, themeDisplay)) {
+				panelCategoryHelper.getChildPanelCategories(
+					parentKey, themeDisplay)) {
 
 			if (panelCategoryHelper.containsPortlet(
-				portletId, childPanelCategory.getKey())) {
+					portletId, childPanelCategory.getKey())) {
 
 				return childPanelCategory;
 			}
@@ -135,10 +135,10 @@ public class HomeDisplayContext {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
 
 		for (PanelApp panelApp :
-			_panelAppRegistry.getPanelApps(
-				panelCategory.getKey(),
-				_themeDisplay.getPermissionChecker(),
-				_themeDisplay.getScopeGroup())) {
+				_panelAppRegistry.getPanelApps(
+					panelCategory.getKey(),
+					_themeDisplay.getPermissionChecker(),
+					_themeDisplay.getScopeGroup())) {
 
 			propsItems.add(
 				HashMapBuilder.<String, Object>put(
