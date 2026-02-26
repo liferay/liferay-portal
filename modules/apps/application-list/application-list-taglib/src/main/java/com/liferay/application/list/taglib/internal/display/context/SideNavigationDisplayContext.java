@@ -70,24 +70,34 @@ public class SideNavigationDisplayContext {
 			return expandedKeys;
 		}
 
-		List<PanelCategory> childPanelCategories =
-			_panelCategoryHelper.getChildPanelCategories(
-				_panelCategory.getKey(), _themeDisplay);
+		if (_panelCategory != null) {
+			List<PanelCategory> childPanelCategories =
+				_panelCategoryHelper.getChildPanelCategories(
+					_panelCategory.getKey(), _themeDisplay);
 
-		for (PanelCategory childPanelCategory : childPanelCategories) {
-			expandedKeys.add(childPanelCategory.getKey());
+			for (PanelCategory childPanelCategory : childPanelCategories) {
+				expandedKeys.add(childPanelCategory.getKey());
+			}
 		}
 
 		return expandedKeys;
 	}
 
 	public String getPanelCategoryImageUrl() {
+		if (_panelCategory == null) {
+			return null;
+		}
+
 		return String.format(
 			"%s/product_icons/%s_sm.svg", _themeDisplay.getPathThemeImages(),
 			_panelCategory.getKey());
 	}
 
 	public String getPanelCategoryLabel() {
+		if (_panelCategory == null) {
+			return null;
+		}
+
 		return _panelCategory.getLabel(_themeDisplay.getLocale());
 	}
 
@@ -96,6 +106,10 @@ public class SideNavigationDisplayContext {
 	}
 
 	public Map<String, Object> getProps() throws Exception {
+		if (_panelCategory == null) {
+			return Collections.emptyMap();
+		}
+
 		String itemSelectedEventName = String.format(
 			"_%s_selectSite",
 			ProductNavigationProductMenuPortletKeys.
@@ -141,6 +155,10 @@ public class SideNavigationDisplayContext {
 
 	public List<VerticalNavItem> getVerticalNavItems() throws Exception {
 		List<VerticalNavItem> verticalNavItems = new ArrayList<>();
+
+		if (_panelCategory == null) {
+			return verticalNavItems;
+		}
 
 		verticalNavItems.addAll(_getVerticalNavItems(_panelCategory));
 
@@ -199,6 +217,10 @@ public class SideNavigationDisplayContext {
 	}
 
 	private String _getExpandedKeysSessionKey() {
+		if (_panelCategory == null) {
+			return null;
+		}
+
 		return String.format(
 			"com_liferay_application_list_taglib_SideNavigationExpanded_%sKeys",
 			_panelCategory.getKey());
@@ -206,6 +228,10 @@ public class SideNavigationDisplayContext {
 
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
+
+		if (_panelCategory == null) {
+			return propsItems;
+		}
 
 		propsItems.addAll(_getPropsItems(_panelCategory));
 

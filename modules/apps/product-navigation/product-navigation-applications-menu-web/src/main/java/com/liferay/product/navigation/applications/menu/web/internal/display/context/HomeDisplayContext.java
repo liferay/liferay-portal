@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +46,10 @@ public class HomeDisplayContext {
 	}
 
 	public String getPanelCategoryLabel() {
+		if (_panelCategory == null) {
+			return null;
+		}
+
 		return _panelCategory.getLabel(_themeDisplay.getLocale());
 	}
 
@@ -53,6 +58,9 @@ public class HomeDisplayContext {
 	}
 
 	public Map<String, Object> getProps() throws Exception {
+		if (_panelCategory == null) {
+			return Collections.emptyMap();
+		}
 
 		return HashMapBuilder.<String, Object>put(
 			"icon",
@@ -89,6 +97,10 @@ public class HomeDisplayContext {
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
 
+		if (_panelCategory == null) {
+			return propsItems;
+		}
+
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
 					_panelCategory.getKey(), _themeDisplay)) {
@@ -123,10 +135,10 @@ public class HomeDisplayContext {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
 
 		for (PanelApp panelApp :
-				_panelAppRegistry.getPanelApps(
-					panelCategory.getKey(),
-					_themeDisplay.getPermissionChecker(),
-					_themeDisplay.getScopeGroup())) {
+			_panelAppRegistry.getPanelApps(
+				panelCategory.getKey(),
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroup())) {
 
 			propsItems.add(
 				HashMapBuilder.<String, Object>put(
