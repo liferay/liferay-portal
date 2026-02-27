@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '74ff5b249e1f34d9f2a8b889d60a9f36e39daa08243cc0e914b3d9d8a4682237',
+	hash: '61e3890ddde27095689e4ca414ab5776d0aea19641f5e07a2dd37a6660e3e0b4',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -63,7 +63,6 @@ module.exports = {
 		'@liferay/cookies-banner-web': [],
 		'@liferay/cookies-sample-web': [],
 		'@liferay/dialect-theme': [],
-		'@liferay/digital-sales-room-web': [],
 		'@liferay/digital-signature-web': [],
 		'@liferay/dispatch-web': [],
 		'@liferay/document-library-opener-google-drive-web': [],
@@ -550,7 +549,7 @@ module.exports = {
 		'moment/min/moment-with-locales': ['*', 'default'],
 		'numeral': ['*', 'default'],
 		'object-hash': ['*', 'default'],
-		'prop-types': ['*', 'default'],
+		'prop-types': ['*', 'bigint', 'default'],
 		'qrcode': ['create', 'toCanvas', 'toString', 'toDataURL'],
 		'qs': ['*', 'default'],
 		'react': ['*', 'default'],
