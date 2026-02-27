@@ -451,6 +451,12 @@ public class SegmentsEntryLocalServiceImpl
 				Field.NAME, keywords
 			).build();
 
+		params.put("keywords", keywords);
+
+		attributes.put("params", params);
+
+		searchContext.setAttributes(attributes);
+
 		if (!FeatureFlagManagerUtil.isEnabled(
 				CompanyConstants.SYSTEM, "LPD-78863")) {
 
@@ -467,12 +473,6 @@ public class SegmentsEntryLocalServiceImpl
 						booleanQuery, BooleanClauseOccur.MUST.getName())
 				});
 		}
-
-		params.put("keywords", keywords);
-
-		attributes.put("params", params);
-
-		searchContext.setAttributes(attributes);
 
 		searchContext.setCompanyId(companyId);
 		searchContext.setEnd(end);
