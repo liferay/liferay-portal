@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Digital Sales Room API
-Bundle-SymbolicName: com.liferay.digital.sales.room.api
-Bundle-Version: 2.0.0
-Export-Package: com.liferay.digital.sales.room.constants
