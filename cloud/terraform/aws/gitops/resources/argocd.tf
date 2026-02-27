@@ -250,7 +250,6 @@ resource "kubernetes_manifest" "infrastructure_provider_application" {
 								},
 							]
 							valueFiles=[
-								"$values/${var.infrastructure_provider_helm_chart_config.path}/values.yaml",
 								"$values/${var.infrastructure_git_repo_config.source_paths.system}/${var.infrastructure_git_repo_config.source_paths.infrastructure_provider_values_filename}",
 							]
 						}
