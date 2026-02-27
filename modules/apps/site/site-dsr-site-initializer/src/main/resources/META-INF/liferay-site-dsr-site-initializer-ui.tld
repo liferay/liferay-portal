@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<taglib
+	version="2.1"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+>
+	<description></description>
+	<tlib-version>1.0</tlib-version>
+	<short-name>liferay-site-dsr-site-initializer-ui</short-name>
+	<uri>http://liferay.com/tld/site-dsr-site-initializer-ui</uri>
+	<tag>
+		<name>comments</name>
+		<tag-class>com.liferay.site.dsr.site.initializer.internal.servlet.taglib.CommentsTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>roomId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib>
