@@ -14,6 +14,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
+	testIntegrationImplementation project(":apps:login:login-web-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-rest-api")
 	testIntegrationImplementation project(":apps:object:object-rest-test-util")
@@ -25,6 +26,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal:portal-props-test-util")
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-personal-menu-api")
 	testIntegrationImplementation project(":apps:site:site-api")
+	testIntegrationImplementation project(":apps:site:site-dsr-site-initializer-api")
 	testIntegrationImplementation project(":apps:site:site-dsr-site-initializer-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
