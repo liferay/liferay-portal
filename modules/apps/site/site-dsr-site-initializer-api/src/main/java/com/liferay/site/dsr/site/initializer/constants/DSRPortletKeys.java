@@ -10,8 +10,8 @@ package com.liferay.site.dsr.site.initializer.constants;
  */
 public class DSRPortletKeys {
 
-	public static final String DIGITAL_SALES_ROOM_INVITE_MEMBER =
-		"com_liferay_digital_sales_room_web_internal_portlet_" +
-			"DigitalSalesRoomInviteMemberPortlet";
+	public static final String DSR_INVITE_MEMBER =
+		"com_liferay_site_dsr_site_initializer_internal_portlet_" +
+			"DSRInviteMemberPortlet";
 
 }

@@ -275,12 +275,12 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 						return PortletURLBuilder.create(
 							PortletURLFactoryUtil.create(
 								contextHttpServletRequest,
-								DSRPortletKeys.DIGITAL_SALES_ROOM_INVITE_MEMBER,
+								DSRPortletKeys.DSR_INVITE_MEMBER,
 								_portal.getPlidFromPortletId(
 									group.getGroupId(), LoginPortletKeys.LOGIN),
 								PortletRequest.RENDER_PHASE)
 						).setMVCRenderCommandName(
-							"/digital_sales_room/invite_member"
+							"/dsr/invite_member"
 						).setParameter(
 							"ticketKey", ticket.getKey()
 						).setPortletMode(
