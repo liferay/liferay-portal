@@ -11,10 +11,10 @@ import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.exportimport.attachment.ExportImportAttachmentManager;
 import com.liferay.exportimport.internal.lar.PortletDataContextThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Image;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.util.Http;
@@ -47,34 +47,12 @@ public class ExportImportAttachmentManagerImpl
 			return null;
 		}
 
-		PortletDataContext portletDataContext =
-			PortletDataContextThreadLocal.getPortletDataContext();
-
-		if ((portletDataContext == null) ||
-			(portletDataContext.getZipWriter() == null)) {
-
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(
-				dlFileEntry.getFileEntryId());
-
-			Company company = _companyLocalService.getCompany(
-				fileEntry.getCompanyId());
-
-			boolean secure = _isSecure();
-
-			String portalURL = _portal.getPortalURL(
-				company.getVirtualHostname(),
-				_portal.getPortalServerPort(secure), secure);
-
-			return portalURL + _dlurlHelper.getThumbnailSrc(fileEntry, null);
-		}
-
-		try (InputStream inputStream = dlFileEntry.getContentStream()) {
-			String fileKey = String.valueOf(dlFileEntry.getFileEntryId());
-
-			portletDataContext.addZipEntry(_getZipPath(fileKey), inputStream);
-
-			return _PROTOCOL + ":" + fileKey;
-		}
+		return _getURL(
+			dlFileEntry.getCompanyId(), dlFileEntry::getContentStream,
+			String.valueOf(dlFileEntry.getFileEntryId()),
+			() -> _dlurlHelper.getThumbnailSrc(
+				_dlAppLocalService.getFileEntry(dlFileEntry.getFileEntryId()),
+				null));
 	}
 
 	@Override
@@ -83,34 +61,14 @@ public class ExportImportAttachmentManagerImpl
 			return null;
 		}
 
-		PortletDataContext portletDataContext =
-			PortletDataContextThreadLocal.getPortletDataContext();
-
-		if ((portletDataContext == null) ||
-			(portletDataContext.getZipWriter() == null)) {
-
-			Company company = _companyLocalService.getCompany(
-				image.getCompanyId());
-
-			boolean secure = _isSecure();
-
-			return StringBundler.concat(
-				_portal.getPortalURL(
-					company.getVirtualHostname(),
-					_portal.getPortalServerPort(secure), secure),
+		return _getURL(
+			image.getCompanyId(),
+			() -> _imageLocalService.getImageInputStream(
+				image.getCompanyId(), image.getImageId(), image.getType()),
+			String.valueOf(image.getImageId()),
+			() -> StringBundler.concat(
 				_portal.getPathImage(), "/layout_icon?img_id=",
-				image.getImageId());
-		}
-
-		try (InputStream inputStream = _imageLocalService.getImageInputStream(
-				image.getCompanyId(), image.getImageId(), image.getType())) {
-
-			String key = String.valueOf(image.getImageId());
-
-			portletDataContext.addZipEntry(_getZipPath(key), inputStream);
-
-			return _PROTOCOL + ":" + key;
-		}
+				image.getImageId()));
 	}
 
 	@Override
@@ -144,6 +102,36 @@ public class ExportImportAttachmentManagerImpl
 				}
 
 			});
+	}
+
+	private String _getURL(
+			long companyId,
+			UnsafeSupplier<InputStream, Exception> inputStreamUnsafeSupplier,
+			String key, UnsafeSupplier<String, Exception> pathUnsafeSupplier)
+		throws Exception {
+
+		PortletDataContext portletDataContext =
+			PortletDataContextThreadLocal.getPortletDataContext();
+
+		if ((portletDataContext == null) ||
+			(portletDataContext.getZipWriter() == null)) {
+
+			Company company = _companyLocalService.getCompany(companyId);
+
+			boolean secure = _isSecure();
+
+			String portalURL = _portal.getPortalURL(
+				company.getVirtualHostname(),
+				_portal.getPortalServerPort(secure), secure);
+
+			return portalURL + pathUnsafeSupplier.get();
+		}
+
+		try (InputStream inputStream = inputStreamUnsafeSupplier.get()) {
+			portletDataContext.addZipEntry(_getZipPath(key), inputStream);
+
+			return _PROTOCOL + ":" + key;
+		}
 	}
 
 	private String _getZipPath(String key) {
