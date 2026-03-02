@@ -21,7 +21,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 	selectable='<%= FeatureFlagManagerUtil.isEnabled(CompanyConstants.SYSTEM, "LPD-78863") %>'
 />
 
-<c:if test='<%= !segmentsDisplayContext.isSegmentationEnabled(themeDisplay.getCompanyId()) && FeatureFlagManagerUtil.isEnabled(CompanyConstants.SYSTEM, "LPD-78863") %>'>
+<c:if test="<%= !segmentsDisplayContext.isSegmentationEnabled(themeDisplay.getCompanyId()) %>">
 	<clay:stripe
 		defaultTitleDisabled="<%= true %>"
 		dismissible="<%= true %>"
