@@ -1577,6 +1577,60 @@ public class ObjectEntryLocalServiceTest {
 			() -> _dlAppLocalService.getFileEntry(persistedFileEntryId2));
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	public void testAddObjectEntryWithAttachmentObjectFieldAndCMSBasicDocument()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectField objectField1 = _addAttachmentObjectField(
+			ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT,
+			objectDefinition.getObjectDefinitionId());
+
+		DLFileEntry dlFileEntry = _addDLFileEntry();
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.InvalidValue.class,
+			String.format(
+				"The value is invalid for object field \"%s\"",
+				objectField1.getName()),
+			() -> _addObjectEntry(
+				0, objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					objectField1.getName(), dlFileEntry.getFileEntryId()
+				).build()));
+
+		ObjectField objectField2 = _addAttachmentObjectField(
+			ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
+			objectDefinition.getObjectDefinitionId());
+
+		ObjectEntry objectEntry = _addCMSBasicDocumentObjectEntry(dlFileEntry);
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.InvalidValue.class,
+			String.format(
+				"The value is invalid for object field \"%s\"",
+				objectField2.getName()),
+			() -> _addObjectEntry(
+				0, objectDefinition.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					objectField2.getName(),
+					MapUtil.getLong(objectEntry.getValues(), "file")
+				).build()));
+
+		_assertObjectEntryDLFileEntry(
+			objectDefinition.getObjectDefinitionId(), objectField1.getName(),
+			MapUtil.getLong(objectEntry.getValues(), "file"));
+
+		_assertObjectEntryDLFileEntry(
+			objectDefinition.getObjectDefinitionId(), objectField2.getName(),
+			dlFileEntry.getFileEntryId());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
 	@Test
 	public void testAddObjectEntryWithAutoIncrementObjectField()
 		throws Exception {
@@ -7101,6 +7155,72 @@ public class ObjectEntryLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	private ObjectField _addAttachmentObjectField(
+			String fileSource, long objectDefinitionId)
+		throws Exception {
+
+		return ObjectFieldUtil.addCustomObjectField(
+			new AttachmentObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"a" + RandomTestUtil.randomString()
+			).objectDefinitionId(
+				objectDefinitionId
+			).objectFieldSettings(
+				Arrays.asList(
+					new ObjectFieldSettingBuilder(
+					).name(
+						ObjectFieldSettingConstants.
+							NAME_ACCEPTED_FILE_EXTENSIONS
+					).value(
+						"txt"
+					).build(),
+					new ObjectFieldSettingBuilder(
+					).name(
+						ObjectFieldSettingConstants.NAME_FILE_SOURCE
+					).value(
+						fileSource
+					).build(),
+					new ObjectFieldSettingBuilder(
+					).name(
+						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+					).value(
+						"100"
+					).build())
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+	}
+
+	private ObjectEntry _addCMSBasicDocumentObjectEntry(DLFileEntry dlFileEntry)
+		throws Exception {
+
+		CMSTestUtil.getOrAddGroup(ObjectEntryLocalServiceTest.class);
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		return _addObjectEntry(
+			depotEntry.getGroupId(), objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"file", dlFileEntry.getFileEntryId()
+			).put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
+			).build());
+	}
+
 	private void _addComment(
 			Group group, ObjectDefinition objectDefinition,
 			ObjectEntry objectEntry)
@@ -7476,6 +7596,22 @@ public class ObjectEntryLocalServiceTest {
 			objectAction.getObjectActionId());
 
 		Assert.assertEquals(expectedStatus, objectAction.getStatus());
+	}
+
+	private void _assertObjectEntryDLFileEntry(
+			long objectDefinitionId, String objectFieldName,
+			long objectFieldValue)
+		throws Exception {
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			0, objectDefinitionId,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName, objectFieldValue
+			).build());
+
+		Assert.assertNotNull(
+			_dlFileEntryLocalService.getFileEntry(
+				MapUtil.getLong(objectEntry.getValues(), objectFieldName)));
 	}
 
 	private void _assertObjectEntryLocalizedValues(
