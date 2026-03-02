@@ -6,14 +6,13 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
 import com.liferay.exportimport.attachment.ExportImportAttachmentManagerUtil;
-import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.Validator;
 
-import java.io.InputStream;
-
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.Objects;
 
@@ -32,29 +31,13 @@ public class URLUtil {
 					" because of unsupported protocol ", url.getProtocol()));
 		}
 
-		URLConnection urlConnection = null;
+		String string = HttpUtil.URLtoString(url);
 
-		try {
-			urlConnection = url.openConnection();
-
-			if ((urlConnection instanceof
-					HttpURLConnection httpURLConnection) &&
-				(httpURLConnection.getResponseCode() !=
-					HttpURLConnection.HTTP_OK)) {
-
-				throw new IllegalArgumentException(
-					"Unable to download file from " + urlString);
-			}
-
-			try (InputStream inputStream = urlConnection.getInputStream()) {
-				return StreamUtil.toByteArray(inputStream);
-			}
+		if (Validator.isNull(string)) {
+			return new byte[0];
 		}
-		finally {
-			if (urlConnection instanceof HttpURLConnection httpURLConnection) {
-				httpURLConnection.disconnect();
-			}
-		}
+
+		return string.getBytes(StandardCharsets.UTF_8);
 	}
 
 }
