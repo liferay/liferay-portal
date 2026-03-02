@@ -390,9 +390,15 @@ public class EditSegmentsEntryDisplayContext {
 			"isSegmentationEnabled",
 			_isSegmentationEnabled(_themeDisplay.getCompanyId())
 		).put(
-			"learnResourceContext",
-			LearnMessageUtil.getReactDataJSONObject(
-				"frontend-js-components-web")
+			"learnResources",
+			HashMapBuilder.put(
+				"frontend-js-components-web",
+				LearnMessageUtil.getReactDataJSONObject(
+					"frontend-js-components-web")
+			).put(
+				"segments-web",
+				LearnMessageUtil.getReactDataJSONObject("segments-web")
+			).build()
 		).put(
 			"locale", _locale.toString()
 		).put(

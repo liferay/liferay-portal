@@ -8,7 +8,11 @@ import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import classNames from 'classnames';
-import {FeatureIndicator, LearnMessage} from 'frontend-js-components-web';
+import {
+	FeatureIndicator,
+	LearnMessage,
+	LearnResourcesContext,
+} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 import {DndProvider} from 'react-dnd';
@@ -27,7 +31,7 @@ export default function ContributorsBuilder({
 	emptyContributors,
 	isSegmentationDisabledAlertDismissed,
 	isSegmentationEnabled,
-	learnResourceContext,
+	learnResources,
 	membersCount = 0,
 	membersCountLoading = false,
 	onAlertClose = () => {},
@@ -117,10 +121,14 @@ export default function ContributorsBuilder({
 										'segments-deprecation-warning-message'
 									) + ' '}
 
-									<LearnMessage
-										resource="segments-web"
-										resourceKey="analytics-cloud"
-									/>
+									<LearnResourcesContext.Provider
+										value={learnResources['segments-web']}
+									>
+										<LearnMessage
+											resource="segments-web"
+											resourceKey="analytics-cloud"
+										/>
+									</LearnResourcesContext.Provider>
 								</ClayAlert>
 
 								<ClayLayout.Sheet className="c-pb-4">
@@ -132,7 +140,9 @@ export default function ContributorsBuilder({
 												<FeatureIndicator
 													interactive={true}
 													learnResourceContext={
-														learnResourceContext
+														learnResources[
+															'frontend-js-components-web'
+														]
 													}
 													type="deprecated"
 												/>
