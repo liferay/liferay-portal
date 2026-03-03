@@ -1,0 +1,32 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.petra.string.StringPool;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Jessyca Ferreira
+ */
+public class LPD_80774 {
+
+	public void method(
+		long userId, long groupId, String name, String title,
+		Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+		String settings, int visibilityType, ServiceContext serviceContext) {
+
+		AssetVocabularyLocalServiceUtil.addVocabulary(
+			123, groupId, name, title, titleMap, descriptionMap, settings,
+			visibilityType, serviceContext);
+		AssetVocabularyLocalServiceUtil.addVocabulary(StringPool.BLANK, userId, groupId, name, title, titleMap, descriptionMap, settings, visibilityType, serviceContext);
+		_assetVocabularyLocalService.addVocabulary(StringPool.BLANK, userId, groupId, name, title, titleMap, descriptionMap, settings, visibilityType, serviceContext);
+	}
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+}
