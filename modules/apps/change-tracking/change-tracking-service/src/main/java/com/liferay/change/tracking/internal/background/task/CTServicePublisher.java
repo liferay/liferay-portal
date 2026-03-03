@@ -312,8 +312,9 @@ public class CTServicePublisher<T extends CTModel<T>> {
 			sb.append(".mvccVersion = ?");
 		}
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				sb.toString())) {
+		try (PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection, sb.toString())) {
 
 			int batchCount = 0;
 			int totalRowCount = 0;

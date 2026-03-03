@@ -11,6 +11,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -48,7 +49,8 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 				1, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT);
 
 			try (PreparedStatement preparedStatement2 =
-					connection.prepareStatement(
+					AutoBatchPreparedStatementUtil.autoBatch(
+						connection,
 						"update ObjectDefinition set friendlyURLSeparator = " +
 							"? where objectDefinitionId = ?");
 				ResultSet resultSet = preparedStatement1.executeQuery()) {

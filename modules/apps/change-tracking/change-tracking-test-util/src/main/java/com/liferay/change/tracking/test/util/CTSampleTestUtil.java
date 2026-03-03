@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -51,20 +52,24 @@ public class CTSampleTestUtil {
 		long ctsChildId = 0;
 
 		try (Connection connection = DataAccess.getConnection();
-			PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"insert into CTSChild (mvccVersion, ctCollectionId, ",
-					"ctsChildId, companyId, ctsGrandParentId, ",
-					"parentCTSChildId, ctsParentName, name) values (?, ?, ?, ",
-					"?, ?, ?, ?, ?)"));
-			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				StringBundler.concat(
-					"insert into CTEntry (mvccVersion, uuid_, ",
-					"externalReferenceCode, ctCollectionId, ctEntryId, ",
-					"companyId, userId, createDate, modifiedDate, ",
-					"modelClassNameId, modelClassPK, modelMvccVersion, ",
-					"changeType) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ",
-					"?)"))) {
+			PreparedStatement preparedStatement1 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					StringBundler.concat(
+						"insert into CTSChild (mvccVersion, ctCollectionId, ",
+						"ctsChildId, companyId, ctsGrandParentId, ",
+						"parentCTSChildId, ctsParentName, name) values (?, ?, ",
+						"?, ?, ?, ?, ?, ?)"));
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					StringBundler.concat(
+						"insert into CTEntry (mvccVersion, uuid_, ",
+						"externalReferenceCode, ctCollectionId, ctEntryId, ",
+						"companyId, userId, createDate, modifiedDate, ",
+						"modelClassNameId, modelClassPK, modelMvccVersion, ",
+						"changeType) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ",
+						"?, ?)"))) {
 
 			long ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
 

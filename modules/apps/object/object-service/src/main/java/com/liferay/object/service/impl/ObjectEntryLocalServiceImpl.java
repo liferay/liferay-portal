@@ -5383,8 +5383,8 @@ public class ObjectEntryLocalServiceImpl
 		Connection connection = _currentConnection.getConnection(
 			objectEntryPersistence.getDataSource());
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				sql)) {
+		try (PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatch(connection, sql)) {
 
 			for (Locale locale : locales) {
 				String languageId = LocaleUtil.toLanguageId(locale);

@@ -6,6 +6,7 @@
 package com.liferay.portal.workflow.kaleo.internal.upgrade.v3_1_1;
 
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -29,9 +30,11 @@ public class KaleoNotificationUpgradeProcess extends UpgradeProcess {
 				"select kaleoNotificationId, notificationTypes  from " +
 					"KaleoNotification where notificationTypes like ? OR " +
 						"notificationTypes like ?");
-			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				"update KaleoNotification set notificationTypes = ? where " +
-					"kaleoNotificationId = ?")) {
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"update KaleoNotification set notificationTypes = ? " +
+						"where kaleoNotificationId = ?")) {
 
 			preparedStatement1.setString(1, "%im%");
 			preparedStatement1.setString(2, "%private-message%");

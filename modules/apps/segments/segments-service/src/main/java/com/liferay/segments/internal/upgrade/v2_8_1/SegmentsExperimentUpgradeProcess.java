@@ -5,6 +5,7 @@
 
 package com.liferay.segments.internal.upgrade.v2_8_1;
 
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.segments.constants.SegmentsExperimentConstants;
 
@@ -39,12 +40,16 @@ public class SegmentsExperimentUpgradeProcess extends UpgradeProcess {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				"select segmentsExperimentId, status from SegmentsExperiment " +
 					"where plid = ? order by createDate desc");
-			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				"delete from SegmentsExperiment where segmentsExperimentId = " +
-					"?");
-			PreparedStatement preparedStatement3 = connection.prepareStatement(
-				"delete from SegmentsExperimentRel where " +
-					"segmentsExperimentId = ?")) {
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"delete from SegmentsExperiment where " +
+						"segmentsExperimentId = ?");
+			PreparedStatement preparedStatement3 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"delete from SegmentsExperimentRel where " +
+						"segmentsExperimentId = ?")) {
 
 			preparedStatement1.setLong(1, plid);
 

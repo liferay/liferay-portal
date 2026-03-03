@@ -126,7 +126,8 @@ public class UpgradeCustomizablePortlets extends UpgradeProcess {
 				sb.append("portletId = ?");
 
 				try (PreparedStatement preparedStatement =
-						connection.prepareStatement(sb.toString())) {
+						AutoBatchPreparedStatementUtil.autoBatch(
+							connection, sb.toString())) {
 
 					for (String customPortletId : StringUtil.split(value)) {
 						if (!PortletIdCodec.hasInstanceId(customPortletId)) {

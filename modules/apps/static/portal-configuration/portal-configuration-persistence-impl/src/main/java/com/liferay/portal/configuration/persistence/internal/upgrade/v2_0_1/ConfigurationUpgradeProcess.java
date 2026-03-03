@@ -7,6 +7,7 @@ package com.liferay.portal.configuration.persistence.internal.upgrade.v2_0_1;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.log.Log;
@@ -46,9 +47,11 @@ public class ConfigurationUpgradeProcess extends UpgradeProcess {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				"select configurationId, dictionary from Configuration_ " +
 					"where dictionary like '%groupId=%'");
-			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				"update Configuration_ set dictionary = ? where " +
-					"configurationId = ?");
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"update Configuration_ set dictionary = ? where " +
+						"configurationId = ?");
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {

@@ -8,6 +8,7 @@ package com.liferay.change.tracking.internal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 
 import java.io.Serializable;
@@ -60,9 +61,10 @@ public class CTRowUtil {
 
 			try (PreparedStatement selectPreparedStatement =
 					connection.prepareStatement(selectSQL);
-				PreparedStatement insertPreparedStatement =
-					connection.prepareStatement(sb.toString());
-				ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+				 PreparedStatement insertPreparedStatement =
+					AutoBatchPreparedStatementUtil.autoBatch(connection, sb.toString());
+
+				 ResultSet resultSet = selectPreparedStatement.executeQuery()) {
 
 				while (resultSet.next()) {
 					int parameterIndex = 1;

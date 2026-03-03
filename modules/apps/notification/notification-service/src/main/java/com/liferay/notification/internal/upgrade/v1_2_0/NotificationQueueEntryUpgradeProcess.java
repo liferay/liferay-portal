@@ -7,6 +7,7 @@ package com.liferay.notification.internal.upgrade.v1_2_0;
 
 import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
@@ -25,10 +26,12 @@ public class NotificationQueueEntryUpgradeProcess extends UpgradeProcess {
 				"select notificationQueueEntryId, sent from " +
 					"NotificationQueueEntry");
 			ResultSet resultSet = preparedStatement1.executeQuery();
-			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				SQLTransformer.transform(
-					"update NotificationQueueEntry set status = ? where " +
-						"notificationQueueEntryId = ?"))) {
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					SQLTransformer.transform(
+						"update NotificationQueueEntry set status = ? where " +
+							"notificationQueueEntryId = ?"))) {
 
 			while (resultSet.next()) {
 				if (resultSet.getBoolean("sent")) {
