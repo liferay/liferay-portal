@@ -36,6 +36,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
+	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:subscription:subscription-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

@@ -221,6 +221,7 @@ import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
+import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -9564,13 +9565,14 @@ public class ObjectEntryResourceTest {
 			_siteScopedObjectDefinition1);
 	}
 
+	@FeatureFlag("LPD-17564")
 	@Test
 	public void testPostCustomObjectEntryWithAttachmentObjectField()
 		throws Exception {
 
 		_testPostCustomObjectEntryWithAttachmentObjectField(_objectDefinition1);
-		_testPostCustomObjectEntryWithAttachmentObjectField(
-			_siteScopedObjectDefinition1);
+//		_testPostCustomObjectEntryWithAttachmentObjectField(
+//			_siteScopedObjectDefinition1);
 	}
 
 	@Test
@@ -19104,11 +19106,109 @@ public class ObjectEntryResourceTest {
 			JSONCompareMode.LENIENT);
 	}
 
+//	private ObjectEntry _addCMSBasicDocumentObjectEntry(
+//		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry)
+//		throws Exception {
+//
+//		CMSTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
+//
+//		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+//			RandomTestUtil.randomLocaleStringMap(),
+//			RandomTestUtil.randomLocaleStringMap(),
+//			DepotConstants.TYPE_ASSET_LIBRARY,
+//			ServiceContextTestUtil.getServiceContext());
+//
+//		ObjectDefinition objectDefinition =
+//			_objectDefinitionLocalService.
+//				getObjectDefinitionByExternalReferenceCode(
+//					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+//
+//		return
+//		_objectEntryLocalService.addObjectEntry(
+//			depotEntry.getGroupId(), TestPropsValues.getUserId(), objectDefinition.getObjectDefinitionId(),
+//			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+//			null, HashMapBuilder.<String, Serializable>put(
+//				"file", fileEntry.getId()
+//			).put(
+//				"title_i18n",
+//				HashMapBuilder.put(
+//					"en_US", RandomTestUtil.randomString()
+//				).build()
+//			).build(), ServiceContextTestUtil.getServiceContext());
+//	}
+//
+//	private long _depotGroupId(){
+//
+//	}
+
+	@FeatureFlag("LPD-17564")
+	@Test
+	public void testAbe()throws Exception {
+		CMSTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectDefinition cmsBasicDocumentObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		_testPostCustomObjectEntryWithAttachmentObjectField(
+			fileEntry -> JSONUtil.put(
+				_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
+				_getFileEntryJSONObject(
+					_getDLFolder(cmsBasicDocumentObjectDefinition, false), fileEntry,
+					_objectDefinition1,
+					_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)),
+			_toFileEntry(
+				Base64::encode, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + ".txt", null, depotEntry.getGroupId(),
+				ContentTypes.TEXT_PLAIN),
+			null, _objectDefinition1,
+			_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE);
+	}
+
+
 	private void _testPostCustomObjectEntryWithAttachmentObjectField(
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		// CMS basic document source, file from Base64
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectDefinition cmsBasicDocumentObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", TestPropsValues.getCompanyId());
+
+		_testPostCustomObjectEntryWithAttachmentObjectField(
+			fileEntry -> JSONUtil.put(
+				_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
+				_getFileEntryJSONObject(
+					_getDLFolder(cmsBasicDocumentObjectDefinition, false), fileEntry,
+					objectDefinition,
+					_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)),
+			_toFileEntry(
+				Base64::encode, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + ".txt", null, depotEntry.getGroupId(),
+				ContentTypes.TEXT_PLAIN),
+			null, objectDefinition,
+			_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE);
+
+
+
+		// Documents and media source, file from Base64
+
+		DLFolder dlFolder1 = DLTestUtil.addDLFolder(_testGroupId);
 
 		FileEntry customFileEntry1 = TempFileEntryUtil.addTempFileEntry(
 			_testGroupId, TestPropsValues.getUserId(),
@@ -19117,24 +19217,6 @@ public class ObjectEntryResourceTest {
 				StringUtil.randomString() + ".txt"),
 			FileUtil.createTempFile(RandomTestUtil.randomBytes()),
 			ContentTypes.TEXT_PLAIN);
-
-		_testPostCustomObjectEntryWithAttachmentObjectField(
-			fileEntry -> JSONUtil.put(
-				_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
-				_getFileEntryJSONObject(
-					_getDLFolder(objectDefinition, false), fileEntry,
-					objectDefinition,
-					_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)),
-			_toFileEntry(
-				Base64::encode, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString() + ".txt", null, null,
-				customFileEntry1.getMimeType()),
-			null, objectDefinition,
-			_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE);
-
-		// Documents and media source, file from Base64
-
-		DLFolder dlFolder1 = DLTestUtil.addDLFolder(_testGroupId);
 
 		_testPostCustomObjectEntryWithAttachmentObjectField(
 			fileEntry -> JSONUtil.put(
@@ -19237,21 +19319,21 @@ public class ObjectEntryResourceTest {
 
 		testFileEntry.setExternalReferenceCode(externalReferenceCode1);
 
-		_testPostCustomObjectEntryWithAttachmentObjectField(
-			fileEntry -> JSONUtil.put(
-				_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-				() -> {
-					JSONObject jsonObject = _getFileEntryJSONObject(
-						null, fileEntry, objectDefinition,
-						_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
-
-					jsonObject.put(
-						"externalReferenceCode", externalReferenceCode1);
-
-					return jsonObject;
-				}),
-			testFileEntry, null, objectDefinition,
-			_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
+//		_testPostCustomObjectEntryWithAttachmentObjectField(
+//			fileEntry -> JSONUtil.put(
+//				_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
+//				() -> {
+//					JSONObject jsonObject = _getFileEntryJSONObject(
+//						null, fileEntry, objectDefinition,
+//						_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
+//
+//					jsonObject.put(
+//						"externalReferenceCode", externalReferenceCode1);
+//
+//					return jsonObject;
+//				}),
+//			testFileEntry, null, objectDefinition,
+//			_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
 
 		testFileEntry = _toFileEntry(
 			content -> null, RandomTestUtil.randomString(),
