@@ -27,6 +27,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.expando.kernel.exception.NoSuchValueException;
@@ -2067,11 +2068,11 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		account.setPermissions(new Permission[] {permission1, permission2});
 
-		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+		AssetVocabulary assetVocabulary1 = AssetTestUtil.addVocabulary(
 			TestPropsValues.getGroupId());
 
 		AssetCategory assetCategory1 = AssetTestUtil.addCategory(
-			TestPropsValues.getGroupId(), assetVocabulary.getVocabularyId());
+			TestPropsValues.getGroupId(), assetVocabulary1.getVocabularyId());
 
 		Group group = _groupLocalService.getGroup(assetCategory1.getGroupId());
 
@@ -2083,6 +2084,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 					siteKey = group.getGroupKey();
 				}
 			};
+
+		String randomString1 = RandomTestUtil.randomString();
+		String randomString2 = RandomTestUtil.randomString();
 
 		TaxonomyCategoryReference taxonomyCategoryReference2 =
 			new TaxonomyCategoryReference() {
@@ -2101,6 +2105,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 				},
 				new TaxonomyCategoryBrief() {
 					{
+						parentTaxonomyCategoryExternalReferenceCode =
+							randomString2;
+						parentVocabularyExternalReferenceCode = randomString1;
 						taxonomyCategoryReference = taxonomyCategoryReference2;
 					}
 				}
@@ -2384,6 +2391,22 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 						assetCategory3.getCategoryId()));
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EMPTY, assetCategory3.getStatus());
+
+		AssetCategory assetCategory4 =
+			_assetCategoryLocalService.
+				fetchAssetCategoryByExternalReferenceCode(
+					randomString2, group.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, assetCategory4.getStatus());
+
+		AssetVocabulary assetVocabulary2 =
+			_assetVocabularyLocalService.
+				fetchAssetVocabularyByExternalReferenceCode(
+					randomString1, group.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, assetVocabulary2.getStatus());
 	}
 
 	private void _testPostAccountDuplicateExternalReferenceCode()
@@ -2878,6 +2901,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 	@Inject
 	private AssetTagLocalService _assetTagLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;

@@ -1443,11 +1443,11 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 		organization.setRoleBriefs(new RoleBrief[] {roleBrief1, roleBrief2});
 
-		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+		AssetVocabulary assetVocabulary1 = AssetTestUtil.addVocabulary(
 			TestPropsValues.getGroupId());
 
 		AssetCategory assetCategory1 = AssetTestUtil.addCategory(
-			TestPropsValues.getGroupId(), assetVocabulary.getVocabularyId());
+			TestPropsValues.getGroupId(), assetVocabulary1.getVocabularyId());
 
 		Group group = _groupLocalService.getGroup(assetCategory1.getGroupId());
 
@@ -1459,6 +1459,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 					siteKey = group.getGroupKey();
 				}
 			};
+
+		String randomString1 = RandomTestUtil.randomString();
+		String randomString2 = RandomTestUtil.randomString();
 
 		TaxonomyCategoryReference taxonomyCategoryReference2 =
 			new TaxonomyCategoryReference() {
@@ -1477,6 +1480,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 				},
 				new TaxonomyCategoryBrief() {
 					{
+						parentTaxonomyCategoryExternalReferenceCode =
+							randomString2;
+						parentVocabularyExternalReferenceCode = randomString1;
 						taxonomyCategoryReference = taxonomyCategoryReference2;
 					}
 				}
@@ -1670,6 +1676,22 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 						assetCategory3.getCategoryId()));
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EMPTY, assetCategory3.getStatus());
+
+		AssetCategory assetCategory4 =
+			_assetCategoryLocalService.
+				fetchAssetCategoryByExternalReferenceCode(
+					randomString2, group.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, assetCategory4.getStatus());
+
+		AssetVocabulary assetVocabulary2 =
+			_assetVocabularyLocalService.
+				fetchAssetVocabularyByExternalReferenceCode(
+					randomString1, group.getGroupId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, assetVocabulary2.getStatus());
 	}
 
 	private void _testPostOrganizationWithCommentOverMaximumLength()
