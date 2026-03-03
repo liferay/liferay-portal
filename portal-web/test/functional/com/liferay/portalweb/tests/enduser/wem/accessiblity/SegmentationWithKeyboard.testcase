@@ -6,9 +6,30 @@ definition {
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property property.group = "analytics.cloud.profile";
+	property test.liferay.virtual.instance = "false";
+	property test.run.type = "single";
 	property testray.main.component.name = "Segmentation";
 
 	setUp {
+		task ("Enable DXP segments deprecation feature flag") {
+			SignIn.signIn();
+
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
+
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Feature Flags",
+				configurationName = "Deprecation",
+				configurationScope = "System Scope");
+
+			FeatureFlag.enableFeatureFlag(
+				configurationScope = "System Scope",
+				featureFlag = "DXP Segments",
+				scope = "Deprecation");
+		}
+
 		task ("Set up instance and sign in") {
 			TestCase.setUpPortalInstance();
 
