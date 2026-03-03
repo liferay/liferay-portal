@@ -5932,6 +5932,18 @@
 	{
 		"classNames": [
 			"AssetVocabularyLocalService",
+			"AssetVocabularyLocalServiceUtil"
+		],
+		"from": "addVocabulary(long paramName, long paramName, String paramName, String paramName, Map<Locale, String> paramName, Map<Locale, String> paramName, String paramName, int paramName, ServiceContext paramName)",
+		"issueKey": "LPD-80774",
+		"newImports": [
+			"com.liferay.petra.string.StringPool"
+		],
+		"to": "addVocabulary(StringPool.BLANK, param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#)"
+	},
+	{
+		"classNames": [
+			"AssetVocabularyLocalService",
 			"AssetVocabularyLocalServiceUtil",
 			"AssetVocabularyService",
 			"AssetVocabularyServiceUtil"
