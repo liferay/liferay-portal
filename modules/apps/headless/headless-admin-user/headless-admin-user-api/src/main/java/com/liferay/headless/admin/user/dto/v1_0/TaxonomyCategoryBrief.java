@@ -97,6 +97,101 @@ public class TaxonomyCategoryBrief implements Serializable {
 	@JsonIgnore
 	private Supplier<Object> _embeddedTaxonomyCategorySupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getParentTaxonomyCategoryExternalReferenceCode() {
+		if (_parentTaxonomyCategoryExternalReferenceCodeSupplier != null) {
+			parentTaxonomyCategoryExternalReferenceCode =
+				_parentTaxonomyCategoryExternalReferenceCodeSupplier.get();
+
+			_parentTaxonomyCategoryExternalReferenceCodeSupplier = null;
+		}
+
+		return parentTaxonomyCategoryExternalReferenceCode;
+	}
+
+	public void setParentTaxonomyCategoryExternalReferenceCode(
+		String parentTaxonomyCategoryExternalReferenceCode) {
+
+		this.parentTaxonomyCategoryExternalReferenceCode =
+			parentTaxonomyCategoryExternalReferenceCode;
+
+		_parentTaxonomyCategoryExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setParentTaxonomyCategoryExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			parentTaxonomyCategoryExternalReferenceCodeUnsafeSupplier) {
+
+		_parentTaxonomyCategoryExternalReferenceCodeSupplier = () -> {
+			try {
+				return parentTaxonomyCategoryExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String parentTaxonomyCategoryExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String>
+		_parentTaxonomyCategoryExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getParentVocabularyExternalReferenceCode() {
+		if (_parentVocabularyExternalReferenceCodeSupplier != null) {
+			parentVocabularyExternalReferenceCode =
+				_parentVocabularyExternalReferenceCodeSupplier.get();
+
+			_parentVocabularyExternalReferenceCodeSupplier = null;
+		}
+
+		return parentVocabularyExternalReferenceCode;
+	}
+
+	public void setParentVocabularyExternalReferenceCode(
+		String parentVocabularyExternalReferenceCode) {
+
+		this.parentVocabularyExternalReferenceCode =
+			parentVocabularyExternalReferenceCode;
+
+		_parentVocabularyExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setParentVocabularyExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			parentVocabularyExternalReferenceCodeUnsafeSupplier) {
+
+		_parentVocabularyExternalReferenceCodeSupplier = () -> {
+			try {
+				return parentVocabularyExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String parentVocabularyExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _parentVocabularyExternalReferenceCodeSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The category's ID."
 	)
@@ -330,6 +425,40 @@ public class TaxonomyCategoryBrief implements Serializable {
 			else {
 				sb.append(embeddedTaxonomyCategory);
 			}
+		}
+
+		String parentTaxonomyCategoryExternalReferenceCode =
+			getParentTaxonomyCategoryExternalReferenceCode();
+
+		if (parentTaxonomyCategoryExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentTaxonomyCategoryExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(parentTaxonomyCategoryExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		String parentVocabularyExternalReferenceCode =
+			getParentVocabularyExternalReferenceCode();
+
+		if (parentVocabularyExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentVocabularyExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(parentVocabularyExternalReferenceCode));
+
+			sb.append("\"");
 		}
 
 		Long taxonomyCategoryId = getTaxonomyCategoryId();
