@@ -5,12 +5,16 @@
 
 package com.liferay.journal.internal.util;
 
+import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.Field;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -18,6 +22,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.language.LanguageImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.xml.SAXReaderImpl;
 
@@ -26,11 +31,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import org.mockito.Mockito;
 
 /**
  * @author Jürgen Kappler
@@ -41,6 +50,75 @@ public class JournalConverterImplTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGetField() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			LanguageUtil.class, "_language", new LanguageImpl());
+
+		JournalConverterImpl journalConverterImpl = new JournalConverterImpl();
+
+		String imageDDMFormFieldName = RandomTestUtil.randomString();
+
+		DDMFormField ddmFormField = new DDMFormField(
+			imageDDMFormFieldName, DDMFormFieldTypeConstants.IMAGE);
+
+		ddmFormField.setLocalizable(true);
+
+		LocalizedValue predefinedValue = new LocalizedValue(LocaleUtil.US);
+
+		predefinedValue.addString(LocaleUtil.GERMANY, "{}");
+		predefinedValue.addString(LocaleUtil.US, "{}");
+
+		ddmFormField.setPredefinedValue(predefinedValue);
+
+		DDMStructure ddmStructure = Mockito.mock(DDMStructure.class);
+
+		Mockito.when(
+			ddmStructure.getDDMFormField(imageDDMFormFieldName)
+		).thenReturn(
+			ddmFormField
+		);
+
+		Mockito.when(
+			ddmStructure.getFieldProperty(imageDDMFormFieldName, "localizable")
+		).thenReturn(
+			"true"
+		);
+
+		Mockito.when(
+			ddmStructure.getStructureId()
+		).thenReturn(
+			1L
+		);
+
+		Element rootElement = _createRootElement();
+
+		Element dynamicElementElement = rootElement.addElement(
+			"dynamic-element");
+
+		dynamicElementElement.addAttribute("name", imageDDMFormFieldName);
+
+		Element dynamicContentElement = dynamicElementElement.addElement(
+			"dynamic-content");
+
+		dynamicContentElement.addAttribute("language-id", "de_DE");
+		dynamicContentElement.addCDATA("{}");
+
+		Field field = ReflectionTestUtil.invoke(
+			journalConverterImpl, "_getField",
+			new Class<?>[] {
+				String[].class, DDMStructure.class, String.class, Element.class,
+				String.class
+			},
+			new String[] {"en_US", "de_DE"}, ddmStructure, "en_US",
+			dynamicElementElement, imageDDMFormFieldName);
+
+		Set<Locale> availableLocales = field.getAvailableLocales();
+
+		Assert.assertFalse(availableLocales.contains(LocaleUtil.GERMANY));
+		Assert.assertTrue(availableLocales.isEmpty());
+	}
 
 	@Test
 	public void testUpdateContentDynamicElement() {
