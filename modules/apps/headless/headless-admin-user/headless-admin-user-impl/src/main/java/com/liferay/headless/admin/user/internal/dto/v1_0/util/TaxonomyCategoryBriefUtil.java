@@ -6,6 +6,9 @@
 package com.liferay.headless.admin.user.internal.dto.v1_0.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.headless.admin.user.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.admin.user.dto.v1_0.TaxonomyCategoryReference;
 import com.liferay.portal.kernel.model.Group;
@@ -28,6 +31,39 @@ public class TaxonomyCategoryBriefUtil {
 
 		return new TaxonomyCategoryBrief() {
 			{
+				setParentTaxonomyCategoryExternalReferenceCode(
+					() -> {
+						if (assetCategory.getParentCategoryId() == 0) {
+							return null;
+						}
+
+						AssetCategory parentAssetCategory =
+							AssetCategoryLocalServiceUtil.fetchAssetCategory(
+								assetCategory.getParentCategoryId());
+
+						if (parentAssetCategory == null) {
+							return null;
+						}
+
+						return parentAssetCategory.getExternalReferenceCode();
+					});
+				setParentVocabularyExternalReferenceCode(
+					() -> {
+						if (assetCategory.getVocabularyId() == 0) {
+							return null;
+						}
+
+						AssetVocabulary assetVocabulary =
+							AssetVocabularyLocalServiceUtil.
+								fetchAssetVocabulary(
+									assetCategory.getVocabularyId());
+
+						if (assetVocabulary == null) {
+							return null;
+						}
+
+						return assetVocabulary.getExternalReferenceCode();
+					});
 				setTaxonomyCategoryId(assetCategory::getCategoryId);
 				setTaxonomyCategoryName(
 					() -> assetCategory.getTitle(

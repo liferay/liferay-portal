@@ -823,8 +823,13 @@ public class AccountResourceImpl
 				}
 
 				AssetCategory assetCategory =
-					_assetCategoryService.getOrAddEmptyCategory(
-						externalReferenceCode, group.getGroupId());
+					_assetCategoryService.getOrAddEmptyCategoryWithAncestors(
+						externalReferenceCode, contextUser.getUserId(),
+						group.getGroupId(),
+						taxonomyCategoryBrief.
+							getParentTaxonomyCategoryExternalReferenceCode(),
+						taxonomyCategoryBrief.
+							getParentVocabularyExternalReferenceCode());
 
 				return assetCategory.getCategoryId();
 			},
