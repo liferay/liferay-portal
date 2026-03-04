@@ -115,12 +115,13 @@ public class CommercePriceListLocalServiceTest {
 			commercePriceList =
 				_commercePriceListLocalService.updateCommercePriceList(
 					commercePriceList.getCommercePriceListId(),
-					commercePriceList.getCommerceCurrencyCode(),
-					commercePriceList.isNetPrice(),
+					commercePriceList.isCatalogBasePriceList(),
+					commercePriceList.getCommerceCurrencyCode(), 1, 12, 0, 1,
+					2026, 0, 0, 0, 0, 0, commercePriceList.getName(),
+					commercePriceList.isNetPrice(), false,
 					commercePriceList.getParentCommercePriceListId(),
-					commercePriceList.getName(),
-					commercePriceList.getPriority(), 1, 1, 2026, 12, 0, 0, 0, 0,
-					0, 0, false, _serviceContext);
+					commercePriceList.getPriority(),
+					commercePriceList.getType(), _serviceContext);
 
 			Assert.fail();
 		}
@@ -133,11 +134,12 @@ public class CommercePriceListLocalServiceTest {
 		commercePriceList =
 			_commercePriceListLocalService.updateCommercePriceList(
 				commercePriceList.getCommercePriceListId(),
-				commercePriceList.getCommerceCurrencyCode(),
-				commercePriceList.isNetPrice(),
-				commercePriceList.getParentCommercePriceListId(),
-				commercePriceList.getName(), 10, 1, 1, 2026, 12, 0, 0, 0, 0, 0,
-				0, true, _serviceContext);
+				commercePriceList.isCatalogBasePriceList(),
+				commercePriceList.getCommerceCurrencyCode(), 1, 12, 0, 1, 2026,
+				0, 0, 0, 0, 0, commercePriceList.getName(),
+				commercePriceList.isNetPrice(), true,
+				commercePriceList.getParentCommercePriceListId(), 10,
+				commercePriceList.getType(), _serviceContext);
 
 		Assert.assertNull(commercePriceList.getExpirationDate());
 
@@ -154,11 +156,12 @@ public class CommercePriceListLocalServiceTest {
 		commercePriceList =
 			_commercePriceListLocalService.updateCommercePriceList(
 				commercePriceList.getCommercePriceListId(),
-				commercePriceList.getCommerceCurrencyCode(),
-				commercePriceList.isNetPrice(),
-				commercePriceList.getParentCommercePriceListId(),
-				commercePriceList.getName(), 10, 1, 1, 2026, 12, 0, 1, 1, 2100,
-				12, 0, false, _serviceContext);
+				commercePriceList.isCatalogBasePriceList(),
+				commercePriceList.getCommerceCurrencyCode(), 1, 12, 0, 1, 2026,
+				1, 12, 0, 1, 2026, commercePriceList.getName(),
+				commercePriceList.isNetPrice(), false,
+				commercePriceList.getParentCommercePriceListId(), 10,
+				commercePriceList.getType(), _serviceContext);
 
 		Assert.assertNotNull(commercePriceList.getExpirationDate());
 
@@ -171,11 +174,13 @@ public class CommercePriceListLocalServiceTest {
 		commercePriceList =
 			_commercePriceListLocalService.updateCommercePriceList(
 				commercePriceList.getCommercePriceListId(),
-				commercePriceList.getCommerceCurrencyCode(),
-				commercePriceList.isNetPrice(),
+				commercePriceList.isCatalogBasePriceList(),
+				commercePriceList.getCommerceCurrencyCode(), 1, 12, 0, 1, 2026,
+				1, 12, 0, 1, 2026, commercePriceList.getName(),
+				commercePriceList.isNetPrice(), false,
 				commercePriceList.getParentCommercePriceListId(),
-				commercePriceList.getName(), commercePriceList.getPriority(), 1,
-				1, 2026, 12, 0, 1, 1, 2100, 12, 0, false, _serviceContext);
+				commercePriceList.getPriority(), commercePriceList.getType(),
+				_serviceContext);
 
 		Assert.assertNotNull(commercePriceList.getExpirationDate());
 
@@ -192,11 +197,12 @@ public class CommercePriceListLocalServiceTest {
 		commercePriceList =
 			_commercePriceListLocalService.updateCommercePriceList(
 				commercePriceList.getCommercePriceListId(),
-				commercePriceList.getCommerceCurrencyCode(),
-				commercePriceList.isNetPrice(),
-				commercePriceList.getParentCommercePriceListId(),
-				commercePriceList.getName(), 10, 1, 1, 2026, 12, 0, 1, 1, 2100,
-				12, 0, false, _serviceContext);
+				commercePriceList.isCatalogBasePriceList(),
+				commercePriceList.getCommerceCurrencyCode(), 1, 12, 0, 1, 2026,
+				1, 12, 0, 1, 2026, commercePriceList.getName(),
+				commercePriceList.isNetPrice(), false,
+				commercePriceList.getParentCommercePriceListId(), 10,
+				commercePriceList.getType(), _serviceContext);
 
 		Assert.assertNotNull(commercePriceList.getExpirationDate());
 	}

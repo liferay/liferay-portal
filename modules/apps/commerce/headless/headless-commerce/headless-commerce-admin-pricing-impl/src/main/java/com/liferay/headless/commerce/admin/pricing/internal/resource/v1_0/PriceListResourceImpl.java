@@ -359,17 +359,18 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 
 		commercePriceList = _commercePriceListService.updateCommercePriceList(
 			commercePriceList.getCommercePriceListId(),
-			commerceCurrency.getCode(), true, 0,
+			commercePriceList.isCatalogBasePriceList(),
+			commerceCurrency.getCode(), displayDateConfig.getDay(),
+			displayDateConfig.getHour(), displayDateConfig.getMinute(),
+			displayDateConfig.getMonth(), displayDateConfig.getYear(),
+			expirationDateConfig.getDay(), expirationDateConfig.getHour(),
+			expirationDateConfig.getMinute(), expirationDateConfig.getMonth(),
+			expirationDateConfig.getYear(),
 			GetterUtil.get(priceList.getName(), commercePriceList.getName()),
+			true, GetterUtil.getBoolean(priceList.getNeverExpire(), true), 0,
 			GetterUtil.get(
 				priceList.getPriority(), commercePriceList.getPriority()),
-			displayDateConfig.getMonth(), displayDateConfig.getDay(),
-			displayDateConfig.getYear(), displayDateConfig.getHour(),
-			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
-			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
-			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
-			GetterUtil.getBoolean(priceList.getNeverExpire(), true),
-			serviceContext);
+			commercePriceList.getType(), serviceContext);
 
 		// Expando
 

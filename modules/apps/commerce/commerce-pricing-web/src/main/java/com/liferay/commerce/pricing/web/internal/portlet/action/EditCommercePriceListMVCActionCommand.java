@@ -250,13 +250,17 @@ public class EditCommercePriceListMVCActionCommand
 				expirationDateMinute, neverExpire, serviceContext);
 		}
 
+		CommercePriceList commercePriceList =
+			_commercePriceListService.getCommercePriceList(commercePriceListId);
+
 		return _commercePriceListService.updateCommercePriceList(
-			commercePriceListId, commerceCurrency.getCode(), netPrice,
-			parentCommercePriceListId, name, priority, displayDateMonth,
-			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire,
-			serviceContext);
+			commercePriceListId, commercePriceList.isCatalogBasePriceList(),
+			commerceCurrency.getCode(), displayDateDay, displayDateHour,
+			displayDateMinute, displayDateMonth, displayDateYear,
+			expirationDateDay, expirationDateHour, expirationDateMinute,
+			expirationDateMonth, expirationDateYear, name, netPrice,
+			neverExpire, parentCommercePriceListId, priority,
+			commercePriceList.getType(), serviceContext);
 	}
 
 	@Reference
