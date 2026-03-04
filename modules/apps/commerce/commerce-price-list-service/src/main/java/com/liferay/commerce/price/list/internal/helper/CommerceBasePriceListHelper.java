@@ -98,7 +98,7 @@ public class CommerceBasePriceListHelper {
 
 			_commercePriceListLocalService.addCatalogBaseCommercePriceList(
 				commerceCatalog.getGroupId(), serviceContext.getUserId(),
-				commerceCurrency.getCode(), type, name, serviceContext);
+				commerceCurrency.getCode(), name, type, serviceContext);
 		}
 	}
 

@@ -224,7 +224,7 @@ public class PricingCommerceHealthStatus implements CommerceHealthStatus {
 			commercePriceList =
 				_commercePriceListLocalService.addCatalogBaseCommercePriceList(
 					commerceCatalog.getGroupId(), serviceContext.getUserId(),
-					commerceCurrency.getCode(), type, name, serviceContext);
+					commerceCurrency.getCode(), name, type, serviceContext);
 
 			List<CPDefinition> cpDefinitions =
 				_cpDefinitionLocalService.getCPDefinitions(

@@ -123,11 +123,10 @@ public class CommercePriceListIndexerTest {
 			commerceCurrency.getCode());
 
 		_commercePriceListLocalService.addCommercePriceList(
-			null, _user.getUserId(), commerceCatalog.getGroupId(),
-			commerceCurrency.getCode(), true,
-			CommercePriceListConstants.TYPE_PRICE_LIST, 0, false,
-			RandomTestUtil.randomString(), 0, 1, 1, 2018, 3, 4, 0, 0, 0, 0, 0,
-			true,
+			null, _user.getUserId(), commerceCatalog.getGroupId(), false,
+			commerceCurrency.getCode(), 1, 3, 4, 1, 2018, 0, 0, 0, 0, 0,
+			RandomTestUtil.randomString(), true, true, 0, 0,
+			CommercePriceListConstants.TYPE_PRICE_LIST,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		List<CommercePriceList> commercePriceLists =

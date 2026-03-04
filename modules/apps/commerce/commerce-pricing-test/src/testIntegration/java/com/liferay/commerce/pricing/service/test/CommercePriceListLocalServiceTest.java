@@ -67,11 +67,12 @@ public class CommercePriceListLocalServiceTest {
 		try {
 			_commercePriceListLocalService.addCommercePriceList(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_commerceCatalog.getGroupId(), _commerceCurrency.getCode(),
-				RandomTestUtil.randomBoolean(),
-				CommercePriceListConstants.TYPE_PRICE_LIST, 0, true,
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), 1,
-				1, 2026, 12, 0, 1, 1, 2100, 12, 0, false, _serviceContext);
+				_commerceCatalog.getGroupId(), true,
+				_commerceCurrency.getCode(), 1, 12, 0, 1, 2026, 1, 12, 0, 1,
+				2100, RandomTestUtil.randomString(),
+				RandomTestUtil.randomBoolean(), false, 0,
+				RandomTestUtil.randomDouble(),
+				CommercePriceListConstants.TYPE_PRICE_LIST, _serviceContext);
 
 			Assert.fail();
 		}
@@ -84,21 +85,22 @@ public class CommercePriceListLocalServiceTest {
 		CommercePriceList commercePriceList =
 			_commercePriceListLocalService.addCommercePriceList(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_commerceCatalog.getGroupId(), _commerceCurrency.getCode(),
-				RandomTestUtil.randomBoolean(),
-				CommercePriceListConstants.TYPE_PRICE_LIST, 0, false,
-				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), 1,
-				1, 2026, 12, 0, 1, 1, 2100, 12, 0, false, _serviceContext);
+				_commerceCatalog.getGroupId(), false,
+				_commerceCurrency.getCode(), 1, 12, 0, 1, 2026, 1, 12, 0, 1,
+				2100, RandomTestUtil.randomString(),
+				RandomTestUtil.randomBoolean(), false, 0,
+				RandomTestUtil.randomDouble(),
+				CommercePriceListConstants.TYPE_PRICE_LIST, _serviceContext);
 
 		Assert.assertNotNull(commercePriceList.getExpirationDate());
 
 		commercePriceList = _commercePriceListLocalService.addCommercePriceList(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_commerceCatalog.getGroupId(), _commerceCurrency.getCode(),
-			RandomTestUtil.randomBoolean(),
-			CommercePriceListConstants.TYPE_PROMOTION, 0, false,
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), 1, 1,
-			2026, 12, 0, 1, 1, 2100, 12, 0, false, _serviceContext);
+			_commerceCatalog.getGroupId(), false, _commerceCurrency.getCode(),
+			1, 12, 0, 1, 2026, 1, 12, 0, 1, 2100, RandomTestUtil.randomString(),
+			RandomTestUtil.randomBoolean(), false, 0,
+			RandomTestUtil.randomDouble(),
+			CommercePriceListConstants.TYPE_PROMOTION, _serviceContext);
 
 		Assert.assertNotNull(commercePriceList.getExpirationDate());
 	}
@@ -145,11 +147,11 @@ public class CommercePriceListLocalServiceTest {
 
 		commercePriceList = _commercePriceListLocalService.addCommercePriceList(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_commerceCatalog.getGroupId(), _commerceCurrency.getCode(),
-			RandomTestUtil.randomBoolean(),
-			CommercePriceListConstants.TYPE_PRICE_LIST, 0, false,
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), 1, 1,
-			2026, 12, 0, 1, 1, 2100, 12, 0, true, _serviceContext);
+			_commerceCatalog.getGroupId(), false, _commerceCurrency.getCode(),
+			1, 12, 0, 1, 2026, 1, 12, 0, 1, 2100, RandomTestUtil.randomString(),
+			RandomTestUtil.randomBoolean(), true, 0,
+			RandomTestUtil.randomDouble(),
+			CommercePriceListConstants.TYPE_PRICE_LIST, _serviceContext);
 
 		Assert.assertNull(commercePriceList.getExpirationDate());
 
@@ -186,11 +188,11 @@ public class CommercePriceListLocalServiceTest {
 
 		commercePriceList = _commercePriceListLocalService.addCommercePriceList(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_commerceCatalog.getGroupId(), _commerceCurrency.getCode(),
-			RandomTestUtil.randomBoolean(),
-			CommercePriceListConstants.TYPE_PROMOTION, 0, false,
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), 1, 1,
-			2026, 12, 0, 1, 1, 2100, 12, 0, true, _serviceContext);
+			_commerceCatalog.getGroupId(), false, _commerceCurrency.getCode(),
+			1, 12, 0, 1, 2026, 1, 12, 0, 1, 2100, RandomTestUtil.randomString(),
+			RandomTestUtil.randomBoolean(), true, 0,
+			RandomTestUtil.randomDouble(),
+			CommercePriceListConstants.TYPE_PROMOTION, _serviceContext);
 
 		Assert.assertNull(commercePriceList.getExpirationDate());
 

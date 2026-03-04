@@ -131,8 +131,8 @@ public class CommercePriceListLocalServiceImpl
 
 	@Override
 	public CommercePriceList addCatalogBaseCommercePriceList(
-			long groupId, long userId, String commerceCurrencyCode, String type,
-			String name, ServiceContext serviceContext)
+			long groupId, long userId, String commerceCurrencyCode, String name,
+			String type, ServiceContext serviceContext)
 		throws PortalException {
 
 		Date date = new Date();
@@ -146,25 +146,25 @@ public class CommercePriceListLocalServiceImpl
 		}
 
 		return commercePriceListLocalService.addCommercePriceList(
-			null, userId, groupId, commerceCurrencyCode, true, type, 0L, true,
-			name, 0D, calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
-			displayDateHour, calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
-			serviceContext);
+			null, userId, groupId, true, commerceCurrencyCode,
+			calendar.get(Calendar.DAY_OF_MONTH), displayDateHour,
+			calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
+			calendar.get(Calendar.YEAR), 0, 0, 0, 0, 0, name, true, true, 0L,
+			0D, type, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommercePriceList addCommercePriceList(
 			String externalReferenceCode, long userId, long groupId,
-			String commerceCurrencyCode, boolean netPrice, String type,
-			long parentCommercePriceListId, boolean catalogBasePriceList,
-			String name, double priority, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
+			boolean catalogBasePriceList, String commerceCurrencyCode,
+			int displayDateDay, int displayDateHour, int displayDateMinute,
+			int displayDateMonth, int displayDateYear, int expirationDateDay,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, ServiceContext serviceContext)
+			int expirationDateMonth, int expirationDateYear, String name,
+			boolean netPrice, boolean neverExpire,
+			long parentCommercePriceListId, double priority, String type,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce price list
@@ -299,12 +299,13 @@ public class CommercePriceListLocalServiceImpl
 		// Add
 
 		return commercePriceListLocalService.addCommercePriceList(
-			externalReferenceCode, userId, groupId, commerceCurrencyCode,
-			netPrice, type, parentCommercePriceListId, catalogBasePriceList,
-			name, priority, displayDateMonth, displayDateDay, displayDateYear,
-			displayDateHour, displayDateMinute, expirationDateMonth,
-			expirationDateDay, expirationDateYear, expirationDateHour,
-			expirationDateMinute, neverExpire, serviceContext);
+			externalReferenceCode, userId, groupId, catalogBasePriceList,
+			commerceCurrencyCode, displayDateDay, displayDateHour,
+			displayDateMinute, displayDateMonth, displayDateYear,
+			expirationDateDay, expirationDateHour, expirationDateMinute,
+			expirationDateMonth, expirationDateYear, name, netPrice,
+			neverExpire, parentCommercePriceListId, priority, type,
+			serviceContext);
 	}
 
 	@Override

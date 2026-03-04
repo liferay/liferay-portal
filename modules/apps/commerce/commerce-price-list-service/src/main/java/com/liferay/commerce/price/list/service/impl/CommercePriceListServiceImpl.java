@@ -50,26 +50,27 @@ public class CommercePriceListServiceImpl
 	@Override
 	public CommercePriceList addCommercePriceList(
 			String externalReferenceCode, long groupId,
-			String commerceCurrencyCode, boolean netPrice, String type,
-			long parentCommercePriceListId, boolean catalogBasePriceList,
-			String name, double priority, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
+			boolean catalogBasePriceList, String commerceCurrencyCode,
+			int displayDateDay, int displayDateHour, int displayDateMinute,
+			int displayDateMonth, int displayDateYear, int expirationDateDay,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, ServiceContext serviceContext)
+			int expirationDateMonth, int expirationDateYear, String name,
+			boolean netPrice, boolean neverExpire,
+			long parentCommercePriceListId, double priority, String type,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkPortletResourcePermission(
 			groupId, CommercePriceListActionKeys.ADD_COMMERCE_PRICE_LIST);
 
 		return commercePriceListLocalService.addCommercePriceList(
-			externalReferenceCode, getUserId(), groupId, commerceCurrencyCode,
-			netPrice, type, parentCommercePriceListId, catalogBasePriceList,
-			name, priority, displayDateMonth, displayDateDay, displayDateYear,
-			displayDateHour, displayDateMinute, expirationDateMonth,
-			expirationDateDay, expirationDateYear, expirationDateHour,
-			expirationDateMinute, neverExpire, serviceContext);
+			externalReferenceCode, getUserId(), groupId, catalogBasePriceList,
+			commerceCurrencyCode, displayDateDay, displayDateHour,
+			displayDateMinute, displayDateMonth, displayDateYear,
+			expirationDateDay, expirationDateHour, expirationDateMinute,
+			expirationDateMonth, expirationDateYear, name, netPrice,
+			neverExpire, parentCommercePriceListId, priority, type,
+			serviceContext);
 	}
 
 	@Override
@@ -128,12 +129,13 @@ public class CommercePriceListServiceImpl
 		// Add
 
 		return addCommercePriceList(
-			externalReferenceCode, groupId, commerceCurrencyCode, netPrice,
-			type, parentCommercePriceListId, catalogBasePriceList, name,
-			priority, displayDateMonth, displayDateDay, displayDateYear,
-			displayDateHour, displayDateMinute, expirationDateMonth,
-			expirationDateDay, expirationDateYear, expirationDateHour,
-			expirationDateMinute, neverExpire, serviceContext);
+			externalReferenceCode, groupId, catalogBasePriceList,
+			commerceCurrencyCode, displayDateDay, displayDateHour,
+			displayDateMinute, displayDateMonth, displayDateYear,
+			expirationDateDay, expirationDateHour, expirationDateMinute,
+			expirationDateMonth, expirationDateYear, name, netPrice,
+			neverExpire, parentCommercePriceListId, priority, type,
+			serviceContext);
 	}
 
 	@Override
