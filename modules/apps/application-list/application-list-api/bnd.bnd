@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Application List API
 Bundle-SymbolicName: com.liferay.application.list.api
-Bundle-Version: 14.2.0
+Bundle-Version: 15.0.0
 Export-Package:\
 	com.liferay.application.list,\
 	com.liferay.application.list.adapter,\
