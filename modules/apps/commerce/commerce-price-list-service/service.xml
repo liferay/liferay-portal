@@ -104,15 +104,15 @@
 
 		<!-- Other fields -->
 
-		<column name="commerceCurrencyCode" type="String" />
-		<column name="parentCommercePriceListId" type="long" />
 		<column name="catalogBasePriceList" type="boolean" />
-		<column name="netPrice" type="boolean" />
-		<column name="type" type="String" />
-		<column name="name" type="String" />
-		<column name="priority" type="double" />
+		<column name="commerceCurrencyCode" type="String" />
 		<column name="displayDate" type="Date" />
 		<column name="expirationDate" type="Date" />
+		<column name="name" type="String" />
+		<column name="netPrice" type="boolean" />
+		<column name="parentCommercePriceListId" type="long" />
+		<column name="priority" type="double" />
+		<column name="type" type="String" />
 		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
 		<column name="statusByUserId" type="long" />
