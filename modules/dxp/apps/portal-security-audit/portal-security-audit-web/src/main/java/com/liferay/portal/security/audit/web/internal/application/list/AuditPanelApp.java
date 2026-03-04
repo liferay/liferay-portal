@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class AuditPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "search-experiences";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

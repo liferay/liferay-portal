@@ -32,6 +32,11 @@ import org.osgi.service.component.annotations.Reference;
 public class MarketplaceAppManagerPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "grid";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

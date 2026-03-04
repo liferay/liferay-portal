@@ -32,6 +32,11 @@ import org.osgi.service.component.annotations.Reference;
 public class MarketplaceStorePanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "shopping-cart";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

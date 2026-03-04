@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class GogoShellPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "code";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

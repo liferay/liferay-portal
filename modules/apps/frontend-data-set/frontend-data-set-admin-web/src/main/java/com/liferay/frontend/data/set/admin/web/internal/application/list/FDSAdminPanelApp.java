@@ -31,6 +31,11 @@ import org.osgi.service.component.annotations.Reference;
 public class FDSAdminPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "table2";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

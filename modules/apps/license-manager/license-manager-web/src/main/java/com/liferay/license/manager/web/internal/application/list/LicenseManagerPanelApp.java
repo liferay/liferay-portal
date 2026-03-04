@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class LicenseManagerPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "forms";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

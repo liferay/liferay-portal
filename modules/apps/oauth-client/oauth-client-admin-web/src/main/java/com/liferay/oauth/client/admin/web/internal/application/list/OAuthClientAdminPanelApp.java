@@ -28,7 +28,7 @@ public class OAuthClientAdminPanelApp extends BasePanelApp {
 
 	@Override
 	public String getIcon() {
-		return "oauth";
+		return "shield-check";
 	}
 
 	@Override

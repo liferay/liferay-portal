@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class PortalInstancesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "display-content";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

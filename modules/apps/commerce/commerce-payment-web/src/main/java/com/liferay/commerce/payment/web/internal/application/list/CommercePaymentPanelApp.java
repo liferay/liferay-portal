@@ -28,7 +28,7 @@ public class CommercePaymentPanelApp extends BasePanelApp {
 
 	@Override
 	public String getIcon() {
-		return "square-hole";
+		return "credit-card";
 	}
 
 	@Override

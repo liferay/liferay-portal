@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceAvalaraPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "plug";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

@@ -31,7 +31,7 @@ public class NotificationQueueEntriesPanelApp extends BasePanelApp {
 
 	@Override
 	public String getIcon() {
-		return "list";
+		return "order-list-down";
 	}
 
 	@Override

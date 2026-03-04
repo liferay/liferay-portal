@@ -28,7 +28,7 @@ public class ServerAdminPanelApp extends BasePanelApp {
 
 	@Override
 	public String getIcon() {
-		return "suitcase";
+		return "database";
 	}
 
 	@Override
