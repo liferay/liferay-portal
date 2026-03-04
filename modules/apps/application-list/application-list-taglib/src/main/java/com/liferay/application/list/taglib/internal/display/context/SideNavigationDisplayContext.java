@@ -50,63 +50,6 @@ public class SideNavigationDisplayContext {
 		_portletId = _themeDisplay.getPpid();
 	}
 
-	public List<String> getExpandedKeys() {
-		List<String> expandedKeys = new ArrayList<>();
-
-		String expandedKeysString = SessionClicks.get(
-			_httpServletRequest, _getExpandedKeysSessionKey(),
-			StringPool.BLANK);
-
-		if (!expandedKeysString.isEmpty()) {
-			Collections.addAll(
-				expandedKeys, expandedKeysString.split(StringPool.COMMA));
-
-			return expandedKeys;
-		}
-
-		PanelCategory panelCategory = _getPanelCategory();
-
-		if (panelCategory == null) {
-			return expandedKeys;
-		}
-
-		List<PanelCategory> childPanelCategories =
-			_panelCategoryHelper.getChildPanelCategories(
-				panelCategory.getKey(), _themeDisplay);
-
-		for (PanelCategory childPanelCategory : childPanelCategories) {
-			expandedKeys.add(childPanelCategory.getKey());
-		}
-
-		return expandedKeys;
-	}
-
-	public String getPanelCategoryImageUrl() {
-		PanelCategory panelCategory = _getPanelCategory();
-
-		if (panelCategory == null) {
-			return null;
-		}
-
-		return String.format(
-			"%s/product_icons/%s_sm.svg", _themeDisplay.getPathThemeImages(),
-			panelCategory.getKey());
-	}
-
-	public String getPanelCategoryLabel() {
-		PanelCategory panelCategory = _getPanelCategory();
-
-		if (panelCategory == null) {
-			return null;
-		}
-
-		return panelCategory.getLabel(_themeDisplay.getLocale());
-	}
-
-	public String getPortletId() {
-		return _portletId;
-	}
-
 	public Map<String, Object> getProps() throws Exception {
 		PanelCategory panelCategory = _getPanelCategory();
 
@@ -122,15 +65,15 @@ public class SideNavigationDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"canonicalName", panelCategory.getLabel(LocaleUtil.ENGLISH)
 		).put(
-			"categoryImageUrl", getPanelCategoryImageUrl()
+			"categoryImageUrl", _getPanelCategoryImageUrl()
 		).put(
-			"expandedKeys", getExpandedKeys()
+			"expandedKeys", _getExpandedKeys()
 		).put(
 			"expandedKeysSessionKey", _getExpandedKeysSessionKey()
 		).put(
 			"items", _getPropsItems()
 		).put(
-			"label", getPanelCategoryLabel()
+			"label", _getPanelCategoryLabel()
 		).put(
 			"portletId", _portletId
 		).put(
@@ -181,6 +124,37 @@ public class SideNavigationDisplayContext {
 		return null;
 	}
 
+	private List<String> _getExpandedKeys() {
+		List<String> expandedKeys = new ArrayList<>();
+
+		String expandedKeysString = SessionClicks.get(
+			_httpServletRequest, _getExpandedKeysSessionKey(),
+			StringPool.BLANK);
+
+		if (!expandedKeysString.isEmpty()) {
+			Collections.addAll(
+				expandedKeys, expandedKeysString.split(StringPool.COMMA));
+
+			return expandedKeys;
+		}
+
+		PanelCategory panelCategory = _getPanelCategory();
+
+		if (panelCategory == null) {
+			return expandedKeys;
+		}
+
+		List<PanelCategory> childPanelCategories =
+			_panelCategoryHelper.getChildPanelCategories(
+				panelCategory.getKey(), _themeDisplay);
+
+		for (PanelCategory childPanelCategory : childPanelCategories) {
+			expandedKeys.add(childPanelCategory.getKey());
+		}
+
+		return expandedKeys;
+	}
+
 	private String _getExpandedKeysSessionKey() {
 		PanelCategory panelCategory = _getPanelCategory();
 
@@ -198,6 +172,28 @@ public class SideNavigationDisplayContext {
 			PanelCategoryKeys.APPLICATIONS_MENU);
 
 		return _panelCategory;
+	}
+
+	private String _getPanelCategoryImageUrl() {
+		PanelCategory panelCategory = _getPanelCategory();
+
+		if (panelCategory == null) {
+			return null;
+		}
+
+		return String.format(
+			"%s/product_icons/%s_sm.svg", _themeDisplay.getPathThemeImages(),
+			panelCategory.getKey());
+	}
+
+	private String _getPanelCategoryLabel() {
+		PanelCategory panelCategory = _getPanelCategory();
+
+		if (panelCategory == null) {
+			return null;
+		}
+
+		return panelCategory.getLabel(_themeDisplay.getLocale());
 	}
 
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
