@@ -172,8 +172,8 @@ public class CommercePriceListLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		_validate(
-			catalogBasePriceList, commerceCurrencyCode, 0, user.getCompanyId(),
-			groupId, neverExpire, parentCommercePriceListId, type);
+			0, groupId, user.getCompanyId(), catalogBasePriceList,
+			commerceCurrencyCode, neverExpire, parentCommercePriceListId, type);
 
 		Date expirationDate = null;
 		Date date = new Date();
@@ -1136,9 +1136,9 @@ public class CommercePriceListLocalServiceImpl
 			commercePriceListPersistence.findByPrimaryKey(commercePriceListId);
 
 		_validate(
-			catalogBasePriceList, commerceCurrencyCode, commercePriceListId,
-			commercePriceList.getCompanyId(), commercePriceList.getGroupId(),
-			neverExpire, parentCommercePriceListId, type);
+			commercePriceListId, commercePriceList.getGroupId(),
+			commercePriceList.getCompanyId(), catalogBasePriceList,
+			commerceCurrencyCode, neverExpire, parentCommercePriceListId, type);
 
 		Date expirationDate = null;
 		Date date = new Date();
@@ -1760,8 +1760,8 @@ public class CommercePriceListLocalServiceImpl
 	}
 
 	private void _validate(
+			long commercePriceListId, long groupId, long companyId,
 			boolean catalogBasePriceList, String commerceCurrencyCode,
-			long commercePriceListId, long companyId, long groupId,
 			boolean neverExpire, long parentCommercePriceListId, String type)
 		throws PortalException {
 
