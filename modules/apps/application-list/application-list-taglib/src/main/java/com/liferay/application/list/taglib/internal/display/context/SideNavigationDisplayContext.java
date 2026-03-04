@@ -11,9 +11,6 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
@@ -162,38 +159,6 @@ public class SideNavigationDisplayContext {
 		).build();
 	}
 
-	public List<VerticalNavItem> getVerticalNavItems() throws Exception {
-		List<VerticalNavItem> verticalNavItems = new ArrayList<>();
-
-		PanelCategory panelCategory = _getPanelCategory();
-
-		for (PanelCategory childPanelCategory :
-				_panelCategoryHelper.getChildPanelCategories(
-					panelCategory.getKey(), _themeDisplay)) {
-
-			List<VerticalNavItem> childrenVerticalNavItems =
-				_getVerticalNavItems(childPanelCategory);
-
-			if (childrenVerticalNavItems.isEmpty()) {
-				continue;
-			}
-
-			VerticalNavItem verticalNavItem = new VerticalNavItem();
-
-			verticalNavItem.setExpanded(
-				_panelCategoryHelper.containsPortlet(
-					_portletId, childPanelCategory.getKey()));
-			verticalNavItem.setId(childPanelCategory.getKey());
-			verticalNavItem.setItems(childrenVerticalNavItems);
-			verticalNavItem.setLabel(
-				childPanelCategory.getLabel(_themeDisplay.getLocale()));
-
-			verticalNavItems.add(verticalNavItem);
-		}
-
-		return verticalNavItems;
-	}
-
 	public boolean isVisible() {
 		String state = SessionClicks.get(
 			_httpServletRequest, _VISIBLE_SESSION_KEY, "visible");
@@ -295,34 +260,6 @@ public class SideNavigationDisplayContext {
 		}
 
 		return propsItems;
-	}
-
-	private List<VerticalNavItem> _getVerticalNavItems(
-			PanelCategory panelCategory)
-		throws Exception {
-
-		VerticalNavItemList verticalNavItems = new VerticalNavItemList();
-
-		for (PanelApp panelApp :
-				_panelAppRegistry.getPanelApps(
-					panelCategory.getKey(),
-					_themeDisplay.getPermissionChecker(),
-					_themeDisplay.getScopeGroup())) {
-
-			VerticalNavItem verticalNavItem = new VerticalNavItem();
-
-			verticalNavItem.setHref(
-				panelApp.getPortletURL(_httpServletRequest));
-			verticalNavItem.setId(panelApp.getPortletId());
-			verticalNavItem.setLabel(
-				panelApp.getLabel(_themeDisplay.getLocale()));
-			verticalNavItem.setLeadingIcon(
-				IconItem.of(panelApp.getIcon(), null));
-
-			verticalNavItems.add(verticalNavItem);
-		}
-
-		return verticalNavItems;
 	}
 
 	private static final String _VISIBLE_SESSION_KEY =
