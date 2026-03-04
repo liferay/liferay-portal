@@ -251,35 +251,6 @@ public interface CommercePriceListModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the commerce currency code of this commerce price list.
-	 *
-	 * @return the commerce currency code of this commerce price list
-	 */
-	@AutoEscape
-	public String getCommerceCurrencyCode();
-
-	/**
-	 * Sets the commerce currency code of this commerce price list.
-	 *
-	 * @param commerceCurrencyCode the commerce currency code of this commerce price list
-	 */
-	public void setCommerceCurrencyCode(String commerceCurrencyCode);
-
-	/**
-	 * Returns the parent commerce price list ID of this commerce price list.
-	 *
-	 * @return the parent commerce price list ID of this commerce price list
-	 */
-	public long getParentCommercePriceListId();
-
-	/**
-	 * Sets the parent commerce price list ID of this commerce price list.
-	 *
-	 * @param parentCommercePriceListId the parent commerce price list ID of this commerce price list
-	 */
-	public void setParentCommercePriceListId(long parentCommercePriceListId);
-
-	/**
 	 * Returns the catalog base price list of this commerce price list.
 	 *
 	 * @return the catalog base price list of this commerce price list
@@ -301,69 +272,19 @@ public interface CommercePriceListModel
 	public void setCatalogBasePriceList(boolean catalogBasePriceList);
 
 	/**
-	 * Returns the net price of this commerce price list.
+	 * Returns the commerce currency code of this commerce price list.
 	 *
-	 * @return the net price of this commerce price list
-	 */
-	public boolean getNetPrice();
-
-	/**
-	 * Returns <code>true</code> if this commerce price list is net price.
-	 *
-	 * @return <code>true</code> if this commerce price list is net price; <code>false</code> otherwise
-	 */
-	public boolean isNetPrice();
-
-	/**
-	 * Sets whether this commerce price list is net price.
-	 *
-	 * @param netPrice the net price of this commerce price list
-	 */
-	public void setNetPrice(boolean netPrice);
-
-	/**
-	 * Returns the type of this commerce price list.
-	 *
-	 * @return the type of this commerce price list
+	 * @return the commerce currency code of this commerce price list
 	 */
 	@AutoEscape
-	public String getType();
+	public String getCommerceCurrencyCode();
 
 	/**
-	 * Sets the type of this commerce price list.
+	 * Sets the commerce currency code of this commerce price list.
 	 *
-	 * @param type the type of this commerce price list
+	 * @param commerceCurrencyCode the commerce currency code of this commerce price list
 	 */
-	public void setType(String type);
-
-	/**
-	 * Returns the name of this commerce price list.
-	 *
-	 * @return the name of this commerce price list
-	 */
-	@AutoEscape
-	public String getName();
-
-	/**
-	 * Sets the name of this commerce price list.
-	 *
-	 * @param name the name of this commerce price list
-	 */
-	public void setName(String name);
-
-	/**
-	 * Returns the priority of this commerce price list.
-	 *
-	 * @return the priority of this commerce price list
-	 */
-	public double getPriority();
-
-	/**
-	 * Sets the priority of this commerce price list.
-	 *
-	 * @param priority the priority of this commerce price list
-	 */
-	public void setPriority(double priority);
+	public void setCommerceCurrencyCode(String commerceCurrencyCode);
 
 	/**
 	 * Returns the display date of this commerce price list.
@@ -392,6 +313,85 @@ public interface CommercePriceListModel
 	 * @param expirationDate the expiration date of this commerce price list
 	 */
 	public void setExpirationDate(Date expirationDate);
+
+	/**
+	 * Returns the name of this commerce price list.
+	 *
+	 * @return the name of this commerce price list
+	 */
+	@AutoEscape
+	public String getName();
+
+	/**
+	 * Sets the name of this commerce price list.
+	 *
+	 * @param name the name of this commerce price list
+	 */
+	public void setName(String name);
+
+	/**
+	 * Returns the net price of this commerce price list.
+	 *
+	 * @return the net price of this commerce price list
+	 */
+	public boolean getNetPrice();
+
+	/**
+	 * Returns <code>true</code> if this commerce price list is net price.
+	 *
+	 * @return <code>true</code> if this commerce price list is net price; <code>false</code> otherwise
+	 */
+	public boolean isNetPrice();
+
+	/**
+	 * Sets whether this commerce price list is net price.
+	 *
+	 * @param netPrice the net price of this commerce price list
+	 */
+	public void setNetPrice(boolean netPrice);
+
+	/**
+	 * Returns the parent commerce price list ID of this commerce price list.
+	 *
+	 * @return the parent commerce price list ID of this commerce price list
+	 */
+	public long getParentCommercePriceListId();
+
+	/**
+	 * Sets the parent commerce price list ID of this commerce price list.
+	 *
+	 * @param parentCommercePriceListId the parent commerce price list ID of this commerce price list
+	 */
+	public void setParentCommercePriceListId(long parentCommercePriceListId);
+
+	/**
+	 * Returns the priority of this commerce price list.
+	 *
+	 * @return the priority of this commerce price list
+	 */
+	public double getPriority();
+
+	/**
+	 * Sets the priority of this commerce price list.
+	 *
+	 * @param priority the priority of this commerce price list
+	 */
+	public void setPriority(double priority);
+
+	/**
+	 * Returns the type of this commerce price list.
+	 *
+	 * @return the type of this commerce price list
+	 */
+	@AutoEscape
+	public String getType();
+
+	/**
+	 * Sets the type of this commerce price list.
+	 *
+	 * @param type the type of this commerce price list
+	 */
+	public void setType(String type);
 
 	/**
 	 * Returns the last publish date of this commerce price list.

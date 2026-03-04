@@ -47,16 +47,16 @@ public class CommercePriceListWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("commerceCurrencyCode", getCommerceCurrencyCode());
-		attributes.put(
-			"parentCommercePriceListId", getParentCommercePriceListId());
 		attributes.put("catalogBasePriceList", isCatalogBasePriceList());
-		attributes.put("netPrice", isNetPrice());
-		attributes.put("type", getType());
-		attributes.put("name", getName());
-		attributes.put("priority", getPriority());
+		attributes.put("commerceCurrencyCode", getCommerceCurrencyCode());
 		attributes.put("displayDate", getDisplayDate());
 		attributes.put("expirationDate", getExpirationDate());
+		attributes.put("name", getName());
+		attributes.put("netPrice", isNetPrice());
+		attributes.put(
+			"parentCommercePriceListId", getParentCommercePriceListId());
+		attributes.put("priority", getPriority());
+		attributes.put("type", getType());
 		attributes.put("lastPublishDate", getLastPublishDate());
 		attributes.put("status", getStatus());
 		attributes.put("statusByUserId", getStatusByUserId());
@@ -135,20 +135,6 @@ public class CommercePriceListWrapper
 			setModifiedDate(modifiedDate);
 		}
 
-		String commerceCurrencyCode = (String)attributes.get(
-			"commerceCurrencyCode");
-
-		if (commerceCurrencyCode != null) {
-			setCommerceCurrencyCode(commerceCurrencyCode);
-		}
-
-		Long parentCommercePriceListId = (Long)attributes.get(
-			"parentCommercePriceListId");
-
-		if (parentCommercePriceListId != null) {
-			setParentCommercePriceListId(parentCommercePriceListId);
-		}
-
 		Boolean catalogBasePriceList = (Boolean)attributes.get(
 			"catalogBasePriceList");
 
@@ -156,28 +142,11 @@ public class CommercePriceListWrapper
 			setCatalogBasePriceList(catalogBasePriceList);
 		}
 
-		Boolean netPrice = (Boolean)attributes.get("netPrice");
+		String commerceCurrencyCode = (String)attributes.get(
+			"commerceCurrencyCode");
 
-		if (netPrice != null) {
-			setNetPrice(netPrice);
-		}
-
-		String type = (String)attributes.get("type");
-
-		if (type != null) {
-			setType(type);
-		}
-
-		String name = (String)attributes.get("name");
-
-		if (name != null) {
-			setName(name);
-		}
-
-		Double priority = (Double)attributes.get("priority");
-
-		if (priority != null) {
-			setPriority(priority);
+		if (commerceCurrencyCode != null) {
+			setCommerceCurrencyCode(commerceCurrencyCode);
 		}
 
 		Date displayDate = (Date)attributes.get("displayDate");
@@ -190,6 +159,37 @@ public class CommercePriceListWrapper
 
 		if (expirationDate != null) {
 			setExpirationDate(expirationDate);
+		}
+
+		String name = (String)attributes.get("name");
+
+		if (name != null) {
+			setName(name);
+		}
+
+		Boolean netPrice = (Boolean)attributes.get("netPrice");
+
+		if (netPrice != null) {
+			setNetPrice(netPrice);
+		}
+
+		Long parentCommercePriceListId = (Long)attributes.get(
+			"parentCommercePriceListId");
+
+		if (parentCommercePriceListId != null) {
+			setParentCommercePriceListId(parentCommercePriceListId);
+		}
+
+		Double priority = (Double)attributes.get("priority");
+
+		if (priority != null) {
+			setPriority(priority);
+		}
+
+		String type = (String)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 
 		Date lastPublishDate = (Date)attributes.get("lastPublishDate");

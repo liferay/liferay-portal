@@ -48,15 +48,15 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="commerceCurrencyCode" type="String" />
-		<field name="parentCommercePriceListId" type="long" />
 		<field name="catalogBasePriceList" type="boolean" />
-		<field name="netPrice" type="boolean" />
-		<field name="type" type="String" />
-		<field name="name" type="String" />
-		<field name="priority" type="double" />
+		<field name="commerceCurrencyCode" type="String" />
 		<field name="displayDate" type="Date" />
 		<field name="expirationDate" type="Date" />
+		<field name="name" type="String" />
+		<field name="netPrice" type="boolean" />
+		<field name="parentCommercePriceListId" type="long" />
+		<field name="priority" type="double" />
+		<field name="type" type="String" />
 		<field name="lastPublishDate" type="Date" />
 		<field name="status" type="int" />
 		<field name="statusByUserId" type="long" />

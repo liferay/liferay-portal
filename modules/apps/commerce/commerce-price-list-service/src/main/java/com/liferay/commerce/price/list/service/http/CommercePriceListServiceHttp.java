@@ -44,14 +44,15 @@ public class CommercePriceListServiceHttp {
 	public static com.liferay.commerce.price.list.model.CommercePriceList
 			addCommercePriceList(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long groupId, String commerceCurrencyCode, boolean netPrice,
-				String type, long parentCommercePriceListId,
-				boolean catalogBasePriceList, String name, double priority,
-				int displayDateMonth, int displayDateDay, int displayDateYear,
+				long groupId, boolean catalogBasePriceList,
+				String commerceCurrencyCode, int displayDateDay,
 				int displayDateHour, int displayDateMinute,
-				int expirationDateMonth, int expirationDateDay,
-				int expirationDateYear, int expirationDateHour,
-				int expirationDateMinute, boolean neverExpire,
+				int displayDateMonth, int displayDateYear,
+				int expirationDateDay, int expirationDateHour,
+				int expirationDateMinute, int expirationDateMonth,
+				int expirationDateYear, String name, boolean netPrice,
+				boolean neverExpire, long parentCommercePriceListId,
+				double priority, String type,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -61,12 +62,12 @@ public class CommercePriceListServiceHttp {
 				_addCommercePriceListParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, groupId, commerceCurrencyCode,
-				netPrice, type, parentCommercePriceListId, catalogBasePriceList,
-				name, priority, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, neverExpire,
+				methodKey, externalReferenceCode, groupId, catalogBasePriceList,
+				commerceCurrencyCode, displayDateDay, displayDateHour,
+				displayDateMinute, displayDateMonth, displayDateYear,
+				expirationDateDay, expirationDateHour, expirationDateMinute,
+				expirationDateMonth, expirationDateYear, name, netPrice,
+				neverExpire, parentCommercePriceListId, priority, type,
 				serviceContext);
 
 			Object returnObj = null;
@@ -102,14 +103,14 @@ public class CommercePriceListServiceHttp {
 			addOrUpdateCommercePriceList(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				long groupId, long commercePriceListId,
-				String commerceCurrencyCode, boolean netPrice, String type,
-				long parentCommercePriceListId, boolean catalogBasePriceList,
-				String name, double priority, int displayDateMonth,
-				int displayDateDay, int displayDateYear, int displayDateHour,
-				int displayDateMinute, int expirationDateMonth,
-				int expirationDateDay, int expirationDateYear,
-				int expirationDateHour, int expirationDateMinute,
-				boolean neverExpire,
+				boolean catalogBasePriceList, String commerceCurrencyCode,
+				int displayDateDay, int displayDateHour, int displayDateMinute,
+				int displayDateMonth, int displayDateYear,
+				int expirationDateDay, int expirationDateHour,
+				int expirationDateMinute, int expirationDateMonth,
+				int expirationDateYear, String name, boolean netPrice,
+				boolean neverExpire, long parentCommercePriceListId,
+				double priority, String type,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -121,12 +122,12 @@ public class CommercePriceListServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId, commercePriceListId,
-				commerceCurrencyCode, netPrice, type, parentCommercePriceListId,
-				catalogBasePriceList, name, priority, displayDateMonth,
-				displayDateDay, displayDateYear, displayDateHour,
-				displayDateMinute, expirationDateMonth, expirationDateDay,
-				expirationDateYear, expirationDateHour, expirationDateMinute,
-				neverExpire, serviceContext);
+				catalogBasePriceList, commerceCurrencyCode, displayDateDay,
+				displayDateHour, displayDateMinute, displayDateMonth,
+				displayDateYear, expirationDateDay, expirationDateHour,
+				expirationDateMinute, expirationDateMonth, expirationDateYear,
+				name, netPrice, neverExpire, parentCommercePriceListId,
+				priority, type, serviceContext);
 
 			Object returnObj = null;
 
@@ -720,13 +721,14 @@ public class CommercePriceListServiceHttp {
 	public static com.liferay.commerce.price.list.model.CommercePriceList
 			updateCommercePriceList(
 				HttpPrincipal httpPrincipal, long commercePriceListId,
-				String commerceCurrencyCode, boolean netPrice,
-				long parentCommercePriceListId, String name, double priority,
-				int displayDateMonth, int displayDateDay, int displayDateYear,
-				int displayDateHour, int displayDateMinute,
-				int expirationDateMonth, int expirationDateDay,
-				int expirationDateYear, int expirationDateHour,
-				int expirationDateMinute, boolean neverExpire,
+				boolean catalogBasePriceList, String commerceCurrencyCode,
+				int displayDateDay, int displayDateHour, int displayDateMinute,
+				int displayDateMonth, int displayDateYear,
+				int expirationDateDay, int expirationDateHour,
+				int expirationDateMinute, int expirationDateMonth,
+				int expirationDateYear, String name, boolean netPrice,
+				boolean neverExpire, long parentCommercePriceListId,
+				double priority, String type,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -736,68 +738,13 @@ public class CommercePriceListServiceHttp {
 				_updateCommercePriceListParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commercePriceListId, commerceCurrencyCode, netPrice,
-				parentCommercePriceListId, name, priority, displayDateMonth,
-				displayDateDay, displayDateYear, displayDateHour,
-				displayDateMinute, expirationDateMonth, expirationDateDay,
-				expirationDateYear, expirationDateHour, expirationDateMinute,
-				neverExpire, serviceContext);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (com.liferay.commerce.price.list.model.CommercePriceList)
-				returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static com.liferay.commerce.price.list.model.CommercePriceList
-			updateCommercePriceList(
-				HttpPrincipal httpPrincipal, long commercePriceListId,
-				String commerceCurrencyCode, boolean netPrice, String type,
-				long parentCommercePriceListId, boolean catalogBasePriceList,
-				String name, double priority, int displayDateMonth,
-				int displayDateDay, int displayDateYear, int displayDateHour,
-				int displayDateMinute, int expirationDateMonth,
-				int expirationDateDay, int expirationDateYear,
-				int expirationDateHour, int expirationDateMinute,
-				boolean neverExpire,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CommercePriceListServiceUtil.class, "updateCommercePriceList",
-				_updateCommercePriceListParameterTypes16);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commercePriceListId, commerceCurrencyCode, netPrice,
-				type, parentCommercePriceListId, catalogBasePriceList, name,
-				priority, displayDateMonth, displayDateDay, displayDateYear,
-				displayDateHour, displayDateMinute, expirationDateMonth,
-				expirationDateDay, expirationDateYear, expirationDateHour,
-				expirationDateMinute, neverExpire, serviceContext);
+				methodKey, commercePriceListId, catalogBasePriceList,
+				commerceCurrencyCode, displayDateDay, displayDateHour,
+				displayDateMinute, displayDateMonth, displayDateYear,
+				expirationDateDay, expirationDateHour, expirationDateMinute,
+				expirationDateMonth, expirationDateYear, name, netPrice,
+				neverExpire, parentCommercePriceListId, priority, type,
+				serviceContext);
 
 			Object returnObj = null;
 
@@ -840,7 +787,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"updateExternalReferenceCode",
-				_updateExternalReferenceCodeParameterTypes17);
+				_updateExternalReferenceCodeParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePriceList, externalReferenceCode, companyId);
@@ -879,19 +826,19 @@ public class CommercePriceListServiceHttp {
 
 	private static final Class<?>[] _addCommercePriceListParameterTypes0 =
 		new Class[] {
-			String.class, long.class, String.class, boolean.class, String.class,
-			long.class, boolean.class, String.class, double.class, int.class,
+			String.class, long.class, boolean.class, String.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, int.class, boolean.class,
+			int.class, int.class, int.class, String.class, boolean.class,
+			boolean.class, long.class, double.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_addOrUpdateCommercePriceListParameterTypes1 = new Class[] {
-			String.class, long.class, long.class, String.class, boolean.class,
-			String.class, long.class, boolean.class, String.class, double.class,
+			String.class, long.class, long.class, boolean.class, String.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, int.class, int.class, boolean.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
+			int.class, int.class, int.class, int.class, String.class,
+			boolean.class, boolean.class, long.class, double.class,
+			String.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _deleteCommercePriceListParameterTypes2 =
 		new Class[] {long.class};
@@ -939,22 +886,14 @@ public class CommercePriceListServiceHttp {
 		new Class[] {long.class, long.class, String.class};
 	private static final Class<?>[] _updateCommercePriceListParameterTypes15 =
 		new Class[] {
-			long.class, String.class, boolean.class, long.class, String.class,
-			double.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, int.class, int.class, int.class,
-			boolean.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
-		};
-	private static final Class<?>[] _updateCommercePriceListParameterTypes16 =
-		new Class[] {
-			long.class, String.class, boolean.class, String.class, long.class,
-			boolean.class, String.class, double.class, int.class, int.class,
+			long.class, boolean.class, String.class, int.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, boolean.class,
+			int.class, int.class, String.class, boolean.class, boolean.class,
+			long.class, double.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateExternalReferenceCodeParameterTypes17 = new Class[] {
+		_updateExternalReferenceCodeParameterTypes16 = new Class[] {
 			com.liferay.commerce.price.list.model.CommercePriceList.class,
 			String.class, long.class
 		};
