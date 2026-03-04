@@ -97,51 +97,7 @@ public class InformationMessagesProductNavigationControlMenuEntry
 	public boolean isShow(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Layout layout = themeDisplay.getLayout();
-
-		if (layout.isTypeAssetDisplay() || layout.isTypeControlPanel()) {
-			return false;
-		}
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
-
-		if (layoutPageTemplateEntry == null) {
-			layoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.
-					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
-		}
-
-		int layoutType = -1;
-
-		if (layoutPageTemplateEntry != null) {
-			layoutType = layoutPageTemplateEntry.getType();
-		}
-
-		if ((layoutType == LayoutPageTemplateEntryTypeConstants.BASIC) ||
-			(layoutType ==
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT)) {
-
-			return false;
-		}
-
-		LayoutUtilityPageEntry layoutUtilityPageEntry =
-			_layoutUtilityPageEntryLocalService.
-				fetchLayoutUtilityPageEntryByPlid(layout.getClassPK());
-
-		if ((layoutUtilityPageEntry != null) ||
-			(!_isLinkedLayout(themeDisplay) &&
-			 !_isModifiedLayout(themeDisplay))) {
-
-			return false;
-		}
-
-		return super.isShow(httpServletRequest);
+		return false;
 	}
 
 	@Override
