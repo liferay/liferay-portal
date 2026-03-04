@@ -49,60 +49,8 @@ public class PropagationMessageProductNavigationControlMenuEntry
 	@Override
 	public boolean isShow(HttpServletRequest httpServletRequest)
 		throws PortalException {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Layout layout = themeDisplay.getLayout();
-
-		if (layout.isTypeControlPanel() || layout.isTypeAssetDisplay()) {
-			return false;
-		}
-
-		Group group = layout.getGroup();
-
-		if ((group == null) || !group.isLayoutSetPrototype()) {
-			return false;
-		}
-
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.fetchLayoutSetPrototype(
-				group.getClassPK());
-
-		if (layoutSetPrototype == null) {
-			return false;
-		}
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
-
-		if (layoutPageTemplateEntry == null) {
-			layoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.
-					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
-		}
-
-		int layoutType = -1;
-
-		if (layoutPageTemplateEntry != null) {
-			layoutType = layoutPageTemplateEntry.getType();
-		}
-
-		if ((layoutType == LayoutPageTemplateEntryTypeConstants.BASIC) ||
-			(layoutType ==
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT) ||
-			layout.isTypeUtility() ||
-			!LayoutSetPrototypePermissionUtil.contains(
-				themeDisplay.getPermissionChecker(),
-				layoutSetPrototype.getLayoutSetPrototypeId(),
-				ActionKeys.UPDATE)) {
-
-			return false;
-		}
-
-		return super.isShow(httpServletRequest);
+		
+		return false;
 	}
 
 	@Override
