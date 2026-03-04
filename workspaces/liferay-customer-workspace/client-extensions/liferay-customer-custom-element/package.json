@@ -24,7 +24,7 @@
 		"apollo-link-rest": "^0.8.0",
 		"apollo3-cache-persist": "^0.14.1",
 		"classnames": "^2.3.1",
-		"dompurify": "^3.2.4",
+		"dompurify": "^3.3.1",
 		"filesize": "^10.1.4",
 		"formik": "^2.2.9",
 		"graphql": "^16.5.0",
