@@ -71,15 +71,15 @@ public class CommercePriceListTestUtil {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
 		return CommercePriceListLocalServiceUtil.addCommercePriceList(
-			null, user.getUserId(), groupId, commerceCurrency.getCode(), true,
-			CommercePriceListConstants.TYPE_PRICE_LIST, 0, catalogBasePriceList,
-			RandomTestUtil.randomString(), priority,
-			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-			calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
+			null, user.getUserId(), groupId, catalogBasePriceList,
+			commerceCurrency.getCode(), calendar.get(Calendar.DAY_OF_MONTH),
 			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			true, serviceContext);
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			calendar.get(Calendar.DAY_OF_MONTH),
+			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			RandomTestUtil.randomString(), true, true, 0, priority,
+			CommercePriceListConstants.TYPE_PRICE_LIST, serviceContext);
 	}
 
 	public static CommercePriceList addCommercePriceList(
@@ -107,14 +107,15 @@ public class CommercePriceListTestUtil {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
 		return CommercePriceListLocalServiceUtil.addCommercePriceList(
-			null, user.getUserId(), groupId, commerceCurrency.getCode(), true,
-			type, 0, catalogBasePriceList, RandomTestUtil.randomString(),
-			priority, calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
+			null, user.getUserId(), groupId, catalogBasePriceList,
+			commerceCurrency.getCode(), calendar.get(Calendar.DAY_OF_MONTH),
 			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-			calendar.get(Calendar.MINUTE), true, serviceContext);
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			calendar.get(Calendar.DAY_OF_MONTH),
+			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			RandomTestUtil.randomString(), true, true, 0, priority, type,
+			serviceContext);
 	}
 
 	public static CommercePriceList addCommercePriceList(
@@ -141,15 +142,15 @@ public class CommercePriceListTestUtil {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
 		return CommercePriceListLocalServiceUtil.addCommercePriceList(
-			null, user.getUserId(), groupId, commerceCurrency.getCode(), true,
-			CommercePriceListConstants.TYPE_PRICE_LIST, 0, false,
-			RandomTestUtil.randomString(), priority,
-			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-			calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
+			null, user.getUserId(), groupId, false, commerceCurrency.getCode(),
+			calendar.get(Calendar.DAY_OF_MONTH),
 			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			true, serviceContext);
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			calendar.get(Calendar.DAY_OF_MONTH),
+			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			RandomTestUtil.randomString(), true, true, 0, priority,
+			CommercePriceListConstants.TYPE_PRICE_LIST, serviceContext);
 	}
 
 	public static CommercePriceList addPromotion(long groupId, double priority)
@@ -175,15 +176,15 @@ public class CommercePriceListTestUtil {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
 		return CommercePriceListLocalServiceUtil.addCommercePriceList(
-			null, user.getUserId(), groupId, commerceCurrency.getCode(), true,
-			CommercePriceListConstants.TYPE_PROMOTION, 0, false,
-			RandomTestUtil.randomString(), priority,
-			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-			calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
+			null, user.getUserId(), groupId, false, commerceCurrency.getCode(),
+			calendar.get(Calendar.DAY_OF_MONTH),
 			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			true, serviceContext);
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			calendar.get(Calendar.DAY_OF_MONTH),
+			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR),
+			RandomTestUtil.randomString(), true, true, 0, priority,
+			CommercePriceListConstants.TYPE_PROMOTION, serviceContext);
 	}
 
 }
