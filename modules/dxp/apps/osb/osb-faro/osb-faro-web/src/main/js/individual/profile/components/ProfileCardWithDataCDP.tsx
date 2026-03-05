@@ -358,7 +358,6 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 
 						<div className='mt-4'>
 							<SearchInput
-								autoFocus
 								className='search-input mr-3'
 								onChange={setSearchValue}
 								onSubmit={handleQuery}
