@@ -32,13 +32,12 @@ public class CTCollectionServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.change.tracking.service.impl.CTCollectionServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CTCollection addCTCollection(
-			String externalReferenceCode, long companyId, long userId,
-			long ctRemoteId, String name, String description)
+			String externalReferenceCode, long ctRemoteId, String name,
+			String description)
 		throws PortalException {
 
 		return getService().addCTCollection(
-			externalReferenceCode, companyId, userId, ctRemoteId, name,
-			description);
+			externalReferenceCode, ctRemoteId, name, description);
 	}
 
 	public static void deleteCTAutoResolutionInfo(long ctAutoResolutionInfoId)
@@ -70,26 +69,27 @@ public class CTCollectionServiceUtil {
 	}
 
 	public static List<CTCollection> getCTCollections(
-		long companyId, int[] statuses, int start, int end,
-		OrderByComparator<CTCollection> orderByComparator) {
+			int[] statuses, int start, int end,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws PortalException {
 
 		return getService().getCTCollections(
-			companyId, statuses, start, end, orderByComparator);
+			statuses, start, end, orderByComparator);
 	}
 
 	public static List<CTCollection> getCTCollections(
-		long companyId, int[] statuses, String keywords, int start, int end,
-		OrderByComparator<CTCollection> orderByComparator) {
+			int[] statuses, String keywords, int start, int end,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws PortalException {
 
 		return getService().getCTCollections(
-			companyId, statuses, keywords, start, end, orderByComparator);
+			statuses, keywords, start, end, orderByComparator);
 	}
 
-	public static int getCTCollectionsCount(
-		long companyId, int[] statuses, String keywords) {
+	public static int getCTCollectionsCount(int[] statuses, String keywords)
+		throws PortalException {
 
-		return getService().getCTCollectionsCount(
-			companyId, statuses, keywords);
+		return getService().getCTCollectionsCount(statuses, keywords);
 	}
 
 	/**
