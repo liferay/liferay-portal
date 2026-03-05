@@ -53,7 +53,7 @@
 		"formik": "^1.5.1",
 		"graphql": "^16.8.1",
 		"html2canvas": "^1.4.1",
-		"immutable": "^3.8.2",
+		"immutable": "^4.3.8",
 		"jspdf": "^3.0.4",
 		"lodash": "^4.17.15",
 		"memoize-one": "^5.0.2",
