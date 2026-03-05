@@ -398,9 +398,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 				messages.toString(),
 				messages.contains(
 					StringBundler.concat(
-						"Table ", testTableName, StringPool.PERIOD,
-						invalidColumnName, " was renamed to ", testTableName,
-						StringPool.PERIOD, testColumnName,
+						"Table ", testTableName, ", column ", invalidColumnName,
+						" was renamed to ", testColumnName,
 						" because it was incorrectly cased")));
 
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
