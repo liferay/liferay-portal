@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.DataCleanupLoggingUtil;
+import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -184,6 +186,21 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 			String columnName = columnNames.get(expectedColumnName);
 
 			if ((columnName == null) || columnName.equals(expectedColumnName)) {
+				continue;
+			}
+
+			if (PropsValues.DATABASE_PARTITION_ENABLED &&
+				StringUtil.equalsIgnoreCase(tableName, "Company")) {
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Column ", tableName, StringPool.PERIOD, columnName,
+							" is incorrectly cased, must be manually renamed ",
+							"to ", tableName, StringPool.PERIOD,
+							expectedColumnName));
+				}
+
 				continue;
 			}
 
