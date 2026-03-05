@@ -171,9 +171,15 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 				continue;
 			}
 
-			String expectedColumnName = StringUtil.split(
-				dbInspector.normalizeName(columnDefinition), StringPool.SPACE)
-				[0];
+			String expectedColumnName =
+				StringUtil.split(columnDefinition, StringPool.SPACE)[0];
+
+			if ((db.getDBType() != DBType.MARIADB) &&
+				(db.getDBType() != DBType.MYSQL)) {
+
+				expectedColumnName = dbInspector.normalizeName(
+					expectedColumnName);
+			}
 
 			String columnName = columnNames.get(expectedColumnName);
 
