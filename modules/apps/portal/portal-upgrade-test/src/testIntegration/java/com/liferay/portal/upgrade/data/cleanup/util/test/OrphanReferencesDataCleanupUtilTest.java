@@ -138,10 +138,8 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 				Assert.assertEquals(
 					_getCleanUpTableExpectedMessage(
-						1, false, _dbInspector.normalizeName("portletId"),
-						_dbInspector.normalizeName("PortletPreferences"),
-						_dbInspector.normalizeName("portletId"),
-						_dbInspector.normalizeName("Portlet"), userPortletId),
+						1, false, "portletId", "PortletPreferences",
+						"portletId", "Portlet", userPortletId),
 					logEntry.getMessage());
 			},
 			() -> {
@@ -206,10 +204,8 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 				Assert.assertEquals(
 					_getCleanUpTableExpectedMessage(
-						2, false, _dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("Portlet"),
-						_dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("Company"), companyId),
+						2, false, "companyId", "Portlet", "companyId",
+						"Company", companyId),
 					logEntry.getMessage());
 			},
 			() -> _db.runSQL(
@@ -252,10 +248,8 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 				Assert.assertEquals(
 					_getCleanUpTableExpectedMessage(
-						2, true, _dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("Portlet"),
-						_dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("Company"), companyId),
+						2, true, "companyId", "Portlet", "companyId", "Company",
+						companyId),
 					logEntry.getMessage());
 			},
 			() -> _db.runSQL(
@@ -298,10 +292,8 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 				Assert.assertEquals(
 					_getCleanUpTableExpectedMessage(
-						2, false, _dbInspector.normalizeName("ownerId"),
-						_dbInspector.normalizeName("PortletPreferences"),
-						_dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("Company"), companyId),
+						2, false, "ownerId", "PortletPreferences", "companyId",
+						"Company", companyId),
 					logEntry.getMessage());
 			},
 			() -> _db.runSQL(
@@ -361,10 +353,8 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 				Assert.assertEquals(
 					_getCleanUpTableExpectedMessage(
-						1, false, _dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("DLFileEntry"),
-						_dbInspector.normalizeName("companyId"),
-						_dbInspector.normalizeName("Company"), companyId),
+						1, false, "companyId", "DLFileEntry", "companyId",
+						"Company", companyId),
 					logEntry.getMessage());
 			},
 			() -> {
@@ -396,12 +386,30 @@ public class OrphanReferencesDataCleanupUtilTest {
 		throws Exception {
 
 		return StringBundler.concat(
-			"Table ", _dbInspector.normalizeName(sourceTableName), ", ", count,
+			"Table ", _normalizeTableName(sourceTableName), ", ", count,
 			(count == 1) ? " row " : " rows ", readOnly ? "should be " : "",
 			"deleted because ", _dbInspector.normalizeName(sourceColumnName),
 			StringPool.SPACE, targetValue, " was not found in column ",
 			_dbInspector.normalizeName(targetColumnName), " from table ",
 			_dbInspector.normalizeName(targetTableName));
+	}
+
+	private String _normalizeTableName(String tableName) throws Exception {
+		tableName = _dbInspector.normalizeName(tableName);
+
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			return tableName;
+		}
+
+		long companyId = CompanyThreadLocal.getNonsystemCompanyId();
+
+		if (companyId == PortalInstancePool.getDefaultCompanyId()) {
+			return tableName;
+		}
+
+		return StringBundler.concat(
+			PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX, companyId,
+			StringPool.PERIOD, tableName);
 	}
 
 	private void _testCleanUpTable(
