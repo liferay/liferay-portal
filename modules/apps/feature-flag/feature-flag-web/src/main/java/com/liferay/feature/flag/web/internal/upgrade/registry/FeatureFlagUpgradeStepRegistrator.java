@@ -28,11 +28,6 @@ public class FeatureFlagUpgradeStepRegistrator
 			"0.0.1", "1.0.0",
 			new FeatureFlagUpgradeProcess(
 				_companyLocalService, _portalPreferencesLocalService));
-
-		registry.register(
-			"1.0.0", "1.0.1",
-			new com.liferay.feature.flag.web.internal.upgrade.v1_0_1.
-				FeatureFlagUpgradeProcess(_portalPreferencesLocalService));
 	}
 
 	@Reference
