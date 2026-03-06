@@ -178,8 +178,7 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 
 		return _toCTCollection(
 			_ctCollectionService.addCTCollection(
-				ctCollection.getExternalReferenceCode(),
-				contextCompany.getCompanyId(), contextUser.getUserId(), 0,
+				ctCollection.getExternalReferenceCode(), 0,
 				ctCollection.getName(), ctCollection.getDescription()));
 	}
 

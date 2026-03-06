@@ -114,8 +114,7 @@ public class LayoutClassedModelUsageOrphanDataUpgradeProcessTest {
 						).build())) {
 
 			CTCollection ctCollection = _ctCollectionService.addCTCollection(
-				null, TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), 0, RandomTestUtil.randomString(),
+				null, 0, RandomTestUtil.randomString(),
 				RandomTestUtil.randomString());
 
 			try (SafeCloseable safeCloseable =

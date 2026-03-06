@@ -170,8 +170,8 @@ public class CTCollectionServiceTest {
 			_group.getGroupId(), folder.getFolderId());
 
 		_ctCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(_ctCollection);
 
@@ -281,8 +281,8 @@ public class CTCollectionServiceTest {
 		UserTestUtil.setUser(_user);
 
 		CTCollection fromCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(fromCollection);
 
@@ -298,8 +298,8 @@ public class CTCollectionServiceTest {
 		}
 
 		CTCollection toCTCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(toCTCollection);
 
@@ -340,8 +340,8 @@ public class CTCollectionServiceTest {
 		UserTestUtil.setUser(_user);
 
 		CTCollection fromCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(fromCollection);
 
@@ -359,8 +359,8 @@ public class CTCollectionServiceTest {
 		}
 
 		CTCollection toCTCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(toCTCollection);
 
@@ -401,8 +401,8 @@ public class CTCollectionServiceTest {
 		UserTestUtil.setUser(_user);
 
 		CTCollection fromCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(fromCollection);
 
@@ -418,8 +418,8 @@ public class CTCollectionServiceTest {
 		}
 
 		CTCollection toCTCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(toCTCollection);
 
@@ -453,13 +453,11 @@ public class CTCollectionServiceTest {
 		UserTestUtil.setUser(_user);
 
 		Assert.assertEquals(
-			0,
-			_ctCollectionService.getCTCollectionsCount(
-				_user.getCompanyId(), null, ""));
+			0, _ctCollectionService.getCTCollectionsCount(null, ""));
 
 		_ctCollection = _ctCollectionService.addCTCollection(
-			null, _user.getCompanyId(), _user.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		_ctCollections.add(_ctCollection);
 
@@ -478,8 +476,7 @@ public class CTCollectionServiceTest {
 
 		Assert.assertEquals(
 			expectedCTCollectionsCount,
-			_ctCollectionService.getCTCollectionsCount(
-				_user.getCompanyId(), null, ""));
+			_ctCollectionService.getCTCollectionsCount(null, ""));
 
 		JournalFolder journalFolder = null;
 

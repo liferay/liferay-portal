@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Collections;
@@ -32,8 +31,8 @@ public abstract class BaseCTUpgradeProcessTestCase {
 	@Test
 	public void testMissingCtCollectionId() throws Exception {
 		CTCollection ctCollection = _ctCollectionService.addCTCollection(
-			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			0, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			null, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		CTModel<?> productionCTModel = addCTModel();
 

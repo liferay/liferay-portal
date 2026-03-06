@@ -79,7 +79,6 @@ public class GetSelectPublicationsMVCResourceCommand
 
 		List<CTCollection> ctCollections =
 			_ctCollectionService.getCTCollections(
-				themeDisplay.getCompanyId(),
 				new int[] {
 					WorkflowConstants.STATUS_DRAFT,
 					WorkflowConstants.STATUS_INCOMPLETE
