@@ -43,6 +43,8 @@ public interface WorkspaceGitRepository extends LocalGitRepository {
 
 	public void setBaseBranchSHA(String branchSHA);
 
+	public void setCommitFileIsSHA(boolean commitFileIsSha);
+
 	public void setGitHubURL(String gitHubURL);
 
 	public void setPatchSHAs(List<String> patchSHAs);

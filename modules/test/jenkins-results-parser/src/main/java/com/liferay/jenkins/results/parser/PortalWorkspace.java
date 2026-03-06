@@ -485,6 +485,8 @@ public class PortalWorkspace extends BaseWorkspace {
 		}
 
 		if (JenkinsResultsParserUtil.isSHA(gitCommit)) {
+			workspaceGitRepository.setCommitFileIsSHA(true);
+
 			workspaceGitRepository.setSenderBranchSHA(gitCommit);
 
 			return true;
