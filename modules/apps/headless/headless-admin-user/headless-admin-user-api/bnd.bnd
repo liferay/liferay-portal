@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin User API
 Bundle-SymbolicName: com.liferay.headless.admin.user.api
-Bundle-Version: 29.4.1
+Bundle-Version: 29.5.0
 Export-Package:\
 	com.liferay.headless.admin.user.dto.v1_0,\
 	com.liferay.headless.admin.user.resource.v1_0
