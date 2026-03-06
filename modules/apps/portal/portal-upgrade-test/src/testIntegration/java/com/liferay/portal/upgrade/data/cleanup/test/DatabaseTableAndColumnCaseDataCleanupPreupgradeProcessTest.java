@@ -20,11 +20,14 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -37,6 +40,7 @@ import java.sql.ResultSet;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -255,6 +259,70 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 		}
 		finally {
 			this.connection = null;
+		}
+	}
+
+	@Test
+	public void testValidateColumnNamesCasingMysqlWithLowerCaseTableNamesTableConfiguration()
+		throws Exception {
+
+		Assume.assumeTrue(
+			(_db.getDBType() == DBType.MARIADB) ||
+			(_db.getDBType() == DBType.MYSQL));
+
+		String columnName = "testColumn";
+		String tableName = "TestTable";
+
+		try (Connection connection = DataAccess.getConnection();
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.class.
+					getName(),
+				LoggerTestUtil.INFO)) {
+
+			_createTestTable(columnName, tableName);
+
+			// When mysql is configured with lower_case_table_names = 1
+			// DatabaseMetaData.storesLowerCaseIdentifiers returns true
+
+			DatabaseMetaData proxyDatabaseMetaData =
+				ProxyUtil.newDelegateProxyInstance(
+					DatabaseMetaData.class.getClassLoader(),
+					DatabaseMetaData.class,
+					new Object() {
+
+						public boolean storesLowerCaseIdentifiers() {
+							return true;
+						}
+
+					},
+					connection.getMetaData());
+
+			Connection proxyConnection = ProxyUtil.newDelegateProxyInstance(
+				Connection.class.getClassLoader(), Connection.class,
+				new Object() {
+
+					public DatabaseMetaData getMetaData() {
+						return proxyDatabaseMetaData;
+					}
+
+				},
+				connection);
+
+			this.connection = proxyConnection;
+
+			_testValidateColumnNamesCasing(
+				columnName, "LONG", columnName, tableName);
+
+			this.connection = null;
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 0, messages.size());
+		}
+		finally {
+			DBPartitionUtil.forEachCompanyId(
+				companyId -> _db.runSQL(
+					"DROP_TABLE_IF_EXISTS(" + tableName + ")"));
 		}
 	}
 
