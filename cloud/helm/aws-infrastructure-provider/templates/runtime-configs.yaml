@@ -29,7 +29,8 @@ spec:
                                 limits:
                                     memory: 512Mi
                                 requests:
-                                    memory: 128Mi
+                                    cpu: 20m
+                                    memory: 256Mi
                     serviceAccountName: provider-kubernetes
     serviceAccountTemplate:
         metadata:
@@ -64,9 +65,10 @@ spec:
                         -   name: package-runtime
                             resources:
                                 limits:
-                                    memory: 512Mi
+                                    memory: 1Gi
                                 requests:
-                                    memory: 128Mi
+                                    cpu: 35m
+                                    memory: 768Mi
                     serviceAccountName: provider-aws-backup
     serviceAccountTemplate:
         metadata:
@@ -103,7 +105,8 @@ spec:
                                 limits:
                                     memory: 1.5Gi
                                 requests:
-                                    memory: 256Mi
+                                    cpu: 65m
+                                    memory: 768Mi
                     serviceAccountName: provider-aws-ec2
     serviceAccountTemplate:
         metadata:
@@ -138,9 +141,10 @@ spec:
                         -   name: package-runtime
                             resources:
                                 limits:
-                                    memory: 512Mi
+                                    memory: 1.5Gi
                                 requests:
-                                    memory: 128Mi
+                                    cpu: 40m
+                                    memory: 768Mi
                     serviceAccountName: provider-aws-iam
     serviceAccountTemplate:
         metadata:
@@ -177,7 +181,8 @@ spec:
                                 limits:
                                     memory: 768Mi
                                 requests:
-                                    memory: 128Mi
+                                    cpu: 35m
+                                    memory: 512Mi
                     serviceAccountName: provider-aws-opensearch
     serviceAccountTemplate:
         metadata:
@@ -214,7 +219,8 @@ spec:
                                 limits:
                                     memory: 1.5Gi
                                 requests:
-                                    memory: 256Mi
+                                    cpu: 35m
+                                    memory: 512Mi
                     serviceAccountName: provider-aws-rds
     serviceAccountTemplate:
         metadata:
@@ -249,9 +255,10 @@ spec:
                         -   name: package-runtime
                             resources:
                                 limits:
-                                    memory: 512Mi
+                                    memory: 1Gi
                                 requests:
-                                    memory: 128Mi
+                                    cpu: 95m
+                                    memory: 768Mi
                     serviceAccountName: provider-aws-s3
     serviceAccountTemplate:
         metadata:

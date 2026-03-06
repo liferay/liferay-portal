@@ -7,6 +7,35 @@ resource "helm_release" "argo_workflows" {
 	namespace=var.argo_workflows_namespace
 	repository="https://argoproj.github.io/argo-helm"
 	upgrade_install=true
+	values=[
+		yamlencode(
+			{
+				controller={
+					resources={
+						limits={
+							cpu="500m"
+							memory="512Mi"
+						}
+						requests={
+							cpu="20m"
+							memory="128Mi"
+						}
+					}
+				}
+				server={
+					resources={
+						limits={
+							cpu="500m"
+							memory="512Mi"
+						}
+						requests={
+							cpu="20m"
+							memory="128Mi"
+						}
+					}
+				}
+			}),
+	]
 	version="0.47.3"
 }
 resource "kubernetes_namespace" "argo_workflows" {

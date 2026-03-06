@@ -83,6 +83,49 @@ resource "kubernetes_manifest" "function_auto_ready" {
 		}
 		spec={
 			package="xpkg.upbound.io/upbound/function-auto-ready:v0.6.0"
+			runtimeConfigRef={
+				name="function-auto-ready-runtime-config"
+			}
+		}
+	}
+	provider=kubernetes
+}
+resource "kubernetes_manifest" "function_auto_ready_runtime_config" {
+	manifest={
+		apiVersion="pkg.crossplane.io/v1beta1"
+		kind="DeploymentRuntimeConfig"
+		metadata={
+			name="function-auto-ready-runtime-config"
+		}
+		spec={
+			deploymentTemplate={
+				spec={
+					selector={
+						matchLabels={
+							"pkg.crossplane.io/function"="function-auto-ready"
+						}
+					}
+					template={
+						spec={
+							containers=[
+								{
+									name="package-runtime"
+									resources={
+										limits={
+											cpu="500m"
+											memory="512Mi"
+										}
+										requests={
+											cpu="20m"
+											memory="128Mi"
+										}
+									}
+								},
+							]
+						}
+					}
+				}
+			}
 		}
 	}
 	provider=kubernetes
@@ -125,12 +168,12 @@ resource "kubernetes_manifest" "function_go_templating_runtime_config" {
 									name="package-runtime"
 									resources={
 										limits={
-											cpu="1000m"
-											memory="1Gi"
-										}
-										requests={
 											cpu="500m"
 											memory="512Mi"
+										}
+										requests={
+											cpu="20m"
+											memory="128Mi"
 										}
 									}
 								},
@@ -152,6 +195,49 @@ resource "kubernetes_manifest" "function_tag_manager" {
 		}
 		spec={
 			package="xpkg.upbound.io/crossplane-contrib/function-tag-manager:v0.6.0"
+			runtimeConfigRef={
+				name="function-tag-manager-runtime-config"
+			}
+		}
+	}
+	provider=kubernetes
+}
+resource "kubernetes_manifest" "function_tag_manager_runtime_config" {
+	manifest={
+		apiVersion="pkg.crossplane.io/v1beta1"
+		kind="DeploymentRuntimeConfig"
+		metadata={
+			name="function-tag-manager-runtime-config"
+		}
+		spec={
+			deploymentTemplate={
+				spec={
+					selector={
+						matchLabels={
+							"pkg.crossplane.io/function"="function-tag-manager"
+						}
+					}
+					template={
+						spec={
+							containers=[
+								{
+									name="package-runtime"
+									resources={
+										limits={
+											cpu="500m"
+											memory="512Mi"
+										}
+										requests={
+											cpu="20m"
+											memory="128Mi"
+										}
+									}
+								},
+							]
+						}
+					}
+				}
+			}
 		}
 	}
 	provider=kubernetes

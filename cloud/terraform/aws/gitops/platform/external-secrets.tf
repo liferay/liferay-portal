@@ -10,12 +10,12 @@ resource "helm_release" "external_secrets" {
 				certController={
 					resources={
 						limits={
-							cpu="20m"
-							memory="64Mi"
+							cpu="50m"
+							memory="256Mi"
 						}
 						requests={
-							cpu="10m"
-							memory="32Mi"
+							cpu="20m"
+							memory="128Mi"
 						}
 					}
 				}
@@ -23,22 +23,22 @@ resource "helm_release" "external_secrets" {
 				resources={
 					limits={
 						cpu="100m"
-						memory="128Mi"
+						memory="256Mi"
 					}
 					requests={
-						cpu="50m"
-						memory="64Mi"
+						cpu="20m"
+						memory="128Mi"
 					}
 				}
 				webhook={
 					resources={
 						limits={
-							cpu="20m"
-							memory="64Mi"
+							cpu="50m"
+							memory="256Mi"
 						}
 						requests={
-							cpu="10m"
-							memory="32Mi"
+							cpu="20m"
+							memory="128Mi"
 						}
 					}
 				}

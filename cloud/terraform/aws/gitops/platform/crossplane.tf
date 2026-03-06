@@ -9,14 +9,24 @@ resource "helm_release" "crossplane" {
 	values=[
 		yamlencode(
 			{
-				resources={
+				resourcesCrossplane={
 					limits={
 						cpu="500m"
 						memory="1Gi"
 					}
 					requests={
-						cpu="250m"
+						cpu="100m"
+						memory="768Mi"
+					}
+				}
+				resourcesRBACManager={
+					limits={
+						cpu="500m"
 						memory="512Mi"
+					}
+					requests={
+						cpu="100m"
+						memory="256Mi"
 					}
 				}
 			})
