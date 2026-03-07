@@ -54,7 +54,7 @@ public class BatchableUpdateCheck extends BaseCheck {
 
 			DetailAST variableDefinitionDetailAST =
 				getVariableDefinitionDetailAST(
-					methodCallDetailAST, names.get(0));
+					methodCallDetailAST, names.get(0), false);
 
 			if ((variableDefinitionDetailAST == null) ||
 				(variableDefinitionDetailAST.getLineNo() >=
