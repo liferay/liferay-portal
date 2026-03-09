@@ -745,7 +745,6 @@
 	<model name="com.liferay.portal.kernel.model.Image">
 		<field name="mvccVersion" type="long" />
 		<field name="ctCollectionId" type="long" />
-		<field name="externalReferenceCode" type="String" />
 		<field name="imageId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="modifiedDate" type="Date" />

@@ -59,10 +59,10 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
-		{"externalReferenceCode", Types.VARCHAR}, {"imageId", Types.BIGINT},
-		{"companyId", Types.BIGINT}, {"modifiedDate", Types.TIMESTAMP},
-		{"type_", Types.VARCHAR}, {"height", Types.INTEGER},
-		{"width", Types.INTEGER}, {"size_", Types.INTEGER}
+		{"imageId", Types.BIGINT}, {"companyId", Types.BIGINT},
+		{"modifiedDate", Types.TIMESTAMP}, {"type_", Types.VARCHAR},
+		{"height", Types.INTEGER}, {"width", Types.INTEGER},
+		{"size_", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -71,7 +71,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 	static {
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ctCollectionId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("imageId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
@@ -82,7 +81,7 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Image (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,externalReferenceCode VARCHAR(75) null,imageId LONG not null,companyId LONG,modifiedDate DATE null,type_ VARCHAR(75) null,height INTEGER,width INTEGER,size_ INTEGER,primary key (imageId, ctCollectionId))";
+		"create table Image (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,imageId LONG not null,companyId LONG,modifiedDate DATE null,type_ VARCHAR(75) null,height INTEGER,width INTEGER,size_ INTEGER,primary key (imageId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table Image";
 
@@ -118,26 +117,14 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long SIZE_COLUMN_BITMASK = 4L;
+	public static final long SIZE_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long IMAGEID_COLUMN_BITMASK = 8L;
+	public static final long IMAGEID_COLUMN_BITMASK = 2L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -235,8 +222,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 			attributeGetterFunctions.put("mvccVersion", Image::getMvccVersion);
 			attributeGetterFunctions.put(
 				"ctCollectionId", Image::getCtCollectionId);
-			attributeGetterFunctions.put(
-				"externalReferenceCode", Image::getExternalReferenceCode);
 			attributeGetterFunctions.put("imageId", Image::getImageId);
 			attributeGetterFunctions.put("companyId", Image::getCompanyId);
 			attributeGetterFunctions.put(
@@ -266,9 +251,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 			attributeSetterBiConsumers.put(
 				"ctCollectionId",
 				(BiConsumer<Image, Long>)Image::setCtCollectionId);
-			attributeSetterBiConsumers.put(
-				"externalReferenceCode",
-				(BiConsumer<Image, String>)Image::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"imageId", (BiConsumer<Image, Long>)Image::setImageId);
 			attributeSetterBiConsumers.put(
@@ -323,35 +305,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 	@JSON
 	@Override
-	public String getExternalReferenceCode() {
-		if (_externalReferenceCode == null) {
-			return "";
-		}
-		else {
-			return _externalReferenceCode;
-		}
-	}
-
-	@Override
-	public void setExternalReferenceCode(String externalReferenceCode) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_externalReferenceCode = externalReferenceCode;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalExternalReferenceCode() {
-		return getColumnOriginalValue("externalReferenceCode");
-	}
-
-	@JSON
-	@Override
 	public long getImageId() {
 		return _imageId;
 	}
@@ -378,16 +331,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 		}
 
 		_companyId = companyId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalCompanyId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
 	@JSON
@@ -544,7 +487,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 		imageImpl.setMvccVersion(getMvccVersion());
 		imageImpl.setCtCollectionId(getCtCollectionId());
-		imageImpl.setExternalReferenceCode(getExternalReferenceCode());
 		imageImpl.setImageId(getImageId());
 		imageImpl.setCompanyId(getCompanyId());
 		imageImpl.setModifiedDate(getModifiedDate());
@@ -566,8 +508,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 			this.<Long>getColumnOriginalValue("mvccVersion"));
 		imageImpl.setCtCollectionId(
 			this.<Long>getColumnOriginalValue("ctCollectionId"));
-		imageImpl.setExternalReferenceCode(
-			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		imageImpl.setImageId(this.<Long>getColumnOriginalValue("imageId"));
 		imageImpl.setCompanyId(this.<Long>getColumnOriginalValue("companyId"));
 		imageImpl.setModifiedDate(
@@ -663,16 +603,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 		imageCacheModel.ctCollectionId = getCtCollectionId();
 
-		imageCacheModel.externalReferenceCode = getExternalReferenceCode();
-
-		String externalReferenceCode = imageCacheModel.externalReferenceCode;
-
-		if ((externalReferenceCode != null) &&
-			(externalReferenceCode.length() == 0)) {
-
-			imageCacheModel.externalReferenceCode = null;
-		}
-
 		imageCacheModel.imageId = getImageId();
 
 		imageCacheModel.companyId = getCompanyId();
@@ -762,7 +692,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 	private long _mvccVersion;
 	private long _ctCollectionId;
-	private String _externalReferenceCode;
 	private long _imageId;
 	private long _companyId;
 	private Date _modifiedDate;
@@ -804,8 +733,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("ctCollectionId", _ctCollectionId);
-		_columnOriginalValues.put(
-			"externalReferenceCode", _externalReferenceCode);
 		_columnOriginalValues.put("imageId", _imageId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
@@ -841,21 +768,19 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 		columnBitmasks.put("ctCollectionId", 2L);
 
-		columnBitmasks.put("externalReferenceCode", 4L);
+		columnBitmasks.put("imageId", 4L);
 
-		columnBitmasks.put("imageId", 8L);
+		columnBitmasks.put("companyId", 8L);
 
-		columnBitmasks.put("companyId", 16L);
+		columnBitmasks.put("modifiedDate", 16L);
 
-		columnBitmasks.put("modifiedDate", 32L);
+		columnBitmasks.put("type_", 32L);
 
-		columnBitmasks.put("type_", 64L);
+		columnBitmasks.put("height", 64L);
 
-		columnBitmasks.put("height", 128L);
+		columnBitmasks.put("width", 128L);
 
-		columnBitmasks.put("width", 256L);
-
-		columnBitmasks.put("size_", 512L);
+		columnBitmasks.put("size_", 256L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

@@ -12,14 +12,11 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.exception.DuplicateImageExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchImageException;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.ImagePersistence;
 import com.liferay.portal.kernel.service.persistence.ImageUtil;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -119,8 +116,6 @@ public class ImagePersistenceTest {
 
 		newImage.setCtCollectionId(RandomTestUtil.nextLong());
 
-		newImage.setExternalReferenceCode(RandomTestUtil.randomString());
-
 		newImage.setCompanyId(RandomTestUtil.nextLong());
 
 		newImage.setModifiedDate(RandomTestUtil.nextDate());
@@ -142,9 +137,6 @@ public class ImagePersistenceTest {
 			existingImage.getMvccVersion(), newImage.getMvccVersion());
 		Assert.assertEquals(
 			existingImage.getCtCollectionId(), newImage.getCtCollectionId());
-		Assert.assertEquals(
-			existingImage.getExternalReferenceCode(),
-			newImage.getExternalReferenceCode());
 		Assert.assertEquals(existingImage.getImageId(), newImage.getImageId());
 		Assert.assertEquals(
 			existingImage.getCompanyId(), newImage.getCompanyId());
@@ -157,39 +149,11 @@ public class ImagePersistenceTest {
 		Assert.assertEquals(existingImage.getSize(), newImage.getSize());
 	}
 
-	@Test(expected = DuplicateImageExternalReferenceCodeException.class)
-	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
-		Image image = addImage();
-
-		Image newImage = addImage();
-
-		newImage.setCompanyId(image.getCompanyId());
-
-		newImage = _persistence.update(newImage);
-
-		Session session = _persistence.getCurrentSession();
-
-		session.evict(newImage);
-
-		newImage.setExternalReferenceCode(image.getExternalReferenceCode());
-
-		_persistence.update(newImage);
-	}
-
 	@Test
 	public void testCountByLtSize() throws Exception {
 		_persistence.countByLtSize(RandomTestUtil.nextInt());
 
 		_persistence.countByLtSize(0);
-	}
-
-	@Test
-	public void testCountByERC_C() throws Exception {
-		_persistence.countByERC_C("", RandomTestUtil.nextLong());
-
-		_persistence.countByERC_C("null", 0L);
-
-		_persistence.countByERC_C((String)null, 0L);
 	}
 
 	@Test
@@ -217,10 +181,9 @@ public class ImagePersistenceTest {
 
 	protected OrderByComparator<Image> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"Image", "mvccVersion", true, "ctCollectionId", true,
-			"externalReferenceCode", true, "imageId", true, "companyId", true,
-			"modifiedDate", true, "type", true, "height", true, "width", true,
-			"size", true);
+			"Image", "mvccVersion", true, "ctCollectionId", true, "imageId",
+			true, "companyId", true, "modifiedDate", true, "type", true,
+			"height", true, "width", true, "size", true);
 	}
 
 	@Test
@@ -421,67 +384,6 @@ public class ImagePersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
-	@Test
-	public void testResetOriginalValues() throws Exception {
-		Image newImage = addImage();
-
-		_persistence.clearCache();
-
-		_assertOriginalValues(
-			_persistence.findByPrimaryKey(newImage.getPrimaryKey()));
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(true);
-	}
-
-	@Test
-	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
-		throws Exception {
-
-		_testResetOriginalValuesWithDynamicQuery(false);
-	}
-
-	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
-		throws Exception {
-
-		Image newImage = addImage();
-
-		if (clearSession) {
-			Session session = _persistence.openSession();
-
-			session.flush();
-
-			session.clear();
-		}
-
-		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-			Image.class, _dynamicQueryClassLoader);
-
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq("imageId", newImage.getImageId()));
-
-		List<Image> result = _persistence.findWithDynamicQuery(dynamicQuery);
-
-		_assertOriginalValues(result.get(0));
-	}
-
-	private void _assertOriginalValues(Image image) {
-		Assert.assertEquals(
-			image.getExternalReferenceCode(),
-			ReflectionTestUtil.invoke(
-				image, "getColumnOriginalValue", new Class<?>[] {String.class},
-				"externalReferenceCode"));
-		Assert.assertEquals(
-			Long.valueOf(image.getCompanyId()),
-			ReflectionTestUtil.<Long>invoke(
-				image, "getColumnOriginalValue", new Class<?>[] {String.class},
-				"companyId"));
-	}
-
 	protected Image addImage() throws Exception {
 		long pk = RandomTestUtil.nextLong();
 
@@ -490,8 +392,6 @@ public class ImagePersistenceTest {
 		image.setMvccVersion(RandomTestUtil.nextLong());
 
 		image.setCtCollectionId(RandomTestUtil.nextLong());
-
-		image.setExternalReferenceCode(RandomTestUtil.randomString());
 
 		image.setCompanyId(RandomTestUtil.nextLong());
 

@@ -18,32 +18,24 @@ import com.liferay.portal.kernel.dao.orm.Query;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.exception.DuplicateImageExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchImageException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.ImageTable;
-import com.liferay.portal.kernel.sanitizer.Sanitizer;
-import com.liferay.portal.kernel.sanitizer.SanitizerException;
-import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.ImagePersistence;
 import com.liferay.portal.kernel.service.persistence.ImageUtil;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelperUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.impl.ImageImpl;
 import com.liferay.portal.model.impl.ImageModelImpl;
 
@@ -60,7 +52,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -578,211 +569,6 @@ public class ImagePersistenceImpl
 
 	private static final String _FINDER_COLUMN_LTSIZE_SIZE_2 = "image.size < ?";
 
-	private FinderPath _finderPathFetchByERC_C;
-
-	/**
-	 * Returns the image where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchImageException</code> if it could not be found.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the matching image
-	 * @throws NoSuchImageException if a matching image could not be found
-	 */
-	@Override
-	public Image findByERC_C(String externalReferenceCode, long companyId)
-		throws NoSuchImageException {
-
-		Image image = fetchByERC_C(externalReferenceCode, companyId);
-
-		if (image == null) {
-			StringBundler sb = new StringBundler(6);
-
-			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-			sb.append("externalReferenceCode=");
-			sb.append(externalReferenceCode);
-
-			sb.append(", companyId=");
-			sb.append(companyId);
-
-			sb.append("}");
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(sb.toString());
-			}
-
-			throw new NoSuchImageException(sb.toString());
-		}
-
-		return image;
-	}
-
-	/**
-	 * Returns the image where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the matching image, or <code>null</code> if a matching image could not be found
-	 */
-	@Override
-	public Image fetchByERC_C(String externalReferenceCode, long companyId) {
-		return fetchByERC_C(externalReferenceCode, companyId, true);
-	}
-
-	/**
-	 * Returns the image where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching image, or <code>null</code> if a matching image could not be found
-	 */
-	@Override
-	public Image fetchByERC_C(
-		String externalReferenceCode, long companyId, boolean useFinderCache) {
-
-		try (SafeCloseable safeCloseable =
-				CTPersistenceHelperUtil.setCTCollectionIdWithSafeCloseable(
-					Image.class)) {
-
-			externalReferenceCode = Objects.toString(externalReferenceCode, "");
-
-			Object[] finderArgs = null;
-
-			if (useFinderCache) {
-				finderArgs = new Object[] {externalReferenceCode, companyId};
-			}
-
-			Object result = null;
-
-			if (useFinderCache) {
-				result = FinderCacheUtil.getResult(
-					_finderPathFetchByERC_C, finderArgs, this);
-			}
-
-			if (result instanceof Image) {
-				Image image = (Image)result;
-
-				if (!Objects.equals(
-						externalReferenceCode,
-						image.getExternalReferenceCode()) ||
-					(companyId != image.getCompanyId())) {
-
-					result = null;
-				}
-			}
-
-			if (result == null) {
-				StringBundler sb = new StringBundler(4);
-
-				sb.append(_SQL_SELECT_IMAGE_WHERE);
-
-				boolean bindExternalReferenceCode = false;
-
-				if (externalReferenceCode.isEmpty()) {
-					sb.append(_FINDER_COLUMN_ERC_C_EXTERNALREFERENCECODE_3);
-				}
-				else {
-					bindExternalReferenceCode = true;
-
-					sb.append(_FINDER_COLUMN_ERC_C_EXTERNALREFERENCECODE_2);
-				}
-
-				sb.append(_FINDER_COLUMN_ERC_C_COMPANYID_2);
-
-				String sql = sb.toString();
-
-				Session session = null;
-
-				try {
-					session = openSession();
-
-					Query query = session.createQuery(sql);
-
-					QueryPos queryPos = QueryPos.getInstance(query);
-
-					if (bindExternalReferenceCode) {
-						queryPos.add(externalReferenceCode);
-					}
-
-					queryPos.add(companyId);
-
-					List<Image> list = query.list();
-
-					if (list.isEmpty()) {
-						if (useFinderCache) {
-							FinderCacheUtil.putResult(
-								_finderPathFetchByERC_C, finderArgs, list);
-						}
-					}
-					else {
-						Image image = list.get(0);
-
-						result = image;
-
-						cacheResult(image);
-					}
-				}
-				catch (Exception exception) {
-					throw processException(exception);
-				}
-				finally {
-					closeSession(session);
-				}
-			}
-
-			if (result instanceof List<?>) {
-				return null;
-			}
-			else {
-				return (Image)result;
-			}
-		}
-	}
-
-	/**
-	 * Removes the image where externalReferenceCode = &#63; and companyId = &#63; from the database.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the image that was removed
-	 */
-	@Override
-	public Image removeByERC_C(String externalReferenceCode, long companyId)
-		throws NoSuchImageException {
-
-		Image image = findByERC_C(externalReferenceCode, companyId);
-
-		return remove(image);
-	}
-
-	/**
-	 * Returns the number of images where externalReferenceCode = &#63; and companyId = &#63;.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the number of matching images
-	 */
-	@Override
-	public int countByERC_C(String externalReferenceCode, long companyId) {
-		Image image = fetchByERC_C(externalReferenceCode, companyId);
-
-		if (image == null) {
-			return 0;
-		}
-
-		return 1;
-	}
-
-	private static final String _FINDER_COLUMN_ERC_C_EXTERNALREFERENCECODE_2 =
-		"image.externalReferenceCode = ? AND ";
-
-	private static final String _FINDER_COLUMN_ERC_C_EXTERNALREFERENCECODE_3 =
-		"(image.externalReferenceCode IS NULL OR image.externalReferenceCode = '') AND ";
-
-	private static final String _FINDER_COLUMN_ERC_C_COMPANYID_2 =
-		"image.companyId = ?";
-
 	public ImagePersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -812,13 +598,6 @@ public class ImagePersistenceImpl
 
 			EntityCacheUtil.putResult(
 				ImageImpl.class, image.getPrimaryKey(), image);
-
-			FinderCacheUtil.putResult(
-				_finderPathFetchByERC_C,
-				new Object[] {
-					image.getExternalReferenceCode(), image.getCompanyId()
-				},
-				image);
 		}
 	}
 
@@ -891,21 +670,6 @@ public class ImagePersistenceImpl
 
 		for (Serializable primaryKey : primaryKeys) {
 			EntityCacheUtil.removeResult(ImageImpl.class, primaryKey);
-		}
-	}
-
-	protected void cacheUniqueFindersCache(ImageModelImpl imageModelImpl) {
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					imageModelImpl.getCtCollectionId())) {
-
-			Object[] args = new Object[] {
-				imageModelImpl.getExternalReferenceCode(),
-				imageModelImpl.getCompanyId()
-			};
-
-			FinderCacheUtil.putResult(
-				_finderPathFetchByERC_C, args, imageModelImpl);
 		}
 	}
 
@@ -1029,67 +793,6 @@ public class ImagePersistenceImpl
 
 		ImageModelImpl imageModelImpl = (ImageModelImpl)image;
 
-		if (Validator.isNull(image.getExternalReferenceCode())) {
-			image.setExternalReferenceCode(
-				String.valueOf(image.getPrimaryKey()));
-		}
-		else {
-			if (!Objects.equals(
-					imageModelImpl.getColumnOriginalValue(
-						"externalReferenceCode"),
-					image.getExternalReferenceCode())) {
-
-				long userId = GetterUtil.getLong(
-					PrincipalThreadLocal.getName());
-
-				if (userId > 0) {
-					long companyId = image.getCompanyId();
-
-					long groupId = 0;
-
-					long classPK = 0;
-
-					if (!isNew) {
-						classPK = image.getPrimaryKey();
-					}
-
-					try {
-						image.setExternalReferenceCode(
-							SanitizerUtil.sanitize(
-								companyId, groupId, userId,
-								Image.class.getName(), classPK,
-								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
-								image.getExternalReferenceCode(), null));
-					}
-					catch (SanitizerException sanitizerException) {
-						throw new SystemException(sanitizerException);
-					}
-				}
-			}
-
-			Image ercImage = fetchByERC_C(
-				image.getExternalReferenceCode(), image.getCompanyId());
-
-			if (isNew) {
-				if (ercImage != null) {
-					throw new DuplicateImageExternalReferenceCodeException(
-						"Duplicate image with external reference code " +
-							image.getExternalReferenceCode() + " and company " +
-								image.getCompanyId());
-				}
-			}
-			else {
-				if ((ercImage != null) &&
-					(image.getImageId() != ercImage.getImageId())) {
-
-					throw new DuplicateImageExternalReferenceCodeException(
-						"Duplicate image with external reference code " +
-							image.getExternalReferenceCode() + " and company " +
-								image.getCompanyId());
-				}
-			}
-		}
-
 		if (!imageModelImpl.hasSetModifiedDate()) {
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
@@ -1127,9 +830,7 @@ public class ImagePersistenceImpl
 			closeSession(session);
 		}
 
-		EntityCacheUtil.putResult(ImageImpl.class, imageModelImpl, false, true);
-
-		cacheUniqueFindersCache(imageModelImpl);
+		EntityCacheUtil.putResult(ImageImpl.class, image, false, true);
 
 		if (isNew) {
 			image.setNew(false);
@@ -1608,7 +1309,6 @@ public class ImagePersistenceImpl
 
 		ctControlColumnNames.add("mvccVersion");
 		ctControlColumnNames.add("ctCollectionId");
-		ctStrictColumnNames.add("externalReferenceCode");
 		ctStrictColumnNames.add("companyId");
 		ctIgnoreColumnNames.add("modifiedDate");
 		ctMergeColumnNames.add("type_");
@@ -1625,9 +1325,6 @@ public class ImagePersistenceImpl
 			CTColumnResolutionType.PK, Collections.singleton("imageId"));
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.STRICT, ctStrictColumnNames);
-
-		_uniqueIndexColumnNames.add(
-			new String[] {"externalReferenceCode", "companyId"});
 	}
 
 	/**
@@ -1661,11 +1358,6 @@ public class ImagePersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByLtSize",
 			new String[] {Integer.class.getName()}, new String[] {"size_"},
 			false);
-
-		_finderPathFetchByERC_C = new FinderPath(
-			FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",
-			new String[] {String.class.getName(), Long.class.getName()},
-			new String[] {"externalReferenceCode", "companyId"}, true);
 
 		ImageUtil.setPersistence(this);
 	}

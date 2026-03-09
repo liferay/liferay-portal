@@ -25,8 +25,7 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface ImageModel
-	extends BaseModel<Image>, CTModel<Image>, ExternalReferenceCodeModel,
-			MVCCModel, ShardedModel {
+	extends BaseModel<Image>, CTModel<Image>, MVCCModel, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -81,23 +80,6 @@ public interface ImageModel
 	 */
 	@Override
 	public void setCtCollectionId(long ctCollectionId);
-
-	/**
-	 * Returns the external reference code of this image.
-	 *
-	 * @return the external reference code of this image
-	 */
-	@AutoEscape
-	@Override
-	public String getExternalReferenceCode();
-
-	/**
-	 * Sets the external reference code of this image.
-	 *
-	 * @param externalReferenceCode the external reference code of this image
-	 */
-	@Override
-	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the image ID of this image.

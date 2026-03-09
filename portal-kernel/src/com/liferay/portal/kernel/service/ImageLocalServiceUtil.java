@@ -51,13 +51,6 @@ public class ImageLocalServiceUtil {
 		return getService().addImage(image);
 	}
 
-	public static Image addImage(
-			String externalReferenceCode, long companyId, byte[] bytes)
-		throws PortalException {
-
-		return getService().addImage(externalReferenceCode, companyId, bytes);
-	}
-
 	/**
 	 * Creates a new image with the primary key. Does not add the image to the database.
 	 *
@@ -206,13 +199,6 @@ public class ImageLocalServiceUtil {
 		return getService().fetchImage(imageId);
 	}
 
-	public static Image fetchImageByExternalReferenceCode(
-		String externalReferenceCode, long companyId) {
-
-		return getService().fetchImageByExternalReferenceCode(
-			externalReferenceCode, companyId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -232,14 +218,6 @@ public class ImageLocalServiceUtil {
 	 */
 	public static Image getImage(long imageId) throws PortalException {
 		return getService().getImage(imageId);
-	}
-
-	public static Image getImageByExternalReferenceCode(
-			String externalReferenceCode, long companyId)
-		throws PortalException {
-
-		return getService().getImageByExternalReferenceCode(
-			externalReferenceCode, companyId);
 	}
 
 	public static InputStream getImageInputStream(

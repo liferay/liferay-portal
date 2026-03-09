@@ -649,7 +649,6 @@ create table Groups_UserGroups (
 create table Image (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
-	externalReferenceCode VARCHAR(75) null,
 	imageId LONG not null,
 	companyId LONG,
 	modifiedDate DATE null,

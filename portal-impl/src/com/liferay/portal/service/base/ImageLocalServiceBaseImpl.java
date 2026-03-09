@@ -229,21 +229,6 @@ public abstract class ImageLocalServiceBaseImpl
 		return imagePersistence.fetchByPrimaryKey(imageId);
 	}
 
-	@Override
-	public Image fetchImageByExternalReferenceCode(
-		String externalReferenceCode, long companyId) {
-
-		return imagePersistence.fetchByERC_C(externalReferenceCode, companyId);
-	}
-
-	@Override
-	public Image getImageByExternalReferenceCode(
-			String externalReferenceCode, long companyId)
-		throws PortalException {
-
-		return imagePersistence.findByERC_C(externalReferenceCode, companyId);
-	}
-
 	/**
 	 * Returns the image with the primary key.
 	 *

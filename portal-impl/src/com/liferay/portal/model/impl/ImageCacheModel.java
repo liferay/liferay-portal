@@ -67,14 +67,12 @@ public class ImageCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(19);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", ctCollectionId=");
 		sb.append(ctCollectionId);
-		sb.append(", externalReferenceCode=");
-		sb.append(externalReferenceCode);
 		sb.append(", imageId=");
 		sb.append(imageId);
 		sb.append(", companyId=");
@@ -100,14 +98,6 @@ public class ImageCacheModel
 
 		imageImpl.setMvccVersion(mvccVersion);
 		imageImpl.setCtCollectionId(ctCollectionId);
-
-		if (externalReferenceCode == null) {
-			imageImpl.setExternalReferenceCode("");
-		}
-		else {
-			imageImpl.setExternalReferenceCode(externalReferenceCode);
-		}
-
 		imageImpl.setImageId(imageId);
 		imageImpl.setCompanyId(companyId);
 
@@ -139,7 +129,6 @@ public class ImageCacheModel
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		externalReferenceCode = objectInput.readUTF();
 
 		imageId = objectInput.readLong();
 
@@ -159,13 +148,6 @@ public class ImageCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		objectOutput.writeLong(ctCollectionId);
-
-		if (externalReferenceCode == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(externalReferenceCode);
-		}
 
 		objectOutput.writeLong(imageId);
 
@@ -188,7 +170,6 @@ public class ImageCacheModel
 
 	public long mvccVersion;
 	public long ctCollectionId;
-	public String externalReferenceCode;
 	public long imageId;
 	public long companyId;
 	public long modifiedDate;

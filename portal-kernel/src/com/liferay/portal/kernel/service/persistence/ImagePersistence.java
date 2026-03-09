@@ -175,56 +175,6 @@ public interface ImagePersistence
 	public int countByLtSize(int size);
 
 	/**
-	 * Returns the image where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchImageException</code> if it could not be found.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the matching image
-	 * @throws NoSuchImageException if a matching image could not be found
-	 */
-	public Image findByERC_C(String externalReferenceCode, long companyId)
-		throws NoSuchImageException;
-
-	/**
-	 * Returns the image where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the matching image, or <code>null</code> if a matching image could not be found
-	 */
-	public Image fetchByERC_C(String externalReferenceCode, long companyId);
-
-	/**
-	 * Returns the image where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching image, or <code>null</code> if a matching image could not be found
-	 */
-	public Image fetchByERC_C(
-		String externalReferenceCode, long companyId, boolean useFinderCache);
-
-	/**
-	 * Removes the image where externalReferenceCode = &#63; and companyId = &#63; from the database.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the image that was removed
-	 */
-	public Image removeByERC_C(String externalReferenceCode, long companyId)
-		throws NoSuchImageException;
-
-	/**
-	 * Returns the number of images where externalReferenceCode = &#63; and companyId = &#63;.
-	 *
-	 * @param externalReferenceCode the external reference code
-	 * @param companyId the company ID
-	 * @return the number of matching images
-	 */
-	public int countByERC_C(String externalReferenceCode, long companyId);
-
-	/**
 	 * Caches the image in the entity cache if it is enabled.
 	 *
 	 * @param image the image
