@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -33,6 +35,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -175,6 +178,86 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			"testCOLUMN", "testTABLE", "testColumn", "TestTable");
 	}
 
+	@Test
+	public void testValidateColumnNamesCasingCompanyTable() throws Exception {
+		try (Connection connection = DataAccess.getConnection()) {
+			this.connection = connection;
+
+			String columnName = "testColumn";
+			String columnType = "LONG";
+			String invalidColumnName = "testCOLUMN";
+			String tableName = "Company";
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.
+						class.getName(),
+					LoggerTestUtil.INFO);
+				SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"DATABASE_PARTITION_ENABLED", false)) {
+
+				alterTableAddColumn(tableName, invalidColumnName, columnType);
+
+				_testValidateColumnNamesCasing(
+					columnName, columnType, invalidColumnName, tableName);
+
+				List<String> messages = logCapture.getMessages();
+
+				Assert.assertEquals(messages.toString(), 1, messages.size());
+
+				String message = messages.get(0);
+
+				Assert.assertEquals(
+					message,
+					StringBundler.concat(
+						"Table ", tableName, ", column ", invalidColumnName,
+						" was renamed to ", columnName,
+						" because it was incorrectly cased"),
+					message);
+			}
+			finally {
+				alterTableDropColumn(tableName, columnName);
+				alterTableDropColumn(tableName, invalidColumnName);
+			}
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.
+						class.getName(),
+					LoggerTestUtil.INFO);
+				SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"DATABASE_PARTITION_ENABLED", true)) {
+
+				alterTableAddColumn(tableName, invalidColumnName, columnType);
+
+				_testValidateColumnNamesCasing(
+					columnName, columnType, invalidColumnName, tableName);
+
+				List<String> messages = logCapture.getMessages();
+
+				Assert.assertEquals(messages.toString(), 1, messages.size());
+
+				String message = messages.get(0);
+
+				Assert.assertEquals(
+					message,
+					StringBundler.concat(
+						"Column ", tableName, StringPool.PERIOD,
+						invalidColumnName,
+						" is incorrectly cased, must be manually renamed to ",
+						tableName, StringPool.PERIOD, columnName),
+					message);
+			}
+			finally {
+				alterTableDropColumn(tableName, columnName);
+				alterTableDropColumn(tableName, invalidColumnName);
+			}
+		}
+		finally {
+			this.connection = null;
+		}
+	}
+
 	private void _createTestTable(String columnName, String tableName)
 		throws Exception {
 
@@ -302,6 +385,34 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 				companyId -> _db.runSQL(
 					"DROP_TABLE_IF_EXISTS(" + testTableName + ")"));
 		}
+	}
+
+	private void _testValidateColumnNamesCasing(
+			String expectedColumnName, String columnType,
+			String existingColumnName, String tableName)
+		throws Exception {
+
+		List<String> expectedColumnDefinitions = Collections.singletonList(
+			expectedColumnName + StringPool.SPACE + columnType);
+
+		Map<String, String> existingColumnNames =
+			TreeMapBuilder.<String, String>create(
+				String.CASE_INSENSITIVE_ORDER
+			).put(
+				existingColumnName, existingColumnName
+			).build();
+
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+		ReflectionTestUtil.invoke(
+			this, "_validateColumnNamesCasing",
+			new Class<?>[] {
+				DBInspector.class, List.class, Map.class, int.class,
+				String.class
+			},
+			new DBInspector(connection), expectedColumnDefinitions,
+			existingColumnNames, databaseMetaData.getMaxColumnNameLength(),
+			tableName);
 	}
 
 	private static final String _TEMP_SUFFIX = "_temp";
