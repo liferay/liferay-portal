@@ -33,63 +33,18 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName(
-	description = "A unique reference to a URL which remains constant across environments.",
-	value = "IconImageURLReference"
-)
+@GraphQLName(description = "An Icon Image URL.", value = "IconImageURL")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "IconImageURLReference")
-public class IconImageURLReference implements Serializable {
+@XmlRootElement(name = "IconImageURL")
+public class IconImageURL implements Serializable {
 
-	public static IconImageURLReference toDTO(String json) {
-		return ObjectMapperUtil.readValue(IconImageURLReference.class, json);
+	public static IconImageURL toDTO(String json) {
+		return ObjectMapperUtil.readValue(IconImageURL.class, json);
 	}
 
-	public static IconImageURLReference unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(
-			IconImageURLReference.class, json);
+	public static IconImageURL unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(IconImageURL.class, json);
 	}
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	public String getExternalReferenceCode() {
-		if (_externalReferenceCodeSupplier != null) {
-			externalReferenceCode = _externalReferenceCodeSupplier.get();
-
-			_externalReferenceCodeSupplier = null;
-		}
-
-		return externalReferenceCode;
-	}
-
-	public void setExternalReferenceCode(String externalReferenceCode) {
-		this.externalReferenceCode = externalReferenceCode;
-
-		_externalReferenceCodeSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setExternalReferenceCode(
-		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
-
-		_externalReferenceCodeSupplier = () -> {
-			try {
-				return externalReferenceCodeUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String externalReferenceCode;
-
-	@JsonIgnore
-	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getUrl() {
@@ -136,14 +91,13 @@ public class IconImageURLReference implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof IconImageURLReference)) {
+		if (!(object instanceof IconImageURL)) {
 			return false;
 		}
 
-		IconImageURLReference iconImageURLReference =
-			(IconImageURLReference)object;
+		IconImageURL iconImageURL = (IconImageURL)object;
 
-		return Objects.equals(toString(), iconImageURLReference.toString());
+		return Objects.equals(toString(), iconImageURL.toString());
 	}
 
 	@Override
@@ -157,22 +111,6 @@ public class IconImageURLReference implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
-
-		String externalReferenceCode = getExternalReferenceCode();
-
-		if (externalReferenceCode != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"externalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(externalReferenceCode));
-
-			sb.append("\"");
-		}
 
 		String url = getUrl();
 
@@ -197,7 +135,7 @@ public class IconImageURLReference implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.IconImageURLReference",
+		defaultValue = "com.liferay.headless.admin.site.dto.v1_0.IconImageURL",
 		name = "x-class-name"
 	)
 	public String xClassName;

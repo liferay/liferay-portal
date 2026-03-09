@@ -282,32 +282,29 @@ public class Settings implements Serializable {
 		description = "The IconImage of the page specification."
 	)
 	@Valid
-	public IconImageURLReference getIconImageURLReference() {
-		if (_iconImageURLReferenceSupplier != null) {
-			iconImageURLReference = _iconImageURLReferenceSupplier.get();
+	public IconImageURL getIconImageURL() {
+		if (_iconImageURLSupplier != null) {
+			iconImageURL = _iconImageURLSupplier.get();
 
-			_iconImageURLReferenceSupplier = null;
+			_iconImageURLSupplier = null;
 		}
 
-		return iconImageURLReference;
+		return iconImageURL;
 	}
 
-	public void setIconImageURLReference(
-		IconImageURLReference iconImageURLReference) {
+	public void setIconImageURL(IconImageURL iconImageURL) {
+		this.iconImageURL = iconImageURL;
 
-		this.iconImageURLReference = iconImageURLReference;
-
-		_iconImageURLReferenceSupplier = null;
+		_iconImageURLSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setIconImageURLReference(
-		UnsafeSupplier<IconImageURLReference, Exception>
-			iconImageURLReferenceUnsafeSupplier) {
+	public void setIconImageURL(
+		UnsafeSupplier<IconImageURL, Exception> iconImageURLUnsafeSupplier) {
 
-		_iconImageURLReferenceSupplier = () -> {
+		_iconImageURLSupplier = () -> {
 			try {
-				return iconImageURLReferenceUnsafeSupplier.get();
+				return iconImageURLUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -320,10 +317,10 @@ public class Settings implements Serializable {
 
 	@GraphQLField(description = "The IconImage of the page specification.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected IconImageURLReference iconImageURLReference;
+	protected IconImageURL iconImageURL;
 
 	@JsonIgnore
-	private Supplier<IconImageURLReference> _iconImageURLReferenceSupplier;
+	private Supplier<IconImageURL> _iconImageURLSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page specification's JavaScript."
@@ -774,17 +771,16 @@ public class Settings implements Serializable {
 			sb.append("]");
 		}
 
-		IconImageURLReference iconImageURLReference =
-			getIconImageURLReference();
+		IconImageURL iconImageURL = getIconImageURL();
 
-		if (iconImageURLReference != null) {
+		if (iconImageURL != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"iconImageURLReference\": ");
+			sb.append("\"iconImageURL\": ");
 
-			sb.append(String.valueOf(iconImageURLReference));
+			sb.append(String.valueOf(iconImageURL));
 		}
 
 		String javascript = getJavascript();

@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
-import com.liferay.headless.admin.site.client.dto.v1_0.IconImageURLReference;
+import com.liferay.headless.admin.site.client.dto.v1_0.IconImageURL;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -21,24 +21,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class IconImageURLReferenceSerDes {
+public class IconImageURLSerDes {
 
-	public static IconImageURLReference toDTO(String json) {
-		IconImageURLReferenceJSONParser iconImageURLReferenceJSONParser =
-			new IconImageURLReferenceJSONParser();
+	public static IconImageURL toDTO(String json) {
+		IconImageURLJSONParser iconImageURLJSONParser =
+			new IconImageURLJSONParser();
 
-		return iconImageURLReferenceJSONParser.parseToDTO(json);
+		return iconImageURLJSONParser.parseToDTO(json);
 	}
 
-	public static IconImageURLReference[] toDTOs(String json) {
-		IconImageURLReferenceJSONParser iconImageURLReferenceJSONParser =
-			new IconImageURLReferenceJSONParser();
+	public static IconImageURL[] toDTOs(String json) {
+		IconImageURLJSONParser iconImageURLJSONParser =
+			new IconImageURLJSONParser();
 
-		return iconImageURLReferenceJSONParser.parseToDTOs(json);
+		return iconImageURLJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(IconImageURLReference iconImageURLReference) {
-		if (iconImageURLReference == null) {
+	public static String toJSON(IconImageURL iconImageURL) {
+		if (iconImageURL == null) {
 			return "null";
 		}
 
@@ -46,22 +46,7 @@ public class IconImageURLReferenceSerDes {
 
 		sb.append("{");
 
-		if (iconImageURLReference.getExternalReferenceCode() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"externalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				_escape(iconImageURLReference.getExternalReferenceCode()));
-
-			sb.append("\"");
-		}
-
-		if (iconImageURLReference.getUrl() != null) {
+		if (iconImageURL.getUrl() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -70,7 +55,7 @@ public class IconImageURLReferenceSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(iconImageURLReference.getUrl()));
+			sb.append(_escape(iconImageURL.getUrl()));
 
 			sb.append("\"");
 		}
@@ -81,60 +66,45 @@ public class IconImageURLReferenceSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		IconImageURLReferenceJSONParser iconImageURLReferenceJSONParser =
-			new IconImageURLReferenceJSONParser();
+		IconImageURLJSONParser iconImageURLJSONParser =
+			new IconImageURLJSONParser();
 
-		return iconImageURLReferenceJSONParser.parseToMap(json);
+		return iconImageURLJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(
-		IconImageURLReference iconImageURLReference) {
-
-		if (iconImageURLReference == null) {
+	public static Map<String, String> toMap(IconImageURL iconImageURL) {
+		if (iconImageURL == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (iconImageURLReference.getExternalReferenceCode() == null) {
-			map.put("externalReferenceCode", null);
-		}
-		else {
-			map.put(
-				"externalReferenceCode",
-				String.valueOf(
-					iconImageURLReference.getExternalReferenceCode()));
-		}
-
-		if (iconImageURLReference.getUrl() == null) {
+		if (iconImageURL.getUrl() == null) {
 			map.put("url", null);
 		}
 		else {
-			map.put("url", String.valueOf(iconImageURLReference.getUrl()));
+			map.put("url", String.valueOf(iconImageURL.getUrl()));
 		}
 
 		return map;
 	}
 
-	public static class IconImageURLReferenceJSONParser
-		extends BaseJSONParser<IconImageURLReference> {
+	public static class IconImageURLJSONParser
+		extends BaseJSONParser<IconImageURL> {
 
 		@Override
-		protected IconImageURLReference createDTO() {
-			return new IconImageURLReference();
+		protected IconImageURL createDTO() {
+			return new IconImageURL();
 		}
 
 		@Override
-		protected IconImageURLReference[] createDTOArray(int size) {
-			return new IconImageURLReference[size];
+		protected IconImageURL[] createDTOArray(int size) {
+			return new IconImageURL[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "url")) {
+			if (Objects.equals(jsonParserFieldName, "url")) {
 				return false;
 			}
 
@@ -143,18 +113,12 @@ public class IconImageURLReferenceSerDes {
 
 		@Override
 		protected void setField(
-			IconImageURLReference iconImageURLReference,
-			String jsonParserFieldName, Object jsonParserFieldValue) {
+			IconImageURL iconImageURL, String jsonParserFieldName,
+			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+			if (Objects.equals(jsonParserFieldName, "url")) {
 				if (jsonParserFieldValue != null) {
-					iconImageURLReference.setExternalReferenceCode(
-						(String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "url")) {
-				if (jsonParserFieldValue != null) {
-					iconImageURLReference.setUrl((String)jsonParserFieldValue);
+					iconImageURL.setUrl((String)jsonParserFieldValue);
 				}
 			}
 		}
