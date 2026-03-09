@@ -726,15 +726,7 @@ public class PortalUpgradeProcessRegistryImpl
 				new String[] {"com.liferay.oauth2.provider.shortcut"}, null));
 
 		upgradeVersionTreeMap.put(
-			new Version(38, 1, 0),
-			new BaseExternalReferenceCodeUpgradeProcess() {
-
-				@Override
-				protected String[] getTableNames() {
-					return new String[] {"Image"};
-				}
-
-			});
+			new Version(38, 1, 0), new DummyUpgradeProcess());
 
 		upgradeVersionTreeMap.put(
 			new Version(38, 1, 1),
