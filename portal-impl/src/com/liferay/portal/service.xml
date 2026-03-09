@@ -565,7 +565,7 @@
 			<finder-column name="inheritContent" />
 		</finder>
 	</entity>
-	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Image" remote-service="true">
+	<entity change-tracking-enabled="true" local-service="true" name="Image" remote-service="true">
 
 		<!-- PK fields -->
 
