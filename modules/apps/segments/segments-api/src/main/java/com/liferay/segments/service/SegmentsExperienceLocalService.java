@@ -379,6 +379,11 @@ public interface SegmentsExperienceLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsExperience> getSegmentsExperiences(
+			long groupId, boolean active)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SegmentsExperience> getSegmentsExperiences(
 		long groupId, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

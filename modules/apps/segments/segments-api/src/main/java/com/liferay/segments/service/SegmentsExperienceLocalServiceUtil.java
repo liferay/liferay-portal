@@ -474,6 +474,13 @@ public class SegmentsExperienceLocalServiceUtil {
 	}
 
 	public static List<SegmentsExperience> getSegmentsExperiences(
+			long groupId, boolean active)
+		throws PortalException {
+
+		return getService().getSegmentsExperiences(groupId, active);
+	}
+
+	public static List<SegmentsExperience> getSegmentsExperiences(
 		long groupId, long plid) {
 
 		return getService().getSegmentsExperiences(groupId, plid);

@@ -117,8 +117,23 @@ public class SegmentsEntryServiceWrapper
 	}
 
 	@Override
+	public java.util.List<SegmentsEntry> getSegmentsEntries(
+		long groupId, String source, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
+			orderByComparator) {
+
+		return _segmentsEntryService.getSegmentsEntries(
+			groupId, source, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getSegmentsEntriesCount(long groupId) {
 		return _segmentsEntryService.getSegmentsEntriesCount(groupId);
+	}
+
+	@Override
+	public int getSegmentsEntriesCount(long groupId, String source) {
+		return _segmentsEntryService.getSegmentsEntriesCount(groupId, source);
 	}
 
 	@Override

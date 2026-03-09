@@ -538,6 +538,15 @@ public class SegmentsExperienceLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsExperience> getSegmentsExperiences(
+			long groupId, boolean active)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _segmentsExperienceLocalService.getSegmentsExperiences(
+			groupId, active);
+	}
+
+	@Override
+	public java.util.List<SegmentsExperience> getSegmentsExperiences(
 		long groupId, long plid) {
 
 		return _segmentsExperienceLocalService.getSegmentsExperiences(

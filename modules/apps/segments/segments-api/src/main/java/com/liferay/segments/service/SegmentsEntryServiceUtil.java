@@ -107,8 +107,20 @@ public class SegmentsEntryServiceUtil {
 			groupId, start, end, orderByComparator);
 	}
 
+	public static List<SegmentsEntry> getSegmentsEntries(
+		long groupId, String source, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return getService().getSegmentsEntries(
+			groupId, source, start, end, orderByComparator);
+	}
+
 	public static int getSegmentsEntriesCount(long groupId) {
 		return getService().getSegmentsEntriesCount(groupId);
+	}
+
+	public static int getSegmentsEntriesCount(long groupId, String source) {
+		return getService().getSegmentsEntriesCount(groupId, source);
 	}
 
 	public static SegmentsEntry getSegmentsEntry(long segmentsEntryId)

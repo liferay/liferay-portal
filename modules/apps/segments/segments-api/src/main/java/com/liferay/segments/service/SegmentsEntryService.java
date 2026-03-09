@@ -95,7 +95,15 @@ public interface SegmentsEntryService extends BaseService {
 		OrderByComparator<SegmentsEntry> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SegmentsEntry> getSegmentsEntries(
+		long groupId, String source, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSegmentsEntriesCount(long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getSegmentsEntriesCount(long groupId, String source);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SegmentsEntry getSegmentsEntry(long segmentsEntryId)
