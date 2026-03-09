@@ -39,21 +39,6 @@ import java.util.List;
 public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 
 	@Override
-	public Image addImage(
-			String externalReferenceCode, long companyId, byte[] bytes)
-		throws PortalException {
-
-		Image image = imagePersistence.create(counterLocalService.increment());
-
-		image.setExternalReferenceCode(externalReferenceCode);
-		image.setCompanyId(companyId);
-
-		image = imagePersistence.update(image);
-
-		return updateImage(companyId, image.getImageId(), bytes);
-	}
-
-	@Override
 	public Image deleteImage(long imageId) throws PortalException {
 		if (imageId <= 0) {
 			return null;
