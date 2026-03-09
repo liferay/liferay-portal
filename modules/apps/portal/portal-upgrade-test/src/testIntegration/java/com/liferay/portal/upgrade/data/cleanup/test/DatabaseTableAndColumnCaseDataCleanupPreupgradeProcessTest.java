@@ -192,70 +192,21 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			String invalidColumnName = "testCOLUMN";
 			String tableName = "Company";
 
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.
-						class.getName(),
-					LoggerTestUtil.INFO);
-				SafeCloseable safeCloseable =
-					PropsValuesTestUtil.swapWithSafeCloseable(
-						"DATABASE_PARTITION_ENABLED", false)) {
+			_testValidateColumnNameCasing(
+				columnName, columnType, false,
+				StringBundler.concat(
+					"Table ", tableName, ", column ", invalidColumnName,
+					" was renamed to ", columnName, " because it was ",
+					"incorrectly cased"),
+				invalidColumnName, tableName);
 
-				alterTableAddColumn(tableName, invalidColumnName, columnType);
-
-				_testValidateColumnNamesCasing(
-					invalidColumnName, columnName, columnType, tableName);
-
-				List<String> messages = logCapture.getMessages();
-
-				Assert.assertEquals(messages.toString(), 1, messages.size());
-
-				String message = messages.get(0);
-
-				Assert.assertEquals(
-					message,
-					StringBundler.concat(
-						"Table ", tableName, ", column ", invalidColumnName,
-						" was renamed to ", columnName,
-						" because it was incorrectly cased"),
-					message);
-			}
-			finally {
-				alterTableDropColumn(tableName, columnName);
-				alterTableDropColumn(tableName, invalidColumnName);
-			}
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.
-						class.getName(),
-					LoggerTestUtil.INFO);
-				SafeCloseable safeCloseable =
-					PropsValuesTestUtil.swapWithSafeCloseable(
-						"DATABASE_PARTITION_ENABLED", true)) {
-
-				alterTableAddColumn(tableName, invalidColumnName, columnType);
-
-				_testValidateColumnNamesCasing(
-					invalidColumnName, columnName, columnType, tableName);
-
-				List<String> messages = logCapture.getMessages();
-
-				Assert.assertEquals(messages.toString(), 1, messages.size());
-
-				String message = messages.get(0);
-
-				Assert.assertEquals(
-					message,
-					StringBundler.concat(
-						"Column ", tableName, StringPool.PERIOD,
-						invalidColumnName,
-						" is incorrectly cased, must be manually renamed to ",
-						tableName, StringPool.PERIOD, columnName),
-					message);
-			}
-			finally {
-				alterTableDropColumn(tableName, columnName);
-				alterTableDropColumn(tableName, invalidColumnName);
-			}
+			_testValidateColumnNameCasing(
+				columnName, columnType, true,
+				StringBundler.concat(
+					"Column ", tableName, StringPool.PERIOD, invalidColumnName,
+					" is incorrectly cased, must be manually renamed to ",
+					tableName, StringPool.PERIOD, columnName),
+				invalidColumnName, tableName);
 		}
 		finally {
 			this.connection = null;
@@ -451,6 +402,39 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			DBPartitionUtil.forEachCompanyId(
 				companyId -> _db.runSQL(
 					"DROP_TABLE_IF_EXISTS(" + testTableName + ")"));
+		}
+	}
+
+	private void _testValidateColumnNameCasing(
+			String columnName, String columnType,
+			boolean databasePartitionEnabled, String expectedLogMessage,
+			String invalidColumnName, String tableName)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.class.
+					getName(),
+				LoggerTestUtil.INFO);
+			SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_ENABLED", databasePartitionEnabled)) {
+
+			alterTableAddColumn(tableName, invalidColumnName, columnType);
+
+			_testValidateColumnNamesCasing(
+				invalidColumnName, columnName, columnType, tableName);
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 1, messages.size());
+
+			String message = messages.get(0);
+
+			Assert.assertEquals(message, expectedLogMessage, message);
+		}
+		finally {
+			alterTableDropColumn(tableName, columnName);
+			alterTableDropColumn(tableName, invalidColumnName);
 		}
 	}
 
