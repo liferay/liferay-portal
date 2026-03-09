@@ -38,6 +38,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Objects;
 
+// PDY PDY
+
 /**
  * @author Lourdes Fernández Besada
  */
@@ -249,10 +251,10 @@ public class ServiceContextUtil {
 						scope.getExternalReferenceCode());
 				}
 
+				String parentTaxonomyCategoryExternalReferenceCode != null;
+
 				ParentTaxonomyVocabulary parentTaxonomyVocabulary =
 					taxonomyCategoryBrief.getParentTaxonomyVocabulary();
-
-				String parentTaxonomyCategoryExternalReferenceCode = null;
 
 				ParentTaxonomyCategory parentTaxonomyCategory =
 					taxonomyCategoryBrief.getParentTaxonomyCategory();

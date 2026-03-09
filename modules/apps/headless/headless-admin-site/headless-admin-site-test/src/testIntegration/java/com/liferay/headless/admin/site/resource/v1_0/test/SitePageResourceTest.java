@@ -1193,7 +1193,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 						groupId);
 
 			Assert.assertNotNull(parentAssetCategory);
-
 			Assert.assertEquals(
 				assetCategory.getParentCategory(), parentAssetCategory);
 		}
@@ -3349,7 +3348,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_getTaxonomyCategoryBrief(
 				RandomTestUtil.randomString(),
 				_groupLocalService.getGroup(testCompany.getGroupId()), null);
-
 		TaxonomyCategoryBrief taxonomyCategoryBrief2 =
 			_getTaxonomyCategoryBrief(
 				RandomTestUtil.randomString(), null,
