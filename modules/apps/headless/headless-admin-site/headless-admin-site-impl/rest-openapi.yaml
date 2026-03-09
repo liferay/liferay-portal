@@ -3286,7 +3286,7 @@ components:
                     items:
                         $ref: "#/components/schemas/ClientExtension"
                     type: array
-                iconImageURLReference:
+                iconImageURL:
                     $ref: "#/components/schemas/IconImageURL"
                     # @review
                     description:
