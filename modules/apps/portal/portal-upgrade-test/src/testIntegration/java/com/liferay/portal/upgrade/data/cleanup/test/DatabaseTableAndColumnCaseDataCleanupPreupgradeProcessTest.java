@@ -203,7 +203,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 				alterTableAddColumn(tableName, invalidColumnName, columnType);
 
 				_testValidateColumnNamesCasing(
-					columnName, columnType, invalidColumnName, tableName);
+					invalidColumnName, columnName, columnType, tableName);
 
 				List<String> messages = logCapture.getMessages();
 
@@ -235,7 +235,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 				alterTableAddColumn(tableName, invalidColumnName, columnType);
 
 				_testValidateColumnNamesCasing(
-					columnName, columnType, invalidColumnName, tableName);
+					invalidColumnName, columnName, columnType, tableName);
 
 				List<String> messages = logCapture.getMessages();
 
@@ -311,7 +311,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			this.connection = proxyConnection;
 
 			_testValidateColumnNamesCasing(
-				columnName, "LONG", columnName, tableName);
+				columnName, columnName, "LONG", tableName);
 
 			this.connection = null;
 
@@ -455,12 +455,11 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	private void _testValidateColumnNamesCasing(
-			String expectedColumnName, String columnType,
-			String existingColumnName, String tableName)
+			String existingColumnName, String expectedColumnName,
+			String expectedColumnType, String tableName)
 		throws Exception {
 
-		List<String> expectedColumnDefinitions = Collections.singletonList(
-			expectedColumnName + StringPool.SPACE + columnType);
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
 
 		Map<String, String> existingColumnNames =
 			TreeMapBuilder.<String, String>create(
@@ -469,7 +468,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 				existingColumnName, existingColumnName
 			).build();
 
-		DatabaseMetaData databaseMetaData = connection.getMetaData();
+		List<String> expectedColumnDefinitions = Collections.singletonList(
+			expectedColumnName + StringPool.SPACE + expectedColumnType);
 
 		ReflectionTestUtil.invoke(
 			this, "_validateColumnNamesCasing",
