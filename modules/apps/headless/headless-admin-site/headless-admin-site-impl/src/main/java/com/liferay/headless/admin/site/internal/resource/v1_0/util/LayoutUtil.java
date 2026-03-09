@@ -18,7 +18,7 @@ import com.liferay.headless.admin.site.dto.v1_0.FavIcon;
 import com.liferay.headless.admin.site.dto.v1_0.FavIconClientExtension;
 import com.liferay.headless.admin.site.dto.v1_0.FavIconItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.GeneralConfig;
-import com.liferay.headless.admin.site.dto.v1_0.IconImageURLReference;
+import com.liferay.headless.admin.site.dto.v1_0.IconImageURL;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.NestedApplicationsWidgetPageWidgetInstance;
 import com.liferay.headless.admin.site.dto.v1_0.NestedWidgetSection;
@@ -50,7 +50,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CustomizedPages;
-import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTemplate;
@@ -58,7 +57,6 @@ import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
-import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.service.LayoutTemplateLocalServiceUtil;
@@ -656,33 +654,20 @@ public class LayoutUtil {
 		}
 	}
 
-	private static long _getIconImageId(long companyId, Settings settings)
+	private static byte[] _getIconImageByteArray(Settings settings)
 		throws Exception {
 
 		if (settings == null) {
-			return 0;
+			return null;
 		}
 
-		IconImageURLReference iconImageURLReference =
-			settings.getIconImageURLReference();
+		IconImageURL iconImageURL = settings.getIconImageURL();
 
-		if ((iconImageURLReference == null) ||
-			Validator.isNull(
-				iconImageURLReference.getExternalReferenceCode())) {
-
-			return 0;
+		if ((iconImageURL == null) || Validator.isNull(iconImageURL.getUrl())) {
+			return null;
 		}
 
-		Image image = ImageLocalServiceUtil.fetchImageByExternalReferenceCode(
-			iconImageURLReference.getExternalReferenceCode(), companyId);
-
-		if (image == null) {
-			image = ImageLocalServiceUtil.addImage(
-				iconImageURLReference.getExternalReferenceCode(), companyId,
-				HttpUtil.URLtoByteArray(iconImageURLReference.getUrl()));
-		}
-
-		return image.getImageId();
+		return URLUtil.getByteArray(iconImageURL.getUrl());
 	}
 
 	private static String _getMasterLayoutPageTemplateEntryERC(
@@ -1072,13 +1057,8 @@ public class LayoutUtil {
 				serviceContext.getScopeGroupId(), layout, settings),
 			friendlyURLMap, serviceContext);
 
-		long iconImageId = _getIconImageId(
-			serviceContext.getCompanyId(), settings);
-
-		if (iconImageId != layout.getIconImageId()) {
-			layout = LayoutServiceUtil.updateIconImageId(
-				layout.getPlid(), iconImageId);
-		}
+		layout = LayoutLocalServiceUtil.updateIconImage(
+			layout.getPlid(), _getIconImageByteArray(settings));
 
 		return _updateLookAndFeel(layout, settings);
 	}
