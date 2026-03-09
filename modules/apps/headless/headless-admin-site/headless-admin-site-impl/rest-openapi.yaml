@@ -2030,13 +2030,11 @@ components:
                     enum: [Article, Aside, Div, Footer, Header, Nav, Section]
                     type: string
             type: object
-        IconImageURLReference:
+        IconImageURL:
             # @review
             description:
-                A unique reference to a URL which remains constant across environments.
+                An Icon Image URL.
             properties:
-                externalReferenceCode:
-                    type: string
                 url:
                     type: string
             type: object
@@ -3289,7 +3287,7 @@ components:
                         $ref: "#/components/schemas/ClientExtension"
                     type: array
                 iconImageURLReference:
-                    $ref: "#/components/schemas/IconImageURLReference"
+                    $ref: "#/components/schemas/IconImageURL"
                     # @review
                     description:
                         The IconImage of the page specification.
