@@ -14,7 +14,7 @@ import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.EmbeddedPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.FavIconClientExtension;
 import com.liferay.headless.admin.site.dto.v1_0.FavIconItemExternalReference;
-import com.liferay.headless.admin.site.dto.v1_0.IconImageURLReference;
+import com.liferay.headless.admin.site.dto.v1_0.IconImageURL;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.LinkToPagePageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.LinkToURLPageSpecification;
@@ -286,8 +286,7 @@ public class PageSpecificationDTOConverter
 					() -> _getClientExtensions(
 						classNameId, layout.getPlid(),
 						ClientExtensionEntryConstants.TYPE_GLOBAL_JS));
-				setIconImageURLReference(
-					() -> _getIconImageURLReference(layout));
+				setIconImageURL(() -> _getIconImageURL(layout));
 				setJavascript(
 					() -> unicodeProperties.getProperty("javascript", null));
 				setMasterPageItemExternalReference(
@@ -356,9 +355,7 @@ public class PageSpecificationDTOConverter
 						ClientExtensionEntryConstants.TYPE_THEME_SPRITEMAP));
 			}
 
-			private IconImageURLReference _getIconImageURLReference(
-				Layout layout) {
-
+			private IconImageURL _getIconImageURL(Layout layout) {
 				if (layout.getIconImageId() <= 0) {
 					return null;
 				}
@@ -370,10 +367,8 @@ public class PageSpecificationDTOConverter
 					return null;
 				}
 
-				return new IconImageURLReference() {
+				return new IconImageURL() {
 					{
-						setExternalReferenceCode(
-							image::getExternalReferenceCode);
 						setUrl(
 							() -> _exportImportAttachmentManager.getImageURL(
 								image));
