@@ -254,8 +254,8 @@ public class SettingsTestUtil {
 				actualSettings.getGlobalJSClientExtensions()));
 		Assert.assertTrue(
 			Objects.deepEquals(
-				expectedSettings.getIconImageURLReference(),
-				actualSettings.getIconImageURLReference()));
+				expectedSettings.getIconImageURL(),
+				actualSettings.getIconImageURL()));
 		Assert.assertEquals(
 			expectedSettings.getJavascript(), actualSettings.getJavascript());
 		Assert.assertTrue(
