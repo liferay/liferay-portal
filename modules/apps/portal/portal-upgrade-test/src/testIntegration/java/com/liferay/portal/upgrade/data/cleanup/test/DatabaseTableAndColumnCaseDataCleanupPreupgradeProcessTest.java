@@ -175,6 +175,27 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			"testCOLUMN", "testTABLE", "testColumn", "TestTable");
 	}
 
+	private void _createTestTable(String columnName, String tableName)
+		throws Exception {
+
+		DBType dbType = DBManagerUtil.getDBType();
+
+		if (dbType == DBType.SQLSERVER) {
+			DBPartitionUtil.forEachCompanyId(
+				companyId -> _db.runSQL(
+					StringBundler.concat(
+						"create table [", tableName, "] ([", columnName,
+						"] LONG)")));
+		}
+		else {
+			DBPartitionUtil.forEachCompanyId(
+				companyId -> _db.runSQL(
+					StringBundler.concat(
+						"create table `", tableName, "` (`", columnName,
+						"` LONG)")));
+		}
+	}
+
 	private String _getName(String baseName, int targetLength) {
 		if (baseName.length() >= targetLength) {
 			return baseName.substring(0, targetLength);
@@ -187,8 +208,6 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			String invalidColumnName, String invalidTableName,
 			String testColumnName, String testTableName)
 		throws Exception {
-
-		DBInspector dbInspector = new DBInspector(_connection);
 
 		ServiceComponent serviceComponent =
 			_serviceComponentLocalService.createServiceComponent(
@@ -210,22 +229,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 					getName(),
 				LoggerTestUtil.INFO)) {
 
-			DBType dbType = DBManagerUtil.getDBType();
-
-			if (dbType == DBType.SQLSERVER) {
-				DBPartitionUtil.forEachCompanyId(
-					companyId -> _db.runSQL(
-						StringBundler.concat(
-							"create table [", invalidTableName, "] ([",
-							invalidColumnName, "] LONG)")));
-			}
-			else {
-				DBPartitionUtil.forEachCompanyId(
-					companyId -> _db.runSQL(
-						StringBundler.concat(
-							"create table `", invalidTableName, "` (`",
-							invalidColumnName, "` LONG)")));
-			}
+			_createTestTable(invalidColumnName, invalidTableName);
 
 			upgrade();
 
@@ -249,6 +253,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 						" because it was incorrectly cased")));
 
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+			DBInspector dbInspector = new DBInspector(_connection);
 
 			try (ResultSet resultSet = databaseMetaData.getColumns(
 					dbInspector.getCatalog(), dbInspector.getSchema(),
