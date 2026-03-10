@@ -227,9 +227,9 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			_testValidateColumnNameCasing(
 				columnName,
 				StringBundler.concat(
-					"Column ", tableName, StringPool.PERIOD, invalidColumnName,
-					" is incorrectly cased, must be manually renamed to ",
-					tableName, StringPool.PERIOD, columnName),
+					"Table ", tableName, ", column ", invalidColumnName,
+					" must be manually renamed to ", columnName, " because it ",
+					"is incorrectly cased"),
 				invalidColumnName, tableName);
 		}
 		finally {

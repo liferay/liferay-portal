@@ -195,10 +195,9 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						StringBundler.concat(
-							"Column ", tableName, StringPool.PERIOD, columnName,
-							" is incorrectly cased, must be manually renamed ",
-							"to ", tableName, StringPool.PERIOD,
-							expectedColumnName));
+							"Table ", tableName, ", column ", columnName,
+							" must be manually renamed to ", expectedColumnName,
+							" because it is incorrectly cased"));
 				}
 
 				continue;
