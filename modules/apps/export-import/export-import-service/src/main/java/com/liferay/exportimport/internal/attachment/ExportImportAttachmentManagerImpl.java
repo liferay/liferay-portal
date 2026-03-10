@@ -117,7 +117,6 @@ public class ExportImportAttachmentManagerImpl
 			(portletDataContext.getZipWriter() == null)) {
 
 			Company company = _companyLocalService.getCompany(companyId);
-
 			boolean secure = _isSecure();
 
 			String portalURL = _portal.getPortalURL(
