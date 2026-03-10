@@ -115,10 +115,9 @@ public class DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 		db.runSQL(
 			connection,
 			StringBundler.concat(
-				"insert into Image (mvccVersion, ctCollectionId, ",
-				"externalReferenceCode, imageId, companyId) values (0, 0, '",
-				RandomTestUtil.randomString(), "', ", RandomTestUtil.nextLong(),
-				", ", companyId, ")"));
+				"insert into Image (mvccVersion, ctCollectionId, imageId, ",
+				"companyId) values (0, 0, ", RandomTestUtil.nextLong(), ", ",
+				companyId, ")"));
 
 		db.runSQL(
 			connection,
