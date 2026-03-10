@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
@@ -18,13 +17,15 @@ import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ServiceComponent;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
-import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -152,7 +153,9 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 				messages.toString(),
 				messages.contains(
 					StringBundler.concat(
-						"Table ", invalidObjectDefinitionDBTableName,
+						"Table ",
+						_prependPartitionName(
+							invalidObjectDefinitionDBTableName),
 						" was renamed to ", objectDefinitionDBTableName,
 						" because it was incorrectly cased")));
 		}
@@ -183,25 +186,46 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	@Test
-	public void testValidateColumnNamesCasingCompanyTable() throws Exception {
+	public void testValidateColumnNamesCasingCompanyTableWithDatabasePartitionDisabled()
+		throws Exception {
+
+		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
+
 		try (Connection connection = DataAccess.getConnection()) {
 			this.connection = connection;
 
 			String columnName = "testColumn";
-			String columnType = "LONG";
 			String invalidColumnName = "testCOLUMN";
 			String tableName = "Company";
 
 			_testValidateColumnNameCasing(
-				columnName, columnType, false,
+				columnName,
 				StringBundler.concat(
 					"Table ", tableName, ", column ", invalidColumnName,
 					" was renamed to ", columnName, " because it was ",
 					"incorrectly cased"),
 				invalidColumnName, tableName);
+		}
+		finally {
+			this.connection = null;
+		}
+	}
+
+	@Test
+	public void testValidateColumnNamesCasingCompanyTableWithDatabasePartitionEnabled()
+		throws Exception {
+
+		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
+
+		try (Connection connection = DataAccess.getConnection()) {
+			this.connection = connection;
+
+			String columnName = "testColumn";
+			String invalidColumnName = "testCOLUMN";
+			String tableName = "Company";
 
 			_testValidateColumnNameCasing(
-				columnName, columnType, true,
+				columnName,
 				StringBundler.concat(
 					"Column ", tableName, StringPool.PERIOD, invalidColumnName,
 					" is incorrectly cased, must be manually renamed to ",
@@ -306,6 +330,22 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 		return baseName + "a".repeat(targetLength - baseName.length());
 	}
 
+	private String _prependPartitionName(String tableName) {
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			return tableName;
+		}
+
+		long companyId = CompanyThreadLocal.getNonsystemCompanyId();
+
+		if (companyId == PortalInstancePool.getDefaultCompanyId()) {
+			return tableName;
+		}
+
+		return StringBundler.concat(
+			PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX, companyId,
+			StringPool.PERIOD, tableName);
+	}
+
 	private void _testUpgradeWithServiceComponentTable(
 			String invalidColumnName, String invalidTableName,
 			String testColumnName, String testTableName)
@@ -337,7 +377,14 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 
 			List<String> messages = logCapture.getMessages();
 
-			Assert.assertEquals(messages.toString(), 2, messages.size());
+			long partitionCount = 1;
+
+			if (PropsValues.DATABASE_PARTITION_ENABLED) {
+				partitionCount = PortalInstancePool.getCompanyIds().length;
+			}
+
+			Assert.assertEquals(
+				messages.toString(), 2 * partitionCount, messages.size());
 
 			Assert.assertTrue(
 				messages.contains(
@@ -406,18 +453,16 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	private void _testValidateColumnNameCasing(
-			String columnName, String columnType,
-			boolean databasePartitionEnabled, String expectedLogMessage,
+			String columnName, String expectedLogMessage,
 			String invalidColumnName, String tableName)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.class.
 					getName(),
-				LoggerTestUtil.INFO);
-			SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"DATABASE_PARTITION_ENABLED", databasePartitionEnabled)) {
+				LoggerTestUtil.INFO)) {
+
+			String columnType = "LONG";
 
 			alterTableAddColumn(tableName, invalidColumnName, columnType);
 
