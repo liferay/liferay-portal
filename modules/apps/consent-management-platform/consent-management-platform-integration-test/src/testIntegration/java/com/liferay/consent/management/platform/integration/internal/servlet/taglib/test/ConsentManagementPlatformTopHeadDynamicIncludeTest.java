@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.URLUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Christian Moura
  */
+@FeatureFlag("LPD-65299")
 @RunWith(Arquillian.class)
 public class ConsentManagementPlatformTopHeadDynamicIncludeTest {
 
