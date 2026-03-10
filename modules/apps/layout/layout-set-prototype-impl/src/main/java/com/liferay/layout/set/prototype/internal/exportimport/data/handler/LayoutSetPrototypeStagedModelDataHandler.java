@@ -159,8 +159,6 @@ public class LayoutSetPrototypeStagedModelDataHandler
 
 		boolean layoutsUpdateable = GetterUtil.getBoolean(
 			settingsUnicodeProperties.getProperty("layoutsUpdateable"), true);
-		boolean readyForPropagation = GetterUtil.getBoolean(
-			settingsUnicodeProperties.getProperty("readyForPropagation"), true);
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
 			layoutSetPrototype);
@@ -185,7 +183,7 @@ public class LayoutSetPrototypeStagedModelDataHandler
 						layoutSetPrototype.getNameMap(),
 						layoutSetPrototype.getDescriptionMap(),
 						layoutSetPrototype.isActive(), layoutsUpdateable,
-						readyForPropagation, serviceContext);
+						serviceContext);
 			}
 			else {
 				importedLayoutSetPrototype =
@@ -194,7 +192,7 @@ public class LayoutSetPrototypeStagedModelDataHandler
 						layoutSetPrototype.getNameMap(),
 						layoutSetPrototype.getDescriptionMap(),
 						layoutSetPrototype.isActive(), layoutsUpdateable,
-						readyForPropagation, serviceContext);
+						serviceContext);
 			}
 		}
 		else {
@@ -204,7 +202,7 @@ public class LayoutSetPrototypeStagedModelDataHandler
 					layoutSetPrototype.getNameMap(),
 					layoutSetPrototype.getDescriptionMap(),
 					layoutSetPrototype.isActive(), layoutsUpdateable,
-					readyForPropagation, serviceContext);
+					serviceContext);
 		}
 
 		_importLayoutPrototypes(portletDataContext, layoutSetPrototype);

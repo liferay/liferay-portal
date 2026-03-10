@@ -7,8 +7,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<%@ include file="/propagation_alert.jspf" %>
-
 <liferay-ui:error exception="<%= RequiredLayoutSetPrototypeException.class %>" message="you-cannot-delete-site-templates-that-are-used-by-a-site" />
 
 <clay:management-toolbar

@@ -79,7 +79,6 @@ export class JSONWebServicesLayoutSetPrototypeApiHelper {
 			'layoutsUpdateable',
 			layoutsUpdateable.toString()
 		);
-		urlSearchParams.append('readyForPropagation', booleanTrue.toString());
 
 		return this.apiHelpers.post(
 			`${url}${this.basePath}/add-layout-set-prototype`,

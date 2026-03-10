@@ -132,8 +132,7 @@ public class DepotEntryGroupRelLocalServiceTest {
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()
 				).build(),
-				null, true, true, false,
-				ServiceContextTestUtil.getServiceContext());
+				null, true, true, ServiceContextTestUtil.getServiceContext());
 
 		Group group = _setUpLayoutSetPrototypeGroup(layoutSetPrototype);
 
@@ -237,8 +236,7 @@ public class DepotEntryGroupRelLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			null, true, true, false,
-			ServiceContextTestUtil.getServiceContext());
+			null, true, true, ServiceContextTestUtil.getServiceContext());
 
 		int systemEventsCount = _systemEventLocalService.getSystemEventsCount();
 

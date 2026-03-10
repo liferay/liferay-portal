@@ -86,13 +86,6 @@ public interface LayoutSetPrototypeLocalService
 	public LayoutSetPrototype addLayoutSetPrototype(
 			long userId, long companyId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
-		throws PortalException;
-
-	public LayoutSetPrototype addLayoutSetPrototype(
-			long userId, long companyId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active,
 			boolean layoutsUpdateable, ServiceContext serviceContext)
 		throws PortalException;
 
@@ -342,13 +335,6 @@ public interface LayoutSetPrototypeLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public LayoutSetPrototype updateLayoutSetPrototype(
 		LayoutSetPrototype layoutSetPrototype);
-
-	public LayoutSetPrototype updateLayoutSetPrototype(
-			long layoutSetPrototypeId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
-		throws PortalException;
 
 	public LayoutSetPrototype updateLayoutSetPrototype(
 			long layoutSetPrototypeId, Map<Locale, String> nameMap,

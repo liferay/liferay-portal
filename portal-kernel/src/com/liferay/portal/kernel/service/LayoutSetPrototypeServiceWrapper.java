@@ -33,19 +33,6 @@ public class LayoutSetPrototypeServiceWrapper
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			boolean active, boolean layoutsUpdateable,
-			boolean readyForPropagation, ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutSetPrototypeService.addLayoutSetPrototype(
-			nameMap, descriptionMap, active, layoutsUpdateable,
-			readyForPropagation, serviceContext);
-	}
-
-	@Override
-	public LayoutSetPrototype addLayoutSetPrototype(
-			java.util.Map<java.util.Locale, String> nameMap,
-			java.util.Map<java.util.Locale, String> descriptionMap,
-			boolean active, boolean layoutsUpdateable,
 			ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -56,13 +43,11 @@ public class LayoutSetPrototypeServiceWrapper
 	@Override
 	public LayoutSetPrototype addLayoutSetPrototype(
 			String name, String description, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
+			boolean layoutsUpdateable, ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutSetPrototypeService.addLayoutSetPrototype(
-			name, description, active, layoutsUpdateable, readyForPropagation,
-			serviceContext);
+			name, description, active, layoutsUpdateable, serviceContext);
 	}
 
 	@Override
@@ -124,20 +109,6 @@ public class LayoutSetPrototypeServiceWrapper
 
 		return _layoutSetPrototypeService.search(
 			companyId, active, orderByComparator);
-	}
-
-	@Override
-	public LayoutSetPrototype updateLayoutSetPrototype(
-			long layoutSetPrototypeId,
-			java.util.Map<java.util.Locale, String> nameMap,
-			java.util.Map<java.util.Locale, String> descriptionMap,
-			boolean active, boolean layoutsUpdateable,
-			boolean readyForPropagation, ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _layoutSetPrototypeService.updateLayoutSetPrototype(
-			layoutSetPrototypeId, nameMap, descriptionMap, active,
-			layoutsUpdateable, readyForPropagation, serviceContext);
 	}
 
 	@Override

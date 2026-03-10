@@ -36,13 +36,11 @@ definition {
 		var description = JSONSiteTemplateSetter.setTemplateDescription(description = ${description});
 		var active = JSONSiteTemplateSetter.setTemplateStatus(active = ${active});
 		var layoutsUpdateable = JSONSiteTemplateSetter.setTemplateIsUpdateable(layoutsUpdateable = ${layoutsUpdateable});
-		var readyForPropagation = JSONSiteTemplateSetter.setTemplatePropagation(readyForPropagation = ${readyForPropagation});
 
 		JSONSiteTemplateAPI._addSiteTemplateByName(
 			active = ${active},
 			description = ${description},
 			layoutsUpdateable = ${layoutsUpdateable},
-			readyForPropagation = ${readyForPropagation},
 			siteTemplateName = ${siteTemplateName});
 	}
 

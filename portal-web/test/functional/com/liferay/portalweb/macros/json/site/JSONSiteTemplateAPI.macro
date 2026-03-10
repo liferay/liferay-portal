@@ -1,8 +1,8 @@
 definition {
 
 	@summary = "Default summary"
-	macro _addSiteTemplateByName(readyForPropagation = null, layoutsUpdateable = null, description = null, active = null, siteTemplateName = null) {
-		Variables.assertDefined(parameterList = "${description},${active},${layoutsUpdateable},${readyForPropagation},${siteTemplateName}");
+	macro _addSiteTemplateByName(layoutsUpdateable = null, description = null, active = null, siteTemplateName = null) {
+		Variables.assertDefined(parameterList = "${description},${active},${layoutsUpdateable},${siteTemplateName}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userLoginInfo = JSONUtil2.formatJSONUser();
@@ -13,8 +13,7 @@ definition {
 				-d name=${siteTemplateName} \
 				-d description=${description} \
 				-d active=${active} \
-				-d layoutsUpdateable=${layoutsUpdateable} \
-				-d readyForPropagation=${readyForPropagation}
+				-d layoutsUpdateable=${layoutsUpdateable}
 		''';
 
 		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});

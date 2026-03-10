@@ -2378,14 +2378,8 @@
 				},
 				"pid": {
 					"const": "com.liferay.layout.set.prototype.configuration.LayoutSetPrototypeConfiguration",
-					"description": "Configure when automatic propagation is triggered for site templates.",
+					"description": "Configure site template propagation settings.",
 					"title": "Site Templates"
-				},
-				"triggerPropagation": {
-					"default": false,
-					"description": "If unchecked, changes are propagated to sites individually when they are first visited by a user. If checked, enabling propagation in a template also triggers propagation for all connected sites simultaneously.",
-					"title": "Trigger Propagation",
-					"type": "boolean"
 				}
 			},
 			"required": [

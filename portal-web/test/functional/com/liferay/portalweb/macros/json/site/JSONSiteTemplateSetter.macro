@@ -31,15 +31,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro setTemplatePropagation() {
-		if (!(isSet(readyForPropagation))) {
-			var readyForPropagation = "true";
-		}
-
-		return ${readyForPropagation};
-	}
-
-	@summary = "Default summary"
 	macro setTemplateStatus() {
 		if (!(isSet(active))) {
 			var active = "true";

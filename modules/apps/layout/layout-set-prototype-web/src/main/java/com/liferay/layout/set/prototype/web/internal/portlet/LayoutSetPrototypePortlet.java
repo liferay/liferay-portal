@@ -8,14 +8,10 @@ package com.liferay.layout.set.prototype.web.internal.portlet;
 import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
-import com.liferay.layout.set.prototype.configuration.LayoutSetPrototypeConfiguration;
 import com.liferay.layout.set.prototype.constants.LayoutSetPrototypePortletKeys;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.NoSuchLayoutSetPrototypeException;
 import com.liferay.portal.kernel.exception.RequiredLayoutSetPrototypeException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -25,7 +21,6 @@ import com.liferay.portal.kernel.service.LayoutSetPrototypeService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -43,16 +38,13 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
  */
 @Component(
-	configurationPid = "com.liferay.layout.set.prototype.configuration.LayoutSetPrototypeConfiguration",
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=portlet-layout-set-prototype",
@@ -143,8 +135,6 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
 		boolean layoutsUpdateable = ParamUtil.getBoolean(
 			actionRequest, "layoutsUpdateable");
-		boolean readyForPropagation = ParamUtil.getBoolean(
-			actionRequest, "readyForPropagation");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
@@ -158,30 +148,16 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 			layoutSetPrototype =
 				layoutSetPrototypeService.addLayoutSetPrototype(
 					nameMap, descriptionMap, active, layoutsUpdateable,
-					readyForPropagation, serviceContext);
+					serviceContext);
 		}
 		else {
 
 			// Update layout prototoype
 
 			layoutSetPrototype =
-				layoutSetPrototypeService.getLayoutSetPrototype(
-					layoutSetPrototypeId);
-
-			UnicodeProperties oldSettingsUnicodeProperties =
-				layoutSetPrototype.getSettingsProperties();
-
-			boolean oldReadyForPropagation = GetterUtil.getBoolean(
-				oldSettingsUnicodeProperties.getProperty(
-					"readyForPropagation"));
-
-			_addSessionMessages(
-				actionRequest, oldReadyForPropagation, readyForPropagation);
-
-			layoutSetPrototype =
 				layoutSetPrototypeService.updateLayoutSetPrototype(
 					layoutSetPrototypeId, nameMap, descriptionMap, active,
-					layoutsUpdateable, readyForPropagation, serviceContext);
+					layoutsUpdateable, serviceContext);
 		}
 
 		// Custom JSPs
@@ -224,29 +200,13 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 		boolean layoutsUpdateable = GetterUtil.getBoolean(
 			settingsUnicodeProperties.getProperty("layoutsUpdateable"));
 
-		boolean oldReadyForPropagation = GetterUtil.getBoolean(
-			settingsUnicodeProperties.getProperty("readyForPropagation"));
-
-		boolean readyForPropagation = ParamUtil.getBoolean(
-			actionRequest, "readyForPropagation", oldReadyForPropagation);
-
-		_addSessionMessages(
-			actionRequest, oldReadyForPropagation, readyForPropagation);
-
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
 
 		layoutSetPrototypeService.updateLayoutSetPrototype(
 			layoutSetPrototypeId, layoutSetPrototype.getNameMap(),
 			layoutSetPrototype.getDescriptionMap(), active, layoutsUpdateable,
-			readyForPropagation, serviceContext);
-	}
-
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_layoutSetPrototypeConfiguration = ConfigurableUtil.createConfigurable(
-			LayoutSetPrototypeConfiguration.class, properties);
+			serviceContext);
 	}
 
 	@Override
@@ -282,17 +242,6 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 		return false;
 	}
 
-	protected boolean isTriggerPropagation() {
-		try {
-			return _layoutSetPrototypeConfiguration.triggerPropagation();
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return false;
-	}
-
 	@Reference
 	protected LayoutSetPrototypeHelper layoutSetPrototypeHelper;
 
@@ -304,29 +253,5 @@ public class LayoutSetPrototypePortlet extends MVCPortlet {
 
 	@Reference
 	protected PanelAppRegistry panelAppRegistry;
-
-	private void _addSessionMessages(
-		ActionRequest actionRequest, boolean oldReadyForPropagation,
-		boolean readyForPropagation) {
-
-		if (oldReadyForPropagation && !readyForPropagation) {
-			SessionMessages.add(actionRequest, "disablePropagation");
-		}
-
-		if (!oldReadyForPropagation && readyForPropagation) {
-			if (isTriggerPropagation()) {
-				SessionMessages.add(actionRequest, "triggerPropagation");
-			}
-			else {
-				SessionMessages.add(actionRequest, "enablePropagation");
-			}
-		}
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutSetPrototypePortlet.class);
-
-	private volatile LayoutSetPrototypeConfiguration
-		_layoutSetPrototypeConfiguration;
 
 }

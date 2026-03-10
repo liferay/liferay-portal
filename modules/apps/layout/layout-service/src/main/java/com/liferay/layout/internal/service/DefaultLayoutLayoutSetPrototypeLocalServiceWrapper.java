@@ -34,13 +34,12 @@ public class DefaultLayoutLayoutSetPrototypeLocalServiceWrapper
 	public LayoutSetPrototype addLayoutSetPrototype(
 			long userId, long companyId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
+			boolean layoutsUpdateable, ServiceContext serviceContext)
 		throws PortalException {
 
 		LayoutSetPrototype layoutSetPrototype = super.addLayoutSetPrototype(
 			userId, companyId, nameMap, descriptionMap, active,
-			layoutsUpdateable, readyForPropagation, serviceContext);
+			layoutsUpdateable, serviceContext);
 
 		if (GetterUtil.getBoolean(
 				serviceContext.getAttribute("addDefaultLayout"), true)) {
@@ -65,18 +64,6 @@ public class DefaultLayoutLayoutSetPrototypeLocalServiceWrapper
 		}
 
 		return layoutSetPrototype;
-	}
-
-	@Override
-	public LayoutSetPrototype addLayoutSetPrototype(
-			long userId, long companyId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active,
-			boolean layoutsUpdateable, ServiceContext serviceContext)
-		throws PortalException {
-
-		return addLayoutSetPrototype(
-			userId, companyId, nameMap, descriptionMap, active,
-			layoutsUpdateable, true, serviceContext);
 	}
 
 	@Reference

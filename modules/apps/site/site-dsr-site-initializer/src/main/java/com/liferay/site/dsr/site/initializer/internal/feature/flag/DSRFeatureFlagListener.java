@@ -98,7 +98,7 @@ public class DSRFeatureFlagListener implements FeatureFlagListener {
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), GroupConstants.DSR
 				).build(),
-				null, true, true, false, serviceContext);
+				null, true, true, serviceContext);
 
 		SiteInitializerUtil.initialize(
 			companyId, layoutSetPrototype.getGroup(),

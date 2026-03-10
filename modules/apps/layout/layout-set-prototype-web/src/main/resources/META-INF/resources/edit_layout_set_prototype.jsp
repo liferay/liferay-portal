@@ -41,7 +41,6 @@ if (layoutSetPrototype == null) {
 }
 
 boolean layoutsUpdateable = GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("layoutsUpdateable"), true);
-boolean readyForPropagation = GetterUtil.getBoolean(layoutSetPrototype.getSettingsProperty("readyForPropagation"), true);
 
 Group group = themeDisplay.getSiteGroup();
 
@@ -56,8 +55,6 @@ if (!group.isLayoutSetPrototype()) {
 request.setAttribute("edit_layout_set_prototype.jsp-layoutSetPrototype", layoutSetPrototype);
 request.setAttribute("edit_layout_set_prototype.jsp-redirect", currentURL);
 %>
-
-<%@ include file="/propagation_alert.jspf" %>
 
 <liferay-ui:success key='<%= LayoutSetPrototypePortletKeys.SITE_TEMPLATE_SETTINGS + "requestProcessed" %>' message="site-template-was-added" />
 
@@ -84,8 +81,6 @@ request.setAttribute("edit_layout_set_prototype.jsp-redirect", currentURL);
 			<aui:input helpMessage="allow-site-administrators-to-create-sites-from-this-site-template" inlineLabel="right" label="active" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" value="<%= layoutSetPrototype.isActive() %>" />
 
 			<aui:input helpMessage="allow-site-administrators-to-modify-pages-associated-with-this-site-template-help" inlineLabel="right" label="allow-site-administrators-to-modify-pages-associated-with-this-site-template" labelCssClass="simple-toggle-switch" name="layoutsUpdateable" type="toggle-switch" value="<%= layoutsUpdateable %>" />
-
-			<aui:input helpMessage="ready-for-propagation-help" label="ready-for-propagation" name="readyForPropagation" type="toggle-switch" value="<%= readyForPropagation %>" />
 
 			<%
 			Set<String> servletContextNames = CustomJspRegistryUtil.getServletContextNames();

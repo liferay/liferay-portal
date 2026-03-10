@@ -37,10 +37,6 @@ const ACTIONS = {
 		});
 	},
 
-	disablePropagation(itemData) {
-		submitForm(document.hrefFm, itemData.disablePropagationURL);
-	},
-
 	permissions(itemData) {
 		openWindow({
 			dialog: {
@@ -53,10 +49,6 @@ const ACTIONS = {
 			title: Liferay.Language.get('permissions'),
 			uri: itemData.permissionsURL,
 		});
-	},
-
-	readyForPropagation(itemData) {
-		submitForm(document.hrefFm, itemData.readyForPropagationURL);
 	},
 };
 

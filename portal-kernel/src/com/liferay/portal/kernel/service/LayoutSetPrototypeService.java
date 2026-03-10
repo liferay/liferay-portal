@@ -49,19 +49,12 @@ public interface LayoutSetPrototypeService extends BaseService {
 	public LayoutSetPrototype addLayoutSetPrototype(
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			boolean active, boolean layoutsUpdateable,
-			boolean readyForPropagation, ServiceContext serviceContext)
-		throws PortalException;
-
-	public LayoutSetPrototype addLayoutSetPrototype(
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			boolean active, boolean layoutsUpdateable,
 			ServiceContext serviceContext)
 		throws PortalException;
 
 	public LayoutSetPrototype addLayoutSetPrototype(
 			String name, String description, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
+			boolean layoutsUpdateable, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteLayoutSetPrototype(long layoutSetPrototypeId)
@@ -93,13 +86,6 @@ public interface LayoutSetPrototypeService extends BaseService {
 	public List<LayoutSetPrototype> search(
 			long companyId, Boolean active,
 			OrderByComparator<LayoutSetPrototype> orderByComparator)
-		throws PortalException;
-
-	public LayoutSetPrototype updateLayoutSetPrototype(
-			long layoutSetPrototypeId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	public LayoutSetPrototype updateLayoutSetPrototype(

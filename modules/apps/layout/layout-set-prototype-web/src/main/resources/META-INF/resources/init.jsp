@@ -30,7 +30,6 @@ page import="com.liferay.portal.kernel.security.permission.ActionKeys" %><%@
 page import="com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.LayoutSetPrototypeServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil" %><%@
-page import="com.liferay.portal.kernel.servlet.SessionMessages" %><%@
 page import="com.liferay.portal.kernel.util.CustomJspRegistryUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@

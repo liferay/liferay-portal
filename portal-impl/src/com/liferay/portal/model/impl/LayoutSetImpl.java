@@ -407,34 +407,6 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 	}
 
 	@Override
-	public boolean isLayoutSetReadyForPropagation() {
-		if (!isLayoutSetPrototypeLinkActive()) {
-			return false;
-		}
-
-		try {
-			LayoutSetPrototype layoutSetPrototype =
-				LayoutSetPrototypeLocalServiceUtil.
-					getLayoutSetPrototypeByUuidAndCompanyId(
-						getLayoutSetPrototypeUuid(), getCompanyId());
-
-			String readyForPropagation = layoutSetPrototype.getSettingsProperty(
-				"readyForPropagation");
-
-			if (Validator.isNotNull(readyForPropagation)) {
-				return GetterUtil.getBoolean(readyForPropagation, true);
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		return true;
-	}
-
-	@Override
 	public boolean isLogo() {
 		return getLogo();
 	}

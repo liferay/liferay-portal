@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -83,18 +82,6 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 					}
 					else if (!_layoutSetPrototype.isActive()) {
 						add(_getActivateActionUnsafeConsumer());
-					}
-
-					boolean readyForPropagation = GetterUtil.getBoolean(
-						_layoutSetPrototype.getSettingsProperty(
-							"readyForPropagation"),
-						true);
-
-					if (readyForPropagation && !group.isGuest()) {
-						add(_getDisablePropagationActionUnsafeConsumer());
-					}
-					else if (!readyForPropagation) {
-						add(_getReadyForPropagationActionUnsafeConsumer());
 					}
 				}
 
@@ -189,30 +176,6 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
-		_getDisablePropagationActionUnsafeConsumer() {
-
-		return dropdownItem -> {
-			dropdownItem.putData("action", "disablePropagation");
-			dropdownItem.putData(
-				"disablePropagationURL",
-				PortletURLBuilder.createActionURL(
-					_renderResponse
-				).setActionName(
-					"updateLayoutSetPrototypeAction"
-				).setRedirect(
-					_themeDisplay.getURLCurrent()
-				).setParameter(
-					"layoutSetPrototypeId",
-					_layoutSetPrototype.getLayoutSetPrototypeId()
-				).setParameter(
-					"readyForPropagation", false
-				).buildString());
-			dropdownItem.setLabel(
-				LanguageUtil.get(_httpServletRequest, "disable-propagation"));
-		};
-	}
-
-	private UnsafeConsumer<DropdownItem, Exception>
 			_getPermissionsActionUnsafeConsumer()
 		throws Exception {
 
@@ -229,30 +192,6 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 			dropdownItem.setIcon("password-policies");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "permissions"));
-		};
-	}
-
-	private UnsafeConsumer<DropdownItem, Exception>
-		_getReadyForPropagationActionUnsafeConsumer() {
-
-		return dropdownItem -> {
-			dropdownItem.putData("action", "readyForPropagation");
-			dropdownItem.putData(
-				"readyForPropagationURL",
-				PortletURLBuilder.createActionURL(
-					_renderResponse
-				).setActionName(
-					"updateLayoutSetPrototypeAction"
-				).setRedirect(
-					_themeDisplay.getURLCurrent()
-				).setParameter(
-					"layoutSetPrototypeId",
-					_layoutSetPrototype.getLayoutSetPrototypeId()
-				).setParameter(
-					"readyForPropagation", true
-				).buildString());
-			dropdownItem.setLabel(
-				LanguageUtil.get(_httpServletRequest, "ready-for-propagation"));
 		};
 	}
 

@@ -35,23 +35,6 @@ public class LayoutSetPrototypeServiceImpl
 	public LayoutSetPrototype addLayoutSetPrototype(
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			boolean active, boolean layoutsUpdateable,
-			boolean readyForPropagation, ServiceContext serviceContext)
-		throws PortalException {
-
-		PortalPermissionUtil.check(
-			getPermissionChecker(), ActionKeys.ADD_LAYOUT_SET_PROTOTYPE);
-
-		User user = getUser();
-
-		return layoutSetPrototypeLocalService.addLayoutSetPrototype(
-			user.getUserId(), user.getCompanyId(), nameMap, descriptionMap,
-			active, layoutsUpdateable, readyForPropagation, serviceContext);
-	}
-
-	@Override
-	public LayoutSetPrototype addLayoutSetPrototype(
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			boolean active, boolean layoutsUpdateable,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -68,8 +51,7 @@ public class LayoutSetPrototypeServiceImpl
 	@Override
 	public LayoutSetPrototype addLayoutSetPrototype(
 			String name, String description, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
+			boolean layoutsUpdateable, ServiceContext serviceContext)
 		throws PortalException {
 
 		PortalPermissionUtil.check(
@@ -87,7 +69,7 @@ public class LayoutSetPrototypeServiceImpl
 			HashMapBuilder.put(
 				locale, description
 			).build(),
-			active, layoutsUpdateable, readyForPropagation, serviceContext);
+			active, layoutsUpdateable, serviceContext);
 	}
 
 	@Override
@@ -156,22 +138,6 @@ public class LayoutSetPrototypeServiceImpl
 				orderByComparator);
 
 		return filterLayoutSetPrototypes(layoutSetPrototypes);
-	}
-
-	@Override
-	public LayoutSetPrototype updateLayoutSetPrototype(
-			long layoutSetPrototypeId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, boolean active,
-			boolean layoutsUpdateable, boolean readyForPropagation,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		LayoutSetPrototypePermissionUtil.check(
-			getPermissionChecker(), layoutSetPrototypeId, ActionKeys.UPDATE);
-
-		return layoutSetPrototypeLocalService.updateLayoutSetPrototype(
-			layoutSetPrototypeId, nameMap, descriptionMap, active,
-			layoutsUpdateable, readyForPropagation, serviceContext);
 	}
 
 	@Override

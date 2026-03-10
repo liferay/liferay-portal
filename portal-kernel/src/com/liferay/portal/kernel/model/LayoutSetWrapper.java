@@ -474,11 +474,6 @@ public class LayoutSetWrapper
 	}
 
 	@Override
-	public boolean isLayoutSetReadyForPropagation() {
-		return model.isLayoutSetReadyForPropagation();
-	}
-
-	@Override
 	public boolean isLogo() {
 		return model.isLogo();
 	}

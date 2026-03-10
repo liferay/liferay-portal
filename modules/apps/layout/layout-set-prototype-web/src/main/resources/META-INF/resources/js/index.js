@@ -5,4 +5,3 @@
 
 export {default as LayoutSetPrototypeDropdownDefaultPropsTransformer} from './LayoutSetPrototypeDropdownDefaultPropsTransformer';
 export {default as LayoutSetPrototypeManagementToolbarPropsTransformer} from './LayoutSetPrototypeManagementToolbarPropsTransformer';
-export {default as PropagationMessage} from './dynamic_include/PropagationMessage';

@@ -143,8 +143,7 @@ public class GroupUtilTest {
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()
 				).build(),
-				null, true, true, false,
-				ServiceContextTestUtil.getServiceContext());
+				null, true, true, ServiceContextTestUtil.getServiceContext());
 
 		Group group = layoutSetPrototype.getGroup();
 
