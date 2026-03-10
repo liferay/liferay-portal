@@ -49,6 +49,58 @@ public class TaxonomyCategoryBrief implements Cloneable, Serializable {
 
 	protected Object embeddedTaxonomyCategory;
 
+	public String getParentTaxonomyCategoryExternalReferenceCode() {
+		return parentTaxonomyCategoryExternalReferenceCode;
+	}
+
+	public void setParentTaxonomyCategoryExternalReferenceCode(
+		String parentTaxonomyCategoryExternalReferenceCode) {
+
+		this.parentTaxonomyCategoryExternalReferenceCode =
+			parentTaxonomyCategoryExternalReferenceCode;
+	}
+
+	public void setParentTaxonomyCategoryExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			parentTaxonomyCategoryExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			parentTaxonomyCategoryExternalReferenceCode =
+				parentTaxonomyCategoryExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String parentTaxonomyCategoryExternalReferenceCode;
+
+	public String getParentVocabularyExternalReferenceCode() {
+		return parentVocabularyExternalReferenceCode;
+	}
+
+	public void setParentVocabularyExternalReferenceCode(
+		String parentVocabularyExternalReferenceCode) {
+
+		this.parentVocabularyExternalReferenceCode =
+			parentVocabularyExternalReferenceCode;
+	}
+
+	public void setParentVocabularyExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			parentVocabularyExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			parentVocabularyExternalReferenceCode =
+				parentVocabularyExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String parentVocabularyExternalReferenceCode;
+
 	public Long getTaxonomyCategoryId() {
 		return taxonomyCategoryId;
 	}
