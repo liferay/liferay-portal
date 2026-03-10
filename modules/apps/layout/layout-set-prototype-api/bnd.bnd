@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Set Prototype API
 Bundle-SymbolicName: com.liferay.layout.set.prototype.api
-Bundle-Version: 7.1.2
+Bundle-Version: 8.0.0
 Export-Package:\
 	com.liferay.layout.set.prototype.configuration,\
 	com.liferay.layout.set.prototype.constants,\
