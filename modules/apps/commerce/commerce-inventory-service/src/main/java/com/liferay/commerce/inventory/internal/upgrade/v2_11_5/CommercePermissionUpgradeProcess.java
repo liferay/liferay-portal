@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.commerce.inventory.internal.upgrade.v2_11_4;
+package com.liferay.commerce.inventory.internal.upgrade.v2_11_5;
 
 import com.liferay.commerce.inventory.constants.CommerceInventoryActionKeys;
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
