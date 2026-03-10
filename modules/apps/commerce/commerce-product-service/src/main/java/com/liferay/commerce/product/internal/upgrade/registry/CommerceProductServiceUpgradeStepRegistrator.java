@@ -648,13 +648,15 @@ public class CommerceProductServiceUpgradeStepRegistrator
 				"CPConfigurationList", "masterCPConfigurationList",
 				"master BOOLEAN"));
 
+		registry.register("5.27.0", "5.27.1", new DummyUpgradeStep());
+
 		registry.register(
-			"5.27.0", "5.27.1",
-			new com.liferay.commerce.product.internal.upgrade.v5_28_0.
+			"5.27.1", "5.27.2",
+			new com.liferay.commerce.product.internal.upgrade.v5_27_2.
 				CPDefinitionSpecificationOptionValueUpgradeProcess());
 
 		registry.register(
-			"5.27.1", "5.28.0",
+			"5.27.2", "5.28.0",
 			new com.liferay.commerce.product.internal.upgrade.v5_28_0.
 				CPSpecificationOptionUpgradeProcess());
 
