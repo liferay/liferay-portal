@@ -53,16 +53,11 @@ test.beforeEach(async ({apiHelpers, page}) => {
 	});
 });
 
-test.afterEach(async ({apiHelpers, page, segmentsPage}) => {
+test.afterEach(async ({apiHelpers, page}) => {
 	await test.step('Delete site on the DXP side', async () => {
 		await page.goto(liferayConfig.environment.baseUrl);
 
 		await apiHelpers.headlessSite.deleteSite(String(site.id));
-	});
-
-	await test.step('Delete all segments created during test execution', async () => {
-		await goToSegmentsAdmin(page);
-		await segmentsPage.deleteAllSegmentEntries();
 	});
 });
 
