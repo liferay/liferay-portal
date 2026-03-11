@@ -8,6 +8,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:asset:asset-taglib")
 	compileOnly project(":apps:change-tracking:change-tracking-api")
