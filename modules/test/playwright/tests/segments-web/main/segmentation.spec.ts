@@ -82,11 +82,12 @@ test(
 		usersAndOrganizationsPage,
 	}) => {
 		const segmentName = 'AddSegmentByOrganizationCountry Test';
+		const organizationName = getRandomString();
 
 		await test.step('Given a user and an organization were created and the user was assigned to the organization', async () => {
-			const orgName = await apiHelpers.headlessAdminUser.postOrganization(
+			const organization = await apiHelpers.headlessAdminUser.postOrganization(
 				{
-					name: 'Organization1',
+					name: organizationName,
 				}
 			);
 
@@ -95,14 +96,14 @@ test(
 			});
 
 			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
-				orgName.id,
+				organization.id,
 				user.emailAddress
 			);
 
 			await usersAndOrganizationsPage.goToOrganizations();
 			await (
 				await usersAndOrganizationsPage.organizationsTable.rowActions(
-					'Organization1'
+					organizationName
 				)
 			).click();
 			await usersAndOrganizationsPage.editOrganizationMenuItem.click();
@@ -160,12 +161,13 @@ test(
 	},
 
 	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+		const organizationName = getRandomString();
 		const segmentName = 'AddSegmentByOrganizationName Test';
 
 		await test.step('Given a user and an organization were created and the user was assigned to the organization', async () => {
-			const orgName = await apiHelpers.headlessAdminUser.postOrganization(
+			const organization = await apiHelpers.headlessAdminUser.postOrganization(
 				{
-					name: 'Organization Name',
+					name: organizationName,
 				}
 			);
 
@@ -174,7 +176,7 @@ test(
 			});
 
 			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
-				orgName.id,
+				organization.id,
 				user.emailAddress
 			);
 		});
@@ -190,7 +192,7 @@ test(
 
 			await segmentsPage.editSegmentsEntry(segmentName);
 
-			await segmentsPage.fillField('Organization Name');
+			await segmentsPage.fillField(organizationName);
 
 			await segmentsPage.saveButton.click();
 
@@ -208,7 +210,7 @@ test(
 
 			await page.waitForLoadState('networkidle');
 
-			await segmentsPage.viewCriterionValue('Organization Name');
+			await segmentsPage.viewCriterionValue(organizationName);
 		});
 	}
 );
@@ -224,9 +226,9 @@ test(
 		const segmentName = 'AddSegmentByOrganizationType Test';
 
 		await test.step('Given a user and an organization were created and the user was assigned to the organization', async () => {
-			const orgName = await apiHelpers.headlessAdminUser.postOrganization(
+			const organization = await apiHelpers.headlessAdminUser.postOrganization(
 				{
-					name: 'Organization Name',
+					name: getRandomString(),
 				}
 			);
 
@@ -235,7 +237,7 @@ test(
 			});
 
 			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
-				orgName.id,
+				organization.id,
 				user.emailAddress
 			);
 		});
@@ -740,13 +742,12 @@ test(
 	},
 
 	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+		const organizationName = getRandomString();
 		const segmentName = 'Validate Organization Segment';
-
-		const orgName = 'Organization Name';
 
 		await test.step('Given an organization is created', async () => {
 			await apiHelpers.headlessAdminUser.postOrganization({
-				name: orgName,
+				name: organizationName,
 			});
 		});
 
@@ -761,7 +762,7 @@ test(
 
 			await segmentsPage.selectButton.click();
 
-			await segmentsPage.selectCheckboxItem(orgName);
+			await segmentsPage.selectCheckboxItem(organizationName);
 
 			await segmentsPage.saveButton.click();
 
@@ -773,7 +774,7 @@ test(
 
 			await page.waitForLoadState('networkidle');
 
-			await segmentsPage.viewCriterionValue('Organization Name');
+			await segmentsPage.viewCriterionValue(organizationName);
 		});
 	}
 );
@@ -787,15 +788,17 @@ test(
 
 	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
 		const segmentName = 'Validate Parent Organization Segment';
+		const parentOrganizationName = getRandomString();
+		const organizationName = getRandomString();
 
 		await test.step('Given 2 organizations are created, the first as the parent of the second', async () => {
 			const organization1 =
 				await apiHelpers.headlessAdminUser.postOrganization({
-					name: 'Parent Organization Name',
+					name: parentOrganizationName,
 				});
 
 			await apiHelpers.headlessAdminUser.postOrganization({
-				name: 'Organization Name',
+				name: organizationName,
 				parentOrganization: {
 					externalReferenceCode: organization1.externalReferenceCode,
 				},
@@ -813,7 +816,7 @@ test(
 
 			await segmentsPage.selectButton.click();
 
-			await segmentsPage.selectCheckboxItem('Parent Organization Name');
+			await segmentsPage.selectCheckboxItem(parentOrganizationName);
 
 			await segmentsPage.saveButton.click();
 
@@ -825,7 +828,7 @@ test(
 
 			await page.waitForLoadState('networkidle');
 
-			await segmentsPage.viewCriterionValue('Parent Organization Name');
+			await segmentsPage.viewCriterionValue(parentOrganizationName);
 		});
 	}
 );
