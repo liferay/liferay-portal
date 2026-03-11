@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Drew Brokke
@@ -113,7 +114,7 @@ public class FiltersManagementToolbarDisplayContextWrapper
 								filterContributor.getParameter(), (String)null
 							).buildString());
 
-						labelItem.setCloseable(true);
+						labelItem.setDismissible(true);
 						labelItem.setLabel(
 							String.format(
 								"%s: %s",
@@ -133,9 +134,17 @@ public class FiltersManagementToolbarDisplayContextWrapper
 		HttpServletRequest httpServletRequest,
 		FilterContributor filterContributor) {
 
-		return ParamUtil.getString(
+		String currentValue = ParamUtil.getString(
 			httpServletRequest, filterContributor.getParameter(),
 			filterContributor.getDefaultValue());
+
+		if (Objects.equals(filterContributor.getParameter(), "domain") &&
+			Objects.equals(currentValue, "company-users")) {
+
+			currentValue = "users-without-an-account";
+		}
+
+		return currentValue;
 	}
 
 	private final FilterContributor[] _filterContributors;
