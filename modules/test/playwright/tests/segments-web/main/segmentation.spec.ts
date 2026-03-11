@@ -8,11 +8,11 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
-import {liferayConfig} from '../../../liferay.config';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
@@ -22,6 +22,7 @@ import {segmentsPageTest} from './fixtures/segmentsPageTest';
 
 export const test = mergeTests(
 	apiHelpersTest,
+	isolatedSiteTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-78863': {enabled: true, system: true},
@@ -35,29 +36,11 @@ export const test = mergeTests(
 
 const userEmailAddress = getRandomString() + '@liferay.com';
 
-const randomString = getRandomString();
-
-const siteName = 'My Site ' + randomString;
-
-let site;
-
-test.beforeEach(async ({apiHelpers, page}) => {
+test.beforeEach(async ({page}) => {
 	page.setViewportSize({height: 1080, width: 1920});
 
 	page.on('dialog', async (dialog) => {
 		await dialog.accept();
-	});
-
-	site = await apiHelpers.headlessSite.createSite({
-		name: siteName,
-	});
-});
-
-test.afterEach(async ({apiHelpers, page}) => {
-	await test.step('Delete site on the DXP side', async () => {
-		await page.goto(liferayConfig.environment.baseUrl);
-
-		await apiHelpers.headlessSite.deleteSite(String(site.id));
 	});
 });
 
@@ -74,17 +57,17 @@ test(
 		page,
 		pageEditorPage,
 		segmentsPage,
+		site,
 		usersAndOrganizationsPage,
 	}) => {
 		const segmentName = 'AddSegmentByOrganizationCountry Test';
 		const organizationName = getRandomString();
 
 		await test.step('Given a user and an organization were created and the user was assigned to the organization', async () => {
-			const organization = await apiHelpers.headlessAdminUser.postOrganization(
-				{
+			const organization =
+				await apiHelpers.headlessAdminUser.postOrganization({
 					name: organizationName,
-				}
-			);
+				});
 
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
 				emailAddress: userEmailAddress,
@@ -108,7 +91,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment and checks the user belongs to the segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -136,7 +119,7 @@ test(
 		});
 
 		await test.step('Then can assert the segment is correctly created', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			const linkLocator = page.locator(`a:has-text('${segmentName}')`);
 			await linkLocator.click();
@@ -155,16 +138,15 @@ test(
 		tag: '@LPS-130277',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const organizationName = getRandomString();
 		const segmentName = 'AddSegmentByOrganizationName Test';
 
 		await test.step('Given a user and an organization were created and the user was assigned to the organization', async () => {
-			const organization = await apiHelpers.headlessAdminUser.postOrganization(
-				{
+			const organization =
+				await apiHelpers.headlessAdminUser.postOrganization({
 					name: organizationName,
-				}
-			);
+				});
 
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
 				emailAddress: userEmailAddress,
@@ -177,7 +159,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment and checks the user belongs to the segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -199,7 +181,7 @@ test(
 		});
 
 		await test.step('Then can assert the segment is correctly created', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickLinkByText(segmentName);
 
@@ -217,15 +199,14 @@ test(
 		tag: '@LPS-130280',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'AddSegmentByOrganizationType Test';
 
 		await test.step('Given a user and an organization were created and the user was assigned to the organization', async () => {
-			const organization = await apiHelpers.headlessAdminUser.postOrganization(
-				{
+			const organization =
+				await apiHelpers.headlessAdminUser.postOrganization({
 					name: getRandomString(),
-				}
-			);
+				});
 
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
 				emailAddress: userEmailAddress,
@@ -238,7 +219,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment and checks the user belongs to the segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -258,7 +239,7 @@ test(
 		});
 
 		await test.step('Then can assert the segment is correctly created', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickLinkByText(segmentName);
 
@@ -276,11 +257,11 @@ test(
 		tag: '@LPS-130346',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'AddSegment Test';
 
 		await test.step('When a segment designer adds a new segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -306,7 +287,7 @@ test(
 		tag: '@LPS-130347',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'Segment With User1';
 		const segmentName2 = 'Segment With User2';
 		const segmentName3 = 'AddSegmentByOtherSegmentsWarning Test';
@@ -325,7 +306,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds 2 segments', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -375,7 +356,7 @@ test(
 		});
 
 		await test.step('Then asserts that a warning is shown', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.editSegmentsEntry(segmentName3);
 
@@ -396,11 +377,11 @@ test(
 		tag: '@LPS-130313',
 	},
 
-	async ({page, segmentsPage}) => {
+	async ({page, segmentsPage, site}) => {
 		const segmentName = 'AddSegmentBySessionBrowser Test';
 
 		await test.step('When a segment designer adds a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -434,11 +415,11 @@ test(
 		tag: '@LPS-130351',
 	},
 
-	async ({page, segmentsPage}) => {
+	async ({page, segmentsPage, site}) => {
 		const segmentName = 'AddSegmentBySessionLanguage Test';
 
 		await test.step('When a segment designer adds a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -470,11 +451,11 @@ test(
 		tag: '@LPS-130325',
 	},
 
-	async ({page, segmentsPage}) => {
+	async ({page, segmentsPage, site}) => {
 		const segmentName = 'AddSegmentBySessionURL Test';
 
 		await test.step('When a segment designer adds a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -509,6 +490,7 @@ test(
 		page,
 		pageEditorPage,
 		segmentsPage,
+		site,
 		usersAndOrganizationsPage,
 	}) => {
 		const segmentName = 'Segment with Apostrophe';
@@ -517,7 +499,9 @@ test(
 			await usersAndOrganizationsPage.goToUsers();
 			await usersAndOrganizationsPage.addUserButton.click();
 
-			await editUserPage.emailAddressInput.fill(getRandomString() + '@liferay.com');
+			await editUserPage.emailAddressInput.fill(
+				getRandomString() + '@liferay.com'
+			);
 			await editUserPage.firstNameInput.fill('Shaquille');
 			await editUserPage.lastNameInput.fill(`O'Neal`);
 			await editUserPage.screenNameInput.fill('shaquille');
@@ -526,7 +510,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment with last name property', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -558,7 +542,7 @@ test(
 		tag: '@LPS-152077',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'First Segment';
 		const segmentName2 = 'Second Segment';
 
@@ -569,7 +553,7 @@ test(
 		});
 
 		await test.step('And a segment designer adds the first segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -604,7 +588,7 @@ test(
 		});
 
 		await test.step('And removes from second segment the criterion related to the first segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.editSegmentsEntry(segmentName2);
 
@@ -632,9 +616,9 @@ test(
 		tag: '@LPS-150511',
 	},
 
-	async ({page, segmentsPage}) => {
+	async ({page, segmentsPage, site}) => {
 		await test.step('Given a segment designer goes to the segments editor page', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 		});
@@ -667,6 +651,7 @@ test(
 		page,
 		pageEditorPage,
 		segmentsPage,
+		site,
 		usersAndOrganizationsPage,
 	}) => {
 		const segmentName = 'Segment With Special Characters';
@@ -675,7 +660,9 @@ test(
 			await usersAndOrganizationsPage.goToUsers();
 			await usersAndOrganizationsPage.addUserButton.click();
 
-			await editUserPage.emailAddressInput.fill(getRandomString() + '@liferay.com');
+			await editUserPage.emailAddressInput.fill(
+				getRandomString() + '@liferay.com'
+			);
 			await editUserPage.firstNameInput.fill('User');
 			await editUserPage.lastNameInput.fill(`1 + / ? # &`);
 			await editUserPage.screenNameInput.fill('u1');
@@ -684,7 +671,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment with last name property', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -716,9 +703,9 @@ test(
 		tag: '@LPS-136086',
 	},
 
-	async ({page}) => {
+	async ({page, site}) => {
 		await test.step('Given a segment designer goes to the segments editor page', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 		});
 
 		await test.step('Then can assert that the default segment is not displayed', async () => {
@@ -736,7 +723,7 @@ test(
 		tag: '@LPS-135880',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const organizationName = getRandomString();
 		const segmentName = 'Validate Organization Segment';
 
@@ -747,7 +734,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment with Organization criterion', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -781,7 +768,7 @@ test(
 		tag: '@LPS-135880',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'Validate Parent Organization Segment';
 		const parentOrganizationName = getRandomString();
 		const organizationName = getRandomString();
@@ -801,7 +788,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment with Parent Organization criterion', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -835,11 +822,11 @@ test(
 		tag: '@LPS-135880',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'Validate Role Segment';
 
 		await test.step('When a segment designer adds a segment with Regular Role criterion', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -873,11 +860,11 @@ test(
 		tag: '@LPS-135880',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'Validate Site Segment';
 
 		await test.step('When a segment designer adds a segment with Site criterion', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -887,7 +874,7 @@ test(
 
 			await segmentsPage.selectButton.click();
 
-			await segmentsPage.selectCardItem(siteName);
+			await segmentsPage.selectCardItem(site.name);
 
 			await segmentsPage.saveButton.click();
 
@@ -899,7 +886,7 @@ test(
 
 			await page.waitForLoadState('networkidle');
 
-			await segmentsPage.viewCriterionValue(siteName);
+			await segmentsPage.viewCriterionValue(site.name);
 		});
 	}
 );
@@ -916,6 +903,7 @@ test(
 		pageEditorPage,
 		productMenuPage,
 		segmentsPage,
+		site,
 		teamsPage,
 	}) => {
 		const segmentName = 'Validate Site Segment';
@@ -970,11 +958,11 @@ test(
 		tag: '@LPS-135880',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'Validate User Segment';
 
 		await test.step('When a segment designer adds a segment with User criterion', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1008,13 +996,7 @@ test(
 		tag: '@LPS-135880',
 	},
 
-	async ({
-		apiHelpers,
-		page,
-		pageEditorPage,
-		productMenuPage,
-		segmentsPage,
-	}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName = 'Validate User Group Segment';
 
 		await test.step('Given a User Group is created', async () => {
@@ -1024,9 +1006,7 @@ test(
 		});
 
 		await test.step('When a segment designer adds a segment with User Group criterion', async () => {
-			await productMenuPage.openProductMenuIfClosed();
-
-			await productMenuPage.goToSegments();
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1060,9 +1040,9 @@ test(
 		tag: '@LPS-103516',
 	},
 
-	async ({page, segmentsPage}) => {
+	async ({page, segmentsPage, site}) => {
 		await test.step('Given a segment designer goes to the segments editor page', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 		});
@@ -1201,12 +1181,12 @@ test(
 		tag: '@LPS-94874',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'EditSegment Test';
 		const segmentName2 = 'EditSegmentIfHaveASelectInput Test';
 
 		await test.step('Given a segment designer creates a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1266,12 +1246,12 @@ test(
 		tag: '@LPS-102740',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'EditSegment Test';
 		const segmentName2 = 'EditSegmentUserByCountry Test';
 
 		await test.step('Given a segment designer creates a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1315,12 +1295,12 @@ test(
 		tag: '@LPS-102740',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'EditSegment Test';
 		const segmentName2 = 'EditSegmentUserByRegion Test';
 
 		await test.step('Given a segment designer creates a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1364,12 +1344,12 @@ test(
 		tag: '@LPS-102743',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'EditSegment Test';
 		const segmentName2 = 'EditSegmentUserBySessionURL Test';
 
 		await test.step('Given a segment designer creates a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1416,6 +1396,7 @@ test(
 		page,
 		pageEditorPage,
 		segmentsPage,
+		site,
 		usersAndOrganizationsPage,
 	}) => {
 		const segmentName1 = 'EditSegment Test';
@@ -1439,7 +1420,7 @@ test(
 		});
 
 		await test.step('And the segment designer creates a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1485,12 +1466,12 @@ test(
 		tag: '@LPS-97141',
 	},
 
-	async ({page, pageEditorPage, segmentsPage}) => {
+	async ({page, pageEditorPage, segmentsPage, site}) => {
 		const segmentName1 = 'EditSegment Test';
 		const segmentName2 = 'EditSegmentUserEmailAddressEqualsToContains Test';
 
 		await test.step('Given a segment designer creates a segment', async () => {
-			await goToSegmentsAdmin(page);
+			await goToSegmentsAdmin(page, site.friendlyUrlPath);
 
 			await segmentsPage.clickAddNewSegmentButton();
 
@@ -1533,7 +1514,7 @@ test(
 		tag: '@LPS-130344',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
 			options: {type: 'content'},
@@ -1684,7 +1665,7 @@ test(
 		tag: '@LPS-163095',
 	},
 
-	async ({apiHelpers, page, pageEditorPage, segmentsPage}) => {
+	async ({apiHelpers, page, pageEditorPage, segmentsPage, site}) => {
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
 			options: {type: 'content'},
