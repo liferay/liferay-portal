@@ -16,15 +16,14 @@ import useFDSDrop from '../../dnd/useFDSDrop';
 import filterItemActions from '../../utils/actionItems/filterItemActions';
 import formatActionURL from '../../utils/actionItems/formatActionURL';
 import handleActionClick from '../../utils/actionItems/handleActionClick';
+import getLabels from '../../utils/getLabels';
 import {getLocalizedValue} from '../../utils/getLocalizedValue';
 import getRandomId from '../../utils/getRandomId';
 import isLink from '../../utils/isLink';
 import {
-	DisplayType,
 	EItemActionsType,
 	ICardSchema,
 	IItemsActions,
-	ILabelSchema,
 	IView,
 } from '../../utils/types';
 import ViewsContext from '../ViewsContext';
@@ -94,44 +93,6 @@ const Card = forwardRef<HTMLDivElement, any>(
 		const selectedItemKey =
 			selectedItemsKey &&
 			getObjectValueFromPath({object: item, path: selectedItemsKey});
-
-		const getLabels = (
-			item: any
-		): Array<{
-			displayType: DisplayType;
-			value: string;
-		}> => {
-			if (!labels) {
-				return [];
-			}
-
-			return labels.flatMap((label: ILabelSchema) => {
-				const {displayTypeKey, displayTypeValues} = label;
-				let {displayType} = label;
-
-				if (!displayType && displayTypeValues && displayTypeKey) {
-					const keyValue = getLocalizedValue(
-						item,
-						displayTypeKey
-					)?.value;
-
-					displayType = displayTypeValues[keyValue!];
-				}
-
-				const value = getLocalizedValue(item, label.value)?.value;
-
-				if (!value) {
-					return [];
-				}
-
-				return [
-					{
-						displayType: displayType || DisplayType.UNSTYLED,
-						value,
-					},
-				];
-			});
-		};
 
 		const getDropdownActions = (actions: IItemsActions[]): Array<any> => {
 			const processedActions: any[] = [];
@@ -214,7 +175,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 			imgProps:
 				image &&
 				imagePropsTransformer(getLocalizedValue(item, image)?.value),
-			labels: getLabels(item),
+			labels: getLabels(item, labels),
 			onClick: (event: React.MouseEvent) => {
 				const target = event.nativeEvent.target as Element;
 
