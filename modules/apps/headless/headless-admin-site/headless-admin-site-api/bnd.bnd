@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin Site API
 Bundle-SymbolicName: com.liferay.headless.admin.site.api
-Bundle-Version: 23.0.1
+Bundle-Version: 24.0.0
 Export-Package:\
 	com.liferay.headless.admin.site.dto.v1_0,\
 	com.liferay.headless.admin.site.resource.v1_0
