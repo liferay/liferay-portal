@@ -48,8 +48,8 @@
 						</antcall>
 
 						<antcall target="deploy-license-xml">
-							<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 							<param name="test.build.cmp.license.url" value="${test.cmp.license.url}" />
+							<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 						</antcall>
 
 						<antcall target="deploy-sql-zip">

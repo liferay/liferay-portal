@@ -11215,6 +11215,18 @@ org.apache.catalina.ha.session.level=INFO]]>
 
 	<target name="deploy-license-xml">
 		<if>
+			<matches pattern="https?://" string="${test.build.cmp.license.url}" />
+			<then>
+				<mkdir dir="${liferay.home}/deploy" />
+
+				<mirrors-get
+					dest="${liferay.home}/deploy/license-cmp.xml"
+					src="${test.build.cmp.license.url}"
+				/>
+			</then>
+		</if>
+
+		<if>
 			<matches pattern="https?://" string="${test.build.license.xml.zip.url}" />
 			<then>
 				<mkdir dir="${liferay.home}/deploy" />
@@ -11235,18 +11247,6 @@ org.apache.catalina.ha.session.level=INFO]]>
 					/>
 				</then>
 			</elseif>
-		</if>
-
-		<if>
-			<matches pattern="https?://" string="${test.build.cmp.license.url}" />
-			<then>
-				<mkdir dir="${liferay.home}/deploy" />
-
-				<mirrors-get
-					dest="${liferay.home}/deploy/license-cmp.xml"
-					src="${test.build.cmp.license.url}"
-				/>
-			</then>
 		</if>
 	</target>
 
@@ -14445,8 +14445,8 @@ analytics.cloud.domain.allowed=*</echo>
 		</untar>
 
 		<antcall target="deploy-license-xml">
-			<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 			<param name="test.build.cmp.license.url" value="${test.cmp.license.url}" />
+			<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 		</antcall>
 	</target>
 
@@ -15373,8 +15373,8 @@ ANT_OPTS=${env.ANT_OPTS}</echo>
 		<delete dir="${test.release.bundle.parent.dir}/bundles/osgi/state" />
 
 		<antcall target="deploy-license-xml">
-			<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 			<param name="test.build.cmp.license.url" value="${test.cmp.license.url}" />
+			<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 		</antcall>
 
 		<if>
