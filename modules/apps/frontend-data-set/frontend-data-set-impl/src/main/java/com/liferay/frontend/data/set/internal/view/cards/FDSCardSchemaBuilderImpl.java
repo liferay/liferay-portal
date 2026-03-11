@@ -5,9 +5,9 @@
 
 package com.liferay.frontend.data.set.internal.view.cards;
 
+import com.liferay.frontend.data.set.view.FDSSchemaLabelField;
 import com.liferay.frontend.data.set.view.cards.FDSCardSchema;
 import com.liferay.frontend.data.set.view.cards.FDSCardSchemaBuilder;
-import com.liferay.frontend.data.set.view.cards.FDSCardSchemaLabelField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,8 @@ import java.util.Map;
 public class FDSCardSchemaBuilderImpl implements FDSCardSchemaBuilder {
 
 	@Override
-	public FDSCardSchemaBuilder add(
-		FDSCardSchemaLabelField fdsCardSchemaLabelField) {
-
-		_fdsCardSchemaLabelFieldsList.add(fdsCardSchemaLabelField);
+	public FDSCardSchemaBuilder add(FDSSchemaLabelField fdsSchemaLabelField) {
+		_fdsSchemaLabelFieldsList.add(fdsSchemaLabelField);
 
 		return this;
 	}
@@ -32,41 +30,38 @@ public class FDSCardSchemaBuilderImpl implements FDSCardSchemaBuilder {
 		String displayTypeKey, Map<String, String> displayTypeValues,
 		String value) {
 
-		FDSCardSchemaLabelField fdsCardSchemaLabelField =
-			new FDSCardSchemaLabelField();
+		FDSSchemaLabelField fdsSchemaLabelField = new FDSSchemaLabelField();
 
-		fdsCardSchemaLabelField.setDisplayTypeKey(displayTypeKey);
-		fdsCardSchemaLabelField.setDisplayTypeValues(displayTypeValues);
-		fdsCardSchemaLabelField.setValue(value);
+		fdsSchemaLabelField.setDisplayTypeKey(displayTypeKey);
+		fdsSchemaLabelField.setDisplayTypeValues(displayTypeValues);
+		fdsSchemaLabelField.setValue(value);
 
-		_fdsCardSchemaLabelFieldsList.add(fdsCardSchemaLabelField);
+		_fdsSchemaLabelFieldsList.add(fdsSchemaLabelField);
 
 		return this;
 	}
 
 	@Override
 	public FDSCardSchemaBuilder add(String displayType, String value) {
-		FDSCardSchemaLabelField fdsCardSchemaLabelField =
-			new FDSCardSchemaLabelField();
+		FDSSchemaLabelField fdsSchemaLabelField = new FDSSchemaLabelField();
 
-		fdsCardSchemaLabelField.setDisplayType(displayType);
-		fdsCardSchemaLabelField.setValue(value);
+		fdsSchemaLabelField.setDisplayType(displayType);
+		fdsSchemaLabelField.setValue(value);
 
-		_fdsCardSchemaLabelFieldsList.add(fdsCardSchemaLabelField);
+		_fdsSchemaLabelFieldsList.add(fdsSchemaLabelField);
 
 		return this;
 	}
 
 	@Override
 	public FDSCardSchema build() {
-		_fdsCardSchema.setFDSCardSchemaLabelFieldsList(
-			_fdsCardSchemaLabelFieldsList);
+		_fdsCardSchema.setFDSSchemaLabelFieldsList(_fdsSchemaLabelFieldsList);
 
 		return _fdsCardSchema;
 	}
 
 	private final FDSCardSchema _fdsCardSchema = new FDSCardSchema();
-	private final List<FDSCardSchemaLabelField> _fdsCardSchemaLabelFieldsList =
+	private final List<FDSSchemaLabelField> _fdsSchemaLabelFieldsList =
 		new ArrayList<>();
 
 }

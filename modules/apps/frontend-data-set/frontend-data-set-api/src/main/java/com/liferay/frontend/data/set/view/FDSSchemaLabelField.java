@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.frontend.data.set.view.cards;
+package com.liferay.frontend.data.set.view;
 
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author Mikel Lorza
  */
-public class FDSCardSchemaLabelField {
+public class FDSSchemaLabelField {
 
 	public String getDisplayType() {
 		return _displayType;
@@ -31,19 +31,19 @@ public class FDSCardSchemaLabelField {
 		return _value;
 	}
 
-	public FDSCardSchemaLabelField setDisplayType(String displayType) {
+	public FDSSchemaLabelField setDisplayType(String displayType) {
 		_displayType = displayType;
 
 		return this;
 	}
 
-	public FDSCardSchemaLabelField setDisplayTypeKey(String displayTypeKey) {
+	public FDSSchemaLabelField setDisplayTypeKey(String displayTypeKey) {
 		_displayTypeKey = displayTypeKey;
 
 		return this;
 	}
 
-	public FDSCardSchemaLabelField setDisplayTypeValues(
+	public FDSSchemaLabelField setDisplayTypeValues(
 		Map<String, String> displayTypeValues) {
 
 		_displayTypeValues = displayTypeValues;
@@ -51,7 +51,7 @@ public class FDSCardSchemaLabelField {
 		return this;
 	}
 
-	public FDSCardSchemaLabelField setValue(String value) {
+	public FDSSchemaLabelField setValue(String value) {
 		_value = value;
 
 		return this;

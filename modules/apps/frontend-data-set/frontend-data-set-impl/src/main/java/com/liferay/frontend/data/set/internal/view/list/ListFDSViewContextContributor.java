@@ -6,11 +6,11 @@
 package com.liferay.frontend.data.set.internal.view.list;
 
 import com.liferay.frontend.data.set.constants.FDSConstants;
+import com.liferay.frontend.data.set.view.FDSSchemaLabelField;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.FDSViewContextContributor;
 import com.liferay.frontend.data.set.view.list.BaseListFDSView;
 import com.liferay.frontend.data.set.view.list.FDSListSchema;
-import com.liferay.frontend.data.set.view.list.FDSListSchemaLabelField;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -66,19 +66,19 @@ public class ListFDSViewContextContributor
 						return null;
 					}
 
-					List<FDSListSchemaLabelField> fdsListSchemaLabelFieldList =
-						fdsListSchema.getFDSListSchemaLabelFieldsList();
+					List<FDSSchemaLabelField> fdsSchemaLabelFieldList =
+						fdsListSchema.getFDSSchemaLabelFieldsList();
 
-					if (ListUtil.isEmpty(fdsListSchemaLabelFieldList)) {
+					if (ListUtil.isEmpty(fdsSchemaLabelFieldList)) {
 						return null;
 					}
 
 					JSONArray jsonArray = JSONUtil.putAll();
 
 					TransformUtil.transform(
-						fdsListSchemaLabelFieldList,
-						fdsListSchemaLabelField -> jsonArray.put(
-							fdsListSchemaLabelField.toJSONObject()));
+						fdsSchemaLabelFieldList,
+						fdsSchemaLabelField -> jsonArray.put(
+							fdsSchemaLabelField.toJSONObject()));
 
 					return jsonArray;
 				}

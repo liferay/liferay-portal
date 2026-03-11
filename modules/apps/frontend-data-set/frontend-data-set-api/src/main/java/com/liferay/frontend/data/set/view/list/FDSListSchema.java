@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.data.set.view.list;
 
+import com.liferay.frontend.data.set.view.FDSSchemaLabelField;
+
 import java.util.List;
 
 /**
@@ -12,16 +14,16 @@ import java.util.List;
  */
 public class FDSListSchema {
 
-	public List<FDSListSchemaLabelField> getFDSListSchemaLabelFieldsList() {
-		return _fdsListSchemaLabelFieldsList;
+	public List<FDSSchemaLabelField> getFDSSchemaLabelFieldsList() {
+		return _fdsSchemaLabelFieldsList;
 	}
 
-	public void setFDSListSchemaLabelFieldsList(
-		List<FDSListSchemaLabelField> fdsListSchemaLabelFieldsList) {
+	public void setFDSSchemaLabelFieldsList(
+		List<FDSSchemaLabelField> fdsSchemaLabelFieldsList) {
 
-		_fdsListSchemaLabelFieldsList = fdsListSchemaLabelFieldsList;
+		_fdsSchemaLabelFieldsList = fdsSchemaLabelFieldsList;
 	}
 
-	private List<FDSListSchemaLabelField> _fdsListSchemaLabelFieldsList;
+	private List<FDSSchemaLabelField> _fdsSchemaLabelFieldsList;
 
 }

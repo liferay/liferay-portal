@@ -5,9 +5,9 @@
 
 package com.liferay.frontend.data.set.internal.view.list;
 
+import com.liferay.frontend.data.set.view.FDSSchemaLabelField;
 import com.liferay.frontend.data.set.view.list.FDSListSchema;
 import com.liferay.frontend.data.set.view.list.FDSListSchemaBuilder;
-import com.liferay.frontend.data.set.view.list.FDSListSchemaLabelField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,8 @@ import java.util.Map;
 public class FDSListSchemaBuilderImpl implements FDSListSchemaBuilder {
 
 	@Override
-	public FDSListSchemaBuilder add(
-		FDSListSchemaLabelField fdsListSchemaLabelField) {
-
-		_fdsListSchemaLabelFieldsList.add(fdsListSchemaLabelField);
+	public FDSListSchemaBuilder add(FDSSchemaLabelField fdsSchemaLabelField) {
+		_fdsSchemaLabelFieldsList.add(fdsSchemaLabelField);
 
 		return this;
 	}
@@ -32,41 +30,38 @@ public class FDSListSchemaBuilderImpl implements FDSListSchemaBuilder {
 		String displayTypeKey, Map<String, String> displayTypeValues,
 		String value) {
 
-		FDSListSchemaLabelField fdsListSchemaLabelField =
-			new FDSListSchemaLabelField();
+		FDSSchemaLabelField fdsSchemaLabelField = new FDSSchemaLabelField();
 
-		fdsListSchemaLabelField.setDisplayTypeKey(displayTypeKey);
-		fdsListSchemaLabelField.setDisplayTypeValues(displayTypeValues);
-		fdsListSchemaLabelField.setValue(value);
+		fdsSchemaLabelField.setDisplayTypeKey(displayTypeKey);
+		fdsSchemaLabelField.setDisplayTypeValues(displayTypeValues);
+		fdsSchemaLabelField.setValue(value);
 
-		_fdsListSchemaLabelFieldsList.add(fdsListSchemaLabelField);
+		_fdsSchemaLabelFieldsList.add(fdsSchemaLabelField);
 
 		return this;
 	}
 
 	@Override
 	public FDSListSchemaBuilder add(String displayType, String value) {
-		FDSListSchemaLabelField fdsListSchemaLabelField =
-			new FDSListSchemaLabelField();
+		FDSSchemaLabelField fdsSchemaLabelField = new FDSSchemaLabelField();
 
-		fdsListSchemaLabelField.setDisplayType(displayType);
-		fdsListSchemaLabelField.setValue(value);
+		fdsSchemaLabelField.setDisplayType(displayType);
+		fdsSchemaLabelField.setValue(value);
 
-		_fdsListSchemaLabelFieldsList.add(fdsListSchemaLabelField);
+		_fdsSchemaLabelFieldsList.add(fdsSchemaLabelField);
 
 		return this;
 	}
 
 	@Override
 	public FDSListSchema build() {
-		_fdsListSchema.setFDSListSchemaLabelFieldsList(
-			_fdsListSchemaLabelFieldsList);
+		_fdsListSchema.setFDSSchemaLabelFieldsList(_fdsSchemaLabelFieldsList);
 
 		return _fdsListSchema;
 	}
 
 	private final FDSListSchema _fdsListSchema = new FDSListSchema();
-	private final List<FDSListSchemaLabelField> _fdsListSchemaLabelFieldsList =
+	private final List<FDSSchemaLabelField> _fdsSchemaLabelFieldsList =
 		new ArrayList<>();
 
 }
