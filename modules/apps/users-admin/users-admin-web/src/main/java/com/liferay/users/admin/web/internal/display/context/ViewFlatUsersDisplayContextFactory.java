@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -175,6 +176,36 @@ public class ViewFlatUsersDisplayContextFactory {
 				}
 			}
 		}
+
+		String selectionString = ParamUtil.getString(
+			httpServletRequest, "selection", "all");
+
+		if (Objects.equals(selectionString, "selected-account-users")) {
+			long[] accountEntryIds = ParamUtil.getLongValues(
+				httpServletRequest, "accountEntryIds");
+
+			if (accountEntryIds.length > 0) {
+				params.put("accountEntryIds", accountEntryIds);
+			}
+			else {
+				selectionString = "all";
+			}
+		}
+		else if (Objects.equals(
+					selectionString, "selected-organization-users")) {
+
+			Long[] organizationIds = ArrayUtil.toArray(
+				ParamUtil.getLongValues(httpServletRequest, "organizationIds"));
+
+			if (organizationIds.length > 0) {
+				params.put("usersOrgs", organizationIds);
+			}
+			else {
+				selectionString = "all";
+			}
+		}
+
+		portletURL.setParameter("selection", selectionString);
 
 		userSearch.setResultsAndTotal(
 			() -> UserLocalServiceUtil.search(

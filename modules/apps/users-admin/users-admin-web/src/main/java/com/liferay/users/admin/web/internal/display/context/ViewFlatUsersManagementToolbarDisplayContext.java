@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -35,6 +36,7 @@ import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
 import jakarta.portlet.PortletURL;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Pei-Jung Lan
@@ -57,6 +59,8 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 		_navigation = ParamUtil.getString(
 			liferayPortletRequest, "navigation", "active");
+		_selectionNavigation = ParamUtil.getString(
+			liferayPortletRequest, "selection", "all");
 	}
 
 	@Override
@@ -150,6 +154,12 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 			StringPool.BLANK
 		).setNavigation(
 			(String)null
+		).setParameter(
+			"accountEntryIds", (String)null
+		).setParameter(
+			"organizationIds", (String)null
+		).setParameter(
+			"selection", "all"
 		).buildString();
 	}
 
@@ -162,6 +172,25 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 					"mvcRenderCommandName", "/users_admin/edit_user");
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "add-user"));
+			}
+		).build();
+	}
+
+	@Override
+	public List<DropdownItem> getFilterDropdownItems() {
+		return DropdownItemListBuilder.addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					super.getFilterDropdownItems());
+				dropdownGroupItem.setLabel(
+					getFilterNavigationDropdownItemsLabel());
+			}
+		).addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					_getFilterNavigationDropdownItems());
+				dropdownGroupItem.setLabel(
+					LanguageUtil.get(httpServletRequest, "filter-by"));
 			}
 		).build();
 	}
@@ -185,6 +214,29 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 						"%s: %s",
 						LanguageUtil.get(httpServletRequest, "status"),
 						LanguageUtil.get(httpServletRequest, _navigation)));
+			}
+		).add(
+			() -> !Objects.equals(_getSelectionNavigation(), "all"),
+			labelItem -> {
+				labelItem.putData(
+					"removeLabelURL",
+					PortletURLBuilder.create(
+						getPortletURL()
+					).setParameter(
+						"accountEntryIds", (String)null
+					).setParameter(
+						"organizationIds", (String)null
+					).setParameter(
+						"selection", "all"
+					).buildString());
+
+				labelItem.setDismissible(true);
+				labelItem.setLabel(
+					String.format(
+						"%s: %s",
+						LanguageUtil.get(httpServletRequest, "selection"),
+						LanguageUtil.get(
+							httpServletRequest, _getSelectionNavigation())));
 			}
 		).build();
 	}
@@ -259,6 +311,91 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 		).buildPortletURL();
 	}
 
+	private List<DropdownItem> _getFilterNavigationDropdownItems() {
+		return DropdownItemListBuilder.add(
+			dropdownItem -> {
+				dropdownItem.setActive(
+					Objects.equals(_getSelectionNavigation(), "all"));
+				dropdownItem.setHref(
+					PortletURLBuilder.create(
+						getPortletURL()
+					).setParameter(
+						"accountEntryIds", (String)null
+					).setParameter(
+						"organizationIds", (String)null
+					).setParameter(
+						"selection", "all"
+					).buildString());
+				dropdownItem.setLabel(
+					LanguageUtil.get(httpServletRequest, "all"));
+			}
+		).add(
+			dropdownItem -> {
+				dropdownItem.setActive(
+					Objects.equals(
+						_getSelectionNavigation(), "selected-account-users"));
+
+				dropdownItem.putData("action", "selectAccountEntries");
+
+				dropdownItem.putData(
+					"accountEntriesSelectorURL",
+					PortletURLBuilder.createRenderURL(
+						liferayPortletResponse
+					).setMVCPath(
+						"/select_account_entries.jsp"
+					).setParameter(
+						"selection", "selected-account-users"
+					).setWindowState(
+						LiferayWindowState.POP_UP
+					).buildString());
+
+				dropdownItem.putData(
+					"dialogTitle",
+					LanguageUtil.get(httpServletRequest, "select-accounts"));
+				dropdownItem.putData("redirectURL", currentURLObj.toString());
+
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						httpServletRequest, "selected-account-users"));
+			}
+		).add(
+			dropdownItem -> {
+				dropdownItem.setActive(
+					Objects.equals(
+						_getSelectionNavigation(),
+						"selected-organization-users"));
+
+				dropdownItem.putData("action", "selectOrganizations");
+
+				dropdownItem.putData(
+					"dialogTitle",
+					LanguageUtil.get(
+						httpServletRequest, "select-organizations"));
+
+				dropdownItem.putData(
+					"organizationsSelectorURL",
+					PortletURLBuilder.createRenderURL(
+						liferayPortletResponse
+					).setMVCPath(
+						"/select_organizations.jsp"
+					).setParameter(
+						"selection", "selected-organization-users"
+					).setWindowState(
+						LiferayWindowState.POP_UP
+					).buildString());
+
+				dropdownItem.putData("redirectURL", currentURLObj.toString());
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						httpServletRequest, "selected-organization-users"));
+			}
+		).build();
+	}
+
+	private String _getSelectionNavigation() {
+		return _selectionNavigation;
+	}
+
 	private boolean _hasDeletePermission(
 		PermissionChecker permissionChecker, UserSearchTerms userSearchTerms) {
 
@@ -274,6 +411,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	}
 
 	private final String _navigation;
+	private final String _selectionNavigation;
 	private final boolean _showDeleteButton;
 	private final boolean _showRestoreButton;
 

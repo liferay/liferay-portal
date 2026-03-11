@@ -86,7 +86,6 @@ import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.UserTable;
-import com.liferay.portal.kernel.model.Users_OrgsTable;
 import com.liferay.portal.kernel.model.Users_RolesTable;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
