@@ -33,6 +33,8 @@ export const test = mergeTests(
 	loginTest()
 );
 
+const userEmailAddress = getRandomString() + '@liferay.com';
+
 const randomString = getRandomString();
 
 const siteName = 'My Site ' + randomString;
@@ -89,7 +91,7 @@ test(
 			);
 
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
-				emailAddress: 'userea@liferay.com',
+				emailAddress: userEmailAddress,
 			});
 
 			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
@@ -133,7 +135,7 @@ test(
 			await segmentsPage.clickLinkByText(segmentName);
 
 			await segmentsPage.viewMembers({
-				expectedEmail: 'userea@liferay.com',
+				expectedEmail: userEmailAddress,
 			});
 		});
 
@@ -168,7 +170,7 @@ test(
 			);
 
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
-				emailAddress: 'userea@liferay.com',
+				emailAddress: userEmailAddress,
 			});
 
 			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
@@ -195,7 +197,7 @@ test(
 			await segmentsPage.clickLinkByText(segmentName);
 
 			await segmentsPage.viewMembers({
-				expectedEmail: 'userea@liferay.com',
+				expectedEmail: userEmailAddress,
 			});
 		});
 
@@ -229,7 +231,7 @@ test(
 			);
 
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
-				emailAddress: 'userea@liferay.com',
+				emailAddress: userEmailAddress,
 			});
 
 			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
@@ -254,7 +256,7 @@ test(
 			await segmentsPage.clickLinkByText(segmentName);
 
 			await segmentsPage.viewMembers({
-				expectedEmail: 'userea@liferay.com',
+				expectedEmail: userEmailAddress,
 			});
 		});
 
@@ -312,13 +314,16 @@ test(
 		const segmentName2 = 'Segment With User2';
 		const segmentName3 = 'AddSegmentByOtherSegmentsWarning Test';
 
+		const emailAddress1 = getRandomString() + '@liferay.com';
+		const emailAddress2 = getRandomString() + '@liferay.com';
+
 		await test.step('Given 2 users were created', async () => {
 			await apiHelpers.headlessAdminUser.postUserAccount({
-				emailAddress: `userea1@liferay.com`,
+				emailAddress: emailAddress1,
 			});
 
 			await apiHelpers.headlessAdminUser.postUserAccount({
-				emailAddress: `userea2@liferay.com`,
+				emailAddress: emailAddress2,
 			});
 		});
 
@@ -331,7 +336,7 @@ test(
 				user: ['Email Address'],
 			});
 
-			await segmentsPage.fillField('userea1@liferay.com');
+			await segmentsPage.fillField(emailAddress1);
 
 			await segmentsPage.saveButton.click();
 
@@ -341,7 +346,7 @@ test(
 				user: ['Email Address'],
 			});
 
-			await segmentsPage.fillField('userea2@liferay.com');
+			await segmentsPage.fillField(emailAddress2);
 
 			await segmentsPage.saveButton.click();
 		});
@@ -515,7 +520,7 @@ test(
 			await usersAndOrganizationsPage.goToUsers();
 			await usersAndOrganizationsPage.addUserButton.click();
 
-			await editUserPage.emailAddressInput.fill('shaquille@liferay.com');
+			await editUserPage.emailAddressInput.fill(getRandomString() + '@liferay.com');
 			await editUserPage.firstNameInput.fill('Shaquille');
 			await editUserPage.lastNameInput.fill(`O'Neal`);
 			await editUserPage.screenNameInput.fill('shaquille');
@@ -562,7 +567,7 @@ test(
 
 		await test.step('Given a user is created', async () => {
 			await apiHelpers.headlessAdminUser.postUserAccount({
-				emailAddress: `userea@liferay.com`,
+				emailAddress: userEmailAddress,
 			});
 		});
 
@@ -575,7 +580,7 @@ test(
 				user: ['Email Address'],
 			});
 
-			await segmentsPage.fillField('userea@liferay.com');
+			await segmentsPage.fillField(userEmailAddress);
 
 			await segmentsPage.saveButton.click();
 		});
@@ -673,7 +678,7 @@ test(
 			await usersAndOrganizationsPage.goToUsers();
 			await usersAndOrganizationsPage.addUserButton.click();
 
-			await editUserPage.emailAddressInput.fill('u1@liferay.com');
+			await editUserPage.emailAddressInput.fill(getRandomString() + '@liferay.com');
 			await editUserPage.firstNameInput.fill('User');
 			await editUserPage.lastNameInput.fill(`1 + / ? # &`);
 			await editUserPage.screenNameInput.fill('u1');
@@ -1422,7 +1427,7 @@ test(
 			await usersAndOrganizationsPage.goToUsers();
 			await usersAndOrganizationsPage.addUserButton.click();
 
-			await editUserPage.emailAddressInput.fill('userea@liferay.com');
+			await editUserPage.emailAddressInput.fill(userEmailAddress);
 			await editUserPage.firstNameInput.fill('userfn');
 			await editUserPage.lastNameInput.fill('userln');
 			await editUserPage.screenNameInput.fill('usersn');
