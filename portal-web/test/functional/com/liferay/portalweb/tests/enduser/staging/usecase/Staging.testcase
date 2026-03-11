@@ -484,16 +484,15 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-146160. Verify Admin can enable local staging on the inherited site even site template propagation is disabled. The testcase is blocked by LPS-146160."
+	@description = "This is a test for LPS-146160. Verify Admin can enable local staging on the inherited site. The testcase is blocked by LPS-146160."
 	@priority = 3
 	test CanEnableLocalStagingOnInheritedSite {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		task ("Given: Create a site with new site template with disable allow site administrators to modify pages associated with this site template, even when propagation of changes is enabled and Ready for Propagation,the testcase is blocked by LPS-146160.") {
+		task ("Given: Create a site with new site template with disable allow site administrators to modify pages associated with this site template, the testcase is blocked by LPS-146160.") {
 			SiteTemplates.addCP(
 				disableChanges = "true",
-				disablePropagation = "true",
 				siteTemplateName = "Site Template Name1");
 
 			SiteTemplates.addSitePageViaSiteTemplateCP(

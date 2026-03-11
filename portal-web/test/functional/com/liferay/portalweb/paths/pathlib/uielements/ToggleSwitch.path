@@ -71,11 +71,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>READY_FOR_PROPAGATION</td>
-	<td>//label[contains(.,'Ready for Propagation')]//span[contains(@class,'toggle-switch-handle')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>SHOW_SPECIFIC_TOGGLE_SWITCH</td>
 	<td>//label[contains(.,'${key_checkSetupName}')]//input[contains(@class,'field') and contains(@class,'toggle-switch')]</td>
 	<td></td>

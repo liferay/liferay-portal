@@ -416,11 +416,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ENABLE_PROPAGATION</td>
-	<td>//a[contains(@class,'btn')][contains(.,'Ready for Propagation')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ENTER</td>
 	<td>//button[contains(.,'Enter')]</td>
 	<td></td>

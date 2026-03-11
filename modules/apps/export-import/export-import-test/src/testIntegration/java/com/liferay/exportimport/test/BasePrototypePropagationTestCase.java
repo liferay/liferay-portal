@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.sites.kernel.util.Sites;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -253,6 +255,8 @@ public abstract class BasePrototypePropagationTestCase {
 		MergeLayoutPrototypesThreadLocal.clearMergeComplete();
 		MergeLayoutPrototypesThreadLocal.setSkipMerge(false);
 
+		_sites.mergeLayoutPrototypeLayout(group, layout);
+
 		return LayoutLocalServiceUtil.getLayout(layout.getPlid());
 	}
 
@@ -287,5 +291,8 @@ public abstract class BasePrototypePropagationTestCase {
 	protected Layout layoutPrototypeLayout;
 	protected String portletId;
 	protected Layout prototypeLayout;
+
+	@Inject
+	private Sites _sites;
 
 }

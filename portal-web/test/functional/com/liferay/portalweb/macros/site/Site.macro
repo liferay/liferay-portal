@@ -38,19 +38,18 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addBlankCP(membershipType = null, singleSiteTypePermission = null, parentSiteName = null, uncheckPropagation = null, siteName = null, siteTemplateName = null) {
+	macro addBlankCP(membershipType = null, singleSiteTypePermission = null, parentSiteName = null, siteName = null, siteTemplateName = null) {
 		Site.addCP(
 			membershipType = ${membershipType},
 			parentSiteName = ${parentSiteName},
 			singleSiteTypePermission = ${singleSiteTypePermission},
 			siteName = ${siteName},
 			siteTemplateName = ${siteTemplateName},
-			siteType = "Blank",
-			uncheckPropagation = ${uncheckPropagation});
+			siteType = "Blank");
 	}
 
 	@summary = "Default summary"
-	macro addCP(membershipType = null, singleSiteTypePermission = null, siteTemplateTab = null, parentSiteName = null, uncheckPropagation = null, siteName = null, siteType = null) {
+	macro addCP(membershipType = null, singleSiteTypePermission = null, siteTemplateTab = null, parentSiteName = null, siteName = null, siteType = null) {
 		LexiconEntry.gotoAdd();
 
 		if (${singleSiteTypePermission} != "true") {
@@ -79,22 +78,6 @@ definition {
 			SelectFrameTop();
 
 			Alert.viewSuccessMessage();
-		}
-
-		if (${siteType} == "Site Template") {
-			if (${uncheckPropagation} == "true") {
-				Click(
-					key_itemName = "Pages",
-					locator1 = "ListGroupItem#ITEM_TEXT");
-
-				Navigator.gotoNavTab(navTab = "Pages");
-
-				Uncheck.uncheckToggleSwitch(locator1 = "Checkbox#ENABLE_PROPAGATION");
-
-				PortletEntry.save();
-
-				Navigator.gotoBack();
-			}
 		}
 
 		while (IsElementNotPresent(key_itemName = "Site Configuration", locator1 = "ListGroupItem#ITEM_TEXT")) {
@@ -214,7 +197,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addSiteTemplateCP(membershipType = null, siteTemplateTab = null, parentSiteName = null, uncheckPropagation = null, siteName = null, enablePrivatePage = null, siteTemplateName = null) {
+	macro addSiteTemplateCP(membershipType = null, siteTemplateTab = null, parentSiteName = null, siteName = null, enablePrivatePage = null, siteTemplateName = null) {
 		if (isSet(siteTemplateTab)) {
 			Site.addCP(
 				enablePrivatePage = ${enablePrivatePage},
@@ -223,8 +206,7 @@ definition {
 				siteName = ${siteName},
 				siteTemplateName = ${siteTemplateName},
 				siteTemplateTab = ${siteTemplateTab},
-				siteType = "Site Template",
-				uncheckPropagation = ${uncheckPropagation});
+				siteType = "Site Template");
 		}
 		else {
 			Site.addCP(
@@ -232,8 +214,7 @@ definition {
 				parentSiteName = ${parentSiteName},
 				siteName = ${siteName},
 				siteTemplateName = ${siteTemplateName},
-				siteType = "Site Template",
-				uncheckPropagation = ${uncheckPropagation});
+				siteType = "Site Template");
 		}
 	}
 

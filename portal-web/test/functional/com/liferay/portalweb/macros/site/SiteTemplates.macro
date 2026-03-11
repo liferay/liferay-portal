@@ -56,7 +56,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addCP(siteTemplateActive = null, disableChanges = null, disablePropagation = null, siteTemplateName = null) {
+	macro addCP(siteTemplateActive = null, disableChanges = null, siteTemplateName = null) {
 		if (!(isSet(baseURL))) {
 			var baseURL = JSONCompany.getPortalURL();
 		}
@@ -78,10 +78,6 @@ definition {
 
 		if (${disableChanges} == "true") {
 			Uncheck.uncheckHiddenToggleSwitch(locator1 = "ToggleSwitch#ALLOW_SITE_ADMIN_MODIFY_PAGES");
-		}
-
-		if (${disablePropagation} == "true") {
-			Uncheck.uncheckHiddenToggleSwitch(locator1 = "ToggleSwitch#READY_FOR_PROPAGATION");
 		}
 
 		PortletEntry.save();
@@ -273,44 +269,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro disablePropagation(siteTemplateName = null) {
-		var key_siteTemplateName = ${siteTemplateName};
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "SiteTemplates#SITE_TEMPLATE_TABLE_NAME",
-			value1 = ${siteTemplateName});
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Disable Propagation",
-			rowEntry = ${siteTemplateName});
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
-	macro disablePropagationPG() {
-		WaitForElementPresent(locator1 = "ControlMenu#MERGE");
-
-		Click(locator1 = "ControlMenu#MERGE");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#CUSTOMIZED_PAGE_INFO",
-			value1 = "Each page modification can trigger a propagation from the site template to the connected sites. You can disable the propagation temporally and enable it later when the template is ready. Automatic propagation can be resource intensive depending on the scope of changes made to the template.");
-
-		AssertTextEquals(
-			locator1 = "Button#DISABLE_PROPAGATION",
-			value1 = "Disable Propagation");
-
-		AssertClick(
-			locator1 = "Button#DISABLE_PROPAGATION",
-			value1 = "Disable Propagation");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ALERT_DISMISSIBLE",
-			value1 = "Propagation is disabled. Connected sites might not have been updated yet. Initial propagations to sites that are being created from this template still run.");
-	}
-
-	@summary = "Default summary"
 	macro editCP(siteTemplateDescription = null, siteTemplateName = null) {
 		SiteTemplates.gotoSettingsCP(siteTemplateName = ${siteTemplateName});
 
@@ -377,60 +335,6 @@ definition {
 		Button.clickSave();
 
 		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
-	macro enableAutomaticPropagation() {
-		SystemSettings.openSystemSettingsAdmin();
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Infrastructure",
-			configurationName = "Site Templates",
-			configurationScope = "Virtual Instance Scope");
-
-		Check.checkToggleSwitch(
-			key_toggleSwitchLabel = "Trigger Propagation",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
-		Button.clickSave();
-	}
-
-	@summary = "Default summary"
-	macro enablePropagation(siteTemplateName = null) {
-		var key_siteTemplateName = ${siteTemplateName};
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "SiteTemplates#SITE_TEMPLATE_TABLE_NAME",
-			value1 = ${siteTemplateName});
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Ready for Propagation",
-			rowEntry = ${siteTemplateName});
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
-	macro enablePropagationPG() {
-		WaitForElementPresent(locator1 = "ControlMenu#MERGE");
-
-		Click(locator1 = "ControlMenu#MERGE");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#CUSTOMIZED_PAGE_INFO",
-			value1 = "Each page modification can trigger a propagation from the site template to the connected sites. You can disable the propagation temporally and enable it later when the template is ready. Automatic propagation can be resource intensive depending on the scope of changes made to the template.");
-
-		AssertTextEquals(
-			locator1 = "Button#ENABLE_PROPAGATION",
-			value1 = "Ready for Propagation");
-
-		AssertClick(
-			locator1 = "Button#ENABLE_PROPAGATION",
-			value1 = "Ready for Propagation");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ALERT_DISMISSIBLE",
-			value1 = "Propagation is enabled. Connected sites will be updated once a site page is visited.");
 	}
 
 	@summary = "Default summary"

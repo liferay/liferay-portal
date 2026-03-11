@@ -8,7 +8,7 @@ definition {
 	// This macro should be removed when the issue ISSD-1572 be completed and the macro HeadlessSite.addSite() is usable.
 
 	@summary = "Add the Site manually on the site page"
-	macro addCP(membershipType = null, singleSiteTypePermission = null, siteTemplateTab = null, parentSiteName = null, uncheckPropagation = null, siteName = null, siteType = null) {
+	macro addCP(membershipType = null, singleSiteTypePermission = null, siteTemplateTab = null, parentSiteName = null, siteName = null, siteType = null) {
 		LexiconEntry.gotoAdd();
 
 		if (${singleSiteTypePermission} != "true") {
@@ -37,22 +37,6 @@ definition {
 			SelectFrameTop();
 
 			Alert.viewSuccessMessage();
-		}
-
-		if (${siteType} == "Site Template") {
-			if (${uncheckPropagation} == "true") {
-				Click(
-					key_itemName = "Pages",
-					locator1 = "ListGroupItem#ITEM_TEXT");
-
-				Navigator.gotoNavTab(navTab = "Pages");
-
-				Uncheck.uncheckToggleSwitch(locator1 = "Checkbox#ENABLE_PROPAGATION");
-
-				PortletEntry.save();
-
-				Navigator.gotoBack();
-			}
 		}
 
 		while (IsElementNotPresent(key_itemName = "Site Configuration", locator1 = "ListGroupItem#ITEM_TEXT")) {
