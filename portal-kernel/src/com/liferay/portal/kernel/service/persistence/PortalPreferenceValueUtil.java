@@ -274,6 +274,86 @@ public class PortalPreferenceValueUtil {
 	}
 
 	/**
+	 * Returns all the portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @return the matching portal preference values
+	 */
+	public static List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds) {
+
+		return getPersistence().findByPortalPreferencesId(portalPreferencesIds);
+	}
+
+	/**
+	 * Returns a range of all the portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @param start the lower bound of the range of portal preference values
+	 * @param end the upper bound of the range of portal preference values (not inclusive)
+	 * @return the range of matching portal preference values
+	 */
+	public static List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds, int start, int end) {
+
+		return getPersistence().findByPortalPreferencesId(
+			portalPreferencesIds, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @param start the lower bound of the range of portal preference values
+	 * @param end the upper bound of the range of portal preference values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching portal preference values
+	 */
+	public static List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds, int start, int end,
+		OrderByComparator<PortalPreferenceValue> orderByComparator) {
+
+		return getPersistence().findByPortalPreferencesId(
+			portalPreferencesIds, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the portal preference values where portalPreferencesId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @param start the lower bound of the range of portal preference values
+	 * @param end the upper bound of the range of portal preference values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching portal preference values
+	 */
+	public static List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds, int start, int end,
+		OrderByComparator<PortalPreferenceValue> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByPortalPreferencesId(
+			portalPreferencesIds, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
 	 * Removes all the portal preference values where portalPreferencesId = &#63; from the database.
 	 *
 	 * @param portalPreferencesId the portal preferences ID
@@ -290,6 +370,17 @@ public class PortalPreferenceValueUtil {
 	 */
 	public static int countByPortalPreferencesId(long portalPreferencesId) {
 		return getPersistence().countByPortalPreferencesId(portalPreferencesId);
+	}
+
+	/**
+	 * Returns the number of portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @return the number of matching portal preference values
+	 */
+	public static int countByPortalPreferencesId(long[] portalPreferencesIds) {
+		return getPersistence().countByPortalPreferencesId(
+			portalPreferencesIds);
 	}
 
 	/**

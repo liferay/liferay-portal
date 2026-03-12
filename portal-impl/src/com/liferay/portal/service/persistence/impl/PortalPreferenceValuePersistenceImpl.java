@@ -22,12 +22,14 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.PortalPreferenceValuePersistence;
 import com.liferay.portal.kernel.service.persistence.PortalPreferenceValueUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.PortalPreferenceValueImpl;
 import com.liferay.portal.model.impl.PortalPreferenceValueModelImpl;
 
@@ -75,6 +77,7 @@ public class PortalPreferenceValuePersistenceImpl
 	private FinderPath _finderPathWithPaginationFindByPortalPreferencesId;
 	private FinderPath _finderPathWithoutPaginationFindByPortalPreferencesId;
 	private FinderPath _finderPathCountByPortalPreferencesId;
+	private FinderPath _finderPathWithPaginationCountByPortalPreferencesId;
 
 	/**
 	 * Returns all the portal preference values where portalPreferencesId = &#63;.
@@ -520,6 +523,197 @@ public class PortalPreferenceValuePersistenceImpl
 	}
 
 	/**
+	 * Returns all the portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @return the matching portal preference values
+	 */
+	@Override
+	public List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds) {
+
+		return findByPortalPreferencesId(
+			portalPreferencesIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @param start the lower bound of the range of portal preference values
+	 * @param end the upper bound of the range of portal preference values (not inclusive)
+	 * @return the range of matching portal preference values
+	 */
+	@Override
+	public List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds, int start, int end) {
+
+		return findByPortalPreferencesId(
+			portalPreferencesIds, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @param start the lower bound of the range of portal preference values
+	 * @param end the upper bound of the range of portal preference values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching portal preference values
+	 */
+	@Override
+	public List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds, int start, int end,
+		OrderByComparator<PortalPreferenceValue> orderByComparator) {
+
+		return findByPortalPreferencesId(
+			portalPreferencesIds, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the portal preference values where portalPreferencesId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortalPreferenceValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @param start the lower bound of the range of portal preference values
+	 * @param end the upper bound of the range of portal preference values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching portal preference values
+	 */
+	@Override
+	public List<PortalPreferenceValue> findByPortalPreferencesId(
+		long[] portalPreferencesIds, int start, int end,
+		OrderByComparator<PortalPreferenceValue> orderByComparator,
+		boolean useFinderCache) {
+
+		if (portalPreferencesIds == null) {
+			portalPreferencesIds = new long[0];
+		}
+		else if (portalPreferencesIds.length > 1) {
+			portalPreferencesIds = ArrayUtil.sortedUnique(portalPreferencesIds);
+		}
+
+		if (portalPreferencesIds.length == 1) {
+			return findByPortalPreferencesId(
+				portalPreferencesIds[0], start, end, orderByComparator);
+		}
+
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderArgs = new Object[] {
+					StringUtil.merge(portalPreferencesIds)
+				};
+			}
+		}
+		else if (useFinderCache) {
+			finderArgs = new Object[] {
+				StringUtil.merge(portalPreferencesIds), start, end,
+				orderByComparator
+			};
+		}
+
+		List<PortalPreferenceValue> list = null;
+
+		if (useFinderCache) {
+			list = (List<PortalPreferenceValue>)dummyFinderCache.getResult(
+				_finderPathWithPaginationFindByPortalPreferencesId, finderArgs,
+				this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (PortalPreferenceValue portalPreferenceValue : list) {
+					if (!ArrayUtil.contains(
+							portalPreferencesIds,
+							portalPreferenceValue.getPortalPreferencesId())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = new StringBundler();
+
+			sb.append(_SQL_SELECT_PORTALPREFERENCEVALUE_WHERE);
+
+			if (portalPreferencesIds.length > 0) {
+				sb.append("(");
+
+				sb.append(
+					_FINDER_COLUMN_PORTALPREFERENCESID_PORTALPREFERENCESID_7);
+
+				sb.append(StringUtil.merge(portalPreferencesIds));
+
+				sb.append(")");
+
+				sb.append(")");
+			}
+
+			sb.setStringAt(
+				removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(PortalPreferenceValueModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				list = (List<PortalPreferenceValue>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					dummyFinderCache.putResult(
+						_finderPathWithPaginationFindByPortalPreferencesId,
+						finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
 	 * Removes all the portal preference values where portalPreferencesId = &#63; from the database.
 	 *
 	 * @param portalPreferencesId the portal preferences ID
@@ -585,9 +779,83 @@ public class PortalPreferenceValuePersistenceImpl
 		return count.intValue();
 	}
 
+	/**
+	 * Returns the number of portal preference values where portalPreferencesId = any &#63;.
+	 *
+	 * @param portalPreferencesIds the portal preferences IDs
+	 * @return the number of matching portal preference values
+	 */
+	@Override
+	public int countByPortalPreferencesId(long[] portalPreferencesIds) {
+		if (portalPreferencesIds == null) {
+			portalPreferencesIds = new long[0];
+		}
+		else if (portalPreferencesIds.length > 1) {
+			portalPreferencesIds = ArrayUtil.sortedUnique(portalPreferencesIds);
+		}
+
+		Object[] finderArgs = new Object[] {
+			StringUtil.merge(portalPreferencesIds)
+		};
+
+		Long count = (Long)dummyFinderCache.getResult(
+			_finderPathWithPaginationCountByPortalPreferencesId, finderArgs,
+			this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler();
+
+			sb.append(_SQL_COUNT_PORTALPREFERENCEVALUE_WHERE);
+
+			if (portalPreferencesIds.length > 0) {
+				sb.append("(");
+
+				sb.append(
+					_FINDER_COLUMN_PORTALPREFERENCESID_PORTALPREFERENCESID_7);
+
+				sb.append(StringUtil.merge(portalPreferencesIds));
+
+				sb.append(")");
+
+				sb.append(")");
+			}
+
+			sb.setStringAt(
+				removeConjunction(sb.stringAt(sb.index() - 1)), sb.index() - 1);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				count = (Long)query.uniqueResult();
+
+				dummyFinderCache.putResult(
+					_finderPathWithPaginationCountByPortalPreferencesId,
+					finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
 	private static final String
 		_FINDER_COLUMN_PORTALPREFERENCESID_PORTALPREFERENCESID_2 =
 			"portalPreferenceValue.portalPreferencesId = ?";
+
+	private static final String
+		_FINDER_COLUMN_PORTALPREFERENCESID_PORTALPREFERENCESID_7 =
+			"portalPreferenceValue.portalPreferencesId IN (";
 
 	private FinderPath _finderPathWithPaginationFindByP_N;
 	private FinderPath _finderPathWithoutPaginationFindByP_N;
@@ -3472,6 +3740,11 @@ public class PortalPreferenceValuePersistenceImpl
 
 		_finderPathCountByPortalPreferencesId = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+			"countByPortalPreferencesId", new String[] {Long.class.getName()},
+			new String[] {"portalPreferencesId"}, false);
+
+		_finderPathWithPaginationCountByPortalPreferencesId = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
 			"countByPortalPreferencesId", new String[] {Long.class.getName()},
 			new String[] {"portalPreferencesId"}, false);
 
