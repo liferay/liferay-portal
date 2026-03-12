@@ -41,8 +41,7 @@ public class PortalPreferenceValueLocalServiceImpl
 
 		Map<PortalPreferenceKey, List<PortalPreferenceValue>>
 			portalPreferenceValuesMap = getPortalPreferenceValuesMap(
-				portalPreferenceValuePersistence, portalPreferencesId,
-				useFinderCache);
+				portalPreferenceValuePersistence, portalPreferencesId);
 
 		preferenceMap = new HashMap<>();
 
@@ -86,7 +85,7 @@ public class PortalPreferenceValueLocalServiceImpl
 	protected static Map<PortalPreferenceKey, List<PortalPreferenceValue>>
 		getPortalPreferenceValuesMap(
 			PortalPreferenceValuePersistence portalPreferenceValuePersistence,
-			long portalPreferencesId, boolean useFinderCache) {
+			long portalPreferencesId) {
 
 		Map<PortalPreferenceKey, List<PortalPreferenceValue>>
 			portalPreferenceValuesMap = new HashMap<>();
@@ -94,7 +93,7 @@ public class PortalPreferenceValueLocalServiceImpl
 		for (PortalPreferenceValue portalPreferenceValue :
 				portalPreferenceValuePersistence.findByPortalPreferencesId(
 					portalPreferencesId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null, useFinderCache)) {
+					null, false)) {
 
 			List<PortalPreferenceValue> portalPreferenceValues =
 				portalPreferenceValuesMap.computeIfAbsent(

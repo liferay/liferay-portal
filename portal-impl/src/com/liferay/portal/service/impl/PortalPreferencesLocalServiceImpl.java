@@ -239,7 +239,7 @@ public class PortalPreferencesLocalServiceImpl
 				PortalPreferenceValueLocalServiceImpl.
 					getPortalPreferenceValuesMap(
 						_portalPreferenceValuePersistence,
-						portalPreferencesModel.getPortalPreferencesId(), true);
+						portalPreferencesModel.getPortalPreferencesId());
 		}
 
 		_updatePortalPreferences(
