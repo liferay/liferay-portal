@@ -1591,7 +1591,7 @@
 		<!-- Finder methods -->
 
 		<finder name="PortalPreferencesId" return-type="Collection">
-			<finder-column name="portalPreferencesId" />
+			<finder-column arrayable-operator="OR" name="portalPreferencesId" />
 		</finder>
 		<finder name="P_N" return-type="Collection">
 			<finder-column name="portalPreferencesId" />
