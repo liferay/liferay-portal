@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.persistence.PortalPreferenceValuePersistence;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.base.PortalPreferencesLocalServiceBaseImpl;
@@ -219,12 +220,13 @@ public class PortalPreferencesLocalServiceImpl
 	private PortletPreferences _getCompanyPreferences(
 		long ownerId, String defaultPreferences) {
 
+		List<PortalPreferences> portalPreferencesList =
+			portalPreferencesPersistence.findByOwnerType(
+				PortletKeys.PREFS_OWNER_TYPE_COMPANY);
+
 		PortalPreferences portalPreferences = null;
 
-		for (PortalPreferences curPortalPreferences :
-				portalPreferencesPersistence.findByOwnerType(
-					PortletKeys.PREFS_OWNER_TYPE_COMPANY)) {
-
+		for (PortalPreferences curPortalPreferences : portalPreferencesList) {
 			if (curPortalPreferences.getOwnerId() == ownerId) {
 				portalPreferences = curPortalPreferences;
 
@@ -249,16 +251,42 @@ public class PortalPreferencesLocalServiceImpl
 			}
 		}
 
-		Map<PortalPreferenceKey, String[]> preferenceMap =
-			PortalPreferenceValueLocalServiceImpl.getPreferenceMap(
+		int size = portalPreferencesList.size();
+
+		if (size == 0) {
+			return new PortalPreferencesWrapper(
+				new PortalPreferencesImpl(
+					portalPreferences.getOwnerId(),
+					portalPreferences.getOwnerType(), Collections.emptyMap(),
+					false));
+		}
+
+		if (size == 1) {
+			return new PortalPreferencesWrapper(
+				new PortalPreferencesImpl(
+					portalPreferences.getOwnerId(),
+					portalPreferences.getOwnerType(),
+					PortalPreferenceValueLocalServiceImpl.getPreferenceMap(
+						_portalPreferenceValuePersistence,
+						portalPreferences.getPortalPreferencesId(), true),
+					false));
+		}
+
+		Map<Long, Map<PortalPreferenceKey, String[]>> preferenceMaps =
+			PortalPreferenceValueLocalServiceImpl.getPreferenceMaps(
 				_portalPreferenceValuePersistence,
-				portalPreferences.getPortalPreferencesId(), true);
+				ListUtil.toLongArray(
+					portalPreferencesList,
+					PortalPreferences::getPortalPreferencesId));
 
-		PortalPreferencesImpl portalPreferencesImpl = new PortalPreferencesImpl(
-			portalPreferences.getOwnerId(), portalPreferences.getOwnerType(),
-			preferenceMap, false);
-
-		return new PortalPreferencesWrapper(portalPreferencesImpl);
+		return new PortalPreferencesWrapper(
+			new PortalPreferencesImpl(
+				portalPreferences.getOwnerId(),
+				portalPreferences.getOwnerType(),
+				preferenceMaps.getOrDefault(
+					portalPreferences.getPortalPreferencesId(),
+					Collections.emptyMap()),
+				false));
 	}
 
 	private PortalPreferences _updatePortalPreferences(
