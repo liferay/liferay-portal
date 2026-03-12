@@ -162,6 +162,10 @@ public class PortalPreferencesLocalServiceImpl
 	public PortletPreferences getPreferences(
 		long ownerId, int ownerType, String defaultPreferences) {
 
+		if (ownerType == PortletKeys.PREFS_OWNER_TYPE_COMPANY) {
+			return _getCompanyPreferences(ownerId, defaultPreferences);
+		}
+
 		PortalPreferences portalPreferences = fetchPortalPreferences(
 			ownerId, ownerType);
 
@@ -210,6 +214,47 @@ public class PortalPreferencesLocalServiceImpl
 
 		return _updatePortalPreferences(
 			ownerId, ownerType, portalPreferencesImpl.getPreferences());
+	}
+
+	private PortletPreferences _getCompanyPreferences(
+		long ownerId, String defaultPreferences) {
+
+		PortalPreferences portalPreferences = null;
+
+		for (PortalPreferences curPortalPreferences :
+				portalPreferencesPersistence.findByOwnerType(
+					PortletKeys.PREFS_OWNER_TYPE_COMPANY)) {
+
+			if (curPortalPreferences.getOwnerId() == ownerId) {
+				portalPreferences = curPortalPreferences;
+
+				break;
+			}
+		}
+
+		if (portalPreferences == null) {
+			try {
+				portalPreferences =
+					portalPreferencesLocalService.addPortalPreferences(
+						ownerId, PortletKeys.PREFS_OWNER_TYPE_COMPANY,
+						defaultPreferences);
+			}
+			catch (Throwable throwable) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(throwable);
+				}
+
+				portalPreferences = fetchPortalPreferences(
+					ownerId, PortletKeys.PREFS_OWNER_TYPE_COMPANY);
+			}
+		}
+
+		PortalPreferencesImpl portalPreferencesImpl =
+			(PortalPreferencesImpl)
+				_portalPreferenceValueLocalService.getPortalPreferences(
+					portalPreferences, false);
+
+		return new PortalPreferencesWrapper(portalPreferencesImpl);
 	}
 
 	private PortalPreferences _updatePortalPreferences(
