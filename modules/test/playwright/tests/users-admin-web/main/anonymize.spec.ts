@@ -947,7 +947,7 @@ test(
 		);
 
 		await usersAndOrganizationsPage.goToUsers(false);
-		await usersAndOrganizationsPage.filterUsers('inactive');
+		await usersAndOrganizationsPage.filterUsers('Inactive');
 		await usersAndOrganizationsPage.activateUsers([userAccount.name]);
 
 		await page.goto(`/group/${site.name}${PORTLET_URLS.documentLibrary}`);

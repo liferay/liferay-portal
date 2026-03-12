@@ -44,7 +44,7 @@ test(
 			await usersAndOrganizationsPage.goToUsers();
 
 			await usersAndOrganizationsPage.deActivateUsers([userName]);
-			await usersAndOrganizationsPage.filterUsers('inactive');
+			await usersAndOrganizationsPage.filterUsers('Inactive');
 			await usersAndOrganizationsPage.deleteUsers([userName]);
 		};
 

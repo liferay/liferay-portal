@@ -42,6 +42,7 @@ export const searchTableRowByValue = async function (
 export class UsersAndOrganizationsPage {
 	readonly activateButton: Locator;
 	readonly activateUserMenuItem: Locator;
+	readonly addButton: Locator;
 	readonly addOrganizationButton: Locator;
 	readonly addOrganizationMenuItem: Locator;
 	readonly addUserButton: Locator;
@@ -166,14 +167,33 @@ export class UsersAndOrganizationsPage {
 	readonly selectViewCardButton: Locator;
 	readonly selectViewListButton: Locator;
 	readonly selectViewTableButton: Locator;
+	readonly selectorFrame: (type: string) => FrameLocator;
 	readonly statusText: (value: string) => Locator;
 	readonly tableFilterMenu: Locator;
-	readonly tableFilterMenuItem: (option: string) => Locator;
+	readonly tableFilterMenuItem: (option: string, exact?: boolean) => Locator;
 	readonly tableOrderMenu: Locator;
 	readonly tableOrderMenuItem: (option: string) => Locator;
 	readonly userIdInput: Locator;
+	readonly usersAccountEntryTable: Locator;
+	readonly usersAccountEntryTableAddButton: Locator;
+	readonly usersAccountEntryTableCheckbox: (name: string) => Promise<Locator>;
+	readonly usersAccountEntryTableRow: (
+		colPosition: number,
+		value: string,
+		strictEqual?: boolean
+	) => Promise<{column: Locator; row: Locator}>;
 	readonly usersCheckbox: (userName: string) => Promise<Locator>;
 	readonly usersDataTable: DataTablePage;
+	readonly usersOrganizationsTable: Locator;
+	readonly usersOrganizationsTableAddButton: Locator;
+	readonly usersOrganizationsTableCheckbox: (
+		name: string
+	) => Promise<Locator>;
+	readonly usersOrganizationsTableRow: (
+		colPosition: number,
+		value: string,
+		strictEqual?: boolean
+	) => Promise<{column: Locator; row: Locator}>;
 	readonly usersSearchBar: Locator;
 	readonly usersSearchBarButton: Locator;
 	readonly usersTableRow: (
@@ -200,6 +220,7 @@ export class UsersAndOrganizationsPage {
 		this.activateUserMenuItem = page.getByRole('menuitem', {
 			name: 'Activate',
 		});
+		this.addButton = page.getByRole('button', {name: 'add'});
 		this.addOrganizationButton = page.getByRole('link', {
 			name: 'Add Organization',
 		});
@@ -604,10 +625,13 @@ export class UsersAndOrganizationsPage {
 		this.selectViewTableButton = page.getByRole('menuitem', {
 			name: 'Table',
 		});
+		this.selectorFrame = (type) => {
+			return page.frameLocator(`iframe[title="Select ${type}"]`);
+		};
 		this.tableFilterMenu = page
 			.locator('.management-bar')
 			.getByLabel('Filter');
-		this.tableFilterMenuItem = (option: string) => {
+		this.tableFilterMenuItem = (option, exact = true) => {
 			if (option === 'all') {
 				return page
 					.locator('.dropdown-menu')
@@ -616,6 +640,7 @@ export class UsersAndOrganizationsPage {
 			}
 
 			return page.locator('.dropdown-menu').getByRole('menuitem', {
+				exact,
 				name: option,
 			});
 		};
@@ -626,6 +651,55 @@ export class UsersAndOrganizationsPage {
 			return page.getByRole('menuitem', {
 				name: option,
 			});
+		};
+		this.usersAccountEntryTable = this.selectorFrame('Accounts').locator(
+			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_accountEntries'
+		);
+		this.usersAccountEntryTableRow = async (
+			colPosition: number,
+			value: string,
+			strictEqual: boolean = false
+		) => {
+			return await searchTableRowByValue(
+				this.usersAccountEntryTable,
+				colPosition,
+				value,
+				strictEqual
+			);
+		};
+		this.usersAccountEntryTableCheckbox = async (name: string) => {
+			const usersAccountEntryTableRow =
+				await this.usersAccountEntryTableRow(1, name);
+
+			if (usersAccountEntryTableRow && usersAccountEntryTableRow.row) {
+				return usersAccountEntryTableRow.row.getByRole('checkbox');
+			}
+		};
+		this.usersOrganizationsTable = this.selectorFrame(
+			'Organizations'
+		).locator(
+			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_organizations'
+		);
+
+		this.usersOrganizationsTableRow = async (
+			colPosition: number,
+			value: string,
+			strictEqual: boolean = false
+		) => {
+			return await searchTableRowByValue(
+				this.usersOrganizationsTable,
+				colPosition,
+				value,
+				strictEqual
+			);
+		};
+		this.usersOrganizationsTableCheckbox = async (name: string) => {
+			const usersOrganizationsTableRow =
+				await this.usersOrganizationsTableRow(1, name);
+
+			if (usersOrganizationsTableRow && usersOrganizationsTableRow.row) {
+				return usersOrganizationsTableRow.row.getByRole('checkbox');
+			}
 		};
 		this.userIdInput = page.getByLabel('User ID');
 		this.usersTableRowLink = async (screenName: string) => {
@@ -772,6 +846,34 @@ export class UsersAndOrganizationsPage {
 			}),
 			await expect(this.page.getByText('Search Results')).toBeVisible(),
 		]);
+	}
+
+	async filterUsersBySelection(option: string, selections: string[]) {
+		await this.tableFilterMenu.click();
+		await this.tableFilterMenuItem(option, false).click({force: true});
+
+		if (option === 'Selected Account Users') {
+			for (const entry of selections) {
+				await (
+					await this.usersAccountEntryTableCheckbox(entry)
+				).check();
+			}
+
+			await this.addButton.click();
+
+			await expect(this.page.getByText('Search Results')).toBeVisible();
+		}
+		else if (option === 'Selected Organization Users') {
+			for (const entry of selections) {
+				await (
+					await this.usersOrganizationsTableCheckbox(entry)
+				).check();
+			}
+
+			await this.addButton.click();
+
+			await expect(this.page.getByText('Search Results')).toBeVisible();
+		}
 	}
 
 	async goto(forceReload?: boolean) {

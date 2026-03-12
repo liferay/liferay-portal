@@ -711,7 +711,7 @@ test(
 
 		await usersAndOrganizationsPage.deActivateUsers(userNames);
 
-		await usersAndOrganizationsPage.filterUsers('inactive');
+		await usersAndOrganizationsPage.filterUsers('Inactive');
 
 		for (const userName of userNames) {
 			await expect(
@@ -870,7 +870,7 @@ test(
 
 		await usersAndOrganizationsPage.deActivateUsers(userNames);
 
-		await usersAndOrganizationsPage.filterUsers('inactive');
+		await usersAndOrganizationsPage.filterUsers('Inactive');
 
 		for (const userName of userNames) {
 			await expect(
@@ -989,7 +989,7 @@ test(
 			).toBeVisible();
 		}
 
-		await usersAndOrganizationsPage.filterUsers('inactive');
+		await usersAndOrganizationsPage.filterUsers('Inactive');
 
 		for (const userName of userNames) {
 			await expect(

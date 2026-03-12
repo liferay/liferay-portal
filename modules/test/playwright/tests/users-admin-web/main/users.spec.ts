@@ -392,7 +392,7 @@ test(
 
 test(
 	'Can filter users by unassociated users',
-	{tag: '@LPD-57819'},
+	{tag: ['@LPD-57819', '@LPD-69113']},
 	async ({apiHelpers, usersAndOrganizationsPage}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount();
 		const organization =
@@ -1752,3 +1752,383 @@ test(
 		await impersonatedPage.close();
 	}
 );
+
+test.describe('Users & Organizations - Domain Filters', () => {
+	let user;
+	let user2;
+	let user3;
+	let user4;
+
+	test.beforeEach(async ({apiHelpers}) => {
+		user = await apiHelpers.headlessAdminUser.postUserAccount();
+		user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+		user3 = await apiHelpers.headlessAdminUser.postUserAccount();
+		user4 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		const account = await apiHelpers.headlessAdminUser.postAccount();
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			[user3.emailAddress, user4.emailAddress]
+		);
+
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization();
+
+		await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+			organization.id,
+			user2.emailAddress
+		);
+
+		await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+			organization.id,
+			user4.emailAddress
+		);
+	});
+
+	test(
+		'domain filter - organization users',
+		{tag: ['@LPD-69113']},
+		async ({usersAndOrganizationsPage}) => {
+			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
+
+			await expect(
+				usersAndOrganizationsPage.tableFilterMenu
+			).toBeVisible();
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+			).toBeVisible();
+
+			await expect(async () => {
+				await usersAndOrganizationsPage.tableFilterMenu.click();
+
+				await expect(
+					usersAndOrganizationsPage.tableFilterMenuItem(
+						'Organization Users'
+					)
+				).toBeVisible();
+			}).toPass();
+
+			await usersAndOrganizationsPage
+				.tableFilterMenuItem('Organization Users')
+				.click();
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+		}
+	);
+
+	test(
+		'domain filter - users without an account',
+		{tag: ['@LPD-69113']},
+		async ({usersAndOrganizationsPage}) => {
+			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
+
+			await expect(
+				usersAndOrganizationsPage.tableFilterMenu
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+			).toBeVisible();
+
+			await usersAndOrganizationsPage.filterUsers(
+				'Users Without an Account'
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).not.toBeVisible();
+		}
+	);
+
+	test(
+		'domain filter - users without an organization',
+		{tag: ['@LPD-69113']},
+		async ({usersAndOrganizationsPage}) => {
+			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
+
+			await expect(
+				usersAndOrganizationsPage.tableFilterMenu
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+			).toBeVisible();
+
+			await usersAndOrganizationsPage.filterUsers(
+				'Users Without an Organization'
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).not.toBeVisible();
+		}
+	);
+});
+
+test.describe('Users & Organizations - Selection Filters', () => {
+	test(
+		'Select Organizations filter',
+		{tag: ['@LPD-69113']},
+		async ({apiHelpers, usersAndOrganizationsPage}) => {
+			const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user3 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user4 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user5 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			const organization1 =
+				await apiHelpers.headlessAdminUser.postOrganization();
+
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization1.id,
+				user2.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization1.id,
+				user4.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization1.id,
+				user5.emailAddress
+			);
+
+			const organization2 =
+				await apiHelpers.headlessAdminUser.postOrganization();
+
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization2.id,
+				user3.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization2.id,
+				user4.emailAddress
+			);
+
+			const account = await apiHelpers.headlessAdminUser.postAccount();
+
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				[user5.emailAddress]
+			);
+
+			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
+
+			await expect(
+				usersAndOrganizationsPage.tableFilterMenu
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).toBeVisible();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Organization Users',
+				[organization1.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user5.alternateName)
+			).toBeVisible();
+
+			await usersAndOrganizationsPage.clearButton.click();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Organization Users',
+				[organization2.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user5.alternateName)
+			).not.toBeVisible();
+
+			await usersAndOrganizationsPage.clearButton.click();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Organization Users',
+				[organization1.name, organization2.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user5.alternateName)
+			).toBeVisible();
+		}
+	);
+
+	test(
+		'Select Accounts filter',
+		{tag: ['@LPD-69113']},
+		async ({apiHelpers, usersAndOrganizationsPage}) => {
+			const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user3 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user4 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user5 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			const account1 = await apiHelpers.headlessAdminUser.postAccount();
+
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account1.id,
+				[user2.emailAddress, user4.emailAddress, user5.emailAddress]
+			);
+
+			const account2 = await apiHelpers.headlessAdminUser.postAccount();
+
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account2.id,
+				[user3.emailAddress]
+			);
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account2.id,
+				[user4.emailAddress]
+			);
+
+			const organization =
+				await apiHelpers.headlessAdminUser.postOrganization();
+
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization.id,
+				user5.emailAddress
+			);
+
+			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
+
+			await expect(
+				usersAndOrganizationsPage.tableFilterMenu
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).toBeVisible();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Account Users',
+				[account1.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user5.alternateName)
+			).toBeVisible();
+
+			await usersAndOrganizationsPage.clearButton.click();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Account Users',
+				[account2.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user5.alternateName)
+			).not.toBeVisible();
+
+			await usersAndOrganizationsPage.clearButton.click();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Account Users',
+				[account1.name, account2.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user3.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user4.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user5.alternateName)
+			).toBeVisible();
+		}
+	);
+});

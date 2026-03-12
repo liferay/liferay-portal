@@ -2659,7 +2659,7 @@ test(
 
 test(
 	'Can filter users by account association',
-	{tag: ['@LPD-48750', '@LPS-107598', '@LPS-129713']},
+	{tag: ['@LPD-48750', '@LPD-69113', '@LPS-107598', '@LPS-129713']},
 	async ({apiHelpers, usersAndOrganizationsPage}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			type: 'business',
@@ -2687,12 +2687,15 @@ test(
 			await usersAndOrganizationsPage.tableFilterMenu.click();
 
 			await expect(
-				usersAndOrganizationsPage.tableFilterMenuItem('Company Users')
-			).toBeVisible();
+				usersAndOrganizationsPage.tableFilterMenuItem(
+					'Users Without an Account',
+					false
+				)
+			).toHaveCount(1);
 		}).toPass();
 
 		await usersAndOrganizationsPage
-			.tableFilterMenuItem('Company Users')
+			.tableFilterMenuItem('Users Without an Account', false)
 			.click();
 
 		await expect(
