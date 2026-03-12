@@ -249,10 +249,14 @@ public class PortalPreferencesLocalServiceImpl
 			}
 		}
 
-		PortalPreferencesImpl portalPreferencesImpl =
-			(PortalPreferencesImpl)
-				_portalPreferenceValueLocalService.getPortalPreferences(
-					portalPreferences, false);
+		Map<PortalPreferenceKey, String[]> preferenceMap =
+			PortalPreferenceValueLocalServiceImpl.getPreferenceMap(
+				_portalPreferenceValuePersistence,
+				portalPreferences.getPortalPreferencesId(), true);
+
+		PortalPreferencesImpl portalPreferencesImpl = new PortalPreferencesImpl(
+			portalPreferences.getOwnerId(), portalPreferences.getOwnerType(),
+			preferenceMap, false);
 
 		return new PortalPreferencesWrapper(portalPreferencesImpl);
 	}
