@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagType;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -40,17 +41,31 @@ public class CompanyModelListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testOnAfterCreate() throws Exception {
+	public void testDeprecationFeatureFlags() throws Exception {
+		PortalPreferencesWrapper portalPreferencesWrapper =
+			(PortalPreferencesWrapper)
+				_portalPreferencesLocalService.getPreferences(
+					CompanyConstants.SYSTEM,
+					PortletKeys.PREFS_OWNER_TYPE_COMPANY);
+
+		PortalPreferences portalPreferences =
+			portalPreferencesWrapper.getPortalPreferencesImpl();
+
+		Assert.assertEquals(
+			"true",
+			portalPreferences.getValue(
+				FeatureFlagConstants.PREFERENCE_NAMESPACE,
+				FeatureFlagConstants.PREFERENCE_KEY_DEPRECATION_PROCESSED));
+
 		Company company = CompanyTestUtil.addCompany();
 
-		PortalPreferencesWrapper portalPreferencesWrapper =
+		portalPreferencesWrapper =
 			(PortalPreferencesWrapper)
 				_portalPreferencesLocalService.getPreferences(
 					company.getCompanyId(),
 					PortletKeys.PREFS_OWNER_TYPE_COMPANY);
 
-		PortalPreferences portalPreferences =
-			portalPreferencesWrapper.getPortalPreferencesImpl();
+		portalPreferences = portalPreferencesWrapper.getPortalPreferencesImpl();
 
 		List<FeatureFlag> deprecationFeatureFlags =
 			_featureFlagManager.getFeatureFlags(

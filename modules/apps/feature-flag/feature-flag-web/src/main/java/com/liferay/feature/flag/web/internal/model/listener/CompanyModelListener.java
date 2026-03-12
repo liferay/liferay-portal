@@ -7,12 +7,14 @@ package com.liferay.feature.flag.web.internal.model.listener;
 
 import com.liferay.feature.flag.web.internal.feature.flag.FeatureFlagsBag;
 import com.liferay.feature.flag.web.internal.feature.flag.FeatureFlagsBagProvider;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagType;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -47,6 +49,10 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Activate
 	protected void activate() {
+		if (StartupHelperUtil.isDBNew()) {
+			_processDeprecationFeatureFlags(CompanyConstants.SYSTEM);
+		}
+
 		_companyLocalService.forEachCompanyId(
 			this::_processDeprecationFeatureFlags);
 	}
