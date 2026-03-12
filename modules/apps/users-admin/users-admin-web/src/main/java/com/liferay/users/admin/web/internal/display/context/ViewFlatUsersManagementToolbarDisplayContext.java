@@ -5,16 +5,20 @@
 
 package com.liferay.users.admin.web.internal.display.context;
 
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalServiceUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemList;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -23,11 +27,14 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.search.UserSearchTerms;
@@ -35,8 +42,12 @@ import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
 
 import jakarta.portlet.PortletURL;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.LongFunction;
+import java.util.function.ToLongFunction;
 
 /**
  * @author Pei-Jung Lan
@@ -59,7 +70,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 		_navigation = ParamUtil.getString(
 			liferayPortletRequest, "navigation", "active");
-		_selectionNavigation = ParamUtil.getString(
+		_selectionString = ParamUtil.getString(
 			liferayPortletRequest, "selection", "all");
 	}
 
@@ -197,48 +208,53 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 	@Override
 	public List<LabelItem> getFilterLabelItems() {
-		return LabelItemListBuilder.add(
-			() -> !_navigation.equals("active"),
-			labelItem -> {
-				labelItem.putData(
-					"removeLabelURL",
-					PortletURLBuilder.create(
-						getPortletURL()
-					).setNavigation(
-						(String)null
-					).buildString());
+		return new LabelItemList() {
+			{
+				if (Objects.equals(
+						_selectionString, "selected-account-users")) {
 
-				labelItem.setCloseable(true);
-				labelItem.setLabel(
-					String.format(
-						"%s: %s",
-						LanguageUtil.get(httpServletRequest, "status"),
-						LanguageUtil.get(httpServletRequest, _navigation)));
-			}
-		).add(
-			() -> !Objects.equals(_getSelectionNavigation(), "all"),
-			labelItem -> {
-				labelItem.putData(
-					"removeLabelURL",
-					PortletURLBuilder.create(
-						getPortletURL()
-					).setParameter(
-						"accountEntryIds", (String)null
-					).setParameter(
-						"organizationIds", (String)null
-					).setParameter(
-						"selection", "all"
-					).buildString());
+					_addSelectedEntityFilterLabelItems(
+						this, "accountEntryIds",
+						ParamUtil.getLongValues(
+							httpServletRequest, "accountEntryIds"),
+						AccountEntryLocalServiceUtil::fetchAccountEntry,
+						AccountEntry::getAccountEntryId, AccountEntry::getName,
+						"no-accounts-were-found");
+				}
+				else if (Objects.equals(
+							_selectionString, "selected-organization-users")) {
 
-				labelItem.setDismissible(true);
-				labelItem.setLabel(
-					String.format(
-						"%s: %s",
-						LanguageUtil.get(httpServletRequest, "selection"),
-						LanguageUtil.get(
-							httpServletRequest, _getSelectionNavigation())));
+					_addSelectedEntityFilterLabelItems(
+						this, "organizationIds",
+						ParamUtil.getLongValues(
+							httpServletRequest, "organizationIds"),
+						OrganizationLocalServiceUtil::fetchOrganization,
+						Organization::getOrganizationId, Organization::getName,
+						"no-organizations-were-found");
+				}
+
+				if (!Objects.equals(_navigation, "active")) {
+					add(
+						labelItem -> {
+							labelItem.putData(
+								"removeLabelURL",
+								PortletURLBuilder.create(
+									getPortletURL()
+								).setNavigation(
+									(String)null
+								).buildString());
+							labelItem.setCloseable(true);
+							labelItem.setLabel(
+								String.format(
+									"%s: %s",
+									LanguageUtil.get(
+										httpServletRequest, "status"),
+									LanguageUtil.get(
+										httpServletRequest, getNavigation())));
+						});
+				}
 			}
-		).build();
+		};
 	}
 
 	@Override
@@ -311,11 +327,73 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 		).buildPortletURL();
 	}
 
+	private <T> void _addSelectedEntityFilterLabelItems(
+		LabelItemList labelItemList, String parameterName, long[] entityIds,
+		LongFunction<T> fetchFunction, ToLongFunction<T> idFunction,
+		Function<T, String> nameFunction, String emptyLabelKey) {
+
+		List<T> entities = new ArrayList<>();
+
+		for (long entityId : entityIds) {
+			T entity = fetchFunction.apply(entityId);
+
+			if (entity != null) {
+				entities.add(entity);
+			}
+		}
+
+		if (entities.isEmpty()) {
+			labelItemList.add(
+				labelItem -> {
+					labelItem.putData(
+						"removeLabelURL",
+						PortletURLBuilder.create(
+							getPortletURL()
+						).setParameter(
+							parameterName, (String)null
+						).setParameter(
+							"selection", "all"
+						).buildString());
+					labelItem.setDismissible(true);
+					labelItem.setLabel(
+						LanguageUtil.get(httpServletRequest, emptyLabelKey));
+				});
+
+			return;
+		}
+
+		long[] resolvedEntityIds = ListUtil.toLongArray(entities, idFunction);
+
+		PortletURL portletURL = getPortletURL();
+
+		for (T entity : entities) {
+			if (resolvedEntityIds.length == 1) {
+				portletURL.setParameter(parameterName, (String)null);
+				portletURL.setParameter("selection", "all");
+			}
+			else {
+				portletURL.setParameter(
+					parameterName,
+					StringUtil.merge(
+						ArrayUtil.remove(
+							resolvedEntityIds, idFunction.applyAsLong(entity)),
+						StringPool.COMMA));
+			}
+
+			labelItemList.add(
+				labelItem -> {
+					labelItem.putData("removeLabelURL", portletURL.toString());
+					labelItem.setDismissible(true);
+					labelItem.setLabel(
+						HtmlUtil.escape(nameFunction.apply(entity)));
+				});
+		}
+	}
+
 	private List<DropdownItem> _getFilterNavigationDropdownItems() {
 		return DropdownItemListBuilder.add(
 			dropdownItem -> {
-				dropdownItem.setActive(
-					Objects.equals(_getSelectionNavigation(), "all"));
+				dropdownItem.setActive(Objects.equals(_selectionString, "all"));
 				dropdownItem.setHref(
 					PortletURLBuilder.create(
 						getPortletURL()
@@ -331,12 +409,6 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 			}
 		).add(
 			dropdownItem -> {
-				dropdownItem.setActive(
-					Objects.equals(
-						_getSelectionNavigation(), "selected-account-users"));
-
-				dropdownItem.putData("action", "selectAccountEntries");
-
 				dropdownItem.putData(
 					"accountEntriesSelectorURL",
 					PortletURLBuilder.createRenderURL(
@@ -348,30 +420,24 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
-
+				dropdownItem.putData("action", "selectAccountEntries");
 				dropdownItem.putData(
 					"dialogTitle",
 					LanguageUtil.get(httpServletRequest, "select-accounts"));
 				dropdownItem.putData("redirectURL", currentURLObj.toString());
-
+				dropdownItem.setActive(
+					Objects.equals(_selectionString, "selected-account-users"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(
 						httpServletRequest, "selected-account-users"));
 			}
 		).add(
 			dropdownItem -> {
-				dropdownItem.setActive(
-					Objects.equals(
-						_getSelectionNavigation(),
-						"selected-organization-users"));
-
 				dropdownItem.putData("action", "selectOrganizations");
-
 				dropdownItem.putData(
 					"dialogTitle",
 					LanguageUtil.get(
 						httpServletRequest, "select-organizations"));
-
 				dropdownItem.putData(
 					"organizationsSelectorURL",
 					PortletURLBuilder.createRenderURL(
@@ -383,17 +449,15 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
-
 				dropdownItem.putData("redirectURL", currentURLObj.toString());
+				dropdownItem.setActive(
+					Objects.equals(
+						_selectionString, "selected-organization-users"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(
 						httpServletRequest, "selected-organization-users"));
 			}
 		).build();
-	}
-
-	private String _getSelectionNavigation() {
-		return _selectionNavigation;
 	}
 
 	private boolean _hasDeletePermission(
@@ -411,7 +475,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	}
 
 	private final String _navigation;
-	private final String _selectionNavigation;
+	private final String _selectionString;
 	private final boolean _showDeleteButton;
 	private final boolean _showRestoreButton;
 
