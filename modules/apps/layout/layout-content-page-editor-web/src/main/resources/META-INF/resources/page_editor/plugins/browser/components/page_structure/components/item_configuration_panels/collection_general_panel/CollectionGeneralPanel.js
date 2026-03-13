@@ -320,6 +320,7 @@ export function CollectionGeneralPanel({item}) {
 										handleConfigurationChanged={
 											handleConfigurationChanged
 										}
+										key={collection.key}
 										listStyle={listStyle}
 									/>
 								)}

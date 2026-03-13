@@ -29,6 +29,7 @@ const DEFAULT_LIST_STYLES = [
 export function StyleDisplaySelector({
 	collectionItemType,
 	handleConfigurationChanged,
+	key,
 	listStyle,
 }) {
 	const [availableListStyles, setAvailableListStyles] =
@@ -40,22 +41,28 @@ export function StyleDisplaySelector({
 		if (collectionItemType) {
 			InfoItemService.getAvailableListRenderers({
 				className: collectionItemType,
+				key,
 			})
 				.then((response) => {
-					setAvailableListStyles([
-						...DEFAULT_LIST_STYLES,
-						{
-							label: Liferay.Language.get('templates'),
-							options: response,
-							type: 'group',
-						},
-					]);
+					if (response && !!response.length) {
+						setAvailableListStyles([
+							...DEFAULT_LIST_STYLES,
+							{
+								label: Liferay.Language.get('templates'),
+								options: response,
+								type: 'group',
+							},
+						]);
+					}
+					else {
+						setAvailableListStyles(DEFAULT_LIST_STYLES);
+					}
 				})
 				.catch(() => {
 					setAvailableListStyles(DEFAULT_LIST_STYLES);
 				});
 		}
-	}, [collectionItemType]);
+	}, [collectionItemType, key]);
 
 	return (
 		<ClayForm.Group className="mt-3" small>
@@ -81,5 +88,6 @@ export function StyleDisplaySelector({
 StyleDisplaySelector.propTypes = {
 	collectionItemType: PropTypes.string,
 	handleConfigurationChanged: PropTypes.func.isRequired,
+	key: PropTypes.string,
 	listStyle: PropTypes.string,
 };
