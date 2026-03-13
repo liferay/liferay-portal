@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.upgrade.data.cleanup.util;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
