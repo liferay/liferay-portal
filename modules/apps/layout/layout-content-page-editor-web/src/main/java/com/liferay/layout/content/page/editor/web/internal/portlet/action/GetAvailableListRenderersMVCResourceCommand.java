@@ -5,6 +5,7 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.info.collection.provider.RepeatableFieldInfoItemCollectionProvider;
 import com.liferay.info.list.renderer.InfoListRenderer;
 import com.liferay.info.list.renderer.InfoListRendererRegistry;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
@@ -22,7 +23,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
-import java.util.List;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,21 +48,28 @@ public class GetAvailableListRenderersMVCResourceCommand
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
-		List<InfoListRenderer<?>> infoListRenderers =
-			_infoListRendererRegistry.getInfoListRenderers(
-				_infoSearchClassMapperRegistry.getClassName(
-					ParamUtil.getString(resourceRequest, "className")));
+		if (!Objects.equals(
+				ParamUtil.getString(resourceRequest, "key"),
+				RepeatableFieldInfoItemCollectionProvider.class.getName())) {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)resourceRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
 
-		for (InfoListRenderer<?> infoListRenderer : infoListRenderers) {
-			jsonArray.put(
-				JSONUtil.put(
-					"label", infoListRenderer.getLabel(themeDisplay.getLocale())
-				).put(
-					"value", infoListRenderer.getKey()
-				));
+			for (InfoListRenderer<?> infoListRenderer :
+					_infoListRendererRegistry.getInfoListRenderers(
+						_infoSearchClassMapperRegistry.getClassName(
+							ParamUtil.getString(
+								resourceRequest, "className")))) {
+
+				jsonArray.put(
+					JSONUtil.put(
+						"label",
+						infoListRenderer.getLabel(themeDisplay.getLocale())
+					).put(
+						"value", infoListRenderer.getKey()
+					));
+			}
 		}
 
 		JSONPortletResponseUtil.writeJSON(
