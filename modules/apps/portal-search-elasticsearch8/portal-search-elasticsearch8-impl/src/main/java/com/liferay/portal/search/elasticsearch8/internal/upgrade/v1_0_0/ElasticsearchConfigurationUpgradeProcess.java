@@ -81,7 +81,7 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 	private void _upgradeElasticsearchConfiguration() throws Exception {
 		Configuration elasticsearch7configuration =
 			_configurationAdmin.getConfiguration(
-				_ELASTICSEARCH_7_CONFIGURATION_CLASS_NAME, StringPool.QUESTION);
+				_CLASS_NAME_ELASTICSEARCH_CONFIGURATION, StringPool.QUESTION);
 
 		Dictionary<String, Object> elasticsearch7properties =
 			elasticsearch7configuration.getProperties();
@@ -101,7 +101,7 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 
 		UpgradeStep upgradeStep =
 			_configurationUpgradeStepFactory.createUpgradeStep(
-				_ELASTICSEARCH_7_CONFIGURATION_CLASS_NAME,
+				_CLASS_NAME_ELASTICSEARCH_CONFIGURATION,
 				ElasticsearchConfiguration.class.getName());
 
 		upgradeStep.upgrade();
@@ -139,18 +139,18 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 
 		UpgradeStep upgradeStep =
 			_configurationUpgradeStepFactory.createUpgradeStep(
-				_ELASTICSEARCH_7_CONNECTION_CONFIGURATION_CLASS_NAME,
+				_CLASS_NAME_ELASTICSEARCH_CONNECTION_CONFIGURATION,
 				ElasticsearchConnectionConfiguration.class.getName());
 
 		upgradeStep.upgrade();
 	}
 
-	private static final String _ELASTICSEARCH_7_CONFIGURATION_CLASS_NAME =
+	private static final String _CLASS_NAME_ELASTICSEARCH_CONFIGURATION =
 		"com.liferay.portal.search.elasticsearch7.configuration." +
 			"ElasticsearchConfiguration";
 
 	private static final String
-		_ELASTICSEARCH_7_CONNECTION_CONFIGURATION_CLASS_NAME =
+		_CLASS_NAME_ELASTICSEARCH_CONNECTION_CONFIGURATION =
 			"com.liferay.portal.search.elasticsearch7.configuration." +
 				"ElasticsearchConnectionConfiguration";
 

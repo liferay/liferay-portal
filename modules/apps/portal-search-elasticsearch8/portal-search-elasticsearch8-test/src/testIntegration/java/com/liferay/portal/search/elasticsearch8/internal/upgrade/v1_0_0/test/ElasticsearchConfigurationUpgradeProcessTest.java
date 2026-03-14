@@ -67,7 +67,7 @@ public class ElasticsearchConfigurationUpgradeProcessTest {
 			).build());
 
 		configuration = _getConfiguration(
-			_ELASTICSEARCH_7_CONFIGURATION_CLASS_NAME);
+			_CLASS_NAME_ELASTICSEARCH_CONFIGURATION);
 
 		configuration.update(
 			HashMapDictionaryBuilder.putAll(
@@ -134,7 +134,7 @@ public class ElasticsearchConfigurationUpgradeProcessTest {
 					Class<? extends UpgradeStep> clazz = upgradeStep.getClass();
 
 					if (Objects.equals(
-							clazz.getName(), _UPGRADE_PROCESS_CLASS_NAME)) {
+							clazz.getName(), _CLASS_NAME_UPGRADE_PROCESS)) {
 
 						upgradeProcesses[0] = (UpgradeProcess)upgradeStep;
 
@@ -146,11 +146,11 @@ public class ElasticsearchConfigurationUpgradeProcessTest {
 		return upgradeProcesses[0];
 	}
 
-	private static final String _ELASTICSEARCH_7_CONFIGURATION_CLASS_NAME =
+	private static final String _CLASS_NAME_ELASTICSEARCH_CONFIGURATION =
 		"com.liferay.portal.search.elasticsearch7.configuration." +
 			"ElasticsearchConfiguration";
 
-	private static final String _UPGRADE_PROCESS_CLASS_NAME =
+	private static final String _CLASS_NAME_UPGRADE_PROCESS =
 		"com.liferay.portal.search.elasticsearch8.internal.upgrade.v1_0_0." +
 			"ElasticsearchConfigurationUpgradeProcess";
 
