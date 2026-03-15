@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Staging Configuration Web
 Bundle-SymbolicName: com.liferay.staging.configuration.web
-Bundle-Version: 5.0.62
+Bundle-Version: 5.0.63
 Web-ContextPath: /staging-configuration-web
