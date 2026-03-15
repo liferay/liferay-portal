@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Feature Flag Web
 Bundle-SymbolicName: com.liferay.feature.flag.web
-Bundle-Version: 1.0.64
+Bundle-Version: 1.0.65
 Web-ContextPath: /feature-flag-web
