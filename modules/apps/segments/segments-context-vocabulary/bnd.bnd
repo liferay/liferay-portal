@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Segments Context Vocabulary
 Bundle-SymbolicName: com.liferay.segments.context.vocabulary
-Bundle-Version: 2.0.35
+Bundle-Version: 2.0.36
 Web-ContextPath: /segments-context-vocabulary
 -dsannotations-options: inherit
