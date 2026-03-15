@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Depot Service
 Bundle-SymbolicName: com.liferay.depot.service
-Bundle-Version: 3.0.81
+Bundle-Version: 3.0.82
 Liferay-Require-SchemaVersion: 2.3.0
 Liferay-Service: true
 -dsannotations-options: inherit
