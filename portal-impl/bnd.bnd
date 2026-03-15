@@ -1,6 +1,6 @@
 Bundle-Name: ${manifest.bundle.name}
 Bundle-SymbolicName: ${manifest.bundle.symbolic.name}
-Bundle-Version: 124.0.0
+Bundle-Version: 124.0.1
 CPE-Name: ${cpe.name}
 Export-Package:\
 	com.liferay.portal.bean,\
