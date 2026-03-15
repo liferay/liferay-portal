@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Set Prototype Implementation
 Bundle-SymbolicName: com.liferay.layout.set.prototype.impl
-Bundle-Version: 6.0.29
+Bundle-Version: 6.0.30
 -dsannotations-options: inherit
