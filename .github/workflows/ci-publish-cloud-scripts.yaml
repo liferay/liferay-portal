@@ -50,7 +50,8 @@ jobs:
                         cloud/scripts/setup_aws.sh \
                         cloud/terraform/aws/eks/* \
                         cloud/terraform/aws/gitops/platform/* \
-                        cloud/terraform/aws/gitops/resources/*
+                        cloud/terraform/aws/gitops/resources/* \
+                        cloud/terraform/aws/modules/observability/*
 
                     gcloud storage cp \
                         /tmp/liferay-aws-bootstrap-${CURRENT_VERSION}.tar.gz \
