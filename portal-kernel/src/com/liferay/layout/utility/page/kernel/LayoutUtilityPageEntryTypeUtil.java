@@ -28,6 +28,9 @@ public class LayoutUtilityPageEntryTypeUtil {
 		).put(
 			HttpServletResponse.SC_NOT_FOUND,
 			LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND
+		).put(
+			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+			LayoutUtilityPageEntryConstants.TYPE_SC_SERVICE_UNAVAILABLE
 		).build();
 
 }
