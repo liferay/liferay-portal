@@ -98,8 +98,32 @@ public class EditDetailsMVCActionCommand
 			actionRequest, "manualMembership", liveGroup.isManualMembership());
 		boolean inheritContent = ParamUtil.getBoolean(
 			actionRequest, "inheritContent", liveGroup.isInheritContent());
+
 		boolean active = ParamUtil.getBoolean(
 			actionRequest, "active", liveGroup.isActive());
+
+		boolean maintenanceMode = ParamUtil.getBoolean(
+			actionRequest, "maintenanceMode");
+
+		if (maintenanceMode) {
+			active = false;
+		}
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			liveGroup.getTypeSettingsProperties();
+
+		if (maintenanceMode) {
+			typeSettingsUnicodeProperties.setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString());
+		}
+		else {
+			typeSettingsUnicodeProperties.remove(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE);
+			typeSettingsUnicodeProperties.remove(
+				GroupConstants.
+					TYPE_SETTINGS_KEY_MAINTENANCE_UTILITY_PAGE_ENTRY_ID);
+		}
 
 		if (!liveGroup.isGuest() && !liveGroup.isOrganization()) {
 			UnicodeProperties unicodeProperties =
@@ -113,9 +137,10 @@ public class EditDetailsMVCActionCommand
 		}
 
 		_groupService.updateGroup(
-			liveGroupId, parentGroupId, nameMap, descriptionMap, type, null,
-			manualMembership, membershipRestriction, liveGroup.getFriendlyURL(),
-			inheritContent, active, serviceContext);
+			liveGroupId, parentGroupId, nameMap, descriptionMap, type,
+			typeSettingsUnicodeProperties.toString(), manualMembership,
+			membershipRestriction, liveGroup.getFriendlyURL(), inheritContent,
+			active, serviceContext);
 
 		if (type == GroupConstants.TYPE_SITE_OPEN) {
 			ThemeDisplay themeDisplay =
