@@ -138,6 +138,9 @@ public class UtilityPageDTOConverter
 			LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND,
 			UtilityPage.Type.ERROR_CODE404
 		).put(
+			LayoutUtilityPageEntryConstants.TYPE_SC_SERVICE_UNAVAILABLE,
+			UtilityPage.Type.ERROR_CODE503
+		).put(
 			LayoutUtilityPageEntryConstants.TYPE_STATUS, UtilityPage.Type.ERROR
 		).put(
 			LayoutUtilityPageEntryConstants.TYPE_TERMS_OF_USE,

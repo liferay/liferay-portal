@@ -48,6 +48,9 @@ public class LayoutUtilityPageEntryTypeConverter {
 			"ErrorCode500",
 			LayoutUtilityPageEntryConstants.TYPE_SC_INTERNAL_SERVER_ERROR
 		).put(
+			"ErrorCode503",
+			LayoutUtilityPageEntryConstants.TYPE_SC_SERVICE_UNAVAILABLE
+		).put(
 			"ForgotPassword",
 			LayoutUtilityPageEntryConstants.TYPE_FORGOT_PASSWORD
 		).put(
