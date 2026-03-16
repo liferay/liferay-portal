@@ -4101,7 +4101,7 @@ components:
                     # @review
                     description:
                         The utility page's type.
-                    enum: [CookiePolicy, CreateAccount, Error, ErrorCode404, ErrorCode500, ForgotPassword, Login, TermsOfUse]
+                    enum: [CookiePolicy, CreateAccount, Error, ErrorCode404, ErrorCode500, ErrorCode503, ForgotPassword, Login, TermsOfUse]
                     type: string
                 utilityPageSettings:
                     $ref: "#/components/schemas/UtilityPageSettings"
