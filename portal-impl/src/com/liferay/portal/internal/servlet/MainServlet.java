@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.model.PortletFilter;
 import com.liferay.portal.kernel.model.PortletURLListener;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.module.util.ServiceLatch;
@@ -48,6 +49,8 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutTemplateLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.InactiveRequestHandler;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
@@ -971,6 +974,34 @@ public class MainServlet extends HttpServlet {
 		return portlets;
 	}
 
+	private boolean _isGroupOrCompanyAdmin(long userId, Group group) {
+		if (userId <= 0) {
+			return false;
+		}
+
+		try {
+			if (RoleLocalServiceUtil.hasUserRole(
+					userId, group.getCompanyId(), RoleConstants.ADMINISTRATOR,
+					true) ||
+				UserGroupRoleLocalServiceUtil.hasUserGroupRole(
+					userId, group.getGroupId(),
+					RoleConstants.SITE_ADMINISTRATOR, true) ||
+				UserGroupRoleLocalServiceUtil.hasUserGroupRole(
+					userId, group.getGroupId(), RoleConstants.SITE_OWNER,
+					true)) {
+
+				return true;
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return false;
+	}
+
 	private long _loginUser(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long companyId,
@@ -1059,7 +1090,18 @@ public class MainServlet extends HttpServlet {
 	private boolean _processGroupInactiveRequest(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
-		throws IOException, PortalException {
+		throws IOException, PortalException, ServletException {
+
+		Object renderingMaintenanceUtilityPage =
+			httpServletRequest.getAttribute(
+				_RENDERING_MAINTENANCE_UTILITY_PAGE);
+
+		if (renderingMaintenanceUtilityPage != null) {
+			httpServletRequest.removeAttribute(
+				_RENDERING_MAINTENANCE_UTILITY_PAGE);
+
+			return false;
+		}
 
 		long plid = ParamUtil.getLong(httpServletRequest, "p_l_id");
 
@@ -1069,8 +1111,26 @@ public class MainServlet extends HttpServlet {
 
 		Layout layout = LayoutLocalServiceUtil.getLayout(plid);
 
-		if (GroupLocalServiceUtil.isLiveGroupActive(layout.getGroup())) {
+		Group group = layout.getGroup();
+
+		if (GroupLocalServiceUtil.isLiveGroupActive(group)) {
 			return false;
+		}
+
+		if (GroupLocalServiceUtil.isMaintenanceMode(group)) {
+			if (_isGroupOrCompanyAdmin(
+					PortalUtil.getUserId(httpServletRequest), group)) {
+
+				return false;
+			}
+
+			PortalUtil.sendError(
+				HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+				new PortalException(
+					"this-site-is-temporarily-unavailable-for-maintenance"),
+				httpServletRequest, httpServletResponse);
+
+			return true;
 		}
 
 		InactiveRequestHandler inactiveRequestHandler =
@@ -1302,6 +1362,9 @@ public class MainServlet extends HttpServlet {
 
 	private static final String _LIFERAY_PORTAL_REQUEST_HEADER =
 		"Liferay-Portal";
+
+	private static final String _RENDERING_MAINTENANCE_UTILITY_PAGE =
+		"RENDERING_MAINTENANCE_UTILITY_PAGE";
 
 	private static final Log _log = LogFactoryUtil.getLog(MainServlet.class);
 

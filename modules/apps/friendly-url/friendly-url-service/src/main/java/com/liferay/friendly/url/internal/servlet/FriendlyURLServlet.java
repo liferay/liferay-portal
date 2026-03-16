@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.friendly.url.configuration.FriendlyURLRedirectionConfiguration;
 import com.liferay.friendly.url.configuration.FriendlyURLRedirectionConfigurationProvider;
+import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalServiceUtil;
 import com.liferay.petra.lang.HashUtil;
@@ -147,6 +148,23 @@ public class FriendlyURLServlet extends HttpServlet {
 		long companyId = PortalInstances.getCompanyId(httpServletRequest);
 
 		Group group = _getGroup(path, groupFriendlyURL, companyId);
+
+		if (!group.isActive() && groupLocalService.isMaintenanceMode(group)) {
+			User user = _getUser(httpServletRequest);
+
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker(
+					user, !user.isGuestUser());
+
+			if (!permissionChecker.isCompanyAdmin() &&
+				!permissionChecker.isGroupAdmin(group.getGroupId())) {
+
+				httpServletRequest.setAttribute(
+					_MAINTENANCE_MODE_GROUP_ID, group.getGroupId());
+
+				return null;
+			}
+		}
 
 		Locale locale = portal.getLocale(httpServletRequest, null, false);
 
@@ -634,6 +652,67 @@ public class FriendlyURLServlet extends HttpServlet {
 		}
 
 		if (redirect == null) {
+			Long maintenanceGroupId = (Long)httpServletRequest.getAttribute(
+				_MAINTENANCE_MODE_GROUP_ID);
+
+			if (maintenanceGroupId != null) {
+				httpServletRequest.removeAttribute(_MAINTENANCE_MODE_GROUP_ID);
+
+				httpServletResponse.setStatus(
+					HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+
+				LayoutUtilityPageEntry layoutUtilityPageEntry =
+					LayoutUtilityPageEntryLocalServiceUtil.
+						fetchDefaultLayoutUtilityPageEntry(
+							maintenanceGroupId,
+							LayoutUtilityPageEntryConstants.
+								TYPE_SC_SERVICE_UNAVAILABLE);
+
+				if (layoutUtilityPageEntry != null) {
+					Layout maintenanceLayout = layoutLocalService.fetchLayout(
+						layoutUtilityPageEntry.getPlid());
+
+					if (maintenanceLayout != null) {
+						try {
+							httpServletRequest.setAttribute(
+								_RENDERING_MAINTENANCE_UTILITY_PAGE,
+								Boolean.TRUE);
+
+							RequestDispatcher requestDispatcher =
+								httpServletRequest.getRequestDispatcher(
+									portal.getLayoutActualURL(
+										maintenanceLayout));
+
+							requestDispatcher.forward(
+								httpServletRequest, httpServletResponse);
+
+							return;
+						}
+						catch (PortalException portalException) {
+							if (_log.isWarnEnabled()) {
+								_log.warn(
+									"Unable to render maintenance utility page",
+									portalException);
+							}
+						}
+					}
+				}
+
+				httpServletResponse.setContentType("text/html; charset=UTF-8");
+
+				httpServletResponse.getWriter(
+				).write(
+					StringBundler.concat(
+						"<!DOCTYPE html><html><head>",
+						"<title>503 Service Unavailable</title></head><body>",
+						"<h1>Service Unavailable</h1>",
+						"<p>This site is temporarily unavailable for ",
+						"maintenance.</p></body></html>")
+				);
+
+				return;
+			}
+
 			redirect = new Redirect();
 		}
 
@@ -899,7 +978,7 @@ public class FriendlyURLServlet extends HttpServlet {
 		}
 
 		if ((group == null) ||
-			(!group.isActive() &&
+			(!group.isActive() && !groupLocalService.isMaintenanceMode(group) &&
 			 !inactiveRequestHandler.isShowInactiveRequestMessage() &&
 			 !path.startsWith(GroupConstants.CONTROL_PANEL_FRIENDLY_URL) &&
 			 !path.startsWith(
@@ -1318,6 +1397,12 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		return groupLocale;
 	}
+
+	private static final String _MAINTENANCE_MODE_GROUP_ID =
+		"MAINTENANCE_MODE_GROUP_ID";
+
+	private static final String _RENDERING_MAINTENANCE_UTILITY_PAGE =
+		"RENDERING_MAINTENANCE_UTILITY_PAGE";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FriendlyURLServlet.class);
