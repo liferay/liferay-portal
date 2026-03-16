@@ -582,6 +582,11 @@ public class GroupWrapper
 		return model.getLogoURL(themeDisplay, useDefault);
 	}
 
+	@Override
+	public long getMaintenanceUtilityPageEntryId() {
+		return model.getMaintenanceUtilityPageEntryId();
+	}
+
 	/**
 	 * Returns the manual membership of this group.
 	 *
@@ -985,6 +990,11 @@ public class GroupWrapper
 	@Override
 	public boolean isLimitedToParentSiteMembers() {
 		return model.isLimitedToParentSiteMembers();
+	}
+
+	@Override
+	public boolean isMaintenanceMode() {
+		return model.isMaintenanceMode();
 	}
 
 	/**

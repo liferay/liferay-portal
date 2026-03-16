@@ -1505,6 +1505,10 @@ public class GroupLocalServiceUtil {
 		return getService().isLiveGroupActive(group);
 	}
 
+	public static boolean isMaintenanceMode(Group group) {
+		return getService().isMaintenanceMode(group);
+	}
+
 	/**
 	 * Returns the group with the matching group key by first searching the
 	 * system groups and then using the finder cache.

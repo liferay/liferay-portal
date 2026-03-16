@@ -1190,6 +1190,9 @@ public interface GroupLocalService
 	@Transactional(enabled = false)
 	public boolean isLiveGroupActive(Group group);
 
+	@Transactional(enabled = false)
+	public boolean isMaintenanceMode(Group group);
+
 	/**
 	 * Returns the group with the matching group key by first searching the
 	 * system groups and then using the finder cache.
