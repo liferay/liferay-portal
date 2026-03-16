@@ -483,7 +483,9 @@ public class LayoutPermissionImpl implements LayoutPermission {
 
 		// Inactive sites are not viewable
 
-		if (!GroupLocalServiceUtil.isLiveGroupActive(group)) {
+		if (!GroupLocalServiceUtil.isLiveGroupActive(group) &&
+			!GroupLocalServiceUtil.isMaintenanceMode(group)) {
+
 			return false;
 		}
 
