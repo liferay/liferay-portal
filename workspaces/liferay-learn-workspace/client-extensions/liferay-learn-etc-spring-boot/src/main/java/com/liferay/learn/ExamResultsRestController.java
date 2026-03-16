@@ -137,7 +137,7 @@ public class ExamResultsRestController extends BaseRestController {
 							LocalDateTime.parse(
 								csvRecord.get(10),
 								DateTimeFormatter.ofPattern(
-									"yyyy-MM-dd H:mm:ss")),
+									"yyyy-MM-dd'T'H:mm:ss[.SSS]")),
 							ZoneOffset.UTC
 						).format(
 							DateTimeFormatter.ISO_INSTANT
@@ -228,7 +228,7 @@ public class ExamResultsRestController extends BaseRestController {
 					csvPrinter.printRecord(
 						jsonObject2.getString("firstName"),
 						jsonObject2.getString("lastName"),
-						jsonObject2.getString("email"),
+						jsonObject2.getString("emailAddress"),
 						jsonObject2.getString("examName"),
 						jsonObject2.getString("date"),
 						jsonObject2.getDouble("score"),
