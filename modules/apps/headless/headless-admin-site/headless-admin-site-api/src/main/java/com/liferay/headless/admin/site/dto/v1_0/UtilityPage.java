@@ -1018,8 +1018,9 @@ public class UtilityPage implements Serializable {
 
 		COOKIE_POLICY("CookiePolicy"), CREATE_ACCOUNT("CreateAccount"),
 		ERROR("Error"), ERROR_CODE404("ErrorCode404"),
-		ERROR_CODE500("ErrorCode500"), FORGOT_PASSWORD("ForgotPassword"),
-		LOGIN("Login"), TERMS_OF_USE("TermsOfUse");
+		ERROR_CODE500("ErrorCode500"), ERROR_CODE503("ErrorCode503"),
+		FORGOT_PASSWORD("ForgotPassword"), LOGIN("Login"),
+		TERMS_OF_USE("TermsOfUse");
 
 		@JsonCreator
 		public static Type create(String value) {
