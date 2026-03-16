@@ -2602,6 +2602,26 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		return liveGroup.isActive();
 	}
 
+	@Override
+	@Transactional(enabled = false)
+	public boolean isMaintenanceMode(Group group) {
+		if (group == null) {
+			return false;
+		}
+
+		if (group.isStagingGroup()) {
+			Group liveGroup = group.getLiveGroup();
+
+			if (liveGroup == null) {
+				return false;
+			}
+
+			return liveGroup.isMaintenanceMode();
+		}
+
+		return group.isMaintenanceMode();
+	}
+
 	/**
 	 * Returns the group with the matching group key by first searching the
 	 * system groups and then using the finder cache.
