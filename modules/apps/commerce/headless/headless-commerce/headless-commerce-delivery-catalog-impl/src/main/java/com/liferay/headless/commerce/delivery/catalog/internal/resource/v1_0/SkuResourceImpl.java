@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 import com.liferay.account.exception.NoSuchEntryException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.helper.CommerceAccountHelper;
@@ -181,31 +182,45 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
+		if ((accountId != null) && (accountId > 0)) {
+			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
+				accountId);
 
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchEntryException();
+			if (accountEntry != null) {
+				accountId = accountEntry.getAccountEntryId();
+			}
+			else {
+				accountId = null;
 			}
 		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
+
+		if ((accountId == null) || (accountId <= 0)) {
+			int countUserCommerceAccounts =
+				_commerceAccountHelper.countUserCommerceAccounts(
 					contextUser.getUserId(), commerceChannel.getGroupId());
 
-			if (commerceAccountIds.length == 0) {
-				AccountEntry accountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						contextCompany.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					accountEntry.getAccountEntryId()
-				};
+			if (countUserCommerceAccounts > 1) {
+				if (accountId == null) {
+					throw new NoSuchEntryException();
+				}
 			}
+			else {
+				long[] commerceAccountIds =
+					_commerceAccountHelper.getUserCommerceAccountIds(
+						contextUser.getUserId(), commerceChannel.getGroupId());
 
-			accountId = commerceAccountIds[0];
+				if (commerceAccountIds.length == 0) {
+					AccountEntry accountEntry =
+						_accountEntryLocalService.getGuestAccountEntry(
+							contextCompany.getCompanyId());
+
+					commerceAccountIds = new long[] {
+						accountEntry.getAccountEntryId()
+					};
+				}
+
+				accountId = commerceAccountIds[0];
+			}
 		}
 
 		_commerceProductViewPermission.check(
@@ -322,6 +337,18 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 			String currencyCode)
 		throws Exception {
 
+		if ((accountId != null) && (accountId > 0)) {
+			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
+				accountId);
+
+			if (accountEntry != null) {
+				return _commerceContextFactory.create(
+					accountEntry.getAccountEntryId(),
+					commerceChannel.getGroupId(), currencyCode, 0,
+					contextCompany.getCompanyId());
+			}
+		}
+
 		int countUserCommerceAccounts =
 			_commerceAccountHelper.countUserCommerceAccounts(
 				contextUser.getUserId(), commerceChannel.getGroupId());
@@ -414,6 +441,9 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private CommerceAccountHelper _commerceAccountHelper;

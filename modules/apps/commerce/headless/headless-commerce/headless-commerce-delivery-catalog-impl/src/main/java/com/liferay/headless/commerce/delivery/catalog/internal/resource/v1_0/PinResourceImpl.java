@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 import com.liferay.account.exception.NoSuchEntryException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.helper.CommerceAccountHelper;
@@ -112,6 +113,15 @@ public class PinResourceImpl extends BasePinResourceImpl {
 	private Long _getAccountId(Long accountId, CommerceChannel commerceChannel)
 		throws Exception {
 
+		if ((accountId != null) && (accountId > 0)) {
+			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
+				accountId);
+
+			if (accountEntry != null) {
+				return accountEntry.getAccountEntryId();
+			}
+		}
+
 		int countUserCommerceAccounts =
 			_commerceAccountHelper.countUserCommerceAccounts(
 				contextUser.getUserId(), commerceChannel.getGroupId());
@@ -162,6 +172,9 @@ public class PinResourceImpl extends BasePinResourceImpl {
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private CommerceAccountHelper _commerceAccountHelper;

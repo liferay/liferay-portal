@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 import com.liferay.account.exception.NoSuchEntryException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
@@ -96,6 +97,15 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	private Long _getAccountId(Long accountId, CommerceChannel commerceChannel)
 		throws Exception {
 
+		if ((accountId != null) && (accountId > 0)) {
+			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
+				accountId);
+
+			if (accountEntry != null) {
+				return accountEntry.getAccountEntryId();
+			}
+		}
+
 		int countUserAccounts =
 			_commerceAccountHelper.countUserCommerceAccounts(
 				contextUser.getUserId(), commerceChannel.getGroupId());
@@ -159,6 +169,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.AttachmentDTOConverter)"
