@@ -51,7 +51,7 @@ jobs:
                         cloud/terraform/aws/eks/* \
                         cloud/terraform/aws/gitops/platform/* \
                         cloud/terraform/aws/gitops/resources/* \
-                        cloud/terraform/aws/modules/observability/*
+                        cloud/terraform/aws/grafana/*
 
                     gcloud storage cp \
                         /tmp/liferay-aws-bootstrap-${CURRENT_VERSION}.tar.gz \
