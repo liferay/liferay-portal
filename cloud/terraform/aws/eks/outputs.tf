@@ -10,11 +10,21 @@ output "deployment_name" {
 output "deployment_namespace" {
 	value=var.deployment_namespace
 }
+output "grafana_enabled" {
+	value=length(aws_grafana_workspace.amg)== 1 ? true : false
+}
 output "grafana_workspace_endpoint" {
 	value=aws_grafana_workspace.amg[0].endpoint
 }
 output "grafana_workspace_id" {
 	value=aws_grafana_workspace.amg[0].id
+}
+output "grafana_workspace_role_arn" {
+	value=aws_iam_role.grafana[0].arn
+}
+output "grafana_workspace_api_key" {
+	value=aws_grafana_workspace_api_key.amg_api_key[0].key
+	sensitive=true
 }
 output "liferay_sa_role_arn" {
 	value=aws_iam_role.irsa.arn
