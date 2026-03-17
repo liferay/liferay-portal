@@ -97,11 +97,16 @@ public class PortalInstances {
 			_log.debug("Company ID from request " + companyIdObj);
 		}
 
+		long currentCompanyId = CompanyThreadLocal.getCompanyId();
+
 		if (companyIdObj != null) {
 			long companyId = companyIdObj.longValue();
 
-			if (CompanyThreadLocal.getCompanyId() == CompanyConstants.SYSTEM) {
+			if (currentCompanyId == CompanyConstants.SYSTEM) {
 				CompanyThreadLocal.setCompanyId(companyId);
+			}
+			else if (currentCompanyId != companyId) {
+				throw new IllegalStateException("CompanyId was already set by" + currentCompanyId + " Request company ID:" + companyId);
 			}
 
 			return companyId;
