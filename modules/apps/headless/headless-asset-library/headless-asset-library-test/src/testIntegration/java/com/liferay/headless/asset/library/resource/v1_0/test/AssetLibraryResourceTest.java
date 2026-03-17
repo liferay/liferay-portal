@@ -242,6 +242,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			});
 		_testPostAssetLibrary(new MimeTypeLimit[0]);
 
+		_testPostAssetLibraryWithNoSettings();
+
 		AssetLibrary randomAssetLibrary = randomAssetLibrary();
 
 		randomAssetLibrary.setSettings(new Settings());
@@ -319,17 +321,26 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	protected AssetLibrary randomAssetLibrary() throws Exception {
+		return randomAssetLibrary(true);
+	}
+
+	protected AssetLibrary randomAssetLibrary(boolean provideSettings)
+			throws Exception {
+
 		AssetLibrary assetLibrary = super.randomAssetLibrary();
 
-		assetLibrary.setSettings(
-			new Settings() {
-				{
-					autoTaggingEnabled = false;
-					logoColor = "color-1";
-					sharingEnabled = false;
-					useCustomLanguages = false;
-				}
-			});
+		if (provideSettings) {
+			assetLibrary.setSettings(
+				new Settings() {
+					{
+						autoTaggingEnabled = false;
+						logoColor = "color-1";
+						sharingEnabled = false;
+						useCustomLanguages = false;
+					}
+				});
+		}
+
 		assetLibrary.setType(
 			RandomTestUtil.randomEnum(AssetLibrary.Type.class));
 
@@ -610,6 +621,16 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			trashEnabled, trashEntriesMaxAge, useCustomLanguages);
 
 		_assertGroupDepotEntryType(assetLibrary);
+	}
+
+	private void _testPostAssetLibraryWithNoSettings() throws Exception {
+		AssetLibrary randomAssetLibraryNoSettings = randomAssetLibrary(false);
+
+		AssetLibrary postedAssetLibraryNoSettings =
+			assetLibraryResource.postAssetLibrary(randomAssetLibraryNoSettings);
+
+		assertValid(postedAssetLibraryNoSettings);
+
 	}
 
 	private void _testPutAssetLibrary(MimeTypeLimit[] mimeTypeLimits)

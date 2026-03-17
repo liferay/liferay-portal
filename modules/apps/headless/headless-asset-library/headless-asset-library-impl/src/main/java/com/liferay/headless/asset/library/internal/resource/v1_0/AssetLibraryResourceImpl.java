@@ -379,6 +379,10 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			Map<String, Long> mimeTypeSizeLimits)
 		throws Exception {
 
+		if (assetLibrary.getSettings() == null) {
+			assetLibrary.setSettings(new Settings());
+		}
+
 		Group group = null;
 
 		if (Validator.isNotNull(externalReferenceCode)) {
