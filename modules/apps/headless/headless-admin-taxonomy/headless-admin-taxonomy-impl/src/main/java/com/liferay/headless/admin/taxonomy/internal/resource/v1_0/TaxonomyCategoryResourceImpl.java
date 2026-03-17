@@ -891,6 +891,26 @@ public class TaxonomyCategoryResourceImpl
 			long groupId, TaxonomyCategory taxonomyCategory)
 		throws Exception {
 
+		ParentTaxonomyVocabulary parentTaxonomyVocabulary =
+			taxonomyCategory.getParentTaxonomyVocabulary();
+
+		String taxonomyVocabularyExternalReferenceCode = StringPool.BLANK;
+
+		if (parentTaxonomyVocabulary != null) {
+			taxonomyVocabularyExternalReferenceCode =
+				parentTaxonomyVocabulary.getExternalReferenceCode();
+
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyService.fetchVocabularyByExternalReferenceCode(
+					taxonomyVocabularyExternalReferenceCode, groupId);
+
+			if ((assetVocabulary != null) &&
+				(assetVocabulary.getGroupId() == groupId)) {
+
+				return assetVocabulary.getVocabularyId();
+			}
+		}
+
 		Long taxonomyVocabularyId = taxonomyCategory.getTaxonomyVocabularyId();
 
 		if (taxonomyVocabularyId != null) {
@@ -902,16 +922,6 @@ public class TaxonomyCategoryResourceImpl
 
 				return taxonomyVocabularyId;
 			}
-		}
-
-		String taxonomyVocabularyExternalReferenceCode = StringPool.BLANK;
-
-		ParentTaxonomyVocabulary parentTaxonomyVocabulary =
-			taxonomyCategory.getParentTaxonomyVocabulary();
-
-		if (parentTaxonomyVocabulary != null) {
-			taxonomyVocabularyExternalReferenceCode =
-				parentTaxonomyVocabulary.getExternalReferenceCode();
 		}
 
 		if (Validator.isBlank(taxonomyVocabularyExternalReferenceCode)) {
