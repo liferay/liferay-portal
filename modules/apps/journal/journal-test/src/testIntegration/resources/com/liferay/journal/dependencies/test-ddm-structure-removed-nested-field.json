@@ -88,48 +88,6 @@
 			},
 			"type": "text",
 			"visibilityExpression": ""
-		},
-		{
-			"autocomplete": false,
-			"dataSourceType": "manual",
-			"dataType": "string",
-			"ddmDataProviderInstanceId": "[]",
-			"ddmDataProviderInstanceOutput": "[]",
-			"displayStyle": "singleline",
-			"fieldNamespace": "",
-			"fieldReference": "subtitulo",
-			"indexType": "keyword",
-			"label": {
-				"en_US": "subtitulo"
-			},
-			"localizable": true,
-			"name": "subtitulo",
-			"options": [
-				{
-					"label": {
-						"en_US": "Option"
-					},
-					"value": "Option"
-				}
-			],
-			"placeholder": {
-				"en_US": ""
-			},
-			"predefinedValue": {
-				"en_US": ""
-			},
-			"readOnly": false,
-			"repeatable": false,
-			"required": false,
-			"showLabel": true,
-			"tip": {
-				"en_US": ""
-			},
-			"tooltip": {
-				"en_US": ""
-			},
-			"type": "text",
-			"visibilityExpression": ""
 		}
 	]
 }

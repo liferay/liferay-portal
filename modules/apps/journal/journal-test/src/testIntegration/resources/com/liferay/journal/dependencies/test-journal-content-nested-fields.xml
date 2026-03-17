@@ -6,16 +6,16 @@
 		<dynamic-content language-id="pt_BR"><![CDATA[false]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="document_library" index-type="none" instance-id="HzKJrSts" name="document_library" type="document_library">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[document]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[document]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="link_to_layout" index-type="none" instance-id="eHQALxHa" name="link_to_layout" type="link_to_layout">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[link]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[link]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="text_area" index-type="none" instance-id="ucizquBv" name="text_area" type="rich_text">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[Sample text area]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[Texto de exemplo]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="multi_list" index-type="none" instance-id="oOUZHUcy" name="multi_list" type="select">
 		<dynamic-content language-id="en_US">
@@ -78,23 +78,23 @@
 		</dynamic-element>
 	</dynamic-element>
 	<dynamic-element field-reference="text" index-type="text" instance-id="zWlZDoLc" name="text" type="text">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[hello]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[ola]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="text_box" index-type="none" instance-id="fmyemVKH" name="text_box" type="text">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[value1]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[valor1]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="image_1" index-type="none" instance-id="xhdykzYh" name="image_1" type="image">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[image1]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[image1]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="image_2" index-type="none" instance-id="FViKyTea" name="image_2" type="image">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[image2]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[image2]]></dynamic-content>
 	</dynamic-element>
 	<dynamic-element field-reference="image_3" index-type="none" instance-id="JVBHdcGZ" name="image_3" type="image">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-		<dynamic-content language-id="pt_BR"><![CDATA[]]></dynamic-content>
+		<dynamic-content language-id="en_US"><![CDATA[image3]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[image3]]></dynamic-content>
 	</dynamic-element>
 </root>

@@ -12,7 +12,4 @@
 			<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
 		</dynamic-element>
 	</dynamic-element>
-	<dynamic-element index-type="keyword" instance-id="lsamnmcz" name="subtitulo" type="text">
-		<dynamic-content language-id="en_US"><![CDATA[]]></dynamic-content>
-	</dynamic-element>
 </root>
