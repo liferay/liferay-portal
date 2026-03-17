@@ -325,7 +325,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	}
 
 	protected AssetLibrary randomAssetLibrary(boolean provideSettings)
-			throws Exception {
+		throws Exception {
 
 		AssetLibrary assetLibrary = super.randomAssetLibrary();
 
@@ -630,7 +630,6 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			assetLibraryResource.postAssetLibrary(randomAssetLibraryNoSettings);
 
 		assertValid(postedAssetLibraryNoSettings);
-
 	}
 
 	private void _testPutAssetLibrary(MimeTypeLimit[] mimeTypeLimits)

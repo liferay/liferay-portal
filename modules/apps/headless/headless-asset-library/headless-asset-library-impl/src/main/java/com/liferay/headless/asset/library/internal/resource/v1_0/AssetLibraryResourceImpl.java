@@ -380,7 +380,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		throws Exception {
 
 		if (assetLibrary.getSettings() == null) {
-			assetLibrary.setSettings(new Settings());
+			assetLibrary.setSettings(() -> new Settings());
 		}
 
 		Group group = null;
