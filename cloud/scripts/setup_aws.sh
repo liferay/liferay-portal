@@ -26,6 +26,8 @@ function main {
 
 	_setup_aws_eks "${terraform_args}"
 
+	_setup_aws_grafana "${terraform_args}"
+
 	_setup_aws_gitops "${terraform_args}"
 
 	_port_forward_argo_cd
@@ -175,12 +177,40 @@ function _setup_aws_gitops {
 	_popd
 }
 
+function _setup_aws_grafana {
+	_pushd "${_ROOT_CLOUD_DIR}/terraform/aws/eks"
+
+	local grafana_enabled=$(terraform output -raw "grafana_enabled")
+
+	if [[ "${grafana_enabled}" != "true" ]]
+	then
+		echo "Skipping Grafana setup."
+
+		return
+	fi
+
+	echo "Setting up Amazon Managed Grafana."
+
+	export TF_VAR_grafana_workspace_api_key=$(terraform output -raw "grafana_workspace_api_key")
+
+	_terraform_init_and_apply \
+		"../grafana" \
+		${1} \
+		"-var=grafana_workspace_endpoint=$(terraform output -raw "grafana_workspace_endpoint")" \
+		"-var=grafana_workspace_role_arn=$(terraform output -raw "grafana_workspace_role_arn")" \
+		"-var=prometheus_workspace_endpoint=$(terraform output -raw "prometheus_workspace_endpoint")"
+
+	echo "Amazon Managed Grafana setup complete."
+
+	_popd
+}
+
 function _terraform_init_and_apply {
 	_pushd "${1}"
 
-	terraform init
+	terraform init -upgrade
 
-	terraform apply ${2}
+	terraform apply ${@:2}
 
 	_popd
 }
