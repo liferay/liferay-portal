@@ -468,6 +468,7 @@ public class TaxonomyCategoryResourceTest
 
 		_testPostAssetLibraryTaxonomyCategoryBatch("INSERT");
 		_testPostAssetLibraryTaxonomyCategoryBatch("UPSERT");
+		_testPostAssetLibraryTaxonomyCategoryWithExternalReferenceCode();
 	}
 
 	@FeatureFlag("LPD-17564")
@@ -1416,6 +1417,34 @@ public class TaxonomyCategoryResourceTest
 		_testPostTaxonomyCategoryBatchFullLazyReferences(
 			createStrategy, testDepotEntry.getGroupId(), "assetLibraryId",
 			testDepotEntry.getDepotEntryId());
+	}
+
+	private void _testPostAssetLibraryTaxonomyCategoryWithExternalReferenceCode()
+		throws Exception {
+
+		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
+
+		randomTaxonomyCategory.setTaxonomyVocabularyId(
+			RandomTestUtil.randomLong());
+
+		randomTaxonomyCategory.setParentTaxonomyVocabulary(
+			new ParentTaxonomyVocabulary() {
+				{
+					externalReferenceCode =
+						_assetVocabulary.getExternalReferenceCode();
+				}
+			});
+
+		TaxonomyCategory postTaxonomyCategory =
+			taxonomyCategoryResource.postAssetLibraryTaxonomyCategory(
+				testDepotEntry.getGroupId(), randomTaxonomyCategory);
+
+		ParentTaxonomyVocabulary parentTaxonomyVocabulary =
+			postTaxonomyCategory.getParentTaxonomyVocabulary();
+
+		Assert.assertEquals(
+			_assetVocabulary.getExternalReferenceCode(),
+			parentTaxonomyVocabulary.getExternalReferenceCode());
 	}
 
 	private void _testPostSiteTaxonomyCategoryBatch(String createStrategy)
