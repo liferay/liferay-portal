@@ -18,36 +18,98 @@ import Actions from '../../actions/Actions';
 import ImageRenderer from '../../cell_renderers/ImageRenderer';
 import FDSDndProvider from '../../dnd/FDSDndProvider';
 import useFDSDrop from '../../dnd/useFDSDrop';
-import {getLocalizedValue} from '../../utils/getLocalizedValue';
+import {
+	ILocalizedItemDetails,
+	getLocalizedValue,
+} from '../../utils/getLocalizedValue';
 import {
 	IHeader,
+	IItemsActions,
 	IListSchema,
-	IListTitleRenderer,
 	IView,
+	TRenderer,
 } from '../../utils/types';
 import ViewsContext from '../ViewsContext';
 
+const getListSectionContentRenderer = ({
+	contentRendererName,
+	customRenderers,
+}: {
+	contentRendererName: string;
+	customRenderers:
+		| {
+				listSection?: Array<TRenderer>;
+				tableCell?: Array<TRenderer>;
+		  }
+		| undefined;
+}) => {
+	const listSectionContentRenderer = customRenderers?.listSection?.find(
+		(renderer: TRenderer) => renderer.name === contentRendererName
+	);
+
+	if (
+		listSectionContentRenderer?.type === 'internal' &&
+		listSectionContentRenderer.component
+	) {
+		return listSectionContentRenderer.component;
+	}
+
+	return null;
+};
+
 const Title = ({
+	actions,
 	item,
+	itemId,
 	title,
 	titleRenderer,
 }: {
+	actions: IItemsActions[] | undefined;
 	item: any;
+	itemId: any;
 	title: string;
-	titleRenderer: IListTitleRenderer;
+	titleRenderer: string;
 }) => {
-	const TitleRendererComponent = titleRenderer?.component;
+	const {customRenderers, loadData, onItemsChange, openSidePanel} =
+		useContext(FrontendDataSetContext);
 
-	if (TitleRendererComponent) {
-		return <TitleRendererComponent itemData={item} />;
-	}
+	const localizedValue: ILocalizedItemDetails | null = getLocalizedValue(
+		item,
+		title
+	);
+
+	const value = localizedValue?.value ?? undefined;
 
 	if (title) {
-		return (
-			<ClayList.ItemTitle>
-				{getLocalizedValue(item, title)?.value}
-			</ClayList.ItemTitle>
-		);
+		const TitleRendererComponent = getListSectionContentRenderer({
+			contentRendererName: titleRenderer,
+			customRenderers,
+		});
+
+		if (TitleRendererComponent) {
+			const valuePath = localizedValue?.valuePath ?? undefined;
+
+			return (
+				<ClayList.ItemTitle>
+					<TitleRendererComponent
+						actions={actions}
+						itemData={item}
+						itemId={itemId}
+						loadData={loadData}
+						onItemsChange={onItemsChange}
+						openSidePanel={openSidePanel}
+						options={null}
+						rootPropertyName={
+							localizedValue?.rootPropertyName ?? undefined
+						}
+						value={value}
+						valuePath={valuePath}
+					/>
+				</ClayList.ItemTitle>
+			);
+		}
+
+		return <ClayList.ItemTitle>{value}</ClayList.ItemTitle>;
 	}
 
 	return null;
@@ -177,7 +239,9 @@ const ListItem = forwardRef<HTMLLIElement, any>(
 					}}
 				>
 					<Title
+						actions={itemsActions}
 						item={item}
+						itemId={itemId}
 						title={title}
 						titleRenderer={titleRenderer}
 					/>
