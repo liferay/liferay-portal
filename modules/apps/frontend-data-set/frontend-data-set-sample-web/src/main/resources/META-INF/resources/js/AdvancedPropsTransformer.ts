@@ -9,6 +9,7 @@ import {openModal} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 
 import CustomAuthorTableCell from './CustomAuthorTableCell';
+import CustomListTitleRenderer from './CustomListTitleRenderer';
 import SampleInfoPanel from './SampleInfoPanel';
 import dummyUploader from './dummyUploader';
 import {advancedFDSAtom} from './utils/atoms';
@@ -18,6 +19,7 @@ import type {
 	IFileDropSettings,
 	IInternalRenderer,
 	IItemsActions,
+	IListSchema,
 	IView,
 } from '@liferay/frontend-data-set-web';
 
@@ -49,6 +51,12 @@ export default function propsTransformer({
 	const customAuthorTableCellRenderer: IInternalRenderer = {
 		component: CustomAuthorTableCell,
 		name: 'customAuthorTableCellRenderer',
+		type: 'internal',
+	};
+
+	const customListTitleRenderer: IInternalRenderer = {
+		component: CustomListTitleRenderer,
+		name: 'customListTitleRenderer',
 		type: 'internal',
 	};
 
@@ -91,6 +99,8 @@ export default function propsTransformer({
 
 	const listView = views.find((view) => view.name === 'list')!;
 
+	const listSchema = listView.schema as IListSchema;
+
 	listView.setItemComponentProps = ({
 		item,
 		props,
@@ -98,14 +108,25 @@ export default function propsTransformer({
 		item: any;
 		props: any;
 	}) => {
+		const updatedProps = {
+			...props,
+			schema: {
+				...listSchema,
+				titleRenderer: 'customListTitleRenderer',
+			},
+		};
+
 		if (item.title === 'Sample1') {
 			return {
-				...props,
-				className: classNames('sample-css-class', props.className),
+				...updatedProps,
+				className: classNames(
+					'sample-css-class',
+					updatedProps.className
+				),
 			};
 		}
 
-		return props;
+		return updatedProps;
 	};
 
 	const tableView = views.find((view) =>
@@ -133,6 +154,7 @@ export default function propsTransformer({
 		...otherProps,
 		atom: advancedFDSAtom,
 		customRenderers: {
+			listSection: [customListTitleRenderer],
 			tableCell: [customAuthorTableCellRenderer],
 		},
 		fileDropSettings,
