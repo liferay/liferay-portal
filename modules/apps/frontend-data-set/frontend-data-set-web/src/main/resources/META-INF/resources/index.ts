@@ -52,6 +52,7 @@ export {
 	IBaseFilterState,
 	ICardSchema,
 	IClientExtensionRenderer,
+	IListSchema,
 	ICreationActionItem,
 	IFDSState,
 	IFileDropSettings,

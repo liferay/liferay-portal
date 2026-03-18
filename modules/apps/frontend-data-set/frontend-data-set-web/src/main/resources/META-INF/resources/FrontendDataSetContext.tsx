@@ -25,6 +25,7 @@ export interface IFrontendDataSetContext {
 	createInlineItem: Function;
 	customDataRenderers?: Array<any>;
 	customRenderers?: {
+		listSection?: Array<TRenderer>;
 		tableCell?: Array<TRenderer>;
 	};
 	executeAsyncItemAction: ({
