@@ -51,7 +51,11 @@ public class JSUnitJUnitTestResult extends JUnitTestResult {
 			testTaskName = testTaskName.substring(x + 9);
 		}
 
-		if (testTaskName.contains(".src.")) {
+		if (testTaskName.contains(".clay.")) {
+			testTaskName = testTaskName.substring(
+				0, testTaskName.indexOf(".clay."));
+		}
+		else if (testTaskName.contains(".src.")) {
 			testTaskName = testTaskName.substring(
 				0, testTaskName.indexOf(".src."));
 		}

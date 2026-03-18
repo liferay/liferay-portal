@@ -44,7 +44,10 @@ public class JSUnitTestReport extends BaseTestReport {
 			testName = testName.substring(x + 9);
 		}
 
-		if (testName.contains(".src.")) {
+		if (testName.contains(".clay.")) {
+			testName = testName.substring(0, testName.indexOf(".clay."));
+		}
+		else if (testName.contains(".src.")) {
 			testName = testName.substring(0, testName.indexOf(".src."));
 		}
 		else if (testName.contains(".test.")) {
