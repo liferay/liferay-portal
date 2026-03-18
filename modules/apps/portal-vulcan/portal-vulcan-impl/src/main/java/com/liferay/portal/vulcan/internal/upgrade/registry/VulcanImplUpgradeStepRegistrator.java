@@ -6,6 +6,7 @@
 package com.liferay.portal.vulcan.internal.upgrade.registry;
 
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.vulcan.internal.upgrade.v1_0_1.VulcanCompanyConfigurationUpgradeProcess;
 
@@ -23,6 +24,8 @@ public class VulcanImplUpgradeStepRegistrator
 	@Override
 	public void register(Registry registry) {
 		registry.registerInitialization();
+
+		registry.register("0.0.1", "1.0.0", new DummyUpgradeStep());
 
 		registry.register(
 			"1.0.0", "1.0.1",
