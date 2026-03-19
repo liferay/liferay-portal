@@ -30,7 +30,7 @@
 		"@ckeditor/ckeditor5-highlight": "46.0.3",
 		"@ckeditor/ckeditor5-horizontal-line": "46.0.3",
 		"@ckeditor/ckeditor5-html-embed": "46.0.3",
-		"@ckeditor/ckeditor5-html-support": "46.0.3",
+		"@ckeditor/ckeditor5-html-support": "47.6.0",
 		"@ckeditor/ckeditor5-icons": "46.0.3",
 		"@ckeditor/ckeditor5-image": "46.0.3",
 		"@ckeditor/ckeditor5-indent": "46.0.3",
