@@ -240,6 +240,24 @@ spec:
 {{- end }}
 {{- end }}
 ---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+    name: liferay-hash-policy
+    namespace: {{ .Release.Namespace }}
+spec:
+    hashPolicies:
+        -   cookie:
+                name: JSESSIONID
+    loadBalancer:
+        ringHash:
+            minimumRingSize: 4096
+        type: RingHash
+    targetRefs:
+        -   group: ""
+            kind: Service
+            name: {{ include "liferay.name" .root }}{{ $suffix }}
+---
 apiVersion: v1
 kind: Service
 metadata:
