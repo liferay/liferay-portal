@@ -30,6 +30,9 @@ public interface CookiesPreferenceHandlingConfiguration {
 	)
 	public int consentRenewalPeriod();
 
+	@Meta.AD(deflt = "0", required = false)
+	public long customFloatingIconImageId();
+
 	@Meta.AD(
 		deflt = "12", max = "12", min = "0",
 		name = "cookie-dissent-renewal-period", required = false
