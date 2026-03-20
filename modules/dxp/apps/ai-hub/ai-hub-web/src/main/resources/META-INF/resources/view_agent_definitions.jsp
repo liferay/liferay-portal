@@ -23,5 +23,6 @@ ViewAgentDefinitionsDisplayContext viewAgentDefinitionsDisplayContext = (ViewAge
 	fdsActionDropdownItems="<%= viewAgentDefinitionsDisplayContext.getFDSActionDropdownItems() %>"
 	id="<%= AIHubFDSNames.AGENT_DEFINITIONS %>"
 	itemsPerPage="<%= 20 %>"
+	propsTransformer="{AgentDefinitionItemTitlePropsTransformer} from ai-hub-web"
 	style="fluid"
 />

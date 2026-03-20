@@ -10,6 +10,7 @@
 		"@clayui/panel": "^3.159.0",
 		"@clayui/provider": "^3.159.0",
 		"@clayui/toolbar": "^3.159.0",
+		"@liferay/frontend-data-set-web": "*",
 		"@liferay/object-js-components-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",

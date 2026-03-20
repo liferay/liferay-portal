@@ -4,3 +4,4 @@
  */
 
 export {default as AgentDefinitionForm} from './agent_definition_form/AgentDefinitionForm';
+export {default as AgentDefinitionItemTitlePropsTransformer} from './agent_definition_item_title/AgentDefinitionItemTitlePropsTransformer';
