@@ -3,125 +3,98 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayDropDown from '@clayui/drop-down';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {EActionType, IAction} from '../types';
+import {EActionType, IActionGroup} from '../types';
+import WritingAssistantBalloon from './WritingAssistantBalloon';
 
 export default function WritingAssistantActions({
 	containerRef,
 	handleActionClick,
+	hideBalloon,
 }: {
 	containerRef: HTMLElement;
 	handleActionClick: (type: EActionType) => Promise<void>;
+	hideBalloon: () => void;
 }) {
 	const [active, setActive] = useState(true);
-	const [isLoading, setIsLoading] = useState<{type: EActionType | ''}>({
-		type: '',
-	});
 
-	const actionsGroup = [
+	const actionsGroup: IActionGroup[] = [
 		{
 			children: [
 				{
 					disabled: false,
 					name: Liferay.Language.get('improve-writing'),
 					symbolLeft: 'magic',
-					type: 'Improve Writing',
+					type: EActionType.IMPROVE_WRITING,
 				},
 				{
 					disabled: false,
 					name: Liferay.Language.get('fix-spelling-and-grammar'),
 					symbolLeft: 'check',
-					type: 'Fix Spelling and Grammar',
+					type: EActionType.FIX_SPELLING_AND_GRAMMAR,
 				},
 				{
 					disabled: true,
 					name: Liferay.Language.get('translate-to'),
 					symbolLeft: 'automatic-translate',
 					symbolRight: 'angle-right-small',
-					type: 'Translate To',
+					type: EActionType.TRANSLATE_TO,
 				},
 			],
 			name: Liferay.Language.get('suggested'),
 		},
-		{type: 'divider'},
 		{
 			children: [
 				{
 					disabled: false,
 					name: Liferay.Language.get('make-shorter'),
 					symbolLeft: 'bars',
-					type: 'Make Shorter',
+					type: EActionType.MAKE_SHORTER,
 				},
 				{
 					disabled: false,
 					name: Liferay.Language.get('make-longer'),
 					symbolLeft: 'align-justify',
-					type: 'Make Longer',
+					type: EActionType.MAKE_LONGER,
 				},
 				{
 					disabled: true,
 					name: Liferay.Language.get('change-tone'),
 					symbolRight: 'angle-right-small',
-					type: 'Change Tone',
+					type: EActionType.CHANGE_TONE,
 				},
 			],
 			name: Liferay.Language.get('edit'),
 		},
 	];
 
-	const alignRef = useRef<HTMLElement | null>(null);
-
 	useEffect(() => {
-		alignRef.current = containerRef ?? null;
-	}, [containerRef]);
+		function handleDocumentClick(event: MouseEvent) {
+			if (
+				active &&
+				containerRef &&
+				!containerRef.contains(event.target as Node)
+			) {
+				setActive(false);
+				hideBalloon();
+			}
+		}
+		document.addEventListener('mousedown', handleDocumentClick);
+
+		return () => {
+			document.removeEventListener('mousedown', handleDocumentClick);
+		};
+	}, [active, containerRef, hideBalloon]);
+
+	if (!active) {
+		return null;
+	}
 
 	return (
-		<ClayDropDown.Menu
-			active={active}
-			alignElementRef={alignRef}
-			onActiveChange={setActive}
-		>
-			<ClayDropDown.ItemList items={actionsGroup}>
-				{(group: any) => (
-					<ClayDropDown.Group<IAction>
-						header={group.name}
-						items={group.children}
-						key={group.name}
-					>
-						{(child: IAction) => (
-							<ClayDropDown.Item
-								disabled={child.disabled}
-								key={child.name}
-								onClick={() => {
-									handleActionClick(child.type);
-									setIsLoading({type: child.type});
-								}}
-								spritemap={
-									Liferay.ThemeDisplay.getPathThemeImages() +
-									'/clay/icons.svg'
-								}
-								style={{
-									opacity:
-										isLoading.type === child.type ? 0.5 : 1,
-								}}
-								symbolLeft={child.symbolLeft}
-								symbolRight={child.symbolRight}
-							>
-								<div className="align-items-center d-flex">
-									<span className="ml-4">{child.name}</span>
-
-									{isLoading.type === child.type && (
-										<ClayLoadingIndicator className="mb-0 mt-0" />
-									)}
-								</div>
-							</ClayDropDown.Item>
-						)}
-					</ClayDropDown.Group>
-				)}
-			</ClayDropDown.ItemList>
-		</ClayDropDown.Menu>
+		<WritingAssistantBalloon
+			actionsGroup={actionsGroup}
+			handleActionClick={handleActionClick}
+		/>
 	);
 }
