@@ -8,6 +8,8 @@ package com.liferay.headless.admin.site.internal.util;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 
 /**
@@ -20,6 +22,12 @@ public class EnabledUtil {
 	}
 
 	public static void checkEnabled(Company company, boolean privateLayout) {
+
+		_log.error(String.format("!!! THREAD CHECK: [ID: %d] [Name: %s] [ExportActive: %b]",
+			Thread.currentThread().getId(),
+			Thread.currentThread().getName(),
+			ExportImportThreadLocal.isExportInProcess()));
+
 		if (LazyReferencingThreadLocal.isEnabled() ||
 			ExportImportThreadLocal.isExportInProcess() ||
 			ExportImportThreadLocal.isImportInProcess() ||
@@ -37,5 +45,8 @@ public class EnabledUtil {
 			throw new UnsupportedOperationException();
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		EnabledUtil.class);
 
 }
