@@ -20,3 +20,9 @@ export interface IAction {
 	symbolRight?: string;
 	type: EActionType;
 }
+
+export interface IActionGroup {
+	children: IAction[];
+	name: string;
+	type?: 'divider';
+}
