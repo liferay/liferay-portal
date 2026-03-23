@@ -4,6 +4,7 @@
  */
 
 import {Locator, expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {accountSettingsPagesTest} from '../../../fixtures/accountSettingsPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -272,6 +273,72 @@ test(
 				await expect(actualCookie.value).toEqual('true');
 			}
 		});
+	}
+);
+
+test(
+	'Verify Custom Floating Icon can be selected',
+	{tag: '@LPD-81552'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Privacy',
+			'Consent Manager'
+		);
+
+		const acceptAllButton = systemSettingsPage.page.getByRole('button', {
+			name: 'Accept All',
+		});
+
+		await acceptAllButton.click();
+
+		await expect(acceptAllButton).not.toBeVisible();
+		await systemSettingsPage.page
+			.getByText('Custom', {exact: true})
+			.click();
+
+		const fileChooserPromise = page.waitForEvent('filechooser');
+
+		await systemSettingsPage.page
+			.getByRole('button', {name: 'Change Custom Icon'})
+			.click();
+
+		const uploadImageFrame = await systemSettingsPage.page.frameLocator(
+			'iframe[title="Upload Custom Icon"]'
+		);
+
+		await uploadImageFrame
+			.getByRole('button', {name: 'Select Image'})
+			.click();
+
+		const fileChooser = await fileChooserPromise;
+
+		await fileChooser.setFiles(
+			path.join(__dirname, '/dependencies/liferay.png')
+		);
+
+		await uploadImageFrame
+			.getByRole('button', {
+				name: 'Done',
+			})
+			.click();
+
+		await systemSettingsPage.page
+			.getByRole('button', {name: 'Update'})
+			.click();
+
+		await waitForAlert(
+			systemSettingsPage.page,
+			`Success:Your request completed successfully.`
+		);
+		const imageButton = await systemSettingsPage.page.locator(
+			'#_com_liferay_cookies_banner_web_portlet_CookiesBannerPortlet_floatingIconButton'
+		);
+
+		await expect(imageButton).toBeVisible();
+
+		const imageSrc = await imageButton.getAttribute('src');
+
+		await expect(imageSrc.includes('/image/floating_icon?')).toBeTruthy();
 	}
 );
 
