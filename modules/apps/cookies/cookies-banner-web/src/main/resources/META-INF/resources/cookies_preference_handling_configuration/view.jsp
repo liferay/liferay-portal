@@ -129,23 +129,46 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 			<div class="align-items-center d-flex flex-wrap">
 
 				<%
-				for (String icon : new String[] {"cookie", "shield-check", "unlock", "control-panel"}) {
+				for (String icon : new String[] {"cookie", "shield-check", "unlock", "control-panel", "custom"}) {
 				%>
 
 					<div class="align-items-center d-flex mb-3 mr-4">
 						<aui:input checked="<%= Objects.equals(cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingFloatingIcon(), icon) %>" id="<%= icon %>" label="" name="floatingIcon" type="radio" value="<%= icon %>" wrapperCssClass="mb-0" />
 
-						<label class="align-items-center cursor-pointer d-inline-flex floating-icon-custom justify-content-center mb-0 ml-3 rounded-circle text-white" for="<portlet:namespace /><%= icon %>">
-							<clay:icon
-								symbol="<%= icon %>"
-							/>
-						</label>
+						<c:choose>
+							<c:when test='<%= Objects.equals("custom", icon) %>'>
+								<label class="align-items-center cursor-pointer d-inline-flex justify-content-center mb-0 ml-3" for="<portlet:namespace /><%= icon %>">
+									<liferay-ui:message key="custom" />
+								</label>
+							</c:when>
+							<c:otherwise>
+								<label class="align-items-center cursor-pointer d-inline-flex floating-icon-custom justify-content-center mb-0 ml-3 rounded-circle text-white" for="<portlet:namespace /><%= icon %>">
+									<clay:icon
+										symbol="<%= icon %>"
+									/>
+								</label>
+							</c:otherwise>
+						</c:choose>
 					</div>
 
 				<%
 				}
 				%>
 
+			</div>
+
+			<div>
+
+				<%
+				long customFloatingIconImageId = cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingCustomFloatingIconImageId();
+				%>
+
+				<liferay-frontend:logo-selector
+					currentLogoURL='<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId %>'
+					defaultLogoURL='<%= themeDisplay.getPathThemeImages() + "/spacer.png" %>'
+					label='<%= LanguageUtil.get(request, "custom-icon") %>'
+					type="floating_icon"
+				/>
 			</div>
 
 			<div aria-hidden="true" class="form-feedback-group mt-2">
