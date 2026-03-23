@@ -8,6 +8,20 @@ import {createRoot} from 'react-dom/client';
 
 import App from './js/App.es';
 
+globalThis.MonacoEnvironment = {
+	getWorkerUrl(_workerId, label) {
+		if (label === 'graphql') {
+			return 'graphql.worker.js';
+		}
+
+		if (label === 'json') {
+			return 'json.worker.js';
+		}
+
+		return 'editor.worker.js';
+	},
+};
+
 /* Bug with SwaggerUI: https://github.com/agoncal/swagger-ui-angular6/issues/2 */
 
 /* eslint-disable-next-line no-undef */
