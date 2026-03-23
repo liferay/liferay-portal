@@ -6,6 +6,8 @@
 package com.liferay.exportimport.kernel.lar;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 /**
  * @author Michael C. Han
@@ -123,6 +125,10 @@ public class ExportImportThreadLocal {
 	}
 
 	public static void setLayoutExportInProcess(boolean layoutExportInProcess) {
+		_log.error(String.format("!!! THREAD CHECK: [ID: %d] [Name: %s] [LayoutExportActive: %b]",
+			Thread.currentThread().getId(),
+			Thread.currentThread().getName(),
+			layoutExportInProcess));
 		_layoutExportInProcess.set(layoutExportInProcess);
 	}
 
@@ -151,6 +157,10 @@ public class ExportImportThreadLocal {
 
 	public static void setPortletExportInProcess(
 		boolean portletExportInProcess) {
+		_log.error(String.format("!!! THREAD CHECK: [ID: %d] [Name: %s] [PortletExportActive: %b]",
+			Thread.currentThread().getId(),
+			Thread.currentThread().getName(),
+			portletExportInProcess));
 
 		_portletExportInProcess.set(portletExportInProcess);
 	}
@@ -233,5 +243,8 @@ public class ExportImportThreadLocal {
 		new CentralizedThreadLocal<>(
 			ExportImportThreadLocal.class + "._stagingInProcessOnRemoteLive",
 			() -> Boolean.FALSE);
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ExportImportThreadLocal.class);
 
 }
