@@ -112,3 +112,11 @@
 	border-radius: 2px;
 	transition: background-color 0.5s ease;
 }
+
+.ck-balloon-panel::before {
+	display: none;
+}
+
+.ck-balloon-panel::after {
+	display: none;
+}

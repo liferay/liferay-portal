@@ -1,0 +1,107 @@
+@import 'atlas-variables';
+
+.ck {
+	&.ck-balloon-panel {
+		border-radius: 0.5rem !important;
+	}
+}
+
+.ck-balloon-rotator__content {
+	span {
+		.balloon-container {
+			padding: 15px 0;
+
+			.balloon-group-container {
+				.balloon-group-header {
+					color: #6b6c7e;
+					font-size: 0.8rem;
+					font-weight: 600;
+					line-height: 1.5;
+					margin: 0 0 0.5rem 1rem;
+				}
+
+				.balloon-group-item {
+					cursor: pointer;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					padding: 0.25rem 1rem;
+
+					.balloon-group-item-icon {
+						margin-right: 0.625rem;
+					}
+
+					.balloon-group-item-icon-right {
+						margin-left: auto;
+						margin-right: 0;
+						position: relative;
+					}
+
+					.balloon-group-item-button {
+						color: #6b6c7e;
+						cursor: pointer;
+						font-size: 0.875rem;
+						margin-right: 1rem;
+						width: 100%;
+					}
+
+					.balloon-group-item-button-disabled {
+						cursor: not-allowed;
+					}
+				}
+
+				.balloon-group-item-loading {
+					opacity: 0.5;
+					pointer-events: none;
+				}
+
+				.balloon-group-item-disabled {
+					cursor: not-allowed;
+					opacity: 0.5;
+				}
+
+				.balloon-group-item:hover {
+					background-color: $gray-100;
+				}
+
+				.balloon-group-separator {
+					display: block;
+					border-top: 1px solid $gray-300;
+					margin: 0.5rem 0;
+				}
+			}
+		}
+	}
+
+	.custom-react-balloon {
+		.confirmation-balloon-container {
+			padding: 0.8rem 0;
+			width: 15rem;
+
+			.confirmation-balloon-item {
+				cursor: pointer;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				padding: 0.25rem 1rem;
+
+				.confirmation-ballon-button {
+					color: #6b6c7e;
+					cursor: pointer;
+					font-size: 0.875rem;
+					margin: 0 1rem 0 0.75rem;
+					width: 100%;
+				}
+			}
+
+			.confirmation-balloon-item:hover {
+				background-color: $gray-100;
+			}
+
+			.confirmation-balloon-item-disabled {
+				cursor: not-allowed;
+				opacity: 0.5;
+			}
+		}
+	}
+}
