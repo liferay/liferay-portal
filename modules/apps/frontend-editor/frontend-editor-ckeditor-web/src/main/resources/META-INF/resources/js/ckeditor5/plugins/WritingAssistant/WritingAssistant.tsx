@@ -21,6 +21,7 @@ export default class WritingAssistant extends Plugin {
 	public contentSelection: string = '';
 	public eventSourceReference: string = '';
 	public reactRoot: Root | null = null;
+	public confirmationBalloonOpen: boolean = false;
 
 	static get requires() {
 		return [ContextualBalloon];
@@ -67,6 +68,10 @@ export default class WritingAssistant extends Plugin {
 	) {
 		const debouncedSelectionCheck = debounce(() => {
 			this._selectedContent(model);
+
+			if (this.confirmationBalloonOpen) {
+				return;
+			}
 
 			if (
 				this.contentSelection &&
@@ -229,6 +234,7 @@ export default class WritingAssistant extends Plugin {
 							type
 						);
 					}}
+					hideBalloon={() => this._hideBalloon(balloon)}
 				/>
 			);
 
@@ -248,6 +254,8 @@ export default class WritingAssistant extends Plugin {
 		if (this.balloonView && balloon.hasView(this.balloonView)) {
 			return;
 		}
+
+		this.confirmationBalloonOpen = true;
 
 		const reactView = new View();
 
@@ -270,16 +278,17 @@ export default class WritingAssistant extends Plugin {
 					containerRef={reactView.element}
 					handleAccept={() => {
 						this._removeMarker(editor.model);
-						this._hideBalloon(balloon);
 					}}
 					handleDiscard={() => {
 						editor.execute('undo');
 						editor.model.change((writer: ModelWriter) => {
 							writer.setSelection(null);
 						});
-
-						this._hideBalloon(balloon);
 						this._removeMarker(editor.model);
+					}}
+					hideBalloon={() => {
+						this.confirmationBalloonOpen = false;
+						this._hideBalloon(balloon);
 					}}
 				/>
 			);
