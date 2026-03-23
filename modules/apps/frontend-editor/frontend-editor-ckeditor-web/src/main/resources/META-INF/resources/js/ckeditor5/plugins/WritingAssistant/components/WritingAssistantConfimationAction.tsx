@@ -3,33 +3,42 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayDropDown from '@clayui/drop-down';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+
+import ConfirmationBalloon from './ConfimartionBalloon';
 
 export default function WritingAssistantConfirmationAction({
 	containerRef,
 	handleAccept,
 	handleDiscard,
+	hideBalloon,
 }: {
 	containerRef: HTMLElement;
 	handleAccept: () => void;
 	handleDiscard: () => void;
+	hideBalloon: () => void;
 }) {
 	const [active, setActive] = useState(true);
-
-	const alignRef = useRef<HTMLElement | null>(null);
 
 	const actions = [
 		{
 			disabled: false,
 			name: Liferay.Language.get('accept'),
-			onClick: handleAccept,
+			onClick: () => {
+				handleAccept();
+				setActive(false);
+				hideBalloon();
+			},
 			symbolLeft: 'check',
 		},
 		{
 			disabled: false,
 			name: Liferay.Language.get('discard'),
-			onClick: handleDiscard,
+			onClick: () => {
+				handleDiscard();
+				setActive(false);
+				hideBalloon();
+			},
 			symbolLeft: 'times',
 		},
 		{
@@ -41,38 +50,26 @@ export default function WritingAssistantConfirmationAction({
 	];
 
 	useEffect(() => {
-		alignRef.current = containerRef ?? null;
+		function handleDocumentClick(event: MouseEvent) {
+			if (
+				active &&
+				containerRef &&
+				!containerRef.contains(event.target as Node)
+			) {
+				setActive(false);
+				hideBalloon();
+			}
+		}
+		document.addEventListener('mousedown', handleDocumentClick);
 
 		return () => {
-			setActive(false);
+			document.removeEventListener('mousedown', handleDocumentClick);
 		};
-	}, [containerRef]);
+	}, [active, containerRef, hideBalloon]);
 
-	return (
-		<ClayDropDown.Menu
-			active={active}
-			alignElementRef={alignRef}
-			onActiveChange={setActive}
-		>
-			<ClayDropDown.ItemList items={actions}>
-				{(item: any) => (
-					<ClayDropDown.Item
-						disabled={item.disabled}
-						key={item.name}
-						onClick={() => {
-							item.onClick();
-							setActive(false);
-						}}
-						spritemap={
-							Liferay.ThemeDisplay.getPathThemeImages() +
-							'/clay/icons.svg'
-						}
-						symbolLeft={item.symbolLeft}
-					>
-						<span className="ml-4">{item.name}</span>
-					</ClayDropDown.Item>
-				)}
-			</ClayDropDown.ItemList>
-		</ClayDropDown.Menu>
-	);
+	if (!active) {
+		return null;
+	}
+
+	return <ConfirmationBalloon actions={actions} />;
 }
