@@ -69,6 +69,10 @@ public class CookiesBannerBottomJSPDynamicInclude
 			}
 
 			httpServletRequest.setAttribute(
+				CookiesBannerWebKeys.CUSTOM_FLOATING_ICON_IMAGE_ID,
+				cookiesPreferenceHandlingConfiguration.
+					customFloatingIconImageId());
+			httpServletRequest.setAttribute(
 				CookiesBannerWebKeys.FLOATING_ICON,
 				cookiesPreferenceHandlingConfiguration.floatingIcon());
 			httpServletRequest.setAttribute(

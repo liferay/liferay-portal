@@ -39,3 +39,15 @@
 	height: 30px;
 	width: 30px;
 }
+
+.custom-floating-icon-image {
+	bottom: 24px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	height: 60px;
+	left: 24px;
+	position: fixed !important;
+	transition: background-color 0.2s ease;
+	width: 60px;
+	z-index: 1030;
+}

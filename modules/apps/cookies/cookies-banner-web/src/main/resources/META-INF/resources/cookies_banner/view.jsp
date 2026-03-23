@@ -12,15 +12,28 @@ CookiesBannerDisplayContext cookiesBannerDisplayContext = (CookiesBannerDisplayC
 %>
 
 <c:if test="<%= (boolean)request.getAttribute(CookiesBannerWebKeys.FLOATING_ICON_ENABLED) %>">
-	<clay:button
-		cssClass="align-items-center d-none floating-icon-button justify-content-center ml-3 rounded-circle text-white"
-		displayType="unstyled"
-		id='<%= liferayPortletResponse.getNamespace() + "floatingIconButton" %>'
-	>
-		<clay:icon
-			symbol="<%= (String)request.getAttribute(CookiesBannerWebKeys.FLOATING_ICON) %>"
-		/>
-	</clay:button>
+
+	<%
+	long customFloatingIconImageId = (long)request.getAttribute(CookiesBannerWebKeys.CUSTOM_FLOATING_ICON_IMAGE_ID);
+	String floatingIcon = (String)request.getAttribute(CookiesBannerWebKeys.FLOATING_ICON);
+	%>
+
+	<c:choose>
+		<c:when test='<%= Objects.equals("custom", floatingIcon) %>'>
+			<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="floating-icon" />" class="custom-floating-icon-image d-none ml-3" id="<portlet:namespace />floatingIconButton" name="<portlet:namespace />floatingIconButton" src="<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId %>" />
+		</c:when>
+		<c:otherwise>
+			<clay:button
+				cssClass="align-items-center d-none floating-icon-button justify-content-center ml-3 rounded-circle text-white"
+				displayType="unstyled"
+				id='<%= liferayPortletResponse.getNamespace() + "floatingIconButton" %>'
+			>
+				<clay:icon
+					symbol="<%= floatingIcon %>"
+				/>
+			</clay:button>
+		</c:otherwise>
+	</c:choose>
 </c:if>
 
 <div aria-label="banner cookies" class="cookies-banner cookies-banner-bottom" role="dialog">
