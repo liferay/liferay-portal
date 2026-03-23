@@ -9,8 +9,8 @@
 		"@clayui/link": "^3.159.0",
 		"@clayui/modal": "^3.159.0",
 		"@clayui/popover": "^3.159.0",
-		"graphiql": "1.4.7",
-		"graphql": "^15.0.0",
+		"graphiql": "5.2.2",
+		"graphql": "^15.5.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"swagger-ui-react": "5.31.0"
