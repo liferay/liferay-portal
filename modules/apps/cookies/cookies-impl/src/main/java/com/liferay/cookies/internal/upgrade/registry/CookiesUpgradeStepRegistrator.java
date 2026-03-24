@@ -23,6 +23,11 @@ public class CookiesUpgradeStepRegistrator implements UpgradeStepRegistrator {
 		registry.register(
 			"1.0.0", "1.1.0",
 			new CookiesPreferenceHandlingConfigurationUpgradeProcess());
+
+		registry.register(
+			"1.1.0", "1.2.0",
+			new com.liferay.cookies.internal.upgrade.v1_2_0.
+				CookiesPreferenceHandlingConfigurationUpgradeProcess());
 	}
 
 }
