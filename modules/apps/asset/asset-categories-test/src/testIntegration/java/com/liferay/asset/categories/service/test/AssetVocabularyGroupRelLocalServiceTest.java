@@ -134,6 +134,39 @@ public class AssetVocabularyGroupRelLocalServiceTest {
 	}
 
 	@Test
+	public void testGetAssetVocabularyGroupRelsCount() throws Exception {
+		Group group1 = GroupTestUtil.addGroup();
+		Group group2 = GroupTestUtil.addGroup();
+
+		long[] groupIds = {group1.getGroupId(), group2.getGroupId()};
+
+		_assetVocabularyGroupRelLocalService.setAssetVocabularyGroupRels(
+			_assetVocabulary.getVocabularyId(), groupIds);
+
+		Assert.assertEquals(
+			2,
+			_assetVocabularyGroupRelLocalService.
+				getAssetVocabularyGroupRelsCount(
+					_assetVocabulary.getVocabularyId()));
+
+		GroupTestUtil.deleteGroup(group2);
+
+		Assert.assertEquals(
+			1,
+			_assetVocabularyGroupRelLocalService.
+				getAssetVocabularyGroupRelsCount(
+					_assetVocabulary.getVocabularyId()));
+
+		_assetVocabularyLocalService.deleteVocabulary(_assetVocabulary);
+
+		Assert.assertEquals(
+			0,
+			_assetVocabularyGroupRelLocalService.
+				getAssetVocabularyGroupRelsCount(
+					_assetVocabulary.getVocabularyId()));
+	}
+
+	@Test
 	public void testSetAssetVocabularyGroupRels() throws Exception {
 		try {
 			_assetVocabularyGroupRelLocalService.setAssetVocabularyGroupRels(
