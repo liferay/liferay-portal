@@ -451,6 +451,60 @@ test(
 );
 
 test(
+	'Verify Floating Icon options can be only edited when Consent Manager is enabled',
+	{tag: '@LPD-81552'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Privacy',
+			'Consent Manager'
+		);
+
+		const acceptAllButton = systemSettingsPage.page.getByRole('button', {
+			name: 'Accept All',
+		});
+
+		await acceptAllButton.click();
+
+		await expect(acceptAllButton).not.toBeVisible();
+
+		const enabledButton = await systemSettingsPage.page.getByLabel(
+			'Enabled',
+			{exact: true}
+		);
+
+		await enabledButton.setChecked(false);
+
+		const floatingIconEnabled = await systemSettingsPage.page.getByLabel(
+			'Floating Icon Enabled'
+		);
+
+		const controlPanelIconInput = page.locator(
+			'input[id$="control-panel"]'
+		);
+		const cookieIconInput = page.locator('input[id$="cookie"]');
+		const customIconInput = page.locator('input[id$="custom"]');
+
+		await expect(floatingIconEnabled).not.toBeEnabled();
+
+		await expect(controlPanelIconInput).not.toBeEnabled();
+
+		await expect(cookieIconInput).not.toBeEnabled();
+
+		await expect(customIconInput).not.toBeEnabled();
+
+		await enabledButton.setChecked(true);
+
+		await expect(floatingIconEnabled).toBeEnabled();
+
+		await expect(controlPanelIconInput).toBeEnabled();
+
+		await expect(cookieIconInput).toBeEnabled();
+
+		await expect(customIconInput).toBeEnabled();
+	}
+);
+
+test(
 	'Verify Floating Icon use',
 	{tag: '@LPD-78593'},
 	async ({page, systemSettingsPage}) => {
