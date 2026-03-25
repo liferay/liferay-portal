@@ -157,15 +157,15 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 
 			</div>
 
-			<div>
+			<div id="<portlet:namespace />logoSelectorContainer">
 
 				<%
 				long customFloatingIconImageId = cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingCustomFloatingIconImageId();
 				%>
 
 				<liferay-frontend:logo-selector
-					currentLogoURL='<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId %>'
 					aspectRatio="<%= 1 %>"
+					currentLogoURL='<%= (customFloatingIconImageId == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/floating_icon?img_id=" + customFloatingIconImageId %>'
 					defaultLogoURL='<%= themeDisplay.getPathThemeImages() + "/spacer.png" %>'
 					label='<%= LanguageUtil.get(request, "custom-icon") %>'
 					type="floating_icon"
@@ -184,6 +184,29 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 />
 
 <aui:script>
+	var logoSelectorContainer = document.getElementById(
+		'<portlet:namespace />logoSelectorContainer'
+	);
+	var customRadioButton = document.getElementById('<portlet:namespace />custom');
+	var allRadioButtons = document.querySelectorAll(
+		'input[name="<portlet:namespace />floatingIcon"]'
+	);
+
+	function toggleLogoSelector() {
+		if (customRadioButton.checked) {
+			logoSelectorContainer.classList.remove('d-none');
+		}
+		else {
+			logoSelectorContainer.classList.add('d-none');
+		}
+	}
+
+	toggleLogoSelector();
+
+	allRadioButtons.forEach(function (radio) {
+		radio.addEventListener('change', toggleLogoSelector);
+	});
+
 	var form = document.<portlet:namespace />fm;
 
 	if (form) {
