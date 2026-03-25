@@ -31,6 +31,18 @@ export default function ({namespace}) {
 				`input[type='checkbox'][name='${namespace}explicitConsentMode']`
 			);
 
+			const floatingIconEnabled = document.querySelector(
+				`input[type='checkbox'][name='${namespace}floatingIconEnabled']`
+			);
+
+			const floatingIcons = document.querySelectorAll(
+				`input[type='radio'][name='${namespace}floatingIcon']`
+			);
+
+			const logoSelectorContainer = document.getElementById(
+				`${namespace}logoSelectorContainer`
+			);
+
 			const storeConsent = document.querySelector(
 				`input[type='checkbox'][name='${namespace}storeConsent']`
 			);
@@ -47,6 +59,30 @@ export default function ({namespace}) {
 					dissentRenewalPeriodLabel?.classList.remove('disabled');
 					explicitConsentMode.removeAttribute('disabled');
 
+					if (Liferay.FeatureFlags['LPD-75027']) {
+						floatingIconEnabled.removeAttribute('disabled');
+
+						floatingIcons.forEach((iconInput) => {
+							iconInput.removeAttribute('disabled');
+
+							const label = document.querySelector(
+								`label[for='${iconInput.id}']`
+							);
+							if (label) {
+								label.classList.remove('disabled');
+							}
+						});
+
+						if (logoSelectorContainer) {
+							logoSelectorContainer.classList.remove('disabled');
+							logoSelectorContainer
+								.querySelectorAll('input, button')
+								.forEach((element) => {
+									element.removeAttribute('disabled');
+								});
+						}
+					}
+
 					if (Liferay.FeatureFlags['LPD-75032']) {
 						storeConsent.removeAttribute('disabled');
 					}
@@ -61,6 +97,30 @@ export default function ({namespace}) {
 					dissentRenewalPeriod.setAttribute('disabled', '');
 					dissentRenewalPeriodLabel?.classList.add('disabled');
 					explicitConsentMode.setAttribute('disabled', '');
+
+					if (Liferay.FeatureFlags['LPD-75027']) {
+						floatingIconEnabled.setAttribute('disabled', '');
+
+						floatingIcons.forEach((iconInput) => {
+							iconInput.setAttribute('disabled', '');
+
+							const label = document.querySelector(
+								`label[for='${iconInput.id}']`
+							);
+							if (label) {
+								label.classList.add('disabled');
+							}
+						});
+
+						if (logoSelectorContainer) {
+							logoSelectorContainer.classList.add('disabled');
+							logoSelectorContainer
+								.querySelectorAll('input, button')
+								.forEach((element) => {
+									element.setAttribute('disabled', '');
+								});
+						}
+					}
 
 					if (Liferay.FeatureFlags['LPD-75032']) {
 						storeConsent.checked = false;
