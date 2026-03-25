@@ -3548,6 +3548,14 @@
 		"issueKey": "LPD-31312"
 	},
 	{
+		"from": "regex:aui:container",
+		"issueKey": "LPD-31352",
+		"to": "clay:container",
+		"validExtensions": [
+			"jsp"
+		]
+	},
+	{
 		"classNames": [
 			"CustomFacetPortletPreferences"
 		],
