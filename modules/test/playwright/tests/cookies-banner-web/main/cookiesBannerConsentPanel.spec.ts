@@ -343,6 +343,46 @@ test(
 );
 
 test(
+	'Verify Custom Floating Icon selector only is visible when Custom is selected',
+	{tag: '@LPD-81552'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Privacy',
+			'Consent Manager'
+		);
+
+		const acceptAllButton = systemSettingsPage.page.getByRole('button', {
+			name: 'Accept All',
+		});
+
+		await acceptAllButton.click();
+
+		await expect(acceptAllButton).not.toBeVisible();
+
+		const changeCustomIconButton = systemSettingsPage.page.getByRole(
+			'button',
+			{name: 'Change Custom Icon'}
+		);
+
+		await expect(changeCustomIconButton).not.toBeVisible();
+
+		await systemSettingsPage.page
+			.getByText('Custom', {exact: true})
+			.click();
+
+		await expect(changeCustomIconButton).toBeVisible();
+
+		const controlPanelIcon = page.locator(
+			'label:has(svg.lexicon-icon-control-panel)'
+		);
+
+		await controlPanelIcon.click();
+
+		await expect(changeCustomIconButton).not.toBeVisible();
+	}
+);
+
+test(
 	'Verify Floating Icon can be selected',
 	{tag: '@LPD-78592'},
 	async ({page, systemSettingsPage}) => {
