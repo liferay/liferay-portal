@@ -5,6 +5,7 @@
 
 package com.liferay.fragment.internal.renderer;
 
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
@@ -15,6 +16,7 @@ import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.layout.page.template.info.item.capability.EditPageInfoItemCapability;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -26,7 +28,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -42,6 +44,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.Locale;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -144,6 +147,36 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		AssetEntry assetEntry = (AssetEntry)httpServletRequest.getAttribute(
+			WebKeys.LAYOUT_ASSET_ENTRY);
+
+		Locale defaultLocale;
+		Set<Locale> localeSet;
+
+		if (assetEntry != null) {
+			try {
+				defaultLocale = _portal.getSiteDefaultLocale(
+					assetEntry.getGroupId());
+			}
+			catch (PortalException portalException) {
+
+				// See LPS-36174
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(portalException);
+				}
+
+				defaultLocale = themeDisplay.getSiteDefaultLocale();
+			}
+
+			localeSet = _language.getAvailableLocales(assetEntry.getGroupId());
+		}
+		else {
+			defaultLocale = themeDisplay.getSiteDefaultLocale();
+			localeSet = _language.getCompanyAvailableLocales(
+				themeDisplay.getCompanyId());
+		}
+
 		try {
 			PrintWriter printWriter = httpServletResponse.getWriter();
 
@@ -173,9 +206,8 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 							"allowLocalizationManagement"))
 				).put(
 					"autoTranslateURL",
-					PortalUtil.getPortalURL(httpServletRequest) +
-						PortalUtil.getPathModule() +
-							"/translation/auto_translate"
+					_portal.getPortalURL(httpServletRequest) +
+						_portal.getPathModule() + "/translation/auto_translate"
 				).put(
 					"autoTranslationEnabled",
 					() -> {
@@ -190,8 +222,7 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 						return false;
 					}
 				).put(
-					"defaultLanguageId",
-					LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale())
+					"defaultLanguageId", LocaleUtil.toLanguageId(defaultLocale)
 				).put(
 					"editMode", fragmentRendererContext.isEditMode()
 				).put(
@@ -205,8 +236,7 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 				).put(
 					"locales",
 					JSONUtil.toJSONArray(
-						_language.getCompanyAvailableLocales(
-							themeDisplay.getCompanyId()),
+						localeSet,
 						locale -> {
 							String w3cLanguageId = LocaleUtil.toW3cLanguageId(
 								locale);
@@ -258,6 +288,9 @@ public class LocalizationSelectFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.fragment.impl)")
 	private ServletContext _servletContext;
