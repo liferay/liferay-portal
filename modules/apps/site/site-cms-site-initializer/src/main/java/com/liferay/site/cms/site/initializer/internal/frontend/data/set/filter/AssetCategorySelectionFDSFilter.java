@@ -5,15 +5,36 @@
 
 package com.liferay.site.cms.site.initializer.internal.frontend.data.set.filter;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
+import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marco Leo
+ * @author Roberto Díaz
  */
 @Component(
 	property = {
@@ -32,12 +53,6 @@ import org.osgi.service.component.annotations.Component;
 public class AssetCategorySelectionFDSFilter extends BaseSelectionFDSFilter {
 
 	@Override
-	public String getAPIURL() {
-		return "/o/headless-admin-taxonomy/v1.0/taxonomy-categories/0" +
-			"/taxonomy-categories?sort=name:asc";
-	}
-
-	@Override
 	public String getEntityFieldType() {
 		return FDSEntityFieldTypes.INTEGER;
 	}
@@ -48,23 +63,70 @@ public class AssetCategorySelectionFDSFilter extends BaseSelectionFDSFilter {
 	}
 
 	@Override
-	public String getItemKey() {
-		return "id";
-	}
-
-	@Override
-	public String getItemLabel() {
-		return "name";
-	}
-
-	@Override
 	public String getLabel() {
 		return "category";
+	}
+
+	@Override
+	public List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
+		Locale locale) {
+
+		Group group = _groupLocalService.fetchGroup(
+			CompanyThreadLocal.getCompanyId(), GroupConstants.CMS);
+
+		if (group == null) {
+			return Collections.emptyList();
+		}
+
+		List<AssetCategory> assetCategories = new ArrayList<>();
+
+		Map<Long, AssetVocabulary> assetVocabulariesMap = new HashMap<>();
+
+		try {
+			List<AssetVocabulary> assetVocabularies =
+				_assetVocabularyLocalService.getGroupVocabularies(
+					group.getGroupId());
+
+			for (AssetVocabulary assetVocabulary : assetVocabularies) {
+				assetCategories.addAll(
+					_assetCategoryLocalService.getVocabularyCategories(
+						assetVocabulary.getVocabularyId(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null));
+
+				assetVocabulariesMap.put(
+					assetVocabulary.getVocabularyId(), assetVocabulary);
+			}
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+
+		return TransformUtil.transform(
+			assetCategories,
+			assetCategory -> {
+				AssetVocabulary assetVocabulary = assetVocabulariesMap.get(
+					assetCategory.getVocabularyId());
+
+				return new SelectionFDSFilterItem(
+					StringBundler.concat(
+						assetCategory.getTitle(locale), " (",
+						assetVocabulary.getTitle(locale), ")"),
+					assetCategory.getCategoryId());
+			});
 	}
 
 	@Override
 	public boolean isAutocompleteEnabled() {
 		return true;
 	}
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }
