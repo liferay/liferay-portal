@@ -403,6 +403,12 @@ public class AssetVocabularyGroupRelLocalServiceWrapper
 	}
 
 	@Override
+	public int getAssetVocabularyGroupRelsCount(long vocabularyId) {
+		return _assetVocabularyGroupRelLocalService.
+			getAssetVocabularyGroupRelsCount(vocabularyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -501,4 +507,4 @@ public class AssetVocabularyGroupRelLocalServiceWrapper
 		_assetVocabularyGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:172502299
+// LIFERAY-SERVICE-BUILDER-HASH:1836138432
