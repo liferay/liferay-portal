@@ -189,9 +189,6 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 		'<portlet:namespace />logoSelectorContainer'
 	);
 	var customRadioButton = document.getElementById('<portlet:namespace />custom');
-	var allRadioButtons = document.querySelectorAll(
-		'input[name="<portlet:namespace />floatingIcon"]'
-	);
 
 	function toggleLogoSelector() {
 		if (customRadioButton.checked) {
@@ -204,8 +201,12 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 
 	toggleLogoSelector();
 
-	allRadioButtons.forEach(function (radio) {
-		radio.addEventListener('change', toggleLogoSelector);
+	var floatingIcons = document.querySelectorAll(
+		'input[name="<portlet:namespace />floatingIcon"]'
+	);
+
+	floatingIcons.forEach(function (floatingIcon) {
+		floatingIcon.addEventListener('change', toggleLogoSelector);
 	});
 
 	var form = document.<portlet:namespace />fm;

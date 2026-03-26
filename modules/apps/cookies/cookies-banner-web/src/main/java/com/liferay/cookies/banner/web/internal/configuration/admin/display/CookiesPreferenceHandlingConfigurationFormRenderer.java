@@ -64,9 +64,7 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 
 		long companyId = _portal.getCompanyId(httpServletRequest);
 
-		Image image = null;
-
-		long currentImageId =
+		long customFloatingIconImageId =
 			_cookiesConfigurationProvider.
 				getCookiesPreferenceHandlingCustomFloatingIconImageId(
 					_scope, companyId);
@@ -77,9 +75,9 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 
 			try {
 				if (ParamUtil.getBoolean(httpServletRequest, "deleteLogo")) {
-					_imageLocalService.deleteImage(currentImageId);
+					_imageLocalService.deleteImage(customFloatingIconImageId);
 
-					currentImageId = 0;
+					customFloatingIconImageId = 0;
 				}
 				else if (fileEntryId > 0) {
 					FileEntry fileEntry = _dlAppLocalService.getFileEntry(
@@ -88,14 +86,18 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 					byte[] bytes = FileUtil.getBytes(
 						fileEntry.getContentStream());
 
-					if (currentImageId > 0) {
+					Image image = null;
+
+					if (customFloatingIconImageId > 0) {
 						image = _imageLocalService.moveImage(
-							currentImageId, bytes);
+							customFloatingIconImageId, bytes);
 					}
 					else {
 						image = _imageLocalService.updateImage(
 							companyId, _counterLocalService.increment(), bytes);
 					}
+
+					customFloatingIconImageId = image.getImageId();
 				}
 			}
 			catch (IOException | PortalException exception) {
@@ -107,8 +109,7 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 			"consentRenewalPeriod",
 			ParamUtil.getInteger(httpServletRequest, "consentRenewalPeriod", 12)
 		).put(
-			"customFloatingIconImageId",
-			(image == null) ? currentImageId : image.getImageId()
+			"customFloatingIconImageId", customFloatingIconImageId
 		).put(
 			"dissentRenewalPeriod",
 			ParamUtil.getInteger(httpServletRequest, "dissentRenewalPeriod", 12)
