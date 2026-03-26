@@ -5,8 +5,6 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.account.exception.NoSuchEntryException;
-import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupLocalService;
@@ -31,6 +29,7 @@ import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.ProductDTOConverterContext;
 import com.liferay.headless.commerce.delivery.catalog.internal.odata.entity.v1_0.ProductEntityModel;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.ProductResource;
 import com.liferay.headless.common.spi.odata.entity.EntityFieldsUtil;
 import com.liferay.petra.function.UnsafeConsumer;
@@ -96,21 +95,23 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		Long commerceAccountId = _getCommerceAccountId(
-			accountId, commerceChannel);
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
 
 		if (!_isAccountEntryEligible(
-				commerceAccountId, commerceChannel.getCommerceChannelId())) {
+				accountId, commerceChannel.getCommerceChannelId())) {
 
 			return null;
 		}
 
 		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
+			PermissionThreadLocal.getPermissionChecker(), accountId,
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
 
 		CommerceContext commerceContext = _commerceContextFactory.create(
-			commerceAccountId, commerceChannel.getGroupId(), null, 0,
+			accountId, commerceChannel.getGroupId(), null, 0,
 			contextCompany.getCompanyId());
 
 		return _toProduct(commerceContext, cpDefinition);
@@ -124,11 +125,13 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		Long commerceAccountId = _getCommerceAccountId(
-			accountId, commerceChannel);
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
 
 		if (!_isAccountEntryEligible(
-				commerceAccountId, commerceChannel.getCommerceChannelId())) {
+				accountId, commerceChannel.getCommerceChannelId())) {
 
 			return null;
 		}
@@ -145,12 +148,12 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		}
 
 		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
+			PermissionThreadLocal.getPermissionChecker(), accountId,
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
 
 		return _toProduct(
 			_commerceContextFactory.create(
-				commerceAccountId, commerceChannel.getGroupId(), null, 0,
+				accountId, commerceChannel.getGroupId(), null, 0,
 				contextCompany.getCompanyId()),
 			cpDefinition);
 	}
@@ -164,11 +167,13 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		Long commerceAccountId = _getCommerceAccountId(
-			accountId, commerceChannel);
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
 
 		if (!_isAccountEntryEligible(
-				commerceAccountId, commerceChannel.getCommerceChannelId())) {
+				accountId, commerceChannel.getCommerceChannelId())) {
 
 			return Page.of(
 				Collections.emptyList(),
@@ -179,17 +184,17 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		SearchContext searchContext = new SearchContext();
 
 		CommerceContext commerceContext = _commerceContextFactory.create(
-			commerceAccountId, commerceChannel.getGroupId(), null, 0,
+			accountId, commerceChannel.getGroupId(), null, 0,
 			contextCompany.getCompanyId());
 
 		searchContext.setAttributes(
 			HashMapBuilder.<String, Serializable>put(
 				Field.STATUS, WorkflowConstants.STATUS_APPROVED
 			).put(
-				"accountEntryId", commerceAccountId
+				"accountEntryId", accountId
 			).put(
 				"commerceAccountGroupIds",
-				_accountGroupLocalService.getAccountGroupIds(commerceAccountId)
+				_accountGroupLocalService.getAccountGroupIds(accountId)
 			).put(
 				"commerceChannelGroupId", commerceChannel.getGroupId()
 			).build());
@@ -252,49 +257,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		booleanQueryUnsafeConsumer.accept(booleanQuery);
 
 		return new BooleanClause<>(booleanQuery, BooleanClauseOccur.MUST);
-	}
-
-	private Long _getCommerceAccountId(
-			Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		if ((accountId != null) && (accountId > 0)) {
-			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
-				accountId);
-
-			if (accountEntry != null) {
-				return accountEntry.getAccountEntryId();
-			}
-		}
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchEntryException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				AccountEntry accountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						contextCompany.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					accountEntry.getAccountEntryId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
 	}
 
 	private boolean _isAccountEntryEligible(

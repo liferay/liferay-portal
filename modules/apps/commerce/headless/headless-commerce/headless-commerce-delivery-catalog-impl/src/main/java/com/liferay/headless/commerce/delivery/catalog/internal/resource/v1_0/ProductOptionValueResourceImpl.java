@@ -5,8 +5,6 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.account.exception.NoSuchEntryException;
-import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.context.CommerceContext;
@@ -28,6 +26,7 @@ import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.constants.DTOConverterConstants;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.ProductOptionValueResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -142,47 +141,6 @@ public class ProductOptionValueResourceImpl
 			productOptionValueId, skuId, pagination, skuOptions);
 	}
 
-	private Long _getAccountEntryId(
-			Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		if ((accountId != null) && (accountId > 0)) {
-			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
-				accountId);
-
-			if (accountEntry != null) {
-				return accountEntry.getAccountEntryId();
-			}
-		}
-
-		int userAccountEntriesCount =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (userAccountEntriesCount > 1) {
-			if (accountId == null) {
-				throw new NoSuchEntryException();
-			}
-		}
-		else {
-			long[] accountEntryIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (accountEntryIds.length == 0) {
-				AccountEntry accountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						contextCompany.getCompanyId());
-
-				accountEntryIds = new long[] {accountEntry.getAccountEntryId()};
-			}
-
-			return accountEntryIds[0];
-		}
-
-		return accountId;
-	}
-
 	private Page<ProductOptionValue> _getProductOptionValuePage(
 			Long channelId, Long productId, Long productOptionId,
 			Long accountId, String currencyCode, Long productOptionValueId,
@@ -200,7 +158,10 @@ public class ProductOptionValueResourceImpl
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		accountId = _getAccountEntryId(accountId, commerceChannel);
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
 
 		_commerceProductViewPermission.check(
 			PermissionThreadLocal.getPermissionChecker(), accountId,

@@ -5,8 +5,6 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.account.exception.NoSuchEntryException;
-import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.helper.CommerceAccountHelper;
@@ -23,9 +21,9 @@ import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.LinkedProduct;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.LinkedProductDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.LinkedProductResource;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -33,8 +31,6 @@ import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-
-import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.List;
 
@@ -63,8 +59,11 @@ public class LinkedProductResourceImpl extends BaseLinkedProductResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		long selectedAccountId = _getSelectedAccountId(
-			accountId, commerceChannel);
+		long selectedAccountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper,
+			contextUriInfo.getQueryParameters());
 
 		CProduct cProduct = _cProductLocalService.getCProduct(productId);
 
@@ -106,58 +105,6 @@ public class LinkedProductResourceImpl extends BaseLinkedProductResourceImpl {
 						contextUser))));
 
 		return Page.of(linkedProducts, pagination, linkedProducts.size());
-	}
-
-	private Long _getSelectedAccountId(
-			Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		if ((accountId != null) && (accountId > 0)) {
-			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
-				accountId);
-
-			if (accountEntry != null) {
-				return accountEntry.getAccountEntryId();
-			}
-		}
-
-		int count = _commerceAccountHelper.countUserCommerceAccounts(
-			contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (count > 1) {
-			if (accountId == null) {
-				MultivaluedMap<String, String> queryParameters =
-					contextUriInfo.getQueryParameters();
-
-				String accountIdString = queryParameters.getFirst("accountId");
-
-				if (accountIdString != null) {
-					accountId = GetterUtil.getLong(accountIdString);
-				}
-				else {
-					throw new NoSuchEntryException();
-				}
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				AccountEntry accountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						contextCompany.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					accountEntry.getAccountEntryId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
 	}
 
 	@Reference

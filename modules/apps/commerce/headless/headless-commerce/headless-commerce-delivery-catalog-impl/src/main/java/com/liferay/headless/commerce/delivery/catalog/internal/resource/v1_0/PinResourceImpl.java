@@ -5,8 +5,6 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.account.exception.NoSuchEntryException;
-import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.context.CommerceContext;
@@ -25,6 +23,7 @@ import com.liferay.commerce.shop.by.diagram.model.CSDiagramPin;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramPinLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Pin;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.PinDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.PinResource;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -88,7 +87,10 @@ public class PinResourceImpl extends BasePinResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		accountId = _getAccountId(accountId, commerceChannel);
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
 
 		_commerceProductViewPermission.check(
 			PermissionThreadLocal.getPermissionChecker(), accountId,
@@ -108,48 +110,6 @@ public class PinResourceImpl extends BasePinResourceImpl {
 			pagination,
 			_csDiagramPinLocalService.getCSDiagramPinsCount(
 				cpDefinition.getCPDefinitionId()));
-	}
-
-	private Long _getAccountId(Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		if ((accountId != null) && (accountId > 0)) {
-			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
-				accountId);
-
-			if (accountEntry != null) {
-				return accountEntry.getAccountEntryId();
-			}
-		}
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchEntryException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				AccountEntry accountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						contextCompany.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					accountEntry.getAccountEntryId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
 	}
 
 	private Pin _toPin(CommerceContext commerceContext, long csDiagramPinId)

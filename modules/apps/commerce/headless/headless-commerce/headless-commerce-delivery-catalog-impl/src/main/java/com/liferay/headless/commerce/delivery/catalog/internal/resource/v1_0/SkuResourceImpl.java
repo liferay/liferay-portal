@@ -31,6 +31,7 @@ import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.converter.SkuDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.SkuResource;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -182,46 +183,10 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		if ((accountId != null) && (accountId > 0)) {
-			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
-				accountId);
-
-			if (accountEntry != null) {
-				accountId = accountEntry.getAccountEntryId();
-			}
-			else {
-				accountId = null;
-			}
-		}
-
-		if ((accountId == null) || (accountId <= 0)) {
-			int countUserCommerceAccounts =
-				_commerceAccountHelper.countUserCommerceAccounts(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (countUserCommerceAccounts > 1) {
-				if (accountId == null) {
-					throw new NoSuchEntryException();
-				}
-			}
-			else {
-				long[] commerceAccountIds =
-					_commerceAccountHelper.getUserCommerceAccountIds(
-						contextUser.getUserId(), commerceChannel.getGroupId());
-
-				if (commerceAccountIds.length == 0) {
-					AccountEntry accountEntry =
-						_accountEntryLocalService.getGuestAccountEntry(
-							contextCompany.getCompanyId());
-
-					commerceAccountIds = new long[] {
-						accountEntry.getAccountEntryId()
-					};
-				}
-
-				accountId = commerceAccountIds[0];
-			}
-		}
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
 
 		_commerceProductViewPermission.check(
 			PermissionThreadLocal.getPermissionChecker(), accountId,

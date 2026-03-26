@@ -5,8 +5,6 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.account.exception.NoSuchEntryException;
-import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.context.CommerceContext;
@@ -23,6 +21,7 @@ import com.liferay.commerce.wish.list.service.CommerceWishListItemService;
 import com.liferay.commerce.wish.list.service.CommerceWishListService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.WishList;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.WishListItem;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.WishListItemResource;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -71,7 +70,10 @@ public class WishListItemResourceImpl extends BaseWishListItemResourceImpl {
 		}
 
 		CommerceContext commerceContext = _commerceContextFactory.create(
-			_getCommerceAccountId(accountId, commerceChannel),
+			AccountUtil.getAccountId(
+				contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+				contextUser.getUserId(), _accountEntryLocalService,
+				_accountEntryService, accountId, _commerceAccountHelper, null),
 			commerceChannel.getGroupId(), currencyCode, 0,
 			commerceChannel.getCompanyId());
 
@@ -97,7 +99,10 @@ public class WishListItemResourceImpl extends BaseWishListItemResourceImpl {
 		}
 
 		CommerceContext commerceContext = _commerceContextFactory.create(
-			_getCommerceAccountId(accountId, commerceChannel),
+			AccountUtil.getAccountId(
+				contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+				contextUser.getUserId(), _accountEntryLocalService,
+				_accountEntryService, accountId, _commerceAccountHelper, null),
 			commerceChannel.getGroupId(), currecyCode, 0,
 			commerceChannel.getCompanyId());
 
@@ -138,61 +143,21 @@ public class WishListItemResourceImpl extends BaseWishListItemResourceImpl {
 			throw new NoSuchChannelException();
 		}
 
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
+
 		CommerceWishListItem commerceWishListItem =
 			_commerceWishListItemService.addOrUpdateCommerceWishListItem(
-				_getCommerceAccountId(accountId, commerceChannel), wishListId,
-				cpInstanceUuid, wishListItem.getProductId(),
-				wishListItem.toString());
+				accountId, wishListId, cpInstanceUuid,
+				wishListItem.getProductId(), wishListItem.toString());
 
 		return _toWishListItem(
 			commerceWishListItem,
 			_commerceContextFactory.create(
-				_getCommerceAccountId(accountId, commerceChannel),
-				commerceChannel.getGroupId(), null, 0,
+				accountId, commerceChannel.getGroupId(), null, 0,
 				commerceChannel.getCompanyId()));
-	}
-
-	private Long _getCommerceAccountId(
-			Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		if ((accountId != null) && (accountId > 0)) {
-			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
-				accountId);
-
-			if (accountEntry != null) {
-				return accountEntry.getAccountEntryId();
-			}
-		}
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchEntryException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				AccountEntry accountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						contextCompany.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					accountEntry.getAccountEntryId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
 	}
 
 	private WishListItem _toWishListItem(
