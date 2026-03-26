@@ -5920,6 +5920,14 @@
 		"issueKey": "LPD-82354"
 	},
 	{
+		"from": "regex:(?<varName>\\w*?FileEntryType)\\.getDDMStructures\\(\\)",
+		"issueKey": "LPD-84010",
+		"newImports": [
+			"com.liferay.document.library.util.DLFileEntryTypeUtil"
+		],
+		"to": "DLFileEntryTypeUtil.getDDMStructures(${varName})"
+	},
+	{
 		"classNames": [
 			"PhoneLocalService",
 			"PhoneLocalServiceUtil",
