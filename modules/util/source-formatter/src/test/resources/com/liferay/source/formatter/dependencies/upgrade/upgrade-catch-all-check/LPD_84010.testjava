@@ -10,7 +10,7 @@ package com.liferay.source.formatter.dependencies.upgrade;
  */
 public class LPD_84010 {
 
-	public void method(DLFileEntryType dlFileEntryType) {
+	public void method() {
 		dlFileEntryType.getDDMStructures();
 	}
 

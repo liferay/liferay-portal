@@ -5,12 +5,14 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
+import com.liferay.document.library.util.DLFileEntryTypeUtil;
+
 /**
  * @author Mateus Xavier
  */
 public class LPD_84010 {
 
-	public void method(DLFileEntryType dlFileEntryType) {
+	public void method() {
 		DLFileEntryTypeUtil.getDDMStructures(dlFileEntryType);
 	}
 
