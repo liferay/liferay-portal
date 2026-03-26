@@ -221,37 +221,6 @@ public class CookiesConsentPreferenceUtil {
 	}
 
 	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	public static CookiesConsentPreference findByUserId_Last(
-			long userId,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws com.liferay.cookies.exception.
-			NoSuchCookiesConsentPreferenceException {
-
-		return getPersistence().findByUserId_Last(userId, orderByComparator);
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	public static CookiesConsentPreference fetchByUserId_Last(
-		long userId,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		return getPersistence().fetchByUserId_Last(userId, orderByComparator);
-	}
-
-	/**
 	 * Removes all the cookies consent preferences where userId = &#63; from the database.
 	 *
 	 * @param userId the user ID
@@ -375,39 +344,6 @@ public class CookiesConsentPreferenceUtil {
 		OrderByComparator<CookiesConsentPreference> orderByComparator) {
 
 		return getPersistence().fetchByExpirationDate_First(
-			expirationDate, orderByComparator);
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	public static CookiesConsentPreference findByExpirationDate_Last(
-			Date expirationDate,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws com.liferay.cookies.exception.
-			NoSuchCookiesConsentPreferenceException {
-
-		return getPersistence().findByExpirationDate_Last(
-			expirationDate, orderByComparator);
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	public static CookiesConsentPreference fetchByExpirationDate_Last(
-		Date expirationDate,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		return getPersistence().fetchByExpirationDate_Last(
 			expirationDate, orderByComparator);
 	}
 
@@ -540,41 +476,6 @@ public class CookiesConsentPreferenceUtil {
 		OrderByComparator<CookiesConsentPreference> orderByComparator) {
 
 		return getPersistence().fetchByU_D_First(
-			userId, domain, orderByComparator);
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63; and domain = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param domain the domain
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	public static CookiesConsentPreference findByU_D_Last(
-			long userId, String domain,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws com.liferay.cookies.exception.
-			NoSuchCookiesConsentPreferenceException {
-
-		return getPersistence().findByU_D_Last(
-			userId, domain, orderByComparator);
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63; and domain = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param domain the domain
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	public static CookiesConsentPreference fetchByU_D_Last(
-		long userId, String domain,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		return getPersistence().fetchByU_D_Last(
 			userId, domain, orderByComparator);
 	}
 
@@ -850,4 +751,4 @@ public class CookiesConsentPreferenceUtil {
 	private static volatile CookiesConsentPreferencePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-152107351
+// LIFERAY-SERVICE-BUILDER-HASH:1526253959
