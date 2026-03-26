@@ -304,67 +304,6 @@ public class CookiesConsentPreferencePersistenceImpl
 	}
 
 	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference findByUserId_Last(
-			long userId,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws NoSuchCookiesConsentPreferenceException {
-
-		CookiesConsentPreference cookiesConsentPreference = fetchByUserId_Last(
-			userId, orderByComparator);
-
-		if (cookiesConsentPreference != null) {
-			return cookiesConsentPreference;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("userId=");
-		sb.append(userId);
-
-		sb.append("}");
-
-		throw new NoSuchCookiesConsentPreferenceException(sb.toString());
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference fetchByUserId_Last(
-		long userId,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		int count = countByUserId(userId);
-
-		if (count == 0) {
-			return null;
-		}
-
-		List<CookiesConsentPreference> list = findByUserId(
-			userId, count - 1, count, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
 	 * Removes all the cookies consent preferences where userId = &#63; from the database.
 	 *
 	 * @param userId the user ID
@@ -662,67 +601,6 @@ public class CookiesConsentPreferencePersistenceImpl
 
 		List<CookiesConsentPreference> list = findByExpirationDate(
 			expirationDate, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference findByExpirationDate_Last(
-			Date expirationDate,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws NoSuchCookiesConsentPreferenceException {
-
-		CookiesConsentPreference cookiesConsentPreference =
-			fetchByExpirationDate_Last(expirationDate, orderByComparator);
-
-		if (cookiesConsentPreference != null) {
-			return cookiesConsentPreference;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("expirationDate=");
-		sb.append(expirationDate);
-
-		sb.append("}");
-
-		throw new NoSuchCookiesConsentPreferenceException(sb.toString());
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference fetchByExpirationDate_Last(
-		Date expirationDate,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		int count = countByExpirationDate(expirationDate);
-
-		if (count == 0) {
-			return null;
-		}
-
-		List<CookiesConsentPreference> list = findByExpirationDate(
-			expirationDate, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1057,72 +935,6 @@ public class CookiesConsentPreferencePersistenceImpl
 
 		List<CookiesConsentPreference> list = findByU_D(
 			userId, domain, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63; and domain = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param domain the domain
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference findByU_D_Last(
-			long userId, String domain,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws NoSuchCookiesConsentPreferenceException {
-
-		CookiesConsentPreference cookiesConsentPreference = fetchByU_D_Last(
-			userId, domain, orderByComparator);
-
-		if (cookiesConsentPreference != null) {
-			return cookiesConsentPreference;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("userId=");
-		sb.append(userId);
-
-		sb.append(", domain=");
-		sb.append(domain);
-
-		sb.append("}");
-
-		throw new NoSuchCookiesConsentPreferenceException(sb.toString());
-	}
-
-	/**
-	 * Returns the last cookies consent preference in the ordered set where userId = &#63; and domain = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param domain the domain
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference fetchByU_D_Last(
-		long userId, String domain,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		int count = countByU_D(userId, domain);
-
-		if (count == 0) {
-			return null;
-		}
-
-		List<CookiesConsentPreference> list = findByU_D(
-			userId, domain, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -2178,4 +1990,4 @@ public class CookiesConsentPreferencePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-337347303
+// LIFERAY-SERVICE-BUILDER-HASH:-1548955799
