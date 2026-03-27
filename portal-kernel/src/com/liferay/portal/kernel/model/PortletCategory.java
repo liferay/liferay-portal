@@ -170,6 +170,12 @@ public class PortletCategory implements Serializable {
 
 	protected void setPath(String path) {
 		_path = path;
+
+		for (PortletCategory portletCategory : getCategories()) {
+			portletCategory.setPath(
+				StringBundler.concat(
+					_path, _DELIMITER, portletCategory.getName()));
+		}
 	}
 
 	private static final String _DELIMITER = StringPool.DOUBLE_SLASH;
