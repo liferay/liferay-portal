@@ -1,4 +1,6 @@
 Bundle-Name: Liferay Organizations Item Selector API
 Bundle-SymbolicName: com.liferay.organizations.item.selector.api
-Bundle-Version: 4.1.2
-Export-Package: com.liferay.organizations.item.selector
+Bundle-Version: 5.0.0
+Export-Package:\
+	com.liferay.organizations.item.selector,\
+	com.liferay.organizations.item.selector.util
