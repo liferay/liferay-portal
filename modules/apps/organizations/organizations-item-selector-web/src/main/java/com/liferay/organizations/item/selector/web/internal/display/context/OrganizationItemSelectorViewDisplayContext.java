@@ -6,6 +6,7 @@
 package com.liferay.organizations.item.selector.web.internal.display.context;
 
 import com.liferay.organizations.item.selector.OrganizationItemSelectorCriterion;
+import com.liferay.organizations.item.selector.util.OrganizationItemSelectorCriterionUtil;
 import com.liferay.organizations.item.selector.web.internal.search.OrganizationItemSelectorChecker;
 import com.liferay.organizations.search.OrganizationSearch;
 import com.liferay.organizations.search.OrganizationSearchTerms;
@@ -45,6 +46,8 @@ public class OrganizationItemSelectorViewDisplayContext {
 
 		_organizationItemSelectorCriterion = organizationItemSelectorCriterion;
 		_organizationLocalService = organizationLocalService;
+		_httpServletRequest = portal.getOriginalServletRequest(
+			httpServletRequest);
 		_portal = portal;
 		_portletURL = portletURL;
 
@@ -117,12 +120,15 @@ public class OrganizationItemSelectorViewDisplayContext {
 		_searchContainer.setRowChecker(
 			new OrganizationItemSelectorChecker(
 				_renderResponse,
-				_organizationItemSelectorCriterion.
-					getSelectedOrganizationIds()));
+				OrganizationItemSelectorCriterionUtil.toLongArray(
+					_organizationItemSelectorCriterion.
+						getSelectedOrganizationIds(),
+					_httpServletRequest)));
 
 		return _searchContainer;
 	}
 
+	private final HttpServletRequest _httpServletRequest;
 	private final OrganizationItemSelectorCriterion
 		_organizationItemSelectorCriterion;
 	private final OrganizationLocalService _organizationLocalService;

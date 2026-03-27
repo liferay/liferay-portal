@@ -13,6 +13,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.organizations.item.selector.OrganizationItemSelectorCriterion;
+import com.liferay.organizations.item.selector.util.OrganizationItemSelectorCriterionUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.memberships.web.internal.util.GroupUtil;
 
@@ -205,7 +207,10 @@ public class OrganizationsManagementToolbarDisplayContext
 			new UUIDItemSelectorReturnType());
 		organizationItemSelectorCriterion.setMultiSelection(true);
 		organizationItemSelectorCriterion.setSelectedOrganizationIds(
-			_getSelectedOrganizationIds());
+			OrganizationItemSelectorCriterionUtil.toString(
+				PortalUtil.getOriginalServletRequest(httpServletRequest),
+				_getSelectedOrganizationIds(),
+				"group_" + _getGroupId()));
 
 		return String.valueOf(
 			itemSelector.getItemSelectorURL(

@@ -13,7 +13,7 @@ import com.liferay.item.selector.BaseItemSelectorCriterion;
 public class OrganizationItemSelectorCriterion
 	extends BaseItemSelectorCriterion {
 
-	public long[] getSelectedOrganizationIds() {
+	public String getSelectedOrganizationIds() {
 		return _selectedOrganizationIds;
 	}
 
@@ -25,11 +25,11 @@ public class OrganizationItemSelectorCriterion
 		_multiSelection = multiSelection;
 	}
 
-	public void setSelectedOrganizationIds(long[] selectedOrganizationIds) {
+	public void setSelectedOrganizationIds(String selectedOrganizationIds) {
 		_selectedOrganizationIds = selectedOrganizationIds;
 	}
 
 	private boolean _multiSelection;
-	private long[] _selectedOrganizationIds;
+	private String _selectedOrganizationIds;
 
 }
