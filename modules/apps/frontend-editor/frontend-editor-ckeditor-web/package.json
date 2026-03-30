@@ -82,7 +82,7 @@
 		"@liferay/frontend-js-state-web": "*",
 		"ckeditor4": "4.22.1",
 		"ckeditor4-react": "1.4.2",
-		"ckeditor5": "46.0.3",
+		"ckeditor5": "47.6.0",
 		"ckeditor5-premium-features": "46.0.3",
 		"eventsource": "^4.0.0",
 		"frontend-js-components-web": "*",
