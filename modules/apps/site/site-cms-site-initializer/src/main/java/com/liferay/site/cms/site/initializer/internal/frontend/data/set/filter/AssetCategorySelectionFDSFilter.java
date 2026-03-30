@@ -13,7 +13,6 @@ import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -24,10 +23,8 @@ import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializ
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -78,41 +75,33 @@ public class AssetCategorySelectionFDSFilter extends BaseSelectionFDSFilter {
 			return Collections.emptyList();
 		}
 
-		List<AssetCategory> assetCategories = new ArrayList<>();
-
-		Map<Long, AssetVocabulary> assetVocabulariesMap = new HashMap<>();
+		List<SelectionFDSFilterItem> selectionFDSFilterItems =
+			new ArrayList<>();
 
 		try {
-			List<AssetVocabulary> assetVocabularies =
-				_assetVocabularyLocalService.getGroupVocabularies(
-					group.getGroupId());
+			for (AssetVocabulary assetVocabulary :
+					_assetVocabularyLocalService.getGroupVocabularies(
+						group.getGroupId())) {
 
-			for (AssetVocabulary assetVocabulary : assetVocabularies) {
-				assetCategories.addAll(
-					_assetCategoryLocalService.getVocabularyCategories(
-						assetVocabulary.getVocabularyId(), QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS, null));
+				for (AssetCategory assetCategory :
+						_assetCategoryLocalService.getVocabularyCategories(
+							assetVocabulary.getVocabularyId(),
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 
-				assetVocabulariesMap.put(
-					assetVocabulary.getVocabularyId(), assetVocabulary);
+					selectionFDSFilterItems.add(
+						new SelectionFDSFilterItem(
+							StringBundler.concat(
+								assetCategory.getTitle(locale), " (",
+								assetVocabulary.getTitle(locale), ")"),
+							assetCategory.getCategoryId()));
+				}
 			}
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
 
-		return TransformUtil.transform(
-			assetCategories,
-			assetCategory -> {
-				AssetVocabulary assetVocabulary = assetVocabulariesMap.get(
-					assetCategory.getVocabularyId());
-
-				return new SelectionFDSFilterItem(
-					StringBundler.concat(
-						assetCategory.getTitle(locale), " (",
-						assetVocabulary.getTitle(locale), ")"),
-					assetCategory.getCategoryId());
-			});
+		return selectionFDSFilterItems;
 	}
 
 	@Override
