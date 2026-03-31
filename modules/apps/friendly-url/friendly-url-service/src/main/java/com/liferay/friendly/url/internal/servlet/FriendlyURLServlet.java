@@ -158,9 +158,7 @@ public class FriendlyURLServlet extends HttpServlet {
 				PermissionThreadLocal.getPermissionChecker(
 					user, !user.isGuestUser());
 
-			if (!permissionChecker.isCompanyAdmin() &&
-				!permissionChecker.isGroupAdmin(group.getGroupId())) {
-
+			if (!permissionChecker.isGroupAdmin(group.getGroupId())) {
 				httpServletRequest.setAttribute(
 					_MAINTENANCE_MODE_GROUP_ID, group.getGroupId());
 
