@@ -1020,7 +1020,10 @@ public class WebServerServlet extends HttpServlet {
 
 		if (_processCompanyInactiveRequest(
 				httpServletRequest, httpServletResponse,
-				fileEntry.getCompanyId())) {
+				fileEntry.getCompanyId()) ||
+			_processGroupMaintenanceModeRequest(
+				httpServletRequest, httpServletResponse,
+				fileEntry.getGroupId())) {
 
 			return;
 		}
@@ -1326,7 +1329,10 @@ public class WebServerServlet extends HttpServlet {
 		if ((fileEntry == null) ||
 			_processCompanyInactiveRequest(
 				httpServletRequest, httpServletResponse,
-				fileEntry.getCompanyId())) {
+				fileEntry.getCompanyId()) ||
+			_processGroupMaintenanceModeRequest(
+				httpServletRequest, httpServletResponse,
+				fileEntry.getGroupId())) {
 
 			return;
 		}
@@ -1981,6 +1987,44 @@ public class WebServerServlet extends HttpServlet {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Processed company inactive request");
 		}
+
+		return true;
+	}
+
+	private boolean _processGroupMaintenanceModeRequest(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, long groupId)
+		throws Exception {
+
+		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+		if ((group == null) || GroupLocalServiceUtil.isLiveGroupActive(group)) {
+			return false;
+		}
+
+		if (GroupLocalServiceUtil.isMaintenanceMode(group)) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			if (permissionChecker.isGroupAdmin(groupId)) {
+				return false;
+			}
+
+			PortalUtil.sendError(
+				HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+				new PortalException(
+					"this-site-is-temporarily-unavailable-for-maintenance"),
+				httpServletRequest, httpServletResponse);
+
+			return true;
+		}
+
+		InactiveRequestHandler inactiveRequestHandler =
+			_inactiveRequestHandlerSnapshot.get();
+
+		inactiveRequestHandler.processInactiveRequest(
+			httpServletRequest, httpServletResponse,
+			"this-site-is-inactive-please-contact-the-administrator");
 
 		return true;
 	}
