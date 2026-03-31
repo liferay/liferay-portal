@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.model.PortletFilter;
 import com.liferay.portal.kernel.model.PortletURLListener;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.module.util.ServiceLatch;
@@ -43,14 +42,14 @@ import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutTemplateLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.InactiveRequestHandler;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
@@ -974,34 +973,6 @@ public class MainServlet extends HttpServlet {
 		return portlets;
 	}
 
-	private boolean _isGroupOrCompanyAdmin(long userId, Group group) {
-		if (userId <= 0) {
-			return false;
-		}
-
-		try {
-			if (RoleLocalServiceUtil.hasUserRole(
-					userId, group.getCompanyId(), RoleConstants.ADMINISTRATOR,
-					true) ||
-				UserGroupRoleLocalServiceUtil.hasUserGroupRole(
-					userId, group.getGroupId(),
-					RoleConstants.SITE_ADMINISTRATOR, true) ||
-				UserGroupRoleLocalServiceUtil.hasUserGroupRole(
-					userId, group.getGroupId(), RoleConstants.SITE_OWNER,
-					true)) {
-
-				return true;
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		return false;
-	}
-
 	private long _loginUser(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, long companyId,
@@ -1118,9 +1089,10 @@ public class MainServlet extends HttpServlet {
 		}
 
 		if (GroupLocalServiceUtil.isMaintenanceMode(group)) {
-			if (_isGroupOrCompanyAdmin(
-					PortalUtil.getUserId(httpServletRequest), group)) {
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
 
+			if (permissionChecker.isGroupAdmin(group.getGroupId())) {
 				return false;
 			}
 
