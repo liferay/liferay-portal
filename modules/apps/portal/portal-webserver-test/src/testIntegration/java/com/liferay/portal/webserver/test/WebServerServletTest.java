@@ -14,6 +14,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -98,6 +101,117 @@ public class WebServerServletTest {
 		}
 	}
 
+	@Test
+	public void testMaintenanceModeCompanyAdminCanAccessDocument()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		_enableMaintenanceMode(_group);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_serviceDocumentRequest(fileEntry, TestPropsValues.getUser());
+
+		Assert.assertNotEquals(
+			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+			mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	public void testMaintenanceModeGuestUserGets503ForDocument()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		_enableMaintenanceMode(_group);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_serviceDocumentRequest(fileEntry, null);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+			mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	public void testMaintenanceModeRegularUserGets503ForDocument()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		_enableMaintenanceMode(_group);
+
+		User regularUser = UserTestUtil.addUser();
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_serviceDocumentRequest(fileEntry, regularUser);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+			mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	public void testMaintenanceModeSiteAdminCanAccessDocument()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		_enableMaintenanceMode(_group);
+
+		User siteAdminUser = UserTestUtil.addGroupAdminUser(_group);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			_serviceDocumentRequest(fileEntry, siteAdminUser);
+
+		Assert.assertNotEquals(
+			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+			mockHttpServletResponse.getStatus());
+	}
+
+	private FileEntry _addFileEntry() throws Exception {
+		Repository repository = _repositoryLocalService.addRepository(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			PortalUtil.getClassNameId(LiferayRepository.class.getName()),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(), new UnicodeProperties(), true,
+			ServiceContextTestUtil.getServiceContext());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), repository.getRepositoryId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), repository.getRepositoryId(),
+			folder.getFolderId(), RandomTestUtil.randomString() + ".txt",
+			ContentTypes.TEXT_PLAIN, TestDataConstants.TEST_BYTE_ARRAY, null,
+			null, null, serviceContext);
+	}
+
+	private void _enableMaintenanceMode(Group group) throws Exception {
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty(
+			GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+			Boolean.TRUE.toString());
+
+		_groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
+			group.getDescriptionMap(), group.getType(),
+			typeSettingsUnicodeProperties.toString(),
+			group.isManualMembership(), group.getMembershipRestriction(),
+			group.getFriendlyURL(), group.isInheritContent(), false,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	}
+
 	private void _removeResourcePermission(
 			long fileEntryId, String roleName, String actionId)
 		throws Exception {
@@ -109,6 +223,30 @@ public class WebServerServletTest {
 			_group.getCompanyId(), DLFileEntry.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(fileEntryId),
 			guestRole.getRoleId(), actionId);
+	}
+
+	private MockHttpServletResponse _serviceDocumentRequest(
+			FileEntry fileEntry, User user)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		if (user != null) {
+			mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+		}
+
+		mockHttpServletRequest.setRequestURI(
+			StringBundler.concat(
+				"/", fileEntry.getRepositoryId(), "/", fileEntry.getUuid()));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_webServerServlet.service(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		return mockHttpServletResponse;
 	}
 
 	private void _testGetStatus(int status) throws Exception {
@@ -174,6 +312,9 @@ public class WebServerServletTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private RepositoryLocalService _repositoryLocalService;
