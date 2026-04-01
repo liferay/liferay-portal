@@ -32,6 +32,8 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -71,7 +73,6 @@ import com.liferay.portlet.asset.service.permission.AssetCategoriesPermission;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.io.Serializable;
@@ -645,7 +646,13 @@ public class TaxonomyVocabularyResourceImpl
 							}
 						}
 
-						throw new InternalServerErrorException();
+						if (_log.isDebugEnabled()) {
+							_log.debug(
+								"Unable to get class type found with class " +
+									"type ID " + classTypePK);
+						}
+
+						return null;
 					});
 				setType(
 					() -> {
@@ -1098,6 +1105,9 @@ public class TaxonomyVocabularyResourceImpl
 				taxonomyVocabulary.getViewableByAsString()
 			).build());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		TaxonomyVocabularyResourceImpl.class);
 
 	private static final Map<String, String> _assetTypeTypeToClassNames =
 		new HashMap<>();
