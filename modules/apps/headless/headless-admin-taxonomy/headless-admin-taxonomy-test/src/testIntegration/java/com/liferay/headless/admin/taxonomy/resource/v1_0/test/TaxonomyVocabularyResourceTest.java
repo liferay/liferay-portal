@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.AssetLibrary;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.AssetType;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyVocabulary;
@@ -22,12 +23,14 @@ import com.liferay.headless.admin.taxonomy.client.problem.Problem;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyVocabularyResource;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -43,9 +46,12 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -244,6 +250,7 @@ public class TaxonomyVocabularyResourceTest
 		super.testGetTaxonomyVocabulary();
 
 		_testGetTaxonomyVocabularyActions();
+		_testGetTaxonomyVocabularyWithoutClassTypePK();
 		_testGetTaxonomyVocabularyWithoutPermissionsAction();
 	}
 
@@ -506,6 +513,34 @@ public class TaxonomyVocabularyResourceTest
 			).build());
 	}
 
+	private void _testGetTaxonomyVocabularyWithoutClassTypePK()
+		throws Exception {
+
+		long classNameId = _classNameLocalService.getClassNameId(
+			DLFileEntryConstants.getClassName());
+
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.create(
+			true
+		).put(
+			"selectedClassNameIds",
+			classNameId + StringPool.COLON + RandomTestUtil.randomLong()
+		).build();
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), testGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()),
+				null, unicodeProperties.toString(),
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+
+		Assert.assertNotNull(
+			taxonomyVocabularyResource.getTaxonomyVocabulary(
+				assetVocabulary.getVocabularyId()));
+	}
+
 	private void _testGetTaxonomyVocabularyWithoutPermissionsAction()
 		throws Exception {
 
@@ -679,6 +714,9 @@ public class TaxonomyVocabularyResourceTest
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
