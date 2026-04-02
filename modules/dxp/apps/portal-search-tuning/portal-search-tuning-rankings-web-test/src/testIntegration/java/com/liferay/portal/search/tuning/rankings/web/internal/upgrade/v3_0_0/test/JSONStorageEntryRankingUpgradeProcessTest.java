@@ -57,7 +57,7 @@ public class JSONStorageEntryRankingUpgradeProcessTest
 			ResultRankingsConstants.STATUS_ACTIVE,
 			rankingJSONObject.getString("status"));
 
-		_indexReindexer.reindex(companyId);
+		_indexReindexer.reindex(companyId, IndexReindexer.ExecutionMode.FULL);
 
 		Assert.assertNotNull(
 			_rankingIndexReader.fetch(

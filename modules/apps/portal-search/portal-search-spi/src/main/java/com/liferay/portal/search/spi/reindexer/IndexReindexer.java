@@ -10,8 +10,34 @@ package com.liferay.portal.search.spi.reindexer;
  */
 public interface IndexReindexer {
 
-	public void reindex(long companyId) throws Exception;
+	/*
+	something like this that can maybe help standardize index names and
+	also be used to check if indexes exist or not
+	 */
+	//public String getIndexNameSuffix();
 
-	public void reindex(long companyId, String executionMode) throws Exception;
+	@Deprecated
+	public default void reindex(long companyId) throws Exception {
+		reindex(companyId, ExecutionMode.FULL);
+	};
+
+	public default void reindex(long companyId, String executionMode)
+		throws Exception {
+
+		reindex(companyId, ExecutionMode.valueOf(executionMode.toUpperCase()));
+	}
+
+	public void reindex(long companyId, ExecutionMode executionMode)
+		throws Exception;
+
+	/*
+	create enum instead of String so that developers know what the
+	different modes are. this could maybe be in portal-search-api instead, and
+	also used for company index reindexing, but thats all internal, so probably
+	not really necessary
+	 */
+	public enum ExecutionMode {
+		CONCURRENT, FULL, SYNC
+	}
 
 }

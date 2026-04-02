@@ -6,6 +6,7 @@
 package com.liferay.portal.search.tuning.synonyms.web.internal.storage;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.search.tuning.synonyms.web.internal.BaseSynonymsWebTestCase;
 import com.liferay.portal.search.tuning.synonyms.web.internal.index.SynonymSetIndexReindexer;
 import com.liferay.portal.search.tuning.synonyms.web.internal.storage.helper.SynonymSetJSONStorageHelper;
@@ -58,7 +59,7 @@ public class SynonymSetsDatabaseImporterImplTest
 		Mockito.verify(
 			_synonymSetIndexReindexer, Mockito.times(1)
 		).reindex(
-			Mockito.anyLong()
+			Mockito.anyLong(), Mockito.any(IndexReindexer.ExecutionMode.class)
 		);
 	}
 
@@ -69,7 +70,7 @@ public class SynonymSetsDatabaseImporterImplTest
 		Mockito.verify(
 			_synonymSetIndexReindexer, Mockito.never()
 		).reindex(
-			Mockito.anyLong()
+			Mockito.anyLong(), Mockito.any(IndexReindexer.ExecutionMode.class)
 		);
 	}
 
