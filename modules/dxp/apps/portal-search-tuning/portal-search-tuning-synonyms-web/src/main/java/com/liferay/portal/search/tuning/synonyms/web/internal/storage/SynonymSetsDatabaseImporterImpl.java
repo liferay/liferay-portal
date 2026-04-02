@@ -126,7 +126,8 @@ public class SynonymSetsDatabaseImporterImpl
 		}
 
 		try {
-			synonymSetIndexReindexer.reindex(companyId);
+			synonymSetIndexReindexer.reindex(
+				companyId, IndexReindexer.ExecutionMode.FULL);
 		}
 		catch (Exception exception) {
 			_log.error(

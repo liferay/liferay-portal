@@ -10,8 +10,25 @@ package com.liferay.portal.search.spi.reindexer;
  */
 public interface IndexReindexer {
 
-	public void reindex(long companyId) throws Exception;
+	public void reindex(long companyId, ExecutionMode executionMode)
+		throws Exception;
 
-	public void reindex(long companyId, String executionMode) throws Exception;
+	public default void reindex(long companyId, String executionMode)
+		throws Exception {
+
+		reindex(companyId, ExecutionMode.valueOf(executionMode.toUpperCase()));
+	}
+
+	/*
+	create enum instead of String so that developers know what the
+	different modes are. this could maybe be in portal-search-api instead, and
+	also used for company index reindexing, but thats all internal, so probably
+	not really necessary
+	 */
+	public enum ExecutionMode {
+
+		CONCURRENT, FULL, SYNC
+
+	}
 
 }
