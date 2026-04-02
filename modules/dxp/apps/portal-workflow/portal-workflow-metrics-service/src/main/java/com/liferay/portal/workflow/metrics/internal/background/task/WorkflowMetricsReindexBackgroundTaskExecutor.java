@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = "background.task.executor.class.name=com.liferay.portal.workflow.metrics.internal.background.task.WorkflowMetricsReindexBackgroundTaskExecutor",
 	service = BackgroundTaskExecutor.class
 )
-public class WorkflowMetricsReindexBackgroundTaskExecutor
+public class WorkflowMetricsReindexBackgroundTaskExecutor //if we implement IndexReindexer, this class would be replaced by ReindexIndexReindexerBackgroundTaskExecutor
 	extends BaseBackgroundTaskExecutor {
 
 	public WorkflowMetricsReindexBackgroundTaskExecutor() {

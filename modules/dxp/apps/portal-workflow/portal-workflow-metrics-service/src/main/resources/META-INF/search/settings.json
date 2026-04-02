@@ -8,6 +8,7 @@
 		}
 	},
 	"index.auto_expand_replicas": "0-all",
+	"index.default_pipeline": "timestamp",
 	"index.mapping.total_fields.limit": 7500,
 	"index.number_of_shards": 1
 }
