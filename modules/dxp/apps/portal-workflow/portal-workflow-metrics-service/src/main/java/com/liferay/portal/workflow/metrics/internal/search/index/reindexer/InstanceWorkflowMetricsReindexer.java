@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.workflow.kaleo.metrics.integration.internal.search.index.reindexer;
+package com.liferay.portal.workflow.metrics.internal.search.index.reindexer;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -15,7 +15,6 @@ import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.index.SyncReindexManager;
 import com.liferay.portal.search.spi.reindexer.IndexReindexer;
-import com.liferay.portal.workflow.kaleo.metrics.integration.internal.helper.IndexerHelper;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
@@ -100,10 +99,10 @@ public class InstanceWorkflowMetricsReindexer implements IndexReindexer { //rena
 				}
 
 				_instanceWorkflowMetricsIndexer.addInstance(
-					_indexerHelper.createAssetTitleLocalizationMap(
+					_indexerHelper2.createAssetTitleLocalizationMap(
 						kaleoInstance.getClassName(),
 						kaleoInstance.getClassPK(), kaleoInstance.getGroupId()),
-					_indexerHelper.createAssetTypeLocalizationMap(
+					_indexerHelper2.createAssetTypeLocalizationMap(
 						kaleoInstance.getClassName(),
 						kaleoInstance.getGroupId()),
 					kaleoInstance.getClassName(), kaleoInstance.getClassPK(),
@@ -160,7 +159,7 @@ public class InstanceWorkflowMetricsReindexer implements IndexReindexer { //rena
 	private SearchEngineAdapter _searchEngineAdapter;
 
 	@Reference
-	private IndexerHelper _indexerHelper;
+	private IndexerHelper2 _indexerHelper2;
 
 	@Reference
 	private InstanceWorkflowMetricsIndexer _instanceWorkflowMetricsIndexer;
