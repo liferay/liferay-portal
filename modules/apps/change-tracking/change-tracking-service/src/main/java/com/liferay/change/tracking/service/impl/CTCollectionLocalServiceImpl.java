@@ -824,16 +824,12 @@ public class CTCollectionLocalServiceImpl
 				modelClassNameId);
 
 			if (ctService == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						StringBundler.concat(
-							"Unable to check for unapproved changes for ",
-							"change tracking collection ", ctCollectionId,
-							" because the service for ", modelClassNameId,
-							" is missing"));
-				}
-
-				continue;
+				throw new SystemException(
+					StringBundler.concat(
+						"Unable to check for unapproved changes for change ",
+						"tracking collection ", ctCollectionId,
+						" because the service for ", modelClassNameId,
+						" is missing"));
 			}
 
 			CTPersistence<?> ctPersistence = ctService.getCTPersistence();
@@ -892,21 +888,22 @@ public class CTCollectionLocalServiceImpl
 
 		CTClosure ctClosure = _ctClosureFactory.create(ctCollectionId);
 
-		return CTEnclosureUtil.traverseParentEntries(
-			ctClosure,
-			CTEnclosureUtil.getEnclosureMap(
-				ctClosure, modelClassNameId, modelClassPK),
-			parentEntry -> {
-				int count = _ctEntryPersistence.countByC_MCNI_MCPK(
-					ctCollectionId, parentEntry.getKey(),
-					parentEntry.getValue());
+		Map<Long, Set<Long>> enclosureMap = CTEnclosureUtil.getEnclosureMap(
+			ctClosure, modelClassNameId, modelClassPK);
 
-				if (count > 0) {
-					return false;
-				}
+		for (Map.Entry<Long, Long> entry :
+				CTEnclosureUtil.getEnclosureParentEntries(
+					ctClosure, enclosureMap)) {
 
-				return true;
-			});
+			int count = _ctEntryPersistence.countByC_MCNI_MCPK(
+				ctCollectionId, entry.getKey(), entry.getValue());
+
+			if (count > 0) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -1104,8 +1101,7 @@ public class CTCollectionLocalServiceImpl
 
 			ctEntry.setChangeType(changeType);
 
-			ctServiceCopier.addCTEntry(
-				_ctEntryLocalService.updateCTEntry(ctEntry));
+			ctServiceCopier.addCTEntry(_ctEntryPersistence.update(ctEntry));
 		}
 
 		try {
@@ -1341,7 +1337,7 @@ public class CTCollectionLocalServiceImpl
 		}
 
 		CTClosure ctClosure = _ctClosureFactory.create(
-			ctCollection.getCtCollectionId());
+			ctCollection.getCtCollectionId(), modelClassNameId);
 
 		Map<Long, Set<Long>> enclosureMap = CTEnclosureUtil.getEnclosureMap(
 			ctClosure, modelClassNameId, modelClassPK);
@@ -1444,7 +1440,7 @@ public class CTCollectionLocalServiceImpl
 
 			ctEntry.setCtCollectionId(toCTCollectionId);
 
-			_ctEntryLocalService.updateCTEntry(ctEntry);
+			_ctEntryPersistence.update(ctEntry);
 		}
 
 		CTPersistence<?> ctPersistence = ctService.getCTPersistence();

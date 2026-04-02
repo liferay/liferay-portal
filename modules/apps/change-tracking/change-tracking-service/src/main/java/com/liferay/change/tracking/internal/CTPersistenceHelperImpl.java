@@ -67,10 +67,9 @@ public class CTPersistenceHelperImpl implements CTPersistenceHelper {
 			}
 
 			if (userId != ctEntry.getUserId()) {
-				ctEntry.setUserId(userId);
+				_ctEntryLocalService.updateUserId(
+					ctEntry.getCtEntryId(), userId);
 			}
-
-			_ctEntryLocalService.updateCTEntry(ctEntry);
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(portalException);
@@ -154,14 +153,14 @@ public class CTPersistenceHelperImpl implements CTPersistenceHelper {
 				int changeType = ctEntry.getChangeType();
 
 				if (changeType == CTConstants.CT_CHANGE_TYPE_ADDITION) {
-					_ctEntryLocalService.deleteCTEntry(ctEntry);
+					_ctEntryLocalService.deleteCTEntry(ctEntry, false);
 
 					return true;
 				}
 
-				ctEntry.setChangeType(CTConstants.CT_CHANGE_TYPE_DELETION);
-
-				_ctEntryLocalService.updateCTEntry(ctEntry);
+				_ctEntryLocalService.updateChangeType(
+					ctEntry.getCtEntryId(),
+					CTConstants.CT_CHANGE_TYPE_DELETION);
 
 				if ((changeType == CTConstants.CT_CHANGE_TYPE_MODIFICATION) &&
 					(ctModel.getCtCollectionId() !=
