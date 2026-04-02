@@ -468,6 +468,13 @@ public class CTEntryLocalServiceWrapper
 			modelClassNameId, modelClassPK, changeType);
 	}
 
+	@Override
+	public com.liferay.change.tracking.model.CTEntry updateChangeType(
+		long ctEntryId, int changeType) {
+
+		return _ctEntryLocalService.updateChangeType(ctEntryId, changeType);
+	}
+
 	/**
 	 * Updates the ct entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -494,6 +501,13 @@ public class CTEntryLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.change.tracking.model.CTEntry updateUserId(
+		long ctEntryId, long userId) {
+
+		return _ctEntryLocalService.updateUserId(ctEntryId, userId);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _ctEntryLocalService.getBasePersistence();
 	}
@@ -511,4 +525,4 @@ public class CTEntryLocalServiceWrapper
 	private CTEntryLocalService _ctEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:981117985
+// LIFERAY-SERVICE-BUILDER-HASH:1428692022

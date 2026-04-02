@@ -403,6 +403,10 @@ public class CTEntryLocalServiceUtil {
 			modelClassNameId, modelClassPK, changeType);
 	}
 
+	public static CTEntry updateChangeType(long ctEntryId, int changeType) {
+		return getService().updateChangeType(ctEntryId, changeType);
+	}
+
 	/**
 	 * Updates the ct entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -423,6 +427,10 @@ public class CTEntryLocalServiceUtil {
 		return getService().updateModelMvccVersion(ctEntryId, modelMvccVersion);
 	}
 
+	public static CTEntry updateUserId(long ctEntryId, long userId) {
+		return getService().updateUserId(ctEntryId, userId);
+	}
+
 	public static CTEntryLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -432,4 +440,4 @@ public class CTEntryLocalServiceUtil {
 			CTEntryLocalServiceUtil.class, CTEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:388473024
+// LIFERAY-SERVICE-BUILDER-HASH:1850296377
