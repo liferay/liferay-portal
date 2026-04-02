@@ -320,6 +320,10 @@ public class CTEntryLocalServiceImpl extends CTEntryLocalServiceBaseImpl {
 
 		CTEntry ctEntry = ctEntryPersistence.fetchByPrimaryKey(ctEntryId);
 
+		if (ctEntry == null) {
+			return null;
+		}
+
 		ctEntry.setModelMvccVersion(modelMvccVersion);
 
 		return ctEntryPersistence.update(ctEntry);
@@ -329,6 +333,10 @@ public class CTEntryLocalServiceImpl extends CTEntryLocalServiceBaseImpl {
 	public CTEntry updateChangeType(long ctEntryId, int changeType) {
 		CTEntry ctEntry = ctEntryPersistence.fetchByPrimaryKey(ctEntryId);
 
+		if (ctEntry == null) {
+			return null;
+		}
+
 		ctEntry.setChangeType(changeType);
 
 		return ctEntryPersistence.update(ctEntry);
@@ -337,6 +345,10 @@ public class CTEntryLocalServiceImpl extends CTEntryLocalServiceBaseImpl {
 	@Override
 	public CTEntry updateUserId(long ctEntryId, long userId) {
 		CTEntry ctEntry = ctEntryPersistence.fetchByPrimaryKey(ctEntryId);
+
+		if (ctEntry == null) {
+			return null;
+		}
 
 		ctEntry.setUserId(userId);
 
