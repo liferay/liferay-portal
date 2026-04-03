@@ -430,8 +430,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			return getIncludePathMatchers(getIncludesJobProperties());
 		}
 
-		List<String> includeGlobs = new ArrayList<>();
-
 		String portalBatchTestSelector = System.getenv(
 			"PORTAL_BATCH_TEST_SELECTOR");
 
@@ -439,6 +437,12 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			portalBatchTestSelector = getBuildStartProperty(
 				"PORTAL_BATCH_TEST_SELECTOR");
 		}
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalBatchTestSelector)) {
+			return getIncludePathMatchers(getIncludesJobProperties());
+		}
+
+		List<String> includeGlobs = new ArrayList<>();
 
 		for (String glob : portalBatchTestSelector.split(",(?![^{}]*})")) {
 			Matcher matcher = _globClassMethodPattern.matcher(glob);
