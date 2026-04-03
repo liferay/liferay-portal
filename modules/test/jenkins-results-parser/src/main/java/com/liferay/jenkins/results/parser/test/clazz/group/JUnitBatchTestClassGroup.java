@@ -460,24 +460,17 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 			glob = testClassGlob;
 
-			List<String> testClassMethodNames;
+			List<String> testClassMethodNames =
+				_globTestClassMethodNamesMap.get(testClassGlob);
 
-			if (_globTestClassMethodNamesMap.containsKey(testClassGlob)) {
-				testClassMethodNames = _globTestClassMethodNamesMap.get(
-					testClassGlob);
-
-				testClassMethodNames.add(testClassMethodName);
-
-				_globTestClassMethodNamesMap.replace(
-					glob, testClassMethodNames);
-			}
-			else {
+			if (testClassMethodNames == null) {
 				testClassMethodNames = new ArrayList<>();
 
-				testClassMethodNames.add(testClassMethodName);
-
-				_globTestClassMethodNamesMap.put(glob, testClassMethodNames);
+				_globTestClassMethodNamesMap.put(
+					testClassGlob, testClassMethodNames);
 			}
+
+			testClassMethodNames.add(testClassMethodName);
 
 			Collections.addAll(
 				includeGlobs,
