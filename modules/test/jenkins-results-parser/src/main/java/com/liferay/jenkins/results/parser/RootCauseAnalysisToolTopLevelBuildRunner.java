@@ -430,9 +430,28 @@ public class RootCauseAnalysisToolTopLevelBuildRunner
 					JenkinsResultsParserUtil.getCanonicalPath(
 						testClass.getTestClassFile());
 
-				list.add(
-					testClassFilePath.replaceAll(
-						".*/(com/.*)\\.java", "$1.class"));
+				testClassFilePath = testClassFilePath.replaceAll(
+					".*/(com/.*)\\.java", "$1.class");
+
+				if (testClass instanceof JUnitTestClass) {
+					JUnitTestClass jUnitTestClass = (JUnitTestClass)testClass;
+
+					List<String> testClassMethodNames =
+						jUnitTestClass.getTestClassMethodNames();
+
+					if (!testClassMethodNames.isEmpty()) {
+						for (String testClassMethodName :
+								testClassMethodNames) {
+
+							list.add(
+								testClassFilePath + "#" + testClassMethodName);
+						}
+
+						continue;
+					}
+				}
+
+				list.add(testClassFilePath);
 			}
 			else if (testClass instanceof ModulesTestClass) {
 				for (TestClassMethod testClassMethod :
