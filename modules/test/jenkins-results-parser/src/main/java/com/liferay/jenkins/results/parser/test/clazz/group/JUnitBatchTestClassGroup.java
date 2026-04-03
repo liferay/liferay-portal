@@ -458,8 +458,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			String testClassGlob = matcher.group("testClassGlob");
 			String testClassMethodName = matcher.group("testClassMethodName");
 
-			glob = testClassGlob;
-
 			List<String> testClassMethodNames =
 				_globTestClassMethodNamesMap.get(testClassGlob);
 
@@ -474,7 +472,7 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 			Collections.addAll(
 				includeGlobs,
-				JenkinsResultsParserUtil.getGlobsFromProperty(glob));
+				JenkinsResultsParserUtil.getGlobsFromProperty(testClassGlob));
 		}
 
 		return JenkinsResultsParserUtil.toPathMatchers(
