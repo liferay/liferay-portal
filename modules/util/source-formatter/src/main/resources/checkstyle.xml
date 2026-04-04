@@ -662,6 +662,11 @@
 			<property name="enabled" value="false" />
 			<message key="modified.method.incorrect" value="Remove method &quot;modified&quot; as it only calls &quot;deactivate&quot; and then &quot;activate&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ModifiedServiceMethodCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks for incorrect delegation to a sequence of `removedService()` and `addingService()` calls within `modifiedService()`." />
+			<message key="method.content.incorrect" value="Do not simply delegate to a sequence call of &quot;removedService()&quot; and &quot;addingService()&quot; in &quot;modifiedService()&quot;, see LPD-66061" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.MVCCommandNameCheck">
 			<property name="category" value="Naming Conventions" />
 			<property name="description" value="Checks for consistent naming for values of `mvc.command.name`." />
