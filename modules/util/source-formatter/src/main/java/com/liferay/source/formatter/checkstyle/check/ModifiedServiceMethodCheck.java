@@ -61,15 +61,7 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 
 		firstChildDetailAST = slistDetailAST.getFirstChild();
 
-		if ((firstChildDetailAST == null) ||
-			(firstChildDetailAST.getType() != TokenTypes.EXPR)) {
-
-			return;
-		}
-
-		methodName = getMethodName(firstChildDetailAST.getFirstChild());
-
-		if (!StringUtil.equals(methodName, "removedService")) {
+		if (!_isMethodCall(firstChildDetailAST, "removedService")) {
 			return;
 		}
 
@@ -83,15 +75,7 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 
 		nextSiblingDetailAST = nextSiblingDetailAST.getNextSibling();
 
-		if ((nextSiblingDetailAST == null) ||
-			(nextSiblingDetailAST.getType() != TokenTypes.EXPR)) {
-
-			return;
-		}
-
-		methodName = getMethodName(nextSiblingDetailAST.getFirstChild());
-
-		if (!StringUtil.equals(methodName, "addingService")) {
+		if (!_isMethodCall(nextSiblingDetailAST, "addingService")) {
 			return;
 		}
 
@@ -107,6 +91,15 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 		}
 
 		log(detailAST, _MSG_INCORRECT_METHOD_CONTENT);
+	}
+
+	private boolean _isMethodCall(DetailAST detailAST, String methodName) {
+		if ((detailAST == null) || (detailAST.getType() != TokenTypes.EXPR)) {
+			return false;
+		}
+
+		return StringUtil.equals(
+			getMethodName(detailAST.getFirstChild()), methodName);
 	}
 
 	private static final String _MSG_INCORRECT_METHOD_CONTENT =
