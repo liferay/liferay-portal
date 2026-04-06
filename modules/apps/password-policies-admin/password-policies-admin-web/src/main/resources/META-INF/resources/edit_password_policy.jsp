@@ -81,6 +81,9 @@ renderResponse.setTitle(passwordPolicy.isNew() ? LanguageUtil.get(request, "new-
 
 						<%
 						for (long duration : _sort(passwordPoliciesConfiguration.resetTicketMaxAgeDurations())) {
+							if (duration == 0) {
+								continue;
+							}
 						%>
 
 							<aui:option label="<%= LanguageUtil.getTimeDescription(request, duration * 1000) %>" value="<%= duration %>" />
