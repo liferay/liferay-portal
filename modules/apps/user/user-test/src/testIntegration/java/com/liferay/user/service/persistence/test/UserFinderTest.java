@@ -151,10 +151,17 @@ public class UserFinderTest {
 		).put(
 			"usersGroups",
 			new Long[] {
-				_depotEntry.getGroupId(), _group.getGroupId(),
-				_organization1.getGroupId(), _userGroup.getGroupId()
+				_group.getGroupId(), _organization1.getGroupId(),
+				_userGroup.getGroupId()
 			}
 		).build();
+
+		_inheritedUserGroupsDepotEntryParams =
+			LinkedHashMapBuilder.<String, Object>put(
+				"inherit", Boolean.TRUE
+			).put(
+				"usersGroups", new Long[] {_depotEntry.getGroupId()}
+			).build();
 
 		_inheritedUserGroupsExpectedCount = _userFinder.countByKeywords(
 			TestPropsValues.getCompanyId(), null,
@@ -191,14 +198,16 @@ public class UserFinderTest {
 
 		int expectedCount = _userFinder.countByKeywords(
 			TestPropsValues.getCompanyId(), null,
-			WorkflowConstants.STATUS_APPROVED, _inheritedUserGroupsParams);
+			WorkflowConstants.STATUS_APPROVED,
+			_inheritedUserGroupsDepotEntryParams);
 
 		_groupLocalService.addUserGroupGroup(
 			_userGroup.getUserGroupId(), _depotEntry.getGroupId());
 
 		int count = _userFinder.countByKeywords(
 			TestPropsValues.getCompanyId(), null,
-			WorkflowConstants.STATUS_APPROVED, _inheritedUserGroupsParams);
+			WorkflowConstants.STATUS_APPROVED,
+			_inheritedUserGroupsDepotEntryParams);
 
 		Assert.assertEquals(expectedCount + 1, count);
 	}
@@ -358,8 +367,9 @@ public class UserFinderTest {
 
 		List<User> users = _userFinder.findByKeywords(
 			TestPropsValues.getCompanyId(), null,
-			WorkflowConstants.STATUS_APPROVED, _inheritedUserGroupsParams,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			WorkflowConstants.STATUS_APPROVED,
+			_inheritedUserGroupsDepotEntryParams, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 
 		Assert.assertTrue(users.contains(_userGroupUser));
 	}
@@ -487,6 +497,7 @@ public class UserFinderTest {
 	@Inject
 	private static UserLocalService _userLocalService;
 
+	private LinkedHashMap<String, Object> _inheritedUserGroupsDepotEntryParams;
 	private int _inheritedUserGroupsExpectedCount;
 	private LinkedHashMap<String, Object> _inheritedUserGroupsParams;
 	private LinkedHashMap<String, Object> _inheritedUserRolesParams;
