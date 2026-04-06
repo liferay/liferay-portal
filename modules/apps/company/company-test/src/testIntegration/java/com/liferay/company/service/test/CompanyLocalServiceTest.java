@@ -1315,7 +1315,6 @@ public class CompanyLocalServiceTest {
 		_testUpdateMaxUsers(-100);
 	}
 
-
 	@Test
 	public void testUpdateInvalidMx() throws Exception {
 		_testUpdateMx("abc", false, true);
@@ -1334,7 +1333,6 @@ public class CompanyLocalServiceTest {
 		_testUpdateMaxUsers(20);
 		_testUpdateMaxUsers(10000);
 	}
-
 
 	@Test
 	public void testUpdateMx() throws Exception {
@@ -1644,13 +1642,12 @@ public class CompanyLocalServiceTest {
 		}
 	}
 
-
 	private void _testUpdateMaxUsers(int maxUsers) throws Exception {
 		int originalMaxUsers = _company.getMaxUsers();
 
 		try (SafeCloseable safeCloseable =
-				 CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					 _company.getCompanyId())) {
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
 
 			_company = _companyLocalService.updateCompany(
 				_company.getCompanyId(), _company.getVirtualHostname(),

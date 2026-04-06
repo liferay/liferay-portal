@@ -29,7 +29,7 @@
 
 				<aui:input label="mail-domain" name="mx" />
 
-				<aui:input name="maxUsers" type="number"/>
+				<aui:input name="maxUsers" type="number" />
 
 				<aui:input inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" value="<%= true %>" />
 
