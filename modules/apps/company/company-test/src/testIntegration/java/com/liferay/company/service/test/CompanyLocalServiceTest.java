@@ -1249,6 +1249,20 @@ public class CompanyLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateCompanyWithInvalidMx() throws Exception {
+		_testUpdateMx("abc", false, true);
+		_testUpdateMx(StringPool.BLANK, false, true);
+	}
+
+	@Test
+	public void testUpdateCompanyWithInvalidVirtualHostnames()
+		throws Exception {
+
+		_testUpdateVirtualHostnames(
+			new String[] {StringPool.BLANK, "localhost", ".abc"}, true);
+	}
+
+	@Test
 	public void testUpdateCompanyWithValidMaxUsers() throws Exception {
 		_testValidateMaxUsers(0);
 		_testValidateMaxUsers(20);
@@ -1320,18 +1334,6 @@ public class CompanyLocalServiceTest {
 
 			safeCloseable.close();
 		}
-	}
-
-	@Test
-	public void testUpdateInvalidMx() throws Exception {
-		_testUpdateMx("abc", false, true);
-		_testUpdateMx(StringPool.BLANK, false, true);
-	}
-
-	@Test
-	public void testUpdateInvalidVirtualHostnames() throws Exception {
-		_testUpdateVirtualHostnames(
-			new String[] {StringPool.BLANK, "localhost", ".abc"}, true);
 	}
 
 	@Test
