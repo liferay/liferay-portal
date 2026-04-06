@@ -9,10 +9,13 @@ import {captchaConfigPageTest} from '../../../fixtures/captchaConfigPageTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {passwordPoliciesAdminPageTest} from '../../../fixtures/passwordPoliciesAdminConfigPageTest';
+import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {TPasswordPolicy} from '../../../helpers/PasswordPolicyApiHelper';
+import {liferayConfig} from '../../../liferay.config';
 import {PasswordPoliciesAdminPage} from '../../../pages/password-policies-admin-web/PasswordPoliciesAdminPage';
 import getRandomString from '../../../utils/getRandomString';
 import performLoginViaApi from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	captchaConfigPageTest,
@@ -20,7 +23,8 @@ export const test = mergeTests(
 		'LPD-36105': {enabled: true},
 	}),
 	loginTest(),
-	passwordPoliciesAdminPageTest
+	passwordPoliciesAdminPageTest,
+	systemSettingsPageTest
 );
 
 test.afterEach(
@@ -194,6 +198,67 @@ test(
 			passwordPolicy,
 			'abc123'
 		);
+	}
+);
+
+test(
+	'Verify only display Eternal option when Ticket Max Age is set to 0',
+	{tag: '@LPD-85143'},
+	async ({page, passwordPoliciesAdminConfigPage, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Users',
+			'Password Policies'
+		);
+
+		await expect(
+			page.getByText('Reset Ticket Max Age Durations').first()
+		).toBeVisible();
+
+		const resetTicketMaxAgeDurationEntry = await page
+			.locator('div[data-field-reference="resetTicketMaxAgeDurations"]')
+			.first();
+
+		const removeExcludedPatresetTicketMaxAgeDurationButton =
+			resetTicketMaxAgeDurationEntry.locator('button[title="Duplicate"]');
+
+		await removeExcludedPatresetTicketMaxAgeDurationButton.click();
+
+		if (await page.isVisible('button:has-text("Update")')) {
+			await page.getByRole('button', {name: 'Update'}).click();
+		}
+		else {
+			await page.getByRole('button', {name: 'Save'}).click();
+		}
+
+		await waitForAlert(
+			page,
+			`Success:Your request completed successfully.`
+		);
+
+		await page.goto(liferayConfig.environment.baseUrl);
+
+		await passwordPoliciesAdminConfigPage.goTo();
+
+		const passwordPolicy: TPasswordPolicy = {
+			checkSyntaxToggle: true,
+			minNumbers: 1,
+		};
+
+		await passwordPoliciesAdminConfigPage.editDefaultPasswordPolicy(
+			passwordPolicy
+		);
+
+		const resetTicketMaxAgeOptions =
+			await passwordPoliciesAdminConfigPage.resetTicketMaxAge
+				.locator('option')
+				.allInnerTexts();
+
+		const resetTicketMaxAgeTrimmedOptions = resetTicketMaxAgeOptions.map(
+			(text) => text.trim()
+		);
+
+		expect(resetTicketMaxAgeTrimmedOptions).not.toContain('0 weeks');
+		expect(resetTicketMaxAgeTrimmedOptions).toContain('Eternal');
 	}
 );
 
