@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
@@ -1309,6 +1310,13 @@ public class CompanyLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateInvalidMaxUsers() throws Exception {
+		_testUpdateMaxUsers(-1);
+		_testUpdateMaxUsers(-100);
+	}
+
+
+	@Test
 	public void testUpdateInvalidMx() throws Exception {
 		_testUpdateMx("abc", false, true);
 		_testUpdateMx(StringPool.BLANK, false, true);
@@ -1319,6 +1327,14 @@ public class CompanyLocalServiceTest {
 		_testUpdateVirtualHostnames(
 			new String[] {StringPool.BLANK, "localhost", ".abc"}, true);
 	}
+
+	@Test
+	public void testUpdateMaxUsers() throws Exception {
+		_testUpdateMaxUsers(0);
+		_testUpdateMaxUsers(20);
+		_testUpdateMaxUsers(10000);
+	}
+
 
 	@Test
 	public void testUpdateMx() throws Exception {
@@ -1625,6 +1641,34 @@ public class CompanyLocalServiceTest {
 
 				Assert.assertTrue(expectFailure);
 			}
+		}
+	}
+
+
+	private void _testUpdateMaxUsers(int maxUsers) throws Exception {
+		int originalMaxUsers = _company.getMaxUsers();
+
+		try (SafeCloseable safeCloseable =
+				 CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					 _company.getCompanyId())) {
+
+			_company = _companyLocalService.updateCompany(
+				_company.getCompanyId(), _company.getVirtualHostname(),
+				_company.getMx(), maxUsers, _company.isActive());
+
+			Assert.assertTrue(maxUsers >= 0);
+
+			Assert.assertEquals(maxUsers, _company.getMaxUsers());
+		}
+		catch (CompanyMaxUsersException companyMaxUsersException) {
+			Assert.assertTrue(maxUsers < 0);
+
+			Assert.assertEquals(originalMaxUsers, _company.getMaxUsers());
+		}
+		finally {
+			_company = _companyLocalService.updateCompany(
+				_company.getCompanyId(), _company.getVirtualHostname(),
+				_company.getMx(), originalMaxUsers, _company.isActive());
 		}
 	}
 
