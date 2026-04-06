@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
@@ -219,6 +220,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		validateWebId(webId);
 		validateVirtualHost(webId, lowerCaseVirtualHostname);
 		validateMx(-1, mx);
+		validateMaxUsers(maxUsers);
 
 		if ((companyId == null) || (companyId == 0)) {
 			companyId = _getNextCompanyId();
@@ -1174,6 +1176,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		validateVirtualHost(company.getWebId(), virtualHostname);
 
+		validateMaxUsers(maxUsers);
+
 		if (PropsValues.COMPANY_MX_UPDATE) {
 			validateMx(companyId, mx);
 
@@ -1967,6 +1971,15 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 				throw localeException;
 			}
+		}
+	}
+
+	protected void validateMaxUsers(int maxUsers)
+		throws CompanyMaxUsersException {
+
+		if (maxUsers < 0) {
+			throw new CompanyMaxUsersException(
+				"Max users should be equal or greater than 0");
 		}
 	}
 

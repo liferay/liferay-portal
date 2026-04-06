@@ -6,6 +6,7 @@
 package com.liferay.portal.instances.web.internal.portlet.action;
 
 import com.liferay.portal.instances.web.internal.constants.PortalInstancesPortletKeys;
+import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
@@ -66,7 +67,8 @@ public class EditInstanceMVCActionCommand extends BaseMVCActionCommand {
 
 				SessionErrors.add(actionRequest, exception.getClass());
 			}
-			else if (exception instanceof CompanyMxException ||
+			else if (exception instanceof CompanyMaxUsersException ||
+					 exception instanceof CompanyMxException ||
 					 exception instanceof CompanyVirtualHostException ||
 					 exception instanceof CompanyWebIdException) {
 

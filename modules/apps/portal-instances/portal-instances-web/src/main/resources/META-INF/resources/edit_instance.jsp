@@ -33,6 +33,7 @@ renderResponse.setTitle(HtmlUtil.escape(selCompany.getWebId()));
 		<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 		<aui:input name="companyId" type="hidden" value="<%= companyId %>" />
 
+		<liferay-ui:error exception="<%= CompanyMaxUsersException.class %>" message="please-enter-a-valid-max-users" />
 		<liferay-ui:error exception="<%= CompanyMxException.class %>" message="please-enter-a-valid-mail-domain" />
 		<liferay-ui:error exception="<%= CompanyVirtualHostException.class %>" message="please-enter-a-valid-virtual-host" />
 		<liferay-ui:error exception="<%= CompanyWebIdException.class %>" message="please-enter-a-valid-web-id" />
@@ -47,7 +48,7 @@ renderResponse.setTitle(HtmlUtil.escape(selCompany.getWebId()));
 
 		<aui:input label="mail-domain" name="mx" />
 
-		<aui:input name="maxUsers" />
+		<aui:input name="maxUsers" type="number"/>
 
 		<c:if test="<%= selCompany.getCompanyId() != PortalInstancePool.getDefaultCompanyId() %>">
 			<aui:input inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" value="<%= selCompany.isActive() %>" />
