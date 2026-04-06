@@ -90,7 +90,7 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 			return;
 		}
 
-		log(detailAST, _MSG_INCORRECT_METHOD_CONTENT);
+		log(detailAST, _MSG_INCORRECT_METHOD_DECLARATION);
 	}
 
 	private boolean _isMethodCall(DetailAST detailAST, String methodName) {
@@ -102,7 +102,7 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 			getMethodName(detailAST.getFirstChild()), methodName);
 	}
 
-	private static final String _MSG_INCORRECT_METHOD_CONTENT =
-		"method.content.incorrect";
+	private static final String _MSG_INCORRECT_METHOD_DECLARATION =
+		"method.declaration.incorrect";
 
 }
