@@ -34,6 +34,17 @@ export class SystemSettingsPage {
 	) {
 		await this.globalMenuPage.goToHome();
 		await this.globalMenuPage.goToControlPanel('System Settings');
+
+		if (
+			await this.page
+				.getByRole('tab', {name: 'Close Product Menu'})
+				.isVisible()
+		) {
+			await this.page
+				.getByRole('tab', {name: 'Close Product Menu'})
+				.click();
+		}
+
 		await this.page
 			.getByRole('link', {
 				exact: true,
