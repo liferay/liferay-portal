@@ -10,15 +10,22 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
+import com.liferay.portal.kernel.search.IndexStatusManagerThreadLocal;
+import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.search.model.uid.UIDFactory;
 import com.liferay.redirect.internal.configuration.RedirectConfiguration;
 import com.liferay.redirect.model.RedirectNotFoundEntry;
 import com.liferay.redirect.service.RedirectNotFoundEntryLocalService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -39,8 +46,28 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 		return () -> {
-			_removeMaximumOverflowRedirectNotFoundEntries();
-			_removeOldRedirectNotFoundEntries();
+			Map<Long, List<String>> deletedUidsMap = new HashMap<>();
+
+			boolean indexReadOnly =
+				IndexStatusManagerThreadLocal.isIndexReadOnly();
+
+			try {
+				IndexStatusManagerThreadLocal.setIndexReadOnly(true);
+
+				_removeMaximumOverflowRedirectNotFoundEntries(deletedUidsMap);
+
+				_removeOldRedirectNotFoundEntries(deletedUidsMap);
+			}
+			finally {
+				IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
+
+				for (Map.Entry<Long, List<String>> entry :
+						deletedUidsMap.entrySet()) {
+
+					_indexWriterHelper.deleteDocuments(
+						entry.getKey(), entry.getValue(), false);
+				}
+			}
 		};
 	}
 
@@ -59,7 +86,25 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 			TimeUnit.HOUR);
 	}
 
-	private void _removeMaximumOverflowRedirectNotFoundEntries()
+	private void _deleteRedirectNotFoundEntry(
+			RedirectNotFoundEntry redirectNotFoundEntry,
+			Map<Long, List<String>> deletedUidsMap)
+		throws PortalException {
+
+		long companyId = redirectNotFoundEntry.getCompanyId();
+		String uid = _uidFactory.getUID(redirectNotFoundEntry);
+
+		_redirectNotFoundEntryLocalService.deleteRedirectNotFoundEntry(
+			redirectNotFoundEntry);
+
+		List<String> uids = deletedUidsMap.computeIfAbsent(
+			companyId, key -> new ArrayList<>());
+
+		uids.add(uid);
+	}
+
+	private void _removeMaximumOverflowRedirectNotFoundEntries(
+			Map<Long, List<String>> deletedUidsMap)
 		throws Exception {
 
 		int redirectNotFoundEntriesCount =
@@ -88,13 +133,16 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 				OrderFactoryUtil.desc("modifiedDate")));
 		actionableDynamicQuery.setPerformActionMethod(
 			(ActionableDynamicQuery.PerformActionMethod<RedirectNotFoundEntry>)
-				_redirectNotFoundEntryLocalService::
-					deleteRedirectNotFoundEntry);
+				redirectNotFoundEntry -> _deleteRedirectNotFoundEntry(
+					redirectNotFoundEntry, deletedUidsMap));
 
 		actionableDynamicQuery.performActions();
 	}
 
-	private void _removeOldRedirectNotFoundEntries() throws Exception {
+	private void _removeOldRedirectNotFoundEntries(
+			Map<Long, List<String>> deletedUidsMap)
+		throws Exception {
+
 		ActionableDynamicQuery actionableDynamicQuery =
 			_redirectNotFoundEntryLocalService.getActionableDynamicQuery();
 
@@ -111,11 +159,14 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 
 		actionableDynamicQuery.setPerformActionMethod(
 			(ActionableDynamicQuery.PerformActionMethod<RedirectNotFoundEntry>)
-				_redirectNotFoundEntryLocalService::
-					deleteRedirectNotFoundEntry);
+				redirectNotFoundEntry -> _deleteRedirectNotFoundEntry(
+					redirectNotFoundEntry, deletedUidsMap));
 
 		actionableDynamicQuery.performActions();
 	}
+
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
 
 	private volatile RedirectConfiguration _redirectConfiguration;
 
@@ -124,5 +175,8 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 		_redirectNotFoundEntryLocalService;
 
 	private TriggerConfiguration _triggerConfiguration;
+
+	@Reference
+	private UIDFactory _uidFactory;
 
 }

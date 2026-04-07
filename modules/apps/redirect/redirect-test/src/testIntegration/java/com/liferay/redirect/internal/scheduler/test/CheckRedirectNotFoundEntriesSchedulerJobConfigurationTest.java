@@ -10,11 +10,15 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.redirect.model.RedirectNotFoundEntry;
@@ -73,6 +77,8 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 			redirectNotFoundEntries.toString(), 2,
 			redirectNotFoundEntries.size());
 
+		Assert.assertEquals(2, _getRedirectNotFoundEntryCount());
+
 		UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
 			_schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
 
@@ -88,6 +94,8 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 			redirectNotFoundEntries.size());
 		Assert.assertEquals(
 			redirectNotFoundEntry, redirectNotFoundEntries.get(0));
+
+		Assert.assertEquals(1, _getRedirectNotFoundEntryCount());
 	}
 
 	@Test
@@ -101,6 +109,7 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 			1001,
 			_redirectNotFoundEntryLocalService.getRedirectNotFoundEntriesCount(
 				_group.getGroupId()));
+		Assert.assertEquals(1001, _getRedirectNotFoundEntryCount());
 
 		UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
 			_schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
@@ -111,6 +120,7 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 			1000,
 			_redirectNotFoundEntryLocalService.getRedirectNotFoundEntriesCount(
 				_group.getGroupId()));
+		Assert.assertEquals(1000, _getRedirectNotFoundEntryCount());
 	}
 
 	private RedirectNotFoundEntry _addOrUpdateRedirectNotFoundEntry(
@@ -124,6 +134,16 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 
 		return _redirectNotFoundEntryLocalService.updateRedirectNotFoundEntry(
 			redirectNotFoundEntry);
+	}
+
+	private int _getRedirectNotFoundEntryCount() throws Exception {
+		Indexer<RedirectNotFoundEntry> indexer = IndexerRegistryUtil.getIndexer(
+			RedirectNotFoundEntry.class);
+
+		Hits hits = indexer.search(
+			SearchContextTestUtil.getSearchContext(_group.getGroupId()));
+
+		return hits.getLength();
 	}
 
 	@DeleteAfterTestRun
