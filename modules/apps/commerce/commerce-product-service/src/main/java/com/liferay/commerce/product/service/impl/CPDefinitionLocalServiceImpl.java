@@ -873,14 +873,36 @@ public class CPDefinitionLocalServiceImpl
 		if (!cpDefinitionLocalService.isVersionable(
 				sourceCProduct.getPublishedCPDefinitionId())) {
 
-			throw new UnsupportedOperationException(
-				"Unable to perform a copy with versioning disabled");
+			return sourceCPDefinition;
+		}
+
+		if (sourceCPDefinition.isDraft() &&
+			(status ==
+			 WorkflowConstants.ACTION_SAVE_DRAFT)) {
+
+			return sourceCPDefinition;
 		}
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
+
+		if (!sourceCPDefinition.isDraft() &&
+			(status ==
+			 WorkflowConstants.ACTION_SAVE_DRAFT)) {
+			for (CPDefinition cProductCPDefinition :
+				cpDefinitionLocalService.getCProductCPDefinitions(
+					sourceCPDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS)) {
+
+				cpDefinitionLocalService.updateStatus(
+					user.getUserId(), cProductCPDefinition.getCPDefinitionId(),
+					WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
+					Collections.emptyMap());
+			}
+		}
 
 		CPDefinition targetCPDefinition =
 			(CPDefinition)sourceCPDefinition.clone();
