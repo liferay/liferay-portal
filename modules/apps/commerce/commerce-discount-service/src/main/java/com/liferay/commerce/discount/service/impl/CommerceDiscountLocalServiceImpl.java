@@ -335,13 +335,13 @@ public class CommerceDiscountLocalServiceImpl
 				commerceDiscount.setLevel1(level1);
 			}
 			else if (level.equals(CommerceDiscountConstants.LEVEL_L2)) {
-				commerceDiscount.setLevel2(level1);
+				commerceDiscount.setLevel2(level2);
 			}
 			else if (level.equals(CommerceDiscountConstants.LEVEL_L3)) {
-				commerceDiscount.setLevel3(level1);
+				commerceDiscount.setLevel3(level3);
 			}
 			else if (level.equals(CommerceDiscountConstants.LEVEL_L4)) {
-				commerceDiscount.setLevel4(level1);
+				commerceDiscount.setLevel4(level4);
 			}
 		}
 		else {
