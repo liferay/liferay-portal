@@ -8,7 +8,7 @@
 		"@types/react-dom": "^18.0.9",
 		"@vitejs/plugin-react-swc": "^4.1.0",
 		"typescript": "5.7.2",
-		"vite": "4.0.0"
+		"vite": "6.4.2"
 	},
 	"name": "liferay-sample-custom-element-6",
 	"private": true,
