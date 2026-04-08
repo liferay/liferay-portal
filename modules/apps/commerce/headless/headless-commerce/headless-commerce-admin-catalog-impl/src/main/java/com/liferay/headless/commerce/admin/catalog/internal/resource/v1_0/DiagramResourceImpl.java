@@ -17,6 +17,7 @@ import com.liferay.commerce.shop.by.diagram.service.CSDiagramSettingService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Diagram;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.DiagramUtil;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.DiagramResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -90,7 +91,10 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 		CSDiagramSetting csDiagramSetting =
 			_csDiagramSettingService.getCSDiagramSetting(diagramId);
 
-		CPDefinition cpDefinition = csDiagramSetting.getCPDefinition();
+		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			_cpDefinitionService,
+			csDiagramSetting.getCPDefinition(
+			).getCProductId());
 
 		DiagramUtil.updateCSDiagramSetting(
 			contextCompany.getCompanyId(), _cpAttachmentFileEntryService,
@@ -109,10 +113,9 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 		throws Exception {
 
 		CPDefinition cpDefinition =
-			_cpDefinitionService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId(),
-					false);
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				_cpDefinitionService, externalReferenceCode,
+				contextCompany.getCompanyId());
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -135,9 +138,8 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 	public Diagram postProductIdDiagram(Long productId, Diagram diagram)
 		throws Exception {
 
-		CPDefinition cpDefinition =
-			_cpDefinitionService.fetchCPDefinitionByCProductId(
-				productId, false);
+		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			_cpDefinitionService, productId);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

@@ -340,8 +340,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Override
 	public Response patchProduct(Long id, Product product) throws Exception {
-		CPDefinition cpDefinition =
-			_cpDefinitionService.fetchCPDefinitionByCProductId(id, false);
+		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			_cpDefinitionService, id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -361,10 +361,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		throws Exception {
 
 		CPDefinition cpDefinition =
-			_cpDefinitionService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId(),
-					false);
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				_cpDefinitionService, externalReferenceCode,
+				contextCompany.getCompanyId());
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -609,10 +608,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			_getProductTaxConfiguration(product);
 
 		CPDefinition cpDefinition =
-			_cpDefinitionService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId(),
-					false);
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				_cpDefinitionService, externalReferenceCode,
+				contextCompany.getCompanyId());
 
 		Category[] categories = product.getCategories();
 
