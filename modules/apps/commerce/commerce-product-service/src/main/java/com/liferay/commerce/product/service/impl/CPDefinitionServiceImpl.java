@@ -227,6 +227,24 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 	}
 
 	@Override
+	public CPDefinition fetchCPDefinitionByCProductExternalReferenceCode(
+			String externalReferenceCode, long companyId, int status)
+		throws PortalException {
+
+		CPDefinition cpDefinition =
+			cpDefinitionLocalService.
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					externalReferenceCode, companyId, status);
+
+		if (cpDefinition != null) {
+			_checkCommerceCatalogByCPDefinitionId(
+				cpDefinition.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinition;
+	}
+
+	@Override
 	public CPDefinition fetchCPDefinitionByCProductId(
 			long cProductId, boolean excludeDraft)
 		throws PortalException {
@@ -234,6 +252,23 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 		CPDefinition cpDefinition =
 			cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 				cProductId, excludeDraft);
+
+		if (cpDefinition != null) {
+			_checkCommerceCatalogByCPDefinitionId(
+				cpDefinition.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinition;
+	}
+
+	@Override
+	public CPDefinition fetchCPDefinitionByCProductId(
+			long cProductId, int status)
+		throws PortalException {
+
+		CPDefinition cpDefinition =
+			cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+				cProductId, status);
 
 		if (cpDefinition != null) {
 			_checkCommerceCatalogByCPDefinitionId(
@@ -325,6 +360,20 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 		_checkCommerceCatalogByCPDefinitionId(cpDefinitionId, ActionKeys.VIEW);
 
 		return cpDefinitionLocalService.getUrlTitleMapAsXML(cpDefinitionId);
+	}
+
+	@Override
+	public boolean isVersionable(CPDefinition cpDefinition)
+		throws PortalException {
+
+		if (cpDefinition == null) {
+			return false;
+		}
+
+		_checkCommerceCatalogByCPDefinitionId(
+			cpDefinition.getCPDefinitionId(), ActionKeys.VIEW);
+
+		return cpDefinitionLocalService.isVersionable(cpDefinition);
 	}
 
 	@Override
