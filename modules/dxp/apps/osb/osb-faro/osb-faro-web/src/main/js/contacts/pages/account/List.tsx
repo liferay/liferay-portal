@@ -213,7 +213,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 										{
 											apiURL: `/o/contacts/${groupId}/account/industries`,
 											entityFieldType: 'string',
-											id: 'industry',
+											id: 'name',
 											itemKey: 'name',
 											itemLabel: 'name',
 											label: Liferay.Language.get(
@@ -225,7 +225,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 										{
 											apiURL: `/o/contacts/${groupId}/account/countries`,
 											entityFieldType: 'string',
-											id: 'country',
+											id: 'name',
 											itemKey: 'name',
 											itemLabel: 'name',
 											label: Liferay.Language.get(
