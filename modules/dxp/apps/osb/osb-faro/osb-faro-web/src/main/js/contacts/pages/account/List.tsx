@@ -8,7 +8,7 @@ import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React from 'react';
 import TotalAccounts from 'contacts/components/account/TotalAccounts';
 import URLConstants from 'shared/util/url-constants';
-import {columns, pagination} from 'shared/util/frontend-data-set';
+import {columns, pagination, useSnapshots} from 'shared/util/frontend-data-set';
 import {CUSTOM_DATE_FORMAT, formatUTCDate} from 'shared/util/date';
 import {isNil} from 'lodash/fp';
 import {LifecycleStages} from './utils/constants';
@@ -127,6 +127,8 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 	);
 
 	const FrontendDataSet = useFrontendDataSet();
+
+	const snapshots = useSnapshots('accounts-list-dataset');
 
 	if (dataSourceLoading) {
 		return <Loading />;
@@ -258,6 +260,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 									loading={dataSourceLoading}
 									pagination={pagination}
 									showPagination
+									snapshots={snapshots}
 									snapshotsEnabled
 									sort={[
 										{
@@ -272,12 +275,15 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 									views={[
 										{
 											contentRenderer: 'table',
-											default: false,
-											label: 'table',
+											default: true,
+											label: Liferay.Language.get(
+												'default-view'
+											),
 											name: 'table',
 											schema: {
 												fields: [
 													{
+														_key: 'accountName',
 														contentRenderer:
 															'accountNameRenderer',
 														fieldName:
@@ -289,6 +295,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 														truncate: true
 													},
 													{
+														_key: 'industry',
 														fieldName: 'industry',
 														label: Liferay.Language.get(
 															'industry'
@@ -296,6 +303,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 														sortable: true
 													},
 													{
+														_key: 'lifecycleStage',
 														contentRenderer:
 															'accountLifecycleStageRenderer',
 														fieldName:
@@ -306,6 +314,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 														sortable: true
 													},
 													{
+														_key: 'annualRevenue',
 														contentRenderer:
 															'annualRevenueRenderer',
 														fieldName:
@@ -316,6 +325,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 														sortable: true
 													},
 													{
+														_key: 'country',
 														fieldName: 'country',
 														label: Liferay.Language.get(
 															'country'
@@ -323,6 +333,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 														sortable: true
 													},
 													{
+														_key: 'lastActive',
 														contentRenderer:
 															'dateRenderer',
 														fieldName: 'lastActive',
@@ -332,6 +343,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 														sortable: true
 													},
 													{
+														_key: 'lastEnriched',
 														contentRenderer:
 															'dateRenderer',
 														fieldName:
