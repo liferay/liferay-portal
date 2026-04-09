@@ -9,7 +9,6 @@ import React from 'react';
 import TotalAccounts from 'contacts/components/account/TotalAccounts';
 import URLConstants from 'shared/util/url-constants';
 import {columns, pagination, useSnapshots} from 'shared/util/frontend-data-set';
-import {CUSTOM_DATE_FORMAT, formatUTCDate} from 'shared/util/date';
 import {isNil} from 'lodash/fp';
 import {LifecycleStages} from './utils/constants';
 import {Routes, toRoute} from 'shared/util/router';
@@ -180,37 +179,17 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 										accountNameRenderer: ({
 											itemData,
 											value
-										}) => {
-											const itemTitle =
-												value || itemData.id;
-
-											return (
-												<Link
-													className='font-weight-semi-bold text-dark'
-													href={toRoute(
-														Routes.CONTACTS_ACCOUNT,
-														{
-															groupId,
-															id: itemData.id
-														}
-													)}
-												>
-													{itemTitle}
-												</Link>
-											);
-										},
+										}) =>
+											columns.nameAndLinkRenderer({
+												groupId,
+												itemData,
+												value
+											}),
 										annualRevenueRenderer: ({value}) => (
 											<div>{toThousands(value)}</div>
 										),
-										dateRenderer: ({value}) => (
-											<div>
-												{value &&
-													formatUTCDate(
-														value,
-														CUSTOM_DATE_FORMAT
-													)}
-											</div>
-										)
+										dateRenderer: ({value}) =>
+											columns.dateRenderer({value})
 									}}
 									emptyState={{
 										description: Liferay.Language.get(
