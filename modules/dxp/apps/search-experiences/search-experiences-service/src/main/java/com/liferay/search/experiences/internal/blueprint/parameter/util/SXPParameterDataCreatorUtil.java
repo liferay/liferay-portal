@@ -382,7 +382,16 @@ public class SXPParameterDataCreatorUtil {
 		}
 
 		if (object != null) {
-			return ArrayUtil.toArray(GetterUtil.getIntegerValues(object));
+			int[] fromArray = GetterUtil.getIntegerValues(object);
+
+			if (ArrayUtil.isNotEmpty(fromArray)) {
+				return ArrayUtil.toArray(fromArray);
+			}
+			else if (object instanceof List<?> list) {
+				if (list.stream().allMatch(e -> e instanceof Integer)) {
+					return list.toArray(new Integer[0]);
+				}
+			}
 		}
 
 		if (defaultValue != null) {
@@ -441,7 +450,16 @@ public class SXPParameterDataCreatorUtil {
 		}
 
 		if (object != null) {
-			return ArrayUtil.toArray(GetterUtil.getLongValues(object));
+			long[] fromArray = GetterUtil.getLongValues(object);
+
+			if (ArrayUtil.isNotEmpty(fromArray)) {
+				return ArrayUtil.toArray(fromArray);
+			}
+			else if (object instanceof List<?> list) {
+				if (list.stream().allMatch(e -> e instanceof Long)) {
+					return list.toArray(new Long[0]);
+				}
+			}
 		}
 
 		if (defaultValue != null) {
@@ -494,7 +512,16 @@ public class SXPParameterDataCreatorUtil {
 		String[] defaultValue, Object object) {
 
 		if (object != null) {
-			return GetterUtil.getStringValues(object);
+			String[] fromArray = GetterUtil.getStringValues(object);
+
+			if (ArrayUtil.isNotEmpty(fromArray)) {
+				return fromArray;
+			}
+			else if (object instanceof List<?> list) {
+				if (list.stream().allMatch(e -> e instanceof String)) {
+					return list.toArray(new String[0]);
+				}
+			}
 		}
 
 		if (defaultValue != null) {
