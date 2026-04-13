@@ -12169,6 +12169,88 @@ paths:
                         -   HeadlessCommerceAdminCatalog.read
             summary: Gets a product by External Reference Code.
             tags: ["Product"]
+        patch:
+            operationId: patchProductByExternalReferenceCodeByVersion
+            parameters:
+                -   in: path
+                    explode: false
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        description:
+                            The resource external reference code
+                        example: AB-34098-789-N
+                        minLength: 1
+                        type: string
+                    style: simple
+                -   in: path
+                    explode: false
+                    name: version
+                    required: true
+                    schema:
+                        description:
+                            The resource version
+                        example: 30130
+                        format: int32
+                        minimum: 0
+                        type: integer
+                    style: simple
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Product"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Product"
+                required: true
+            responses:
+                202:
+                    description:
+                        Async
+                204:
+                    description:
+                        Updated
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            security:
+                -   BasicAuth: []
+                -   BearerAuth: []
+                -   OAuth2:
+                        -   HeadlessCommerceAdminCatalog.write
+            summary: Updates a product by External Reference Code and version.
+            tags: ["Product"]
     "/products/by-externalReferenceCode/{externalReferenceCode}/catalog":
         get:
             operationId: getProductByExternalReferenceCodeCatalog
@@ -15589,6 +15671,89 @@ paths:
                 -   OAuth2:
                         -   HeadlessCommerceAdminCatalog.read
             summary: Gets a product by ID.
+            tags: ["Product"]
+        patch:
+            operationId: patchProductByVersion
+            parameters:
+                -   in: path
+                    explode: false
+                    name: id
+                    required: true
+                    schema:
+                        description:
+                            The resource Id
+                        example: 30130
+                        format: int64
+                        minimum: 0
+                        type: integer
+                    style: simple
+                -   in: path
+                    explode: false
+                    name: version
+                    required: true
+                    schema:
+                        description:
+                            The resource version
+                        example: 30130
+                        format: int32
+                        minimum: 0
+                        type: integer
+                    style: simple
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Product"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Product"
+                required: true
+            responses:
+                202:
+                    description:
+                        Async
+                204:
+                    description:
+                        Updated
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            security:
+                -   BasicAuth: []
+                -   BearerAuth: []
+                -   OAuth2:
+                        -   HeadlessCommerceAdminCatalog.write
+            summary: Updates a product by ID and version.
             tags: ["Product"]
     "/products/{id}/catalog":
         get:
