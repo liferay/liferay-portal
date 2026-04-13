@@ -389,6 +389,40 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	}
 
 	@Override
+	public Response patchProductByExternalReferenceCodeByVersion(
+			String externalReferenceCode, Integer version, Product product)
+		throws Exception {
+
+		CProduct cProduct =
+			_cProductLocalService.fetchCProductByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cProduct == null) {
+			throw new NoSuchCPDefinitionException(
+				"Unable to find product with external reference code " +
+					externalReferenceCode);
+		}
+
+		return patchProductByVersion(
+			cProduct.getCProductId(), version, product);
+	}
+
+	@Override
+	public Response patchProductByVersion(
+			Long id, Integer version, Product product)
+		throws Exception {
+
+		CPDefinition cpDefinition =
+			_cpDefinitionService.getCProductCPDefinition(id, version);
+
+		_updateProduct(cpDefinition, product);
+
+		Response.ResponseBuilder responseBuilder = Response.noContent();
+
+		return responseBuilder.build();
+	}
+
+	@Override
 	public Product postProduct(Product product) throws Exception {
 		CPDefinition cpDefinition = _addOrUpdateProduct(
 			product.getExternalReferenceCode(), product);
