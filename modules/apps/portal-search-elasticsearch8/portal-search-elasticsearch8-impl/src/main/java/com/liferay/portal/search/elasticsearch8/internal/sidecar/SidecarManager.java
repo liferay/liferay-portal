@@ -7,9 +7,12 @@ package com.liferay.portal.search.elasticsearch8.internal.sidecar;
 
 import com.liferay.petra.process.ProcessExecutor;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationObserver;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnection;
@@ -24,7 +27,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.util.Dictionary;
+
 import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -66,7 +73,9 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 	protected void applyConfigurations() {
 		File processFile = _bundleContext.getDataFile("sidecar.process");
 
-		if (elasticsearchConfigurationWrapper.productionModeEnabled()) {
+		if (elasticsearchConfigurationWrapper.productionModeEnabled() ||
+			_isLegacyProductionModeEnabled()) {
+
 			elasticsearchConnectionManager.removeElasticsearchConnection(
 				ConnectionConstants.SIDECAR_CONNECTION_ID);
 
@@ -134,6 +143,9 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 	}
 
 	@Reference
+	protected ConfigurationAdmin configurationAdmin;
+
+	@Reference
 	protected ElasticsearchConfigurationWrapper
 		elasticsearchConfigurationWrapper;
 
@@ -142,6 +154,46 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 
 	@Reference
 	protected ProcessExecutor processExecutor;
+
+	private boolean _isLegacyProductionModeEnabled() {
+		try {
+			Configuration elasticsearch8Configuration =
+				configurationAdmin.getConfiguration(
+					"com.liferay.portal.search.elasticsearch8.configuration." +
+						"ElasticsearchConfiguration",
+					StringPool.QUESTION);
+
+			if (elasticsearch8Configuration.getProperties() != null) {
+				return false;
+			}
+
+			Configuration elasticsearch7Configuration =
+				configurationAdmin.getConfiguration(
+					"com.liferay.portal.search.elasticsearch7.configuration." +
+						"ElasticsearchConfiguration",
+					StringPool.QUESTION);
+
+			Dictionary<String, Object> properties =
+				elasticsearch7Configuration.getProperties();
+
+			if (properties == null) {
+				return false;
+			}
+
+			String operationMode = GetterUtil.getString(
+				properties.get("operationMode"));
+
+			if (StringUtil.equals(operationMode, "REMOTE")) {
+				return true;
+			}
+
+			return GetterUtil.getBoolean(
+				properties.get("productionModeEnabled"));
+		}
+		catch (Exception exception) {
+			return false;
+		}
+	}
 
 	private Path _resolveHomePath(Path path) {
 		String sidecarHome = elasticsearchConfigurationWrapper.sidecarHome();
