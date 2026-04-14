@@ -46,7 +46,7 @@ export function NewSpaceFormSection({
 
 				<LearnResourcesContext.Provider value={learnResources}>
 					<LearnMessage
-						className="font-weight-semi-bold text-decoration-underline"
+						className="font-weight-regular text-decoration-underline"
 						resource="site-cms-site-initializer"
 						resourceKey={learnResourceKey}
 					/>
