@@ -46,9 +46,17 @@ describe('NewSpaceFormSection', () => {
 		expect(
 			screen.getByText(props.children!.toString())
 		).toBeInTheDocument();
-		expect(
-			screen.getByRole('link', {name: 'x-opens-new-window'})
-		).toHaveAttribute('href', 'https://learn.liferay.com/test-url');
+
+		const learnMoreLink = screen.getByRole('link', {
+			name: 'x-opens-new-window',
+		});
+
+		expect(learnMoreLink).toHaveAttribute(
+			'href',
+			'https://learn.liferay.com/test-url'
+		);
+		expect(learnMoreLink).toHaveClass('font-weight-regular');
+		expect(learnMoreLink).not.toHaveClass('font-weight-semi-bold');
 	});
 
 	it('calls onSubmit callback when clicking on a button of type submit', async () => {
