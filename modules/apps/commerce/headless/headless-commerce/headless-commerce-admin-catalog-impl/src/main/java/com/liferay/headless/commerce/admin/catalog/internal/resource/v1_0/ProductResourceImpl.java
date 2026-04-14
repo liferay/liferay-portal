@@ -1562,8 +1562,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				WorkflowConstants.ACTION_SAVE_DRAFT);
 		}
 
-		cpDefinition = _getCPDefinition(cpDefinition, serviceContext);
-
 		String[] assetTagNames = product.getTags();
 
 		if (assetTagNames == null) {
@@ -1673,6 +1671,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 					contextUser.getTimeZone()),
 				cpDefinition.getExpirationDate()),
 			contextUser.getTimeZone());
+
+		cpDefinition = _getCPDefinition(cpDefinition, serviceContext);
 
 		cpDefinition = _cpDefinitionService.updateCPDefinition(
 			cpDefinition.getCPDefinitionId(), cpDefinition.getCPTaxCategoryId(),
