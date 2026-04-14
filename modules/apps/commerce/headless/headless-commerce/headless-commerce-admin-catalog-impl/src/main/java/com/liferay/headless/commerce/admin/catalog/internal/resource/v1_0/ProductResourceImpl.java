@@ -1539,9 +1539,25 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpDefinition.getGroupId());
 
+		boolean publish = false;
+
+		CProduct cProduct = cpDefinition.getCProduct();
+
+		CPDefinition publishedCPDefinition =
+			_cpDefinitionService.fetchCPDefinition(
+				cProduct.getPublishedCPDefinitionId());
+
 		int productStatus = GetterUtil.getInteger(product.getProductStatus());
 
 		if (productStatus == WorkflowConstants.STATUS_DRAFT) {
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+		}
+		else if ((publishedCPDefinition != null) &&
+				 _cpDefinitionService.isVersionable(publishedCPDefinition)) {
+
+			publish = true;
+
 			serviceContext.setWorkflowAction(
 				WorkflowConstants.ACTION_SAVE_DRAFT);
 		}
@@ -1695,15 +1711,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				cpDefinition.getCPDefinitionId());
 		}
 
-		if ((product.getActive() != null) && !product.getActive()) {
-			Map<String, Serializable> workflowContext = new HashMap<>();
-
-			_cpDefinitionService.updateStatus(
-				cpDefinition.getCPDefinitionId(),
-				WorkflowConstants.STATUS_INACTIVE, serviceContext,
-				workflowContext);
-		}
-
 		Map<String, ?> expando = product.getExpando();
 
 		if ((expando != null) && !expando.isEmpty()) {
@@ -1712,7 +1719,29 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				cpDefinition.getPrimaryKey(), expando);
 		}
 
-		return _updateNestedResources(product, cpDefinition, serviceContext);
+		cpDefinition = _updateNestedResources(
+			product, cpDefinition, serviceContext);
+
+		if ((product.getActive() != null) && !product.getActive()) {
+			Map<String, Serializable> workflowContext = new HashMap<>();
+
+			_cpDefinitionService.updateStatus(
+				cpDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_INACTIVE, serviceContext,
+				workflowContext);
+		}
+		else if (publish && (productStatus != WorkflowConstants.STATUS_DRAFT)) {
+			Map<String, Serializable> workflowContext = new HashMap<>();
+
+			serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
+			cpDefinition = _cpDefinitionService.updateStatus(
+				cpDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED, serviceContext,
+				workflowContext);
+		}
+
+		return cpDefinition;
 	}
 
 	@Reference
