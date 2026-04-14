@@ -388,7 +388,11 @@ public class SXPParameterDataCreatorUtil {
 				return ArrayUtil.toArray(fromArray);
 			}
 			else if (object instanceof List<?> list) {
-				if (list.stream().allMatch(e -> e instanceof Integer)) {
+				if (list.stream(
+					).allMatch(
+						e -> e instanceof Integer
+					)) {
+
 					return list.toArray(new Integer[0]);
 				}
 			}
@@ -456,7 +460,11 @@ public class SXPParameterDataCreatorUtil {
 				return ArrayUtil.toArray(fromArray);
 			}
 			else if (object instanceof List<?> list) {
-				if (list.stream().allMatch(e -> e instanceof Long)) {
+				if (list.stream(
+					).allMatch(
+						e -> e instanceof Long
+					)) {
+
 					return list.toArray(new Long[0]);
 				}
 			}
@@ -518,7 +526,11 @@ public class SXPParameterDataCreatorUtil {
 				return fromArray;
 			}
 			else if (object instanceof List<?> list) {
-				if (list.stream().allMatch(e -> e instanceof String)) {
+				if (list.stream(
+					).allMatch(
+						e -> e instanceof String
+					)) {
+
 					return list.toArray(new String[0]);
 				}
 			}
