@@ -19,6 +19,7 @@ import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConne
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -43,6 +44,10 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateProperties(Dictionary<String, Object> properties) {
+		if (properties == null) {
+			return;
+		}
+
 		properties.remove("discoveryZenPingUnicastHostsPort");
 
 		Object embeddedHttpPort = properties.remove("embeddedHttpPort");
@@ -117,6 +122,10 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 
 		Dictionary<String, Object> elasticsearch8properties =
 			elasticsearch8configuration.getProperties();
+
+		if (elasticsearch8properties == null) {
+			elasticsearch8properties = new Hashtable<>();
+		}
 
 		_updateProperties(elasticsearch8properties);
 
