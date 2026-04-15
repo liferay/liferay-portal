@@ -6,5 +6,5 @@ create index IX_F747B9BD on LayoutClassedModelUsage (containerType, plid, contai
 create index IX_19448DD6 on LayoutClassedModelUsage (plid);
 create unique index IX_8A32D79F on LayoutClassedModelUsage (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create unique index IX_7925C939 on LayoutLocalization (plid, ctCollectionId, languageId[$COLUMN_LENGTH:75$]);
-create unique index IX_8DC09EE1 on LayoutLocalization (uuid_[$COLUMN_LENGTH:75$], ctCollectionId, groupId);
+create unique index IX_F4B6F839 on LayoutLocalization (plid, languageId[$COLUMN_LENGTH:75$], ctCollectionId);
+create unique index IX_9336DDD on LayoutLocalization (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);

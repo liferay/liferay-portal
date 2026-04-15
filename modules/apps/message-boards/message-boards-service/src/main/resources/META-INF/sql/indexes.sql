@@ -4,8 +4,8 @@ create index IX_48814BBA on MBBan (userId);
 create unique index IX_6F119354 on MBBan (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_BC735DCF on MBCategory (companyId);
-create unique index IX_ED533FEE on MBCategory (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
-create unique index IX_B73EC7E5 on MBCategory (groupId, ctCollectionId, friendlyURL[$COLUMN_LENGTH:255$]);
+create unique index IX_9E671C6A on MBCategory (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
+create unique index IX_1C6A43E1 on MBCategory (groupId, friendlyURL[$COLUMN_LENGTH:255$], ctCollectionId);
 create index IX_72DC3FF5 on MBCategory (groupId, parentCategoryId, categoryId);
 create index IX_F69FCDDB on MBCategory (groupId, parentCategoryId, status, categoryId);
 create index IX_DA84A9F7 on MBCategory (groupId, status);
@@ -13,23 +13,23 @@ create unique index IX_7B308E1 on MBCategory (groupId, uuid_[$COLUMN_LENGTH:75$]
 create index IX_AB585C29 on MBCategory (status, companyId);
 create index IX_C2626EDB on MBCategory (uuid_[$COLUMN_LENGTH:75$]);
 
-create unique index IX_4B5416 on MBDiscussion (ctCollectionId, classNameId, classPK);
-create unique index IX_C88E75BA on MBDiscussion (ctCollectionId, threadId);
-create unique index IX_BEBA7CFB on MBDiscussion (uuid_[$COLUMN_LENGTH:75$], ctCollectionId, groupId);
+create unique index IX_F4BC4496 on MBDiscussion (classNameId, classPK, ctCollectionId);
+create unique index IX_393E413A on MBDiscussion (threadId, ctCollectionId);
+create unique index IX_3A2D4BF7 on MBDiscussion (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_BFEB984F on MBMailingList (active_);
-create unique index IX_5AFAF63B on MBMailingList (groupId, ctCollectionId, categoryId);
+create unique index IX_D626193B on MBMailingList (groupId, categoryId, ctCollectionId);
 create unique index IX_212E7CE on MBMailingList (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_51A8D44D on MBMessage (classNameId, classPK);
 create index IX_B1432D30 on MBMessage (companyId);
 create index IX_1073AB9F on MBMessage (groupId, categoryId);
-create unique index IX_CAD6292D on MBMessage (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
-create unique index IX_C3FB4E01 on MBMessage (groupId, ctCollectionId, urlSubject[$COLUMN_LENGTH:255$]);
+create unique index IX_7BEA05A9 on MBMessage (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_1D0DEF85 on MBMessage (groupId, status, categoryId);
 create index IX_5084DE7E on MBMessage (groupId, status, threadId, categoryId);
 create index IX_D12CECD2 on MBMessage (groupId, status, userId);
 create index IX_C19015CA on MBMessage (groupId, threadId, categoryId, answer);
+create unique index IX_8813E901 on MBMessage (groupId, urlSubject[$COLUMN_LENGTH:255$], ctCollectionId);
 create index IX_8EB8C5EC on MBMessage (groupId, userId);
 create unique index IX_94D65020 on MBMessage (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_58465030 on MBMessage (parentMessageId);
@@ -60,4 +60,4 @@ create index IX_7E264A0F on MBThread (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_8CB0A24A on MBThreadFlag (threadId);
 create unique index IX_B2386762 on MBThreadFlag (userId, threadId, ctCollectionId);
-create unique index IX_78C515E9 on MBThreadFlag (uuid_[$COLUMN_LENGTH:75$], ctCollectionId, groupId);
+create unique index IX_F437E4E5 on MBThreadFlag (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);

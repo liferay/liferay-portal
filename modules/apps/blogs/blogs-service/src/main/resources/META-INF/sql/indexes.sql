@@ -1,8 +1,8 @@
 create index IX_430D791F on BlogsEntry (companyId, displayDate);
 create index IX_8CACE77B on BlogsEntry (companyId, userId);
-create unique index IX_D05A3CBC on BlogsEntry (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
-create unique index IX_D6281CFE on BlogsEntry (groupId, ctCollectionId, urlTitle[$COLUMN_LENGTH:255$]);
 create index IX_621E19D on BlogsEntry (groupId, displayDate);
+create unique index IX_816E1938 on BlogsEntry (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
+create unique index IX_38CAA07E on BlogsEntry (groupId, urlTitle[$COLUMN_LENGTH:255$], ctCollectionId);
 create index IX_FBDE0AA3 on BlogsEntry (groupId, userId, displayDate);
 create unique index IX_69B961AF on BlogsEntry (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_7B596F05 on BlogsEntry (status, companyId, displayDate);

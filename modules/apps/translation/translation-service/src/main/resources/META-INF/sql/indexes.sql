@@ -1,2 +1,2 @@
-create unique index IX_B69D02A1 on TranslationEntry (classNameId, classPK, ctCollectionId, languageId[$COLUMN_LENGTH:75$]);
-create unique index IX_91DCD4BF on TranslationEntry (uuid_[$COLUMN_LENGTH:75$], ctCollectionId, groupId);
+create unique index IX_322E31A1 on TranslationEntry (classNameId, classPK, languageId[$COLUMN_LENGTH:75$], ctCollectionId);
+create unique index IX_D4FA3BB on TranslationEntry (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);

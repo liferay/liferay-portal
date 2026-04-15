@@ -30,7 +30,7 @@ create index IX_F029602F on JournalArticle (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_9B44D13C on JournalArticleLocalization (companyId, articlePK, languageId[$COLUMN_LENGTH:75$], ctCollectionId);
 
-create unique index IX_42F04A2C on JournalArticleResource (groupId, ctCollectionId, articleId[$COLUMN_LENGTH:75$]);
+create unique index IX_57129BA8 on JournalArticleResource (groupId, articleId[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_37A8A767 on JournalArticleResource (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_9207CB31 on JournalContentSearch (articleId[$COLUMN_LENGTH:75$]);
@@ -40,13 +40,13 @@ create unique index IX_F91BC3CC on JournalContentSearch (groupId, privateLayout,
 create index IX_7ACC74C9 on JournalContentSearch (groupId, privateLayout, layoutId, portletId[$COLUMN_LENGTH:200$]);
 create index IX_8DAF8A35 on JournalContentSearch (portletId[$COLUMN_LENGTH:200$]);
 
-create unique index IX_E5E4C71A on JournalFeed (groupId, ctCollectionId, feedId[$COLUMN_LENGTH:75$]);
+create unique index IX_53294B1A on JournalFeed (groupId, feedId[$COLUMN_LENGTH:75$], ctCollectionId);
 create unique index IX_800F33AF on JournalFeed (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_E6E2725D on JournalFolder (companyId);
-create unique index IX_5C538C20 on JournalFolder (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
+create unique index IX_D67689C on JournalFolder (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_E988689E on JournalFolder (groupId, name[$COLUMN_LENGTH:100$]);
-create unique index IX_266332E3 on JournalFolder (groupId, parentFolderId, ctCollectionId, name[$COLUMN_LENGTH:100$]);
+create unique index IX_A2109363 on JournalFolder (groupId, parentFolderId, name[$COLUMN_LENGTH:100$], ctCollectionId);
 create index IX_EFD9CAC on JournalFolder (groupId, parentFolderId, status);
 create unique index IX_1965F913 on JournalFolder (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_8D6902B7 on JournalFolder (status, companyId);

@@ -10,7 +10,7 @@ create index IX_255AF6E1 on CommercePriceEntry (status, expirationDate);
 create index IX_C15BC5AA on CommercePriceEntry (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_6C8A40A3 on CommercePriceList (companyId, commerceCurrencyCode[$COLUMN_LENGTH:75$]);
-create unique index IX_A0692909 on CommercePriceList (companyId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
+create unique index IX_517D0585 on CommercePriceList (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_3AE5B429 on CommercePriceList (groupId, catalogBasePriceList);
 create index IX_3BE0F85F on CommercePriceList (groupId, companyId, status, type_[$COLUMN_LENGTH:75$]);
 create index IX_31F12A8E on CommercePriceList (groupId, type_[$COLUMN_LENGTH:75$], catalogBasePriceList);
@@ -33,7 +33,7 @@ create index IX_C6ECAD11 on CommercePriceListOrderTypeRel (uuid_[$COLUMN_LENGTH:
 
 create unique index IX_4072830C on CommerceTierPriceEntry (commercePriceEntryId, minQuantity, ctCollectionId);
 create index IX_89DE1E88 on CommerceTierPriceEntry (commercePriceEntryId, status, minQuantity);
-create unique index IX_4B03AB43 on CommerceTierPriceEntry (companyId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
+create unique index IX_FC1787BF on CommerceTierPriceEntry (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_CB288BCE on CommerceTierPriceEntry (status, displayDate);
 create index IX_D00E2E63 on CommerceTierPriceEntry (status, expirationDate);
 create index IX_71F6D1E8 on CommerceTierPriceEntry (uuid_[$COLUMN_LENGTH:75$]);

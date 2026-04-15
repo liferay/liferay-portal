@@ -2,8 +2,8 @@ create unique index IX_17D56F1B on CPDAvailabilityEstimate (CProductId);
 create index IX_E560850D on CPDAvailabilityEstimate (commerceAvailabilityEstimateId);
 create index IX_109320B4 on CPDAvailabilityEstimate (uuid_[$COLUMN_LENGTH:75$]);
 
-create unique index IX_C37B844F on CPDefinitionInventory (ctCollectionId, CPDefinitionId);
-create unique index IX_6C4F2D3A on CPDefinitionInventory (uuid_[$COLUMN_LENGTH:75$], ctCollectionId, groupId);
+create unique index IX_2A31024F on CPDefinitionInventory (CPDefinitionId, ctCollectionId);
+create unique index IX_E7C1FC36 on CPDefinitionInventory (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create unique index IX_4F4C712A on CSOptionAccountEntryRel (accountEntryId, commerceChannelId);
 create index IX_B48AB5E on CSOptionAccountEntryRel (commerceChannelId);

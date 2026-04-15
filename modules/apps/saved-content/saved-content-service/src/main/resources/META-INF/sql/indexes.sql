@@ -1,5 +1,5 @@
 create index IX_85EFE02D on SavedContentEntry (classNameId, classPK, companyId);
-create unique index IX_A4BA5449 on SavedContentEntry (classNameId, userId, classPK, ctCollectionId, companyId);
+create unique index IX_3059B7C5 on SavedContentEntry (classNameId, userId, classPK, companyId, ctCollectionId);
 create index IX_5F4B6779 on SavedContentEntry (groupId, classNameId, classPK);
 create unique index IX_3C86B2DD on SavedContentEntry (groupId, classNameId, userId, classPK, ctCollectionId);
 create index IX_26BC5C5E on SavedContentEntry (groupId, userId);
