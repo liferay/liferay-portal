@@ -17,6 +17,7 @@ export default function SelectCollection({
 	selectEventName,
 	title: initialTitle,
 	url,
+	addCollectionUrl
 }) {
 	const onChangeCollectionButtonClick = () => {
 		openSelectionModal({
@@ -59,6 +60,14 @@ export default function SelectCollection({
 			title: defaultTitle,
 		});
 	};
+
+	const onAddCollectionButtonClick = () => {
+		openSelectionModal({
+			iframeBodyCssClass: 'hide-control-menu',
+			title: Liferay.Language.get('add-collection'),
+			url: addCollectionUrl.toString()
+		});
+	}
 
 	const [values, setValues] = useState({
 		assetListEntryId: initialAssetListEntryId,
@@ -103,7 +112,7 @@ export default function SelectCollection({
 						className="c-mr-2 flex-shrink-0"
 						displayType="secondary"
 						onClick={onChangeCollectionButtonClick}
-						symbol={values.clearButtonEnabled ? 'change' : 'plus'}
+						symbol={values.clearButtonEnabled ? 'change' : 'select'}
 						title={
 							values.clearButtonEnabled
 								? Liferay.Language.get('change-collection')
@@ -116,13 +125,23 @@ export default function SelectCollection({
 							aria-label={Liferay.Language.get(
 								'clear-collection'
 							)}
-							className="flex-shrink-0"
+							className="c-mr-2 flex-shrink-0"
 							displayType="secondary"
 							onClick={onClearCollectionButtonClick}
 							symbol="times-circle"
 							title={Liferay.Language.get('clear-collection')}
 						/>
 					) : null}
+
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('add-collection')}
+						className="flex-shrink-0"
+						displayType="primary"
+						onClick={onAddCollectionButtonClick}
+						symbol="plus"
+						title={Liferay.Language.get('add-collection')}
+					/>
+
 				</div>
 			</ClayForm.Group>
 		</>

@@ -21,6 +21,7 @@ import com.liferay.asset.kernel.service.AssetEntryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
+import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.publisher.action.AssetEntryAction;
@@ -89,6 +90,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -111,6 +113,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.kernel.util.StringComparator;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -460,6 +463,13 @@ public class AssetPublisherDisplayContext {
 				RequestBackedPortletURLFactoryUtil.create(_portletRequest),
 				getSelectAssetListEventName(),
 				infoCollectionProviderItemSelectorCriterion));
+	}
+
+	public String getAddCollectionAssetListURL() {
+		return String.valueOf(PortalUtil.getControlPanelPortletURL(
+			_httpServletRequest, _themeDisplay.getScopeGroup(),
+			AssetListPortletKeys.ASSET_LIST, 0, 0,
+			PortletRequest.ACTION_PHASE));
 	}
 
 	public String getAssetTagName() {
@@ -1413,6 +1423,8 @@ public class AssetPublisherDisplayContext {
 			}
 		).put(
 			"url", getAssetListSelectorURL()
+		).put(
+			"addCollectionUrl", getAddCollectionAssetListURL()
 		).build();
 	}
 
