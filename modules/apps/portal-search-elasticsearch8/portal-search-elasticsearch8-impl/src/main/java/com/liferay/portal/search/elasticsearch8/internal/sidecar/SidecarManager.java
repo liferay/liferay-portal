@@ -7,12 +7,9 @@ package com.liferay.portal.search.elasticsearch8.internal.sidecar;
 
 import com.liferay.petra.process.ProcessExecutor;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationObserver;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnection;
@@ -27,11 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import java.util.Dictionary;
-
 import org.osgi.framework.BundleContext;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -73,17 +66,20 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 	protected void applyConfigurations() {
 		File processFile = _bundleContext.getDataFile("sidecar.process");
 
-		boolean es8ProductionMode = elasticsearchConfigurationWrapper.productionModeEnabled();
-		boolean es7ProductionMode = _isLegacyProductionModeEnabled();
+		boolean productionModeEnabled =
+			elasticsearchConfigurationWrapper.productionModeEnabled();
 
 		if (_log.isInfoEnabled()) {
-			_log.info("SidecarManager applyConfigurations: ES8 productionModeEnabled=" + es8ProductionMode);
-			_log.info("SidecarManager applyConfigurations: Legacy ES7 productionModeEnabled=" + es7ProductionMode);
+			_log.info(
+				"SidecarManager applyConfigurations: productionModeEnabled=" +
+					productionModeEnabled);
 		}
 
-		if (es8ProductionMode || es7ProductionMode) {
+		if (productionModeEnabled) {
 			if (_log.isInfoEnabled()) {
-				_log.info("SidecarManager: Production mode or legacy remote setup detected. Sidecar will NOT start.");
+				_log.info(
+					"SidecarManager: Production mode or legacy remote setup " +
+						"detected. Sidecar will NOT start.");
 			}
 
 			elasticsearchConnectionManager.removeElasticsearchConnection(
@@ -93,7 +89,9 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 		}
 		else {
 			if (_log.isInfoEnabled()) {
-				_log.info("SidecarManager: Development mode detected. Attempting to start Sidecar.");
+				_log.info(
+					"SidecarManager: Development mode detected. Attempting " +
+						"to start Sidecar.");
 			}
 
 			_startupSuccessful = false;
@@ -157,9 +155,6 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 	}
 
 	@Reference
-	protected ConfigurationAdmin configurationAdmin;
-
-	@Reference
 	protected ElasticsearchConfigurationWrapper
 		elasticsearchConfigurationWrapper;
 
@@ -168,73 +163,6 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 
 	@Reference
 	protected ProcessExecutor processExecutor;
-
-	private boolean _isLegacyProductionModeEnabled() {
-		try {
-			// --- DEBUG MOCKING BLOCK START ---
-			// Uncomment the next line to manually simulate a legacy remote ES7 setup:
-			// return true;
-			// --- DEBUG MOCKING BLOCK END ---
-
-			Configuration elasticsearch8Configuration =
-				configurationAdmin.getConfiguration(
-					"com.liferay.portal.search.elasticsearch8.configuration." +
-						"ElasticsearchConfiguration",
-					StringPool.QUESTION);
-
-			if (elasticsearch8Configuration.getProperties() != null) {
-				if (_log.isInfoEnabled()) {
-					_log.info("SidecarManager: ES8 configuration already exists. Skipping ES7 check.");
-				}
-
-				return false;
-			}
-
-			Configuration elasticsearch7Configuration =
-				configurationAdmin.getConfiguration(
-					"com.liferay.portal.search.elasticsearch7.configuration." +
-						"ElasticsearchConfiguration",
-					StringPool.QUESTION);
-
-			Dictionary<String, Object> properties =
-				elasticsearch7Configuration.getProperties();
-
-			if (properties == null) {
-				if (_log.isInfoEnabled()) {
-					_log.info("SidecarManager: No ES7 configuration found.");
-				}
-
-				return false;
-			}
-
-			String operationMode = GetterUtil.getString(
-				properties.get("operationMode"));
-
-			if (_log.isInfoEnabled()) {
-				_log.info("SidecarManager: Found legacy ES7 config. operationMode=" + operationMode);
-			}
-
-			if (StringUtil.equals(operationMode, "REMOTE")) {
-				return true;
-			}
-
-			boolean productionModeEnabled = GetterUtil.getBoolean(
-				properties.get("productionModeEnabled"));
-
-			if (_log.isInfoEnabled()) {
-				_log.info("SidecarManager: Legacy ES7 productionModeEnabled=" + productionModeEnabled);
-			}
-
-			return productionModeEnabled;
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("SidecarManager: Error during legacy ES7 configuration check.", exception);
-			}
-
-			return false;
-		}
-	}
 
 	private Path _resolveHomePath(Path path) {
 		String sidecarHome = elasticsearchConfigurationWrapper.sidecarHome();

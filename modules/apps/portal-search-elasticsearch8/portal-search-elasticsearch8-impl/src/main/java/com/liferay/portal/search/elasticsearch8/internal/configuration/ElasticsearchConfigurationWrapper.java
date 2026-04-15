@@ -6,7 +6,9 @@
 package com.liferay.portal.search.elasticsearch8.internal.configuration;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -14,15 +16,19 @@ import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfi
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Bryan Engler
@@ -159,7 +165,11 @@ public class ElasticsearchConfigurationWrapper
 	}
 
 	public boolean productionModeEnabled() {
-		return _elasticsearchConfiguration.productionModeEnabled();
+		if (_elasticsearchConfiguration.productionModeEnabled()) {
+			return true;
+		}
+
+		return _isLegacyProductionModeEnabled();
 	}
 
 	public String proxyHost() {
@@ -279,6 +289,9 @@ public class ElasticsearchConfigurationWrapper
 		_elasticsearchConfiguration = elasticsearchConfiguration;
 	}
 
+	@Reference
+	protected ConfigurationAdmin configurationAdmin;
+
 	private Map<String, Object> _getPropsMap(String[] keys, Class<?> clazz) {
 		Properties properties = PropsUtil.getProperties(
 			StringUtil.toLowerCase(clazz.getName()) + CharPool.PERIOD, true);
@@ -299,6 +312,46 @@ public class ElasticsearchConfigurationWrapper
 		}
 
 		return propsMap;
+	}
+
+	private boolean _isLegacyProductionModeEnabled() {
+		try {
+			Configuration elasticsearch8Configuration =
+				configurationAdmin.getConfiguration(
+					"com.liferay.portal.search.elasticsearch8.configuration." +
+						"ElasticsearchConfiguration",
+					StringPool.QUESTION);
+
+			if (elasticsearch8Configuration.getProperties() != null) {
+				return false;
+			}
+
+			Configuration elasticsearch7Configuration =
+				configurationAdmin.getConfiguration(
+					"com.liferay.portal.search.elasticsearch7.configuration." +
+						"ElasticsearchConfiguration",
+					StringPool.QUESTION);
+
+			Dictionary<String, Object> properties =
+				elasticsearch7Configuration.getProperties();
+
+			if (properties == null) {
+				return false;
+			}
+
+			String operationMode = GetterUtil.getString(
+				properties.get("operationMode"));
+
+			if (StringUtil.equals(operationMode, "REMOTE")) {
+				return true;
+			}
+
+			return GetterUtil.getBoolean(
+				properties.get("productionModeEnabled"));
+		}
+		catch (Exception exception) {
+			return false;
+		}
 	}
 
 	private static final String[] _PROPS_KEYS = {"sidecarJVMOptions"};
