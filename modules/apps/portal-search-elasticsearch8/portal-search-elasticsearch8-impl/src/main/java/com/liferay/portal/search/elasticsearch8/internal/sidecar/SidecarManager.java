@@ -73,8 +73,18 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 	protected void applyConfigurations() {
 		File processFile = _bundleContext.getDataFile("sidecar.process");
 
-		if (elasticsearchConfigurationWrapper.productionModeEnabled() ||
-			_isLegacyProductionModeEnabled()) {
+		boolean es8ProductionMode = elasticsearchConfigurationWrapper.productionModeEnabled();
+		boolean es7ProductionMode = _isLegacyProductionModeEnabled();
+
+		if (_log.isInfoEnabled()) {
+			_log.info("SidecarManager applyConfigurations: ES8 productionModeEnabled=" + es8ProductionMode);
+			_log.info("SidecarManager applyConfigurations: Legacy ES7 productionModeEnabled=" + es7ProductionMode);
+		}
+
+		if (es8ProductionMode || es7ProductionMode) {
+			if (_log.isInfoEnabled()) {
+				_log.info("SidecarManager: Production mode or legacy remote setup detected. Sidecar will NOT start.");
+			}
 
 			elasticsearchConnectionManager.removeElasticsearchConnection(
 				ConnectionConstants.SIDECAR_CONNECTION_ID);
@@ -82,6 +92,10 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 			processFile.delete();
 		}
 		else {
+			if (_log.isInfoEnabled()) {
+				_log.info("SidecarManager: Development mode detected. Attempting to start Sidecar.");
+			}
+
 			_startupSuccessful = false;
 
 			if (_log.isWarnEnabled()) {
@@ -157,6 +171,11 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 
 	private boolean _isLegacyProductionModeEnabled() {
 		try {
+			// --- DEBUG MOCKING BLOCK START ---
+			// Uncomment the next line to manually simulate a legacy remote ES7 setup:
+			// return true;
+			// --- DEBUG MOCKING BLOCK END ---
+
 			Configuration elasticsearch8Configuration =
 				configurationAdmin.getConfiguration(
 					"com.liferay.portal.search.elasticsearch8.configuration." +
@@ -164,6 +183,10 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 					StringPool.QUESTION);
 
 			if (elasticsearch8Configuration.getProperties() != null) {
+				if (_log.isInfoEnabled()) {
+					_log.info("SidecarManager: ES8 configuration already exists. Skipping ES7 check.");
+				}
+
 				return false;
 			}
 
@@ -177,20 +200,38 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 				elasticsearch7Configuration.getProperties();
 
 			if (properties == null) {
+				if (_log.isInfoEnabled()) {
+					_log.info("SidecarManager: No ES7 configuration found.");
+				}
+
 				return false;
 			}
 
 			String operationMode = GetterUtil.getString(
 				properties.get("operationMode"));
 
+			if (_log.isInfoEnabled()) {
+				_log.info("SidecarManager: Found legacy ES7 config. operationMode=" + operationMode);
+			}
+
 			if (StringUtil.equals(operationMode, "REMOTE")) {
 				return true;
 			}
 
-			return GetterUtil.getBoolean(
+			boolean productionModeEnabled = GetterUtil.getBoolean(
 				properties.get("productionModeEnabled"));
+
+			if (_log.isInfoEnabled()) {
+				_log.info("SidecarManager: Legacy ES7 productionModeEnabled=" + productionModeEnabled);
+			}
+
+			return productionModeEnabled;
 		}
 		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("SidecarManager: Error during legacy ES7 configuration check.", exception);
+			}
+
 			return false;
 		}
 	}
