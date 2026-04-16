@@ -96,7 +96,13 @@ public abstract class BasePersistentResource implements PersistentResource {
 			return;
 		}
 
-		_touched = true;
+		synchronized (this) {
+			if (_touched) {
+				return;
+			}
+
+			_touched = true;
+		}
 
 		if (!isBuildCachingEnabled()) {
 			return;
@@ -401,6 +407,6 @@ public abstract class BasePersistentResource implements PersistentResource {
 	private long _producerQueueId;
 	private Properties _startProperties;
 	private Status _status;
-	private boolean _touched;
+	private volatile boolean _touched;
 
 }

@@ -48,10 +48,17 @@ public class PersistentResourceFactory {
 		return persistentResource;
 	}
 
-	public static synchronized void touchUsedPersistentResources() {
-		for (PersistentResource persistentResource :
-				_persistentResources.values()) {
+	public static void touchUsedPersistentResources() {
+		PersistentResource[] persistentResources;
 
+		synchronized (PersistentResourceFactory.class) {
+			persistentResources = _persistentResources.values(
+			).toArray(
+				new PersistentResource[0]
+			);
+		}
+
+		for (PersistentResource persistentResource : persistentResources) {
 			if (persistentResource.getStatus() ==
 					PersistentResource.Status.SUCCESS) {
 
