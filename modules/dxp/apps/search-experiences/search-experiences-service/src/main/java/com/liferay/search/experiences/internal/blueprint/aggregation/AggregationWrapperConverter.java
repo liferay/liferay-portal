@@ -1177,7 +1177,8 @@ public class AggregationWrapperConverter {
 	private ReverseNestedAggregation _toReverseNestedAggregation(
 		JSONObject jsonObject, String name) {
 
-		return _aggregations.reverseNested(name, jsonObject.getString("path"));
+		return _aggregations.reverseNested(
+			name, jsonObject.getString("path", null));
 	}
 
 	private SamplerAggregation _toSamplerAggregation(
