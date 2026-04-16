@@ -23,6 +23,7 @@ import com.liferay.jenkins.results.parser.failure.message.generator.PoshiTestFai
 import com.liferay.jenkins.results.parser.failure.message.generator.PoshiValidationFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.RebaseFailureMessageGenerator;
 import com.liferay.jenkins.results.parser.failure.message.generator.RelevantRuleValidationFailureMessageGenerator;
+import com.liferay.jenkins.results.parser.persistent.resource.PersistentResourceFactory;
 import com.liferay.jenkins.results.parser.testray.TestrayBuild;
 
 import java.io.File;
@@ -928,6 +929,19 @@ public abstract class BaseTopLevelBuild
 				@Override
 				public Object call() {
 					_archiveProperties();
+
+					return null;
+				}
+
+			});
+
+		archiveCallables.add(
+			new Callable<Object>() {
+
+				@Override
+				public Object call() {
+					PersistentResourceFactory.touchUsedPersistentResources(
+						getExecutorService());
 
 					return null;
 				}
