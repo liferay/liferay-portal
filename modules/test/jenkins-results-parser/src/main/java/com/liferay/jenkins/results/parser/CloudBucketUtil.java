@@ -456,6 +456,19 @@ public class CloudBucketUtil {
 				"Touched ", s3Path, " in ",
 				JenkinsResultsParserUtil.toDurationString(
 					System.currentTimeMillis() - start)));
+
+		if (!s3Path.endsWith(_CHECKSUM_FILE_EXTENSION)) {
+			String s3ChecksumPath = s3Path + _CHECKSUM_FILE_EXTENSION;
+
+			try {
+				if (_exists(s3ChecksumPath)) {
+					touchS3File(s3ChecksumPath);
+				}
+			}
+			catch (TimeoutException timeoutException) {
+				throw new IOException(timeoutException);
+			}
+		}
 	}
 
 	public static void uploadS3File(String s3DestinationPath, File sourceFile)
