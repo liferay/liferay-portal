@@ -60,8 +60,10 @@ public class PersistentResourceFactory {
 		PersistentResource[] persistentResources;
 
 		synchronized (PersistentResourceFactory.class) {
-			persistentResources = _persistentResources.values().toArray(
-				new PersistentResource[_persistentResources.size()]);
+			persistentResources = _persistentResources.values(
+			).toArray(
+				new PersistentResource[_persistentResources.size()]
+			);
 		}
 
 		List<Callable<Object>> touchCallables = new ArrayList<>();
