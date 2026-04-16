@@ -48,6 +48,18 @@ public class PersistentResourceFactory {
 		return persistentResource;
 	}
 
+	public static synchronized void touchUsedPersistentResources() {
+		for (PersistentResource persistentResource :
+				_persistentResources.values()) {
+
+			if (persistentResource.getStatus() ==
+					PersistentResource.Status.SUCCESS) {
+
+				persistentResource.touch();
+			}
+		}
+	}
+
 	private static final Map<String, PersistentResource> _persistentResources =
 		new HashMap<>();
 

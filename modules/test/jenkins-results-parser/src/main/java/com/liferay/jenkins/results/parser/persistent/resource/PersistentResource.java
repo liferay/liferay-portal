@@ -40,6 +40,8 @@ public interface PersistentResource {
 
 	public Type getType();
 
+	public void touch();
+
 	public void upload(File baseDir);
 
 	public void waitForUpdate(long waitTime);
