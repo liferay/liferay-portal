@@ -52,6 +52,8 @@ public abstract class BasePersistentResource implements PersistentResource {
 			CloudBucketUtil.downloadS3File(
 				new File(destinationDir, artifactName),
 				artifact.getS3ObjectPath());
+
+			touch();
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -86,6 +88,44 @@ public abstract class BasePersistentResource implements PersistentResource {
 	@Override
 	public Status getStatus() {
 		return _status;
+	}
+
+	@Override
+	public void touch() {
+		if (_touched) {
+			return;
+		}
+
+		synchronized (this) {
+			if (_touched) {
+				return;
+			}
+
+			_touched = true;
+		}
+
+		if (!isBuildCachingEnabled()) {
+			return;
+		}
+
+		try {
+			if (CloudBucketUtil.isS3ObjectPathAvailable(
+					_getDataS3ObjectPath())) {
+
+				CloudBucketUtil.touchS3File(_getDataS3ObjectPath());
+			}
+
+			for (Artifact artifact : getArtifacts()) {
+				if (artifact.isAvailable()) {
+					CloudBucketUtil.touchS3File(artifact.getS3ObjectPath());
+				}
+			}
+		}
+		catch (IOException ioException) {
+			System.out.println(
+				"WARNING: Failed to touch " + getType() + " S3 resource: " +
+					ioException.getMessage());
+		}
 	}
 
 	@Override
@@ -129,6 +169,8 @@ public abstract class BasePersistentResource implements PersistentResource {
 			}
 			else if (status == Status.SUCCESS) {
 				print(statusMessage);
+
+				touch();
 
 				return;
 			}
@@ -367,5 +409,6 @@ public abstract class BasePersistentResource implements PersistentResource {
 	private long _producerQueueId;
 	private Properties _startProperties;
 	private Status _status;
+	private volatile boolean _touched;
 
 }
