@@ -95,7 +95,9 @@ public class PersistentResourceFactory {
 			parallelExecutor.execute();
 		}
 		catch (TimeoutException timeoutException) {
-			throw new RuntimeException(timeoutException);
+			System.out.println(
+				"WARNING: Failed to touch persistent resources: " +
+					timeoutException.getMessage());
 		}
 	}
 
