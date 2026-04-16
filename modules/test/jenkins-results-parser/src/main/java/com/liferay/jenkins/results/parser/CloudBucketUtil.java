@@ -466,7 +466,7 @@ public class CloudBucketUtil {
 				}
 			}
 			catch (TimeoutException timeoutException) {
-				throw new RuntimeException(timeoutException);
+				throw new IOException(timeoutException);
 			}
 		}
 	}
