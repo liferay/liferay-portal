@@ -940,7 +940,8 @@ public abstract class BaseTopLevelBuild
 
 				@Override
 				public Object call() {
-					PersistentResourceFactory.touchUsedPersistentResources();
+					PersistentResourceFactory.touchUsedPersistentResources(
+						getExecutorService());
 
 					return null;
 				}
