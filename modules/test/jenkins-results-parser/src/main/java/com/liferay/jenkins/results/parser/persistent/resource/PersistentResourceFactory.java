@@ -54,7 +54,7 @@ public class PersistentResourceFactory {
 		synchronized (PersistentResourceFactory.class) {
 			persistentResources = _persistentResources.values(
 			).toArray(
-				new PersistentResource[0]
+				new PersistentResource[_persistentResources.size()]
 			);
 		}
 

@@ -122,7 +122,9 @@ public abstract class BasePersistentResource implements PersistentResource {
 			}
 		}
 		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
+			System.out.println(
+				"WARNING: Failed to touch " + getType() + " S3 resource: " +
+					ioException.getMessage());
 		}
 	}
 
