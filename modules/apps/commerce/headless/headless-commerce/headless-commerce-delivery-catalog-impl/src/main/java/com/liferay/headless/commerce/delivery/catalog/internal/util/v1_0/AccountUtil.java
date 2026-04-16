@@ -28,58 +28,6 @@ public class AccountUtil {
 			MultivaluedMap<String, String> queryParameters)
 		throws PortalException {
 
-		Long accountEntryId = _getAccountEntryId(
-			accountEntryService, accountId);
-
-		if (accountEntryId != null) {
-			return accountEntryId;
-		}
-
-		if ((accountId == null) || (accountId <= 0)) {
-			int countUserCommerceAccounts =
-				commerceAccountHelper.countUserCommerceAccounts(
-					userId, groupId);
-
-			if (countUserCommerceAccounts > 1) {
-				if (accountId == null) {
-					if (queryParameters != null) {
-						String accountIdString = queryParameters.getFirst(
-							"accountId");
-
-						if (accountIdString != null) {
-							return GetterUtil.getLong(accountIdString);
-						}
-
-						throw new NoSuchEntryException();
-					}
-
-					throw new NoSuchEntryException();
-				}
-			}
-			else {
-				long[] accountIds =
-					commerceAccountHelper.getUserCommerceAccountIds(
-						userId, groupId);
-
-				if (accountIds.length == 0) {
-					AccountEntry accountEntry =
-						accountEntryLocalService.getGuestAccountEntry(
-							companyId);
-
-					accountIds = new long[] {accountEntry.getAccountEntryId()};
-				}
-
-				return accountIds[0];
-			}
-		}
-
-		return 0;
-	}
-
-	private static Long _getAccountEntryId(
-			AccountEntryService accountEntryService, Long accountId)
-		throws PortalException {
-
 		if ((accountId != null) && (accountId > 0)) {
 			AccountEntry accountEntry = accountEntryService.fetchAccountEntry(
 				accountId);
@@ -89,7 +37,35 @@ public class AccountUtil {
 			}
 		}
 
-		return null;
+		int countUserCommerceAccounts =
+			commerceAccountHelper.countUserCommerceAccounts(userId, groupId);
+
+		if (countUserCommerceAccounts > 1) {
+			if (accountId == null) {
+				if (queryParameters != null) {
+					String accountIdString = queryParameters.getFirst(
+						"accountId");
+
+					if (accountIdString != null) {
+						return GetterUtil.getLong(accountIdString);
+					}
+				}
+
+				throw new NoSuchEntryException();
+			}
+		}
+
+		long[] accountIds = commerceAccountHelper.getUserCommerceAccountIds(
+			userId, groupId);
+
+		if (accountIds.length != 0) {
+			return accountIds[0];
+		}
+
+		AccountEntry accountEntry =
+			accountEntryLocalService.getGuestAccountEntry(companyId);
+
+		return accountEntry.getAccountEntryId();
 	}
 
 }

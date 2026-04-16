@@ -109,7 +109,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	public void testGetChannelProductSkusPage() throws Exception {
 		super.testGetChannelProductSkusPage();
 
-		_testGetChannelProductSkusPageWithPriceListAccount();
+		_testGetChannelProductSkusPageWithPriceListAccountRel();
 		_testGetChannelProductSkusPageWithUnitOfMeasure();
 		_testGetChannelProductSkusPageWithUnitOfMeasurePrice();
 	}
@@ -488,7 +488,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 				price.getPromoPrice(), commercePriceEntryPrice.doubleValue()));
 	}
 
-	private void _testGetChannelProductSkusPageWithPriceListAccount()
+	private void _testGetChannelProductSkusPageWithPriceListAccountRel()
 		throws Exception {
 
 		CommerceCurrency commerceCurrency =
@@ -543,7 +543,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR),
 				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR) - 1, calendar.get(Calendar.HOUR),
+				calendar.get(Calendar.YEAR) + 1, calendar.get(Calendar.HOUR),
 				calendar.get(Calendar.MINUTE), false, BigDecimal.TEN, false,
 				BigDecimal.TEN, StringPool.BLANK, _serviceContext);
 
