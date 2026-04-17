@@ -7,8 +7,12 @@ package com.liferay.portal.search.elasticsearch8.internal.sidecar;
 
 import com.liferay.petra.process.ProcessExecutor;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationObserver;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
@@ -16,6 +20,7 @@ import com.liferay.portal.search.elasticsearch8.internal.connection.Elasticsearc
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchConnectionManager;
 import com.liferay.portal.search.elasticsearch8.internal.connection.constants.ConnectionConstants;
 import com.liferay.portal.search.elasticsearch8.internal.sidecar.constants.SidecarConstants;
+import com.liferay.portal.search.elasticsearch8.internal.upgrade.v1_0_0.ElasticsearchUpgradeProcessUtil;
 import com.liferay.portal.search.elasticsearch8.internal.util.ResourceUtil;
 
 import java.io.File;
@@ -24,7 +29,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -64,6 +71,19 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 	}
 
 	protected void applyConfigurations() {
+		if (StartupHelperUtil.isUpgrading() &&
+			_isUpgradeNeeded()) {
+
+			try {
+				ElasticsearchUpgradeProcessUtil.doUpgrade(
+					_configurationAdmin, _configurationUpgradeStepFactory);
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to upgrade Elasticsearch configuration", exception);
+			}
+		}
+
 		File processFile = _bundleContext.getDataFile("sidecar.process");
 
 		if (elasticsearchConfigurationWrapper.productionModeEnabled()) {
@@ -142,6 +162,28 @@ public class SidecarManager implements ElasticsearchConfigurationObserver {
 
 	@Reference
 	protected ProcessExecutor processExecutor;
+
+	@Reference
+	protected ReleaseLocalService releaseLocalService;
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private ConfigurationUpgradeStepFactory _configurationUpgradeStepFactory;
+
+	private boolean _isUpgradeNeeded() {
+		Bundle bundle = _bundleContext.getBundle();
+
+		Release release = releaseLocalService.fetchRelease(
+			bundle.getSymbolicName());
+
+		if ((release != null) && (!release.getSchemaVersion().equals("0.0.1"))) {
+			return false;
+		}
+
+		return true;
+	}
 
 	private Path _resolveHomePath(Path path) {
 		String sidecarHome = elasticsearchConfigurationWrapper.sidecarHome();
