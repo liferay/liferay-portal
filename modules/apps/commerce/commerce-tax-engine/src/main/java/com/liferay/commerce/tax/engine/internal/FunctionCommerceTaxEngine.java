@@ -19,8 +19,6 @@ import com.liferay.commerce.tax.service.CommerceTaxMethodLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.catapult.PortalCatapult;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -41,7 +39,6 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -127,23 +124,8 @@ public class FunctionCommerceTaxEngine implements CommerceTaxEngine {
 	}
 
 	@Deactivate
-	protected void deactivate() throws PortalException {
-		String key = _functionCommerceTaxEngineConfiguration.key();
-
-		if (key == null) {
-			return;
-		}
-
-		List<CommerceTaxMethod> commerceTaxMethods =
-			_commerceTaxMethodLocalService.getCommerceTaxMethods(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (CommerceTaxMethod commerceTaxMethod : commerceTaxMethods) {
-			if (key.equals(commerceTaxMethod.getEngineKey())) {
-				_commerceTaxMethodLocalService.deleteCommerceTaxMethod(
-					commerceTaxMethod.getCommerceTaxMethodId());
-			}
-		}
+	protected void deactivate() {
+		_functionCommerceTaxEngineConfiguration = null;
 	}
 
 	protected JSONObject getPayloadJSONObject(
@@ -175,25 +157,10 @@ public class FunctionCommerceTaxEngine implements CommerceTaxEngine {
 	}
 
 	@Modified
-	protected void modified(Map<String, Object> properties)
-		throws PortalException {
-
+	protected void modified(Map<String, Object> properties) {
 		_functionCommerceTaxEngineConfiguration =
 			ConfigurableUtil.createConfigurable(
 				FunctionCommerceTaxEngineConfiguration.class, properties);
-
-		List<CommerceTaxMethod> commerceTaxMethods =
-			_commerceTaxMethodLocalService.getCommerceTaxMethods(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (CommerceTaxMethod commerceTaxMethod : commerceTaxMethods) {
-			String key = (String)properties.get("key");
-
-			if (key.equals(commerceTaxMethod.getEngineKey())) {
-				_commerceTaxMethodLocalService.deleteCommerceTaxMethod(
-					commerceTaxMethod.getCommerceTaxMethodId());
-			}
-		}
 	}
 
 	private JSONObject _getCommerceTaxCalculateRequestJSONObject(

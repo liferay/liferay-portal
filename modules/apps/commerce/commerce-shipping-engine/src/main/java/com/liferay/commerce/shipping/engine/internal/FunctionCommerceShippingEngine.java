@@ -21,8 +21,6 @@ import com.liferay.commerce.shipping.engine.internal.configuration.FunctionComme
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.catapult.PortalCatapult;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -188,28 +186,10 @@ public class FunctionCommerceShippingEngine implements CommerceShippingEngine {
 	}
 
 	@Modified
-	protected void modified(Map<String, Object> properties)
-		throws PortalException {
-
+	protected void modified(Map<String, Object> properties) {
 		_functionCommerceShippingEngineConfiguration =
 			ConfigurableUtil.createConfigurable(
 				FunctionCommerceShippingEngineConfiguration.class, properties);
-
-		List<CommerceShippingMethod> commerceShippingMethods =
-			_commerceShippingMethodLocalService.getCommerceShippingMethods(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (CommerceShippingMethod commerceShippingMethod :
-				commerceShippingMethods) {
-
-			String key = (String)properties.get("key");
-
-			if (key.equals(commerceShippingMethod.getEngineKey())) {
-				_commerceShippingMethodLocalService.
-					deleteCommerceShippingMethod(
-						commerceShippingMethod.getCommerceShippingMethodId());
-			}
-		}
 	}
 
 	private JSONObject _getCommerceOrderJSONObject(CommerceOrder commerceOrder)
