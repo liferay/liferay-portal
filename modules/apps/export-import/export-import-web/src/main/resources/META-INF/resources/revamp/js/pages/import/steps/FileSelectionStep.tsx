@@ -4,15 +4,46 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React, {useState} from 'react';
+import {useFormikContext} from 'formik';
+import {sub} from 'frontend-js-web';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {getValidateLarFileEndpoint} from '../../../common/utils/getValidateLarFileEndpoint';
+import {FormikFieldText} from '../../../components/forms/formik';
 import {FormikFieldFileSelector} from '../../../components/forms/formik/FormikFieldFileSelector';
 import {useWizard} from '../NewImport';
+
+interface FileSelectionValues {
+	fileSelector?: File;
+	name: string;
+}
 
 export default function FileSelectionStep() {
 	const [progress, setProgress] = useState<number>();
 	const {isCompanyGroup} = useWizard();
+
+	const {setFieldValue, values} = useFormikContext<FileSelectionValues>();
+	const previousFileRef = useRef<File | undefined>(undefined);
+	const nameRef = useRef(values.name);
+
+	useEffect(() => {
+		nameRef.current = values.name;
+	}, [values.name]);
+
+	useEffect(() => {
+		const currentFile = values.fileSelector;
+		const previousFile = previousFileRef.current;
+
+		previousFileRef.current = currentFile;
+
+		if (
+			currentFile instanceof File &&
+			currentFile !== previousFile &&
+			!nameRef.current
+		) {
+			setFieldValue('name', currentFile.name);
+		}
+	}, [values.fileSelector, setFieldValue]);
 
 	const handleUpload = (file: File, signal?: AbortSignal) =>
 		getValidateLarFileEndpoint({
@@ -27,9 +58,24 @@ export default function FileSelectionStep() {
 			<ClayLayout.Sheet>
 				<ClayLayout.SheetHeader className="mb-1">
 					<div className="mb-2 sheet-title">
-						{Liferay.Language.get('import-details')}
+						{sub(
+							Liferay.Language.get('x-details'),
+							Liferay.Language.get('import')
+						)}
+					</div>
+
+					<div className="sheet-text text-3">
+						{Liferay.Language.get(
+							'provide-a-descriptive-name-for-your-import'
+						)}
 					</div>
 				</ClayLayout.SheetHeader>
+
+				<FormikFieldText
+					label={Liferay.Language.get('name')}
+					name="name"
+					required
+				/>
 			</ClayLayout.Sheet>
 
 			<ClayLayout.Sheet>

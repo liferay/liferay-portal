@@ -36,6 +36,7 @@ export function NewImport({
 					)}
 					initialValues={{
 						fileSelector: undefined,
+						name: '',
 					}}
 					title={Liferay.Language.get('setup')}
 				>
