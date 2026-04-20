@@ -18,6 +18,7 @@ export class ExportImportPage {
 	readonly fileSelector: Locator;
 	readonly importButton: Locator;
 	readonly importMenuItem: Locator;
+	readonly nameInput: Locator;
 	readonly newExportButton: Locator;
 	readonly newExportTab: Locator;
 	readonly newImport: Locator;
@@ -45,6 +46,7 @@ export class ExportImportPage {
 		this.importMenuItem = page.getByRole('menuitem', {
 			name: 'Import',
 		});
+		this.nameInput = page.getByRole('textbox', {name: 'Name'});
 		this.newExportButton = page.getByRole('link', {name: 'Custom Export'});
 		this.newExportTab = page.getByRole('link', {
 			name: 'New Export Process',
@@ -96,7 +98,9 @@ export class ExportImportPage {
 		await this.selectFile(folderPath);
 
 		if (expectedUploadErrorMessage) {
-			await this.page.getByText(expectedUploadErrorMessage).waitFor();
+			await this.page
+				.getByText(expectedUploadErrorMessage, {exact: true})
+				.waitFor();
 
 			return;
 		}
