@@ -640,10 +640,10 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.diff.impl.jar!neko-htmlunit.jar</file-name>
-				<version>2.66.0</version>
-				<project-name>HtmlUnit NekoHtml</project-name>
-				<project-url>http://htmlunit.sourceforge.net</project-url>
+				<file-name>com.liferay.diff.impl.jar!html5diff.jar</file-name>
+				<version>1.4.5</version>
+				<project-name>HTML5Diff</project-name>
+				<project-url>https://github.com/SchweizerischeBundesbahnen/html5diff</project-url>
 				<licenses>
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
@@ -652,13 +652,14 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.diff.impl.jar!org.outerj.daisy.diff.jar</file-name>
-				<version>1.2.LIFERAY-PATCHED-1</version>
-				<project-name>org.outerj.daisy.diff</project-name>
+				<file-name>com.liferay.diff.impl.jar!neko-htmlunit.jar</file-name>
+				<version>4.21.0</version>
+				<project-name>HtmlUnit NekoHtml</project-name>
+				<project-url>https://www.htmlunit.org</project-url>
 				<licenses>
 					<license>
-						<license-name>LGPL 2.1</license-name>
-						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
