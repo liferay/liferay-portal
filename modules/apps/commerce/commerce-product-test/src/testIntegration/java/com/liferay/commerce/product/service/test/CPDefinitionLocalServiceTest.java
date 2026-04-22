@@ -12,6 +12,7 @@ import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
+import com.liferay.commerce.product.exception.DuplicateCPDefinitionDraftException;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLocalization;
@@ -38,6 +39,7 @@ import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporaryS
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
@@ -60,18 +62,30 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.test.rule.ExpectedDBType;
+import com.liferay.portal.test.rule.ExpectedLog;
+import com.liferay.portal.test.rule.ExpectedLogs;
+import com.liferay.portal.test.rule.ExpectedMultipleLogs;
+import com.liferay.portal.test.rule.ExpectedType;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.frutilla.FrutillaRule;
+
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -757,6 +771,171 @@ public class CPDefinitionLocalServiceTest {
 		}
 	}
 
+	@ExpectedMultipleLogs(
+		expectedMultipleLogs = {
+			@ExpectedLogs(
+				expectedLogs = {
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.DB2,
+						expectedLog = "Error for batch element",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.DB2,
+						expectedLog = "Batch failure.",
+						expectedType = ExpectedType.CONTAINS
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.HYPERSONIC,
+						expectedLog = "integrity constraint violation: unique constraint or index violation: IX_228562AD",
+						expectedType = ExpectedType.EXACT
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MARIADB,
+						expectedLog = "Deadlock found when trying to get lock; try restarting transaction",
+						expectedType = ExpectedType.CONTAINS
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MARIADB,
+						expectedLog = "Duplicate entry",
+						expectedType = ExpectedType.CONTAINS
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MYSQL,
+						expectedLog = "Deadlock found when trying to get lock; try restarting transaction",
+						expectedType = ExpectedType.EXACT
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MYSQL,
+						expectedLog = "Duplicate entry",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.ORACLE,
+						expectedLog = "ORA-00001: unique constraint",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.POSTGRESQL,
+						expectedLog = "Batch entry 0 insert into Lock_ ",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.POSTGRESQL,
+						expectedLog = "ERROR: duplicate key value violates unique constraint ",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.SQLSERVER,
+						expectedLog = "Cannot insert duplicate key row in object",
+						expectedType = ExpectedType.PREFIX
+					)
+				},
+				level = "ERROR", loggerClass = SqlExceptionHelper.class
+			)
+		}
+	)
+	@Test
+	public void testCopyCPDefinitionConcurrentlyCreatesOnlyOneDraft()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Only one draft can be created from a published product at a time"
+		).given(
+			"A published product definition with versioning enabled"
+		).when(
+			"multiple threads call copyCPDefinition for the same cProductId"
+		).then(
+			"exactly one draft remains and the lock is released"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		long cpDefinitionId = cpDefinition.getCPDefinitionId();
+		long groupId = cpDefinition.getGroupId();
+		long cProductId = cpDefinition.getCProductId();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			int threadCount = 5;
+
+			ServiceContext serviceContext = _serviceContext;
+
+			CountDownLatch startLatch = new CountDownLatch(1);
+
+			ExecutorService executorService = Executors.newFixedThreadPool(
+				threadCount);
+
+			try {
+				List<Future<Throwable>> futures = new ArrayList<>(threadCount);
+
+				for (int i = 0; i < threadCount; i++) {
+					futures.add(
+						executorService.submit(
+							() -> {
+								ServiceContextThreadLocal.pushServiceContext(
+									serviceContext);
+
+								try {
+									startLatch.await();
+
+									_cpDefinitionLocalService.copyCPDefinition(
+										cpDefinitionId, groupId,
+										WorkflowConstants.STATUS_DRAFT);
+
+									return null;
+								}
+								catch (Throwable throwable) {
+									return throwable;
+								}
+								finally {
+									ServiceContextThreadLocal.
+										popServiceContext();
+								}
+							}));
+				}
+
+				startLatch.countDown();
+
+				for (Future<Throwable> future : futures) {
+					Throwable throwable = future.get();
+
+					if ((throwable != null) &&
+						!(throwable instanceof
+							DuplicateCPDefinitionDraftException)) {
+
+						throw new AssertionError(
+							"Unexpected exception", throwable);
+					}
+				}
+			}
+			finally {
+				executorService.shutdown();
+			}
+
+			List<CPDefinition> drafts =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cProductId, WorkflowConstants.STATUS_DRAFT,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			Assert.assertEquals(1, drafts.size());
+			Assert.assertFalse(
+				_lockManager.isLocked(
+					CProduct.class.getName(), String.valueOf(cProductId)));
+		}
+	}
+
 	@Test
 	public void testDeleteCPDefinitionWithIgnoreSKUCombinationsAndDefaultInstance()
 		throws Exception {
@@ -1417,6 +1596,9 @@ public class CPDefinitionLocalServiceTest {
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Inject
+	private LockManager _lockManager;
 
 	@Inject
 	private Portal _portal;
