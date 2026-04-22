@@ -6,23 +6,37 @@
 package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
+import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityField;
+import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -109,6 +123,130 @@ public class ProductOptionResourceTest
 		assertValid(postProductOption);
 
 		_testPostProductByExternalReferenceCodeProductOptionsPageWithOptionExternalReferenceCode();
+	}
+
+	@Test
+	public void testPostProductIdProductOptionProductVersioning()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			CommerceCatalog commerceCatalog =
+				CPTestUtil.getSystemCommerceCatalog(testCompany.getCompanyId());
+
+			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+				commerceCatalog.getGroupId(), "simple", null, null, true, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+			_cpDefinitions.add(cpDefinition1);
+
+			CPOption cpOption1 = CPTestUtil.addCPOption(
+				commerceCatalog.getGroupId(), true);
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			Assert.assertEquals(
+				0,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition1.getCPDefinitionId()));
+
+			ProductOption productOption1 = randomProductOption();
+
+			productOption1.setKey(cpOption1.getKey());
+
+			productOptionResource.postProductIdProductOptionsPage(
+				cpDefinition1.getCProductId(),
+				new ProductOption[] {productOption1});
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			List<CPDefinition> draftDefinitions =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				draftDefinitions.toString(), 1, draftDefinitions.size());
+
+			CPDefinition cpDefinition2 = draftDefinitions.get(0);
+
+			_cpDefinitions.add(cpDefinition2);
+
+			Assert.assertEquals(
+				0,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition1.getCPDefinitionId()));
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition2.getCPDefinitionId()));
+
+			CPOption cpOption2 = CPTestUtil.addCPOption(
+				commerceCatalog.getGroupId(), true);
+
+			ProductOption productOption2 = randomProductOption();
+
+			productOption2.setKey(cpOption2.getKey());
+
+			productOptionResource.postProductIdProductOptionsPage(
+				cpDefinition1.getCProductId(),
+				new ProductOption[] {productOption1, productOption2});
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				cpDefinition2.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
+
+			Assert.assertEquals(
+				2,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition3.getCPDefinitionId()));
+		}
 	}
 
 	@Override
@@ -352,8 +490,25 @@ public class ProductOptionResourceTest
 	}
 
 	private CPDefinition _cpDefinition;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionOptionRelLocalService
+		_cpDefinitionOptionRelLocalService;
+
+	@DeleteAfterTestRun
+	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
+
+	@Inject
+	private CPDefinitionService _cpDefinitionService;
+
 	private CPInstance _cpInstance;
 	private CProduct _cProduct;
 	private final Map<Long, ProductOption> _productOptions = new HashMap<>();
+
+	@Inject
+	private ServiceContextHelper _serviceContextHelper;
 
 }

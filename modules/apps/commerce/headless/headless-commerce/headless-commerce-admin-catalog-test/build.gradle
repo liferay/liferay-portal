@@ -9,16 +9,20 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
 	testIntegrationImplementation group: "junit", name: "junit", version: "4.13.1"
+	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-media-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-price-list-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-pricing-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-type-simple")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-type-virtual-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-shop-by-diagram-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":apps:commerce:headless:headless-commerce-core-api")
 	testIntegrationImplementation project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
