@@ -35,7 +35,7 @@ describe('NewExport', () => {
 		const {container} = renderComponent();
 
 		const fileNameInput = screen.getByRole('textbox', {
-			name: /file-name/,
+			name: /^name$/i,
 		});
 		expect(fileNameInput).toBeInTheDocument();
 
@@ -61,7 +61,7 @@ describe('NewExport', () => {
 		});
 
 		const fileNameInput = await screen.findByRole('textbox', {
-			name: /file-name/,
+			name: /^name$/i,
 		});
 
 		await userEvent.click(fileNameInput);
@@ -92,7 +92,7 @@ describe('NewExport', () => {
 		const {container} = renderComponent();
 
 		const fileNameInput = await screen.findByRole('textbox', {
-			name: /file-name/,
+			name: /^name$/i,
 		});
 
 		await userEvent.type(fileNameInput, 'test-file');

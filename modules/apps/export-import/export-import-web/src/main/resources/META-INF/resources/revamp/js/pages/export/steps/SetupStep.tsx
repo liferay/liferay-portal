@@ -33,8 +33,8 @@ export default function SetupStep() {
 				</ClayLayout.SheetHeader>
 
 				<FormikFieldText
-					label={Liferay.Language.get('file-name')}
-					name="filename"
+					label={Liferay.Language.get('name')}
+					name="name"
 					required
 				/>
 			</ClayLayout.Sheet>
