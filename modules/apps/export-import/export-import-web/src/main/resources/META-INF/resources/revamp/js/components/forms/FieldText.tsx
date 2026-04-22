@@ -22,6 +22,7 @@ export type FieldTextProps = {
 } & React.ComponentProps<typeof ClayInput>;
 
 const FieldText = ({
+	'aria-describedby': ariaDescribedBy,
 	component = 'input',
 	disabled,
 	errorMessage,
@@ -36,6 +37,10 @@ const FieldText = ({
 	...restProps
 }: FieldTextProps) => {
 	const fieldId = id ?? name;
+	const feedbackId =
+		errorMessage || helpMessage ? `${fieldId}fieldFeedback` : undefined;
+	const describedBy =
+		[ariaDescribedBy, feedbackId].filter(Boolean).join(' ') || undefined;
 
 	return (
 		<FieldBase
@@ -49,11 +54,7 @@ const FieldText = ({
 		>
 			<ClayInput
 				{...restProps}
-				aria-describedby={
-					errorMessage || helpMessage
-						? `${fieldId}fieldFeedback`
-						: undefined
-				}
+				aria-describedby={describedBy}
 				aria-invalid={errorMessage ? true : undefined}
 				component={component}
 				disabled={disabled}

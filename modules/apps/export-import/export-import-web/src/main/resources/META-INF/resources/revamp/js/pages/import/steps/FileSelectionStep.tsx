@@ -53,7 +53,7 @@ export default function FileSelectionStep() {
 						{Liferay.Language.get('import-details')}
 					</div>
 
-					<div className="sheet-text text-3">
+					<div className="sheet-text text-3" id="name-description">
 						{Liferay.Language.get(
 							'provide-a-descriptive-name-for-your-import'
 						)}
@@ -61,6 +61,7 @@ export default function FileSelectionStep() {
 				</ClayLayout.SheetHeader>
 
 				<FormikFieldText
+					aria-describedby="name-description"
 					label={Liferay.Language.get('name')}
 					name="name"
 					required
