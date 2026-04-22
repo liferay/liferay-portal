@@ -34,9 +34,7 @@ describe('NewExport', () => {
 	it('renders the SetupStep', async () => {
 		const {container} = renderComponent();
 
-		const fileNameInput = screen.getByRole('textbox', {
-			name: /^name$/i,
-		});
+		const fileNameInput = screen.getByLabelText(/^name/i);
 		expect(fileNameInput).toBeInTheDocument();
 
 		const designCheckbox = screen.getByRole('checkbox', {
@@ -60,9 +58,7 @@ describe('NewExport', () => {
 			expect(continueButton).toBeDisabled();
 		});
 
-		const fileNameInput = await screen.findByRole('textbox', {
-			name: /^name$/i,
-		});
+		const fileNameInput = await screen.findByLabelText(/^name/i);
 
 		await userEvent.click(fileNameInput);
 		fileNameInput.blur();
@@ -91,9 +87,7 @@ describe('NewExport', () => {
 	it('renders the DataSelectionStep (Step 2) and checks accessibility', async () => {
 		const {container} = renderComponent();
 
-		const fileNameInput = await screen.findByRole('textbox', {
-			name: /^name$/i,
-		});
+		const fileNameInput = await screen.findByLabelText(/^name/i);
 
 		await userEvent.type(fileNameInput, 'test-file');
 
