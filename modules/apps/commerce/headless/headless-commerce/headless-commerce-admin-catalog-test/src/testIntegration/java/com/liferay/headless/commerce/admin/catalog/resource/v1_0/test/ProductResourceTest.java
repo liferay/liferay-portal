@@ -346,6 +346,46 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Override
 	@Test
+	public void testPatchProductByExternalReferenceCodeByVersion()
+		throws Exception {
+
+		Product postProduct = productResource.postProduct(randomProduct());
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+				postProduct.getProductId(), false);
+
+		Product randomPatchProduct = randomProduct();
+
+		productResource.patchProductByExternalReferenceCodeByVersion(
+			postProduct.getExternalReferenceCode(), cpDefinition.getVersion(),
+			randomPatchProduct);
+
+		Assert.assertNotNull(
+			productResource.getProduct(postProduct.getProductId()));
+	}
+
+	@Override
+	@Test
+	public void testPatchProductByVersion() throws Exception {
+		Product postProduct = productResource.postProduct(randomProduct());
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+				postProduct.getProductId(), false);
+
+		Product randomPatchProduct = randomProduct();
+
+		productResource.patchProductByVersion(
+			cpDefinition.getCProductId(), cpDefinition.getVersion(),
+			randomPatchProduct);
+
+		Assert.assertNotNull(
+			productResource.getProduct(postProduct.getProductId()));
+	}
+
+	@Override
+	@Test
 	public void testPostProduct() throws Exception {
 		super.testPostProduct();
 
