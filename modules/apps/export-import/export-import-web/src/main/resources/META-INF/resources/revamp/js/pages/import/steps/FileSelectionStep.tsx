@@ -8,9 +8,9 @@ import {useFormikContext} from 'formik';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {getValidateLarFile} from '../../../utils/getValidateLarFile';
 import {FormikFieldText} from '../../../components/forms/formik';
 import {FormikFieldFileSelector} from '../../../components/forms/formik/FormikFieldFileSelector';
+import {getValidateLarFile} from '../../../utils/getValidateLarFile';
 import {useWizard} from '../NewImport';
 
 interface FileSelectionValues {
@@ -23,27 +23,20 @@ export default function FileSelectionStep() {
 	const {isCompanyGroup} = useWizard();
 
 	const {setFieldValue, values} = useFormikContext<FileSelectionValues>();
-	const previousFileRef = useRef<File | undefined>(undefined);
-	const nameRef = useRef(values.name);
-
-	useEffect(() => {
-		nameRef.current = values.name;
-	}, [values.name]);
+	const autoFilledFromRef = useRef<File | undefined>(undefined);
 
 	useEffect(() => {
 		const currentFile = values.fileSelector;
-		const previousFile = previousFileRef.current;
-
-		previousFileRef.current = currentFile;
 
 		if (
 			currentFile instanceof File &&
-			currentFile !== previousFile &&
-			!nameRef.current
+			currentFile !== autoFilledFromRef.current &&
+			!values.name
 		) {
+			autoFilledFromRef.current = currentFile;
 			setFieldValue('name', currentFile.name);
 		}
-	}, [values.fileSelector, setFieldValue]);
+	}, [values.fileSelector, values.name, setFieldValue]);
 
 	const handleUpload = (file: File, signal?: AbortSignal) =>
 		getValidateLarFile({
