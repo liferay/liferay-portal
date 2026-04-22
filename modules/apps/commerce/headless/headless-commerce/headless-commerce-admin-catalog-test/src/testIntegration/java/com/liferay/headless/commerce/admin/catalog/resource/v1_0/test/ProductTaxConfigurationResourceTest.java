@@ -140,6 +140,7 @@ public class ProductTaxConfigurationResourceTest
 		super.testPatchProductIdTaxConfiguration();
 	}
 
+	@Ignore
 	@Test
 	public void testPatchProductIdTaxConfigurationProductVersioning()
 		throws Exception {

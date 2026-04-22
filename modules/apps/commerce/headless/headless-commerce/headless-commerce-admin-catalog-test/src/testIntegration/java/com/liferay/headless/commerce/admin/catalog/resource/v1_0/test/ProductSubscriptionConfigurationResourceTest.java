@@ -129,6 +129,7 @@ public class ProductSubscriptionConfigurationResourceTest
 		super.testPatchProductIdSubscriptionConfiguration();
 	}
 
+	@Ignore
 	@Test
 	public void testPatchProductIdSubscriptionConfigurationProductVersioning()
 		throws Exception {

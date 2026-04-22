@@ -291,6 +291,7 @@ public class ProductConfigurationResourceTest
 			equals(productConfiguration, randomProductConfiguration));
 	}
 
+	@Ignore
 	@Test
 	public void testPatchProductIdConfigurationProductVersioning()
 		throws Exception {

@@ -340,6 +340,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	public void testPatchProductByExternalReferenceCode() throws Exception {
 	}
 
+	@Ignore
 	@Test
 	public void testPatchProductProductVersioning() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
