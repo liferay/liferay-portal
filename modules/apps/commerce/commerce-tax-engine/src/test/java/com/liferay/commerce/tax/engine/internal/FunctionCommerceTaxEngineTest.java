@@ -65,6 +65,17 @@ public class FunctionCommerceTaxEngineTest {
 	}
 
 	@Test
+	public void testDeactivate() throws Exception {
+		_functionCommerceTaxEngine.deactivate();
+
+		Mockito.verify(
+			_commerceTaxMethodLocalService, Mockito.never()
+		).deleteCommerceTaxMethod(
+			Mockito.anyLong()
+		);
+	}
+
+	@Test
 	public void testGetCommerceTaxValue() throws Exception {
 		CommerceTaxCalculateRequest commerceTaxCalculateRequest =
 			_setUpCommerceTaxCalculateRequest("EUR");
