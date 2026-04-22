@@ -178,16 +178,18 @@ describe('Custom Asset Plugin', () => {
 			document.body.removeChild(customAssetElement);
 		});
 
-		it('includes assetCategories, mimeType and assetTags in the payload', async () => {
+		it('includes assetCategories, assetVocabularies, mimeType and assetTags in the payload', async () => {
 			const customAssetElement = createCustomAssetElement(
 				'assetId',
 				'Custom Asset Title'
 			);
 			customAssetElement.dataset.analyticsAssetCategories =
-				'[{"id":"cat1","name":"Category 1"},{"id":"cat2","name":"Category 2"}]';
+				'[{"id":"cat1","name":"Category 1","vocabularyId":"voc1"},{"id":"cat2","name":"Category 2","vocabularyId":"voc1"}]';
 			customAssetElement.dataset.analyticsAssetMimeType = 'text/html';
 			customAssetElement.dataset.analyticsAssetTags =
 				'[{"id":"tag1","name":"Tag 1"},{"id":"tag2","name":"Tag 2"}]';
+			customAssetElement.dataset.analyticsAssetVocabularies =
+				'[{"id":"voc1","name":"Vocabulary 1"}]';
 
 			const domContentLoaded = new Event('DOMContentLoaded');
 
@@ -203,10 +205,12 @@ describe('Custom Asset Plugin', () => {
 					eventId: 'assetViewed',
 					properties: expect.objectContaining({
 						assetCategories:
-							'[{"id":"cat1","name":"Category 1"},{"id":"cat2","name":"Category 2"}]',
+							'[{"id":"cat1","name":"Category 1","vocabularyId":"voc1"},{"id":"cat2","name":"Category 2","vocabularyId":"voc1"}]',
 						assetId: 'assetId',
 						assetTags:
 							'[{"id":"tag1","name":"Tag 1"},{"id":"tag2","name":"Tag 2"}]',
+						assetVocabularies:
+							'[{"id":"voc1","name":"Vocabulary 1"}]',
 						mimeType: 'text/html',
 						title: 'Custom Asset Title',
 					}),

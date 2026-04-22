@@ -192,6 +192,7 @@ describe('ObjectEntry Plugin', () => {
 			analyticsAssetCategories?: string;
 			analyticsAssetMimeType?: string;
 			analyticsAssetTags?: string;
+			analyticsAssetVocabularies?: string;
 		}) => {
 			const element = document.createElement('a');
 
@@ -219,6 +220,11 @@ describe('ObjectEntry Plugin', () => {
 			if (options.analyticsAssetMimeType !== undefined) {
 				element.dataset.analyticsAssetMimeType =
 					options.analyticsAssetMimeType;
+			}
+
+			if (options.analyticsAssetVocabularies !== undefined) {
+				element.dataset.analyticsAssetVocabularies =
+					options.analyticsAssetVocabularies;
 			}
 
 			document.body.appendChild(element);
@@ -290,6 +296,38 @@ describe('ObjectEntry Plugin', () => {
 			document.body.removeChild(element);
 		});
 
+		it('includes assetVocabularies in the payload when set', async () => {
+			const element = createObjectEntryLinkElementWithOptions({
+				analyticsAssetVocabularies: 'vocabulary1,vocabulary2',
+			});
+
+			await userEvent.click(element);
+
+			expect(Analytics.getEvents()).toEqual([
+				expect.objectContaining({
+					applicationId: AnalyticsTypes.ApplicationId.ObjectEntry,
+					eventId: AnalyticsTypes.EventId.ObjectEntryDownloaded,
+					properties: expect.objectContaining({
+						assetVocabularies: 'vocabulary1,vocabulary2',
+					}),
+				}),
+			]);
+
+			document.body.removeChild(element);
+		});
+
+		it('does not include assetVocabularies in the payload when not set', async () => {
+			const element = createObjectEntryLinkElementWithOptions({});
+
+			await userEvent.click(element);
+
+			expect(Analytics.getEvents()[0].properties).not.toHaveProperty(
+				'assetVocabularies'
+			);
+
+			document.body.removeChild(element);
+		});
+
 		it('includes mimeType from analyticsAssetMimeType when set', async () => {
 			const element = createObjectEntryLinkElementWithOptions({
 				analyticsAssetMimeType: 'application/pdf',
@@ -314,6 +352,7 @@ describe('ObjectEntry Plugin', () => {
 			const element = createObjectEntryLinkElementWithOptions({
 				analyticsAssetCategories: '  category1  ',
 				analyticsAssetTags: '  tag1  ',
+				analyticsAssetVocabularies: '  vocabulary1  ',
 			});
 
 			await userEvent.click(element);
@@ -323,6 +362,7 @@ describe('ObjectEntry Plugin', () => {
 					properties: expect.objectContaining({
 						assetCategories: 'category1',
 						assetTags: 'tag1',
+						assetVocabularies: 'vocabulary1',
 					}),
 				}),
 			]);

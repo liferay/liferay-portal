@@ -134,13 +134,15 @@ describe('Blogs Plugin', () => {
 			document.body.removeChild(blogElement);
 		});
 
-		it('includes assetCategories, mimeType and assetTags in the payload', async () => {
+		it('includes assetCategories, assetVocabularies, mimeType and assetTags in the payload', async () => {
 			const blogElement = createBlogElement('assetId', 'Blog Title');
 			blogElement.dataset.analyticsAssetCategories =
-				'[{"id":"cat1","name":"Category 1"},{"id":"cat2","name":"Category 2"}]';
+				'[{"id":"cat1","name":"Category 1","vocabularyId":"voc1"},{"id":"cat2","name":"Category 2","vocabularyId":"voc1"}]';
 			blogElement.dataset.analyticsAssetMimeType = 'text/html';
 			blogElement.dataset.analyticsAssetTags =
 				'[{"id":"tag1","name":"Tag 1"},{"id":"tag2","name":"Tag 2"}]';
+			blogElement.dataset.analyticsAssetVocabularies =
+				'[{"id":"voc1","name":"Vocabulary 1"}]';
 
 			const domContentLoaded = new Event('DOMContentLoaded');
 
@@ -156,9 +158,11 @@ describe('Blogs Plugin', () => {
 					eventId: 'blogViewed',
 					properties: expect.objectContaining({
 						assetCategories:
-							'[{"id":"cat1","name":"Category 1"},{"id":"cat2","name":"Category 2"}]',
+							'[{"id":"cat1","name":"Category 1","vocabularyId":"voc1"},{"id":"cat2","name":"Category 2","vocabularyId":"voc1"}]',
 						assetTags:
 							'[{"id":"tag1","name":"Tag 1"},{"id":"tag2","name":"Tag 2"}]',
+						assetVocabularies:
+							'[{"id":"voc1","name":"Vocabulary 1"}]',
 						entryId: 'assetId',
 						mimeType: 'text/html',
 						title: 'Blog Title',

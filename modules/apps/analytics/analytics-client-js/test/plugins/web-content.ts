@@ -123,16 +123,18 @@ describe('WebContent Plugin', () => {
 			document.body.removeChild(webContentElement);
 		});
 
-		it('includes assetCategories, mimeType and assetTags in the payload', async () => {
+		it('includes assetCategories, assetVocabularies, mimeType and assetTags in the payload', async () => {
 			const webContentElement = createWebContentElement(
 				'assetId',
 				'Web Content Title'
 			);
 			webContentElement.dataset.analyticsAssetCategories =
-				'[{"id":"cat1","name":"Category 1"},{"id":"cat2","name":"Category 2"}]';
+				'[{"id":"cat1","name":"Category 1","vocabularyId":"voc1"},{"id":"cat2","name":"Category 2","vocabularyId":"voc1"}]';
 			webContentElement.dataset.analyticsAssetMimeType = 'text/html';
 			webContentElement.dataset.analyticsAssetTags =
 				'[{"id":"tag1","name":"Tag 1"},{"id":"tag2","name":"Tag 2"}]';
+			webContentElement.dataset.analyticsAssetVocabularies =
+				'[{"id":"voc1","name":"Vocabulary 1"}]';
 
 			jest.spyOn(
 				webContentElement,
@@ -166,9 +168,11 @@ describe('WebContent Plugin', () => {
 					properties: expect.objectContaining({
 						articleId: 'assetId',
 						assetCategories:
-							'[{"id":"cat1","name":"Category 1"},{"id":"cat2","name":"Category 2"}]',
+							'[{"id":"cat1","name":"Category 1","vocabularyId":"voc1"},{"id":"cat2","name":"Category 2","vocabularyId":"voc1"}]',
 						assetTags:
 							'[{"id":"tag1","name":"Tag 1"},{"id":"tag2","name":"Tag 2"}]',
+						assetVocabularies:
+							'[{"id":"voc1","name":"Vocabulary 1"}]',
 						mimeType: 'text/html',
 						title: 'Web Content Title',
 					}),
