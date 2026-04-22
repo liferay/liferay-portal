@@ -7,8 +7,10 @@ package com.liferay.fragment.entry.processor.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
 import com.liferay.fragment.entry.processor.helper.InfoItemFieldMapped;
@@ -40,10 +42,13 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.jsoup.nodes.Element;
@@ -171,6 +176,11 @@ public class AnalyticsAttributesUtil {
 		).attr(
 			"data-analytics-asset-type",
 			() -> _getAnalyticsAssetType(infoItemFieldMapped.getClassName())
+		).attr(
+			"data-analytics-asset-vocabularies",
+			() -> _getAnalyticsAssetVocabularies(
+				classPKInfoItemIdentifier, infoItemFieldMapped,
+				fragmentEntryProcessorContext.getLocale())
 		).attr(
 			"data-analytics-object-definition-name",
 			() -> {
@@ -305,6 +315,54 @@ public class AnalyticsAttributesUtil {
 		}
 
 		return className;
+	}
+
+	private static String _getAnalyticsAssetVocabularies(
+		ClassPKInfoItemIdentifier classPKInfoItemIdentifier,
+		InfoItemFieldMapped infoItemFieldMapped, Locale locale) {
+
+		List<AssetCategory> assetCategories =
+			AssetCategoryLocalServiceUtil.getCategories(
+				infoItemFieldMapped.getClassName(),
+				classPKInfoItemIdentifier.getClassPK());
+
+		if (ListUtil.isEmpty(assetCategories)) {
+			return StringPool.BLANK;
+		}
+
+		Set<Long> vocabularyIds = new LinkedHashSet<>();
+
+		for (AssetCategory assetCategory : assetCategories) {
+			vocabularyIds.add(assetCategory.getVocabularyId());
+		}
+
+		List<AssetVocabulary> assetVocabularies = new ArrayList<>(
+			vocabularyIds.size());
+
+		for (Long vocabularyId : vocabularyIds) {
+			AssetVocabulary assetVocabulary =
+				AssetVocabularyLocalServiceUtil.fetchAssetVocabulary(
+					vocabularyId);
+
+			if (assetVocabulary != null) {
+				assetVocabularies.add(assetVocabulary);
+			}
+		}
+
+		if (ListUtil.isEmpty(assetVocabularies)) {
+			return StringPool.BLANK;
+		}
+
+		JSONArray jsonArray = JSONUtil.toJSONArray(
+			assetVocabularies,
+			assetVocabulary -> JSONUtil.put(
+				"id", assetVocabulary.getVocabularyId()
+			).put(
+				"name", assetVocabulary.getTitle(locale)
+			),
+			_log);
+
+		return jsonArray.toString();
 	}
 
 	private static String _getAnalyticsExternalReferenceCode(
