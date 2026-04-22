@@ -34,7 +34,7 @@ export default function FileSelectionStep() {
 			!values.name
 		) {
 			autoFilledFromRef.current = currentFile;
-			setFieldValue('name', currentFile.name);
+			setFieldValue('name', currentFile.name.replace(/\.lar$/i, ''));
 		}
 	}, [values.fileSelector, values.name, setFieldValue]);
 

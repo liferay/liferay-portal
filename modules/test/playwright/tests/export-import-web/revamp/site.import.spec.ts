@@ -60,7 +60,7 @@ test('Auto-fills the Name field with the uploaded file name', async ({
 
 	await exportImportPage.completedLabel.waitFor();
 
-	await expect(exportImportPage.nameInput).toHaveValue('site.lar');
+	await expect(exportImportPage.nameInput).toHaveValue('site');
 });
 
 test('Preserves the user-provided Name when a file is uploaded', async ({

@@ -86,7 +86,7 @@ describe('NewImport', () => {
 
 		await waitFor(
 			() => {
-				expect(nameInput).toHaveValue('site.lar');
+				expect(nameInput).toHaveValue('site');
 			},
 			{timeout: 3000}
 		);
@@ -118,7 +118,7 @@ describe('NewImport', () => {
 
 		await waitFor(
 			() => {
-				expect(nameInput).toHaveValue('first.lar');
+				expect(nameInput).toHaveValue('first');
 			},
 			{timeout: 3000}
 		);
@@ -133,7 +133,7 @@ describe('NewImport', () => {
 
 		await waitFor(
 			() => {
-				expect(nameInput).toHaveValue('second.lar');
+				expect(nameInput).toHaveValue('second');
 			},
 			{timeout: 3000}
 		);
@@ -148,7 +148,7 @@ describe('NewImport', () => {
 
 		await waitFor(
 			() => {
-				expect(nameInput).toHaveValue('site.lar');
+				expect(nameInput).toHaveValue('site');
 			},
 			{timeout: 3000}
 		);
