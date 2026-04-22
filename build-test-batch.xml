@@ -8712,50 +8712,17 @@ information. Make sure to commit in all format-javadoc results.
 					</then>
 				</if>
 
-				<loadresource property="modules.compile.task.groups">
+				<loadresource property="modules.compile.tasks">
 					<filterchain>
 						<replacestring from="-test:assemble" to="-test:compileTestIntegrationJava" />
-
-						<tokenfilter>
-							<replaceregex flags="g" pattern="(\S+ ){${test.module.groups.size}}" replace="\0," />
-						</tokenfilter>
 					</filterchain>
 					<propertyresource name="modules.test.class.group" />
 				</loadresource>
 
-				<get-gradle-module-dir-task-names gradle.task.names="${modules.compile.task.groups}" />
-
-				<for delimiter="|" list="${gradle.module.dir.task.names}" param="gradle.module.dir.task.name" trim="true">
-					<sequential>
-						<local name="gradle.module.dir" />
-						<local name="gradle.task.name" />
-
-						<propertyregex
-							input="@{gradle.module.dir.task.name}"
-							override="true"
-							property="gradle.module.dir"
-							regexp="([^=]+)=([^=]+)"
-							replace="\1"
-						/>
-
-						<propertyregex
-							input="@{gradle.module.dir.task.name}"
-							override="true"
-							property="gradle.task.name"
-							regexp="([^=]+)=([^=]+)"
-							replace="\2"
-						/>
-
-						<execute-gradle-task gradle.task.module.dir="${gradle.module.dir}" gradle.task.name="${gradle.task.name}">
-							<action>
-								<gradle-execute dir="${gradle.module.dir}" task="${gradle.task.name}">
-									<arg value="--continue" />
-									<arg value="--parallel" />
-								</gradle-execute>
-							</action>
-						</execute-gradle-task>
-					</sequential>
-				</for>
+				<gradle-execute dir="modules" task="${modules.compile.tasks}">
+					<arg value="--continue" />
+					<arg value="--parallel" />
+				</gradle-execute>
 			</test-action>
 
 			<test-set-up>

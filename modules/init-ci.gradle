@@ -1,0 +1,142 @@
+import groovy.xml.XmlUtil
+
+import java.util.concurrent.ConcurrentHashMap
+
+final String TASK_NAME_ASSEMBLE = "assemble"
+final String TASK_NAME_COMPILE_TEST_INTEGRATION_JAVA = "compileTestIntegrationJava"
+
+ConcurrentHashMap<String, Long> compileTaskStartTimes = new ConcurrentHashMap<String, Long>()
+ConcurrentHashMap<String, String> projectPathToTargetTaskName = new ConcurrentHashMap<String, String>()
+Set<String> writtenProjectPaths = ConcurrentHashMap.newKeySet()
+
+File testResultsDir = null
+
+Closure isCompileTask = {
+	Task task ->
+
+	return (task.name == TASK_NAME_ASSEMBLE) || (task.name == TASK_NAME_COMPILE_TEST_INTEGRATION_JAVA)
+}
+
+Closure getClassName = {
+	String projectPath ->
+
+	return "modules" + projectPath.replace(":", ".")
+}
+
+Closure writeReport = {
+	String projectPath, Double duration, String failureMessage, String failureStacktrace ->
+
+	writtenProjectPaths.add projectPath
+
+	int failureCount = (failureMessage == null) ? 0 : 1
+
+	String className = getClassName(projectPath)
+	String timestamp = new Date().format("yyyy-MM-dd_kk:mm:ss")
+
+	String failureElement = ""
+
+	if (failureMessage != null) {
+		failureElement = "<failure message=\"${XmlUtil.escapeXml(failureMessage)}\">${XmlUtil.escapeXml(failureStacktrace ?: "")}</failure>"
+	}
+
+	String xml = """<?xml version="1.0" encoding="UTF-8"?>
+
+		<testsuite errors="${failureCount}" failures="${failureCount}" hostname="localhost" name="${className}" skipped="0" tests="1" time="${duration}" timestamp="${timestamp}">
+			<properties />
+			<testcase classname="${className}" name="assemble" time="${duration}">
+				${failureElement
+}
+			</testcase>
+			<system-out></system-out>
+			<system-err></system-err>
+		</testsuite>"""
+
+	File file = new File(testResultsDir, "TEST-${className}.xml")
+
+	file.text = xml
+}
+
+gradle.taskGraph.whenReady {
+	TaskExecutionGraph taskGraph ->
+
+	taskGraph.allTasks.each {
+		Task task ->
+
+		if (!isCompileTask(task)) {
+			return
+		}
+
+		if (testResultsDir == null) {
+			testResultsDir = new File(gradle.rootProject.rootDir, "test-results")
+
+			testResultsDir.mkdirs()
+		}
+
+		projectPathToTargetTaskName.put task.project.path, task.name
+	}
+}
+
+gradle.taskGraph.addTaskExecutionListener(
+	new TaskExecutionListener() {
+
+		void afterExecute(Task task, TaskState taskState) {
+			String projectPath = task.project.path
+
+			if (!projectPathToTargetTaskName.containsKey(projectPath)) {
+				return
+			}
+
+			Throwable failure = taskState.failure
+			boolean compileTask = isCompileTask(task)
+
+			if (!compileTask && (failure == null)) {
+				return
+			}
+
+			double duration = 0.0d
+
+			if (compileTask) {
+				long startTime = compileTaskStartTimes.remove(task.path)
+
+				duration = (System.currentTimeMillis() - startTime) / 1000.0d
+			}
+
+			if (failure == null) {
+				writeReport(projectPath, duration, null, null)
+			}
+			else {
+				StringWriter stringWriter = new StringWriter()
+
+				failure.printStackTrace(new PrintWriter(stringWriter))
+
+				writeReport(
+					projectPath,
+					duration,
+					"${task.path} failed. Please check the logs for details.",
+					stringWriter.toString())
+			}
+		}
+
+		void beforeExecute(Task task) {
+			if (isCompileTask(task)) {
+				compileTaskStartTimes.put task.path, System.currentTimeMillis()
+			}
+		}
+
+	})
+
+gradle.buildFinished {
+	projectPathToTargetTaskName.each {
+		String projectPath, String targetTaskName ->
+
+		if (writtenProjectPaths.contains(projectPath)) {
+			return
+		}
+
+		writeReport(
+			projectPath,
+			0.0d,
+			"${projectPath}:${targetTaskName} was not executed. Please check the logs for details.",
+			"")
+	}
+}

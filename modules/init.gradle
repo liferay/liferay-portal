@@ -115,3 +115,15 @@ if (Boolean.getBoolean("build.performance.logger.enabled")) {
 
 		})
 }
+
+if (System.getenv("JENKINS_HOME")) {
+	gradle.rootProject {
+		Project rootProject ->
+
+		File scriptFile = rootProject.file("init-ci.gradle")
+
+		if (scriptFile.exists()) {
+			apply from: scriptFile
+		}
+	}
+}
