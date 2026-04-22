@@ -53,6 +53,10 @@ public abstract class BaseConfigurationFactory {
 			log.debug("Deactivating " + oAuth2Application);
 		}
 
+		if (oAuth2Application == null) {
+			return;
+		}
+
 		ConfigurationFactoryUtil.executeAsCompany(
 			companyLocalService,
 			HashMapBuilder.<String, Object>put(
