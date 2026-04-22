@@ -108,7 +108,6 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTAware;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -150,7 +149,6 @@ import java.math.BigDecimal;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -340,8 +338,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Override
 	public Response patchProduct(Long id, Product product) throws Exception {
-		CPDefinition cpDefinition =
-			_cpDefinitionService.fetchCPDefinitionByCProductId(id, false);
+		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			_cpDefinitionService, id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -361,10 +359,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		throws Exception {
 
 		CPDefinition cpDefinition =
-			_cpDefinitionService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId(),
-					false);
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				_cpDefinitionService, externalReferenceCode,
+				contextCompany.getCompanyId());
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -385,6 +382,40 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		_updateProduct(cpDefinition, product);
 
 		Response.ResponseBuilder responseBuilder = Response.ok();
+
+		return responseBuilder.build();
+	}
+
+	@Override
+	public Response patchProductByExternalReferenceCodeByVersion(
+			String externalReferenceCode, Integer version, Product product)
+		throws Exception {
+
+		CProduct cProduct =
+			_cProductLocalService.fetchCProductByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cProduct == null) {
+			throw new NoSuchCPDefinitionException(
+				"Unable to find product with external reference code " +
+					externalReferenceCode);
+		}
+
+		return patchProductByVersion(
+			cProduct.getCProductId(), version, product);
+	}
+
+	@Override
+	public Response patchProductByVersion(
+			Long id, Integer version, Product product)
+		throws Exception {
+
+		CPDefinition cpDefinition =
+			_cpDefinitionService.getCProductCPDefinition(id, version);
+
+		_updateProduct(cpDefinition, product);
+
+		Response.ResponseBuilder responseBuilder = Response.noContent();
 
 		return responseBuilder.build();
 	}
@@ -609,10 +640,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			_getProductTaxConfiguration(product);
 
 		CPDefinition cpDefinition =
-			_cpDefinitionService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId(),
-					false);
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				_cpDefinitionService, externalReferenceCode,
+				contextCompany.getCompanyId());
 
 		Category[] categories = product.getCategories();
 
@@ -867,18 +897,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 						CProductVersionConfiguration.class.getName()));
 
 			if (cProductVersionConfiguration.enabled()) {
-				for (CPDefinition cProductCPDefinition :
-						_cpDefinitionService.getCProductCPDefinitions(
-							cpDefinition.getCProductId(),
-							WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS)) {
-
-					_cpDefinitionService.updateStatus(
-						cProductCPDefinition.getCPDefinitionId(),
-						WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
-						Collections.emptyMap());
-				}
-
 				cpDefinition = _cpDefinitionService.copyCPDefinition(
 					cpDefinition.getCPDefinitionId(), cpDefinition.getGroupId(),
 					WorkflowConstants.STATUS_DRAFT);
@@ -1507,14 +1525,28 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpDefinition.getGroupId());
 
+		boolean publish = false;
+
+		CProduct cProduct = cpDefinition.getCProduct();
+
+		CPDefinition publishedCPDefinition =
+			_cpDefinitionService.fetchCPDefinition(
+				cProduct.getPublishedCPDefinitionId());
+
 		int productStatus = GetterUtil.getInteger(product.getProductStatus());
 
 		if (productStatus == WorkflowConstants.STATUS_DRAFT) {
 			serviceContext.setWorkflowAction(
 				WorkflowConstants.ACTION_SAVE_DRAFT);
 		}
+		else if ((publishedCPDefinition != null) &&
+				 _cpDefinitionService.isVersionable(publishedCPDefinition)) {
 
-		cpDefinition = _getCPDefinition(cpDefinition, serviceContext);
+			publish = true;
+
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+		}
 
 		String[] assetTagNames = product.getTags();
 
@@ -1626,6 +1658,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				cpDefinition.getExpirationDate()),
 			contextUser.getTimeZone());
 
+		cpDefinition = _getCPDefinition(cpDefinition, serviceContext);
+
 		cpDefinition = _cpDefinitionService.updateCPDefinition(
 			cpDefinition.getCPDefinitionId(), cpDefinition.getCPTaxCategoryId(),
 			GetterUtil.getBoolean(
@@ -1663,15 +1697,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				cpDefinition.getCPDefinitionId());
 		}
 
-		if ((product.getActive() != null) && !product.getActive()) {
-			Map<String, Serializable> workflowContext = new HashMap<>();
-
-			_cpDefinitionService.updateStatus(
-				cpDefinition.getCPDefinitionId(),
-				WorkflowConstants.STATUS_INACTIVE, serviceContext,
-				workflowContext);
-		}
-
 		Map<String, ?> expando = product.getExpando();
 
 		if ((expando != null) && !expando.isEmpty()) {
@@ -1680,7 +1705,29 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				cpDefinition.getPrimaryKey(), expando);
 		}
 
-		return _updateNestedResources(product, cpDefinition, serviceContext);
+		cpDefinition = _updateNestedResources(
+			product, cpDefinition, serviceContext);
+
+		if ((product.getActive() != null) && !product.getActive()) {
+			Map<String, Serializable> workflowContext = new HashMap<>();
+
+			_cpDefinitionService.updateStatus(
+				cpDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_INACTIVE, serviceContext,
+				workflowContext);
+		}
+		else if (publish && (productStatus != WorkflowConstants.STATUS_DRAFT)) {
+			Map<String, Serializable> workflowContext = new HashMap<>();
+
+			serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
+			cpDefinition = _cpDefinitionService.updateStatus(
+				cpDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED, serviceContext,
+				workflowContext);
+		}
+
+		return cpDefinition;
 	}
 
 	@Reference

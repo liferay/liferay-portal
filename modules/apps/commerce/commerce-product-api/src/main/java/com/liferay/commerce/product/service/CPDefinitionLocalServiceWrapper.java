@@ -401,11 +401,28 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
+	public CPDefinition fetchCPDefinitionByCProductExternalReferenceCode(
+		String externalReferenceCode, long companyId, int status) {
+
+		return _cpDefinitionLocalService.
+			fetchCPDefinitionByCProductExternalReferenceCode(
+				externalReferenceCode, companyId, status);
+	}
+
+	@Override
 	public CPDefinition fetchCPDefinitionByCProductId(
 		long cProductId, boolean excludeDraft) {
 
 		return _cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 			cProductId, excludeDraft);
+	}
+
+	@Override
+	public CPDefinition fetchCPDefinitionByCProductId(
+		long cProductId, int status) {
+
+		return _cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+			cProductId, status);
 	}
 
 	@Override
@@ -1106,4 +1123,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2040300879
+// LIFERAY-SERVICE-BUILDER-HASH:831660630

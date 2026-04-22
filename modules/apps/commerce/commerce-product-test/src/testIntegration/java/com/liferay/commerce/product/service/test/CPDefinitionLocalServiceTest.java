@@ -12,6 +12,7 @@ import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
+import com.liferay.commerce.product.exception.DuplicateCPDefinitionDraftException;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLocalization;
@@ -38,6 +39,7 @@ import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporaryS
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
@@ -60,18 +62,30 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.test.rule.ExpectedDBType;
+import com.liferay.portal.test.rule.ExpectedLog;
+import com.liferay.portal.test.rule.ExpectedLogs;
+import com.liferay.portal.test.rule.ExpectedMultipleLogs;
+import com.liferay.portal.test.rule.ExpectedType;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.frutilla.FrutillaRule;
+
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -565,15 +579,48 @@ public class CPDefinitionLocalServiceTest {
 			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
 			true);
 
-		try {
-			_cpDefinitionLocalService.copyCPDefinition(
-				cpDefinition1.getCPDefinitionId());
+		CPDefinition cpDefinition2 = _cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition1.getCPDefinitionId());
 
-			Assert.fail();
-		}
-		catch (UnsupportedOperationException unsupportedOperationException) {
-			Assert.assertNotNull(unsupportedOperationException);
-		}
+		Assert.assertEquals(
+			cpDefinition1.getCPDefinitionId(),
+			cpDefinition2.getCPDefinitionId());
+
+		User user = UserTestUtil.addUser();
+
+		CPConfigurationList cpConfigurationList =
+			_cpConfigurationListLocalService.addCPConfigurationList(
+				RandomTestUtil.randomString(), user.getUserId(),
+				_commerceCatalog.getGroupId(), 0, false,
+				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
+				0, true, new ServiceContext());
+
+		_cpConfigurationEntryLocalService.addCPConfigurationEntry(
+			RandomTestUtil.randomString(), user.getUserId(),
+			cpConfigurationList.getGroupId(),
+			_portal.getClassNameId(CPDefinition.class),
+			cpDefinition1.getCPDefinitionId(),
+			cpConfigurationList.getCPConfigurationListId(), 0, "123.00", true,
+			0, "cpde", 1.0, true, true, true, 1.0, "lowstoc", BigDecimal.TEN,
+			BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, true, true, 1.0,
+			true, true, 1.0, 1.0);
+
+		CPSpecificationOption cpSpecificationOption =
+			CPTestUtil.addCPSpecificationOption(
+				_commerceCatalog.getGroupId(), false);
+
+		CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue1 =
+				_cpDefinitionSpecificationOptionValueLocalService.
+					addCPDefinitionSpecificationOptionValue(
+						RandomTestUtil.randomString(),
+						cpDefinition1.getCPDefinitionId(),
+						cpSpecificationOption.getCPSpecificationOptionId(),
+						cpSpecificationOption.getCPOptionCategoryId(),
+						RandomTestUtil.randomDouble(),
+						RandomTestUtil.randomLocaleStringMap(), true,
+						ServiceContextTestUtil.getServiceContext(
+							_commerceCatalog.getGroupId()));
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -586,51 +633,19 @@ public class CPDefinitionLocalServiceTest {
 							"versionThreshold", 2
 						).build())) {
 
-			User user = UserTestUtil.addUser();
-
-			CPConfigurationList cpConfigurationList =
-				_cpConfigurationListLocalService.addCPConfigurationList(
-					RandomTestUtil.randomString(), user.getUserId(),
-					_commerceCatalog.getGroupId(), 0, false,
-					RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0,
-					0, 0, true, new ServiceContext());
-
-			_cpConfigurationEntryLocalService.addCPConfigurationEntry(
-				RandomTestUtil.randomString(), user.getUserId(),
-				cpConfigurationList.getGroupId(),
-				_portal.getClassNameId(CPDefinition.class),
-				cpDefinition1.getCPDefinitionId(),
-				cpConfigurationList.getCPConfigurationListId(), 0, "123.00",
-				true, 0, "cpde", 1.0, true, true, true, 1.0, "lowstoc",
-				BigDecimal.TEN, BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE,
-				true, true, 1.0, true, true, 1.0, 1.0);
-
-			CPSpecificationOption cpSpecificationOption =
-				CPTestUtil.addCPSpecificationOption(
-					_commerceCatalog.getGroupId(), false);
-
-			CPDefinitionSpecificationOptionValue
-				cpDefinitionSpecificationOptionValue1 =
-					_cpDefinitionSpecificationOptionValueLocalService.
-						addCPDefinitionSpecificationOptionValue(
-							RandomTestUtil.randomString(),
-							cpDefinition1.getCPDefinitionId(),
-							cpSpecificationOption.getCPSpecificationOptionId(),
-							cpSpecificationOption.getCPOptionCategoryId(),
-							RandomTestUtil.randomDouble(),
-							RandomTestUtil.randomLocaleStringMap(), true,
-							ServiceContextTestUtil.getServiceContext(
-								_commerceCatalog.getGroupId()));
-
-			CPDefinition cpDefinition2 =
+			CPDefinition cpDefinition3 =
 				_cpDefinitionLocalService.copyCPDefinition(
 					cpDefinitionSpecificationOptionValue1.getCPDefinitionId());
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
 
 			List<CPDefinitionSpecificationOptionValue>
 				cpDefinitionSpecificationOptionValues =
 					_cpDefinitionSpecificationOptionValueLocalService.
 						getCPDefinitionSpecificationOptionValues(
-							cpDefinition2.getCPDefinitionId(), null,
+							cpDefinition3.getCPDefinitionId(), null,
 							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 			CPDefinitionSpecificationOptionValue
@@ -646,7 +661,278 @@ public class CPDefinitionLocalServiceTest {
 			Assert.assertNotNull(
 				_cpDefinitionInventoryLocalService.
 					fetchCPDefinitionInventoryByCPDefinitionId(
-						cpDefinition2.getCPDefinitionId()));
+						cpDefinition3.getCPDefinitionId()));
+		}
+	}
+
+	@Test
+	public void testCopyCPDefinitionDoesNotCopyDraftCPDefinition()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Do not copy a draft product definition"
+		).given(
+			"A draft product definition"
+		).when(
+			"the copy method is run"
+		).then(
+			"the draft product definition is returned"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition2.getStatus());
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition2.getCPDefinitionId(),
+					cpDefinition2.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				cpDefinition2.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
+		}
+	}
+
+	@Test
+	public void testCopyCPDefinitionSetsExistingDraftToIncomplete()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Set existing draft to incomplete when a new draft is created"
+		).given(
+			"A published product definition with an existing draft"
+		).when(
+			"a new draft is created from the published product definition"
+		).then(
+			"the existing draft is set to incomplete"
+		).and(
+			"the new draft is created"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition1.getStatus());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition2.getStatus());
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition3.getStatus());
+
+			cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
+				cpDefinition2.getCPDefinitionId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_INCOMPLETE, cpDefinition2.getStatus());
+		}
+	}
+
+	@ExpectedMultipleLogs(
+		expectedMultipleLogs = {
+			@ExpectedLogs(
+				expectedLogs = {
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.DB2,
+						expectedLog = "Error for batch element",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.DB2,
+						expectedLog = "Batch failure.",
+						expectedType = ExpectedType.CONTAINS
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.HYPERSONIC,
+						expectedLog = "integrity constraint violation: unique constraint or index violation: IX_228562AD",
+						expectedType = ExpectedType.EXACT
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MARIADB,
+						expectedLog = "Deadlock found when trying to get lock; try restarting transaction",
+						expectedType = ExpectedType.CONTAINS
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MARIADB,
+						expectedLog = "Duplicate entry",
+						expectedType = ExpectedType.CONTAINS
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MYSQL,
+						expectedLog = "Deadlock found when trying to get lock; try restarting transaction",
+						expectedType = ExpectedType.EXACT
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.MYSQL,
+						expectedLog = "Duplicate entry",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.ORACLE,
+						expectedLog = "ORA-00001: unique constraint",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.POSTGRESQL,
+						expectedLog = "Batch entry 0 insert into Lock_ ",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.POSTGRESQL,
+						expectedLog = "ERROR: duplicate key value violates unique constraint ",
+						expectedType = ExpectedType.PREFIX
+					),
+					@ExpectedLog(
+						expectedDBType = ExpectedDBType.SQLSERVER,
+						expectedLog = "Cannot insert duplicate key row in object",
+						expectedType = ExpectedType.PREFIX
+					)
+				},
+				level = "ERROR", loggerClass = SqlExceptionHelper.class
+			)
+		}
+	)
+	@Test
+	public void testCopyCPDefinitionConcurrentlyCreatesOnlyOneDraft()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Only one draft can be created from a published product at a time"
+		).given(
+			"A published product definition with versioning enabled"
+		).when(
+			"multiple threads call copyCPDefinition for the same cProductId"
+		).then(
+			"exactly one draft remains and the lock is released"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		long cpDefinitionId = cpDefinition.getCPDefinitionId();
+		long groupId = cpDefinition.getGroupId();
+		long cProductId = cpDefinition.getCProductId();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			int threadCount = 5;
+
+			ServiceContext serviceContext = _serviceContext;
+
+			CountDownLatch startLatch = new CountDownLatch(1);
+
+			ExecutorService executorService = Executors.newFixedThreadPool(
+				threadCount);
+
+			try {
+				List<Future<Throwable>> futures = new ArrayList<>(threadCount);
+
+				for (int i = 0; i < threadCount; i++) {
+					futures.add(
+						executorService.submit(
+							() -> {
+								ServiceContextThreadLocal.pushServiceContext(
+									serviceContext);
+
+								try {
+									startLatch.await();
+
+									_cpDefinitionLocalService.copyCPDefinition(
+										cpDefinitionId, groupId,
+										WorkflowConstants.STATUS_DRAFT);
+
+									return null;
+								}
+								catch (Throwable throwable) {
+									return throwable;
+								}
+								finally {
+									ServiceContextThreadLocal.
+										popServiceContext();
+								}
+							}));
+				}
+
+				startLatch.countDown();
+
+				for (Future<Throwable> future : futures) {
+					Throwable throwable = future.get();
+
+					if ((throwable != null) &&
+						!(throwable instanceof
+							DuplicateCPDefinitionDraftException)) {
+
+						throw new AssertionError(
+							"Unexpected exception", throwable);
+					}
+				}
+			}
+			finally {
+				executorService.shutdown();
+			}
+
+			List<CPDefinition> drafts =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cProductId, WorkflowConstants.STATUS_DRAFT,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			Assert.assertEquals(1, drafts.size());
+			Assert.assertFalse(
+				_lockManager.isLocked(
+					CProduct.class.getName(), String.valueOf(cProductId)));
 		}
 	}
 
@@ -1310,6 +1596,9 @@ public class CPDefinitionLocalServiceTest {
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Inject
+	private LockManager _lockManager;
 
 	@Inject
 	private Portal _portal;
