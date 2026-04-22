@@ -5,7 +5,6 @@
 
 import ClayLayout from '@clayui/layout';
 import {useFormikContext} from 'formik';
-import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {FormikFieldText} from '../../../components/forms/formik';
@@ -51,10 +50,7 @@ export default function FileSelectionStep() {
 			<ClayLayout.Sheet>
 				<ClayLayout.SheetHeader className="mb-1">
 					<div className="mb-2 sheet-title">
-						{sub(
-							Liferay.Language.get('x-details'),
-							Liferay.Language.get('import')
-						)}
+						{Liferay.Language.get('import-details')}
 					</div>
 
 					<div className="sheet-text text-3">
