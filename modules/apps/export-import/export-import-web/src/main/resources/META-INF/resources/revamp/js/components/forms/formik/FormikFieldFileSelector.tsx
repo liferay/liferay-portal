@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import {RequestResult} from '../../../common/services/ApiHelper';
+import {RequestResult} from '../../../services/ApiHelper';
 import FileSelector from '../../FileSelector';
 import {FormikWrapper} from './FormikWrapper';
 import {ValidationResponse, useFileSelector} from './hooks/useFileSelector';

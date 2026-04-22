@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export {default as formatDate} from '../revamp/js/common/utils/formatDate';
+export {default as formatDate} from '../revamp/js/utils/formatDate';
 export {default as ImportReportFDSPropsTransformer} from '../revamp/js/fds/ImportReportFDSPropsTransformer';
 export {NewExport} from '../revamp/js/pages/export/NewExport';
 export {NewImport} from '../revamp/js/pages/import/NewImport';

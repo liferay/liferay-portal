@@ -11,7 +11,7 @@ import {openModal} from 'frontend-js-components-web';
 import {escapeHTML, fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import formatDate from '../../../common/utils/formatDate';
+import formatDate from '../../../utils/formatDate';
 
 function DetailViewDefinitionCol({
 	body,

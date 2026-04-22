@@ -6,7 +6,7 @@
 import {useField} from 'formik';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
-import {RequestResult} from '../../../../common/services/ApiHelper';
+import {RequestResult} from '../../../../services/ApiHelper';
 import {FileSelectorStatus} from '../../../FileSelector';
 
 export interface ValidationResponse {

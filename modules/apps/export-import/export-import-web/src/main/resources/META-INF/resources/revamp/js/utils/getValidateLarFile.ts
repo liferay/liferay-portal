@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ApiHelper, {RequestResult} from '../common/services/ApiHelper';
+import ApiHelper, {RequestResult} from '../services/ApiHelper';
 
 const getEndpointByScope = (isCompanyGroup: boolean) => {
 	return isCompanyGroup
