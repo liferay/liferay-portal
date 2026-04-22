@@ -1594,6 +1594,7 @@
 		<exception>DuplicateCPAttachmentFileEntry</exception>
 		<exception>DuplicateCPConfigurationList</exception>
 		<exception>DuplicateCPConfigurationListRel</exception>
+		<exception>DuplicateCPDefinitionDraft</exception>
 		<exception>DuplicateCPDefinitionOptionRelKey</exception>
 		<exception>DuplicateCPDefinitionOptionValueRelKey</exception>
 		<exception>DuplicateCPInstance</exception>
