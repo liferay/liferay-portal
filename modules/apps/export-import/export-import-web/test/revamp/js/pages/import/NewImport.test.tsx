@@ -12,9 +12,9 @@ import React from 'react';
 import {NewImport} from '../../../../../src/main/resources/META-INF/resources/revamp/js/pages/import/NewImport';
 
 jest.mock(
-	'../../../../../src/main/resources/META-INF/resources/revamp/js/common/utils/getValidateLarFileEndpoint',
+	'../../../../../src/main/resources/META-INF/resources/revamp/js/utils/getValidateLarFile',
 	() => ({
-		getValidateLarFileEndpoint: jest.fn(() =>
+		getValidateLarFile: jest.fn(() =>
 			Promise.resolve({
 				data: {
 					errorMessages: [],

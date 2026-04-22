@@ -8,7 +8,7 @@ import {useFormikContext} from 'formik';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {getValidateLarFileEndpoint} from '../../../common/utils/getValidateLarFileEndpoint';
+import {getValidateLarFile} from '../../../utils/getValidateLarFile';
 import {FormikFieldText} from '../../../components/forms/formik';
 import {FormikFieldFileSelector} from '../../../components/forms/formik/FormikFieldFileSelector';
 import {useWizard} from '../NewImport';
@@ -46,7 +46,7 @@ export default function FileSelectionStep() {
 	}, [values.fileSelector, setFieldValue]);
 
 	const handleUpload = (file: File, signal?: AbortSignal) =>
-		getValidateLarFileEndpoint({
+		getValidateLarFile({
 			file,
 			isCompanyGroup,
 			onProgress: setProgress,
