@@ -42,6 +42,12 @@ function getDocumentPayload({dataset}: AnalyticsType.HTMLElement) {
 		});
 	}
 
+	if (dataset.analyticsAssetVocabularies) {
+		Object.assign(payload, {
+			assetVocabularies: dataset.analyticsAssetVocabularies.trim(),
+		});
+	}
+
 	if (dataset.analyticsExternalReferenceCode) {
 		Object.assign(payload, {
 			externalReferenceCode:

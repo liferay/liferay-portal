@@ -66,6 +66,12 @@ function getFormPayload(form: AnalyticsType.HTMLElement) {
 		});
 	}
 
+	if (form.dataset.analyticsAssetVocabularies) {
+		Object.assign(payload, {
+			assetVocabularies: form.dataset.analyticsAssetVocabularies.trim(),
+		});
+	}
+
 	if (form.dataset.analyticsExternalReferenceCode) {
 		Object.assign(payload, {
 			externalReferenceCode:

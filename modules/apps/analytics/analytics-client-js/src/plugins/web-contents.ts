@@ -50,6 +50,12 @@ function getWebContentPayload({dataset}: AnalyticsType.HTMLElement) {
 		Object.assign(payload, {type: dataset.analyticsAssetType.trim()});
 	}
 
+	if (dataset.analyticsAssetVocabularies) {
+		Object.assign(payload, {
+			assetVocabularies: dataset.analyticsAssetVocabularies.trim(),
+		});
+	}
+
 	if (dataset.analyticsWebContentResourcePk) {
 		Object.assign(payload, {
 			webContentResourcePk: dataset.analyticsWebContentResourcePk.trim(),

@@ -51,6 +51,12 @@ function getBlogPayload({dataset}: AnalyticsType.HTMLElement) {
 		Object.assign(payload, {type: dataset.analyticsAssetType.trim()});
 	}
 
+	if (dataset.analyticsAssetVocabularies) {
+		Object.assign(payload, {
+			assetVocabularies: dataset.analyticsAssetVocabularies.trim(),
+		});
+	}
+
 	if (dataset.analyticsExternalReferenceCode) {
 		Object.assign(payload, {
 			externalReferenceCode:

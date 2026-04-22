@@ -45,6 +45,12 @@ function getCustomAssetPayload({dataset}: AnalyticsType.HTMLElement) {
 		Object.assign(payload, {title: dataset.analyticsAssetTitle.trim()});
 	}
 
+	if (dataset.analyticsAssetVocabularies) {
+		Object.assign(payload, {
+			assetVocabularies: dataset.analyticsAssetVocabularies.trim(),
+		});
+	}
+
 	return payload;
 }
 
