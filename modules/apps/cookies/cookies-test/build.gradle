@@ -10,6 +10,7 @@ dependencies {
 	testImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	testImplementation project(":apps:static:portal:portal-upgrade-api")
 	testImplementation project(":core:petra:petra-string")
+	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
