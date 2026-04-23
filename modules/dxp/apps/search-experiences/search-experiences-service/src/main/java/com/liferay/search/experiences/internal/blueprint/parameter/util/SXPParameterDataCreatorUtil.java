@@ -382,17 +382,24 @@ public class SXPParameterDataCreatorUtil {
 		}
 
 		if (object != null) {
-			int[] fromArray = GetterUtil.getIntegerValues(object);
+			int[] intArray = GetterUtil.getIntegerValues(object);
 
-			if (ArrayUtil.isNotEmpty(fromArray)) {
-				return ArrayUtil.toArray(fromArray);
+			if (ArrayUtil.isNotEmpty(intArray)) {
+				return ArrayUtil.toArray(intArray);
 			}
-			else if (object instanceof List<?> list) {
-				if (list.stream(
-					).allMatch(
-						e -> e instanceof Integer
-					)) {
 
+			if (object instanceof List<?> list) {
+				boolean allInteger = true;
+
+				for (Object element : list) {
+					if (!(element instanceof Integer)) {
+						allInteger = false;
+
+						break;
+					}
+				}
+
+				if (allInteger) {
 					return list.toArray(new Integer[0]);
 				}
 			}
@@ -454,17 +461,24 @@ public class SXPParameterDataCreatorUtil {
 		}
 
 		if (object != null) {
-			long[] fromArray = GetterUtil.getLongValues(object);
+			long[] longArray = GetterUtil.getLongValues(object);
 
-			if (ArrayUtil.isNotEmpty(fromArray)) {
-				return ArrayUtil.toArray(fromArray);
+			if (ArrayUtil.isNotEmpty(longArray)) {
+				return ArrayUtil.toArray(longArray);
 			}
-			else if (object instanceof List<?> list) {
-				if (list.stream(
-					).allMatch(
-						e -> e instanceof Long
-					)) {
 
+			if (object instanceof List<?> list) {
+				boolean allLong = true;
+
+				for (Object element : list) {
+					if (!(element instanceof Long)) {
+						allLong = false;
+
+						break;
+					}
+				}
+
+				if (allLong) {
 					return list.toArray(new Long[0]);
 				}
 			}
@@ -520,17 +534,24 @@ public class SXPParameterDataCreatorUtil {
 		String[] defaultValue, Object object) {
 
 		if (object != null) {
-			String[] fromArray = GetterUtil.getStringValues(object);
+			String[] stringArray = GetterUtil.getStringValues(object);
 
-			if (ArrayUtil.isNotEmpty(fromArray)) {
-				return fromArray;
+			if (ArrayUtil.isNotEmpty(stringArray)) {
+				return stringArray;
 			}
-			else if (object instanceof List<?> list) {
-				if (list.stream(
-					).allMatch(
-						e -> e instanceof String
-					)) {
 
+			if (object instanceof List<?> list) {
+				boolean allString = true;
+
+				for (Object element : list) {
+					if (!(element instanceof String)) {
+						allString = false;
+
+						break;
+					}
+				}
+
+				if (allString) {
 					return list.toArray(new String[0]);
 				}
 			}
