@@ -23,14 +23,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 
-import java.text.Format;
-
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,13 +76,13 @@ public class AssetEntryInfoItemFieldValuesProvider
 				assetEntry.getUserName()),
 			new InfoFieldValue<>(
 				AssetEntryInfoItemFields.createDateInfoField,
-				_getDateValue(assetEntry.getCreateDate())),
+				assetEntry.getCreateDate()),
 			new InfoFieldValue<>(
 				AssetEntryInfoItemFields.modifiedDateInfoField,
-				_getDateValue(assetEntry.getModifiedDate())),
+				assetEntry.getModifiedDate()),
 			new InfoFieldValue<>(
 				AssetEntryInfoItemFields.expirationDateInfoField,
-				_getDateValue(assetEntry.getExpirationDate())),
+				assetEntry.getExpirationDate()),
 			new InfoFieldValue<>(
 				AssetEntryInfoItemFields.viewCountInfoField,
 				assetEntry::getViewCount),
@@ -98,18 +94,6 @@ public class AssetEntryInfoItemFieldValuesProvider
 			new InfoFieldValue<>(
 				AssetEntryInfoItemFields.userProfileImageInfoField,
 				_getUserNameProfileImage(assetEntry.getUserId())));
-	}
-
-	private String _getDateValue(Date date) {
-		if (date == null) {
-			return StringPool.BLANK;
-		}
-
-		Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
-
-		Format dateTimeFormat = FastDateFormatFactoryUtil.getDateTime(locale);
-
-		return dateTimeFormat.format(date);
 	}
 
 	private String _getDisplayPageURL(AssetEntry assetEntry) {
