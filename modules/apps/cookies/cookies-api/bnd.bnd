@@ -7,5 +7,6 @@ Export-Package:\
 	com.liferay.cookies.configuration.consent,\
 	com.liferay.cookies.exception,\
 	com.liferay.cookies.model,\
+	com.liferay.cookies.provider,\
 	com.liferay.cookies.service,\
 	com.liferay.cookies.service.persistence
