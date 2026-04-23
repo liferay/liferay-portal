@@ -317,6 +317,9 @@ Map<String, Map<String, String>> languagesTranslationsAriaLabelsMap = new HashMa
 		%>
 
 		<aui:script use="<%= modules %>">
+			const inputLocalizedId =
+				'<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>';
+
 			var defaultLanguageId = '<%= defaultLanguageId %>';
 
 			var available = {};
@@ -385,47 +388,96 @@ Map<String, Map<String, String>> languagesTranslationsAriaLabelsMap = new HashMa
 
 			const PATH_CONTEXT = Liferay.ThemeDisplay.getPathContext();
 
+			function <%= namespace + randomNamespace + id %>waitFor(isEditor) {
+				const elementNameCallback = isEditor
+					? () => {
+							const editor =
+								window[
+									'<%= namespace + HtmlUtil.escapeJS(inputEditorName) %>'
+								];
+
+							const nativeEditor = editor?.getNativeEditor();
+
+							return nativeEditor?.element?.getId();
+						}
+					: () => inputLocalizedId;
+
+				return new Promise((resolve) => {
+					const startTime = window.performance.now();
+
+					const check = () => {
+						if (window.performance.now() - startTime >= 200) {
+							resolve(null);
+
+							return;
+						}
+
+						const element = A.one('#' + elementNameCallback());
+
+						if (element) {
+							resolve(element);
+
+							return;
+						}
+
+						window.requestAnimationFrame(check);
+					};
+
+					window.requestAnimationFrame(check);
+				});
+			}
+
 			<c:choose>
 				<c:when test="<%= Validator.isNotNull(activeLanguageIds) && !activeLanguageIds.isEmpty() %>">
 
-				Promise.all([
-					import (PATH_CONTEXT + '/o/frontend-js-components-web/__liferay__/index.js'),
-					import (PATH_CONTEXT + '/o/frontend-js-react-web/__liferay__/index.js'),
-					import (PATH_CONTEXT + '/o/frontend-js-state-web/__liferay__/index.js')
-				]).then(
-					([frontendJsComponentsWebModule, frontendJsReactWebModule, frontendJsStateWebModule]) => {
-						// Wrapping in a timeout to deal with React's async rendering
-setTimeout(() => {
-						Liferay.InputLocalized.register(
-							'<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>',
-							{
-								activeLanguageIds: <%= JSONFactoryUtil.createJSONArray(activeLanguageIds) %>,
-								frontendJsComponentsWebModule,
-								frontendJsReactWebModule,
-								frontendJsStateWebModule,
-								...inputLocalizedProps
-							}
-						);
-});
-					}
-				)
+					Promise.all([
+						import(PATH_CONTEXT + '/o/frontend-js-components-web/__liferay__/index.js'),
+						import(PATH_CONTEXT + '/o/frontend-js-react-web/__liferay__/index.js'),
+						import(PATH_CONTEXT + '/o/frontend-js-state-web/__liferay__/index.js'),
+					]).then(
+						([
+							frontendJsComponentsWebModule,
+							frontendJsReactWebModule,
+							frontendJsStateWebModule,
+						]) => {
+
+							// Wrapping in a timeout to deal with React's async rendering
+
+							setTimeout(() => {
+								<%= namespace + randomNamespace + id %>waitFor(
+									<%= type.equals("editor") %>
+								).then(() => {
+									Liferay.InputLocalized.register(inputLocalizedId, {
+										activeLanguageIds:
+											<%= JSONFactoryUtil.createJSONArray(activeLanguageIds) %>,
+										frontendJsComponentsWebModule,
+										frontendJsReactWebModule,
+										frontendJsStateWebModule,
+										...inputLocalizedProps,
+									});
+								});
+							});
+						}
+					);
 				</c:when>
 				<c:otherwise>
-				Promise.all([
-					import (PATH_CONTEXT + '/o/frontend-js-components-web/__liferay__/index.js'),
-					import (PATH_CONTEXT + '/o/frontend-js-state-web/__liferay__/index.js')
-				]).then(
-					([frontendJsComponentsWebModule, frontendJsStateWebModule]) => {
+					Promise.all([
+						import(PATH_CONTEXT + '/o/frontend-js-components-web/__liferay__/index.js'),
+						import(PATH_CONTEXT + '/o/frontend-js-state-web/__liferay__/index.js'),
+					]).then(([frontendJsComponentsWebModule, frontendJsStateWebModule]) => {
+
 						// Wrapping in a timeout to deal with React's async rendering
+
 						setTimeout(() => {
-							Liferay.InputLocalized.register(
-								'<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>',
-								{
+							<%= namespace + randomNamespace + id %>waitFor(
+								<%= type.equals("editor") %>
+							).then(() => {
+								Liferay.InputLocalized.register(inputLocalizedId, {
 									frontendJsComponentsWebModule,
 									frontendJsStateWebModule,
-									...inputLocalizedProps
-								}
-							);
+									...inputLocalizedProps,
+								});
+							});
 						});
 					});
 				</c:otherwise>
