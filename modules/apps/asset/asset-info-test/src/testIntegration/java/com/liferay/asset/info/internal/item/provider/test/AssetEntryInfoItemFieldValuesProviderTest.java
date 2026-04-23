@@ -91,6 +91,9 @@ public class AssetEntryInfoItemFieldValuesProviderTest {
 		_assertDateFieldValue(
 			assetEntry.getCreateDate(), infoItemFieldValues, "createDate");
 		_assertDateFieldValue(
+			assetEntry.getExpirationDate(), infoItemFieldValues,
+			"expirationDate");
+		_assertDateFieldValue(
 			assetEntry.getModifiedDate(), infoItemFieldValues, "modifiedDate");
 	}
 
