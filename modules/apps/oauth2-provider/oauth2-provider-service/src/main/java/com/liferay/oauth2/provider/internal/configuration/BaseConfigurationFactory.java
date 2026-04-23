@@ -41,8 +41,9 @@ public abstract class BaseConfigurationFactory {
 
 	@Deactivate
 	protected void deactivate(Integer reason) throws PortalException {
-		if (reason !=
-				ComponentConstants.DEACTIVATION_REASON_CONFIGURATION_DELETED) {
+		if ((oAuth2Application == null) ||
+			(reason !=
+				ComponentConstants.DEACTIVATION_REASON_CONFIGURATION_DELETED)) {
 
 			return;
 		}
@@ -51,10 +52,6 @@ public abstract class BaseConfigurationFactory {
 
 		if (log.isDebugEnabled()) {
 			log.debug("Deactivating " + oAuth2Application);
-		}
-
-		if (oAuth2Application == null) {
-			return;
 		}
 
 		ConfigurationFactoryUtil.executeAsCompany(
