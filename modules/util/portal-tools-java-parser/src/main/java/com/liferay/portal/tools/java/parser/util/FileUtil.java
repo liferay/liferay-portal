@@ -8,7 +8,6 @@ package com.liferay.portal.tools.java.parser.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
