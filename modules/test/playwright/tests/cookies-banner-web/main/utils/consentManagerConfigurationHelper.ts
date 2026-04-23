@@ -16,6 +16,7 @@ interface ConsentManagerConfiguration {
 	enabled?: boolean;
 	explicitCookieConsentMode?: boolean;
 	forceReload?: boolean;
+	globalPrivacyControlEnabled?: boolean;
 	storeConsent?: boolean;
 }
 
@@ -136,6 +137,7 @@ export async function updateConsentManagerConfiguration(
 		enabled,
 		explicitCookieConsentMode,
 		forceReload,
+		globalPrivacyControlEnabled,
 		storeConsent,
 	}: ConsentManagerConfiguration
 ) {
@@ -197,6 +199,12 @@ export async function updateConsentManagerConfiguration(
 		if (storeConsent !== undefined) {
 			await consentManagerConfigurationPage.storeConsentCheckbox.setChecked(
 				storeConsent
+			);
+		}
+
+		if (globalPrivacyControlEnabled !== undefined) {
+			await consentManagerConfigurationPage.globalPrivacyControlEnabledCheckbox.setChecked(
+				globalPrivacyControlEnabled
 			);
 		}
 	}
