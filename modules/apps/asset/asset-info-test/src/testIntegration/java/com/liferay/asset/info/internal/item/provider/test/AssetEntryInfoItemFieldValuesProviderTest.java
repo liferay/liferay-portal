@@ -42,6 +42,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -68,6 +70,28 @@ public class AssetEntryInfoItemFieldValuesProviderTest {
 		_classNameId = _classNameLocalService.getClassNameId(
 			JournalArticle.class);
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testGetInfoItemFieldValuesReturnsDateForDateFields()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+			_classNameId, journalArticle.getResourcePrimKey());
+
+		_setupServiceContext(_getThemeDisplay());
+
+		InfoItemFieldValues infoItemFieldValues =
+			_infoItemFieldValuesProvider.getInfoItemFieldValues(assetEntry);
+
+		_assertDateFieldValue(
+			assetEntry.getCreateDate(), infoItemFieldValues, "createDate");
+		_assertDateFieldValue(
+			assetEntry.getModifiedDate(), infoItemFieldValues, "modifiedDate");
 	}
 
 	@Test
@@ -110,6 +134,16 @@ public class AssetEntryInfoItemFieldValuesProviderTest {
 
 		_testGetInfoItemFieldValues(
 			journalArticle, JournalArticleConstants.CANONICAL_URL_SEPARATOR);
+	}
+
+	private void _assertDateFieldValue(
+		Date expectedDate, InfoItemFieldValues infoItemFieldValues,
+		String fieldName) {
+
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue(fieldName);
+
+		Assert.assertEquals(expectedDate, infoFieldValue.getValue());
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws Exception {
