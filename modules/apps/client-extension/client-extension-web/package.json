@@ -11,7 +11,7 @@
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
-		"uuid": "9.0.0"
+		"uuid": "14.0.0"
 	},
 	"main": "js/index.ts",
 	"name": "@liferay/client-extension-web",

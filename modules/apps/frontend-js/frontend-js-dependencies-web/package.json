@@ -26,7 +26,7 @@
 		"react-transition-group": "4.4.1",
 		"text-mask-addons": "3.8.0",
 		"text-mask-core": "5.1.2",
-		"uuid": "9.0.0"
+		"uuid": "14.0.0"
 	},
 	"name": "@liferay/frontend-js-dependencies-web",
 	"private": true,

@@ -9,7 +9,7 @@
 		"browser-tabs-lock": "^1.2.7",
 		"core-js": "^2.5.6",
 		"hash.js": "^1.1.7",
-		"uuid": "9.0.0"
+		"uuid": "14.0.0"
 	},
 	"description": "Javascript client to capture and send analytics data to server",
 	"devDependencies": {
