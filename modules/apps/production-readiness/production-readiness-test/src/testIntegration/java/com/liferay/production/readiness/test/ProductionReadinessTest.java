@@ -44,8 +44,8 @@ public class ProductionReadinessTest {
 				ProductionReadinessRule.class, null);
 
 		Assert.assertTrue(
-			"Should have at least 3 seed rules, but found " + references.size(),
-			references.size() >= 3);
+			"Should have at least 8 rules, but found " + references.size(),
+			references.size() >= 8);
 
 		long companyId = TestPropsValues.getCompanyId();
 

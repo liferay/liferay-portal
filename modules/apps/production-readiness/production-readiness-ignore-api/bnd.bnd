@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Production Readiness Ignore API
 Bundle-SymbolicName: com.liferay.production.readiness.ignore.api
 Bundle-Version: 1.0.0
-Export-Package: com.liferay.production.readiness.ignore.exception,com.liferay.production.readiness.ignore.model,com.liferay.production.readiness.ignore.persistence,com.liferay.production.readiness.ignore.service,com.liferay.production.readiness.ignore.service.persistence
+Export-Package: com.liferay.production.readiness.ignore.exception,com.liferay.production.readiness.ignore.model,com.liferay.production.readiness.ignore.service,com.liferay.production.readiness.ignore.service.persistence

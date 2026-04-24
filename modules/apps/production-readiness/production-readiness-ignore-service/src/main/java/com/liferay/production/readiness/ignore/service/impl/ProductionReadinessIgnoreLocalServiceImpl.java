@@ -15,9 +15,12 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.production.readiness.ignore.model.ProductionReadinessIgnore;
 import com.liferay.production.readiness.ignore.service.base.ProductionReadinessIgnoreLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.service.RoleLocalService;
+
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -89,7 +92,7 @@ public class ProductionReadinessIgnoreLocalServiceImpl
 	}
 
 	private void _checkPermission() throws PortalException {
-		if (!roleLocalService.hasUserRole(
+		if (!_roleLocalService.hasUserRole(
 				PrincipalThreadLocal.getUserId(),
 				CompanyThreadLocal.getCompanyId(), RoleConstants.ADMINISTRATOR,
 				true)) {
@@ -98,6 +101,9 @@ public class ProductionReadinessIgnoreLocalServiceImpl
 				PrincipalThreadLocal.getUserId());
 		}
 	}
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
 // LIFERAY-SERVICE-BUILDER-HASH:1760571727

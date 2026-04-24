@@ -1,4 +1,4 @@
-package com.liferay.production.readiness.internal.rules;
+package com.liferay.production.readiness.rule.impl;
 
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.production.readiness.ProductionReadinessRule;
@@ -31,20 +31,32 @@ public class DatabaseTypeRule implements ProductionReadinessRule {
 					databaseMetaData.getDatabaseProductName();
 
 				if (databaseProductName.contains("HSQL")) {
-					return Collections.singletonList(new Result(
-						Result.Status.FAIL, Result.Severity.CRITICAL,
-						getCategory(), databaseProductName,
-						"MySQL, PostgreSQL, Oracle, or SQL Server",
-						"database-type-fail", null,
-						"https://learn.liferay.com/"));
+					return Collections.singletonList(
+						Result.builder()
+							.status(Result.Status.FAIL)
+							.severity(Result.Severity.CRITICAL)
+							.category(getCategory())
+							.currentValue(databaseProductName)
+							.recommendedValue(
+								"MySQL, PostgreSQL, Oracle, or SQL Server")
+							.messageKey("database-type-fail")
+							.messageParameters(new Object[] {databaseProductName})
+							.docsLink("https://learn.liferay.com/")
+							.build());
 				}
 
-				return Collections.singletonList(new Result(
-					Result.Status.PASS, Result.Severity.LOW, getCategory(),
-					databaseProductName,
-					"MySQL, PostgreSQL, Oracle, or SQL Server",
-					"database-type-pass", null,
-					"https://learn.liferay.com/"));
+				return Collections.singletonList(
+					Result.builder()
+						.status(Result.Status.PASS)
+						.severity(Result.Severity.LOW)
+						.category(getCategory())
+						.currentValue(databaseProductName)
+						.recommendedValue(
+							"MySQL, PostgreSQL, Oracle, or SQL Server")
+						.messageKey("database-type-pass")
+						.messageParameters(new Object[] {databaseProductName})
+						.docsLink("https://learn.liferay.com/")
+						.build());
 			}
 		}
 		catch (Exception e) {

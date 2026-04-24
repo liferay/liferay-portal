@@ -1,4 +1,4 @@
-package com.liferay.production.readiness.internal.rules;
+package com.liferay.production.readiness.rule.impl;
 
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -23,18 +23,28 @@ public class DefaultCompanyWebIdRule implements ProductionReadinessRule {
 			Company company = _companyLocalService.getCompany(companyId);
 
 			if ("liferay.com".equals(company.getWebId())) {
-				return Collections.singletonList(new Result(
-					Result.Status.FAIL, Result.Severity.MEDIUM, getCategory(),
-					company.getWebId(), "a-custom-web-id",
-					"default-company-web-id-fail", null,
-					"https://learn.liferay.com/"));
+				return Collections.singletonList(
+					Result.builder()
+						.status(Result.Status.FAIL)
+						.severity(Result.Severity.MEDIUM)
+						.category(getCategory())
+						.currentValue(company.getWebId())
+						.recommendedValue("a-custom-web-id")
+						.messageKey("default-company-web-id-fail")
+						.docsLink("https://learn.liferay.com/")
+						.build());
 			}
 
-			return Collections.singletonList(new Result(
-				Result.Status.PASS, Result.Severity.LOW, getCategory(),
-				company.getWebId(), "a-custom-web-id",
-				"default-company-web-id-pass", null,
-				"https://learn.liferay.com/"));
+			return Collections.singletonList(
+				Result.builder()
+					.status(Result.Status.PASS)
+					.severity(Result.Severity.LOW)
+					.category(getCategory())
+					.currentValue(company.getWebId())
+					.recommendedValue("a-custom-web-id")
+					.messageKey("default-company-web-id-pass")
+					.docsLink("https://learn.liferay.com/")
+					.build());
 		}
 		catch (Exception e) {
 			return Collections.emptyList();
