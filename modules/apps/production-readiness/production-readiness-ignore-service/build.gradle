@@ -1,0 +1,8 @@
+buildService {
+	apiDir = "../production-readiness-ignore-api/src/main/java"
+}
+
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly project(":apps:production-readiness:production-readiness-ignore-api")
+}

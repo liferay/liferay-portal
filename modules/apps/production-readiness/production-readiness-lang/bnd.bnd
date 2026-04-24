@@ -1,0 +1,8 @@
+Bundle-Name: Liferay Production Readiness Lang
+Bundle-SymbolicName: com.liferay.production.readiness.lang
+Bundle-Version: 1.0.0
+Liferay-Releng-Module-Group-Description:
+Liferay-Releng-Module-Group-Title: Production Readiness
+provide-capability:\
+	osgi.resource.localization;\
+		osgi.resource.localization="content.Language"

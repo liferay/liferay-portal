@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder package-path="com.liferay.production.readiness.ignore">
+	<namespace>PR</namespace>
+	<entity name="ProductionReadinessIgnore" local-service="true" remote-service="false" uuid="false">
+
+		<!-- PK fields -->
+
+		<column name="productionReadinessIgnoreId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="ruleKey" type="String" />
+		<column name="reason" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+
+		<finder name="C_R" return-type="ProductionReadinessIgnore" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="ruleKey" />
+		</finder>
+	</entity>
+</service-builder>

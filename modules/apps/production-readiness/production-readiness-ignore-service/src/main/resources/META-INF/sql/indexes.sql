@@ -1,0 +1,1 @@
+create unique index IX_F76F1417 on PR_ProductionReadinessIgnore (companyId, ruleKey[$COLUMN_LENGTH:75$]);

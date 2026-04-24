@@ -1,0 +1,8 @@
+dependencies {
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	testIntegrationImplementation project(":apps:production-readiness:production-readiness-api")
+	testIntegrationImplementation project(":apps:production-readiness:production-readiness-ignore-api")
+	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
+}

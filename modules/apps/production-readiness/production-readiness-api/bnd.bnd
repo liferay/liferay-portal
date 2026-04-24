@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Production Readiness API
+Bundle-SymbolicName: com.liferay.production.readiness.api
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.production.readiness
