@@ -10,6 +10,15 @@ html#{$cadmin-selector}:not(._) {
 			top: 0;
 			width: 100%;
 			z-index: 1;
+
+			&:has(.no-preview-container) {
+				background-color: $cadmin-white;
+
+				.footer {
+					background-color: $cadmin-gray-100;
+					color: $cadmin-gray-900;
+				}
+			}
 		}
 
 		.header > nav {
@@ -86,13 +95,38 @@ html#{$cadmin-selector}:not(._) {
 			}
 
 			&:not(.open) {
-				img,
+				img:not(.no-preview-image),
 				.no-preview-container,
 				.video-preview {
 					left: 50%;
 					position: absolute;
 					top: 50%;
 					transform: translate(-50%, -50%);
+				}
+			}
+
+			.no-preview-container {
+				color: $cadmin-gray-900;
+				text-align: center;
+
+				.no-preview-image {
+					display: block;
+					filter: grayscale(100%);
+					height: auto;
+					margin: 0 auto 16px;
+					max-width: 100%;
+					width: 250px;
+				}
+
+				.no-preview-title {
+					display: block;
+					font-size: 16px;
+					margin-bottom: 4px;
+				}
+
+				.no-preview-description {
+					color: $cadmin-gray-700;
+					margin: 0;
 				}
 			}
 		}

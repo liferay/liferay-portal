@@ -7,10 +7,22 @@ import React from 'react';
 
 export default function NoPreview() {
 	return (
-		<div className="no-preview-container text-light">
-			<strong>
-				{Liferay.Language.get('there-is-no-preview-available')}
+		<div className="no-preview-container">
+			<img
+				alt=""
+				className="no-preview-image"
+				src={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/cms_empty_state_preview.svg`}
+			/>
+
+			<strong className="no-preview-title">
+				{Liferay.Language.get('your-document-is-uploaded')}
 			</strong>
+
+			<p className="no-preview-description">
+				{Liferay.Language.get(
+					'a-preview-could-not-be-generated-but-the-document-is-available'
+				)}
+			</p>
 		</div>
 	);
 }
