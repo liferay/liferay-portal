@@ -59,7 +59,19 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 				_log.warn("The operationMode property is no longer supported");
 			}
 
-			properties.put("productionModeEnabled", Boolean.TRUE);
+			Object productionModeEnabled = properties.get(
+				"productionModeEnabled");
+
+			if (productionModeEnabled == null) {
+				properties.put("productionModeEnabled", Boolean.TRUE);
+			}
+			else if (!GetterUtil.getBoolean(productionModeEnabled) &&
+					 _log.isWarnEnabled()) {
+
+				_log.warn(
+					"Preserving existing productionModeEnabled value over " +
+						"operationMode=REMOTE");
+			}
 		}
 
 		Object trackTotalHits = properties.remove("trackTotalHits");
