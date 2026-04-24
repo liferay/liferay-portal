@@ -469,6 +469,16 @@ definition {
 
 	@summary = "Default summary"
 	macro setGoogleCloudTranslationServiceKey() {
+		var wifCredentialsFile = "/root/.gcloud/translate.json";
+
+		var wifCredentialsFileExists = FileUtil.exists(${wifCredentialsFile});
+
+		if (${wifCredentialsFileExists} == "true") {
+			var attributes = FileUtil.read(${wifCredentialsFile});
+
+			return ${attributes};
+		}
+
 		var lineSeparater = "\n";
 		var value1 = PropsUtil.get("google.cloud.translation.service.key.type");
 		var value2 = PropsUtil.get("google.cloud.translation.service.key.project.id");
