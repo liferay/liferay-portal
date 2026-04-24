@@ -9,6 +9,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -18,10 +20,15 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.internal.constants.CompanyGroupConstants;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -34,12 +41,35 @@ public class AddCompanyGroupPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) {
-		_addCompanyGroup(company.getCompanyId());
+		if (FeatureFlagManagerUtil.isEnabled(
+				company.getCompanyId(), "LPD-35914")) {
+
+			_addCompanyGroup(company.getCompanyId());
+		}
 	}
 
 	@Override
 	public void portalInstanceUnregistered(Company company) {
 		_deleteCompanyGroup(company.getCompanyId());
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class,
+			(companyId, featureFlagKey, enabled) -> {
+				if (enabled) {
+					_addCompanyGroup(companyId);
+				}
+			},
+			MapUtil.singletonDictionary("feature.flag.key", "LPD-35914"));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+		}
 	}
 
 	private void _addCompanyGroup(long companyId) {
@@ -87,6 +117,8 @@ public class AddCompanyGroupPortalInstanceLifecycleListener
 
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED)
 	private ModuleServiceLifecycle _moduleServiceLifecycle;
+
+	private volatile ServiceRegistration<?> _serviceRegistration;
 
 	@Reference
 	private UserLocalService _userLocalService;
