@@ -5,7 +5,7 @@
 
 package com.liferay.translation.translator.google.cloud.internal.translator;
 
-import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
@@ -151,13 +151,12 @@ public class GoogleCloudTranslator extends BaseTranslator {
 		String serviceAccountPrivateKey =
 			googleCloudTranslatorConfiguration.serviceAccountPrivateKey();
 
-		ServiceAccountCredentials serviceAccountCredentials = null;
+		GoogleCredentials googleCredentials = null;
 
 		try (InputStream inputStream = new ByteArrayInputStream(
 				serviceAccountPrivateKey.getBytes())) {
 
-			serviceAccountCredentials = ServiceAccountCredentials.fromStream(
-				inputStream);
+			googleCredentials = GoogleCredentials.fromStream(inputStream);
 		}
 		catch (IOException ioException) {
 			throw new SystemException(
@@ -170,7 +169,7 @@ public class GoogleCloudTranslator extends BaseTranslator {
 		return defaultTranslateFactory.create(
 			TranslateOptions.newBuilder(
 			).setCredentials(
-				serviceAccountCredentials
+				googleCredentials
 			).build());
 	}
 
