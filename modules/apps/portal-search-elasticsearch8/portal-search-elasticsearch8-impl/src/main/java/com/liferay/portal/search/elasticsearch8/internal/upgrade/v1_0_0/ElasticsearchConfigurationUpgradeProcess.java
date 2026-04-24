@@ -36,13 +36,9 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 		_configurationUpgradeStepFactory = configurationUpgradeStepFactory;
 	}
 
-	@Override
-	protected void doUpgrade() throws Exception {
-		_upgradeElasticsearchConfiguration();
-		_upgradeElasticsearchConnectionConfigurations();
-	}
+	protected static void updateProperties(
+		Dictionary<String, Object> properties) {
 
-	private void _updateProperties(Dictionary<String, Object> properties) {
 		properties.remove("discoveryZenPingUnicastHostsPort");
 
 		Object embeddedHttpPort = properties.remove("embeddedHttpPort");
@@ -82,6 +78,12 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 		properties.remove("restClientLoggerLevel");
 	}
 
+	@Override
+	protected void doUpgrade() throws Exception {
+		_upgradeElasticsearchConfiguration();
+		_upgradeElasticsearchConnectionConfigurations();
+	}
+
 	private void _upgradeElasticsearchConfiguration() throws Exception {
 		Configuration elasticsearch7configuration =
 			_configurationAdmin.getConfiguration(
@@ -101,7 +103,7 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 						"to the configuration may be required.");
 		}
 
-		_updateProperties(elasticsearch7properties);
+		updateProperties(elasticsearch7properties);
 
 		UpgradeStep upgradeStep =
 			_configurationUpgradeStepFactory.createUpgradeStep(
@@ -118,7 +120,7 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 		Dictionary<String, Object> elasticsearch8properties =
 			elasticsearch8configuration.getProperties();
 
-		_updateProperties(elasticsearch8properties);
+		updateProperties(elasticsearch8properties);
 
 		Enumeration<String> enumeration = elasticsearch7properties.keys();
 
