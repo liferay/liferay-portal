@@ -53,6 +53,9 @@ ServerDisplayContext serverDisplayContext = new ServerDisplayContext(renderReque
 		<c:when test='<%= tabs1.equals("shutdown") %>'>
 			<liferay-util:include page="/shutdown.jsp" servletContext="<%= application %>" />
 		</c:when>
+		<c:when test='<%= tabs1.equals("production-readiness") %>'>
+			<liferay-util:include page="/production_readiness.jsp" servletContext="<%= application %>" />
+		</c:when>
 		<c:otherwise>
 			<liferay-util:include page="/resources.jsp" servletContext="<%= application %>" />
 		</c:otherwise>
