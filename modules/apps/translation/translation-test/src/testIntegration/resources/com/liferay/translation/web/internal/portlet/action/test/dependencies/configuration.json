@@ -1,0 +1,14 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": true,
+					"label": "Show paragraph",
+					"name": "paragraph",
+					"type": "checkbox"
+				}
+			]
+		}
+	]
+}
