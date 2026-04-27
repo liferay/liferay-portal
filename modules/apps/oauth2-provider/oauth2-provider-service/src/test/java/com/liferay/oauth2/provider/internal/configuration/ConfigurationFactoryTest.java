@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
 import com.liferay.portal.k8s.agent.PortalK8sConfigMapModifier;
+import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
@@ -260,6 +261,12 @@ public class ConfigurationFactoryTest {
 		).thenReturn(
 			_user
 		);
+
+		Runnable syncCallableFuture = ReflectionTestUtil.getFieldValue(
+			DependencyManagerSyncUtil.class,
+			"_syncCallableDefaultNoticeableFuture");
+
+		syncCallableFuture.run();
 	}
 
 	@Test
