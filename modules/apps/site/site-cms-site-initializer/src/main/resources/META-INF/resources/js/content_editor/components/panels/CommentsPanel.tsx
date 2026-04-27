@@ -226,7 +226,11 @@ export default function CommentsPanel({
 	return (
 		<>
 			{addCommentURL && (
-				<div className="border-bottom pb-2 px-3">
+				<div
+					className={classNames('pb-2 px-3', {
+						'border-bottom ': comments.length,
+					})}
+				>
 					<label>{Liferay.Language.get('add-comment')}</label>
 
 					<CommentEditor
