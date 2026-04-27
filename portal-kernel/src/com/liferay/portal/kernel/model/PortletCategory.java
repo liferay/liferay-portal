@@ -75,7 +75,21 @@ public class PortletCategory implements Serializable {
 	}
 
 	public PortletCategory getCategory(String name) {
-		return _portletCategories.get(name);
+		int index = name.indexOf(_DELIMITER);
+
+		if (index == -1) {
+			return _portletCategories.get(name);
+		}
+
+		PortletCategory portletCategory = _portletCategories.get(
+			name.substring(0, index));
+
+		if (portletCategory == null) {
+			return null;
+		}
+
+		return portletCategory.getCategory(
+			name.substring(index + _DELIMITER.length()));
 	}
 
 	public String getName() {
