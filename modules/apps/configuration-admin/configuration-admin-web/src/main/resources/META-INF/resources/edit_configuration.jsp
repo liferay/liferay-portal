@@ -230,7 +230,7 @@ renderResponse.setTitle(categoryDisplayName);
 		if (form) {
 			var handleInputs = function () {
 				var inputs = form.querySelectorAll(
-					'input:not([type="hidden"]), select, textarea'
+					'button[role="combobox"], input:not([type="hidden"]), select, textarea'
 				);
 
 				if (inputs.length) {
