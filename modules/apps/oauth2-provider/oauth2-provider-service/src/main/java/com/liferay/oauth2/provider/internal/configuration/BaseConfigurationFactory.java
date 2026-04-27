@@ -14,11 +14,13 @@ import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.k8s.agent.PortalK8sConfigMapModifier;
+import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.ComponentConstants;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
@@ -38,6 +41,32 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  */
 public abstract class BaseConfigurationFactory {
+
+	@Activate
+	protected void activate(Map<String, Object> properties) throws Exception {
+		Log log = getLog();
+
+		if (log.isDebugEnabled()) {
+			log.debug("Activate " + properties);
+		}
+
+		DependencyManagerSyncUtil.registerSyncCallable(
+			new CompanyInheritableThreadLocalCallable<>(
+				() -> {
+					ConfigurationFactoryUtil.executeAsCompany(
+						companyLocalService, properties,
+						companyId -> {
+							String externalReferenceCode =
+								ConfigurationFactoryUtil.
+									getExternalReferenceCode(properties);
+
+							doActivate(
+								properties, companyId, externalReferenceCode);
+						});
+
+					return null;
+				}));
+	}
 
 	@Deactivate
 	protected void deactivate(Integer reason) throws PortalException {
@@ -87,6 +116,34 @@ public abstract class BaseConfigurationFactory {
 			});
 	}
 
+	protected abstract void doActivate(
+			Map<String, Object> properties, long companyId,
+			String externalReferenceCode)
+		throws Exception;
+
+	protected HashMapBuilder.HashMapWrapper<String, String>
+		getBaseExtensionProperties(
+			String externalReferenceCode, OAuth2Application oAuth2Application) {
+
+		return HashMapBuilder.put(
+			externalReferenceCode + ".oauth2.authorization.uri",
+			"/o/oauth2/authorize"
+		).put(
+			externalReferenceCode + ".oauth2.home.page.uri",
+			oAuth2Application.getHomePageURL()
+		).put(
+			externalReferenceCode + ".oauth2.introspection.uri",
+			"/o/oauth2/introspect"
+		).put(
+			externalReferenceCode + ".oauth2.jwks.uri", "/o/oauth2/jwks"
+		).put(
+			externalReferenceCode + ".oauth2.redirect.uris",
+			"/o/oauth2/redirect"
+		).put(
+			externalReferenceCode + ".oauth2.token.uri", "/o/oauth2/token"
+		);
+	}
+
 	protected String getHomePageURL(String homePageURL, String baseURL) {
 		if (Validator.isNull(homePageURL)) {
 			return baseURL;
@@ -107,6 +164,19 @@ public abstract class BaseConfigurationFactory {
 
 	protected String getServiceAddress(Company company) {
 		return Http.HTTPS_WITH_SLASH.concat(company.getVirtualHostname());
+	}
+
+	protected void logOAuth2Application(OAuth2Application oAuth2Application) {
+		Log log = getLog();
+
+		if (log.isDebugEnabled()) {
+			log.debug(
+				StringBundler.concat(
+					"OAuth 2 application with external reference code ",
+					oAuth2Application.getExternalReferenceCode(),
+					" and company ID ", oAuth2Application.getCompanyId(),
+					" has client ID ", oAuth2Application.getClientId()));
+		}
 	}
 
 	protected void modifyConfigMap(
