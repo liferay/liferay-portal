@@ -244,10 +244,11 @@ export default function CommentsPanel({
 
 			{comments.length ? (
 				<ul className="p-0">
-					{comments.map((comment) => (
+					{comments.map((comment, index) => (
 						<CommentNode
 							comment={comment}
 							editorConfig={editorConfig}
+							isLast={index === comments.length - 1}
 							key={comment.commentId}
 							onDeleteComment={deleteComment}
 							onSaveComment={saveComment}
@@ -262,12 +263,14 @@ export default function CommentsPanel({
 function CommentNode({
 	comment,
 	editorConfig,
+	isLast,
 	onDeleteComment,
 	onSaveComment,
 	parentCommentId,
 }: {
 	comment: Comment;
 	editorConfig: LiferayEditorConfig;
+	isLast: Boolean;
 	onDeleteComment: (
 		commentId: string,
 		parentCommentId?: string
@@ -293,7 +296,8 @@ function CommentNode({
 		<>
 			<li
 				className={classNames('list-unstyled pl-3', {
-					'border-bottom pr-3 py-3': comment.rootComment,
+					'border-bottom ': comment.rootComment && !isLast,
+					'pr-3 py-3': comment.rootComment,
 				})}
 			>
 				<article>
@@ -379,10 +383,13 @@ function CommentNode({
 
 					{comment.children?.length ? (
 						<ul className="border-left border-secondary pl-0">
-							{comment.children.map((child: Comment) => (
+							{comment.children.map((child: Comment, index) => (
 								<CommentNode
 									comment={child}
 									editorConfig={editorConfig}
+									isLast={
+										index === comment.children.length - 1
+									}
 									key={child.commentId}
 									onDeleteComment={onDeleteComment}
 									onSaveComment={onSaveComment}
