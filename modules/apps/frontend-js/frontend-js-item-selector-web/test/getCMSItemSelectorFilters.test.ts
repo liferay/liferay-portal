@@ -28,7 +28,7 @@ describe('getCMSItemSelectorFilters', () => {
 
 		expect(filters.map((f) => f.id)).toEqual([
 			'groupIds',
-			'objectDefinitionId',
+			'objectDefinitionExternalReferenceCode',
 			'taxonomyCategoryIds',
 			'keywords',
 			'creatorId',
@@ -42,13 +42,13 @@ describe('getCMSItemSelectorFilters', () => {
 		]);
 
 		const typeFilter = filters.find(
-			(f) => f.id === 'objectDefinitionId'
+			(f) => f.id === 'objectDefinitionExternalReferenceCode'
 		) as ISelectionFilterConfig;
 
 		expect(typeFilter?.apiURL).toContain(
 			"objectFolderExternalReferenceCode eq 'L_CMS_FILE_TYPES'"
 		);
-		expect(typeFilter?.entityFieldType).toBe(EEntityFieldType.INTEGER);
+		expect(typeFilter?.entityFieldType).toBe(EEntityFieldType.STRING);
 		expect(typeFilter?.itemLabel).toBe('label.LANG');
 
 		const categoryFilter = filters.find(
