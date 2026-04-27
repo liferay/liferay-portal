@@ -57,29 +57,6 @@ public class DDMFormValuesConverterUtil {
 		return newDDMFormFieldValues;
 	}
 
-	public static List<DDMFormFieldValue> getDDMFormFieldValues(
-		Collection<DDMFormField> ddmFormFields,
-		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap) {
-
-		List<DDMFormFieldValue> newDDMFormFieldValues = new ArrayList<>();
-
-		for (DDMFormField ddmFormField : ddmFormFields) {
-			List<DDMFormFieldValue> ddmFormFieldValues =
-				ddmFormFieldValuesMap.get(ddmFormField.getName());
-
-			if (ddmFormFieldValues != null) {
-				for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
-					_populateNestedValues(
-						ddmFormField, ddmFormFieldValue, ddmFormFieldValuesMap);
-
-					newDDMFormFieldValues.add(ddmFormFieldValue);
-				}
-			}
-		}
-
-		return newDDMFormFieldValues;
-	}
-
 	private static DDMFormFieldValue _createDefaultDDMFormFieldValue(
 		DDMFormField ddmFormField) {
 
