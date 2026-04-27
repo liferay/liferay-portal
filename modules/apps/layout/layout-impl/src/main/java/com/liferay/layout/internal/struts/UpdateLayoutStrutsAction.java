@@ -60,8 +60,6 @@ import jakarta.portlet.PortletPreferences;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Set;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -421,17 +419,14 @@ public class UpdateLayoutStrutsAction implements StrutsAction {
 				0, ActionKeys.ADD_TO_PAGE);
 		}
 
-		Set<String> categoryNames = portlet.getCategoryNames();
-
-		PortletCategory portletCategory = (PortletCategory)WebAppPool.get(
+		PortletCategory rootPortletCategory = (PortletCategory)WebAppPool.get(
 			themeDisplay.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
-		for (PortletCategory curPortletCategory :
-				portletCategory.getCategories()) {
+		for (String categoryName : portlet.getCategoryNames()) {
+			PortletCategory portletCategory = rootPortletCategory.getCategory(
+				categoryName);
 
-			if (_containsPortletCategoryPermission(
-					categoryNames, curPortletCategory)) {
-
+			if ((portletCategory != null) && !portletCategory.isHidden()) {
 				return;
 			}
 		}
@@ -441,29 +436,6 @@ public class UpdateLayoutStrutsAction implements StrutsAction {
 			StringBundler.concat(
 				Portlet.class.getName(), StringPool.UNDERLINE, portletId),
 			0, ActionKeys.ADD_TO_PAGE);
-	}
-
-	private boolean _containsPortletCategoryPermission(
-		Set<String> categoryNames, PortletCategory portletCategory) {
-
-		if (!portletCategory.isHidden() &&
-			(categoryNames.contains(portletCategory.getName()) ||
-			 categoryNames.contains(portletCategory.getPath()))) {
-
-			return true;
-		}
-
-		for (PortletCategory childPortletCategory :
-				portletCategory.getCategories()) {
-
-			if (_containsPortletCategoryPermission(
-					categoryNames, childPortletCategory)) {
-
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	@Reference
