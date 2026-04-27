@@ -5,6 +5,7 @@
 
 package com.liferay.layout.admin.web.internal.info.item.helper;
 
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.info.field.InfoField;
@@ -81,7 +82,11 @@ public class LayoutInfoItemFieldValuesUpdaterHelper {
 			JSONObject processorJSONObject = jsonObject.getJSONObject(
 				processorKey);
 
-			if (!processorJSONObject.has(fieldName)) {
+			if (!processorJSONObject.has(fieldName) ||
+				processorKey.equals(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR)) {
+
 				continue;
 			}
 

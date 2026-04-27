@@ -5,6 +5,7 @@
 
 package com.liferay.layout.admin.web.internal.info.item.helper;
 
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
@@ -93,7 +94,11 @@ public class LayoutInfoItemFieldValuesProviderHelper {
 			JSONObject processorJSONObject = jsonObject.getJSONObject(
 				processorKey);
 
-			if (!processorJSONObject.has(name)) {
+			if (!processorJSONObject.has(name) ||
+				processorKey.equals(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR)) {
+
 				continue;
 			}
 
