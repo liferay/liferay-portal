@@ -53,23 +53,23 @@ export function useCollection<
 	P = unknown,
 	K = unknown,
 >({
-	children,
-	connectNested = true,
-	exclude,
-	filter,
-	filterKey,
-	forceDeepRootUpdate,
-	itemContainer: ItemContainer,
-	itemIdKey = 'id',
-	items,
-	notFound,
-	parentKey,
-	passthroughKey = true,
-	publicApi,
-	suppressTextValueWarning = true,
-	virtualizer,
-	visibleKeys,
-}: ICollectionProps<T, P> & Props<P, K>): CollectionState {
+	  children,
+	  connectNested = true,
+	  exclude,
+	  filter,
+	  filterKey,
+	  forceDeepRootUpdate,
+	  itemContainer: ItemContainer,
+	  itemIdKey = 'id',
+	  items,
+	  notFound,
+	  parentKey,
+	  passthroughKey = true,
+	  publicApi,
+	  suppressTextValueWarning = true,
+	  virtualizer,
+	  visibleKeys,
+  }: ICollectionProps<T, P> & Props<P, K>): CollectionState {
 	const {forceUpdate, layout: parentLayout} = useContext(CollectionContext);
 
 	const layoutRef = useRef<Map<React.Key, LayoutValue>>(new Map());
@@ -126,9 +126,9 @@ export function useCollection<
 					>
 						{props
 							? React.cloneElement(
-									child as React.ReactElement,
-									props
-								)
+								child as React.ReactElement,
+								props
+							)
 							: child}
 					</ItemContainer>
 				);
@@ -140,22 +140,22 @@ export function useCollection<
 				key,
 				...(passthroughKey || hasChildNeedPassthroughKey
 					? {
-							index,
-							keyValue: key,
+						index,
+						keyValue: key,
 
-							// We only pass the textValue to the component when the collection
-							// indicates that it will be used for accessibility issues.
+						// We only pass the textValue to the component when the collection
+						// indicates that it will be used for accessibility issues.
 
-							...(!suppressTextValueWarning
-								? {
-										textValue: getTextValue(
-											key,
-											child,
-											true
-										),
-									}
-								: {}),
-						}
+						...(!suppressTextValueWarning
+							? {
+								textValue: getTextValue(
+									key,
+									child,
+									true
+								),
+							}
+							: {}),
+					}
 					: {}),
 				...(props ? props : {}),
 			});
@@ -280,19 +280,19 @@ export function useCollection<
 						const publicItem =
 							exclude && typeof item === 'object'
 								? excludeProps(
-										item as Record<any, any>,
-										exclude
-									)
+									item as Record<any, any>,
+									exclude
+								)
 								: item;
 						const child = Array.isArray(publicApi)
 							? (children(
-									publicItem,
-									...publicApi
-								) as ChildElement)
+								publicItem,
+								...publicApi
+							) as ChildElement)
 							: (children(
-									publicItem,
-									virtual.index
-								) as ChildElement);
+								publicItem,
+								virtual.index
+							) as ChildElement);
 
 						const props = {
 							'data-index': virtual.index,
@@ -355,11 +355,11 @@ export function useCollection<
 					if (
 						visibleKeys &&
 						((Array.isArray(visibleKeys) &&
-							!!visibleKeys.length &&
-							!visibleKeys.includes(index)) ||
-							(visibleKeys instanceof Set &&
-								visibleKeys.size > 0 &&
-								!visibleKeys.has(key)))
+						  !!visibleKeys.length &&
+						  !visibleKeys.includes(index)) ||
+						 (visibleKeys instanceof Set &&
+						  visibleKeys.size > 0 &&
+						  !visibleKeys.has(key)))
 					) {
 						return null;
 					}
@@ -380,11 +380,11 @@ export function useCollection<
 					if (
 						visibleKeys &&
 						((Array.isArray(visibleKeys) &&
-							!!visibleKeys.length &&
-							!visibleKeys.includes(index)) ||
-							(visibleKeys instanceof Set &&
-								visibleKeys.size > 0 &&
-								!visibleKeys.has(key)))
+						  !!visibleKeys.length &&
+						  !visibleKeys.includes(index)) ||
+						 (visibleKeys instanceof Set &&
+						  visibleKeys.size > 0 &&
+						  !visibleKeys.has(key)))
 					) {
 						return null;
 					}
