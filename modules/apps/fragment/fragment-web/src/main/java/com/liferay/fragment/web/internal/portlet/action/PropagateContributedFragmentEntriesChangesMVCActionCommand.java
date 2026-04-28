@@ -120,7 +120,9 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 			actionableDynamicQuery.setPerformActionMethod(
 				(FragmentEntryLink fragmentEntryLink) ->
 					_fragmentEntryLinkLocalService.updateLatestChanges(
-						fragmentEntry, fragmentEntryLink));
+						fragmentEntry,
+						_fragmentEntryLinkLocalService.getFragmentEntryLink(
+							fragmentEntryLink.getFragmentEntryLinkId())));
 
 			actionableDynamicQuery.performActions();
 		}
