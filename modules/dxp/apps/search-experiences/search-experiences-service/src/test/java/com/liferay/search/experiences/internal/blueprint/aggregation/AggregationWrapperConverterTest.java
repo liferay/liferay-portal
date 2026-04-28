@@ -36,19 +36,16 @@ public class AggregationWrapperConverterTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testReverseNestedAggregationWithoutPath() {
+	public void testReverseNestedAggregation() {
 		ReverseNestedAggregation reverseNestedAggregation =
 			_getReverseNestedAggregation(JSONFactoryUtil.createJSONObject());
 
 		Assert.assertNull(reverseNestedAggregation.getPath());
-	}
 
-	@Test
-	public void testReverseNestedAggregationWithPath() {
 		String path = RandomTestUtil.randomString();
 
-		ReverseNestedAggregation reverseNestedAggregation =
-			_getReverseNestedAggregation(JSONUtil.put("path", path));
+		reverseNestedAggregation = _getReverseNestedAggregation(
+			JSONUtil.put("path", path));
 
 		Assert.assertEquals(path, reverseNestedAggregation.getPath());
 	}
