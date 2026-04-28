@@ -23,6 +23,8 @@
 		).put(
 			"fieldValueType", fieldValueType
 		).put(
+			"hasManageOrderNotesPermission", hasManageOrderNotesPermission
+		).put(
 			"hasManageOrderRestrictedNotesPermission", hasManageOrderRestrictedNotesPermission
 		).put(
 			"hasUpdatePermission", hasUpdatePermission

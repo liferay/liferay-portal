@@ -211,6 +211,11 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 				"liferay-commerce:info-box:fieldValueType",
 				_getEditableFieldValueType(field));
 			httpServletRequest.setAttribute(
+				"liferay-commerce:info-box:hasManageOrderNotesPermission",
+				_hasPermission(
+					permissionChecker, commerceOrder,
+					CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES));
+			httpServletRequest.setAttribute(
 				"liferay-commerce:info-box:" +
 					"hasManageOrderRestrictedNotesPermission",
 				_hasPermission(

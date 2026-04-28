@@ -22,6 +22,7 @@ long commerceOrderId = (long)request.getAttribute("liferay-commerce:info-box:com
 String field = (String)request.getAttribute("liferay-commerce:info-box:field");
 String fieldValue = (String)request.getAttribute("liferay-commerce:info-box:fieldValue");
 String fieldValueType = (String)request.getAttribute("liferay-commerce:info-box:fieldValueType");
+boolean hasManageOrderNotesPermission = (boolean)request.getAttribute("liferay-commerce:info-box:hasManageOrderNotesPermission");
 boolean hasManageOrderRestrictedNotesPermission = (boolean)request.getAttribute("liferay-commerce:info-box:hasManageOrderRestrictedNotesPermission");
 boolean hasUpdatePermission = (boolean)request.getAttribute("liferay-commerce:info-box:hasUpdatePermission");
 boolean hasViewPermission = (boolean)request.getAttribute("liferay-commerce:info-box:hasViewPermission");
