@@ -69,8 +69,9 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 					 _log.isWarnEnabled()) {
 
 				_log.warn(
-					"Preserving existing productionModeEnabled value over " +
-						"operationMode=REMOTE");
+					"Preserving existing value of property " +
+						"\"productionModeEnabled\" over property " +
+							"\"operationMode\" with value \"REMOTE\"");
 			}
 		}
 
