@@ -266,6 +266,9 @@ export function useCollection<
 	);
 
 	const virtualizerItems = virtualizer?.getVirtualItems();
+	const virtualizerLayoutKey = virtualizerItems
+		?.map((v) => `${v.index}:${v.start}:${v.size}`)
+		.join('|');
 
 	const performCollectionRender = useCallback(
 		({children, items}: ICollectionProps<T, P>) => {
@@ -294,7 +297,16 @@ export function useCollection<
 						const props = {
 							'data-index': virtual.index,
 							'ref': (node: HTMLElement) => {
-								virtualizer.measureElement(node);
+								if (node && !node.isConnected) {
+									requestAnimationFrame(() => {
+										if (node.isConnected) {
+											virtualizer.measureElement(node);
+										}
+									});
+								}
+								else {
+									virtualizer.measureElement(node);
+								}
 
 								const ref = (child as ChildElement).ref;
 
@@ -385,6 +397,7 @@ export function useCollection<
 			performItemRender,
 			publicApi,
 			virtualizerItems?.length,
+			virtualizerLayoutKey,
 			visibleKeys,
 			itemIdKey,
 		]
