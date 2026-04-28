@@ -8,9 +8,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String color = ParamUtil.getString(request, "color");
-String label = ParamUtil.getString(request, "label");
-String name = ParamUtil.getString(request, "name");
+String color = HtmlUtil.escape(ParamUtil.getString(request, "color"));
+String label = HtmlUtil.escape(ParamUtil.getString(request, "label"));
+String name = HtmlUtil.escape(ParamUtil.getString(request, "name"));
 %>
 
 <div>
