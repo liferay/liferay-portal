@@ -87,7 +87,7 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 
 		modifyConfigMap(
 			companyLocalService.getCompanyById(companyId),
-			getBaseExtensionProperties(
+			getExtensionProperties(
 				externalReferenceCode, oAuth2Application
 			).put(
 				externalReferenceCode + ".oauth2.headless.server.audience",

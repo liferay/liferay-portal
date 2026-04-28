@@ -122,7 +122,7 @@ public abstract class BaseConfigurationFactory {
 		throws Exception;
 
 	protected HashMapBuilder.HashMapWrapper<String, String>
-		getBaseExtensionProperties(
+		getExtensionProperties(
 			String externalReferenceCode, OAuth2Application oAuth2Application) {
 
 		return HashMapBuilder.put(

@@ -79,7 +79,7 @@ public class OAuth2ProviderApplicationUserAgentConfigurationFactory
 
 		modifyConfigMap(
 			company,
-			getBaseExtensionProperties(
+			getExtensionProperties(
 				externalReferenceCode, oAuth2Application
 			).put(
 				externalReferenceCode + ".oauth2.user.agent.audience",
