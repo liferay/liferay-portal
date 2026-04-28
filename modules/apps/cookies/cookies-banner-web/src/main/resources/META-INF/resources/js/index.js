@@ -24,4 +24,5 @@ export {
 	default as toggleThirdPartyCookies,
 	runThirdPartyCookiesInterval,
 	flipThirdPartyCookiesOff,
+	suppressThirdPartyCookies,
 } from './toggleThirdPartyCookies';

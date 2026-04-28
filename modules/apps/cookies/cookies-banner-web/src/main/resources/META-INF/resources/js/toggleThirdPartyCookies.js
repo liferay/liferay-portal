@@ -5,6 +5,8 @@
 
 import {COOKIE_TYPES, getCookie} from 'frontend-js-web';
 
+import {declineAllCookies} from './CookiesUtil';
+
 export function flipThirdPartyCookiesOff(element) {
 	const elements = element.querySelectorAll(
 		'[data-third-party-cookie-flipped]'
@@ -140,6 +142,28 @@ export default function toggleThirdPartyCookies() {
 			flipThirdPartyCookie(type);
 		}
 	});
+}
+
+export function suppressThirdPartyCookies(
+	consentRenewalPeriod,
+	consentRenewalPeriodTimeUnit,
+	dissentRenewalPeriod,
+	dissentRenewalPeriodTimeUnit,
+	optionalConsentCookieTypeNames,
+	requiredConsentCookieTypeNames,
+	storeConsent
+) {
+	flipThirdPartyCookiesOff(document);
+
+	declineAllCookies(
+		consentRenewalPeriod,
+		consentRenewalPeriodTimeUnit,
+		dissentRenewalPeriod,
+		dissentRenewalPeriodTimeUnit,
+		optionalConsentCookieTypeNames,
+		requiredConsentCookieTypeNames,
+		storeConsent
+	);
 }
 
 /**
