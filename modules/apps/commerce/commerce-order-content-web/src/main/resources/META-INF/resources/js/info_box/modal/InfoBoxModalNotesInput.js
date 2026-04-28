@@ -123,48 +123,50 @@ const InfoBoxModalNotes = ({
 			</InfiniteScrollerComponent>
 
 			{hasManageOrderNotesPermission && (
-				<ClayInput.Group className="commerce-panel">
-					<ClayInput.GroupItem>
-						<ClayInput
-							aria-required={true}
-							className="field form-control lfr-textarea"
-							component="textarea"
-							id="infoBoxModalInput"
-							maxLength={4000}
-							onChange={(event) => {
-								event.preventDefault();
-								setInputValue(event.target.value);
-							}}
-							placeholder={Liferay.Language.get(
-								'type-your-note-here'
-							)}
-							required={true}
-							type="text"
-						/>
+				<>
+					<ClayInput.Group className="commerce-panel">
+						<ClayInput.GroupItem>
+							<ClayInput
+								aria-required={true}
+								className="field form-control lfr-textarea"
+								component="textarea"
+								id="infoBoxModalInput"
+								maxLength={4000}
+								onChange={(event) => {
+									event.preventDefault();
+									setInputValue(event.target.value);
+								}}
+								placeholder={Liferay.Language.get(
+									'type-your-note-here'
+								)}
+								required={true}
+								type="text"
+							/>
 
-						<span className="hide-accessible sr-only">
-							{Liferay.Language.get('required')}
-						</span>
-					</ClayInput.GroupItem>
-				</ClayInput.Group>
-			)}
+							<span className="hide-accessible sr-only">
+								{Liferay.Language.get('required')}
+							</span>
+						</ClayInput.GroupItem>
+					</ClayInput.Group>
 
-			{hasManageOrderRestrictedNotesPermission && (
-				<div className="form-group inline-item">
-					<ClayToggle
-						label={Liferay.Language.get('private')}
-						onToggle={handleToggle}
-						spritemap={spritemap}
-						toggled={isRestricted}
-					/>
+					{hasManageOrderRestrictedNotesPermission && (
+						<div className="form-group inline-item">
+							<ClayToggle
+								label={Liferay.Language.get('private')}
+								onToggle={handleToggle}
+								spritemap={spritemap}
+								toggled={isRestricted}
+							/>
 
-					<ClayButtonWithIcon
-						className="lfr-portal-tooltip ml-1 taglib-icon-help"
-						displayType="unstyled"
-						symbol="question-circle-full"
-						title={Liferay.Language.get('restricted-help')}
-					/>
-				</div>
+							<ClayButtonWithIcon
+								className="lfr-portal-tooltip ml-1 taglib-icon-help"
+								displayType="unstyled"
+								symbol="question-circle-full"
+								title={Liferay.Language.get('restricted-help')}
+							/>
+						</div>
+					)}
+				</>
 			)}
 		</>
 	);
