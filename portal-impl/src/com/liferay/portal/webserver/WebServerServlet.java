@@ -377,7 +377,6 @@ public class WebServerServlet extends HttpServlet {
 
 			TransactionConfig.Builder builder = new TransactionConfig.Builder();
 
-			builder.setReadOnly(true);
 			builder.setRollbackForClasses(Exception.class);
 
 			TransactionInvokerUtil.invoke(
