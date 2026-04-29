@@ -86,23 +86,6 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 			TimeUnit.HOUR);
 	}
 
-	private void _deleteRedirectNotFoundEntry(
-			RedirectNotFoundEntry redirectNotFoundEntry,
-			Map<Long, List<String>> deletedUidsMap)
-		throws PortalException {
-
-		long companyId = redirectNotFoundEntry.getCompanyId();
-		String uid = _uidFactory.getUID(redirectNotFoundEntry);
-
-		_redirectNotFoundEntryLocalService.deleteRedirectNotFoundEntry(
-			redirectNotFoundEntry);
-
-		List<String> uids = deletedUidsMap.computeIfAbsent(
-			companyId, key -> new ArrayList<>());
-
-		uids.add(uid);
-	}
-
 	private void _deleteMaximumOverflowRedirectNotFoundEntries(
 			Map<Long, List<String>> deletedUidsMap)
 		throws Exception {
@@ -162,6 +145,23 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 					redirectNotFoundEntry, deletedUidsMap));
 
 		actionableDynamicQuery.performActions();
+	}
+
+	private void _deleteRedirectNotFoundEntry(
+			RedirectNotFoundEntry redirectNotFoundEntry,
+			Map<Long, List<String>> deletedUidsMap)
+		throws PortalException {
+
+		long companyId = redirectNotFoundEntry.getCompanyId();
+		String uid = _uidFactory.getUID(redirectNotFoundEntry);
+
+		_redirectNotFoundEntryLocalService.deleteRedirectNotFoundEntry(
+			redirectNotFoundEntry);
+
+		List<String> uids = deletedUidsMap.computeIfAbsent(
+			companyId, key -> new ArrayList<>());
+
+		uids.add(uid);
 	}
 
 	@Reference
