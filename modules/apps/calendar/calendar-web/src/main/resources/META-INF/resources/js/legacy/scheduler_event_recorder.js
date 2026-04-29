@@ -49,6 +49,13 @@ AUI.add(
 					value: STR_BLANK,
 				},
 
+				headerContent: {
+					value:
+						'<input aria-label="' +
+						Liferay.Language.get('title') +
+						'" class="scheduler-event-recorder-content form-control" name="content" value="{content}" />',
+				},
+
 				permissionsCalendarBookingURL: {
 					setter: String,
 					validator: isValue,
