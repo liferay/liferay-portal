@@ -12,6 +12,7 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -37,22 +38,19 @@ public class AccountUtil {
 			}
 		}
 
-		int countUserCommerceAccounts =
-			commerceAccountHelper.countUserCommerceAccounts(userId, groupId);
+		int count = commerceAccountHelper.countUserCommerceAccounts(
+			userId, groupId);
 
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				if (queryParameters != null) {
-					String accountIdString = queryParameters.getFirst(
-						"accountId");
+		if ((count > 1) && (accountId == null)) {
+			if (queryParameters != null) {
+				String accountIdString = queryParameters.getFirst("accountId");
 
-					if (accountIdString != null) {
-						return GetterUtil.getLong(accountIdString);
-					}
+				if (Validator.isNotNull(accountIdString)) {
+					return GetterUtil.getLong(accountIdString);
 				}
-
-				throw new NoSuchEntryException();
 			}
+
+			throw new NoSuchEntryException();
 		}
 
 		long[] accountIds = commerceAccountHelper.getUserCommerceAccountIds(
