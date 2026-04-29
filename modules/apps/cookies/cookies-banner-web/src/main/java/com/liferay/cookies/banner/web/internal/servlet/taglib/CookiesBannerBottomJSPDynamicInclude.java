@@ -8,6 +8,7 @@ package com.liferay.cookies.banner.web.internal.servlet.taglib;
 import com.liferay.cookies.banner.web.internal.constants.CookiesBannerWebKeys;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
+import com.liferay.cookies.provider.GlobalPrivacyControlProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -69,6 +70,10 @@ public class CookiesBannerBottomJSPDynamicInclude
 			}
 
 			httpServletRequest.setAttribute(
+				CookiesBannerWebKeys.BANNER_SUPPRESSED,
+				_globalPrivacyControlProvider.isSignalActive(
+					httpServletRequest));
+			httpServletRequest.setAttribute(
 				CookiesBannerWebKeys.CUSTOM_FLOATING_ICON_IMAGE_ID,
 				cookiesPreferenceHandlingConfiguration.
 					customFloatingIconImageId());
@@ -106,6 +111,9 @@ public class CookiesBannerBottomJSPDynamicInclude
 
 	@Reference
 	private CookiesConfigurationProvider _cookiesConfigurationProvider;
+
+	@Reference
+	private GlobalPrivacyControlProvider _globalPrivacyControlProvider;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.cookies.banner.web)"

@@ -10,6 +10,8 @@ package com.liferay.cookies.banner.web.internal.constants;
  */
 public class CookiesBannerWebKeys {
 
+	public static final String BANNER_SUPPRESSED = "BANNER_SUPPRESSED";
+
 	public static final String COOKIES_BANNER_CONFIGURATION_DISPLAY_CONTEXT =
 		"COOKIES_BANNER_CONFIGURATION_DISPLAY_CONTEXT";
 

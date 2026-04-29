@@ -27,6 +27,7 @@ let openCookieConsentModal = () => {
 };
 
 export default function ({
+	bannerSuppressed = false,
 	configurationNamespace,
 	configurationURL,
 	consentRenewalPeriod = 12,
@@ -56,26 +57,33 @@ export default function ({
 	const editMode = document.body.classList.contains('has-edit-mode-menu');
 
 	if (!editMode) {
-		isCookiesPreferenceHandlingConfigurationModified(modifiedDate).then(
-			(value) => {
-				if (value) {
-					removeAllCookies(
-						optionalConsentCookieTypeNames,
-						requiredConsentCookieTypeNames
-					);
+		if (!bannerSuppressed) {
+			isCookiesPreferenceHandlingConfigurationModified(modifiedDate).then(
+				(value) => {
+					if (value) {
+						removeAllCookies(
+							optionalConsentCookieTypeNames,
+							requiredConsentCookieTypeNames
+						);
+					}
 				}
-			}
-		);
+			);
 
-		if (Liferay.ThemeDisplay.isSignedIn() && hasGuestUserConfigCookie()) {
-			hasPreviouslyStoredConsent().then((hasPreviouslyStoredConsent) => {
-				if (hasPreviouslyStoredConsent) {
-					removeAllCookies(
-						optionalConsentCookieTypeNames,
-						requiredConsentCookieTypeNames
-					);
-				}
-			});
+			if (
+				Liferay.ThemeDisplay.isSignedIn() &&
+				hasGuestUserConfigCookie()
+			) {
+				hasPreviouslyStoredConsent().then(
+					(hasPreviouslyStoredConsent) => {
+						if (hasPreviouslyStoredConsent) {
+							removeAllCookies(
+								optionalConsentCookieTypeNames,
+								requiredConsentCookieTypeNames
+							);
+						}
+					}
+				);
+			}
 		}
 
 		const consentManager = document.getElementById(
@@ -86,6 +94,7 @@ export default function ({
 		);
 
 		if (
+			bannerSuppressed ||
 			consentManager ||
 			(productAnalyticsBanner &&
 				productAnalyticsBanner.style.display === 'block')

@@ -6,6 +6,7 @@
 package com.liferay.cookies.banner.web.internal.display.context;
 
 import com.liferay.cookies.banner.web.internal.constants.CookiesBannerPortletKeys;
+import com.liferay.cookies.banner.web.internal.constants.CookiesBannerWebKeys;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.kernel.provider.LayoutUtilityPageEntryLayoutProvider;
@@ -69,6 +70,11 @@ public class CookiesBannerDisplayContext
 
 	public Map<String, Object> getContext(Locale locale) {
 		return HashMapBuilder.<String, Object>put(
+			"bannerSuppressed",
+			Boolean.TRUE.equals(
+				httpServletRequest.getAttribute(
+					CookiesBannerWebKeys.BANNER_SUPPRESSED))
+		).put(
 			"configurationNamespace",
 			CookiesBannerPortletKeys.COOKIES_BANNER_CONFIGURATION
 		).put(
