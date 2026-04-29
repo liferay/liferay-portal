@@ -84,7 +84,12 @@ export default class OpenStreetMapGeocoder {
 
 		fetch(reverseURL)
 			.then((response) => response.json())
-			.then((response) => this._handleReverse(response, callback));
+			.then((response) =>
+				this._handleReverse(
+					response.error ? location : response,
+					callback
+				)
+			);
 	}
 }
 
