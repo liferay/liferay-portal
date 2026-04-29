@@ -841,6 +841,37 @@ AUI.add(
 						instance.headerView.syncDaysHeaderUI();
 					}
 				},
+
+				syncDaysHeaderUI() {
+					const instance = this;
+
+					SchedulerDayView.superclass.syncDaysHeaderUI.apply(
+						this,
+						arguments
+					);
+
+					const scheduler = instance.get('scheduler');
+					const locale = scheduler.get('locale');
+					const viewDate = scheduler.get('viewDate');
+
+					instance.colHeaderDaysNode
+						.all('a')
+						.each((anchor, index) => {
+							const columnDate = DateMath.add(
+								viewDate,
+								DateMath.DAY,
+								index
+							);
+
+							anchor.setAttribute(
+								'aria-label',
+								A.DataType.Date.format(columnDate, {
+									format: Liferay.Language.get('a-b-d-y'),
+									locale,
+								})
+							);
+						});
+				},
 			},
 		});
 
