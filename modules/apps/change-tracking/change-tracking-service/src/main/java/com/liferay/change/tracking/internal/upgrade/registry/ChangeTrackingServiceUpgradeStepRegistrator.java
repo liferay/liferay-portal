@@ -8,6 +8,7 @@ package com.liferay.change.tracking.internal.upgrade.registry;
 import com.liferay.change.tracking.internal.upgrade.v2_10_0.CTCollectionUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_12_3.CTMessageCompanyIdUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_12_4.CTProcessResourceUpgradeProcess;
+import com.liferay.change.tracking.internal.upgrade.v2_14_0.CTConflictCheckerDispatchTriggerUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_3_0.UpgradeCompanyId;
 import com.liferay.change.tracking.internal.upgrade.v2_4_0.CTSchemaVersionUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_7_0.CTProcessUpgradeProcess;
@@ -151,6 +152,10 @@ public class ChangeTrackingServiceUpgradeStepRegistrator
 			new com.liferay.change.tracking.internal.upgrade.v2_13_1.
 				CTConflictConfigurationUpgradeProcess(
 					_configurationAdmin, _configurationProvider));
+
+		registry.register(
+			"2.13.1", "2.14.0",
+			new CTConflictCheckerDispatchTriggerUpgradeProcess());
 	}
 
 	@Reference
