@@ -13,6 +13,39 @@ AUI.add(
 				'<div aria-expanded="false"',
 				'<div role="button" aria-expanded="false"'
 			);
+
+		const calendarBaseProto = A.CalendarBase.prototype;
+
+		const hideEmptyDayButtons = function () {
+			this.get('contentBox')
+				.all('button')
+				.each((button) => {
+					const text = button.get('text').replace(/ /g, '').trim();
+
+					if (text) {
+						button.removeAttribute('aria-hidden');
+					}
+					else {
+						button.setAttribute('aria-hidden', 'true');
+					}
+				});
+		};
+
+		const originalRenderUI = calendarBaseProto.renderUI;
+
+		calendarBaseProto.renderUI = function () {
+			originalRenderUI.apply(this, arguments);
+
+			hideEmptyDayButtons.call(this);
+		};
+
+		const originalAfterDateChange = calendarBaseProto._afterDateChange;
+
+		calendarBaseProto._afterDateChange = function () {
+			originalAfterDateChange.apply(this, arguments);
+
+			hideEmptyDayButtons.call(this);
+		};
 	},
 	'',
 	{
