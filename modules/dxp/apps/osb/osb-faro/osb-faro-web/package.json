@@ -72,7 +72,7 @@
 		"text-mask-addons": "^3.7.2",
 		"text-mask-core": "^5.1.0",
 		"unorm": "^1.6.0",
-		"uuid": "9.0.0",
+		"uuid": "14.0.0",
 		"whatwg-fetch": "^3.0.0"
 	},
 	"description": "Liferay Analytics Cloud",
