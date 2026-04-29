@@ -817,11 +817,36 @@ AUI.add(
 			EXTENDS: A.SchedulerDayView,
 
 			NAME: 'scheduler-day-view',
+
+			prototype: {
+				_uiSetDate() {
+					const instance = this;
+
+					SchedulerDayView.superclass._uiSetDate.apply(
+						this,
+						arguments
+					);
+
+					if (instance.headerView) {
+						instance.headerView.syncDaysHeaderUI();
+					}
+				},
+
+				renderUI() {
+					const instance = this;
+
+					SchedulerDayView.superclass.renderUI.apply(this, arguments);
+
+					if (instance.headerView) {
+						instance.headerView.syncDaysHeaderUI();
+					}
+				},
+			},
 		});
 
 		Liferay.SchedulerDayView = SchedulerDayView;
 
-		Liferay.SchedulerWeekView = A.Component.create({
+		const SchedulerWeekView = A.Component.create({
 			ATTRS: {
 				headerDateFormatter: {
 					validator: isFunction,
@@ -890,7 +915,37 @@ AUI.add(
 			EXTENDS: A.SchedulerWeekView,
 
 			NAME: 'scheduler-week-view',
+
+			prototype: {
+				_uiSetDate() {
+					const instance = this;
+
+					SchedulerWeekView.superclass._uiSetDate.apply(
+						this,
+						arguments
+					);
+
+					if (instance.headerView) {
+						instance.headerView.syncDaysHeaderUI();
+					}
+				},
+
+				renderUI() {
+					const instance = this;
+
+					SchedulerWeekView.superclass.renderUI.apply(
+						this,
+						arguments
+					);
+
+					if (instance.headerView) {
+						instance.headerView.syncDaysHeaderUI();
+					}
+				},
+			},
 		});
+
+		Liferay.SchedulerWeekView = SchedulerWeekView;
 
 		const SchedulerMonthView = A.Component.create({
 			ATTRS: {
