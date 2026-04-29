@@ -11,14 +11,14 @@ function main {
 		exit 1
 	fi
 
-	local bucket_name="${LIFERAY_OVERLAY_BUCKET_NAME:-${LIFERAY_GCS_BUCKET_NAME:-${S3_BUCKET_ID:-${AZURE_CONTAINER_NAME:-${OSS_BUCKET_NAME:-}}}}}"
+	local bucket_name="${LIFERAY_OVERLAY_BUCKET_NAME:-}"
 	local from_path="${2}"
 	local into_path="${3}"
 	local provider_type="${1}"
 
 	if [ -z "${bucket_name}" ]
 	then
-		_log_json "No overlay bucket found (checked LIFERAY_OVERLAY_BUCKET_NAME, LIFERAY_GCS_BUCKET_NAME, S3_BUCKET_ID, AZURE_CONTAINER_NAME, and OSS_BUCKET_NAME). Skipping sync." "ERROR"
+		_log_json "Overlay bucket does not exist (checked LIFERAY_OVERLAY_BUCKET_NAME). Skipping sync." "ERROR"
 
 		exit 1
 	fi
@@ -57,7 +57,6 @@ function _log_json {
 	script_name=$(basename "${0}")
 
 	local severity="${2:-INFO}"
-
 	local timestamp
 
 	timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
