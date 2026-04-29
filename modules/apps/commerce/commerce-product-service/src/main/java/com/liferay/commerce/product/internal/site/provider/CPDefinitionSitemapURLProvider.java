@@ -8,28 +8,24 @@ package com.liferay.commerce.product.internal.site.provider;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.commerce.helper.CommerceAccountHelper;
-import com.liferay.commerce.product.catalog.CPCatalogEntry;
-import com.liferay.commerce.product.catalog.CPQuery;
 import com.liferay.commerce.product.constants.CPPortletKeys;
-import com.liferay.commerce.product.data.source.CPDataSourceResult;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.url.CPFriendlyURL;
+import com.liferay.commerce.product.util.comparator.CPDefinitionModifiedDateComparator;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -38,8 +34,7 @@ import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.provider.SitemapURLProvider;
 import com.liferay.site.provider.helper.SitemapURLProviderHelper;
 
-import java.io.Serializable;
-
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -82,35 +77,20 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 				_commerceAccountHelper.getCurrentAccountEntry(
 					groupId, themeDisplay.getRequest());
 
-			SearchContext searchContext = new SearchContext();
-
-			searchContext.setAttributes(
-				HashMapBuilder.<String, Serializable>put(
-					Field.STATUS, WorkflowConstants.STATUS_APPROVED
-				).put(
-					"commerceAccountGroupIds",
+			List<CPDefinition> cpDefinitions =
+				_cpDefinitionLocalService.getCPDefinitions(
+					themeDisplay.getCompanyId(),
+					accountEntry.getAccountEntryId(),
 					_accountGroupLocalService.getAccountGroupIds(
-						accountEntry.getAccountEntryId())
-				).put(
-					"commerceChannelGroupId", groupId
-				).build());
-			searchContext.setCompanyId(themeDisplay.getCompanyId());
+						accountEntry.getAccountEntryId()),
+					new long[] {groupId}, false, true, true,
+					new int[] {WorkflowConstants.STATUS_APPROVED},
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					CPDefinitionModifiedDateComparator.getInstance(false));
 
-			CPQuery cpQuery = new CPQuery();
-
-			cpQuery.setOrderByCol1("title");
-			cpQuery.setOrderByCol2("modifiedDate");
-			cpQuery.setOrderByType1("ASC");
-			cpQuery.setOrderByType2("DESC");
-
-			CPDataSourceResult cpDataSourceResult = _cpDefinitionHelper.search(
-				groupId, searchContext, cpQuery, -1, -1);
-
-			for (CPCatalogEntry cpCatalogEntry :
-					cpDataSourceResult.getCPCatalogEntries()) {
-
+			for (CPDefinition cpDefinition : cpDefinitions) {
 				visitLayout(
-					element, layout, cpCatalogEntry.getCPDefinitionId(),
+					element, layout, cpDefinition.getCPDefinitionId(),
 					themeDisplay);
 			}
 		}
