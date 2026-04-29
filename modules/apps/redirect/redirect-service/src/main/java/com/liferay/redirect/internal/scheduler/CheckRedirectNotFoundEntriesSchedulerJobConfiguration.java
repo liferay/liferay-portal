@@ -54,9 +54,9 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 			try {
 				IndexStatusManagerThreadLocal.setIndexReadOnly(true);
 
-				_removeMaximumOverflowRedirectNotFoundEntries(deletedUidsMap);
+				_deleteMaximumOverflowRedirectNotFoundEntries(deletedUidsMap);
 
-				_removeOldRedirectNotFoundEntries(deletedUidsMap);
+				_deleteOldRedirectNotFoundEntries(deletedUidsMap);
 			}
 			finally {
 				IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
@@ -103,7 +103,7 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 		uids.add(uid);
 	}
 
-	private void _removeMaximumOverflowRedirectNotFoundEntries(
+	private void _deleteMaximumOverflowRedirectNotFoundEntries(
 			Map<Long, List<String>> deletedUidsMap)
 		throws Exception {
 
@@ -127,7 +127,6 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 			dynamicQuery -> dynamicQuery.setLimit(
 				maximumNumberOfRedirectNotFoundEntries,
 				redirectNotFoundEntriesCount));
-
 		actionableDynamicQuery.setAddOrderCriteriaMethod(
 			dynamicQuery -> dynamicQuery.addOrder(
 				OrderFactoryUtil.desc("modifiedDate")));
@@ -139,7 +138,7 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfiguration
 		actionableDynamicQuery.performActions();
 	}
 
-	private void _removeOldRedirectNotFoundEntries(
+	private void _deleteOldRedirectNotFoundEntries(
 			Map<Long, List<String>> deletedUidsMap)
 		throws Exception {
 
