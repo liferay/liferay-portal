@@ -7,9 +7,15 @@ AUI.add(
 	'liferay-calendar-a11y',
 	(A) => {
 		A.CalendarBase.ATTRS.tabIndex.value = 0;
+
+		A.SchedulerEvent.prototype.EVENT_NODE_TEMPLATE =
+			A.SchedulerEvent.prototype.EVENT_NODE_TEMPLATE.replace(
+				'<div aria-expanded="false"',
+				'<div role="button" aria-expanded="false"'
+			);
 	},
 	'',
 	{
-		requires: ['calendar'],
+		requires: ['aui-scheduler', 'calendar'],
 	}
 );
