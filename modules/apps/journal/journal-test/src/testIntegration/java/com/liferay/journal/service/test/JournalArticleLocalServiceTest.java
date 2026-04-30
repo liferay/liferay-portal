@@ -2553,6 +2553,33 @@ public class JournalArticleLocalServiceTest {
 			false, true, ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertEquals(date, journalArticle2.getDisplayDate());
+
+		calendar.add(Calendar.YEAR, 1);
+
+		Date futureDate = calendar.getTime();
+
+		journalArticle2 = JournalTestUtil.updateArticle(
+			journalArticle2.getUserId(), journalArticle2,
+			journalArticle2.getTitleMap(), journalArticle2.getContent(),
+			futureDate, false, true,
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(futureDate, journalArticle2.getDisplayDate());
+
+		journalArticle2 = _journalArticleLocalService.updateArticle(
+			journalArticle2.getUserId(), journalArticle2.getGroupId(),
+			journalArticle2.getFolderId(), journalArticle2.getArticleId(),
+			journalArticle2.getVersion(), journalArticle2.getTitleMap(),
+			journalArticle2.getDescriptionMap(), null,
+			journalArticle2.getContent(), journalArticle2.getDDMTemplateKey(),
+			journalArticle2.getLayoutUuid(), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true,
+			0, 0, 0, 0, 0, true, journalArticle2.isIndexable(),
+			journalArticle2.isSmallImage(), 0,
+			journalArticle2.getSmallImageSource(),
+			journalArticle2.getSmallImageURL(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertEquals(futureDate, journalArticle2.getDisplayDate());
 	}
 
 	@Test
