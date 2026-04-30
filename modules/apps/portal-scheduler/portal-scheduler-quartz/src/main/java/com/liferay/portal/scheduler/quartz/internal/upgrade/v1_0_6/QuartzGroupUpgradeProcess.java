@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.SetUtil;
 
 import java.io.InputStream;
 
@@ -31,9 +32,9 @@ import org.quartz.JobDataMap;
 /**
  * @author Mariano Álvaro Sáiz
  */
-public class QuartzDispatchGroupUpgradeProcess extends UpgradeProcess {
+public class QuartzGroupUpgradeProcess extends UpgradeProcess {
 
-	public QuartzDispatchGroupUpgradeProcess(
+	public QuartzGroupUpgradeProcess(
 		CompanyLocalService companyLocalService, JSONFactory jsonFactory) {
 
 		_companyLocalService = companyLocalService;
@@ -136,8 +137,7 @@ public class QuartzDispatchGroupUpgradeProcess extends UpgradeProcess {
 				protectedClassLoaderObjectInputStream =
 					new ProtectedClassLoaderObjectInputStream(
 						inputStream,
-						QuartzDispatchGroupUpgradeProcess.class.
-							getClassLoader())) {
+						QuartzGroupUpgradeProcess.class.getClassLoader())) {
 
 			return (JobDataMap)
 				protectedClassLoaderObjectInputStream.readObject();
@@ -179,9 +179,10 @@ public class QuartzDispatchGroupUpgradeProcess extends UpgradeProcess {
 			Map<String, Long> companyIds, String jobName, JobDataMap jobDataMap)
 		throws Exception {
 
-		if (!_DISPATCH_DESTINATION_NAME.equals(
-				jobDataMap.getString(SchedulerEngine.DESTINATION_NAME))) {
+		String destinationName = jobDataMap.getString(
+			SchedulerEngine.DESTINATION_NAME);
 
+		if (!_supportedDestinationNames.contains(destinationName)) {
 			return;
 		}
 
@@ -194,14 +195,16 @@ public class QuartzDispatchGroupUpgradeProcess extends UpgradeProcess {
 			return;
 		}
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			(String)message.getPayload());
+		if (destinationName.equals("liferay/dispatch/executor")) {
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
+				(String)message.getPayload());
 
-		long dispatchTriggerId = jsonObject.getLong("dispatchTriggerId");
+			long dispatchTriggerId = jsonObject.getLong("dispatchTriggerId");
 
-		_getCompanyId(
-			companyIds, jobName, "DispatchTrigger", "dispatchTriggerId",
-			dispatchTriggerId);
+			_getCompanyId(
+				companyIds, jobName, "DispatchTrigger", "dispatchTriggerId",
+				dispatchTriggerId);
+		}
 	}
 
 	private Set<String> _loadRenamedJobGroups() throws Exception {
@@ -256,13 +259,15 @@ public class QuartzDispatchGroupUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private static final String _DISPATCH_DESTINATION_NAME =
-		"liferay/dispatch/executor";
-
 	private static final String[] _TRIGGER_TABLE_NAMES = {
 		"QUARTZ_BLOB_TRIGGERS", "QUARTZ_CRON_TRIGGERS", "QUARTZ_FIRED_TRIGGERS",
 		"QUARTZ_SIMPLE_TRIGGERS", "QUARTZ_SIMPROP_TRIGGERS", "QUARTZ_TRIGGERS"
 	};
+
+	private static final Set<String> _supportedDestinationNames =
+		SetUtil.fromArray(
+			"destination.workflow_timer", "liferay/dispatch/executor",
+			"liferay/message_boards_mailing_list");
 
 	private final CompanyLocalService _companyLocalService;
 	private final JSONFactory _jsonFactory;

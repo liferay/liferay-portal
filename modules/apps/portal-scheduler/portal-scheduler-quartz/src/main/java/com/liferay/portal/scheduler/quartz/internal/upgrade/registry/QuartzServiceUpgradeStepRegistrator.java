@@ -52,8 +52,7 @@ public class QuartzServiceUpgradeStepRegistrator
 		registry.register(
 			"1.0.5", "1.0.6",
 			new com.liferay.portal.scheduler.quartz.internal.upgrade.v1_0_6.
-				QuartzDispatchGroupUpgradeProcess(
-					_companyLocalService, _jsonFactory));
+				QuartzGroupUpgradeProcess(_companyLocalService, _jsonFactory));
 	}
 
 	@Reference
