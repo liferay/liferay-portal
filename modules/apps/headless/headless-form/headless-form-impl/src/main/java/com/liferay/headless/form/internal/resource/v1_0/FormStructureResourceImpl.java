@@ -6,7 +6,7 @@
 package com.liferay.headless.form.internal.resource.v1_0;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.headless.form.dto.v1_0.FormStructure;
 import com.liferay.headless.form.dto.v1_0.util.StructureUtil;
 import com.liferay.headless.form.resource.v1_0.FormStructureResource;
@@ -37,7 +37,7 @@ public class FormStructureResourceImpl extends BaseFormStructureResourceImpl {
 
 		return StructureUtil.toFormStructure(
 			contextAcceptLanguage.isAcceptAllLanguages(),
-			_ddmStructureLocalService.getStructure(formStructureId),
+			_ddmStructureService.getStructure(formStructureId),
 			contextAcceptLanguage.getPreferredLocale(), _portal,
 			_userLocalService);
 	}
@@ -49,16 +49,18 @@ public class FormStructureResourceImpl extends BaseFormStructureResourceImpl {
 
 		return Page.of(
 			transform(
-				_ddmStructureLocalService.getStructures(
-					siteId, _getClassNameId(), pagination.getStartPosition(),
+				_ddmStructureService.getStructures(
+					contextCompany.getCompanyId(), new long[] {siteId},
+					_getClassNameId(), pagination.getStartPosition(),
 					pagination.getEndPosition(), null),
 				ddmStructure -> StructureUtil.toFormStructure(
 					contextAcceptLanguage.isAcceptAllLanguages(), ddmStructure,
 					contextAcceptLanguage.getPreferredLocale(), _portal,
 					_userLocalService)),
 			pagination,
-			_ddmStructureLocalService.getStructuresCount(
-				siteId, _getClassNameId()));
+			_ddmStructureService.getStructuresCount(
+				contextCompany.getCompanyId(), new long[] {siteId},
+				_getClassNameId()));
 	}
 
 	private long _getClassNameId() {
@@ -66,7 +68,7 @@ public class FormStructureResourceImpl extends BaseFormStructureResourceImpl {
 	}
 
 	@Reference
-	private DDMStructureLocalService _ddmStructureLocalService;
+	private DDMStructureService _ddmStructureService;
 
 	@Reference
 	private Portal _portal;
