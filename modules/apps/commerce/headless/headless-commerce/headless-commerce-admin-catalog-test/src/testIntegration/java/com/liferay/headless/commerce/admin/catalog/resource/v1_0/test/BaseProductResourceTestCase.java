@@ -1836,6 +1836,18 @@ public abstract class BaseProductResourceTestCase {
 	}
 
 	@Test
+	public void testPatchProductByExternalReferenceCodeByVersion()
+		throws Exception {
+
+		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testPatchProductByVersion() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
 	public void testPostProduct() throws Exception {
 		Product randomProduct = randomProduct();
 

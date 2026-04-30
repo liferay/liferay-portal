@@ -88,6 +88,14 @@ public interface ProductResource {
 			String externalReferenceCode, Product product)
 		throws Exception;
 
+	public Response patchProductByExternalReferenceCodeByVersion(
+			String externalReferenceCode, Integer version, Product product)
+		throws Exception;
+
+	public Response patchProductByVersion(
+			Long id, Integer version, Product product)
+		throws Exception;
+
 	public Product postProduct(Product product) throws Exception;
 
 	public Response postProductBatch(String callbackURL, Object object)
@@ -206,4 +214,4 @@ public interface ProductResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-338766011
+// LIFERAY-REST-BUILDER-HASH:1102190298

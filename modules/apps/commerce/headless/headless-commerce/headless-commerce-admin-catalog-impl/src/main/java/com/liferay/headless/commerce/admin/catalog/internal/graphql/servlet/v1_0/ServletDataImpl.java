@@ -769,6 +769,16 @@ public class ServletDataImpl implements ServletData {
 							ProductResourceImpl.class,
 							"patchProductByExternalReferenceCode"));
 					put(
+						"mutation#patchProductByExternalReferenceCodeByVersion",
+						new ObjectValuePair<>(
+							ProductResourceImpl.class,
+							"patchProductByExternalReferenceCodeByVersion"));
+					put(
+						"mutation#patchProductByVersion",
+						new ObjectValuePair<>(
+							ProductResourceImpl.class,
+							"patchProductByVersion"));
+					put(
 						"mutation#createProduct",
 						new ObjectValuePair<>(
 							ProductResourceImpl.class, "postProduct"));
@@ -2310,4 +2320,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1495354712
+// LIFERAY-REST-BUILDER-HASH:-1185316984

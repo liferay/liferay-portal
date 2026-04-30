@@ -1710,6 +1710,34 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public Response patchProductByExternalReferenceCodeByVersion(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("version") Integer version,
+			@GraphQLName("product") Product product)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productResource ->
+				productResource.patchProductByExternalReferenceCodeByVersion(
+					externalReferenceCode, version, product));
+	}
+
+	@GraphQLField
+	public Response patchProductByVersion(
+			@GraphQLName("id") Long id, @GraphQLName("version") Integer version,
+			@GraphQLName("product") Product product)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productResource -> productResource.patchProductByVersion(
+				id, version, product));
+	}
+
+	@GraphQLField
 	public Product createProduct(@GraphQLName("product") Product product)
 		throws Exception {
 
@@ -4517,4 +4545,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-763551690
+// LIFERAY-REST-BUILDER-HASH:-536557477
