@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Scheduler Quartz
 Bundle-SymbolicName: com.liferay.portal.scheduler.quartz
-Bundle-Version: 7.0.54
+Bundle-Version: 7.0.55
 Import-Package:\
 	!com.mchange.v2.c3p0.*,\
 	\
@@ -17,4 +17,4 @@ Import-Package:\
 	!javax.transaction.*,\
 	\
 	*
-Liferay-Require-SchemaVersion: 1.0.5
+Liferay-Require-SchemaVersion: 1.0.6
