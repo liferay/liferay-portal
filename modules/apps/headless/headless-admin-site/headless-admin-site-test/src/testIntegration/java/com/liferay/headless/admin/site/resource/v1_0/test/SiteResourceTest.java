@@ -28,16 +28,19 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -220,6 +223,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPutSiteBatchWithParentSiteExternalReferenceCode();
 		_testPutSiteWithExcludedTypeSettings();
 		_testPutSiteWithParentSiteExternalReferenceCode();
+		_testPutSiteWithoutUpdatePermission();
 	}
 
 	@LazyReferencing
@@ -1493,6 +1497,36 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			putSiteUnicodeProperties.get("MAP_PROVIDER_KEY"));
 	}
 
+	private void _testPutSiteWithoutUpdatePermission() throws Exception {
+		User user = UserTestUtil.addUser(false);
+
+		user = _userLocalService.updatePassword(
+			user.getUserId(), "test", "test", false, true);
+
+		SiteResource siteResource = SiteResource.builder(
+		).authentication(
+			user.getEmailAddress(), "test"
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		Site postSite = _testPostSite_addSite(randomSite());
+
+		try {
+			siteResource.putSite(
+				postSite.getExternalReferenceCode(), randomSite());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
 	private void _testPutSiteWithParentSiteExternalReferenceCode()
 		throws Exception {
 
@@ -1541,6 +1575,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 	private String _originalName;
 	private final List<Site> _sites = new ArrayList<>();
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 	private class TestSiteInitializer implements SiteInitializer {
 
