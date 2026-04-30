@@ -423,6 +423,21 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			}
 		}
 
+		if (_cpDefinitionService.isVersionable(cpDefinition)) {
+			CPDefinition draftCPDefinition =
+				_cpDefinitionService.fetchCPDefinitionByCProductId(
+					cpDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT);
+
+			if (draftCPDefinition != null) {
+				return draftCPDefinition;
+			}
+
+			return _cpDefinitionService.copyCPDefinition(
+				cpDefinitionId, cpDefinition.getGroupId(),
+				WorkflowConstants.STATUS_DRAFT);
+		}
+
 		return cpDefinition;
 	}
 
