@@ -1051,7 +1051,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 					site.getExternalReferenceCode());
 			}
 
-			Group updatedGroup = _groupLocalService.updateGroup(
+			Group updatedGroup = _groupService.updateGroup(
 				group.getGroupId(),
 				_getParentGroupId(
 					group, site.getParentSiteExternalReferenceCode()),
