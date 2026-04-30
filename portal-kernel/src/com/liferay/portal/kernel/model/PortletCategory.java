@@ -124,6 +124,18 @@ public class PortletCategory implements Serializable {
 		merge(this, newPortletCategory);
 	}
 
+	public void mergeCategory(PortletCategory portletCategory) {
+		PortletCategory curPortletCategory = _portletCategories.get(
+			portletCategory.getName());
+
+		if (curPortletCategory != null) {
+			merge(curPortletCategory, portletCategory);
+		}
+		else {
+			addCategory(portletCategory);
+		}
+	}
+
 	public void separate(Set<String> portletIds) {
 		for (PortletCategory portletCategory : _portletCategories.values()) {
 			portletCategory.separate(portletIds);
