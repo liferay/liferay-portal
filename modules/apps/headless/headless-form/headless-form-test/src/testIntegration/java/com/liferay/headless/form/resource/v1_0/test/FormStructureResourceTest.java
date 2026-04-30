@@ -10,13 +10,17 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.headless.form.client.dto.v1_0.FormStructure;
+import com.liferay.headless.form.client.problem.Problem;
+import com.liferay.headless.form.client.resource.v1_0.FormStructureResource;
 import com.liferay.headless.form.dto.v1_0.util.StructureUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.Inject;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -26,6 +30,23 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class FormStructureResourceTest
 	extends BaseFormStructureResourceTestCase {
+
+	@Override
+	@Test
+	public void testGetSiteFormStructuresPage() throws Exception {
+		super.testGetSiteFormStructuresPage();
+
+		FormStructureResource formStructureResource =
+			FormStructureResource.builder(
+			).endpoint(
+				testCompany.getVirtualHostname(), 8080, "http"
+			).build();
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class, null,
+			() -> formStructureResource.getSiteFormStructuresPage(
+				testGroup.getGroupId(), null));
+	}
 
 	@Override
 	protected FormStructure testGetFormStructure_addFormStructure()
