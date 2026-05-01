@@ -19,6 +19,20 @@ ${csvFileWriter.write("company", defaultVirtualHostModel.hostname + "," + defaul
 
 <#include "default_groups.ftl">
 
+<#assign
+	guestHomePageContentLayoutModels = dataFactory.newContentPageLayoutModels(guestGroupModel.groupId, "home")
+	guestHomePageSegmentsExperienceModels = dataFactory.newSegmentsExperienceModels(guestHomePageContentLayoutModels)
+/>
+<#list guestHomePageSegmentsExperienceModels as guestHomePageSegmentsExperienceModel>
+	${dataFactory.toInsertSQL(guestHomePageSegmentsExperienceModel)}
+</#list>
+
+<@insertContentPageLayout
+	_fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(guestHomePageContentLayoutModels, guestHomePageSegmentsExperienceModels)
+	_layoutModels = guestHomePageContentLayoutModels
+	_templateFileName = "default-homepage-layout-definition.json"
+/>
+
 <#include "notification_templates.ftl">
 
 <#include "system_object_definitions.ftl">
