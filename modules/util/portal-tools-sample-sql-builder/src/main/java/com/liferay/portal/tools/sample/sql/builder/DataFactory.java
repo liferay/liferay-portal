@@ -784,6 +784,12 @@ public class DataFactory {
 		return sb.toString();
 	}
 
+	public List<String> getLayoutNames() {
+		return Arrays.asList(
+			"404", "500", "Cookie Policy", "Create Account", "Forgot Password",
+			"Sign In");
+	}
+
 	public int getMaxAccountEntryCommerceOrderCount() {
 		return BenchmarksPropsValues.MAX_ACCOUNT_ENTRY_COMMERCE_ORDER_COUNT;
 	}
@@ -943,6 +949,20 @@ public class DataFactory {
 		}
 
 		return sequence;
+	}
+
+	public String getTemplateFileName(List<LayoutModel> layoutModels) {
+		String externalReferenceCode = StringPool.BLANK;
+
+		for (LayoutModel layoutModel : layoutModels) {
+			externalReferenceCode = layoutModel.getExternalReferenceCode();
+
+			if (!externalReferenceCode.endsWith("-draft")) {
+				break;
+			}
+		}
+
+		return "utility_page_" + externalReferenceCode + "_definition.json";
 	}
 
 	public RoleModel getUserRoleModel() {
@@ -6903,12 +6923,14 @@ public class DataFactory {
 
 		Long index = _segmentsExperienceCounter.get();
 
+		String uuid = SequentialUUID.generate();
+
 		return newSegmentsExperienceModel(
 			groupId, segmentsEntryModel.getExternalReferenceCode(),
 			ScopeUtil.getItemScopeExternalReferenceCode(
 				segmentsEntryModel.getGroupId(), groupId),
 			_counter.getString(), plid, "SampleExperience" + index,
-			index.intValue());
+			index.intValue(), uuid, uuid);
 	}
 
 	public List<SegmentsExperienceModel> newSegmentsExperienceModels(
@@ -6921,7 +6943,9 @@ public class DataFactory {
 			segmentsExperienceModels.add(
 				newSegmentsExperienceModel(
 					layoutModel.getGroupId(), "DEFAULT", null, "DEFAULT",
-					layoutModel.getPlid(), "Default", 0));
+					layoutModel.getPlid(), "Default", 0,
+					SequentialUUID.generate(),
+					layoutModel.getExternalReferenceCode() + "-default"));
 		}
 
 		return segmentsExperienceModels;
@@ -7025,6 +7049,127 @@ public class DataFactory {
 		return newGroupModel(
 			getClassNameId(UserPersonalSite.class), _guestUserId,
 			_counter.get(), GroupConstants.USER_PERSONAL_SITE, false);
+	}
+
+	public List<LayoutModel> newUtilityPageLayoutModels(
+		long groupId, String name) {
+
+		List<LayoutModel> layoutModels = new ArrayList<>();
+
+		String externalReferenceCodeSuffix = StringUtil.replace(
+			StringUtil.toUpperCase(name.trim()), CharPool.SPACE, CharPool.DASH);
+
+		String friendlyURL = StringUtil.toLowerCase(
+			externalReferenceCodeSuffix);
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.create(
+				true
+			).build();
+
+		if (Validator.isNumber(name)) {
+			externalReferenceCodeSuffix = name + "-ERROR";
+
+			friendlyURL = name + "-1";
+
+			typeSettingsUnicodeProperties.setProperty(
+				"lfr-theme:regular:show-footer", "false");
+			typeSettingsUnicodeProperties.setProperty(
+				"lfr-theme:regular:show-header", "false");
+		}
+		else if (name.equals("Sign In")) {
+			externalReferenceCodeSuffix = "LOGIN";
+		}
+
+		String externalReferenceCode =
+			"LFR-" + externalReferenceCodeSuffix + "-layout";
+
+		LayoutModel publicLayoutModel = newUtilityPageLayoutModel(
+			friendlyURL, groupId, name, 0, 0,
+			typeSettingsUnicodeProperties.toString(), externalReferenceCode);
+
+		layoutModels.add(publicLayoutModel);
+
+		typeSettingsUnicodeProperties.setProperty("published", "true");
+
+		layoutModels.add(
+			newUtilityPageLayoutModel(
+				String.valueOf(
+					new UUID(
+						SecureRandomUtil.nextLong(),
+						SecureRandomUtil.nextLong())),
+				publicLayoutModel.getGroupId(), publicLayoutModel.getName(),
+				getClassNameId(Layout.class), publicLayoutModel.getPlid(),
+				typeSettingsUnicodeProperties.toString(),
+				externalReferenceCode + "-draft"));
+
+		return layoutModels;
+	}
+
+	public List<FragmentEntryLinkModel>
+			newUtilityPageLayoutsFragmentEntryLinkModels(
+				List<LayoutModel> layoutModels,
+				List<SegmentsExperienceModel> segmentsExperienceModels)
+		throws Exception {
+
+		LayoutModel nonhiddenLayoutModel = null;
+
+		List<FragmentEntryLinkModel> originalFragmentEntryLinkModels =
+			new ArrayList<>();
+
+		for (LayoutModel layoutModel : layoutModels) {
+			String externalReferenceCode =
+				layoutModel.getExternalReferenceCode();
+
+			if (externalReferenceCode.endsWith("-draft")) {
+				nonhiddenLayoutModel = layoutModel;
+
+				continue;
+			}
+
+			String renderNamespace = StringUtil.randomId();
+
+			long segmentsExperienceId = _getSegmentsExperienceId(
+				layoutModel, segmentsExperienceModels);
+
+			List<String> rendererKeyAndPositionList =
+				_utilityPageFragmentEntryLinkRendererKeyAndPositionMap.get(
+					externalReferenceCode);
+
+			for (String rendererKeyAndPosition : rendererKeyAndPositionList) {
+				originalFragmentEntryLinkModels.add(
+					newUtilityPageFragmentEntryLinkModel(
+						layoutModel, segmentsExperienceId,
+						rendererKeyAndPosition, externalReferenceCode,
+						renderNamespace));
+			}
+		}
+
+		List<FragmentEntryLinkModel> fragmentEntryLinkModels = new ArrayList<>(
+			originalFragmentEntryLinkModels);
+
+		long segmentsExperienceId = _getSegmentsExperienceId(
+			nonhiddenLayoutModel, segmentsExperienceModels);
+
+		for (FragmentEntryLinkModel hiddenFragmentEntryLinkModel :
+				originalFragmentEntryLinkModels) {
+
+			fragmentEntryLinkModels.add(
+				newFragmentEntryLinkModel(
+					nonhiddenLayoutModel,
+					hiddenFragmentEntryLinkModel.getExternalReferenceCode(),
+					segmentsExperienceId, hiddenFragmentEntryLinkModel.getCss(),
+					hiddenFragmentEntryLinkModel.getHtml(),
+					hiddenFragmentEntryLinkModel.getJs(),
+					hiddenFragmentEntryLinkModel.getConfiguration(),
+					hiddenFragmentEntryLinkModel.getEditableValues(),
+					hiddenFragmentEntryLinkModel.getNamespace(),
+					hiddenFragmentEntryLinkModel.getPosition(),
+					hiddenFragmentEntryLinkModel.getRendererKey(),
+					hiddenFragmentEntryLinkModel.getType()));
+		}
+
+		return fragmentEntryLinkModels;
 	}
 
 	public VirtualHostModel newVirtualHostModel() {
@@ -8011,8 +8156,10 @@ public class DataFactory {
 	}
 
 	protected LayoutModel newLayoutModel(
-		String friendlyURL, long groupId, boolean hidden, String name,
-		boolean privateLayout, long parentLayoutId, String typeSettings) {
+		String friendlyURL, long groupId, boolean hidden, boolean system,
+		String themeId, String name, String type, boolean privateLayout,
+		long parentLayoutId, long classNameId, long classPK,
+		String typeSettings, String uuid, String externalReferenceCode) {
 
 		SimpleCounter simpleCounter = _layoutIdCounters.computeIfAbsent(
 			LayoutLocalServiceImpl.getCounterName(groupId, privateLayout),
@@ -8038,18 +8185,29 @@ public class DataFactory {
 
 		// Other fields
 
+		layoutModel.setParentLayoutId(0);
+		layoutModel.setPrivateLayout(privateLayout);
 		layoutModel.setLayoutId(simpleCounter.get());
 		layoutModel.setParentLayoutId(parentLayoutId);
-		layoutModel.setPrivateLayout(privateLayout);
+		layoutModel.setClassNameId(classNameId);
+		layoutModel.setClassPK(classPK);
+
 		layoutModel.setName(
 			"<?xml version=\"1.0\"?><root><name>" + name + "</name></root>");
-		layoutModel.setType(LayoutConstants.TYPE_PORTLET);
-		layoutModel.setHidden(hidden);
+		layoutModel.setTitle(
+			"<?xml version=\"1.0\"?><root><name>" + name + "</name></root>");
 
+		layoutModel.setType(type);
 		layoutModel.setTypeSettings(
 			StringUtil.replace(typeSettings, '\n', "\\n"));
-
+		layoutModel.setHidden(hidden);
+		layoutModel.setSystem(system);
 		layoutModel.setFriendlyURL(StringPool.FORWARD_SLASH + friendlyURL);
+
+		if (themeId != null) {
+			layoutModel.setThemeId(themeId);
+			layoutModel.setPriority(2147483647);
+		}
 
 		if (name.equals("search")) {
 			layoutModel.setPriority(1);
@@ -8059,12 +8217,22 @@ public class DataFactory {
 
 		// Autogenerated fields
 
-		String uuid = SequentialUUID.generate();
-
 		layoutModel.setUuid(uuid);
-		layoutModel.setExternalReferenceCode(uuid);
+		layoutModel.setExternalReferenceCode(externalReferenceCode);
 
 		return layoutModel;
+	}
+
+	protected LayoutModel newLayoutModel(
+		String friendlyURL, long groupId, boolean hidden, String name,
+		boolean privateLayout, long parentLayoutId, String typeSettings) {
+
+		String uuid = SequentialUUID.generate();
+
+		return newLayoutModel(
+			friendlyURL, groupId, hidden, false, null, name,
+			LayoutConstants.TYPE_PORTLET, privateLayout, parentLayoutId, 0, 0,
+			typeSettings, uuid, uuid);
 	}
 
 	protected LayoutSetModel newLayoutSetModel(
@@ -8684,7 +8852,8 @@ public class DataFactory {
 
 	protected SegmentsExperienceModel newSegmentsExperienceModel(
 		long groupId, String segmentsEntryERC, String segmentsEntryScopeERC,
-		String segmentsExperienceKey, long plid, String name, int priority) {
+		String segmentsExperienceKey, long plid, String name, int priority,
+		String uuid, String externalReferenceCode) {
 
 		SegmentsExperienceModel segmentsExperienceModel =
 			new SegmentsExperienceModelImpl();
@@ -8721,10 +8890,8 @@ public class DataFactory {
 
 		// Autogenerated fields
 
-		String uuid = SequentialUUID.generate();
-
 		segmentsExperienceModel.setUuid(uuid);
-		segmentsExperienceModel.setExternalReferenceCode(uuid);
+		segmentsExperienceModel.setExternalReferenceCode(externalReferenceCode);
 
 		return segmentsExperienceModel;
 	}
@@ -8837,6 +9004,110 @@ public class DataFactory {
 		userModel.setExternalReferenceCode(uuid);
 
 		return userModel;
+	}
+
+	protected FragmentEntryLinkModel newUtilityPageFragmentEntryLinkModel(
+			LayoutModel layoutModel, long segmentsExperienceId,
+			String rendererKeyAndPosition, String externalReferenceCode,
+			String renderNamespace)
+		throws Exception {
+
+		String configuration = StringPool.BLANK;
+		String css = StringPool.BLANK;
+		String editValue = StringPool.BLANK;
+		String html = StringPool.BLANK;
+		int type = FragmentConstants.TYPE_COMPONENT;
+		String rendererKey = StringPool.BLANK;
+		int position = 0;
+
+		if (rendererKeyAndPosition.equals(StringPool.BLANK)) {
+			type = FragmentConstants.TYPE_PORTLET;
+
+			editValue = StringUtil.replace(
+				_readFile(
+					"fragment_component/fragment_" +
+						"component_portlet_editValue_utility_page.json"),
+				"${portletId}",
+				_utilityPagePortletIdMap.get(externalReferenceCode));
+		}
+		else {
+			String[] rendererKeyAndPositionArray = rendererKeyAndPosition.split(
+				"#");
+
+			rendererKey = rendererKeyAndPositionArray[0];
+
+			position = GetterUtil.getInteger(rendererKeyAndPositionArray[1]);
+
+			String fragmentName = StringUtil.replace(
+				StringUtil.toLowerCase(
+					StringUtil.split(rendererKey, CharPool.DASH)[1]),
+				CharPool.UNDERLINE, CharPool.DASH);
+
+			if (rendererKey.contains("heading")) {
+				editValue = StringUtil.replace(
+					_readFile(
+						"fragment_component/fragment_" +
+							"component_heading_editValue_utility_page.json"),
+					"${heading}", rendererKeyAndPositionArray[2]);
+
+				configuration = _readFile(
+					"fragment_component" +
+						"/fragment_component_heading_configuration.json");
+			}
+			else if (rendererKey.contains("paragraph")) {
+				String paragraphContent = rendererKeyAndPositionArray[2];
+
+				if (paragraphContent.endsWith(".txt")) {
+					String fileName = StringUtil.replace(
+						paragraphContent, CharPool.SPACE, CharPool.UNDERLINE);
+
+					paragraphContent = _readFile(
+						"fragment_component/" + fileName);
+				}
+
+				editValue = StringUtil.replace(
+					_readFile(
+						"fragment_component/fragment_" +
+							"component_paragraph_editValue_utility_page.json"),
+					"${paragraph}", paragraphContent);
+			}
+			else if (rendererKey.contains("button")) {
+				String suffix = "404";
+
+				if (externalReferenceCode.contains("COOKIE")) {
+					suffix = "cookie";
+				}
+
+				editValue = _readFile(
+					StringBundler.concat(
+						"fragment_component/fragment_component_", suffix,
+						"_button_editValue_utility_page.json"));
+			}
+
+			if (!rendererKey.contains("button")) {
+				css = _readFile(
+					_getFragmentComponentInputStream(
+						"basic/component", fragmentName, "css"));
+				html = _readFile(
+					_getFragmentComponentInputStream(
+						"basic/component", fragmentName, "html"));
+			}
+		}
+
+		return newFragmentEntryLinkModel(
+			layoutModel, null, segmentsExperienceId, css, html,
+			StringPool.BLANK, configuration, editValue, renderNamespace,
+			position, rendererKey, type);
+	}
+
+	protected LayoutModel newUtilityPageLayoutModel(
+		String friendlyURL, long groupId, String name, long classNameId,
+		long classPK, String typeSettings, String externalReferenceCode) {
+
+		return newLayoutModel(
+			friendlyURL, groupId, true, true, "classic_WAR_classictheme", name,
+			LayoutConstants.TYPE_UTILITY, false, 0, classNameId, classPK,
+			typeSettings, SequentialUUID.generate(), externalReferenceCode);
 	}
 
 	protected String nextDDLCustomFieldName(
@@ -9139,6 +9410,22 @@ public class DataFactory {
 			List<FragmentEntryLinkModel> fragmentEntryLinkModels,
 			String templateFileName)
 		throws Exception {
+
+		if (templateFileName.startsWith("utility_page")) {
+			String data = _readFile(
+				"utility_page_templates/" + templateFileName);
+
+			for (FragmentEntryLinkModel fragmentEntryLinkModel :
+					fragmentEntryLinkModels) {
+
+				data = StringUtil.replaceFirst(
+					data, "${fragmentEntryLinkId}",
+					String.valueOf(
+						fragmentEntryLinkModel.getFragmentEntryLinkId()));
+			}
+
+			return data;
+		}
 
 		String data = _readFile("home_page_template/" + templateFileName);
 
@@ -9469,6 +9756,58 @@ public class DataFactory {
 			).build();
 	private static final PortletPreferencesFactory _portletPreferencesFactory =
 		new PortletPreferencesFactoryImpl();
+	private static final Map<String, List<String>>
+		_utilityPageFragmentEntryLinkRendererKeyAndPositionMap =
+			HashMapBuilder.<String, List<String>>put(
+				"LFR-404-ERROR-layout",
+				Arrays.asList(
+					"BASIC_COMPONENT-heading#0#404",
+					"BASIC_COMPONENT-paragraph#1#Page Not Found",
+					"BASIC_COMPONENT-button#2#")
+			).put(
+				"LFR-500-ERROR-layout",
+				Arrays.asList(
+					"BASIC_COMPONENT-heading#0#500",
+					"BASIC_COMPONENT-paragraph#1#Internt serverfel")
+			).put(
+				"LFR-COOKIE-POLICY-layout",
+				Arrays.asList(
+					StringPool.BLANK,
+					"BASIC_COMPONENT-heading#0#Strictly Necessary Cookies",
+					StringPool.BLANK,
+					"BASIC_COMPONENT-paragraph#1#Strictly_Necessary_Cookies." +
+						"txt",
+					"BASIC_COMPONENT-heading#0#Personalization Cookies",
+					"BASIC_COMPONENT-paragraph#1#Personalization_Cookies.txt",
+					"BASIC_COMPONENT-paragraph#0#Cookies_List.txt",
+					StringPool.BLANK,
+					"BASIC_COMPONENT-heading#0#Performance Cookies",
+					"BASIC_COMPONENT-button#1#",
+					"BASIC_COMPONENT-heading#0#Functional Cookies",
+					"BASIC_COMPONENT-paragraph#1#Functional_Cookies.txt",
+					"BASIC_COMPONENT-paragraph#1#Performance_Cookies.txt",
+					"BASIC_COMPONENT-heading#0#Cookies List", StringPool.BLANK)
+			).put(
+				"LFR-CREATE-ACCOUNT-layout", Arrays.asList(StringPool.BLANK)
+			).put(
+				"LFR-FORGOT-PASSWORD-layout", Arrays.asList(StringPool.BLANK)
+			).put(
+				"LFR-LOGIN-layout", Arrays.asList(StringPool.BLANK)
+			).build();
+	private static final Map<String, String> _utilityPagePortletIdMap =
+		HashMapBuilder.put(
+			"LFR-COOKIE-POLICY-layout",
+			"com_liferay_object_web_internal_object_definitions_portlet_" +
+				"ObjectDefinitionsPortlet"
+		).put(
+			"LFR-CREATE-ACCOUNT-layout",
+			"com_liferay_login_web_portlet_CreateAccountPortlet"
+		).put(
+			"LFR-FORGOT-PASSWORD-layout",
+			"com_liferay_login_web_portlet_ForgotPasswordPortlet"
+		).put(
+			"LFR-LOGIN-layout", "com_liferay_login_web_portlet_LoginPortlet"
+		).build();
 
 	private RoleModel _administratorRoleModel;
 	private Map<Long, SimpleCounter>[] _assetCategoryCounters;

@@ -33,6 +33,22 @@ ${csvFileWriter.write("company", defaultVirtualHostModel.hostname + "," + defaul
 	_templateFileName = "default-homepage-layout-definition.json"
 />
 
+<#list dataFactory.layoutNames as layoutName>
+	<#assign
+		utilityPageLayoutModels = dataFactory.newUtilityPageLayoutModels(guestGroupModel.groupId, layoutName)
+		utilityPageSegmentsExperienceModels = dataFactory.newSegmentsExperienceModels(utilityPageLayoutModels)
+	/>
+	<#list utilityPageSegmentsExperienceModels as utilityPageSegmentsExperienceModel>
+		${dataFactory.toInsertSQL(utilityPageSegmentsExperienceModel)}
+	</#list>
+
+	<@insertContentPageLayout
+		_fragmentEntryLinkModels = dataFactory.newUtilityPageLayoutsFragmentEntryLinkModels(utilityPageLayoutModels, utilityPageSegmentsExperienceModels)
+		_layoutModels = utilityPageLayoutModels
+		_templateFileName = dataFactory.getTemplateFileName(utilityPageLayoutModels);
+	/>
+</#list>
+
 <#include "notification_templates.ftl">
 
 <#include "system_object_definitions.ftl">

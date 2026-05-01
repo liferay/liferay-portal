@@ -1,0 +1,20 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"action": {
+			"config": {
+			},
+			"defaultValue": "Go Somewhere",
+			"en_US": "Manage Cookies Settings"
+		},
+		"link": {
+			"config": {
+				"mapperType": "link"
+			}
+		}
+	},
+	"com.liferay.fragment.entry.processor.freemarker.FreeMarkerFragmentEntryProcessor": {
+		"buttonSize": "sm",
+		"buttonType": "secondary",
+		"type": "action"
+	}
+}

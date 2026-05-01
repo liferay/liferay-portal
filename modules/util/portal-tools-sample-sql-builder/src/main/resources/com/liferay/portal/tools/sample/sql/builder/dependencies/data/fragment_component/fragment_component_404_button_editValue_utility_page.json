@@ -1,0 +1,19 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"link": {
+			"config": {
+				"href": {
+					"en_US": "javascript:history.back()"
+				},
+				"mapperType": "link"
+			},
+			"defaultValue": "Go Somewhere",
+			"en_US": "Go Back"
+		}
+	},
+	"com.liferay.fragment.entry.processor.freemarker.FreeMarkerFragmentEntryProcessor": {
+		"buttonSize": "sm",
+		"buttonType": "link",
+		"type": "link"
+	}
+}

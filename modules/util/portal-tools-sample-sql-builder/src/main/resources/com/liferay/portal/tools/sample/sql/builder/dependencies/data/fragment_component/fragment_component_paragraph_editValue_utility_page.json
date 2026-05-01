@@ -1,0 +1,11 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"element-text": {
+			"config": {
+				"mapperType": "link"
+			},
+			"defaultValue": "<p>A paragraph is a self-contained unit of a discourse in writing dealing with a particular point or idea. Paragraphs are usually an expected part of formal writing, used to organize longer prose.</p>",
+			"en_US": "${paragraph}"
+		}
+	}
+}

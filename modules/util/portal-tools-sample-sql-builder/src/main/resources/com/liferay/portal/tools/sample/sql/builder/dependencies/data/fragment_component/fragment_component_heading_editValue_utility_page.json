@@ -1,0 +1,14 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"element-text": {
+			"config": {
+				"mapperType": "link"
+			},
+			"defaultValue": "Heading Example",
+			"en_US": "${heading}"
+		}
+	},
+	"com.liferay.fragment.entry.processor.freemarker.FreeMarkerFragmentEntryProcessor": {
+		"headingLevel": "h1"
+	}
+}
