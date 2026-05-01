@@ -14,6 +14,7 @@ import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -32,11 +33,14 @@ import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -121,6 +125,45 @@ public class DispatchTriggerDisplayContextTest {
 				dispatchTaskExecutorTypeHiddenInUILabel,
 				dropdownItem.get("label"));
 		}
+	}
+
+	@Test
+	public void testGetSearchContainer() throws Exception {
+		DispatchTrigger dispatchTrigger1 =
+			_dispatchTriggerLocalService.addDispatchTrigger(
+				null, TestPropsValues.getUserId(),
+				SingleNodeClusterModeDispatchTaskExecutor.
+					DISPATCH_TASK_EXECUTOR_TYPE_SINGLE_NODE,
+				null, RandomTestUtil.randomString(), false);
+
+		DispatchTrigger dispatchTrigger2 =
+			_dispatchTriggerLocalService.addDispatchTrigger(
+				null, TestPropsValues.getUserId(),
+				SingleNodeClusterModeDispatchTaskExecutor.
+					DISPATCH_TASK_EXECUTOR_TYPE_SINGLE_NODE,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"featureFlagKey", RandomTestUtil.randomString()
+				).build(),
+				RandomTestUtil.randomString(), false);
+
+		User user = TestPropsValues.getUser();
+
+		SearchContainer<DispatchTrigger> searchContainer =
+			ReflectionTestUtil.invoke(
+				_getDispatchTriggerDisplayContext(
+					_getMockHttpServletRequest(
+						_companyLocalService.getCompany(
+							TestPropsValues.getCompanyId()),
+						LayoutTestUtil.addTypePortletLayout(user.getGroupId()),
+						user)),
+				"getSearchContainer", new Class<?>[0], null);
+
+		List<DispatchTrigger> dispatchTriggers = searchContainer.getResults();
+
+		Assert.assertTrue(dispatchTriggers.contains(dispatchTrigger1));
+		Assert.assertTrue(dispatchTriggers.contains(dispatchTrigger2));
 	}
 
 	@Test
@@ -222,6 +265,10 @@ public class DispatchTriggerDisplayContextTest {
 			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
 		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
 			new MockLiferayPortletRenderResponse();
+
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_REQUEST,
+			mockLiferayPortletRenderRequest);
 
 		mockLiferayPortletRenderRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_RESPONSE,
