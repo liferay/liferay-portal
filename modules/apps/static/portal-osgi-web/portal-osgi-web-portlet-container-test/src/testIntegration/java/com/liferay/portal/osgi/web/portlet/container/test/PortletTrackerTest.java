@@ -376,29 +376,25 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 			Company company = CompanyTestUtil.addCompany();
 
-			try {
-				PortletCategory rootCategory3 = (PortletCategory)WebAppPool.get(
-					company.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+			PortletCategory rootCategory3 = (PortletCategory)WebAppPool.get(
+				company.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
-				PortletCategory parentCategory3 = rootCategory3.getCategory(
-					parentCategoryName);
+			PortletCategory parentCategory3 = rootCategory3.getCategory(
+				parentCategoryName);
 
-				Assert.assertEquals(
-					parentCategoryName, parentCategory3.getName());
-				Assert.assertEquals(
-					"root//" + parentCategoryName, parentCategory3.getPath());
+			Assert.assertEquals(
+				parentCategoryName, parentCategory3.getName());
+			Assert.assertEquals(
+				"root//" + parentCategoryName, parentCategory3.getPath());
 
-				PortletCategory childCategory3 = parentCategory3.getCategory(
-					childCategoryName);
+			PortletCategory childCategory3 = parentCategory3.getCategory(
+				childCategoryName);
 
-				Assert.assertEquals(
-					childCategoryName, childCategory3.getName());
-				Assert.assertEquals(
-					"root//" + displayCategory, childCategory3.getPath());
-			}
-			finally {
-				_companyLocalService.deleteCompany(company);
-			}
+			Assert.assertEquals(childCategoryName, childCategory3.getName());
+			Assert.assertEquals(
+				"root//" + displayCategory, childCategory3.getPath());
+
+			_companyLocalService.deleteCompany(company);
 		}
 		finally {
 			for (ServiceRegistration<?> serviceRegistration :

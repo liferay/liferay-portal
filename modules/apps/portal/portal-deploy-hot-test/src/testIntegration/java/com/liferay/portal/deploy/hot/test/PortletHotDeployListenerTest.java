@@ -267,14 +267,14 @@ public class PortletHotDeployListenerTest {
 						categoryNames.toString(),
 						Collections.singleton(categoryName), categoryNames);
 
-					String[] nestedCategoryNames = StringUtil.split(
-						categoryName, StringPool.DOUBLE_SLASH);
-
 					PortletCategory portletCategory = rootPortletCategory;
 
 					StringBundler sb = new StringBundler();
 
 					sb.append("root");
+
+					String[] nestedCategoryNames = StringUtil.split(
+						categoryName, StringPool.DOUBLE_SLASH);
 
 					for (String nestedCategoryName : nestedCategoryNames) {
 						portletCategory = portletCategory.getCategory(
