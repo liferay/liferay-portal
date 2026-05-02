@@ -382,8 +382,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			PortletCategory parentCategory3 = rootCategory3.getCategory(
 				parentCategoryName);
 
-			Assert.assertEquals(
-				parentCategoryName, parentCategory3.getName());
+			Assert.assertEquals(parentCategoryName, parentCategory3.getName());
 			Assert.assertEquals(
 				"root//" + parentCategoryName, parentCategory3.getPath());
 
