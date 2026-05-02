@@ -4720,7 +4720,7 @@ test.describe('Manage object entries through View Object Entries', () => {
 		{tag: '@LPD-65249'},
 		async ({
 			apiHelpers,
-			commerceCatalogSystemSettingsPage,
+			commerceInstanceSettingsPage,
 			page,
 			viewObjectEntriesPage,
 		}) => {
@@ -4789,7 +4789,7 @@ test.describe('Manage object entries through View Object Entries', () => {
 					catalogId: catalog.id,
 				});
 
-			await commerceCatalogSystemSettingsPage.toggleProductVersioning();
+			await commerceInstanceSettingsPage.toggleProductVersioning();
 
 			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
 				productVersion1.productId.toString()
@@ -4847,7 +4847,7 @@ test.describe('Manage object entries through View Object Entries', () => {
 				1
 			);
 
-			await commerceCatalogSystemSettingsPage.toggleProductVersioning();
+			await commerceInstanceSettingsPage.toggleProductVersioning();
 		}
 	);
 
