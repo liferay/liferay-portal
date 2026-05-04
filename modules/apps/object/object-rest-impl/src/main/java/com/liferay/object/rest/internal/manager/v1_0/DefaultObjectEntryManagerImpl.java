@@ -3426,6 +3426,28 @@ public class DefaultObjectEntryManagerImpl
 					objectDefinition, serviceBuilderObjectEntry,
 					serviceBuilderParentObjectEntry)
 			).put(
+				"duplicate",
+				() -> {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							serviceBuilderObjectEntry.getCompanyId(),
+							"LPD-17564")) {
+
+						return null;
+					}
+
+					return _addAction(
+						ActionKeys.UPDATE,
+						"postObjectEntryByObjectEntryFolderCopy",
+						serviceBuilderObjectEntry,
+						HashMapBuilder.put(
+							"objectEntryFolderId",
+							String.valueOf(
+								serviceBuilderObjectEntry.
+									getObjectEntryFolderId())
+						).build(),
+						dtoConverterContext.getUriInfo());
+				}
+			).put(
 				"expire",
 				() -> {
 					if (!FeatureFlagManagerUtil.isEnabled(
