@@ -8,6 +8,7 @@ interface ItemData {
 		copy: Action;
 		'copy-replace': Action;
 		delete: Action;
+		duplicate: Action;
 		expire: Action;
 		get: Action;
 		'get-by-scope': Action;
