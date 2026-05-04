@@ -788,6 +788,11 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(38, 7, 0),
 			UpgradeProcessFactory.addColumns(
 				"AssetCategory", "system_ BOOLEAN"));
+
+		upgradeVersionTreeMap.put(
+			new Version(38, 7, 1),
+			UpgradeModulesFactory.create(
+				new String[] {"com.liferay.portal.vulcan.impl"}, null));
 	}
 
 }
