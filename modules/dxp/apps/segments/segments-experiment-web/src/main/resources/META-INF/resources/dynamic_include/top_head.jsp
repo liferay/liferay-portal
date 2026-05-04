@@ -30,9 +30,13 @@ SegmentsExperiment segmentsExperiment = (SegmentsExperiment)request.getAttribute
 			});
 		}
 		else {
-			elements.push(
-				document.querySelector('<%= segmentsExperiment.getGoalTarget() %>')
+			var goalTargetElement = document.querySelector(
+				'<%= segmentsExperiment.getGoalTarget() %>'
 			);
+
+			if (goalTargetElement) {
+				elements.push(goalTargetElement);
+			}
 		}
 
 		if (elements.length) {
