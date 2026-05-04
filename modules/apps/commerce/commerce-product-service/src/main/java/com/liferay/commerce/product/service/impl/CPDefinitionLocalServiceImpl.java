@@ -873,7 +873,7 @@ public class CPDefinitionLocalServiceImpl
 		if (!cpDefinitionLocalService.isVersionable(
 				sourceCProduct.getPublishedCPDefinitionId()) ||
 			(sourceCPDefinition.isDraft() &&
-			 (status == WorkflowConstants.ACTION_SAVE_DRAFT))) {
+			 (status == WorkflowConstants.STATUS_DRAFT))) {
 
 			return sourceCPDefinition;
 		}
@@ -884,7 +884,7 @@ public class CPDefinitionLocalServiceImpl
 		User user = _userLocalService.getUser(serviceContext.getUserId());
 
 		if (!sourceCPDefinition.isDraft() &&
-			(status == WorkflowConstants.ACTION_SAVE_DRAFT)) {
+			(status == WorkflowConstants.STATUS_DRAFT)) {
 
 			for (CPDefinition cProductCPDefinition :
 					cpDefinitionLocalService.getCProductCPDefinitions(
