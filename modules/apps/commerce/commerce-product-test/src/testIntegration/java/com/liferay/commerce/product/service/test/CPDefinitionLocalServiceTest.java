@@ -491,6 +491,74 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testCloneCPDefinitionWithSKUCombinations() throws Exception {
+		frutillaRule.scenario(
+			"Clone a product definition with SKU combinations"
+		).given(
+			"A product definition with SKU combinations"
+		).when(
+			"the clone method is run"
+		).then(
+			"the cloned SKUs link to the cloned option value rels"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			_commerceCatalog.getGroupId(), true);
+
+		_cpOptions.add(cpOption);
+
+		for (int i = 0; i < 3; i++) {
+			CPTestUtil.addCPOptionValue(cpOption);
+		}
+
+		CPTestUtil.addCPDefinitionOptionRel(
+			_commerceCatalog.getGroupId(), cpDefinition1.getCPDefinitionId(),
+			cpOption.getCPOptionId());
+
+		CPTestUtil.buildCPInstances(cpDefinition1);
+
+		CPDefinition cpDefinition2 = _cpDefinitionLocalService.cloneCPDefinition(
+			TestPropsValues.getUserId(), cpDefinition1.getCPDefinitionId(),
+			_commerceCatalog.getGroupId(), _serviceContext);
+
+		List<CPInstance> cpInstances =
+			_cpInstanceLocalService.getCPDefinitionInstances(
+				cpDefinition2.getCPDefinitionId(),
+				WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertFalse(cpInstances.isEmpty());
+
+		for (CPInstance cpInstance : cpInstances) {
+			List<CPInstanceOptionValueRel> cpInstanceOptionValueRels =
+				_cpInstanceOptionValueRelLocalService.
+					getCPInstanceCPInstanceOptionValueRels(
+						cpInstance.getCPInstanceId());
+
+			for (CPInstanceOptionValueRel cpInstanceOptionValueRel :
+					cpInstanceOptionValueRels) {
+
+				CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+					_cpDefinitionOptionValueRelLocalService.
+						getCPDefinitionOptionValueRel(
+							cpInstanceOptionValueRel.
+								getCPDefinitionOptionValueRelId());
+
+				CPDefinitionOptionRel cpDefinitionOptionRel =
+					cpDefinitionOptionValueRel.getCPDefinitionOptionRel();
+
+				Assert.assertEquals(
+					cpDefinition2.getCPDefinitionId(),
+					cpDefinitionOptionRel.getCPDefinitionId());
+			}
+		}
+	}
+
+	@Test
 	public void testClonedProductPriceChangeDoesNotAffectParent()
 		throws PortalException {
 
