@@ -23,7 +23,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.ldap.DuplicateLDAPServerNameException;
 import com.liferay.portal.security.ldap.LDAPServerNameException;
-import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationModelListenerException;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
@@ -91,12 +91,15 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 			else {
 				Throwable throwable = exception.getCause();
 
-				if (!(throwable instanceof LocalizedLDAPConfigurationException)) {
+				if (!(throwable instanceof
+						LocalizedLDAPConfigurationModelListenerException)) {
+
 					throw exception;
 				}
 
 				SessionErrors.add(
-					actionRequest, LocalizedLDAPConfigurationException.class,
+					actionRequest,
+					LocalizedLDAPConfigurationModelListenerException.class,
 					throwable);
 			}
 

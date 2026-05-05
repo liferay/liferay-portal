@@ -28,13 +28,13 @@ boolean disableImportUserPassword = FIPSModeUtil.isEnabled() && !FIPSModeUtil.is
 <aui:fieldset>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= LDAPSettingsConstants.CMD_UPDATE_IMPORT %>" />
 
-	<liferay-ui:error exception="<%= LocalizedLDAPConfigurationException.class %>">
+	<liferay-ui:error exception="<%= LocalizedLDAPConfigurationModelListenerException.class %>">
 
 		<%
-		LocalizedLDAPConfigurationException localizedLDAPConfigurationException = (LocalizedLDAPConfigurationException)errorException;
+		LocalizedLDAPConfigurationModelListenerException localizedLDAPConfigurationModelListenerException = (LocalizedLDAPConfigurationModelListenerException)errorException;
 		%>
 
-		<liferay-ui:message arguments="<%= localizedLDAPConfigurationException.getMessageArguments() %>" key="<%= localizedLDAPConfigurationException.getMessageKey() %>" translateArguments="<%= false %>" />
+		<liferay-ui:message arguments="<%= localizedLDAPConfigurationModelListenerException.getMessageArguments() %>" key="<%= localizedLDAPConfigurationModelListenerException.getMessageKey() %>" translateArguments="<%= false %>" />
 	</liferay-ui:error>
 
 	<c:choose>

@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationModelListenerException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
@@ -96,12 +96,15 @@ public class LDAPFormMVCActionCommand extends BaseFormMVCActionCommand {
 		catch (SystemException systemException) {
 			Throwable throwable = systemException.getCause();
 
-			if (!(throwable instanceof LocalizedLDAPConfigurationException)) {
+			if (!(throwable instanceof
+					LocalizedLDAPConfigurationModelListenerException)) {
+
 				throw systemException;
 			}
 
 			SessionErrors.add(
-				actionRequest, LocalizedLDAPConfigurationException.class,
+				actionRequest,
+				LocalizedLDAPConfigurationModelListenerException.class,
 				throwable);
 		}
 

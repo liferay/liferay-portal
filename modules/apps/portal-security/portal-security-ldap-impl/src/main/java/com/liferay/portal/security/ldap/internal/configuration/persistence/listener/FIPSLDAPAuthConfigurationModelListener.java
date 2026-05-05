@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationModelListenerException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
 
@@ -64,7 +64,7 @@ public class FIPSLDAPAuthConfigurationModelListener
 		}
 
 		if (!FIPSModeUtil.isApprovedPasswordAlgorithm(algorithm)) {
-			throw new LocalizedLDAPConfigurationException(
+			throw new LocalizedLDAPConfigurationModelListenerException(
 				StringBundler.concat(
 					"FIPS mode does not permit LDAP password encryption ",
 					"algorithm \"", algorithm, "\"; allowed values are ",

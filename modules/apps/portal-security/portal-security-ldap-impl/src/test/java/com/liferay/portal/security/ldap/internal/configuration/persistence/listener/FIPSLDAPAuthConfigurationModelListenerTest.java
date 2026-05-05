@@ -7,7 +7,7 @@ package com.liferay.portal.security.ldap.internal.configuration.persistence.list
 
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
-import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationModelListenerException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -92,18 +92,20 @@ public class FIPSLDAPAuthConfigurationModelListenerTest {
 				_listener.onBeforeSave(
 					_PID, _properties("password-compare", "MD5"));
 
-				Assert.fail("Expected LocalizedLDAPConfigurationException");
+				Assert.fail();
 			}
-			catch (LocalizedLDAPConfigurationException
-						localizedLDAPConfigurationException) {
+			catch (LocalizedLDAPConfigurationModelListenerException
+						localizedLDAPConfigurationModelListenerException) {
 
 				Assert.assertEquals(
 					"fips-mode-does-not-permit-ldap-password-encryption-" +
 						"algorithm-x",
-					localizedLDAPConfigurationException.getMessageKey());
+					localizedLDAPConfigurationModelListenerException.
+						getMessageKey());
 				Assert.assertArrayEquals(
 					new Object[] {"MD5"},
-					localizedLDAPConfigurationException.getMessageArguments());
+					localizedLDAPConfigurationModelListenerException.
+						getMessageArguments());
 			}
 		}
 	}

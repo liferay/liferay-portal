@@ -12,10 +12,10 @@ import java.util.Dictionary;
 /**
  * @author Jorge García Jiménez
  */
-public class LocalizedLDAPConfigurationException
+public class LocalizedLDAPConfigurationModelListenerException
 	extends ConfigurationModelListenerException {
 
-	public LocalizedLDAPConfigurationException(
+	public LocalizedLDAPConfigurationModelListenerException(
 		String causeMessage, String messageKey, Object[] messageArguments,
 		Class<?> configurationClass, Class<?> listenerClass,
 		Dictionary<String, Object> properties) {
