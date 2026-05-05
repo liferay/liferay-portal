@@ -93,12 +93,11 @@ public class QuartzGroupUpgradeProcess extends UpgradeProcess {
 
 		_updateTables(
 			companyIds, jobGroups, "trigger_group", "trigger_name",
-			_TRIGGER_TABLE_NAMES);
+			_QUARTZ_TRIGGER_TABLE_NAMES);
 
 		_deleteFromTables(
 			deleteJobNames, jobGroups, "trigger_group", "trigger_name",
-			_TRIGGER_TABLE_NAMES);
-
+			_QUARTZ_TRIGGER_TABLE_NAMES);
 		_deleteFromTables(
 			deleteJobNames, jobGroups, "job_group", "job_name",
 			new String[] {"QUARTZ_JOB_DETAILS"});
@@ -259,7 +258,7 @@ public class QuartzGroupUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private static final String[] _TRIGGER_TABLE_NAMES = {
+	private static final String[] _QUARTZ_TRIGGER_TABLE_NAMES = {
 		"QUARTZ_BLOB_TRIGGERS", "QUARTZ_CRON_TRIGGERS", "QUARTZ_FIRED_TRIGGERS",
 		"QUARTZ_SIMPLE_TRIGGERS", "QUARTZ_SIMPROP_TRIGGERS", "QUARTZ_TRIGGERS"
 	};

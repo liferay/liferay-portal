@@ -86,9 +86,9 @@ public class QuartzGroupUpgradeProcessTest {
 		message.setPayload(
 			JSONUtil.put("dispatchTriggerId", dispatchTriggerId));
 
-		_scheduleJob(
+		_schedule(
 			jobName, _oldGroupName, _DISPATCH_DESTINATION_NAME, message);
-		_scheduleJob(
+		_schedule(
 			jobName, _newGroupName, _DISPATCH_DESTINATION_NAME, message);
 
 		_runUpgrade();
@@ -129,7 +129,7 @@ public class QuartzGroupUpgradeProcessTest {
 		message.setPayload(
 			JSONUtil.put("dispatchTriggerId", dispatchTriggerId));
 
-		_scheduleJob(
+		_schedule(
 			jobName, _oldGroupName, _DISPATCH_DESTINATION_NAME, message);
 
 		_runUpgrade();
@@ -153,7 +153,7 @@ public class QuartzGroupUpgradeProcessTest {
 		}
 	}
 
-	private void _scheduleJob(
+	private void _schedule(
 			String jobName, String groupName, String destinationName,
 			Message message)
 		throws Exception {
