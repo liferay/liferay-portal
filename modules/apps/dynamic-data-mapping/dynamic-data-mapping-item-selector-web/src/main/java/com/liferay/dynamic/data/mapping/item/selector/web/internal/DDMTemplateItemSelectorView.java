@@ -7,6 +7,7 @@ package com.liferay.dynamic.data.mapping.item.selector.web.internal;
 
 import com.liferay.dynamic.data.mapping.item.selector.DDMTemplateItemSelectorCriterion;
 import com.liferay.dynamic.data.mapping.item.selector.DDMTemplateItemSelectorReturnType;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
@@ -63,13 +64,16 @@ public class DDMTemplateItemSelectorView
 			servletRequest, servletResponse, ddmTemplateItemSelectorCriterion,
 			portletURL, itemSelectedEventName, search,
 			new DDMTemplateItemSelectorViewDescriptor(
-				ddmTemplateItemSelectorCriterion,
+				_ddmStructureLocalService, ddmTemplateItemSelectorCriterion,
 				(HttpServletRequest)servletRequest, portletURL));
 	}
 
 	private static final List<ItemSelectorReturnType>
 		_supportedItemSelectorReturnTypes = Collections.singletonList(
 			new DDMTemplateItemSelectorReturnType());
+
+	@Reference
+	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Reference
 	private ItemSelectorViewDescriptorRenderer<DDMTemplateItemSelectorCriterion>
