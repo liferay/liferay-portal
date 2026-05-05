@@ -18,6 +18,7 @@ interface ExecItemActionArgs {
 		| 'Copy To'
 		| 'Delete'
 		| 'Download'
+		| 'Duplicate'
 		| 'Edit'
 		| 'Expire'
 		| 'Export for Translation'
@@ -27,6 +28,7 @@ interface ExecItemActionArgs {
 		| 'View'
 		| 'View History';
 	filter: string;
+	parentAction?: 'Copy';
 }
 
 interface BulkCopyOrMoveArgs {
@@ -192,10 +194,11 @@ export class AssetsPage {
 		await this.page.getByRole('heading', {name: 'Contents'}).waitFor();
 	}
 
-	async execItemAction({action, filter}: ExecItemActionArgs) {
+	async execItemAction({action, filter, parentAction}: ExecItemActionArgs) {
 		await this.dataSetFragmentPage.execItemAction({
 			action,
 			filter,
+			parentAction,
 		});
 	}
 

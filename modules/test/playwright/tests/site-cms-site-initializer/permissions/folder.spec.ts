@@ -73,6 +73,7 @@ test(
 			await assetsPage.execItemAction({
 				action: 'Copy To',
 				filter: folder1Name,
+				parentAction: 'Copy',
 			});
 
 			await copyFolderModalPage.space(spaceName).click();
@@ -101,6 +102,7 @@ test(
 			await assetsPage.execItemAction({
 				action: 'Copy To',
 				filter: folder1Name,
+				parentAction: 'Copy',
 			});
 
 			await copyFolderModalPage.spaceInModal(spaceName).click();
@@ -127,6 +129,7 @@ test(
 			await assetsPage.execItemAction({
 				action: 'Copy To',
 				filter: folder1Name,
+				parentAction: 'Copy',
 			});
 
 			await copyFolderModalPage.spaceInModal(spaceName).click();

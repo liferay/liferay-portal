@@ -146,6 +146,7 @@ test(
 			await assetsPage.execItemAction({
 				action: 'Copy To',
 				filter: file1Title,
+				parentAction: 'Copy',
 			});
 		});
 
@@ -166,6 +167,7 @@ test(
 			await assetsPage.execItemAction({
 				action: 'Copy To',
 				filter: file2Title,
+				parentAction: 'Copy',
 			});
 		});
 
