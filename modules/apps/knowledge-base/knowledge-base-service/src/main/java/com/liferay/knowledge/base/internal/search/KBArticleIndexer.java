@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerPostProcessor;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
@@ -74,6 +75,32 @@ public class KBArticleIndexer extends BaseIndexer<KBArticle> {
 	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Summary getSummary(Document document, Locale locale, String snippet)
+		throws SearchException {
+
+		try {
+			Summary summary = doGetSummary(
+				document, locale, snippet, null, null);
+
+			if (summary == null) {
+				return null;
+			}
+
+			for (IndexerPostProcessor indexerPostProcessor :
+					IndexerRegistryUtil.getIndexerPostProcessors(this)) {
+
+				indexerPostProcessor.postProcessSummary(
+					summary, document, locale, snippet);
+			}
+
+			return summary;
+		}
+		catch (Exception exception) {
+			throw new SearchException(exception);
+		}
 	}
 
 	@Override
