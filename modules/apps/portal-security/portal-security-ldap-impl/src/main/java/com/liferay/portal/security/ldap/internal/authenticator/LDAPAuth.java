@@ -239,26 +239,18 @@ public class LDAPAuth implements Authenticator {
 				String algorithm =
 					ldapAuthConfiguration.passwordEncryptionAlgorithm();
 
-				if (FIPSModeUtil.isEnabled()) {
-					String reportedAlgorithm = algorithm;
+				if (FIPSModeUtil.isEnabled() &&
+					!FIPSModeUtil.isApprovedPasswordAlgorithm(algorithm)) {
 
-					if (Validator.isNull(reportedAlgorithm)) {
-						reportedAlgorithm = PasswordEncryptor.TYPE_NONE;
-					}
+					_log.error(
+						StringBundler.concat(
+							"FIPS mode does not permit LDAP password ",
+							"encryption algorithm \"", algorithm,
+							"\"; rejecting password compare"));
 
-					if (!FIPSModeUtil.isApprovedPasswordAlgorithm(
-							reportedAlgorithm)) {
+					ldapAuthResult.setAuthenticated(false);
 
-						_log.error(
-							StringBundler.concat(
-								"FIPS mode does not permit LDAP password ",
-								"encryption algorithm \"", reportedAlgorithm,
-								"\"; rejecting password compare"));
-
-						ldapAuthResult.setAuthenticated(false);
-
-						return ldapAuthResult;
-					}
+					return ldapAuthResult;
 				}
 
 				String encryptedPassword = password;

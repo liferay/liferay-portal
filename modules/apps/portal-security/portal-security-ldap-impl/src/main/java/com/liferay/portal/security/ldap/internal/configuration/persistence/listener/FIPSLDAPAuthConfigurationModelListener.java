@@ -9,9 +9,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
-import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationModelListenerException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
@@ -58,10 +56,6 @@ public class FIPSLDAPAuthConfigurationModelListener
 
 		String algorithm = GetterUtil.getString(
 			properties.get("passwordEncryptionAlgorithm"));
-
-		if (Validator.isNull(algorithm)) {
-			algorithm = PasswordEncryptor.TYPE_NONE;
-		}
 
 		if (!FIPSModeUtil.isApprovedPasswordAlgorithm(algorithm)) {
 			throw new LocalizedLDAPConfigurationModelListenerException(
