@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
 import com.liferay.portal.kernel.security.ldap.LDAPSettings;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -33,6 +34,8 @@ import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
+import com.liferay.portal.security.ldap.internal.configuration.LDAPCredentialCipher;
+import com.liferay.portal.security.ldap.internal.ssl.FIPSLDAPSSLSocketFactory;
 import com.liferay.portal.security.ldap.internal.validator.SafeLdapContextImpl;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
@@ -418,6 +421,16 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 		long companyId, String providerURL, String principal,
 		String credentials) {
 
+		boolean fipsEnabled = FIPSModeUtil.isEnabled();
+
+		if (fipsEnabled && !_isLDAPS(providerURL)) {
+			_log.error(
+				"FIPS mode requires LDAP base provider URL to use the " +
+					"ldaps:// scheme: " + providerURL);
+
+			return null;
+		}
+
 		SystemLDAPConfiguration systemLDAPConfiguration =
 			_systemLDAPConfigurationProvider.getConfiguration(companyId);
 
@@ -429,7 +442,9 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 		environmentProperties.put(Context.PROVIDER_URL, providerURL);
 		environmentProperties.put(
 			Context.REFERRAL, systemLDAPConfiguration.referral());
-		environmentProperties.put(Context.SECURITY_CREDENTIALS, credentials);
+		environmentProperties.put(
+			Context.SECURITY_CREDENTIALS,
+			_ldapCredentialCipher.resolve(companyId, credentials));
 		environmentProperties.put(Context.SECURITY_PRINCIPAL, principal);
 
 		String[] connectionProperties =
@@ -453,6 +468,22 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 				connectionProperty[0], connectionProperty[1]);
 		}
 
+		String[] fipsCipherSuites = null;
+
+		if (fipsEnabled) {
+			environmentProperties.put(Context.SECURITY_PROTOCOL, "ssl");
+			environmentProperties.put(
+				"java.naming.ldap.factory.socket",
+				FIPSLDAPSSLSocketFactory.class.getName());
+
+			fipsCipherSuites = systemLDAPConfiguration.fipsCipherSuites();
+
+			if ((fipsCipherSuites != null) && (fipsCipherSuites.length > 0)) {
+				FIPSLDAPSSLSocketFactory.setCipherSuitesOverride(
+					fipsCipherSuites);
+			}
+		}
+
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				MapUtil.toString(
@@ -471,6 +502,13 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 			}
 
 			return null;
+		}
+		finally {
+			if (fipsEnabled && (fipsCipherSuites != null) &&
+				(fipsCipherSuites.length > 0)) {
+
+				FIPSLDAPSSLSocketFactory.setCipherSuitesOverride(null);
+			}
 		}
 	}
 
@@ -1067,10 +1105,17 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 			originalAttributeId, ";range=", start, StringPool.DASH, end);
 	}
 
+	private boolean _isLDAPS(String providerURL) {
+		return StringUtil.startsWith(providerURL, "ldaps://");
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		SafePortalLDAPImpl.class);
 
 	private String _companySecurityAuthType;
+
+	@Reference
+	private LDAPCredentialCipher _ldapCredentialCipher;
 
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,

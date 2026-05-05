@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AuthException;
 import com.liferay.portal.kernel.security.auth.Authenticator;
 import com.liferay.portal.kernel.security.auth.PasswordModificationThreadLocal;
+import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
 import com.liferay.portal.kernel.security.ldap.LDAPSettings;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
@@ -238,17 +239,30 @@ public class LDAPAuth implements Authenticator {
 				String encryptedPassword = password;
 				String ldapPassword = new String((byte[])userPassword.get());
 
-				if (Validator.isNotNull(
-						ldapAuthConfiguration.passwordEncryptionAlgorithm()) &&
-					!Objects.equals(
-						ldapAuthConfiguration.passwordEncryptionAlgorithm(),
-						PasswordEncryptor.TYPE_NONE)) {
+				String algorithm =
+					ldapAuthConfiguration.passwordEncryptionAlgorithm();
+
+				if (Validator.isNotNull(algorithm) &&
+					!Objects.equals(algorithm, PasswordEncryptor.TYPE_NONE)) {
+
+					if (FIPSModeUtil.isEnabled() &&
+						!FIPSModeUtil.isApprovedPasswordAlgorithm(algorithm)) {
+
+						_log.error(
+							StringBundler.concat(
+								"FIPS mode does not permit LDAP password ",
+								"encryption algorithm \"", algorithm,
+								"\"; rejecting password compare"));
+
+						ldapAuthResult.setAuthenticated(false);
+
+						return ldapAuthResult;
+					}
 
 					ldapPassword = _removeEncryptionAlgorithm(ldapPassword);
 
 					encryptedPassword = PasswordEncryptorUtil.encrypt(
-						ldapAuthConfiguration.passwordEncryptionAlgorithm(),
-						password, ldapPassword);
+						algorithm, password, ldapPassword);
 				}
 
 				if (ldapPassword.equals(encryptedPassword)) {
