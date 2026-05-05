@@ -56,6 +56,12 @@ public interface SystemLDAPConfiguration extends CompanyScopedConfiguration {
 	public String factoryInitial();
 
 	@Meta.AD(
+		deflt = "", description = "fips-cipher-suites-help",
+		name = "fips-cipher-suites", required = false
+	)
+	public String[] fipsCipherSuites();
+
+	@Meta.AD(
 		deflt = "1000", description = "page-size-help", name = "page-size",
 		required = false
 	)
