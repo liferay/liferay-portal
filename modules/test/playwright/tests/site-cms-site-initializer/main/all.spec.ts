@@ -183,6 +183,77 @@ test(
 );
 
 test(
+	'Duplicating content creates a draft copy in the same Space',
+	{tag: '@LPD-88346'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const fileTitle = `Content ${getRandomString()}`;
+		const spaceName = `Space ${getRandomString()}`;
+
+		await test.step('Create a new Space', async () => {
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				settings: {},
+				type: 'Space',
+			});
+		});
+
+		await test.step('Create a content for that Space', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: fileTitle,
+				},
+				'cms/basic-web-contents',
+				spaceName
+			);
+		});
+
+		await test.step('Duplicate content', async () => {
+			await assetsPage.gotoSpaceContents(spaceName);
+
+			await assetsPage.execItemAction({
+				action: 'Duplicate',
+				filter: fileTitle,
+				parentAction: 'Copy',
+			});
+
+			await expect(
+				page.getByRole('link', {
+					exact: true,
+					name: `${fileTitle} (Copy)`,
+				})
+			).toBeVisible();
+
+			await expect(
+				assetsPage.table.bodyRows
+					.filter({
+						has: page.getByRole('link', {
+							exact: true,
+							name: `${fileTitle} (Copy)`,
+						}),
+					})
+					.getByText('Draft')
+			).toBeVisible();
+		});
+
+		await test.step('Duplicate the original again and check the suffix increments', async () => {
+			await assetsPage.execItemAction({
+				action: 'Duplicate',
+				filter: fileTitle,
+				parentAction: 'Copy',
+			});
+
+			await expect(
+				page.getByRole('link', {
+					exact: true,
+					name: `${fileTitle} (Copy 1)`,
+				})
+			).toBeVisible();
+		});
+	}
+);
+
+test(
 	'Can view Share modal for added content',
 	{tag: '@LPD-62554'},
 	async ({apiHelpers, assetsPage}) => {
