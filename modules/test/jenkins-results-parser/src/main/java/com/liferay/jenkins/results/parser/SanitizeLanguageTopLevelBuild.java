@@ -16,16 +16,27 @@ public class SanitizeLanguageTopLevelBuild
 
 		super(buildURL, topLevelBuild);
 
-		StringBuilder sb = new StringBuilder();
+		String receiverUsername = getParameterValue("GITHUB_RECEIVER_USERNAME");
+		String pullRequestNumber = getParameterValue(
+			"GITHUB_PULL_REQUEST_NUMBER");
 
-		sb.append("https://github.com/");
-		sb.append(getParameterValue("GITHUB_RECEIVER_USERNAME"));
-		sb.append("/liferay-portal");
+		if (JenkinsResultsParserUtil.isNullOrEmpty(receiverUsername) ||
+			JenkinsResultsParserUtil.isNullOrEmpty(pullRequestNumber) ||
+			pullRequestNumber.equals("0")) {
 
-		sb.append("/pull/");
-		sb.append(getParameterValue("GITHUB_PULL_REQUEST_NUMBER"));
+			_pullRequest = null;
+		}
+		else {
+			StringBuilder sb = new StringBuilder();
 
-		_pullRequest = PullRequestFactory.newPullRequest(sb.toString());
+			sb.append("https://github.com/");
+			sb.append(receiverUsername);
+			sb.append("/liferay-portal");
+			sb.append("/pull/");
+			sb.append(pullRequestNumber);
+
+			_pullRequest = PullRequestFactory.newPullRequest(sb.toString());
+		}
 	}
 
 	@Override
@@ -67,8 +78,6 @@ public class SanitizeLanguageTopLevelBuild
 
 	@Override
 	public Workspace getWorkspace() {
-		PullRequest pullRequest = getPullRequest();
-
 		Workspace workspace = WorkspaceFactory.newWorkspace(
 			"liferay-portal", getParameterValue("GITHUB_UPSTREAM_BRANCH_NAME"),
 			"sanitize-language");
@@ -82,7 +91,9 @@ public class SanitizeLanguageTopLevelBuild
 		WorkspaceGitRepository workspaceGitRepository =
 			workspace.getPrimaryWorkspaceGitRepository();
 
-		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
+		if (_pullRequest != null) {
+			workspaceGitRepository.setGitHubURL(_pullRequest.getHtmlURL());
+		}
 
 		String senderBranchSHA = _getSenderBranchSHA();
 
