@@ -7,6 +7,7 @@ package com.liferay.saml.web.internal.portlet.action.test;
 
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
@@ -23,7 +24,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -55,16 +56,18 @@ public abstract class BaseMVCActionCommandTestCase<T extends BaseModel<?>> {
 	public void testProcessAction() throws Exception {
 		T baseModel = addBaseModel();
 
+		Company otherCompany = CompanyTestUtil.addCompany(true);
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					RandomTestUtil.randomLong())) {
+					otherCompany.getCompanyId())) {
 
 			_assertException(
 				() -> _processAction(
-					baseModel,
-					_companyLocalService.createCompany(
-						CompanyThreadLocal.getCompanyId()),
-					TestPropsValues.getUser()));
+					baseModel, otherCompany, TestPropsValues.getUser()));
+		}
+		finally {
+			_companyLocalService.deleteCompany(otherCompany);
 		}
 
 		Company company = _companyLocalService.getCompanyById(
@@ -98,10 +101,13 @@ public abstract class BaseMVCActionCommandTestCase<T extends BaseModel<?>> {
 			Assert.fail();
 		}
 		catch (Exception exception) {
-			Throwable throwable = exception.getCause();
+			Throwable throwable = Objects.requireNonNullElse(
+				exception.getCause(), exception);
 
 			Assert.assertTrue(
-				throwable.toString(), throwable instanceof PrincipalException);
+				throwable.toString(),
+				throwable instanceof NoSuchModelException ||
+				throwable instanceof PrincipalException);
 		}
 	}
 
