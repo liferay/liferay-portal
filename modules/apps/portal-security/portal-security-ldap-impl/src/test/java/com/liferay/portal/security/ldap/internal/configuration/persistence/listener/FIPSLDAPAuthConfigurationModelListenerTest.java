@@ -37,61 +37,60 @@ public class FIPSLDAPAuthConfigurationModelListenerTest {
 		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
 				false)) {
 
-			_listener.onBeforeSave(_PID, _properties("MD5"));
-			_listener.onBeforeSave(_PID, _properties("BCRYPT"));
-			_listener.onBeforeSave(_PID, _properties("SSHA"));
-			_listener.onBeforeSave(_PID, _properties("SHA-256"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "MD5"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "BCRYPT"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "SSHA"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "SHA-256"));
+		}
+	}
+
+	@Test
+	public void testAcceptsAnyAlgorithmWhenFIPSOnAndBind() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
+
+			_listener.onBeforeSave(_PID, _properties("bind", "MD5"));
+			_listener.onBeforeSave(_PID, _properties("bind", "BCRYPT"));
+			_listener.onBeforeSave(_PID, _properties("bind", "NONE"));
+			_listener.onBeforeSave(_PID, _properties("bind", "SSHA"));
 		}
 	}
 
 	@Test
 	public void testAcceptsApprovedAlgorithmsWhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
-
-			_listener.onBeforeSave(_PID, _properties("SHA-256"));
-			_listener.onBeforeSave(_PID, _properties("SHA-384"));
-			_listener.onBeforeSave(_PID, _properties("PBKDF2"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "SHA-256"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "SHA-384"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "PBKDF2"));
 		}
 	}
 
 	@Test
-	public void testEmptyAlgorithmIsNoOpWhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+	public void testMissingMethodIsNoOpWhenFIPSOn() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
-
-			_listener.onBeforeSave(_PID, _properties(""));
+			_listener.onBeforeSave(_PID, _properties(null, "MD5"));
 		}
 	}
 
 	@Test
 	public void testRejectionCarriesLocalizedMessage() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
-
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
 			try {
-				_listener.onBeforeSave(_PID, _properties("MD5"));
+				_listener.onBeforeSave(
+					_PID, _properties("password-compare", "MD5"));
 
 				Assert.fail("Expected LocalizedLDAPConfigurationException");
 			}
@@ -110,82 +109,65 @@ public class FIPSLDAPAuthConfigurationModelListenerTest {
 	}
 
 	@Test(expected = ConfigurationModelListenerException.class)
-	public void testRejectsBcryptWhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+	public void testRejectsBcryptWhenFIPSOnAndPasswordCompare()
+		throws Exception {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			_listener.onBeforeSave(_PID, _properties("BCRYPT"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "BCRYPT"));
 		}
 	}
 
 	@Test(expected = ConfigurationModelListenerException.class)
-	public void testRejectsMD5WhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+	public void testRejectsEmptyAlgorithmWhenFIPSOnAndPasswordCompare()
+		throws Exception {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			_listener.onBeforeSave(_PID, _properties("MD5"));
+			_listener.onBeforeSave(_PID, _properties("password-compare", ""));
 		}
 	}
 
 	@Test(expected = ConfigurationModelListenerException.class)
-	public void testRejectsNoneWhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+	public void testRejectsMD5WhenFIPSOnAndPasswordCompare() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
-
-			_listener.onBeforeSave(_PID, _properties("NONE"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "MD5"));
 		}
 	}
 
 	@Test(expected = ConfigurationModelListenerException.class)
-	public void testRejectsSha1WhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+	public void testRejectsNoneWhenFIPSOnAndPasswordCompare() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
-
-			_listener.onBeforeSave(_PID, _properties("SHA"));
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "NONE"));
 		}
 	}
 
 	@Test(expected = ConfigurationModelListenerException.class)
-	public void testRejectsSshaWhenFIPSOn() throws Exception {
-		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
-				Mockito.mockStatic(
-					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+	public void testRejectsSha1WhenFIPSOnAndPasswordCompare() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
 
-			fipsModeUtilMockedStatic.when(
-				FIPSModeUtil::isEnabled
-			).thenReturn(
-				true
-			);
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "SHA"));
+		}
+	}
 
-			_listener.onBeforeSave(_PID, _properties("SSHA"));
+	@Test(expected = ConfigurationModelListenerException.class)
+	public void testRejectsSshaWhenFIPSOnAndPasswordCompare() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic = _mockFIPS(
+				true)) {
+
+			_listener.onBeforeSave(
+				_PID, _properties("password-compare", "SSHA"));
 		}
 	}
 
@@ -202,8 +184,14 @@ public class FIPSLDAPAuthConfigurationModelListenerTest {
 		return fipsModeUtilMockedStatic;
 	}
 
-	private Dictionary<String, Object> _properties(String algorithm) {
+	private Dictionary<String, Object> _properties(
+		String method, String algorithm) {
+
 		Dictionary<String, Object> properties = new Hashtable<>();
+
+		if (method != null) {
+			properties.put("method", method);
+		}
 
 		properties.put("passwordEncryptionAlgorithm", algorithm);
 
