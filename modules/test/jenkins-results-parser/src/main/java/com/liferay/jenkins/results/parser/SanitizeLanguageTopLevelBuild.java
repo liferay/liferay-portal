@@ -16,16 +16,23 @@ public class SanitizeLanguageTopLevelBuild
 
 		super(buildURL, topLevelBuild);
 
-		StringBuilder sb = new StringBuilder();
+		String pullRequestNumber = getParameterValue(
+			"GITHUB_PULL_REQUEST_NUMBER");
 
-		sb.append("https://github.com/");
-		sb.append(getParameterValue("GITHUB_RECEIVER_USERNAME"));
-		sb.append("/liferay-portal");
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(pullRequestNumber)) {
+			StringBuilder sb = new StringBuilder();
 
-		sb.append("/pull/");
-		sb.append(getParameterValue("GITHUB_PULL_REQUEST_NUMBER"));
+			sb.append("https://github.com/");
+			sb.append(getParameterValue("GITHUB_RECEIVER_USERNAME"));
+			sb.append("/liferay-portal");
+			sb.append("/pull/");
+			sb.append(pullRequestNumber);
 
-		_pullRequest = PullRequestFactory.newPullRequest(sb.toString());
+			_pullRequest = PullRequestFactory.newPullRequest(sb.toString());
+		}
+		else {
+			_pullRequest = null;
+		}
 	}
 
 	@Override
@@ -82,7 +89,9 @@ public class SanitizeLanguageTopLevelBuild
 		WorkspaceGitRepository workspaceGitRepository =
 			workspace.getPrimaryWorkspaceGitRepository();
 
-		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
+		if (pullRequest != null) {
+			workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
+		}
 
 		String senderBranchSHA = _getSenderBranchSHA();
 
