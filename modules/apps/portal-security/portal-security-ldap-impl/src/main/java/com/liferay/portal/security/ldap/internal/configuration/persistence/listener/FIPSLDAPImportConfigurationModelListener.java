@@ -5,12 +5,14 @@
 
 package com.liferay.portal.security.ldap.internal.configuration.persistence.listener;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
 
 import java.util.Dictionary;
@@ -48,8 +50,19 @@ public class FIPSLDAPImportConfigurationModelListener
 			PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM);
 
 		if (!FIPSModeUtil.isApprovedPasswordAlgorithm(portalAlgorithm)) {
-			throw new ConfigurationModelListenerException(
-				null, LDAPImportConfiguration.class, getClass(), properties);
+			throw new LocalizedLDAPConfigurationException(
+				StringBundler.concat(
+					"FIPS mode does not permit enabling user password import ",
+					"from LDAP while passwords.encryption.algorithm is \"",
+					portalAlgorithm, "\"; configure a FIPS-approved algorithm ",
+					"(PBKDF2*, SHA-256, SHA-384, SHA-512) or disable the ",
+					"import feature"),
+				StringBundler.concat(
+					"fips-mode-does-not-permit-enabling-ldap-user-password-",
+					"import-while-the-portal-password-encryption-algorithm-is-",
+					"x"),
+				new Object[] {portalAlgorithm}, LDAPImportConfiguration.class,
+				getClass(), properties);
 		}
 	}
 

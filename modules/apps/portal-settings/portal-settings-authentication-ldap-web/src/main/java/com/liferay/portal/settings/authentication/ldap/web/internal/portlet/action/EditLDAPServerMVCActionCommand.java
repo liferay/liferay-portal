@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.ldap.DuplicateLDAPServerNameException;
 import com.liferay.portal.security.ldap.LDAPServerNameException;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
@@ -32,7 +33,6 @@ import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletRequest;
-import jakarta.portlet.PortletURL;
 
 import java.util.Dictionary;
 import java.util.List;
@@ -80,36 +80,37 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 				exception instanceof LDAPServerNameException) {
 
 				SessionErrors.add(actionRequest, exception.getClass());
-
-				PortletURL portletURL = PortletURLBuilder.create(
-					PortletURLFactoryUtil.create(
-						actionRequest,
-						ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-						PortletRequest.RENDER_PHASE)
-				).setMVCRenderCommandName(
-					"/portal_settings_authentication_ldap" +
-						"/portal_settings_edit_ldap_server"
-				).buildPortletURL();
-
-				String redirect = ParamUtil.getString(
-					actionRequest, "redirect");
-
-				portletURL.setParameter("redirect", redirect);
-
-				actionResponse.sendRedirect(portletURL.toString());
-
-				return;
 			}
-
-			if (exception instanceof PrincipalException) {
+			else if (exception instanceof PrincipalException) {
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 
 				return;
 			}
+			else {
+				Throwable throwable = exception.getCause();
 
-			throw exception;
+				if (!(throwable instanceof LocalizedLDAPConfigurationException)) {
+					throw exception;
+				}
+
+				SessionErrors.add(
+					actionRequest, LocalizedLDAPConfigurationException.class,
+					throwable);
+			}
+
+			actionResponse.sendRedirect(
+				PortletURLBuilder.create(
+					PortletURLFactoryUtil.create(
+						actionRequest,
+						ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+						PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/portal_settings_authentication_ldap/edit_ldap_server"
+				).setRedirect(
+					ParamUtil.getString(actionRequest, "redirect")
+				).buildString());
 		}
 	}
 

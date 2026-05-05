@@ -139,6 +139,15 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 	<liferay-ui:error exception="<%= LDAPFilterException.class %>" message="please-enter-a-valid-ldap-search-filter" />
 	<liferay-ui:error exception="<%= LDAPServerNameException.class %>" message="please-enter-a-valid-ldap-server-name" />
 
+	<liferay-ui:error exception="<%= LocalizedLDAPConfigurationException.class %>">
+
+		<%
+		LocalizedLDAPConfigurationException localizedLDAPConfigurationException = (LocalizedLDAPConfigurationException)errorException;
+		%>
+
+		<liferay-ui:message arguments="<%= localizedLDAPConfigurationException.getMessageArguments() %>" key="<%= localizedLDAPConfigurationException.getMessageKey() %>" translateArguments="<%= false %>" />
+	</liferay-ui:error>
+
 	<aui:input name="<%= Constants.CMD %>" type="hidden" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="ldapServerId" type="hidden" value="<%= ldapServerId %>" />

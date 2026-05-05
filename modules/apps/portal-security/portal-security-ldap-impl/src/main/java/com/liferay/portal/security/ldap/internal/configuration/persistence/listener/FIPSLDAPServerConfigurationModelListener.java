@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 
 import java.util.Dictionary;
@@ -46,14 +47,14 @@ public class FIPSLDAPServerConfigurationModelListener
 			return;
 		}
 
-		if (!StringUtil.toLowerCase(
-				baseProviderURL
-			).startsWith(
-				"ldaps://"
-			)) {
-
-			throw new ConfigurationModelListenerException(
-				null, LDAPServerConfiguration.class, getClass(), properties);
+		if (!StringUtil.startsWith(baseProviderURL, "ldaps://")) {
+			throw new LocalizedLDAPConfigurationException(
+				"FIPS mode requires LDAP base provider URL to use the " +
+					"ldaps:// scheme: " + baseProviderURL,
+				"fips-mode-requires-the-ldaps-scheme-for-the-base-provider-" +
+					"url-x",
+				new Object[] {baseProviderURL}, LDAPServerConfiguration.class,
+				getClass(), properties);
 		}
 	}
 

@@ -7,12 +7,14 @@ package com.liferay.portal.security.ldap.internal.configuration.persistence.list
 
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,6 +75,37 @@ public class FIPSLDAPAuthConfigurationModelListenerTest {
 			);
 
 			_listener.onBeforeSave(_PID, _properties(""));
+		}
+	}
+
+	@Test
+	public void testRejectionCarriesLocalizedMessage() throws Exception {
+		try (MockedStatic<FIPSModeUtil> fipsModeUtilMockedStatic =
+				Mockito.mockStatic(
+					FIPSModeUtil.class, Mockito.CALLS_REAL_METHODS)) {
+
+			fipsModeUtilMockedStatic.when(
+				FIPSModeUtil::isEnabled
+			).thenReturn(
+				true
+			);
+
+			try {
+				_listener.onBeforeSave(_PID, _properties("MD5"));
+
+				Assert.fail("Expected LocalizedLDAPConfigurationException");
+			}
+			catch (LocalizedLDAPConfigurationException
+						localizedLDAPConfigurationException) {
+
+				Assert.assertEquals(
+					"fips-mode-does-not-permit-ldap-password-encryption-" +
+						"algorithm-x",
+					localizedLDAPConfigurationException.getMessageKey());
+				Assert.assertArrayEquals(
+					new Object[] {"MD5"},
+					localizedLDAPConfigurationException.getMessageArguments());
+			}
 		}
 	}
 

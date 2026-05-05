@@ -16,9 +16,13 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys" %><%@
 page import="com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder" %><%@
+page import="com.liferay.portal.kernel.security.fips.FIPSModeUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
+page import="com.liferay.portal.kernel.util.PropsKeys" %><%@
+page import="com.liferay.portal.kernel.util.PropsUtil" %><%@
+page import="com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException" %><%@
 page import="com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration" %><%@
 page import="com.liferay.portal.security.ldap.configuration.ConfigurationProvider" %><%@
 page import="com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration" %><%@

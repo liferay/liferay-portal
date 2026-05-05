@@ -5,11 +5,13 @@
 
 package com.liferay.portal.security.ldap.internal.configuration.persistence.listener;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.security.fips.FIPSModeUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.ldap.LocalizedLDAPConfigurationException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 
 import java.util.Dictionary;
@@ -47,8 +49,15 @@ public class FIPSLDAPAuthConfigurationModelListener
 		}
 
 		if (!FIPSModeUtil.isApprovedPasswordAlgorithm(algorithm)) {
-			throw new ConfigurationModelListenerException(
-				null, LDAPAuthConfiguration.class, getClass(), properties);
+			throw new LocalizedLDAPConfigurationException(
+				StringBundler.concat(
+					"FIPS mode does not permit LDAP password encryption ",
+					"algorithm \"", algorithm, "\"; allowed values are ",
+					"SHA-256, SHA-384, PBKDF2"),
+				"fips-mode-does-not-permit-ldap-password-encryption-" +
+					"algorithm-x",
+				new Object[] {algorithm}, LDAPAuthConfiguration.class,
+				getClass(), properties);
 		}
 	}
 

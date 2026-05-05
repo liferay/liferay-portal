@@ -10,11 +10,19 @@
 <%
 ConfigurationProvider<LDAPExportConfiguration> ldapExportConfigurationProvider = ConfigurationProviderUtil.getLDAPExportConfigurationProvider();
 
-LDAPExportConfiguration ldapExportConfiguration = ldapExportConfigurationProvider.getConfiguration(themeDisplay.getCompanyId());
+long companyId = 0L;
+
+String portletId = PortalUtil.getPortletId(request);
+
+if (portletId.equals(ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
+	companyId = themeDisplay.getCompanyId();
+}
+
+LDAPExportConfiguration ldapExportConfiguration = ldapExportConfigurationProvider.getConfiguration(companyId);
 
 ConfigurationProvider<LDAPImportConfiguration> ldapImportConfigurationProvider = ConfigurationProviderUtil.getLDAPImportConfigurationProvider();
 
-LDAPImportConfiguration ldapImportConfiguration = ldapImportConfigurationProvider.getConfiguration(themeDisplay.getCompanyId());
+LDAPImportConfiguration ldapImportConfiguration = ldapImportConfigurationProvider.getConfiguration(companyId);
 
 boolean ldapImportEnabled = ldapImportConfiguration.importEnabled();
 %>
