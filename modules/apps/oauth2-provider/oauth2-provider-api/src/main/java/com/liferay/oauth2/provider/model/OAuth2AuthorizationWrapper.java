@@ -47,6 +47,7 @@ public class OAuth2AuthorizationWrapper
 		attributes.put("accessTokenCreateDate", getAccessTokenCreateDate());
 		attributes.put(
 			"accessTokenExpirationDate", getAccessTokenExpirationDate());
+		attributes.put("audiences", getAudiences());
 		attributes.put("remoteHostInfo", getRemoteHostInfo());
 		attributes.put("remoteIPInfo", getRemoteIPInfo());
 		attributes.put("refreshTokenContent", getRefreshTokenContent());
@@ -131,6 +132,12 @@ public class OAuth2AuthorizationWrapper
 
 		if (accessTokenExpirationDate != null) {
 			setAccessTokenExpirationDate(accessTokenExpirationDate);
+		}
+
+		String audiences = (String)attributes.get("audiences");
+
+		if (audiences != null) {
+			setAudiences(audiences);
 		}
 
 		String remoteHostInfo = (String)attributes.get("remoteHostInfo");
@@ -224,6 +231,21 @@ public class OAuth2AuthorizationWrapper
 	@Override
 	public Date getAccessTokenExpirationDate() {
 		return model.getAccessTokenExpirationDate();
+	}
+
+	/**
+	 * Returns the audiences of this o auth2 authorization.
+	 *
+	 * @return the audiences of this o auth2 authorization
+	 */
+	@Override
+	public String getAudiences() {
+		return model.getAudiences();
+	}
+
+	@Override
+	public java.util.List<String> getAudiencesList() {
+		return model.getAudiencesList();
 	}
 
 	/**
@@ -432,6 +454,21 @@ public class OAuth2AuthorizationWrapper
 	}
 
 	/**
+	 * Sets the audiences of this o auth2 authorization.
+	 *
+	 * @param audiences the audiences of this o auth2 authorization
+	 */
+	@Override
+	public void setAudiences(String audiences) {
+		model.setAudiences(audiences);
+	}
+
+	@Override
+	public void setAudiencesList(java.util.List<String> audiencesList) {
+		model.setAudiencesList(audiencesList);
+	}
+
+	/**
 	 * Sets the company ID of this o auth2 authorization.
 	 *
 	 * @param companyId the company ID of this o auth2 authorization
@@ -607,4 +644,4 @@ public class OAuth2AuthorizationWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2094917622
+// LIFERAY-SERVICE-BUILDER-HASH:-1562478898

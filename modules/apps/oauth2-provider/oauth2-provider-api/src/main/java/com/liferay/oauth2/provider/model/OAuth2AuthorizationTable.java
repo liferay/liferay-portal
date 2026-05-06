@@ -64,6 +64,8 @@ public class OAuth2AuthorizationTable
 		accessTokenExpirationDate = createColumn(
 			"accessTokenExpirationDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
+	public final Column<OAuth2AuthorizationTable, Clob> audiences =
+		createColumn("audiences", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<OAuth2AuthorizationTable, String> remoteHostInfo =
 		createColumn(
 			"remoteHostInfo", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
@@ -95,4 +97,4 @@ public class OAuth2AuthorizationTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-479389449
+// LIFERAY-SERVICE-BUILDER-HASH:-48770570

@@ -55,7 +55,7 @@ public class OAuth2AuthorizationCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{oAuth2AuthorizationId=");
 		sb.append(oAuth2AuthorizationId);
@@ -79,6 +79,8 @@ public class OAuth2AuthorizationCacheModel
 		sb.append(accessTokenCreateDate);
 		sb.append(", accessTokenExpirationDate=");
 		sb.append(accessTokenExpirationDate);
+		sb.append(", audiences=");
+		sb.append(audiences);
 		sb.append(", remoteHostInfo=");
 		sb.append(remoteHostInfo);
 		sb.append(", remoteIPInfo=");
@@ -149,6 +151,13 @@ public class OAuth2AuthorizationCacheModel
 		else {
 			oAuth2AuthorizationImpl.setAccessTokenExpirationDate(
 				new Date(accessTokenExpirationDate));
+		}
+
+		if (audiences == null) {
+			oAuth2AuthorizationImpl.setAudiences("");
+		}
+		else {
+			oAuth2AuthorizationImpl.setAudiences(audiences);
 		}
 
 		if (remoteHostInfo == null) {
@@ -224,6 +233,7 @@ public class OAuth2AuthorizationCacheModel
 		accessTokenContentHash = objectInput.readLong();
 		accessTokenCreateDate = objectInput.readLong();
 		accessTokenExpirationDate = objectInput.readLong();
+		audiences = (String)objectInput.readObject();
 		remoteHostInfo = objectInput.readUTF();
 		remoteIPInfo = objectInput.readUTF();
 		refreshTokenContent = (String)objectInput.readObject();
@@ -265,6 +275,13 @@ public class OAuth2AuthorizationCacheModel
 		objectOutput.writeLong(accessTokenContentHash);
 		objectOutput.writeLong(accessTokenCreateDate);
 		objectOutput.writeLong(accessTokenExpirationDate);
+
+		if (audiences == null) {
+			objectOutput.writeObject("");
+		}
+		else {
+			objectOutput.writeObject(audiences);
+		}
 
 		if (remoteHostInfo == null) {
 			objectOutput.writeUTF("");
@@ -310,6 +327,7 @@ public class OAuth2AuthorizationCacheModel
 	public long accessTokenContentHash;
 	public long accessTokenCreateDate;
 	public long accessTokenExpirationDate;
+	public String audiences;
 	public String remoteHostInfo;
 	public String remoteIPInfo;
 	public String refreshTokenContent;
@@ -319,4 +337,4 @@ public class OAuth2AuthorizationCacheModel
 	public String rememberDeviceContent;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1014306663
+// LIFERAY-SERVICE-BUILDER-HASH:-1982545885

@@ -69,8 +69,8 @@ public class OAuth2AuthorizationModelImpl
 		{"accessTokenContentHash", Types.BIGINT},
 		{"accessTokenCreateDate", Types.TIMESTAMP},
 		{"accessTokenExpirationDate", Types.TIMESTAMP},
-		{"remoteHostInfo", Types.VARCHAR}, {"remoteIPInfo", Types.VARCHAR},
-		{"refreshTokenContent", Types.CLOB},
+		{"audiences", Types.CLOB}, {"remoteHostInfo", Types.VARCHAR},
+		{"remoteIPInfo", Types.VARCHAR}, {"refreshTokenContent", Types.CLOB},
 		{"refreshTokenContentHash", Types.BIGINT},
 		{"refreshTokenCreateDate", Types.TIMESTAMP},
 		{"refreshTokenExpirationDate", Types.TIMESTAMP},
@@ -92,6 +92,7 @@ public class OAuth2AuthorizationModelImpl
 		TABLE_COLUMNS_MAP.put("accessTokenContentHash", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("accessTokenCreateDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("accessTokenExpirationDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("audiences", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("remoteHostInfo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("remoteIPInfo", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("refreshTokenContent", Types.CLOB);
@@ -102,7 +103,7 @@ public class OAuth2AuthorizationModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OAuth2Authorization (oAuth2AuthorizationId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,oAuth2ApplicationId LONG,oA2AScopeAliasesId LONG,accessTokenContent TEXT null,accessTokenContentHash LONG,accessTokenCreateDate DATE null,accessTokenExpirationDate DATE null,remoteHostInfo VARCHAR(255) null,remoteIPInfo VARCHAR(75) null,refreshTokenContent TEXT null,refreshTokenContentHash LONG,refreshTokenCreateDate DATE null,refreshTokenExpirationDate DATE null,rememberDeviceContent VARCHAR(75) null)";
+		"create table OAuth2Authorization (oAuth2AuthorizationId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,oAuth2ApplicationId LONG,oA2AScopeAliasesId LONG,accessTokenContent TEXT null,accessTokenContentHash LONG,accessTokenCreateDate DATE null,accessTokenExpirationDate DATE null,audiences TEXT null,remoteHostInfo VARCHAR(255) null,remoteIPInfo VARCHAR(75) null,refreshTokenContent TEXT null,refreshTokenContentHash LONG,refreshTokenCreateDate DATE null,refreshTokenExpirationDate DATE null,rememberDeviceContent VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OAuth2Authorization";
@@ -318,6 +319,8 @@ public class OAuth2AuthorizationModelImpl
 				"accessTokenExpirationDate",
 				OAuth2Authorization::getAccessTokenExpirationDate);
 			attributeGetterFunctions.put(
+				"audiences", OAuth2Authorization::getAudiences);
+			attributeGetterFunctions.put(
 				"remoteHostInfo", OAuth2Authorization::getRemoteHostInfo);
 			attributeGetterFunctions.put(
 				"remoteIPInfo", OAuth2Authorization::getRemoteIPInfo);
@@ -399,6 +402,10 @@ public class OAuth2AuthorizationModelImpl
 				"accessTokenExpirationDate",
 				(BiConsumer<OAuth2Authorization, Date>)
 					OAuth2Authorization::setAccessTokenExpirationDate);
+			attributeSetterBiConsumers.put(
+				"audiences",
+				(BiConsumer<OAuth2Authorization, String>)
+					OAuth2Authorization::setAudiences);
 			attributeSetterBiConsumers.put(
 				"remoteHostInfo",
 				(BiConsumer<OAuth2Authorization, String>)
@@ -656,6 +663,25 @@ public class OAuth2AuthorizationModelImpl
 	}
 
 	@Override
+	public String getAudiences() {
+		if (_audiences == null) {
+			return "";
+		}
+		else {
+			return _audiences;
+		}
+	}
+
+	@Override
+	public void setAudiences(String audiences) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_audiences = audiences;
+	}
+
+	@Override
 	public String getRemoteHostInfo() {
 		if (_remoteHostInfo == null) {
 			return "";
@@ -867,6 +893,7 @@ public class OAuth2AuthorizationModelImpl
 			getAccessTokenCreateDate());
 		oAuth2AuthorizationImpl.setAccessTokenExpirationDate(
 			getAccessTokenExpirationDate());
+		oAuth2AuthorizationImpl.setAudiences(getAudiences());
 		oAuth2AuthorizationImpl.setRemoteHostInfo(getRemoteHostInfo());
 		oAuth2AuthorizationImpl.setRemoteIPInfo(getRemoteIPInfo());
 		oAuth2AuthorizationImpl.setRefreshTokenContent(
@@ -912,6 +939,8 @@ public class OAuth2AuthorizationModelImpl
 			this.<Date>getColumnOriginalValue("accessTokenCreateDate"));
 		oAuth2AuthorizationImpl.setAccessTokenExpirationDate(
 			this.<Date>getColumnOriginalValue("accessTokenExpirationDate"));
+		oAuth2AuthorizationImpl.setAudiences(
+			this.<String>getColumnOriginalValue("audiences"));
 		oAuth2AuthorizationImpl.setRemoteHostInfo(
 			this.<String>getColumnOriginalValue("remoteHostInfo"));
 		oAuth2AuthorizationImpl.setRemoteIPInfo(
@@ -1069,6 +1098,14 @@ public class OAuth2AuthorizationModelImpl
 				Long.MIN_VALUE;
 		}
 
+		oAuth2AuthorizationCacheModel.audiences = getAudiences();
+
+		String audiences = oAuth2AuthorizationCacheModel.audiences;
+
+		if ((audiences != null) && (audiences.length() == 0)) {
+			oAuth2AuthorizationCacheModel.audiences = null;
+		}
+
 		oAuth2AuthorizationCacheModel.remoteHostInfo = getRemoteHostInfo();
 
 		String remoteHostInfo = oAuth2AuthorizationCacheModel.remoteHostInfo;
@@ -1207,6 +1244,7 @@ public class OAuth2AuthorizationModelImpl
 	private long _accessTokenContentHash;
 	private Date _accessTokenCreateDate;
 	private Date _accessTokenExpirationDate;
+	private String _audiences;
 	private String _remoteHostInfo;
 	private String _remoteIPInfo;
 	private String _refreshTokenContent;
@@ -1261,6 +1299,7 @@ public class OAuth2AuthorizationModelImpl
 			"accessTokenCreateDate", _accessTokenCreateDate);
 		_columnOriginalValues.put(
 			"accessTokenExpirationDate", _accessTokenExpirationDate);
+		_columnOriginalValues.put("audiences", _audiences);
 		_columnOriginalValues.put("remoteHostInfo", _remoteHostInfo);
 		_columnOriginalValues.put("remoteIPInfo", _remoteIPInfo);
 		_columnOriginalValues.put("refreshTokenContent", _refreshTokenContent);
@@ -1318,19 +1357,21 @@ public class OAuth2AuthorizationModelImpl
 
 		columnBitmasks.put("accessTokenExpirationDate", 1024L);
 
-		columnBitmasks.put("remoteHostInfo", 2048L);
+		columnBitmasks.put("audiences", 2048L);
 
-		columnBitmasks.put("remoteIPInfo", 4096L);
+		columnBitmasks.put("remoteHostInfo", 4096L);
 
-		columnBitmasks.put("refreshTokenContent", 8192L);
+		columnBitmasks.put("remoteIPInfo", 8192L);
 
-		columnBitmasks.put("refreshTokenContentHash", 16384L);
+		columnBitmasks.put("refreshTokenContent", 16384L);
 
-		columnBitmasks.put("refreshTokenCreateDate", 32768L);
+		columnBitmasks.put("refreshTokenContentHash", 32768L);
 
-		columnBitmasks.put("refreshTokenExpirationDate", 65536L);
+		columnBitmasks.put("refreshTokenCreateDate", 65536L);
 
-		columnBitmasks.put("rememberDeviceContent", 131072L);
+		columnBitmasks.put("refreshTokenExpirationDate", 131072L);
+
+		columnBitmasks.put("rememberDeviceContent", 262144L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1339,4 +1380,4 @@ public class OAuth2AuthorizationModelImpl
 	private OAuth2Authorization _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1759293294
+// LIFERAY-SERVICE-BUILDER-HASH:-1922040889

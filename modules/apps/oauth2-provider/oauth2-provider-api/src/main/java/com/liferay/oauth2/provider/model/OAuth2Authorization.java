@@ -51,5 +51,9 @@ public interface OAuth2Authorization
 
 			};
 
+	public java.util.List<String> getAudiencesList();
+
+	public void setAudiencesList(java.util.List<String> audiencesList);
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:737718859
+// LIFERAY-SERVICE-BUILDER-HASH:1898234286

@@ -222,6 +222,21 @@ public interface OAuth2AuthorizationModel
 	public void setAccessTokenExpirationDate(Date accessTokenExpirationDate);
 
 	/**
+	 * Returns the audiences of this o auth2 authorization.
+	 *
+	 * @return the audiences of this o auth2 authorization
+	 */
+	@AutoEscape
+	public String getAudiences();
+
+	/**
+	 * Sets the audiences of this o auth2 authorization.
+	 *
+	 * @param audiences the audiences of this o auth2 authorization
+	 */
+	public void setAudiences(String audiences);
+
+	/**
 	 * Returns the remote host info of this o auth2 authorization.
 	 *
 	 * @return the remote host info of this o auth2 authorization
@@ -331,4 +346,4 @@ public interface OAuth2AuthorizationModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1163386414
+// LIFERAY-SERVICE-BUILDER-HASH:1447082576

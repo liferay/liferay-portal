@@ -55,6 +55,7 @@ create table OAuth2Authorization (
 	accessTokenContentHash LONG,
 	accessTokenCreateDate DATE null,
 	accessTokenExpirationDate DATE null,
+	audiences TEXT null,
 	remoteHostInfo VARCHAR(255) null,
 	remoteIPInfo VARCHAR(75) null,
 	refreshTokenContent TEXT null,
