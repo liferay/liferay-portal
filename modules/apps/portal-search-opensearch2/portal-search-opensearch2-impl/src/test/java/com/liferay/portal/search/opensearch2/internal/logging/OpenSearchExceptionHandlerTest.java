@@ -8,12 +8,15 @@ package com.liferay.portal.search.opensearch2.internal.logging;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
-import com.liferay.portal.search.test.rule.logging.ExpectedLogMethodTestRule;
-import com.liferay.portal.search.test.util.logging.ExpectedLog;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,46 +28,53 @@ import org.junit.rules.ExpectedException;
 public class OpenSearchExceptionHandlerTest {
 
 	@ClassRule
-	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(
-			ExpectedLogMethodTestRule.INSTANCE, LiferayUnitTestRule.INSTANCE);
+	public static final LiferayUnitTestRule liferayUnitTestRule =
+		LiferayUnitTestRule.INSTANCE;
 
 	@ClassRule
 	public static OpenSearchTestRule openSearchTestRule =
 		OpenSearchTestRule.INSTANCE;
 
-	@ExpectedLog(
-		expectedClass = OpenSearchExceptionHandlerTest.class,
-		expectedLevel = ExpectedLog.Level.INFO,
-		expectedLog = OpenSearchExceptionHandler.INDEX_NOT_FOUND_EXCEPTION_MESSAGE
-	)
 	@Test
 	public void testDeleteIndexNotFoundLogExceptionsOnlyFalse()
 		throws Throwable {
 
-		OpenSearchExceptionHandler openSearchExceptionHandler =
-			new OpenSearchExceptionHandler(_log, false);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchExceptionHandlerTest.class.getName(),
+				LoggerTestUtil.INFO)) {
 
-		openSearchExceptionHandler.handleDeleteDocumentException(
-			new SearchException(
-				OpenSearchExceptionHandler.INDEX_NOT_FOUND_EXCEPTION_MESSAGE));
+			OpenSearchExceptionHandler openSearchExceptionHandler =
+				new OpenSearchExceptionHandler(_log, false);
+
+			SearchException searchException = new SearchException(
+				OpenSearchExceptionHandler.INDEX_NOT_FOUND_EXCEPTION_MESSAGE);
+
+			openSearchExceptionHandler.handleDeleteDocumentException(
+				searchException);
+
+			_assertLogCapture(logCapture, searchException, LoggerTestUtil.INFO);
+		}
 	}
 
-	@ExpectedLog(
-		expectedClass = OpenSearchExceptionHandlerTest.class,
-		expectedLevel = ExpectedLog.Level.INFO,
-		expectedLog = OpenSearchExceptionHandler.INDEX_NOT_FOUND_EXCEPTION_MESSAGE
-	)
 	@Test
 	public void testDeleteIndexNotFoundLogExceptionsOnlyTrue()
 		throws Throwable {
 
-		OpenSearchExceptionHandler openSearchExceptionHandler =
-			new OpenSearchExceptionHandler(_log, true);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchExceptionHandlerTest.class.getName(),
+				LoggerTestUtil.INFO)) {
 
-		openSearchExceptionHandler.handleDeleteDocumentException(
-			new SearchException(
-				OpenSearchExceptionHandler.INDEX_NOT_FOUND_EXCEPTION_MESSAGE));
+			OpenSearchExceptionHandler openSearchExceptionHandler =
+				new OpenSearchExceptionHandler(_log, true);
+
+			SearchException searchException = new SearchException(
+				OpenSearchExceptionHandler.INDEX_NOT_FOUND_EXCEPTION_MESSAGE);
+
+			openSearchExceptionHandler.handleDeleteDocumentException(
+				searchException);
+
+			_assertLogCapture(logCapture, searchException, LoggerTestUtil.INFO);
+		}
 	}
 
 	@Test
@@ -80,18 +90,24 @@ public class OpenSearchExceptionHandlerTest {
 			new SearchException("deletion failed and results in exception"));
 	}
 
-	@ExpectedLog(
-		expectedClass = OpenSearchExceptionHandlerTest.class,
-		expectedLevel = ExpectedLog.Level.WARNING,
-		expectedLog = "deletion failed is only logged"
-	)
 	@Test
 	public void testDeleteLogExceptionsOnlyTrue() throws Throwable {
-		OpenSearchExceptionHandler openSearchExceptionHandler =
-			new OpenSearchExceptionHandler(_log, true);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchExceptionHandlerTest.class.getName(),
+				LoggerTestUtil.ERROR)) {
 
-		openSearchExceptionHandler.handleDeleteDocumentException(
-			new SearchException("deletion failed is only logged"));
+			OpenSearchExceptionHandler openSearchExceptionHandler =
+				new OpenSearchExceptionHandler(_log, true);
+
+			SearchException searchException = new SearchException(
+				"deletion failed is only logged");
+
+			openSearchExceptionHandler.handleDeleteDocumentException(
+				searchException);
+
+			_assertLogCapture(
+				logCapture, searchException, LoggerTestUtil.ERROR);
+		}
 	}
 
 	@Test
@@ -106,22 +122,42 @@ public class OpenSearchExceptionHandlerTest {
 			new SearchException("some other random message"));
 	}
 
-	@ExpectedLog(
-		expectedClass = OpenSearchExceptionHandlerTest.class,
-		expectedLevel = ExpectedLog.Level.WARNING,
-		expectedLog = "some random message"
-	)
 	@Test
 	public void testLogExceptionsOnlyTrue() throws Throwable {
-		OpenSearchExceptionHandler openSearchExceptionHandler =
-			new OpenSearchExceptionHandler(_log, true);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchExceptionHandlerTest.class.getName(),
+				LoggerTestUtil.ERROR)) {
 
-		openSearchExceptionHandler.logOrThrow(
-			new SearchException("some random message"));
+			OpenSearchExceptionHandler openSearchExceptionHandler =
+				new OpenSearchExceptionHandler(_log, true);
+
+			SearchException searchException = new SearchException(
+				"some random message");
+
+			openSearchExceptionHandler.logOrThrow(searchException);
+
+			_assertLogCapture(
+				logCapture, searchException, LoggerTestUtil.ERROR);
+		}
 	}
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+
+	private void _assertLogCapture(
+		LogCapture logCapture, SearchException searchException,
+		String logLevel) {
+
+		List<LogEntry> logEntries = logCapture.getLogEntries();
+
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
+
+		Assert.assertEquals(logLevel, logEntry.getPriority());
+
+		Assert.assertSame(searchException, logEntry.getThrowable());
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OpenSearchExceptionHandlerTest.class);
