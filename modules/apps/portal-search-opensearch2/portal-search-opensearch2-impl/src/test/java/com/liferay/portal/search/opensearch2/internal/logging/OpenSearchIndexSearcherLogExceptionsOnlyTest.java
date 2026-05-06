@@ -10,20 +10,25 @@ import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchIndexSearcher;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
 import com.liferay.portal.search.opensearch2.internal.connection.TestOpenSearchConnectionManager;
 import com.liferay.portal.search.opensearch2.internal.indexing.LiferayOpenSearchIndexingFixtureFactory;
-import com.liferay.portal.search.test.rule.logging.ExpectedLogMethodTestRule;
 import com.liferay.portal.search.test.util.indexing.BaseIndexingTestCase;
 import com.liferay.portal.search.test.util.indexing.IndexingFixture;
-import com.liferay.portal.search.test.util.logging.ExpectedLog;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import org.opensearch.client.opensearch._types.OpenSearchException;
 
 /**
  * @author Bryan Engler
@@ -32,32 +37,35 @@ public class OpenSearchIndexSearcherLogExceptionsOnlyTest
 	extends BaseIndexingTestCase {
 
 	@ClassRule
-	public static final AggregateTestRule aggregateTestRule =
-		new AggregateTestRule(
-			ExpectedLogMethodTestRule.INSTANCE, LiferayUnitTestRule.INSTANCE);
+	public static final LiferayUnitTestRule liferayUnitTestRule =
+		LiferayUnitTestRule.INSTANCE;
 
 	@ClassRule
 	public static OpenSearchTestRule openSearchTestRule =
 		OpenSearchTestRule.INSTANCE;
 
-	@ExpectedLog(
-		expectedClass = OpenSearchIndexSearcher.class,
-		expectedLevel = ExpectedLog.Level.WARNING,
-		expectedLog = "all shards failed"
-	)
 	@Test
 	public void testExceptionOnlyLoggedWhenQueryMalformedSearch() {
-		search(createSearchContext(), getMalformedQuery());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchIndexSearcher.class.getName(),
+				LoggerTestUtil.ERROR)) {
+
+			search(createSearchContext(), getMalformedQuery());
+
+			_assertLogCapture(logCapture);
+		}
 	}
 
-	@ExpectedLog(
-		expectedClass = OpenSearchIndexSearcher.class,
-		expectedLevel = ExpectedLog.Level.WARNING,
-		expectedLog = "all shards failed"
-	)
 	@Test
 	public void testExceptionOnlyLoggedWhenQueryMalformedSearchCount() {
-		searchCount(createSearchContext(), getMalformedQuery());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchIndexSearcher.class.getName(),
+				LoggerTestUtil.ERROR)) {
+
+			searchCount(createSearchContext(), getMalformedQuery());
+
+			_assertLogCapture(logCapture);
+		}
 	}
 
 	@Override
@@ -79,6 +87,24 @@ public class OpenSearchIndexSearcherLogExceptionsOnlyTest
 			BooleanClauseOccur.MUST);
 
 		return booleanQuery;
+	}
+
+	private void _assertLogCapture(LogCapture logCapture) {
+		List<LogEntry> logEntries = logCapture.getLogEntries();
+
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
+
+		Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+		Throwable throwable = logEntry.getThrowable();
+
+		Assert.assertEquals(
+			"Request failed: [search_phase_execution_exception] all shards " +
+				"failed",
+			throwable.getMessage());
+		Assert.assertSame(OpenSearchException.class, throwable.getClass());
 	}
 
 }
