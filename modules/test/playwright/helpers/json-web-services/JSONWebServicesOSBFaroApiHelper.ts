@@ -10,6 +10,14 @@ type Channel = {
 	id: string;
 };
 
+type FaroUser = {
+	emailAddress: string;
+	groupId: string;
+	id: string;
+	roleName: string;
+	status: number;
+};
+
 type Project = {
 	groupId: string;
 	name: string;
@@ -62,6 +70,32 @@ export class JSONWebServicesOSBFaroApiHelper {
 		).then((response) => response.json());
 	}
 
+	async createUser(
+		emailAddress: string,
+		groupId: string,
+		roleName: string,
+		sendEmail: boolean = false
+	): Promise<FaroUser[]> {
+		const formdata = new FormData();
+
+		formdata.append('emailAddresses', JSON.stringify([emailAddress]));
+		formdata.append('roleName', roleName);
+		formdata.append('sendEmail', String(sendEmail));
+
+		const header = new Headers();
+
+		header.append('Authorization', _authorization);
+
+		return fetch(
+			`${faroConfig.environment.baseUrl}${this.basePath}/main/${groupId}/user`,
+			{
+				body: formdata,
+				headers: header,
+				method: 'POST',
+			}
+		).then((response) => response.json());
+	}
+
 	async createProject(name: string): Promise<Project> {
 		const formdata = new FormData();
 
@@ -97,6 +131,20 @@ export class JSONWebServicesOSBFaroApiHelper {
 			`${faroConfig.environment.baseUrl}${this.basePath}/main/${groupId}/channel`,
 			{
 				body: formdata,
+				headers: header,
+				method: 'DELETE',
+			}
+		).then((response) => response);
+	}
+
+	async deleteUser(id: string, groupId: string): Promise<Response> {
+		const header = new Headers();
+
+		header.append('Authorization', _authorization);
+
+		return fetch(
+			`${faroConfig.environment.baseUrl}${this.basePath}/main/${groupId}/user/${id}`,
+			{
 				headers: header,
 				method: 'DELETE',
 			}
