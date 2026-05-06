@@ -82,7 +82,7 @@ public class MCPProtectedResourceTest {
 		Assert.assertTrue(
 			wwwAuthenticate,
 			wwwAuthenticate.contains(
-				"resource_metadata=\"http://localhost:8080/o/.well-known" +
+				"resource_metadata=\"http://localhost:8080/.well-known" +
 					"/oauth-protected-resource\""));
 		Assert.assertTrue(
 			wwwAuthenticate,
@@ -125,7 +125,7 @@ public class MCPProtectedResourceTest {
 			HttpRequest.newBuilder(
 			).uri(
 				URI.create(
-					"http://localhost:8080/o/.well-known" +
+					"http://localhost:8080/.well-known" +
 						"/oauth-protected-resource")
 			).GET(
 			).build(),

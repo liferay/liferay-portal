@@ -224,7 +224,8 @@ public class MCPServerServlet extends HttpServlet {
 		}
 
 		String mcpResourceURI =
-			_portal.getPortalURL(httpServletRequest) + _MCP_PATH;
+			_portal.getPortalURL(httpServletRequest) +
+				_portal.getPathContext() + _MCP_PATH;
 
 		List<String> audiences = oAuth2Authorization.getAudiencesList();
 
@@ -658,7 +659,8 @@ public class MCPServerServlet extends HttpServlet {
 			StringBundler.concat(
 				"Bearer realm=\"mcp\", resource_metadata=\"",
 				_portal.getPortalURL(httpServletRequest),
-				"/o/.well-known/oauth-protected-resource\", ",
+				_portal.getPathContext(),
+				"/.well-known/oauth-protected-resource\", ",
 				"error=\"insufficient_scope\", error_description=\"",
 				description, "\""));
 		httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -674,7 +676,8 @@ public class MCPServerServlet extends HttpServlet {
 			StringBundler.concat(
 				"Bearer realm=\"mcp\", resource_metadata=\"",
 				_portal.getPortalURL(httpServletRequest),
-				"/o/.well-known/oauth-protected-resource\", ",
+				_portal.getPathContext(),
+				"/.well-known/oauth-protected-resource\", ",
 				"error=\"invalid_token\", error_description=\"", description,
 				"\""));
 		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
