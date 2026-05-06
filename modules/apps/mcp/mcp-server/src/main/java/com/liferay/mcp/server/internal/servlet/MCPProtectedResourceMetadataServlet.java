@@ -71,7 +71,7 @@ public class MCPProtectedResourceMetadataServlet extends HttpServlet {
 		}
 	}
 
-	private static final String _MCP_PATH = "/mcp";
+	private static final String _MCP_PATH = "/o/mcp";
 
 	@Reference
 	private Portal _portal;

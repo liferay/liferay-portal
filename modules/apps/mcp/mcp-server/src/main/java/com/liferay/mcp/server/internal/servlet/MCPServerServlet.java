@@ -680,7 +680,7 @@ public class MCPServerServlet extends HttpServlet {
 		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
-	private static final String _MCP_PATH = "/mcp";
+	private static final String _MCP_PATH = "/o/mcp";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MCPServerServlet.class);
