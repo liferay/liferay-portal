@@ -10,6 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.mcp.server.internal.configuration.MCPServerConfiguration;
 import com.liferay.mcp.server.internal.constants.MCPServerConstants;
 import com.liferay.mcp.server.internal.util.OpenAPIUtil;
+import com.liferay.oauth2.provider.constants.OAuth2AuthorizationConstants;
+import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -26,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
@@ -55,6 +59,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,6 +142,10 @@ public class MCPServerServlet extends HttpServlet {
 			return;
 		}
 
+		if (!_authenticate(httpServletRequest, httpServletResponse)) {
+			return;
+		}
+
 		MCPServerProfile mcpServerProfile = null;
 
 		String profileName = _getProfileName(httpServletRequest);
@@ -157,6 +166,77 @@ public class MCPServerServlet extends HttpServlet {
 			companyId, mcpServerProfile);
 
 		servlet.service(httpServletRequest, httpServletResponse);
+	}
+
+	private boolean _authenticate(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws IOException {
+
+		String authorization = httpServletRequest.getHeader("Authorization");
+
+		if (Validator.isBlank(authorization)) {
+			_sendInvalidTokenChallenge(
+				httpServletRequest, httpServletResponse,
+				"Missing Authorization header");
+
+			return false;
+		}
+
+		String[] parts = authorization.split("\\s+");
+
+		if ((parts.length != 2) ||
+			!StringUtil.equalsIgnoreCase(parts[0], "Bearer")) {
+
+			_sendInvalidTokenChallenge(
+				httpServletRequest, httpServletResponse,
+				"Authorization header is not a Bearer token");
+
+			return false;
+		}
+
+		String accessToken = parts[1];
+
+		OAuth2Authorization oAuth2Authorization =
+			_oAuth2AuthorizationLocalService.
+				fetchOAuth2AuthorizationByAccessTokenContent(accessToken);
+
+		if ((oAuth2Authorization == null) ||
+			OAuth2AuthorizationConstants.ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN.
+				equals(oAuth2Authorization.getAccessTokenContent())) {
+
+			_sendInvalidTokenChallenge(
+				httpServletRequest, httpServletResponse,
+				"Access token is unknown or revoked");
+
+			return false;
+		}
+
+		Date expirationDate =
+			oAuth2Authorization.getAccessTokenExpirationDate();
+
+		if ((expirationDate != null) && expirationDate.before(new Date())) {
+			_sendInvalidTokenChallenge(
+				httpServletRequest, httpServletResponse,
+				"Access token has expired");
+
+			return false;
+		}
+
+		String mcpResourceURI =
+			_portal.getPortalURL(httpServletRequest) + _MCP_PATH;
+
+		List<String> audiences = oAuth2Authorization.getAudiencesList();
+
+		if (!audiences.contains(mcpResourceURI)) {
+			_sendInsufficientScopeChallenge(
+				httpServletRequest, httpServletResponse,
+				"Access token is not bound to this MCP server");
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private Servlet _buildServlet(
@@ -568,6 +648,40 @@ public class MCPServerServlet extends HttpServlet {
 		}
 	}
 
+	private void _sendInsufficientScopeChallenge(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, String description)
+		throws IOException {
+
+		httpServletResponse.setHeader(
+			HttpHeaders.WWW_AUTHENTICATE,
+			StringBundler.concat(
+				"Bearer realm=\"mcp\", resource_metadata=\"",
+				_portal.getPortalURL(httpServletRequest),
+				"/.well-known/oauth-protected-resource\", ",
+				"error=\"insufficient_scope\", error_description=\"",
+				description, "\""));
+		httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+	}
+
+	private void _sendInvalidTokenChallenge(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, String description)
+		throws IOException {
+
+		httpServletResponse.setHeader(
+			HttpHeaders.WWW_AUTHENTICATE,
+			StringBundler.concat(
+				"Bearer realm=\"mcp\", resource_metadata=\"",
+				_portal.getPortalURL(httpServletRequest),
+				"/.well-known/oauth-protected-resource\", ",
+				"error=\"invalid_token\", error_description=\"", description,
+				"\""));
+		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+	}
+
+	private static final String _MCP_PATH = "/mcp";
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		MCPServerServlet.class);
 
@@ -579,6 +693,9 @@ public class MCPServerServlet extends HttpServlet {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
