@@ -5,6 +5,12 @@
 
 package com.liferay.oauth2.provider.model.impl;
 
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+
+import java.util.List;
+
 /**
  * The extended model implementation for the OAuth2Authorization service.
  * Represents a row in the &quot;OAuth2Authorization&quot; database table, with
@@ -21,6 +27,10 @@ package com.liferay.oauth2.provider.model.impl;
  */
 public class OAuth2AuthorizationImpl extends OAuth2AuthorizationBaseImpl {
 
+	public List<String> getAudiencesList() {
+		return StringUtil.split(getAudiences(), CharPool.NEW_LINE);
+	}
+
 	@Override
 	public void setAccessTokenContent(String accessTokenContent) {
 		super.setAccessTokenContent(accessTokenContent);
@@ -31,6 +41,10 @@ public class OAuth2AuthorizationImpl extends OAuth2AuthorizationBaseImpl {
 		else {
 			setAccessTokenContentHash(0);
 		}
+	}
+
+	public void setAudiencesList(List<String> audiencesList) {
+		setAudiences(StringUtil.merge(audiencesList, StringPool.NEW_LINE));
 	}
 
 	@Override

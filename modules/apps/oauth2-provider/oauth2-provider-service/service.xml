@@ -99,6 +99,7 @@
 		<column name="accessTokenContentHash" type="long" />
 		<column name="accessTokenCreateDate" type="Date" />
 		<column name="accessTokenExpirationDate" type="Date" />
+		<column name="audiences" type="String" />
 		<column name="remoteHostInfo" type="String" />
 		<column name="remoteIPInfo" type="String" />
 		<column name="refreshTokenContent" type="String" />

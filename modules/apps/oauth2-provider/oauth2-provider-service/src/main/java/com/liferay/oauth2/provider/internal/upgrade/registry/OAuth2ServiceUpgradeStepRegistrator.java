@@ -144,6 +144,11 @@ public class OAuth2ServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.alterColumnType(
 				"OAuth2Application", "externalReferenceCode",
 				"VARCHAR(1000) null"));
+
+		registry.register(
+			"4.2.7", "4.2.8",
+			UpgradeProcessFactory.addColumns(
+				"OAuth2Authorization", "audiences TEXT null"));
 	}
 
 	@Reference

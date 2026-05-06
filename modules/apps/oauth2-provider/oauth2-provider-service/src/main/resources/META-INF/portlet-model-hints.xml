@@ -71,6 +71,9 @@
 		<field name="accessTokenContentHash" type="long" />
 		<field name="accessTokenCreateDate" type="Date" />
 		<field name="accessTokenExpirationDate" type="Date" />
+		<field name="audiences" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="remoteHostInfo" type="String">
 			<hint name="max-length">255</hint>
 		</field>
