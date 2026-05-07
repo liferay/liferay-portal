@@ -29,9 +29,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import com.nimbusds.oauth2.sdk.GrantType;
+import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.as.AuthorizationServerMetadata;
 import com.nimbusds.oauth2.sdk.id.Issuer;
+import com.nimbusds.oauth2.sdk.pkce.CodeChallengeMethod;
 import com.nimbusds.openid.connect.sdk.SubjectType;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 
@@ -41,6 +43,7 @@ import java.net.URL;
 
 import java.security.MessageDigest;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -354,12 +357,16 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 
 			authorizationServerMetadata.setAuthorizationEndpointURI(
 				new URI(authorizationEndpoint));
+			authorizationServerMetadata.setCodeChallengeMethods(
+				Collections.singletonList(CodeChallengeMethod.S256));
 			authorizationServerMetadata.setGrantTypes(
 				TransformUtil.transformToList(
 					supportedGrantTypes, GrantType::parse));
 			authorizationServerMetadata.setJWKSetURI(new URI(jwksURI));
 			authorizationServerMetadata.setRegistrationEndpointURI(
 				new URI(registrationEndpoint));
+			authorizationServerMetadata.setResponseTypes(
+				Collections.singletonList(new ResponseType("code")));
 			authorizationServerMetadata.setScopes(new Scope(supportedScopes));
 			authorizationServerMetadata.setTokenEndpointURI(
 				new URI(tokenEndpoint));
@@ -418,9 +425,13 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 
 			oidcProviderMetadata.setAuthorizationEndpointURI(
 				new URI(authorizationEndpoint));
+			oidcProviderMetadata.setCodeChallengeMethods(
+				Collections.singletonList(CodeChallengeMethod.S256));
 			oidcProviderMetadata.setGrantTypes(
 				TransformUtil.transformToList(
 					supportedGrantTypes, GrantType::parse));
+			oidcProviderMetadata.setResponseTypes(
+				Collections.singletonList(new ResponseType("code")));
 			oidcProviderMetadata.setScopes(new Scope(supportedScopes));
 			oidcProviderMetadata.setTokenEndpointURI(new URI(tokenEndpoint));
 			oidcProviderMetadata.setUserInfoEndpointURI(
