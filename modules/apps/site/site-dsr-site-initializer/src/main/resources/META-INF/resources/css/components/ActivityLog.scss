@@ -44,9 +44,11 @@ li.timeline-item:last-of-type::before {
 .timeline-increment-icon-comment {
 	color: #aa33ff;
 }
+.timeline-increment-download,
 .timeline-increment-upload {
 	background-color: #f1fce9;
 }
+.timeline-increment-icon-download,
 .timeline-increment-icon-upload {
 	color: #458613;
 }

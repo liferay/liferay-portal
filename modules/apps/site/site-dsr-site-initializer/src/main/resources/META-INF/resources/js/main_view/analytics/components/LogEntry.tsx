@@ -13,10 +13,10 @@ const LogEntry: React.FC<ILogEntry> = (logEntry) => {
 		<li className="timeline-item" key={logEntry.createDate}>
 			<div className="panel">
 				<div
-					className={`sticker sticker-circle timeline-increment timeline-increment-${logEntry.type}`}
+					className={`sticker sticker-circle timeline-increment timeline-increment-${logEntry.category}`}
 				>
 					<span
-						className={`timeline-increment-icon timeline-increment-icon-${logEntry.type}`}
+						className={`timeline-increment-icon timeline-increment-icon-${logEntry.category}`}
 					>
 						<ClayIcon className="log-icon" symbol={logEntry.icon} />
 					</span>

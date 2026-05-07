@@ -11,31 +11,19 @@ import AccountSticker from '../../../common/components/AccountSticker';
 import './../../../../css/components/LatestActivity.scss';
 import useAnalyticsQuery from '../../../common/hooks/useAnalyticsQuery';
 import {TLatestActivity} from '../../../common/utils/types';
-import LatestActivityQuery from '../queries/LatestActivityQuery';
 import {BASE_URL} from '../utils/constants';
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
 import {TimeDataRenderer} from './data_renderers/TimeDataRenderer';
 
-const LatestActivity = ({
-	dsrDevEnvEnabled: useDevEnvData,
-	namespace,
-}: {
-	dsrDevEnvEnabled: boolean;
-	namespace: string;
-}) => {
+const LatestActivity = ({namespace}: {namespace: string}) => {
 	const [data, setData] = useState<TLatestActivity[]>([]);
 	const [element, setElement] = useState<HTMLElement | null>(null);
 
 	const {isLoading, response} = useAnalyticsQuery({
 		element,
-		query: LatestActivityQuery,
-		settings: {
-			checkViewportVisibility: true,
-			useDevEnvData,
-		},
+		query: {paths: [{key: 'events', path: '/events'}]},
 		variables: {
-			channelId: '',
 			includeAnonymousUsers: false,
 			page: 0,
 			rangeKey: 7,
@@ -45,7 +33,15 @@ const LatestActivity = ({
 
 	useEffect(() => {
 		if (response) {
-			setData(response);
+			const eventEntries = response.events?.eventEntries ?? [];
+
+			setData(
+				eventEntries.map((eventEntry: any) => ({
+					action: eventEntry.name,
+					createDate: eventEntry.createDate,
+					name: eventEntry.individualName,
+				}))
+			);
 		}
 
 		return () => {};

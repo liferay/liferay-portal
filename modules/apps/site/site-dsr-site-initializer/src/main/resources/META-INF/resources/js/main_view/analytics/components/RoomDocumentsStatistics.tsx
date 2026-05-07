@@ -7,52 +7,61 @@ import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import React, {useEffect, useState} from 'react';
 
 import {TRoomDocumentsStatistics} from '../../../common/utils/types';
-import {AverageTimeDataRenderer} from './data_renderers/AverageTimeDataRenderer';
 import {DocumentTitleDataRenderer} from './data_renderers/DocumentTitleDataRenderer';
 import {LastViewedDataRenderer} from './data_renderers/LastViewedDataRenderer';
-import {UserInvolvedDataRenderer} from './data_renderers/UserInvolvedDataRenderer';
 
 import '../../../../css/components/RoomDocumentsStatistics.scss';
 import useAnalyticsQuery from '../../../common/hooks/useAnalyticsQuery';
-import RoomDocumentsStatisticsQuery from '../queries/RoomDocumentsStatisticsQuery';
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
 
-const RoomDocumentsStatistics = ({
-	dsrDevEnvEnabled: useDevEnvData,
-	namespace,
-}: {
-	dsrDevEnvEnabled: boolean;
-	namespace: string;
-}) => {
+const RoomDocumentsStatistics = ({namespace}: {namespace: string}) => {
 	const [data, setData] = useState<TRoomDocumentsStatistics[]>([]);
 	const [element, setElement] = useState<HTMLElement | null>(null);
 
 	const {isLoading, response} = useAnalyticsQuery({
 		element,
-		query: RoomDocumentsStatisticsQuery,
-		settings: {
-			checkViewportVisibility: true,
-			useDevEnvData,
-		},
+		query: {paths: [{key: 'documents', path: '/document-metrics'}]},
 		variables: {
-			channelId: '',
 			keywords: '',
 			rangeEnd: null,
 			rangeKey: 7,
 			rangeStart: null,
 			size: 20,
-			sort: {
-				column: 'downloadsMetric',
-				type: 'DESC',
-			},
+			sortColumn: 'downloadsMetric',
+			sortType: 'DESC',
 			start: 0,
 		},
 	});
 
 	useEffect(() => {
 		if (response) {
-			setData(response);
+			const documentMetrics = response.documents?.documentMetrics ?? [];
+
+			setData(
+				documentMetrics.map((documentMetric: any) => {
+					const url: string = documentMetric.urls?.[0] ?? '';
+					const extension = url.includes('.')
+						? url.split('.').pop() ?? ''
+						: '';
+
+					const lastViewedValue =
+						documentMetric.lastViewedMetric?.value;
+
+					return {
+						download: documentMetric.downloadsMetric?.value ?? 0,
+						lastViewed: lastViewedValue
+							? new Date(lastViewedValue).toISOString()
+							: '',
+						title: documentMetric.assetTitle ?? '',
+						totalViews:
+							documentMetric.impressionMadeMetric?.value ?? 0,
+						type: extension || 'document',
+						userInvolved:
+							documentMetric.usersInvolvedMetric?.value ?? 0,
+					};
+				})
+			);
 		}
 
 		return () => {};
@@ -77,13 +86,9 @@ const RoomDocumentsStatistics = ({
 					<div className="room-document-statistics-fds">
 						<FrontendDataSet
 							customDataRenderers={{
-								averageTimeDataRenderer:
-									AverageTimeDataRenderer,
 								documentNameDataRenderer:
 									DocumentTitleDataRenderer,
 								lastViewedDataRenderer: LastViewedDataRenderer,
-								userInvolvedDataRenderer:
-									UserInvolvedDataRenderer,
 							}}
 							id={namespace}
 							items={data}
@@ -127,16 +132,6 @@ const RoomDocumentsStatistics = ({
 												),
 											},
 											{
-												contentRenderer:
-													'averageTimeDataRenderer',
-												fieldName: 'averageTime',
-												label: Liferay.Language.get(
-													'average-time'
-												),
-											},
-											{
-												contentRenderer:
-													'userInvolvedDataRenderer',
 												fieldName: 'userInvolved',
 												label: Liferay.Language.get(
 													'user-involved'

@@ -16,9 +16,13 @@ import {
 
 import useAnalyticsQuery from '../../../common/hooks/useAnalyticsQuery';
 import {IFrequencyChartItem} from '../../../common/utils/types';
-import FrequencyChartQuery from '../queries/FrequencyChartQuery';
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
+
+interface IVisitFrequencyItem {
+	count: number;
+	name: string;
+}
 
 const margin = {
 	bottom: 5,
@@ -45,44 +49,33 @@ const getFrequencyLabel = (type: string): string => {
 };
 
 const formatData = (
-	frequencyChartItems: IFrequencyChartItem[]
+	visitFrequencyItems: IVisitFrequencyItem[]
 ): IFrequencyChartItem[] => {
-	if (!frequencyChartItems) {
+	if (!visitFrequencyItems) {
 		return [];
 	}
 
-	return frequencyChartItems.map((frequencyChartItem) => ({
-		frequencyType: getFrequencyLabel(frequencyChartItem.frequencyType),
-		visitCount: frequencyChartItem.visitCount || 0,
+	return visitFrequencyItems.map((visitFrequencyItem) => ({
+		frequencyType: getFrequencyLabel(visitFrequencyItem.name),
+		visitCount: visitFrequencyItem.count || 0,
 	}));
 };
 
-function FrequencyChart({
-	dsrDevEnvEnabled: useDevEnvData,
-}: {
-	dsrDevEnvEnabled: boolean;
-}) {
+function FrequencyChart() {
 	const [data, setData] = useState<IFrequencyChartItem[]>([]);
 	const [element, setElement] = useState<HTMLElement | null>(null);
 
 	const {isLoading, response} = useAnalyticsQuery({
 		element,
-		query: FrequencyChartQuery,
-		settings: {
-			checkViewportVisibility: true,
-			useDevEnvData,
-		},
+		query: {paths: [{key: 'visitFrequency', path: '/visit-frequency'}]},
 		variables: {
-			channelId: '',
 			rangeKey: 30,
 		},
 	});
 
 	useEffect(() => {
 		if (response) {
-			const formattedData = formatData(response);
-
-			setData(formattedData);
+			setData(formatData(response.visitFrequency?.visitFrequencyItems));
 		}
 
 		return () => {};

@@ -11,29 +11,19 @@ import VisitorStickerRenderer from './cell_renderers/VisitorStickerRenderer';
 import './../../../../css/components/MostActiveVisitors.scss';
 import useAnalyticsQuery from '../../../common/hooks/useAnalyticsQuery';
 import {TVisitor} from '../../../common/utils/types';
-import MostActiveVisitorsQuery from '../queries/MostActiveVisitorsQuery';
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
 
-const MostActiveVisitors = ({
-	dsrDevEnvEnabled: useDevEnvData,
-	namespace,
-}: {
-	dsrDevEnvEnabled: boolean;
-	namespace: string;
-}) => {
+const MostActiveVisitors = ({namespace}: {namespace: string}) => {
 	const [data, setData] = useState<TVisitor[]>([]);
 	const [element, setElement] = useState<HTMLElement | null>(null);
 
 	const {isLoading, response} = useAnalyticsQuery({
 		element,
-		query: MostActiveVisitorsQuery,
-		settings: {
-			checkViewportVisibility: true,
-			useDevEnvData,
+		query: {
+			paths: [{key: 'mostActiveVisitors', path: '/most-active-visitors'}],
 		},
 		variables: {
-			channelId: '',
 			rangeKey: 7,
 			size: 10,
 			start: 0,
@@ -42,7 +32,7 @@ const MostActiveVisitors = ({
 
 	useEffect(() => {
 		if (response) {
-			setData(response);
+			setData(response.mostActiveVisitors?.mostActiveVisitors ?? []);
 		}
 	}, [response]);
 

@@ -41,8 +41,8 @@ function TimelineEngagementChart() {
 			setData(
 				histogramMetrics.map((histogramMetric: any) => ({
 					date: histogramMetric.key,
-					numberOfVisits: 0,
-					timeSpent: histogramMetric.value ?? 0,
+					numberOfVisits: histogramMetric.value ?? 0,
+					timeSpent: 0,
 				}))
 			);
 		}

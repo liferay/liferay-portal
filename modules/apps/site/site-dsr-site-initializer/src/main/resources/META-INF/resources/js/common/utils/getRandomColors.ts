@@ -17,7 +17,7 @@ export function getRandomColor(str: string, alpha = 1) {
 		`rgba(156,39,176,${alpha})`,
 	];
 
-	const hash = str
+	const hash = (str ?? '')
 		.split('')
 		.reduce((acc, char) => acc + char.charCodeAt(0), 0);
 

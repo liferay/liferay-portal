@@ -17,7 +17,6 @@ import {
 	IRoomStatistics,
 	IRoomStatisticsItem,
 } from '../../../common/utils/types';
-import RoomStatisticsQuery from '../queries/RoomStatisticsQuery';
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
 
@@ -42,6 +41,17 @@ const formatTime = (minutes?: number): string => {
 			: sub(Liferay.Language.get('x-minutes'), [mins]).toLowerCase();
 
 	return `${hoursLabel} ${minutesLabel}`;
+};
+
+const toRoomStatistics = (response: any): IRoomStatistics => {
+	return {
+		timeViewedMinutes:
+			response?.siteVisitorBehavior?.totalSessionDuration ?? 0,
+		totalActions: response?.identityActivity?.count ?? 0,
+		totalComments: response?.identityComment?.count ?? 0,
+		totalVisits: response?.siteVisitorBehavior?.visitors ?? 0,
+		uniqueVisitors: response?.siteVisitorBehavior?.knownVisitors ?? 0,
+	};
 };
 
 const formatData = (data: IRoomStatistics): IRoomStatisticsItem[] => {
@@ -84,36 +94,40 @@ const formatData = (data: IRoomStatistics): IRoomStatisticsItem[] => {
 	];
 };
 
-function RoomStatistics({
-	dsrDevEnvEnabled: useDevEnvData,
-}: {
-	dsrDevEnvEnabled: boolean;
-}) {
+function RoomStatistics() {
 	const [data, setData] = useState<IRoomStatisticsItem[]>([]);
 	const [element, setElement] = useState<HTMLElement | null>(null);
 
 	const {isLoading, response} = useAnalyticsQuery({
 		element,
-		query: RoomStatisticsQuery,
-		settings: {
-			checkViewportVisibility: true,
-			useDevEnvData,
+		query: {
+			paths: [
+				{
+					key: 'siteVisitorBehavior',
+					path: '/site-visitor-behavior-metric',
+				},
+				{
+					key: 'identityActivity',
+					path: '/identity-activity',
+				},
+				{
+					key: 'identityComment',
+					path: '/identity-activity',
+					variables: {
+						includedEventIds: ['commentPosted'],
+						rangeKey: 7,
+					},
+				},
+			],
 		},
 		variables: {
-			channelId: '',
-			entityType: 'INDIVIDUAL',
-			keywords: '',
-			page: 1,
-			rangeEnd: null,
 			rangeKey: 7,
-			rangeStart: null,
-			size: 20,
 		},
 	});
 
 	useEffect(() => {
 		if (response) {
-			setData(formatData(response));
+			setData(formatData(toRoomStatistics(response)));
 		}
 
 		return () => {};
