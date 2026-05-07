@@ -116,15 +116,15 @@ public class DDMTemplateItemSelectorViewDescriptorTest {
 		DDMTemplate group1Template = DDMTemplateTestUtil.addTemplate(
 			group1.getGroupId(), ddmStructure.getStructureId(),
 			ddmStructure.getClassNameId(), TemplateConstants.LANG_TYPE_FTL,
-			_TEMPLATE_SCRIPT, LocaleUtil.getSiteDefault());
+			_SCRIPT, LocaleUtil.getSiteDefault());
 		DDMTemplate group2Template = DDMTemplateTestUtil.addTemplate(
 			group2.getGroupId(), ddmStructure.getStructureId(),
 			ddmStructure.getClassNameId(), TemplateConstants.LANG_TYPE_FTL,
-			_TEMPLATE_SCRIPT, LocaleUtil.getSiteDefault());
+			_SCRIPT, LocaleUtil.getSiteDefault());
 		DDMTemplate depotTemplate = DDMTemplateTestUtil.addTemplate(
 			depotEntry.getGroupId(), ddmStructure.getStructureId(),
 			ddmStructure.getClassNameId(), TemplateConstants.LANG_TYPE_FTL,
-			_TEMPLATE_SCRIPT, LocaleUtil.getSiteDefault());
+			_SCRIPT, LocaleUtil.getSiteDefault());
 
 		DDMTemplateItemSelectorCriterion ddmTemplateItemSelectorCriterion =
 			new DDMTemplateItemSelectorCriterion();
@@ -184,7 +184,7 @@ public class DDMTemplateItemSelectorViewDescriptorTest {
 			ddmTemplates.toString(), ddmTemplates.contains(group2Template));
 	}
 
-	private static final String _TEMPLATE_SCRIPT = "${variable}";
+	private static final String _SCRIPT = "${variable}";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
