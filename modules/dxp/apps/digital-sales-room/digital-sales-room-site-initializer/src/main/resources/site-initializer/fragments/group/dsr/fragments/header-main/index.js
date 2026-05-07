@@ -42,7 +42,7 @@ if (!window.onFileEntrySaved) {
 		if (typeof window.Analytics !== 'undefined') {
 			Analytics.track('documentUploaded', {
 				assetId: data.fileEntryId,
-				assetName: data.fileName,
+				assetTitle: data.fileName,
 			});
 		}
 	};
