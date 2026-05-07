@@ -1,0 +1,550 @@
+components:
+    schemas:
+        DocumentMetric:
+            properties:
+                assetId:
+                    type: string
+                assetTitle:
+                    type: string
+                commentsMetric:
+                    $ref: "#/components/schemas/MetricValue"
+                downloadsMetric:
+                    $ref: "#/components/schemas/MetricValue"
+                impressionMadeMetric:
+                    $ref: "#/components/schemas/MetricValue"
+                lastViewedMetric:
+                    $ref: "#/components/schemas/MetricValue"
+                ratingsMetric:
+                    $ref: "#/components/schemas/MetricValue"
+                urls:
+                    items:
+                        type: string
+                    type: array
+                usersInvolvedMetric:
+                    $ref: "#/components/schemas/MetricValue"
+        DocumentMetrics:
+            properties:
+                documentMetrics:
+                    items:
+                        $ref: "#/components/schemas/DocumentMetric"
+                    type: array
+                total:
+                    format: int64
+                    type: integer
+        EventEntry:
+            properties:
+                createDate:
+                    type: string
+                emailAddressHashed:
+                    type: string
+                individualName:
+                    type: string
+                name:
+                    type: string
+        Events:
+            properties:
+                eventEntries:
+                    items:
+                        $ref: "#/components/schemas/EventEntry"
+                    type: array
+        Histogram:
+            properties:
+                histogramMetrics:
+                    items:
+                        $ref: "#/components/schemas/HistogramMetric"
+                    type: array
+                total:
+                    format: double
+                    type: number
+        HistogramMetric:
+            properties:
+                key:
+                    type: string
+                value:
+                    format: double
+                    type: number
+                valueKey:
+                    type: string
+        IdentityActivity:
+            properties:
+                count:
+                    format: int64
+                    type: integer
+                name:
+                    type: string
+        MetricValue:
+            properties:
+                value:
+                    format: double
+                    type: number
+        MostActiveVisitor:
+            properties:
+                activitiesCount:
+                    format: int64
+                    type: integer
+                emailAddress:
+                    type: string
+                firstName:
+                    type: string
+                id:
+                    type: string
+                lastName:
+                    type: string
+        MostActiveVisitors:
+            properties:
+                mostActiveVisitors:
+                    items:
+                        $ref: "#/components/schemas/MostActiveVisitor"
+                    type: array
+                total:
+                    format: int64
+                    type: integer
+        Property:
+            properties:
+                name:
+                    type: string
+                value:
+                    type: string
+        SiteHistogramMetric:
+            properties:
+                histogram:
+                    $ref: "#/components/schemas/Histogram"
+        SiteVisitorBehaviorMetric:
+            properties:
+                averageSessionDuration:
+                    format: double
+                    type: number
+                knownVisitors:
+                    format: int64
+                    type: integer
+                totalSessionDuration:
+                    format: double
+                    type: number
+                visitors:
+                    format: int64
+                    type: integer
+        UserSession:
+            properties:
+                userName:
+                    type: string
+                userSessionEvents:
+                    items:
+                        $ref: "#/components/schemas/UserSessionEvent"
+                    type: array
+        UserSessionEvent:
+            properties:
+                assetTitle:
+                    type: string
+                createDate:
+                    type: string
+                emailAddressHashed:
+                    type: string
+                name:
+                    type: string
+                properties:
+                    items:
+                        $ref: "#/components/schemas/Property"
+                    type: array
+        UserSessions:
+            properties:
+                totalEvents:
+                    format: int64
+                    type: integer
+                userSessions:
+                    items:
+                        $ref: "#/components/schemas/UserSession"
+                    type: array
+        VisitFrequency:
+            properties:
+                totalCount:
+                    format: int64
+                    type: integer
+                visitFrequencyItems:
+                    items:
+                        $ref: "#/components/schemas/VisitFrequencyItem"
+                    type: array
+        VisitFrequencyItem:
+            properties:
+                count:
+                    format: int64
+                    type: integer
+                name:
+                    type: string
+info:
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: ""
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/document-metrics":
+        get:
+            operationId: getDocumentMetric
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: keywords
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    name: size
+                    required: true
+                    schema:
+                        type: integer
+                -   in: query
+                    name: sortColumn
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: sortType
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: start
+                    required: true
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetrics"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentMetrics"
+            tags: ["DocumentMetric"]
+    "/events":
+        get:
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: includeAnonymousUsers
+                    schema:
+                        type: boolean
+                -   in: query
+                    name: individualId
+                    schema:
+                        type: string
+                -   in: query
+                    name: keywords
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    required: true
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    name: size
+                    required: true
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Events"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Events"
+            tags: ["Event"]
+    "/identity-activity":
+        get:
+            operationId: getIdentityActivity
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: includedEventIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/IdentityActivity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/IdentityActivity"
+            tags: ["IdentityActivity"]
+    "/most-active-visitors":
+        get:
+            operationId: getMostActiveVisitor
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    name: size
+                    required: true
+                    schema:
+                        type: integer
+                -   in: query
+                    name: start
+                    required: true
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MostActiveVisitors"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MostActiveVisitors"
+            tags: ["MostActiveVisitor"]
+    "/sessions-site-histogram-metric":
+        get:
+            parameters:
+                -   in: query
+                    name: emailAddresses
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: interval
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SiteHistogramMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SiteHistogramMetric"
+            tags: ["SessionsSiteHistogramMetric"]
+    "/site-visitor-behavior-metric":
+        get:
+            operationId: getSiteVisitorBehaviorMetric
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SiteVisitorBehaviorMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SiteVisitorBehaviorMetric"
+            tags: ["UserSession"]
+    "/user-sessions":
+        get:
+            operationId: getUserSession
+            parameters:
+                -   in: query
+                    name: entityId
+                    schema:
+                        type: string
+                -   in: query
+                    name: entityType
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: keywords
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    required: true
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    name: size
+                    required: true
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserSessions"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UserSessions"
+            tags: ["UserSession"]
+    "/visit-frequency":
+        get:
+            operationId: getVisitFrequency
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/VisitFrequency"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/VisitFrequency"
+            tags: ["VisitFrequency"]
+    "/visitors-site-histogram-metric":
+        get:
+            parameters:
+                -   in: query
+                    name: groupIds
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: interval
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    name: rangeKey
+                    schema:
+                        type: integer
+                -   in: query
+                    name: rangeStart
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SiteHistogramMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/SiteHistogramMetric"
+            tags: ["VisitorsSiteHistogramMetric"]

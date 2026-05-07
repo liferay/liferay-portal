@@ -1,0 +1,14 @@
+apiDir: ../site-dsr-analytics-rest-api/src/main/java
+apiPackagePath: com.liferay.site.dsr.analytics.rest
+application:
+    baseURI: /site-dsr-analytics-rest
+    className: SiteDSRAnalyticsRESTApplication
+    name: Liferay.Site.DSR.Analytics.REST
+author: Gianmarco Brunialti
+clientDir: ../site-dsr-analytics-rest-client/src/main/java
+compatibilityVersion: 15
+forcePredictableOperationId: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../site-dsr-analytics-rest-test/src/testIntegration/java
