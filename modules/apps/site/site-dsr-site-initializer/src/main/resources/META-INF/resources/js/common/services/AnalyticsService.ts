@@ -3,101 +3,76 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ApiHelper} from '@liferay/site-cms-site-initializer';
 import {openToast} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 
 import {TAnalyticsFilterValue} from '../../main_view/analytics/types';
 
-const API_URL = '';
+const ANALYTICS_BASE_URL = '/o/site-dsr-analytics-rest/v1.0';
 const STORE_ANALYTICS_FILTERS_URL = '/dsr/analytics/store_filters';
 
-async function post(query: string): Promise<any> {
-	const response = await fetch(API_URL, {
-		body: query,
-		headers: {
-			'Content-Type': 'application/json',
-			'OSB-Asah-Data-Source-ID': '',
-			'OSB-Asah-Faro-Backend-Security-Signature': '',
-			'OSB-Asah-Project-ID': '',
-		},
-		method: 'POST',
-	});
+type TParams = Record<string, unknown>;
 
-	if (!response.ok) {
+function _appendParam(
+	searchParams: URLSearchParams,
+	key: string,
+	value: unknown
+) {
+	if (value === null || value === undefined || value === '') {
+		return;
+	}
+
+	if (Array.isArray(value)) {
+		value.forEach((item) => _appendParam(searchParams, key, item));
+
+		return;
+	}
+
+	searchParams.append(key, String(value));
+}
+
+async function get<T>(path: string, params: TParams = {}): Promise<T> {
+	const searchParams = new URLSearchParams();
+
+	Object.entries(params).forEach(([key, value]) =>
+		_appendParam(searchParams, key, value)
+	);
+
+	const queryString = searchParams.toString();
+	const url = `${ANALYTICS_BASE_URL}${path}${queryString ? `?${queryString}` : ''}`;
+
+	const {data, error} = await ApiHelper.get<T>(url);
+
+	if (error) {
 		openToast({
 			message: Liferay.Language.get('unexpected-error'),
 			type: 'danger',
 		});
 
-		throw new Error(`API Error: ${response.status} ${response.statusText}`);
+		throw new Error(error);
 	}
 
-	return response;
-}
-
-const AJAX = {
-	POST(url: string, json = {}, customOptions = {}, params = {}) {
-		const options = {
-			body: JSON.stringify(json),
-			method: 'POST',
-			...customOptions,
-		};
-
-		return _fetch(url, options, params);
-	},
-};
-
-function _fetch(url: string, options = {}, params = {}) {
-	const formattedURL = new URL(url, Liferay.ThemeDisplay.getPortalURL());
-
-	Object.entries(params).map(([key, value]) => {
-		formattedURL.searchParams.append(key, String(value));
-	});
-
-	return fetch(formattedURL.pathname + formattedURL.search, {
-		...{
-			headers: new Headers({
-				'Accept': 'application/json',
-				'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
-				'Content-Type': 'application/json',
-			}),
-		},
-		...options,
-	})
-		.then((response) => {
-			if (!response.ok) {
-				return response
-					.json()
-					.catch((parseError) =>
-						Promise.reject(new Error(parseError))
-					)
-					.then((reason) => Promise.reject(reason));
-			}
-
-			if (response.status === 204) {
-				return Promise.resolve();
-			}
-
-			return response.json().catch(() => {
-				const contentType = response.headers.get('content-type');
-
-				if (!contentType && response.status === 200) {
-					return response;
-				}
-			});
-		})
-		.catch((error) => Promise.reject(error));
+	return data as T;
 }
 
 function storeFilters(filters: TAnalyticsFilterValue) {
-	return AJAX.POST(
+	const url = new URL(
 		Liferay.ThemeDisplay.getPathMain() + STORE_ANALYTICS_FILTERS_URL,
-		{},
-		{},
-		{
-			filters: JSON.stringify(filters),
-		}
+		Liferay.ThemeDisplay.getPortalURL()
 	);
+
+	url.searchParams.append('filters', JSON.stringify(filters));
+
+	return fetch(url.pathname + url.search, {
+		body: JSON.stringify({}),
+		headers: new Headers({
+			'Accept': 'application/json',
+			'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
+			'Content-Type': 'application/json',
+		}),
+		method: 'POST',
+	});
 }
 
-export default {post, storeFilters};
+export default {get, storeFilters};
