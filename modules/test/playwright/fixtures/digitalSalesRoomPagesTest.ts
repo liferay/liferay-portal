@@ -5,6 +5,7 @@
 
 import {test} from '@playwright/test';
 
+import {DSRAnalyticsPage} from '../pages/site-dsr-site-initializer/DSRAnalyticsPage';
 import {DigitalSalesRoomUsersPage} from '../pages/site-dsr-site-initializer/DigitalSalesRoomUsersPage';
 import {DigitalSalesRoomsPage} from '../pages/site-dsr-site-initializer/DigitalSalesRoomsPage';
 import {EditDigitalSalesRoomPage} from '../pages/site-dsr-site-initializer/EditDigitalSalesRoomPage';
@@ -12,6 +13,7 @@ import {EditDigitalSalesRoomPage} from '../pages/site-dsr-site-initializer/EditD
 const digitalSalesRoomPagesTest = test.extend<{
 	digitalSalesRoomUsersPage: DigitalSalesRoomUsersPage;
 	digitalSalesRoomsPage: DigitalSalesRoomsPage;
+	dsrAnalyticsPage: DSRAnalyticsPage;
 	editDigitalSalesRoomPage: EditDigitalSalesRoomPage;
 }>({
 	digitalSalesRoomUsersPage: async ({page}, use) => {
@@ -19,6 +21,9 @@ const digitalSalesRoomPagesTest = test.extend<{
 	},
 	digitalSalesRoomsPage: async ({page}, use) => {
 		await use(new DigitalSalesRoomsPage(page));
+	},
+	dsrAnalyticsPage: async ({page}, use) => {
+		await use(new DSRAnalyticsPage(page));
 	},
 	editDigitalSalesRoomPage: async ({page}, use) => {
 		await use(new EditDigitalSalesRoomPage(page));
