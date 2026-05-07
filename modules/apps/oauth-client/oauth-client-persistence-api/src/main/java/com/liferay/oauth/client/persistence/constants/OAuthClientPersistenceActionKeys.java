@@ -16,4 +16,7 @@ public class OAuthClientPersistenceActionKeys {
 	public static final String ACTION_ADD_OAUTH_CLIENT_ENTRY =
 		"ADD_OAUTH_CLIENT_ENTRY";
 
+	public static final String ACTION_ADD_OAUTH_CLIENT_PR_LOCAL_METADATA =
+		"ADD_OAUTH_CLIENT_PR_LOCAL_METADATA";
+
 }

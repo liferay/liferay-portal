@@ -13,6 +13,7 @@
 			<supports>
 				<action-key>ADD_OAUTH_CLIENT_AS_LOCAL_METADATA</action-key>
 				<action-key>ADD_OAUTH_CLIENT_ENTRY</action-key>
+				<action-key>ADD_OAUTH_CLIENT_PR_LOCAL_METADATA</action-key>
 				<action-key>PERMISSIONS</action-key>
 			</supports>
 			<site-member-defaults />
@@ -20,6 +21,7 @@
 			<guest-unsupported>
 				<action-key>ADD_OAUTH_CLIENT_AS_LOCAL_METADATA</action-key>
 				<action-key>ADD_OAUTH_CLIENT_ENTRY</action-key>
+				<action-key>ADD_OAUTH_CLIENT_PR_LOCAL_METADATA</action-key>
 				<action-key>PERMISSIONS</action-key>
 			</guest-unsupported>
 		</permissions>
@@ -49,6 +51,29 @@
 	</model-resource>
 	<model-resource>
 		<model-name>com.liferay.oauth.client.persistence.model.OAuthClientEntry</model-name>
+		<portlet-ref>
+			<portlet-name>com_liferay_oauth_client_admin_web_internal_portlet_OAuthClientAdminPortlet</portlet-name>
+		</portlet-ref>
+		<weight>2</weight>
+		<permissions>
+			<supports>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+				<action-key>VIEW</action-key>
+			</supports>
+			<site-member-defaults />
+			<guest-defaults />
+			<guest-unsupported>
+				<action-key>DELETE</action-key>
+				<action-key>PERMISSIONS</action-key>
+				<action-key>UPDATE</action-key>
+				<action-key>VIEW</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+	<model-resource>
+		<model-name>com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata</model-name>
 		<portlet-ref>
 			<portlet-name>com_liferay_oauth_client_admin_web_internal_portlet_OAuthClientAdminPortlet</portlet-name>
 		</portlet-ref>
