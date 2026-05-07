@@ -10245,6 +10245,48 @@ ${output.content}</echo>
 		<prepare-test-environment />
 	</target>
 
+	<target name="publish-source-formatter">
+		<fail message="Please set the property ${source.formatter.s3.path}." unless="source.formatter.s3.path" />
+
+		<local name="source.formatter.tree.sha" />
+
+		<exec executable="git" failonerror="true" outputproperty="source.formatter.tree.sha">
+			<arg value="rev-parse" />
+			<arg value="HEAD:modules/util/source-formatter" />
+		</exec>
+
+		<beanshell>
+			<![CDATA[
+				import com.liferay.jenkins.results.parser.CloudBucketUtil;
+				import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
+				import java.io.File;
+
+				String jarPath = "tools/sdk/dependencies/com.liferay.source.formatter/lib/com.liferay.source.formatter.jar";
+				String treeSha = project.getProperty("source.formatter.tree.sha").trim();
+				String s3Prefix = project.getProperty("source.formatter.s3.path") + "/snapshots";
+
+				File jarFile = new File(project.getBaseDir(), jarPath);
+
+				if (!jarFile.exists()) {
+					throw new RuntimeException("Source formatter jar missing at " + jarFile);
+				}
+
+				File checksumFile = new File(jarFile.getParentFile(), jarFile.getName() + ".sha512");
+
+				JenkinsResultsParserUtil.writeSHAFile(jarFile, checksumFile);
+
+				String s3Jar = s3Prefix + "/" + treeSha + ".jar";
+				String s3Sha = s3Jar + ".sha512";
+
+				CloudBucketUtil.uploadS3File(s3Jar, jarFile);
+				CloudBucketUtil.uploadS3File(s3Sha, checksumFile);
+
+				System.out.println("Published source-formatter jar at tree SHA " + treeSha);
+			]]>
+		</beanshell>
+	</target>
+
 	<target name="release-functional-smoke-tomcat-mysql84">
 		<antcall target="functional-tomcat-mysql84" />
 	</target>
@@ -10287,6 +10329,67 @@ ${output.content}</echo>
 
 	<target name="release-osgi-state-lpkg-test-postgresql163">
 		<run-release-osgi-state-lpkg-test database.type="postgresql" database.version="16.3" />
+	</target>
+
+	<target name="resolve-source-formatter">
+		<fail message="Please set the property ${source.formatter.s3.path}." unless="source.formatter.s3.path" />
+
+		<local name="source.formatter.tree.sha" />
+
+		<exec executable="git" failonerror="true" outputproperty="source.formatter.tree.sha">
+			<arg value="rev-parse" />
+			<arg value="${liferay.portal.branch}:modules/util/source-formatter" />
+		</exec>
+
+		<mkdir dir="tools/sdk/dependencies/com.liferay.source.formatter/lib" />
+
+		<trycatch property="source.formatter.s3.lookup.failure">
+			<try>
+				<beanshell>
+					<![CDATA[
+						import com.liferay.jenkins.results.parser.CloudBucketUtil;
+
+						import java.io.File;
+
+						String jarPath = "tools/sdk/dependencies/com.liferay.source.formatter/lib/com.liferay.source.formatter.jar";
+						String treeSha = project.getProperty("source.formatter.tree.sha").trim();
+						String s3Jar = project.getProperty("source.formatter.s3.path") + "/snapshots/" + treeSha + ".jar";
+
+						if (!CloudBucketUtil.isS3ObjectPathAvailable(s3Jar)) {
+							System.out.println("S3 jar not found at " + s3Jar);
+
+							throw new RuntimeException("S3 miss");
+						}
+
+						File localJar = new File(project.getBaseDir(), jarPath);
+
+						CloudBucketUtil.downloadS3File(localJar, s3Jar);
+
+						if (!localJar.exists() || (localJar.length() == 0)) {
+							System.out.println("S3 download produced no jar at " + localJar);
+
+							throw new RuntimeException("S3 download empty");
+						}
+
+						System.out.println("Resolved source-formatter jar from S3 at tree SHA " + treeSha);
+					]]>
+				</beanshell>
+			</try>
+			<catch>
+				<echo>S3 resolve missed; falling back to build SF jar from source.</echo>
+
+				<antcall target="compile" />
+
+				<antcall target="install-portal-snapshots" />
+
+				<if>
+					<available file="modules/util/source-formatter" />
+					<then>
+						<gradle-execute dir="modules/util/source-formatter" task="deploy" />
+					</then>
+				</if>
+			</catch>
+		</trycatch>
 	</target>
 
 	<target name="rest-builder">
@@ -10511,15 +10614,13 @@ tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/
 						</if>
 
 						<echo>Running com.liferay.source.formatter.jar from HEAD.</echo>
+
+						<antcall target="publish-source-formatter" />
 					</then>
 					<else>
 						<lstopwatch action="start" name="setup.source.format" />
 
-						<antcall inheritAll="false" target="update-gradle-properties" />
-
-						<gradle-execute setupbinariescache="true" task="setUpComLiferaySourceFormatter">
-							<arg value="--build-file=${project.dir}/modules/util.gradle" />
-						</gradle-execute>
+						<antcall target="resolve-source-formatter" />
 
 						<lstopwatch action="total" name="setup.source.format" />
 
