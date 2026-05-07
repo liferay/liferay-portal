@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -31,8 +30,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-
-import java.security.MessageDigest;
 
 import java.util.List;
 import java.util.Objects;
@@ -291,13 +288,9 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 		try {
 			URI resourceURI = URI.create(resource);
 
-			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-
 			return StringBundler.concat(
 				resourceURI.getScheme(), "://", resourceURI.getAuthority(),
-				"/.well-known/oauth-protected-resource/",
-				Base64.encodeToURL(messageDigest.digest(resource.getBytes())),
-				"/local");
+				"/.well-known/oauth-protected-resource", resourceURI.getPath());
 		}
 		catch (Exception exception) {
 			throw new OAuthClientPRLocalMetadataLocalWellKnownURIException(
