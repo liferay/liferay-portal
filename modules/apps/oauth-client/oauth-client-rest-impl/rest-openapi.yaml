@@ -62,6 +62,27 @@ components:
                 tokenRequestParametersJSON:
                     type: string
             type: object
+        OAuthClientPRLocalMetadata:
+            properties:
+                creator:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
+                dateCreated:
+                    format: date
+                    type: string
+                dateModified:
+                    format: date
+                    type: string
+                externalReferenceCode:
+                    type: string
+                localWellKnownEnabled:
+                    type: boolean
+                localWellKnownURI:
+                    type: string
+                metadataJSON:
+                    type: string
+                resource:
+                    type: string
 info:
     license:
         name: Apache 2.0
@@ -262,3 +283,99 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OAuthClientEntry"
             tags: ["OAuthClientEntry"]
+    "/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteOAuthClientPRLocalMetadataByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["OAuthClientPRLocalMetadata"]
+        get:
+            operationId: getOAuthClientPRLocalMetadataByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+            tags: ["OAuthClientPRLocalMetadata"]
+        put:
+            operationId: putOAuthClientPRLocalMetadataByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+            tags: ["OAuthClientPRLocalMetadata"]
+    "/oauth-client-pr-local-metadatas":
+        get:
+            operationId: getOAuthClientPRLocalMetadatasPage
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                                type: array
+            tags: ["OAuthClientPRLocalMetadata"]
+        post:
+            operationId: postOAuthClientPRLocalMetadata
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/OAuthClientPRLocalMetadata"
+            tags: ["OAuthClientPRLocalMetadata"]
