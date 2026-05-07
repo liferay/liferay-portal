@@ -1,11 +1,13 @@
 /**
- * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.mcp.server.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata;
+import com.liferay.oauth.client.persistence.service.OAuthClientPRLocalMetadataLocalService;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -14,6 +16,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.net.URI;
@@ -29,10 +32,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+
 /**
  * @author Jorge García Jiménez
  */
-@FeatureFlag("LPD-63311")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-63311"), @FeatureFlag("LPD-63415")}
+)
 @RunWith(Arquillian.class)
 public class MCPProtectedResourceTest {
 
@@ -44,10 +53,41 @@ public class MCPProtectedResourceTest {
 	@Before
 	public void setUp() throws Exception {
 		_updateMCPServerConfiguration(true);
+
+		BundleContext bundleContext = FrameworkUtil.getBundle(
+			MCPProtectedResourceTest.class
+		).getBundleContext();
+
+		_serviceReference = bundleContext.getServiceReference(
+			OAuthClientPRLocalMetadataLocalService.class);
+
+		_oAuthClientPRLocalMetadataLocalService = bundleContext.getService(
+			_serviceReference);
+
+		_bundleContext = bundleContext;
+
+		_oAuthClientPRLocalMetadata =
+			_oAuthClientPRLocalMetadataLocalService.
+				addOAuthClientPRLocalMetadata(
+					null, TestPropsValues.getUserId(),
+					new String[] {"http://localhost:8080"},
+					new String[] {"header"}, true, _MCP_RESOURCE,
+					"Liferay MCP Server", new String[0]);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		if (_oAuthClientPRLocalMetadata != null) {
+			_oAuthClientPRLocalMetadataLocalService.
+				deleteOAuthClientPRLocalMetadata(
+					_oAuthClientPRLocalMetadata.
+						getOAuthClientPRLocalMetadataId());
+		}
+
+		if (_serviceReference != null) {
+			_bundleContext.ungetService(_serviceReference);
+		}
+
 		_updateMCPServerConfiguration(false);
 	}
 
@@ -83,7 +123,7 @@ public class MCPProtectedResourceTest {
 			wwwAuthenticate,
 			wwwAuthenticate.contains(
 				"resource_metadata=\"http://localhost:8080/.well-known" +
-					"/oauth-protected-resource\""));
+					"/oauth-protected-resource/o/mcp\""));
 		Assert.assertTrue(
 			wwwAuthenticate,
 			wwwAuthenticate.contains("error=\"invalid_token\""));
@@ -126,7 +166,7 @@ public class MCPProtectedResourceTest {
 			).uri(
 				URI.create(
 					"http://localhost:8080/.well-known" +
-						"/oauth-protected-resource")
+						"/oauth-protected-resource/o/mcp")
 			).GET(
 			).build(),
 			HttpResponse.BodyHandlers.ofString()
@@ -147,8 +187,7 @@ public class MCPProtectedResourceTest {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 			httpResponse.body());
 
-		Assert.assertEquals(
-			"http://localhost:8080/o/mcp", jsonObject.getString("resource"));
+		Assert.assertEquals(_MCP_RESOURCE, jsonObject.getString("resource"));
 
 		JSONArray authorizationServersJSONArray = jsonObject.getJSONArray(
 			"authorization_servers");
@@ -182,6 +221,15 @@ public class MCPProtectedResourceTest {
 			).build());
 	}
 
+	private static final String _MCP_RESOURCE = "http://localhost:8080/o/mcp";
+
 	private static final String _MCP_URL = "http://localhost:8080/o/mcp";
+
+	private BundleContext _bundleContext;
+	private OAuthClientPRLocalMetadata _oAuthClientPRLocalMetadata;
+	private OAuthClientPRLocalMetadataLocalService
+		_oAuthClientPRLocalMetadataLocalService;
+	private ServiceReference<OAuthClientPRLocalMetadataLocalService>
+		_serviceReference;
 
 }

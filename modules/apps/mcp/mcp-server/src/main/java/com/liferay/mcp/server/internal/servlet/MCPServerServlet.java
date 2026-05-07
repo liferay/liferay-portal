@@ -660,7 +660,7 @@ public class MCPServerServlet extends HttpServlet {
 				"Bearer realm=\"mcp\", resource_metadata=\"",
 				_portal.getPortalURL(httpServletRequest),
 				_portal.getPathContext(),
-				"/.well-known/oauth-protected-resource\", ",
+				"/.well-known/oauth-protected-resource", _MCP_PATH, "\", ",
 				"error=\"insufficient_scope\", error_description=\"",
 				description, "\""));
 		httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -677,7 +677,7 @@ public class MCPServerServlet extends HttpServlet {
 				"Bearer realm=\"mcp\", resource_metadata=\"",
 				_portal.getPortalURL(httpServletRequest),
 				_portal.getPathContext(),
-				"/.well-known/oauth-protected-resource\", ",
+				"/.well-known/oauth-protected-resource", _MCP_PATH, "\", ",
 				"error=\"invalid_token\", error_description=\"", description,
 				"\""));
 		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);

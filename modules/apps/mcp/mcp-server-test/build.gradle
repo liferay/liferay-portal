@@ -4,6 +4,7 @@ dependencies {
 	testIntegrationImplementation group: "io.modelcontextprotocol.sdk", name: "mcp-json-jackson2", version: "1.0.1"
 	testIntegrationImplementation group: "org.json", name: "json", version: "20231013"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.5.0"
+	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
