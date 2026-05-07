@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Site DSR Analytics REST API
+Bundle-SymbolicName: com.liferay.site.dsr.analytics.rest.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.site.dsr.analytics.rest.dto.v1_0,\
+	com.liferay.site.dsr.analytics.rest.resource.v1_0

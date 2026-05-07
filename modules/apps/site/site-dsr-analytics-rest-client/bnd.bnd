@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Site DSR Analytics REST Client
+Bundle-SymbolicName: com.liferay.site.dsr.analytics.rest.client
+Bundle-Version: 1.0.0
