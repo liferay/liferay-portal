@@ -1,0 +1,28 @@
+query MostActiveVisitors(
+	$channelId: String!
+	$groupIds: [String]
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+	$size: Int!
+	$start: Int!
+) {
+	mostActiveVisitors(
+		channelId: $channelId
+		groupIds: $groupIds
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+		size: $size
+		start: $start
+	) {
+		mostActiveVisitors {
+			activitiesCount
+			emailAddress
+			firstName
+			id
+			lastName
+		}
+		total
+	}
+}

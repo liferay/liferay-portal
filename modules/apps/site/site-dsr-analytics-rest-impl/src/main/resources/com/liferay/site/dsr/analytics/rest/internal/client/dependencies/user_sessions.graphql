@@ -1,0 +1,42 @@
+query UserSession(
+	$channelId: String!
+	$entityId: String
+	$entityType: EntityType!
+	$groupIds: [String]
+	$keywords: String
+	$page: Int!
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+	$size: Int!
+) {
+	eventsByUserSessions(
+		channelId: $channelId
+		entityId: $entityId
+		entityType: $entityType
+		groupIds: $groupIds
+		keywords: $keywords
+		page: $page
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+		size: $size
+	) {
+		userSessions {
+			... on UserSession {
+				events {
+					assetTitle
+					createDate
+					emailAddressHashed
+					name
+					properties {
+						name
+						value
+					}
+				}
+				userName
+			}
+		}
+		totalEvents
+	}
+}

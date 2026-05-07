@@ -1,0 +1,16 @@
+query IdentityActivityCount(
+	$channelId: String!
+	$groupIds: [String]
+	$includedEventIds: [String]
+	$rangeKey: Int!
+) {
+	identityActivityCount(
+		channelId: $channelId
+		groupIds: $groupIds
+		includedEventIds: $includedEventIds
+		rangeKey: $rangeKey
+	) {
+		count
+		name
+	}
+}

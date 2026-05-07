@@ -1,0 +1,50 @@
+query DocumentsAndMediaList(
+	$channelId: String!
+	$groupIds: [String]
+	$keywords: String
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+	$size: Int!
+	$sort: Sort!
+	$start: Int!
+) {
+	documents(
+		channelId: $channelId
+		groupIds: $groupIds
+		keywords: $keywords
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+		size: $size
+		sort: $sort
+		start: $start
+	) {
+		assetMetrics {
+			... on DocumentMetric {
+				assetId
+				assetTitle
+				commentsMetric {
+					value
+				}
+				downloadsMetric {
+					value
+				}
+				impressionMadeMetric {
+					value
+				}
+				lastViewedMetric {
+					value
+				}
+				ratingsMetric {
+					value
+				}
+				urls
+				usersInvolvedMetric {
+					value
+				}
+			}
+		}
+		total
+	}
+}

@@ -1,0 +1,30 @@
+query SitesMetricQuery(
+	$channelId: String!
+	$emailAddresses: [String]
+	$groupIds: [String]
+	$interval: String!
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+) {
+	site(
+		channelId: $channelId
+		emailAddresses: $emailAddresses
+		groupIds: $groupIds
+		interval: $interval
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+	) {
+		sessionsMetric {
+			histogram {
+				metrics {
+					key
+					value
+					valueKey
+				}
+				total
+			}
+		}
+	}
+}

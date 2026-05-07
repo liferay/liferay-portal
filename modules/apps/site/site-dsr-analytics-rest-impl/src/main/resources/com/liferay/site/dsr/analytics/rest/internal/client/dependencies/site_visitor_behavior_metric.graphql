@@ -1,0 +1,14 @@
+query UserSession($channelId: String!, $groupIds: [String], $rangeKey: Int) {
+	siteVisitor(
+		channelId: $channelId
+		groupIds: $groupIds
+		rangeKey: $rangeKey
+	) {
+		... on SiteVisitorBehaviorMetric {
+			averageSessionDuration
+			knownVisitors
+			totalSessionDuration
+			visitors
+		}
+	}
+}
