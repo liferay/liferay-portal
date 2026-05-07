@@ -292,6 +292,11 @@ export class Session {
 				}
 			}
 		}, 1000);
+
+		const handle = Liferay.on('beforeNavigate', () => {
+			clearInterval(this._intervalId);
+			handle.detach();
+		});
 	}
 
 	private _removeAlert() {
