@@ -19,15 +19,16 @@ interface CMSFileEventData {
 interface CMSFileItem {
 	description: string;
 	embedded: {
-		file: {
+		file?: {
 			link?: {
 				href?: string;
 			};
-			name?: string;
+			mimeType: string;
 			thumbnailURL: string;
 		};
 		id: number;
 		title: string;
+		videoURL?: string;
 	};
 	title: string;
 }
@@ -44,7 +45,7 @@ function uploadCMSFileToDocumentLibrary(
 			return Promise.resolve();
 		}
 
-		const fileName = item.embedded?.file?.name || item.title || 'untitled';
+		const fileName = item.title || 'untitled';
 
 		return Liferay.Util.fetch(fileLink)
 			.then((response: Response) => response.blob())
