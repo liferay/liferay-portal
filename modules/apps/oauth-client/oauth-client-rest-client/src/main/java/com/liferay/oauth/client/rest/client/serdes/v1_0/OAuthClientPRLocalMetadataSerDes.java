@@ -5,7 +5,7 @@
 
 package com.liferay.oauth.client.rest.client.serdes.v1_0;
 
-import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientASLocalMetadata;
+import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientPRLocalMetadata;
 import com.liferay.oauth.client.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -24,28 +24,28 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class OAuthClientASLocalMetadataSerDes {
+public class OAuthClientPRLocalMetadataSerDes {
 
-	public static OAuthClientASLocalMetadata toDTO(String json) {
-		OAuthClientASLocalMetadataJSONParser
-			oAuthClientASLocalMetadataJSONParser =
-				new OAuthClientASLocalMetadataJSONParser();
+	public static OAuthClientPRLocalMetadata toDTO(String json) {
+		OAuthClientPRLocalMetadataJSONParser
+			oAuthClientPRLocalMetadataJSONParser =
+				new OAuthClientPRLocalMetadataJSONParser();
 
-		return oAuthClientASLocalMetadataJSONParser.parseToDTO(json);
+		return oAuthClientPRLocalMetadataJSONParser.parseToDTO(json);
 	}
 
-	public static OAuthClientASLocalMetadata[] toDTOs(String json) {
-		OAuthClientASLocalMetadataJSONParser
-			oAuthClientASLocalMetadataJSONParser =
-				new OAuthClientASLocalMetadataJSONParser();
+	public static OAuthClientPRLocalMetadata[] toDTOs(String json) {
+		OAuthClientPRLocalMetadataJSONParser
+			oAuthClientPRLocalMetadataJSONParser =
+				new OAuthClientPRLocalMetadataJSONParser();
 
-		return oAuthClientASLocalMetadataJSONParser.parseToDTOs(json);
+		return oAuthClientPRLocalMetadataJSONParser.parseToDTOs(json);
 	}
 
 	public static String toJSON(
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata) {
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata) {
 
-		if (oAuthClientASLocalMetadata == null) {
+		if (oAuthClientPRLocalMetadata == null) {
 			return "null";
 		}
 
@@ -56,17 +56,17 @@ public class OAuthClientASLocalMetadataSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
-		if (oAuthClientASLocalMetadata.getCreator() != null) {
+		if (oAuthClientPRLocalMetadata.getCreator() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"creator\": ");
 
-			sb.append(oAuthClientASLocalMetadata.getCreator());
+			sb.append(oAuthClientPRLocalMetadata.getCreator());
 		}
 
-		if (oAuthClientASLocalMetadata.getDateCreated() != null) {
+		if (oAuthClientPRLocalMetadata.getDateCreated() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -77,12 +77,12 @@ public class OAuthClientASLocalMetadataSerDes {
 
 			sb.append(
 				liferayToJSONDateFormat.format(
-					oAuthClientASLocalMetadata.getDateCreated()));
+					oAuthClientPRLocalMetadata.getDateCreated()));
 
 			sb.append("\"");
 		}
 
-		if (oAuthClientASLocalMetadata.getDateModified() != null) {
+		if (oAuthClientPRLocalMetadata.getDateModified() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -93,12 +93,12 @@ public class OAuthClientASLocalMetadataSerDes {
 
 			sb.append(
 				liferayToJSONDateFormat.format(
-					oAuthClientASLocalMetadata.getDateModified()));
+					oAuthClientPRLocalMetadata.getDateModified()));
 
 			sb.append("\"");
 		}
 
-		if (oAuthClientASLocalMetadata.getExternalReferenceCode() != null) {
+		if (oAuthClientPRLocalMetadata.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -108,36 +108,22 @@ public class OAuthClientASLocalMetadataSerDes {
 			sb.append("\"");
 
 			sb.append(
-				_escape(oAuthClientASLocalMetadata.getExternalReferenceCode()));
+				_escape(oAuthClientPRLocalMetadata.getExternalReferenceCode()));
 
 			sb.append("\"");
 		}
 
-		if (oAuthClientASLocalMetadata.getIssuer() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"issuer\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(oAuthClientASLocalMetadata.getIssuer()));
-
-			sb.append("\"");
-		}
-
-		if (oAuthClientASLocalMetadata.getLocalWellKnownEnabled() != null) {
+		if (oAuthClientPRLocalMetadata.getLocalWellKnownEnabled() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"localWellKnownEnabled\": ");
 
-			sb.append(oAuthClientASLocalMetadata.getLocalWellKnownEnabled());
+			sb.append(oAuthClientPRLocalMetadata.getLocalWellKnownEnabled());
 		}
 
-		if (oAuthClientASLocalMetadata.getLocalWellKnownURI() != null) {
+		if (oAuthClientPRLocalMetadata.getLocalWellKnownURI() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -147,12 +133,12 @@ public class OAuthClientASLocalMetadataSerDes {
 			sb.append("\"");
 
 			sb.append(
-				_escape(oAuthClientASLocalMetadata.getLocalWellKnownURI()));
+				_escape(oAuthClientPRLocalMetadata.getLocalWellKnownURI()));
 
 			sb.append("\"");
 		}
 
-		if (oAuthClientASLocalMetadata.getMetadataJSON() != null) {
+		if (oAuthClientPRLocalMetadata.getMetadataJSON() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -161,38 +147,21 @@ public class OAuthClientASLocalMetadataSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(oAuthClientASLocalMetadata.getMetadataJSON()));
+			sb.append(_escape(oAuthClientPRLocalMetadata.getMetadataJSON()));
 
 			sb.append("\"");
 		}
 
-		if (oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI() != null) {
+		if (oAuthClientPRLocalMetadata.getResource() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"oAuthASLocalWellKnownURI\": ");
+			sb.append("\"resource\": ");
 
 			sb.append("\"");
 
-			sb.append(
-				_escape(
-					oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI()));
-
-			sb.append("\"");
-		}
-
-		if (oAuthClientASLocalMetadata.getOAuthASMetadataJSON() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"oAuthASMetadataJSON\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				_escape(oAuthClientASLocalMetadata.getOAuthASMetadataJSON()));
+			sb.append(_escape(oAuthClientPRLocalMetadata.getResource()));
 
 			sb.append("\"");
 		}
@@ -203,17 +172,17 @@ public class OAuthClientASLocalMetadataSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		OAuthClientASLocalMetadataJSONParser
-			oAuthClientASLocalMetadataJSONParser =
-				new OAuthClientASLocalMetadataJSONParser();
+		OAuthClientPRLocalMetadataJSONParser
+			oAuthClientPRLocalMetadataJSONParser =
+				new OAuthClientPRLocalMetadataJSONParser();
 
-		return oAuthClientASLocalMetadataJSONParser.parseToMap(json);
+		return oAuthClientPRLocalMetadataJSONParser.parseToMap(json);
 	}
 
 	public static Map<String, String> toMap(
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata) {
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata) {
 
-		if (oAuthClientASLocalMetadata == null) {
+		if (oAuthClientPRLocalMetadata == null) {
 			return null;
 		}
 
@@ -222,117 +191,97 @@ public class OAuthClientASLocalMetadataSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
-		if (oAuthClientASLocalMetadata.getCreator() == null) {
+		if (oAuthClientPRLocalMetadata.getCreator() == null) {
 			map.put("creator", null);
 		}
 		else {
 			map.put(
 				"creator",
-				String.valueOf(oAuthClientASLocalMetadata.getCreator()));
+				String.valueOf(oAuthClientPRLocalMetadata.getCreator()));
 		}
 
-		if (oAuthClientASLocalMetadata.getDateCreated() == null) {
+		if (oAuthClientPRLocalMetadata.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
 		else {
 			map.put(
 				"dateCreated",
 				liferayToJSONDateFormat.format(
-					oAuthClientASLocalMetadata.getDateCreated()));
+					oAuthClientPRLocalMetadata.getDateCreated()));
 		}
 
-		if (oAuthClientASLocalMetadata.getDateModified() == null) {
+		if (oAuthClientPRLocalMetadata.getDateModified() == null) {
 			map.put("dateModified", null);
 		}
 		else {
 			map.put(
 				"dateModified",
 				liferayToJSONDateFormat.format(
-					oAuthClientASLocalMetadata.getDateModified()));
+					oAuthClientPRLocalMetadata.getDateModified()));
 		}
 
-		if (oAuthClientASLocalMetadata.getExternalReferenceCode() == null) {
+		if (oAuthClientPRLocalMetadata.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
 		else {
 			map.put(
 				"externalReferenceCode",
 				String.valueOf(
-					oAuthClientASLocalMetadata.getExternalReferenceCode()));
+					oAuthClientPRLocalMetadata.getExternalReferenceCode()));
 		}
 
-		if (oAuthClientASLocalMetadata.getIssuer() == null) {
-			map.put("issuer", null);
-		}
-		else {
-			map.put(
-				"issuer",
-				String.valueOf(oAuthClientASLocalMetadata.getIssuer()));
-		}
-
-		if (oAuthClientASLocalMetadata.getLocalWellKnownEnabled() == null) {
+		if (oAuthClientPRLocalMetadata.getLocalWellKnownEnabled() == null) {
 			map.put("localWellKnownEnabled", null);
 		}
 		else {
 			map.put(
 				"localWellKnownEnabled",
 				String.valueOf(
-					oAuthClientASLocalMetadata.getLocalWellKnownEnabled()));
+					oAuthClientPRLocalMetadata.getLocalWellKnownEnabled()));
 		}
 
-		if (oAuthClientASLocalMetadata.getLocalWellKnownURI() == null) {
+		if (oAuthClientPRLocalMetadata.getLocalWellKnownURI() == null) {
 			map.put("localWellKnownURI", null);
 		}
 		else {
 			map.put(
 				"localWellKnownURI",
 				String.valueOf(
-					oAuthClientASLocalMetadata.getLocalWellKnownURI()));
+					oAuthClientPRLocalMetadata.getLocalWellKnownURI()));
 		}
 
-		if (oAuthClientASLocalMetadata.getMetadataJSON() == null) {
+		if (oAuthClientPRLocalMetadata.getMetadataJSON() == null) {
 			map.put("metadataJSON", null);
 		}
 		else {
 			map.put(
 				"metadataJSON",
-				String.valueOf(oAuthClientASLocalMetadata.getMetadataJSON()));
+				String.valueOf(oAuthClientPRLocalMetadata.getMetadataJSON()));
 		}
 
-		if (oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI() == null) {
-			map.put("oAuthASLocalWellKnownURI", null);
+		if (oAuthClientPRLocalMetadata.getResource() == null) {
+			map.put("resource", null);
 		}
 		else {
 			map.put(
-				"oAuthASLocalWellKnownURI",
-				String.valueOf(
-					oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI()));
-		}
-
-		if (oAuthClientASLocalMetadata.getOAuthASMetadataJSON() == null) {
-			map.put("oAuthASMetadataJSON", null);
-		}
-		else {
-			map.put(
-				"oAuthASMetadataJSON",
-				String.valueOf(
-					oAuthClientASLocalMetadata.getOAuthASMetadataJSON()));
+				"resource",
+				String.valueOf(oAuthClientPRLocalMetadata.getResource()));
 		}
 
 		return map;
 	}
 
-	public static class OAuthClientASLocalMetadataJSONParser
-		extends BaseJSONParser<OAuthClientASLocalMetadata> {
+	public static class OAuthClientPRLocalMetadataJSONParser
+		extends BaseJSONParser<OAuthClientPRLocalMetadata> {
 
 		@Override
-		protected OAuthClientASLocalMetadata createDTO() {
-			return new OAuthClientASLocalMetadata();
+		protected OAuthClientPRLocalMetadata createDTO() {
+			return new OAuthClientPRLocalMetadata();
 		}
 
 		@Override
-		protected OAuthClientASLocalMetadata[] createDTOArray(int size) {
-			return new OAuthClientASLocalMetadata[size];
+		protected OAuthClientPRLocalMetadata[] createDTOArray(int size) {
+			return new OAuthClientPRLocalMetadata[size];
 		}
 
 		@Override
@@ -351,9 +300,6 @@ public class OAuthClientASLocalMetadataSerDes {
 
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "issuer")) {
-				return false;
-			}
 			else if (Objects.equals(
 						jsonParserFieldName, "localWellKnownEnabled")) {
 
@@ -365,14 +311,7 @@ public class OAuthClientASLocalMetadataSerDes {
 			else if (Objects.equals(jsonParserFieldName, "metadataJSON")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "oAuthASLocalWellKnownURI")) {
-
-				return false;
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "oAuthASMetadataJSON")) {
-
+			else if (Objects.equals(jsonParserFieldName, "resource")) {
 				return false;
 			}
 
@@ -381,24 +320,24 @@ public class OAuthClientASLocalMetadataSerDes {
 
 		@Override
 		protected void setField(
-			OAuthClientASLocalMetadata oAuthClientASLocalMetadata,
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "creator")) {
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setCreator(
+					oAuthClientPRLocalMetadata.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setDateCreated(
+					oAuthClientPRLocalMetadata.setDateCreated(
 						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setDateModified(
+					oAuthClientPRLocalMetadata.setDateModified(
 						toDate((String)jsonParserFieldValue));
 				}
 			}
@@ -406,13 +345,7 @@ public class OAuthClientASLocalMetadataSerDes {
 						jsonParserFieldName, "externalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setExternalReferenceCode(
-						(String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "issuer")) {
-				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setIssuer(
+					oAuthClientPRLocalMetadata.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -420,35 +353,25 @@ public class OAuthClientASLocalMetadataSerDes {
 						jsonParserFieldName, "localWellKnownEnabled")) {
 
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setLocalWellKnownEnabled(
+					oAuthClientPRLocalMetadata.setLocalWellKnownEnabled(
 						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "localWellKnownURI")) {
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setLocalWellKnownURI(
+					oAuthClientPRLocalMetadata.setLocalWellKnownURI(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "metadataJSON")) {
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setMetadataJSON(
+					oAuthClientPRLocalMetadata.setMetadataJSON(
 						(String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "oAuthASLocalWellKnownURI")) {
-
+			else if (Objects.equals(jsonParserFieldName, "resource")) {
 				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setOAuthASLocalWellKnownURI(
-						(String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "oAuthASMetadataJSON")) {
-
-				if (jsonParserFieldValue != null) {
-					oAuthClientASLocalMetadata.setOAuthASMetadataJSON(
+					oAuthClientPRLocalMetadata.setResource(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -533,4 +456,4 @@ public class OAuthClientASLocalMetadataSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1296567379
+// LIFERAY-REST-BUILDER-HASH:-1352484749

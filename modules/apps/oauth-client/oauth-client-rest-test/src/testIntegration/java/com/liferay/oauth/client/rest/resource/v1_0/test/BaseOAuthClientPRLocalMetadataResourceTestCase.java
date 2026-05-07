@@ -16,11 +16,11 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
-import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientASLocalMetadata;
+import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientPRLocalMetadata;
 import com.liferay.oauth.client.rest.client.http.HttpInvoker;
 import com.liferay.oauth.client.rest.client.pagination.Page;
-import com.liferay.oauth.client.rest.client.resource.v1_0.OAuthClientASLocalMetadataResource;
-import com.liferay.oauth.client.rest.client.serdes.v1_0.OAuthClientASLocalMetadataSerDes;
+import com.liferay.oauth.client.rest.client.resource.v1_0.OAuthClientPRLocalMetadataResource;
+import com.liferay.oauth.client.rest.client.serdes.v1_0.OAuthClientPRLocalMetadataSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -76,7 +76,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
+public abstract class BaseOAuthClientPRLocalMetadataResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -97,13 +97,13 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_oAuthClientASLocalMetadataResource.setContextCompany(testCompany);
+		_oAuthClientPRLocalMetadataResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		oAuthClientASLocalMetadataResource =
-			OAuthClientASLocalMetadataResource.builder(
+		oAuthClientPRLocalMetadataResource =
+			OAuthClientPRLocalMetadataResource.builder(
 			).authentication(
 				_testCompanyAdminUser.getEmailAddress(),
 				PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -134,30 +134,30 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	public void testClientSerDesToDTO() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata1 =
-			randomOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1 =
+			randomOAuthClientPRLocalMetadata();
 
 		String json = objectMapper.writeValueAsString(
-			oAuthClientASLocalMetadata1);
+			oAuthClientPRLocalMetadata1);
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata2 =
-			OAuthClientASLocalMetadataSerDes.toDTO(json);
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata2 =
+			OAuthClientPRLocalMetadataSerDes.toDTO(json);
 
 		Assert.assertTrue(
-			equals(oAuthClientASLocalMetadata1, oAuthClientASLocalMetadata2));
+			equals(oAuthClientPRLocalMetadata1, oAuthClientPRLocalMetadata2));
 	}
 
 	@Test
 	public void testClientSerDesToJSON() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			randomOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
+			randomOAuthClientPRLocalMetadata();
 
 		String json1 = objectMapper.writeValueAsString(
-			oAuthClientASLocalMetadata);
-		String json2 = OAuthClientASLocalMetadataSerDes.toJSON(
-			oAuthClientASLocalMetadata);
+			oAuthClientPRLocalMetadata);
+		String json2 = OAuthClientPRLocalMetadataSerDes.toJSON(
+			oAuthClientPRLocalMetadata);
 
 		Assert.assertEquals(
 			objectMapper.readTree(json1), objectMapper.readTree(json2));
@@ -185,65 +185,59 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	public void testEscapeRegexInStringFields() throws Exception {
 		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			randomOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
+			randomOAuthClientPRLocalMetadata();
 
-		oAuthClientASLocalMetadata.setExternalReferenceCode(regex);
-		oAuthClientASLocalMetadata.setIssuer(regex);
-		oAuthClientASLocalMetadata.setLocalWellKnownURI(regex);
-		oAuthClientASLocalMetadata.setMetadataJSON(regex);
-		oAuthClientASLocalMetadata.setOAuthASLocalWellKnownURI(regex);
-		oAuthClientASLocalMetadata.setOAuthASMetadataJSON(regex);
+		oAuthClientPRLocalMetadata.setExternalReferenceCode(regex);
+		oAuthClientPRLocalMetadata.setLocalWellKnownURI(regex);
+		oAuthClientPRLocalMetadata.setMetadataJSON(regex);
+		oAuthClientPRLocalMetadata.setResource(regex);
 
-		String json = OAuthClientASLocalMetadataSerDes.toJSON(
-			oAuthClientASLocalMetadata);
+		String json = OAuthClientPRLocalMetadataSerDes.toJSON(
+			oAuthClientPRLocalMetadata);
 
 		Assert.assertFalse(json.contains(regex));
 
-		oAuthClientASLocalMetadata = OAuthClientASLocalMetadataSerDes.toDTO(
+		oAuthClientPRLocalMetadata = OAuthClientPRLocalMetadataSerDes.toDTO(
 			json);
 
 		Assert.assertEquals(
-			regex, oAuthClientASLocalMetadata.getExternalReferenceCode());
-		Assert.assertEquals(regex, oAuthClientASLocalMetadata.getIssuer());
+			regex, oAuthClientPRLocalMetadata.getExternalReferenceCode());
 		Assert.assertEquals(
-			regex, oAuthClientASLocalMetadata.getLocalWellKnownURI());
+			regex, oAuthClientPRLocalMetadata.getLocalWellKnownURI());
 		Assert.assertEquals(
-			regex, oAuthClientASLocalMetadata.getMetadataJSON());
-		Assert.assertEquals(
-			regex, oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI());
-		Assert.assertEquals(
-			regex, oAuthClientASLocalMetadata.getOAuthASMetadataJSON());
+			regex, oAuthClientPRLocalMetadata.getMetadataJSON());
+		Assert.assertEquals(regex, oAuthClientPRLocalMetadata.getResource());
 	}
 
 	@Test
-	public void testDeleteOAuthClientASLocalMetadataByExternalReferenceCode()
+	public void testDeleteOAuthClientPRLocalMetadataByExternalReferenceCode()
 		throws Exception {
 
 		@SuppressWarnings("PMD.UnusedLocalVariable")
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			testDeleteOAuthClientASLocalMetadataByExternalReferenceCode_addOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
+			testDeleteOAuthClientPRLocalMetadataByExternalReferenceCode_addOAuthClientPRLocalMetadata();
 
 		assertHttpResponseStatusCode(
 			204,
-			oAuthClientASLocalMetadataResource.
-				deleteOAuthClientASLocalMetadataByExternalReferenceCodeHttpResponse(
-					oAuthClientASLocalMetadata.getExternalReferenceCode()));
+			oAuthClientPRLocalMetadataResource.
+				deleteOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
+					oAuthClientPRLocalMetadata.getExternalReferenceCode()));
 
 		assertHttpResponseStatusCode(
 			404,
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadataByExternalReferenceCodeHttpResponse(
-					oAuthClientASLocalMetadata.getExternalReferenceCode()));
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
+					oAuthClientPRLocalMetadata.getExternalReferenceCode()));
 		assertHttpResponseStatusCode(
 			404,
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadataByExternalReferenceCodeHttpResponse(
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 					"-"));
 	}
 
-	protected OAuthClientASLocalMetadata
-			testDeleteOAuthClientASLocalMetadataByExternalReferenceCode_addOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata
+			testDeleteOAuthClientPRLocalMetadataByExternalReferenceCode_addOAuthClientPRLocalMetadata()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -251,24 +245,24 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	@Test
-	public void testGetOAuthClientASLocalMetadataByExternalReferenceCode()
+	public void testGetOAuthClientPRLocalMetadataByExternalReferenceCode()
 		throws Exception {
 
-		OAuthClientASLocalMetadata postOAuthClientASLocalMetadata =
-			testGetOAuthClientASLocalMetadataByExternalReferenceCode_addOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata =
+			testGetOAuthClientPRLocalMetadataByExternalReferenceCode_addOAuthClientPRLocalMetadata();
 
-		OAuthClientASLocalMetadata getOAuthClientASLocalMetadata =
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadataByExternalReferenceCode(
-					postOAuthClientASLocalMetadata.getExternalReferenceCode());
+		OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata =
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadataByExternalReferenceCode(
+					postOAuthClientPRLocalMetadata.getExternalReferenceCode());
 
 		assertEquals(
-			postOAuthClientASLocalMetadata, getOAuthClientASLocalMetadata);
-		assertValid(getOAuthClientASLocalMetadata);
+			postOAuthClientPRLocalMetadata, getOAuthClientPRLocalMetadata);
+		assertValid(getOAuthClientPRLocalMetadata);
 	}
 
-	protected OAuthClientASLocalMetadata
-			testGetOAuthClientASLocalMetadataByExternalReferenceCode_addOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata
+			testGetOAuthClientPRLocalMetadataByExternalReferenceCode_addOAuthClientPRLocalMetadata()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -276,39 +270,39 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	@Test
-	public void testGetOAuthClientASLocalMetadatasPage() throws Exception {
-		Page<OAuthClientASLocalMetadata> page =
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadatasPage();
+	public void testGetOAuthClientPRLocalMetadatasPage() throws Exception {
+		Page<OAuthClientPRLocalMetadata> page =
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadatasPage();
 
 		long totalCount = page.getTotalCount();
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata1 =
-			testGetOAuthClientASLocalMetadatasPage_addOAuthClientASLocalMetadata(
-				randomOAuthClientASLocalMetadata());
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1 =
+			testGetOAuthClientPRLocalMetadatasPage_addOAuthClientPRLocalMetadata(
+				randomOAuthClientPRLocalMetadata());
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata2 =
-			testGetOAuthClientASLocalMetadatasPage_addOAuthClientASLocalMetadata(
-				randomOAuthClientASLocalMetadata());
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata2 =
+			testGetOAuthClientPRLocalMetadatasPage_addOAuthClientPRLocalMetadata(
+				randomOAuthClientPRLocalMetadata());
 
 		page =
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadatasPage();
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadatasPage();
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
 		assertContains(
-			oAuthClientASLocalMetadata1,
-			(List<OAuthClientASLocalMetadata>)page.getItems());
+			oAuthClientPRLocalMetadata1,
+			(List<OAuthClientPRLocalMetadata>)page.getItems());
 		assertContains(
-			oAuthClientASLocalMetadata2,
-			(List<OAuthClientASLocalMetadata>)page.getItems());
+			oAuthClientPRLocalMetadata2,
+			(List<OAuthClientPRLocalMetadata>)page.getItems());
 		assertValid(
-			page, testGetOAuthClientASLocalMetadatasPage_getExpectedActions());
+			page, testGetOAuthClientPRLocalMetadatasPage_getExpectedActions());
 	}
 
 	protected Map<String, Map<String, String>>
-			testGetOAuthClientASLocalMetadatasPage_getExpectedActions()
+			testGetOAuthClientPRLocalMetadatasPage_getExpectedActions()
 		throws Exception {
 
 		Map<String, Map<String, String>> expectedActions = new HashMap<>();
@@ -316,9 +310,9 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		return expectedActions;
 	}
 
-	protected OAuthClientASLocalMetadata
-			testGetOAuthClientASLocalMetadatasPage_addOAuthClientASLocalMetadata(
-				OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
+	protected OAuthClientPRLocalMetadata
+			testGetOAuthClientPRLocalMetadatasPage_addOAuthClientPRLocalMetadata(
+				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -326,22 +320,22 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	@Test
-	public void testPostOAuthClientASLocalMetadata() throws Exception {
-		OAuthClientASLocalMetadata randomOAuthClientASLocalMetadata =
-			randomOAuthClientASLocalMetadata();
+	public void testPostOAuthClientPRLocalMetadata() throws Exception {
+		OAuthClientPRLocalMetadata randomOAuthClientPRLocalMetadata =
+			randomOAuthClientPRLocalMetadata();
 
-		OAuthClientASLocalMetadata postOAuthClientASLocalMetadata =
-			testPostOAuthClientASLocalMetadata_addOAuthClientASLocalMetadata(
-				randomOAuthClientASLocalMetadata);
+		OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata =
+			testPostOAuthClientPRLocalMetadata_addOAuthClientPRLocalMetadata(
+				randomOAuthClientPRLocalMetadata);
 
 		assertEquals(
-			randomOAuthClientASLocalMetadata, postOAuthClientASLocalMetadata);
-		assertValid(postOAuthClientASLocalMetadata);
+			randomOAuthClientPRLocalMetadata, postOAuthClientPRLocalMetadata);
+		assertValid(postOAuthClientPRLocalMetadata);
 	}
 
-	protected OAuthClientASLocalMetadata
-			testPostOAuthClientASLocalMetadata_addOAuthClientASLocalMetadata(
-				OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
+	protected OAuthClientPRLocalMetadata
+			testPostOAuthClientPRLocalMetadata_addOAuthClientPRLocalMetadata(
+				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -349,86 +343,86 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	@Test
-	public void testPutOAuthClientASLocalMetadataByExternalReferenceCode()
+	public void testPutOAuthClientPRLocalMetadataByExternalReferenceCode()
 		throws Exception {
 
-		OAuthClientASLocalMetadata postOAuthClientASLocalMetadata =
-			testPutOAuthClientASLocalMetadataByExternalReferenceCode_addOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata =
+			testPutOAuthClientPRLocalMetadataByExternalReferenceCode_addOAuthClientPRLocalMetadata();
 
-		OAuthClientASLocalMetadata randomOAuthClientASLocalMetadata =
-			randomOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata randomOAuthClientPRLocalMetadata =
+			randomOAuthClientPRLocalMetadata();
 
-		OAuthClientASLocalMetadata putOAuthClientASLocalMetadata =
-			oAuthClientASLocalMetadataResource.
-				putOAuthClientASLocalMetadataByExternalReferenceCode(
-					postOAuthClientASLocalMetadata.getExternalReferenceCode(),
-					randomOAuthClientASLocalMetadata);
-
-		assertEquals(
-			randomOAuthClientASLocalMetadata, putOAuthClientASLocalMetadata);
-		assertValid(putOAuthClientASLocalMetadata);
-
-		OAuthClientASLocalMetadata getOAuthClientASLocalMetadata =
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadataByExternalReferenceCode(
-					putOAuthClientASLocalMetadata.getExternalReferenceCode());
+		OAuthClientPRLocalMetadata putOAuthClientPRLocalMetadata =
+			oAuthClientPRLocalMetadataResource.
+				putOAuthClientPRLocalMetadataByExternalReferenceCode(
+					postOAuthClientPRLocalMetadata.getExternalReferenceCode(),
+					randomOAuthClientPRLocalMetadata);
 
 		assertEquals(
-			randomOAuthClientASLocalMetadata, getOAuthClientASLocalMetadata);
-		assertValid(getOAuthClientASLocalMetadata);
+			randomOAuthClientPRLocalMetadata, putOAuthClientPRLocalMetadata);
+		assertValid(putOAuthClientPRLocalMetadata);
 
-		OAuthClientASLocalMetadata newOAuthClientASLocalMetadata =
-			testPutOAuthClientASLocalMetadataByExternalReferenceCode_createOAuthClientASLocalMetadata();
-
-		putOAuthClientASLocalMetadata =
-			oAuthClientASLocalMetadataResource.
-				putOAuthClientASLocalMetadataByExternalReferenceCode(
-					newOAuthClientASLocalMetadata.getExternalReferenceCode(),
-					newOAuthClientASLocalMetadata);
+		OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata =
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadataByExternalReferenceCode(
+					putOAuthClientPRLocalMetadata.getExternalReferenceCode());
 
 		assertEquals(
-			newOAuthClientASLocalMetadata, putOAuthClientASLocalMetadata);
-		assertValid(putOAuthClientASLocalMetadata);
+			randomOAuthClientPRLocalMetadata, getOAuthClientPRLocalMetadata);
+		assertValid(getOAuthClientPRLocalMetadata);
 
-		getOAuthClientASLocalMetadata =
-			oAuthClientASLocalMetadataResource.
-				getOAuthClientASLocalMetadataByExternalReferenceCode(
-					putOAuthClientASLocalMetadata.getExternalReferenceCode());
+		OAuthClientPRLocalMetadata newOAuthClientPRLocalMetadata =
+			testPutOAuthClientPRLocalMetadataByExternalReferenceCode_createOAuthClientPRLocalMetadata();
+
+		putOAuthClientPRLocalMetadata =
+			oAuthClientPRLocalMetadataResource.
+				putOAuthClientPRLocalMetadataByExternalReferenceCode(
+					newOAuthClientPRLocalMetadata.getExternalReferenceCode(),
+					newOAuthClientPRLocalMetadata);
 
 		assertEquals(
-			newOAuthClientASLocalMetadata, getOAuthClientASLocalMetadata);
+			newOAuthClientPRLocalMetadata, putOAuthClientPRLocalMetadata);
+		assertValid(putOAuthClientPRLocalMetadata);
+
+		getOAuthClientPRLocalMetadata =
+			oAuthClientPRLocalMetadataResource.
+				getOAuthClientPRLocalMetadataByExternalReferenceCode(
+					putOAuthClientPRLocalMetadata.getExternalReferenceCode());
+
+		assertEquals(
+			newOAuthClientPRLocalMetadata, getOAuthClientPRLocalMetadata);
 
 		Assert.assertEquals(
-			newOAuthClientASLocalMetadata.getExternalReferenceCode(),
-			putOAuthClientASLocalMetadata.getExternalReferenceCode());
+			newOAuthClientPRLocalMetadata.getExternalReferenceCode(),
+			putOAuthClientPRLocalMetadata.getExternalReferenceCode());
 	}
 
-	protected OAuthClientASLocalMetadata
-			testPutOAuthClientASLocalMetadataByExternalReferenceCode_addOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata
+			testPutOAuthClientPRLocalMetadataByExternalReferenceCode_addOAuthClientPRLocalMetadata()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected OAuthClientASLocalMetadata
-			testPutOAuthClientASLocalMetadataByExternalReferenceCode_createOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata
+			testPutOAuthClientPRLocalMetadataByExternalReferenceCode_createOAuthClientPRLocalMetadata()
 		throws Exception {
 
-		return randomOAuthClientASLocalMetadata();
+		return randomOAuthClientPRLocalMetadata();
 	}
 
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata1 =
-			testBatchEngineDeleteImportTask_addOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1 =
+			testBatchEngineDeleteImportTask_addOAuthClientPRLocalMetadata();
 
-		testBatchEngineDeleteImportTask_deleteOAuthClientASLocalMetadata(
-			200, oAuthClientASLocalMetadata1.getExternalReferenceCode());
+		testBatchEngineDeleteImportTask_deleteOAuthClientPRLocalMetadata(
+			200, oAuthClientPRLocalMetadata1.getExternalReferenceCode());
 	}
 
-	protected OAuthClientASLocalMetadata
-			testBatchEngineDeleteImportTask_addOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata
+			testBatchEngineDeleteImportTask_addOAuthClientPRLocalMetadata()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -436,7 +430,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	protected void
-			testBatchEngineDeleteImportTask_deleteOAuthClientASLocalMetadata(
+			testBatchEngineDeleteImportTask_deleteOAuthClientPRLocalMetadata(
 				int expectedStatusCode, String externalReferenceCode,
 				String... parameters)
 		throws Exception {
@@ -453,7 +447,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 		HttpResponse httpResponse =
 			importTaskResource.deleteImportTaskHttpResponse(
-				"com.liferay.oauth.client.rest.dto.v1_0.OAuthClientASLocalMetadata",
+				"com.liferay.oauth.client.rest.dto.v1_0.OAuthClientPRLocalMetadata",
 				null, null, null, null,
 				JSONUtil.putAll(
 					JSONUtil.put(
@@ -469,13 +463,13 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	protected void assertContains(
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata,
-		List<OAuthClientASLocalMetadata> oAuthClientASLocalMetadatas) {
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata,
+		List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas) {
 
 		boolean contains = false;
 
-		for (OAuthClientASLocalMetadata item : oAuthClientASLocalMetadatas) {
-			if (equals(oAuthClientASLocalMetadata, item)) {
+		for (OAuthClientPRLocalMetadata item : oAuthClientPRLocalMetadatas) {
+			if (equals(oAuthClientPRLocalMetadata, item)) {
 				contains = true;
 
 				break;
@@ -483,8 +477,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			oAuthClientASLocalMetadatas + " does not contain " +
-				oAuthClientASLocalMetadata,
+			oAuthClientPRLocalMetadatas + " does not contain " +
+				oAuthClientPRLocalMetadata,
 			contains);
 	}
 
@@ -497,53 +491,53 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	protected void assertEquals(
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata1,
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata2) {
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1,
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata2) {
 
 		Assert.assertTrue(
-			oAuthClientASLocalMetadata1 + " does not equal " +
-				oAuthClientASLocalMetadata2,
-			equals(oAuthClientASLocalMetadata1, oAuthClientASLocalMetadata2));
+			oAuthClientPRLocalMetadata1 + " does not equal " +
+				oAuthClientPRLocalMetadata2,
+			equals(oAuthClientPRLocalMetadata1, oAuthClientPRLocalMetadata2));
 	}
 
 	protected void assertEquals(
-		List<OAuthClientASLocalMetadata> oAuthClientASLocalMetadatas1,
-		List<OAuthClientASLocalMetadata> oAuthClientASLocalMetadatas2) {
+		List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas1,
+		List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas2) {
 
 		Assert.assertEquals(
-			oAuthClientASLocalMetadatas1.size(),
-			oAuthClientASLocalMetadatas2.size());
+			oAuthClientPRLocalMetadatas1.size(),
+			oAuthClientPRLocalMetadatas2.size());
 
-		for (int i = 0; i < oAuthClientASLocalMetadatas1.size(); i++) {
-			OAuthClientASLocalMetadata oAuthClientASLocalMetadata1 =
-				oAuthClientASLocalMetadatas1.get(i);
-			OAuthClientASLocalMetadata oAuthClientASLocalMetadata2 =
-				oAuthClientASLocalMetadatas2.get(i);
+		for (int i = 0; i < oAuthClientPRLocalMetadatas1.size(); i++) {
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1 =
+				oAuthClientPRLocalMetadatas1.get(i);
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata2 =
+				oAuthClientPRLocalMetadatas2.get(i);
 
 			assertEquals(
-				oAuthClientASLocalMetadata1, oAuthClientASLocalMetadata2);
+				oAuthClientPRLocalMetadata1, oAuthClientPRLocalMetadata2);
 		}
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<OAuthClientASLocalMetadata> oAuthClientASLocalMetadatas1,
-		List<OAuthClientASLocalMetadata> oAuthClientASLocalMetadatas2) {
+		List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas1,
+		List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas2) {
 
 		Assert.assertEquals(
-			oAuthClientASLocalMetadatas1.size(),
-			oAuthClientASLocalMetadatas2.size());
+			oAuthClientPRLocalMetadatas1.size(),
+			oAuthClientPRLocalMetadatas2.size());
 
-		for (OAuthClientASLocalMetadata oAuthClientASLocalMetadata1 :
-				oAuthClientASLocalMetadatas1) {
+		for (OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1 :
+				oAuthClientPRLocalMetadatas1) {
 
 			boolean contains = false;
 
-			for (OAuthClientASLocalMetadata oAuthClientASLocalMetadata2 :
-					oAuthClientASLocalMetadatas2) {
+			for (OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata2 :
+					oAuthClientPRLocalMetadatas2) {
 
 				if (equals(
-						oAuthClientASLocalMetadata1,
-						oAuthClientASLocalMetadata2)) {
+						oAuthClientPRLocalMetadata1,
+						oAuthClientPRLocalMetadata2)) {
 
 					contains = true;
 
@@ -552,23 +546,23 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				oAuthClientASLocalMetadatas2 + " does not contain " +
-					oAuthClientASLocalMetadata1,
+				oAuthClientPRLocalMetadatas2 + " does not contain " +
+					oAuthClientPRLocalMetadata1,
 				contains);
 		}
 	}
 
 	protected void assertValid(
-			OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception {
 
 		boolean valid = true;
 
-		if (oAuthClientASLocalMetadata.getDateCreated() == null) {
+		if (oAuthClientPRLocalMetadata.getDateCreated() == null) {
 			valid = false;
 		}
 
-		if (oAuthClientASLocalMetadata.getDateModified() == null) {
+		if (oAuthClientPRLocalMetadata.getDateModified() == null) {
 			valid = false;
 		}
 
@@ -576,7 +570,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
-				if (oAuthClientASLocalMetadata.getCreator() == null) {
+				if (oAuthClientPRLocalMetadata.getCreator() == null) {
 					valid = false;
 				}
 
@@ -586,17 +580,9 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
-				if (oAuthClientASLocalMetadata.getExternalReferenceCode() ==
+				if (oAuthClientPRLocalMetadata.getExternalReferenceCode() ==
 						null) {
 
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("issuer", additionalAssertFieldName)) {
-				if (oAuthClientASLocalMetadata.getIssuer() == null) {
 					valid = false;
 				}
 
@@ -606,7 +592,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			if (Objects.equals(
 					"localWellKnownEnabled", additionalAssertFieldName)) {
 
-				if (oAuthClientASLocalMetadata.getLocalWellKnownEnabled() ==
+				if (oAuthClientPRLocalMetadata.getLocalWellKnownEnabled() ==
 						null) {
 
 					valid = false;
@@ -618,7 +604,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			if (Objects.equals(
 					"localWellKnownURI", additionalAssertFieldName)) {
 
-				if (oAuthClientASLocalMetadata.getLocalWellKnownURI() == null) {
+				if (oAuthClientPRLocalMetadata.getLocalWellKnownURI() == null) {
 					valid = false;
 				}
 
@@ -626,31 +612,15 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			}
 
 			if (Objects.equals("metadataJSON", additionalAssertFieldName)) {
-				if (oAuthClientASLocalMetadata.getMetadataJSON() == null) {
+				if (oAuthClientPRLocalMetadata.getMetadataJSON() == null) {
 					valid = false;
 				}
 
 				continue;
 			}
 
-			if (Objects.equals(
-					"oAuthASLocalWellKnownURI", additionalAssertFieldName)) {
-
-				if (oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI() ==
-						null) {
-
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"oAuthASMetadataJSON", additionalAssertFieldName)) {
-
-				if (oAuthClientASLocalMetadata.getOAuthASMetadataJSON() ==
-						null) {
-
+			if (Objects.equals("resource", additionalAssertFieldName)) {
+				if (oAuthClientPRLocalMetadata.getResource() == null) {
 					valid = false;
 				}
 
@@ -665,20 +635,20 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<OAuthClientASLocalMetadata> page) {
+	protected void assertValid(Page<OAuthClientPRLocalMetadata> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<OAuthClientASLocalMetadata> page,
+		Page<OAuthClientPRLocalMetadata> page,
 		Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<OAuthClientASLocalMetadata>
-			oAuthClientASLocalMetadatas = page.getItems();
+		java.util.Collection<OAuthClientPRLocalMetadata>
+			oAuthClientPRLocalMetadatas = page.getItems();
 
-		int size = oAuthClientASLocalMetadatas.size();
+		int size = oAuthClientPRLocalMetadatas.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -721,7 +691,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.oauth.client.rest.dto.v1_0.
-						OAuthClientASLocalMetadata.class)) {
+						OAuthClientPRLocalMetadata.class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -770,10 +740,10 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	}
 
 	protected boolean equals(
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata1,
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata2) {
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata1,
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata2) {
 
-		if (oAuthClientASLocalMetadata1 == oAuthClientASLocalMetadata2) {
+		if (oAuthClientPRLocalMetadata1 == oAuthClientPRLocalMetadata2) {
 			return true;
 		}
 
@@ -782,8 +752,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getCreator(),
-						oAuthClientASLocalMetadata2.getCreator())) {
+						oAuthClientPRLocalMetadata1.getCreator(),
+						oAuthClientPRLocalMetadata2.getCreator())) {
 
 					return false;
 				}
@@ -793,8 +763,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getDateCreated(),
-						oAuthClientASLocalMetadata2.getDateCreated())) {
+						oAuthClientPRLocalMetadata1.getDateCreated(),
+						oAuthClientPRLocalMetadata2.getDateCreated())) {
 
 					return false;
 				}
@@ -804,8 +774,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 			if (Objects.equals("dateModified", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getDateModified(),
-						oAuthClientASLocalMetadata2.getDateModified())) {
+						oAuthClientPRLocalMetadata1.getDateModified(),
+						oAuthClientPRLocalMetadata2.getDateModified())) {
 
 					return false;
 				}
@@ -817,20 +787,9 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getExternalReferenceCode(),
-						oAuthClientASLocalMetadata2.
+						oAuthClientPRLocalMetadata1.getExternalReferenceCode(),
+						oAuthClientPRLocalMetadata2.
 							getExternalReferenceCode())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("issuer", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getIssuer(),
-						oAuthClientASLocalMetadata2.getIssuer())) {
 
 					return false;
 				}
@@ -842,8 +801,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 					"localWellKnownEnabled", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getLocalWellKnownEnabled(),
-						oAuthClientASLocalMetadata2.
+						oAuthClientPRLocalMetadata1.getLocalWellKnownEnabled(),
+						oAuthClientPRLocalMetadata2.
 							getLocalWellKnownEnabled())) {
 
 					return false;
@@ -856,8 +815,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 					"localWellKnownURI", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getLocalWellKnownURI(),
-						oAuthClientASLocalMetadata2.getLocalWellKnownURI())) {
+						oAuthClientPRLocalMetadata1.getLocalWellKnownURI(),
+						oAuthClientPRLocalMetadata2.getLocalWellKnownURI())) {
 
 					return false;
 				}
@@ -867,8 +826,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 			if (Objects.equals("metadataJSON", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getMetadataJSON(),
-						oAuthClientASLocalMetadata2.getMetadataJSON())) {
+						oAuthClientPRLocalMetadata1.getMetadataJSON(),
+						oAuthClientPRLocalMetadata2.getMetadataJSON())) {
 
 					return false;
 				}
@@ -876,27 +835,10 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"oAuthASLocalWellKnownURI", additionalAssertFieldName)) {
-
+			if (Objects.equals("resource", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.
-							getOAuthASLocalWellKnownURI(),
-						oAuthClientASLocalMetadata2.
-							getOAuthASLocalWellKnownURI())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"oAuthASMetadataJSON", additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						oAuthClientASLocalMetadata1.getOAuthASMetadataJSON(),
-						oAuthClientASLocalMetadata2.getOAuthASMetadataJSON())) {
+						oAuthClientPRLocalMetadata1.getResource(),
+						oAuthClientPRLocalMetadata2.getResource())) {
 
 					return false;
 				}
@@ -960,7 +902,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_oAuthClientASLocalMetadataResource instanceof
+		if (!(_oAuthClientPRLocalMetadataResource instanceof
 				EntityModelResource)) {
 
 			throw new UnsupportedOperationException(
@@ -968,7 +910,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_oAuthClientASLocalMetadataResource;
+			(EntityModelResource)_oAuthClientPRLocalMetadataResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -1002,7 +944,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 	protected String getFilterString(
 		EntityField entityField, String operator,
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata) {
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata) {
 
 		StringBundler sb = new StringBundler();
 
@@ -1021,7 +963,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 		if (entityFieldName.equals("dateCreated")) {
 			if (operator.equals("between")) {
-				Date date = oAuthClientASLocalMetadata.getDateCreated();
+				Date date = oAuthClientPRLocalMetadata.getDateCreated();
 
 				sb = new StringBundler();
 
@@ -1044,7 +986,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 				sb.append(
 					_format.format(
-						oAuthClientASLocalMetadata.getDateCreated()));
+						oAuthClientPRLocalMetadata.getDateCreated()));
 			}
 
 			return sb.toString();
@@ -1052,7 +994,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 		if (entityFieldName.equals("dateModified")) {
 			if (operator.equals("between")) {
-				Date date = oAuthClientASLocalMetadata.getDateModified();
+				Date date = oAuthClientPRLocalMetadata.getDateModified();
 
 				sb = new StringBundler();
 
@@ -1075,7 +1017,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 				sb.append(
 					_format.format(
-						oAuthClientASLocalMetadata.getDateModified()));
+						oAuthClientPRLocalMetadata.getDateModified()));
 			}
 
 			return sb.toString();
@@ -1083,53 +1025,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object =
-				oAuthClientASLocalMetadata.getExternalReferenceCode();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("issuer")) {
-			Object object = oAuthClientASLocalMetadata.getIssuer();
+				oAuthClientPRLocalMetadata.getExternalReferenceCode();
 
 			String value = String.valueOf(object);
 
@@ -1180,7 +1076,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		}
 
 		if (entityFieldName.equals("localWellKnownURI")) {
-			Object object = oAuthClientASLocalMetadata.getLocalWellKnownURI();
+			Object object = oAuthClientPRLocalMetadata.getLocalWellKnownURI();
 
 			String value = String.valueOf(object);
 
@@ -1226,7 +1122,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		}
 
 		if (entityFieldName.equals("metadataJSON")) {
-			Object object = oAuthClientASLocalMetadata.getMetadataJSON();
+			Object object = oAuthClientPRLocalMetadata.getMetadataJSON();
 
 			String value = String.valueOf(object);
 
@@ -1271,55 +1167,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("oAuthASLocalWellKnownURI")) {
-			Object object =
-				oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("oAuthASMetadataJSON")) {
-			Object object = oAuthClientASLocalMetadata.getOAuthASMetadataJSON();
+		if (entityFieldName.equals("resource")) {
+			Object object = oAuthClientPRLocalMetadata.getResource();
 
 			String value = String.valueOf(object);
 
@@ -1406,43 +1255,40 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
-	protected OAuthClientASLocalMetadata randomOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata randomOAuthClientPRLocalMetadata()
 		throws Exception {
 
-		return new OAuthClientASLocalMetadata() {
+		return new OAuthClientPRLocalMetadata() {
 			{
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
-				issuer = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				localWellKnownEnabled = RandomTestUtil.randomBoolean();
 				localWellKnownURI = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				metadataJSON = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
-				oAuthASLocalWellKnownURI = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				oAuthASMetadataJSON = StringUtil.toLowerCase(
+				resource = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 			}
 		};
 	}
 
-	protected OAuthClientASLocalMetadata
-			randomIrrelevantOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata
+			randomIrrelevantOAuthClientPRLocalMetadata()
 		throws Exception {
 
-		OAuthClientASLocalMetadata randomIrrelevantOAuthClientASLocalMetadata =
-			randomOAuthClientASLocalMetadata();
+		OAuthClientPRLocalMetadata randomIrrelevantOAuthClientPRLocalMetadata =
+			randomOAuthClientPRLocalMetadata();
 
-		return randomIrrelevantOAuthClientASLocalMetadata;
+		return randomIrrelevantOAuthClientPRLocalMetadata;
 	}
 
-	protected OAuthClientASLocalMetadata randomPatchOAuthClientASLocalMetadata()
+	protected OAuthClientPRLocalMetadata randomPatchOAuthClientPRLocalMetadata()
 		throws Exception {
 
-		return randomOAuthClientASLocalMetadata();
+		return randomOAuthClientPRLocalMetadata();
 	}
 
 	protected final JSONObject waitForFinish(
@@ -1467,8 +1313,8 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		}
 	}
 
-	protected OAuthClientASLocalMetadataResource
-		oAuthClientASLocalMetadataResource;
+	protected OAuthClientPRLocalMetadataResource
+		oAuthClientPRLocalMetadataResource;
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
@@ -1669,7 +1515,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 	private static final com.liferay.portal.kernel.log.Log _log =
 		LogFactoryUtil.getLog(
-			BaseOAuthClientASLocalMetadataResourceTestCase.class);
+			BaseOAuthClientPRLocalMetadataResourceTestCase.class);
 
 	private static Format _format;
 
@@ -1677,7 +1523,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 
 	@Inject
 	private com.liferay.oauth.client.rest.resource.v1_0.
-		OAuthClientASLocalMetadataResource _oAuthClientASLocalMetadataResource;
+		OAuthClientPRLocalMetadataResource _oAuthClientPRLocalMetadataResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2051766312
+// LIFERAY-REST-BUILDER-HASH:1483715530

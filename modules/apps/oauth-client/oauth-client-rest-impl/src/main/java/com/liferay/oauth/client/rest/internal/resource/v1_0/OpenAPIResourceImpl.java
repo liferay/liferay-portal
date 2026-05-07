@@ -89,9 +89,11 @@ public class OpenAPIResourceImpl {
 
 			add(OAuthClientEntryResourceImpl.class);
 
+			add(OAuthClientPRLocalMetadataResourceImpl.class);
+
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1720401828
+// LIFERAY-REST-BUILDER-HASH:79070554

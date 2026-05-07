@@ -5,11 +5,11 @@
 
 package com.liferay.oauth.client.rest.client.resource.v1_0;
 
-import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientEntry;
+import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientPRLocalMetadata;
 import com.liferay.oauth.client.rest.client.http.HttpInvoker;
 import com.liferay.oauth.client.rest.client.pagination.Page;
 import com.liferay.oauth.client.rest.client.problem.Problem;
-import com.liferay.oauth.client.rest.client.serdes.v1_0.OAuthClientEntrySerDes;
+import com.liferay.oauth.client.rest.client.serdes.v1_0.OAuthClientPRLocalMetadataSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -27,66 +27,74 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface OAuthClientEntryResource {
+public interface OAuthClientPRLocalMetadataResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public void deleteOAuthClientEntryByExternalReferenceCode(
+	public void deleteOAuthClientPRLocalMetadataByExternalReferenceCode(
 			String externalReferenceCode)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			deleteOAuthClientEntryByExternalReferenceCodeHttpResponse(
+			deleteOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 				String externalReferenceCode)
 		throws Exception;
 
-	public Page<OAuthClientEntry> getOAuthClientEntriesPage() throws Exception;
-
-	public HttpInvoker.HttpResponse getOAuthClientEntriesPageHttpResponse()
-		throws Exception;
-
-	public OAuthClientEntry getOAuthClientEntryByExternalReferenceCode(
-			String externalReferenceCode)
+	public OAuthClientPRLocalMetadata
+			getOAuthClientPRLocalMetadataByExternalReferenceCode(
+				String externalReferenceCode)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			getOAuthClientEntryByExternalReferenceCodeHttpResponse(
+			getOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 				String externalReferenceCode)
 		throws Exception;
 
-	public void postOAuthClientEntriesPageExportBatch(
+	public Page<OAuthClientPRLocalMetadata> getOAuthClientPRLocalMetadatasPage()
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getOAuthClientPRLocalMetadatasPageHttpResponse()
+		throws Exception;
+
+	public OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata(
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse postOAuthClientPRLocalMetadataHttpResponse(
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+		throws Exception;
+
+	public void postOAuthClientPRLocalMetadataBatch(
+			String callbackURL, Object object)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			postOAuthClientPRLocalMetadataBatchHttpResponse(
+				String callbackURL, Object object)
+		throws Exception;
+
+	public void postOAuthClientPRLocalMetadatasPageExportBatch(
 			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			postOAuthClientEntriesPageExportBatchHttpResponse(
+			postOAuthClientPRLocalMetadatasPageExportBatchHttpResponse(
 				String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
-	public OAuthClientEntry postOAuthClientEntry(
-			OAuthClientEntry oAuthClientEntry)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse postOAuthClientEntryHttpResponse(
-			OAuthClientEntry oAuthClientEntry)
-		throws Exception;
-
-	public void postOAuthClientEntryBatch(String callbackURL, Object object)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse postOAuthClientEntryBatchHttpResponse(
-			String callbackURL, Object object)
-		throws Exception;
-
-	public OAuthClientEntry putOAuthClientEntryByExternalReferenceCode(
-			String externalReferenceCode, OAuthClientEntry oAuthClientEntry)
+	public OAuthClientPRLocalMetadata
+			putOAuthClientPRLocalMetadataByExternalReferenceCode(
+				String externalReferenceCode,
+				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			putOAuthClientEntryByExternalReferenceCodeHttpResponse(
-				String externalReferenceCode, OAuthClientEntry oAuthClientEntry)
+			putOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
+				String externalReferenceCode,
+				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception;
 
 	public static class Builder {
@@ -102,8 +110,8 @@ public interface OAuthClientEntryResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public OAuthClientEntryResource build() {
-			return new OAuthClientEntryResourceImpl(this);
+		public OAuthClientPRLocalMetadataResource build() {
+			return new OAuthClientPRLocalMetadataResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -195,15 +203,15 @@ public interface OAuthClientEntryResource {
 
 	}
 
-	public static class OAuthClientEntryResourceImpl
-		implements OAuthClientEntryResource {
+	public static class OAuthClientPRLocalMetadataResourceImpl
+		implements OAuthClientPRLocalMetadataResource {
 
-		public void deleteOAuthClientEntryByExternalReferenceCode(
+		public void deleteOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String externalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				deleteOAuthClientEntryByExternalReferenceCodeHttpResponse(
+				deleteOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 					externalReferenceCode);
 
 			String content = httpResponse.getContent();
@@ -266,7 +274,7 @@ public interface OAuthClientEntryResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				deleteOAuthClientEntryByExternalReferenceCodeHttpResponse(
+				deleteOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 					String externalReferenceCode)
 			throws Exception {
 
@@ -294,7 +302,7 @@ public interface OAuthClientEntryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries/by-external-reference-code/{externalReferenceCode}");
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}");
 
 			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
@@ -306,114 +314,13 @@ public interface OAuthClientEntryResource {
 			return httpInvoker.invoke();
 		}
 
-		public Page<OAuthClientEntry> getOAuthClientEntriesPage()
+		public OAuthClientPRLocalMetadata
+				getOAuthClientPRLocalMetadataByExternalReferenceCode(
+					String externalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getOAuthClientEntriesPageHttpResponse();
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return Page.of(content, OAuthClientEntrySerDes::toDTO);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse getOAuthClientEntriesPageHttpResponse()
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries");
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public OAuthClientEntry getOAuthClientEntryByExternalReferenceCode(
-				String externalReferenceCode)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getOAuthClientEntryByExternalReferenceCodeHttpResponse(
+				getOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 					externalReferenceCode);
 
 			String content = httpResponse.getContent();
@@ -464,7 +371,7 @@ public interface OAuthClientEntryResource {
 			}
 
 			try {
-				return OAuthClientEntrySerDes.toDTO(content);
+				return OAuthClientPRLocalMetadataSerDes.toDTO(content);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -476,7 +383,7 @@ public interface OAuthClientEntryResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getOAuthClientEntryByExternalReferenceCodeHttpResponse(
+				getOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 					String externalReferenceCode)
 			throws Exception {
 
@@ -504,7 +411,7 @@ public interface OAuthClientEntryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries/by-external-reference-code/{externalReferenceCode}");
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}");
 
 			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
@@ -516,12 +423,328 @@ public interface OAuthClientEntryResource {
 			return httpInvoker.invoke();
 		}
 
-		public void postOAuthClientEntriesPageExportBatch(
+		public Page<OAuthClientPRLocalMetadata>
+				getOAuthClientPRLocalMetadatasPage()
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				getOAuthClientPRLocalMetadatasPageHttpResponse();
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return Page.of(
+					content, OAuthClientPRLocalMetadataSerDes::toDTO);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				getOAuthClientPRLocalMetadatasPageHttpResponse()
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadatas");
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata(
+				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postOAuthClientPRLocalMetadataHttpResponse(
+					oAuthClientPRLocalMetadata);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return OAuthClientPRLocalMetadataSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postOAuthClientPRLocalMetadataHttpResponse(
+					OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(
+				oAuthClientPRLocalMetadata.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadatas");
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postOAuthClientPRLocalMetadataBatch(
+				String callbackURL, Object object)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postOAuthClientPRLocalMetadataBatchHttpResponse(
+					callbackURL, object);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postOAuthClientPRLocalMetadataBatchHttpResponse(
+					String callbackURL, Object object)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(object.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadatas/batch");
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postOAuthClientPRLocalMetadatasPageExportBatch(
 				String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postOAuthClientEntriesPageExportBatchHttpResponse(
+				postOAuthClientPRLocalMetadatasPageExportBatchHttpResponse(
 					callbackURL, contentType, fieldNames);
 
 			String content = httpResponse.getContent();
@@ -573,7 +796,7 @@ public interface OAuthClientEntryResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				postOAuthClientEntriesPageExportBatchHttpResponse(
+				postOAuthClientPRLocalMetadatasPageExportBatchHttpResponse(
 					String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
@@ -617,7 +840,7 @@ public interface OAuthClientEntryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries/export-batch");
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadatas/export-batch");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -627,12 +850,15 @@ public interface OAuthClientEntryResource {
 			return httpInvoker.invoke();
 		}
 
-		public OAuthClientEntry postOAuthClientEntry(
-				OAuthClientEntry oAuthClientEntry)
+		public OAuthClientPRLocalMetadata
+				putOAuthClientPRLocalMetadataByExternalReferenceCode(
+					String externalReferenceCode,
+					OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postOAuthClientEntryHttpResponse(oAuthClientEntry);
+				putOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
+					externalReferenceCode, oAuthClientPRLocalMetadata);
 
 			String content = httpResponse.getContent();
 
@@ -682,213 +908,7 @@ public interface OAuthClientEntryResource {
 			}
 
 			try {
-				return OAuthClientEntrySerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse postOAuthClientEntryHttpResponse(
-				OAuthClientEntry oAuthClientEntry)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(oAuthClientEntry.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries");
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public void postOAuthClientEntryBatch(String callbackURL, Object object)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postOAuthClientEntryBatchHttpResponse(callbackURL, object);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-		}
-
-		public HttpInvoker.HttpResponse postOAuthClientEntryBatchHttpResponse(
-				String callbackURL, Object object)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(object.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (callbackURL != null) {
-				httpInvoker.parameter(
-					"callbackURL", String.valueOf(callbackURL));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries/batch");
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public OAuthClientEntry putOAuthClientEntryByExternalReferenceCode(
-				String externalReferenceCode, OAuthClientEntry oAuthClientEntry)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				putOAuthClientEntryByExternalReferenceCodeHttpResponse(
-					externalReferenceCode, oAuthClientEntry);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return OAuthClientEntrySerDes.toDTO(content);
+				return OAuthClientPRLocalMetadataSerDes.toDTO(content);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -900,14 +920,15 @@ public interface OAuthClientEntryResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				putOAuthClientEntryByExternalReferenceCodeHttpResponse(
+				putOAuthClientPRLocalMetadataByExternalReferenceCodeHttpResponse(
 					String externalReferenceCode,
-					OAuthClientEntry oAuthClientEntry)
+					OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 
-			httpInvoker.body(oAuthClientEntry.toString(), "application/json");
+			httpInvoker.body(
+				oAuthClientPRLocalMetadata.toString(), "application/json");
 
 			if (_builder._locale != null) {
 				httpInvoker.header(
@@ -931,7 +952,7 @@ public interface OAuthClientEntryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/oauth-client/v1.0/oauth-client-entries/by-external-reference-code/{externalReferenceCode}");
+						"/o/oauth-client/v1.0/oauth-client-pr-local-metadata/by-external-reference-code/{externalReferenceCode}");
 
 			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
@@ -943,16 +964,16 @@ public interface OAuthClientEntryResource {
 			return httpInvoker.invoke();
 		}
 
-		private OAuthClientEntryResourceImpl(Builder builder) {
+		private OAuthClientPRLocalMetadataResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			OAuthClientEntryResource.class.getName());
+			OAuthClientPRLocalMetadataResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-860538144
+// LIFERAY-REST-BUILDER-HASH:-407966980

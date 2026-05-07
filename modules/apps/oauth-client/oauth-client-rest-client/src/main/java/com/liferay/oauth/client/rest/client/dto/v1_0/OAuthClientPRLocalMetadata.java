@@ -6,7 +6,7 @@
 package com.liferay.oauth.client.rest.client.dto.v1_0;
 
 import com.liferay.oauth.client.rest.client.function.UnsafeSupplier;
-import com.liferay.oauth.client.rest.client.serdes.v1_0.OAuthClientASLocalMetadataSerDes;
+import com.liferay.oauth.client.rest.client.serdes.v1_0.OAuthClientPRLocalMetadataSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -20,10 +20,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
+public class OAuthClientPRLocalMetadata implements Cloneable, Serializable {
 
-	public static OAuthClientASLocalMetadata toDTO(String json) {
-		return OAuthClientASLocalMetadataSerDes.toDTO(json);
+	public static OAuthClientPRLocalMetadata toDTO(String json) {
+		return OAuthClientPRLocalMetadataSerDes.toDTO(json);
 	}
 
 	public Creator getCreator() {
@@ -110,27 +110,6 @@ public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
-	public String getIssuer() {
-		return issuer;
-	}
-
-	public void setIssuer(String issuer) {
-		this.issuer = issuer;
-	}
-
-	public void setIssuer(
-		UnsafeSupplier<String, Exception> issuerUnsafeSupplier) {
-
-		try {
-			issuer = issuerUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String issuer;
-
 	public Boolean getLocalWellKnownEnabled() {
 		return localWellKnownEnabled;
 	}
@@ -195,55 +174,32 @@ public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
 
 	protected String metadataJSON;
 
-	public String getOAuthASLocalWellKnownURI() {
-		return oAuthASLocalWellKnownURI;
+	public String getResource() {
+		return resource;
 	}
 
-	public void setOAuthASLocalWellKnownURI(String oAuthASLocalWellKnownURI) {
-		this.oAuthASLocalWellKnownURI = oAuthASLocalWellKnownURI;
+	public void setResource(String resource) {
+		this.resource = resource;
 	}
 
-	public void setOAuthASLocalWellKnownURI(
-		UnsafeSupplier<String, Exception>
-			oAuthASLocalWellKnownURIUnsafeSupplier) {
+	public void setResource(
+		UnsafeSupplier<String, Exception> resourceUnsafeSupplier) {
 
 		try {
-			oAuthASLocalWellKnownURI =
-				oAuthASLocalWellKnownURIUnsafeSupplier.get();
+			resource = resourceUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String oAuthASLocalWellKnownURI;
-
-	public String getOAuthASMetadataJSON() {
-		return oAuthASMetadataJSON;
-	}
-
-	public void setOAuthASMetadataJSON(String oAuthASMetadataJSON) {
-		this.oAuthASMetadataJSON = oAuthASMetadataJSON;
-	}
-
-	public void setOAuthASMetadataJSON(
-		UnsafeSupplier<String, Exception> oAuthASMetadataJSONUnsafeSupplier) {
-
-		try {
-			oAuthASMetadataJSON = oAuthASMetadataJSONUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String oAuthASMetadataJSON;
+	protected String resource;
 
 	@Override
-	public OAuthClientASLocalMetadata clone()
+	public OAuthClientPRLocalMetadata clone()
 		throws CloneNotSupportedException {
 
-		return (OAuthClientASLocalMetadata)super.clone();
+		return (OAuthClientPRLocalMetadata)super.clone();
 	}
 
 	@Override
@@ -252,15 +208,15 @@ public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof OAuthClientASLocalMetadata)) {
+		if (!(object instanceof OAuthClientPRLocalMetadata)) {
 			return false;
 		}
 
-		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			(OAuthClientASLocalMetadata)object;
+		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
+			(OAuthClientPRLocalMetadata)object;
 
 		return Objects.equals(
-			toString(), oAuthClientASLocalMetadata.toString());
+			toString(), oAuthClientPRLocalMetadata.toString());
 	}
 
 	@Override
@@ -271,8 +227,8 @@ public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return OAuthClientASLocalMetadataSerDes.toJSON(this);
+		return OAuthClientPRLocalMetadataSerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-996786330
+// LIFERAY-REST-BUILDER-HASH:541866906

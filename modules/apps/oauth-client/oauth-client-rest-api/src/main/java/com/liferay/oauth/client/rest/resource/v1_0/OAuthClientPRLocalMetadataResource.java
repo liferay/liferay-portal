@@ -5,7 +5,7 @@
 
 package com.liferay.oauth.client.rest.resource.v1_0;
 
-import com.liferay.oauth.client.rest.dto.v1_0.OAuthClientASLocalMetadata;
+import com.liferay.oauth.client.rest.dto.v1_0.OAuthClientPRLocalMetadata;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -43,36 +43,36 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface OAuthClientASLocalMetadataResource {
+public interface OAuthClientPRLocalMetadataResource {
 
-	public void deleteOAuthClientASLocalMetadataByExternalReferenceCode(
+	public void deleteOAuthClientPRLocalMetadataByExternalReferenceCode(
 			String externalReferenceCode)
 		throws Exception;
 
-	public OAuthClientASLocalMetadata
-			getOAuthClientASLocalMetadataByExternalReferenceCode(
+	public OAuthClientPRLocalMetadata
+			getOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String externalReferenceCode)
 		throws Exception;
 
-	public Page<OAuthClientASLocalMetadata> getOAuthClientASLocalMetadatasPage()
+	public Page<OAuthClientPRLocalMetadata> getOAuthClientPRLocalMetadatasPage()
 		throws Exception;
 
-	public OAuthClientASLocalMetadata postOAuthClientASLocalMetadata(
-			OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
+	public OAuthClientPRLocalMetadata postOAuthClientPRLocalMetadata(
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception;
 
-	public Response postOAuthClientASLocalMetadataBatch(
+	public Response postOAuthClientPRLocalMetadataBatch(
 			String callbackURL, Object object)
 		throws Exception;
 
-	public Response postOAuthClientASLocalMetadatasPageExportBatch(
+	public Response postOAuthClientPRLocalMetadatasPageExportBatch(
 			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
-	public OAuthClientASLocalMetadata
-			putOAuthClientASLocalMetadataByExternalReferenceCode(
+	public OAuthClientPRLocalMetadata
+			putOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String externalReferenceCode,
-				OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
+				OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -145,7 +145,7 @@ public interface OAuthClientASLocalMetadataResource {
 	@ProviderType
 	public interface Builder {
 
-		public OAuthClientASLocalMetadataResource build();
+		public OAuthClientPRLocalMetadataResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -171,4 +171,4 @@ public interface OAuthClientASLocalMetadataResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1053380597
+// LIFERAY-REST-BUILDER-HASH:-867217957

@@ -364,4 +364,4 @@ public class OAuthClientEntry implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1044931912
+// LIFERAY-REST-BUILDER-HASH:1378405626
