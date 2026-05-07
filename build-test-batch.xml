@@ -10388,6 +10388,8 @@ ${output.content}</echo>
 						<gradle-execute dir="modules/util/source-formatter" task="deploy" />
 					</then>
 				</if>
+
+				<antcall target="publish-source-formatter" />
 			</catch>
 		</trycatch>
 	</target>
