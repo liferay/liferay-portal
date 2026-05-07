@@ -109,6 +109,9 @@ public class OAuthClientPRLocalMetadataModelImpl
 	public static final String ORDER_BY_SQL =
 		" ORDER BY OAuthClientPRLocalMetadata.oAuthClientPRLocalMetadataId ASC";
 
+	public static final String ORDER_BY_SQL_INLINE_DISTINCT =
+		" ORDER BY oAuthClientPRLocalMetadata.oAuthClientPRLocalMetadataId ASC";
+
 	public static final String DATA_SOURCE = "liferayDataSource";
 
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
@@ -1174,4 +1177,4 @@ public class OAuthClientPRLocalMetadataModelImpl
 	private OAuthClientPRLocalMetadata _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2139144081
+// LIFERAY-SERVICE-BUILDER-HASH:-578241054

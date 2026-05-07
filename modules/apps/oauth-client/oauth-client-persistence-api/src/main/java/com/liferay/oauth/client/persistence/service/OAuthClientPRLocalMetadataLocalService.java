@@ -54,6 +54,9 @@ public interface OAuthClientPRLocalMetadataLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.oauth.client.persistence.service.impl.OAuthClientPRLocalMetadataLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the o auth client pr local metadata local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link OAuthClientPRLocalMetadataLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public OAuthClientPRLocalMetadata addOAuthClientPRLocalMetadata(
+			long userId, String metadataJSON)
+		throws PortalException;
 
 	/**
 	 * Adds the o auth client pr local metadata to the database. Also notifies the appropriate model listeners.
@@ -68,6 +71,13 @@ public interface OAuthClientPRLocalMetadataLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public OAuthClientPRLocalMetadata addOAuthClientPRLocalMetadata(
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata);
+
+	public OAuthClientPRLocalMetadata addOAuthClientPRLocalMetadata(
+			String externalReferenceCode, long userId,
+			String[] authorizationServers, String[] bearerMethodsSupported,
+			boolean localWellKnownEnabled, String resource, String resourceName,
+			String[] scopesSupported)
+		throws PortalException;
 
 	/**
 	 * Creates a new o auth client pr local metadata with the primary key. Does not add the o auth client pr local metadata to the database.
@@ -101,6 +111,10 @@ public interface OAuthClientPRLocalMetadataLocalService
 			long oAuthClientPRLocalMetadataId)
 		throws PortalException;
 
+	public OAuthClientPRLocalMetadata deleteOAuthClientPRLocalMetadata(
+			long companyId, String localWellKnownURI)
+		throws PortalException;
+
 	/**
 	 * Deletes the o auth client pr local metadata from the database. Also notifies the appropriate model listeners.
 	 *
@@ -110,10 +124,12 @@ public interface OAuthClientPRLocalMetadataLocalService
 	 *
 	 * @param oAuthClientPRLocalMetadata the o auth client pr local metadata
 	 * @return the o auth client pr local metadata that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public OAuthClientPRLocalMetadata deleteOAuthClientPRLocalMetadata(
-		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata);
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -199,9 +215,23 @@ public interface OAuthClientPRLocalMetadataLocalService
 		long oAuthClientPRLocalMetadataId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OAuthClientPRLocalMetadata fetchOAuthClientPRLocalMetadata(
+		long companyId, boolean localWellKnownEnabled,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OAuthClientPRLocalMetadata fetchOAuthClientPRLocalMetadata(
+		long companyId, String resource);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OAuthClientPRLocalMetadata
 		fetchOAuthClientPRLocalMetadataByExternalReferenceCode(
 			String externalReferenceCode, long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OAuthClientPRLocalMetadata
+		fetchOAuthClientPRLocalMetadataByLocalWellKnownURI(
+			long companyId, String localWellKnownURI);
 
 	/**
 	 * Returns the o auth client pr local metadata with the matching UUID and company.
@@ -217,6 +247,15 @@ public interface OAuthClientPRLocalMetadataLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OAuthClientPRLocalMetadata>
+		getCompanyOAuthClientPRLocalMetadata(long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OAuthClientPRLocalMetadata>
+		getCompanyOAuthClientPRLocalMetadata(
+			long companyId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -235,6 +274,11 @@ public interface OAuthClientPRLocalMetadataLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata(
 			long oAuthClientPRLocalMetadataId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata(
+			long companyId, String localWellKnownURI)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -280,6 +324,9 @@ public interface OAuthClientPRLocalMetadataLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getOAuthClientPRLocalMetadatasCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getOAuthClientPRLocalMetadatasCount(long companyId);
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -293,6 +340,24 @@ public interface OAuthClientPRLocalMetadataLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OAuthClientPRLocalMetadata> getUserOAuthClientPRLocalMetadata(
+		long userId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OAuthClientPRLocalMetadata> getUserOAuthClientPRLocalMetadata(
+		long userId, int start, int end);
+
+	public OAuthClientPRLocalMetadata updateOAuthClientPRLocalMetadata(
+			long oAuthClientPRLocalMetadataId, String metadataJSON)
+		throws PortalException;
+
+	public OAuthClientPRLocalMetadata updateOAuthClientPRLocalMetadata(
+			long oAuthClientPRLocalMetadataId, String[] authorizationServers,
+			String[] bearerMethodsSupported, boolean localWellKnownEnabled,
+			String resource, String resourceName, String[] scopesSupported)
 		throws PortalException;
 
 	/**
@@ -310,4 +375,4 @@ public interface OAuthClientPRLocalMetadataLocalService
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:923164695
+// LIFERAY-SERVICE-BUILDER-HASH:-1230025180

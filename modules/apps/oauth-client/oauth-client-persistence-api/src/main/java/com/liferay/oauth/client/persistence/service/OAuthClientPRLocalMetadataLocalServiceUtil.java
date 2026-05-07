@@ -36,6 +36,12 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.oauth.client.persistence.service.impl.OAuthClientPRLocalMetadataLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static OAuthClientPRLocalMetadata addOAuthClientPRLocalMetadata(
+			long userId, String metadataJSON)
+		throws PortalException {
+
+		return getService().addOAuthClientPRLocalMetadata(userId, metadataJSON);
+	}
 
 	/**
 	 * Adds the o auth client pr local metadata to the database. Also notifies the appropriate model listeners.
@@ -52,6 +58,19 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 
 		return getService().addOAuthClientPRLocalMetadata(
 			oAuthClientPRLocalMetadata);
+	}
+
+	public static OAuthClientPRLocalMetadata addOAuthClientPRLocalMetadata(
+			String externalReferenceCode, long userId,
+			String[] authorizationServers, String[] bearerMethodsSupported,
+			boolean localWellKnownEnabled, String resource, String resourceName,
+			String[] scopesSupported)
+		throws PortalException {
+
+		return getService().addOAuthClientPRLocalMetadata(
+			externalReferenceCode, userId, authorizationServers,
+			bearerMethodsSupported, localWellKnownEnabled, resource,
+			resourceName, scopesSupported);
 	}
 
 	/**
@@ -96,6 +115,14 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 			oAuthClientPRLocalMetadataId);
 	}
 
+	public static OAuthClientPRLocalMetadata deleteOAuthClientPRLocalMetadata(
+			long companyId, String localWellKnownURI)
+		throws PortalException {
+
+		return getService().deleteOAuthClientPRLocalMetadata(
+			companyId, localWellKnownURI);
+	}
+
 	/**
 	 * Deletes the o auth client pr local metadata from the database. Also notifies the appropriate model listeners.
 	 *
@@ -105,9 +132,11 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 	 *
 	 * @param oAuthClientPRLocalMetadata the o auth client pr local metadata
 	 * @return the o auth client pr local metadata that was removed
+	 * @throws PortalException
 	 */
 	public static OAuthClientPRLocalMetadata deleteOAuthClientPRLocalMetadata(
-		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata) {
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+		throws PortalException {
 
 		return getService().deleteOAuthClientPRLocalMetadata(
 			oAuthClientPRLocalMetadata);
@@ -215,6 +244,21 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 			oAuthClientPRLocalMetadataId);
 	}
 
+	public static OAuthClientPRLocalMetadata fetchOAuthClientPRLocalMetadata(
+		long companyId, boolean localWellKnownEnabled,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator) {
+
+		return getService().fetchOAuthClientPRLocalMetadata(
+			companyId, localWellKnownEnabled, orderByComparator);
+	}
+
+	public static OAuthClientPRLocalMetadata fetchOAuthClientPRLocalMetadata(
+		long companyId, String resource) {
+
+		return getService().fetchOAuthClientPRLocalMetadata(
+			companyId, resource);
+	}
+
 	public static OAuthClientPRLocalMetadata
 		fetchOAuthClientPRLocalMetadataByExternalReferenceCode(
 			String externalReferenceCode, long companyId) {
@@ -222,6 +266,14 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 		return getService().
 			fetchOAuthClientPRLocalMetadataByExternalReferenceCode(
 				externalReferenceCode, companyId);
+	}
+
+	public static OAuthClientPRLocalMetadata
+		fetchOAuthClientPRLocalMetadataByLocalWellKnownURI(
+			long companyId, String localWellKnownURI) {
+
+		return getService().fetchOAuthClientPRLocalMetadataByLocalWellKnownURI(
+			companyId, localWellKnownURI);
 	}
 
 	/**
@@ -243,6 +295,20 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static List<OAuthClientPRLocalMetadata>
+		getCompanyOAuthClientPRLocalMetadata(long companyId) {
+
+		return getService().getCompanyOAuthClientPRLocalMetadata(companyId);
+	}
+
+	public static List<OAuthClientPRLocalMetadata>
+		getCompanyOAuthClientPRLocalMetadata(
+			long companyId, int start, int end) {
+
+		return getService().getCompanyOAuthClientPRLocalMetadata(
+			companyId, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -273,6 +339,14 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 
 		return getService().getOAuthClientPRLocalMetadata(
 			oAuthClientPRLocalMetadataId);
+	}
+
+	public static OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata(
+			long companyId, String localWellKnownURI)
+		throws PortalException {
+
+		return getService().getOAuthClientPRLocalMetadata(
+			companyId, localWellKnownURI);
 	}
 
 	public static OAuthClientPRLocalMetadata
@@ -328,6 +402,10 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 		return getService().getOAuthClientPRLocalMetadatasCount();
 	}
 
+	public static int getOAuthClientPRLocalMetadatasCount(long companyId) {
+		return getService().getOAuthClientPRLocalMetadatasCount(companyId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -344,6 +422,39 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static List<OAuthClientPRLocalMetadata>
+		getUserOAuthClientPRLocalMetadata(long userId) {
+
+		return getService().getUserOAuthClientPRLocalMetadata(userId);
+	}
+
+	public static List<OAuthClientPRLocalMetadata>
+		getUserOAuthClientPRLocalMetadata(long userId, int start, int end) {
+
+		return getService().getUserOAuthClientPRLocalMetadata(
+			userId, start, end);
+	}
+
+	public static OAuthClientPRLocalMetadata updateOAuthClientPRLocalMetadata(
+			long oAuthClientPRLocalMetadataId, String metadataJSON)
+		throws PortalException {
+
+		return getService().updateOAuthClientPRLocalMetadata(
+			oAuthClientPRLocalMetadataId, metadataJSON);
+	}
+
+	public static OAuthClientPRLocalMetadata updateOAuthClientPRLocalMetadata(
+			long oAuthClientPRLocalMetadataId, String[] authorizationServers,
+			String[] bearerMethodsSupported, boolean localWellKnownEnabled,
+			String resource, String resourceName, String[] scopesSupported)
+		throws PortalException {
+
+		return getService().updateOAuthClientPRLocalMetadata(
+			oAuthClientPRLocalMetadataId, authorizationServers,
+			bearerMethodsSupported, localWellKnownEnabled, resource,
+			resourceName, scopesSupported);
 	}
 
 	/**
@@ -373,4 +484,4 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 			OAuthClientPRLocalMetadataLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1098156678
+// LIFERAY-SERVICE-BUILDER-HASH:-1672194168

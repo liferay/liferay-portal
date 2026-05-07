@@ -14,11 +14,14 @@ import com.liferay.oauth.client.persistence.model.impl.OAuthClientPRLocalMetadat
 import com.liferay.oauth.client.persistence.service.persistence.OAuthClientPRLocalMetadataPersistence;
 import com.liferay.oauth.client.persistence.service.persistence.OAuthClientPRLocalMetadataUtil;
 import com.liferay.oauth.client.persistence.service.persistence.impl.constants.OAuthClientPersistenceConstants;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
+import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -29,6 +32,7 @@ import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -216,6 +220,162 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 	/**
+	 * Returns all the o auth client pr local metadatas that the user has permission to view where uuid = &#63;.
+	 *
+	 * @param uuid the uuid
+	 * @return the matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUuid(String uuid) {
+		return filterFindByUuid(
+			uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the o auth client pr local metadatas that the user has permission to view where uuid = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @return the range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUuid(
+		String uuid, int start, int end) {
+
+		return filterFindByUuid(uuid, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the o auth client pr local metadatas that the user has permissions to view where uuid = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUuid(
+		String uuid, int start, int end,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByUuid(uuid, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
+		uuid = Objects.toString(uuid, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				3 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindUuid = false;
+
+		if (uuid.isEmpty()) {
+			sb.append(_FINDER_COLUMN_UUID_UUID_3_SQL);
+		}
+		else {
+			bindUuid = true;
+
+			sb.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
+		}
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ENTITY_ALIAS_PREFIX, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(
+					OAuthClientPRLocalMetadataModelImpl.
+						ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OAuthClientPRLocalMetadataModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, OAuthClientPRLocalMetadataImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, OAuthClientPRLocalMetadataImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindUuid) {
+				queryPos.add(uuid);
+			}
+
+			return (List<OAuthClientPRLocalMetadata>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
 	 * Removes all the o auth client pr local metadatas where uuid = &#63; from the database.
 	 *
 	 * @param uuid the uuid
@@ -237,6 +397,83 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 		return _collectionPersistenceFinderByUuid.count(
 			finderCache, new Object[] {uuid});
 	}
+
+	/**
+	 * Returns the number of o auth client pr local metadatas that the user has permission to view where uuid = &#63;.
+	 *
+	 * @param uuid the uuid
+	 * @return the number of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public int filterCountByUuid(String uuid) {
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas =
+				findByUuid(uuid);
+
+			oAuthClientPRLocalMetadatas = InlineSQLHelperUtil.filter(
+				oAuthClientPRLocalMetadatas);
+
+			return oAuthClientPRLocalMetadatas.size();
+		}
+
+		uuid = Objects.toString(uuid, "");
+
+		StringBundler sb = new StringBundler(2);
+
+		sb.append(_FILTER_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid.isEmpty()) {
+			sb.append(_FINDER_COLUMN_UUID_UUID_3_SQL);
+		}
+		else {
+			bindUuid = true;
+
+			sb.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindUuid) {
+				queryPos.add(uuid);
+			}
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_UUID_UUID_2_SQL =
+		"oAuthClientPRLocalMetadata.uuid_ = ?";
+
+	private static final String _FINDER_COLUMN_UUID_UUID_3_SQL =
+		"(oAuthClientPRLocalMetadata.uuid_ IS NULL OR oAuthClientPRLocalMetadata.uuid_ = '')";
 
 	private FinderPath _finderPathWithPaginationFindByUuid_C;
 	private FinderPath _finderPathWithoutPaginationFindByUuid_C;
@@ -373,6 +610,171 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 	/**
+	 * Returns all the o auth client pr local metadatas that the user has permission to view where uuid = &#63; and companyId = &#63;.
+	 *
+	 * @param uuid the uuid
+	 * @param companyId the company ID
+	 * @return the matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUuid_C(
+		String uuid, long companyId) {
+
+		return filterFindByUuid_C(
+			uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the o auth client pr local metadatas that the user has permission to view where uuid = &#63; and companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @return the range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUuid_C(
+		String uuid, long companyId, int start, int end) {
+
+		return filterFindByUuid_C(uuid, companyId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the o auth client pr local metadatas that the user has permissions to view where uuid = &#63; and companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param uuid the uuid
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUuid_C(
+		String uuid, long companyId, int start, int end,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
+		uuid = Objects.toString(uuid, "");
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		boolean bindUuid = false;
+
+		if (uuid.isEmpty()) {
+			sb.append(_FINDER_COLUMN_UUID_C_UUID_3_SQL);
+		}
+		else {
+			bindUuid = true;
+
+			sb.append(_FINDER_COLUMN_UUID_C_UUID_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ENTITY_ALIAS_PREFIX, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(
+					OAuthClientPRLocalMetadataModelImpl.
+						ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OAuthClientPRLocalMetadataModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, OAuthClientPRLocalMetadataImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, OAuthClientPRLocalMetadataImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindUuid) {
+				queryPos.add(uuid);
+			}
+
+			queryPos.add(companyId);
+
+			return (List<OAuthClientPRLocalMetadata>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
 	 * Removes all the o auth client pr local metadatas where uuid = &#63; and companyId = &#63; from the database.
 	 *
 	 * @param uuid the uuid
@@ -396,6 +798,91 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 		return _collectionPersistenceFinderByUuid_C.count(
 			finderCache, new Object[] {uuid, companyId});
 	}
+
+	/**
+	 * Returns the number of o auth client pr local metadatas that the user has permission to view where uuid = &#63; and companyId = &#63;.
+	 *
+	 * @param uuid the uuid
+	 * @param companyId the company ID
+	 * @return the number of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public int filterCountByUuid_C(String uuid, long companyId) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas =
+				findByUuid_C(uuid, companyId);
+
+			oAuthClientPRLocalMetadatas = InlineSQLHelperUtil.filter(
+				oAuthClientPRLocalMetadatas);
+
+			return oAuthClientPRLocalMetadatas.size();
+		}
+
+		uuid = Objects.toString(uuid, "");
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(_FILTER_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid.isEmpty()) {
+			sb.append(_FINDER_COLUMN_UUID_C_UUID_3_SQL);
+		}
+		else {
+			bindUuid = true;
+
+			sb.append(_FINDER_COLUMN_UUID_C_UUID_2_SQL);
+		}
+
+		sb.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			if (bindUuid) {
+				queryPos.add(uuid);
+			}
+
+			queryPos.add(companyId);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_UUID_C_UUID_2_SQL =
+		"oAuthClientPRLocalMetadata.uuid_ = ? AND ";
+
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3_SQL =
+		"(oAuthClientPRLocalMetadata.uuid_ IS NULL OR oAuthClientPRLocalMetadata.uuid_ = '') AND ";
+
+	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 =
+		"oAuthClientPRLocalMetadata.companyId = ?";
 
 	private FinderPath _finderPathWithPaginationFindByCompanyId;
 	private FinderPath _finderPathWithoutPaginationFindByCompanyId;
@@ -523,6 +1010,151 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 	/**
+	 * Returns all the o auth client pr local metadatas that the user has permission to view where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByCompanyId(
+		long companyId) {
+
+		return filterFindByCompanyId(
+			companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the o auth client pr local metadatas that the user has permission to view where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @return the range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByCompanyId(
+		long companyId, int start, int end) {
+
+		return filterFindByCompanyId(companyId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the o auth client pr local metadatas that the user has permissions to view where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByCompanyId(
+		long companyId, int start, int end,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByCompanyId(companyId, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				3 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ENTITY_ALIAS_PREFIX, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(
+					OAuthClientPRLocalMetadataModelImpl.
+						ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OAuthClientPRLocalMetadataModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, OAuthClientPRLocalMetadataImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, OAuthClientPRLocalMetadataImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			return (List<OAuthClientPRLocalMetadata>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
 	 * Removes all the o auth client pr local metadatas where companyId = &#63; from the database.
 	 *
 	 * @param companyId the company ID
@@ -544,6 +1176,67 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 		return _collectionPersistenceFinderByCompanyId.count(
 			finderCache, new Object[] {companyId});
 	}
+
+	/**
+	 * Returns the number of o auth client pr local metadatas that the user has permission to view where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the number of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public int filterCountByCompanyId(long companyId) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas =
+				findByCompanyId(companyId);
+
+			oAuthClientPRLocalMetadatas = InlineSQLHelperUtil.filter(
+				oAuthClientPRLocalMetadatas);
+
+			return oAuthClientPRLocalMetadatas.size();
+		}
+
+		StringBundler sb = new StringBundler(2);
+
+		sb.append(_FILTER_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+
+		sb.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_COMPANYID_COMPANYID_2 =
+		"oAuthClientPRLocalMetadata.companyId = ?";
 
 	private FinderPath _finderPathWithPaginationFindByUserId;
 	private FinderPath _finderPathWithoutPaginationFindByUserId;
@@ -670,6 +1363,149 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 	/**
+	 * Returns all the o auth client pr local metadatas that the user has permission to view where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @return the matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUserId(long userId) {
+		return filterFindByUserId(
+			userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the o auth client pr local metadatas that the user has permission to view where userId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @return the range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUserId(
+		long userId, int start, int end) {
+
+		return filterFindByUserId(userId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the o auth client pr local metadatas that the user has permissions to view where userId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param userId the user ID
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByUserId(
+		long userId, int start, int end,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return findByUserId(userId, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUserId(
+					userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				3 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ENTITY_ALIAS_PREFIX, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(
+					OAuthClientPRLocalMetadataModelImpl.
+						ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OAuthClientPRLocalMetadataModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, OAuthClientPRLocalMetadataImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, OAuthClientPRLocalMetadataImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(userId);
+
+			return (List<OAuthClientPRLocalMetadata>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
 	 * Removes all the o auth client pr local metadatas where userId = &#63; from the database.
 	 *
 	 * @param userId the user ID
@@ -691,6 +1527,67 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 		return _collectionPersistenceFinderByUserId.count(
 			finderCache, new Object[] {userId});
 	}
+
+	/**
+	 * Returns the number of o auth client pr local metadatas that the user has permission to view where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @return the number of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public int filterCountByUserId(long userId) {
+		if (!InlineSQLHelperUtil.isEnabled()) {
+			return countByUserId(userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas =
+				findByUserId(userId);
+
+			oAuthClientPRLocalMetadatas = InlineSQLHelperUtil.filter(
+				oAuthClientPRLocalMetadatas);
+
+			return oAuthClientPRLocalMetadatas.size();
+		}
+
+		StringBundler sb = new StringBundler(2);
+
+		sb.append(_FILTER_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+
+		sb.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(userId);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_USERID_USERID_2 =
+		"oAuthClientPRLocalMetadata.userId = ?";
 
 	private FinderPath _finderPathWithPaginationFindByC_L;
 	private FinderPath _finderPathWithoutPaginationFindByC_L;
@@ -832,6 +1729,162 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 	/**
+	 * Returns all the o auth client pr local metadatas that the user has permission to view where companyId = &#63; and localWellKnownEnabled = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param localWellKnownEnabled the local well known enabled
+	 * @return the matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByC_L(
+		long companyId, boolean localWellKnownEnabled) {
+
+		return filterFindByC_L(
+			companyId, localWellKnownEnabled, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the o auth client pr local metadatas that the user has permission to view where companyId = &#63; and localWellKnownEnabled = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param localWellKnownEnabled the local well known enabled
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @return the range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByC_L(
+		long companyId, boolean localWellKnownEnabled, int start, int end) {
+
+		return filterFindByC_L(
+			companyId, localWellKnownEnabled, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the o auth client pr local metadatas that the user has permissions to view where companyId = &#63; and localWellKnownEnabled = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OAuthClientPRLocalMetadataModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param localWellKnownEnabled the local well known enabled
+	 * @param start the lower bound of the range of o auth client pr local metadatas
+	 * @param end the upper bound of the range of o auth client pr local metadatas (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public List<OAuthClientPRLocalMetadata> filterFindByC_L(
+		long companyId, boolean localWellKnownEnabled, int start, int end,
+		OrderByComparator<OAuthClientPRLocalMetadata> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_L(
+				companyId, localWellKnownEnabled, start, end,
+				orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_L(
+					companyId, localWellKnownEnabled, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_L_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_L_LOCALWELLKNOWNENABLED_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ENTITY_ALIAS_PREFIX, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(
+					OAuthClientPRLocalMetadataModelImpl.
+						ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OAuthClientPRLocalMetadataModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, OAuthClientPRLocalMetadataImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, OAuthClientPRLocalMetadataImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			queryPos.add(localWellKnownEnabled);
+
+			return (List<OAuthClientPRLocalMetadata>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
 	 * Removes all the o auth client pr local metadatas where companyId = &#63; and localWellKnownEnabled = &#63; from the database.
 	 *
 	 * @param companyId the company ID
@@ -855,6 +1908,75 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 		return _collectionPersistenceFinderByC_L.count(
 			finderCache, new Object[] {companyId, localWellKnownEnabled});
 	}
+
+	/**
+	 * Returns the number of o auth client pr local metadatas that the user has permission to view where companyId = &#63; and localWellKnownEnabled = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param localWellKnownEnabled the local well known enabled
+	 * @return the number of matching o auth client pr local metadatas that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_L(long companyId, boolean localWellKnownEnabled) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByC_L(companyId, localWellKnownEnabled);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientPRLocalMetadata> oAuthClientPRLocalMetadatas =
+				findByC_L(companyId, localWellKnownEnabled);
+
+			oAuthClientPRLocalMetadatas = InlineSQLHelperUtil.filter(
+				oAuthClientPRLocalMetadatas);
+
+			return oAuthClientPRLocalMetadatas.size();
+		}
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(_FILTER_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_L_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_L_LOCALWELLKNOWNENABLED_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), OAuthClientPRLocalMetadata.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			queryPos.add(localWellKnownEnabled);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_C_L_COMPANYID_2 =
+		"oAuthClientPRLocalMetadata.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_L_LOCALWELLKNOWNENABLED_2 =
+		"oAuthClientPRLocalMetadata.localWellKnownEnabled = ?";
 
 	private FinderPath _finderPathFetchByC_LWKURI;
 	private UniquePersistenceFinder<OAuthClientPRLocalMetadata>
@@ -1735,6 +2857,34 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	private static final String _SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE =
 		"SELECT COUNT(oAuthClientPRLocalMetadata) FROM OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata WHERE ";
 
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN =
+		"oAuthClientPRLocalMetadata.oAuthClientPRLocalMetadataId";
+
+	private static final String
+		_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_WHERE =
+			"SELECT DISTINCT {oAuthClientPRLocalMetadata.*} FROM OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_1 =
+			"SELECT {OAuthClientPRLocalMetadata.*} FROM (SELECT DISTINCT oAuthClientPRLocalMetadata.oAuthClientPRLocalMetadataId FROM OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata WHERE ";
+
+	private static final String
+		_FILTER_SQL_SELECT_OAUTHCLIENTPRLOCALMETADATA_NO_INLINE_DISTINCT_WHERE_2 =
+			") TEMP_TABLE INNER JOIN OAuthClientPRLocalMetadata ON TEMP_TABLE.oAuthClientPRLocalMetadataId = OAuthClientPRLocalMetadata.oAuthClientPRLocalMetadataId";
+
+	private static final String
+		_FILTER_SQL_COUNT_OAUTHCLIENTPRLOCALMETADATA_WHERE =
+			"SELECT COUNT(DISTINCT oAuthClientPRLocalMetadata.oAuthClientPRLocalMetadataId) AS COUNT_VALUE FROM OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata WHERE ";
+
+	private static final String _FILTER_ENTITY_ALIAS =
+		"oAuthClientPRLocalMetadata";
+
+	private static final String _FILTER_ENTITY_TABLE =
+		"OAuthClientPRLocalMetadata";
+
+	private static final String _ORDER_BY_ENTITY_TABLE =
+		"OAuthClientPRLocalMetadata.";
+
 	private static final String _NO_SUCH_ENTITY_WITH_KEY =
 		"No OAuthClientPRLocalMetadata exists with the key {";
 
@@ -1750,4 +2900,4 @@ public class OAuthClientPRLocalMetadataPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:197676819
+// LIFERAY-SERVICE-BUILDER-HASH:1709649476

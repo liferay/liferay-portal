@@ -139,11 +139,13 @@ public abstract class OAuthClientPRLocalMetadataLocalServiceBaseImpl
 	 *
 	 * @param oAuthClientPRLocalMetadata the o auth client pr local metadata
 	 * @return the o auth client pr local metadata that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public OAuthClientPRLocalMetadata deleteOAuthClientPRLocalMetadata(
-		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata) {
+			OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata)
+		throws PortalException {
 
 		return oAuthClientPRLocalMetadataPersistence.remove(
 			oAuthClientPRLocalMetadata);
@@ -615,4 +617,4 @@ public abstract class OAuthClientPRLocalMetadataLocalServiceBaseImpl
 		OAuthClientPRLocalMetadataLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1159527007
+// LIFERAY-SERVICE-BUILDER-HASH:-303016019
