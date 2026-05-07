@@ -122,13 +122,16 @@ public class DDMTemplateItemSelectorViewDescriptor
 			PortalUtil.getCurrentAndAncestorSiteGroupIds(
 				_themeDisplay.getScopeGroupId(), false);
 
-		long[] groupIds = currentAndAncestorSiteGroupIds;
+		long[] groupIds;
 
 		if ((ddmStructure != null) &&
 			_isDepotGroup(ddmStructure.getGroupId())) {
 
 			groupIds = ArrayUtil.append(
 				currentAndAncestorSiteGroupIds, ddmStructure.getGroupId());
+		}
+		else {
+			groupIds = currentAndAncestorSiteGroupIds;
 		}
 
 		ddmTemplateSearchContainer.setResultsAndTotal(
