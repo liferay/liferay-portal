@@ -11,10 +11,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.dsr.site.initializer.internal.constants.DSRWebKeys;
@@ -22,6 +18,7 @@ import com.liferay.site.dsr.site.initializer.internal.constants.DSRWebKeys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -75,11 +72,7 @@ public abstract class BaseAnalyticsSectionDisplayContext {
 	}
 
 	public Map<String, Object> getProps() {
-		return HashMapBuilder.<String, Object>put(
-			"dsrDevEnvEnabled",
-			GetterUtil.getBoolean(
-				PropsUtil.get(PropsKeys.DSR_DEV_ENV_ENABLED), true)
-		).build();
+		return Collections.emptyMap();
 	}
 
 	protected final JSONObject configurationJSONObject;
