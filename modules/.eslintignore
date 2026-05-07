@@ -83,3 +83,8 @@
     #
     frontend-sdk/eslint-plugin/
     frontend-sdk/node-scripts/util/jest/
+
+    #
+    # LPD-86504 Ignore GraphQL query templates.
+    #
+    apps/site/site-dsr-analytics-rest-impl/src/main/resources/com/liferay/site/dsr/analytics/rest/internal/client/dependencies/

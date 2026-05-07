@@ -59,6 +59,7 @@
 			"<rootDir>/src/main/resources/META-INF/resources/tests/js/**/*.spec.*"
 		],
 		"testPathIgnorePatterns": [
+			"<rootDir>/.*/fixtures",
 			"<rootDir>/.*/mocks",
 			"<rootDir>/.*/__mocks__",
 			"<rootDir>/.*/index.tsx"
