@@ -95,9 +95,52 @@
 			<finder-column name="clientId" />
 		</finder>
 	</entity>
+	<entity external-reference-code="company" local-service="true" name="OAuthClientPRLocalMetadata" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="oAuthClientPRLocalMetadataId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="localWellKnownEnabled" type="boolean" />
+		<column name="localWellKnownURI" type="String" />
+		<column name="metadataJSON" type="String" />
+		<column name="resource" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="C_L" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="localWellKnownEnabled" />
+		</finder>
+		<finder name="C_LWKURI" return-type="OAuthClientPRLocalMetadata" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="localWellKnownURI" />
+		</finder>
+		<finder name="C_R" return-type="OAuthClientPRLocalMetadata" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="resource" />
+		</finder>
+	</entity>
 	<exceptions>
 		<exception>DuplicateOAuthClientASLocalMetadata</exception>
 		<exception>DuplicateOAuthClientEntry</exception>
+		<exception>DuplicateOAuthClientPRLocalMetadata</exception>
 		<exception>OAuthClientASLocalMetadataIssuer</exception>
 		<exception>OAuthClientASLocalMetadataLocalWellKnownURI</exception>
 		<exception>OAuthClientASLocalMetadataMetadataJSON</exception>
@@ -106,5 +149,8 @@
 		<exception>OAuthClientEntryInfoJSON</exception>
 		<exception>OAuthClientEntryOIDCUserInfoMapperJSON</exception>
 		<exception>OAuthClientEntryTokenRequestParametersJSON</exception>
+		<exception>OAuthClientPRLocalMetadataLocalWellKnownURI</exception>
+		<exception>OAuthClientPRLocalMetadataMetadataJSON</exception>
+		<exception>OAuthClientPRLocalMetadataResource</exception>
 	</exceptions>
 </service-builder>
