@@ -33,11 +33,29 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			frequencyChartDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: frequencyChartDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('VisitFrequencyChart component', () => {
 	let container: HTMLElement;
 
 	beforeEach(() => {
-		const view = render(<FrequencyChart dsrDevEnvEnabled={true} />);
+		const view = render(<FrequencyChart />);
 
 		container = view.container;
 	});

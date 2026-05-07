@@ -33,13 +33,29 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			timelineEngagementChartDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: timelineEngagementChartDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('EngagementTimelineChart component', () => {
 	let container: HTMLElement;
 
 	beforeEach(() => {
-		const view = render(
-			<TimelineEngagementChart dsrDevEnvEnabled={true} />
-		);
+		const view = render(<TimelineEngagementChart />);
 
 		container = view.container;
 	});

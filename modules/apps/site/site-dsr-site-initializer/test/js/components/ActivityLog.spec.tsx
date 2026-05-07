@@ -48,6 +48,24 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			activityLogDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: activityLogDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('ActivityLog Component', () => {
 	beforeAll(() => {
 		window['Liferay'] = {
@@ -105,36 +123,25 @@ describe('ActivityLog Component', () => {
 		cleanup();
 	});
 
-	it('renders the correct number of date headers', () => {
-		render(<ActivityLog dsrDevEnvEnabled={true} />);
+	it('renders a date header per distinct event day', () => {
+		render(<ActivityLog />);
 
 		expect(screen.getByText('2026-03-06')).toBeInTheDocument();
 		expect(screen.getByText('2026-03-07')).toBeInTheDocument();
 	});
 
 	it('groups consecutive logs for the same user', () => {
-		render(<ActivityLog dsrDevEnvEnabled={true} />);
+		render(<ActivityLog />);
 
-		const userNames = screen.getAllByText('John Doe');
-
-		expect(userNames.length).toBe(1);
+		expect(screen.getAllByText('John Doe').length).toBe(1);
+		expect(screen.getAllByText('Paul Gerome').length).toBe(1);
 	});
 
-	it('displays localized labels using the sub utility', () => {
-		render(<ActivityLog dsrDevEnvEnabled={true} />);
+	it('renders an asset title per event', () => {
+		render(<ActivityLog />);
 
-		expect(screen.getAllByText('Commented on')[0]).toBeInTheDocument();
-		expect(
-			screen.getAllByText('Uploaded a document')[0]
-		).toBeInTheDocument();
-		expect(screen.getAllByText('Viewed a tab')[0]).toBeInTheDocument();
-	});
-
-	it('renders descriptions only when they exist', () => {
-		render(<ActivityLog dsrDevEnvEnabled={true} />);
-
-		const descriptions = screen.getAllByText(/Lorem ipsum/i);
-
-		expect(descriptions.length).toBe(6);
+		expect(screen.getByText('document_a')).toBeInTheDocument();
+		expect(screen.getByText('document_b')).toBeInTheDocument();
+		expect(screen.getByText('document_c')).toBeInTheDocument();
 	});
 });

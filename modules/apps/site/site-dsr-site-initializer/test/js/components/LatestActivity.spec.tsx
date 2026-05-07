@@ -52,6 +52,24 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			latestActivityDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: latestActivityDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('LatestActivity', () => {
 	beforeEach(() => {
 		jest.fn();
@@ -64,10 +82,7 @@ describe('LatestActivity', () => {
 
 	it('renders the component with provided data', () => {
 		const {baseElement} = render(
-			<LatestActivity
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
+			<LatestActivity namespace="test-namespace" />
 		);
 
 		expect(baseElement).toMatchSnapshot();
@@ -77,12 +92,7 @@ describe('LatestActivity', () => {
 	});
 
 	it('renders the correct timestamp representation from moment', () => {
-		render(
-			<LatestActivity
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
-		);
+		render(<LatestActivity namespace="test-namespace" />);
 
 		expect(screen.getByText('2 hours ago')).toBeInTheDocument();
 	});

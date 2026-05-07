@@ -29,6 +29,24 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			mostActiveVisitorsDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: mostActiveVisitorsDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('MostActiveVisitors', () => {
 	beforeEach(() => {
 		jest.fn();
@@ -42,10 +60,7 @@ describe('MostActiveVisitors', () => {
 
 	it('renders the component with provided data', () => {
 		const {baseElement} = render(
-			<MostActiveVisitors
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
+			<MostActiveVisitors namespace="test-namespace" />
 		);
 
 		expect(baseElement).toMatchSnapshot();

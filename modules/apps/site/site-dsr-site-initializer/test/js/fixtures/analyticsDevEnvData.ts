@@ -8,30 +8,29 @@ export const activityLogDevEnvData = {
 		totalEvents: 3,
 		userSessions: [
 			{
+				userName: 'John Doe',
 				userSessionEvents: [
 					{
 						assetTitle: 'document_a',
 						createDate: '2026-03-06T08:00:00Z',
 						emailAddressHashed: 'john.doe@example.com',
-						individualName: 'John Doe',
 						name: 'commentPosted',
 					},
 					{
 						assetTitle: 'document_b',
 						createDate: '2026-03-06T09:00:00Z',
 						emailAddressHashed: 'john.doe@example.com',
-						individualName: 'John Doe',
 						name: 'documentUploaded',
 					},
 				],
 			},
 			{
+				userName: 'Paul Gerome',
 				userSessionEvents: [
 					{
 						assetTitle: 'document_c',
 						createDate: '2026-03-07T10:00:00Z',
 						emailAddressHashed: 'paul.gerome@example.com',
-						individualName: 'Paul Gerome',
 						name: 'pageViewed',
 					},
 				],
@@ -184,7 +183,7 @@ export const roomDocumentsStatisticsDevEnvData = {
 				lastViewedMetric: {value: 1740929400000},
 				ratingsMetric: {value: 0},
 				urls: ['pdf_test.pdf'],
-				userInvolvedMetric: {value: 4},
+				usersInvolvedMetric: {value: 4},
 			},
 			{
 				assetId: '2',
@@ -195,7 +194,7 @@ export const roomDocumentsStatisticsDevEnvData = {
 				lastViewedMetric: {value: 1741015800000},
 				ratingsMetric: {value: 0},
 				urls: ['doc_test2.docx'],
-				userInvolvedMetric: {value: 3},
+				usersInvolvedMetric: {value: 3},
 			},
 			{
 				assetId: '3',
@@ -206,7 +205,7 @@ export const roomDocumentsStatisticsDevEnvData = {
 				lastViewedMetric: {value: 1743694200000},
 				ratingsMetric: {value: 0},
 				urls: ['pdf_test2.pdf'],
-				userInvolvedMetric: {value: 4},
+				usersInvolvedMetric: {value: 4},
 			},
 			{
 				assetId: '4',
@@ -217,7 +216,7 @@ export const roomDocumentsStatisticsDevEnvData = {
 				lastViewedMetric: {value: 1741015800000},
 				ratingsMetric: {value: 0},
 				urls: ['document_test.docx'],
-				userInvolvedMetric: {value: 2},
+				usersInvolvedMetric: {value: 2},
 			},
 			{
 				assetId: '5',
@@ -228,7 +227,7 @@ export const roomDocumentsStatisticsDevEnvData = {
 				lastViewedMetric: {value: 1741534200000},
 				ratingsMetric: {value: 0},
 				urls: ['pdf_test3.pdf'],
-				userInvolvedMetric: {value: 4},
+				usersInvolvedMetric: {value: 4},
 			},
 			{
 				assetId: '6',
@@ -239,7 +238,7 @@ export const roomDocumentsStatisticsDevEnvData = {
 				lastViewedMetric: {value: 1741188600000},
 				ratingsMetric: {value: 0},
 				urls: ['pdf_test4.pdf'],
-				userInvolvedMetric: {value: 3},
+				usersInvolvedMetric: {value: 3},
 			},
 		],
 		total: 6,

@@ -56,6 +56,24 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			roomStatisticsDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: roomStatisticsDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('RoomStatistics', () => {
 	beforeAll(() => {
 		window['Liferay'] = {
@@ -110,13 +128,13 @@ describe('RoomStatistics', () => {
 	});
 
 	it('matches snapshot', () => {
-		const {container} = render(<RoomStatistics dsrDevEnvEnabled={true} />);
+		const {container} = render(<RoomStatistics />);
 
 		expect(container).toMatchSnapshot();
 	});
 
 	it('renders with provided data', () => {
-		const {getByText} = render(<RoomStatistics dsrDevEnvEnabled={true} />);
+		const {getByText} = render(<RoomStatistics />);
 
 		expect(getByText('0-hours 45-minutes')).toBeInTheDocument();
 		expect(getByText('100')).toBeInTheDocument();

@@ -33,11 +33,29 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			recentEngagementChartDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: recentEngagementChartDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('RecentEngagementChart component', () => {
 	let container: HTMLElement;
 
 	beforeEach(() => {
-		const view = render(<RecentEngagementChart dsrDevEnvEnabled={true} />);
+		const view = render(<RecentEngagementChart />);
 
 		container = view.container;
 	});

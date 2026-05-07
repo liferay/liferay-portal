@@ -60,6 +60,24 @@ jest.mock(
 	})
 );
 
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/common/hooks/useAnalyticsQuery',
+	() => {
+		const {
+			roomDocumentsStatisticsDevEnvData,
+		} = require('../fixtures/analyticsDevEnvData');
+
+		return {
+			__esModule: true,
+			default: jest.fn(() => ({
+				isLoading: false,
+				response: roomDocumentsStatisticsDevEnvData,
+				sendRequest: jest.fn(),
+			})),
+		};
+	}
+);
+
 describe('RoomDocumentsStatistics', () => {
 	beforeEach(() => {
 		jest.fn();
@@ -72,10 +90,7 @@ describe('RoomDocumentsStatistics', () => {
 
 	it('renders the component with provided data', () => {
 		const {baseElement} = render(
-			<DocumentsStatistics
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
+			<DocumentsStatistics namespace="test-namespace" />
 		);
 
 		expect(baseElement).toMatchSnapshot();
@@ -85,51 +100,11 @@ describe('RoomDocumentsStatistics', () => {
 		expect(screen.getAllByText('324')[0]).toBeInTheDocument();
 	});
 
-	it('renders the correct average time', () => {
-		render(
-			<DocumentsStatistics
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
-		);
+	it('renders the user involved count from userInvolvedMetric', () => {
+		render(<DocumentsStatistics namespace="test-namespace" />);
 
-		expect(screen.getByText('1 hour 33 minutes')).toBeInTheDocument();
-	});
-
-	it('renders the correct last viewed date', () => {
-		render(
-			<DocumentsStatistics
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
-		);
-
-		const count = screen.getAllByText('Mar 3, 2026');
-
-		expect(count.length).toBe(2);
-	});
-
-	it('renders the correct user involved count', () => {
-		render(
-			<DocumentsStatistics
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
-		);
-
-		const count = screen.getAllByText('4 users');
-
-		expect(count.length).toBe(3);
-	});
-
-	it('handles duplicate users in user involved count', () => {
-		render(
-			<DocumentsStatistics
-				dsrDevEnvEnabled={true}
-				namespace="test-namespace"
-			/>
-		);
-
-		expect(screen.getByText('2 users')).toBeInTheDocument();
+		expect(screen.getAllByText('4').length).toBe(3);
+		expect(screen.getAllByText('3').length).toBe(2);
+		expect(screen.getByText('2')).toBeInTheDocument();
 	});
 });

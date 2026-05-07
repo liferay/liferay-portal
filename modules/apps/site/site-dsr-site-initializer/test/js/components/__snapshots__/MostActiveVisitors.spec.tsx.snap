@@ -119,13 +119,13 @@ exports[`MostActiveVisitors renders the component with provided data 1`] = `
                         <tbody>
                           <tr
                             class=""
-                            data-id="string,$.0"
+                            data-id="string,1"
                             tabindex="-1"
                           >
                             <td
                               aria-colindex="1"
                               class="cell-title"
-                              data-id="string,null:title"
+                              data-id="string,1:title"
                               style="width: auto;"
                               tabindex="-1"
                             >
@@ -184,7 +184,7 @@ exports[`MostActiveVisitors renders the component with provided data 1`] = `
                             <td
                               aria-colindex="2"
                               class="cell-item-actions"
-                              data-id="string,null:actions"
+                              data-id="string,1:actions"
                               style="width: auto;"
                               tabindex="-1"
                             />
