@@ -44,7 +44,6 @@ export default function RoomAnalyticsFilter({filter, setValue}: IProps) {
 				[AnalyticsFilters.ROOM]: {
 					...filter,
 					value: {
-						channelId: room.siteId.toString(),
 						room,
 					},
 				},
@@ -55,7 +54,6 @@ export default function RoomAnalyticsFilter({filter, setValue}: IProps) {
 				[AnalyticsFilters.ROOM]: {
 					...filter,
 					value: {
-						channelId: '',
 						room: null,
 					},
 				},

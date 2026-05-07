@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import moment, {now} from 'moment';
+import moment from 'moment';
 
 import DateRangeAnalyticsFilter from '../components/filters/DateRangeAnalyticsFilter';
 import RoomAnalyticsFilter from '../components/filters/RoomAnalyticsFilter';
@@ -22,9 +22,8 @@ export function computePreset(amount: number, unit: any, startOf: any) {
 		from: moment()
 			.subtract(amount, unit)
 			.startOf(startOf)
-			.valueOf()
-			.toString(),
-		to: now().toString(),
+			.format('YYYY-MM-DD'),
+		to: moment().format('YYYY-MM-DD'),
 	} as TDateRangeAnalyticsFilterValue;
 }
 
@@ -57,7 +56,6 @@ const DEFAULT_FILTERS: TAnalyticsFilter = {
 		active: true,
 		component: RoomAnalyticsFilter,
 		value: {
-			channelId: '',
 			room: null,
 		},
 	},

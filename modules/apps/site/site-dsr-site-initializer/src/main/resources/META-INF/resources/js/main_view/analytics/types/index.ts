@@ -34,6 +34,7 @@ export type TTrendOptions = {
 };
 
 export interface ILogEntry extends IActivityLogEntry {
+	category: string;
 	icon: string;
 	time: string;
 }
@@ -100,6 +101,5 @@ export type TDateRangeAnalyticsFilterValue = {
 };
 
 export type TRoomAnalyticsFilterValue = {
-	channelId: string;
 	room: IRoomObjectEntry | null;
 };

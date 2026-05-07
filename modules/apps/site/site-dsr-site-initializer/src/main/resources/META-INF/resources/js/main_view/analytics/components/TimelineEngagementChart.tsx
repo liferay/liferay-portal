@@ -7,28 +7,22 @@ import React, {useEffect, useState} from 'react';
 
 import useAnalyticsQuery from '../../../common/hooks/useAnalyticsQuery';
 import {IEngagementChartItem} from '../../../common/utils/types';
-import TimelineEngagementChartQuery from '../queries/TimelineEngagementChartQuery';
 import AnalyticsFrame from './AnalyticsFrame';
 import EngagementChart from './EngagementChart';
 import Loader from './Loader';
 
-function TimelineEngagementChart({
-	dsrDevEnvEnabled: useDevEnvData,
-}: {
-	dsrDevEnvEnabled: boolean;
-}) {
+function TimelineEngagementChart() {
 	const [data, setData] = useState<IEngagementChartItem[]>([]);
 	const [element, setElement] = useState<HTMLElement | null>(null);
 
 	const {isLoading, response} = useAnalyticsQuery({
 		element,
-		query: TimelineEngagementChartQuery,
-		settings: {
-			checkViewportVisibility: true,
-			useDevEnvData,
+		query: {
+			paths: [
+				{key: 'siteSessions', path: '/sessions-site-histogram-metric'},
+			],
 		},
 		variables: {
-			channelId: '',
 			devices: 'Any',
 			emailAddresses: [],
 			interval: 'D',
@@ -41,7 +35,16 @@ function TimelineEngagementChart({
 
 	useEffect(() => {
 		if (response) {
-			setData(response);
+			const histogramMetrics =
+				response.siteSessions?.histogram?.histogramMetrics ?? [];
+
+			setData(
+				histogramMetrics.map((histogramMetric: any) => ({
+					date: histogramMetric.key,
+					numberOfVisits: 0,
+					timeSpent: histogramMetric.value ?? 0,
+				}))
+			);
 		}
 	}, [response]);
 

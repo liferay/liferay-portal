@@ -216,7 +216,7 @@ export type TRoomDocumentsStatistics = {
 	totalTimeViewingAsset: number;
 	totalViews: number;
 	type: string;
-	userInvolved: string[];
+	userInvolved: number;
 };
 
 export type TRoomDocumentsStatisticsProps = TRoomDocumentsStatistics[];

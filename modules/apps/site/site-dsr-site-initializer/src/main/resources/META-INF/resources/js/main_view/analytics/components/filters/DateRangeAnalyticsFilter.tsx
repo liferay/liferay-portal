@@ -6,7 +6,6 @@
 import ClayDatePicker from '@clayui/date-picker';
 import {ClayInput, ClaySelect} from '@clayui/form';
 import ClayForm from '@clayui/form/src/Form';
-import moment from 'moment';
 import React, {ChangeEvent, useCallback} from 'react';
 
 import {
@@ -52,9 +51,9 @@ export default function DateRangeAnalyticsFilter({
 				[AnalyticsFilters.DATE_RANGE]: {
 					...dateRangeFilter,
 					value: {
-						from: new Date(from).getTime().toString(),
+						from,
 						preset: DateRangePreset.CUSTOM_RANGE,
-						to: new Date(to).getTime().toString(),
+						to,
 					},
 				},
 			});
@@ -92,7 +91,7 @@ export default function DateRangeAnalyticsFilter({
 						value={
 							dateRangeFilter?.value?.from &&
 							dateRangeFilter?.value?.to
-								? `${moment(Number(dateRangeFilter.value.from)).format('YYYY-MM-DD')} - ${moment(Number(dateRangeFilter.value.to)).format('YYYY-MM-DD')}`
+								? `${dateRangeFilter.value.from} - ${dateRangeFilter.value.to}`
 								: ''
 						}
 						years={{
