@@ -11,8 +11,6 @@ import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -36,7 +34,8 @@ import dev.langchain4j.model.chat.request.json.JsonAnyOfSchema;
 import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import dev.langchain4j.model.chat.request.json.JsonSchemaElement;
 
-import java.util.Base64;
+import java.io.Serializable;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -70,7 +69,7 @@ public class MCPToolProviderUtil {
 		long companyId, DTOConverterRegistry dtoConverterRegistry, long groupId,
 		Locale locale, List<String> mcpServerExternalReferenceCodes,
 		ObjectEntryManager objectEntryManager, String sseEventSinkKey,
-		long userId) {
+		long userId, Map<String, Serializable> workflowContext) {
 
 		if (ListUtil.isEmpty(mcpServerExternalReferenceCodes)) {
 			return null;
@@ -82,7 +81,8 @@ public class MCPToolProviderUtil {
 				mcpServerExternalReferenceCodes, objectEntryManager, userId),
 			objectEntry -> {
 				McpTransport mcpTransport = _createMcpTransport(
-					objectEntry.getProperties());
+					objectEntry.getProperties(),
+					GetterUtil.getString(workflowContext.get("userToken")));
 
 				return new DefaultMcpClient.Builder(
 				).transport(
@@ -101,23 +101,12 @@ public class MCPToolProviderUtil {
 		).build();
 	}
 
-	private static Map<String, String> _createCustomHeaders(
-		String authArguments) {
-
-		if (authArguments.isBlank()) {
-			return Map.of();
-		}
-
-		return Map.of("Authorization", _parseBasicAuthorization(authArguments));
-	}
-
 	private static McpTransport _createMcpTransport(
-		Map<String, Object> properties) {
+		Map<String, Object> properties, String userToken) {
 
 		return new StreamableHttpMcpTransport.Builder(
 		).customHeaders(
-			_createCustomHeaders(
-				GetterUtil.getString(properties.get("authArguments")))
+			Map.of("Liferay-AI-Hub-Cell-On-Behalf-Of", userToken)
 		).url(
 			GetterUtil.getString(properties.get("url"))
 		).build();
@@ -173,26 +162,6 @@ public class MCPToolProviderUtil {
 				null, null, null);
 
 			return (List<ObjectEntry>)page.getItems();
-		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-
-	private static String _parseBasicAuthorization(String authArguments) {
-		try {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				authArguments);
-
-			Base64.Encoder encoder = Base64.getEncoder();
-
-			String credentials =
-				jsonObject.getString("userName") + ":" +
-					jsonObject.getString("password");
-
-			return "Basic " +
-				new String(
-					encoder.encode(credentials.getBytes("UTF-8")), "UTF-8");
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
