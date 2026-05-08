@@ -12,6 +12,8 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -84,22 +86,52 @@ public class CommerceInventoryWarehouseItemServiceTest {
 
 	@Test
 	public void testDeleteCommerceInventoryWarehouseItems() throws Exception {
+		CPInstance cpInstance =
+			CommerceInventoryTestUtil.addRandomCPInstanceSku(
+				TestPropsValues.getGroupId());
+
+		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+			TestPropsValues.getUserId(), _commerceInventoryWarehouse,
+			BigDecimal.TEN, cpInstance.getSku(), StringPool.BLANK);
+
+		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure1 =
+			CPTestUtil.addCPInstanceUnitOfMeasure(
+				TestPropsValues.getGroupId(), _cpInstance.getCPInstanceId(),
+				RandomTestUtil.randomString(), BigDecimal.TEN,
+				_cpInstance.getSku());
+		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure2 =
+			CPTestUtil.addCPInstanceUnitOfMeasure(
+				TestPropsValues.getGroupId(), _cpInstance.getCPInstanceId(),
+				RandomTestUtil.randomString(), BigDecimal.TEN,
+				_cpInstance.getSku());
+
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
 
 			_commerceInventoryWarehouseItemService.
 				deleteCommerceInventoryWarehouseItems(
 					_user.getCompanyId(), _cpInstance.getSku(),
-					StringPool.BLANK);
-
-			Assert.assertFalse(
-				ListUtil.isEmpty(
-					_commerceInventoryWarehouseItemLocalService.
-						getCommerceInventoryWarehouseItems(
-							_commerceInventoryWarehouse.
-								getCommerceInventoryWarehouseId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+					cpInstanceUnitOfMeasure1.getKey());
 		}
+
+		Assert.assertNotNull(
+			_commerceInventoryWarehouseItemLocalService.
+				fetchCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					_cpInstance.getSku(), cpInstanceUnitOfMeasure1.getKey()));
+		Assert.assertNotNull(
+			_commerceInventoryWarehouseItemLocalService.
+				fetchCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					_cpInstance.getSku(), cpInstanceUnitOfMeasure2.getKey()));
+		Assert.assertNotNull(
+			_commerceInventoryWarehouseItemLocalService.
+				fetchCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					cpInstance.getSku(), StringPool.BLANK));
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			_commerceInventoryWarehouse.getCompanyId(),
@@ -115,16 +147,27 @@ public class CommerceInventoryWarehouseItemServiceTest {
 			_commerceInventoryWarehouseItemService.
 				deleteCommerceInventoryWarehouseItems(
 					_user.getCompanyId(), _cpInstance.getSku(),
-					StringPool.BLANK);
-
-			Assert.assertTrue(
-				ListUtil.isEmpty(
-					_commerceInventoryWarehouseItemLocalService.
-						getCommerceInventoryWarehouseItems(
-							_commerceInventoryWarehouse.
-								getCommerceInventoryWarehouseId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+					cpInstanceUnitOfMeasure1.getKey());
 		}
+
+		Assert.assertNull(
+			_commerceInventoryWarehouseItemLocalService.
+				fetchCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					_cpInstance.getSku(), cpInstanceUnitOfMeasure1.getKey()));
+		Assert.assertNotNull(
+			_commerceInventoryWarehouseItemLocalService.
+				fetchCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					_cpInstance.getSku(), cpInstanceUnitOfMeasure2.getKey()));
+		Assert.assertNotNull(
+			_commerceInventoryWarehouseItemLocalService.
+				fetchCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					cpInstance.getSku(), StringPool.BLANK));
 	}
 
 	@Test
