@@ -17,5 +17,3 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class EventResourceTest extends BaseEventResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:1056863785

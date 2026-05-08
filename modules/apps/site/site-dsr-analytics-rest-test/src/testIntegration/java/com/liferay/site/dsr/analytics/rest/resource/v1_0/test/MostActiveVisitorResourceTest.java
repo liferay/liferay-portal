@@ -18,5 +18,3 @@ import org.junit.runner.RunWith;
 public class MostActiveVisitorResourceTest
 	extends BaseMostActiveVisitorResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:551173055

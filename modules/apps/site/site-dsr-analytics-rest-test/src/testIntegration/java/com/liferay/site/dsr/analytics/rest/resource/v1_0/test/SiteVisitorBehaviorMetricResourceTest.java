@@ -18,5 +18,3 @@ import org.junit.runner.RunWith;
 public class SiteVisitorBehaviorMetricResourceTest
 	extends BaseSiteVisitorBehaviorMetricResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:1000163207

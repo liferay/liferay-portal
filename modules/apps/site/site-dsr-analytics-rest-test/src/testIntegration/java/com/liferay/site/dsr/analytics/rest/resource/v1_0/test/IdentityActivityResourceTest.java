@@ -18,5 +18,3 @@ import org.junit.runner.RunWith;
 public class IdentityActivityResourceTest
 	extends BaseIdentityActivityResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:-874994747

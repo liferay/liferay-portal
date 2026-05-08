@@ -18,5 +18,3 @@ import org.junit.runner.RunWith;
 public class DocumentMetricResourceTest
 	extends BaseDocumentMetricResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:-977557435

@@ -331,7 +331,6 @@ public class AnalyticsCloudClient {
 			options.addHeader(
 				"OSB-Asah-Project-ID",
 				analyticsConfiguration.liferayAnalyticsProjectId());
-
 			options.setBody(
 				_objectMapper.writeValueAsString(bodyObjectNode),
 				"application/json", "UTF-8");

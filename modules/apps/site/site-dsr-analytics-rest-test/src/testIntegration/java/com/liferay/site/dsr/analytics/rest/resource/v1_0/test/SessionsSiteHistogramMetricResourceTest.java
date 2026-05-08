@@ -18,5 +18,3 @@ import org.junit.runner.RunWith;
 public class SessionsSiteHistogramMetricResourceTest
 	extends BaseSessionsSiteHistogramMetricResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:-628000747

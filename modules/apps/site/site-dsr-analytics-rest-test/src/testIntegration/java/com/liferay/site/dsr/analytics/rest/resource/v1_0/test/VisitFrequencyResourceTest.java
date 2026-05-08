@@ -18,5 +18,3 @@ import org.junit.runner.RunWith;
 public class VisitFrequencyResourceTest
 	extends BaseVisitFrequencyResourceTestCase {
 }
-
-// LIFERAY-REST-BUILDER-HASH:1424791941
