@@ -602,6 +602,19 @@ public class CPDefinitionLocalServiceWrapper
 			groupId, status, start, end, orderByComparator);
 	}
 
+	@Override
+	public java.util.List<CPDefinition> getCPDefinitions(
+		long companyId, long accountEntryId, long[] accountGroupIds,
+		long[] commerceChannelGroupIds, boolean published, int[] statuses,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<CPDefinition>
+			orderByComparator) {
+
+		return _cpDefinitionLocalService.getCPDefinitions(
+			companyId, accountEntryId, accountGroupIds, commerceChannelGroupIds,
+			published, statuses, start, end, orderByComparator);
+	}
+
 	/**
 	 * Returns all the cp definitions matching the UUID and company.
 	 *
@@ -1106,4 +1119,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2040300879
+// LIFERAY-SERVICE-BUILDER-HASH:1444118985
