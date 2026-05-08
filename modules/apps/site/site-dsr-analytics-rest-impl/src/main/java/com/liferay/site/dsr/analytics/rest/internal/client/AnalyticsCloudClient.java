@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.site.dsr.analytics.rest.dto.v1_0.DocumentMetrics;
+import com.liferay.site.dsr.analytics.rest.dto.v1_0.DocumentsMetric;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.Events;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.IdentityActivity;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.MostActiveVisitors;
@@ -56,7 +56,7 @@ public class AnalyticsCloudClient {
 		_user = user;
 	}
 
-	public DocumentMetrics getDocumentMetrics(
+	public DocumentsMetric getDocumentsMetric(
 			AnalyticsConfiguration analyticsConfiguration, String[] groupIds,
 			String keywords, String rangeEnd, Integer rangeKey,
 			String rangeStart, Integer size, String sortColumn, String sortType,
@@ -80,12 +80,12 @@ public class AnalyticsCloudClient {
 		sortObjectNode.put("type", sortType);
 
 		JsonNode dataJsonNode = _executeQuery(
-			analyticsConfiguration, _QUERY_DOCUMENT_METRICS, "documents",
+			analyticsConfiguration, _QUERY_DOCUMENTS_METRIC, "documents",
 			variablesObjectNode);
 
 		_renameKey(dataJsonNode, "documentMetrics", "assetMetrics");
 
-		return _objectMapper.treeToValue(dataJsonNode, DocumentMetrics.class);
+		return _objectMapper.treeToValue(dataJsonNode, DocumentsMetric.class);
 	}
 
 	public Events getEvents(
@@ -505,7 +505,7 @@ public class AnalyticsCloudClient {
 
 	private static final String _DSR_CHANNEL_NAME = "DSR";
 
-	private static final String _QUERY_DOCUMENT_METRICS;
+	private static final String _QUERY_DOCUMENTS_METRIC;
 
 	private static final String _QUERY_EVENTS;
 
@@ -535,7 +535,7 @@ public class AnalyticsCloudClient {
 
 	static {
 		try {
-			_QUERY_DOCUMENT_METRICS = _readQuery("document_metrics.graphql");
+			_QUERY_DOCUMENTS_METRIC = _readQuery("documents_metric.graphql");
 			_QUERY_EVENTS = _readQuery("events.graphql");
 			_QUERY_IDENTITY_ACTIVITY = _readQuery("identity_activity.graphql");
 			_QUERY_MOST_ACTIVE_VISITORS = _readQuery(
