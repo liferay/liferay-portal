@@ -219,7 +219,7 @@ public class AIDecisionNodeExecutor extends BaseNodeExecutor {
 					ToolsUtil.getMCPServerExternalReferenceCodes(
 						_jsonFactory, kaleoNodeSettingValues),
 					_objectEntryManager, sseEventSinkKey,
-					serviceContext.getUserId())
+					serviceContext.getUserId(), workflowContext)
 			).userMessage(
 				userMessage
 			).vertexAiGeminiStreamingChatModel(

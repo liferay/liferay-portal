@@ -57,7 +57,6 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -212,13 +211,6 @@ public class AgentInstanceResourceTest
 			_mcpServerObjectDefinition.getObjectDefinitionId(), 0,
 			LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
 			HashMapBuilder.<String, Serializable>put(
-				"authArguments",
-				JSONUtil.put(
-					"password", PropsValues.DEFAULT_ADMIN_PASSWORD
-				).put(
-					"userName", "test@liferay.com"
-				).toString()
-			).put(
 				"externalReferenceCode", "L_LIFERAY_AI_HUB_MCP_SERVER"
 			).put(
 				"r_accountToAIHubMCPServers_accountEntryId",

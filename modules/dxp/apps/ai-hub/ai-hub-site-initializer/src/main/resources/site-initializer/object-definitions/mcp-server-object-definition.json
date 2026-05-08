@@ -18,34 +18,6 @@
 	"name": "AIHubMCPServer",
 	"objectFields": [
 		{
-			"DBType": "Clob",
-			"businessType": "LongText",
-			"defaultValue": "null",
-			"externalReferenceCode": "AUTHENTICATION_ARGUMENTS",
-			"indexed": true,
-			"indexedAsKeyword": false,
-			"indexedLanguageId": "en_US",
-			"label": {
-				"en_US": "Authentication Arguments"
-			},
-			"listTypeDefinitionId": 0,
-			"localized": false,
-			"name": "authArguments",
-			"objectFieldSettings": [
-				{
-					"name": "showCounter",
-					"value": false
-				}
-			],
-			"readOnly": "false",
-			"readOnlyConditionExpression": "",
-			"required": false,
-			"state": false,
-			"system": true,
-			"type": "Clob",
-			"unique": false
-		},
-		{
 			"DBType": "String",
 			"businessType": "Text",
 			"defaultValue": "null",
