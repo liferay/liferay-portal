@@ -203,4 +203,4 @@ public class SiteHistogramMetricSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1439543644
+// LIFERAY-REST-BUILDER-HASH:-438412722

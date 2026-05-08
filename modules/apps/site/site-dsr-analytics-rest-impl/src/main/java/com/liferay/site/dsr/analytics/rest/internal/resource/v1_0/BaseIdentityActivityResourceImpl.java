@@ -532,4 +532,4 @@ public abstract class BaseIdentityActivityResourceImpl
 		LogFactoryUtil.getLog(BaseIdentityActivityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:182388269
+// LIFERAY-REST-BUILDER-HASH:1750558840

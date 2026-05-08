@@ -78,4 +78,4 @@ public class MetricValue implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:889918629
+// LIFERAY-REST-BUILDER-HASH:1599773901

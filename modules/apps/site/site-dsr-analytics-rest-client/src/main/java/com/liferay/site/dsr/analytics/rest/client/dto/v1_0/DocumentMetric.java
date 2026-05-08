@@ -248,4 +248,4 @@ public class DocumentMetric implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-862070494
+// LIFERAY-REST-BUILDER-HASH:134348867

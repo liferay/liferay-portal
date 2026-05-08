@@ -99,4 +99,4 @@ public class UserSessions implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:568255478
+// LIFERAY-REST-BUILDER-HASH:-181777842

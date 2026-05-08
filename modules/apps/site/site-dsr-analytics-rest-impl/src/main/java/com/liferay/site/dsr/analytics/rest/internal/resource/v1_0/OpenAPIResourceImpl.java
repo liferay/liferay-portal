@@ -85,25 +85,25 @@ public class OpenAPIResourceImpl {
 
 	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
 		{
-			add(DocumentMetricResourceImpl.class);
+			add(DocumentsMetricResourceImpl.class);
 
-			add(EventResourceImpl.class);
+			add(EventsResourceImpl.class);
 
 			add(IdentityActivityResourceImpl.class);
 
-			add(MostActiveVisitorResourceImpl.class);
+			add(MostActiveVisitorsResourceImpl.class);
 
-			add(SessionsSiteHistogramMetricResourceImpl.class);
+			add(SiteHistogramMetricResourceImpl.class);
 
-			add(UserSessionResourceImpl.class);
+			add(SiteVisitorBehaviorMetricResourceImpl.class);
+
+			add(UserSessionsResourceImpl.class);
 
 			add(VisitFrequencyResourceImpl.class);
-
-			add(VisitorsSiteHistogramMetricResourceImpl.class);
 
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:1063458595
+// LIFERAY-REST-BUILDER-HASH:1243925173

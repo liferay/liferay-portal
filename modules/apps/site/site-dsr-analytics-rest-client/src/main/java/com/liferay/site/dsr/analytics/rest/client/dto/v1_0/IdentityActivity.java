@@ -95,4 +95,4 @@ public class IdentityActivity implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2085528471
+// LIFERAY-REST-BUILDER-HASH:-160738599

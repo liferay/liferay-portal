@@ -95,4 +95,4 @@ public class VisitFrequencyItem implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-712277116
+// LIFERAY-REST-BUILDER-HASH:-553086083

@@ -139,4 +139,4 @@ public class EventEntry implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2100009530
+// LIFERAY-REST-BUILDER-HASH:328071097

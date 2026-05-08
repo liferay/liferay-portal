@@ -97,4 +97,4 @@ public class Property implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-696645965
+// LIFERAY-REST-BUILDER-HASH:-289587235

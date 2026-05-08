@@ -133,4 +133,4 @@ public interface IdentityActivityResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1772071329
+// LIFERAY-REST-BUILDER-HASH:-640476066

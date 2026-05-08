@@ -160,4 +160,4 @@ public class MostActiveVisitor implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-765388755
+// LIFERAY-REST-BUILDER-HASH:-1081216351

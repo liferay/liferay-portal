@@ -78,4 +78,4 @@ public class Events implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:85567716
+// LIFERAY-REST-BUILDER-HASH:-1504401280

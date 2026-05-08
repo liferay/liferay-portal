@@ -160,4 +160,4 @@ public class UserSessionEvent implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1219811418
+// LIFERAY-REST-BUILDER-HASH:-450943953

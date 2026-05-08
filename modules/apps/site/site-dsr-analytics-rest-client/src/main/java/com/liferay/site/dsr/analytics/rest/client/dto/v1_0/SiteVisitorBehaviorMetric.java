@@ -143,4 +143,4 @@ public class SiteVisitorBehaviorMetric implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:418129371
+// LIFERAY-REST-BUILDER-HASH:-1636295861

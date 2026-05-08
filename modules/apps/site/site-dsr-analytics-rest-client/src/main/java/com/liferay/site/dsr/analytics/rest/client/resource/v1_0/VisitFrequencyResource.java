@@ -289,4 +289,4 @@ public interface VisitFrequencyResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1802884680
+// LIFERAY-REST-BUILDER-HASH:-1811409853

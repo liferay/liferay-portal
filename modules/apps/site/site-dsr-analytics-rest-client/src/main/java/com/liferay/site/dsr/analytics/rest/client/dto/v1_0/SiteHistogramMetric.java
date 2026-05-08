@@ -78,4 +78,4 @@ public class SiteHistogramMetric implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1314916710
+// LIFERAY-REST-BUILDER-HASH:1419518522
