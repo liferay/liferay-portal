@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
@@ -93,14 +94,14 @@ public class CPSearchResultsPortletSharedSearchContributor
 		String parameterValue = GetterUtil.getString(
 			portletSharedSearchSettings.getParameter("q"));
 
-		if (parameterValue != null) {
+		if (!Validator.isBlank(parameterValue)) {
 			if ((parameterValue.length() > 1) &&
 				(parameterValue.charAt(0) == CharPool.STAR)) {
 
 				parameterValue = parameterValue.substring(1);
 			}
 
-			portletSharedSearchSettings.setKeywords(parameterValue.toString());
+			portletSharedSearchSettings.setKeywords(parameterValue);
 		}
 
 		portletSharedSearchSettings.addCondition(
