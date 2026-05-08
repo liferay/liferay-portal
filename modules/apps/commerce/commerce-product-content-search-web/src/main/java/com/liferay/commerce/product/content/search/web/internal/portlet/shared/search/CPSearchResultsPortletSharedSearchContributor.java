@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
@@ -91,19 +92,6 @@ public class CPSearchResultsPortletSharedSearchContributor
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String parameterValue = GetterUtil.getString(
-			portletSharedSearchSettings.getParameter("q"));
-
-		if (!Validator.isBlank(parameterValue)) {
-			if ((parameterValue.length() > 1) &&
-				(parameterValue.charAt(0) == CharPool.STAR)) {
-
-				parameterValue = parameterValue.substring(1);
-			}
-
-			portletSharedSearchSettings.setKeywords(parameterValue);
-		}
-
 		portletSharedSearchSettings.addCondition(
 			new BooleanClause<Query>(
 				new TermQuery(
@@ -124,6 +112,8 @@ public class CPSearchResultsPortletSharedSearchContributor
 
 		SearchContext searchContext =
 			portletSharedSearchSettings.getSearchContext();
+
+		_setKeywords(portletSharedSearchSettings, searchContext);
 
 		searchContext.setAttribute(CPField.PUBLISHED, Boolean.TRUE);
 		searchContext.setEntryClassNames(
@@ -223,6 +213,32 @@ public class CPSearchResultsPortletSharedSearchContributor
 
 		searchContext.setEnd(startAndEnd[1]);
 		searchContext.setStart(startAndEnd[0]);
+	}
+
+	private void _setKeywords(
+		PortletSharedSearchSettings portletSharedSearchSettings,
+		SearchContext searchContext) {
+
+		String parameterValue = GetterUtil.getString(
+			portletSharedSearchSettings.getParameter(
+				GetterUtil.getString(
+					portletSharedSearchSettings.getKeywordsParameterName(),
+					"q")));
+
+		if (Validator.isBlank(parameterValue)) {
+			return;
+		}
+
+		if ((parameterValue.length() > 1) &&
+			(parameterValue.charAt(0) == CharPool.STAR)) {
+
+			parameterValue = parameterValue.substring(1);
+			searchContext.setAttribute(
+				SearchContextAttributes.ATTRIBUTE_KEY_LUCENE_SYNTAX,
+				Boolean.TRUE);
+		}
+
+		portletSharedSearchSettings.setKeywords(parameterValue);
 	}
 
 	@Reference
