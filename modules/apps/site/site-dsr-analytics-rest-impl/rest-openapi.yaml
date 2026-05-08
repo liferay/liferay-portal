@@ -22,7 +22,7 @@ components:
                     type: array
                 usersInvolvedMetric:
                     $ref: "#/components/schemas/MetricValue"
-        DocumentMetrics:
+        DocumentsMetric:
             properties:
                 documentMetrics:
                     items:
@@ -178,9 +178,9 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
-    "/document-metrics":
+    "/documents-metric":
         get:
-            operationId: getDocumentMetric
+            operationId: getDocumentsMetric
             parameters:
                 -   in: query
                     name: groupIds
@@ -229,13 +229,14 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/DocumentMetrics"
+                                $ref: "#/components/schemas/DocumentsMetric"
                         application/xml:
                             schema:
-                                $ref: "#/components/schemas/DocumentMetrics"
-            tags: ["DocumentMetric"]
+                                $ref: "#/components/schemas/DocumentsMetric"
+            tags: ["DocumentsMetric"]
     "/events":
         get:
+            operationId: getEvents
             parameters:
                 -   in: query
                     name: groupIds
@@ -286,7 +287,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Events"
-            tags: ["Event"]
+            tags: ["Events"]
     "/identity-activity":
         get:
             operationId: getIdentityActivity
@@ -319,7 +320,7 @@ paths:
             tags: ["IdentityActivity"]
     "/most-active-visitors":
         get:
-            operationId: getMostActiveVisitor
+            operationId: getMostActiveVisitors
             parameters:
                 -   in: query
                     name: groupIds
@@ -358,9 +359,10 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/MostActiveVisitors"
-            tags: ["MostActiveVisitor"]
+            tags: ["MostActiveVisitors"]
     "/sessions-site-histogram-metric":
         get:
+            operationId: getSessionsSiteHistogramMetric
             parameters:
                 -   in: query
                     name: emailAddresses
@@ -400,7 +402,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteHistogramMetric"
-            tags: ["SessionsSiteHistogramMetric"]
+            tags: ["SiteHistogramMetric"]
     "/site-visitor-behavior-metric":
         get:
             operationId: getSiteVisitorBehaviorMetric
@@ -424,10 +426,10 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteVisitorBehaviorMetric"
-            tags: ["UserSession"]
+            tags: ["SiteVisitorBehaviorMetric"]
     "/user-sessions":
         get:
-            operationId: getUserSession
+            operationId: getUserSessions
             parameters:
                 -   in: query
                     name: entityId
@@ -479,7 +481,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UserSessions"
-            tags: ["UserSession"]
+            tags: ["UserSessions"]
     "/visit-frequency":
         get:
             operationId: getVisitFrequency
@@ -514,6 +516,7 @@ paths:
             tags: ["VisitFrequency"]
     "/visitors-site-histogram-metric":
         get:
+            operationId: getVisitorsSiteHistogramMetric
             parameters:
                 -   in: query
                     name: groupIds
@@ -547,4 +550,4 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/SiteHistogramMetric"
-            tags: ["VisitorsSiteHistogramMetric"]
+            tags: ["SiteHistogramMetric"]
