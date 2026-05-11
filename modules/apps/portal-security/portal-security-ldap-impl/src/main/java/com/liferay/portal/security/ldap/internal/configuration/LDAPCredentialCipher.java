@@ -19,12 +19,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Resolves LDAP bind credentials read from OSGi configuration: values prefixed
- * with {@link LDAPServerCredentialEncryptionConfigurationModelListener#ENCRYPTED_VALUE_PREFIX}
- * are decrypted with the company key; legacy plain-text values are returned
- * unchanged so upgrades from older configurations continue to function until
- * the next save re-encrypts them.
- *
  * @author Jorge García Jiménez
  */
 @Component(service = {})

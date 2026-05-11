@@ -24,18 +24,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
- * SocketFactory wired into JNDI via the {@code java.naming.ldap.factory.socket}
- * environment property. Constrains every LDAPS connection to TLS 1.2/1.3 and a
- * FIPS-approved cipher suite allowlist, intersected with what the installed
- * JSSE provider actually supports.
- *
- * <p>
- * An operator-configured override (via
- * {@link com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration#fipsCipherSuites()})
- * is passed in through {@link #setCipherSuitesOverride(String[])} immediately
- * before {@code InitialLdapContext} is constructed, and cleared afterwards.
- * </p>
- *
  * @author Jorge García Jiménez
  */
 public class FIPSLDAPSSLSocketFactory extends SocketFactory {
@@ -149,8 +137,6 @@ public class FIPSLDAPSSLSocketFactory extends SocketFactory {
 	}
 
 	private static final String[] _ENABLED_PROTOCOLS = {"TLSv1.2", "TLSv1.3"};
-
-	// NIST SP 800-52 Rev. 2 approved AEAD suites for TLS 1.2/1.3
 
 	private static final String[] _FIPS_CIPHER_SUITES_ALLOWLIST = {
 		"TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384",

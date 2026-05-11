@@ -19,10 +19,6 @@ import java.util.Dictionary;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Rejects saving an {@link LDAPServerConfiguration} whose
- * {@code baseProviderURL} does not use the {@code ldaps://} scheme while FIPS
- * mode is enabled.
- *
  * @author Jorge García Jiménez
  */
 @Component(
@@ -50,7 +46,7 @@ public class FIPSLDAPServerConfigurationModelListener
 		if (!StringUtil.startsWith(baseProviderURL, "ldaps://")) {
 			throw new LocalizedLDAPConfigurationModelListenerException(
 				"FIPS mode requires LDAP base provider URL to use the " +
-					"ldaps:// scheme: " + baseProviderURL,
+					"\"ldaps://\" scheme: " + baseProviderURL,
 				"fips-mode-requires-the-ldaps-scheme-for-the-base-provider-" +
 					"url-x",
 				new Object[] {baseProviderURL}, LDAPServerConfiguration.class,

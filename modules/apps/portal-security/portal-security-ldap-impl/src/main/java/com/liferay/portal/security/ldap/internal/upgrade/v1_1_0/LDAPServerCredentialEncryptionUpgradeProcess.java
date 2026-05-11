@@ -19,12 +19,6 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
- * Re-saves every existing {@link LDAPServerConfiguration} factory instance so
- * that any plaintext {@code securityCredential} is encrypted by the model
- * listener. Already-encrypted values (prefixed with
- * {@link LDAPServerCredentialEncryptionConfigurationModelListener#ENCRYPTED_VALUE_PREFIX})
- * are skipped so the step is idempotent.
- *
  * @author Jorge García Jiménez
  */
 public class LDAPServerCredentialEncryptionUpgradeProcess

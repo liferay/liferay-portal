@@ -19,20 +19,6 @@ import java.util.Dictionary;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Under FIPS mode, requires {@code passwordEncryptionAlgorithm} to be in the
- * FIPS-approved allowlist ({@code SHA-256}, {@code SHA-384}, {@code SHA-512},
- * {@code PBKDF2})
- * whenever {@code method} is {@code password-compare}. Rejects legacy
- * algorithms (MD2, MD5, SHA, SSHA, UFC-CRYPT, BCRYPT) and plaintext compare
- * ({@code NONE} or unset, which defaults to {@code NONE}).
- *
- * <p>
- * The check is skipped when {@code method} is not {@code password-compare},
- * because {@code passwordEncryptionAlgorithm} is only consulted by the
- * password-compare path; the bind path delegates verification to the LDAP
- * server.
- * </p>
- *
  * @author Jorge García Jiménez
  */
 @Component(

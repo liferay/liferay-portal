@@ -24,17 +24,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Encrypts {@code securityCredential} (the LDAP bind password) at configuration
- * save time so it is never persisted in plain text in the OSGi configuration
- * store. Values already tagged with {@link #ENCRYPTED_VALUE_PREFIX} are left
- * untouched so repeated saves are idempotent and existing encrypted values
- * survive a round-trip.
- *
- * <p>
- * Always active; not gated on FIPS mode — encrypting credentials at rest is
- * a strict improvement over plain text in both modes.
- * </p>
- *
  * @author Jorge García Jiménez
  */
 @Component(
