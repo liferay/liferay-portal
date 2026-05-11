@@ -1,6 +1,6 @@
 # The Liferay Development Team
 
-Liferay Portal is produced by the worldwide Liferay engineering team and represents many hours of development, testing, writing documentation, and working with the wider Liferay community of customers, partners, and open source developers. We are glad you have chosen Liferay Portal and hope that it meets or exceeds your expectations!
+Liferay Portal is produced by the worldwide Liferay engineering team and represents many hours of development, testing, writing documentation, and working with the wider Liferay community of customers, partners, and open source developers. We are pleased you have chosen Liferay Portal and hope that it meets or exceeds your expectations!
 
 In addition to Liferay's engineering staff, a special thanks goes to the many open source developers who volunteer their time and energy to help with the release, with bug fixing, idea generation, documentation, translations, or other contributions that helped improve this release.
 
