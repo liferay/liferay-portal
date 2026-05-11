@@ -5,7 +5,6 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
@@ -21,8 +20,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.model.StyleBookEntry;
-import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
+import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -76,10 +75,7 @@ public class ChangeStyleBookEntryMVCActionCommand
 		}
 
 		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.
-				fetchStyleBookEntryByExternalReferenceCode(
-					updatedLayout.getStyleBookEntryERC(),
-					_staging.getLiveGroupId(updatedLayout.getGroupId()));
+			StyleBookEntryProviderUtil.getStyleBookEntry(updatedLayout);
 
 		if (styleBookEntry == null) {
 			styleBookEntry = DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(
@@ -104,11 +100,5 @@ public class ChangeStyleBookEntryMVCActionCommand
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
-
-	@Reference
-	private Staging _staging;
-
-	@Reference
-	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
