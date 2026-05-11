@@ -5,7 +5,6 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
-import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
@@ -13,6 +12,7 @@ import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
+import com.liferay.layout.content.page.editor.web.internal.util.PageEditorStyleBookEntriesUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.style.book.model.StyleBookEntry;
-import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.StyleBookUtil;
 
@@ -217,28 +216,12 @@ public class ChangeMasterLayoutMVCActionCommand
 					defaultStyleBookEntry)
 			));
 
-		List<StyleBookEntry> styleBookEntries =
-			_styleBookEntryLocalService.getStyleBookEntries(
-				_staging.getLiveGroupId(layout.getGroupId()),
-				frontendTokenDefinition.getThemeId());
+		JSONArray styleBookEntriesJSONArray =
+			PageEditorStyleBookEntriesUtil.getStyleBookEntriesJSONArray(
+				frontendTokenDefinition, true, layout, themeDisplay);
 
-		for (StyleBookEntry styleBookEntry : styleBookEntries) {
-			styleBooksJSONArray.put(
-				JSONUtil.put(
-					"imagePreviewURL",
-					styleBookEntry.getImagePreviewURL(themeDisplay)
-				).put(
-					"name", styleBookEntry.getName()
-				).put(
-					"styleBookEntryERC",
-					styleBookEntry.getExternalReferenceCode()
-				).put(
-					"tokenValues",
-					StyleBookEntryUtil.getFrontendTokensValues(
-						_frontendTokenDefinitionRegistry.
-							getFrontendTokenDefinition(layout),
-						themeDisplay.getLocale(), styleBookEntry)
-				));
+		for (int i = 0; i < styleBookEntriesJSONArray.length(); i++) {
+			styleBooksJSONArray.put(styleBookEntriesJSONArray.getJSONObject(i));
 		}
 
 		return styleBooksJSONArray;
@@ -265,11 +248,5 @@ public class ChangeMasterLayoutMVCActionCommand
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private Staging _staging;
-
-	@Reference
-	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
