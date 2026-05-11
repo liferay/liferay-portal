@@ -10,12 +10,14 @@ import {config} from '../../../app/config/index';
 const StyleBookDispatchContext = React.createContext(() => {});
 const StyleBookStateContext = React.createContext({
 	styleBookEntryERC: null,
+	styleBookEntryScopeERC: null,
 	tokenValues: {},
 });
 
 export function StyleBookContextProvider({children}) {
 	const [styleBook, setStyleBook] = useState({
 		styleBookEntryERC: config.styleBookEntryERC,
+		styleBookEntryScopeERC: config.styleBookEntryScopeERC,
 		tokenValues: config.frontendTokens,
 	});
 

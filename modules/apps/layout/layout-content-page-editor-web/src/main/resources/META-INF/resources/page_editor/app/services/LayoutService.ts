@@ -90,13 +90,20 @@ export default {
 	changeStyleBookEntry({
 		onNetworkStatus,
 		styleBookEntryERC,
+		styleBookEntryScopeERC,
 	}: {
 		onNetworkStatus: OnNetworkStatus;
 		styleBookEntryERC: string;
+		styleBookEntryScopeERC?: string;
 	}) {
 		return draftServiceFetch<{tokenValues: StyleBookTokenValueMap}>(
 			config.changeStyleBookEntryURL,
-			{body: {styleBookEntryERC}},
+			{
+				body: {
+					styleBookEntryERC,
+					styleBookEntryScopeERC: styleBookEntryScopeERC || '',
+				},
+			},
 			onNetworkStatus
 		);
 	},

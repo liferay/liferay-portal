@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -98,6 +99,9 @@ public class ChangeMasterLayoutMVCActionCommand
 			return JSONUtil.put(
 				"styleBookEntryERC", _getStyleBookEntryERC(updatedLayout)
 			).put(
+				"styleBookEntryScopeERC",
+				GetterUtil.getString(updatedLayout.getStyleBookEntryScopeERC())
+			).put(
 				"styleBooks",
 				_getStyleBooksJSONArray(updatedLayout, themeDisplay)
 			);
@@ -144,6 +148,9 @@ public class ChangeMasterLayoutMVCActionCommand
 			"masterLayoutData", layoutStructure.toJSONObject()
 		).put(
 			"styleBookEntryERC", _getStyleBookEntryERC(updatedLayout)
+		).put(
+			"styleBookEntryScopeERC",
+			GetterUtil.getString(updatedLayout.getStyleBookEntryScopeERC())
 		).put(
 			"styleBooks", _getStyleBooksJSONArray(updatedLayout, themeDisplay)
 		);
