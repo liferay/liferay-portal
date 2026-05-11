@@ -6,14 +6,39 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.style.book.model.StyleBookEntry;
+import com.liferay.style.book.service.StyleBookEntryLocalService;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,6 +57,60 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@Before
+	public void setUp() throws Exception {
+		_group = GroupTestUtil.addGroup();
+
+		_company = _companyLocalService.getCompany(_group.getCompanyId());
+		_layout = LayoutTestUtil.addTypeContentLayout(_group);
+	}
+
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
+	)
+	@Test
+	@TestInfo("LPD-89205")
+	public void testChangeStyleBookEntryPersistsStyleBookEntryScopeERC()
+		throws Exception {
+
+		Group depotGroup = _addConnectedDepotGroup();
+
+		StyleBookEntry depotStyleBookEntry = _addStyleBookEntry(
+			depotGroup.getGroupId());
+
+		_processAction(
+			depotStyleBookEntry.getExternalReferenceCode(),
+			depotGroup.getExternalReferenceCode());
+
+		Layout updatedLayout = _layoutLocalService.getLayout(_layout.getPlid());
+
+		Assert.assertEquals(
+			depotGroup.getExternalReferenceCode(),
+			updatedLayout.getStyleBookEntryScopeERC());
+		Assert.assertEquals(
+			depotStyleBookEntry.getExternalReferenceCode(),
+			updatedLayout.getStyleBookEntryERC());
+	}
+
+	@Test
+	@TestInfo("LPD-89205")
+	public void testChangeStyleBookEntryWithoutStyleBookEntryScopeERCStoresNull()
+		throws Exception {
+
+		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
+			_group.getGroupId());
+
+		_processAction(siteStyleBookEntry.getExternalReferenceCode(), "");
+
+		Layout updatedLayout = _layoutLocalService.getLayout(_layout.getPlid());
+
+		Assert.assertEquals(
+			siteStyleBookEntry.getExternalReferenceCode(),
+			updatedLayout.getStyleBookEntryERC());
+		Assert.assertTrue(
+			Validator.isNull(updatedLayout.getStyleBookEntryScopeERC()));
+	}
+
 	@Test
 	public void testIsLayoutLockRequired() {
 		Assert.assertFalse(
@@ -39,9 +118,69 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 				_mvcActionCommand, "isLayoutLockRequired", new Class<?>[0]));
 	}
 
+	private Group _addConnectedDepotGroup() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		return depotEntry.getGroup();
+	}
+
+	private StyleBookEntry _addStyleBookEntry(long groupId) throws Exception {
+		return _styleBookEntryLocalService.addStyleBookEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
+			false, null, RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString(), null);
+	}
+
+	private void _processAction(
+			String styleBookEntryERC, String styleBookEntryScopeERC)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			ContentLayoutTestUtil.getMockLiferayPortletActionRequest(
+				_company, _group, _layout);
+
+		mockLiferayPortletActionRequest.addParameter(
+			"styleBookEntryERC", styleBookEntryERC);
+		mockLiferayPortletActionRequest.addParameter(
+			"styleBookEntryScopeERC", styleBookEntryScopeERC);
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+	}
+
+	private Company _company;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	private Layout _layout;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
 	@Inject(
 		filter = "mvc.command.name=/layout_content_page_editor/change_style_book_entry"
 	)
 	private MVCActionCommand _mvcActionCommand;
+
+	@Inject
+	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
