@@ -142,28 +142,26 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 	</div>
 </div>
 
-<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-75064") %>'>
-	<clay:row>
-		<clay:col
-			cssClass="form-group"
-			sm="12"
-		>
-			<div class="form-group__inner">
-				<clay:checkbox
-					checked="<%= cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingGlobalPrivacyControlEnabled() %>"
-					disabled="<%= !cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() %>"
-					id='<%= liferayPortletResponse.getNamespace() + "globalPrivacyControlEnabled" %>'
-					label="global-privacy-control-enabled"
-					name='<%= liferayPortletResponse.getNamespace() + "globalPrivacyControlEnabled" %>'
-				/>
+<clay:row>
+	<clay:col
+		cssClass="form-group"
+		sm="12"
+	>
+		<div class="form-group__inner">
+			<clay:checkbox
+				checked="<%= cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingGlobalPrivacyControlEnabled() %>"
+				disabled="<%= !cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() %>"
+				id='<%= liferayPortletResponse.getNamespace() + "globalPrivacyControlEnabled" %>'
+				label="global-privacy-control-enabled"
+				name='<%= liferayPortletResponse.getNamespace() + "globalPrivacyControlEnabled" %>'
+			/>
 
-				<div aria-hidden="true" class="form-feedback-group">
-					<div class="form-text text-weight-normal"><liferay-ui:message key="global-privacy-control-enabled-help" /></div>
-				</div>
+			<div aria-hidden="true" class="form-feedback-group">
+				<div class="form-text text-weight-normal"><liferay-ui:message key="global-privacy-control-enabled-help" /></div>
 			</div>
-		</clay:col>
-	</clay:row>
-</c:if>
+		</div>
+	</clay:col>
+</clay:row>
 
 <h3 class="sheet-subtitle"><liferay-ui:message key="floating-icon" /></h3>
 

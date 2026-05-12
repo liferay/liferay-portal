@@ -8,7 +8,6 @@ package com.liferay.cookies.internal.servlet.filter;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -59,14 +58,6 @@ public class GlobalPrivacyControlWellKnownFilter extends BaseFilter {
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
 		throws Exception {
 
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-75064")) {
-			filterChain.doFilter(httpServletRequest, httpServletResponse);
-
-			return;
-		}
-
 		if (!Objects.equals(httpServletRequest.getMethod(), "GET")) {
 			httpServletResponse.setHeader("Allow", "GET");
 			httpServletResponse.sendError(
@@ -74,6 +65,8 @@ public class GlobalPrivacyControlWellKnownFilter extends BaseFilter {
 
 			return;
 		}
+
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		boolean enabled =
 			_cookiesConfigurationProvider.

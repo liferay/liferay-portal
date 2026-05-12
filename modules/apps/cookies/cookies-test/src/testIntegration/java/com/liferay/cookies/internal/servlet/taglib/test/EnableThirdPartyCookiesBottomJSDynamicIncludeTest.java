@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -32,7 +31,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Christian Moura
  */
-@FeatureFlag("LPD-75064")
 @RunWith(Arquillian.class)
 public class EnableThirdPartyCookiesBottomJSDynamicIncludeTest {
 

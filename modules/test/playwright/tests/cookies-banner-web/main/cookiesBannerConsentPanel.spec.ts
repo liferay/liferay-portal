@@ -36,7 +36,6 @@ export const test = mergeTests(
 	consentManagerConfigurationPageTest,
 	featureFlagsTest({
 		'LPD-51356': {enabled: true},
-		'LPD-75064': {enabled: true},
 	}),
 	loginTest(),
 	systemSettingsPageTest

@@ -9,7 +9,6 @@ import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.cookies.global.privacy.control.GlobalPrivacyControlProvider;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -32,15 +31,9 @@ public class GlobalPrivacyControlProviderImpl
 
 	@Override
 	public boolean isEnabled(HttpServletRequest httpServletRequest) {
-		long companyId = _portal.getCompanyId(httpServletRequest);
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-75064")) {
-			return false;
-		}
-
 		ExtendedObjectClassDefinition.Scope scope =
 			ExtendedObjectClassDefinition.Scope.COMPANY;
-		long scopePK = companyId;
+		long scopePK = _portal.getCompanyId(httpServletRequest);
 
 		try {
 			long groupId = _portal.getScopeGroupId(httpServletRequest);

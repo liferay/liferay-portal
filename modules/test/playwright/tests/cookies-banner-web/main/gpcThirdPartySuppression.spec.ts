@@ -6,7 +6,6 @@
 import {Page, expect, mergeTests} from '@playwright/test';
 
 import {consentManagerConfigurationPageTest} from '../../../fixtures/consentManagerConfigurationPageTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {
@@ -17,9 +16,6 @@ import {
 
 export const test = mergeTests(
 	consentManagerConfigurationPageTest,
-	featureFlagsTest({
-		'LPD-75064': {enabled: true},
-	}),
 	loginTest(),
 	systemSettingsPageTest
 );

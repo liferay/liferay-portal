@@ -81,6 +81,7 @@ export default function ({namespace}) {
 					floatingIconEnabled.removeAttribute('disabled');
 					forcedReconsentButton.removeAttribute('disabled');
 					forcedReconsentButton.classList.remove('disabled');
+					globalPrivacyControlEnabled.removeAttribute('disabled');
 					storeConsent.removeAttribute('disabled');
 
 					floatingIcons.forEach((iconInput) => {
@@ -102,10 +103,6 @@ export default function ({namespace}) {
 								element.removeAttribute('disabled');
 							});
 					}
-
-					if (Liferay.FeatureFlags['LPD-75064']) {
-						globalPrivacyControlEnabled.removeAttribute('disabled');
-					}
 				}
 				else {
 					consentRenewalPeriod.classList.add('disabled');
@@ -124,6 +121,7 @@ export default function ({namespace}) {
 					floatingIconEnabled.setAttribute('disabled', '');
 					forcedReconsentButton.classList.add('disabled');
 					forcedReconsentButton.setAttribute('disabled', '');
+					globalPrivacyControlEnabled.setAttribute('disabled', '');
 					storeConsent.checked = false;
 					storeConsent.setAttribute('disabled', '');
 
@@ -145,13 +143,6 @@ export default function ({namespace}) {
 							.forEach((element) => {
 								element.setAttribute('disabled', '');
 							});
-					}
-
-					if (Liferay.FeatureFlags['LPD-75064']) {
-						globalPrivacyControlEnabled.setAttribute(
-							'disabled',
-							''
-						);
 					}
 				}
 			}

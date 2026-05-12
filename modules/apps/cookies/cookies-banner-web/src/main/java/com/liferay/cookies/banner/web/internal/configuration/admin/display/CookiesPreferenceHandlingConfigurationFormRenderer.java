@@ -15,7 +15,6 @@ import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ImageLocalService;
@@ -130,17 +129,8 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 			ParamUtil.getBoolean(httpServletRequest, "floatingIconEnabled")
 		).put(
 			"globalPrivacyControlEnabled",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_portal.getCompanyId(httpServletRequest),
-						"LPD-75064")) {
-
-					return ParamUtil.getBoolean(
-						httpServletRequest, "globalPrivacyControlEnabled");
-				}
-
-				return false;
-			}
+			ParamUtil.getBoolean(
+				httpServletRequest, "globalPrivacyControlEnabled")
 		).put(
 			"modifiedDate",
 			() -> {
