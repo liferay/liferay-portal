@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"next": "15.5.10"
+		"next": "15.5.18"
 	},
 	"name": "clay-root",
 	"private": true,
