@@ -90,13 +90,13 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 	}
 
 	@Override
-	protected void afterReturning(
+	protected Object afterReturning(
 			AopMethodInvocation aopMethodInvocation, Object[] arguments,
 			Object result)
 		throws Throwable {
 
 		if (MassDeleteCacheThreadLocal.isMassDeleteMode()) {
-			return;
+			return result;
 		}
 
 		SystemEvent systemEvent = aopMethodInvocation.getAdviceMethodContext();
@@ -104,7 +104,7 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 		if (!systemEvent.send() ||
 			!isValid(aopMethodInvocation, arguments, _PHASE_AFTER_RETURNING)) {
 
-			return;
+			return result;
 		}
 
 		ClassedModel classedModel = (ClassedModel)arguments[0];
@@ -169,6 +169,8 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 				className, classPK, getUuid(classedModel), referrerClassName,
 				systemEvent.type(), _getExtraData(baseModel, StringPool.BLANK));
 		}
+
+		return result;
 	}
 
 	@Override

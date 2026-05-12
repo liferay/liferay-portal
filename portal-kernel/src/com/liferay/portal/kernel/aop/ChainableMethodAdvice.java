@@ -55,7 +55,8 @@ public abstract class ChainableMethodAdvice {
 		try {
 			returnValue = aopMethodInvocation.proceed(arguments);
 
-			afterReturning(aopMethodInvocation, arguments, returnValue);
+			returnValue = afterReturning(
+				aopMethodInvocation, arguments, returnValue);
 		}
 		catch (Throwable throwable) {
 			afterThrowing(aopMethodInvocation, arguments, throwable);
@@ -69,10 +70,26 @@ public abstract class ChainableMethodAdvice {
 		return returnValue;
 	}
 
-	protected void afterReturning(
+	/**
+	 * Returns the result to propagate to the caller, which allows this advice
+	 * to replace the intercepted method's return value. An advice that only
+	 * observes the result must return <code>result</code> unchanged, and
+	 * returning <code>null</code> propagates <code>null</code>. {@link
+	 * #nullResult} applies only to {@link #before(AopMethodInvocation,
+	 * Object[])}, where <code>null</code> instead means that the invocation
+	 * should proceed.
+	 *
+	 * @param  aopMethodInvocation the method invocation being advised
+	 * @param  arguments the arguments the method was invoked with
+	 * @param  result the result from the rest of the invocation chain
+	 * @return the result to propagate to the caller
+	 */
+	protected Object afterReturning(
 			AopMethodInvocation aopMethodInvocation, Object[] arguments,
 			Object result)
 		throws Throwable {
+
+		return result;
 	}
 
 	protected void afterThrowing(

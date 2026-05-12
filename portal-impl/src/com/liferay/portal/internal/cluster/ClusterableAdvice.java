@@ -31,13 +31,13 @@ public class ClusterableAdvice extends ChainableMethodAdvice {
 	}
 
 	@Override
-	protected void afterReturning(
+	protected Object afterReturning(
 			AopMethodInvocation aopMethodInvocation, Object[] arguments,
 			Object result)
 		throws Throwable {
 
 		if (!ClusterInvokeThreadLocal.isEnabled()) {
-			return;
+			return result;
 		}
 
 		Clusterable clusterable = aopMethodInvocation.getAdviceMethodContext();
@@ -45,6 +45,8 @@ public class ClusterableAdvice extends ChainableMethodAdvice {
 		ClusterableInvokerUtil.invokeOnCluster(
 			clusterable.acceptor(), aopMethodInvocation.getThis(),
 			aopMethodInvocation.getMethod(), arguments);
+
+		return result;
 	}
 
 	@Override
