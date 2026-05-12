@@ -11,6 +11,7 @@ import com.liferay.portal.internal.cluster.ClusterableAdvice;
 import com.liferay.portal.kernel.aop.ChainableMethodAdvice;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.preview.PreviewableAdvice;
 import com.liferay.portal.search.IndexableAdvice;
 import com.liferay.portal.security.access.control.AccessControlAdvice;
 import com.liferay.portal.service.ServiceContextAdvice;
@@ -67,6 +68,8 @@ public class AopCacheManager {
 		}
 
 		chainableMethodAdvices.add(new IndexableAdvice());
+
+		chainableMethodAdvices.add(new PreviewableAdvice());
 
 		chainableMethodAdvices.add(new RetryAdvice());
 
