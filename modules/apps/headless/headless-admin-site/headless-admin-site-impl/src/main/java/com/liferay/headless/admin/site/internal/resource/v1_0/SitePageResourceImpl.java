@@ -37,6 +37,7 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecifica
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.LogUtil;
+import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.SitePageResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
@@ -124,12 +125,10 @@ public class SitePageResourceImpl
 
 		EnabledUtil.checkEnabled(contextCompany);
 
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			sitePageExternalReferenceCode,
+		Layout layout = SitePageUtil.getSitePageLayout(
 			GroupUtil.getStagingAwareGroupId(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
-
-		_validateSitePageLayout(layout);
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			sitePageExternalReferenceCode);
 
 		_layoutService.deleteLayout(
 			layout.getPlid(),
@@ -260,12 +259,10 @@ public class SitePageResourceImpl
 
 		EnabledUtil.checkEnabled(contextCompany);
 
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			sitePageExternalReferenceCode,
+		Layout layout = SitePageUtil.getSitePageLayout(
 			GroupUtil.getStagingAwareGroupId(
-				contextCompany.getCompanyId(), siteExternalReferenceCode));
-
-		_validateSitePageLayout(layout);
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			sitePageExternalReferenceCode);
 
 		if (!layout.isTypeContent()) {
 			throw new IllegalArgumentException(
@@ -305,15 +302,12 @@ public class SitePageResourceImpl
 
 		EnabledUtil.checkEnabled(contextCompany);
 
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			sitePageExternalReferenceCode,
-			GroupUtil.getGroupId(
-				true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
-
-		_validateSitePageLayout(layout);
-
-		return _toSitePage(layout);
+		return _toSitePage(
+			SitePageUtil.getSitePageLayout(
+				GroupUtil.getGroupId(
+					true, contextCompany.getCompanyId(),
+					siteExternalReferenceCode),
+				sitePageExternalReferenceCode));
 	}
 
 	@Override
@@ -419,7 +413,7 @@ public class SitePageResourceImpl
 					sitePage));
 		}
 
-		_validateSitePageLayout(layout);
+		SitePageUtil.validateSitePageLayout(layout);
 
 		if (layout.isPrivateLayout() != privateLayout) {
 			throw new IllegalArgumentException(
@@ -1283,24 +1277,6 @@ public class SitePageResourceImpl
 
 		publishedPageSpecification.setExternalReferenceCode(
 			sitePage::getExternalReferenceCode);
-	}
-
-	private void _validateSitePageLayout(Layout layout) {
-		if (layout.isDraftLayout() || layout.isTypeAssetDisplay() ||
-			layout.isTypeUtility()) {
-
-			throw new IllegalArgumentException(
-				"This page type cannot be modified through this endpoint");
-		}
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
-
-		if (layoutPageTemplateEntry != null) {
-			throw new IllegalArgumentException(
-				"This page type cannot be modified through this endpoint");
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
