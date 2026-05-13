@@ -4,6 +4,7 @@ Bundle-Version: 1.0.2
 Export-Package:\
 	com.liferay.layout.content.exception,\
 	com.liferay.layout.content.model,\
+	com.liferay.layout.content.provider,\
 	com.liferay.layout.content.service,\
 	com.liferay.layout.content.service.persistence,\
 	com.liferay.layout.content.util.comparator
