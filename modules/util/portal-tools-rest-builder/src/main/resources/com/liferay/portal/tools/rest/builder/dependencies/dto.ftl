@@ -49,6 +49,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -536,8 +537,14 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 				<#elseif allSchemas[propertyType]??>
 					sb.append(String.valueOf(${propertyName}));
 				<#elseif stringUtil.equals(propertyType, "Object")>
-					if (${propertyName} instanceof Map) {
+					if (${propertyName} instanceof Collection) {
+						sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)${propertyName}));
+					}
+					else if (${propertyName} instanceof Map) {
 						sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)${propertyName}));
+					}
+					else if (${propertyName} instanceof Object[]) {
+						sb.append(JSONFactoryUtil.createJSONArray((Object[])${propertyName}));
 					}
 					else if (${propertyName} instanceof String) {
 						sb.append("\"");
