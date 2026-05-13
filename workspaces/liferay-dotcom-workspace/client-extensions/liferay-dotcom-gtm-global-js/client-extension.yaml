@@ -1,0 +1,9 @@
+assemble:
+    -   from: assets
+        into: static
+liferay-dotcom-gtm-global-js:
+    name: Liferay Dotcom Google Tag Manager
+    type: globalJS
+    url: index.js
+    scriptElementAttributes:
+        async: true

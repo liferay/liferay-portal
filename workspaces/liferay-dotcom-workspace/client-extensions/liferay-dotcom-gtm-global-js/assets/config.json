@@ -1,0 +1,8 @@
+{
+	"_comment": "Default container suffix (GTM- prefix added at runtime) + per-site overrides. Override this file per environment via the deploy pipeline; values bundled here mirror the prd OSGi config at lfris-www/configs/prd/osgi/configs/com.liferay.osb.www.gtm.configuration.GTMConfiguration.config.",
+	"default": "TS5JTP",
+	"sites": {
+		"232187258": "KJZWH5T",
+		"448812852": "M8WJZMD"
+	}
+}
