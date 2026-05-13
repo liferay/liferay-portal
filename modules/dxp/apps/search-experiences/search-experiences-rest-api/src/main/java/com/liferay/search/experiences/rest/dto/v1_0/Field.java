@@ -25,6 +25,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -453,9 +454,18 @@ public class Field implements Serializable {
 
 			sb.append("\"defaultValue\": ");
 
-			if (defaultValue instanceof Map) {
+			if (defaultValue instanceof Collection) {
+				sb.append(
+					JSONFactoryUtil.createJSONArray(
+						(Collection<?>)defaultValue));
+			}
+			else if (defaultValue instanceof Map) {
 				sb.append(
 					JSONFactoryUtil.createJSONObject((Map<?, ?>)defaultValue));
+			}
+			else if (defaultValue instanceof Object[]) {
+				sb.append(
+					JSONFactoryUtil.createJSONArray((Object[])defaultValue));
 			}
 			else if (defaultValue instanceof String) {
 				sb.append("\"");
