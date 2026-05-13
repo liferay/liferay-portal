@@ -5,14 +5,20 @@
 
 package com.liferay.osb.faro.web.internal.controller.contacts;
 
+import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
+import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
+import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.AccountDisplay;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.RoleConstants;
 
 import jakarta.annotation.security.RolesAllowed;
 
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -24,6 +30,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -96,6 +103,31 @@ public class AccountLifecycleController extends BaseFaroController {
 		return contactsEngineClient.getAccountLifecycleStageMetrics(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId), country,
 			id, industry);
+	}
+
+	@GET
+	@Path("/{id}/accounts")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public FaroFDSResultsDisplay getAccounts(
+			@PathParam("groupId") long groupId, @PathParam("id") String id,
+			@QueryParam("country") String country,
+			@QueryParam("industry") String industry,
+			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize,
+			@QueryParam("query") String query,
+			@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
+				sortString,
+			@QueryParam("stageType") String stageType)
+		throws Exception {
+
+		Results<Account> results =
+			contactsEngineClient.getAccountLifecycleAccounts(
+				faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
+				country, industry, query, stageType, page, pageSize,
+				sortString);
+
+		Function<Account, AccountDisplay> function = AccountDisplay::new;
+
+		return new FaroFDSResultsDisplay(results, function, page, pageSize);
 	}
 
 	@Path("/{id}")
