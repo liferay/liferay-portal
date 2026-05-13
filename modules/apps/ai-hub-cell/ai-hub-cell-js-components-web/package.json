@@ -15,7 +15,7 @@
 		"@clayui/panel": "^3.161.0",
 		"@clayui/provider": "^3.161.0",
 		"@clayui/toolbar": "^3.161.0",
-		"ckeditor5": "46.0.3",
+		"ckeditor5": "47.6.0",
 		"eventsource": "^4.0.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
