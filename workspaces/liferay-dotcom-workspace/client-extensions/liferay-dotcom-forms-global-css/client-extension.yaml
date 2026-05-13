@@ -1,0 +1,7 @@
+assemble:
+    -   from: assets
+        into: static
+liferay-dotcom-forms-global-css:
+    name: Liferay Dotcom Forms Global CSS
+    type: globalCSS
+    url: forms.css
