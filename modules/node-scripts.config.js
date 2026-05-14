@@ -189,6 +189,7 @@ module.exports = {
 		'@liferay/frontend-js-importmaps-extender': [],
 		'@liferay/frontend-js-item-selector-sample-web': [],
 		'@liferay/frontend-js-item-selector-web': [],
+		'@liferay/frontend-js-pintura-image-editor-web': [],
 		'@liferay/frontend-js-react-web': [
 			'classnames',
 			'formik',

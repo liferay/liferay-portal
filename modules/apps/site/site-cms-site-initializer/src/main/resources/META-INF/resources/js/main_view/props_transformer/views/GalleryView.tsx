@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
 import {Card, ICardSchema} from '@liferay/frontend-data-set-web';
 import React, {Context, useContext, useMemo, useState} from 'react';
 
 import '../../../../css/props_transformer/GalleryView.scss';
-
-import {ClayButtonWithIcon} from '@clayui/button';
 
 // eslint-disable-next-line
 import {IFrontendDataSetContext} from '@liferay/frontend-data-set-web/src/main/resources/META-INF/resources/FrontendDataSetContext';

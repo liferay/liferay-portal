@@ -1,0 +1,21 @@
+{
+	"dependencies": {
+		"@clayui/button": "^3.161.0",
+		"@clayui/layout": "^3.161.0",
+		"@clayui/modal": "^3.161.0",
+		"@liferay/frontend-js-react-web": "*",
+		"@pqina/pintura": "*",
+		"@pqina/react-pintura": "*",
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
+	"main": "index.ts",
+	"name": "@liferay/frontend-js-pintura-image-editor-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format",
+		"test": "node-scripts test"
+	},
+	"version": "1.0.0"
+}

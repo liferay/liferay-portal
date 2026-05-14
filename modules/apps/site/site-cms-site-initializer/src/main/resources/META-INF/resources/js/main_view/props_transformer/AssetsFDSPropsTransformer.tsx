@@ -10,6 +10,7 @@ import {
 	replaceTokens,
 } from '@liferay/frontend-data-set-web';
 import {getCMSItemSelectorGroupedFilters} from '@liferay/frontend-js-item-selector-web';
+import {openPinturaEditorModal} from '@liferay/frontend-js-pintura-image-editor-web';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -362,42 +363,70 @@ export default function AssetsFDSPropsTransformer({
 				{...items}
 			/>
 		),
-		itemsActions: itemsActions.map((action) => {
+		itemsActions: itemsActions.flatMap((action) => {
 			if (action?.data?.id === 'copy' || action?.data?.id === 'move') {
-				return {
-					...action,
-					isVisible: () => true,
-				};
+				return [{...action, isVisible: () => true}];
 			}
 			else if (
 				action?.data?.id === 'default-permissions' ||
 				action?.data?.id === 'edit-and-propagate-default-permissions'
 			) {
-				return {
-					...action,
-					isVisible: (item: any) =>
-						Boolean(
-							item?.entryClassName ===
-								OBJECT_ENTRY_FOLDER_CLASS_NAME
-						),
-				};
+				return [
+					{
+						...action,
+						isVisible: (item: any) =>
+							Boolean(
+								item?.entryClassName ===
+									OBJECT_ENTRY_FOLDER_CLASS_NAME
+							),
+					},
+				];
 			}
 			else if (action?.data?.id === 'download') {
-				return {
-					...action,
-					isVisible: (item: any) =>
-						Boolean(item?.embedded?.file?.link?.href),
-				};
+				return [
+					{
+						...action,
+						isVisible: (item: any) =>
+							Boolean(item?.embedded?.file?.link?.href),
+					},
+				];
 			}
 			else if (action?.data?.id === 'actionLink') {
-				return {
-					...action,
-					isVisible: (item: any) =>
-						Boolean(
-							item?.entryClassName !==
-								OBJECT_ENTRY_FOLDER_CLASS_NAME
-						),
+				const editImageAction = {
+					data: {id: 'edit-image'},
+					isVisible: (item: any) => {
+						const file = item?.embedded?.file;
+						if (!file) {
+							return false;
+						}
+						if (file.mimeType?.startsWith('image/')) {
+							return true;
+						}
+						const search = file.thumbnailURL?.includes('?')
+							? file.thumbnailURL.substring(
+									file.thumbnailURL.indexOf('?')
+								)
+							: '';
+
+						return new URLSearchParams(search).has(
+							'imageThumbnail'
+						);
+					},
+					label: Liferay.Language.get('edit-image'),
+					target: 'event',
 				};
+
+				return [
+					{
+						...action,
+						isVisible: (item: any) =>
+							Boolean(
+								item?.entryClassName !==
+									OBJECT_ENTRY_FOLDER_CLASS_NAME
+							),
+					},
+					editImageAction,
+				];
 			}
 			else if (
 				action?.data?.id === 'export-for-translation' ||
@@ -405,29 +434,33 @@ export default function AssetsFDSPropsTransformer({
 				action?.data?.id === 'translate' ||
 				action?.data?.id === 'view-content'
 			) {
-				return {
-					...action,
-					isVisible: (item: any) =>
-						Boolean(
-							item?.entryClassName !==
-								OBJECT_ENTRY_FOLDER_CLASS_NAME &&
-								!item?.embedded?.file
-						),
-				};
+				return [
+					{
+						...action,
+						isVisible: (item: any) =>
+							Boolean(
+								item?.entryClassName !==
+									OBJECT_ENTRY_FOLDER_CLASS_NAME &&
+									!item?.embedded?.file
+							),
+					},
+				];
 			}
 			else if (action?.data?.id === 'view-file') {
-				return {
-					...action,
-					isVisible: (item: any) =>
-						Boolean(item?.embedded?.file) &&
-						Boolean(
-							item?.entryClassName !==
-								OBJECT_ENTRY_FOLDER_CLASS_NAME
-						),
-				};
+				return [
+					{
+						...action,
+						isVisible: (item: any) =>
+							Boolean(item?.embedded?.file) &&
+							Boolean(
+								item?.entryClassName !==
+									OBJECT_ENTRY_FOLDER_CLASS_NAME
+							),
+					},
+				];
 			}
 
-			return action;
+			return [action];
 		}),
 		async onActionDropdownItemClick({
 			action,
@@ -623,6 +656,55 @@ export default function AssetsFDSPropsTransformer({
 							items: filteredItems,
 						}),
 					size: 'full-screen',
+				});
+			}
+			else if (action?.data?.id === 'edit-image') {
+				event?.preventDefault();
+
+				const file = itemData.embedded.file;
+				const url =
+					file.previewURL ||
+					(file.thumbnailURL?.includes('?')
+						? file.thumbnailURL.substring(
+								0,
+								file.thumbnailURL.indexOf('?')
+							)
+						: file.thumbnailURL) ||
+					'';
+
+				const response = await fetch(url);
+				const imageBlob = await response.blob();
+
+				openPinturaEditorModal({
+					imageName: file.name,
+					imageUrl: imageBlob,
+					onSave: async (blob) => {
+						const formData = new FormData();
+
+						formData.append('file', blob, file.name);
+
+						const saveResponse = await fetch(
+							`/o/headless-delivery/v1.0/documents/${file.id}`,
+							{
+								body: formData,
+								headers: {
+									'x-csrf-token': Liferay.authToken,
+								},
+								method: 'PUT',
+							}
+						);
+
+						if (!saveResponse.ok) {
+							throw new Error(
+								`Failed to save image: ${saveResponse.status}`
+							);
+						}
+
+						// Wait for DL preview regeneration before reloading
+						await new Promise((resolve) => setTimeout(resolve, 4000));
+
+						window.location.href = window.location.href;
+					},
 				});
 			}
 		},

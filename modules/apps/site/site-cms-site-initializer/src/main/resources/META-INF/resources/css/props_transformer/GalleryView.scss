@@ -5,6 +5,7 @@
 
 	&__preview {
 		height: $gallery-preview-height;
+		position: relative;
 
 		.c-empty-state {
 			align-self: center;
@@ -27,6 +28,13 @@
 				padding: 0;
 			}
 		}
+	}
+
+	&__actions {
+		position: absolute;
+		right: $spacer;
+		top: $spacer;
+		z-index: 1;
 	}
 
 	.preview-file .preview-file-container.preview-file-max-height {

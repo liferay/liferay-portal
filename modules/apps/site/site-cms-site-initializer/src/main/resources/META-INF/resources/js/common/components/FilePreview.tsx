@@ -23,13 +23,16 @@ export default function FilePreview({
 }: {
 	file: IAssetFile;
 }) {
-	const search = thumbnailURL
+	const thumbnailSearch = thumbnailURL?.includes('?')
 		? thumbnailURL.substring(thumbnailURL.indexOf('?'))
 		: '';
-	const params = new URLSearchParams(search);
+	const params = new URLSearchParams(thumbnailSearch);
 	const hasDocumentPreview = numberOfPages && previewURL;
 	const baseDocumentImageURL = new URL(previewURL, window.location.href);
-	const hasImagePreview = params.has('imageThumbnail');
+	const isImageThumbnail =
+		params.has('imageThumbnail') || mimeType?.startsWith('image/');
+	const imageURL = previewURL || thumbnailURL;
+	const hasImagePreview = !!isImageThumbnail && !!imageURL;
 	const isVideo = mimeType?.startsWith('video/') && previewURL;
 
 	return (
@@ -41,7 +44,7 @@ export default function FilePreview({
 					totalPages={numberOfPages}
 				/>
 			) : hasImagePreview ? (
-				<ImagePreviewer alt={name} imageURL={previewURL} />
+				<ImagePreviewer alt={name} imageURL={imageURL} />
 			) : isVideo ? (
 				<DLVideoIframe videoPreviewURL={previewURL} />
 			) : (
