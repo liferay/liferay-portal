@@ -1,24 +1,3 @@
-resource "google_project_iam_member" "cloudplatform_roles" {
-	for_each=toset(local.cloudplatform_roles)
-	member="serviceAccount:${google_service_account.cloudplatform_gsa.email}"
-	project=var.project_id
-	role=each.key
-}
-resource "google_project_iam_member" "provider_direct_iam" {
-	for_each=local.direct_provider_ksas
-	member="${local.ksa_principal_base}/provider-gcp-${each.key}"
-	project=var.project_id
-	role=each.value
-}
-resource "google_service_account" "cloudplatform_gsa" {
-	account_id="${var.deployment_name}-cp-iam"
-	project=var.project_id
-}
-resource "google_service_account_iam_member" "cloudplatform_wi_binding" {
-	member="serviceAccount:${var.project_id}.svc.id.goog[${var.crossplane_namespace}/provider-gcp-cloudplatform]"
-	role="roles/iam.workloadIdentityUser"
-	service_account_id=google_service_account.cloudplatform_gsa.name
-}
 resource "kubernetes_manifest" "function_auto_ready" {
 	manifest={
 		apiVersion="pkg.crossplane.io/v1beta1"

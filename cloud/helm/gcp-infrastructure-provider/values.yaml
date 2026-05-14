@@ -10,7 +10,6 @@ clusterBootstrap:
             memory: 8Mi
     script: |
         sysctl -w vm.max_map_count=1048576
-crossplaneGsaEmail: ""
 crossplaneNamespace: crossplane-system
 eck-operator:
     enabled: true

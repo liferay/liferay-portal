@@ -35,10 +35,6 @@ spec:
                     serviceAccountName: provider-gcp-cloudplatform
     serviceAccountTemplate:
         metadata:
-            {{- with .Values.crossplaneGsaEmail }}
-            annotations:
-                iam.gke.io/gcp-service-account: {{ . | quote }}
-            {{- end }}
             name: provider-gcp-cloudplatform
 ---
 apiVersion: pkg.crossplane.io/v1beta1
