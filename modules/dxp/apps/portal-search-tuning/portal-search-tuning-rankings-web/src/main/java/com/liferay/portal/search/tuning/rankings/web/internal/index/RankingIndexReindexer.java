@@ -44,6 +44,11 @@ import org.osgi.service.component.annotations.Reference;
 public class RankingIndexReindexer implements IndexReindexer {
 
 	@Override
+	public String getIndexNameSuffix() {
+		return "-search-tuning-rankings";
+	}
+
+	@Override
 	public void reindex(long companyId, ExecutionMode executionMode)
 		throws Exception {
 
