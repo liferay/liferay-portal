@@ -9,13 +9,11 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.product.constants.CPPortletKeys;
-import com.liferay.commerce.product.helper.CPDefinitionHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.url.CPFriendlyURL;
-import com.liferay.commerce.product.util.comparator.CPDefinitionModifiedDateComparator;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringBundler;
@@ -83,10 +81,9 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 					accountEntry.getAccountEntryId(),
 					_accountGroupLocalService.getAccountGroupIds(
 						accountEntry.getAccountEntryId()),
-					new long[] {groupId}, false, true, true,
+					new long[] {groupId}, true,
 					new int[] {WorkflowConstants.STATUS_APPROVED},
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					CPDefinitionModifiedDateComparator.getInstance(false));
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 			for (CPDefinition cpDefinition : cpDefinitions) {
 				visitLayout(
@@ -159,9 +156,6 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
-
-	@Reference
-	private CPDefinitionHelper _cpDefinitionHelper;
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
