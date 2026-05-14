@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.workflow.kaleo.metrics.integration.internal.helper;
+package com.liferay.portal.workflow.kaleo.metrics.integration.helper;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetEntry;
@@ -63,8 +63,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rafael Praxedes
  */
 @Component(service = IndexerHelper.class)
-public class IndexerHelper {
+public class IndexerHelperImpl implements IndexerHelper {
 
+	@Override
 	public AddNodeRequest createAddNodeRequest(
 		KaleoDefinitionVersion kaleoDefinitionVersion, KaleoNode kaleoNode) {
 
@@ -93,6 +94,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public AddNodeRequest createAddNodeRequest(
 		KaleoDefinitionVersion kaleoDefinitionVersion, KaleoTask kaleoTask) {
 
@@ -121,6 +123,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public AddProcessRequest createAddProcessRequest(
 		long companyId, KaleoDefinition kaleoDefinition) {
 
@@ -176,6 +179,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public AddTaskRequest createAddTaskRequest(
 		KaleoInstance kaleoInstance,
 		KaleoTaskInstanceToken kaleoTaskInstanceToken, String processVersion) {
@@ -239,6 +243,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public AddTransitionRequest createAddTransitionRequest(
 			KaleoTransition kaleoTransition, String processVersion)
 		throws PortalException {
@@ -275,6 +280,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public Map<Locale, String> createAssetTitleLocalizationMap(
 		String className, long classPK, long groupId) {
 
@@ -311,6 +317,7 @@ public class IndexerHelper {
 		return Collections.emptyMap();
 	}
 
+	@Override
 	public Map<Locale, String> createAssetTypeLocalizationMap(
 		String className, long groupId) {
 
@@ -326,6 +333,7 @@ public class IndexerHelper {
 		return localizationMap;
 	}
 
+	@Override
 	public DeleteProcessRequest createDeleteProcessRequest(
 		KaleoDefinition kaleoDefinition) {
 
@@ -339,6 +347,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public DeleteTransitionRequest createDeleteTransitionRequest(
 		KaleoTransition kaleoTransition) {
 
@@ -352,6 +361,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public UpdateProcessRequest createUpdateProcessRequest(
 		KaleoDefinition kaleoDefinition) {
 
@@ -379,6 +389,7 @@ public class IndexerHelper {
 		).build();
 	}
 
+	@Override
 	public List<Assignment> toAssignments(
 		List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances) {
 
@@ -454,7 +465,8 @@ public class IndexerHelper {
 		return kaleoTask.getKaleoTaskId();
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(IndexerHelper.class);
+	private static final Log _log = LogFactoryUtil.getLog(
+		IndexerHelperImpl.class);
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;
