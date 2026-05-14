@@ -10,25 +10,25 @@ package com.liferay.portal.search.spi.reindexer;
  */
 public interface IndexReindexer {
 
-	/*
-	something like this that can maybe help standardize index names and
-	also be used to check if indexes exist or not
-	 */
-	//public String getIndexNameSuffix();
+	public String getIndexNameSuffix();
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), portal-search-spi, replaced by {@link
+	 *             #reindex(long, ExecutionMode)}
+	 */
 	@Deprecated
 	public default void reindex(long companyId) throws Exception {
 		reindex(companyId, ExecutionMode.FULL);
-	};
+	}
+
+	public void reindex(long companyId, ExecutionMode executionMode)
+		throws Exception;
 
 	public default void reindex(long companyId, String executionMode)
 		throws Exception {
 
 		reindex(companyId, ExecutionMode.valueOf(executionMode.toUpperCase()));
 	}
-
-	public void reindex(long companyId, ExecutionMode executionMode)
-		throws Exception;
 
 	/*
 	create enum instead of String so that developers know what the
@@ -37,7 +37,9 @@ public interface IndexReindexer {
 	not really necessary
 	 */
 	public enum ExecutionMode {
+
 		CONCURRENT, FULL, SYNC
+
 	}
 
 }
