@@ -20,12 +20,8 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.search.capabilities.SearchCapabilities;
-import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
-import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.workflow.metrics.internal.background.task.constants.WorkflowMetricsReindexBackgroundTaskConstants;
 import com.liferay.portal.workflow.metrics.internal.petra.executor.WorkflowMetricsPortalExecutor;
-import com.liferay.portal.workflow.metrics.internal.search.index.WorkflowMetricsIndex;
 import com.liferay.portal.workflow.metrics.search.background.task.WorkflowMetricsReindexStatusMessageSender;
 import com.liferay.portal.workflow.metrics.search.index.reindexer.WorkflowMetricsReindexer;
 import com.liferay.portal.workflow.metrics.search.index.reindexer.WorkflowMetricsReindexerRegistry;
@@ -74,19 +70,6 @@ public class WorkflowMetricsReindexBackgroundTaskExecutor //if we implement Inde
 
 		_workflowMetricsReindexStatusMessageSender.sendStatusMessage(
 			0, indexEntityNames.length, StringPool.BLANK);
-
-		for (String indexEntityName : indexEntityNames) {
-			WorkflowMetricsIndex workflowMetricsIndex =
-				WorkflowMetricsIndex.toWorkflowMetricsIndex(indexEntityName);
-
-			workflowMetricsIndex.removeIndex(
-				_searchCapabilities, _searchEngineAdapter,
-				_indexNameBuilder, backgroundTask.getCompanyId());
-
-			workflowMetricsIndex.createIndex(
-				_searchCapabilities, _searchEngineAdapter,
-				_indexNameBuilder, backgroundTask.getCompanyId());
-		}
 
 		List<NoticeableFuture<?>> noticeableFutures = new ArrayList<>();
 
@@ -186,15 +169,6 @@ public class WorkflowMetricsReindexBackgroundTaskExecutor //if we implement Inde
 	@Reference
 	private BackgroundTaskStatusMessageSender
 		_backgroundTaskStatusMessageSender;
-
-	@Reference
-	private IndexNameBuilder _indexNameBuilder;
-
-	@Reference
-	private SearchCapabilities _searchCapabilities;
-
-	@Reference
-	private SearchEngineAdapter _searchEngineAdapter;
 
 	@Reference
 	private WorkflowMetricsPortalExecutor _workflowMetricsPortalExecutor;
