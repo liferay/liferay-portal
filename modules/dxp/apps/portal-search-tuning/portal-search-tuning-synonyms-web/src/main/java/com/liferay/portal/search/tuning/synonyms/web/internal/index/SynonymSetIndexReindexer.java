@@ -36,6 +36,11 @@ import org.osgi.service.component.annotations.Reference;
 public class SynonymSetIndexReindexer implements IndexReindexer {
 
 	@Override
+	public String getIndexNameSuffix() {
+		return "-search-tuning-synonyms";
+	}
+
+	@Override
 	public void reindex(long companyId, ExecutionMode executionMode)
 		throws Exception {
 
