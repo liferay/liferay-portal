@@ -4,17 +4,6 @@ kind: Provider
 metadata:
     annotations:
         argocd.argoproj.io/sync-wave: "-80"
-    name: provider-gcp-compute
-spec:
-    package: xpkg.upbound.io/upbound/provider-gcp-compute:v2.5.0
-    runtimeConfigRef:
-        name: gcp-compute-config
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-    annotations:
-        argocd.argoproj.io/sync-wave: "-80"
     name: provider-gcp-cloudplatform
 spec:
     package: xpkg.upbound.io/upbound/provider-gcp-cloudplatform:v2.5.0

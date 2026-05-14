@@ -42,45 +42,6 @@ kind: DeploymentRuntimeConfig
 metadata:
     annotations:
         argocd.argoproj.io/sync-wave: "-90"
-    name: gcp-compute-config
-spec:
-    deploymentTemplate:
-        spec:
-            selector:
-                matchLabels:
-                    pkg.crossplane.io/provider: provider-gcp-compute
-            template:
-                metadata:
-                    annotations:
-                        instrumentation.opentelemetry.io/inject-dotnet: "false"
-                        instrumentation.opentelemetry.io/inject-java: "false"
-                        instrumentation.opentelemetry.io/inject-nodejs: "false"
-                        instrumentation.opentelemetry.io/inject-python: "false"
-                        sidecar.opentelemetry.io/inject: "false"
-                    labels:
-                        pkg.crossplane.io/provider: provider-gcp-compute
-                spec:
-                    containers:
-                        -   name: package-runtime
-                            resources:
-                                limits:
-                                    cpu: 1000m
-                                    memory: 2Gi
-                                requests:
-                                    cpu: 250m
-                                    memory: 512Mi
-                            {{- include "crossplane-runtime-configs.containerSecurityContext" . | nindent 28 }}
-                    {{- include "crossplane-runtime-configs.podSecurityContext" . | nindent 20 }}
-                    serviceAccountName: provider-gcp-compute
-    serviceAccountTemplate:
-        metadata:
-            name: provider-gcp-compute
----
-apiVersion: pkg.crossplane.io/v1beta1
-kind: DeploymentRuntimeConfig
-metadata:
-    annotations:
-        argocd.argoproj.io/sync-wave: "-90"
     name: gcp-family-config
 spec:
     deploymentTemplate:
