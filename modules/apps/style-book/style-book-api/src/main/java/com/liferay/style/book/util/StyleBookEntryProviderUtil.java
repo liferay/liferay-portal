@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.model.StyleBookEntry;
@@ -55,7 +56,7 @@ public class StyleBookEntryProviderUtil {
 			layout.getCompanyId(), layout.getStyleBookEntryScopeERC(),
 			layout.getGroupId());
 
-		if (groupId != null) {
+		if ((groupId != null) && _isConnectedGroup(groupId, layout)) {
 			styleBookEntry =
 				StyleBookEntryLocalServiceUtil.
 					fetchStyleBookEntryByExternalReferenceCode(
@@ -92,6 +93,21 @@ public class StyleBookEntryProviderUtil {
 
 		return siteConnectedGroupGroupProvider.
 			getCurrentAndAncestorSiteAndDepotGroupIds(groupId);
+	}
+
+	private static boolean _isConnectedGroup(long groupId, Layout layout) {
+		try {
+			return ArrayUtil.contains(
+				_getGroupIds(layout.getCompanyId(), layout.getGroupId()),
+				groupId);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return false;
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
