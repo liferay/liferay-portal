@@ -8,10 +8,6 @@ locals {
 		"${local.secret_prefixes.certificates}${var.argocd_domain_config.tls_external_secret_name}"
 	)
 	argocd_tls_secret_name="argocd-server-tls"
-	cloudplatform_roles=[
-		"roles/iam.serviceAccountAdmin",
-		"roles/resourcemanager.projectIamAdmin",
-	]
 	common_labels={
 		"app.kubernetes.io/component"="gitops-infrastructure"
 		"app.kubernetes.io/managed-by"=local.terraform_manager_name
@@ -42,12 +38,6 @@ locals {
 		"instrumentation.opentelemetry.io/inject-nodejs"="false"
 		"instrumentation.opentelemetry.io/inject-python"="false"
 		"sidecar.opentelemetry.io/inject"="false"
-	}
-	direct_provider_ksas={
-		compute="roles/compute.admin"
-		kms="roles/cloudkms.admin"
-		sql="roles/cloudsql.admin"
-		storage="roles/storage.admin"
 	}
 	gateway_class_name="liferay-gateway-class"
 	gateway_name="${var.infrastructure_git_repo_config.target.slugProjectId}-${var.infrastructure_git_repo_config.target.slugEnvironmentId}-gateway"
