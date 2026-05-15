@@ -56,6 +56,10 @@ public class Account {
 		return new Date(_modifiedDate.getTime());
 	}
 
+	public Integer getNumberOfEmployees() {
+		return _numberOfEmployees;
+	}
+
 	public String getWebsite() {
 		return _website;
 	}
@@ -100,6 +104,10 @@ public class Account {
 		}
 	}
 
+	public void setNumberOfEmployees(Integer numberOfEmployees) {
+		_numberOfEmployees = numberOfEmployees;
+	}
+
 	public void setWebsite(String website) {
 		_website = website;
 	}
@@ -113,6 +121,7 @@ public class Account {
 	private Date _lastActivityDate;
 	private String _lifecycleStage;
 	private Date _modifiedDate;
+	private Integer _numberOfEmployees;
 	private String _website;
 
 }

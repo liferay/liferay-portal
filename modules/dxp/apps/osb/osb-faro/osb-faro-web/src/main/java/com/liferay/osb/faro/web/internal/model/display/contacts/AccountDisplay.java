@@ -29,6 +29,7 @@ public class AccountDisplay {
 		_lastActivityDate = account.getLastActivityDate();
 		_lifecycleStage = account.getLifecycleStage();
 		_modifiedDate = account.getModifiedDate();
+		_numberOfEmployees = account.getNumberOfEmployees();
 		_website = account.getWebsite();
 	}
 
@@ -47,6 +48,7 @@ public class AccountDisplay {
 	@JsonProperty("lastEnriched")
 	private Date _modifiedDate;
 
+	private Integer _numberOfEmployees;
 	private String _website;
 
 }
