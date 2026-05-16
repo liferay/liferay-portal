@@ -367,7 +367,8 @@ describe('Add to Cart', () => {
 		});
 	});
 
-	describe('Poshi: CommerceProductCard Unit ports', () => {
+	describe('bundled-product variants and purchasable contract', () => {
+
 		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const {
 			mockBundledProductMultiSku,
@@ -376,7 +377,7 @@ describe('Add to Cart', () => {
 			// @ts-ignore
 		} = require('../fixtures/productFixtures');
 
-		it('CanAddToCartSingleSkuDynamicPriceBundledProductFromProductCard: a single-SKU bundled product (purchasable=true) renders an enabled add-to-cart button alongside the quantity selector', () => {
+		it('a single-SKU bundled product (purchasable=true) renders an enabled add-to-cart button alongside the quantity selector', () => {
 			const addToCart = render(
 				<AddToCart {...mockBundledProductSingleSku()} />
 			);
@@ -388,7 +389,7 @@ describe('Add to Cart', () => {
 			expect(button).not.toBeDisabled();
 		});
 
-		it('CanAddToCartSingleSkuStaticPriceBundledProductFromProductCard: a static-price single-SKU bundled product also renders an enabled add-to-cart button (the price-type does not affect the AddToCart contract)', () => {
+		it('a static-price single-SKU bundled product also renders an enabled add-to-cart button (the price-type does not affect the AddToCart contract)', () => {
 			const addToCart = render(
 				<AddToCart
 					{...mockBundledProductSingleSku({
@@ -404,7 +405,7 @@ describe('Add to Cart', () => {
 			expect(button).not.toBeDisabled();
 		});
 
-		it('CannotAddToCartMultipleSkuDynamicPriceBundledProductFromProductCard: a multi-SKU bundled product (purchasable=false) renders the add-to-cart button in the disabled state', () => {
+		it('a multi-SKU bundled product (purchasable=false) renders the add-to-cart button in the disabled state', () => {
 			const addToCart = render(
 				<AddToCart {...mockBundledProductMultiSku()} />
 			);
@@ -415,7 +416,7 @@ describe('Add to Cart', () => {
 			expect(button).toBeDisabled();
 		});
 
-		it('CannotAddToCartMultipleSkuStaticPriceBundledProductFromProductCard: a static-price multi-SKU bundled product also renders the add-to-cart button disabled', () => {
+		it('a static-price multi-SKU bundled product also renders the add-to-cart button disabled', () => {
 			const addToCart = render(
 				<AddToCart
 					{...mockBundledProductMultiSku({
@@ -430,7 +431,7 @@ describe('Add to Cart', () => {
 			expect(button).toBeDisabled();
 		});
 
-		it('AssertViewAllVariantsButtonRedirectsToProductDetailsPage: when a product cannot be purchased directly (purchasable=false), AddToCart is disabled — the surrounding product card is expected to surface a "view all variants" link instead', () => {
+		it('when a product cannot be purchased directly (purchasable=false), AddToCart is disabled — the surrounding product card is expected to surface a "view all variants" link instead', () => {
 			const addToCart = render(
 				<AddToCart {...mockBundledProductMultiSku()} />
 			);
