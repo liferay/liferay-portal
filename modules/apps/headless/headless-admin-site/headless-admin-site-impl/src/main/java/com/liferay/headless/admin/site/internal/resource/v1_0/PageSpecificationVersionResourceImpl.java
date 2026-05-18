@@ -13,6 +13,7 @@ import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionRes
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionService;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -42,6 +43,9 @@ public class PageSpecificationVersionResourceImpl
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
 
+		FeatureFlagManagerUtil.checkEnabled(
+			contextCompany.getCompanyId(), "LPD-10622");
+
 		_getLayout(
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
 
@@ -61,6 +65,9 @@ public class PageSpecificationVersionResourceImpl
 				@NestedFieldId(value = "externalReferenceCode") String
 					sitePageExternalReferenceCode)
 		throws Exception {
+
+		FeatureFlagManagerUtil.checkEnabled(
+			contextCompany.getCompanyId(), "LPD-10622");
 
 		Layout layout = _getLayout(
 			true, siteExternalReferenceCode, sitePageExternalReferenceCode);
