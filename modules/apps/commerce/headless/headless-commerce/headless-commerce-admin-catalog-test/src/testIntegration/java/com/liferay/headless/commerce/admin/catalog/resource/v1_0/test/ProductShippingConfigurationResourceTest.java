@@ -127,10 +127,23 @@ public class ProductShippingConfigurationResourceTest
 		super.testPatchProductIdShippingConfiguration();
 	}
 
-	@Ignore
 	@Test
 	public void testPatchProductIdShippingConfigurationProductVersioning()
 		throws Exception {
+
+		CommerceCatalog commerceCatalog = CPTestUtil.getSystemCommerceCatalog(
+			testCompany.getCompanyId());
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			commerceCatalog.getGroupId(), "simple", null, null, true, true,
+			WorkflowConstants.STATUS_APPROVED);
+
+		_cpDefinitions.add(cpDefinition1);
+
+		cpDefinition1.setFreeShipping(false);
+
+		cpDefinition1 = _cpDefinitionLocalService.updateCPDefinition(
+			cpDefinition1);
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -140,15 +153,6 @@ public class ProductShippingConfigurationResourceTest
 						HashMapDictionaryBuilder.<String, Object>put(
 							"enabled", true
 						).build())) {
-
-			CommerceCatalog commerceCatalog =
-				CPTestUtil.getSystemCommerceCatalog(testCompany.getCompanyId());
-
-			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
-				commerceCatalog.getGroupId(), "simple", null, null, true, true,
-				WorkflowConstants.STATUS_APPROVED);
-
-			_cpDefinitions.add(cpDefinition1);
 
 			Assert.assertEquals(
 				1,
@@ -191,7 +195,11 @@ public class ProductShippingConfigurationResourceTest
 
 			_cpDefinitions.add(cpDefinition2);
 
+			cpDefinition1 = _cpDefinitionLocalService.fetchCPDefinition(
+				cpDefinition1.getCPDefinitionId());
+
 			Assert.assertFalse(cpDefinition1.isFreeShipping());
+
 			Assert.assertTrue(cpDefinition2.isFreeShipping());
 
 			ProductShippingConfiguration productShippingConfiguration2 =
