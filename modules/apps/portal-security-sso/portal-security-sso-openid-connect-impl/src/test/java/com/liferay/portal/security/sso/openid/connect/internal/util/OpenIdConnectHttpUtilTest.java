@@ -85,6 +85,8 @@ public class OpenIdConnectHttpUtilTest {
 
 		Assert.assertNull(httpOptions.getBody());
 		Assert.assertEquals(
+			Http.CookieSpec.STANDARD, httpOptions.getCookieSpec());
+		Assert.assertEquals(
 			authorization, httpOptions.getHeader("Authorization"));
 		Assert.assertEquals(userInfoURL.toString(), httpOptions.getLocation());
 		Assert.assertFalse(httpOptions.isPost());
