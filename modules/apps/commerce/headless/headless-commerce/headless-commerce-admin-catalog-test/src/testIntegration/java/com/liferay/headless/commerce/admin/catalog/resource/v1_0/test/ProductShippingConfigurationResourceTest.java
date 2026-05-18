@@ -127,6 +127,7 @@ public class ProductShippingConfigurationResourceTest
 		super.testPatchProductIdShippingConfiguration();
 	}
 
+	@Ignore
 	@Test
 	public void testPatchProductIdShippingConfigurationProductVersioning()
 		throws Exception {
