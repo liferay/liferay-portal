@@ -51,6 +51,8 @@ public class OpenIdConnectHttpUtil {
 	private static Http.Options _toHttpOptions(HTTPRequest httpRequest) {
 		Http.Options httpOptions = new Http.Options();
 
+		httpOptions.setCookieSpec(Http.CookieSpec.STANDARD);
+
 		Map<String, List<String>> headerMap = httpRequest.getHeaderMap();
 
 		if (headerMap != null) {

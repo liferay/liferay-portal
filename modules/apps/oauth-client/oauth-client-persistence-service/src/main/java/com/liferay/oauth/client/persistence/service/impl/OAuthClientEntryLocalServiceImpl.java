@@ -347,6 +347,7 @@ public class OAuthClientEntryLocalServiceImpl
 
 			Http.Options httpOptions = new Http.Options();
 
+			httpOptions.setCookieSpec(Http.CookieSpec.STANDARD);
 			httpOptions.setLocation(authServerWellKnownURI);
 
 			_http.URLtoString(httpOptions);
