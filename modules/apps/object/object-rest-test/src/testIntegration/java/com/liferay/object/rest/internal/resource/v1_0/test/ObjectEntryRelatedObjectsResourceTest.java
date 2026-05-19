@@ -7,6 +7,9 @@ package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -53,6 +57,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
@@ -66,7 +71,9 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -1486,6 +1493,119 @@ public class ObjectEntryRelatedObjectsResourceTest {
 	}
 
 	@Test
+	public void testPutCustomObjectEntryWithNestedCustomObjectEntryMultiselectPicklistByExternalReferenceCode()
+		throws Exception {
+
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				null, TestPropsValues.getUserId(),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				false, Collections.emptyList(), new ServiceContext());
+
+		_listTypeEntryLocalService.addListTypeEntry(
+			null, TestPropsValues.getUserId(),
+			listTypeDefinition.getListTypeDefinitionId(), "cat",
+			Collections.singletonMap(LocaleUtil.US, "cat"),
+			listTypeDefinition.isSystem());
+		_listTypeEntryLocalService.addListTypeEntry(
+			null, TestPropsValues.getUserId(),
+			listTypeDefinition.getListTypeDefinitionId(), "dog",
+			Collections.singletonMap(LocaleUtil.US, "dog"),
+			listTypeDefinition.isSystem());
+
+		String multiselectFieldName = "x" + RandomTestUtil.randomString();
+
+		ObjectDefinition childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				List.of(
+					ObjectFieldUtil.createObjectField(
+						listTypeDefinition.getListTypeDefinitionId(),
+						ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST,
+						null, ObjectFieldConstants.DB_TYPE_CLOB, false, false,
+						null, RandomTestUtil.randomString(),
+						multiselectFieldName, false, false)),
+				false);
+
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, childObjectDefinition,
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		try {
+			String childExternalReferenceCode =
+				"childERC-" + RandomTestUtil.randomString();
+
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"externalReferenceCode", childExternalReferenceCode
+				).toString(),
+				childObjectDefinition.getRESTContextPath(), Http.Method.POST);
+
+			String parentExternalReferenceCode =
+				_objectEntry1.getExternalReferenceCode();
+
+			JSONObject parentJSONObject = HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"externalReferenceCode", parentExternalReferenceCode
+				).put(
+					objectRelationship.getName(),
+					JSONUtil.putAll(
+						JSONUtil.put(
+							multiselectFieldName,
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"key", "cat"
+								).put(
+									"name", "cat"
+								),
+								JSONUtil.put(
+									"key", "dog"
+								).put(
+									"name", "dog"
+								))
+						).put(
+							"externalReferenceCode", childExternalReferenceCode
+						))
+				).toString(),
+				StringBundler.concat(
+					_objectDefinition1.getRESTContextPath(),
+					"/by-external-reference-code/",
+					parentExternalReferenceCode),
+				Http.Method.PUT);
+
+			JSONArray childrenJSONArray = parentJSONObject.getJSONArray(
+				objectRelationship.getName());
+
+			Assert.assertEquals(1, childrenJSONArray.length());
+
+			JSONObject childJSONObject = childrenJSONArray.getJSONObject(0);
+
+			JSONArray animalJSONArray = childJSONObject.getJSONArray(
+				multiselectFieldName);
+
+			Assert.assertEquals(2, animalJSONArray.length());
+
+			Set<String> keys = new HashSet<>();
+
+			for (int i = 0; i < animalJSONArray.length(); i++) {
+				JSONObject entryJSONObject = animalJSONArray.getJSONObject(i);
+
+				keys.add(entryJSONObject.getString("key"));
+			}
+
+			Assert.assertEquals(SetUtil.fromArray("cat", "dog"), keys);
+		}
+		finally {
+			_objectRelationships.remove(objectRelationship);
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				childObjectDefinition);
+			_listTypeDefinitionLocalService.deleteListTypeDefinition(
+				listTypeDefinition.getListTypeDefinitionId());
+		}
+	}
+
+	@Test
 	public void testPutCustomObjectEntryWithNestedSystemObjectEntry()
 		throws Exception {
 
@@ -2566,6 +2686,12 @@ public class ObjectEntryRelatedObjectsResourceTest {
 
 	private static final String _SYSTEM_OBJECT_FIELD_VALUE =
 		RandomTestUtil.randomString();
+
+	@Inject
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Inject
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	private ObjectDefinition _objectDefinition1;
 	private ObjectDefinition _objectDefinition2;
