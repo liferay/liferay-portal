@@ -125,130 +125,6 @@ public class ProductOptionResourceTest
 		_testPostProductByExternalReferenceCodeProductOptionsPageWithOptionExternalReferenceCode();
 	}
 
-	@Test
-	public void testPostProductIdProductOptionProductVersioning()
-		throws Exception {
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						CProductVersionConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"enabled", true
-						).build())) {
-
-			CommerceCatalog commerceCatalog =
-				CPTestUtil.getSystemCommerceCatalog(testCompany.getCompanyId());
-
-			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
-				commerceCatalog.getGroupId(), "simple", null, null, true, true,
-				WorkflowConstants.STATUS_APPROVED);
-
-			_cpDefinitions.add(cpDefinition1);
-
-			CPOption cpOption1 = CPTestUtil.addCPOption(
-				commerceCatalog.getGroupId(), true);
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			Assert.assertEquals(
-				0,
-				_cpDefinitionOptionRelLocalService.
-					getCPDefinitionOptionRelsCount(
-						cpDefinition1.getCPDefinitionId()));
-
-			ProductOption productOption1 = randomProductOption();
-
-			productOption1.setKey(cpOption1.getKey());
-
-			productOptionResource.postProductIdProductOptionsPage(
-				cpDefinition1.getCProductId(),
-				new ProductOption[] {productOption1});
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			List<CPDefinition> draftDefinitions =
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-
-			Assert.assertEquals(
-				draftDefinitions.toString(), 1, draftDefinitions.size());
-
-			CPDefinition cpDefinition2 = draftDefinitions.get(0);
-
-			_cpDefinitions.add(cpDefinition2);
-
-			Assert.assertEquals(
-				0,
-				_cpDefinitionOptionRelLocalService.
-					getCPDefinitionOptionRelsCount(
-						cpDefinition1.getCPDefinitionId()));
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionOptionRelLocalService.
-					getCPDefinitionOptionRelsCount(
-						cpDefinition2.getCPDefinitionId()));
-
-			CPOption cpOption2 = CPTestUtil.addCPOption(
-				commerceCatalog.getGroupId(), true);
-
-			ProductOption productOption2 = randomProductOption();
-
-			productOption2.setKey(cpOption2.getKey());
-
-			productOptionResource.postProductIdProductOptionsPage(
-				cpDefinition1.getCProductId(),
-				new ProductOption[] {productOption1, productOption2});
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			CPDefinition cpDefinition3 =
-				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT);
-
-			Assert.assertEquals(
-				cpDefinition2.getCPDefinitionId(),
-				cpDefinition3.getCPDefinitionId());
-
-			Assert.assertEquals(
-				2,
-				_cpDefinitionOptionRelLocalService.
-					getCPDefinitionOptionRelsCount(
-						cpDefinition3.getCPDefinitionId()));
-		}
-	}
-
 	@Override
 	@Test
 	public void testPostProductIdProductOptionsPage() throws Exception {
@@ -266,6 +142,8 @@ public class ProductOptionResourceTest
 		assertValid(postProductOption);
 
 		_testPostProductIdProductOptionsPageWithOptionExternalReferenceCode();
+
+		_testPostProductIdProductOptionsPageProductVersioning();
 	}
 
 	@Override
@@ -459,6 +337,129 @@ public class ProductOptionResourceTest
 		Assert.assertEquals(
 			randomProductOption.getOptionExternalReferenceCode(),
 			postProductOption.getOptionExternalReferenceCode());
+	}
+
+	private void _testPostProductIdProductOptionsPageProductVersioning()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			CommerceCatalog commerceCatalog =
+				CPTestUtil.getSystemCommerceCatalog(testCompany.getCompanyId());
+
+			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+				commerceCatalog.getGroupId(), "simple", null, null, true, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+			_cpDefinitions.add(cpDefinition1);
+
+			CPOption cpOption1 = CPTestUtil.addCPOption(
+				commerceCatalog.getGroupId(), true);
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			Assert.assertEquals(
+				0,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition1.getCPDefinitionId()));
+
+			ProductOption productOption1 = randomProductOption();
+
+			productOption1.setKey(cpOption1.getKey());
+
+			productOptionResource.postProductIdProductOptionsPage(
+				cpDefinition1.getCProductId(),
+				new ProductOption[] {productOption1});
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			List<CPDefinition> draftDefinitions =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				draftDefinitions.toString(), 1, draftDefinitions.size());
+
+			CPDefinition cpDefinition2 = draftDefinitions.get(0);
+
+			_cpDefinitions.add(cpDefinition2);
+
+			Assert.assertEquals(
+				0,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition1.getCPDefinitionId()));
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition2.getCPDefinitionId()));
+
+			CPOption cpOption2 = CPTestUtil.addCPOption(
+				commerceCatalog.getGroupId(), true);
+
+			ProductOption productOption2 = randomProductOption();
+
+			productOption2.setKey(cpOption2.getKey());
+
+			productOptionResource.postProductIdProductOptionsPage(
+				cpDefinition1.getCProductId(),
+				new ProductOption[] {productOption1, productOption2});
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				cpDefinition2.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
+
+			Assert.assertEquals(
+				2,
+				_cpDefinitionOptionRelLocalService.
+					getCPDefinitionOptionRelsCount(
+						cpDefinition3.getCPDefinitionId()));
+		}
 	}
 
 	private void _testPostProductIdProductOptionsPageWithOptionExternalReferenceCode()

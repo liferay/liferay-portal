@@ -131,93 +131,8 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 		super.testPostProductIdAttachment();
 
 		_testPostProductIdAttachmentWithFileEntryExternalReferenceCode();
-	}
 
-	@Test
-	public void testPostProductIdAttachmentProductVersioning()
-		throws Exception {
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						CProductVersionConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"enabled", true
-						).build())) {
-
-			CommerceCatalog commerceCatalog =
-				CPTestUtil.getSystemCommerceCatalog(testCompany.getCompanyId());
-
-			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
-				commerceCatalog.getGroupId(), "simple", null, null, true, true,
-				WorkflowConstants.STATUS_APPROVED);
-
-			_cpDefinitions.add(cpDefinition1);
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			long classNameId = _classNameLocalService.getClassNameId(
-				CPDefinition.class.getName());
-
-			Assert.assertEquals(
-				0,
-				_cpAttachmentFileEntryLocalService.
-					getCPAttachmentFileEntriesCount(
-						classNameId, cpDefinition1.getCPDefinitionId(),
-						CPAttachmentFileEntryConstants.TYPE_OTHER,
-						WorkflowConstants.STATUS_ANY));
-
-			Attachment attachment1 = randomAttachment();
-
-			attachment1.setType(CPAttachmentFileEntryConstants.TYPE_OTHER);
-
-			attachmentResource.postProductIdAttachment(
-				cpDefinition1.getCProductId(), attachment1);
-
-			Assert.assertEquals(
-				1,
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS
-				).size());
-
-			List<CPDefinition> draftDefinitions =
-				_cpDefinitionLocalService.getCProductCPDefinitions(
-					cpDefinition1.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-
-			Assert.assertEquals(
-				draftDefinitions.toString(), 1, draftDefinitions.size());
-
-			CPDefinition cpDefinition2 = draftDefinitions.get(0);
-
-			_cpDefinitions.add(cpDefinition2);
-
-			Assert.assertEquals(
-				0,
-				_cpAttachmentFileEntryLocalService.
-					getCPAttachmentFileEntriesCount(
-						classNameId, cpDefinition1.getCPDefinitionId(),
-						CPAttachmentFileEntryConstants.TYPE_OTHER,
-						WorkflowConstants.STATUS_ANY));
-
-			Assert.assertEquals(
-				1,
-				_cpAttachmentFileEntryLocalService.
-					getCPAttachmentFileEntriesCount(
-						classNameId, cpDefinition2.getCPDefinitionId(),
-						CPAttachmentFileEntryConstants.TYPE_OTHER,
-						WorkflowConstants.STATUS_ANY));
-		}
+		_testPostProductIdAttachmentProductVersioning();
 	}
 
 	@Override
@@ -624,6 +539,92 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 		Assert.assertEquals(
 			fileEntry.getFileEntryId(),
 			GetterUtil.getLong(postAttachment.getFileEntryId()));
+	}
+
+	private void _testPostProductIdAttachmentProductVersioning()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			CommerceCatalog commerceCatalog =
+				CPTestUtil.getSystemCommerceCatalog(testCompany.getCompanyId());
+
+			CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+				commerceCatalog.getGroupId(), "simple", null, null, true, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+			_cpDefinitions.add(cpDefinition1);
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			long classNameId = _classNameLocalService.getClassNameId(
+				CPDefinition.class.getName());
+
+			Assert.assertEquals(
+				0,
+				_cpAttachmentFileEntryLocalService.
+					getCPAttachmentFileEntriesCount(
+						classNameId, cpDefinition1.getCPDefinitionId(),
+						CPAttachmentFileEntryConstants.TYPE_OTHER,
+						WorkflowConstants.STATUS_ANY));
+
+			Attachment attachment1 = randomAttachment();
+
+			attachment1.setType(CPAttachmentFileEntryConstants.TYPE_OTHER);
+
+			attachmentResource.postProductIdAttachment(
+				cpDefinition1.getCProductId(), attachment1);
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS
+				).size());
+
+			List<CPDefinition> draftDefinitions =
+				_cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				draftDefinitions.toString(), 1, draftDefinitions.size());
+
+			CPDefinition cpDefinition2 = draftDefinitions.get(0);
+
+			_cpDefinitions.add(cpDefinition2);
+
+			Assert.assertEquals(
+				0,
+				_cpAttachmentFileEntryLocalService.
+					getCPAttachmentFileEntriesCount(
+						classNameId, cpDefinition1.getCPDefinitionId(),
+						CPAttachmentFileEntryConstants.TYPE_OTHER,
+						WorkflowConstants.STATUS_ANY));
+
+			Assert.assertEquals(
+				1,
+				_cpAttachmentFileEntryLocalService.
+					getCPAttachmentFileEntriesCount(
+						classNameId, cpDefinition2.getCPDefinitionId(),
+						CPAttachmentFileEntryConstants.TYPE_OTHER,
+						WorkflowConstants.STATUS_ANY));
+		}
 	}
 
 	private void _testPostProductIdAttachmentWithFileEntryExternalReferenceCode()
