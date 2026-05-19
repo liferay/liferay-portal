@@ -8,6 +8,7 @@ package com.liferay.cookies.internal.manager;
 import com.google.common.net.InternetDomainName;
 
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
+import com.liferay.cookies.consent.CookiesConsentResolver;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -360,35 +361,8 @@ public class CookiesManagerImpl implements CookiesManager {
 	public boolean hasConsentType(
 		int consentType, HttpServletRequest httpServletRequest) {
 
-		if (consentType == CookiesConstants.CONSENT_TYPE_NECESSARY) {
-			return true;
-		}
-
-		String consentCookieName = StringPool.BLANK;
-
-		if (consentType == CookiesConstants.CONSENT_TYPE_FUNCTIONAL) {
-			consentCookieName = CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL;
-		}
-		else if (consentType == CookiesConstants.CONSENT_TYPE_PERFORMANCE) {
-			consentCookieName = CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE;
-		}
-		else if (consentType == CookiesConstants.CONSENT_TYPE_PERSONALIZATION) {
-			consentCookieName =
-				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION;
-		}
-
-		String consentCookieValue = getCookieValue(
-			consentCookieName, httpServletRequest);
-
-		if (Validator.isNotNull(consentCookieValue)) {
-			return GetterUtil.getBoolean(consentCookieValue);
-		}
-
-		CookiesPreferenceHandlingConfiguration
-			cookiesPreferenceHandlingConfiguration =
-				_getCookiesPreferenceHandlingConfiguration(httpServletRequest);
-
-		return !cookiesPreferenceHandlingConfiguration.explicitConsentMode();
+		return _cookiesConsentResolver.hasConsent(
+			consentType, httpServletRequest);
 	}
 
 	@Override
@@ -635,6 +609,9 @@ public class CookiesManagerImpl implements CookiesManager {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private CookiesConsentResolver _cookiesConsentResolver;
 
 	@Reference
 	private Portal _portal;
