@@ -6,6 +6,7 @@
 package com.liferay.seo.studio.controller;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.seo.studio.crawler.DetectOrphanPagesCrawler;
 import com.liferay.seo.studio.service.SEOStudioService;
@@ -97,7 +98,25 @@ public class CrawlerRestController extends BaseRestController {
 			URI hostname = SEOStudioService.toCrawlURI(
 				domainJSONObject.getString("hostname"));
 
-			String domainUrl = SEOStudioService.toDomainURL(hostname);
+			URI canonicalHostname = _resolveCanonicalHostname(hostname);
+
+			String domainUrl = SEOStudioService.toDomainURL(canonicalHostname);
+
+			if (!canonicalHostname.equals(hostname)) {
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Canonical hostname for ", hostname,
+							" resolved to ", canonicalHostname));
+				}
+
+				_seoStudioService.updateDomain(
+					domainId,
+					new JSONObject(
+					).put(
+						"hostname", domainUrl
+					));
+			}
 
 			String sitemapURL = domainUrl + "/sitemap.xml";
 
@@ -107,7 +126,7 @@ public class CrawlerRestController extends BaseRestController {
 					HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 
-			String indexName = SEOStudioService.toIndexName(hostname);
+			String indexName = SEOStudioService.toIndexName(canonicalHostname);
 
 			crawlerConfig = _replace(
 				Map.ofEntries(
@@ -185,7 +204,7 @@ public class CrawlerRestController extends BaseRestController {
 				try {
 					_detectOrphanPagesCrawler.detect(
 						objectEntryJSONObject.getLong("objectEntryId"),
-						hostname, "orphan_page");
+						domainId, canonicalHostname, "orphan_page");
 				}
 				catch (Exception exception) {
 					_log.error(
@@ -268,6 +287,30 @@ public class CrawlerRestController extends BaseRestController {
 		}
 
 		return string;
+	}
+
+	private URI _resolveCanonicalHostname(URI hostname) throws Exception {
+		HttpClient httpClient = HttpClient.newBuilder(
+		).followRedirects(
+			HttpClient.Redirect.NORMAL
+		).build();
+
+		HttpResponse<Void> httpResponse = httpClient.send(
+			HttpRequest.newBuilder(
+				URI.create(SEOStudioService.toDomainURL(hostname))
+			).GET(
+			).build(),
+			HttpResponse.BodyHandlers.discarding());
+
+		URI finalURI = httpResponse.uri();
+
+		if ((finalURI == null) || (finalURI.getHost() == null)) {
+			return hostname;
+		}
+
+		return new URI(
+			finalURI.getScheme(), null, finalURI.getHost(), finalURI.getPort(),
+			null, null, null);
 	}
 
 	private static final Log _log = LogFactory.getLog(

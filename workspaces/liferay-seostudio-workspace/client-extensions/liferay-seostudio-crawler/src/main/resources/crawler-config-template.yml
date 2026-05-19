@@ -18,25 +18,20 @@ domains:
             -   pattern: /calendar/
                 policy: deny
                 type: begins
-        extraction_rulesets:
-            -   rules:
-                    -   action: extract
-                        field_name: hreflang
-                        join_as: array
-                        selector: "link[rel=\"alternate\"][hreflang][href]"
-                        source: html
         seed_urls:
             -   [$CRAWLER_SEED_URL$]
+        sitemap_urls:
+            -   [$CRAWLER_SITEMAP_URL$]
         url: [$CRAWLER_DOMAIN_URL$]
 elasticsearch:
     host: [$CRAWLER_ELASTICSEARCH_HOST$]
     pipeline: [$CRAWLER_ELASTICSEARCH_PIPELINE$]
     pipeline_enabled: true
     port: [$CRAWLER_ELASTICSEARCH_PORT$]
-loopback_allowed: true
+loopback_allowed: [$CRAWLER_LOOPBACK_ALLOWED$]
 max_crawl_depth: [$CRAWLER_MAX_CRAWL_DEPTH$]
 max_duration: [$CRAWLER_MAX_DURATION$]
 output_index: [$CRAWLER_OUTPUT_INDEX$]
 output_sink: elasticsearch
-private_networks_allowed: true
+private_networks_allowed: [$CRAWLER_PRIVATE_NETWORKS_ALLOWED$]
 url_queue_size_limit: [$CRAWLER_URL_QUEUE_SIZE_LIMIT$]
