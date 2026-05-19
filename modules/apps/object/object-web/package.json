@@ -34,7 +34,7 @@
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
 		"react-flow-renderer": "9.7.0",
-		"text-mask-addons": "^3.7.1",
+		"text-mask-addons": "3.8.0",
 		"text-mask-core": "5.1.2"
 	},
 	"jest": {
