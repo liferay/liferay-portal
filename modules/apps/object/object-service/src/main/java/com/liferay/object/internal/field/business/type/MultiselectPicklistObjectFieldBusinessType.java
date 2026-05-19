@@ -32,6 +32,8 @@ import com.liferay.portal.vulcan.extension.PropertyDefinition;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -215,22 +217,22 @@ public class MultiselectPicklistObjectFieldBusinessType
 		String objectFieldName, Object value, Map<String, Object> values) {
 
 		if (value instanceof List) {
-			List<String> keys = new ArrayList<>();
+			List<String> keys = _toKeys((List<Object>)value);
 
-			for (Object object : (List<Object>)value) {
-				if (object instanceof ListEntry) {
-					ListEntry listEntry = (ListEntry)object;
+			values.put(objectFieldName, keys);
 
-					keys.add(listEntry.getKey());
-				}
-				else if (object instanceof Map) {
-					keys.add(
-						MapUtil.getString((Map<String, String>)object, "key"));
-				}
-				else {
-					keys.add((String)object);
-				}
-			}
+			return keys;
+		}
+		else if (value instanceof Object[]) {
+			List<String> keys = _toKeys(Arrays.asList((Object[])value));
+
+			values.put(objectFieldName, keys);
+
+			return keys;
+		}
+		else if (value instanceof Map) {
+			List<String> keys = _toKeys(
+				Collections.singletonList((Object)value));
 
 			values.put(objectFieldName, keys);
 
@@ -253,6 +255,26 @@ public class MultiselectPicklistObjectFieldBusinessType
 		}
 
 		return value;
+	}
+
+	private List<String> _toKeys(List<Object> objects) {
+		List<String> keys = new ArrayList<>();
+
+		for (Object object : objects) {
+			if (object instanceof ListEntry) {
+				ListEntry listEntry = (ListEntry)object;
+
+				keys.add(listEntry.getKey());
+			}
+			else if (object instanceof Map) {
+				keys.add(MapUtil.getString((Map<String, String>)object, "key"));
+			}
+			else {
+				keys.add((String)object);
+			}
+		}
+
+		return keys;
 	}
 
 	@Reference
