@@ -49,7 +49,7 @@
 		"react-dom": "18.2.0",
 		"react-dropzone": "11.2.4",
 		"recharts": "^2.8.0",
-		"resize-observer-polyfill": "^1.5.1",
+		"resize-observer-polyfill": "1.5.1",
 		"uuid": "9.0.0"
 	},
 	"jest": {
