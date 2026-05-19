@@ -36,7 +36,7 @@
 		"react-dom": "18.2.0",
 		"resize-observer-polyfill": "1.5.1",
 		"text-mask-addons": "^3.7.1",
-		"text-mask-core": "^5.1.2"
+		"text-mask-core": "5.1.2"
 	},
 	"jest": {
 		"setupFiles": [
