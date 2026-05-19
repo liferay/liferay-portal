@@ -47,6 +47,9 @@ public class CookiesConstants {
 
 	public static final String NAME_JSESSIONID = "JSESSIONID";
 
+	public static final String NAME_LIFERAY_CONSENT_STATE =
+		"LIFERAY_CONSENT_STATE";
+
 	public static final String NAME_LOGIN = "LOGIN";
 
 	public static final String NAME_PASSWORD = "PASSWORD";
