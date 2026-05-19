@@ -5,6 +5,7 @@ Export-Package:\
 	com.liferay.cookies.configuration,\
 	com.liferay.cookies.configuration.banner,\
 	com.liferay.cookies.configuration.consent,\
+	com.liferay.cookies.consent,\
 	com.liferay.cookies.exception,\
 	com.liferay.cookies.global.privacy.control,\
 	com.liferay.cookies.model,\
