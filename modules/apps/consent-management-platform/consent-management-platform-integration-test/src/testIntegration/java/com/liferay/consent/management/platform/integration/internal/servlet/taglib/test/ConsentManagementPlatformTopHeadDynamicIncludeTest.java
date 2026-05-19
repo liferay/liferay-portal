@@ -47,10 +47,12 @@ public class ConsentManagementPlatformTopHeadDynamicIncludeTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testIncludeScriptTag() throws Exception {
+	public void testIncludeScripts() throws Exception {
 		ConfigurationTestUtil.saveConfiguration(
 			ConsentManagementPlatformConfiguration.class.getName(),
 			HashMapDictionaryBuilder.<String, Object>put(
+				"bridgeScript", _BRIDGE_SCRIPT
+			).put(
 				"companyId", TestPropsValues.getCompanyId()
 			).put(
 				"enabled", true
@@ -60,18 +62,28 @@ public class ConsentManagementPlatformTopHeadDynamicIncludeTest {
 				"scriptTag", _SCRIPT_TAG
 			).build());
 
-		Matcher matcher = _pattern.matcher(
-			URLUtil.toString(
-				new URL(
-					"http://localhost:" +
-						PortalUtil.getPortalServerPort(false))));
+		String body = URLUtil.toString(
+			new URL(
+				"http://localhost:" + PortalUtil.getPortalServerPort(false)));
+
+		Matcher matcher = _pattern.matcher(body);
 
 		Assert.assertTrue(matcher.find());
 
 		String group = matcher.group(0);
 
 		Assert.assertTrue(group.contains(_SCRIPT_TAG));
+
+		int scriptTagIndex = body.indexOf(_SCRIPT_TAG);
+		int bridgeScriptIndex = body.indexOf(_BRIDGE_SCRIPT);
+
+		Assert.assertTrue(scriptTagIndex >= 0);
+		Assert.assertTrue(bridgeScriptIndex >= 0);
+		Assert.assertTrue(scriptTagIndex < bridgeScriptIndex);
 	}
+
+	private static final String _BRIDGE_SCRIPT =
+		"<script id=\"liferay-cmp-bridge\">/* bridge */</script>";
 
 	private static final String _SCRIPT_TAG =
 		"<script data-cbid=\"000000\" id=\"Cookiebot\" " +

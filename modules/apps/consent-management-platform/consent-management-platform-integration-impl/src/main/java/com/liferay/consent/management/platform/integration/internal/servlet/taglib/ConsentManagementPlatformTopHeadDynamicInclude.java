@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,6 +75,13 @@ public class ConsentManagementPlatformTopHeadDynamicInclude
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		printWriter.println(consentManagementPlatformConfiguration.scriptTag());
+
+		String bridgeScript =
+			consentManagementPlatformConfiguration.bridgeScript();
+
+		if (Validator.isNotNull(bridgeScript)) {
+			printWriter.println(bridgeScript);
+		}
 	}
 
 	@Override
