@@ -89,6 +89,7 @@ import {config as frontendJsBootstrapSupportWebConfig} from './tests/frontend-js
 import {config as frontendJsClayWebConfig} from './tests/frontend-js-clay-web/main/config';
 import {config as frontendJsComponentsWebConfig} from './tests/frontend-js-components-web/main/config';
 import {config as frontendJsItemSelectorWebConfig} from './tests/frontend-js-item-selector-web/main/config';
+import {config as frontendJsPinturaImageEditorWebConfig} from './tests/frontend-js-pintura-image-editor-web/main/config';
 import {config as frontendJsSpaWebConfig} from './tests/frontend-js-spa-web/main/config';
 import {config as frontendJsWebConfig} from './tests/frontend-js-web/main/config';
 import {config as frontendTaglibClayConfig} from './tests/frontend-taglib-clay/main/config';
@@ -315,6 +316,7 @@ export default defineConfig({
 		frontendJsClayWebConfig,
 		frontendJsComponentsWebConfig,
 		frontendJsItemSelectorWebConfig,
+		frontendJsPinturaImageEditorWebConfig,
 		frontendJsSpaWebConfig,
 		frontendJsWebConfig,
 		frontendTaglibClayConfig,
