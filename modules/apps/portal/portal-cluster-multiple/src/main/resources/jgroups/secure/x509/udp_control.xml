@@ -1,7 +1,7 @@
 <config
 	xmlns="urn:org:jgroups"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.1.xsd"
+	xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-5.5.xsd"
 >
 	<UDP
 		bind_addr="${cluster.link.bind.addr[&quot;cluster-link-control&quot;]}"
