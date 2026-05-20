@@ -5,6 +5,7 @@
 		"@liferay/frontend-js-react-web": "*",
 		"@pqina/pintura": "^8.97.1",
 		"@pqina/react-pintura": "^9.0.4",
+		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},

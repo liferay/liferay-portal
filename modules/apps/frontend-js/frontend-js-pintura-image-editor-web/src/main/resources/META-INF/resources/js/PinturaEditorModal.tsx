@@ -7,7 +7,8 @@ import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
 import {getEditorDefaults} from '@pqina/pintura';
 import {PinturaEditor} from '@pqina/react-pintura';
-import React, {useRef} from 'react';
+import {sub} from 'frontend-js-web';
+import React, {useRef, useState} from 'react';
 
 export interface PinturaEditorModalProps {
 	imageName: string;
@@ -27,15 +28,23 @@ export default function PinturaEditorModal({
 	open,
 }: PinturaEditorModalProps) {
 	const editorRef = useRef<PinturaEditor>(null);
+	const [saving, setSaving] = useState(false);
 
 	const handleDone = () => {
+		setSaving(true);
+
 		editorRef.current?.editor.processImage();
 	};
 
 	const handleProcess = async (result: {dest: Blob}) => {
-		await onSave(result.dest);
+		try {
+			await onSave(result.dest);
 
-		onOpenChange(false);
+			onOpenChange(false);
+		}
+		finally {
+			setSaving(false);
+		}
 	};
 
 	if (!open) {
@@ -45,18 +54,16 @@ export default function PinturaEditorModal({
 	return (
 		<ClayModal observer={observer} size="full-screen">
 			<ClayModal.Header>
-				{Liferay.Language.get('edit-x').replace('{0}', imageName)}
+				{sub(Liferay.Language.get('edit-x'), imageName)}
 			</ClayModal.Header>
 
 			<ClayModal.Body scrollable={false}>
-				<div style={{height: '100%'}}>
-					<PinturaEditor
-						{...getEditorDefaults()}
-						onProcess={handleProcess}
-						ref={editorRef}
-						src={imageUrl}
-					/>
-				</div>
+				<PinturaEditor
+					{...getEditorDefaults()}
+					onProcess={handleProcess}
+					ref={editorRef}
+					src={imageUrl}
+				/>
 			</ClayModal.Body>
 
 			<ClayModal.Footer
@@ -64,14 +71,21 @@ export default function PinturaEditorModal({
 					<>
 						<ClayButton
 							className="mr-2"
+							disabled={saving}
 							displayType="secondary"
 							onClick={() => onOpenChange(false)}
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 
-						<ClayButton onClick={handleDone}>
-							{Liferay.Language.get('done')}
+						<ClayButton
+							disabled={saving}
+							loading={saving}
+							onClick={handleDone}
+						>
+							{saving
+								? Liferay.Language.get('saving')
+								: Liferay.Language.get('done')}
 						</ClayButton>
 					</>
 				}
