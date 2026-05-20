@@ -79,27 +79,27 @@ describe('Connector API', () => {
 	});
 
 	describe('fetchConnectorEntityCount', () => {
-		it('builds the count path from slug and entity name', () => {
-			fetchConnectorEntityCount('demandbase', 'accounts', {
+		it('builds the count path from the data source id and entity name', () => {
+			fetchConnectorEntityCount('accounts', {
 				groupId: '23',
 				id: '7'
 			});
 
 			expect(sendRequest).toHaveBeenCalledWith({
 				method: 'GET',
-				path: 'contacts/23/demandbase/accounts_count?dataSourceId=7'
+				path: 'contacts/23/data-source-metrics/7/accounts_count'
 			});
 		});
 
-		it('works for arbitrary connector/entity pairs', () => {
-			fetchConnectorEntityCount('hubspot', 'contacts', {
+		it('works for arbitrary entity names', () => {
+			fetchConnectorEntityCount('events', {
 				groupId: '23',
 				id: '7'
 			});
 
 			expect(sendRequest).toHaveBeenCalledWith(
 				expect.objectContaining({
-					path: 'contacts/23/hubspot/contacts_count?dataSourceId=7'
+					path: 'contacts/23/data-source-metrics/7/events_count'
 				})
 			);
 		});

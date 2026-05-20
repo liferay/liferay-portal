@@ -29,4 +29,11 @@ describe('getEntityDisplay', () => {
 			label: 'Sites'
 		});
 	});
+
+	it('returns Users label and users icon', () => {
+		expect(getEntityDisplay(Entity.Users)).toEqual({
+			icon: 'users',
+			label: 'Users'
+		});
+	});
 });

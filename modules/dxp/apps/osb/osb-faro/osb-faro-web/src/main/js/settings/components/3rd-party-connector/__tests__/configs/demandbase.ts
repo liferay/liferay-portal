@@ -37,14 +37,13 @@ describe('demandbase config', () => {
 		expect(typeof accounts.fetchCount).toBe('function');
 	});
 
-	it('delegates fetchCount to fetchConnectorEntityCount with the slug and entity', async () => {
+	it('delegates fetchCount to fetchConnectorEntityCount with the entity', async () => {
 		await demandbaseConfig.entities[0].fetchCount!({
 			groupId: '42',
 			id: 'data-source-9'
 		});
 
 		expect(fetchConnectorEntityCount).toHaveBeenCalledWith(
-			'demandbase',
 			Entity.Accounts,
 			{groupId: '42', id: 'data-source-9'}
 		);

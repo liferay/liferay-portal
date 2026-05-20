@@ -37,17 +37,16 @@ describe('hubspot config', () => {
 		expect(typeof events.fetchCount).toBe('function');
 	});
 
-	it('delegates fetchCount to fetchConnectorEntityCount with the slug and entity', async () => {
+	it('delegates fetchCount to fetchConnectorEntityCount with the entity', async () => {
 		await hubspotConfig.entities[0].fetchCount!({
 			groupId: '23',
 			id: 'data-source-1'
 		});
 
-		expect(fetchConnectorEntityCount).toHaveBeenCalledWith(
-			'hubspot',
-			Entity.Events,
-			{groupId: '23', id: 'data-source-1'}
-		);
+		expect(fetchConnectorEntityCount).toHaveBeenCalledWith(Entity.Events, {
+			groupId: '23',
+			id: 'data-source-1'
+		});
 	});
 
 	it('builds the language strings from the configured display name', () => {
