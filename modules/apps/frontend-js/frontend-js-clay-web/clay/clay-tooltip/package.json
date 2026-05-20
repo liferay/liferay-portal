@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@clayui/shared": "^3.166.0",
 		"classnames": "2.3.1",
-		"dom-align": "^1.12.2",
+		"dom-align": "1.12.2",
 		"warning": "^4.0.3"
 	},
 	"description": "ClayTooltip component",

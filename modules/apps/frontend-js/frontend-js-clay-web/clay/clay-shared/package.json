@@ -8,7 +8,7 @@
 		"@clayui/provider": "^3.166.0",
 		"aria-hidden": "^1.2.2",
 		"classnames": "2.3.1",
-		"dom-align": "^1.12.2",
+		"dom-align": "1.12.2",
 		"warning": "^4.0.3"
 	},
 	"description": "ClayShared component",
