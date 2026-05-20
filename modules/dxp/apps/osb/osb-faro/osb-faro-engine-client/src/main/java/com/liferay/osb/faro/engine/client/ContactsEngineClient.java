@@ -349,6 +349,15 @@ public interface ContactsEngineClient {
 	public List<DataSourceField> getDataSourceFields(
 		FaroProject faroProject, String id, String context, int count);
 
+	public long getDataSourceMetricsAccountsCount(
+		FaroProject faroProject, String dataSourceId);
+
+	public long getDataSourceMetricsEventsCount(
+		FaroProject faroProject, String dataSourceId);
+
+	public long getDataSourceMetricsUsersCount(
+		FaroProject faroProject, String dataSourceId);
+
 	public Map<String, DataSourceProgress> getDataSourceProgressMap(
 		FaroProject faroProject, String id);
 
@@ -362,9 +371,6 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String faroEntityId, String query, String name,
 		String providerType, List<String> states, int cur, int delta,
 		List<OrderByField> orderByFields);
-
-	public long getDemandbaseAccountsCount(
-		String dataSourceId, FaroProject faroProject);
 
 	public long getDXPUsersCount(FaroProject faroProject, String id);
 
@@ -548,12 +554,6 @@ public interface ContactsEngineClient {
 			FaroProject faroProject, String path,
 			Map<String, List<String>> queryParameters)
 		throws Exception;
-
-	public long getSalesforceAccountsCount(
-		String dataSourceId, FaroProject faroProject);
-
-	public long getSalesforceUsersCount(
-		String dataSourceId, FaroProject faroProject);
 
 	public Results<String> getSessionValues(
 		FaroProject faroProject, String channelId, String fieldName,

@@ -39,7 +39,7 @@ public class DataSourceMetricsController extends BaseFaroController {
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
 
 		return contactsEngineClient.getDataSourceMetricsAccountsCount(
-			dataSourceId, faroProject);
+			faroProject, dataSourceId);
 	}
 
 	@GET
@@ -54,7 +54,7 @@ public class DataSourceMetricsController extends BaseFaroController {
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
 
 		return contactsEngineClient.getDataSourceMetricsEventsCount(
-			dataSourceId, faroProject);
+			faroProject, dataSourceId);
 	}
 
 	@GET
@@ -69,7 +69,7 @@ public class DataSourceMetricsController extends BaseFaroController {
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
 
 		return contactsEngineClient.getDataSourceMetricsUsersCount(
-			dataSourceId, faroProject);
+			faroProject, dataSourceId);
 	}
 
 }

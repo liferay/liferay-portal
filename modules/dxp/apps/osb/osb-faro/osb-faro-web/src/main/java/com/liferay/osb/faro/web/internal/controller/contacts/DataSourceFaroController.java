@@ -767,8 +767,8 @@ public class DataSourceFaroController extends BaseFaroController {
 				}
 			}
 
-			usersCount = contactsEngineClient.getSalesforceUsersCount(
-				id, faroProject);
+			usersCount = contactsEngineClient.getDataSourceMetricsUsersCount(
+				faroProject, id);
 		}
 
 		return new DataSourceMetricsDisplay(

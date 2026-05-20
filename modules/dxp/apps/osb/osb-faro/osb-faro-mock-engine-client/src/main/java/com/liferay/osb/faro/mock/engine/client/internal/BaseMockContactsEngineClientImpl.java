@@ -703,6 +703,30 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
+	public long getDataSourceMetricsAccountsCount(
+		FaroProject faroProject, String dataSourceId) {
+
+		return contactsEngineClient.getDataSourceMetricsAccountsCount(
+			faroProject, dataSourceId);
+	}
+
+	@Override
+	public long getDataSourceMetricsEventsCount(
+		FaroProject faroProject, String dataSourceId) {
+
+		return contactsEngineClient.getDataSourceMetricsEventsCount(
+			faroProject, dataSourceId);
+	}
+
+	@Override
+	public long getDataSourceMetricsUsersCount(
+		FaroProject faroProject, String dataSourceId) {
+
+		return contactsEngineClient.getDataSourceMetricsUsersCount(
+			faroProject, dataSourceId);
+	}
+
+	@Override
 	public Map<String, DataSourceProgress> getDataSourceProgressMap(
 		FaroProject faroProject, String id) {
 
@@ -733,14 +757,6 @@ public abstract class BaseMockContactsEngineClientImpl
 		return contactsEngineClient.getDataSources(
 			faroProject, faroEntityId, query, name, providerType, states, cur,
 			delta, orderByFields);
-	}
-
-	@Override
-	public long getDemandbaseAccountsCount(
-		String dataSourceId, FaroProject faroProject) {
-
-		return contactsEngineClient.getDemandbaseAccountsCount(
-			dataSourceId, faroProject);
 	}
 
 	@Override
@@ -1114,22 +1130,6 @@ public abstract class BaseMockContactsEngineClientImpl
 
 		return contactsEngineClient.getReportsExportCSVCount(
 			faroProject, path, queryParameters);
-	}
-
-	@Override
-	public long getSalesforceAccountsCount(
-		String dataSourceId, FaroProject faroProject) {
-
-		return contactsEngineClient.getSalesforceAccountsCount(
-			dataSourceId, faroProject);
-	}
-
-	@Override
-	public long getSalesforceUsersCount(
-		String dataSourceId, FaroProject faroProject) {
-
-		return contactsEngineClient.getSalesforceUsersCount(
-			dataSourceId, faroProject);
 	}
 
 	@Override

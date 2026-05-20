@@ -21,14 +21,13 @@ import com.liferay.osb.faro.web.internal.controller.contacts.ContactsCardTemplat
 import com.liferay.osb.faro.web.internal.controller.contacts.ContactsLayoutFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.ContactsLayoutTemplateFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.DataSourceFaroController;
-import com.liferay.osb.faro.web.internal.controller.contacts.DemandbaseFaroController;
+import com.liferay.osb.faro.web.internal.controller.contacts.DataSourceMetricsController;
 import com.liferay.osb.faro.web.internal.controller.contacts.FieldFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.FieldMappingFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.IndividualFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.IndividualSegmentFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.InterestFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.PagesVisitedFaroController;
-import com.liferay.osb.faro.web.internal.controller.contacts.SalesforceFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.SessionFaroController;
 
 import jakarta.ws.rs.ApplicationPath;
@@ -66,14 +65,13 @@ public class ContactsApplication extends BaseApplication {
 		controllers.add(_contactsLayoutFaroController);
 		controllers.add(_contactsLayoutTemplateFaroController);
 		controllers.add(_dataSourceFaroController);
-		controllers.add(_demandbaseFaroController);
+		controllers.add(_dataSourceMetricsController);
 		controllers.add(_fieldFaroController);
 		controllers.add(_fieldMappingFaroController);
 		controllers.add(_individualFaroController);
 		controllers.add(_individualSegmentFaroController);
 		controllers.add(_interestFaroController);
 		controllers.add(_pagesVisitedFaroController);
-		controllers.add(_salesforceFaroController);
 		controllers.add(_sessionFaroController);
 
 		return controllers;
@@ -130,7 +128,7 @@ public class ContactsApplication extends BaseApplication {
 	private DataSourceFaroController _dataSourceFaroController;
 
 	@Reference
-	private DemandbaseFaroController _demandbaseFaroController;
+	private DataSourceMetricsController _dataSourceMetricsController;
 
 	@Reference
 	private FieldFaroController _fieldFaroController;
@@ -149,9 +147,6 @@ public class ContactsApplication extends BaseApplication {
 
 	@Reference
 	private PagesVisitedFaroController _pagesVisitedFaroController;
-
-	@Reference
-	private SalesforceFaroController _salesforceFaroController;
 
 	@Reference
 	private SessionFaroController _sessionFaroController;
