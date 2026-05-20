@@ -9,9 +9,11 @@ import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +56,32 @@ public class LiferayClientCredentialsAccessTokenGrantHandler
 	protected ServerAccessToken doCreateAccessToken(
 		Client client, MultivaluedMap<String, String> params) {
 
-		return _clientCredentialsGrantHandler.createAccessToken(client, params);
+		String resource = params.getFirst("resource");
+
+		if (Validator.isNull(resource)) {
+			return _clientCredentialsGrantHandler.createAccessToken(
+				client, params);
+		}
+
+		List<String> originalRegisteredAudiences =
+			client.getRegisteredAudiences();
+
+		try {
+			List<String> mutableAudiences = new ArrayList<>(
+				originalRegisteredAudiences);
+
+			if (!mutableAudiences.contains(resource)) {
+				mutableAudiences.add(resource);
+			}
+
+			client.setRegisteredAudiences(mutableAudiences);
+
+			return _clientCredentialsGrantHandler.createAccessToken(
+				client, params);
+		}
+		finally {
+			client.setRegisteredAudiences(originalRegisteredAudiences);
+		}
 	}
 
 	@Override
