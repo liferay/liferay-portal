@@ -22,7 +22,6 @@
 		"compass-mixins": "0.12.10",
 		"cross-env": "7.0.0",
 		"eslint-plugin-react-compiler": "^19.0.0-beta-8a03594-20241020",
-		"fetch-mock": "^5.13.1",
 		"jsdoc": "3.6.3",
 		"liferay-frontend-common-css": "1.0.4",
 		"typescript": "4.7.4"

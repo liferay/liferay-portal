@@ -38,7 +38,7 @@
 		"@liferay/site-cms-site-initializer": "*",
 		"classnames": "2.3.1",
 		"eventsource": "^4.0.0",
-		"fetch-mock": "^5.13.1",
+		"fetch-mock": "5.13.1",
 		"formik": "2.1.4",
 		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-components-web": "*",
