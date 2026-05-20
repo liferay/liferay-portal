@@ -52,7 +52,18 @@ public class JGroupsReceiver implements Receiver {
 
 	@Override
 	public void receive(Message message) {
-		byte[] rawBuffer = message.getArray();
+		byte[] rawBuffer = null;
+
+		if (message.hasArray()) {
+			rawBuffer = message.getArray();
+		}
+		else {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Message does not carry a byte[] payload");
+			}
+
+			return;
+		}
 
 		if (rawBuffer == null) {
 			if (_log.isWarnEnabled()) {
