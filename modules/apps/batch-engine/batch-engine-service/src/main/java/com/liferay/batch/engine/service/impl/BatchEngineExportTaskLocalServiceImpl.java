@@ -108,4 +108,12 @@ public class BatchEngineExportTaskLocalServiceImpl
 		return batchEngineExportTaskPersistence.countByCompanyId(companyId);
 	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public BatchEngineExportTask updateBatchEngineExportTask(
+		BatchEngineExportTask batchEngineExportTask) {
+
+		return super.updateBatchEngineExportTask(batchEngineExportTask);
+	}
+
 }
