@@ -30,7 +30,7 @@
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-dropzone": "^14.3.8",
+		"react-dropzone": "11.4.2",
 		"uuid": "9.0.0"
 	},
 	"jest": {
