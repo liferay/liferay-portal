@@ -15,6 +15,9 @@
 		"warning": "^4.0.3"
 	},
 	"description": "ClayList component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

@@ -26,6 +26,9 @@
 		"warning": "^4.0.3"
 	},
 	"description": "Clay UI components in React",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

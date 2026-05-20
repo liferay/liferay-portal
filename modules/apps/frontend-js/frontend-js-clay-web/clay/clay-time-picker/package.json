@@ -10,6 +10,9 @@
 		"classnames": "2.3.1"
 	},
 	"description": "ClayTimePicker component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

@@ -12,6 +12,9 @@
 		"classnames": "2.3.1"
 	},
 	"description": "ClayPaginationBar component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

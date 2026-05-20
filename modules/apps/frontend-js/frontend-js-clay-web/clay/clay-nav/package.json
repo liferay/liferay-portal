@@ -12,6 +12,9 @@
 		"warning": "^4.0.3"
 	},
 	"description": "ClayNav component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

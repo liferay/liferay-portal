@@ -14,6 +14,9 @@
 		"date-fns": "^2.14.0"
 	},
 	"description": "ClayDatePicker component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

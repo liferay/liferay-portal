@@ -11,6 +11,9 @@
 		"react-transition-group": "4.4.5"
 	},
 	"description": "ClayPanel component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

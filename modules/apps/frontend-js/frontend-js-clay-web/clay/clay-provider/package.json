@@ -6,6 +6,9 @@
 		"@clayui/icon": "^3.166.0"
 	},
 	"description": "ClayProvider component in React",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],

@@ -13,6 +13,9 @@
 		"tinycolor2": "^1.4.2"
 	},
 	"description": "ClayColorPicker component",
+	"devDependencies": {
+		"cross-env": "7.0.0"
+	},
 	"files": [
 		"lib"
 	],
