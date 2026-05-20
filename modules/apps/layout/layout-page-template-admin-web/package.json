@@ -7,7 +7,7 @@
 		"@liferay/frontend-icons-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/layout-js-components-web": "*",
-		"axe-core": "^4.9.1",
+		"axe-core": "4.11.4",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
