@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jgroups.Message;
-import org.jgroups.ReceiverAdapter;
+import org.jgroups.Receiver;
 import org.jgroups.View;
 
 /**
  * @author Tina Tian
  */
-public class JGroupsReceiver extends ReceiverAdapter {
+public class JGroupsReceiver implements Receiver {
 
 	public JGroupsReceiver(
 		ClusterReceiver clusterReceiver,
@@ -52,7 +52,7 @@ public class JGroupsReceiver extends ReceiverAdapter {
 
 	@Override
 	public void receive(Message message) {
-		byte[] rawBuffer = message.getRawBuffer();
+		byte[] rawBuffer = message.getArray();
 
 		if (rawBuffer == null) {
 			if (_log.isWarnEnabled()) {
