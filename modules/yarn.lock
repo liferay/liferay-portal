@@ -4478,12 +4478,12 @@
     schema-utils "^4.2.0"
     source-map "^0.7.3"
 
-"@pqina/pintura@*":
+"@pqina/pintura@^8.97.1":
   version "8.97.1"
   resolved "https://registry.yarnpkg.com/@pqina/pintura/-/pintura-8.97.1.tgz#39445e4510cdfd4e632dc4946de928c5503f96d8"
   integrity sha512-wVozTTQawKcBvrw6VwHW3HZsrpQtio4vP53Hf7OU+M765nY+FuIGSJaRx4zuRtrvyyMeuw3M7x4CK6F10kiwPg==
 
-"@pqina/react-pintura@*":
+"@pqina/react-pintura@^9.0.4":
   version "9.0.4"
   resolved "https://registry.yarnpkg.com/@pqina/react-pintura/-/react-pintura-9.0.4.tgz#5a8694b5e0caa1f94a85f6733cba2c8bb8146fb2"
   integrity sha512-KTJ6cXRGw59fgyxis63FyHzMR6kOf4P/sxIoaoHLkEyKX5plPTX5CXW6z9joMX23pZUutYAIXKUm0y61ITX6ZQ==

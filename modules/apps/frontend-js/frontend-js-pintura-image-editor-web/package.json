@@ -1,11 +1,10 @@
 {
 	"dependencies": {
 		"@clayui/button": "^3.161.0",
-		"@clayui/layout": "^3.161.0",
 		"@clayui/modal": "^3.161.0",
 		"@liferay/frontend-js-react-web": "*",
-		"@pqina/pintura": "*",
-		"@pqina/react-pintura": "*",
+		"@pqina/pintura": "^8.97.1",
+		"@pqina/react-pintura": "^9.0.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},
