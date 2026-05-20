@@ -10,7 +10,6 @@ import * as path from 'path';
 import {accountSettingsPagesTest} from '../../../fixtures/accountSettingsPagesTest';
 import {accountsPagesTest} from '../../../fixtures/accountsPagesTest';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
-import {createCategories} from '../../../helpers/CreateCategories';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {depotAdminPageTest} from '../../../fixtures/depotAdminPageTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
@@ -27,6 +26,7 @@ import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import {wikiPagesTest} from '../../../fixtures/wikiPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {createCategories} from '../../../helpers/CreateCategories';
 import {liferayConfig} from '../../../liferay.config';
 import {HomePage} from '../../../pages/portal-web/HomePage';
 import {getRandomInt} from '../../../utils/getRandomInt';
@@ -161,12 +161,17 @@ testWithExportImportAtInstanceLevelFF(
 		expect(categoryJson.length).toBe(2);
 
 		expect(
-			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(categories[0].vocabularyId)
+			await apiHelpers.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
+				categories[0].vocabularyId
+			)
 		).toBeOK();
 
 		await exportImportPage.goToImport(site.friendlyUrlPath);
 
-		await exportImportPage.import({filePath: exportFilePath, taskStatus: 'completedWithErrors'});
+		await exportImportPage.import({
+			filePath: exportFilePath,
+			taskStatus: 'completedWithErrors',
+		});
 	}
 );
 
