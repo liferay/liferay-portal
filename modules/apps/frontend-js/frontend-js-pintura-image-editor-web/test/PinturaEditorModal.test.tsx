@@ -12,25 +12,70 @@ import React from 'react';
 import PinturaEditorModal from '../src/main/resources/META-INF/resources/js/PinturaEditorModal';
 
 const mockBlob = new Blob(['image-data'], {type: 'image/jpeg'});
-const mockProcessImage = jest.fn(() =>
-	Promise.resolve({dest: mockBlob, imageState: {}})
-);
+const mockProcessImage = jest.fn();
+
+jest.mock('@clayui/modal', () => {
+
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+
+	const ReactModule = require('react');
+
+	const Modal = ({children}: {children: React.ReactNode}) => (
+		<div role="dialog">{children}</div>
+	);
+
+	Modal.Header = ({children}: {children: React.ReactNode}) => (
+		<div>{children}</div>
+	);
+	Modal.Body = ({children}: {children: React.ReactNode}) => (
+		<div>{children}</div>
+	);
+	Modal.Footer = ({last}: {last: React.ReactNode}) => <div>{last}</div>;
+
+	return {
+		__esModule: true,
+		default: Modal,
+		useModal: ({defaultOpen}: {defaultOpen?: boolean} = {}) => {
+			const [open, setOpen] = ReactModule.useState(!!defaultOpen);
+
+			return {observer: {}, onOpenChange: setOpen, open};
+		},
+	};
+});
 
 jest.mock('@pqina/pintura', () => ({
 	getEditorDefaults: jest.fn(() => ({})),
 }));
 
-jest.mock('@pqina/react-pintura', () => ({
-	PinturaEditor: React.forwardRef(
-		(_props: unknown, ref: React.ForwardedRef<unknown>) => {
-			React.useImperativeHandle(ref, () => ({
-				processImage: mockProcessImage,
-			}));
+jest.mock('@pqina/react-pintura', () => {
 
-			return <div data-testid="pintura-editor" />;
-		}
-	),
-}));
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+
+	const ReactModule = require('react');
+
+	return {
+		PinturaEditor: ReactModule.forwardRef(
+			(
+				props: {onProcess: (result: {dest: Blob}) => void},
+				ref: React.ForwardedRef<unknown>
+			) => {
+				ReactModule.useImperativeHandle(ref, () => ({
+					editor: {
+						processImage: () => {
+							mockProcessImage();
+
+							return Promise.resolve().then(() =>
+								props.onProcess({dest: mockBlob})
+							);
+						},
+					},
+				}));
+
+				return <div data-testid="pintura-editor" />;
+			}
+		),
+	};
+});
 
 const PinturaEditorModalWrapper = ({
 	defaultOpen,
@@ -111,6 +156,27 @@ describe('PinturaEditorModal', () => {
 			expect(mockProcessImage).toHaveBeenCalledTimes(1);
 			expect(onSave).toHaveBeenCalledWith(mockBlob);
 		});
+	});
+
+	it('shows a loading state on Done while saving', async () => {
+		let resolveOnSave: () => void;
+
+		const onSave = jest.fn(
+			() =>
+				new Promise<void>((resolve) => {
+					resolveOnSave = resolve;
+				})
+		);
+
+		render(<PinturaEditorModalWrapper defaultOpen onSave={onSave} />);
+
+		await userEvent.click(screen.getByText('done'));
+
+		await waitFor(() => {
+			expect(screen.getByText('saving')).toBeInTheDocument();
+		});
+
+		resolveOnSave!();
 	});
 
 	it('closes the modal after Done is clicked', async () => {
