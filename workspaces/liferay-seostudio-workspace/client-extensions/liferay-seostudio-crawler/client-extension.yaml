@@ -1,0 +1,12 @@
+assemble:
+    -   fromTask: bootJar
+liferay-seostudio-crawler-oaua:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Liferay SEO Studio Crawler OAuth Application User Agent
+    type: oAuthApplicationUserAgent
+liferay-seostudio-crawler-object-action-crawl:
+    name: Liferay SEO Studio Crawler Object Action
+    oAuth2ApplicationExternalReferenceCode: liferay-seostudio-crawler-oaua
+    resourcePath: /object/action/crawler
+    type: objectAction
