@@ -22,17 +22,6 @@ export default function DetachedPinturaEditorModal({
 	const {observer, onOpenChange, open} = useModal();
 
 	useEffect(() => {
-		const cssId = 'pintura-editor-css';
-
-		if (!document.getElementById(cssId)) {
-			const link = document.createElement('link');
-			link.href =
-				'/o/frontend-js-pintura-image-editor-web/css/pintura.css';
-			link.id = cssId;
-			link.rel = 'stylesheet';
-			document.head.appendChild(link);
-		}
-
 		onOpenChange(true);
 	}, [onOpenChange]);
 

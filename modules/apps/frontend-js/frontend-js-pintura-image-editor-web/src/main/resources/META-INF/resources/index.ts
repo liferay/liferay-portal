@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import '@pqina/pintura/pintura.css';
+
 export {default as PinturaEditorModal} from './js/PinturaEditorModal';
 export type {PinturaEditorModalProps} from './js/PinturaEditorModal';
 export {default as openPinturaEditorModal} from './js/openPinturaEditorModal';

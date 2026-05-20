@@ -4,5 +4,6 @@
  */
 
 module.exports = {
+	exports: ['@pqina/pintura/pintura.css'],
 	main: './src/main/resources/META-INF/resources/index.ts',
 };
