@@ -45,10 +45,7 @@ export default function PinturaEditorModal({
 	return (
 		<ClayModal observer={observer} size="full-screen">
 			<ClayModal.Header>
-				{Liferay.Language.get('edit-x').replace(
-					'{0}',
-					imageName
-				)}
+				{Liferay.Language.get('edit-x').replace('{0}', imageName)}
 			</ClayModal.Header>
 
 			<ClayModal.Body scrollable={false}>

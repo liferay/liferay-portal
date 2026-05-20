@@ -12,6 +12,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 
 // Minimal valid 1x1 PNG encoded as base64
+
 const VALID_IMAGE_BASE64 =
 	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
@@ -137,9 +138,7 @@ test(
 
 			await expect(modal).toBeVisible();
 
-			await expect(
-				modal.getByText(`Edit ${fileName}.png`)
-			).toBeVisible();
+			await expect(modal.getByText(`Edit ${fileName}.png`)).toBeVisible();
 
 			// Pintura editor container should be rendered
 

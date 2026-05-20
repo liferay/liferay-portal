@@ -4,6 +4,10 @@
  */
 
 module.exports = {
-	exports: ['@pqina/pintura/pintura.css'],
+	exports: [
+		'@pqina/pintura',
+		'@pqina/pintura/pintura.css',
+		'@pqina/react-pintura',
+	],
 	main: './src/main/resources/META-INF/resources/index.ts',
 };

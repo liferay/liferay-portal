@@ -11,6 +11,7 @@ export interface OpenPinturaEditorModalOptions {
 	imageName: string;
 	imageUrl: string | Blob;
 	onSave: (blob: Blob) => void | Promise<void>;
+	[key: string]: unknown;
 }
 
 /**

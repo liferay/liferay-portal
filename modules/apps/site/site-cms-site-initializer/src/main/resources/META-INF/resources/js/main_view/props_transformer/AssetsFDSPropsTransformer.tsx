@@ -11,7 +11,7 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {getCMSItemSelectorGroupedFilters} from '@liferay/frontend-js-item-selector-web';
 import {openPinturaEditorModal} from '@liferay/frontend-js-pintura-image-editor-web';
-import {sub} from 'frontend-js-web';
+import {fetch, sub} from 'frontend-js-web';
 import React from 'react';
 
 import SharedIcon from '../../common/components/SharedIcon';
@@ -687,9 +687,6 @@ export default function AssetsFDSPropsTransformer({
 							`/o/headless-delivery/v1.0/documents/${file.id}`,
 							{
 								body: formData,
-								headers: {
-									'x-csrf-token': Liferay.authToken,
-								},
 								method: 'PUT',
 							}
 						);
@@ -701,9 +698,12 @@ export default function AssetsFDSPropsTransformer({
 						}
 
 						// Wait for DL preview regeneration before reloading
-						await new Promise((resolve) => setTimeout(resolve, 4000));
 
-						window.location.href = window.location.href;
+						await new Promise((resolve) =>
+							setTimeout(resolve, 4000)
+						);
+
+						window.location.reload();
 					},
 				});
 			}

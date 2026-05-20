@@ -77,36 +77,19 @@ describe('PinturaEditorModal', () => {
 	});
 
 	it('renders with the correct title', () => {
-		render(
-			<PinturaEditorModalWrapper
-				defaultOpen
-				onSave={jest.fn()}
-			/>
-		);
+		render(<PinturaEditorModalWrapper defaultOpen onSave={jest.fn()} />);
 
-		expect(
-			screen.getByText('Edit photo.jpg')
-		).toBeInTheDocument();
+		expect(screen.getByText('Edit photo.jpg')).toBeInTheDocument();
 	});
 
 	it('renders the Pintura editor', () => {
-		render(
-			<PinturaEditorModalWrapper
-				defaultOpen
-				onSave={jest.fn()}
-			/>
-		);
+		render(<PinturaEditorModalWrapper defaultOpen onSave={jest.fn()} />);
 
 		expect(screen.getByTestId('pintura-editor')).toBeInTheDocument();
 	});
 
 	it('closes the modal when Cancel is clicked', async () => {
-		render(
-			<PinturaEditorModalWrapper
-				defaultOpen
-				onSave={jest.fn()}
-			/>
-		);
+		render(<PinturaEditorModalWrapper defaultOpen onSave={jest.fn()} />);
 
 		await userEvent.click(screen.getByText('cancel'));
 
@@ -120,12 +103,7 @@ describe('PinturaEditorModal', () => {
 	it('calls onSave with the processed blob when Done is clicked', async () => {
 		const onSave = jest.fn();
 
-		render(
-			<PinturaEditorModalWrapper
-				defaultOpen
-				onSave={onSave}
-			/>
-		);
+		render(<PinturaEditorModalWrapper defaultOpen onSave={onSave} />);
 
 		await userEvent.click(screen.getByText('done'));
 
@@ -136,12 +114,7 @@ describe('PinturaEditorModal', () => {
 	});
 
 	it('closes the modal after Done is clicked', async () => {
-		render(
-			<PinturaEditorModalWrapper
-				defaultOpen
-				onSave={jest.fn()}
-			/>
-		);
+		render(<PinturaEditorModalWrapper defaultOpen onSave={jest.fn()} />);
 
 		await userEvent.click(screen.getByText('done'));
 
@@ -154,14 +127,9 @@ describe('PinturaEditorModal', () => {
 
 	it('does not render when open is false', () => {
 		render(
-			<PinturaEditorModalWrapper
-				defaultOpen={false}
-				onSave={jest.fn()}
-			/>
+			<PinturaEditorModalWrapper defaultOpen={false} onSave={jest.fn()} />
 		);
 
-		expect(
-			screen.queryByTestId('pintura-editor')
-		).not.toBeInTheDocument();
+		expect(screen.queryByTestId('pintura-editor')).not.toBeInTheDocument();
 	});
 });
