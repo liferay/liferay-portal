@@ -1,5 +1,5 @@
 dependencies {
-	compileInclude group: "org.jgroups", name: "jgroups", version: "4.1.7.Final"
+	compileInclude group: "org.jgroups", name: "jgroups", version: "5.5.7.Final"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
