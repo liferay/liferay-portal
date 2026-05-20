@@ -31,6 +31,15 @@ jest.mock('@clayui/modal', () => {
 		<div>{children}</div>
 	);
 	Modal.Footer = ({last}: {last: React.ReactNode}) => <div>{last}</div>;
+	Modal.Item = ({children}: {children: React.ReactNode}) => (
+		<div>{children}</div>
+	);
+	Modal.ItemGroup = ({children}: {children: React.ReactNode}) => (
+		<div>{children}</div>
+	);
+	Modal.Title = ({children}: {children: React.ReactNode}) => (
+		<div>{children}</div>
+	);
 
 	return {
 		__esModule: true,

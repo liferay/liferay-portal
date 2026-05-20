@@ -51,11 +51,25 @@ export default function PinturaEditorModal({
 		return null;
 	}
 
+	const title = sub(Liferay.Language.get('edit-x'), imageName);
+
 	return (
-		<ClayModal observer={observer} size="full-screen">
-			<ClayModal.Header>
-				{sub(Liferay.Language.get('edit-x'), imageName)}
-			</ClayModal.Header>
+		<ClayModal
+			disableAutoClose={saving}
+			observer={observer}
+			size="full-screen"
+		>
+			{saving ? (
+				<ClayModal.Header withTitle={false}>
+					<ClayModal.ItemGroup>
+						<ClayModal.Item>
+							<ClayModal.Title>{title}</ClayModal.Title>
+						</ClayModal.Item>
+					</ClayModal.ItemGroup>
+				</ClayModal.Header>
+			) : (
+				<ClayModal.Header>{title}</ClayModal.Header>
+			)}
 
 			<ClayModal.Body scrollable={false}>
 				<PinturaEditor
