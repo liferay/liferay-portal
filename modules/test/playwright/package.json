@@ -10,7 +10,7 @@
 	"devDependencies": {
 		"@axe-core/playwright": "^4.9.1",
 		"@playwright/test": "1.54.2",
-		"@types/node": "^20.9.0",
+		"@types/node": "20.12.2",
 		"@types/yauzl": "^2.10.3",
 		"dotenv": "^16.3.2",
 		"ts-node": "^10.9.2",
