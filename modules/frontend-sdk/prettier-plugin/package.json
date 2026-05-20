@@ -3,7 +3,7 @@
 		"prettier": "3.2.5"
 	},
 	"devDependencies": {
-		"esbuild": "^0.21.2"
+		"esbuild": "0.21.5"
 	},
 	"files": [
 		"dist"
