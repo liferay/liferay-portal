@@ -371,20 +371,6 @@ export function updateSalesforce({
 	});
 }
 
-export function fetchAccountsCount({groupId, id}) {
-	return sendRequest({
-		method: 'GET',
-		path: `contacts/${groupId}/salesforce/accounts_count?dataSourceId=${id}`
-	});
-}
-
-export function fetchUserCount({groupId, id}) {
-	return sendRequest({
-		method: 'GET',
-		path: `contacts/${groupId}/salesforce/users_count?dataSourceId=${id}`
-	});
-}
-
 export function fetchChannelDatasources({
 	delta,
 	groupId,

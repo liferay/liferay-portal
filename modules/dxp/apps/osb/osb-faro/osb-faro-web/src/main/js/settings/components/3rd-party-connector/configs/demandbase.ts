@@ -14,7 +14,7 @@ const demandbaseConfig: ConnectorConfig = {
 		{
 			entity: Entity.Accounts,
 			fetchCount: params =>
-				fetchConnectorEntityCount(SLUG, Entity.Accounts, params)
+				fetchConnectorEntityCount(Entity.Accounts, params)
 		}
 	],
 	languages: buildLanguages(displayName),

@@ -21,12 +21,9 @@ import {ConnectSalesforceAuth} from './ConnectSalesforceAuth';
 import {DataSource} from 'shared/util/records';
 import {DataSourceEditableTitle} from '../data-source/DataSourceEditableTitle';
 import {DataSourceStatuses} from 'shared/util/constants';
-import {
-	fetch,
-	fetchAccountsCount,
-	fetchUserCount,
-	updateSalesforce
-} from 'shared/api/data-source';
+import {Entity} from '../3rd-party-connector/types';
+import {fetch, updateSalesforce} from 'shared/api/data-source';
+import {fetchConnectorEntityCount} from 'shared/api/connector';
 import {getDataSourceDisplayObject} from 'shared/util/data-sources';
 import {Text} from '@clayui/core';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -362,13 +359,14 @@ const AccountAndIndividuals = ({
 	);
 
 	const accountsCountResponse = useRequest({
-		dataSourceFn: fetchAccountsCount,
-		variables: {groupId, id: dataSource.id}
+		dataSourceFn: params =>
+			fetchConnectorEntityCount(Entity.Accounts, params),
+		variables: {groupId, id: dataSource.id!}
 	});
 
 	const userCountResponse = useRequest({
-		dataSourceFn: fetchUserCount,
-		variables: {groupId, id: dataSource.id}
+		dataSourceFn: params => fetchConnectorEntityCount(Entity.Users, params),
+		variables: {groupId, id: dataSource.id!}
 	});
 
 	const hasChangesRef = useRef<boolean | null>(null);

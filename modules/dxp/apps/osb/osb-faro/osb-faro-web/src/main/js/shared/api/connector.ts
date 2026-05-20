@@ -69,13 +69,12 @@ export function updateConnector(
 }
 
 export function fetchConnectorEntityCount(
-	slug: string,
 	entity: string,
 	{groupId, id}: {groupId: string; id: string}
 ) {
 	return sendRequest({
 		method: 'GET',
-		path: `contacts/${groupId}/${slug}/${entity}_count?dataSourceId=${id}`
+		path: `contacts/${groupId}/data-source-metrics/${id}/${entity}_count`
 	});
 }
 

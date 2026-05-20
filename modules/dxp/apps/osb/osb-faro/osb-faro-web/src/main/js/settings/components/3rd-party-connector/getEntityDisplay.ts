@@ -21,6 +21,10 @@ const ENTITY_DISPLAY: Record<Entity, EntityDisplay> = {
 	[Entity.Sites]: {
 		icon: 'sites',
 		label: Liferay.Language.get('sites')
+	},
+	[Entity.Users]: {
+		icon: 'users',
+		label: Liferay.Language.get('users')
 	}
 };
 
