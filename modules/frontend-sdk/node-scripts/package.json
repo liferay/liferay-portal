@@ -42,7 +42,7 @@
 		"gulp": "4.0.2",
 		"jest": "27.5.1",
 		"jest-axe": "10.0.0",
-		"jest-fetch-mock": "^3.0.3",
+		"jest-fetch-mock": "3.0.3",
 		"liferay-theme-tasks": "11.5.6",
 		"micromatch": "4.0.2",
 		"minimist": "^1.2.8",
