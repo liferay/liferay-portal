@@ -27,6 +27,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectVariationProvider;
 import com.liferay.info.type.WebImage;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -405,6 +406,18 @@ public class AnalyticsAttributesUtil {
 
 				return null;
 			}
+		).put(
+			"analytics-object-type",
+			() -> {
+				if (infoItemFieldMapped.getObject() instanceof
+						ObjectEntry objectEntry) {
+
+					return _getAnalyticsObjectType(
+						infoItemServiceRegistry, objectEntry);
+				}
+
+				return null;
+			}
 		).build();
 	}
 
@@ -456,6 +469,54 @@ public class AnalyticsAttributesUtil {
 			}
 
 			return objectDefinition.getName();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return null;
+	}
+
+	private static String _getAnalyticsObjectType(
+		InfoItemServiceRegistry infoItemServiceRegistry,
+		ObjectEntry objectEntry) {
+
+		try {
+			InfoItemObjectProvider<ObjectDefinition> infoItemObjectProvider =
+				infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemObjectProvider.class,
+					ObjectDefinition.class.getName());
+
+			if (infoItemObjectProvider == null) {
+				return null;
+			}
+
+			ObjectDefinition objectDefinition =
+				infoItemObjectProvider.getInfoItem(
+					new ClassPKInfoItemIdentifier(
+						objectEntry.getObjectDefinitionId()));
+
+			if (objectDefinition == null) {
+				return null;
+			}
+
+			String objectFolderExternalReferenceCode =
+				objectDefinition.getObjectFolderExternalReferenceCode();
+
+			if (Objects.equals(
+					objectFolderExternalReferenceCode,
+					ObjectFolderConstants.
+						EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES)) {
+
+				return "content";
+			}
+
+			if (Objects.equals(
+					objectFolderExternalReferenceCode,
+					ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES)) {
+
+				return "file";
+			}
 		}
 		catch (Exception exception) {
 			_log.error(exception);
