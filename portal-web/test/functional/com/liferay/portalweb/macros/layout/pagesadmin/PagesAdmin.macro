@@ -829,6 +829,13 @@ definition {
 
 	@summary = "Default summary"
 	macro enableCKE4() {
+		PagesAdmin.enableDeprecationFeatureFlag(featureFlagName = "Rich Text Editor");
+	}
+
+	@summary = "Default summary"
+	macro enableDeprecationFeatureFlag(featureFlagName = null) {
+		Variables.assertDefined(parameterList = ${featureFlagName});
+
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Control Panel",
@@ -839,10 +846,10 @@ definition {
 			configurationName = "Deprecation",
 			configurationScope = "Virtual Instance Scope");
 
-		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Rich Text Editor", toggle_state = "Disabled")) {
+		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = ${featureFlagName}, toggle_state = "Disabled")) {
 			Check.checkToggleSwitch(
 				locator1 = "FeatureFlag#TOGGLE_ROW",
-				title_row = "Rich Text Editor",
+				title_row = ${featureFlagName},
 				toggle_state = "Disabled");
 		}
 
@@ -851,46 +858,12 @@ definition {
 
 	@summary = "Default summary"
 	macro enablePrivatePages() {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "Instance Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Feature Flags",
-			configurationName = "Deprecation",
-			configurationScope = "Virtual Instance Scope");
-
-		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Private Pages", toggle_state = "Disabled")) {
-			Check.checkToggleSwitch(
-				locator1 = "FeatureFlag#TOGGLE_ROW",
-				title_row = "Private Pages",
-				toggle_state = "Disabled");
-		}
-
-		Navigator.openURL();
+		PagesAdmin.enableDeprecationFeatureFlag(featureFlagName = "Private Pages");
 	}
 
 	@summary = "Default summary"
 	macro enableWidgetPages() {
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "Instance Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Feature Flags",
-			configurationName = "Deprecation",
-			configurationScope = "Virtual Instance Scope");
-
-		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Widget Pages", toggle_state = "Disabled")) {
-			Check.checkToggleSwitch(
-				locator1 = "FeatureFlag#TOGGLE_ROW",
-				title_row = "Widget Pages",
-				toggle_state = "Disabled");
-		}
-
-		Navigator.openURL();
+		PagesAdmin.enableDeprecationFeatureFlag(featureFlagName = "Widget Pages");
 	}
 
 	@summary = "Default summary"
