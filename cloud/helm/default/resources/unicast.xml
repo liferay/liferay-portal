@@ -29,7 +29,7 @@
 	<pbcast.NAKACK2 discard_delivered_msgs="true" use_mcast_xmit="false" />
 	<UNICAST3 />
 	<pbcast.STABLE
-		stability_delay="1000" desired_avg_gossip="50000" max_bytes="4M"
+		desired_avg_gossip="50000" max_bytes="4M"
 	/>
 	<pbcast.GMS
 		print_local_addr="true" join_timeout="2000"

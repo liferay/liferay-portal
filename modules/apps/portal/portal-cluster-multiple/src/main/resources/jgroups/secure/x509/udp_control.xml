@@ -53,8 +53,7 @@
 		xmit_table_num_rows="100"
 	/>
 	<pbcast.STABLE desired_avg_gossip="50000"
-				   max_bytes="4M"
-				   stability_delay="1000" />
+				   max_bytes="4M" />
 	<AUTH
 		auth_class="org.jgroups.auth.X509Token"
 		auth_value="${cluster.link.auth.value}"
@@ -65,7 +64,7 @@
 		keystore_path="${cluster.link.auth.keystore.path}"
 		keystore_type="${cluster.link.auth.keystore.type}"
 	/>
-	<pbcast.GMS join_timeout="2000" print_local_addr="true" view_bundling="true" />
+	<pbcast.GMS join_timeout="2000" print_local_addr="true" />
 	<UFC
 		max_credits="2M"
 		min_threshold="0.4"

@@ -37,9 +37,8 @@
 		xmit_table_num_rows="100"
 	/>
 	<pbcast.STABLE desired_avg_gossip="50000"
-				   max_bytes="4M"
-				   stability_delay="1000" />
-	<pbcast.GMS join_timeout="2000" print_local_addr="true" view_bundling="true" />
+				   max_bytes="4M" />
+	<pbcast.GMS join_timeout="2000" print_local_addr="true" />
 	<UFC
 		max_credits="2M"
 		min_threshold="0.4"
