@@ -17,7 +17,10 @@ import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import java.lang.reflect.Array;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +36,8 @@ public class CollectionPersistenceFinder
 		FinderPath paginatedFindPath, FinderPath unpaginatedFindPath,
 		FinderPath countFinderPath, String sqlSelectWhere, String sqlCountWhere,
 		String defaultOrderByJpql, String orderByEntityAlias, String where,
-		String dbWhere, FinderColumn<T>... finderColumns) {
+		String dbWhere, UniquePersistenceFinder<T, E> uniquePersistenceFinder,
+		FinderColumn<T>... finderColumns) {
 
 		super(
 			basePersistenceImpl, sqlSelectWhere, where, dbWhere, finderColumns);
@@ -44,6 +48,7 @@ public class CollectionPersistenceFinder
 		_sqlCountWhere = sqlCountWhere;
 		_defaultOrderByJpql = defaultOrderByJpql;
 		_orderByEntityAlias = orderByEntityAlias;
+		_uniquePersistenceFinder = uniquePersistenceFinder;
 
 		List<Integer> arrayableIndexes = new ArrayList<>();
 
@@ -64,6 +69,12 @@ public class CollectionPersistenceFinder
 	public int count(FinderCache finderCache, Object[] values) {
 		try (SafeCloseable safeCloseable =
 				setCTCollectionIdWithSafeCloseable()) {
+
+			if ((_uniquePersistenceFinder != null) &&
+				_unwrapIfAllArrayableLengthOne(values)) {
+
+				return _uniquePersistenceFinder.count(finderCache, values);
+			}
 
 			normalizeValues(values);
 
@@ -122,6 +133,19 @@ public class CollectionPersistenceFinder
 
 		try (SafeCloseable safeCloseable =
 				setCTCollectionIdWithSafeCloseable()) {
+
+			if ((_uniquePersistenceFinder != null) &&
+				_unwrapIfAllArrayableLengthOne(values)) {
+
+				T entity = _uniquePersistenceFinder.fetch(
+					finderCache, values, useFinderCache);
+
+				if (entity == null) {
+					return Collections.emptyList();
+				}
+
+				return Collections.singletonList(entity);
+			}
 
 			normalizeValues(values);
 
@@ -299,12 +323,31 @@ public class CollectionPersistenceFinder
 		return false;
 	}
 
+	private boolean _unwrapIfAllArrayableLengthOne(Object[] values) {
+		if (_arrayableIndexes == null) {
+			return false;
+		}
+
+		for (int index : _arrayableIndexes) {
+			if (Array.getLength(values[index]) != 1) {
+				return false;
+			}
+		}
+
+		for (int index : _arrayableIndexes) {
+			values[index] = Array.get(values[index], 0);
+		}
+
+		return true;
+	}
+
 	private final Integer[] _arrayableIndexes;
 	private final FinderPath _countFinderPath;
 	private final String _defaultOrderByJpql;
 	private final String _orderByEntityAlias;
 	private final FinderPath _paginatedFindPath;
 	private final String _sqlCountWhere;
+	private final UniquePersistenceFinder<T, E> _uniquePersistenceFinder;
 	private final FinderPath _unpaginatedFindPath;
 
 }
