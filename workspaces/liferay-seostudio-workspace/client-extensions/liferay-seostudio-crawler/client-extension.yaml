@@ -1,12 +1,24 @@
 assemble:
     -   fromTask: bootJar
+liferay-seostudio-crawler-oahs:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Liferay SEO Studio Crawler OAuth Application Headless Server
+    scopes:
+        -   seostudiodomain.everything
+        -   seostudioinstance.everything
+        -   seostudioorphanpagedata.everything
+        -   seostudioscan.everything
+        -   seostudioscaninsight.everything
+        -   Liferay.Headless.SEO.Studio.REST.everything
+    type: oAuthApplicationHeadlessServer
 liferay-seostudio-crawler-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay SEO Studio Crawler OAuth Application User Agent
     type: oAuthApplicationUserAgent
-liferay-seostudio-crawler-object-action-crawl:
-    name: Liferay SEO Studio Crawler Object Action
+liferay-seostudio-crawler-trigger:
+    name: Liferay SEO Studio Crawler Trigger
     oAuth2ApplicationExternalReferenceCode: liferay-seostudio-crawler-oaua
-    resourcePath: /object/action/crawler
+    resourcePath: /crawler
     type: objectAction
