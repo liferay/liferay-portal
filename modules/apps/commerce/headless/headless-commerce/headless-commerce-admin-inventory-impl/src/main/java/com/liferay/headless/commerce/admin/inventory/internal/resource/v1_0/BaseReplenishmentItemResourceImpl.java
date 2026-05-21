@@ -77,6 +77,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/{replenishmentItemId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -153,6 +156,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the replenishment item identified by externalReferenceCode. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem after looking the row up by externalReferenceCode within the request company. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -185,6 +191,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/{replenishmentItemId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.getCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -217,6 +226,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the replenishment item identified by externalReferenceCode. Calls CommerceInventoryReplenishmentItemService.fetchCommerceInventoryReplenishmentItemByExternalReferenceCode. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -251,6 +263,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/skus/by-sku/{sku}/replenishment-items'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of replenishment items for the given SKU scoped to the request company, expressed in the SKU's default unit of measure (unitOfMeasureKey is hard-coded to empty by the implementation). Items whose unitOfMeasureKey is non-empty are not returned by this endpoint -- use /warehouses/<warehouseId>/replenishment-items instead. The endpoint exposes no filter, search, or sort parameters; only page and pageSize."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -292,6 +307,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{warehouseId}/replenishment-items'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of replenishment items scoped to the warehouse identified by warehouseId. The list is unfiltered (no filter, search, or sort parameters); only page and pageSize."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -333,6 +351,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/{replenishmentItemId}' -d $'{"availabilityDate": ___, "externalReferenceCode": ___, "id": ___, "quantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Applies a JSON Merge Patch to the replenishment item identified by replenishmentItemId. Only the fields supplied in the body are modified -- availabilityDate and quantity fall back to the persisted value when omitted; externalReferenceCode in the body, when present, is written to the row. Validation -- CommerceInventoryReplenishmentQuantityException -> 400 when quantity is non-positive."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -367,6 +388,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/by-externalReferenceCode/{externalReferenceCode}' -d $'{"availabilityDate": ___, "externalReferenceCode": ___, "id": ___, "quantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Applies a JSON Merge Patch to the replenishment item identified by externalReferenceCode. Only the fields supplied in the body are modified -- availabilityDate, quantity, and unitOfMeasureKey fall back to the persisted value when omitted. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve; CommerceInventoryReplenishmentQuantityException -> 400 when quantity is non-positive."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -438,6 +462,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{warehouseId}/skus/by-sku/{sku}/replenishment-items' -d $'{"availabilityDate": ___, "externalReferenceCode": ___, "id": ___, "quantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a replenishment item for the SKU at the warehouse identified by warehouseId. Validation -- the underlying warehouse item (warehouseId, sku, default unit of measure) must exist (NoSuchInventoryWarehouseItemException -> 404 otherwise); CommerceInventoryReplenishmentQuantityException -> 400 when quantity is non-positive; DuplicateCommerceInventoryReplenishmentItemException -> 400 when externalReferenceCode collides with an existing entry."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -617,6 +644,9 @@ public abstract class BaseReplenishmentItemResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/replenishment-items/by-externalReferenceCode/{externalReferenceCode}' -d $'{"availabilityDate": ___, "externalReferenceCode": ___, "id": ___, "quantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Upserts the replenishment item identified by externalReferenceCode. When a row with that externalReferenceCode already exists, every field is replaced (nulls are coerced to defaults). When it does not, a new replenishment item is created. Validation -- the underlying warehouse item identified by warehouseId and sku must exist (NoSuchInventoryWarehouseItemException -> 404 otherwise); duplicate externalReferenceCode raises DuplicateCommerceInventoryReplenishmentItemException -> 400."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1468,4 +1498,4 @@ public abstract class BaseReplenishmentItemResourceImpl
 		LogFactoryUtil.getLog(BaseReplenishmentItemResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:820624044
+// LIFERAY-REST-BUILDER-HASH:1644144996

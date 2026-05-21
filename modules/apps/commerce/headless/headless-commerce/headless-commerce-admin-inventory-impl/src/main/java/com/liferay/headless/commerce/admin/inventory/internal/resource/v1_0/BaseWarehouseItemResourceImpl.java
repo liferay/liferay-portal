@@ -78,6 +78,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/{id}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -154,6 +157,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the warehouse item identified by externalReferenceCode. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem after looking the row up within the request company. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -186,6 +192,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouseItems'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse items for the warehouse identified by externalReferenceCode. The list is unfiltered (no filter, search, or sort parameters)."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -230,6 +239,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouseItems'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse items for the warehouse identified by id. The list is unfiltered (no filter, search, or sort parameters)."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -271,6 +283,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/{id}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.getCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -303,6 +318,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the warehouse item identified by externalReferenceCode. Calls CommerceInventoryWarehouseItemService.fetchCommerceInventoryWarehouseItemByExternalReferenceCode. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -337,6 +355,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/updated'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse items modified within the (start, end) date window scoped to the request company. Defaults -- when only end is supplied, start is rewound 30 days; when only start is supplied, end is advanced 30 days; when both are omitted, end is set to today and start is rewound 30 days. Validation -- CommerceInventoryInvalidDateException -> 400 when start is after end. The endpoint exposes no filter, search, or sort parameters."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -384,6 +405,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/{id}' -d $'{"externalReferenceCode": ___, "id": ___, "modifiedDate": ___, "quantity": ___, "reservedQuantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Applies a JSON Merge Patch to the warehouse item identified by id. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. Returns 200 OK with an empty body on success; the 202 response declared by the spec is reserved for future async use."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -420,6 +444,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "id": ___, "modifiedDate": ___, "quantity": ___, "reservedQuantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Applies a JSON Merge Patch to the warehouse item identified by externalReferenceCode. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve; CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. The 202 response declared by the spec is reserved for future async use and is not currently emitted."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -458,6 +485,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouseItems' -d $'{"externalReferenceCode": ___, "id": ___, "modifiedDate": ___, "quantity": ___, "reservedQuantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse item under the warehouse identified by externalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -494,6 +524,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouseItems' -d $'{"externalReferenceCode": ___, "id": ___, "modifiedDate": ___, "quantity": ___, "reservedQuantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse item under the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -574,6 +607,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "id": ___, "modifiedDate": ___, "quantity": ___, "reservedQuantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse item with the supplied externalReferenceCode. The body must resolve a warehouse through either warehouseId or warehouseExternalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse cannot be resolved; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the same externalReferenceCode already exists. For upsert semantics use PUT against the same path instead."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -610,6 +646,9 @@ public abstract class BaseWarehouseItemResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouseItems/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "id": ___, "modifiedDate": ___, "quantity": ___, "reservedQuantity": ___, "sku": ___, "unitOfMeasureKey": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Upserts the warehouse item identified by externalReferenceCode. When a warehouse item with that externalReferenceCode already exists, quantity, reservedQuantity, and unitOfMeasureKey are updated. When it does not, a new warehouse item is created against the warehouse resolved by warehouseExternalReferenceCode in the body. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse cannot be resolved. Side effects -- quantity defaults to one and reservedQuantity defaults to zero on create."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1461,4 +1500,4 @@ public abstract class BaseWarehouseItemResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseItemResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:168270016
+// LIFERAY-REST-BUILDER-HASH:1735478098

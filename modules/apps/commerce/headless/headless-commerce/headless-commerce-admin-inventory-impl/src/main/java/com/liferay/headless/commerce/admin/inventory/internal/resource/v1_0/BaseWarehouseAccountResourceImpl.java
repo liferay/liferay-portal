@@ -75,6 +75,9 @@ public abstract class BaseWarehouseAccountResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-accounts/{warehouseAccountId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the warehouse-account binding identified by warehouseAccountId. Calls CommerceInventoryWarehouseRelService.deleteCommerceInventoryWarehouseRel. Side effects -- removes the row that scopes the warehouse to the bound account; the account itself is not affected."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -151,6 +154,9 @@ public abstract class BaseWarehouseAccountResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-accounts'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse-account bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound account name. No filter or sort."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -195,6 +201,9 @@ public abstract class BaseWarehouseAccountResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-accounts'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse-account bindings for the warehouse identified by id. Supports the search query parameter against the bound account name. No filter or sort honored by the implementation."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -255,6 +264,9 @@ public abstract class BaseWarehouseAccountResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse-account binding between the warehouse identified by externalReferenceCode and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account cannot be resolved; a duplicate binding raises a duplicate exception -> 400."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -292,6 +304,9 @@ public abstract class BaseWarehouseAccountResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse-account binding between the warehouse identified by id and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse id does not resolve; NoSuchEntryException -> 404 when the account cannot be resolved."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1083,4 +1098,4 @@ public abstract class BaseWarehouseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-579077844
+// LIFERAY-REST-BUILDER-HASH:-1393541530

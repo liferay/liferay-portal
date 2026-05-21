@@ -153,7 +153,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseAccountAccount(warehouseAccountId: ___){id, logoId, name}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the account referenced by the warehouse-account binding identified by warehouseAccountId. Resolves the binding via CommerceInventoryWarehouseRelService and reads the account through AccountEntryService using the binding's classPK. Read-only nested expansion of the binding's account field."
+	)
 	public Account warehouseAccountAccount(
 			@GraphQLName("warehouseAccountId") Long warehouseAccountId)
 		throws Exception {
@@ -170,7 +172,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseAccountGroupAccountGroup(warehouseAccountGroupId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the account group referenced by the warehouse-account-group binding identified by warehouseAccountGroupId. Resolves the binding via CommerceInventoryWarehouseRelService and reads the account group through AccountGroupService.getAccountGroup using the binding's classPK. Read-only nested expansion of the binding's accountGroup field."
+	)
 	public AccountGroup warehouseAccountGroupAccountGroup(
 			@GraphQLName("warehouseAccountGroupId") Long
 				warehouseAccountGroupId)
@@ -189,7 +193,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseChannelChannel(warehouseChannelId: ___){currencyCode, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the channel referenced by the warehouse-channel binding identified by warehouseChannelId. Resolves the binding via CommerceChannelRelService and reads the channel through CommerceChannelService. Read-only nested expansion of the binding's channel field."
+	)
 	public Channel warehouseChannelChannel(
 			@GraphQLName("warehouseChannelId") Long warehouseChannelId)
 		throws Exception {
@@ -206,7 +212,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseOrderTypeOrderType(warehouseOrderTypeId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the order type referenced by the warehouse-order-type binding identified by warehouseOrderTypeId. Resolves the binding via CommerceInventoryWarehouseRelService and reads the order type through CommerceOrderTypeService using the binding's classPK. Read-only nested expansion of the binding's orderType field."
+	)
 	public OrderType warehouseOrderTypeOrderType(
 			@GraphQLName("warehouseOrderTypeId") Long warehouseOrderTypeId)
 		throws Exception {
@@ -224,7 +232,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {replenishmentItem(replenishmentItemId: ___){availabilityDate, externalReferenceCode, id, quantity, sku, unitOfMeasureKey, warehouseId}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.getCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve."
+	)
 	public ReplenishmentItem replenishmentItem(
 			@GraphQLName("replenishmentItemId") Long replenishmentItemId)
 		throws Exception {
@@ -242,7 +252,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {replenishmentItemByExternalReferenceCode(externalReferenceCode: ___){availabilityDate, externalReferenceCode, id, quantity, sku, unitOfMeasureKey, warehouseId}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the replenishment item identified by externalReferenceCode. Calls CommerceInventoryReplenishmentItemService.fetchCommerceInventoryReplenishmentItemByExternalReferenceCode. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	public ReplenishmentItem replenishmentItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -261,7 +273,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {replenishmentItems(page: ___, pageSize: ___, sku: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of replenishment items for the given SKU scoped to the request company, expressed in the SKU's default unit of measure (unitOfMeasureKey is hard-coded to empty by the implementation). Items whose unitOfMeasureKey is non-empty are not returned by this endpoint -- use /warehouses/<warehouseId>/replenishment-items instead. The endpoint exposes no filter, search, or sort parameters; only page and pageSize."
+	)
 	public ReplenishmentItemPage replenishmentItems(
 			@GraphQLName("sku") String sku,
 			@GraphQLName("pageSize") int pageSize,
@@ -281,7 +295,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseIdReplenishmentItems(page: ___, pageSize: ___, warehouseId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of replenishment items scoped to the warehouse identified by warehouseId. The list is unfiltered (no filter, search, or sort parameters); only page and pageSize."
+	)
 	public ReplenishmentItemPage warehouseIdReplenishmentItems(
 			@GraphQLName("warehouseId") Long warehouseId,
 			@GraphQLName("pageSize") int pageSize,
@@ -301,7 +317,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseByExternalReferenceCode(externalReferenceCode: ___){actions, active, city, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, regionISOCode, street1, street2, street3, type, warehouseItems, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the warehouse identified by externalReferenceCode. Calls CommerceInventoryWarehouseService.fetchCommerceInventoryWarehouseByExternalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve."
+	)
 	public Warehouse warehouseByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -319,7 +337,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseId(id: ___){actions, active, city, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, regionISOCode, street1, street2, street3, type, warehouseItems, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the warehouse identified by id. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve."
+	)
 	public Warehouse warehouseId(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
 			_warehouseResourceComponentServiceObjects,
@@ -332,7 +352,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouses(filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouses for the request company. Supports an OData v4 filter expression (filterable fields -- active, latitude, longitude, city, countryISOCode, name, regionISOCode, street1), a full-text search expression, and a sort expression over the same field set, all sourced from the warehouse entity model. Backed by SearchUtil.search against the indexed CommerceInventoryWarehouse documents."
+	)
 	public WarehousePage warehouses(
 			@GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -357,7 +379,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseByExternalReferenceCodeWarehouseAccounts(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-account bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound account name. No filter or sort."
+	)
 	public WarehouseAccountPage
 			warehouseByExternalReferenceCodeWarehouseAccounts(
 				@GraphQLName("externalReferenceCode") String
@@ -380,7 +404,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseIdWarehouseAccounts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-account bindings for the warehouse identified by id. Supports the search query parameter against the bound account name. No filter or sort honored by the implementation."
+	)
 	public WarehouseAccountPage warehouseIdWarehouseAccounts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -407,7 +433,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseByExternalReferenceCodeWarehouseAccountGroups(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-account-group bindings for the warehouse identified by externalReferenceCode. No filter, search, or sort parameters are honored."
+	)
 	public WarehouseAccountGroupPage
 			warehouseByExternalReferenceCodeWarehouseAccountGroups(
 				@GraphQLName("externalReferenceCode") String
@@ -430,7 +458,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseIdWarehouseAccountGroups(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-account-group bindings for the warehouse identified by id. Supports the search query parameter against the bound account-group name. No filter or sort honored by the implementation."
+	)
 	public WarehouseAccountGroupPage warehouseIdWarehouseAccountGroups(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -458,7 +488,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseByExternalReferenceCodeWarehouseChannels(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound channel name. No filter or sort."
+	)
 	public WarehouseChannelPage
 			warehouseByExternalReferenceCodeWarehouseChannels(
 				@GraphQLName("externalReferenceCode") String
@@ -481,7 +513,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseIdWarehouseChannels(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by id. Supports the search query parameter against the bound channel name. Returns an empty page when the warehouse does not exist (does not raise)."
+	)
 	public WarehouseChannelPage warehouseIdWarehouseChannels(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -508,7 +542,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseByExternalReferenceCodeWarehouseItems(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse items for the warehouse identified by externalReferenceCode. The list is unfiltered (no filter, search, or sort parameters)."
+	)
 	public WarehouseItemPage warehouseByExternalReferenceCodeWarehouseItems(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("pageSize") int pageSize,
@@ -529,7 +565,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseIdWarehouseItems(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse items for the warehouse identified by id. The list is unfiltered (no filter, search, or sort parameters)."
+	)
 	public WarehouseItemPage warehouseIdWarehouseItems(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
@@ -548,7 +586,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseItem(id: ___){externalReferenceCode, id, modifiedDate, quantity, reservedQuantity, sku, unitOfMeasureKey, warehouseExternalReferenceCode, warehouseId}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.getCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve."
+	)
 	public WarehouseItem warehouseItem(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -564,7 +604,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseItemByExternalReferenceCode(externalReferenceCode: ___){externalReferenceCode, id, modifiedDate, quantity, reservedQuantity, sku, unitOfMeasureKey, warehouseExternalReferenceCode, warehouseId}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the warehouse item identified by externalReferenceCode. Calls CommerceInventoryWarehouseItemService.fetchCommerceInventoryWarehouseItemByExternalReferenceCode. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	public WarehouseItem warehouseItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -582,7 +624,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseItemsUpdated(end: ___, page: ___, pageSize: ___, start: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse items modified within the (start, end) date window scoped to the request company. Defaults -- when only end is supplied, start is rewound 30 days; when only start is supplied, end is advanced 30 days; when both are omitted, end is set to today and start is rewound 30 days. Validation -- CommerceInventoryInvalidDateException -> 400 when start is after end. The endpoint exposes no filter, search, or sort parameters."
+	)
 	public WarehouseItemPage warehouseItemsUpdated(
 			@GraphQLName("end") Date end, @GraphQLName("start") Date start,
 			@GraphQLName("pageSize") int pageSize,
@@ -602,7 +646,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseByExternalReferenceCodeWarehouseOrderTypes(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-order-type bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound order-type name. No filter or sort. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve."
+	)
 	public WarehouseOrderTypePage
 			warehouseByExternalReferenceCodeWarehouseOrderTypes(
 				@GraphQLName("externalReferenceCode") String
@@ -625,7 +671,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouseIdWarehouseOrderTypes(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the paginated list of warehouse-order-type bindings for the warehouse identified by id. Supports the search query parameter against the bound order-type name. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve."
+	)
 	public WarehouseOrderTypePage warehouseIdWarehouseOrderTypes(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -657,7 +705,9 @@ public class Query {
 			_warehouse = warehouse;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the replenishment item identified by externalReferenceCode. Calls CommerceInventoryReplenishmentItemService.fetchCommerceInventoryReplenishmentItemByExternalReferenceCode. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve."
+		)
 		public ReplenishmentItem replenishmentItemByExternalReferenceCode()
 			throws Exception {
 
@@ -683,7 +733,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the warehouse identified by externalReferenceCode. Calls CommerceInventoryWarehouseService.fetchCommerceInventoryWarehouseByExternalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve."
+		)
 		public Warehouse warehouseByExternalReferenceCode() throws Exception {
 			return _applyComponentServiceObjects(
 				_warehouseResourceComponentServiceObjects,
@@ -706,7 +758,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the warehouse item identified by externalReferenceCode. Calls CommerceInventoryWarehouseItemService.fetchCommerceInventoryWarehouseItemByExternalReferenceCode. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve."
+		)
 		public WarehouseItem warehouseItemByExternalReferenceCode()
 			throws Exception {
 
@@ -733,7 +787,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the paginated list of warehouse-account bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound account name. No filter or sort."
+		)
 		public WarehouseAccountPage
 				warehouseByExternalReferenceCodeWarehouseAccounts(
 					@GraphQLName("pageSize") int pageSize,
@@ -764,7 +820,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the paginated list of warehouse-account-group bindings for the warehouse identified by externalReferenceCode. No filter, search, or sort parameters are honored."
+		)
 		public WarehouseAccountGroupPage
 				warehouseByExternalReferenceCodeWarehouseAccountGroups(
 					@GraphQLName("pageSize") int pageSize,
@@ -795,7 +853,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound channel name. No filter or sort."
+		)
 		public WarehouseChannelPage
 				warehouseByExternalReferenceCodeWarehouseChannels(
 					@GraphQLName("pageSize") int pageSize,
@@ -826,7 +886,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the paginated list of warehouse items for the warehouse identified by externalReferenceCode. The list is unfiltered (no filter, search, or sort parameters)."
+		)
 		public WarehouseItemPage warehouseByExternalReferenceCodeWarehouseItems(
 				@GraphQLName("pageSize") int pageSize,
 				@GraphQLName("page") int page)
@@ -856,7 +918,9 @@ public class Query {
 			_replenishmentItem = replenishmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the paginated list of warehouse-order-type bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound order-type name. No filter or sort. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve."
+		)
 		public WarehouseOrderTypePage
 				warehouseByExternalReferenceCodeWarehouseOrderTypes(
 					@GraphQLName("pageSize") int pageSize,
@@ -1505,4 +1569,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-966726848
+// LIFERAY-REST-BUILDER-HASH:501307771

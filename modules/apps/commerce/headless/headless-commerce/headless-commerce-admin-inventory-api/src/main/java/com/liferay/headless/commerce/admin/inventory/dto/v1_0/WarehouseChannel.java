@@ -37,8 +37,12 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("WarehouseChannel")
+@GraphQLName(
+	description = "Binding that scopes a warehouse to a specific channel, restricting which storefront the warehouse can source inventory for. Created by POSTing under a warehouse and deleted through its own top-level resource path. A duplicate (warehouse, channel) pair is rejected with a 409. Does not reindex the parent warehouse on add or delete.",
+	value = "WarehouseChannel"
+)
 @io.swagger.v3.oas.annotations.media.Schema(
+	description = "Binding that scopes a warehouse to a specific channel, restricting which storefront the warehouse can source inventory for. Created by POSTing under a warehouse and deleted through its own top-level resource path. A duplicate (warehouse, channel) pair is rejected with a 409. Does not reindex the parent warehouse on add or delete.",
 	requiredProperties = {"channelId", "warehouseId"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -53,7 +57,9 @@ public class WarehouseChannel implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(WarehouseChannel.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Map of HATEOAS actions available to the current user, keyed by action name; each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
 		if (_actionsSupplier != null) {
@@ -89,7 +95,9 @@ public class WarehouseChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Map of HATEOAS actions available to the current user, keyed by action name; each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
 
@@ -138,7 +146,10 @@ public class WarehouseChannel implements Serializable {
 	@JsonIgnore
 	private Supplier<Channel> _channelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "PAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key of the bound channel. Either channelId or channelExternalReferenceCode must resolve to an existing channel on create.",
+		example = "DAB-34098-789-N"
+	)
 	public String getChannelExternalReferenceCode() {
 		if (_channelExternalReferenceCodeSupplier != null) {
 			channelExternalReferenceCode =
@@ -176,7 +187,9 @@ public class WarehouseChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key of the bound channel. Either channelId or channelExternalReferenceCode must resolve to an existing channel on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String channelExternalReferenceCode;
 
@@ -184,7 +197,10 @@ public class WarehouseChannel implements Serializable {
 	private Supplier<String> _channelExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the bound channel (FK identifier). Either channelId or channelExternalReferenceCode must resolve to an existing channel on create.",
+		example = "30130"
+	)
 	public Long getChannelId() {
 		if (_channelIdSupplier != null) {
 			channelId = _channelIdSupplier.get();
@@ -218,7 +234,9 @@ public class WarehouseChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the bound channel (FK identifier). Either channelId or channelExternalReferenceCode must resolve to an existing channel on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long channelId;
@@ -227,7 +245,10 @@ public class WarehouseChannel implements Serializable {
 	private Supplier<Long> _channelIdSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30643")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Internal numeric identifier of the binding; read-only and assigned by the service on create.",
+		example = "30643"
+	)
 	public Long getWarehouseChannelId() {
 		if (_warehouseChannelIdSupplier != null) {
 			warehouseChannelId = _warehouseChannelIdSupplier.get();
@@ -261,14 +282,19 @@ public class WarehouseChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Internal numeric identifier of the binding; read-only and assigned by the service on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long warehouseChannelId;
 
 	@JsonIgnore
 	private Supplier<Long> _warehouseChannelIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "DAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key of the warehouse side of the binding.",
+		example = "PAB-34098-789-N"
+	)
 	public String getWarehouseExternalReferenceCode() {
 		if (_warehouseExternalReferenceCodeSupplier != null) {
 			warehouseExternalReferenceCode =
@@ -306,7 +332,9 @@ public class WarehouseChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key of the warehouse side of the binding."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String warehouseExternalReferenceCode;
 
@@ -314,7 +342,10 @@ public class WarehouseChannel implements Serializable {
 	private Supplier<String> _warehouseExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30324")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the warehouse side of the binding (FK identifier).",
+		example = "30130"
+	)
 	public Long getWarehouseId() {
 		if (_warehouseIdSupplier != null) {
 			warehouseId = _warehouseIdSupplier.get();
@@ -348,7 +379,9 @@ public class WarehouseChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the warehouse side of the binding (FK identifier)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long warehouseId;
@@ -577,4 +610,4 @@ public class WarehouseChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-449578896
+// LIFERAY-REST-BUILDER-HASH:-1508416337

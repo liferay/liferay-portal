@@ -104,7 +104,9 @@ public class Mutation {
 			warehouseOrderTypeResourceComponentServiceObjects;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve."
+	)
 	public boolean deleteReplenishmentItem(
 			@GraphQLName("replenishmentItemId") Long replenishmentItemId)
 		throws Exception {
@@ -133,7 +135,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the replenishment item identified by externalReferenceCode. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem after looking the row up by externalReferenceCode within the request company. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	public boolean deleteReplenishmentItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -149,7 +153,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Applies a JSON Merge Patch to the replenishment item identified by replenishmentItemId. Only the fields supplied in the body are modified -- availabilityDate and quantity fall back to the persisted value when omitted; externalReferenceCode in the body, when present, is written to the row. Validation -- CommerceInventoryReplenishmentQuantityException -> 400 when quantity is non-positive."
+	)
 	public ReplenishmentItem patchReplenishmentItem(
 			@GraphQLName("replenishmentItemId") Long replenishmentItemId,
 			@GraphQLName("replenishmentItem") ReplenishmentItem
@@ -164,7 +170,9 @@ public class Mutation {
 					replenishmentItemId, replenishmentItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Applies a JSON Merge Patch to the replenishment item identified by externalReferenceCode. Only the fields supplied in the body are modified -- availabilityDate, quantity, and unitOfMeasureKey fall back to the persisted value when omitted. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the externalReferenceCode does not resolve; CommerceInventoryReplenishmentQuantityException -> 400 when quantity is non-positive."
+	)
 	public ReplenishmentItem patchReplenishmentItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("replenishmentItem") ReplenishmentItem
@@ -180,7 +188,9 @@ public class Mutation {
 						externalReferenceCode, replenishmentItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a replenishment item for the SKU at the warehouse identified by warehouseId. Validation -- the underlying warehouse item (warehouseId, sku, default unit of measure) must exist (NoSuchInventoryWarehouseItemException -> 404 otherwise); CommerceInventoryReplenishmentQuantityException -> 400 when quantity is non-positive; DuplicateCommerceInventoryReplenishmentItemException -> 400 when externalReferenceCode collides with an existing entry."
+	)
 	public ReplenishmentItem createReplenishmentItem(
 			@GraphQLName("warehouseId") Long warehouseId,
 			@GraphQLName("sku") String sku,
@@ -228,7 +238,9 @@ public class Mutation {
 					sku, callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Upserts the replenishment item identified by externalReferenceCode. When a row with that externalReferenceCode already exists, every field is replaced (nulls are coerced to defaults). When it does not, a new replenishment item is created. Validation -- the underlying warehouse item identified by warehouseId and sku must exist (NoSuchInventoryWarehouseItemException -> 404 otherwise); duplicate externalReferenceCode raises DuplicateCommerceInventoryReplenishmentItemException -> 400."
+	)
 	public ReplenishmentItem updateReplenishmentItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("replenishmentItem") ReplenishmentItem
@@ -244,7 +256,9 @@ public class Mutation {
 						externalReferenceCode, replenishmentItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse identified by externalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse."
+	)
 	public boolean deleteWarehouseByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -259,7 +273,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse."
+	)
 	public boolean deleteWarehouseId(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -271,7 +287,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Applies a JSON Merge Patch to the warehouse identified by externalReferenceCode. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 200 OK on success."
+	)
 	public Response patchWarehouseByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("warehouse") Warehouse warehouse)
@@ -285,7 +303,9 @@ public class Mutation {
 					externalReferenceCode, warehouse));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Applies a JSON Merge Patch to the warehouse identified by id. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success."
+	)
 	public Response patchWarehouseId(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouse") Warehouse warehouse)
@@ -298,7 +318,9 @@ public class Mutation {
 				id, warehouse));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse, or updates an existing one with the same externalReferenceCode supplied in the body (upsert by externalReferenceCode). Side effects -- on create, active defaults to true and latitude/longitude default to 0.0; optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Validation -- CommerceInventoryWarehouseNameException -> 400 when name is blank."
+	)
 	public Warehouse createWarehouse(
 			@GraphQLName("warehouse") Warehouse warehouse)
 		throws Exception {
@@ -343,7 +365,9 @@ public class Mutation {
 					callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Upserts the warehouse identified by externalReferenceCode. When a warehouse with that externalReferenceCode already exists, every field is replaced (nulls become defaults -- empty strings, 0.0 for coordinates, false for active). When it does not, a new warehouse is created. Validation -- CommerceInventoryWarehouseNameException -> 400 when name is blank. Side effects -- optional nested warehouseItems cascade through addOrUpdateCommerceInventoryWarehouseItem."
+	)
 	public Warehouse updateWarehouseByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("warehouse") Warehouse warehouse)
@@ -357,7 +381,9 @@ public class Mutation {
 					externalReferenceCode, warehouse));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse-account binding identified by warehouseAccountId. Calls CommerceInventoryWarehouseRelService.deleteCommerceInventoryWarehouseRel. Side effects -- removes the row that scopes the warehouse to the bound account; the account itself is not affected."
+	)
 	public boolean deleteWarehouseAccount(
 			@GraphQLName("warehouseAccountId") Long warehouseAccountId)
 		throws Exception {
@@ -386,7 +412,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-account binding between the warehouse identified by externalReferenceCode and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account cannot be resolved; a duplicate binding raises a duplicate exception -> 400."
+	)
 	public WarehouseAccount
 			createWarehouseByExternalReferenceCodeWarehouseAccount(
 				@GraphQLName("externalReferenceCode") String
@@ -404,7 +432,9 @@ public class Mutation {
 						externalReferenceCode, warehouseAccount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-account binding between the warehouse identified by id and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse id does not resolve; NoSuchEntryException -> 404 when the account cannot be resolved."
+	)
 	public WarehouseAccount createWarehouseIdWarehouseAccount(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouseAccount") WarehouseAccount warehouseAccount)
@@ -432,7 +462,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse-account-group binding identified by warehouseAccountGroupId. Calls CommerceInventoryWarehouseRelService.deleteCommerceInventoryWarehouseRel. Side effects -- removes the row that scopes the warehouse to the bound account group; the account group itself is not affected."
+	)
 	public boolean deleteWarehouseAccountGroup(
 			@GraphQLName("warehouseAccountGroupId") Long
 				warehouseAccountGroupId)
@@ -462,7 +494,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-account-group binding between the warehouse identified by externalReferenceCode and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved; a duplicate binding raises a duplicate exception -> 400."
+	)
 	public WarehouseAccountGroup
 			createWarehouseByExternalReferenceCodeWarehouseAccountGroup(
 				@GraphQLName("externalReferenceCode") String
@@ -480,7 +514,9 @@ public class Mutation {
 						externalReferenceCode, warehouseAccountGroup));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-account-group binding between the warehouse identified by id and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved."
+	)
 	public WarehouseAccountGroup createWarehouseIdWarehouseAccountGroup(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouseAccountGroup") WarehouseAccountGroup
@@ -511,7 +547,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse-channel binding identified by warehouseChannelId. Calls CommerceChannelRelService.deleteCommerceChannelRel. Side effects -- removes the row that scopes the warehouse to the bound channel; the channel itself is not affected."
+	)
 	public boolean deleteWarehouseChannel(
 			@GraphQLName("warehouseChannelId") Long warehouseChannelId)
 		throws Exception {
@@ -540,7 +578,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-channel binding between the warehouse identified by externalReferenceCode and the channel resolved by channelId or channelExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
+	)
 	public WarehouseChannel
 			createWarehouseByExternalReferenceCodeWarehouseChannel(
 				@GraphQLName("externalReferenceCode") String
@@ -558,7 +598,9 @@ public class Mutation {
 						externalReferenceCode, warehouseChannel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-channel binding between the warehouse identified by id and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
+	)
 	public WarehouseChannel createWarehouseIdWarehouseChannel(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouseChannel") WarehouseChannel warehouseChannel)
@@ -586,7 +628,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve."
+	)
 	public boolean deleteWarehouseItem(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -613,7 +657,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse item identified by externalReferenceCode. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem after looking the row up within the request company. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve."
+	)
 	public boolean deleteWarehouseItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -629,7 +675,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Applies a JSON Merge Patch to the warehouse item identified by id. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. Returns 200 OK with an empty body on success; the 202 response declared by the spec is reserved for future async use."
+	)
 	public Response patchWarehouseItem(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouseItem") WarehouseItem warehouseItem)
@@ -642,7 +690,9 @@ public class Mutation {
 				id, warehouseItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Applies a JSON Merge Patch to the warehouse item identified by externalReferenceCode. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the externalReferenceCode does not resolve; CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. The 202 response declared by the spec is reserved for future async use and is not currently emitted."
+	)
 	public Response patchWarehouseItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("warehouseItem") WarehouseItem warehouseItem)
@@ -656,7 +706,9 @@ public class Mutation {
 					externalReferenceCode, warehouseItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse item under the warehouse identified by externalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the externalReferenceCode does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists."
+	)
 	public WarehouseItem createWarehouseByExternalReferenceCodeWarehouseItem(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("warehouseItem") WarehouseItem warehouseItem)
@@ -671,7 +723,9 @@ public class Mutation {
 						externalReferenceCode, warehouseItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse item under the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists."
+	)
 	public WarehouseItem createWarehouseIdWarehouseItem(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouseItem") WarehouseItem warehouseItem)
@@ -699,7 +753,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse item with the supplied externalReferenceCode. The body must resolve a warehouse through either warehouseId or warehouseExternalReferenceCode. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse cannot be resolved; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the same externalReferenceCode already exists. For upsert semantics use PUT against the same path instead."
+	)
 	public WarehouseItem createWarehouseItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("warehouseItem") WarehouseItem warehouseItem)
@@ -713,7 +769,9 @@ public class Mutation {
 					externalReferenceCode, warehouseItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Upserts the warehouse item identified by externalReferenceCode. When a warehouse item with that externalReferenceCode already exists, quantity, reservedQuantity, and unitOfMeasureKey are updated. When it does not, a new warehouse item is created against the warehouse resolved by warehouseExternalReferenceCode in the body. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse cannot be resolved. Side effects -- quantity defaults to one and reservedQuantity defaults to zero on create."
+	)
 	public WarehouseItem updateWarehouseItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("warehouseItem") WarehouseItem warehouseItem)
@@ -727,7 +785,9 @@ public class Mutation {
 					externalReferenceCode, warehouseItem));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the warehouse-order-type binding identified by warehouseOrderTypeId. Calls CommerceInventoryWarehouseRelService.deleteCommerceInventoryWarehouseRel. Side effects -- removes the row that scopes the warehouse to the bound order type; the order type itself is not affected."
+	)
 	public boolean deleteWarehouseOrderType(
 			@GraphQLName("warehouseOrderTypeId") Long warehouseOrderTypeId)
 		throws Exception {
@@ -756,7 +816,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-order-type binding between the warehouse identified by externalReferenceCode and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved."
+	)
 	public WarehouseOrderType
 			createWarehouseByExternalReferenceCodeWarehouseOrderType(
 				@GraphQLName("externalReferenceCode") String
@@ -774,7 +836,9 @@ public class Mutation {
 						externalReferenceCode, warehouseOrderType));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a warehouse-order-type binding between the warehouse identified by id and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved."
+	)
 	public WarehouseOrderType createWarehouseIdWarehouseOrderType(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouseOrderType") WarehouseOrderType
@@ -1026,4 +1090,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2117222811
+// LIFERAY-REST-BUILDER-HASH:1603336571

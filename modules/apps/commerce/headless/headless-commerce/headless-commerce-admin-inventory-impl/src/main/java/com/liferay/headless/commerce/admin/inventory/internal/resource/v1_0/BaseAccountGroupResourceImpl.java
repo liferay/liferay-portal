@@ -47,6 +47,9 @@ public abstract class BaseAccountGroupResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-account-groups/{warehouseAccountGroupId}/account-group'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the account group referenced by the warehouse-account-group binding identified by warehouseAccountGroupId. Resolves the binding via CommerceInventoryWarehouseRelService and reads the account group through AccountGroupService.getAccountGroup using the binding's classPK. Read-only nested expansion of the binding's accountGroup field."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -519,4 +522,4 @@ public abstract class BaseAccountGroupResourceImpl
 		LogFactoryUtil.getLog(BaseAccountGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1533252504
+// LIFERAY-REST-BUILDER-HASH:-1826058639

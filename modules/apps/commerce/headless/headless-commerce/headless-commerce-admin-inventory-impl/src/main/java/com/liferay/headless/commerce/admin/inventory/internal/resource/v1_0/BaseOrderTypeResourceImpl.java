@@ -46,6 +46,9 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-order-types/{warehouseOrderTypeId}/order-type'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the order type referenced by the warehouse-order-type binding identified by warehouseOrderTypeId. Resolves the binding via CommerceInventoryWarehouseRelService and reads the order type through CommerceOrderTypeService using the binding's classPK. Read-only nested expansion of the binding's orderType field."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -518,4 +521,4 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 		LogFactoryUtil.getLog(BaseOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-435010556
+// LIFERAY-REST-BUILDER-HASH:1732192832

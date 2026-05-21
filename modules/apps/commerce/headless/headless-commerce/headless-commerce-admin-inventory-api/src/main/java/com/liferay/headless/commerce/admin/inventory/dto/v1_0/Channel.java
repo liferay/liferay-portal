@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Channel")
+@GraphQLName(
+	description = "Read-only projection of the channel referenced by a WarehouseChannel binding -- exposes only id, externalReferenceCode, name, currencyCode, siteGroupId, and channel type.",
+	value = "Channel"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Channel")
 public class Channel implements Serializable {
@@ -46,7 +49,10 @@ public class Channel implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Channel.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Three-letter ISO 4217 currency code of the channel's pricing currency. Read-only.",
+		example = "USD"
+	)
 	public String getCurrencyCode() {
 		if (_currencyCodeSupplier != null) {
 			currencyCode = _currencyCodeSupplier.get();
@@ -80,14 +86,19 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Three-letter ISO 4217 currency code of the channel's pricing currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyCode;
 
 	@JsonIgnore
 	private Supplier<String> _currencyCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key for create and update; must be unique per channel within the company. Read-only on this projection.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -121,14 +132,19 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key for create and update; must be unique per channel within the company. Read-only on this projection."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the channel (FK identifier). Read-only.",
+		example = "30130"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -160,14 +176,19 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the channel (FK identifier). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Display name of the channel. Plain string -- not localized. Read-only.",
+		example = "Sample Storefront"
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -199,14 +220,19 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Display name of the channel. Plain string -- not localized. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the Group (site) the channel is bound to (FK identifier). Read-only.",
+		example = "20136"
+	)
 	public Long getSiteGroupId() {
 		if (_siteGroupIdSupplier != null) {
 			siteGroupId = _siteGroupIdSupplier.get();
@@ -240,14 +266,19 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the Group (site) the channel is bound to (FK identifier). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long siteGroupId;
 
 	@JsonIgnore
 	private Supplier<Long> _siteGroupIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Channel type discriminator. The only in-tree value is `site`; other values are reserved for OSGi extensions. Read-only.",
+		example = "site"
+	)
 	public String getType() {
 		if (_typeSupplier != null) {
 			type = _typeSupplier.get();
@@ -279,7 +310,9 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Channel type discriminator. The only in-tree value is `site`; other values are reserved for OSGi extensions. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String type;
 
@@ -502,4 +535,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-581952533
+// LIFERAY-REST-BUILDER-HASH:120817936

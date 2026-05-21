@@ -35,7 +35,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Account")
+@GraphQLName(
+	description = "Read-only projection of the account referenced by a WarehouseAccount binding -- exposes only id, logoId, and name.",
+	value = "Account"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Account")
 public class Account implements Serializable {
@@ -49,7 +52,10 @@ public class Account implements Serializable {
 	}
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the account record (FK identifier). Read-only.",
+		example = "30130"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -81,7 +87,9 @@ public class Account implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the account record (FK identifier). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
@@ -89,7 +97,10 @@ public class Account implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "20078")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the image asset that holds the account's logo (FK identifier). Zero when no logo is attached. Read-only.",
+		example = "20078"
+	)
 	public Long getLogoId() {
 		if (_logoIdSupplier != null) {
 			logoId = _logoIdSupplier.get();
@@ -123,14 +134,19 @@ public class Account implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the image asset that holds the account's logo (FK identifier). Zero when no logo is attached. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long logoId;
 
 	@JsonIgnore
 	private Supplier<Long> _logoIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "Account Name")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Display name of the account. Plain string -- not localized. Read-only.",
+		example = "Account Name"
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -162,7 +178,9 @@ public class Account implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Display name of the account. Plain string -- not localized. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -337,4 +355,4 @@ public class Account implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2043631886
+// LIFERAY-REST-BUILDER-HASH:-652200365

@@ -46,6 +46,9 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-channels/{warehouseChannelId}/channel'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the channel referenced by the warehouse-channel binding identified by warehouseChannelId. Resolves the binding via CommerceChannelRelService and reads the channel through CommerceChannelService. Read-only nested expansion of the binding's channel field."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -516,4 +519,4 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:855624277
+// LIFERAY-REST-BUILDER-HASH:385863771

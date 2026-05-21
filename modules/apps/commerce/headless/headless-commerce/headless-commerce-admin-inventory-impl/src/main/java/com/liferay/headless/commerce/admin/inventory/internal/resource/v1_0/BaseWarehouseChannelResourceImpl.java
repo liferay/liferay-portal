@@ -75,6 +75,9 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-channels/{warehouseChannelId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the warehouse-channel binding identified by warehouseChannelId. Calls CommerceChannelRelService.deleteCommerceChannelRel. Side effects -- removes the row that scopes the warehouse to the bound channel; the channel itself is not affected."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -151,6 +154,9 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-channels'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by externalReferenceCode. Supports the search query parameter, which matches against the bound channel name. No filter or sort."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -195,6 +201,9 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-channels'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by id. Supports the search query parameter against the bound channel name. Returns an empty page when the warehouse does not exist (does not raise)."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -255,6 +264,9 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/by-externalReferenceCode/{externalReferenceCode}/warehouse-channels' -d $'{"channelExternalReferenceCode": ___, "channelId": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse-channel binding between the warehouse identified by externalReferenceCode and the channel resolved by channelId or channelExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -292,6 +304,9 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-channels' -d $'{"channelExternalReferenceCode": ___, "channelId": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a warehouse-channel binding between the warehouse identified by id and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1083,4 +1098,4 @@ public abstract class BaseWarehouseChannelResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-720971326
+// LIFERAY-REST-BUILDER-HASH:-533825338

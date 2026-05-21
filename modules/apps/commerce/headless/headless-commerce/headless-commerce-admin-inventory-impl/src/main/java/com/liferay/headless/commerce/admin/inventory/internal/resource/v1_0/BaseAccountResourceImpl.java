@@ -46,6 +46,9 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouse-accounts/{warehouseAccountId}/account'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the account referenced by the warehouse-account binding identified by warehouseAccountId. Resolves the binding via CommerceInventoryWarehouseRelService and reads the account through AccountEntryService using the binding's classPK. Read-only nested expansion of the binding's account field."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -516,4 +519,4 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1398082155
+// LIFERAY-REST-BUILDER-HASH:-321314695

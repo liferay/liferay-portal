@@ -37,8 +37,12 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("WarehouseAccount")
+@GraphQLName(
+	description = "Binding that scopes a warehouse to a specific account, restricting which buyer the warehouse can source inventory for. Created by POSTing under a warehouse and deleted through its own top-level resource path. Adding or removing the binding reindexes the parent warehouse.",
+	value = "WarehouseAccount"
+)
 @io.swagger.v3.oas.annotations.media.Schema(
+	description = "Binding that scopes a warehouse to a specific account, restricting which buyer the warehouse can source inventory for. Created by POSTing under a warehouse and deleted through its own top-level resource path. Adding or removing the binding reindexes the parent warehouse.",
 	requiredProperties = {"accountId", "warehouseId"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -95,7 +99,10 @@ public class WarehouseAccount implements Serializable {
 	@JsonIgnore
 	private Supplier<Account> _accountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "DAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key of the bound account. Either accountId or accountExternalReferenceCode must resolve to an existing account on create.",
+		example = "DAB-34098-789-N"
+	)
 	public String getAccountExternalReferenceCode() {
 		if (_accountExternalReferenceCodeSupplier != null) {
 			accountExternalReferenceCode =
@@ -133,7 +140,9 @@ public class WarehouseAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key of the bound account. Either accountId or accountExternalReferenceCode must resolve to an existing account on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String accountExternalReferenceCode;
 
@@ -141,7 +150,10 @@ public class WarehouseAccount implements Serializable {
 	private Supplier<String> _accountExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30324")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the bound account (FK identifier). Either accountId or accountExternalReferenceCode must resolve to an existing account on create.",
+		example = "30130"
+	)
 	public Long getAccountId() {
 		if (_accountIdSupplier != null) {
 			accountId = _accountIdSupplier.get();
@@ -175,7 +187,9 @@ public class WarehouseAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the bound account (FK identifier). Either accountId or accountExternalReferenceCode must resolve to an existing account on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long accountId;
@@ -183,7 +197,9 @@ public class WarehouseAccount implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _accountIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Map of HATEOAS actions available to the current user, keyed by action name; each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
 		if (_actionsSupplier != null) {
@@ -219,7 +235,9 @@ public class WarehouseAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Map of HATEOAS actions available to the current user, keyed by action name; each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
 
@@ -227,7 +245,10 @@ public class WarehouseAccount implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30643")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Internal numeric identifier of the binding; read-only and assigned by the service on create.",
+		example = "30643"
+	)
 	public Long getWarehouseAccountId() {
 		if (_warehouseAccountIdSupplier != null) {
 			warehouseAccountId = _warehouseAccountIdSupplier.get();
@@ -261,14 +282,19 @@ public class WarehouseAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Internal numeric identifier of the binding; read-only and assigned by the service on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long warehouseAccountId;
 
 	@JsonIgnore
 	private Supplier<Long> _warehouseAccountIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "PAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key of the warehouse side of the binding. Either warehouseId or warehouseExternalReferenceCode must resolve to an existing warehouse on create.",
+		example = "PAB-34098-789-N"
+	)
 	public String getWarehouseExternalReferenceCode() {
 		if (_warehouseExternalReferenceCodeSupplier != null) {
 			warehouseExternalReferenceCode =
@@ -306,7 +332,9 @@ public class WarehouseAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key of the warehouse side of the binding. Either warehouseId or warehouseExternalReferenceCode must resolve to an existing warehouse on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String warehouseExternalReferenceCode;
 
@@ -314,7 +342,10 @@ public class WarehouseAccount implements Serializable {
 	private Supplier<String> _warehouseExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the warehouse side of the binding (FK identifier). Either warehouseId or warehouseExternalReferenceCode must resolve to an existing warehouse on create.",
+		example = "30130"
+	)
 	public Long getWarehouseId() {
 		if (_warehouseIdSupplier != null) {
 			warehouseId = _warehouseIdSupplier.get();
@@ -348,7 +379,9 @@ public class WarehouseAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the warehouse side of the binding (FK identifier). Either warehouseId or warehouseExternalReferenceCode must resolve to an existing warehouse on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long warehouseId;
@@ -577,4 +610,4 @@ public class WarehouseAccount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-386394664
+// LIFERAY-REST-BUILDER-HASH:-266117421
