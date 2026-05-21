@@ -22,10 +22,10 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Nilton Vieira
  */
-@Component(service = DataSourceMetricsController.class)
+@Component(service = DataSourceMetricsFaroController.class)
 @Path("/{groupId}/data-source-metrics")
 @Produces(MediaType.APPLICATION_JSON)
-public class DataSourceMetricsController extends BaseFaroController {
+public class DataSourceMetricsFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{dataSourceId}/accounts_count")
