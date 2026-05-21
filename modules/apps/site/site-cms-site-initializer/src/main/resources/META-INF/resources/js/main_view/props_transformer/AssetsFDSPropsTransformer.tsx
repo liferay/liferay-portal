@@ -392,30 +392,6 @@ export default function AssetsFDSPropsTransformer({
 				];
 			}
 			else if (action?.data?.id === 'actionLink') {
-				const editImageAction = {
-					data: {id: 'edit-image'},
-					isVisible: (item: any) => {
-						const file = item?.embedded?.file;
-						if (!file) {
-							return false;
-						}
-						if (file.mimeType?.startsWith('image/')) {
-							return true;
-						}
-						const search = file.thumbnailURL?.includes('?')
-							? file.thumbnailURL.substring(
-									file.thumbnailURL.indexOf('?')
-								)
-							: '';
-
-						return new URLSearchParams(search).has(
-							'imageThumbnail'
-						);
-					},
-					label: Liferay.Language.get('edit-image'),
-					target: 'event',
-				};
-
 				return [
 					{
 						...action,
@@ -425,7 +401,34 @@ export default function AssetsFDSPropsTransformer({
 									OBJECT_ENTRY_FOLDER_CLASS_NAME
 							),
 					},
-					editImageAction,
+				];
+			}
+			else if (action?.data?.id === 'edit-image') {
+				return [
+					{
+						...action,
+						isVisible: (item: any) => {
+							const file = item?.embedded?.file;
+
+							if (!file) {
+								return false;
+							}
+
+							if (file.mimeType?.startsWith('image/')) {
+								return true;
+							}
+
+							const search = file.thumbnailURL?.includes('?')
+								? file.thumbnailURL.substring(
+										file.thumbnailURL.indexOf('?')
+									)
+								: '';
+
+							return new URLSearchParams(search).has(
+								'imageThumbnail'
+							);
+						},
+					},
 				];
 			}
 			else if (

@@ -706,6 +706,22 @@ public class SectionDisplayContextUtil {
 				"download-folder"
 			));
 
+		if (_hasEnterpriseLicense()) {
+			fdsActionDropdownItems.add(
+				3,
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.BLANK
+				).setLabel(
+					LanguageUtil.get(httpServletRequest, "edit-image")
+				).setPermissionKey(
+					"update"
+				).setTarget(
+					"event"
+				).build(
+					"edit-image"
+				));
+		}
+
 		return fdsActionDropdownItems;
 	}
 
@@ -1133,6 +1149,15 @@ public class SectionDisplayContextUtil {
 
 		return new String[] {rootObjectEntryFolderExternalReferenceCode};
 	}
+
+	private static boolean _hasEnterpriseLicense() {
+
+		// TODO Replace with the real DXP license check once the Pintura
+		// license gate is wired in. See LPD-86264.
+
+		return true;
+	}
+
 
 	private static final String _CMS_WORKFLOW_STATUSES_STRING =
 		StringUtil.merge(CMSWorkflowConstants.STATUSES, ", ");
