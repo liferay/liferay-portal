@@ -95,6 +95,10 @@ public class ArrayableFinderColumn<T extends BaseModel<T>>
 		return sb.toString();
 	}
 
+	public boolean isAndOperator() {
+		return _andOperator;
+	}
+
 	@Override
 	public boolean matches(T entity, Object normalizedValue) {
 		Object entityValue = valueExtractor.apply(entity);
