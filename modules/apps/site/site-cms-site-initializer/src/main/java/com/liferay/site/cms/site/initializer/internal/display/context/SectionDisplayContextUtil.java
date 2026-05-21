@@ -224,6 +224,22 @@ public class SectionDisplayContextUtil {
 				"download"
 			));
 
+		if (_hasEnterpriseLicense()) {
+			fdsActionDropdownItems.add(
+				3,
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.BLANK
+				).setLabel(
+					LanguageUtil.get(httpServletRequest, "edit-image")
+				).setPermissionKey(
+					"update"
+				).setTarget(
+					"event"
+				).build(
+					"edit-image"
+				));
+		}
+
 		return fdsActionDropdownItems;
 	}
 
