@@ -60,16 +60,19 @@ import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
@@ -1190,6 +1193,8 @@ public class EditableFragmentEntryProcessorTest {
 		Assert.assertEquals(
 			objectDefinition.getName(),
 			element.attr("data-analytics-object-definition-name"));
+		Assert.assertEquals(
+			"", element.attr("data-analytics-object-type"));
 	}
 
 	@Test
@@ -1259,6 +1264,27 @@ public class EditableFragmentEntryProcessorTest {
 		Assert.assertEquals(
 			objectDefinition.getName(),
 			element.attr("data-analytics-object-definition-name"));
+		Assert.assertEquals(
+			"", element.attr("data-analytics-object-type"));
+	}
+
+	@Test
+	@TestInfo("LPD-89684")
+	public void testFragmentEntryProcessorEditableAssertAnalyticsObjectTypeForContentStructuresFolder()
+		throws Exception {
+
+		_assertAnalyticsObjectType(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+			"content");
+	}
+
+	@Test
+	@TestInfo("LPD-89684")
+	public void testFragmentEntryProcessorEditableAssertAnalyticsObjectTypeForFileTypesFolder()
+		throws Exception {
+
+		_assertAnalyticsObjectType(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, "file");
 	}
 
 	@Test
@@ -2329,6 +2355,97 @@ public class EditableFragmentEntryProcessorTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	private void _assertAnalyticsObjectType(
+			String objectFolderExternalReferenceCode, String expectedObjectType)
+		throws Exception {
+
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
+				objectFolderExternalReferenceCode,
+				TestPropsValues.getCompanyId());
+
+		boolean objectFolderCreated = false;
+
+		if (objectFolder == null) {
+			objectFolder = _objectFolderLocalService.addObjectFolder(
+				objectFolderExternalReferenceCode,
+				TestPropsValues.getUserId(),
+				LocalizedMapUtil.getLocalizedMap(
+					objectFolderExternalReferenceCode),
+				RandomTestUtil.randomString());
+
+			objectFolderCreated = true;
+		}
+
+		ObjectDefinition objectDefinition = null;
+
+		try {
+			FragmentEntry fragmentEntry = _addFragmentEntry(
+				"fragment_entry_editable_text.html");
+
+			objectDefinition =
+				ObjectDefinitionTestUtil.publishObjectDefinition(
+					ObjectDefinitionTestUtil.getRandomName(),
+					Collections.singletonList(
+						ObjectFieldUtil.createObjectField(
+							"Text", "String", true, true, null,
+							RandomTestUtil.randomString(), "title", false)),
+					objectFolder.getObjectFolderId(),
+					ObjectDefinitionConstants.SCOPE_COMPANY,
+					TestPropsValues.getUserId());
+
+			ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+				objectDefinition, "title", "titleValue");
+
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkLocalService.addFragmentEntryLink(
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					null, fragmentEntry.getExternalReferenceCode(), null,
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(_layout.getPlid()),
+					TestPropsValues.getPlid(), fragmentEntry.getCss(),
+					fragmentEntry.getHtml(), fragmentEntry.getJs(),
+					StringPool.BLANK,
+					JSONUtil.put(
+						FragmentEntryProcessorConstants.
+							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+						JSONUtil.put(
+							"editable_text",
+							JSONUtil.put(
+								"classNameId",
+								_portal.getClassNameId(
+									objectDefinition.getClassName())
+							).put(
+								"classPK", objectEntry.getPrimaryKey()
+							).put(
+								"defaultValue", RandomTestUtil.randomString()
+							).put(
+								"fieldId", "title"
+							))
+					).toString(),
+					StringPool.BLANK, 0, null, fragmentEntry.getType(),
+					ServiceContextTestUtil.getServiceContext());
+
+			Element element = _getElement(
+				"data-lfr-editable-id", "editable_text", fragmentEntryLink,
+				LocaleUtil.US, FragmentEntryLinkConstants.VIEW);
+
+			Assert.assertEquals(
+				expectedObjectType,
+				element.attr("data-analytics-object-type"));
+		}
+		finally {
+			if (objectDefinition != null) {
+				_objectDefinitionLocalService.deleteObjectDefinition(
+					objectDefinition.getObjectDefinitionId());
+			}
+
+			if (objectFolderCreated) {
+				_objectFolderLocalService.deleteObjectFolder(objectFolder);
+			}
+		}
+	}
+
 	private void _assertElementAttribute(
 		String attributeName, long attributeValue, Element element) {
 
@@ -2708,6 +2825,9 @@ public class EditableFragmentEntryProcessorTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	private Locale _originalSiteDefaultLocale;
 	private Locale _originalThemeDisplayDefaultLocale;
