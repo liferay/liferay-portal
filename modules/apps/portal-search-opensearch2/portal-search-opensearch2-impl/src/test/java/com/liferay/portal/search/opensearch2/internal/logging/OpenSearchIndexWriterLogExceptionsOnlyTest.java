@@ -5,8 +5,6 @@
 
 package com.liferay.portal.search.opensearch2.internal.logging;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
@@ -71,7 +69,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testAddDocuments() {
+	public void testAddDocuments() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
@@ -81,15 +79,8 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.addDocuments(
-					createSearchContext(), Arrays.asList(document));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.addDocuments(
+				createSearchContext(), Arrays.asList(document));
 
 			_assertLogCapture(
 				message -> Assert.assertEquals("Bulk add failed", message),
@@ -98,7 +89,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testAddDocumentsBulkExecutor() {
+	public void testAddDocumentsBulkExecutor() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BulkDocumentRequestExecutor.class.getName(),
 				LoggerTestUtil.ERROR)) {
@@ -109,15 +100,8 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.addDocuments(
-					createSearchContext(), Arrays.asList(document));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.addDocuments(
+				createSearchContext(), Arrays.asList(document));
 
 			String expectedMessage =
 				"failed to parse field [expirationDate] of type [date] in " +
@@ -132,7 +116,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testCommit() {
+	public void testCommit() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
@@ -142,14 +126,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.commit(searchContext);
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.commit(searchContext);
 
 			_assertLogCapture(
 				message -> Assert.assertEquals(
@@ -161,25 +138,18 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testDeleteDocument() {
+	public void testDeleteDocument() throws SearchException {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setCompanyId(1);
 
 		IndexWriter indexWriter = getIndexWriter();
 
-		try {
-			indexWriter.deleteDocument(searchContext, "1");
-		}
-		catch (SearchException searchException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(searchException);
-			}
-		}
+		indexWriter.deleteDocument(searchContext, "1");
 	}
 
 	@Test
-	public void testDeleteDocumentInfoLevel() {
+	public void testDeleteDocumentInfoLevel() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.INFO)) {
 
@@ -189,14 +159,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.deleteDocument(searchContext, "1");
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.deleteDocument(searchContext, "1");
 
 			String expectedMessage =
 				"Request failed: [index_not_found_exception] no such index [1]";
@@ -210,7 +173,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testDeleteDocuments() {
+	public void testDeleteDocuments() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
@@ -220,14 +183,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.deleteDocuments(searchContext, Arrays.asList("1"));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.deleteDocuments(searchContext, Arrays.asList("1"));
 
 			_assertLogCapture(
 				message -> Assert.assertEquals("Bulk delete failed", message),
@@ -236,7 +192,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testDeleteDocumentsBulkExecutor() {
+	public void testDeleteDocumentsBulkExecutor() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BulkDocumentRequestExecutor.class.getName(),
 				LoggerTestUtil.ERROR)) {
@@ -247,14 +203,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.deleteDocuments(searchContext, Arrays.asList("1"));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.deleteDocuments(searchContext, Arrays.asList("1"));
 
 			String expectedMessage = "no such index [1]";
 
@@ -267,7 +216,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testDeleteEntityDocuments() {
+	public void testDeleteEntityDocuments() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
@@ -277,14 +226,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.deleteEntityDocuments(searchContext, "test");
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.deleteEntityDocuments(searchContext, "test");
 
 			_assertLogCapture(
 				message -> Assert.assertEquals(
@@ -296,45 +238,32 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testPartiallyUpdateDocument() {
+	public void testPartiallyUpdateDocument() throws SearchException {
 		Document document = new DocumentImpl();
 
 		document.addKeyword(Field.UID, "1");
 
 		IndexWriter indexWriter = getIndexWriter();
 
-		try {
-			indexWriter.partiallyUpdateDocument(
-				createSearchContext(), document);
-		}
-		catch (SearchException searchException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(searchException);
-			}
-		}
+		indexWriter.partiallyUpdateDocument(createSearchContext(), document);
 	}
 
 	@Test
-	public void testPartiallyUpdateDocuments() {
+	public void testPartiallyUpdateDocuments() throws SearchException {
 		Document document = new DocumentImpl();
 
 		document.addKeyword(Field.UID, "1");
 
 		IndexWriter indexWriter = getIndexWriter();
 
-		try {
-			indexWriter.partiallyUpdateDocuments(
-				createSearchContext(), Arrays.asList(document));
-		}
-		catch (SearchException searchException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(searchException);
-			}
-		}
+		indexWriter.partiallyUpdateDocuments(
+			createSearchContext(), Arrays.asList(document));
 	}
 
 	@Test
-	public void testPartiallyUpdateDocumentsBulkExecutor() {
+	public void testPartiallyUpdateDocumentsBulkExecutor()
+		throws SearchException {
+
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BulkDocumentRequestExecutor.class.getName(),
 				LoggerTestUtil.ERROR)) {
@@ -345,15 +274,8 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.partiallyUpdateDocuments(
-					createSearchContext(), Arrays.asList(document));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.partiallyUpdateDocuments(
+				createSearchContext(), Arrays.asList(document));
 
 			String expectedMessage = "[1]: document missing";
 
@@ -366,7 +288,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testUpdateDocument() {
+	public void testUpdateDocument() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
@@ -377,14 +299,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.updateDocument(createSearchContext(), document);
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.updateDocument(createSearchContext(), document);
 
 			_assertLogCapture(
 				message -> Assert.assertEquals("Update failed", message),
@@ -393,7 +308,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testUpdateDocumentBulkExecutor() {
+	public void testUpdateDocumentBulkExecutor() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BulkDocumentRequestExecutor.class.getName(),
 				LoggerTestUtil.ERROR)) {
@@ -405,14 +320,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.updateDocument(createSearchContext(), document);
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.updateDocument(createSearchContext(), document);
 
 			String expectedMessage =
 				"failed to parse field [expirationDate] of type [date] in " +
@@ -427,7 +335,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testUpdateDocuments() {
+	public void testUpdateDocuments() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
@@ -438,15 +346,8 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.updateDocuments(
-					createSearchContext(), Arrays.asList(document));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.updateDocuments(
+				createSearchContext(), Arrays.asList(document));
 
 			_assertLogCapture(
 				message -> Assert.assertEquals("Bulk update failed", message),
@@ -455,7 +356,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testUpdateDocumentsBulkExecutor() {
+	public void testUpdateDocumentsBulkExecutor() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				BulkDocumentRequestExecutor.class.getName(),
 				LoggerTestUtil.ERROR)) {
@@ -467,15 +368,8 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			IndexWriter indexWriter = getIndexWriter();
 
-			try {
-				indexWriter.updateDocuments(
-					createSearchContext(), Arrays.asList(document));
-			}
-			catch (SearchException searchException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(searchException);
-				}
-			}
+			indexWriter.updateDocuments(
+				createSearchContext(), Arrays.asList(document));
 
 			String expectedMessage =
 				"failed to parse field [expirationDate] of type [date] in " +
@@ -512,8 +406,5 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 		Assert.assertEquals(logLevel, logEntry.getPriority());
 		consumer.accept(logEntry.getMessage());
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		OpenSearchIndexWriterLogExceptionsOnlyTest.class);
 
 }
