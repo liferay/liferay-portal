@@ -12,6 +12,8 @@ Import-Package:\
 	\
 	!org.apache.logging.*,\
 	\
+	!org.jboss.byteman.*,\
+	\
 	!org.mozilla.javascript.*,\
 	\
 	com.ibm.db2.jcc;resolution:=optional,\
