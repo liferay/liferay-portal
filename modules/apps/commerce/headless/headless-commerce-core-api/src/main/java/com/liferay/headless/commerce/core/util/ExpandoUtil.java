@@ -48,12 +48,13 @@ public class ExpandoUtil {
 
 				expandoBridge.setAttribute(
 					attributeName,
-					_parseDate((String)expandoAttributes.get(attributeName)));
+					_parseDate((String)expandoAttributes.get(attributeName)),
+					false);
 			}
 			else {
 				expandoBridge.setAttribute(
 					attributeName,
-					(Serializable)expandoAttributes.get(attributeName));
+					(Serializable)expandoAttributes.get(attributeName), false);
 			}
 		}
 	}
