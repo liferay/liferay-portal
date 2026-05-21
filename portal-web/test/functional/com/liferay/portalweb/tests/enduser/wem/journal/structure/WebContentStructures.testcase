@@ -16,6 +16,10 @@ definition {
 		task ("Add a site") {
 			HeadlessSite.addSite(siteName = "Test Site Name");
 		}
+
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
 	}
 
 	@description = "This is a use case for LPS-77387. Add a structure when URL has locale."

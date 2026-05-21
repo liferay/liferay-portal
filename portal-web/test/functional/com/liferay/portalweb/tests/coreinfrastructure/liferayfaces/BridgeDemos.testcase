@@ -13,6 +13,10 @@ definition {
 
 		User.firstLoginPG();
 
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		HeadlessSite.addSite(siteName = "Bridge Demos");
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "Bridge Demos");

@@ -12,6 +12,10 @@ definition {
 
 		User.firstLoginPG();
 
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		HeadlessSite.addSite(siteName = "Site Name");
 
 		JSONDepot.addDepot(
