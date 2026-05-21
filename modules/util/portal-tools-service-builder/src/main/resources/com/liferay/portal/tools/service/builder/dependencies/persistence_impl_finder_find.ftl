@@ -2255,13 +2255,15 @@ that may or may not be enforced with a unique index at the database level. Case
 
 		if (list == null) {
 			try {
-				if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) && (${databaseInMaxParameters} > 0) && (<#list entityFinderArrayableColsList as arrayableentityColumn>
+				if ((${databaseInMaxParameters} > 0) && (
+					<#list entityFinderArrayableColsList as arrayableentityColumn>
 						(${arrayableentityColumn.pluralName}.length > ${databaseInMaxParameters})
 
 						<#if arrayableentityColumn_has_next>
 							||
 						</#if>
-					</#list>)) {
+					</#list>
+				)) {
 
 					list = new ArrayList<${entity.name}>();
 
@@ -2283,14 +2285,16 @@ that may or may not be enforced with a unique index at the database level. Case
 							</#if>
 						</#list>
 
-						start, end, orderByComparator));
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator));
 					<#list entityFinderArrayableColsList as arrayableentityColumn>
 						}
 					</#list>
 
 					Collections.sort(list, orderByComparator);
 
-					list = Collections.unmodifiableList(list);
+					cacheResult(list);
+
+					list = Collections.unmodifiableList(ListUtil.subList(list, start, end));
 				}
 				else {
 					list = _findBy${entityFinder.name}(
@@ -2304,9 +2308,9 @@ that may or may not be enforced with a unique index at the database level. Case
 					</#list>
 
 					start, end, orderByComparator);
-				}
 
-				cacheResult(list);
+					cacheResult(list);
+				}
 
 				if (useFinderCache) {
 					${finderCache}.putResult(_finderPathWithPaginationFindBy${entityFinder.name}, finderArgs, list);
