@@ -27,8 +27,14 @@ const formatTime = (minutes?: number): string => {
 
 	const duration = moment.duration(minutes, 'minutes');
 
-	const hours = Math.floor(duration.asHours());
+	const days = Math.floor(duration.asDays());
+	const hours = duration.hours();
 	const mins = duration.minutes();
+
+	const daysLabel =
+		days === 1
+			? Liferay.Language.get('1-day').toLowerCase()
+			: sub(Liferay.Language.get('x-days'), [days]).toLowerCase();
 
 	const hoursLabel =
 		hours === 1
@@ -39,6 +45,14 @@ const formatTime = (minutes?: number): string => {
 		mins === 1
 			? Liferay.Language.get('1-minute').toLowerCase()
 			: sub(Liferay.Language.get('x-minutes'), [mins]).toLowerCase();
+
+	if (days > 0) {
+		if (hours === 0) {
+			return daysLabel;
+		}
+
+		return `${daysLabel} ${hoursLabel}`;
+	}
 
 	return `${hoursLabel} ${minutesLabel}`;
 };
