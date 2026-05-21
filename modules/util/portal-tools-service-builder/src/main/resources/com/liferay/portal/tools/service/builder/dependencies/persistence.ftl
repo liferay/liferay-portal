@@ -229,7 +229,7 @@ public interface ${entity.name}Persistence extends BasePersistence<${entity.name
 				}
 			</#if>
 
-			<#if entityFinder.hasArrayableOperator() && !entityFinder.hasArrayablePagination()>
+			<#if entityFinder.hasArrayableOperator()>
 				<#assign entityColumns = entityFinder.entityColumns />
 
 				/**
@@ -419,7 +419,7 @@ public interface ${entity.name}Persistence extends BasePersistence<${entity.name
 				}
 			</#if>
 
-			<#if entity.isPermissionCheckEnabled(entityFinder) && !entityFinder.isUnique() && entityFinder.hasArrayableOperator() && !entityFinder.hasArrayablePagination()>
+			<#if entity.isPermissionCheckEnabled(entityFinder) && !entityFinder.isUnique() && entityFinder.hasArrayableOperator()>
 				/**
 				 * Returns all the ${entity.pluralHumanName} that the user has permission to view where ${entityFinder.getHumanConditions(true)}.
 				 *

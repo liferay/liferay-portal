@@ -1,6 +1,6 @@
 <#assign
 	entityColumns = entityFinder.entityColumns
-	entityFinderArrayableColsList = entityFinder.getArrayableColumns()
+	entityFinderArrayableOrColsList = entityFinder.getArrayableOrEntityColumns()
 />
 
 /**
@@ -147,7 +147,7 @@ public int countBy${entityFinder.name}(
 	</#if>
 }
 
-<#if entityFinder.hasArrayableOperator() && !entityFinder.hasArrayablePagination()>
+<#if entityFinder.hasArrayableOperator() && (serviceBuilder.isVersionGTE_7_4_0() || !entityFinder.hasArrayablePagination())>
 	/**
 	 * Returns the number of ${entity.pluralHumanName} where ${entityFinder.getHumanConditions(true)}.
 	 *
@@ -295,7 +295,7 @@ public int countBy${entityFinder.name}(
 	}
 </#if>
 
-<#if entityFinder.hasArrayableOperator() && entityFinder.hasArrayablePagination()>
+<#if !serviceBuilder.isVersionGTE_7_4_0() && entityFinder.hasArrayableOperator() && entityFinder.hasArrayablePagination()>
 	/**
 	 * Returns the number of ${entity.pluralHumanName} where ${entityFinder.getHumanConditions(true)}.
 	 *
@@ -380,7 +380,7 @@ public int countBy${entityFinder.name}(
 
 		if (count == null) {
 			try {
-				if ((${databaseInMaxParameters} > 0) && (<#list entityFinderArrayableColsList as arrayablefinderCol>
+				if ((${databaseInMaxParameters} > 0) && (<#list entityFinderArrayableOrColsList as arrayablefinderCol>
 							(${arrayablefinderCol.pluralName}.length > ${databaseInMaxParameters})
 
 							<#if arrayablefinderCol_has_next>
@@ -389,11 +389,11 @@ public int countBy${entityFinder.name}(
 						</#list>)) {
 						count = Long.valueOf(0);
 
-						<#list entityFinderArrayableColsList as arrayablefinderCol>
+						<#list entityFinderArrayableOrColsList as arrayablefinderCol>
 							${arrayablefinderCol.type}[][] ${arrayablefinderCol.pluralName}Pages = (${arrayablefinderCol.type}[][])<#if serviceBuilder.isVersionGTE_7_1_0()>ArrayUtil.split<#else>_split</#if>(${arrayablefinderCol.pluralName}, ${databaseInMaxParameters});
 						</#list>
 
-						<#list entityFinderArrayableColsList as arrayablefinderCol>
+						<#list entityFinderArrayableOrColsList as arrayablefinderCol>
 							for (${arrayablefinderCol.type}[] ${arrayablefinderCol.pluralName}Page : ${arrayablefinderCol.pluralName}Pages) {
 						</#list>
 
@@ -401,7 +401,11 @@ public int countBy${entityFinder.name}(
 
 							<#list entityColumns as entityColumn>
 								<#if entityColumn.hasArrayableOperator()>
-									${entityColumn.pluralName}Page
+									<#if entityColumn.isArrayableAndOperator()>
+										${entityColumn.pluralName}
+									<#else>
+										${entityColumn.pluralName}Page
+									</#if>
 								<#else>
 									${entityColumn.name}
 								</#if>
@@ -411,7 +415,7 @@ public int countBy${entityFinder.name}(
 								</#if>
 							</#list>));
 
-					<#list entityFinderArrayableColsList as arrayablefinderCol>
+					<#list entityFinderArrayableOrColsList as arrayablefinderCol>
 						}
 					</#list>
 					}

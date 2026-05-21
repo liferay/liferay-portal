@@ -55,8 +55,16 @@ public class EntityFinder {
 		}
 	}
 
-	public List<EntityColumn> getArrayableColumns() {
-		return _arrayableColumns;
+	public List<EntityColumn> getArrayableOrEntityColumns() {
+		List<EntityColumn> arrayableOrEntityColumns = new ArrayList<>();
+
+		for (EntityColumn arrayableEntityColumn : _arrayableColumns) {
+			if (!arrayableEntityColumn.isArrayableAndOperator()) {
+				arrayableOrEntityColumns.add(arrayableEntityColumn);
+			}
+		}
+
+		return arrayableOrEntityColumns;
 	}
 
 	public String getDBWhere() {
@@ -159,7 +167,7 @@ public class EntityFinder {
 	}
 
 	public boolean isCollectionPersistenceFinderEnabled() {
-		if (isFinderDelegationEnabled() && isCollection()) {
+		if (_serviceBuilder.isVersionGTE_7_4_0() && isCollection()) {
 			return true;
 		}
 
@@ -168,14 +176,6 @@ public class EntityFinder {
 
 	public boolean isDBIndex() {
 		return _dbIndex;
-	}
-
-	public boolean isFinderDelegationEnabled() {
-		if (!_serviceBuilder.isVersionGTE_7_4_0() || hasArrayablePagination()) {
-			return false;
-		}
-
-		return true;
 	}
 
 	public boolean isPretouch() {
@@ -187,7 +187,9 @@ public class EntityFinder {
 	}
 
 	public boolean isUniquePersistenceFinderEnabled() {
-		if (isFinderDelegationEnabled() && (!isCollection() || isUnique())) {
+		if (_serviceBuilder.isVersionGTE_7_4_0() &&
+			(!isCollection() || isUnique())) {
+
 			return true;
 		}
 
