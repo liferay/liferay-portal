@@ -54,6 +54,7 @@ export const test = mergeTests(
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 		'LPD-45276': {enabled: true},
+		'LPD-76864': {enabled: true},
 	}),
 	globalMenuPagesTest,
 	isolatedSiteTest,

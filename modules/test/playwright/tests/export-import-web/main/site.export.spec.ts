@@ -41,6 +41,7 @@ export const test = mergeTests(
 	baseTest,
 	featureFlagsTest({
 		'LPD-35443': {enabled: false},
+		'LPD-76864': {enabled: true},
 	})
 );
 

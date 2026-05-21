@@ -20,6 +20,7 @@ import {pagesPagesTest} from './fixtures/pagesPagesTest';
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
+		'LPD-76864': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	globalMenuPagesTest,

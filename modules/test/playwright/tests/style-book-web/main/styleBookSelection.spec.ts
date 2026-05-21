@@ -5,6 +5,7 @@
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
@@ -40,6 +41,9 @@ async function expectStyleBookToBeSelected({
 }
 
 const test = mergeTests(
+	featureFlagsTest({
+		'LPD-76864': {enabled: true},
+	}),
 	isolatedSiteTest,
 	loginTest(),
 	masterPagesPagesTest,

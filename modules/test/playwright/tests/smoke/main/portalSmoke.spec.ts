@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -22,6 +23,9 @@ import {sitesAdminPagesTest} from '../../site-admin-web/main/fixtures/sitesAdmin
 
 export const test = mergeTests(
 	apiHelpersTest,
+	featureFlagsTest({
+		'LPD-76864': {enabled: true},
+	}),
 	globalMenuPagesTest,
 	loginTest(),
 	pageEditorPagesTest,
