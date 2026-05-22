@@ -8,6 +8,8 @@ package com.liferay.headless.commerce.delivery.cart.internal.resource.v1_0;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.validator.AccountEntryValidatorRegistry;
+import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceConstants;
@@ -76,6 +78,9 @@ import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.portlet.PortletProvider;
@@ -817,6 +822,52 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		cart.setValid(() -> true);
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				commerceOrder.getCompanyId(), "LPD-89850")) {
+
+			List<String> errorMessages = new ArrayList<>();
+			boolean hasAccountEntryValidationError = false;
+
+			for (AccountEntryValidatorResult accountEntryValidatorResult :
+					_accountEntryValidatorRegistry.validate(
+						_accountEntryLocalService.getAccountEntry(
+							commerceOrder.getCommerceAccountId()),
+						JSONUtil.put(
+							"billingAddressId",
+							commerceOrder.getBillingAddressId()
+						).put(
+							"commerceOrderId",
+							commerceOrder.getCommerceOrderId()
+						).put(
+							"shippingAddressId",
+							commerceOrder.getShippingAddressId()
+						))) {
+
+				if (accountEntryValidatorResult.isValid()) {
+					continue;
+				}
+
+				hasAccountEntryValidationError = true;
+
+				if (Validator.isNotNull(
+						accountEntryValidatorResult.getResultMessage())) {
+
+					errorMessages.add(
+						_language.get(
+							contextAcceptLanguage.getPreferredLocale(),
+							accountEntryValidatorResult.getResultMessage()));
+				}
+			}
+
+			if (hasAccountEntryValidationError) {
+				cart.setValid(() -> false);
+				cart.setErrorMessages(
+					() -> errorMessages.toArray(new String[0]));
+
+				return cart;
+			}
+		}
+
 		try {
 			commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
 				commerceOrder, contextUser.getUserId());
@@ -1368,6 +1419,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
 
+	@Reference
+	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
+
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.delivery.cart.internal.dto.v1_0.converter.CartDTOConverter)"
 	)
@@ -1441,6 +1495,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Reference
 	private Encryptor _encryptor;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;
