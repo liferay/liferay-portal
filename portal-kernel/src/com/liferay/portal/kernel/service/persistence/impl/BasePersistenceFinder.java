@@ -25,7 +25,14 @@ public abstract class BasePersistenceFinder
 
 		for (int i = 0; i < finderColumns.length; i++) {
 			sb.append(finderColumns[i].getKeyFragment());
-			sb.append(values[i]);
+
+			Object value = values[i];
+
+			if (finderColumns[i] instanceof ArrayableFinderColumn) {
+				value = finderColumns[i].toFinderArg(value);
+			}
+
+			sb.append(value);
 			sb.append(", ");
 		}
 

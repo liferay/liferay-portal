@@ -3583,23 +3583,11 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 		private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ${entity.name} exists with the primary key ";
 	</#if>
 
-	<#if entity.entityFinders?size != 0>
+	<#if !serviceBuilder.isVersionGTE_7_4_0() && entity.entityFinders?size != 0>
 		private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ${entity.name} exists with the key {";
 	</#if>
 
-	<#assign logEmissionEnabled = !serviceBuilder.isVersionGTE_7_4_0() />
-
-	<#if !logEmissionEnabled>
-		<#list entity.entityFinders as logEmissionEntityFinder>
-			<#if !logEmissionEntityFinder.isCollection() || logEmissionEntityFinder.isUnique()>
-				<#assign logEmissionEnabled = true />
-
-				<#break>
-			</#if>
-		</#list>
-	</#if>
-
-	<#if logEmissionEnabled>
+	<#if !serviceBuilder.isVersionGTE_7_4_0()>
 		private static final Log _log = LogFactoryUtil.getLog(${entity.name}PersistenceImpl.class);
 	</#if>
 

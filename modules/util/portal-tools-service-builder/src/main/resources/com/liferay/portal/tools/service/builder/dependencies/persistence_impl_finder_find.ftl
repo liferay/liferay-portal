@@ -362,12 +362,16 @@ that may or may not be enforced with a unique index at the database level. Case
 	</#list>
 
 	OrderByComparator<${entity.name}> orderByComparator) throws ${noSuchEntity}Exception {
-		<#if entityFinder.collectionPersistenceFinderEnabled && !entityFinder.hasArrayableOperator()>
+		<#if entityFinder.collectionPersistenceFinderEnabled>
 			return _collectionPersistenceFinderBy${entityFinder.name}.findFirst(
 				${finderCacheInstance},
 				new Object[] {
 					<#list entityColumns as entityColumn>
-						${entityColumn.name}
+						<#if entityColumn.hasArrayableOperator()>
+							new ${entityColumn.type}[] {${entityColumn.name}}
+						<#else>
+							${entityColumn.name}
+						</#if>
 
 						<#if entityColumn_has_next>
 							,
