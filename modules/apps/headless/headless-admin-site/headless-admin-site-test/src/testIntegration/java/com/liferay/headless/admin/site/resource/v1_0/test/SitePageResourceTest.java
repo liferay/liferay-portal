@@ -57,6 +57,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.SitemapSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
+import com.liferay.headless.admin.site.client.http.HttpInvoker;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
@@ -139,6 +140,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -150,6 +152,7 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -183,7 +186,12 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Rubén Pulido
  */
-@FeatureFlag("LPD-35443")
+@FeatureFlags(
+	featureFlags = {
+		@FeatureFlag("LPD-35443"),
+		@FeatureFlag(enable = true, value = "LPD-76864")
+	}
+)
 @RunWith(Arquillian.class)
 public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
@@ -368,6 +376,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageWithPageSpecifications();
 		_testPostSiteSitePageWithWidgetPageSettings();
 		_testPostSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
+		_testPostSiteSitePageWithWidgetPageTypeIsRejected();
 	}
 
 	@Override
@@ -2927,6 +2936,36 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 
 		_testPostSiteSitePage(_getRandomSitePageWithWidgetPageTemplate(true));
+	}
+
+	private void _testPostSiteSitePageWithWidgetPageTypeIsRejected()
+		throws Exception {
+
+		PropsUtil.set("feature.flag.LPD-76864", "false");
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					testGroup, TestPropsValues.getUserId());
+
+			HttpInvoker.HttpResponse httpResponse =
+				sitePageResource.postSiteSitePageHttpResponse(
+					testGroup.getExternalReferenceCode(), false,
+					_getRandomSitePage(
+						serviceContext, SitePage.Type.WIDGET_PAGE));
+
+			Assert.assertEquals(
+				httpResponse.getContent(), 400, httpResponse.getStatusCode());
+			Assert.assertTrue(
+				httpResponse.getContent(),
+				httpResponse.getContent(
+				).contains(
+					"Feature flag LPD-76864 is disabled for company"
+				));
+		}
+		finally {
+			PropsUtil.set("feature.flag.LPD-76864", "true");
+		}
 	}
 
 	private void _testPutSiteSitePage(
