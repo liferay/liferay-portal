@@ -56,13 +56,13 @@
 				   max_bytes="4M" />
 	<AUTH
 		auth_class="org.jgroups.auth.X509Token"
-		auth_value="${cluster.link.auth.value}"
-		cert_alias="${cluster.link.auth.cert.alias}"
-		cert_password="${cluster.link.auth.cert.password}"
-		cipher_type="${cluster.link.auth.cipher.type}"
-		keystore_password="${cluster.link.auth.keystore.password}"
-		keystore_path="${cluster.link.auth.keystore.path}"
-		keystore_type="${cluster.link.auth.keystore.type}"
+		auth_token.auth_value="${cluster.link.auth.value}"
+		auth_token.cert_alias="${cluster.link.auth.cert.alias}"
+		auth_token.cert_password="${cluster.link.auth.cert.password}"
+		auth_token.cipher_type="${cluster.link.auth.cipher.type}"
+		auth_token.keystore_password="${cluster.link.auth.keystore.password}"
+		auth_token.keystore_path="${cluster.link.auth.keystore.path}"
+		auth_token.keystore_type="${cluster.link.auth.keystore.type}"
 	/>
 	<pbcast.GMS join_timeout="2000" print_local_addr="true" />
 	<UFC
