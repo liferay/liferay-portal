@@ -395,7 +395,7 @@ public class ${entity.name}PersistenceTest {
 							Blob ${entityColumn.methodName} = ${entity.variableName}.get${entityColumn.methodName}();
 							Blob draft${entityColumn.methodName} = draft${entity.name}.get${entityColumn.methodName}();
 
-							Assert.assertTrue(Arrays.equals(${entityColumn.variableName}.getBytes(1, (int)${entityColumn.variableName}.length()), Arrays.equals(draft${entityColumn.name}.getBytes(1, (int)draft${entityColumn.name}.length()));
+							Assert.assertTrue(Arrays.equals(${entityColumn.methodName}.getBytes(1, (int)${entityColumn.methodName}.length()), draft${entityColumn.methodName}.getBytes(1, (int)draft${entityColumn.methodName}.length())));
 						<#elseif stringUtil.equals(entityColumn.type, "boolean")>
 							Assert.assertEquals(${entity.variableName}.is${entityColumn.methodName}(), draft${entity.name}.is${entityColumn.methodName}());
 						<#elseif stringUtil.equals(entityColumn.type, "Date")>
