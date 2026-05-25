@@ -270,6 +270,10 @@
 		<!-- Audit fields -->
 
 		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column lazy="false" name="blob" type="Blob" />
 	</entity>
 	<entity local-service="true" name="FinderWhereClauseEntry" remote-service="false">
 
