@@ -13,7 +13,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -69,9 +69,9 @@ public class LiferayAuthorizationAccessTokenCodeGrantHandler
 	protected ServerAccessToken doCreateAccessToken(
 		Client client, MultivaluedMap<String, String> params) {
 
-		String resource = params.getFirst("resource");
+		List<String> resources = params.get("resource");
 
-		if (Validator.isNull(resource)) {
+		if (ListUtil.isEmpty(resources)) {
 			return _authorizationCodeGrantHandler.createAccessToken(
 				client, params);
 		}
@@ -83,8 +83,10 @@ public class LiferayAuthorizationAccessTokenCodeGrantHandler
 			List<String> mutableAudiences = new ArrayList<>(
 				originalRegisteredAudiences);
 
-			if (!mutableAudiences.contains(resource)) {
-				mutableAudiences.add(resource);
+			for (String resource : resources) {
+				if (!mutableAudiences.contains(resource)) {
+					mutableAudiences.add(resource);
+				}
 			}
 
 			client.setRegisteredAudiences(mutableAudiences);
