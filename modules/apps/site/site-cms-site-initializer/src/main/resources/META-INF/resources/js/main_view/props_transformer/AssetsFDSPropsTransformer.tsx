@@ -682,15 +682,45 @@ export default function AssetsFDSPropsTransformer({
 					imageName: file.name,
 					imageUrl: imageBlob,
 					onSave: async (blob) => {
-						const formData = new FormData();
 
-						formData.append('file', blob, file.name);
+						// CMS files are CMS object entries that wrap a
+						// DLFileEntry. PATCHing /headless-delivery/.../documents
+						// would touch the underlying FileEntry but the CMS
+						// object framework intercepts and the binary never
+						// lands. PATCH on the CMS object entry endpoint
+						// creates a new FileEntry version that the object
+						// references, which is what we want.
+
+						const fileBase64 = await new Promise<string>(
+							(resolve, reject) => {
+								const reader = new FileReader();
+
+								reader.onerror = () => reject(reader.error);
+								reader.onload = () => {
+									const result = reader.result as string;
+
+									resolve(
+										result.slice(result.indexOf(',') + 1)
+									);
+								};
+
+								reader.readAsDataURL(blob);
+							}
+						);
 
 						const saveResponse = await fetch(
-							`/o/headless-delivery/v1.0/documents/${file.id}`,
+							`/o/cms/basic-documents/${itemData.embedded.id}`,
 							{
-								body: formData,
-								method: 'PUT',
+								body: JSON.stringify({
+									file: {
+										fileBase64,
+										name: file.name,
+									},
+								}),
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								method: 'PATCH',
 							}
 						);
 
