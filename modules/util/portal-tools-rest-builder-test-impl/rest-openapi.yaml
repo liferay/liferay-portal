@@ -1100,6 +1100,10 @@ paths:
             operationId: getBatchTestEntity
             parameters:
                 -   in: path
+                    description:
+                        "Numeric identifier of the Batch Test Entity to act on. Obtain the value from the `id` field of
+                        any entity returned by `GET /batch-test-entities` or by a prior create call. The value is a
+                        64-bit signed integer, unique within the portal instance."
                     name: batchTestEntityId
                     required: true
                     schema:
