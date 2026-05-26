@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Snapshot view of a shipment's destination CommerceAddress. Declared on the Shipment schema but not currently populated by ShipmentDTOConverter.",
+	description = "Snapshot of the destination address on a shipment. Declared on the shipment schema for completeness; not populated by the default response converter.",
 	value = "ShippingAddress"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,7 +52,7 @@ public class ShippingAddress implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "City line of the shipment's destination address.",
+		description = "City line of the destination address. Read-only.",
 		example = "Diamond Bar"
 	)
 	public String getCity() {
@@ -87,7 +87,7 @@ public class ShippingAddress implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "City line of the shipment's destination address."
+		description = "City line of the destination address. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String city;
@@ -96,7 +96,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _citySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO-3166 alpha-2 country code of the destination.",
+		description = "ISO 3166 alpha-2 country code of the destination. Read-only.",
 		example = "US"
 	)
 	public String getCountryISOCode() {
@@ -133,7 +133,7 @@ public class ShippingAddress implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "ISO-3166 alpha-2 country code of the destination."
+		description = "ISO 3166 alpha-2 country code of the destination. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String countryISOCode;
@@ -142,7 +142,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _countryISOCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-form description of the destination address.",
+		description = "Free-form description of the destination address. Read-only.",
 		example = "right stairs, first room on the left"
 	)
 	public String getDescription() {
@@ -179,7 +179,7 @@ public class ShippingAddress implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-form description of the destination address."
+		description = "Free-form description of the destination address. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String description;
@@ -188,7 +188,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the underlying CommerceAddress.",
+		description = "External reference code of the underlying address. Read-only.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -225,7 +225,7 @@ public class ShippingAddress implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the underlying CommerceAddress."
+		description = "External reference code of the underlying address. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -235,7 +235,7 @@ public class ShippingAddress implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the destination CommerceAddress.",
+		description = "Identifier of the destination address. Read-only.",
 		example = "31130"
 	)
 	public Long getId() {
@@ -270,7 +270,7 @@ public class ShippingAddress implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the destination CommerceAddress."
+		description = "Identifier of the destination address. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -279,7 +279,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Latitude geocode of the destination.",
+		description = "Latitude geocode of the destination as a decimal degree. Read-only.",
 		example = "33.9976884"
 	)
 	public Double getLatitude() {
@@ -315,7 +315,9 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Latitude geocode of the destination.")
+	@GraphQLField(
+		description = "Latitude geocode of the destination as a decimal degree. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double latitude;
 
@@ -323,7 +325,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<Double> _latitudeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Longitude geocode of the destination.",
+		description = "Longitude geocode of the destination as a decimal degree. Read-only.",
 		example = "-117.8144595"
 	)
 	public Double getLongitude() {
@@ -359,7 +361,9 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Longitude geocode of the destination.")
+	@GraphQLField(
+		description = "Longitude geocode of the destination as a decimal degree. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double longitude;
 
@@ -367,7 +371,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<Double> _longitudeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Recipient name on the destination.",
+		description = "Recipient name on the destination. Read-only.",
 		example = "Alessio Antonio Rendina"
 	)
 	public String getName() {
@@ -401,7 +405,7 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Recipient name on the destination.")
+	@GraphQLField(description = "Recipient name on the destination. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -409,7 +413,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Phone number on the destination.",
+		description = "Phone number on the destination. Read-only.",
 		example = "(123) 456 7890"
 	)
 	public String getPhoneNumber() {
@@ -445,7 +449,7 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Phone number on the destination.")
+	@GraphQLField(description = "Phone number on the destination. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String phoneNumber;
 
@@ -453,7 +457,8 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _phoneNumberSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Region code of the destination.", example = "CA"
+		description = "Region code of the destination. Read-only.",
+		example = "CA"
 	)
 	public String getRegionISOCode() {
 		if (_regionISOCodeSupplier != null) {
@@ -488,7 +493,7 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Region code of the destination.")
+	@GraphQLField(description = "Region code of the destination. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String regionISOCode;
 
@@ -496,7 +501,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _regionISOCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "First street line of the destination.",
+		description = "First street line of the destination. Read-only.",
 		example = "1400 Montefino Ave"
 	)
 	public String getStreet1() {
@@ -532,7 +537,9 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "First street line of the destination.")
+	@GraphQLField(
+		description = "First street line of the destination. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String street1;
 
@@ -540,7 +547,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _street1Supplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Second street line of the destination.",
+		description = "Second street line of the destination. Read-only.",
 		example = "1st floor"
 	)
 	public String getStreet2() {
@@ -576,7 +583,9 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Second street line of the destination.")
+	@GraphQLField(
+		description = "Second street line of the destination. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String street2;
 
@@ -584,7 +593,7 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _street2Supplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Third street line of the destination.",
+		description = "Third street line of the destination. Read-only.",
 		example = "suite 200"
 	)
 	public String getStreet3() {
@@ -620,7 +629,9 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Third street line of the destination.")
+	@GraphQLField(
+		description = "Third street line of the destination. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String street3;
 
@@ -628,7 +639,8 @@ public class ShippingAddress implements Serializable {
 	private Supplier<String> _street3Supplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Postal code of the destination.", example = "91765"
+		description = "Postal code of the destination. Read-only.",
+		example = "91765"
 	)
 	public String getZip() {
 		if (_zipSupplier != null) {
@@ -661,7 +673,7 @@ public class ShippingAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Postal code of the destination.")
+	@GraphQLField(description = "Postal code of the destination. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String zip;
 
@@ -1008,4 +1020,4 @@ public class ShippingAddress implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1323512726
+// LIFERAY-REST-BUILDER-HASH:-1022577721

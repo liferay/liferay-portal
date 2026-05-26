@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Vulcan error envelope returned for any non-2xx response.",
+	description = "Standard error envelope returned for any non-2xx response.",
 	value = "Error"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -140,7 +140,7 @@ public class Error implements Serializable {
 	private Supplier<String> _errorDescriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Underlying exception message captured by the Vulcan error handler.",
+		description = "Underlying exception message captured by the error handler.",
 		example = "No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}"
 	)
 	public String getMessage() {
@@ -177,7 +177,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Underlying exception message captured by the Vulcan error handler."
+		description = "Underlying exception message captured by the error handler."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String message;
@@ -413,4 +413,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1423841772
+// LIFERAY-REST-BUILDER-HASH:-1431062948

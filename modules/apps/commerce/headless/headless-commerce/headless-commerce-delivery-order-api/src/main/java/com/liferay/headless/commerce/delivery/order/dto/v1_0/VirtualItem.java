@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A virtual-item file entry attached to a placed order item -- carries the download URL, the remaining usages, and the file version.",
+	description = "Virtual-item file entry attached to a placed order item -- carries the download URL, the remaining usage count, and the file version.",
 	value = "VirtualItem"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,8 +50,8 @@ public class VirtualItem implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Direct file URL on the CommerceVirtualOrderItemFileEntry. Falls back to CommerceMediaResolver.getDownloadVirtualOrderItemURL when the entry stores no URL.",
-		example = "http://www.liferay.com"
+		description = "Direct download URL of the virtual-item file. Read-only.",
+		example = "https://example.com/virtual-download.zip"
 	)
 	public String getUrl() {
 		if (_urlSupplier != null) {
@@ -85,7 +85,7 @@ public class VirtualItem implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Direct file URL on the CommerceVirtualOrderItemFileEntry. Falls back to CommerceMediaResolver.getDownloadVirtualOrderItemURL when the entry stores no URL."
+		description = "Direct download URL of the virtual-item file. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String url;
@@ -94,7 +94,8 @@ public class VirtualItem implements Serializable {
 	private Supplier<String> _urlSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Remaining download count on the virtual item file entry."
+		description = "Remaining download count on the virtual-item file. Read-only.",
+		example = "3"
 	)
 	public Integer getUsages() {
 		if (_usagesSupplier != null) {
@@ -130,7 +131,7 @@ public class VirtualItem implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Remaining download count on the virtual item file entry."
+		description = "Remaining download count on the virtual-item file. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer usages;
@@ -139,7 +140,7 @@ public class VirtualItem implements Serializable {
 	private Supplier<Integer> _usagesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Version string of the virtual item file entry. Null when unset.",
+		description = "Version string of the virtual-item file; null when unset. Read-only.",
 		example = "v1.0.0"
 	)
 	public String getVersion() {
@@ -176,7 +177,7 @@ public class VirtualItem implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Version string of the virtual item file entry. Null when unset."
+		description = "Version string of the virtual-item file; null when unset. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String version;
@@ -356,4 +357,4 @@ public class VirtualItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2036462811
+// LIFERAY-REST-BUILDER-HASH:-1204716127

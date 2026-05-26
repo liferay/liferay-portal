@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Reference to a shipping option offered by a CommerceShippingMethod. Declared for completeness; not currently populated by any converter in this module.",
+	description = "Reference to a shipping option offered by a shipping method. Declared on the response schemas for completeness; not populated by the default response converter in this API.",
 	value = "ShippingOption"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class ShippingOption implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric shipping cost as a double, in the order's currency."
+		description = "Numeric shipping cost in the order's currency. Read-only.",
+		example = "9.99"
 	)
 	public Double getAmount() {
 		if (_amountSupplier != null) {
@@ -86,7 +87,7 @@ public class ShippingOption implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Numeric shipping cost as a double, in the order's currency."
+		description = "Numeric shipping cost in the order's currency. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double amount;
@@ -95,7 +96,8 @@ public class ShippingOption implements Serializable {
 	private Supplier<Double> _amountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Shipping cost formatted in the order's currency and locale."
+		description = "Shipping cost formatted in the order's currency and the request locale. Read-only.",
+		example = "$9.99"
 	)
 	public String getAmountFormatted() {
 		if (_amountFormattedSupplier != null) {
@@ -131,7 +133,7 @@ public class ShippingOption implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Shipping cost formatted in the order's currency and locale."
+		description = "Shipping cost formatted in the order's currency and the request locale. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String amountFormatted;
@@ -140,7 +142,7 @@ public class ShippingOption implements Serializable {
 	private Supplier<String> _amountFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the shipping option.",
+		description = "External reference code of the shipping option. Read-only.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -177,7 +179,7 @@ public class ShippingOption implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the shipping option."
+		description = "External reference code of the shipping option. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -186,7 +188,8 @@ public class ShippingOption implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label of the option."
+		description = "Locale-resolved label of the option. Read-only.",
+		example = "Standard Delivery"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -221,7 +224,9 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Localized label of the option.")
+	@GraphQLField(
+		description = "Locale-resolved label of the option. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
@@ -229,7 +234,8 @@ public class ShippingOption implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Programmatic name (key) of the option."
+		description = "Programmatic name (key) of the option. Read-only.",
+		example = "standard-delivery"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -262,7 +268,9 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Programmatic name (key) of the option.")
+	@GraphQLField(
+		description = "Programmatic name (key) of the option. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -473,4 +481,4 @@ public class ShippingOption implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1219210508
+// LIFERAY-REST-BUILDER-HASH:-1683140694

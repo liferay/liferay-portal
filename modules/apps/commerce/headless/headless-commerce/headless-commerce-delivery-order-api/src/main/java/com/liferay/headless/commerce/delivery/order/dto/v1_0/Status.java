@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Status descriptor -- the integer code, the raw label key, and the localized label. The meaning of the code depends on which Status slot it appears in (order, payment, workflow, or shipment) -- see the embedding property's description for the integer-to-meaning mapping.",
+	description = "Status descriptor -- an integer code plus its raw label key and its locale-resolved label. The meaning of the code depends on the slot it appears in (order status, payment status, workflow status, or shipment status); the embedding property's description documents the integer-to-meaning mapping.",
 	value = "Status"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class Status implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer status code. The meaning depends on which Status slot this is in (order, payment, workflow, or shipment); see the embedding property's description for the integer-to-meaning mapping."
+		description = "Integer status code; the meaning depends on the slot this status appears in -- the embedding property's description documents the integer-to-meaning mapping.",
+		example = "0"
 	)
 	public Integer getCode() {
 		if (_codeSupplier != null) {
@@ -84,7 +85,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer status code. The meaning depends on which Status slot this is in (order, payment, workflow, or shipment); see the embedding property's description for the integer-to-meaning mapping."
+		description = "Integer status code; the meaning depends on the slot this status appears in -- the embedding property's description documents the integer-to-meaning mapping."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer code;
@@ -93,8 +94,8 @@ public class Status implements Serializable {
 	private Supplier<Integer> _codeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Raw status label key, lowercase-with-dashes (for example, processing, awaiting-pickup).",
-		example = "black"
+		description = "Raw status label key, lowercase-with-dashes form. Read-only.",
+		example = "completed"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -130,7 +131,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Raw status label key, lowercase-with-dashes (for example, processing, awaiting-pickup)."
+		description = "Raw status label key, lowercase-with-dashes form. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
@@ -139,8 +140,8 @@ public class Status implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized status label resolved via Language.get(resourceBundle, label).",
-		example = "black"
+		description = "Locale-resolved status label. Read-only.",
+		example = "Completed"
 	)
 	public String getLabel_i18n() {
 		if (_label_i18nSupplier != null) {
@@ -175,9 +176,7 @@ public class Status implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Localized status label resolved via Language.get(resourceBundle, label)."
-	)
+	@GraphQLField(description = "Locale-resolved status label. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label_i18n;
 
@@ -356,4 +355,4 @@ public class Status implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1507092670
+// LIFERAY-REST-BUILDER-HASH:-170073749

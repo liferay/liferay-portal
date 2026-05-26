@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Reference to a CommerceShippingMethod. Declared for completeness; not currently populated by any converter in this module.",
+	description = "Reference to a shipping method. Declared on the response schemas for completeness; not populated by the default response converter in this API.",
 	value = "ShippingMethod"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,7 +52,8 @@ public class ShippingMethod implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized description of the shipping method."
+		description = "Locale-resolved description of the shipping method. Read-only.",
+		example = "Standard ground delivery."
 	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
@@ -87,7 +88,9 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Localized description of the shipping method.")
+	@GraphQLField(
+		description = "Locale-resolved description of the shipping method. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String description;
 
@@ -95,7 +98,7 @@ public class ShippingMethod implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the shipping method.",
+		description = "External reference code of the shipping method. Read-only.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -132,7 +135,7 @@ public class ShippingMethod implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the shipping method."
+		description = "External reference code of the shipping method. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -141,7 +144,8 @@ public class ShippingMethod implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Primary key -- the CommerceShippingMethod id."
+		description = "Primary identifier of the shipping method. Read-only.",
+		example = "30130"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -174,7 +178,9 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Primary key -- the CommerceShippingMethod id.")
+	@GraphQLField(
+		description = "Primary identifier of the shipping method. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
@@ -182,7 +188,8 @@ public class ShippingMethod implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized name of the shipping method."
+		description = "Locale-resolved name of the shipping method. Read-only.",
+		example = "Standard"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -215,7 +222,9 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Localized name of the shipping method.")
+	@GraphQLField(
+		description = "Locale-resolved name of the shipping method. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -465,4 +474,4 @@ public class ShippingMethod implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:641346405
+// LIFERAY-REST-BUILDER-HASH:999388480

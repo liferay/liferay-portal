@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A step in the order tracker derived from the order's configuration -- typically one of complete, current, or upcoming.",
+	description = "Step in the order tracker derived from the order's configuration. The state typically resolves to one of complete, current, or upcoming.",
 	value = "Step"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class Step implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Step id from StepModel.getId()."
+		description = "Step identifier from the tracker definition. Read-only.",
+		example = "order-placed"
 	)
 	public String getId() {
 		if (_idSupplier != null) {
@@ -83,7 +84,9 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Step id from StepModel.getId().")
+	@GraphQLField(
+		description = "Step identifier from the tracker definition. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String id;
 
@@ -91,7 +94,8 @@ public class Step implements Serializable {
 	private Supplier<String> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label from StepModel.getLabel()."
+		description = "Locale-resolved label of the step. Read-only.",
+		example = "Order Placed"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -126,7 +130,7 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Localized label from StepModel.getLabel().")
+	@GraphQLField(description = "Locale-resolved label of the step. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
@@ -134,7 +138,8 @@ public class Step implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Step state from StepModel.getState() -- typically one of complete, current, or upcoming."
+		description = "Step state -- typically one of `complete`, `current`, or `upcoming`. Read-only.",
+		example = "complete"
 	)
 	public String getState() {
 		if (_stateSupplier != null) {
@@ -170,7 +175,7 @@ public class Step implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Step state from StepModel.getState() -- typically one of complete, current, or upcoming."
+		description = "Step state -- typically one of `complete`, `current`, or `upcoming`. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String state;
@@ -354,4 +359,4 @@ public class Step implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2034507835
+// LIFERAY-REST-BUILDER-HASH:1059479004

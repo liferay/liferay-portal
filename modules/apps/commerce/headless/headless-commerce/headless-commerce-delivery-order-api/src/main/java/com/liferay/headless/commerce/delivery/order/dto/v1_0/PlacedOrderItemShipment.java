@@ -43,7 +43,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A CommerceShipmentItem row that ships a portion of a PlacedOrderItem. When the placed order has no direct shipment items, this row may be sourced from a non-open supplier order.",
+	description = "Shipment-item row that ships a portion of a placed order item. When the order has no direct shipments, this row may be sourced from a supplier order linked to the same item.",
 	value = "PlacedOrderItemShipment"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -61,7 +61,7 @@ public class PlacedOrderItemShipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceAccount of the parent shipment (FK), from CommerceShipment.getCommerceAccountId().",
+		description = "Reference to the account of the parent shipment (FK identifier). Read-only.",
 		example = "30130"
 	)
 	public Long getAccountId() {
@@ -98,7 +98,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceAccount of the parent shipment (FK), from CommerceShipment.getCommerceAccountId()."
+		description = "Reference to the account of the parent shipment (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long accountId;
@@ -107,8 +107,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Long> _accountIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "User name of the shipment creator, from CommerceShipment.getUserName().",
-		example = "Author"
+		description = "User name of the user who created the parent shipment. Read-only.",
+		example = "John Doe"
 	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
@@ -144,7 +144,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "User name of the shipment creator, from CommerceShipment.getUserName()."
+		description = "User name of the user who created the parent shipment. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String author;
@@ -153,7 +153,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<String> _authorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Carrier name of the parent shipment.", example = "FedEx"
+		description = "Carrier name of the parent shipment. Read-only.",
+		example = "FedEx"
 	)
 	public String getCarrier() {
 		if (_carrierSupplier != null) {
@@ -188,7 +189,9 @@ public class PlacedOrderItemShipment implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Carrier name of the parent shipment.")
+	@GraphQLField(
+		description = "Carrier name of the parent shipment. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String carrier;
 
@@ -196,7 +199,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<String> _carrierSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Creation timestamp of the parent shipment. ISO 8601."
+		description = "Creation date of the parent shipment, in ISO 8601 (date only). Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getCreateDate() {
 		if (_createDateSupplier != null) {
@@ -232,7 +236,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Creation timestamp of the parent shipment. ISO 8601."
+		description = "Creation date of the parent shipment, in ISO 8601 (date only). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date createDate;
@@ -241,7 +245,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Date> _createDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Aliased to CommerceShipment.getExpectedDate() -- the date the shipment is expected to be delivered."
+		description = "Expected delivery date of the parent shipment, in ISO 8601 (date only). Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getEstimatedDeliveryDate() {
 		if (_estimatedDeliveryDateSupplier != null) {
@@ -277,7 +282,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Aliased to CommerceShipment.getExpectedDate() -- the date the shipment is expected to be delivered."
+		description = "Expected delivery date of the parent shipment, in ISO 8601 (date only). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date estimatedDeliveryDate;
@@ -286,7 +291,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Date> _estimatedDeliveryDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Aliased to CommerceShipment.getShippingDate() -- the date the shipment is expected to be shipped."
+		description = "Expected ship date of the parent shipment, in ISO 8601 (date only). Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getEstimatedShippingDate() {
 		if (_estimatedShippingDateSupplier != null) {
@@ -322,7 +328,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Aliased to CommerceShipment.getShippingDate() -- the date the shipment is expected to be shipped."
+		description = "Expected ship date of the parent shipment, in ISO 8601 (date only). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date estimatedShippingDate;
@@ -331,7 +337,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Date> _estimatedShippingDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the parent CommerceShipment.",
+		description = "External reference code of the parent shipment. Read-only.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -368,7 +374,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the parent CommerceShipment."
+		description = "External reference code of the parent shipment. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -378,7 +384,7 @@ public class PlacedOrderItemShipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the parent CommerceShipment (not the shipment item's id).",
+		description = "Identifier of the parent shipment (not the shipment item itself). Read-only.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -413,7 +419,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the parent CommerceShipment (not the shipment item's id)."
+		description = "Identifier of the parent shipment (not the shipment item itself). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -422,7 +428,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Last modification timestamp of the parent shipment. ISO 8601."
+		description = "Last modification date of the parent shipment, in ISO 8601 (date only). Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getModifiedDate() {
 		if (_modifiedDateSupplier != null) {
@@ -458,7 +465,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Last modification timestamp of the parent shipment. ISO 8601."
+		description = "Last modification date of the parent shipment, in ISO 8601 (date only). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date modifiedDate;
@@ -468,7 +475,7 @@ public class PlacedOrderItemShipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Declared parent order id. Declared on the schema; not populated by this converter.",
+		description = "Declared parent order id. Declared on the schema; not populated by the default response converter.",
 		example = "30130"
 	)
 	public Long getOrderId() {
@@ -505,7 +512,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Declared parent order id. Declared on the schema; not populated by this converter."
+		description = "Declared parent order id. Declared on the schema; not populated by the default response converter."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long orderId;
@@ -514,7 +521,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Long> _orderIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized formatted quantity from this shipment item, computed via CommerceQuantityFormatter.format.",
+		description = "Locale-formatted shipped quantity for this row. Read-only.",
 		example = "10.1"
 	)
 	@Valid
@@ -552,7 +559,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized formatted quantity from this shipment item, computed via CommerceQuantityFormatter.format."
+		description = "Locale-formatted shipped quantity for this row. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal quantity;
@@ -562,7 +569,7 @@ public class PlacedOrderItemShipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceAddress of the parent shipment (FK).",
+		description = "Reference to the destination address (FK identifier). Read-only.",
 		example = "31130"
 	)
 	public Long getShippingAddressId() {
@@ -599,7 +606,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceAddress of the parent shipment (FK)."
+		description = "Reference to the destination address (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long shippingAddressId;
@@ -609,7 +616,7 @@ public class PlacedOrderItemShipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceShippingMethod of the parent shipment (FK).",
+		description = "Reference to the shipping method (FK identifier). Read-only.",
 		example = "30130"
 	)
 	public Long getShippingMethodId() {
@@ -646,7 +653,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceShippingMethod of the parent shipment (FK)."
+		description = "Reference to the shipping method (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long shippingMethodId;
@@ -655,7 +662,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Long> _shippingMethodIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Shipping option name of the parent shipment.",
+		description = "Shipping option name on the parent shipment. Read-only.",
 		example = "Standard Delivery"
 	)
 	public String getShippingOptionName() {
@@ -691,7 +698,9 @@ public class PlacedOrderItemShipment implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Shipping option name of the parent shipment.")
+	@GraphQLField(
+		description = "Shipping option name on the parent shipment. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingOptionName;
 
@@ -741,7 +750,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Status> _statusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true this row was produced from a supplier order's shipment items (set by PlacedOrderItemShipmentDTOConverterContext)."
+		description = "When true this row was sourced from a supplier order's shipment items rather than the order's own shipments. Read-only.",
+		example = "false"
 	)
 	public Boolean getSupplierShipment() {
 		if (_supplierShipmentSupplier != null) {
@@ -777,7 +787,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true this row was produced from a supplier order's shipment items (set by PlacedOrderItemShipmentDTOConverterContext)."
+		description = "When true this row was sourced from a supplier order's shipment items rather than the order's own shipments. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean supplierShipment;
@@ -786,7 +796,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<Boolean> _supplierShipmentSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Tracking number of the parent shipment.",
+		description = "Tracking number on the parent shipment. Read-only.",
 		example = "123AD-asd"
 	)
 	public String getTrackingNumber() {
@@ -822,7 +832,9 @@ public class PlacedOrderItemShipment implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Tracking number of the parent shipment.")
+	@GraphQLField(
+		description = "Tracking number on the parent shipment. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String trackingNumber;
 
@@ -830,7 +842,8 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<String> _trackingNumberSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Tracking URL of the parent shipment."
+		description = "Tracking URL on the parent shipment. Read-only.",
+		example = "https://example.com/tracking/123AD-asd"
 	)
 	public String getTrackingURL() {
 		if (_trackingURLSupplier != null) {
@@ -865,7 +878,9 @@ public class PlacedOrderItemShipment implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Tracking URL of the parent shipment.")
+	@GraphQLField(
+		description = "Tracking URL on the parent shipment. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String trackingURL;
 
@@ -873,7 +888,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Supplier<String> _trackingURLSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Key of the unit of measure on the underlying CommerceShipmentItem.",
+		description = "Key of the unit of measure for this shipment item. Read-only.",
 		example = "m"
 	)
 	public String getUnitOfMeasureKey() {
@@ -910,7 +925,7 @@ public class PlacedOrderItemShipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Key of the unit of measure on the underlying CommerceShipmentItem."
+		description = "Key of the unit of measure for this shipment item. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String unitOfMeasureKey;
@@ -1322,4 +1337,4 @@ public class PlacedOrderItemShipment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1369823055
+// LIFERAY-REST-BUILDER-HASH:-1055498936

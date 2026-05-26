@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An order attachment -- either a CommerceOrderAttachment row (when feature flag LPD-6252 is enabled) or a legacy file-entry attached to the placed order's local repository.",
+	description = "Document or image attached to a placed order. Returned by the attachments listing endpoint and created via the by-base64 upload.",
 	value = "Attachment"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -103,7 +103,8 @@ public class Attachment implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Last modification timestamp of the underlying CommerceOrderAttachment. ISO 8601."
+		description = "Last modification timestamp of the attachment, in ISO 8601. Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getDateModified() {
 		if (_dateModifiedSupplier != null) {
@@ -139,7 +140,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Last modification timestamp of the underlying CommerceOrderAttachment. ISO 8601."
+		description = "Last modification timestamp of the attachment, in ISO 8601. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date dateModified;
@@ -148,7 +149,8 @@ public class Attachment implements Serializable {
 	private Supplier<Date> _dateModifiedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "File extension reported by FileEntry.getExtension() for the attachment's document-library file."
+		description = "File extension of the underlying document-library file. Read-only.",
+		example = "pdf"
 	)
 	public String getExtension() {
 		if (_extensionSupplier != null) {
@@ -184,7 +186,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "File extension reported by FileEntry.getExtension() for the attachment's document-library file."
+		description = "File extension of the underlying document-library file. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String extension;
@@ -193,7 +195,7 @@ public class Attachment implements Serializable {
 	private Supplier<String> _extensionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key on the attachment -- the external reference code carried by the CommerceOrderAttachment (or the legacy FileEntry on the legacy path).",
+		description = "Idempotency key for create and update; must be unique per attachment within the company. Read-only on this response.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -230,7 +232,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key on the attachment -- the external reference code carried by the CommerceOrderAttachment (or the legacy FileEntry on the legacy path)."
+		description = "Idempotency key for create and update; must be unique per attachment within the company. Read-only on this response."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -239,7 +241,8 @@ public class Attachment implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Primary key -- the CommerceOrderAttachment id (or the legacy FileEntry id)."
+		description = "Primary identifier of the attachment. Read-only.",
+		example = "30130"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -273,7 +276,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Primary key -- the CommerceOrderAttachment id (or the legacy FileEntry id)."
+		description = "Primary identifier of the attachment. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -282,7 +285,8 @@ public class Attachment implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display priority of the attachment as stored on CommerceOrderAttachment.priority."
+		description = "Display priority of the attachment, lower numbers appearing first.",
+		example = "1.0"
 	)
 	public Double getPriority() {
 		if (_prioritySupplier != null) {
@@ -318,7 +322,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Display priority of the attachment as stored on CommerceOrderAttachment.priority."
+		description = "Display priority of the attachment, lower numbers appearing first."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double priority;
@@ -327,7 +331,8 @@ public class Attachment implements Serializable {
 	private Supplier<Double> _prioritySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true the attachment is restricted to admin and commerce roles per CommerceOrderAttachment.isRestricted()."
+		description = "When true the attachment is restricted to admin and commerce roles; storefront audiences do not see it.",
+		example = "false"
 	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
@@ -363,7 +368,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true the attachment is restricted to admin and commerce roles per CommerceOrderAttachment.isRestricted()."
+		description = "When true the attachment is restricted to admin and commerce roles; storefront audiences do not see it."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean restricted;
@@ -372,7 +377,8 @@ public class Attachment implements Serializable {
 	private Supplier<Boolean> _restrictedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Title of the attachment as stored on the underlying CommerceOrderAttachment."
+		description = "Title of the attachment as supplied at upload time.",
+		example = "Purchase Order Confirmation"
 	)
 	public String getTitle() {
 		if (_titleSupplier != null) {
@@ -408,7 +414,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Title of the attachment as stored on the underlying CommerceOrderAttachment."
+		description = "Title of the attachment as supplied at upload time."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String title;
@@ -417,7 +423,8 @@ public class Attachment implements Serializable {
 	private Supplier<String> _titleSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Type key of the attachment -- typically a list-type entry under the L_COMMERCE_ORDER_ATTACHMENT_TYPES definition."
+		description = "Type key of the attachment, drawn from the order-attachment type list configured for the company.",
+		example = "purchase-order"
 	)
 	public String getType() {
 		if (_typeSupplier != null) {
@@ -451,7 +458,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Type key of the attachment -- typically a list-type entry under the L_COMMERCE_ORDER_ATTACHMENT_TYPES definition."
+		description = "Type key of the attachment, drawn from the order-attachment type list configured for the company."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String type;
@@ -460,7 +467,8 @@ public class Attachment implements Serializable {
 	private Supplier<String> _typeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label of the attachment type, resolved from the L_COMMERCE_ORDER_ATTACHMENT_TYPES list-type entry matching type. Falls back to the raw type key when no list-type entry matches."
+		description = "Locale-resolved label of the attachment type, derived from the type key. Falls back to the raw key when no list entry matches.",
+		example = "Purchase Order"
 	)
 	public String getTypeLabel() {
 		if (_typeLabelSupplier != null) {
@@ -496,7 +504,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized label of the attachment type, resolved from the L_COMMERCE_ORDER_ATTACHMENT_TYPES list-type entry matching type. Falls back to the raw type key when no list-type entry matches."
+		description = "Locale-resolved label of the attachment type, derived from the type key. Falls back to the raw key when no list entry matches."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String typeLabel;
@@ -505,7 +513,8 @@ public class Attachment implements Serializable {
 	private Supplier<String> _typeLabelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Document-library download URL for the file, built by DLURLHelperUtil.getDownloadURL for the latest file version."
+		description = "Document-library download URL for the latest file version. Read-only.",
+		example = "https://example.com/attachment.pdf"
 	)
 	public String getUrl() {
 		if (_urlSupplier != null) {
@@ -539,7 +548,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Document-library download URL for the file, built by DLURLHelperUtil.getDownloadURL for the latest file version."
+		description = "Document-library download URL for the latest file version. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String url;
@@ -838,4 +847,4 @@ public class Attachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-229535910
+// LIFERAY-REST-BUILDER-HASH:-942662806

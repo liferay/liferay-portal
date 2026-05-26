@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Request body for creating an order attachment by uploading the file content as a base64 string.",
+	description = "Request payload for uploading an order attachment as a base64-encoded file.",
 	value = "AttachmentBase64"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Base64-encoded binary content of the file. Decoded and passed to the persistence layer through a ByteArrayInputStream."
+		description = "Base64-encoded binary content of the file.",
+		example = "JVBERi0xLjQKJeLjz9MK"
 	)
 	public String getAttachment() {
 		if (_attachmentSupplier != null) {
@@ -85,9 +86,7 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Base64-encoded binary content of the file. Decoded and passed to the persistence layer through a ByteArrayInputStream."
-	)
+	@GraphQLField(description = "Base64-encoded binary content of the file.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String attachment;
 
@@ -95,7 +94,7 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<String> _attachmentSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Optional external reference code applied to the legacy FileEntry path (CommerceOrderService.addAttachmentFileEntry). Ignored on the LPD-6252 indexed path.",
+		description = "Optional idempotency key applied to the attachment on the legacy file-entry path; ignored on the indexed path.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -132,7 +131,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Optional external reference code applied to the legacy FileEntry path (CommerceOrderService.addAttachmentFileEntry). Ignored on the LPD-6252 indexed path."
+		description = "Optional idempotency key applied to the attachment on the legacy file-entry path; ignored on the indexed path."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -141,7 +140,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display priority passed into CommerceOrderAttachmentService.addCommerceOrderAttachment."
+		description = "Display priority applied to the new attachment, lower numbers appearing first.",
+		example = "1.0"
 	)
 	public Double getPriority() {
 		if (_prioritySupplier != null) {
@@ -177,7 +177,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Display priority passed into CommerceOrderAttachmentService.addCommerceOrderAttachment."
+		description = "Display priority applied to the new attachment, lower numbers appearing first."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double priority;
@@ -186,7 +186,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<Double> _prioritySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Restricted flag passed into CommerceOrderAttachmentService.addCommerceOrderAttachment."
+		description = "When true the new attachment is restricted to admin and commerce roles.",
+		example = "false"
 	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
@@ -222,7 +223,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Restricted flag passed into CommerceOrderAttachmentService.addCommerceOrderAttachment."
+		description = "When true the new attachment is restricted to admin and commerce roles."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean restricted;
@@ -231,7 +232,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<Boolean> _restrictedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Title applied to the new attachment -- also reused as the file name on the indexed path."
+		description = "Title applied to the new attachment; also reused as the file name on the indexed path.",
+		example = "Purchase Order Confirmation"
 	)
 	public String getTitle() {
 		if (_titleSupplier != null) {
@@ -267,7 +269,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Title applied to the new attachment -- also reused as the file name on the indexed path."
+		description = "Title applied to the new attachment; also reused as the file name on the indexed path."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String title;
@@ -276,7 +278,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<String> _titleSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Type key applied to the new CommerceOrderAttachment."
+		description = "Type key applied to the new attachment, drawn from the order-attachment type list configured for the company.",
+		example = "purchase-order"
 	)
 	public String getType() {
 		if (_typeSupplier != null) {
@@ -310,7 +313,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Type key applied to the new CommerceOrderAttachment."
+		description = "Type key applied to the new attachment, drawn from the order-attachment type list configured for the company."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String type;
@@ -534,4 +537,4 @@ public class AttachmentBase64 implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1587172634
+// LIFERAY-REST-BUILDER-HASH:416905078
