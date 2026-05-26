@@ -641,7 +641,7 @@ public class ResourceOpenAPIParser {
 			return "";
 		}
 
-		StringBundler sb = new StringBundler(4);
+		StringBundler sb = new StringBundler(5);
 
 		sb.append(
 			StringBundler.concat(
@@ -655,6 +655,13 @@ public class ResourceOpenAPIParser {
 				String.format(", deprecated = %s", parameter.isDeprecated()));
 		}
 
+		if (parameter.getDescription() != null) {
+			sb.append(
+				String.format(
+					", description = \"%s\"",
+					_escapeAnnotationValue(parameter.getDescription())));
+		}
+
 		if (parameter.getExample() != null) {
 			sb.append(
 				String.format(", example = \"%s\"", parameter.getExample()));
@@ -663,6 +670,20 @@ public class ResourceOpenAPIParser {
 		sb.append("),");
 
 		return sb.toString();
+	}
+
+	private static String _escapeAnnotationValue(String value) {
+		if (value == null) {
+			return null;
+		}
+
+		String escaped = StringUtil.replace(value, "\\", "\\\\");
+
+		escaped = StringUtil.replace(escaped, "\"", "\\\"");
+		escaped = StringUtil.replace(escaped, "\n", "\\n");
+		escaped = StringUtil.replace(escaped, "\r", "\\r");
+
+		return escaped;
 	}
 
 	private static Parameter _findParameter(

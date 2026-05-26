@@ -10,6 +10,10 @@ package com.liferay.portal.tools.rest.builder.internal.yaml.openapi;
  */
 public class Parameter {
 
+	public String getDescription() {
+		return _description;
+	}
+
 	public String getExample() {
 		return _example;
 	}
@@ -42,6 +46,10 @@ public class Parameter {
 		_deprecated = deprecated;
 	}
 
+	public void setDescription(String description) {
+		_description = description;
+	}
+
 	public void setExample(String example) {
 		_example = example;
 	}
@@ -67,6 +75,7 @@ public class Parameter {
 	}
 
 	private boolean _deprecated;
+	private String _description;
 	private String _example;
 	private String _in;
 	private String _name;
