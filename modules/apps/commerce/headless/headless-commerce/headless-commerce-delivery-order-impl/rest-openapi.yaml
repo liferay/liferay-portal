@@ -160,8 +160,8 @@ components:
     schemas:
         Attachment:
             description:
-                An order attachment -- either a CommerceOrderAttachment row (when feature flag LPD-6252 is enabled) or a
-                legacy file-entry attached to the placed order's local repository.
+                Document or image attached to a placed order. Returned by the attachments listing endpoint and created
+                via the by-base64 upload.
             properties:
                 actions:
                     additionalProperties:
@@ -175,99 +175,112 @@ components:
                     type: object
                 dateModified:
                     description:
-                        Last modification timestamp of the underlying CommerceOrderAttachment. ISO 8601.
+                        Last modification timestamp of the attachment, in ISO 8601. Read-only.
+                    example: 2017-07-21T19:30:00Z
                     format: date-time
                     readOnly: true
                     type: string
                 extension:
                     description:
-                        File extension reported by FileEntry.getExtension() for the attachment's document-library file.
+                        File extension of the underlying document-library file. Read-only.
+                    example: pdf
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key on the attachment -- the external reference code carried by the
-                        CommerceOrderAttachment (or the legacy FileEntry on the legacy path).
+                        Idempotency key for create and update; must be unique per attachment within the company.
+                        Read-only on this response.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceOrderAttachment id (or the legacy FileEntry id).
+                        Primary identifier of the attachment. Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 priority:
                     description:
-                        Display priority of the attachment as stored on CommerceOrderAttachment.priority.
+                        Display priority of the attachment, lower numbers appearing first.
+                    example: 1.0
                     format: double
                     readOnly: true
                     type: number
                 restricted:
                     description:
-                        When true the attachment is restricted to admin and commerce roles per
-                        CommerceOrderAttachment.isRestricted().
+                        When true the attachment is restricted to admin and commerce roles; storefront audiences do not
+                        see it.
+                    example: false
                     readOnly: true
                     type: boolean
                 title:
                     description:
-                        Title of the attachment as stored on the underlying CommerceOrderAttachment.
+                        Title of the attachment as supplied at upload time.
+                    example: Purchase Order Confirmation
                     readOnly: true
                     type: string
                 type:
                     description:
-                        Type key of the attachment -- typically a list-type entry under the
-                        L_COMMERCE_ORDER_ATTACHMENT_TYPES definition.
+                        Type key of the attachment, drawn from the order-attachment type list configured for the
+                        company.
+                    example: purchase-order
                     readOnly: true
                     type: string
                 typeLabel:
                     description:
-                        Localized label of the attachment type, resolved from the L_COMMERCE_ORDER_ATTACHMENT_TYPES
-                        list-type entry matching type. Falls back to the raw type key when no list-type entry matches.
+                        Locale-resolved label of the attachment type, derived from the type key. Falls back to the raw
+                        key when no list entry matches.
+                    example: Purchase Order
                     readOnly: true
                     type: string
                 url:
                     description:
-                        Document-library download URL for the file, built by DLURLHelperUtil.getDownloadURL for the
-                        latest file version.
+                        Document-library download URL for the latest file version. Read-only.
+                    example: https://example.com/attachment.pdf
                     readOnly: true
                     type: string
         AttachmentBase64:
             description:
-                Request body for creating an order attachment by uploading the file content as a base64 string.
+                Request payload for uploading an order attachment as a base64-encoded file.
             properties:
                 attachment:
                     description:
-                        Base64-encoded binary content of the file. Decoded and passed to the persistence layer through a
-                        ByteArrayInputStream.
+                        Base64-encoded binary content of the file.
+                    example: JVBERi0xLjQKJeLjz9MK
                     type: string
                 externalReferenceCode:
                     description:
-                        Optional external reference code applied to the legacy FileEntry path
-                        (CommerceOrderService.addAttachmentFileEntry). Ignored on the LPD-6252 indexed path.
+                        Optional idempotency key applied to the attachment on the legacy file-entry path; ignored on the
+                        indexed path.
                     example: AB-34098-789-N
                     type: string
                 priority:
                     description:
-                        Display priority passed into CommerceOrderAttachmentService.addCommerceOrderAttachment.
+                        Display priority applied to the new attachment, lower numbers appearing first.
+                    example: 1.0
                     format: double
                     type: number
                 restricted:
                     description:
-                        Restricted flag passed into CommerceOrderAttachmentService.addCommerceOrderAttachment.
+                        When true the new attachment is restricted to admin and commerce roles.
+                    example: false
                     type: boolean
                 title:
                     description:
-                        Title applied to the new attachment -- also reused as the file name on the indexed path.
+                        Title applied to the new attachment; also reused as the file name on the indexed path.
+                    example: Purchase Order Confirmation
                     type: string
                 type:
                     description:
-                        Type key applied to the new CommerceOrderAttachment.
+                        Type key applied to the new attachment, drawn from the order-attachment type list configured for
+                        the company.
+                    example: purchase-order
                     type: string
             type: object
         Error:
             description:
-                Vulcan error envelope returned for any non-2xx response.
+                Standard error envelope returned for any non-2xx response.
             properties:
                 errorCode:
                     description:
@@ -283,7 +296,7 @@ components:
                     type: string
                 message:
                     description:
-                        Underlying exception message captured by the Vulcan error handler.
+                        Underlying exception message captured by the error handler.
                     example: No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}
                     readOnly: true
                     type: string
@@ -296,149 +309,167 @@ components:
             type: object
         OrderTransition:
             description:
-                A workflow transition that can be executed on a placed order. name carries either a workflow transition
-                name, the synthetic value process-quote, or the synthetic value reorder; workflowTaskId is set when the
-                transition is a real workflow task; orderId is set on the reorder response to point at the newly created
-                order.
+                Workflow transition that can be executed on a placed order. Returned by the listing endpoint with the
+                transitions available to the current user, and accepted by the POST endpoint to execute one.
             properties:
                 comment:
                     description:
-                        Optional reviewer comment attached to the transition -- read on input and echoed on the
-                        response.
+                        Optional reviewer comment attached to the transition; read on input and echoed on the response.
+                    example: Approved by supervisor.
                     type: string
                 label:
                     description:
-                        Localized label of the transition name, resolved via Language.get(locale, name). Read-only.
+                        Locale-resolved label of the transition name. Read-only.
+                    example: Approve
                     readOnly: true
                     type: string
                 name:
                     description:
-                        Transition name. Accepts either a workflow transition name, the synthetic value process-quote,
-                        or the synthetic value reorder.
+                        Transition name -- either a workflow transition name, the synthetic value `process-quote`, or
+                        the synthetic value `reorder`.
+                    example: approve
                     type: string
                 orderId:
                     description:
-                        On the reorder response, the identifier of the newly created CommerceOrder. Unset for other
-                        transitions. Read-only.
+                        On the reorder response, the identifier of the newly created order. Unset for other transitions.
+                        Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 placedOrderId:
                     description:
-                        Identifier of the CommerceOrder the transition originated from. Read-only.
+                        Reference to the order the transition originated from (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 workflowTaskId:
                     description:
-                        Identifier of the workflow task being acted on. Zero indicates one of the synthetic
-                        process-quote or reorder transitions.
+                        Identifier of the workflow task being acted on; zero indicates the synthetic process-quote or
+                        reorder transition.
+                    example: 30130
                     format: int64
                     type: integer
         PlacedOrder:
             description:
-                A finalized CommerceOrder (order status no longer open) as exposed to buyers and storefront consumers.
+                Finalized order (one whose status has moved past the open cart-draft state) as exposed to storefront and
+                order-history consumers. Retrieved by id or external reference code; a small set of buyer-facing fields
+                can be updated via PATCH.
             properties:
                 account:
                     description:
-                        Display name of the buyer account -- CommerceOrder.getCommerceAccountName().
+                        Display name of the buyer account on the order. Read-only.
+                    example: Acme Industries
                     readOnly: true
                     type: string
                 accountId:
                     description:
-                        Reference to the CommerceAccount entity (FK).
+                        Reference to the buyer account (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 attachments:
                     description:
-                        Legacy file-entry attachments of the order, loaded via CommerceOrder.getAttachmentFileEntries().
-                        For LPD-6252 indexed attachments use the /attachments sub-resource.
+                        Legacy file-entry attachments of the order. For the indexed attachment surface use the
+                        /attachments sub-resource.
                     items:
                         $ref: "#/components/schemas/Attachment"
                     type: array
                 author:
                     description:
-                        User name of the user who created the order.
+                        User name of the user who created the order. Read-only.
+                    example: John Doe
                     readOnly: true
                     type: string
                 authorId:
                     description:
-                        Reference to the creating User entity (FK).
+                        Reference to the user who created the order (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 channelId:
                     description:
-                        Reference to the CommerceChannel entity (FK), resolved from the order's group via
-                        CommerceChannelLocalService.getCommerceChannelByOrderGroupId.
+                        Reference to the channel the order belongs to (FK identifier). Read-only; resolved from the
+                        order's site.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 couponCode:
                     description:
-                        Coupon code applied to the order.
+                        Coupon code applied to the order. Read-only.
+                    example: SUMMER10
                     readOnly: true
                     type: string
                 createDate:
                     description:
-                        Creation timestamp of the order. ISO 8601.
+                        Creation date of the order, in ISO 8601 (date only). Read-only; set when the order is first
+                        persisted.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 currencyCode:
                     description:
-                        ISO currency code of the order. Declared on the schema; not populated by the default converter.
+                        ISO 4217 currency code of the order. Declared on the schema; not populated by the default
+                        response converter.
+                    example: USD
                     readOnly: true
                     type: string
                 customFields:
                     additionalProperties: true
                     description:
-                        Expando attributes captured from the order's ExpandoBridge -- map of attribute name to attribute
-                        value.
+                        Custom expando attributes captured from the order; writable through PATCH.
                     type: object
                 errorMessages:
                     description:
                         Validation messages produced by the order engine. Declared on the schema; not currently
-                        populated by this converter.
+                        populated by this response.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 externalReferenceCode:
                     description:
-                        Idempotency key on the order -- caller-supplied external reference code on the CommerceOrder.
+                        Idempotency key for create and update; must be unique per order within the company. Read-only on
+                        this response.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 friendlyURLSeparator:
                     description:
-                        Friendly URL separator configured for CommerceOrder on this company. Returned only when feature
-                        flag LPD-20379 is enabled.
+                        Friendly URL separator configured for orders in this company; returned only when the matching
+                        feature flag is enabled.
+                    example: /-/
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceOrder id.
+                        Primary identifier of the order. Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 lastPriceUpdateDate:
                     description:
-                        Timestamp of the last successful price recalculation, from
-                        CommerceOrder.getLastPriceUpdateDate().
+                        Date of the last successful price recalculation, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 modifiedDate:
                     description:
-                        Last modification timestamp of the order. ISO 8601.
+                        Last modification date of the order, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 name:
                     description:
-                        Human-friendly order name.
+                        Human-friendly order name; writable through PATCH.
                     example: Order Name
                     type: string
                 orderStatusInfo:
@@ -446,41 +477,45 @@ components:
                     readOnly: true
                 orderType:
                     description:
-                        Localized name of the CommerceOrderType linked to the order.
+                        Locale-resolved name of the order type. Read-only.
+                    example: Standard
                     readOnly: true
                     type: string
                 orderTypeExternalReferenceCode:
                     description:
-                        External reference code of the CommerceOrderType linked to the order.
+                        External reference code of the order type. Read-only.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 orderTypeId:
                     description:
-                        Reference to the CommerceOrderType entity (FK).
+                        Reference to the order type (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 orderUUID:
                     description:
-                        UUID of the order, used for guest payment links.
+                        UUID of the order, used for guest payment links. Read-only.
+                    example: 11111111-1111-1111-1111-111111111111
                     readOnly: true
                     type: string
                 paymentMethod:
                     description:
-                        Engine key of the payment method on the order.
+                        Engine key of the payment method recorded on the order. Read-only.
+                    example: money-order
                     readOnly: true
                     type: string
                 paymentMethodLabel:
                     description:
-                        Display name of the payment method group rel resolved from paymentMethod -- localized through
-                        the payment method group rel.
+                        Locale-resolved display name of the payment method. Read-only.
+                    example: Money Order
                     readOnly: true
                     type: string
                 paymentStatus:
                     description:
-                        Integer payment status -- 0=completed, 1=pending, 2=authorized, 4=failed, 8=cancelled,
-                        17=refunded, 23=not-required (see CommerceOrderPaymentConstants).
+                        "Integer payment status of the order. Integer payment status: 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled, 17=Refunded, 23=Not Required. Read-only."
+                    example: 0
                     format: int32
                     readOnly: true
                     type: integer
@@ -489,7 +524,9 @@ components:
                     readOnly: true
                 paymentStatusLabel:
                     description:
-                        Raw payment status label from CommerceOrderPaymentConstants.getOrderPaymentStatusLabel.
+                        Raw label key for the payment status; the locale-resolved form is on
+                        `paymentStatusInfo.label_i18n`. Read-only.
+                    example: completed
                     readOnly: true
                     type: string
                 placedOrderBillingAddress:
@@ -497,22 +534,21 @@ components:
                     readOnly: true
                 placedOrderBillingAddressId:
                     description:
-                        Reference to the billing CommerceAddress entity (FK).
+                        Reference to the billing address (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 placedOrderComments:
                     description:
-                        Embedded collection of comments on the order -- populated by the PlacedOrderComment nested field
-                        resolver.
+                        Comments attached to the order. Read-only on this response.
                     items:
                         $ref: "#/components/schemas/PlacedOrderComment"
                     readOnly: true
                     type: array
                 placedOrderItems:
                     description:
-                        Embedded collection of top-level placed order items -- populated by the PlacedOrderItem nested
-                        field resolver.
+                        Top-level line items on the order. Read-only on this response.
                     items:
                         $ref: "#/components/schemas/PlacedOrderItem"
                     readOnly: true
@@ -522,21 +558,25 @@ components:
                     readOnly: true
                 placedOrderShippingAddressId:
                     description:
-                        Reference to the shipping CommerceAddress entity (FK).
+                        Reference to the shipping address (FK identifier). Read-only.
+                    example: 31130
                     format: int64
                     readOnly: true
                     type: integer
                 printedNote:
                     description:
-                        Printed note shown on the order receipt. Writable through PATCH.
+                        Printed note shown on the order receipt; writable through PATCH.
+                    example: Please leave at the front desk.
                     type: string
                 purchaseOrderNumber:
                     description:
-                        Customer-supplied purchase-order number. Writable through PATCH.
+                        Customer-supplied purchase-order number; writable through PATCH.
+                    example: PO-12345
                     type: string
                 requestedDeliveryDate:
                     description:
-                        Requested delivery date stored on the order.
+                        Requested delivery date stored on the order, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
@@ -545,23 +585,25 @@ components:
                     readOnly: true
                 shippingMethod:
                     description:
-                        Engine key of the order's CommerceShippingMethod.
+                        Engine key of the shipping method recorded on the order. Read-only.
+                    example: fixed
                     readOnly: true
                     type: string
                 shippingOption:
                     description:
-                        Name of the chosen shipping option, from CommerceOrder.getShippingOptionName().
+                        Name of the chosen shipping option on the order. Read-only.
+                    example: Standard Delivery
                     readOnly: true
                     type: string
                 status:
                     description:
-                        Workflow status label of the order, from
-                        WorkflowConstants.getStatusLabel(commerceOrder.getStatus()).
+                        Raw workflow status label of the order. Read-only.
+                    example: approved
                     readOnly: true
                     type: string
                 steps:
                     description:
-                        Tracker steps for the order, built by CommerceOrderStepTrackerHelper.getCommerceOrderSteps.
+                        Tracker steps for the order, derived from the order's configuration. Read-only.
                     items:
                         $ref: "#/components/schemas/Step"
                     type: array
@@ -570,13 +612,15 @@ components:
                     readOnly: true
                 useAsBilling:
                     description:
-                        Declared shipping-billing flag. Declared on the schema; not currently populated by this
+                        Declared shipping-as-billing flag. Declared on the schema; not populated by the default response
                         converter.
+                    example: true
                     readOnly: true
                     type: boolean
                 valid:
                     description:
-                        Declared validity flag. Declared on the schema; not currently populated by this converter.
+                        Declared validity flag. Declared on the schema; not populated by the default response converter.
+                    example: true
                     readOnly: true
                     type: boolean
                 workflowStatusInfo:
@@ -585,234 +629,264 @@ components:
             type: object
         PlacedOrderAddress:
             description:
-                Snapshot view of the CommerceAddress referenced by a placed order, used for both the billing and the
-                shipping slots.
+                Snapshot of the address recorded on a placed order, used for both the billing and the shipping slots.
+                Read-only -- addresses cannot be edited through this API once the order has been placed.
             properties:
                 city:
                     description:
-                        City line of the CommerceAddress.
+                        City line of the address. Read-only.
+                    example: Diamond Bar
                     readOnly: true
                     type: string
                 country:
                     description:
-                        Country title in the requested locale (Country.getTitle(locale)).
+                        Locale-resolved country name. Read-only.
+                    example: United States
                     readOnly: true
                     type: string
                 countryISOCode:
                     description:
-                        ISO-3166 alpha-2 country code from Country.getA2().
+                        ISO 3166 alpha-2 country code. Read-only.
+                    example: US
                     readOnly: true
                     type: string
                 description:
                     description:
-                        Free-form description on the CommerceAddress.
+                        Free-form description on the address. Read-only.
+                    example: right stairs, first room on the left
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key on the CommerceAddress -- the caller-supplied external reference code.
+                        Idempotency key for the address; must be unique per address within the company. Read-only on
+                        this response.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceAddress id.
+                        Primary identifier of the address. Read-only.
+                    example: 31130
                     format: int64
                     readOnly: true
                     type: integer
                 latitude:
                     description:
-                        Latitude geocode of the address.
+                        Latitude geocode of the address as a decimal degree. Read-only.
+                    example: 33.9976884
                     format: double
                     readOnly: true
                     type: number
                 longitude:
                     description:
-                        Longitude geocode of the address.
+                        Longitude geocode of the address as a decimal degree. Read-only.
+                    example: -117.8144595
                     format: double
                     readOnly: true
                     type: number
                 name:
                     description:
-                        Recipient name on the address.
+                        Recipient name on the address. Read-only.
+                    example: Alessio Antonio Rendina
                     readOnly: true
                     type: string
                 phoneNumber:
                     description:
-                        Phone number on the address.
+                        Phone number on the address. Read-only.
+                    example: (123) 456 7890
                     readOnly: true
                     type: string
                 region:
                     description:
-                        Region name from Region.getName().
+                        Locale-resolved region name. Read-only.
+                    example: California
                     readOnly: true
                     type: string
                 regionISOCode:
                     description:
-                        Region code from Region.getRegionCode(). Empty string when the country has no regions.
+                        Region code; empty string when the country has no registered regions. Read-only.
+                    example: CA
                     readOnly: true
                     type: string
                 street1:
                     description:
-                        First street line of the address.
+                        First street line of the address. Read-only.
+                    example: 1400 Montefino Ave
                     readOnly: true
                     type: string
                 street2:
                     description:
-                        Second street line of the address.
+                        Second street line of the address. Read-only.
+                    example: 1st floor
                     readOnly: true
                     type: string
                 street3:
                     description:
-                        Third street line of the address.
+                        Third street line of the address. Read-only.
+                    example: suite 200
                     readOnly: true
                     type: string
                 subtype:
                     description:
-                        Optional subtype label on the CommerceAddress.
+                        Optional subtype label on the address. Read-only.
+                    example: Office
                     readOnly: true
                     type: string
                 type:
                     description:
-                        Declared address-type string. Declared on the schema; not populated by this converter (the
-                        integer is on typeId).
+                        Declared address-type string. Declared on the schema; not populated by the default response
+                        converter.
+                    example: shipping
                     readOnly: true
                     type: string
                 typeId:
                     description:
-                        Integer address type -- 1=billing, 2=billing-and-shipping, 3=shipping (see
-                        CommerceAddressConstants).
+                        "Integer address type: 1=Billing, 2=Billing And Shipping, 3=Shipping. Read-only."
+                    example: 3
                     format: int32
                     readOnly: true
                     type: integer
                 vatNumber:
                     description:
-                        Declared VAT number. Declared on the schema; not populated by this converter.
+                        Declared VAT number. Declared on the schema; not populated by the default response converter.
+                    example: Abcd1234
                     readOnly: true
                     type: string
                 zip:
                     description:
-                        Postal code on the address.
+                        Postal code on the address. Read-only.
+                    example: "91765"
                     readOnly: true
                     type: string
             type: object
         PlacedOrderComment:
             description:
-                A CommerceOrderNote attached to a placed order. Use the restricted flag to distinguish buyer-visible
-                notes from back-office-only notes.
+                Note attached to a placed order. The restricted flag separates buyer-visible notes from back-office-only
+                notes.
             properties:
                 author:
                     description:
-                        User name of the user who wrote the note, from CommerceOrderNote.getUserName().
+                        User name of the user who wrote the comment. Read-only.
+                    example: John Doe
                     readOnly: true
                     type: string
                 content:
                     description:
-                        Body of the comment, from CommerceOrderNote.getContent().
+                        Body of the comment. Read-only.
+                    example: Please verify the delivery date with the buyer.
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key on the CommerceOrderNote -- the caller-supplied external reference code.
+                        Idempotency key for the comment; must be unique per comment within the company. Read-only on
+                        this response.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceOrderNote id.
+                        Primary identifier of the comment. Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 orderId:
                     description:
-                        Reference to the parent CommerceOrder entity (FK).
+                        Reference to the parent order (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 restricted:
                     description:
-                        When true the note is hidden from buyer-side audiences (CommerceOrderNote.isRestricted()).
+                        When true the comment is hidden from buyer-side audiences and only visible in back-office
+                        contexts.
+                    example: false
                     readOnly: true
                     type: boolean
             type: object
         PlacedOrderItem:
             description:
-                A top-level CommerceOrderItem on a placed order. Child items are exposed inline via the placedOrderItems
+                Top-level line item on a placed order. Child items are exposed inline via the placedOrderItems
                 collection, shipment splits via placedOrderItemShipments, and virtual downloads via virtualItems and
                 virtualItemURLs.
             properties:
                 adaptiveMediaImageHTMLTag:
                     description:
-                        Pre-rendered Adaptive Media img tag for the item's CPInstance.
+                        Pre-rendered Adaptive Media image tag for the item. Read-only.
                     readOnly: true
                     type: string
                 customFields:
                     additionalProperties: true
                     description:
-                        Expando attributes from the CommerceOrderItem ExpandoBridge -- map of attribute name to
-                        attribute value.
+                        Custom expando attributes captured from the line item. Read-only on this response.
                     readOnly: true
                     type: object
                 deliveryGroup:
                     deprecated: true
                     description:
-                        Deprecated -- use deliveryGroupName instead. Both properties share the same backing value,
-                        CommerceOrderItem.getDeliveryGroupName().
+                        Deprecated -- use `deliveryGroupName` instead. Carries the same value.
+                    example: default
                     readOnly: true
                     type: string
                 deliveryGroupName:
                     description:
-                        Delivery group name from CommerceOrderItem.getDeliveryGroupName().
+                        Delivery group name on the line item. Read-only.
+                    example: default
                     readOnly: true
                     type: string
                 errorMessages:
                     description:
-                        When the underlying CPInstance no longer exists, the single message
-                        the-product-is-no-longer-available. Null otherwise.
+                        When the underlying SKU no longer exists, the single message
+                        `the-product-is-no-longer-available`; otherwise null. Read-only.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 externalReferenceCode:
                     description:
-                        Idempotency key on the CommerceOrderItem -- the caller-supplied external reference code.
+                        Idempotency key for the line item; must be unique per line item within the company. Read-only on
+                        this response.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceOrderItem id.
+                        Primary identifier of the line item. Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 name:
                     description:
-                        Localized item name in the requested locale.
+                        Locale-resolved item name in the request locale. Read-only.
+                    example: Hand Saw
                     readOnly: true
                     type: string
                 options:
                     description:
-                        JSON blob of the item's selected product options, from CommerceOrderItem.getJson().
+                        JSON blob of the line item's selected product options. Read-only.
+                    example: "[]"
                     readOnly: true
                     type: string
                 parentOrderItemId:
                     description:
-                        Reference to the parent CommerceOrderItem entity (FK). Zero when this is a top-level item.
+                        Reference to the parent line item (FK identifier). Zero when the line item is top-level.
+                        Read-only.
+                    example: 0
                     format: int64
                     readOnly: true
                     type: integer
                 placedOrderItemShipments:
                     description:
-                        Embedded collection of shipments for this item -- populated by the PlacedOrderItemShipment
-                        nested field resolver.
+                        Shipments for this line item. Read-only on this response.
                     items:
                         $ref: "#/components/schemas/PlacedOrderItemShipment"
                     readOnly: true
                     type: array
                 placedOrderItems:
                     description:
-                        Embedded collection of child placed order items, transformed from
-                        CommerceOrderItem.getChildCommerceOrderItems().
+                        Child line items beneath this line item. Read-only on this response.
                     items:
                         $ref: "#/components/schemas/PlacedOrderItem"
                     readOnly: true
@@ -822,7 +896,8 @@ components:
                     readOnly: true
                 productId:
                     description:
-                        Reference to the parent CProduct entity (FK).
+                        Reference to the parent product (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
@@ -830,30 +905,32 @@ components:
                     additionalProperties:
                         type: string
                     description:
-                        Localized product URL title. Map keys are locale codes (for example, en_US, it_IT); values are
-                        the URL title strings sourced from CPDefinitionLocalService.getUrlTitleMap.
+                        Localized text. Map keys are locale codes; values are the URL title for the product in that
+                        locale. Read-only.
                     example:
-                        en_US: product-url-us
-                        hr_HR: product-url-hr
-                        hu_HU: product-url-hu
+                        en_US: hand-saw
+                        hr_HR: hand-saw-hr
+                        hu_HU: hand-saw-hu
                     readOnly: true
                     type: object
                 quantity:
                     description:
-                        Localized formatted quantity, computed by CommerceQuantityFormatter.format against the item's
-                        CPInstance and unit of measure.
+                        Locale-formatted quantity, computed from the SKU and the chosen unit of measure. Read-only.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 replacedSku:
                     description:
-                        SKU of the original item this row replaced when the item was swapped at fulfillment.
+                        SKU of the original item this row replaced, when the line item was swapped at fulfillment.
+                        Read-only.
+                    example: OLD-SKU-001
                     readOnly: true
                     type: string
                 requestedDeliveryDate:
                     description:
-                        Requested delivery date on the item.
+                        Requested delivery date on the line item, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
@@ -862,65 +939,70 @@ components:
                     readOnly: true
                 shippingAddressExternalReferenceCode:
                     description:
-                        External reference code of the CommerceAddress linked to the item via shippingAddressId.
+                        External reference code of the per-item shipping address. Read-only.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 shippingAddressId:
                     description:
-                        Reference to the per-item CommerceAddress entity (FK).
+                        Reference to the per-item shipping address (FK identifier). Read-only.
+                    example: 31130
                     format: int64
                     readOnly: true
                     type: integer
                 sku:
                     description:
-                        SKU string from CommerceOrderItem.getSku().
+                        SKU string of the line item. Read-only.
+                    example: HSW-10IN
                     readOnly: true
                     type: string
                 skuId:
                     description:
-                        Reference to the CPInstance entity (FK) for the SKU.
+                        Reference to the SKU (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 subscription:
                     description:
-                        When true the item is part of a subscription, from CommerceOrderItem.isSubscription().
+                        When true the line item is part of a subscription.
                     example: true
                     readOnly: true
                     type: boolean
                 thumbnail:
                     description:
-                        URL of the item thumbnail, from CPInstanceHelper.getCPInstanceThumbnailSrc.
+                        URL of the line item thumbnail. Read-only.
+                    example: https://example.com/thumb.png
                     readOnly: true
                     type: string
                 unitOfMeasure:
                     description:
-                        Localized name of the chosen CPInstanceUnitOfMeasure.
+                        Locale-resolved name of the chosen unit of measure. Read-only.
+                    example: Meter
                     readOnly: true
                     type: string
                 unitOfMeasureKey:
                     description:
-                        Key of the chosen CPInstanceUnitOfMeasure.
+                        Key of the chosen unit of measure. Read-only.
                     example: m
                     readOnly: true
                     type: string
                 valid:
                     description:
-                        Declared validity flag. Declared on the schema; not currently populated by this converter.
+                        Declared validity flag. Declared on the schema; not populated by the default response converter.
+                    example: true
                     readOnly: true
                     type: boolean
                 virtualItemURLs:
                     description:
-                        URLs of the first virtual-item file entry attached to the order item. Falls back to
-                        CommerceMediaResolver.getDownloadVirtualOrderItemURL when no entry stores a direct URL.
+                        Download URLs of the line item's virtual file entries. Read-only.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 virtualItems:
                     description:
-                        Full list of virtual-item file entries on the order item. See the VirtualItem schema.
+                        Full list of virtual-item file entries on the line item. Read-only.
                     items:
                         $ref: "#/components/schemas/VirtualItem"
                     readOnly: true
@@ -928,13 +1010,12 @@ components:
             type: object
         PlacedOrderItemShipment:
             description:
-                A CommerceShipmentItem row that ships a portion of a PlacedOrderItem. When the placed order has no
-                direct shipment items, this row may be sourced from a non-open supplier order.
+                Shipment-item row that ships a portion of a placed order item. When the order has no direct shipments,
+                this row may be sourced from a supplier order linked to the same item.
             properties:
                 accountId:
                     description:
-                        Reference to the CommerceAccount of the parent shipment (FK), from
-                        CommerceShipment.getCommerceAccountId().
+                        Reference to the account of the parent shipment (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -942,45 +1023,46 @@ components:
                     type: integer
                 author:
                     description:
-                        User name of the shipment creator, from CommerceShipment.getUserName().
-                    example: Author
+                        User name of the user who created the parent shipment. Read-only.
+                    example: John Doe
                     readOnly: true
                     type: string
                 carrier:
                     description:
-                        Carrier name of the parent shipment.
+                        Carrier name of the parent shipment. Read-only.
                     example: FedEx
                     readOnly: true
                     type: string
                 createDate:
                     description:
-                        Creation timestamp of the parent shipment. ISO 8601.
+                        Creation date of the parent shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 estimatedDeliveryDate:
                     description:
-                        Aliased to CommerceShipment.getExpectedDate() -- the date the shipment is expected to be
-                        delivered.
+                        Expected delivery date of the parent shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 estimatedShippingDate:
                     description:
-                        Aliased to CommerceShipment.getShippingDate() -- the date the shipment is expected to be
-                        shipped.
+                        Expected ship date of the parent shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        External reference code of the parent CommerceShipment.
+                        External reference code of the parent shipment. Read-only.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Identifier of the parent CommerceShipment (not the shipment item's id).
+                        Identifier of the parent shipment (not the shipment item itself). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -988,13 +1070,15 @@ components:
                     type: integer
                 modifiedDate:
                     description:
-                        Last modification timestamp of the parent shipment. ISO 8601.
+                        Last modification date of the parent shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 orderId:
                     description:
-                        Declared parent order id. Declared on the schema; not populated by this converter.
+                        Declared parent order id. Declared on the schema; not populated by the default response
+                        converter.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1002,15 +1086,14 @@ components:
                     type: integer
                 quantity:
                     description:
-                        Localized formatted quantity from this shipment item, computed via
-                        CommerceQuantityFormatter.format.
+                        Locale-formatted shipped quantity for this row. Read-only.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 shippingAddressId:
                     description:
-                        Reference to the CommerceAddress of the parent shipment (FK).
+                        Reference to the destination address (FK identifier). Read-only.
                     example: 31130
                     format: int64
                     minimum: 0
@@ -1018,7 +1101,7 @@ components:
                     type: integer
                 shippingMethodId:
                     description:
-                        Reference to the CommerceShippingMethod of the parent shipment (FK).
+                        Reference to the shipping method (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1026,7 +1109,7 @@ components:
                     type: integer
                 shippingOptionName:
                     description:
-                        Shipping option name of the parent shipment.
+                        Shipping option name on the parent shipment. Read-only.
                     example: Standard Delivery
                     readOnly: true
                     type: string
@@ -1035,122 +1118,137 @@ components:
                     readOnly: true
                 supplierShipment:
                     description:
-                        When true this row was produced from a supplier order's shipment items (set by
-                        PlacedOrderItemShipmentDTOConverterContext).
+                        When true this row was sourced from a supplier order's shipment items rather than the order's
+                        own shipments. Read-only.
+                    example: false
                     readOnly: true
                     type: boolean
                 trackingNumber:
                     description:
-                        Tracking number of the parent shipment.
+                        Tracking number on the parent shipment. Read-only.
                     example: 123AD-asd
                     readOnly: true
                     type: string
                 trackingURL:
                     description:
-                        Tracking URL of the parent shipment.
+                        Tracking URL on the parent shipment. Read-only.
+                    example: https://example.com/tracking/123AD-asd
                     readOnly: true
                     type: string
                 unitOfMeasureKey:
                     description:
-                        Key of the unit of measure on the underlying CommerceShipmentItem.
+                        Key of the unit of measure for this shipment item. Read-only.
                     example: m
                     readOnly: true
                     type: string
             type: object
         Price:
             description:
-                Per-unit pricing block for a placed order item -- base, promotional, final, plus formatted strings in
-                the order's currency and locale.
+                Per-unit pricing block for a placed order item -- base price, promotional price, discount, and final
+                price, each in numeric form plus a locale-formatted string.
             properties:
                 currency:
                     description:
-                        Localized currency name from the order's CommerceCurrency.
+                        Locale-resolved currency name from the order's currency. Read-only.
+                    example: US Dollar
                     readOnly: true
                     type: string
                 discount:
                     description:
-                        Per-unit discount amount as a double, in the order's currency.
+                        Per-unit discount amount in the order's currency. Read-only.
+                    example: 1.5
                     format: double
                     readOnly: true
                     type: number
                 discountFormatted:
                     description:
-                        Per-unit discount amount formatted in the order's currency and locale.
+                        Per-unit discount amount formatted in the order's currency and the request locale. Read-only.
+                    example: $1.50
                     readOnly: true
                     type: string
                 discountPercentage:
                     description:
-                        Locale-formatted discount percentage produced by CommercePriceFormatter.format.
+                        Locale-formatted discount percentage. Read-only.
+                    example: 10%
                     readOnly: true
                     type: string
                 discountPercentageLevel1:
                     description:
-                        First-level cumulative discount percentage from the item's price calculation.
+                        First-level cumulative discount percentage from the line item's price calculation. Read-only.
+                    example: 10.0
                     format: double
                     readOnly: true
                     type: number
                 discountPercentageLevel2:
                     description:
-                        Second-level cumulative discount percentage from the item's price calculation.
+                        Second-level cumulative discount percentage from the line item's price calculation. Read-only.
+                    example: 0.0
                     format: double
                     readOnly: true
                     type: number
                 discountPercentageLevel3:
                     description:
-                        Third-level cumulative discount percentage from the item's price calculation.
+                        Third-level cumulative discount percentage from the line item's price calculation. Read-only.
+                    example: 0.0
                     format: double
                     readOnly: true
                     type: number
                 discountPercentageLevel4:
                     description:
-                        Fourth-level cumulative discount percentage from the item's price calculation.
+                        Fourth-level cumulative discount percentage from the line item's price calculation. Read-only.
+                    example: 0.0
                     format: double
                     readOnly: true
                     type: number
                 finalPrice:
                     description:
-                        Final per-unit price after discounts and promos as a double, in the order's currency.
+                        Final per-unit price after discounts and promos, in the order's currency. Read-only.
+                    example: 13.5
                     format: double
                     readOnly: true
                     type: number
                 finalPriceFormatted:
                     description:
-                        Final per-unit price formatted in the order's currency and locale.
+                        Final per-unit price formatted in the order's currency and the request locale. Read-only.
+                    example: $13.50
                     readOnly: true
                     type: string
                 price:
                     description:
-                        Base per-unit price before discounts as a double, in the order's currency.
+                        Base per-unit price before discounts, in the order's currency. Read-only.
+                    example: 15.0
                     format: double
                     readOnly: true
                     type: number
                 priceFormatted:
                     description:
-                        Base per-unit price formatted in the order's currency and locale.
+                        Base per-unit price formatted in the order's currency and the request locale. Read-only.
+                    example: $15.00
                     readOnly: true
                     type: string
                 promoPrice:
                     description:
-                        Promo per-unit price as a double, in the order's currency, when a promo is active.
+                        Promotional per-unit price when a promo is active, in the order's currency. Read-only.
+                    example: 13.5
                     format: double
                     readOnly: true
                     type: number
                 promoPriceFormatted:
                     description:
-                        Promo per-unit price formatted in the order's currency and locale.
+                        Promotional per-unit price formatted in the order's currency and the request locale. Read-only.
+                    example: $13.50
                     readOnly: true
                     type: string
             type: object
         Settings:
             description:
-                Inventory configuration applied to a placed order item -- min, max, multiple, and the explicit allowed
-                quantities (when configured).
+                Inventory configuration applied to a placed order item -- minimum, maximum, multiple, and the explicit
+                allowed quantities when the SKU has them configured.
             properties:
                 allowedQuantities:
                     description:
-                        Explicit list of allowed order quantities from the SKU's
-                        CPDefinitionInventory.allowedOrderQuantitiesArray. Omitted when no inventory configuration is
-                        present.
+                        Explicit list of allowed order quantities for the line item's SKU. Omitted when no inventory
+                        configuration is present. Read-only.
                     items:
                         example: 10.1
                         format: bigdecimal
@@ -1159,38 +1257,34 @@ components:
                     type: array
                 maxQuantity:
                     description:
-                        Maximum order quantity from the SKU's inventory configuration. Defaults to
-                        CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY when unset.
-                    example: 10.1
+                        Maximum order quantity for the SKU. Defaults to the system maximum when unset. Read-only.
+                    example: 100
                     format: bigdecimal
                     readOnly: true
                     type: number
                 minQuantity:
                     description:
-                        Minimum order quantity from the SKU's inventory configuration. Defaults to
-                        CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY when unset.
-                    example: 10.1
+                        Minimum order quantity for the SKU. Defaults to one when unset. Read-only.
+                    example: 1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 multipleQuantity:
                     description:
-                        Required quantity multiple from the SKU's inventory configuration. Defaults to
-                        CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY when unset.
-                    example: 10.1
+                        Required quantity multiple for the SKU. Defaults to one when unset. Read-only.
+                    example: 1
                     format: bigdecimal
                     readOnly: true
                     type: number
             type: object
         Shipment:
             description:
-                A CommerceShipment row produced for a placed order. itemsCount and oneLineAddress are read from the
-                search document and may not appear when the shipment is loaded outside an indexed context.
+                Shipment record produced for a placed order. itemsCount and oneLineAddress are read from the search
+                index when the shipment is loaded as part of a listing and may be absent on direct lookups.
             properties:
                 accountId:
                     description:
-                        Reference to the CommerceAccount of the shipment (FK), from
-                        CommerceShipment.getCommerceAccountId().
+                        Reference to the account of the shipment (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1198,30 +1292,34 @@ components:
                     type: integer
                 carrier:
                     description:
-                        Carrier name of the shipment.
+                        Carrier name of the shipment. Read-only.
                     example: FedEx
                     readOnly: true
                     type: string
                 createDate:
                     description:
-                        Creation timestamp of the shipment. ISO 8601.
+                        Creation date of the shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 expectedDate:
                     description:
-                        Expected delivery date of the shipment.
+                        Expected delivery date of the shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key on the CommerceShipment -- the caller-supplied external reference code.
+                        Idempotency key for the shipment; must be unique per shipment within the company. Read-only on
+                        this response.
+                    example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceShipment id.
+                        Primary identifier of the shipment. Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1229,31 +1327,36 @@ components:
                     type: integer
                 itemsCount:
                     description:
-                        Number of items in the shipment, read from the search document attribute injected by
-                        ShipmentResourceImpl.
+                        Number of items in the shipment, read from the search document on listing responses. Read-only.
+                    example: 3
                     format: int32
                     readOnly: true
                     type: integer
                 modifiedDate:
                     description:
-                        Last modification timestamp of the shipment. ISO 8601.
+                        Last modification date of the shipment, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 oneLineAddress:
                     description:
-                        Single-line shipping address derived for list display, read from the search document attribute.
+                        Single-line shipping address for list display, read from the search document on listing
+                        responses. Read-only.
+                    example: 1400 Montefino Ave, Diamond Bar, CA 91765, US
                     readOnly: true
                     type: string
                 orderExternalReferenceCode:
                     description:
-                        Declared order external reference code. Declared on the schema; not populated by this converter.
+                        Declared order external reference code. Declared on the schema; not populated by the default
+                        response converter.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 orderId:
                     description:
-                        Declared order id. Declared on the schema; not populated by this converter.
+                        Declared parent order id. Declared on the schema; not populated by the default response
+                        converter.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1264,7 +1367,7 @@ components:
                     readOnly: true
                 shippingAddressId:
                     description:
-                        Reference to the CommerceAddress entity (FK).
+                        Reference to the destination address (FK identifier). Read-only.
                     example: 31130
                     format: int64
                     minimum: 0
@@ -1272,13 +1375,14 @@ components:
                     type: integer
                 shippingDate:
                     description:
-                        Date the shipment was shipped.
+                        Date the shipment was shipped, in ISO 8601 (date only). Read-only.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 shippingMethodId:
                     description:
-                        Reference to the CommerceShippingMethod entity (FK).
+                        Reference to the shipping method (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1286,7 +1390,7 @@ components:
                     type: integer
                 shippingOptionName:
                     description:
-                        Name of the chosen shipping option on the shipment.
+                        Name of the chosen shipping option. Read-only.
                     example: Standard Delivery
                     readOnly: true
                     type: string
@@ -1295,55 +1399,55 @@ components:
                     readOnly: true
                 trackingNumber:
                     description:
-                        Tracking number stored on the shipment.
+                        Tracking number stored on the shipment. Read-only.
                     example: 123AD-asd
                     readOnly: true
                     type: string
                 trackingURL:
                     description:
-                        Tracking URL stored on the shipment.
-                    example: Standard Delivery
+                        Tracking URL stored on the shipment. Read-only.
+                    example: https://example.com/tracking/123AD-asd
                     readOnly: true
                     type: string
                 userName:
                     description:
-                        User name of the shipment author, from CommerceShipment.getUserName().
-                    example: John
+                        User name of the user who created the shipment. Read-only.
+                    example: John Doe
                     readOnly: true
                     type: string
             type: object
         ShippingAddress:
             description:
-                Snapshot view of a shipment's destination CommerceAddress. Declared on the Shipment schema but not
-                currently populated by ShipmentDTOConverter.
+                Snapshot of the destination address on a shipment. Declared on the shipment schema for completeness; not
+                populated by the default response converter.
             properties:
                 city:
                     description:
-                        City line of the shipment's destination address.
+                        City line of the destination address. Read-only.
                     example: Diamond Bar
                     readOnly: true
                     type: string
                 countryISOCode:
                     description:
-                        ISO-3166 alpha-2 country code of the destination.
+                        ISO 3166 alpha-2 country code of the destination. Read-only.
                     example: US
                     readOnly: true
                     type: string
                 description:
                     description:
-                        Free-form description of the destination address.
+                        Free-form description of the destination address. Read-only.
                     example: right stairs, first room on the left
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        External reference code of the underlying CommerceAddress.
+                        External reference code of the underlying address. Read-only.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Identifier of the destination CommerceAddress.
+                        Identifier of the destination address. Read-only.
                     example: 31130
                     format: int64
                     minimum: 0
@@ -1351,86 +1455,89 @@ components:
                     type: integer
                 latitude:
                     description:
-                        Latitude geocode of the destination.
+                        Latitude geocode of the destination as a decimal degree. Read-only.
                     example: 33.9976884
                     format: double
                     readOnly: true
                     type: number
                 longitude:
                     description:
-                        Longitude geocode of the destination.
+                        Longitude geocode of the destination as a decimal degree. Read-only.
                     example: -117.8144595
                     format: double
                     readOnly: true
                     type: number
                 name:
                     description:
-                        Recipient name on the destination.
+                        Recipient name on the destination. Read-only.
                     example: Alessio Antonio Rendina
                     readOnly: true
                     type: string
                 phoneNumber:
                     description:
-                        Phone number on the destination.
+                        Phone number on the destination. Read-only.
                     example: (123) 456 7890
                     readOnly: true
                     type: string
                 regionISOCode:
                     description:
-                        Region code of the destination.
+                        Region code of the destination. Read-only.
                     example: CA
                     readOnly: true
                     type: string
                 street1:
                     description:
-                        First street line of the destination.
+                        First street line of the destination. Read-only.
                     example: 1400 Montefino Ave
                     readOnly: true
                     type: string
                 street2:
                     description:
-                        Second street line of the destination.
+                        Second street line of the destination. Read-only.
                     example: 1st floor
                     readOnly: true
                     type: string
                 street3:
                     description:
-                        Third street line of the destination.
+                        Third street line of the destination. Read-only.
                     example: suite 200
                     readOnly: true
                     type: string
                 zip:
                     description:
-                        Postal code of the destination.
+                        Postal code of the destination. Read-only.
                     example: "91765"
                     readOnly: true
                     type: string
             type: object
         ShippingMethod:
             description:
-                Reference to a CommerceShippingMethod. Declared for completeness; not currently populated by any
-                converter in this module.
+                Reference to a shipping method. Declared on the response schemas for completeness; not populated by the
+                default response converter in this API.
             properties:
                 description:
                     description:
-                        Localized description of the shipping method.
+                        Locale-resolved description of the shipping method. Read-only.
+                    example: Standard ground delivery.
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        External reference code of the shipping method.
+                        External reference code of the shipping method. Read-only.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceShippingMethod id.
+                        Primary identifier of the shipping method. Read-only.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
                 name:
                     description:
-                        Localized name of the shipping method.
+                        Locale-resolved name of the shipping method. Read-only.
+                    example: Standard
                     readOnly: true
                     type: string
                 shippingOption:
@@ -1439,82 +1546,89 @@ components:
             type: object
         ShippingOption:
             description:
-                Reference to a shipping option offered by a CommerceShippingMethod. Declared for completeness; not
-                currently populated by any converter in this module.
+                Reference to a shipping option offered by a shipping method. Declared on the response schemas for
+                completeness; not populated by the default response converter in this API.
             properties:
                 amount:
                     description:
-                        Numeric shipping cost as a double, in the order's currency.
+                        Numeric shipping cost in the order's currency. Read-only.
+                    example: 9.99
                     format: double
                     readOnly: true
                     type: number
                 amountFormatted:
                     description:
-                        Shipping cost formatted in the order's currency and locale.
+                        Shipping cost formatted in the order's currency and the request locale. Read-only.
+                    example: $9.99
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        External reference code of the shipping option.
+                        External reference code of the shipping option. Read-only.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 label:
                     description:
-                        Localized label of the option.
+                        Locale-resolved label of the option. Read-only.
+                    example: Standard Delivery
                     readOnly: true
                     type: string
                 name:
                     description:
-                        Programmatic name (key) of the option.
+                        Programmatic name (key) of the option. Read-only.
+                    example: standard-delivery
                     readOnly: true
                     type: string
             type: object
         Status:
             description:
-                Status descriptor -- the integer code, the raw label key, and the localized label. The meaning of the
-                code depends on which Status slot it appears in (order, payment, workflow, or shipment) -- see the
-                embedding property's description for the integer-to-meaning mapping.
+                Status descriptor -- an integer code plus its raw label key and its locale-resolved label. The meaning
+                of the code depends on the slot it appears in (order status, payment status, workflow status, or
+                shipment status); the embedding property's description documents the integer-to-meaning mapping.
             properties:
                 code:
                     description:
-                        Integer status code. The meaning depends on which Status slot this is in (order, payment,
-                        workflow, or shipment); see the embedding property's description for the integer-to-meaning
-                        mapping.
+                        Integer status code; the meaning depends on the slot this status appears in -- the embedding
+                        property's description documents the integer-to-meaning mapping.
+                    example: 0
                     format: int32
                     readOnly: true
                     type: integer
                 label:
                     description:
-                        Raw status label key, lowercase-with-dashes (for example, processing, awaiting-pickup).
-                    example: black
+                        Raw status label key, lowercase-with-dashes form. Read-only.
+                    example: completed
                     readOnly: true
                     type: string
                 label_i18n:
                     description:
-                        Localized status label resolved via Language.get(resourceBundle, label).
-                    example: black
+                        Locale-resolved status label. Read-only.
+                    example: Completed
                     readOnly: true
                     type: string
             type: object
         Step:
             description:
-                A step in the order tracker derived from the order's configuration -- typically one of complete,
-                current, or upcoming.
+                Step in the order tracker derived from the order's configuration. The state typically resolves to one of
+                complete, current, or upcoming.
             properties:
                 id:
                     description:
-                        Step id from StepModel.getId().
+                        Step identifier from the tracker definition. Read-only.
+                    example: order-placed
                     readOnly: true
                     type: string
                 label:
                     description:
-                        Localized label from StepModel.getLabel().
+                        Locale-resolved label of the step. Read-only.
+                    example: Order Placed
                     readOnly: true
                     type: string
                 state:
                     description:
-                        Step state from StepModel.getState() -- typically one of complete, current, or upcoming.
+                        Step state -- typically one of `complete`, `current`, or `upcoming`. Read-only.
+                    example: complete
                     readOnly: true
                     type: string
         Summary:
@@ -1524,189 +1638,210 @@ components:
             properties:
                 currency:
                     description:
-                        Localized currency name of the order.
+                        Locale-resolved currency name of the order. Read-only.
+                    example: US Dollar
                     readOnly: true
                     type: string
                 itemsCount:
                     description:
-                        Count of top-level items (parent commerce order items) on the order.
-                    example: 1
+                        Number of top-level line items on the order. Read-only.
+                    example: 3
                     format: int32
                     readOnly: true
                     type: integer
                 itemsQuantity:
                     description:
-                        Sum of item quantities on the order, with trailing zeros stripped.
+                        Sum of line-item quantities on the order, with trailing zeros stripped. Read-only.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 shippingDiscountPercentages:
                     description:
-                        Cumulative shipping discount percentage levels 1 to 4, formatted as locale-aware strings.
+                        Cumulative shipping discount percentage levels 1 to 4, formatted in the request locale.
+                        Read-only.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 shippingDiscountValue:
                     description:
-                        Shipping discount amount as a double; uses the tax-inclusive amount when the channel displays
-                        prices with tax.
+                        Shipping discount amount in the order's currency; uses the tax-inclusive amount when the channel
+                        displays prices with tax. Read-only.
+                    example: 0.0
                     format: double
                     readOnly: true
                     type: number
                 shippingDiscountValueFormatted:
                     description:
-                        Shipping discount amount formatted in the order's currency and locale.
+                        Shipping discount amount formatted in the order's currency and the request locale. Read-only.
+                    example: $0.00
                     readOnly: true
                     type: string
                 shippingValue:
                     description:
-                        Shipping subtotal (without tax) as a double.
+                        Shipping subtotal (without tax) in the order's currency. Read-only.
+                    example: 9.99
                     format: double
                     readOnly: true
                     type: number
                 shippingValueFormatted:
                     description:
-                        Shipping subtotal formatted in the order's currency and locale.
+                        Shipping subtotal formatted in the order's currency and the request locale. Read-only.
+                    example: $9.99
                     readOnly: true
                     type: string
                 shippingValueWithTaxAmount:
                     description:
-                        Shipping subtotal including tax as a double, when the channel publishes it.
+                        Shipping subtotal including tax in the order's currency, when the channel publishes it.
+                        Read-only.
+                    example: 10.79
                     format: double
                     readOnly: true
                     type: number
                 shippingValueWithTaxAmountFormatted:
                     description:
-                        Shipping subtotal including tax formatted in the order's currency and locale.
+                        Shipping subtotal including tax, formatted in the order's currency and the request locale.
+                        Read-only.
+                    example: $10.79
                     readOnly: true
                     type: string
                 subtotal:
                     description:
-                        Items subtotal as a double; switches to the tax-inclusive subtotal when the channel displays
-                        prices with tax.
+                        Items subtotal in the order's currency; switches to the tax-inclusive subtotal when the channel
+                        displays prices with tax. Read-only.
+                    example: 150.0
                     format: double
                     readOnly: true
                     type: number
                 subtotalDiscountPercentages:
                     description:
-                        Cumulative subtotal discount percentage levels 1 to 4, formatted as locale-aware strings.
+                        Cumulative subtotal discount percentage levels 1 to 4, formatted in the request locale.
+                        Read-only.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 subtotalDiscountValue:
                     description:
-                        Subtotal discount amount as a double; uses the tax-inclusive amount when the channel displays
-                        prices with tax.
+                        Subtotal discount amount in the order's currency; uses the tax-inclusive amount when the channel
+                        displays prices with tax. Read-only.
+                    example: 15.0
                     format: double
                     readOnly: true
                     type: number
                 subtotalDiscountValueFormatted:
                     description:
-                        Subtotal discount amount formatted in the order's currency and locale.
+                        Subtotal discount amount formatted in the order's currency and the request locale. Read-only.
+                    example: $15.00
                     readOnly: true
                     type: string
                 subtotalFormatted:
                     description:
-                        Items subtotal formatted in the order's currency and locale.
+                        Items subtotal formatted in the order's currency and the request locale. Read-only.
+                    example: $150.00
                     readOnly: true
                     type: string
                 taxValue:
                     description:
-                        Tax amount on the order as a double.
+                        Tax amount on the order, in the order's currency. Read-only.
+                    example: 12.15
                     format: double
                     readOnly: true
                     type: number
                 taxValueFormatted:
                     description:
-                        Tax amount formatted in the order's currency and locale.
+                        Tax amount formatted in the order's currency and the request locale. Read-only.
+                    example: $12.15
                     readOnly: true
                     type: string
                 total:
                     description:
-                        Order total as a double; switches to the tax-inclusive total when the channel displays prices
-                        with tax.
+                        Order total in the order's currency; switches to the tax-inclusive total when the channel
+                        displays prices with tax. Read-only.
+                    example: 156.99
                     format: double
                     readOnly: true
                     type: number
                 totalDiscountPercentages:
                     description:
-                        Cumulative total discount percentage levels 1 to 4, formatted as locale-aware strings.
+                        Cumulative total discount percentage levels 1 to 4, formatted in the request locale. Read-only.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 totalDiscountValue:
                     description:
-                        Total discount amount as a double; uses the tax-inclusive amount when the channel displays
-                        prices with tax.
+                        Total discount amount in the order's currency; uses the tax-inclusive amount when the channel
+                        displays prices with tax. Read-only.
+                    example: 15.0
                     format: double
                     readOnly: true
                     type: number
                 totalDiscountValueFormatted:
                     description:
-                        Total discount amount formatted in the order's currency and locale.
+                        Total discount amount formatted in the order's currency and the request locale. Read-only.
+                    example: $15.00
                     readOnly: true
                     type: string
                 totalFormatted:
                     description:
-                        Order total formatted in the order's currency and locale.
+                        Order total formatted in the order's currency and the request locale. Read-only.
+                    example: $156.99
                     readOnly: true
                     type: string
             type: object
         Term:
             description:
-                A CommerceTermEntry referenced by a placed order, exposed in both the delivery-term and payment-term
-                slots.
+                Reference to a commerce term entry linked to a placed order. Exposed in both the delivery-term and
+                payment-term sub-resource slots.
             properties:
                 description:
                     description:
-                        Localized description of the CommerceTermEntry in the requested locale.
-                    example: description
+                        Locale-resolved description of the term in the request locale. Read-only.
+                    example: Net 30 payment terms.
                     readOnly: true
                     type: string
                 externalReferenceCode:
                     description:
-                        External reference code of the CommerceTermEntry.
-                    example: AAB-34098-789-N
+                        External reference code of the term. Read-only.
+                    example: AB-34098-789-N
                     type: string
                 id:
                     description:
-                        Primary key -- the CommerceTermEntry id.
+                        Primary identifier of the term. Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 name:
                     description:
-                        Programmatic name (key) of the CommerceTermEntry.
-                    example: name
+                        Programmatic name (key) of the term. Read-only.
+                    example: net-30
                     readOnly: true
                     type: string
             type: object
         VirtualItem:
             description:
-                A virtual-item file entry attached to a placed order item -- carries the download URL, the remaining
-                usages, and the file version.
+                Virtual-item file entry attached to a placed order item -- carries the download URL, the remaining usage
+                count, and the file version.
             properties:
                 url:
                     description:
-                        Direct file URL on the CommerceVirtualOrderItemFileEntry. Falls back to
-                        CommerceMediaResolver.getDownloadVirtualOrderItemURL when the entry stores no URL.
-                    example: http://www.liferay.com
+                        Direct download URL of the virtual-item file. Read-only.
+                    example: https://example.com/virtual-download.zip
                     readOnly: true
                     type: string
                 usages:
                     description:
-                        Remaining download count on the virtual item file entry.
+                        Remaining download count on the virtual-item file. Read-only.
+                    example: 3
                     format: int32
                     readOnly: true
                     type: integer
                 version:
                     description:
-                        Version string of the virtual item file entry. Null when unset.
+                        Version string of the virtual-item file; null when unset. Read-only.
                     example: v1.0.0
                     readOnly: true
                     type: string
