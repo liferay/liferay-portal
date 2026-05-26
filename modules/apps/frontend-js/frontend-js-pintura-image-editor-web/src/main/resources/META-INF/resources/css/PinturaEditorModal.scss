@@ -1,0 +1,99 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+@import 'atlas-variables';
+
+// Pintura derives every shade in its UI from these base CSS variables on
+// the editor root, so retinting it only takes a few overrides bound to
+// Clay's variables; if Clay's tokens change, refresh them here.
+
+.PinturaRoot {
+	--border-radius: 0.25rem;
+	--border-radius-round: 0.25rem;
+	--color-background: 255, 255, 255;
+	--color-focus: 11, 95, 255;
+	--color-foreground: 39, 40, 51;
+	--color-primary: #{$primary};
+	--color-primary-text: #{$white};
+	--font-family: #{inspect($font-family-base)};
+	--font-size: 0.875em;
+}
+
+.PinturaRoot[data-env~='landscape'][data-env~='has-toolbar'] > .PinturaNavMain {
+	top: 0;
+	bottom: 0;
+	background: #f1f2f5;
+	height: 100%;
+	left: 0;
+	align-items: flex-start;
+}
+
+.PinturaRoot .PinturaNavGroup:first-of-type:not(.PinturaNavGroupFloat) {
+	// margin-right: unset;
+	// margin-left: unset;
+}
+
+.PinturaRoot[data-env~='landscape'] > .PinturaNavMain .PinturaTabList button {
+	border-radius: 0;
+	box-shadow: none;
+	min-width: 5em;
+	min-height: 5em;
+
+	span {
+		font-size: 0.875em;
+	}
+
+	&:hover {
+		box-shadow: none;
+		background-color: #d8d8d9;
+	}
+
+	+ button {
+		margin: 0;
+	}
+}
+
+.pintura-modal {
+	.modal-body {
+		padding: 0;
+	}
+}
+
+// Bottom toolbar undo/redo group: keep Pintura's joined-segmented shape but
+// pad it out to match Clay's icon-button proportions and soften the
+// outline/divider to a Clay-style light gray.
+
+.PinturaRoot .PinturaNavTools .PinturaNavSet {
+	box-shadow: inset 0 0 0 1px #9393a4;
+
+	> :not(:only-child) {
+		border-color: #9393a4;
+	}
+
+	&:first-child:not(:only-child) {
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+	}
+
+	&:first-child:not(:only-child) {
+		border-top-right-radius: 8px;
+		border-bottom-right-radius: 8px;
+	}
+
+	> .PinturaButton {
+		height: 2rem;
+		width: 2rem;
+		font-size: 1.2rem;
+
+		.PinturaButtonInner {
+			padding: 0;
+		}
+
+		&:hover,
+		&[data-focus-visible] {
+			background-color: #{$gray-100};
+		}
+	}
+}

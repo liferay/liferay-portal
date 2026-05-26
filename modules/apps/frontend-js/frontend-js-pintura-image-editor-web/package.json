@@ -1,6 +1,7 @@
 {
 	"dependencies": {
 		"@clayui/button": "^3.163.0",
+		"@clayui/icon": "^3.163.0",
 		"@clayui/modal": "^3.163.0",
 		"@liferay/frontend-js-react-web": "*",
 		"@pqina/pintura": "^8.97.1",
