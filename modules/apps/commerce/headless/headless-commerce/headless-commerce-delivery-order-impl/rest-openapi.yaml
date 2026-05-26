@@ -1,200 +1,486 @@
 components:
+    parameters:
+        accountExternalReferenceCodePathParam:
+            in: path
+            description:
+                External reference code of the CommerceAccount that owns the placed orders being listed.
+            name: accountExternalReferenceCode
+            required: true
+            schema:
+                type: string
+        accountIdPathParam:
+            in: path
+            description:
+                Identifier of the CommerceAccount that owns the placed orders being listed.
+            name: accountId
+            required: true
+            schema:
+                format: int64
+                type: integer
+        attachmentExternalReferenceCodePathParam:
+            in: path
+            description:
+                External reference code of the CommerceOrderAttachment being deleted.
+            name: attachmentExternalReferenceCode
+            required: true
+            schema:
+                type: string
+        attachmentIdPathParam:
+            in: path
+            description:
+                Identifier of the attachment being deleted.
+            name: attachmentId
+            required: true
+            schema:
+                format: int64
+                type: integer
+        callbackURLQueryParam:
+            in: query
+            description:
+                Optional URL the storefront should navigate to after the payment step. When omitted, the
+                order-confirmation checkout step URL is used as the next step.
+            name: callbackURL
+            required: false
+            schema:
+                type: string
+        channelExternalReferenceCodePathParam:
+            in: path
+            description:
+                External reference code of the CommerceChannel scoping the placed orders being listed.
+            name: channelExternalReferenceCode
+            required: true
+            schema:
+                type: string
+        channelIdPathParam:
+            in: path
+            description:
+                Identifier of the CommerceChannel scoping the placed orders being listed.
+            name: channelId
+            required: true
+            schema:
+                format: int64
+                type: integer
+        externalReferenceCodePathParam:
+            in: path
+            description:
+                External reference code -- the caller-supplied idempotency key of the resource being addressed. The
+                meaning is contextual to the path; on /placed-orders/by-externalReferenceCode/... it is the placed
+                order, on /placed-order-items/by-externalReferenceCode/... it is the placed order item, on
+                /placed-order-comments/by-externalReferenceCode/... it is the comment, and on
+                /channels/by-externalReferenceCode/... it is the channel.
+            name: externalReferenceCode
+            required: true
+            schema:
+                type: string
+        filterQueryParam:
+            in: query
+            description:
+                OData v4 filter expression evaluated against the indexed entity. Supported fields depend on the endpoint
+                -- placed orders use accountId, orderStatus, customFields, orderStatusInfo, createDate, modifiedDate,
+                orderDate, requestedDeliveryDate, authorId, id, account, author, externalReferenceCode, name, orderType,
+                orderTypeExternalReferenceCode, and purchaseOrderNumber; attachments use restricted, dateCreated,
+                dateModified, priority, commerceOrderId, externalReferenceCode, title, and type (only when feature flag
+                LPD-6252 is enabled); shipments use status, createDate, expectedDate, shippingDate, id, carrier, and
+                tracking.
+            name: filter
+            required: false
+            schema:
+                type: string
+        pageQueryParam:
+            in: query
+            description:
+                One-based page index. Combined with pageSize to slice the result set; page=1 returns the first page.
+            name: page
+            required: false
+            schema:
+                type: integer
+        pageSizeQueryParam:
+            in: query
+            description:
+                Number of items per page. When omitted the Vulcan default page size applies.
+            name: pageSize
+            required: false
+            schema:
+                type: integer
+        placedOrderCommentIdPathParam:
+            in: path
+            description:
+                Identifier of the CommerceOrderNote being retrieved.
+            name: placedOrderCommentId
+            required: true
+            schema:
+                format: int64
+                type: integer
+        placedOrderIdPathParam:
+            in: path
+            description:
+                Identifier of the placed CommerceOrder.
+            name: placedOrderId
+            required: true
+            schema:
+                format: int64
+                type: integer
+        placedOrderItemIdPathParam:
+            in: path
+            description:
+                Identifier of the placed CommerceOrderItem.
+            name: placedOrderItemId
+            required: true
+            schema:
+                format: int64
+                type: integer
+        searchQueryParam:
+            in: query
+            description:
+                Free-text keyword search evaluated against the indexed entity (uses Lucene-style matching on the same
+                field set the entity model exposes for filter and sort).
+            name: search
+            required: false
+            schema:
+                type: string
+        skuIdQueryParam:
+            in: query
+            description:
+                Identifier of the CPInstance to narrow the placed order items to. Currently declared but not yet applied
+                as an extra filter by the resource implementation.
+            name: skuId
+            required: false
+            schema:
+                format: int64
+                type: integer
+        sortQueryParam:
+            in: query
+            description:
+                Comma-separated list of sort expressions evaluated by Vulcan. Supported fields match the entity model --
+                see the filter parameter for the field set.
+            name: sort
+            required: false
+            schema:
+                type: string
     schemas:
         Attachment:
+            description:
+                An order attachment -- either a CommerceOrderAttachment row (when feature flag LPD-6252 is enabled) or a
+                legacy file-entry attached to the placed order's local repository.
             properties:
                 actions:
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 dateModified:
+                    description:
+                        Last modification timestamp of the underlying CommerceOrderAttachment. ISO 8601.
                     format: date-time
                     readOnly: true
                     type: string
                 extension:
+                    description:
+                        File extension reported by FileEntry.getExtension() for the attachment's document-library file.
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key on the attachment -- the external reference code carried by the
+                        CommerceOrderAttachment (or the legacy FileEntry on the legacy path).
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceOrderAttachment id (or the legacy FileEntry id).
                     format: int64
                     readOnly: true
                     type: integer
                 priority:
+                    description:
+                        Display priority of the attachment as stored on CommerceOrderAttachment.priority.
                     format: double
                     readOnly: true
                     type: number
                 restricted:
+                    description:
+                        When true the attachment is restricted to admin and commerce roles per
+                        CommerceOrderAttachment.isRestricted().
                     readOnly: true
                     type: boolean
                 title:
+                    description:
+                        Title of the attachment as stored on the underlying CommerceOrderAttachment.
                     readOnly: true
                     type: string
                 type:
+                    description:
+                        Type key of the attachment -- typically a list-type entry under the
+                        L_COMMERCE_ORDER_ATTACHMENT_TYPES definition.
                     readOnly: true
                     type: string
                 typeLabel:
+                    description:
+                        Localized label of the attachment type, resolved from the L_COMMERCE_ORDER_ATTACHMENT_TYPES
+                        list-type entry matching type. Falls back to the raw type key when no list-type entry matches.
                     readOnly: true
                     type: string
                 url:
+                    description:
+                        Document-library download URL for the file, built by DLURLHelperUtil.getDownloadURL for the
+                        latest file version.
                     readOnly: true
                     type: string
         AttachmentBase64:
+            description:
+                Request body for creating an order attachment by uploading the file content as a base64 string.
             properties:
                 attachment:
                     description:
-                        Base64 encoded file
+                        Base64-encoded binary content of the file. Decoded and passed to the persistence layer through a
+                        ByteArrayInputStream.
                     type: string
                 externalReferenceCode:
+                    description:
+                        Optional external reference code applied to the legacy FileEntry path
+                        (CommerceOrderService.addAttachmentFileEntry). Ignored on the LPD-6252 indexed path.
                     example: AB-34098-789-N
                     type: string
                 priority:
+                    description:
+                        Display priority passed into CommerceOrderAttachmentService.addCommerceOrderAttachment.
                     format: double
                     type: number
                 restricted:
+                    description:
+                        Restricted flag passed into CommerceOrderAttachmentService.addCommerceOrderAttachment.
                     type: boolean
                 title:
+                    description:
+                        Title applied to the new attachment -- also reused as the file name on the indexed path.
                     type: string
                 type:
+                    description:
+                        Type key applied to the new CommerceOrderAttachment.
                     type: string
             type: object
         Error:
+            description:
+                Vulcan error envelope returned for any non-2xx response.
             properties:
                 errorCode:
                     description:
-                        Internal error code mapping
+                        Internal error code that identifies the failure class.
                     example: 996
                     readOnly: true
                     type: integer
                 errorDescription:
-                    example: Unable to find currency. Currency code should be expressed with
-                        3-letter ISO 4217 format.
+                    description:
+                        Human-readable description of the failure.
+                    example: Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format.
                     readOnly: true
                     type: string
                 message:
-                    example: No CommerceCurrency exists with the key {groupId=41811, code=US
-                        Dollar}
+                    description:
+                        Underlying exception message captured by the Vulcan error handler.
+                    example: No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}
                     readOnly: true
                     type: string
                 status:
                     description:
-                        HTTP Status code
+                        HTTP status code returned alongside the body.
                     example: 404
                     readOnly: true
                     type: integer
             type: object
         OrderTransition:
+            description:
+                A workflow transition that can be executed on a placed order. name carries either a workflow transition
+                name, the synthetic value process-quote, or the synthetic value reorder; workflowTaskId is set when the
+                transition is a real workflow task; orderId is set on the reorder response to point at the newly created
+                order.
             properties:
                 comment:
+                    description:
+                        Optional reviewer comment attached to the transition -- read on input and echoed on the
+                        response.
                     type: string
                 label:
+                    description:
+                        Localized label of the transition name, resolved via Language.get(locale, name). Read-only.
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        Transition name. Accepts either a workflow transition name, the synthetic value process-quote,
+                        or the synthetic value reorder.
                     type: string
                 orderId:
+                    description:
+                        On the reorder response, the identifier of the newly created CommerceOrder. Unset for other
+                        transitions. Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 placedOrderId:
+                    description:
+                        Identifier of the CommerceOrder the transition originated from. Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 workflowTaskId:
+                    description:
+                        Identifier of the workflow task being acted on. Zero indicates one of the synthetic
+                        process-quote or reorder transitions.
                     format: int64
                     type: integer
         PlacedOrder:
+            description:
+                A finalized CommerceOrder (order status no longer open) as exposed to buyers and storefront consumers.
             properties:
                 account:
+                    description:
+                        Display name of the buyer account -- CommerceOrder.getCommerceAccountName().
                     readOnly: true
                     type: string
                 accountId:
+                    description:
+                        Reference to the CommerceAccount entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 attachments:
+                    description:
+                        Legacy file-entry attachments of the order, loaded via CommerceOrder.getAttachmentFileEntries().
+                        For LPD-6252 indexed attachments use the /attachments sub-resource.
                     items:
                         $ref: "#/components/schemas/Attachment"
                     type: array
                 author:
+                    description:
+                        User name of the user who created the order.
                     readOnly: true
                     type: string
                 authorId:
+                    description:
+                        Reference to the creating User entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 channelId:
+                    description:
+                        Reference to the CommerceChannel entity (FK), resolved from the order's group via
+                        CommerceChannelLocalService.getCommerceChannelByOrderGroupId.
                     format: int64
                     readOnly: true
                     type: integer
                 couponCode:
+                    description:
+                        Coupon code applied to the order.
                     readOnly: true
                     type: string
                 createDate:
+                    description:
+                        Creation timestamp of the order. ISO 8601.
                     format: date
                     readOnly: true
                     type: string
                 currencyCode:
+                    description:
+                        ISO currency code of the order. Declared on the schema; not populated by the default converter.
                     readOnly: true
                     type: string
                 customFields:
                     additionalProperties: true
+                    description:
+                        Expando attributes captured from the order's ExpandoBridge -- map of attribute name to attribute
+                        value.
                     type: object
                 errorMessages:
+                    description:
+                        Validation messages produced by the order engine. Declared on the schema; not currently
+                        populated by this converter.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 externalReferenceCode:
+                    description:
+                        Idempotency key on the order -- caller-supplied external reference code on the CommerceOrder.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 friendlyURLSeparator:
+                    description:
+                        Friendly URL separator configured for CommerceOrder on this company. Returned only when feature
+                        flag LPD-20379 is enabled.
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceOrder id.
                     format: int64
                     readOnly: true
                     type: integer
                 lastPriceUpdateDate:
+                    description:
+                        Timestamp of the last successful price recalculation, from
+                        CommerceOrder.getLastPriceUpdateDate().
                     format: date
                     readOnly: true
                     type: string
                 modifiedDate:
+                    description:
+                        Last modification timestamp of the order. ISO 8601.
                     format: date
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        Human-friendly order name.
                     example: Order Name
                     type: string
                 orderStatusInfo:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 orderType:
+                    description:
+                        Localized name of the CommerceOrderType linked to the order.
                     readOnly: true
                     type: string
                 orderTypeExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceOrderType linked to the order.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 orderTypeId:
+                    description:
+                        Reference to the CommerceOrderType entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 orderUUID:
+                    description:
+                        UUID of the order, used for guest payment links.
                     readOnly: true
                     type: string
                 paymentMethod:
+                    description:
+                        Engine key of the payment method on the order.
                     readOnly: true
                     type: string
                 paymentMethodLabel:
+                    description:
+                        Display name of the payment method group rel resolved from paymentMethod -- localized through
+                        the payment method group rel.
                     readOnly: true
                     type: string
                 paymentStatus:
+                    description:
+                        Integer payment status -- 0=completed, 1=pending, 2=authorized, 4=failed, 8=cancelled,
+                        17=refunded, 23=not-required (see CommerceOrderPaymentConstants).
                     format: int32
                     readOnly: true
                     type: integer
@@ -202,21 +488,31 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 paymentStatusLabel:
+                    description:
+                        Raw payment status label from CommerceOrderPaymentConstants.getOrderPaymentStatusLabel.
                     readOnly: true
                     type: string
                 placedOrderBillingAddress:
                     $ref: "#/components/schemas/PlacedOrderAddress"
                     readOnly: true
                 placedOrderBillingAddressId:
+                    description:
+                        Reference to the billing CommerceAddress entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 placedOrderComments:
+                    description:
+                        Embedded collection of comments on the order -- populated by the PlacedOrderComment nested field
+                        resolver.
                     items:
                         $ref: "#/components/schemas/PlacedOrderComment"
                     readOnly: true
                     type: array
                 placedOrderItems:
+                    description:
+                        Embedded collection of top-level placed order items -- populated by the PlacedOrderItem nested
+                        field resolver.
                     items:
                         $ref: "#/components/schemas/PlacedOrderItem"
                     readOnly: true
@@ -225,14 +521,22 @@ components:
                     $ref: "#/components/schemas/PlacedOrderAddress"
                     readOnly: true
                 placedOrderShippingAddressId:
+                    description:
+                        Reference to the shipping CommerceAddress entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 printedNote:
+                    description:
+                        Printed note shown on the order receipt. Writable through PATCH.
                     type: string
                 purchaseOrderNumber:
+                    description:
+                        Customer-supplied purchase-order number. Writable through PATCH.
                     type: string
                 requestedDeliveryDate:
+                    description:
+                        Requested delivery date stored on the order.
                     format: date
                     readOnly: true
                     type: string
@@ -240,15 +544,24 @@ components:
                     $ref: "#/components/schemas/Shipment"
                     readOnly: true
                 shippingMethod:
+                    description:
+                        Engine key of the order's CommerceShippingMethod.
                     readOnly: true
                     type: string
                 shippingOption:
+                    description:
+                        Name of the chosen shipping option, from CommerceOrder.getShippingOptionName().
                     readOnly: true
                     type: string
                 status:
+                    description:
+                        Workflow status label of the order, from
+                        WorkflowConstants.getStatusLabel(commerceOrder.getStatus()).
                     readOnly: true
                     type: string
                 steps:
+                    description:
+                        Tracker steps for the order, built by CommerceOrderStepTrackerHelper.getCommerceOrderSteps.
                     items:
                         $ref: "#/components/schemas/Step"
                     type: array
@@ -256,9 +569,14 @@ components:
                     $ref: "#/components/schemas/Summary"
                     readOnly: true
                 useAsBilling:
+                    description:
+                        Declared shipping-billing flag. Declared on the schema; not currently populated by this
+                        converter.
                     readOnly: true
                     type: boolean
                 valid:
+                    description:
+                        Declared validity flag. Declared on the schema; not currently populated by this converter.
                     readOnly: true
                     type: boolean
                 workflowStatusInfo:
@@ -266,142 +584,235 @@ components:
                     readOnly: true
             type: object
         PlacedOrderAddress:
+            description:
+                Snapshot view of the CommerceAddress referenced by a placed order, used for both the billing and the
+                shipping slots.
             properties:
                 city:
+                    description:
+                        City line of the CommerceAddress.
                     readOnly: true
                     type: string
                 country:
+                    description:
+                        Country title in the requested locale (Country.getTitle(locale)).
                     readOnly: true
                     type: string
                 countryISOCode:
+                    description:
+                        ISO-3166 alpha-2 country code from Country.getA2().
                     readOnly: true
                     type: string
                 description:
+                    description:
+                        Free-form description on the CommerceAddress.
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key on the CommerceAddress -- the caller-supplied external reference code.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceAddress id.
                     format: int64
                     readOnly: true
                     type: integer
                 latitude:
+                    description:
+                        Latitude geocode of the address.
                     format: double
                     readOnly: true
                     type: number
                 longitude:
+                    description:
+                        Longitude geocode of the address.
                     format: double
                     readOnly: true
                     type: number
                 name:
+                    description:
+                        Recipient name on the address.
                     readOnly: true
                     type: string
                 phoneNumber:
+                    description:
+                        Phone number on the address.
                     readOnly: true
                     type: string
                 region:
+                    description:
+                        Region name from Region.getName().
                     readOnly: true
                     type: string
                 regionISOCode:
+                    description:
+                        Region code from Region.getRegionCode(). Empty string when the country has no regions.
                     readOnly: true
                     type: string
                 street1:
+                    description:
+                        First street line of the address.
                     readOnly: true
                     type: string
                 street2:
+                    description:
+                        Second street line of the address.
                     readOnly: true
                     type: string
                 street3:
+                    description:
+                        Third street line of the address.
                     readOnly: true
                     type: string
                 subtype:
+                    description:
+                        Optional subtype label on the CommerceAddress.
                     readOnly: true
                     type: string
                 type:
+                    description:
+                        Declared address-type string. Declared on the schema; not populated by this converter (the
+                        integer is on typeId).
                     readOnly: true
                     type: string
                 typeId:
+                    description:
+                        Integer address type -- 1=billing, 2=billing-and-shipping, 3=shipping (see
+                        CommerceAddressConstants).
                     format: int32
                     readOnly: true
                     type: integer
                 vatNumber:
+                    description:
+                        Declared VAT number. Declared on the schema; not populated by this converter.
                     readOnly: true
                     type: string
                 zip:
+                    description:
+                        Postal code on the address.
                     readOnly: true
                     type: string
             type: object
         PlacedOrderComment:
+            description:
+                A CommerceOrderNote attached to a placed order. Use the restricted flag to distinguish buyer-visible
+                notes from back-office-only notes.
             properties:
                 author:
+                    description:
+                        User name of the user who wrote the note, from CommerceOrderNote.getUserName().
                     readOnly: true
                     type: string
                 content:
+                    description:
+                        Body of the comment, from CommerceOrderNote.getContent().
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key on the CommerceOrderNote -- the caller-supplied external reference code.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceOrderNote id.
                     format: int64
                     readOnly: true
                     type: integer
                 orderId:
+                    description:
+                        Reference to the parent CommerceOrder entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 restricted:
+                    description:
+                        When true the note is hidden from buyer-side audiences (CommerceOrderNote.isRestricted()).
                     readOnly: true
                     type: boolean
             type: object
         PlacedOrderItem:
+            description:
+                A top-level CommerceOrderItem on a placed order. Child items are exposed inline via the placedOrderItems
+                collection, shipment splits via placedOrderItemShipments, and virtual downloads via virtualItems and
+                virtualItemURLs.
             properties:
                 adaptiveMediaImageHTMLTag:
+                    description:
+                        Pre-rendered Adaptive Media img tag for the item's CPInstance.
                     readOnly: true
                     type: string
                 customFields:
                     additionalProperties: true
+                    description:
+                        Expando attributes from the CommerceOrderItem ExpandoBridge -- map of attribute name to
+                        attribute value.
                     readOnly: true
                     type: object
                 deliveryGroup:
                     deprecated: true
+                    description:
+                        Deprecated -- use deliveryGroupName instead. Both properties share the same backing value,
+                        CommerceOrderItem.getDeliveryGroupName().
                     readOnly: true
                     type: string
                 deliveryGroupName:
+                    description:
+                        Delivery group name from CommerceOrderItem.getDeliveryGroupName().
                     readOnly: true
                     type: string
                 errorMessages:
+                    description:
+                        When the underlying CPInstance no longer exists, the single message
+                        the-product-is-no-longer-available. Null otherwise.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 externalReferenceCode:
+                    description:
+                        Idempotency key on the CommerceOrderItem -- the caller-supplied external reference code.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceOrderItem id.
                     format: int64
                     readOnly: true
                     type: integer
                 name:
+                    description:
+                        Localized item name in the requested locale.
                     readOnly: true
                     type: string
                 options:
+                    description:
+                        JSON blob of the item's selected product options, from CommerceOrderItem.getJson().
                     readOnly: true
                     type: string
                 parentOrderItemId:
+                    description:
+                        Reference to the parent CommerceOrderItem entity (FK). Zero when this is a top-level item.
                     format: int64
                     readOnly: true
                     type: integer
                 placedOrderItemShipments:
+                    description:
+                        Embedded collection of shipments for this item -- populated by the PlacedOrderItemShipment
+                        nested field resolver.
                     items:
                         $ref: "#/components/schemas/PlacedOrderItemShipment"
                     readOnly: true
                     type: array
                 placedOrderItems:
+                    description:
+                        Embedded collection of child placed order items, transformed from
+                        CommerceOrderItem.getChildCommerceOrderItems().
                     items:
                         $ref: "#/components/schemas/PlacedOrderItem"
                     readOnly: true
@@ -410,12 +821,17 @@ components:
                     $ref: "#/components/schemas/Price"
                     readOnly: true
                 productId:
+                    description:
+                        Reference to the parent CProduct entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 productURLs:
                     additionalProperties:
                         type: string
+                    description:
+                        Localized product URL title. Map keys are locale codes (for example, en_US, it_IT); values are
+                        the URL title strings sourced from CPDefinitionLocalService.getUrlTitleMap.
                     example:
                         en_US: product-url-us
                         hr_HR: product-url-hr
@@ -423,14 +839,21 @@ components:
                     readOnly: true
                     type: object
                 quantity:
+                    description:
+                        Localized formatted quantity, computed by CommerceQuantityFormatter.format against the item's
+                        CPInstance and unit of measure.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 replacedSku:
+                    description:
+                        SKU of the original item this row replaced when the item was swapped at fulfillment.
                     readOnly: true
                     type: string
                 requestedDeliveryDate:
+                    description:
+                        Requested delivery date on the item.
                     format: date
                     readOnly: true
                     type: string
@@ -438,114 +861,172 @@ components:
                     $ref: "#/components/schemas/Settings"
                     readOnly: true
                 shippingAddressExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceAddress linked to the item via shippingAddressId.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 shippingAddressId:
+                    description:
+                        Reference to the per-item CommerceAddress entity (FK).
                     format: int64
                     readOnly: true
                     type: integer
                 sku:
+                    description:
+                        SKU string from CommerceOrderItem.getSku().
                     readOnly: true
                     type: string
                 skuId:
+                    description:
+                        Reference to the CPInstance entity (FK) for the SKU.
                     format: int64
                     readOnly: true
                     type: integer
                 subscription:
+                    description:
+                        When true the item is part of a subscription, from CommerceOrderItem.isSubscription().
                     example: true
                     readOnly: true
                     type: boolean
                 thumbnail:
+                    description:
+                        URL of the item thumbnail, from CPInstanceHelper.getCPInstanceThumbnailSrc.
                     readOnly: true
                     type: string
                 unitOfMeasure:
+                    description:
+                        Localized name of the chosen CPInstanceUnitOfMeasure.
                     readOnly: true
                     type: string
                 unitOfMeasureKey:
+                    description:
+                        Key of the chosen CPInstanceUnitOfMeasure.
                     example: m
                     readOnly: true
                     type: string
                 valid:
+                    description:
+                        Declared validity flag. Declared on the schema; not currently populated by this converter.
                     readOnly: true
                     type: boolean
                 virtualItemURLs:
+                    description:
+                        URLs of the first virtual-item file entry attached to the order item. Falls back to
+                        CommerceMediaResolver.getDownloadVirtualOrderItemURL when no entry stores a direct URL.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 virtualItems:
+                    description:
+                        Full list of virtual-item file entries on the order item. See the VirtualItem schema.
                     items:
                         $ref: "#/components/schemas/VirtualItem"
                     readOnly: true
                     type: array
             type: object
         PlacedOrderItemShipment:
+            description:
+                A CommerceShipmentItem row that ships a portion of a PlacedOrderItem. When the placed order has no
+                direct shipment items, this row may be sourced from a non-open supplier order.
             properties:
                 accountId:
+                    description:
+                        Reference to the CommerceAccount of the parent shipment (FK), from
+                        CommerceShipment.getCommerceAccountId().
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 author:
+                    description:
+                        User name of the shipment creator, from CommerceShipment.getUserName().
                     example: Author
                     readOnly: true
                     type: string
                 carrier:
+                    description:
+                        Carrier name of the parent shipment.
                     example: FedEx
                     readOnly: true
                     type: string
                 createDate:
+                    description:
+                        Creation timestamp of the parent shipment. ISO 8601.
                     format: date
                     readOnly: true
                     type: string
                 estimatedDeliveryDate:
+                    description:
+                        Aliased to CommerceShipment.getExpectedDate() -- the date the shipment is expected to be
+                        delivered.
                     format: date
                     readOnly: true
                     type: string
                 estimatedShippingDate:
+                    description:
+                        Aliased to CommerceShipment.getShippingDate() -- the date the shipment is expected to be
+                        shipped.
                     format: date
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        External reference code of the parent CommerceShipment.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Identifier of the parent CommerceShipment (not the shipment item's id).
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 modifiedDate:
+                    description:
+                        Last modification timestamp of the parent shipment. ISO 8601.
                     format: date
                     readOnly: true
                     type: string
                 orderId:
+                    description:
+                        Declared parent order id. Declared on the schema; not populated by this converter.
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 quantity:
+                    description:
+                        Localized formatted quantity from this shipment item, computed via
+                        CommerceQuantityFormatter.format.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 shippingAddressId:
+                    description:
+                        Reference to the CommerceAddress of the parent shipment (FK).
                     example: 31130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 shippingMethodId:
+                    description:
+                        Reference to the CommerceShippingMethod of the parent shipment (FK).
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 shippingOptionName:
+                    description:
+                        Shipping option name of the parent shipment.
                     example: Standard Delivery
                     readOnly: true
                     type: string
@@ -553,76 +1034,123 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 supplierShipment:
+                    description:
+                        When true this row was produced from a supplier order's shipment items (set by
+                        PlacedOrderItemShipmentDTOConverterContext).
                     readOnly: true
                     type: boolean
                 trackingNumber:
+                    description:
+                        Tracking number of the parent shipment.
                     example: 123AD-asd
                     readOnly: true
                     type: string
                 trackingURL:
+                    description:
+                        Tracking URL of the parent shipment.
                     readOnly: true
                     type: string
                 unitOfMeasureKey:
+                    description:
+                        Key of the unit of measure on the underlying CommerceShipmentItem.
                     example: m
                     readOnly: true
                     type: string
             type: object
         Price:
+            description:
+                Per-unit pricing block for a placed order item -- base, promotional, final, plus formatted strings in
+                the order's currency and locale.
             properties:
                 currency:
+                    description:
+                        Localized currency name from the order's CommerceCurrency.
                     readOnly: true
                     type: string
                 discount:
+                    description:
+                        Per-unit discount amount as a double, in the order's currency.
                     format: double
                     readOnly: true
                     type: number
                 discountFormatted:
+                    description:
+                        Per-unit discount amount formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 discountPercentage:
+                    description:
+                        Locale-formatted discount percentage produced by CommercePriceFormatter.format.
                     readOnly: true
                     type: string
                 discountPercentageLevel1:
+                    description:
+                        First-level cumulative discount percentage from the item's price calculation.
                     format: double
                     readOnly: true
                     type: number
                 discountPercentageLevel2:
+                    description:
+                        Second-level cumulative discount percentage from the item's price calculation.
                     format: double
                     readOnly: true
                     type: number
                 discountPercentageLevel3:
+                    description:
+                        Third-level cumulative discount percentage from the item's price calculation.
                     format: double
                     readOnly: true
                     type: number
                 discountPercentageLevel4:
+                    description:
+                        Fourth-level cumulative discount percentage from the item's price calculation.
                     format: double
                     readOnly: true
                     type: number
                 finalPrice:
+                    description:
+                        Final per-unit price after discounts and promos as a double, in the order's currency.
                     format: double
                     readOnly: true
                     type: number
                 finalPriceFormatted:
+                    description:
+                        Final per-unit price formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 price:
+                    description:
+                        Base per-unit price before discounts as a double, in the order's currency.
                     format: double
                     readOnly: true
                     type: number
                 priceFormatted:
+                    description:
+                        Base per-unit price formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 promoPrice:
+                    description:
+                        Promo per-unit price as a double, in the order's currency, when a promo is active.
                     format: double
                     readOnly: true
                     type: number
                 promoPriceFormatted:
+                    description:
+                        Promo per-unit price formatted in the order's currency and locale.
                     readOnly: true
                     type: string
             type: object
         Settings:
+            description:
+                Inventory configuration applied to a placed order item -- min, max, multiple, and the explicit allowed
+                quantities (when configured).
             properties:
                 allowedQuantities:
+                    description:
+                        Explicit list of allowed order quantities from the SKU's
+                        CPDefinitionInventory.allowedOrderQuantitiesArray. Omitted when no inventory configuration is
+                        present.
                     items:
                         example: 10.1
                         format: bigdecimal
@@ -630,66 +1158,102 @@ components:
                     readOnly: true
                     type: array
                 maxQuantity:
+                    description:
+                        Maximum order quantity from the SKU's inventory configuration. Defaults to
+                        CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY when unset.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 minQuantity:
+                    description:
+                        Minimum order quantity from the SKU's inventory configuration. Defaults to
+                        CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY when unset.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 multipleQuantity:
+                    description:
+                        Required quantity multiple from the SKU's inventory configuration. Defaults to
+                        CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY when unset.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
             type: object
         Shipment:
+            description:
+                A CommerceShipment row produced for a placed order. itemsCount and oneLineAddress are read from the
+                search document and may not appear when the shipment is loaded outside an indexed context.
             properties:
                 accountId:
+                    description:
+                        Reference to the CommerceAccount of the shipment (FK), from
+                        CommerceShipment.getCommerceAccountId().
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 carrier:
+                    description:
+                        Carrier name of the shipment.
                     example: FedEx
                     readOnly: true
                     type: string
                 createDate:
+                    description:
+                        Creation timestamp of the shipment. ISO 8601.
                     format: date
                     readOnly: true
                     type: string
                 expectedDate:
+                    description:
+                        Expected delivery date of the shipment.
                     format: date
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key on the CommerceShipment -- the caller-supplied external reference code.
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceShipment id.
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 itemsCount:
+                    description:
+                        Number of items in the shipment, read from the search document attribute injected by
+                        ShipmentResourceImpl.
                     format: int32
                     readOnly: true
                     type: integer
                 modifiedDate:
+                    description:
+                        Last modification timestamp of the shipment. ISO 8601.
                     format: date
                     readOnly: true
                     type: string
                 oneLineAddress:
+                    description:
+                        Single-line shipping address derived for list display, read from the search document attribute.
                     readOnly: true
                     type: string
                 orderExternalReferenceCode:
+                    description:
+                        Declared order external reference code. Declared on the schema; not populated by this converter.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 orderId:
+                    description:
+                        Declared order id. Declared on the schema; not populated by this converter.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -699,22 +1263,30 @@ components:
                     $ref: "#/components/schemas/ShippingAddress"
                     readOnly: true
                 shippingAddressId:
+                    description:
+                        Reference to the CommerceAddress entity (FK).
                     example: 31130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 shippingDate:
+                    description:
+                        Date the shipment was shipped.
                     format: date
                     readOnly: true
                     type: string
                 shippingMethodId:
+                    description:
+                        Reference to the CommerceShippingMethod entity (FK).
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 shippingOptionName:
+                    description:
+                        Name of the chosen shipping option on the shipment.
                     example: Standard Delivery
                     readOnly: true
                     type: string
@@ -722,95 +1294,143 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 trackingNumber:
+                    description:
+                        Tracking number stored on the shipment.
                     example: 123AD-asd
                     readOnly: true
                     type: string
                 trackingURL:
+                    description:
+                        Tracking URL stored on the shipment.
                     example: Standard Delivery
                     readOnly: true
                     type: string
                 userName:
+                    description:
+                        User name of the shipment author, from CommerceShipment.getUserName().
                     example: John
                     readOnly: true
                     type: string
             type: object
         ShippingAddress:
+            description:
+                Snapshot view of a shipment's destination CommerceAddress. Declared on the Shipment schema but not
+                currently populated by ShipmentDTOConverter.
             properties:
                 city:
+                    description:
+                        City line of the shipment's destination address.
                     example: Diamond Bar
                     readOnly: true
                     type: string
                 countryISOCode:
+                    description:
+                        ISO-3166 alpha-2 country code of the destination.
                     example: US
                     readOnly: true
                     type: string
                 description:
+                    description:
+                        Free-form description of the destination address.
                     example: right stairs, first room on the left
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        External reference code of the underlying CommerceAddress.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Identifier of the destination CommerceAddress.
                     example: 31130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 latitude:
+                    description:
+                        Latitude geocode of the destination.
                     example: 33.9976884
                     format: double
                     readOnly: true
                     type: number
                 longitude:
+                    description:
+                        Longitude geocode of the destination.
                     example: -117.8144595
                     format: double
                     readOnly: true
                     type: number
                 name:
+                    description:
+                        Recipient name on the destination.
                     example: Alessio Antonio Rendina
                     readOnly: true
                     type: string
                 phoneNumber:
+                    description:
+                        Phone number on the destination.
                     example: (123) 456 7890
                     readOnly: true
                     type: string
                 regionISOCode:
+                    description:
+                        Region code of the destination.
                     example: CA
                     readOnly: true
                     type: string
                 street1:
+                    description:
+                        First street line of the destination.
                     example: 1400 Montefino Ave
                     readOnly: true
                     type: string
                 street2:
+                    description:
+                        Second street line of the destination.
                     example: 1st floor
                     readOnly: true
                     type: string
                 street3:
+                    description:
+                        Third street line of the destination.
                     example: suite 200
                     readOnly: true
                     type: string
                 zip:
+                    description:
+                        Postal code of the destination.
                     example: "91765"
                     readOnly: true
                     type: string
             type: object
         ShippingMethod:
+            description:
+                Reference to a CommerceShippingMethod. Declared for completeness; not currently populated by any
+                converter in this module.
             properties:
                 description:
+                    description:
+                        Localized description of the shipping method.
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        External reference code of the shipping method.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceShippingMethod id.
                     format: int64
                     readOnly: true
                     type: integer
                 name:
+                    description:
+                        Localized name of the shipping method.
                     readOnly: true
                     type: string
                 shippingOption:
@@ -818,223 +1438,320 @@ components:
                     readOnly: true
             type: object
         ShippingOption:
+            description:
+                Reference to a shipping option offered by a CommerceShippingMethod. Declared for completeness; not
+                currently populated by any converter in this module.
             properties:
                 amount:
+                    description:
+                        Numeric shipping cost as a double, in the order's currency.
                     format: double
                     readOnly: true
                     type: number
                 amountFormatted:
+                    description:
+                        Shipping cost formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        External reference code of the shipping option.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 label:
+                    description:
+                        Localized label of the option.
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        Programmatic name (key) of the option.
                     readOnly: true
                     type: string
             type: object
         Status:
+            description:
+                Status descriptor -- the integer code, the raw label key, and the localized label. The meaning of the
+                code depends on which Status slot it appears in (order, payment, workflow, or shipment) -- see the
+                embedding property's description for the integer-to-meaning mapping.
             properties:
                 code:
+                    description:
+                        Integer status code. The meaning depends on which Status slot this is in (order, payment,
+                        workflow, or shipment); see the embedding property's description for the integer-to-meaning
+                        mapping.
                     format: int32
                     readOnly: true
                     type: integer
                 label:
+                    description:
+                        Raw status label key, lowercase-with-dashes (for example, processing, awaiting-pickup).
                     example: black
                     readOnly: true
                     type: string
                 label_i18n:
+                    description:
+                        Localized status label resolved via Language.get(resourceBundle, label).
                     example: black
                     readOnly: true
                     type: string
             type: object
         Step:
+            description:
+                A step in the order tracker derived from the order's configuration -- typically one of complete,
+                current, or upcoming.
             properties:
                 id:
+                    description:
+                        Step id from StepModel.getId().
                     readOnly: true
                     type: string
                 label:
+                    description:
+                        Localized label from StepModel.getLabel().
                     readOnly: true
                     type: string
                 state:
+                    description:
+                        Step state from StepModel.getState() -- typically one of complete, current, or upcoming.
                     readOnly: true
                     type: string
         Summary:
+            description:
+                Pricing summary for a placed order -- items subtotal, shipping, tax, total, plus the cumulative discount
+                levels and tax-inclusive variants when the channel publishes prices with tax.
             properties:
                 currency:
+                    description:
+                        Localized currency name of the order.
                     readOnly: true
                     type: string
                 itemsCount:
+                    description:
+                        Count of top-level items (parent commerce order items) on the order.
                     example: 1
                     format: int32
                     readOnly: true
                     type: integer
                 itemsQuantity:
+                    description:
+                        Sum of item quantities on the order, with trailing zeros stripped.
                     example: 10.1
                     format: bigdecimal
                     readOnly: true
                     type: number
                 shippingDiscountPercentages:
+                    description:
+                        Cumulative shipping discount percentage levels 1 to 4, formatted as locale-aware strings.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 shippingDiscountValue:
+                    description:
+                        Shipping discount amount as a double; uses the tax-inclusive amount when the channel displays
+                        prices with tax.
                     format: double
                     readOnly: true
                     type: number
                 shippingDiscountValueFormatted:
+                    description:
+                        Shipping discount amount formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 shippingValue:
+                    description:
+                        Shipping subtotal (without tax) as a double.
                     format: double
                     readOnly: true
                     type: number
                 shippingValueFormatted:
+                    description:
+                        Shipping subtotal formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 shippingValueWithTaxAmount:
+                    description:
+                        Shipping subtotal including tax as a double, when the channel publishes it.
                     format: double
                     readOnly: true
                     type: number
                 shippingValueWithTaxAmountFormatted:
+                    description:
+                        Shipping subtotal including tax formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 subtotal:
+                    description:
+                        Items subtotal as a double; switches to the tax-inclusive subtotal when the channel displays
+                        prices with tax.
                     format: double
                     readOnly: true
                     type: number
                 subtotalDiscountPercentages:
+                    description:
+                        Cumulative subtotal discount percentage levels 1 to 4, formatted as locale-aware strings.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 subtotalDiscountValue:
+                    description:
+                        Subtotal discount amount as a double; uses the tax-inclusive amount when the channel displays
+                        prices with tax.
                     format: double
                     readOnly: true
                     type: number
                 subtotalDiscountValueFormatted:
+                    description:
+                        Subtotal discount amount formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 subtotalFormatted:
+                    description:
+                        Items subtotal formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 taxValue:
+                    description:
+                        Tax amount on the order as a double.
                     format: double
                     readOnly: true
                     type: number
                 taxValueFormatted:
+                    description:
+                        Tax amount formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 total:
+                    description:
+                        Order total as a double; switches to the tax-inclusive total when the channel displays prices
+                        with tax.
                     format: double
                     readOnly: true
                     type: number
                 totalDiscountPercentages:
+                    description:
+                        Cumulative total discount percentage levels 1 to 4, formatted as locale-aware strings.
                     items:
                         type: string
                     readOnly: true
                     type: array
                 totalDiscountValue:
+                    description:
+                        Total discount amount as a double; uses the tax-inclusive amount when the channel displays
+                        prices with tax.
                     format: double
                     readOnly: true
                     type: number
                 totalDiscountValueFormatted:
+                    description:
+                        Total discount amount formatted in the order's currency and locale.
                     readOnly: true
                     type: string
                 totalFormatted:
+                    description:
+                        Order total formatted in the order's currency and locale.
                     readOnly: true
                     type: string
             type: object
         Term:
+            description:
+                A CommerceTermEntry referenced by a placed order, exposed in both the delivery-term and payment-term
+                slots.
             properties:
                 description:
+                    description:
+                        Localized description of the CommerceTermEntry in the requested locale.
                     example: description
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        External reference code of the CommerceTermEntry.
                     example: AAB-34098-789-N
                     type: string
                 id:
+                    description:
+                        Primary key -- the CommerceTermEntry id.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 name:
+                    description:
+                        Programmatic name (key) of the CommerceTermEntry.
                     example: name
                     readOnly: true
                     type: string
             type: object
         VirtualItem:
+            description:
+                A virtual-item file entry attached to a placed order item -- carries the download URL, the remaining
+                usages, and the file version.
             properties:
                 url:
+                    description:
+                        Direct file URL on the CommerceVirtualOrderItemFileEntry. Falls back to
+                        CommerceMediaResolver.getDownloadVirtualOrderItemURL when the entry stores no URL.
                     example: http://www.liferay.com
                     readOnly: true
                     type: string
                 usages:
+                    description:
+                        Remaining download count on the virtual item file entry.
                     format: int32
                     readOnly: true
                     type: integer
                 version:
+                    description:
+                        Version string of the virtual item file entry. Null when unset.
                     example: v1.0.0
                     readOnly: true
                     type: string
             type: object
 info:
     description:
-        "Headless Delivery Commerce Order API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.delivery.order.client', and version '1.0.35'."
+        "Buyer-facing read and update API for placed Liferay Commerce orders -- every operation in this module operates
+        on a CommerceOrder whose status is no longer the open cart-draft state, so the surface is a finished order's
+        view rather than a cart-edit surface. Primary entities -- PlacedOrder, PlacedOrderItem, PlacedOrderAddress,
+        PlacedOrderComment, PlacedOrderItemShipment, Shipment, OrderTransition, Term, and Attachment. The audience is
+        the storefront and order-history consumers in a channel; the admin counterpart for open carts lives in
+        headless-commerce-delivery-cart and for managing orders end-to-end in headless-commerce-admin-order. Common
+        workflows -- (1) list a buyer's orders in a channel with GET /channels/<channelId>/placed-orders or its
+        by-externalReferenceCode variants, (2) drill into one order with GET /placed-orders/<placedOrderId> or its
+        by-externalReferenceCode variant and follow the embedded ids into the billing-address, shipping-address, items,
+        shipments, and comments sub-resources, (3) inspect or execute the workflow transitions available to the buyer
+        with GET and POST /placed-orders/<placedOrderId>/order-transitions, including the synthetic process-quote and
+        reorder transitions, (4) attach a supporting document to an order with POST
+        /placed-orders/<placedOrderId>/attachments/by-base64 and list or delete attachments from the same sub-resource,
+        (5) edit limited buyer-facing fields (name, purchase order number, printed note, custom fields) with PATCH
+        /placed-orders/<placedOrderId>, (6) resume payment for an order via GET
+        /placed-orders/<placedOrderId>/payment-url with an optional callbackURL. A Java client JAR is available for use
+        with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.order.client', and version
+        '1.0.35'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
-    title: Headless Delivery Commerce Order API
+    title: Liferay Commerce Delivery Order API
     version: v1.0
 openapi: 3.0.1
 paths:
     /channels/by-externalReferenceCode/{channelExternalReferenceCode}/accounts/by-externalReferenceCode/{accountExternalReferenceCode}/placed-orders:
         get:
             description:
-                Retrieves placed orders for specific account in the given channel.
+                Resolves the channel and the account by external reference code, then delegates to
+                getChannelAccountPlacedOrdersPage to return the same channel-scoped, account-scoped page of placed
+                orders. Filter, sort, and search semantics match the by-id variant.
             parameters:
-                -   in: path
-                    name: accountExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: channelExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/accountExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/channelExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -1080,43 +1797,21 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /channels/by-externalReferenceCode/{externalReferenceCode}/placed-orders:
         get:
             description:
-                Retrieves placed orders in the given channel.
+                Resolves the channel by external reference code and delegates to getChannelPlacedOrdersPage to return
+                non-open placed orders visible to the caller in that channel.
             operationId: getChannelByExternalReferenceCodePlacedOrdersPage
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -1162,57 +1857,26 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /channels/{channelId}/accounts/{accountId}/placed-orders:
         get:
             description:
-                Retrieves placed orders for specific account in the given channel.
+                Returns a page of placed orders owned by the given account inside the given channel. The implementation
+                resolves the channel via CommerceChannelLocalService.getCommerceChannel and runs an indexed search of
+                CommerceOrder scoped to the channel group, the supplied account, and every order status except
+                ORDER_STATUS_OPEN. Supported filter and sort fields come from PlacedOrderEntityModel -- accountId,
+                orderStatus, customFields, orderStatusInfo, createDate, modifiedDate, orderDate, requestedDeliveryDate,
+                authorId, id, account, author, externalReferenceCode, name, orderType, orderTypeExternalReferenceCode,
+                purchaseOrderNumber.
             parameters:
-                -   in: path
-                    explode: false
-                    name: accountId
-                    required: true
-                    schema:
-                        description:
-                            Account Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: path
-                    explode: false
-                    name: channelId
-                    required: true
-                    schema:
-                        description:
-                            Channel Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/accountIdPathParam"
+            -   $ref: "#/components/parameters/channelIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -1258,48 +1922,23 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /channels/{channelId}/placed-orders:
         get:
             description:
-                Retrieves placed orders in the given channel.
+                Returns a page of non-open placed orders in the given channel. When the caller lacks the
+                MANAGE_COMMERCE_ORDERS portlet permission the search is narrowed to commerce accounts the user belongs
+                to via CommerceAccountHelper.getUserCommerceAccountIds. Supported filter and sort fields are the
+                PlacedOrderEntityModel field set.
             operationId: getChannelPlacedOrdersPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: channelId
-                    required: true
-                    schema:
-                        description:
-                            Channel Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/channelIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -1345,15 +1984,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /placed-order-comments/by-externalReferenceCode/{externalReferenceCode}:
         get:
+            description:
+                Loads the CommerceOrderNote by external reference code via
+                CommerceOrderNoteService.fetchCommerceOrderNoteByExternalReferenceCode and delegates to
+                getPlacedOrderComment. Raises NoSuchOrderNoteException when no matching note is found.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -1378,6 +2018,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this comment.
                 404:
                     content:
                         application/json:
@@ -1399,20 +2049,15 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a Note by ERC.
-            tags: ["PlacedOrderComment"]
+            tags:
+            -   PlacedOrderComment
     /placed-order-comments/{placedOrderCommentId}:
         get:
+            description:
+                Loads the CommerceOrderNote via CommerceOrderNoteService.getCommerceOrderNote, refuses when the owning
+                order is still open, then converts the note through PlacedOrderCommentDTOConverter.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderCommentId
-                    required: true
-                    schema:
-                        description:
-                            Note Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderCommentIdPathParam"
             responses:
                 200:
                     content:
@@ -1437,6 +2082,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this comment.
                 404:
                     content:
                         application/json:
@@ -1458,17 +2113,15 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a Note by ID.
-            tags: ["PlacedOrderComment"]
+            tags:
+            -   PlacedOrderComment
     /placed-order-items/by-externalReferenceCode/{externalReferenceCode}:
         get:
             description:
-                Retrieve information of the given placed order item.
+                Resolves the CommerceOrderItem by external reference code and delegates to getPlacedOrderItem. Raises
+                NoSuchOrderItemException when no matching item is found.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -1488,6 +2141,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order item.
                 404:
                     content:
                         application/json:
@@ -1508,17 +2171,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderItem"]
+            tags:
+            -   PlacedOrderItem
     /placed-order-items/by-externalReferenceCode/{externalReferenceCode}/placed-order-item-shipments:
         get:
             description:
-                Retrieve shipments of the given placed order item.
+                Resolves the CommerceOrderItem by external reference code and delegates to
+                getPlacedOrderItemPlacedOrderItemShipmentsPage to return the shipments for that item.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -1542,6 +2203,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order item.
                 404:
                     content:
                         application/json:
@@ -1562,22 +2233,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderItemShipment"]
+            tags:
+            -   PlacedOrderItemShipment
     /placed-order-items/{placedOrderItemId}:
         get:
             description:
-                Retrieve information of the given Placed Order.
+                Returns the placed order item by id after verifying its parent CommerceOrder is not open, and converts
+                it through PlacedOrderItemDTOConverter with the order's commerce account id so the thumbnail and
+                adaptive-media tags resolve correctly.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderItemId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Item Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderItemIdPathParam"
             responses:
                 200:
                     content:
@@ -1597,6 +2262,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order item.
                 404:
                     content:
                         application/json:
@@ -1617,22 +2292,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderItem"]
+            tags:
+            -   PlacedOrderItem
     /placed-order-items/{placedOrderItemId}/placed-order-item-shipments:
         get:
             description:
-                Retrieve shipments of the given Placed Order Item.
+                Loads the item, refuses when its parent order is open, then returns the CommerceShipmentItem rows via
+                CommerceShipmentItemService.getCommerceShipmentItemsByCommerceOrderItemId. When no rows exist it falls
+                back to shipment items from non-open supplier orders linked via
+                CommerceOrderItemService.getSupplierCommerceOrderItems.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderItemId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Item Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderItemIdPathParam"
             responses:
                 200:
                     content:
@@ -1656,6 +2326,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order item.
                 404:
                     content:
                         application/json:
@@ -1676,18 +2356,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderItemShipment"]
+            tags:
+            -   PlacedOrderItemShipment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}:
         get:
             description:
-                Retrieve information of the given Placed Order.
+                Resolves the order by external reference code, refuses when it is still open, then converts it through
+                PlacedOrderDTOConverter.
             operationId: getPlacedOrderByExternalReferenceCode
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -1707,6 +2385,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -1727,19 +2415,18 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
         patch:
+            description:
+                JSON Merge Patch -- only supplied fields are modified. Resolves the order by external reference code and
+                refuses with CommerceOrderStatusException when it is open. The accepted fields are name and
+                purchaseOrderNumber (applied via CommerceOrderEngine.updateCommerceOrder, other order fields preserved),
+                printedNote (applied via CommerceOrderService.updatePrintedNote), and customFields (applied via
+                ExpandoUtil.updateExpando).
             operationId: patchPlacedOrderByExternalReferenceCode
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1773,6 +2460,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -1783,6 +2480,27 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         The specified resource was not found
+                409:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The order is still open (a cart draft); buyer-facing updates are only allowed on placed orders.
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Domain validation rejected the request -- the resolved entity could not be found, a referenced
+                        lookup key was missing, or a required field was out of range.
                 500:
                     content:
                         application/json:
@@ -1794,44 +2512,23 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Placed Order by external reference code.
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/attachments:
         get:
+            description:
+                Resolves the order by external reference code and delegates to getPlacedOrderAttachmentsPage. When
+                feature flag LPD-6252 is enabled the listing is an indexed CommerceOrderAttachment query honouring
+                filter, sort, and search (fields -- restricted, dateCreated, dateModified, priority, commerceOrderId,
+                externalReferenceCode, title, type). When the flag is disabled the attachments are read directly from
+                the order's file entries and filter, sort, search are ignored.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    explode: true
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    explode: true
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -1878,20 +2575,20 @@ paths:
                     description:
                         Unexpected error
             security:
-                -   BasicAuth: []
-                -   BearerAuth: []
-                -   OAuth2:
-                        -   HeadlessCommerceDeliveryOrder.read
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a list of attachments related to an order.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/attachments/by-base64:
         post:
+            description:
+                Resolves the order by external reference code and delegates to postPlacedOrderAttachmentByBase64 to
+                create an attachment from the base64-encoded payload.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1931,6 +2628,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -1941,6 +2648,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Domain validation rejected the request -- the resolved entity could not be found, a referenced
+                        lookup key was missing, or a required field was out of range.
                 500:
                     content:
                         application/json:
@@ -1952,25 +2670,22 @@ paths:
                     description:
                         Unexpected error
             security:
-                -   BasicAuth: []
-                -   BearerAuth: []
-                -   OAuth2:
-                        -   HeadlessCommerceDeliveryOrder.write
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             summary: Creates an attachment related to an order.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/attachments/by-externalReferenceCode/{attachmentExternalReferenceCode}:
         delete:
+            description:
+                Resolves the order by external reference code. When feature flag LPD-6252 is enabled the
+                CommerceOrderAttachment is deleted by external reference code; otherwise the legacy FileEntry attachment
+                is removed from the order's local repository.
             parameters:
-                -   in: path
-                    name: attachmentExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/attachmentExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 204:
                     content:
@@ -1986,27 +2701,31 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this attachment.
             security:
-                -   BasicAuth: []
-                -   BearerAuth: []
-                -   OAuth2:
-                        -   HeadlessCommerceDeliveryOrder.write
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             summary: Deletes an attachment by external reference code.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/delivery-term:
         get:
             description:
-                Retrieve delivery term of the given Placed Order.
+                Resolves the order by external reference code and delegates to getPlacedOrderDeliveryTerm to return the
+                linked CommerceTermEntry as a Term.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2026,6 +2745,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2046,21 +2775,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-term:
         get:
             description:
-                Retrieve payment term of the given Placed Order.
+                Resolves the order by external reference code and delegates to getPlacedOrderPaymentTerm to return the
+                linked CommerceTermEntry as a Term.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2080,6 +2803,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2100,39 +2833,34 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-url:
         get:
+            description:
+                Resolves the order by external reference code and delegates to getPlacedOrderPaymentURL to build the
+                next-step payment URL the storefront should redirect to.
             operationId: getPlacedOrderByExternalReferenceCodePaymentURL
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: callbackURL
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/callbackURLQueryParam"
             responses:
                 200:
                     content:
                         text/plain:
                             schema:
                                 type: string
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-billing-address:
         get:
             description:
-                Retrieve placed order billing address.
+                Resolves the order by external reference code and returns the snapshot CommerceAddress referenced by the
+                order's billingAddressId via PlacedOrderAddressDTOConverter. Returns an empty PlacedOrderAddress when
+                the order has no billing address.
             operationId: getPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2152,6 +2880,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2172,26 +2910,19 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderAddress"]
+            tags:
+            -   PlacedOrderAddress
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-comments:
         get:
+            description:
+                Resolves the order by external reference code and returns a page of its CommerceOrderNote rows via
+                CommerceOrderNoteService.getCommerceOrderNotes(orderId, start, end). The endpoint accepts page and
+                pageSize only -- filter, sort, and keyword search are not applied.
             operationId: getPlacedOrderByExternalReferenceCodePlacedOrderCommentsPage
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
             responses:
                 200:
                     content:
@@ -2241,44 +2972,23 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of Comments related to an Order.
-            tags: ["PlacedOrderComment"]
+            tags:
+            -   PlacedOrderComment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-items:
         get:
             description:
-                Retrieve placed order items.
+                Resolves the order by external reference code and runs an indexed CommerceOrderItem search scoped to
+                that order id with parentCommerceOrderItemId = 0 so only top-level items are returned. Search drives the
+                keyword query and sort supports PlacedOrderItemEntityModel fields -- quantity, name, sku, unitOfMeasure.
+                The skuId parameter is declared but not currently applied as an extra filter.
             operationId: getPlacedOrderByExternalReferenceCodePlacedOrderItemsPage
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: skuId
-                    required: false
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/skuIdQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -2324,18 +3034,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderItem"]
+            tags:
+            -   PlacedOrderItem
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-shipping-address:
         get:
             description:
-                Retrieve placed order shipping address.
+                Resolves the order by external reference code and returns the snapshot CommerceAddress referenced by the
+                order's shippingAddressId via PlacedOrderAddressDTOConverter.
             operationId: getPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2355,6 +3063,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2375,41 +3093,22 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderAddress"]
+            tags:
+            -   PlacedOrderAddress
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/shipments:
         get:
+            description:
+                Resolves the order by external reference code and runs an indexed CommerceShipment query whose
+                itemsCount and oneLineAddress are read straight from the search document. Filter, sort, and search use
+                ShipmentEntityModel fields -- status, createDate, expectedDate, shippingDate, id, carrier, tracking.
             operationId: getPlacedOrderByExternalReferenceCodeShipmentsPage
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -2459,22 +3158,15 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of Shipments related to an Order.
-            tags: ["Shipment"]
+            tags:
+            -   Shipment
     /placed-orders/{placedOrderId}:
         get:
             description:
-                Retrieve information of the given Placed Order.
+                Returns the placed order by id. Raises NoSuchOrderException when the order is still open -- open carts
+                are exposed through headless-commerce-delivery-cart, not through this API.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 200:
                     content:
@@ -2494,6 +3186,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2514,20 +3216,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
         patch:
+            description:
+                JSON Merge Patch -- only supplied fields are modified. Refuses with CommerceOrderStatusException when
+                the order is open. Accepted fields are name and purchaseOrderNumber (applied via
+                CommerceOrderEngine.updateCommerceOrder, other order fields preserved), printedNote (applied via
+                CommerceOrderService.updatePrintedNote), and customFields (applied via ExpandoUtil.updateExpando).
             operationId: patchPlacedOrder
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -2561,6 +3260,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2571,6 +3280,27 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         The specified resource was not found
+                409:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The order is still open (a cart draft); buyer-facing updates are only allowed on placed orders.
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Domain validation rejected the request -- the resolved entity could not be found, a referenced
+                        lookup key was missing, or a required field was out of range.
                 500:
                     content:
                         application/json:
@@ -2582,51 +3312,22 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Placed Order.
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /placed-orders/{placedOrderId}/attachments:
         get:
+            description:
+                Returns a page of order attachments. When feature flag LPD-6252 is enabled the query goes through the
+                indexed CommerceOrderAttachment, honouring filter, sort, and search (fields -- restricted, dateCreated,
+                dateModified, priority, commerceOrderId, externalReferenceCode, title, type). Otherwise it reads the
+                order's legacy file-entry attachments and filter, sort, search are ignored.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            The resource Id
-                        example: 30130
-                        format: int64
-                        minimum: 0
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    explode: true
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    explode: true
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -2673,27 +3374,21 @@ paths:
                     description:
                         Unexpected error
             security:
-                -   BasicAuth: []
-                -   BearerAuth: []
-                -   OAuth2:
-                        -   HeadlessCommerceDeliveryOrder.read
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a list of attachments related to an order.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /placed-orders/{placedOrderId}/attachments/by-base64:
         post:
+            description:
+                Creates an order attachment from a base64-encoded payload. When feature flag LPD-6252 is enabled it
+                calls CommerceOrderAttachmentService.addCommerceOrderAttachment with priority, restricted, title, and
+                type; otherwise it calls CommerceOrderService.addAttachmentFileEntry to add a legacy file entry.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            The resource Id
-                        example: 30130
-                        format: int64
-                        minimum: 0
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -2733,6 +3428,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2743,6 +3448,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Domain validation rejected the request -- the resolved entity could not be found, a referenced
+                        lookup key was missing, or a required field was out of range.
                 500:
                     content:
                         application/json:
@@ -2754,39 +3470,22 @@ paths:
                     description:
                         Unexpected error
             security:
-                -   BasicAuth: []
-                -   BearerAuth: []
-                -   OAuth2:
-                        -   HeadlessCommerceDeliveryOrder.write
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             summary: Creates an attachment related to an order.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /placed-orders/{placedOrderId}/attachments/{attachmentId}:
         delete:
+            description:
+                Deletes the attachment. When feature flag LPD-6252 is enabled it removes the CommerceOrderAttachment,
+                otherwise it removes the legacy file-entry attachment via
+                CommerceOrderService.deleteAttachmentFileEntry.
             parameters:
-                -   in: path
-                    explode: false
-                    name: attachmentId
-                    required: true
-                    schema:
-                        description:
-                            The attachment Id
-                        example: 30130
-                        format: int64
-                        minimum: 0
-                        type: integer
-                    style: simple
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            The resource Id
-                        example: 30130
-                        format: int64
-                        minimum: 0
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/attachmentIdPathParam"
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 204:
                     content:
@@ -2802,29 +3501,32 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this attachment.
             security:
-                -   BasicAuth: []
-                -   BearerAuth: []
-                -   OAuth2:
-                        -   HeadlessCommerceDeliveryOrder.write
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             summary: Deletes an attachment.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /placed-orders/{placedOrderId}/delivery-term:
         get:
             description:
-                Retrieve delivery term of the given Placed Order.
+                Loads the order, refuses on open orders, and returns the CommerceTermEntry referenced by
+                commerceOrder.getDeliveryCommerceTermEntryId() projected into the Term schema.
             operationId: getPlacedOrderDeliveryTerm
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 200:
                     content:
@@ -2844,6 +3546,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -2864,23 +3576,18 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /placed-orders/{placedOrderId}/order-transitions:
         get:
             description:
-                Retrieve order transitions of the given Placed Order.
+                Returns the workflow transitions the current user can execute for the order via
+                CommerceWorkflowedModelHelper.getWorkflowTransitions, plus the synthetic process-quote transition when
+                the order matches the quote-processed criteria, plus the synthetic reorder transition. Refuses with
+                CommerceOrderStatusException on open orders.
             operationId: getPlacedOrderOrderTransitionsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 200:
                     content:
@@ -2924,16 +3631,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["OrderTransition"]
+            tags:
+            -   OrderTransition
         post:
+            description:
+                Executes a transition. A positive workflowTaskId runs CommerceOrderService.executeWorkflowTransition;
+                name=process-quote runs CommerceOrderEngine.transitionCommerceOrder to ORDER_STATUS_QUOTE_PROCESSED;
+                name=reorder runs CommerceOrderService.reorderCommerceOrder and returns the new order id on the
+                response's orderId field. Refuses on open orders.
             operationId: postPlacedOrderOrderTransition
             parameters:
-                -   in: path
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        format: int64
-                        type: integer
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -2952,23 +3660,48 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/OrderTransition"
-            tags: ["OrderTransition"]
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
+                409:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The order is still open or the requested workflow transition is not allowed for the order's
+                        current status.
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Domain validation rejected the request -- the resolved entity could not be found, a referenced
+                        lookup key was missing, or a required field was out of range.
+            tags:
+            -   OrderTransition
     /placed-orders/{placedOrderId}/payment-term:
         get:
             description:
-                Retrieve payment term of the given Placed Order.
+                Loads the order, refuses on open orders, and returns the CommerceTermEntry referenced by
+                commerceOrder.getPaymentCommerceTermEntryId() projected into the Term schema.
             operationId: getPlacedOrderPaymentTerm
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 200:
                     content:
@@ -2988,6 +3721,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -3008,44 +3751,34 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /placed-orders/{placedOrderId}/payment-url:
         get:
+            description:
+                Builds the URL the storefront should redirect to in order to resume payment for the placed order. When
+                callbackURL is supplied it is used as the next-step URL, otherwise the order-confirmation checkout step
+                URL is used. Refuses on open orders.
             operationId: getPlacedOrderPaymentURL
             parameters:
-                -   in: path
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: callbackURL
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
+            -   $ref: "#/components/parameters/callbackURLQueryParam"
             responses:
                 200:
                     content:
                         text/plain:
                             schema:
                                 type: string
-            tags: ["PlacedOrder"]
+            tags:
+            -   PlacedOrder
     /placed-orders/{placedOrderId}/placed-order-billing-address:
         get:
             description:
-                Retrieve placed order billing address.
+                Loads the order, refuses on open orders, and returns the snapshot CommerceAddress referenced by
+                commerceOrder.getBillingAddressId() via PlacedOrderAddressDTOConverter. Returns an empty
+                PlacedOrderAddress when the order has no billing address.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 200:
                     content:
@@ -3065,6 +3798,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -3085,30 +3828,18 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderAddress"]
+            tags:
+            -   PlacedOrderAddress
     /placed-orders/{placedOrderId}/placed-order-comments:
         get:
+            description:
+                Loads the order, refuses on open orders, and returns a page of its CommerceOrderNote rows via
+                CommerceOrderNoteService.getCommerceOrderNotes(orderId, start, end). The endpoint accepts page and
+                pageSize only -- filter, sort, and keyword search are not applied.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
             responses:
                 200:
                     content:
@@ -3158,48 +3889,23 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of Comments related to an Order.
-            tags: ["PlacedOrderComment"]
+            tags:
+            -   PlacedOrderComment
     /placed-orders/{placedOrderId}/placed-order-items:
         get:
             description:
-                Retrieve placed order items.
+                Loads the order, refuses on open orders, then runs an indexed CommerceOrderItem search scoped to that
+                order id with parentCommerceOrderItemId = 0 so only top-level items appear; child items live inside each
+                item's placedOrderItems collection. Search drives the keyword query and sort supports
+                PlacedOrderItemEntityModel fields -- quantity, name, sku, unitOfMeasure. The skuId parameter is accepted
+                but not currently applied as an extra filter.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: skuId
-                    required: false
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/skuIdQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -3245,22 +3951,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderItem"]
+            tags:
+            -   PlacedOrderItem
     /placed-orders/{placedOrderId}/placed-order-shipping-address:
         get:
             description:
-                Retrieve placed order shipping address.
+                Loads the order, refuses on open orders, and returns the snapshot CommerceAddress referenced by
+                commerceOrder.getShippingAddressId() via PlacedOrderAddressDTOConverter.
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
                 200:
                     content:
@@ -3280,6 +3979,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this placed order.
                 404:
                     content:
                         application/json:
@@ -3300,48 +4009,22 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PlacedOrderAddress"]
+            tags:
+            -   PlacedOrderAddress
     /placed-orders/{placedOrderId}/shipments:
         get:
             description:
-                Retrieve placed order shipments.
+                Loads the order, refuses on open orders, and runs an indexed CommerceShipment query scoped to the order;
+                itemsCount and oneLineAddress are read straight from the search document. Filter, sort, and search use
+                ShipmentEntityModel fields -- status, createDate, expectedDate, shippingDate, id, carrier, tracking.
             operationId: getPlacedOrderShipmentsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: placedOrderId
-                    required: true
-                    schema:
-                        description:
-                            Placed Order Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/placedOrderIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -3387,4 +4070,39 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Shipment"]
+            tags:
+            -   Shipment
+tags:
+-   description:
+        CRUD over the placed order's attachments, switching between the legacy file-entry repository and the indexed
+        CommerceOrderAttachment model based on feature flag LPD-6252.
+    name: Attachment
+-   description:
+        Listing of workflow transitions a user can execute on a placed order (workflow tasks plus the synthetic
+        process-quote and reorder transitions) and the endpoint that executes one.
+    name: OrderTransition
+-   description:
+        Operations on finalized orders (orders whose status is no longer open), including retrieval by id or external
+        reference code, channel-scoped and account-scoped listings, in-place edits, and resume-payment URL construction.
+    name: PlacedOrder
+-   description:
+        Read-only access to the billing and shipping CommerceAddress snapshots referenced by a placed order.
+    name: PlacedOrderAddress
+-   description:
+        Read-only access to the CommerceOrderNote entries attached to a placed order, listed by id or external reference
+        code.
+    name: PlacedOrderComment
+-   description:
+        Read-only access to top-level CommerceOrderItem rows of a placed order, with options, pricing, virtual items,
+        and inventory settings.
+    name: PlacedOrderItem
+-   description:
+        Read-only access to the CommerceShipmentItem rows produced for a given placed order item, with a fallback to
+        non-open supplier-order shipments.
+    name: PlacedOrderItemShipment
+-   description:
+        Read-only listings of the CommerceShipment rows produced for a placed order.
+    name: Shipment
+-   description:
+        Read-only access to the delivery and payment CommerceTermEntry linked to a placed order.
+    name: Term
