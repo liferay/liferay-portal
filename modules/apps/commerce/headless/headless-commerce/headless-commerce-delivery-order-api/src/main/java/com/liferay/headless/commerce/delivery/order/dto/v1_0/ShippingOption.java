@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ShippingOption")
+@GraphQLName(
+	description = "Reference to a shipping option offered by a CommerceShippingMethod. Declared for completeness; not currently populated by any converter in this module.",
+	value = "ShippingOption"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ShippingOption")
 public class ShippingOption implements Serializable {
@@ -46,7 +49,9 @@ public class ShippingOption implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(ShippingOption.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Numeric shipping cost as a double, in the order's currency."
+	)
 	public Double getAmount() {
 		if (_amountSupplier != null) {
 			amount = _amountSupplier.get();
@@ -80,14 +85,18 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Numeric shipping cost as a double, in the order's currency."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double amount;
 
 	@JsonIgnore
 	private Supplier<Double> _amountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping cost formatted in the order's currency and locale."
+	)
 	public String getAmountFormatted() {
 		if (_amountFormattedSupplier != null) {
 			amountFormatted = _amountFormattedSupplier.get();
@@ -121,14 +130,19 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping cost formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String amountFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _amountFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the shipping option.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -162,14 +176,18 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "External reference code of the shipping option."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized label of the option."
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -203,14 +221,16 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Localized label of the option.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Programmatic name (key) of the option."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -242,7 +262,7 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Programmatic name (key) of the option.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -453,4 +473,4 @@ public class ShippingOption implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-641072764
+// LIFERAY-REST-BUILDER-HASH:1219210508

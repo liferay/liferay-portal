@@ -73,6 +73,9 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/shipments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Resolves the order by external reference code and runs an indexed CommerceShipment query whose itemsCount and oneLineAddress are read straight from the search document. Filter, sort, and search use ShipmentEntityModel fields -- status, createDate, expectedDate, shippingDate, id, carrier, tracking."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -134,7 +137,7 @@ public abstract class BaseShipmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/shipments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order shipments."
+		description = "Loads the order, refuses on open orders, and runs an indexed CommerceShipment query scoped to the order; itemsCount and oneLineAddress are read straight from the search document. Filter, sort, and search use ShipmentEntityModel fields -- status, createDate, expectedDate, shippingDate, id, carrier, tracking."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -949,4 +952,4 @@ public abstract class BaseShipmentResourceImpl
 		LogFactoryUtil.getLog(BaseShipmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-31630415
+// LIFERAY-REST-BUILDER-HASH:-1004014994

@@ -74,6 +74,9 @@ public abstract class BaseAttachmentResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments/{attachmentId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the attachment. When feature flag LPD-6252 is enabled it removes the CommerceOrderAttachment, otherwise it removes the legacy file-entry attachment via CommerceOrderService.deleteAttachmentFileEntry."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -112,6 +115,9 @@ public abstract class BaseAttachmentResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/attachments/by-externalReferenceCode/{attachmentExternalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Resolves the order by external reference code. When feature flag LPD-6252 is enabled the CommerceOrderAttachment is deleted by external reference code; otherwise the legacy FileEntry attachment is removed from the order's local repository."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -151,6 +157,9 @@ public abstract class BaseAttachmentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns a page of order attachments. When feature flag LPD-6252 is enabled the query goes through the indexed CommerceOrderAttachment, honouring filter, sort, and search (fields -- restricted, dateCreated, dateModified, priority, commerceOrderId, externalReferenceCode, title, type). Otherwise it reads the order's legacy file-entry attachments and filter, sort, search are ignored."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -209,6 +218,9 @@ public abstract class BaseAttachmentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/attachments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Resolves the order by external reference code and delegates to getPlacedOrderAttachmentsPage. When feature flag LPD-6252 is enabled the listing is an indexed CommerceOrderAttachment query honouring filter, sort, and search (fields -- restricted, dateCreated, dateModified, priority, commerceOrderId, externalReferenceCode, title, type). When the flag is disabled the attachments are read directly from the order's file entries and filter, sort, search are ignored."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -270,6 +282,9 @@ public abstract class BaseAttachmentResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments/by-base64' -d $'{"attachment": ___, "externalReferenceCode": ___, "priority": ___, "restricted": ___, "title": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates an order attachment from a base64-encoded payload. When feature flag LPD-6252 is enabled it calls CommerceOrderAttachmentService.addCommerceOrderAttachment with priority, restricted, title, and type; otherwise it calls CommerceOrderService.addAttachmentFileEntry to add a legacy file entry."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -392,6 +407,9 @@ public abstract class BaseAttachmentResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/attachments/by-base64' -d $'{"attachment": ___, "externalReferenceCode": ___, "priority": ___, "restricted": ___, "title": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Resolves the order by external reference code and delegates to postPlacedOrderAttachmentByBase64 to create an attachment from the base64-encoded payload."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1095,4 +1113,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1912411829
+// LIFERAY-REST-BUILDER-HASH:-1558688797

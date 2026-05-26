@@ -75,7 +75,7 @@ public abstract class BaseOrderTransitionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/order-transitions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve order transitions of the given Placed Order."
+		description = "Returns the workflow transitions the current user can execute for the order via CommerceWorkflowedModelHelper.getWorkflowTransitions, plus the synthetic process-quote transition when the order matches the quote-processed criteria, plus the synthetic reorder transition. Refuses with CommerceOrderStatusException on open orders."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -109,6 +109,9 @@ public abstract class BaseOrderTransitionResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/order-transitions' -d $'{"comment": ___, "name": ___, "workflowTaskId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Executes a transition. A positive workflowTaskId runs CommerceOrderService.executeWorkflowTransition; name=process-quote runs CommerceOrderEngine.transitionCommerceOrder to ORDER_STATUS_QUOTE_PROCESSED; name=reorder runs CommerceOrderService.reorderCommerceOrder and returns the new order id on the response's orderId field. Refuses on open orders."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -978,4 +981,4 @@ public abstract class BaseOrderTransitionResourceImpl
 		LogFactoryUtil.getLog(BaseOrderTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1529941984
+// LIFERAY-REST-BUILDER-HASH:268129021

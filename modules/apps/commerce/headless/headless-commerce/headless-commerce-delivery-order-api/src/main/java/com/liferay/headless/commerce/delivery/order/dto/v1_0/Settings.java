@@ -37,7 +37,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Settings")
+@GraphQLName(
+	description = "Inventory configuration applied to a placed order item -- min, max, multiple, and the explicit allowed quantities (when configured).",
+	value = "Settings"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Settings")
 public class Settings implements Serializable {
@@ -50,7 +53,9 @@ public class Settings implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Settings.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Explicit list of allowed order quantities from the SKU's CPDefinitionInventory.allowedOrderQuantitiesArray. Omitted when no inventory configuration is present."
+	)
 	@Valid
 	public BigDecimal[] getAllowedQuantities() {
 		if (_allowedQuantitiesSupplier != null) {
@@ -86,14 +91,19 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Explicit list of allowed order quantities from the SKU's CPDefinitionInventory.allowedOrderQuantitiesArray. Omitted when no inventory configuration is present."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal[] allowedQuantities;
 
 	@JsonIgnore
 	private Supplier<BigDecimal[]> _allowedQuantitiesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Maximum order quantity from the SKU's inventory configuration. Defaults to CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY when unset.",
+		example = "10.1"
+	)
 	@Valid
 	public BigDecimal getMaxQuantity() {
 		if (_maxQuantitySupplier != null) {
@@ -128,14 +138,19 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Maximum order quantity from the SKU's inventory configuration. Defaults to CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY when unset."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal maxQuantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _maxQuantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Minimum order quantity from the SKU's inventory configuration. Defaults to CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY when unset.",
+		example = "10.1"
+	)
 	@Valid
 	public BigDecimal getMinQuantity() {
 		if (_minQuantitySupplier != null) {
@@ -170,14 +185,19 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Minimum order quantity from the SKU's inventory configuration. Defaults to CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY when unset."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal minQuantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _minQuantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Required quantity multiple from the SKU's inventory configuration. Defaults to CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY when unset.",
+		example = "10.1"
+	)
 	@Valid
 	public BigDecimal getMultipleQuantity() {
 		if (_multipleQuantitySupplier != null) {
@@ -212,7 +232,9 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Required quantity multiple from the SKU's inventory configuration. Defaults to CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY when unset."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal multipleQuantity;
 
@@ -405,4 +427,4 @@ public class Settings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1923916765
+// LIFERAY-REST-BUILDER-HASH:-1978901952

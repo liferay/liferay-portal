@@ -37,7 +37,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Summary")
+@GraphQLName(
+	description = "Pricing summary for a placed order -- items subtotal, shipping, tax, total, plus the cumulative discount levels and tax-inclusive variants when the channel publishes prices with tax.",
+	value = "Summary"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Summary")
 public class Summary implements Serializable {
@@ -50,7 +53,9 @@ public class Summary implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Summary.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized currency name of the order."
+	)
 	public String getCurrency() {
 		if (_currencySupplier != null) {
 			currency = _currencySupplier.get();
@@ -84,14 +89,17 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Localized currency name of the order.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String currency;
 
 	@JsonIgnore
 	private Supplier<String> _currencySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Count of top-level items (parent commerce order items) on the order.",
+		example = "1"
+	)
 	public Integer getItemsCount() {
 		if (_itemsCountSupplier != null) {
 			itemsCount = _itemsCountSupplier.get();
@@ -125,14 +133,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Count of top-level items (parent commerce order items) on the order."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer itemsCount;
 
 	@JsonIgnore
 	private Supplier<Integer> _itemsCountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Sum of item quantities on the order, with trailing zeros stripped.",
+		example = "10.1"
+	)
 	@Valid
 	public BigDecimal getItemsQuantity() {
 		if (_itemsQuantitySupplier != null) {
@@ -167,14 +180,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Sum of item quantities on the order, with trailing zeros stripped."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal itemsQuantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _itemsQuantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Cumulative shipping discount percentage levels 1 to 4, formatted as locale-aware strings."
+	)
 	public String[] getShippingDiscountPercentages() {
 		if (_shippingDiscountPercentagesSupplier != null) {
 			shippingDiscountPercentages =
@@ -212,14 +229,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Cumulative shipping discount percentage levels 1 to 4, formatted as locale-aware strings."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] shippingDiscountPercentages;
 
 	@JsonIgnore
 	private Supplier<String[]> _shippingDiscountPercentagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping discount amount as a double; uses the tax-inclusive amount when the channel displays prices with tax."
+	)
 	public Double getShippingDiscountValue() {
 		if (_shippingDiscountValueSupplier != null) {
 			shippingDiscountValue = _shippingDiscountValueSupplier.get();
@@ -253,14 +274,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping discount amount as a double; uses the tax-inclusive amount when the channel displays prices with tax."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double shippingDiscountValue;
 
 	@JsonIgnore
 	private Supplier<Double> _shippingDiscountValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping discount amount formatted in the order's currency and locale."
+	)
 	public String getShippingDiscountValueFormatted() {
 		if (_shippingDiscountValueFormattedSupplier != null) {
 			shippingDiscountValueFormatted =
@@ -298,14 +323,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping discount amount formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingDiscountValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _shippingDiscountValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping subtotal (without tax) as a double."
+	)
 	public Double getShippingValue() {
 		if (_shippingValueSupplier != null) {
 			shippingValue = _shippingValueSupplier.get();
@@ -339,14 +368,16 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Shipping subtotal (without tax) as a double.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double shippingValue;
 
 	@JsonIgnore
 	private Supplier<Double> _shippingValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping subtotal formatted in the order's currency and locale."
+	)
 	public String getShippingValueFormatted() {
 		if (_shippingValueFormattedSupplier != null) {
 			shippingValueFormatted = _shippingValueFormattedSupplier.get();
@@ -381,14 +412,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping subtotal formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _shippingValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping subtotal including tax as a double, when the channel publishes it."
+	)
 	public Double getShippingValueWithTaxAmount() {
 		if (_shippingValueWithTaxAmountSupplier != null) {
 			shippingValueWithTaxAmount =
@@ -426,14 +461,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping subtotal including tax as a double, when the channel publishes it."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double shippingValueWithTaxAmount;
 
 	@JsonIgnore
 	private Supplier<Double> _shippingValueWithTaxAmountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping subtotal including tax formatted in the order's currency and locale."
+	)
 	public String getShippingValueWithTaxAmountFormatted() {
 		if (_shippingValueWithTaxAmountFormattedSupplier != null) {
 			shippingValueWithTaxAmountFormatted =
@@ -472,14 +511,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping subtotal including tax formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingValueWithTaxAmountFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _shippingValueWithTaxAmountFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Items subtotal as a double; switches to the tax-inclusive subtotal when the channel displays prices with tax."
+	)
 	public Double getSubtotal() {
 		if (_subtotalSupplier != null) {
 			subtotal = _subtotalSupplier.get();
@@ -513,14 +556,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Items subtotal as a double; switches to the tax-inclusive subtotal when the channel displays prices with tax."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double subtotal;
 
 	@JsonIgnore
 	private Supplier<Double> _subtotalSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Cumulative subtotal discount percentage levels 1 to 4, formatted as locale-aware strings."
+	)
 	public String[] getSubtotalDiscountPercentages() {
 		if (_subtotalDiscountPercentagesSupplier != null) {
 			subtotalDiscountPercentages =
@@ -558,14 +605,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Cumulative subtotal discount percentage levels 1 to 4, formatted as locale-aware strings."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] subtotalDiscountPercentages;
 
 	@JsonIgnore
 	private Supplier<String[]> _subtotalDiscountPercentagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Subtotal discount amount as a double; uses the tax-inclusive amount when the channel displays prices with tax."
+	)
 	public Double getSubtotalDiscountValue() {
 		if (_subtotalDiscountValueSupplier != null) {
 			subtotalDiscountValue = _subtotalDiscountValueSupplier.get();
@@ -599,14 +650,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Subtotal discount amount as a double; uses the tax-inclusive amount when the channel displays prices with tax."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double subtotalDiscountValue;
 
 	@JsonIgnore
 	private Supplier<Double> _subtotalDiscountValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Subtotal discount amount formatted in the order's currency and locale."
+	)
 	public String getSubtotalDiscountValueFormatted() {
 		if (_subtotalDiscountValueFormattedSupplier != null) {
 			subtotalDiscountValueFormatted =
@@ -644,14 +699,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Subtotal discount amount formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String subtotalDiscountValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _subtotalDiscountValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Items subtotal formatted in the order's currency and locale."
+	)
 	public String getSubtotalFormatted() {
 		if (_subtotalFormattedSupplier != null) {
 			subtotalFormatted = _subtotalFormattedSupplier.get();
@@ -685,14 +744,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Items subtotal formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String subtotalFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _subtotalFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Tax amount on the order as a double."
+	)
 	public Double getTaxValue() {
 		if (_taxValueSupplier != null) {
 			taxValue = _taxValueSupplier.get();
@@ -726,14 +789,16 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Tax amount on the order as a double.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double taxValue;
 
 	@JsonIgnore
 	private Supplier<Double> _taxValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Tax amount formatted in the order's currency and locale."
+	)
 	public String getTaxValueFormatted() {
 		if (_taxValueFormattedSupplier != null) {
 			taxValueFormatted = _taxValueFormattedSupplier.get();
@@ -767,14 +832,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Tax amount formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String taxValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _taxValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Order total as a double; switches to the tax-inclusive total when the channel displays prices with tax."
+	)
 	public Double getTotal() {
 		if (_totalSupplier != null) {
 			total = _totalSupplier.get();
@@ -808,14 +877,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Order total as a double; switches to the tax-inclusive total when the channel displays prices with tax."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double total;
 
 	@JsonIgnore
 	private Supplier<Double> _totalSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Cumulative total discount percentage levels 1 to 4, formatted as locale-aware strings."
+	)
 	public String[] getTotalDiscountPercentages() {
 		if (_totalDiscountPercentagesSupplier != null) {
 			totalDiscountPercentages = _totalDiscountPercentagesSupplier.get();
@@ -850,14 +923,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Cumulative total discount percentage levels 1 to 4, formatted as locale-aware strings."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] totalDiscountPercentages;
 
 	@JsonIgnore
 	private Supplier<String[]> _totalDiscountPercentagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total discount amount as a double; uses the tax-inclusive amount when the channel displays prices with tax."
+	)
 	public Double getTotalDiscountValue() {
 		if (_totalDiscountValueSupplier != null) {
 			totalDiscountValue = _totalDiscountValueSupplier.get();
@@ -891,14 +968,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total discount amount as a double; uses the tax-inclusive amount when the channel displays prices with tax."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double totalDiscountValue;
 
 	@JsonIgnore
 	private Supplier<Double> _totalDiscountValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total discount amount formatted in the order's currency and locale."
+	)
 	public String getTotalDiscountValueFormatted() {
 		if (_totalDiscountValueFormattedSupplier != null) {
 			totalDiscountValueFormatted =
@@ -936,14 +1017,18 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total discount amount formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String totalDiscountValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _totalDiscountValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Order total formatted in the order's currency and locale."
+	)
 	public String getTotalFormatted() {
 		if (_totalFormattedSupplier != null) {
 			totalFormatted = _totalFormattedSupplier.get();
@@ -977,7 +1062,9 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Order total formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String totalFormatted;
 
@@ -1457,4 +1544,4 @@ public class Summary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:748757905
+// LIFERAY-REST-BUILDER-HASH:1209111313

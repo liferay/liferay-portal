@@ -75,6 +75,9 @@ public abstract class BasePlacedOrderCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-comments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Resolves the order by external reference code and returns a page of its CommerceOrderNote rows via CommerceOrderNoteService.getCommerceOrderNotes(orderId, start, end). The endpoint accepts page and pageSize only -- filter, sort, and keyword search are not applied."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -119,6 +122,9 @@ public abstract class BasePlacedOrderCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-order-comments/{placedOrderCommentId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Loads the CommerceOrderNote via CommerceOrderNoteService.getCommerceOrderNote, refuses when the owning order is still open, then converts the note through PlacedOrderCommentDTOConverter."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -151,6 +157,9 @@ public abstract class BasePlacedOrderCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-order-comments/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Loads the CommerceOrderNote by external reference code via CommerceOrderNoteService.fetchCommerceOrderNoteByExternalReferenceCode and delegates to getPlacedOrderComment. Raises NoSuchOrderNoteException when no matching note is found."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -185,6 +194,9 @@ public abstract class BasePlacedOrderCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-comments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Loads the order, refuses on open orders, and returns a page of its CommerceOrderNote rows via CommerceOrderNoteService.getCommerceOrderNotes(orderId, start, end). The endpoint accepts page and pageSize only -- filter, sort, and keyword search are not applied."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -975,4 +987,4 @@ public abstract class BasePlacedOrderCommentResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderCommentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1303687985
+// LIFERAY-REST-BUILDER-HASH:-1217773796

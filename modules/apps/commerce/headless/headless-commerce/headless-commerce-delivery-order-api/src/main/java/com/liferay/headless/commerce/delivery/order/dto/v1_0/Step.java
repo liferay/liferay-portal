@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Step")
+@GraphQLName(
+	description = "A step in the order tracker derived from the order's configuration -- typically one of complete, current, or upcoming.",
+	value = "Step"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Step")
 public class Step implements Serializable {
@@ -46,7 +49,9 @@ public class Step implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Step.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Step id from StepModel.getId()."
+	)
 	public String getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -78,14 +83,16 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Step id from StepModel.getId().")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String id;
 
 	@JsonIgnore
 	private Supplier<String> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized label from StepModel.getLabel()."
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -119,14 +126,16 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Localized label from StepModel.getLabel().")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Step state from StepModel.getState() -- typically one of complete, current, or upcoming."
+	)
 	public String getState() {
 		if (_stateSupplier != null) {
 			state = _stateSupplier.get();
@@ -160,7 +169,9 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Step state from StepModel.getState() -- typically one of complete, current, or upcoming."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String state;
 
@@ -343,4 +354,4 @@ public class Step implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1725144420
+// LIFERAY-REST-BUILDER-HASH:-2034507835

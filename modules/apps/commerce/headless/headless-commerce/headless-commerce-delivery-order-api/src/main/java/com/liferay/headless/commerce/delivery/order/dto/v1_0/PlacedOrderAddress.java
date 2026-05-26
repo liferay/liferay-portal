@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PlacedOrderAddress")
+@GraphQLName(
+	description = "Snapshot view of the CommerceAddress referenced by a placed order, used for both the billing and the shipping slots.",
+	value = "PlacedOrderAddress"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PlacedOrderAddress")
 public class PlacedOrderAddress implements Serializable {
@@ -46,7 +49,9 @@ public class PlacedOrderAddress implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(PlacedOrderAddress.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "City line of the CommerceAddress."
+	)
 	public String getCity() {
 		if (_citySupplier != null) {
 			city = _citySupplier.get();
@@ -78,14 +83,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "City line of the CommerceAddress.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String city;
 
 	@JsonIgnore
 	private Supplier<String> _citySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Country title in the requested locale (Country.getTitle(locale))."
+	)
 	public String getCountry() {
 		if (_countrySupplier != null) {
 			country = _countrySupplier.get();
@@ -119,14 +126,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Country title in the requested locale (Country.getTitle(locale))."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String country;
 
 	@JsonIgnore
 	private Supplier<String> _countrySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "ISO-3166 alpha-2 country code from Country.getA2()."
+	)
 	public String getCountryISOCode() {
 		if (_countryISOCodeSupplier != null) {
 			countryISOCode = _countryISOCodeSupplier.get();
@@ -160,14 +171,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "ISO-3166 alpha-2 country code from Country.getA2()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String countryISOCode;
 
 	@JsonIgnore
 	private Supplier<String> _countryISOCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Free-form description on the CommerceAddress."
+	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
 			description = _descriptionSupplier.get();
@@ -201,14 +216,17 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Free-form description on the CommerceAddress.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String description;
 
 	@JsonIgnore
 	private Supplier<String> _descriptionSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key on the CommerceAddress -- the caller-supplied external reference code.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -242,14 +260,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key on the CommerceAddress -- the caller-supplied external reference code."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Primary key -- the CommerceAddress id."
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -281,14 +303,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Primary key -- the CommerceAddress id.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Latitude geocode of the address."
+	)
 	public Double getLatitude() {
 		if (_latitudeSupplier != null) {
 			latitude = _latitudeSupplier.get();
@@ -322,14 +346,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Latitude geocode of the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double latitude;
 
 	@JsonIgnore
 	private Supplier<Double> _latitudeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Longitude geocode of the address."
+	)
 	public Double getLongitude() {
 		if (_longitudeSupplier != null) {
 			longitude = _longitudeSupplier.get();
@@ -363,14 +389,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Longitude geocode of the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double longitude;
 
 	@JsonIgnore
 	private Supplier<Double> _longitudeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Recipient name on the address."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -402,14 +430,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Recipient name on the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Phone number on the address."
+	)
 	public String getPhoneNumber() {
 		if (_phoneNumberSupplier != null) {
 			phoneNumber = _phoneNumberSupplier.get();
@@ -443,14 +473,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Phone number on the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String phoneNumber;
 
 	@JsonIgnore
 	private Supplier<String> _phoneNumberSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Region name from Region.getName()."
+	)
 	public String getRegion() {
 		if (_regionSupplier != null) {
 			region = _regionSupplier.get();
@@ -484,14 +516,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Region name from Region.getName().")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String region;
 
 	@JsonIgnore
 	private Supplier<String> _regionSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Region code from Region.getRegionCode(). Empty string when the country has no regions."
+	)
 	public String getRegionISOCode() {
 		if (_regionISOCodeSupplier != null) {
 			regionISOCode = _regionISOCodeSupplier.get();
@@ -525,14 +559,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Region code from Region.getRegionCode(). Empty string when the country has no regions."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String regionISOCode;
 
 	@JsonIgnore
 	private Supplier<String> _regionISOCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "First street line of the address."
+	)
 	public String getStreet1() {
 		if (_street1Supplier != null) {
 			street1 = _street1Supplier.get();
@@ -566,14 +604,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "First street line of the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String street1;
 
 	@JsonIgnore
 	private Supplier<String> _street1Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Second street line of the address."
+	)
 	public String getStreet2() {
 		if (_street2Supplier != null) {
 			street2 = _street2Supplier.get();
@@ -607,14 +647,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Second street line of the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String street2;
 
 	@JsonIgnore
 	private Supplier<String> _street2Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Third street line of the address."
+	)
 	public String getStreet3() {
 		if (_street3Supplier != null) {
 			street3 = _street3Supplier.get();
@@ -648,14 +690,16 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Third street line of the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String street3;
 
 	@JsonIgnore
 	private Supplier<String> _street3Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Optional subtype label on the CommerceAddress."
+	)
 	public String getSubtype() {
 		if (_subtypeSupplier != null) {
 			subtype = _subtypeSupplier.get();
@@ -689,14 +733,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Optional subtype label on the CommerceAddress."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String subtype;
 
 	@JsonIgnore
 	private Supplier<String> _subtypeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Declared address-type string. Declared on the schema; not populated by this converter (the integer is on typeId)."
+	)
 	public String getType() {
 		if (_typeSupplier != null) {
 			type = _typeSupplier.get();
@@ -728,14 +776,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Declared address-type string. Declared on the schema; not populated by this converter (the integer is on typeId)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String type;
 
 	@JsonIgnore
 	private Supplier<String> _typeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Integer address type -- 1=billing, 2=billing-and-shipping, 3=shipping (see CommerceAddressConstants)."
+	)
 	public Integer getTypeId() {
 		if (_typeIdSupplier != null) {
 			typeId = _typeIdSupplier.get();
@@ -769,14 +821,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Integer address type -- 1=billing, 2=billing-and-shipping, 3=shipping (see CommerceAddressConstants)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer typeId;
 
 	@JsonIgnore
 	private Supplier<Integer> _typeIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Declared VAT number. Declared on the schema; not populated by this converter."
+	)
 	public String getVatNumber() {
 		if (_vatNumberSupplier != null) {
 			vatNumber = _vatNumberSupplier.get();
@@ -810,14 +866,18 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Declared VAT number. Declared on the schema; not populated by this converter."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String vatNumber;
 
 	@JsonIgnore
 	private Supplier<String> _vatNumberSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Postal code on the address."
+	)
 	public String getZip() {
 		if (_zipSupplier != null) {
 			zip = _zipSupplier.get();
@@ -849,7 +909,7 @@ public class PlacedOrderAddress implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Postal code on the address.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String zip;
 
@@ -1288,4 +1348,4 @@ public class PlacedOrderAddress implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1474878249
+// LIFERAY-REST-BUILDER-HASH:891011641

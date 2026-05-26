@@ -41,7 +41,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PlacedOrderItem")
+@GraphQLName(
+	description = "A top-level CommerceOrderItem on a placed order. Child items are exposed inline via the placedOrderItems collection, shipment splits via placedOrderItemShipments, and virtual downloads via virtualItems and virtualItemURLs.",
+	value = "PlacedOrderItem"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PlacedOrderItem")
 public class PlacedOrderItem implements Serializable {
@@ -54,7 +57,9 @@ public class PlacedOrderItem implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(PlacedOrderItem.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-rendered Adaptive Media img tag for the item's CPInstance."
+	)
 	public String getAdaptiveMediaImageHTMLTag() {
 		if (_adaptiveMediaImageHTMLTagSupplier != null) {
 			adaptiveMediaImageHTMLTag =
@@ -90,14 +95,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-rendered Adaptive Media img tag for the item's CPInstance."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String adaptiveMediaImageHTMLTag;
 
 	@JsonIgnore
 	private Supplier<String> _adaptiveMediaImageHTMLTagSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Expando attributes from the CommerceOrderItem ExpandoBridge -- map of attribute name to attribute value."
+	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
 		if (_customFieldsSupplier != null) {
@@ -132,14 +141,19 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Expando attributes from the CommerceOrderItem ExpandoBridge -- map of attribute name to attribute value."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, ?> customFields;
 
 	@JsonIgnore
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(deprecated = true)
+	@io.swagger.v3.oas.annotations.media.Schema(
+		deprecated = true,
+		description = "Deprecated -- use deliveryGroupName instead. Both properties share the same backing value, CommerceOrderItem.getDeliveryGroupName()."
+	)
 	public String getDeliveryGroup() {
 		if (_deliveryGroupSupplier != null) {
 			deliveryGroup = _deliveryGroupSupplier.get();
@@ -174,14 +188,18 @@ public class PlacedOrderItem implements Serializable {
 	}
 
 	@Deprecated
-	@GraphQLField
+	@GraphQLField(
+		description = "Deprecated -- use deliveryGroupName instead. Both properties share the same backing value, CommerceOrderItem.getDeliveryGroupName()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String deliveryGroup;
 
 	@JsonIgnore
 	private Supplier<String> _deliveryGroupSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Delivery group name from CommerceOrderItem.getDeliveryGroupName()."
+	)
 	public String getDeliveryGroupName() {
 		if (_deliveryGroupNameSupplier != null) {
 			deliveryGroupName = _deliveryGroupNameSupplier.get();
@@ -215,14 +233,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Delivery group name from CommerceOrderItem.getDeliveryGroupName()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String deliveryGroupName;
 
 	@JsonIgnore
 	private Supplier<String> _deliveryGroupNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When the underlying CPInstance no longer exists, the single message the-product-is-no-longer-available. Null otherwise."
+	)
 	public String[] getErrorMessages() {
 		if (_errorMessagesSupplier != null) {
 			errorMessages = _errorMessagesSupplier.get();
@@ -256,14 +278,19 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "When the underlying CPInstance no longer exists, the single message the-product-is-no-longer-available. Null otherwise."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] errorMessages;
 
 	@JsonIgnore
 	private Supplier<String[]> _errorMessagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key on the CommerceOrderItem -- the caller-supplied external reference code.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -297,14 +324,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key on the CommerceOrderItem -- the caller-supplied external reference code."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Primary key -- the CommerceOrderItem id."
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -336,14 +367,16 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Primary key -- the CommerceOrderItem id.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized item name in the requested locale."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -375,14 +408,16 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Localized item name in the requested locale.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "JSON blob of the item's selected product options, from CommerceOrderItem.getJson()."
+	)
 	public String getOptions() {
 		if (_optionsSupplier != null) {
 			options = _optionsSupplier.get();
@@ -416,14 +451,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "JSON blob of the item's selected product options, from CommerceOrderItem.getJson()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String options;
 
 	@JsonIgnore
 	private Supplier<String> _optionsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the parent CommerceOrderItem entity (FK). Zero when this is a top-level item."
+	)
 	public Long getParentOrderItemId() {
 		if (_parentOrderItemIdSupplier != null) {
 			parentOrderItemId = _parentOrderItemIdSupplier.get();
@@ -457,14 +496,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the parent CommerceOrderItem entity (FK). Zero when this is a top-level item."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long parentOrderItemId;
 
 	@JsonIgnore
 	private Supplier<Long> _parentOrderItemIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Embedded collection of shipments for this item -- populated by the PlacedOrderItemShipment nested field resolver."
+	)
 	@Valid
 	public PlacedOrderItemShipment[] getPlacedOrderItemShipments() {
 		if (_placedOrderItemShipmentsSupplier != null) {
@@ -502,7 +545,9 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Embedded collection of shipments for this item -- populated by the PlacedOrderItemShipment nested field resolver."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected PlacedOrderItemShipment[] placedOrderItemShipments;
 
@@ -510,7 +555,9 @@ public class PlacedOrderItem implements Serializable {
 	private Supplier<PlacedOrderItemShipment[]>
 		_placedOrderItemShipmentsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Embedded collection of child placed order items, transformed from CommerceOrderItem.getChildCommerceOrderItems()."
+	)
 	@Valid
 	public PlacedOrderItem[] getPlacedOrderItems() {
 		if (_placedOrderItemsSupplier != null) {
@@ -546,7 +593,9 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Embedded collection of child placed order items, transformed from CommerceOrderItem.getChildCommerceOrderItems()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected PlacedOrderItem[] placedOrderItems;
 
@@ -593,7 +642,9 @@ public class PlacedOrderItem implements Serializable {
 	@JsonIgnore
 	private Supplier<Price> _priceSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the parent CProduct entity (FK)."
+	)
 	public Long getProductId() {
 		if (_productIdSupplier != null) {
 			productId = _productIdSupplier.get();
@@ -627,7 +678,7 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Reference to the parent CProduct entity (FK).")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long productId;
 
@@ -635,6 +686,7 @@ public class PlacedOrderItem implements Serializable {
 	private Supplier<Long> _productIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized product URL title. Map keys are locale codes (for example, en_US, it_IT); values are the URL title strings sourced from CPDefinitionLocalService.getUrlTitleMap.",
 		example = "{en_US=product-url-us, hr_HR=product-url-hr, hu_HU=product-url-hu}"
 	)
 	@Valid
@@ -672,14 +724,19 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized product URL title. Map keys are locale codes (for example, en_US, it_IT); values are the URL title strings sourced from CPDefinitionLocalService.getUrlTitleMap."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, String> productURLs;
 
 	@JsonIgnore
 	private Supplier<Map<String, String>> _productURLsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized formatted quantity, computed by CommerceQuantityFormatter.format against the item's CPInstance and unit of measure.",
+		example = "10.1"
+	)
 	@Valid
 	public BigDecimal getQuantity() {
 		if (_quantitySupplier != null) {
@@ -714,14 +771,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized formatted quantity, computed by CommerceQuantityFormatter.format against the item's CPInstance and unit of measure."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal quantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _quantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "SKU of the original item this row replaced when the item was swapped at fulfillment."
+	)
 	public String getReplacedSku() {
 		if (_replacedSkuSupplier != null) {
 			replacedSku = _replacedSkuSupplier.get();
@@ -755,14 +816,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "SKU of the original item this row replaced when the item was swapped at fulfillment."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String replacedSku;
 
 	@JsonIgnore
 	private Supplier<String> _replacedSkuSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Requested delivery date on the item."
+	)
 	public Date getRequestedDeliveryDate() {
 		if (_requestedDeliveryDateSupplier != null) {
 			requestedDeliveryDate = _requestedDeliveryDateSupplier.get();
@@ -796,7 +861,7 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Requested delivery date on the item.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date requestedDeliveryDate;
 
@@ -845,7 +910,10 @@ public class PlacedOrderItem implements Serializable {
 	@JsonIgnore
 	private Supplier<Settings> _settingsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the CommerceAddress linked to the item via shippingAddressId.",
+		example = "AB-34098-789-N"
+	)
 	public String getShippingAddressExternalReferenceCode() {
 		if (_shippingAddressExternalReferenceCodeSupplier != null) {
 			shippingAddressExternalReferenceCode =
@@ -884,14 +952,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "External reference code of the CommerceAddress linked to the item via shippingAddressId."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingAddressExternalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _shippingAddressExternalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the per-item CommerceAddress entity (FK)."
+	)
 	public Long getShippingAddressId() {
 		if (_shippingAddressIdSupplier != null) {
 			shippingAddressId = _shippingAddressIdSupplier.get();
@@ -925,14 +997,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the per-item CommerceAddress entity (FK)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long shippingAddressId;
 
 	@JsonIgnore
 	private Supplier<Long> _shippingAddressIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "SKU string from CommerceOrderItem.getSku()."
+	)
 	public String getSku() {
 		if (_skuSupplier != null) {
 			sku = _skuSupplier.get();
@@ -964,14 +1040,16 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "SKU string from CommerceOrderItem.getSku().")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String sku;
 
 	@JsonIgnore
 	private Supplier<String> _skuSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the CPInstance entity (FK) for the SKU."
+	)
 	public Long getSkuId() {
 		if (_skuIdSupplier != null) {
 			skuId = _skuIdSupplier.get();
@@ -1003,14 +1081,19 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the CPInstance entity (FK) for the SKU."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long skuId;
 
 	@JsonIgnore
 	private Supplier<Long> _skuIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "true")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When true the item is part of a subscription, from CommerceOrderItem.isSubscription().",
+		example = "true"
+	)
 	public Boolean getSubscription() {
 		if (_subscriptionSupplier != null) {
 			subscription = _subscriptionSupplier.get();
@@ -1044,14 +1127,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "When true the item is part of a subscription, from CommerceOrderItem.isSubscription()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean subscription;
 
 	@JsonIgnore
 	private Supplier<Boolean> _subscriptionSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "URL of the item thumbnail, from CPInstanceHelper.getCPInstanceThumbnailSrc."
+	)
 	public String getThumbnail() {
 		if (_thumbnailSupplier != null) {
 			thumbnail = _thumbnailSupplier.get();
@@ -1085,14 +1172,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "URL of the item thumbnail, from CPInstanceHelper.getCPInstanceThumbnailSrc."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String thumbnail;
 
 	@JsonIgnore
 	private Supplier<String> _thumbnailSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized name of the chosen CPInstanceUnitOfMeasure."
+	)
 	public String getUnitOfMeasure() {
 		if (_unitOfMeasureSupplier != null) {
 			unitOfMeasure = _unitOfMeasureSupplier.get();
@@ -1126,14 +1217,19 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized name of the chosen CPInstanceUnitOfMeasure."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String unitOfMeasure;
 
 	@JsonIgnore
 	private Supplier<String> _unitOfMeasureSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "m")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Key of the chosen CPInstanceUnitOfMeasure.",
+		example = "m"
+	)
 	public String getUnitOfMeasureKey() {
 		if (_unitOfMeasureKeySupplier != null) {
 			unitOfMeasureKey = _unitOfMeasureKeySupplier.get();
@@ -1167,14 +1263,16 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Key of the chosen CPInstanceUnitOfMeasure.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String unitOfMeasureKey;
 
 	@JsonIgnore
 	private Supplier<String> _unitOfMeasureKeySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Declared validity flag. Declared on the schema; not currently populated by this converter."
+	)
 	public Boolean getValid() {
 		if (_validSupplier != null) {
 			valid = _validSupplier.get();
@@ -1208,14 +1306,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Declared validity flag. Declared on the schema; not currently populated by this converter."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean valid;
 
 	@JsonIgnore
 	private Supplier<Boolean> _validSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "URLs of the first virtual-item file entry attached to the order item. Falls back to CommerceMediaResolver.getDownloadVirtualOrderItemURL when no entry stores a direct URL."
+	)
 	public String[] getVirtualItemURLs() {
 		if (_virtualItemURLsSupplier != null) {
 			virtualItemURLs = _virtualItemURLsSupplier.get();
@@ -1249,14 +1351,18 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "URLs of the first virtual-item file entry attached to the order item. Falls back to CommerceMediaResolver.getDownloadVirtualOrderItemURL when no entry stores a direct URL."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] virtualItemURLs;
 
 	@JsonIgnore
 	private Supplier<String[]> _virtualItemURLsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Full list of virtual-item file entries on the order item. See the VirtualItem schema."
+	)
 	@Valid
 	public VirtualItem[] getVirtualItems() {
 		if (_virtualItemsSupplier != null) {
@@ -1291,7 +1397,9 @@ public class PlacedOrderItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Full list of virtual-item file entries on the order item. See the VirtualItem schema."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected VirtualItem[] virtualItems;
 
@@ -1901,4 +2009,4 @@ public class PlacedOrderItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1901264760
+// LIFERAY-REST-BUILDER-HASH:1689457304

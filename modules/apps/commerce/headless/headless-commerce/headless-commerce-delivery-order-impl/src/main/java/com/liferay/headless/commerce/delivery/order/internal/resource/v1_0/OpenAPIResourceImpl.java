@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 @Generated("")
 @OpenAPIDefinition(
-	info = @Info(description = "Headless Delivery Commerce Order API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.order.client', and version '1.0.35'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Headless Delivery Commerce Order API", version = "v1.0")
+	info = @Info(description = "Buyer-facing read and update API for placed Liferay Commerce orders -- every operation in this module operates on a CommerceOrder whose status is no longer the open cart-draft state, so the surface is a finished order's view rather than a cart-edit surface. Primary entities -- PlacedOrder, PlacedOrderItem, PlacedOrderAddress, PlacedOrderComment, PlacedOrderItemShipment, Shipment, OrderTransition, Term, and Attachment. The audience is the storefront and order-history consumers in a channel; the admin counterpart for open carts lives in headless-commerce-delivery-cart and for managing orders end-to-end in headless-commerce-admin-order. Common workflows -- (1) list a buyer's orders in a channel with GET /channels/<channelId>/placed-orders or its by-externalReferenceCode variants, (2) drill into one order with GET /placed-orders/<placedOrderId> or its by-externalReferenceCode variant and follow the embedded ids into the billing-address, shipping-address, items, shipments, and comments sub-resources, (3) inspect or execute the workflow transitions available to the buyer with GET and POST /placed-orders/<placedOrderId>/order-transitions, including the synthetic process-quote and reorder transitions, (4) attach a supporting document to an order with POST /placed-orders/<placedOrderId>/attachments/by-base64 and list or delete attachments from the same sub-resource, (5) edit limited buyer-facing fields (name, purchase order number, printed note, custom fields) with PATCH /placed-orders/<placedOrderId>, (6) resume payment for an order via GET /placed-orders/<placedOrderId>/payment-url with an optional callbackURL. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.order.client', and version '1.0.35'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Liferay Commerce Delivery Order API", version = "v1.0")
 )
 @Path("/v1.0")
 public class OpenAPIResourceImpl {
@@ -108,4 +108,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:237112358
+// LIFERAY-REST-BUILDER-HASH:-454798300

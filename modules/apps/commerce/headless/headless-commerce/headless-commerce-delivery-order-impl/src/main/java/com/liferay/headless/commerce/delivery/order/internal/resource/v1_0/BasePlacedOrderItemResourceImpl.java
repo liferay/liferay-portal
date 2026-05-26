@@ -76,7 +76,7 @@ public abstract class BasePlacedOrderItemResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-items'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order items."
+		description = "Resolves the order by external reference code and runs an indexed CommerceOrderItem search scoped to that order id with parentCommerceOrderItemId = 0 so only top-level items are returned. Search drives the keyword query and sort supports PlacedOrderItemEntityModel fields -- quantity, name, sku, unitOfMeasure. The skuId parameter is declared but not currently applied as an extra filter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -143,7 +143,7 @@ public abstract class BasePlacedOrderItemResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-order-items/{placedOrderItemId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve information of the given Placed Order."
+		description = "Returns the placed order item by id after verifying its parent CommerceOrder is not open, and converts it through PlacedOrderItemDTOConverter with the order's commerce account id so the thumbnail and adaptive-media tags resolve correctly."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -178,7 +178,7 @@ public abstract class BasePlacedOrderItemResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-order-items/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve information of the given placed order item."
+		description = "Resolves the CommerceOrderItem by external reference code and delegates to getPlacedOrderItem. Raises NoSuchOrderItemException when no matching item is found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -215,7 +215,7 @@ public abstract class BasePlacedOrderItemResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-items'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order items."
+		description = "Loads the order, refuses on open orders, then runs an indexed CommerceOrderItem search scoped to that order id with parentCommerceOrderItemId = 0 so only top-level items appear; child items live inside each item's placedOrderItems collection. Search drives the keyword query and sort supports PlacedOrderItemEntityModel fields -- quantity, name, sku, unitOfMeasure. The skuId parameter is accepted but not currently applied as an extra filter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1047,4 +1047,4 @@ public abstract class BasePlacedOrderItemResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderItemResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1233941020
+// LIFERAY-REST-BUILDER-HASH:499629117

@@ -77,7 +77,7 @@ public abstract class BasePlacedOrderResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/channels/{channelId}/accounts/{accountId}/placed-orders'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves placed orders for specific account in the given channel."
+		description = "Returns a page of placed orders owned by the given account inside the given channel. The implementation resolves the channel via CommerceChannelLocalService.getCommerceChannel and runs an indexed search of CommerceOrder scoped to the channel group, the supplied account, and every order status except ORDER_STATUS_OPEN. Supported filter and sort fields come from PlacedOrderEntityModel -- accountId, orderStatus, customFields, orderStatusInfo, createDate, modifiedDate, orderDate, requestedDeliveryDate, authorId, id, account, author, externalReferenceCode, name, orderType, orderTypeExternalReferenceCode, purchaseOrderNumber."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -148,7 +148,7 @@ public abstract class BasePlacedOrderResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/channels/by-externalReferenceCode/{channelExternalReferenceCode}/accounts/by-externalReferenceCode/{accountExternalReferenceCode}/placed-orders'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves placed orders for specific account in the given channel."
+		description = "Resolves the channel and the account by external reference code, then delegates to getChannelAccountPlacedOrdersPage to return the same channel-scoped, account-scoped page of placed orders. Filter, sort, and search semantics match the by-id variant."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -220,7 +220,7 @@ public abstract class BasePlacedOrderResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}/placed-orders'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves placed orders in the given channel."
+		description = "Resolves the channel by external reference code and delegates to getChannelPlacedOrdersPage to return non-open placed orders visible to the caller in that channel."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -283,7 +283,7 @@ public abstract class BasePlacedOrderResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/channels/{channelId}/placed-orders'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves placed orders in the given channel."
+		description = "Returns a page of non-open placed orders in the given channel. When the caller lacks the MANAGE_COMMERCE_ORDERS portlet permission the search is narrowed to commerce accounts the user belongs to via CommerceAccountHelper.getUserCommerceAccountIds. Supported filter and sort fields are the PlacedOrderEntityModel field set."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -344,7 +344,7 @@ public abstract class BasePlacedOrderResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve information of the given Placed Order."
+		description = "Returns the placed order by id. Raises NoSuchOrderException when the order is still open -- open carts are exposed through headless-commerce-delivery-cart, not through this API."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -377,7 +377,7 @@ public abstract class BasePlacedOrderResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve information of the given Placed Order."
+		description = "Resolves the order by external reference code, refuses when it is still open, then converts it through PlacedOrderDTOConverter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -411,6 +411,9 @@ public abstract class BasePlacedOrderResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-url'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Resolves the order by external reference code and delegates to getPlacedOrderPaymentURL to build the next-step payment URL the storefront should redirect to."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -450,6 +453,9 @@ public abstract class BasePlacedOrderResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/payment-url'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Builds the URL the storefront should redirect to in order to resume payment for the placed order. When callbackURL is supplied it is used as the next-step URL, otherwise the order-confirmation checkout step URL is used. Refuses on open orders."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -487,6 +493,9 @@ public abstract class BasePlacedOrderResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}' -d $'{"attachments": ___, "customFields": ___, "name": ___, "printedNote": ___, "purchaseOrderNumber": ___, "steps": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "JSON Merge Patch -- only supplied fields are modified. Refuses with CommerceOrderStatusException when the order is open. Accepted fields are name and purchaseOrderNumber (applied via CommerceOrderEngine.updateCommerceOrder, other order fields preserved), printedNote (applied via CommerceOrderService.updatePrintedNote), and customFields (applied via ExpandoUtil.updateExpando)."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -519,6 +528,9 @@ public abstract class BasePlacedOrderResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}' -d $'{"attachments": ___, "customFields": ___, "name": ___, "printedNote": ___, "purchaseOrderNumber": ___, "steps": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "JSON Merge Patch -- only supplied fields are modified. Resolves the order by external reference code and refuses with CommerceOrderStatusException when it is open. The accepted fields are name and purchaseOrderNumber (applied via CommerceOrderEngine.updateCommerceOrder, other order fields preserved), printedNote (applied via CommerceOrderService.updatePrintedNote), and customFields (applied via ExpandoUtil.updateExpando)."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1240,4 +1252,4 @@ public abstract class BasePlacedOrderResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1047678927
+// LIFERAY-REST-BUILDER-HASH:-277907678

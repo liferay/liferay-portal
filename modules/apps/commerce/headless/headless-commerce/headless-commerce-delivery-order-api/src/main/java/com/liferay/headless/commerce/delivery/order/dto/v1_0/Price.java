@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Price")
+@GraphQLName(
+	description = "Per-unit pricing block for a placed order item -- base, promotional, final, plus formatted strings in the order's currency and locale.",
+	value = "Price"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Price")
 public class Price implements Serializable {
@@ -46,7 +49,9 @@ public class Price implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Price.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized currency name from the order's CommerceCurrency."
+	)
 	public String getCurrency() {
 		if (_currencySupplier != null) {
 			currency = _currencySupplier.get();
@@ -80,14 +85,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized currency name from the order's CommerceCurrency."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String currency;
 
 	@JsonIgnore
 	private Supplier<String> _currencySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Per-unit discount amount as a double, in the order's currency."
+	)
 	public Double getDiscount() {
 		if (_discountSupplier != null) {
 			discount = _discountSupplier.get();
@@ -121,14 +130,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Per-unit discount amount as a double, in the order's currency."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double discount;
 
 	@JsonIgnore
 	private Supplier<Double> _discountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Per-unit discount amount formatted in the order's currency and locale."
+	)
 	public String getDiscountFormatted() {
 		if (_discountFormattedSupplier != null) {
 			discountFormatted = _discountFormattedSupplier.get();
@@ -162,14 +175,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Per-unit discount amount formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String discountFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _discountFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Locale-formatted discount percentage produced by CommercePriceFormatter.format."
+	)
 	public String getDiscountPercentage() {
 		if (_discountPercentageSupplier != null) {
 			discountPercentage = _discountPercentageSupplier.get();
@@ -203,14 +220,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Locale-formatted discount percentage produced by CommercePriceFormatter.format."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String discountPercentage;
 
 	@JsonIgnore
 	private Supplier<String> _discountPercentageSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "First-level cumulative discount percentage from the item's price calculation."
+	)
 	public Double getDiscountPercentageLevel1() {
 		if (_discountPercentageLevel1Supplier != null) {
 			discountPercentageLevel1 = _discountPercentageLevel1Supplier.get();
@@ -245,14 +266,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "First-level cumulative discount percentage from the item's price calculation."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double discountPercentageLevel1;
 
 	@JsonIgnore
 	private Supplier<Double> _discountPercentageLevel1Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Second-level cumulative discount percentage from the item's price calculation."
+	)
 	public Double getDiscountPercentageLevel2() {
 		if (_discountPercentageLevel2Supplier != null) {
 			discountPercentageLevel2 = _discountPercentageLevel2Supplier.get();
@@ -287,14 +312,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Second-level cumulative discount percentage from the item's price calculation."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double discountPercentageLevel2;
 
 	@JsonIgnore
 	private Supplier<Double> _discountPercentageLevel2Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Third-level cumulative discount percentage from the item's price calculation."
+	)
 	public Double getDiscountPercentageLevel3() {
 		if (_discountPercentageLevel3Supplier != null) {
 			discountPercentageLevel3 = _discountPercentageLevel3Supplier.get();
@@ -329,14 +358,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Third-level cumulative discount percentage from the item's price calculation."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double discountPercentageLevel3;
 
 	@JsonIgnore
 	private Supplier<Double> _discountPercentageLevel3Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Fourth-level cumulative discount percentage from the item's price calculation."
+	)
 	public Double getDiscountPercentageLevel4() {
 		if (_discountPercentageLevel4Supplier != null) {
 			discountPercentageLevel4 = _discountPercentageLevel4Supplier.get();
@@ -371,14 +404,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Fourth-level cumulative discount percentage from the item's price calculation."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double discountPercentageLevel4;
 
 	@JsonIgnore
 	private Supplier<Double> _discountPercentageLevel4Supplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Final per-unit price after discounts and promos as a double, in the order's currency."
+	)
 	public Double getFinalPrice() {
 		if (_finalPriceSupplier != null) {
 			finalPrice = _finalPriceSupplier.get();
@@ -412,14 +449,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Final per-unit price after discounts and promos as a double, in the order's currency."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double finalPrice;
 
 	@JsonIgnore
 	private Supplier<Double> _finalPriceSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Final per-unit price formatted in the order's currency and locale."
+	)
 	public String getFinalPriceFormatted() {
 		if (_finalPriceFormattedSupplier != null) {
 			finalPriceFormatted = _finalPriceFormattedSupplier.get();
@@ -453,14 +494,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Final per-unit price formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String finalPriceFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _finalPriceFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Base per-unit price before discounts as a double, in the order's currency."
+	)
 	public Double getPrice() {
 		if (_priceSupplier != null) {
 			price = _priceSupplier.get();
@@ -494,14 +539,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Base per-unit price before discounts as a double, in the order's currency."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double price;
 
 	@JsonIgnore
 	private Supplier<Double> _priceSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Base per-unit price formatted in the order's currency and locale."
+	)
 	public String getPriceFormatted() {
 		if (_priceFormattedSupplier != null) {
 			priceFormatted = _priceFormattedSupplier.get();
@@ -535,14 +584,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Base per-unit price formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String priceFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _priceFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Promo per-unit price as a double, in the order's currency, when a promo is active."
+	)
 	public Double getPromoPrice() {
 		if (_promoPriceSupplier != null) {
 			promoPrice = _promoPriceSupplier.get();
@@ -576,14 +629,18 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Promo per-unit price as a double, in the order's currency, when a promo is active."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double promoPrice;
 
 	@JsonIgnore
 	private Supplier<Double> _promoPriceSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Promo per-unit price formatted in the order's currency and locale."
+	)
 	public String getPromoPriceFormatted() {
 		if (_promoPriceFormattedSupplier != null) {
 			promoPriceFormatted = _promoPriceFormattedSupplier.get();
@@ -617,7 +674,9 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Promo per-unit price formatted in the order's currency and locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String promoPriceFormatted;
 
@@ -944,4 +1003,4 @@ public class Price implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:469364756
+// LIFERAY-REST-BUILDER-HASH:608689753

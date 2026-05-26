@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("OrderTransition")
+@GraphQLName(
+	description = "A workflow transition that can be executed on a placed order. name carries either a workflow transition name, the synthetic value process-quote, or the synthetic value reorder; workflowTaskId is set when the transition is a real workflow task; orderId is set on the reorder response to point at the newly created order.",
+	value = "OrderTransition"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "OrderTransition")
 public class OrderTransition implements Serializable {
@@ -46,7 +49,9 @@ public class OrderTransition implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(OrderTransition.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Optional reviewer comment attached to the transition -- read on input and echoed on the response."
+	)
 	public String getComment() {
 		if (_commentSupplier != null) {
 			comment = _commentSupplier.get();
@@ -80,14 +85,18 @@ public class OrderTransition implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Optional reviewer comment attached to the transition -- read on input and echoed on the response."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String comment;
 
 	@JsonIgnore
 	private Supplier<String> _commentSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized label of the transition name, resolved via Language.get(locale, name). Read-only."
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -121,14 +130,18 @@ public class OrderTransition implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized label of the transition name, resolved via Language.get(locale, name). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Transition name. Accepts either a workflow transition name, the synthetic value process-quote, or the synthetic value reorder."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -160,14 +173,18 @@ public class OrderTransition implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Transition name. Accepts either a workflow transition name, the synthetic value process-quote, or the synthetic value reorder."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "On the reorder response, the identifier of the newly created CommerceOrder. Unset for other transitions. Read-only."
+	)
 	public Long getOrderId() {
 		if (_orderIdSupplier != null) {
 			orderId = _orderIdSupplier.get();
@@ -201,14 +218,18 @@ public class OrderTransition implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "On the reorder response, the identifier of the newly created CommerceOrder. Unset for other transitions. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long orderId;
 
 	@JsonIgnore
 	private Supplier<Long> _orderIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Identifier of the CommerceOrder the transition originated from. Read-only."
+	)
 	public Long getPlacedOrderId() {
 		if (_placedOrderIdSupplier != null) {
 			placedOrderId = _placedOrderIdSupplier.get();
@@ -242,14 +263,18 @@ public class OrderTransition implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Identifier of the CommerceOrder the transition originated from. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long placedOrderId;
 
 	@JsonIgnore
 	private Supplier<Long> _placedOrderIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Identifier of the workflow task being acted on. Zero indicates one of the synthetic process-quote or reorder transitions."
+	)
 	public Long getWorkflowTaskId() {
 		if (_workflowTaskIdSupplier != null) {
 			workflowTaskId = _workflowTaskIdSupplier.get();
@@ -283,7 +308,9 @@ public class OrderTransition implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Identifier of the workflow task being acted on. Zero indicates one of the synthetic process-quote or reorder transitions."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long workflowTaskId;
 
@@ -502,4 +529,4 @@ public class OrderTransition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1326297641
+// LIFERAY-REST-BUILDER-HASH:-1781759893

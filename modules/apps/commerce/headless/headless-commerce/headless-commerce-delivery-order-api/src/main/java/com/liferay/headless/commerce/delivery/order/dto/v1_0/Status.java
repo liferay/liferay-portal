@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Status")
+@GraphQLName(
+	description = "Status descriptor -- the integer code, the raw label key, and the localized label. The meaning of the code depends on which Status slot it appears in (order, payment, workflow, or shipment) -- see the embedding property's description for the integer-to-meaning mapping.",
+	value = "Status"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Status")
 public class Status implements Serializable {
@@ -46,7 +49,9 @@ public class Status implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Status.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Integer status code. The meaning depends on which Status slot this is in (order, payment, workflow, or shipment); see the embedding property's description for the integer-to-meaning mapping."
+	)
 	public Integer getCode() {
 		if (_codeSupplier != null) {
 			code = _codeSupplier.get();
@@ -78,14 +83,19 @@ public class Status implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Integer status code. The meaning depends on which Status slot this is in (order, payment, workflow, or shipment); see the embedding property's description for the integer-to-meaning mapping."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer code;
 
 	@JsonIgnore
 	private Supplier<Integer> _codeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "black")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Raw status label key, lowercase-with-dashes (for example, processing, awaiting-pickup).",
+		example = "black"
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -119,14 +129,19 @@ public class Status implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Raw status label key, lowercase-with-dashes (for example, processing, awaiting-pickup)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "black")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized status label resolved via Language.get(resourceBundle, label).",
+		example = "black"
+	)
 	public String getLabel_i18n() {
 		if (_label_i18nSupplier != null) {
 			label_i18n = _label_i18nSupplier.get();
@@ -160,7 +175,9 @@ public class Status implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized status label resolved via Language.get(resourceBundle, label)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label_i18n;
 
@@ -339,4 +356,4 @@ public class Status implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1829148916
+// LIFERAY-REST-BUILDER-HASH:1507092670

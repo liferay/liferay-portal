@@ -47,7 +47,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/delivery-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve delivery term of the given Placed Order."
+		description = "Resolves the order by external reference code and delegates to getPlacedOrderDeliveryTerm to return the linked CommerceTermEntry as a Term."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -82,7 +82,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve payment term of the given Placed Order."
+		description = "Resolves the order by external reference code and delegates to getPlacedOrderPaymentTerm to return the linked CommerceTermEntry as a Term."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -117,7 +117,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/delivery-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve delivery term of the given Placed Order."
+		description = "Loads the order, refuses on open orders, and returns the CommerceTermEntry referenced by commerceOrder.getDeliveryCommerceTermEntryId() projected into the Term schema."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -150,7 +150,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/payment-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve payment term of the given Placed Order."
+		description = "Loads the order, refuses on open orders, and returns the CommerceTermEntry referenced by commerceOrder.getPaymentCommerceTermEntryId() projected into the Term schema."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -622,4 +622,4 @@ public abstract class BaseTermResourceImpl implements TermResource {
 		LogFactoryUtil.getLog(BaseTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:187635314
+// LIFERAY-REST-BUILDER-HASH:711764992

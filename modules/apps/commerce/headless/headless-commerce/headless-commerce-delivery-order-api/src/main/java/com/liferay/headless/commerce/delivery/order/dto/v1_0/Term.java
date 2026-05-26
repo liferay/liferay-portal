@@ -35,7 +35,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Term")
+@GraphQLName(
+	description = "A CommerceTermEntry referenced by a placed order, exposed in both the delivery-term and payment-term slots.",
+	value = "Term"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Term")
 public class Term implements Serializable {
@@ -48,7 +51,10 @@ public class Term implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Term.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "description")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized description of the CommerceTermEntry in the requested locale.",
+		example = "description"
+	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
 			description = _descriptionSupplier.get();
@@ -82,14 +88,19 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized description of the CommerceTermEntry in the requested locale."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String description;
 
 	@JsonIgnore
 	private Supplier<String> _descriptionSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the CommerceTermEntry.",
+		example = "AAB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -123,7 +134,9 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "External reference code of the CommerceTermEntry."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
 
@@ -131,7 +144,10 @@ public class Term implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Primary key -- the CommerceTermEntry id.",
+		example = "30130"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -163,14 +179,17 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Primary key -- the CommerceTermEntry id.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "name")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Programmatic name (key) of the CommerceTermEntry.",
+		example = "name"
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -202,7 +221,9 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Programmatic name (key) of the CommerceTermEntry."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -397,4 +418,4 @@ public class Term implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1891138375
+// LIFERAY-REST-BUILDER-HASH:813010065

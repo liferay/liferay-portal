@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("PlacedOrderComment")
+@GraphQLName(
+	description = "A CommerceOrderNote attached to a placed order. Use the restricted flag to distinguish buyer-visible notes from back-office-only notes.",
+	value = "PlacedOrderComment"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PlacedOrderComment")
 public class PlacedOrderComment implements Serializable {
@@ -46,7 +49,9 @@ public class PlacedOrderComment implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(PlacedOrderComment.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "User name of the user who wrote the note, from CommerceOrderNote.getUserName()."
+	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
 			author = _authorSupplier.get();
@@ -80,14 +85,18 @@ public class PlacedOrderComment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "User name of the user who wrote the note, from CommerceOrderNote.getUserName()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String author;
 
 	@JsonIgnore
 	private Supplier<String> _authorSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Body of the comment, from CommerceOrderNote.getContent()."
+	)
 	public String getContent() {
 		if (_contentSupplier != null) {
 			content = _contentSupplier.get();
@@ -121,14 +130,19 @@ public class PlacedOrderComment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Body of the comment, from CommerceOrderNote.getContent()."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String content;
 
 	@JsonIgnore
 	private Supplier<String> _contentSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key on the CommerceOrderNote -- the caller-supplied external reference code.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -162,14 +176,18 @@ public class PlacedOrderComment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key on the CommerceOrderNote -- the caller-supplied external reference code."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Primary key -- the CommerceOrderNote id."
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -201,14 +219,16 @@ public class PlacedOrderComment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Primary key -- the CommerceOrderNote id.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the parent CommerceOrder entity (FK)."
+	)
 	public Long getOrderId() {
 		if (_orderIdSupplier != null) {
 			orderId = _orderIdSupplier.get();
@@ -242,14 +262,18 @@ public class PlacedOrderComment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the parent CommerceOrder entity (FK)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long orderId;
 
 	@JsonIgnore
 	private Supplier<Long> _orderIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When true the note is hidden from buyer-side audiences (CommerceOrderNote.isRestricted())."
+	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
 			restricted = _restrictedSupplier.get();
@@ -283,7 +307,9 @@ public class PlacedOrderComment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "When true the note is hidden from buyer-side audiences (CommerceOrderNote.isRestricted())."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean restricted;
 
@@ -502,4 +528,4 @@ public class PlacedOrderComment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1993721048
+// LIFERAY-REST-BUILDER-HASH:790501379

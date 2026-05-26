@@ -48,7 +48,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-billing-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order billing address."
+		description = "Resolves the order by external reference code and returns the snapshot CommerceAddress referenced by the order's billingAddressId via PlacedOrderAddressDTOConverter. Returns an empty PlacedOrderAddress when the order has no billing address."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -86,7 +86,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-shipping-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order shipping address."
+		description = "Resolves the order by external reference code and returns the snapshot CommerceAddress referenced by the order's shippingAddressId via PlacedOrderAddressDTOConverter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -124,7 +124,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-billing-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order billing address."
+		description = "Loads the order, refuses on open orders, and returns the snapshot CommerceAddress referenced by commerceOrder.getBillingAddressId() via PlacedOrderAddressDTOConverter. Returns an empty PlacedOrderAddress when the order has no billing address."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -161,7 +161,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-shipping-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order shipping address."
+		description = "Loads the order, refuses on open orders, and returns the snapshot CommerceAddress referenced by commerceOrder.getShippingAddressId() via PlacedOrderAddressDTOConverter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -637,4 +637,4 @@ public abstract class BasePlacedOrderAddressResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:128097531
+// LIFERAY-REST-BUILDER-HASH:-1557293805

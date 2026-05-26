@@ -74,7 +74,7 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-order-items/by-externalReferenceCode/{externalReferenceCode}/placed-order-item-shipments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve shipments of the given placed order item."
+		description = "Resolves the CommerceOrderItem by external reference code and delegates to getPlacedOrderItemPlacedOrderItemShipmentsPage to return the shipments for that item."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -114,7 +114,7 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-order-items/{placedOrderItemId}/placed-order-item-shipments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve shipments of the given Placed Order Item."
+		description = "Loads the item, refuses when its parent order is open, then returns the CommerceShipmentItem rows via CommerceShipmentItemService.getCommerceShipmentItemsByCommerceOrderItemId. When no rows exist it falls back to shipment items from non-open supplier orders linked via CommerceOrderItemService.getSupplierCommerceOrderItems."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -900,4 +900,4 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderItemShipmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1165342351
+// LIFERAY-REST-BUILDER-HASH:-1554698157

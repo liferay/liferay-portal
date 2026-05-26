@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("VirtualItem")
+@GraphQLName(
+	description = "A virtual-item file entry attached to a placed order item -- carries the download URL, the remaining usages, and the file version.",
+	value = "VirtualItem"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "VirtualItem")
 public class VirtualItem implements Serializable {
@@ -47,6 +50,7 @@ public class VirtualItem implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Direct file URL on the CommerceVirtualOrderItemFileEntry. Falls back to CommerceMediaResolver.getDownloadVirtualOrderItemURL when the entry stores no URL.",
 		example = "http://www.liferay.com"
 	)
 	public String getUrl() {
@@ -80,14 +84,18 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Direct file URL on the CommerceVirtualOrderItemFileEntry. Falls back to CommerceMediaResolver.getDownloadVirtualOrderItemURL when the entry stores no URL."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String url;
 
 	@JsonIgnore
 	private Supplier<String> _urlSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Remaining download count on the virtual item file entry."
+	)
 	public Integer getUsages() {
 		if (_usagesSupplier != null) {
 			usages = _usagesSupplier.get();
@@ -121,14 +129,19 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Remaining download count on the virtual item file entry."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer usages;
 
 	@JsonIgnore
 	private Supplier<Integer> _usagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "v1.0.0")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Version string of the virtual item file entry. Null when unset.",
+		example = "v1.0.0"
+	)
 	public String getVersion() {
 		if (_versionSupplier != null) {
 			version = _versionSupplier.get();
@@ -162,7 +175,9 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Version string of the virtual item file entry. Null when unset."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String version;
 
@@ -341,4 +356,4 @@ public class VirtualItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1879184750
+// LIFERAY-REST-BUILDER-HASH:-2036462811
