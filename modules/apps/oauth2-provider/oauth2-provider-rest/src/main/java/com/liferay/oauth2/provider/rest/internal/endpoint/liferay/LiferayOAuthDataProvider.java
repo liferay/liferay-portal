@@ -1806,7 +1806,8 @@ public class LiferayOAuthDataProvider
 
 		for (String audience : audiences) {
 			if (Validator.isBlank(audience)) {
-				continue;
+				OAuth2ErrorUtil.reportInvalidRequestError(
+					audience, "invalid_target", Response.Status.BAD_REQUEST);
 			}
 
 			URI uri;
