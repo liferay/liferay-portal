@@ -9,6 +9,7 @@ import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.exception.NoSuchFileShortcutException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.processor.RawMetadataProcessorUtil;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalServiceUtil;
@@ -205,18 +206,20 @@ public class ActionUtil {
 		boolean ignoreRootFolder = ParamUtil.getBoolean(
 			httpServletRequest, "ignoreRootFolder");
 
+		long rootFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
+
+			DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper =
+				new DLPortletInstanceSettingsHelper(
+					new DLRequestHelper(httpServletRequest));
+
+			rootFolderId = dlPortletInstanceSettingsHelper.getRootFolderId();
+		}
+
 		if ((folderId <= 0) && !ignoreRootFolder) {
-			try (SafeCloseable safeCloseable =
-					CTCollectionThreadLocal.
-						setProductionModeWithSafeCloseable()) {
-
-				DLPortletInstanceSettingsHelper
-					dlPortletInstanceSettingsHelper =
-						new DLPortletInstanceSettingsHelper(
-							new DLRequestHelper(httpServletRequest));
-
-				folderId = dlPortletInstanceSettingsHelper.getRootFolderId();
-			}
+			folderId = rootFolderId;
 		}
 
 		if (folderId <= 0) {
@@ -228,6 +231,12 @@ public class ActionUtil {
 		}
 
 		Folder folder = DLAppServiceUtil.getFolder(folderId);
+
+		if ((rootFolderId > 0) && (folderId != rootFolderId) &&
+			!_isDescendantOfRootFolder(folder, rootFolderId)) {
+
+			throw new NoSuchFolderException("{folderId=" + folderId + "}");
+		}
 
 		DLFolderUtil.validateDepotFolder(
 			folderId, folder.getGroupId(), themeDisplay.getScopeGroupId());
@@ -310,6 +319,25 @@ public class ActionUtil {
 		throws PortalException {
 
 		return getRepository(PortalUtil.getHttpServletRequest(portletRequest));
+	}
+
+	private static boolean _isDescendantOfRootFolder(
+			Folder folder, long rootFolderId)
+		throws PortalException {
+
+		long parentFolderId = folder.getParentFolderId();
+
+		while (parentFolderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+			if (parentFolderId == rootFolderId) {
+				return true;
+			}
+
+			Folder parentFolder = DLAppServiceUtil.getFolder(parentFolderId);
+
+			parentFolderId = parentFolder.getParentFolderId();
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(ActionUtil.class);
