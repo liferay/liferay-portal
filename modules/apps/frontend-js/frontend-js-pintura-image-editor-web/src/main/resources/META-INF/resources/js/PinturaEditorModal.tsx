@@ -5,10 +5,33 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal, {useModal} from '@clayui/modal';
-import {getEditorDefaults} from '@pqina/pintura';
+import {UtilTab, getEditorDefaults} from '@pqina/pintura';
 import {PinturaEditor} from '@pqina/react-pintura';
 import {sub} from 'frontend-js-web';
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
+
+import '../css/PinturaEditorModal.scss';
+
+// Map Pintura util ids to Lexicon icon symbols available in
+// clay-css/lib/images/icons/icons.svg. Entries without a Lexicon match are
+// left out so Pintura keeps its own default icon for those tabs.
+
+const LEXICON_ICON_BY_UTIL_ID: Record<string, string> = {
+	annotate: 'pencil',
+	crop: 'cut',
+	decorate: 'star',
+	filter: 'filter',
+	finetune: 'adjust',
+	frame: 'square',
+	redact: 'hidden',
+	resize: 'expand',
+};
+
+// Build an SVG string that references the Lexicon sprite Liferay already
+// loads via the theme. Pintura's `UtilTab.icon` accepts raw SVG markup.
+
+const getLexiconIconSvg = (symbol: string): string =>
+	`<svg class="lexicon-icon lexicon-icon-${symbol}" focusable="false" role="presentation"><use href="${Liferay.Icons.spritemap}#${symbol}" /></svg>`;
 
 export interface PinturaEditorModalProps {
 	imageName: string;
@@ -29,6 +52,34 @@ export default function PinturaEditorModal({
 }: PinturaEditorModalProps) {
 	const editorRef = useRef<PinturaEditor>(null);
 	const [saving, setSaving] = useState(false);
+
+	const editorProps = useMemo(() => {
+		const defaults = getEditorDefaults();
+
+		return {
+			...defaults,
+			enableButtonExport: false,
+			enableNavigateHistory: true,
+			enableZoomControls: true,
+			layoutVerticalToolbarPreference: 'bottom' as const,
+			locale: {
+				...defaults.locale,
+
+				// TODO Replace with Liferay.Language.get('adjust') once the
+				// language key lands (it isn't in Language.properties yet).
+
+				finetuneLabel: 'Adjust',
+			},
+			willRenderUtilTabs: (tabs: UtilTab[]) =>
+				tabs.map((tab) => {
+					const symbol = LEXICON_ICON_BY_UTIL_ID[tab.id];
+
+					return symbol
+						? {...tab, icon: getLexiconIconSvg(symbol)}
+						: tab;
+				}),
+		};
+	}, []);
 
 	const handleDone = () => {
 		setSaving(true);
@@ -55,6 +106,7 @@ export default function PinturaEditorModal({
 
 	return (
 		<ClayModal
+			className="pintura-modal"
 			disableAutoClose={saving}
 			observer={observer}
 			size="full-screen"
@@ -73,7 +125,7 @@ export default function PinturaEditorModal({
 
 			<ClayModal.Body scrollable={false}>
 				<PinturaEditor
-					{...getEditorDefaults()}
+					{...editorProps}
 					onProcess={handleProcess}
 					ref={editorRef}
 					src={imageUrl}
