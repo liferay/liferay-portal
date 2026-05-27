@@ -176,7 +176,7 @@ components:
                 dateModified:
                     description:
                         Last modification timestamp of the attachment, in ISO 8601. Read-only.
-                    example: 2017-07-21T19:30:00Z
+                    example: 2017-07-21 19:30:00+00:00
                     format: date-time
                     readOnly: true
                     type: string
@@ -1846,6 +1846,23 @@ components:
                     readOnly: true
                     type: string
             type: object
+    securitySchemes:
+        BasicAuth:
+            scheme: basic
+            type: http
+        BearerAuth:
+            scheme: bearer
+            type: http
+        OAuth2:
+            flows:
+                authorizationCode:
+                    authorizationUrl: /oauth/authorize
+                    scopes:
+                        HeadlessCommerceDeliveryOrder.admin: Grants access to admin operations
+                        HeadlessCommerceDeliveryOrder.read: Grants read access
+                        HeadlessCommerceDeliveryOrder.write: Grants write access
+                    tokenUrl: /oauth/token
+            type: oauth2
 info:
     description:
         "Buyer-facing read and update API for placed Liferay Commerce orders -- every operation in this module operates
@@ -1932,6 +1949,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
     /channels/by-externalReferenceCode/{externalReferenceCode}/placed-orders:
@@ -1992,6 +2014,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
     /channels/{channelId}/accounts/{accountId}/placed-orders:
@@ -2057,6 +2084,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
     /channels/{channelId}/placed-orders:
@@ -2119,6 +2151,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
     /placed-order-comments/by-externalReferenceCode/{externalReferenceCode}:
@@ -2183,6 +2220,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a Note by ERC.
             tags:
             -   PlacedOrderComment
@@ -2247,6 +2289,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a Note by ID.
             tags:
             -   PlacedOrderComment
@@ -2306,6 +2353,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderItem
     /placed-order-items/by-externalReferenceCode/{externalReferenceCode}/placed-order-item-shipments:
@@ -2368,6 +2420,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderItemShipment
     /placed-order-items/{placedOrderItemId}:
@@ -2427,6 +2484,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderItem
     /placed-order-items/{placedOrderItemId}/placed-order-item-shipments:
@@ -2491,6 +2553,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderItemShipment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}:
@@ -2550,6 +2617,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
         patch:
@@ -2646,6 +2718,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             summary: Updates a Placed Order by external reference code.
             tags:
             -   PlacedOrder
@@ -2910,6 +2987,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   Term
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-term:
@@ -2968,6 +3050,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   Term
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-url:
@@ -2985,6 +3072,11 @@ paths:
                         text/plain:
                             schema:
                                 type: string
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-billing-address:
@@ -3045,6 +3137,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderAddress
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-comments:
@@ -3106,6 +3203,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a list of Comments related to an Order.
             tags:
             -   PlacedOrderComment
@@ -3169,6 +3271,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderItem
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-shipping-address:
@@ -3228,6 +3335,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderAddress
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/shipments:
@@ -3292,6 +3404,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a list of Shipments related to an Order.
             tags:
             -   Shipment
@@ -3351,6 +3468,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
         patch:
@@ -3446,6 +3568,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             summary: Updates a Placed Order.
             tags:
             -   PlacedOrder
@@ -3711,6 +3838,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   Term
     /placed-orders/{placedOrderId}/order-transitions:
@@ -3766,6 +3898,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   OrderTransition
         post:
@@ -3827,6 +3964,11 @@ paths:
                     description:
                         Domain validation rejected the request -- the resolved entity could not be found, a referenced
                         lookup key was missing, or a required field was out of range.
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.write
             tags:
             -   OrderTransition
     /placed-orders/{placedOrderId}/payment-term:
@@ -3886,6 +4028,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   Term
     /placed-orders/{placedOrderId}/payment-url:
@@ -3904,6 +4051,11 @@ paths:
                         text/plain:
                             schema:
                                 type: string
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrder
     /placed-orders/{placedOrderId}/placed-order-billing-address:
@@ -3963,6 +4115,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderAddress
     /placed-orders/{placedOrderId}/placed-order-comments:
@@ -4023,6 +4180,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             summary: Gets a list of Comments related to an Order.
             tags:
             -   PlacedOrderComment
@@ -4086,6 +4248,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderItem
     /placed-orders/{placedOrderId}/placed-order-shipping-address:
@@ -4144,6 +4311,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   PlacedOrderAddress
     /placed-orders/{placedOrderId}/shipments:
@@ -4205,6 +4377,11 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            security:
+            -   BasicAuth: []
+            -   BearerAuth: []
+            -   OAuth2:
+                -   HeadlessCommerceDeliveryOrder.read
             tags:
             -   Shipment
 tags:
