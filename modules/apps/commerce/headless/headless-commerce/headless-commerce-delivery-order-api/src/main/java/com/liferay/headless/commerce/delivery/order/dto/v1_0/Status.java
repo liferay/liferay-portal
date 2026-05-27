@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Status descriptor -- an integer code plus its raw label key and its locale-resolved label. The meaning of the code depends on the slot it appears in (order status, payment status, workflow status, or shipment status); the embedding property's description documents the integer-to-meaning mapping.",
+	description = "Status descriptor -- an integer code plus its raw label key and its locale-resolved label. The code's meaning depends on the field that embeds this status (order, payment, workflow, or shipment status); the code property lists the per-slot integer-to-label mapping.",
 	value = "Status"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,7 @@ public class Status implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer status code; the meaning depends on the slot this status appears in -- the embedding property's description documents the integer-to-meaning mapping.",
+		description = "Integer status code whose meaning depends on the embedding field. Order status (orderStatusInfo) -- 0=Completed, 1=Pending, 2=Open, 6=In Progress, 8=Cancelled, 9=Subscription, 10=Processing, 13=Awaiting Pickup, 14=Partially Shipped, 15=Shipped, 16=Declined, 17=Refunded, 18=Disputed, 19=Partially Refunded, 20=On Hold, 21=Quote Requested, 22=Quote Processed. Payment status (paymentStatusInfo) -- 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled, 17=Refunded, 23=Not Required. Workflow status (workflowStatusInfo) -- 0=Approved, 1=Pending, 2=Draft, 3=Expired, 4=Denied, 5=Inactive, 6=Incomplete, 7=Scheduled, 8=In Trash, 9=Empty. Shipment status -- 0=Processing, 1=Ready To Ship, 2=Shipped, 3=Delivered. Read-only.",
 		example = "0"
 	)
 	public Integer getCode() {
@@ -85,7 +85,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer status code; the meaning depends on the slot this status appears in -- the embedding property's description documents the integer-to-meaning mapping."
+		description = "Integer status code whose meaning depends on the embedding field. Order status (orderStatusInfo) -- 0=Completed, 1=Pending, 2=Open, 6=In Progress, 8=Cancelled, 9=Subscription, 10=Processing, 13=Awaiting Pickup, 14=Partially Shipped, 15=Shipped, 16=Declined, 17=Refunded, 18=Disputed, 19=Partially Refunded, 20=On Hold, 21=Quote Requested, 22=Quote Processed. Payment status (paymentStatusInfo) -- 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled, 17=Refunded, 23=Not Required. Workflow status (workflowStatusInfo) -- 0=Approved, 1=Pending, 2=Draft, 3=Expired, 4=Denied, 5=Inactive, 6=Incomplete, 7=Scheduled, 8=In Trash, 9=Empty. Shipment status -- 0=Processing, 1=Ready To Ship, 2=Shipped, 3=Delivered. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer code;
@@ -355,4 +355,4 @@ public class Status implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-170073749
+// LIFERAY-REST-BUILDER-HASH:1540644818
