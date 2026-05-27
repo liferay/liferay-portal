@@ -176,7 +176,7 @@ components:
                 dateModified:
                     description:
                         Last modification timestamp of the attachment, in ISO 8601. Read-only.
-                    example: 2017-07-21 19:30:00+00:00
+                    example: 2017-07-21T19:30:00Z
                     format: date-time
                     readOnly: true
                     type: string
