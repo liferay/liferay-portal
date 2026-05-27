@@ -68,6 +68,11 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 						</c:choose>
 					</commerce-ui:info-box>
 
+					<liferay-portlet:renderURL var="viewAccountValidationsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+						<portlet:param name="mvcRenderCommandName" value="/commerce_order/view_commerce_order_account_validations" />
+						<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderEditDisplayContext.getCommerceOrderId()) %>" />
+					</liferay-portlet:renderURL>
+
 					<%
 					AccountEntry accountEntry = commerceOrder.getAccountEntry();
 					%>
@@ -83,7 +88,36 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 								</span>
 							</c:when>
 							<c:otherwise>
-								<p class="mb-0" data-qa-id="commerceOrderAccountEntryName"><%= HtmlUtil.escape(accountEntry.getName()) %></p>
+								<div class="align-items-center d-flex">
+									<p class="mb-0" data-qa-id="commerceOrderAccountEntryName"><%= HtmlUtil.escape(accountEntry.getName()) %></p>
+
+									<%
+									boolean lastResultSuccess = commerceOrderEditDisplayContext.isLastResultSuccess();
+									%>
+
+									<clay:button
+										aria-label='<%= LanguageUtil.get(request, lastResultSuccess ? "all-account-validations-have-succeeded" : "one-or-more-validations-have-failed-for-this-account") %>'
+										cssClass='<%= "ml-2 p-0 " + (lastResultSuccess ? "text-success" : "text-warning") %>'
+										displayType="unstyled"
+										icon='<%= lastResultSuccess ? "check-circle-full" : "warning-full" %>'
+										id='<%= liferayPortletResponse.getNamespace() + "accountValidationsWarning" %>'
+										title='<%= LanguageUtil.get(request, lastResultSuccess ? "all-account-validations-have-succeeded" : "one-or-more-validations-have-failed-for-this-account") %>'
+									/>
+
+									<liferay-frontend:component
+										context='<%=
+											HashMapBuilder.<String, Object>put(
+												"title", LanguageUtil.get(request, "account-validation-results-history")
+											).put(
+												"url", viewAccountValidationsURL
+											).put(
+												"warningButtonId", liferayPortletResponse.getNamespace() + "accountValidationsWarning"
+											).build()
+										%>'
+										module="{accountValidations} from commerce-order-web"
+									/>
+								</div>
+
 								<p class="mb-0">#<%= accountEntry.getAccountEntryId() %></p>
 							</c:otherwise>
 						</c:choose>

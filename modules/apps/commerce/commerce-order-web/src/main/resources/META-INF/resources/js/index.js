@@ -8,6 +8,7 @@ export {default as CommerceOrderAttachmentRestrictedDataRenderer} from './Commer
 export {default as CommerceOrderAttachmentTitleDataRenderer} from './CommerceOrderAttachmentTitleDataRenderer';
 export {default as CommerceOrderItemsFDSPropsTransformer} from './CommerceOrderItemsFDSPropsTransformer';
 export {default as CommerceStatusDataRenderer} from './CommerceStatusDataRenderer';
+export {default as accountValidations} from './accountValidations';
 export {default as addCommerceOrderType} from './addCommerceOrderType';
 export {default as channels} from './channels';
 export {default as commerceReturnItemsPropsTransformer} from './commerceReturnItemsPropsTransformer';

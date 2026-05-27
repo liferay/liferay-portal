@@ -6,6 +6,7 @@
 package com.liferay.commerce.order.web.internal.display.context;
 
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.commerce.configuration.CommerceOrderItemDecimalQuantityConfiguration;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -47,6 +48,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -85,6 +87,7 @@ import java.util.List;
 public class CommerceOrderEditDisplayContext {
 
 	public CommerceOrderEditDisplayContext(
+			AccountEntryValidatorRegistry accountEntryValidatorRegistry,
 			CommerceChannelLocalService commerceChannelLocalService,
 			CommerceNotificationQueueEntryLocalService
 				commerceNotificationQueueEntryLocalService,
@@ -110,6 +113,7 @@ public class CommerceOrderEditDisplayContext {
 			RenderRequest renderRequest)
 		throws PortalException {
 
+		_accountEntryValidatorRegistry = accountEntryValidatorRegistry;
 		_commerceChannelLocalService = commerceChannelLocalService;
 		_commerceNotificationQueueEntryLocalService =
 			commerceNotificationQueueEntryLocalService;
@@ -731,9 +735,32 @@ public class CommerceOrderEditDisplayContext {
 			themeDisplay.getPermissionChecker(), commerceOrder, actionId);
 	}
 
+	public boolean isLastResultSuccess() throws PortalException {
+		if (_commerceOrder == null) {
+			return false;
+		}
+
+		if (_lastResultSuccess != null) {
+			return _lastResultSuccess;
+		}
+
+		_lastResultSuccess = _accountEntryValidatorRegistry.isLastResultSuccess(
+			_commerceOrder.getAccountEntry(),
+			JSONUtil.put(
+				"billingAddressId", _commerceOrder.getBillingAddressId()
+			).put(
+				"commerceOrderId", _commerceOrder.getCommerceOrderId()
+			).put(
+				"shippingAddressId", _commerceOrder.getShippingAddressId()
+			));
+
+		return _lastResultSuccess;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceOrderEditDisplayContext.class);
 
+	private final AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
 	private final CommerceChannelLocalService _commerceChannelLocalService;
 	private final CommerceNotificationQueueEntryLocalService
 		_commerceNotificationQueueEntryLocalService;
@@ -761,6 +788,7 @@ public class CommerceOrderEditDisplayContext {
 	private final CommerceShipmentService _commerceShipmentService;
 	private final CommerceTermEntryLocalService _commerceTermEntryLocalService;
 	private final CPMeasurementUnitService _cpMeasurementUnitService;
+	private Boolean _lastResultSuccess;
 	private final ModelResourcePermission<CommerceOrder>
 		_modelResourcePermission;
 

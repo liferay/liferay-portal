@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action;
 
+import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.commerce.configuration.CommerceOrderItemDecimalQuantityConfiguration;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
@@ -67,6 +68,7 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 		try {
 			CommerceOrderEditDisplayContext commerceOrderEditDisplayContext =
 				new CommerceOrderEditDisplayContext(
+					_accountEntryValidatorRegistry,
 					_commerceChannelLocalService,
 					_commerceNotificationQueueEntryLocalService,
 					_commerceOrderEngine,
@@ -108,6 +110,9 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 				CommerceOrderItemDecimalQuantityConfiguration.class,
 				properties);
 	}
+
+	@Reference
+	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
