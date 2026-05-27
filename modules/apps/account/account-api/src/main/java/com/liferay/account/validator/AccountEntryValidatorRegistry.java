@@ -20,6 +20,10 @@ public interface AccountEntryValidatorRegistry {
 
 	public List<AccountEntryValidator> getAccountEntryValidators();
 
+	public boolean isLastResultSuccess(
+			AccountEntry accountEntry, JSONObject jsonObject)
+		throws PortalException;
+
 	public List<AccountEntryValidatorResult> validate(
 			AccountEntry accountEntry, JSONObject jsonObject)
 		throws PortalException;
