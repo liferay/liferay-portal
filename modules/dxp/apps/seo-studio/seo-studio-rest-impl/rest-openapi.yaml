@@ -1,0 +1,65 @@
+components:
+    schemas:
+        CrawledPage:
+            description:
+                "A single crawled page returned by the SEO Studio crawler."
+            properties:
+                links:
+                    items:
+                        type: string
+                    type: array
+                title:
+                    type: string
+                url:
+                    type: string
+            required:
+                -   url
+            type: object
+info:
+    description:
+        "Liferay SEO Studio REST API. A Java client JAR is available for use with the group ID 'com.liferay', artifact
+        ID 'com.liferay.seo.studio.rest.client', and version '1.0.0'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: SEO Studio
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/seo-studio-domains/{seoStudioDomainId}/crawl-hits":
+        get:
+            description:
+                "Returns crawl hits from the Elasticsearch index for the SEO Studio Domain identified by
+                seoStudioDomainId. The index is resolved server-side from the Domain's hostname; callers cannot address
+                indexes belonging to Domains they do not own."
+            operationId: getCrawlHitsPage
+            parameters:
+                -   in: path
+                    name: seoStudioDomainId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: maxDocs
+                    required: false
+                    schema:
+                        default: 10000
+                        format: int32
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/CrawledPage"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/CrawledPage"
+                                type: array
+                    description:
+                        "OK"
+            tags: ["CrawledPage"]

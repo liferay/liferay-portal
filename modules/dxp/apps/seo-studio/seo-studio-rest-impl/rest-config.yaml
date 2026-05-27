@@ -1,0 +1,11 @@
+apiDir: ../seo-studio-rest-api/src/main/java
+apiPackagePath: com.liferay.seo.studio.rest
+application:
+    baseURI: /seo-studio
+    className: SEOStudioApplication
+    name: Liferay.SEO.Studio.REST
+author: Brooke Dalton
+clientDir: ../seo-studio-rest-client/src/main/java
+compatibilityVersion: 15
+javaEEPackage: jakarta
+testDir: ../seo-studio-rest-test/src/testIntegration/java
