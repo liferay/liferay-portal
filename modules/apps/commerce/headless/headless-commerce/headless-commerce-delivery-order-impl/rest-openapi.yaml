@@ -1583,14 +1583,20 @@ components:
             type: object
         Status:
             description:
-                Status descriptor -- an integer code plus its raw label key and its locale-resolved label. The meaning
-                of the code depends on the slot it appears in (order status, payment status, workflow status, or
-                shipment status); the embedding property's description documents the integer-to-meaning mapping.
+                Status descriptor -- an integer code plus its raw label key and its locale-resolved label. The code's
+                meaning depends on the field that embeds this status (order, payment, workflow, or shipment status); the
+                code property lists the per-slot integer-to-label mapping.
             properties:
                 code:
                     description:
-                        Integer status code; the meaning depends on the slot this status appears in -- the embedding
-                        property's description documents the integer-to-meaning mapping.
+                        Integer status code whose meaning depends on the embedding field. Order status (orderStatusInfo)
+                        -- 0=Completed, 1=Pending, 2=Open, 6=In Progress, 8=Cancelled, 9=Subscription, 10=Processing,
+                        13=Awaiting Pickup, 14=Partially Shipped, 15=Shipped, 16=Declined, 17=Refunded, 18=Disputed,
+                        19=Partially Refunded, 20=On Hold, 21=Quote Requested, 22=Quote Processed. Payment status
+                        (paymentStatusInfo) -- 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled, 17=Refunded,
+                        23=Not Required. Workflow status (workflowStatusInfo) -- 0=Approved, 1=Pending, 2=Draft,
+                        3=Expired, 4=Denied, 5=Inactive, 6=Incomplete, 7=Scheduled, 8=In Trash, 9=Empty. Shipment status
+                        -- 0=Processing, 1=Ready To Ship, 2=Shipped, 3=Delivered. Read-only.
                     example: 0
                     format: int32
                     readOnly: true
@@ -1954,6 +1960,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of placed orders for an account in a channel by external reference code.
             tags:
             -   PlacedOrder
     /channels/by-externalReferenceCode/{externalReferenceCode}/placed-orders:
@@ -2019,6 +2026,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of placed orders in a channel by external reference code.
             tags:
             -   PlacedOrder
     /channels/{channelId}/accounts/{accountId}/placed-orders:
@@ -2089,6 +2097,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of placed orders for an account in a channel.
             tags:
             -   PlacedOrder
     /channels/{channelId}/placed-orders:
@@ -2156,6 +2165,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of placed orders in a channel.
             tags:
             -   PlacedOrder
     /placed-order-comments/by-externalReferenceCode/{externalReferenceCode}:
@@ -2358,6 +2368,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a placed order item by external reference code.
             tags:
             -   PlacedOrderItem
     /placed-order-items/by-externalReferenceCode/{externalReferenceCode}/placed-order-item-shipments:
@@ -2425,6 +2436,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of shipments for a placed order item by external reference code.
             tags:
             -   PlacedOrderItemShipment
     /placed-order-items/{placedOrderItemId}:
@@ -2489,6 +2501,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a placed order item by ID.
             tags:
             -   PlacedOrderItem
     /placed-order-items/{placedOrderItemId}/placed-order-item-shipments:
@@ -2558,6 +2571,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of shipments for a placed order item.
             tags:
             -   PlacedOrderItemShipment
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}:
@@ -2622,6 +2636,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a placed order by external reference code.
             tags:
             -   PlacedOrder
         patch:
@@ -2992,6 +3007,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the delivery term of a placed order by external reference code.
             tags:
             -   Term
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-term:
@@ -3055,6 +3071,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the payment term of a placed order by external reference code.
             tags:
             -   Term
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-url:
@@ -3077,6 +3094,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the payment URL of a placed order by external reference code.
             tags:
             -   PlacedOrder
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-billing-address:
@@ -3142,6 +3160,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the billing address of a placed order by external reference code.
             tags:
             -   PlacedOrderAddress
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-comments:
@@ -3276,6 +3295,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of items in a placed order by external reference code.
             tags:
             -   PlacedOrderItem
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-shipping-address:
@@ -3340,6 +3360,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the shipping address of a placed order by external reference code.
             tags:
             -   PlacedOrderAddress
     /placed-orders/by-externalReferenceCode/{externalReferenceCode}/shipments:
@@ -3473,6 +3494,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a placed order by ID.
             tags:
             -   PlacedOrder
         patch:
@@ -3843,6 +3865,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the delivery term of a placed order.
             tags:
             -   Term
     /placed-orders/{placedOrderId}/order-transitions:
@@ -3903,6 +3926,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of workflow transitions available for a placed order.
             tags:
             -   OrderTransition
         post:
@@ -3969,6 +3993,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.write
+            summary: Executes a workflow transition on a placed order.
             tags:
             -   OrderTransition
     /placed-orders/{placedOrderId}/payment-term:
@@ -4033,6 +4058,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the payment term of a placed order.
             tags:
             -   Term
     /placed-orders/{placedOrderId}/payment-url:
@@ -4056,6 +4082,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the payment URL of a placed order.
             tags:
             -   PlacedOrder
     /placed-orders/{placedOrderId}/placed-order-billing-address:
@@ -4120,6 +4147,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the billing address of a placed order.
             tags:
             -   PlacedOrderAddress
     /placed-orders/{placedOrderId}/placed-order-comments:
@@ -4253,6 +4281,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of items in a placed order.
             tags:
             -   PlacedOrderItem
     /placed-orders/{placedOrderId}/placed-order-shipping-address:
@@ -4316,6 +4345,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets the shipping address of a placed order.
             tags:
             -   PlacedOrderAddress
     /placed-orders/{placedOrderId}/shipments:
@@ -4382,6 +4412,7 @@ paths:
             -   BearerAuth: []
             -   OAuth2:
                 -   HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of shipments for a placed order.
             tags:
             -   Shipment
 tags:
