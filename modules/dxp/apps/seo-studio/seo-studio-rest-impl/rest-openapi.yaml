@@ -30,8 +30,8 @@ paths:
         get:
             description:
                 "Returns crawl hits from the Elasticsearch index for the SEO Studio Domain identified by
-                seoStudioDomainId. The index is resolved server-side from the Domain's hostname; callers cannot address
-                indexes belonging to Domains they do not own."
+                seoStudioDomainId. The index is resolved server-side from the Domain itself, so each Domain has its own
+                index; callers cannot address indexes belonging to Domains they do not own."
             operationId: getCrawlHitsPage
             parameters:
                 -   in: path

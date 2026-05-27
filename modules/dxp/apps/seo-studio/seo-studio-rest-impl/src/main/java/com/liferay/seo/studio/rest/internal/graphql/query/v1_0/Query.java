@@ -51,7 +51,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {crawlHits(maxDocs: ___, seoStudioDomainId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns crawl hits from the Elasticsearch index for the SEO Studio Domain identified by seoStudioDomainId. The index is resolved server-side from the Domain's hostname; callers cannot address indexes belonging to Domains they do not own."
+		description = "Returns crawl hits from the Elasticsearch index for the SEO Studio Domain identified by seoStudioDomainId. The index is resolved server-side from the Domain itself, so each Domain has its own index; callers cannot address indexes belonging to Domains they do not own."
 	)
 	public CrawledPagePage crawlHits(
 			@GraphQLName("seoStudioDomainId") Long seoStudioDomainId,
@@ -156,4 +156,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1728550916
+// LIFERAY-REST-BUILDER-HASH:391836287

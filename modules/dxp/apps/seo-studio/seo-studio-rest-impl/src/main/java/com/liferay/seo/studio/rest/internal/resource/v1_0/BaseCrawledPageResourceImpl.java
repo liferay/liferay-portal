@@ -72,7 +72,7 @@ public abstract class BaseCrawledPageResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/seo-studio/v1.0/seo-studio-domains/{seoStudioDomainId}/crawl-hits'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns crawl hits from the Elasticsearch index for the SEO Studio Domain identified by seoStudioDomainId. The index is resolved server-side from the Domain's hostname; callers cannot address indexes belonging to Domains they do not own."
+		description = "Returns crawl hits from the Elasticsearch index for the SEO Studio Domain identified by seoStudioDomainId. The index is resolved server-side from the Domain itself, so each Domain has its own index; callers cannot address indexes belonging to Domains they do not own."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -766,4 +766,4 @@ public abstract class BaseCrawledPageResourceImpl
 		LogFactoryUtil.getLog(BaseCrawledPageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:855800788
+// LIFERAY-REST-BUILDER-HASH:-187496553
