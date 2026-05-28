@@ -54,6 +54,7 @@ public abstract class BaseUserResourceImpl implements UserResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that identifies the resource. Idempotency key for create and update; must be unique per entity within the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
 			)
@@ -525,4 +526,4 @@ public abstract class BaseUserResourceImpl implements UserResource {
 		LogFactoryUtil.getLog(BaseUserResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-317362110
+// LIFERAY-REST-BUILDER-HASH:1721191596

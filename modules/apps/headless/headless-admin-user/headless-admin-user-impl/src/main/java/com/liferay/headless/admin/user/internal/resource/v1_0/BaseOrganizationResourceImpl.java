@@ -301,7 +301,8 @@ public abstract class BaseOrganizationResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes users from an organization by their email addresses"
+		description = "Removes users from an organization by their email addresses",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "A list of user email addresses to remove from the organization")
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -378,7 +379,8 @@ public abstract class BaseOrganizationResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes users from an organization by their email addresses"
+		description = "Removes users from an organization by their email addresses",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "A list of user email addresses to remove from the organization")
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1388,7 +1390,8 @@ public abstract class BaseOrganizationResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Assigns users to an organization by their email addresses"
+		description = "Assigns users to an organization by their email addresses",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "A list of user email addresses to assign to the organization")
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1556,7 +1559,8 @@ public abstract class BaseOrganizationResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Assigns users to an organization by their email addresses"
+		description = "Assigns users to an organization by their email addresses",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "A list of user email addresses to assign to the organization")
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -2536,4 +2540,4 @@ public abstract class BaseOrganizationResourceImpl
 		LogFactoryUtil.getLog(BaseOrganizationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2101199860
+// LIFERAY-REST-BUILDER-HASH:-512399458

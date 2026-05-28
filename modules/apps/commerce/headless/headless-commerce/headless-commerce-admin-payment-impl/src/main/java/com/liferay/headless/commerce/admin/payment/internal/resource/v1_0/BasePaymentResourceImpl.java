@@ -83,6 +83,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target payment. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the payment's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "id"
 			)
@@ -162,6 +163,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target payment on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the company scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
 			)
@@ -199,6 +201,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target payment. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the payment's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "id"
 			)
@@ -232,6 +235,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target payment on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the company scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
 			)
@@ -267,22 +271,27 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "OData v4 filter expression that narrows the payment result set. Filterable fields sourced from the payment entity model -- paymentStatus, type, reasonKey, and relatedItemId (the FK to the parent order or subscription, indexed as classPK). Example -- filter=paymentStatus eq 0 and type eq 1.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "filter"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "One-based page index. Combined with pageSize to paginate the payment result set; defaults to 1 when omitted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Number of payments per page. Defaults to the portal's configured page size when omitted; capped by the portal configuration to prevent unbounded reads.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Full-text search expression matched against the payment's indexed fields. Returns the payments whose searchable content matches the expression.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression of the form `field:asc` or `field:desc`, comma-separated for multi-field sorting. Sortable fields sourced from the payment entity model -- createDate, id, paymentStatus, reasonKey, relatedItemId, and type.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
 			)
@@ -320,6 +329,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target payment. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the payment's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "id"
 			)
@@ -355,6 +365,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target payment on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the company scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
 			)
@@ -550,6 +561,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target payment on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the company scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
 			)
@@ -585,6 +597,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target payment. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the payment's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "id"
 			)
@@ -615,14 +628,17 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "OData v4 filter expression that narrows the payment result set. Filterable fields sourced from the payment entity model -- paymentStatus, type, reasonKey, and relatedItemId (the FK to the parent order or subscription, indexed as classPK). Example -- filter=paymentStatus eq 0 and type eq 1.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "filter"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Full-text search expression matched against the payment's indexed fields. Returns the payments whose searchable content matches the expression.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression of the form `field:asc` or `field:desc`, comma-separated for multi-field sorting. Sortable fields sourced from the payment entity model -- createDate, id, paymentStatus, reasonKey, relatedItemId, and type.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
 			),
@@ -697,6 +713,7 @@ public abstract class BasePaymentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target payment on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the company scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "externalReferenceCode"
 			)
@@ -1514,4 +1531,4 @@ public abstract class BasePaymentResourceImpl
 		LogFactoryUtil.getLog(BasePaymentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:391765097
+// LIFERAY-REST-BUILDER-HASH:1341743492

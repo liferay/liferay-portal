@@ -59,38 +59,47 @@ public abstract class BaseIndividualResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional account id to restrict results to individuals associated with an account.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "accountId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "If true, anonymous (browser-tracked) individuals are included. Defaults to false.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "includeAnonymousUsers"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional individual segment id to restrict results to members of that segment.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "individualSegmentId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional interest name to restrict results to individuals interested in the keyword.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "interestName"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page number (starts at 1).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page size.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression `column:asc|desc`.",
 				example = "lastActivityDate:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -144,14 +153,17 @@ public abstract class BaseIndividualResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the individual to fetch.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "individualId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional channel id to scope the lookup to a single channel.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "channelId"
 			)
@@ -633,4 +645,4 @@ public abstract class BaseIndividualResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:171928290
+// LIFERAY-REST-BUILDER-HASH:1719518418

@@ -56,30 +56,37 @@ public abstract class BaseIndividualSegmentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional segment name to match exactly.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "name"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page number (starts at 1).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page size.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Free-text search across segment name and related fields.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Filter by segment operational status.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "status"
 			)
@@ -132,10 +139,12 @@ public abstract class BaseIndividualSegmentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the individual segment to fetch.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "individualSegmentId"
 			)
@@ -611,4 +620,4 @@ public abstract class BaseIndividualSegmentResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualSegmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-93940403
+// LIFERAY-REST-BUILDER-HASH:-1561941332

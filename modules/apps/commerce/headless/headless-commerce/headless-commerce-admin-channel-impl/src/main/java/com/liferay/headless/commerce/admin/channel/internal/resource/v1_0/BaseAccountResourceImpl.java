@@ -52,6 +52,7 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a channel-account link. Addresses a single association that grants one commerce account access to a channel.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelAccountId"
 			)
@@ -519,4 +520,4 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1391770208
+// LIFERAY-REST-BUILDER-HASH:-450576742

@@ -59,39 +59,48 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page number (starts at 1).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page size.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Date-range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
 				example = "LAST_30_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range start as datetime (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeStart"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Free-text keyword search across asset titles. Empty or null returns all matching assets.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression `column:asc|desc`. Defaults to `viewsMetric:desc` when omitted. Common columns: viewsMetric, downloadsMetric, impressionMadeMetric, readsMetric.",
 				example = "viewsMetric:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -590,4 +599,4 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetSummaryMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1693948923
+// LIFERAY-REST-BUILDER-HASH:-435014150

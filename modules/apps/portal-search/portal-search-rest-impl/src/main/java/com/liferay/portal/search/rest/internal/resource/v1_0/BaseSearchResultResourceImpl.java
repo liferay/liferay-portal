@@ -78,61 +78,72 @@ public abstract class BaseSearchResultResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify the External Reference Code (ERC) of a search blueprint to control the search query and configuration. This is preferred over the blueprint ID. For POST /search requests, use the `search.experiences.blueprint.external.reference.code` request body attribute instead. Search Blueprints is available on DXP Enterprise tier with Liferay Enterprise Search (LES) add-on subscription.",
 				example = "PRODUCT_SEARCH",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "blueprintExternalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Set this to 'true' to return results even if the search parameter is omitted from the request (no search keywords specified). For POST /search requests, use the `search.empty.search` request body attribute instead.",
 				example = "true",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "emptySearch"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "A comma separated list of entryClassNames to be searched using the class names of the types to search. Defaults to all searchable types. Out-of-the-box searchable types and their corresponding class names include - Basic Document (CMS) - com.liferay.object.model.ObjectDefinition#Z7P5, Basic Web Content (CMS) - com.liferay.object.model.ObjectDefinition#H4T4, Blog (CMS) - com.liferay.object.model.ObjectDefinition#Y8H4, Blogs Entry - com.liferay.blogs.model.BlogsEntry, Bookmarks Entry - com.liferay.bookmarks.model.BookmarksEntry, Bookmarks Folder - com.liferay.bookmarks.model.BookmarksFolder, Calendar Event - com.liferay.calendar.model.CalendarBooking, Commerce Product - com.liferay.commerce.product.model.CPDefinition, Document - com.liferay.document.library.kernel.model.DLFileEntry, Documents Folder - com.liferay.document.library.kernel.model.DLFolder, Dynamic Data Lists Record - com.liferay.dynamic.data.lists.model.DDLRecord, External Video (CMS) - com.liferay.object.model.ObjectDefinition#S1T1, Form Record - com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord, Knowledge Base Article - com.liferay.knowledge.base.model.KBArticle, Message Boards Message - com.liferay.message.boards.model.MBMessage, Object Entry Folder - com.liferay.object.model.ObjectEntryFolder, Page - com.liferay.portal.kernel.model.Layout, Sharing Entry - com.liferay.sharing.model.SharingEntry, User - com.liferay.portal.kernel.model.User, Web Content Article - com.liferay.journal.model.JournalArticle, and Web Content Folder - com.liferay.journal.model.JournalFolder. Entries marked `(CMS)` are seeded by the Liferay CMS site initializer and may be absent on instances that have not run it. Custom Objects and custom CMS Content Structures follow the class name format com.liferay.object.model.ObjectDefinition#<OBJECT-DEFINITION-CLASS-NAME>, where OBJECT-DEFINITION-CLASS-NAME is the Class Name of the Object Definition (for example, com.liferay.object.model.ObjectDefinition#H4T4 for Basic Web Content (CMS)). To discover available class names at runtime, call GET /o/search-experiences-rest/v1.0/searchable-asset-names (admin permission required).",
 				example = "com.liferay.journal.model.JournalArticle,com.liferay.blogs.model.BlogsEntry",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "entryClassNames"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Use this parameter to specify and return only the fields specified in each of the items in the response. When requesting multiple types of items (when parameter entryClassNames is empty or specifies multiple class names), only common fields can be specified, otherwise the API returns an empty object for each result item.",
 				example = "title,description,score",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "fields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Filters across different fields. Supported fields are creatorId (the creator User's ID), folderId (a folder's ID), groupIds (Site, Asset Library, or Space IDs - corresponding search index field is groupId; only approved items are returned by default), objectDefinitionId (an Object Definition's ID), status (workflow status ID - supported statuses are '-1' = Any, '0' = Approved, '1' = Pending, '2' = Draft, '3' = Expired, '4' = Denied, '5' = Inactive, '6' = Incomplete, '7' = Scheduled, '8' = In Trash, '9' = Empty), taxonomyCategoryIds (Asset category IDs), objectDefinitionExternalReferenceCode (Object Definition External Reference Code), extension (file extension), dateCreated (the date the entry was created in OData Edm.Date format YYYY-MM-DD), dateDisplay (the date the entry was displayed in OData Edm.Date format YYYY-MM-DD), dateExpiration (the date the entry expires in OData Edm.Date format YYYY-MM-DD), dateModified (the date the entry was modified in OData Edm.Date format YYYY-MM-DD), datePublish (the date the entry was published in OData Edm.Date format YYYY-MM-DD), dateReview (the date the entry should be reviewed in OData Edm.Date format YYYY-MM-DD), keywords (Asset tag names), and title (Asset title on the locale specified by the 'Accept-Language' request header). Supported operators are `eq`, `ne`, `gt`, `ge`, `lt`, `le`; multivalue collections use `any()`/`all()` (for example, `groupIds/any(g:g eq 20121)`). Web content articles (JournalArticle) cannot be filtered by status - for those, limit by site using `scope`/`groupIds` instead, which returns only approved items by default. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information on the standard API query parameters. For more robust filtering options, use Search Blueprints (available on DXP Enterprise tier with Liferay Enterprise Search (LES) add-on subscription), which can encapsulate more filters and operates directly with search index fields. Learn more at https://learn.liferay.com/w/dxp/search/liferay-enterprise-search/search-blueprints.",
 				example = "groupIds/any(g:g eq 20121)",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "filter"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value.",
 				example = "embedded",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "nestedFields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify which page to return out of all the pages available. Defaults to 1. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.",
 				example = "1",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify how many items you want per page. Defaults to 20. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.",
 				example = "20",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Comma-separated list of fields to exclude from each result. This is the inverse of the fields parameter. Use either fields (allow list) or restrictFields (block list), not both.",
 				example = "actions,embedded",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "restrictFields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify a list of Site, Asset Library, or Space IDs or External Reference Codes (ERCs) to search. You can mix IDs and ERCs in the same request.",
 				example = "20121,L_GUEST",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "scope"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				example = "liferay",
+				description = "Search by keyword(s).", example = "liferay",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort results by ascending or descending order. Use format `field:asc` or `field:desc`. Supported fields are dateCreated (the date the entry was created in OData Edm.Date format YYYY-MM-DD), dateDisplay (the date the entry was displayed in OData Edm.Date format YYYY-MM-DD), dateExpiration (the date the entry expires in OData Edm.Date format YYYY-MM-DD), dateModified (the date the entry was modified in OData Edm.Date format YYYY-MM-DD), datePublish (the date the entry was published in OData Edm.Date format YYYY-MM-DD), dateReview (the date the entry should be reviewed in OData Edm.Date format YYYY-MM-DD), keywords (Asset tag names - corresponding search index field is assetTagNames.lowercase), and title (Asset title on the locale specified by the 'Accept-Language' request header - corresponding search index field is localized_title_[locale].keyword_lowercase where 'locale' is a language ID like 'en_US'). Defaults to order by relevance score descending. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information. Note - a search blueprint can also have sort configurations. See https://learn.liferay.com/w/dxp/search/liferay-enterprise-search/search-blueprints/sorting-results-in-a-search-blueprint#search-blueprints-versus-the-headless-api to understand how these blueprint-added sorts interact with the sort parameter if you plan to use both. Search Blueprints is available on DXP Enterprise tier with Liferay Enterprise Search (LES) add-on subscription.",
 				example = "dateModified:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -183,51 +194,60 @@ public abstract class BaseSearchResultResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "A comma separated list of entryClassNames to be searched using the class names of the types to search. Defaults to all searchable types. Out-of-the-box searchable types and their corresponding class names include - Basic Document (CMS) - com.liferay.object.model.ObjectDefinition#Z7P5, Basic Web Content (CMS) - com.liferay.object.model.ObjectDefinition#H4T4, Blog (CMS) - com.liferay.object.model.ObjectDefinition#Y8H4, Blogs Entry - com.liferay.blogs.model.BlogsEntry, Bookmarks Entry - com.liferay.bookmarks.model.BookmarksEntry, Bookmarks Folder - com.liferay.bookmarks.model.BookmarksFolder, Calendar Event - com.liferay.calendar.model.CalendarBooking, Commerce Product - com.liferay.commerce.product.model.CPDefinition, Document - com.liferay.document.library.kernel.model.DLFileEntry, Documents Folder - com.liferay.document.library.kernel.model.DLFolder, Dynamic Data Lists Record - com.liferay.dynamic.data.lists.model.DDLRecord, External Video (CMS) - com.liferay.object.model.ObjectDefinition#S1T1, Form Record - com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord, Knowledge Base Article - com.liferay.knowledge.base.model.KBArticle, Message Boards Message - com.liferay.message.boards.model.MBMessage, Object Entry Folder - com.liferay.object.model.ObjectEntryFolder, Page - com.liferay.portal.kernel.model.Layout, Sharing Entry - com.liferay.sharing.model.SharingEntry, User - com.liferay.portal.kernel.model.User, Web Content Article - com.liferay.journal.model.JournalArticle, and Web Content Folder - com.liferay.journal.model.JournalFolder. Entries marked `(CMS)` are seeded by the Liferay CMS site initializer and may be absent on instances that have not run it. Custom Objects and custom CMS Content Structures follow the class name format com.liferay.object.model.ObjectDefinition#<OBJECT-DEFINITION-CLASS-NAME>, where OBJECT-DEFINITION-CLASS-NAME is the Class Name of the Object Definition (for example, com.liferay.object.model.ObjectDefinition#H4T4 for Basic Web Content (CMS)). To discover available class names at runtime, call GET /o/search-experiences-rest/v1.0/searchable-asset-names (admin permission required).",
 				example = "com.liferay.journal.model.JournalArticle,com.liferay.blogs.model.BlogsEntry",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "entryClassNames"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Use this parameter to specify and return only the fields specified in each of the items in the response. When requesting multiple types of items (when parameter entryClassNames is empty or specifies multiple class names), only common fields can be specified, otherwise the API returns an empty object for each result item.",
 				example = "title,description,score",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "fields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Filters across different fields. Supported fields are creatorId (the creator User's ID), folderId (a folder's ID), groupIds (Site, Asset Library, or Space IDs - corresponding search index field is groupId; only approved items are returned by default), objectDefinitionId (an Object Definition's ID), status (workflow status ID - supported statuses are '-1' = Any, '0' = Approved, '1' = Pending, '2' = Draft, '3' = Expired, '4' = Denied, '5' = Inactive, '6' = Incomplete, '7' = Scheduled, '8' = In Trash, '9' = Empty), taxonomyCategoryIds (Asset category IDs), objectDefinitionExternalReferenceCode (Object Definition External Reference Code), extension (file extension), dateCreated (the date the entry was created in OData Edm.Date format YYYY-MM-DD), dateDisplay (the date the entry was displayed in OData Edm.Date format YYYY-MM-DD), dateExpiration (the date the entry expires in OData Edm.Date format YYYY-MM-DD), dateModified (the date the entry was modified in OData Edm.Date format YYYY-MM-DD), datePublish (the date the entry was published in OData Edm.Date format YYYY-MM-DD), dateReview (the date the entry should be reviewed in OData Edm.Date format YYYY-MM-DD), keywords (Asset tag names), and title (Asset title on the locale specified by the 'Accept-Language' request header). Supported operators are `eq`, `ne`, `gt`, `ge`, `lt`, `le`; multivalue collections use `any()`/`all()` (for example, `groupIds/any(g:g eq 20121)`). Web content articles (JournalArticle) cannot be filtered by status - for those, limit by site using `scope`/`groupIds` instead, which returns only approved items by default. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information on the standard API query parameters. For more robust filtering options, use Search Blueprints (available on DXP Enterprise tier with Liferay Enterprise Search (LES) add-on subscription), which can encapsulate more filters and operates directly with search index fields. Learn more at https://learn.liferay.com/w/dxp/search/liferay-enterprise-search/search-blueprints.",
 				example = "groupIds/any(g:g eq 20121)",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "filter"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value.",
 				example = "embedded",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "nestedFields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify which page to return out of all the pages available. Defaults to 1. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.",
 				example = "1",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify how many items you want per page. Defaults to 20. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.",
 				example = "20",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Comma-separated list of fields to exclude from each result. This is the inverse of the fields parameter. Use either fields (allow list) or restrictFields (block list), not both.",
 				example = "actions,embedded",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "restrictFields"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify a list of Site, Asset Library, or Space IDs or External Reference Codes (ERCs) to search. You can mix IDs and ERCs in the same request.",
 				example = "20121,L_GUEST",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "scope"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				example = "liferay",
+				description = "Search by keyword(s).", example = "liferay",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort results by ascending or descending order. Use format `field:asc` or `field:desc`. Supported fields are dateCreated (the date the entry was created in OData Edm.Date format YYYY-MM-DD), dateDisplay (the date the entry was displayed in OData Edm.Date format YYYY-MM-DD), dateExpiration (the date the entry expires in OData Edm.Date format YYYY-MM-DD), dateModified (the date the entry was modified in OData Edm.Date format YYYY-MM-DD), datePublish (the date the entry was published in OData Edm.Date format YYYY-MM-DD), dateReview (the date the entry should be reviewed in OData Edm.Date format YYYY-MM-DD), keywords (Asset tag names - corresponding search index field is assetTagNames.lowercase), and title (Asset title on the locale specified by the 'Accept-Language' request header - corresponding search index field is localized_title_[locale].keyword_lowercase where 'locale' is a language ID like 'en_US'). Defaults to order by relevance score descending. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information. Note - a search blueprint can also have sort configurations. See https://learn.liferay.com/w/dxp/search/liferay-enterprise-search/search-blueprints/sorting-results-in-a-search-blueprint#search-blueprints-versus-the-headless-api to understand how these blueprint-added sorts interact with the sort parameter if you plan to use both. Search Blueprints is available on DXP Enterprise tier with Liferay Enterprise Search (LES) add-on subscription.",
 				example = "dateModified:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -922,4 +942,4 @@ public abstract class BaseSearchResultResourceImpl
 		LogFactoryUtil.getLog(BaseSearchResultResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2040772935
+// LIFERAY-REST-BUILDER-HASH:-1348333046

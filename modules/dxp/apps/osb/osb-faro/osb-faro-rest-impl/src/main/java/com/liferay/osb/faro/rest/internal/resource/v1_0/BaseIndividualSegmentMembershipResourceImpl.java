@@ -59,22 +59,27 @@ public abstract class BaseIndividualSegmentMembershipResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the individual segment whose memberships should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "individualSegmentId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page number (starts at 1).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page size.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression `column:asc|desc`.",
 				example = "dateCreated:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -565,4 +570,4 @@ public abstract class BaseIndividualSegmentMembershipResourceImpl
 			BaseIndividualSegmentMembershipResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:554549386
+// LIFERAY-REST-BUILDER-HASH:152533793

@@ -78,26 +78,32 @@ public abstract class BaseAccountForecastResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Restricts the response to the supplied account identifiers. Repeat the parameter once per identifier. The set is further intersected with the accounts the caller has view permission on; when the intersection is empty the response is an empty page.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "accountIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Number of forward months to include in the response. Defaults to 3 when omitted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "forecastLength"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Anchor date for the forecast window in ISO 8601 date format (yyyy-MM-dd). Defaults to the current server date when omitted. The response covers historyLength months before this date and forecastLength months from this date forward.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "forecastStartDate"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Number of historical months to include in the response. Defaults to 8 when omitted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "historyLength"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "One-based page index. Defaults to 1 when omitted. Combined with pageSize to slice the result set.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Maximum number of items per page. Defaults to the portal-wide Vulcan default when omitted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			)
@@ -792,4 +798,4 @@ public abstract class BaseAccountForecastResourceImpl
 		LogFactoryUtil.getLog(BaseAccountForecastResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-296137392
+// LIFERAY-REST-BUILDER-HASH:-874808222

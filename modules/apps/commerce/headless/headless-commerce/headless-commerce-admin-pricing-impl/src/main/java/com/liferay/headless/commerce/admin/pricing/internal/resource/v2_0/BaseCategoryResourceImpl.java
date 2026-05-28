@@ -52,6 +52,7 @@ public abstract class BaseCategoryResourceImpl implements CategoryResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target discount-category binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "discountCategoryId"
 			)
@@ -85,6 +86,7 @@ public abstract class BaseCategoryResourceImpl implements CategoryResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target price-modifier-category binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "priceModifierCategoryId"
 			)
@@ -554,4 +556,4 @@ public abstract class BaseCategoryResourceImpl implements CategoryResource {
 		LogFactoryUtil.getLog(BaseCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1500729250
+// LIFERAY-REST-BUILDER-HASH:134912438

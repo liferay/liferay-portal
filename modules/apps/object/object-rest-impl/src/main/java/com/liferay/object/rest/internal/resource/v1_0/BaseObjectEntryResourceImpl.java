@@ -674,14 +674,17 @@ public abstract class BaseObjectEntryResourceImpl
 				name = "objectEntryId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The required language ID of the source text (e.g., \"en_US\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sourceLanguageId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "A required list of language IDs for the target translations (e.g., \"es_ES\", \"fr_FR\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "targetLanguageIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The XLIFF specification version to export.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "version"
 			)
@@ -724,10 +727,12 @@ public abstract class BaseObjectEntryResourceImpl
 				name = "objectEntryId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The required language ID of the source text (e.g., \"en_US\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "languageId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The required language ID for the target translation (e.g., \"en_US\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "targetLanguageId"
 			)
@@ -980,14 +985,17 @@ public abstract class BaseObjectEntryResourceImpl
 				name = "externalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The required language ID of the source text (e.g., \"en_US\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sourceLanguageId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "A required list of language IDs for the target translations (e.g., \"es_ES\", \"fr_FR\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "targetLanguageIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The XLIFF specification version to export.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "version"
 			)
@@ -1040,10 +1048,12 @@ public abstract class BaseObjectEntryResourceImpl
 				name = "externalReferenceCode"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The required language ID of the source text (e.g., \"en_US\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "languageId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The required language ID for the target translation (e.g., \"en_US\").",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "targetLanguageId"
 			)
@@ -3727,4 +3737,4 @@ public abstract class BaseObjectEntryResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:746632082
+// LIFERAY-REST-BUILDER-HASH:1119317684

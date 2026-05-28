@@ -52,6 +52,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a binding between a payment method group and a commerce term. Addresses a single rule controlling which payment options apply when that term is in effect.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "paymentMethodGroupRelTermId"
 			)
@@ -87,6 +88,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a binding between a fixed-rate shipping option and a commerce term. Addresses a single rule restricting that shipping option to the term.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "shippingFixedOptionTermId"
 			)
@@ -556,4 +558,4 @@ public abstract class BaseTermResourceImpl implements TermResource {
 		LogFactoryUtil.getLog(BaseTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1055027274
+// LIFERAY-REST-BUILDER-HASH:1793005339

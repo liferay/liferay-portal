@@ -81,10 +81,12 @@ public abstract class BaseKeywordResourceImpl
 				name = "emptySearch"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Model class names to be searched for. Defaults to all.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "entryClassNames"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The list of fields to be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "fields"
 			),
@@ -617,4 +619,4 @@ public abstract class BaseKeywordResourceImpl
 		LogFactoryUtil.getLog(BaseKeywordResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2066334139
+// LIFERAY-REST-BUILDER-HASH:335237584

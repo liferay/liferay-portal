@@ -52,6 +52,7 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target discount-product binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "discountProductId"
 			)
@@ -85,6 +86,7 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target price-entry binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "priceEntryId"
 			)
@@ -118,6 +120,7 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target price-modifier-product binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "priceModifierProductId"
 			)
@@ -587,4 +590,4 @@ public abstract class BaseProductResourceImpl implements ProductResource {
 		LogFactoryUtil.getLog(BaseProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-310170376
+// LIFERAY-REST-BUILDER-HASH:1426723479

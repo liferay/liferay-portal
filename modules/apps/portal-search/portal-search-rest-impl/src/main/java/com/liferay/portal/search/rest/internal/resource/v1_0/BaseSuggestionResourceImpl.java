@@ -61,6 +61,7 @@ public abstract class BaseSuggestionResourceImpl implements SuggestionResource {
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				deprecated = true,
+				description = "Deprecated as of Cavanaugh (7.4.x), replaced by scope",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "groupId"
 			),
@@ -565,4 +566,4 @@ public abstract class BaseSuggestionResourceImpl implements SuggestionResource {
 		LogFactoryUtil.getLog(BaseSuggestionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1116677
+// LIFERAY-REST-BUILDER-HASH:-1637898469

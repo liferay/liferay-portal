@@ -67,10 +67,12 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 				name = "emptySearch"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Model class names to be searched for. Defaults to all.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "entryClassNames"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The list of fields to be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "fields"
 			),
@@ -593,4 +595,4 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 		LogFactoryUtil.getLog(BaseTaxonomyVocabularyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-13796357
+// LIFERAY-REST-BUILDER-HASH:133228368

@@ -69,10 +69,12 @@ public abstract class BaseBulkActionResourceImpl
 				name = "emptySearch"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Model class names to be searched for. Defaults to all.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "entryClassNames"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "The list of fields to be returned.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "fields"
 			),
@@ -659,4 +661,4 @@ public abstract class BaseBulkActionResourceImpl
 		LogFactoryUtil.getLog(BaseBulkActionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:287815746
+// LIFERAY-REST-BUILDER-HASH:1847981399
