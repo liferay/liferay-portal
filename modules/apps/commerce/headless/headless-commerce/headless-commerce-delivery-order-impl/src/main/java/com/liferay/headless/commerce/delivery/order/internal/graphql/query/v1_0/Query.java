@@ -133,7 +133,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderAttachments(filter: ___, page: ___, pageSize: ___, placedOrderId: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Lists the attachments uploaded against the placed order addressed by id. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned."
+	)
 	public AttachmentPage placedOrderAttachments(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("search") String search,
@@ -159,7 +161,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodeAttachments(externalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Lists the attachments uploaded against the placed order addressed by ERC. When the feature flag is enabled the attachments are searched against the commerce order attachment index (with search, filter, sort, and pagination); otherwise the underlying document-library file entries are returned in priority order. Returns 404 when the ERC does not resolve."
+	)
 	public AttachmentPage placedOrderByExternalReferenceCodeAttachments(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("search") String search,
@@ -189,7 +193,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderOrderTransitions(placedOrderId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve order transitions of the given Placed Order."
+		description = "Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by id. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN."
 	)
 	public OrderTransitionPage placedOrderOrderTransitions(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -209,7 +213,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelAccountPlacedOrders(accountId: ___, channelId: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves placed orders for specific account in the given channel."
+		description = "Lists the placed orders the authenticated buyer can view within the given channel and account scope. Searches the order index restricted to the supplied account and channel; orders in the OPEN draft state are excluded. Supports search, filter, sort, and pagination over fields exposed by the placed-order entity model."
 	)
 	public PlacedOrderPage channelAccountPlacedOrders(
 			@GraphQLName("accountId") Long accountId,
@@ -238,7 +242,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrders(accountExternalReferenceCode: ___, channelExternalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves placed orders for specific account in the given channel."
+		description = "Lists the placed orders the authenticated buyer can view within the given channel ERC and account ERC scope. Searches the order index filtered to the account and channel; orders in the OPEN draft state are excluded so only committed orders are returned. Supports search, filter, sort, and pagination."
 	)
 	public PlacedOrderPage
 			channelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrders(
@@ -273,7 +277,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodePlacedOrders(externalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieves placed orders in the given channel.")
+	@GraphQLField(
+		description = "Lists the placed orders the authenticated buyer can view within the given channel ERC scope. Resolves the channel by external reference code and delegates to the channel-id-scoped listing; orders in the OPEN draft state are excluded. Supports search, filter, sort, and pagination."
+	)
 	public PlacedOrderPage channelByExternalReferenceCodePlacedOrders(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("search") String search,
@@ -302,7 +308,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelPlacedOrders(channelId: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieves placed orders in the given channel.")
+	@GraphQLField(
+		description = "Lists the placed orders the authenticated buyer can view within the given channel. When the buyer holds the MANAGE_ALL_ACCOUNTS permission on the channel scope every account's orders are returned; otherwise the result is restricted to the buyer's own commerce accounts. Orders in the OPEN draft state are excluded. Supports search, filter, sort, and pagination."
+	)
 	public PlacedOrderPage channelPlacedOrders(
 			@GraphQLName("channelId") Long channelId,
 			@GraphQLName("search") String search,
@@ -329,7 +337,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrder(placedOrderId: ___){account, accountId, attachments, author, authorId, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve information of the given Placed Order."
+		description = "Returns a single placed order addressed by id. The order must not be OPEN; if it is, 404 is returned."
 	)
 	public PlacedOrder placedOrder(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -348,7 +356,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCode(externalReferenceCode: ___){account, accountId, attachments, author, authorId, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve information of the given Placed Order."
+		description = "Returns a single placed order addressed by external reference code. Resolves the order under the authenticated buyer's company; only orders owned by the buyer or by a delegated account user are returned. Returns 404 when the ERC does not resolve."
 	)
 	public PlacedOrder placedOrderByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -367,7 +375,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodePaymentURL(callbackURL: ___, externalReferenceCode: ___){}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by ERC. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
+	)
 	public String placedOrderByExternalReferenceCodePaymentURL(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("callbackURL") String callbackURL)
@@ -387,7 +397,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPaymentURL(callbackURL: ___, placedOrderId: ___){}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by id. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
+	)
 	public String placedOrderPaymentURL(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("callbackURL") String callbackURL)
@@ -405,7 +417,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodePlacedOrderBillingAddress(externalReferenceCode: ___){city, country, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, region, regionISOCode, street1, street2, street3, subtype, type, typeId, vatNumber, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order billing address.")
+	@GraphQLField(
+		description = "Returns the billing address snapshot for the placed order addressed by ERC. The order must not be OPEN; when the billing address is unset an empty PlacedOrderAddress is returned. Returns 404 when the ERC does not resolve."
+	)
 	public PlacedOrderAddress
 			placedOrderByExternalReferenceCodePlacedOrderBillingAddress(
 				@GraphQLName("externalReferenceCode") String
@@ -426,7 +440,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodePlacedOrderShippingAddress(externalReferenceCode: ___){city, country, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, region, regionISOCode, street1, street2, street3, subtype, type, typeId, vatNumber, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order shipping address.")
+	@GraphQLField(
+		description = "Returns the shipping address snapshot for the placed order addressed by ERC. The order must not be OPEN. Returns 404 when the ERC does not resolve or the shipping address has been removed."
+	)
 	public PlacedOrderAddress
 			placedOrderByExternalReferenceCodePlacedOrderShippingAddress(
 				@GraphQLName("externalReferenceCode") String
@@ -447,7 +463,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderBillingAddress(placedOrderId: ___){city, country, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, region, regionISOCode, street1, street2, street3, subtype, type, typeId, vatNumber, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order billing address.")
+	@GraphQLField(
+		description = "Returns the billing address snapshot for the placed order addressed by id. The order must not be OPEN. When the billing address is unset an empty PlacedOrderAddress is returned."
+	)
 	public PlacedOrderAddress placedOrderPlacedOrderBillingAddress(
 			@GraphQLName("placedOrderId") Long placedOrderId)
 		throws Exception {
@@ -465,7 +483,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderShippingAddress(placedOrderId: ___){city, country, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, region, regionISOCode, street1, street2, street3, subtype, type, typeId, vatNumber, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order shipping address.")
+	@GraphQLField(
+		description = "Returns the shipping address snapshot for the placed order addressed by id. The order must not be OPEN. Returns 404 when the shipping address has been removed."
+	)
 	public PlacedOrderAddress placedOrderPlacedOrderShippingAddress(
 			@GraphQLName("placedOrderId") Long placedOrderId)
 		throws Exception {
@@ -483,7 +503,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodePlacedOrderComments(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Lists the comments (notes) recorded against the placed order addressed by ERC. The order must not be OPEN. Supports pagination via page and pageSize."
+	)
 	public PlacedOrderCommentPage
 			placedOrderByExternalReferenceCodePlacedOrderComments(
 				@GraphQLName("externalReferenceCode") String
@@ -506,7 +528,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderComment(placedOrderCommentId: ___){author, content, externalReferenceCode, id, orderId, restricted}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns a single placed-order comment addressed by its internal identifier. The parent order must not be in the OPEN draft state; if it is, 404 is returned."
+	)
 	public PlacedOrderComment placedOrderComment(
 			@GraphQLName("placedOrderCommentId") Long placedOrderCommentId)
 		throws Exception {
@@ -524,7 +548,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderCommentByExternalReferenceCode(externalReferenceCode: ___){author, content, externalReferenceCode, id, orderId, restricted}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns a single placed-order comment addressed by external reference code. Resolves the comment under the authenticated buyer's company and ensures the parent order is not OPEN (draft cart). Returns 404 when the ERC does not resolve."
+	)
 	public PlacedOrderComment placedOrderCommentByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -543,7 +569,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderComments(page: ___, pageSize: ___, placedOrderId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Lists the comments (notes) recorded against the placed order addressed by id. The order must not be OPEN. Supports pagination via page and pageSize."
+	)
 	public PlacedOrderCommentPage placedOrderPlacedOrderComments(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("pageSize") int pageSize,
@@ -564,7 +592,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodePlacedOrderItems(externalReferenceCode: ___, page: ___, pageSize: ___, search: ___, skuId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order items.")
+	@GraphQLField(
+		description = "Lists the top-level line items of the placed order addressed by ERC. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
+	)
 	public PlacedOrderItemPage
 			placedOrderByExternalReferenceCodePlacedOrderItems(
 				@GraphQLName("externalReferenceCode") String
@@ -594,7 +624,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderItem(placedOrderItemId: ___){adaptiveMediaImageHTMLTag, customFields, deliveryGroup, deliveryGroupName, errorMessages, externalReferenceCode, id, name, options, parentOrderItemId, placedOrderItemShipments, placedOrderItems, price, productId, productURLs, quantity, replacedSku, requestedDeliveryDate, settings, shippingAddressExternalReferenceCode, shippingAddressId, sku, skuId, subscription, thumbnail, unitOfMeasure, unitOfMeasureKey, valid, virtualItemURLs, virtualItems}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve information of the given Placed Order."
+		description = "Returns a single placed-order line item addressed by its internal identifier. The parent order must not be OPEN; if it is, 404 is returned."
 	)
 	public PlacedOrderItem placedOrderItem(
 			@GraphQLName("placedOrderItemId") Long placedOrderItemId)
@@ -613,7 +643,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderItemByExternalReferenceCode(externalReferenceCode: ___){adaptiveMediaImageHTMLTag, customFields, deliveryGroup, deliveryGroupName, errorMessages, externalReferenceCode, id, name, options, parentOrderItemId, placedOrderItemShipments, placedOrderItems, price, productId, productURLs, quantity, replacedSku, requestedDeliveryDate, settings, shippingAddressExternalReferenceCode, shippingAddressId, sku, skuId, subscription, thumbnail, unitOfMeasure, unitOfMeasureKey, valid, virtualItemURLs, virtualItems}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve information of the given placed order item."
+		description = "Returns a single placed-order line item addressed by external reference code. Resolves the item under the authenticated buyer's company. Returns 404 when the ERC does not resolve."
 	)
 	public PlacedOrderItem placedOrderItemByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -633,7 +663,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderItems(page: ___, pageSize: ___, placedOrderId: ___, search: ___, skuId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order items.")
+	@GraphQLField(
+		description = "Lists the top-level line items of the placed order addressed by id. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
+	)
 	public PlacedOrderItemPage placedOrderPlacedOrderItems(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("search") String search,
@@ -659,7 +691,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderItemByExternalReferenceCodePlacedOrderItemShipments(externalReferenceCode: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve shipments of the given placed order item."
+		description = "Lists the shipments that fulfill the placed-order line item addressed by ERC. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN."
 	)
 	public PlacedOrderItemShipmentPage
 			placedOrderItemByExternalReferenceCodePlacedOrderItemShipments(
@@ -682,7 +714,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderItemPlacedOrderItemShipments(placedOrderItemId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve shipments of the given Placed Order Item."
+		description = "Lists the shipments that fulfill the placed-order line item addressed by id. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN."
 	)
 	public PlacedOrderItemShipmentPage placedOrderItemPlacedOrderItemShipments(
 			@GraphQLName("placedOrderItemId") Long placedOrderItemId)
@@ -702,7 +734,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodeShipments(externalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Lists the shipments dispatched against the placed order addressed by ERC. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
+	)
 	public ShipmentPage placedOrderByExternalReferenceCodeShipments(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("search") String search,
@@ -730,7 +764,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderShipments(filter: ___, page: ___, pageSize: ___, placedOrderId: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrieve placed order shipments.")
+	@GraphQLField(
+		description = "Lists the shipments dispatched against the placed order addressed by id. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
+	)
 	public ShipmentPage placedOrderShipments(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("search") String search,
@@ -757,7 +793,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodeDeliveryTerm(externalReferenceCode: ___){description, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve delivery term of the given Placed Order."
+		description = "Returns the delivery term assigned to the placed order addressed by ERC. The order must not be OPEN; if it is, the request is rejected. Returns 404 when the ERC does not resolve."
 	)
 	public Term placedOrderByExternalReferenceCodeDeliveryTerm(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -777,7 +813,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCodePaymentTerm(externalReferenceCode: ___){description, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve payment term of the given Placed Order."
+		description = "Returns the payment term assigned to the placed order addressed by ERC. The order must not be OPEN; if it is, the request is rejected. Returns 404 when the ERC does not resolve."
 	)
 	public Term placedOrderByExternalReferenceCodePaymentTerm(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -797,7 +833,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderDeliveryTerm(placedOrderId: ___){description, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve delivery term of the given Placed Order."
+		description = "Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
 	)
 	public Term placedOrderDeliveryTerm(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -816,7 +852,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPaymentTerm(placedOrderId: ___){description, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieve payment term of the given Placed Order."
+		description = "Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
 	)
 	public Term placedOrderPaymentTerm(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -837,7 +873,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve information of the given Placed Order."
+			description = "Returns a single placed order addressed by id. The order must not be OPEN; if it is, 404 is returned."
 		)
 		public PlacedOrder placedOrder() throws Exception {
 			return _applyComponentServiceObjects(
@@ -861,7 +897,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve order transitions of the given Placed Order."
+			description = "Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by id. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN."
 		)
 		public OrderTransitionPage orderTransitions() throws Exception {
 			return _applyComponentServiceObjects(
@@ -886,7 +922,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve information of the given Placed Order."
+			description = "Returns a single placed order addressed by external reference code. Resolves the order under the authenticated buyer's company; only orders owned by the buyer or by a delegated account user are returned. Returns 404 when the ERC does not resolve."
 		)
 		public PlacedOrder placedOrderByExternalReferenceCode()
 			throws Exception {
@@ -910,7 +946,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by id. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
+		)
 		public String paymentURL(@GraphQLName("callbackURL") String callbackURL)
 			throws Exception {
 
@@ -935,7 +973,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns a single placed-order comment addressed by external reference code. Resolves the comment under the authenticated buyer's company and ensures the parent order is not OPEN (draft cart). Returns 404 when the ERC does not resolve."
+		)
 		public PlacedOrderComment commentByExternalReferenceCode()
 			throws Exception {
 
@@ -962,7 +1002,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve information of the given placed order item."
+			description = "Returns a single placed-order line item addressed by external reference code. Resolves the item under the authenticated buyer's company. Returns 404 when the ERC does not resolve."
 		)
 		public PlacedOrderItem itemByExternalReferenceCode() throws Exception {
 			return _applyComponentServiceObjects(
@@ -988,7 +1028,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve delivery term of the given Placed Order."
+			description = "Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
 		)
 		public Term deliveryTerm() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1010,7 +1050,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve payment term of the given Placed Order."
+			description = "Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
 		)
 		public Term paymentTerm() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1034,7 +1074,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Lists the attachments uploaded against the placed order addressed by ERC. When the feature flag is enabled the attachments are searched against the commerce order attachment index (with search, filter, sort, and pagination); otherwise the underlying document-library file entries are returned in priority order. Returns 404 when the ERC does not resolve."
+		)
 		public AttachmentPage byExternalReferenceCodeAttachments(
 				@GraphQLName("search") String search,
 				@GraphQLName("filter") String filterString,
@@ -1072,7 +1114,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieves placed orders in the given channel."
+			description = "Lists the placed orders the authenticated buyer can view within the given channel ERC scope. Resolves the channel by external reference code and delegates to the channel-id-scoped listing; orders in the OPEN draft state are excluded. Supports search, filter, sort, and pagination."
 		)
 		public PlacedOrderPage channelByExternalReferenceCodePlacedOrders(
 				@GraphQLName("search") String search,
@@ -1109,7 +1151,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by ERC. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
+		)
 		public String byExternalReferenceCodePaymentURL(
 				@GraphQLName("callbackURL") String callbackURL)
 			throws Exception {
@@ -1138,7 +1182,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField(description = "Retrieve placed order billing address.")
+		@GraphQLField(
+			description = "Returns the billing address snapshot for the placed order addressed by ERC. The order must not be OPEN; when the billing address is unset an empty PlacedOrderAddress is returned. Returns 404 when the ERC does not resolve."
+		)
 		public PlacedOrderAddress
 				byExternalReferenceCodePlacedOrderBillingAddress()
 			throws Exception {
@@ -1166,7 +1212,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField(description = "Retrieve placed order shipping address.")
+		@GraphQLField(
+			description = "Returns the shipping address snapshot for the placed order addressed by ERC. The order must not be OPEN. Returns 404 when the ERC does not resolve or the shipping address has been removed."
+		)
 		public PlacedOrderAddress
 				byExternalReferenceCodePlacedOrderShippingAddress()
 			throws Exception {
@@ -1194,7 +1242,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Lists the comments (notes) recorded against the placed order addressed by ERC. The order must not be OPEN. Supports pagination via page and pageSize."
+		)
 		public PlacedOrderCommentPage
 				byExternalReferenceCodePlacedOrderComments(
 					@GraphQLName("pageSize") int pageSize,
@@ -1225,7 +1275,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField(description = "Retrieve placed order items.")
+		@GraphQLField(
+			description = "Lists the top-level line items of the placed order addressed by ERC. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
+		)
 		public PlacedOrderItemPage byExternalReferenceCodePlacedOrderItems(
 				@GraphQLName("search") String search,
 				@GraphQLName("skuId") Long skuId,
@@ -1261,7 +1313,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve shipments of the given placed order item."
+			description = "Lists the shipments that fulfill the placed-order line item addressed by ERC. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN."
 		)
 		public PlacedOrderItemShipmentPage
 				itemByExternalReferenceCodePlacedOrderItemShipments()
@@ -1291,7 +1343,9 @@ public class Query {
 			_placedOrder = placedOrder;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Lists the shipments dispatched against the placed order addressed by ERC. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
+		)
 		public ShipmentPage byExternalReferenceCodeShipments(
 				@GraphQLName("search") String search,
 				@GraphQLName("filter") String filterString,
@@ -1329,7 +1383,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve delivery term of the given Placed Order."
+			description = "Returns the delivery term assigned to the placed order addressed by ERC. The order must not be OPEN; if it is, the request is rejected. Returns 404 when the ERC does not resolve."
 		)
 		public Term byExternalReferenceCodeDeliveryTerm() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1355,7 +1409,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieve payment term of the given Placed Order."
+			description = "Returns the payment term assigned to the placed order addressed by ERC. The order must not be OPEN; if it is, the request is rejected. Returns 404 when the ERC does not resolve."
 		)
 		public Term byExternalReferenceCodePaymentTerm() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1893,4 +1947,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:300824936
+// LIFERAY-REST-BUILDER-HASH:-1649929066

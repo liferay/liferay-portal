@@ -37,7 +37,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Summary")
+@GraphQLName(
+	description = "Aggregated pricing summary of a placed order. Carries item counts, subtotals, shipping, tax, and discount breakdowns formatted in the order's currency. Tax inclusion depends on the channel's price-display configuration. Read-only.",
+	value = "Summary"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Summary")
 public class Summary implements Serializable {
@@ -50,7 +53,10 @@ public class Summary implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Summary.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized currency name resolved from the order's commerce currency. Read-only.",
+		example = "US Dollar"
+	)
 	public String getCurrency() {
 		if (_currencySupplier != null) {
 			currency = _currencySupplier.get();
@@ -84,14 +90,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized currency name resolved from the order's commerce currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String currency;
 
 	@JsonIgnore
 	private Supplier<String> _currencySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Number of distinct top-level line items on the order. Read-only.",
+		example = "1"
+	)
 	public Integer getItemsCount() {
 		if (_itemsCountSupplier != null) {
 			itemsCount = _itemsCountSupplier.get();
@@ -125,14 +136,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Number of distinct top-level line items on the order. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer itemsCount;
 
 	@JsonIgnore
 	private Supplier<Integer> _itemsCountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total ordered quantity across every line item. Read-only.",
+		example = "10.1"
+	)
 	@Valid
 	public BigDecimal getItemsQuantity() {
 		if (_itemsQuantitySupplier != null) {
@@ -167,14 +183,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total ordered quantity across every line item. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal itemsQuantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _itemsQuantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Four-entry list of pre-formatted shipping discount percentages, one per discount level. Populated only when a shipping discount applies. Read-only.",
+		example = "[10%, 5%, 0%, 0%]"
+	)
 	public String[] getShippingDiscountPercentages() {
 		if (_shippingDiscountPercentagesSupplier != null) {
 			shippingDiscountPercentages =
@@ -212,14 +233,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Four-entry list of pre-formatted shipping discount percentages, one per discount level. Populated only when a shipping discount applies. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] shippingDiscountPercentages;
 
 	@JsonIgnore
 	private Supplier<String[]> _shippingDiscountPercentagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total shipping discount amount in the order's currency. Read-only.",
+		example = "1.0"
+	)
 	public Double getShippingDiscountValue() {
 		if (_shippingDiscountValueSupplier != null) {
 			shippingDiscountValue = _shippingDiscountValueSupplier.get();
@@ -253,14 +279,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total shipping discount amount in the order's currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double shippingDiscountValue;
 
 	@JsonIgnore
 	private Supplier<Double> _shippingDiscountValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted shipping discount amount with currency symbol. Read-only.",
+		example = "$1.00"
+	)
 	public String getShippingDiscountValueFormatted() {
 		if (_shippingDiscountValueFormattedSupplier != null) {
 			shippingDiscountValueFormatted =
@@ -298,14 +329,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted shipping discount amount with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingDiscountValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _shippingDiscountValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total shipping amount before tax in the order's currency. Read-only.",
+		example = "9.99"
+	)
 	public Double getShippingValue() {
 		if (_shippingValueSupplier != null) {
 			shippingValue = _shippingValueSupplier.get();
@@ -339,14 +375,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total shipping amount before tax in the order's currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double shippingValue;
 
 	@JsonIgnore
 	private Supplier<Double> _shippingValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted shipping amount with currency symbol. Read-only.",
+		example = "$9.99"
+	)
 	public String getShippingValueFormatted() {
 		if (_shippingValueFormattedSupplier != null) {
 			shippingValueFormatted = _shippingValueFormattedSupplier.get();
@@ -381,14 +422,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted shipping amount with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _shippingValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Shipping amount including tax in the order's currency. Falls back to shippingValue when no tax is configured. Read-only.",
+		example = "10.99"
+	)
 	public Double getShippingValueWithTaxAmount() {
 		if (_shippingValueWithTaxAmountSupplier != null) {
 			shippingValueWithTaxAmount =
@@ -426,14 +472,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Shipping amount including tax in the order's currency. Falls back to shippingValue when no tax is configured. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double shippingValueWithTaxAmount;
 
 	@JsonIgnore
 	private Supplier<Double> _shippingValueWithTaxAmountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted shipping amount including tax, with currency symbol. Read-only.",
+		example = "$10.99"
+	)
 	public String getShippingValueWithTaxAmountFormatted() {
 		if (_shippingValueWithTaxAmountFormattedSupplier != null) {
 			shippingValueWithTaxAmountFormatted =
@@ -472,14 +523,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted shipping amount including tax, with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingValueWithTaxAmountFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _shippingValueWithTaxAmountFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Subtotal of the order before shipping, tax, and order-level discounts. Read-only.",
+		example = "33.54"
+	)
 	public Double getSubtotal() {
 		if (_subtotalSupplier != null) {
 			subtotal = _subtotalSupplier.get();
@@ -513,14 +569,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Subtotal of the order before shipping, tax, and order-level discounts. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double subtotal;
 
 	@JsonIgnore
 	private Supplier<Double> _subtotalSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Four-entry list of pre-formatted subtotal discount percentages, one per discount level. Read-only.",
+		example = "[10%, 0%, 0%, 0%]"
+	)
 	public String[] getSubtotalDiscountPercentages() {
 		if (_subtotalDiscountPercentagesSupplier != null) {
 			subtotalDiscountPercentages =
@@ -558,14 +619,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Four-entry list of pre-formatted subtotal discount percentages, one per discount level. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] subtotalDiscountPercentages;
 
 	@JsonIgnore
 	private Supplier<String[]> _subtotalDiscountPercentagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total subtotal discount amount in the order's currency. Read-only.",
+		example = "3.35"
+	)
 	public Double getSubtotalDiscountValue() {
 		if (_subtotalDiscountValueSupplier != null) {
 			subtotalDiscountValue = _subtotalDiscountValueSupplier.get();
@@ -599,14 +665,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total subtotal discount amount in the order's currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double subtotalDiscountValue;
 
 	@JsonIgnore
 	private Supplier<Double> _subtotalDiscountValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted subtotal discount amount with currency symbol. Read-only.",
+		example = "$3.35"
+	)
 	public String getSubtotalDiscountValueFormatted() {
 		if (_subtotalDiscountValueFormattedSupplier != null) {
 			subtotalDiscountValueFormatted =
@@ -644,14 +715,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted subtotal discount amount with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String subtotalDiscountValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _subtotalDiscountValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted subtotal with currency symbol. Read-only.",
+		example = "$33.54"
+	)
 	public String getSubtotalFormatted() {
 		if (_subtotalFormattedSupplier != null) {
 			subtotalFormatted = _subtotalFormattedSupplier.get();
@@ -685,14 +761,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted subtotal with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String subtotalFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _subtotalFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total tax amount in the order's currency. Populated only when tax is configured on the channel. Read-only.",
+		example = "2.69"
+	)
 	public Double getTaxValue() {
 		if (_taxValueSupplier != null) {
 			taxValue = _taxValueSupplier.get();
@@ -726,14 +807,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total tax amount in the order's currency. Populated only when tax is configured on the channel. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double taxValue;
 
 	@JsonIgnore
 	private Supplier<Double> _taxValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted tax amount with currency symbol. Read-only.",
+		example = "$2.69"
+	)
 	public String getTaxValueFormatted() {
 		if (_taxValueFormattedSupplier != null) {
 			taxValueFormatted = _taxValueFormattedSupplier.get();
@@ -767,14 +853,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted tax amount with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String taxValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _taxValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Order total in the order's currency (subtotal plus shipping plus tax minus discounts, with tax inclusion controlled by the channel configuration). Read-only.",
+		example = "43.52"
+	)
 	public Double getTotal() {
 		if (_totalSupplier != null) {
 			total = _totalSupplier.get();
@@ -808,14 +899,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Order total in the order's currency (subtotal plus shipping plus tax minus discounts, with tax inclusion controlled by the channel configuration). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double total;
 
 	@JsonIgnore
 	private Supplier<Double> _totalSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Four-entry list of pre-formatted total-discount percentages, one per discount level. Read-only.",
+		example = "[5%, 0%, 0%, 0%]"
+	)
 	public String[] getTotalDiscountPercentages() {
 		if (_totalDiscountPercentagesSupplier != null) {
 			totalDiscountPercentages = _totalDiscountPercentagesSupplier.get();
@@ -850,14 +946,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Four-entry list of pre-formatted total-discount percentages, one per discount level. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String[] totalDiscountPercentages;
 
 	@JsonIgnore
 	private Supplier<String[]> _totalDiscountPercentagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total order-level discount amount in the order's currency. Read-only.",
+		example = "2.18"
+	)
 	public Double getTotalDiscountValue() {
 		if (_totalDiscountValueSupplier != null) {
 			totalDiscountValue = _totalDiscountValueSupplier.get();
@@ -891,14 +992,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Total order-level discount amount in the order's currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Double totalDiscountValue;
 
 	@JsonIgnore
 	private Supplier<Double> _totalDiscountValueSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted total-discount amount with currency symbol. Read-only.",
+		example = "$2.18"
+	)
 	public String getTotalDiscountValueFormatted() {
 		if (_totalDiscountValueFormattedSupplier != null) {
 			totalDiscountValueFormatted =
@@ -936,14 +1042,19 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted total-discount amount with currency symbol. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String totalDiscountValueFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _totalDiscountValueFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Pre-formatted total with currency symbol, ready for display on the order summary. Read-only.",
+		example = "$43.52"
+	)
 	public String getTotalFormatted() {
 		if (_totalFormattedSupplier != null) {
 			totalFormatted = _totalFormattedSupplier.get();
@@ -977,7 +1088,9 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Pre-formatted total with currency symbol, ready for display on the order summary. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String totalFormatted;
 
@@ -1457,4 +1570,4 @@ public class Summary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:748757905
+// LIFERAY-REST-BUILDER-HASH:120912255

@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("VirtualItem")
+@GraphQLName(
+	description = "Single downloadable virtual item attached to a placed order item (for example, an e-book PDF, a license key, a digital asset). Carries the resolved download URL, the optional version string, and the remaining download-usage count. Read-only.",
+	value = "VirtualItem"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "VirtualItem")
 public class VirtualItem implements Serializable {
@@ -47,7 +50,8 @@ public class VirtualItem implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		example = "http://www.liferay.com"
+		description = "Resolved download URL the buyer follows to obtain the virtual asset. Falls back to a portal-generated download URL when no explicit external URL is set on the underlying file entry. Read-only.",
+		example = "https://example.com/o/commerce-media/download-virtual/30130/30131"
 	)
 	public String getUrl() {
 		if (_urlSupplier != null) {
@@ -80,14 +84,19 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Resolved download URL the buyer follows to obtain the virtual asset. Falls back to a portal-generated download URL when no explicit external URL is set on the underlying file entry. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String url;
 
 	@JsonIgnore
 	private Supplier<String> _urlSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Number of download usages permitted for the virtual asset. Decremented on each successful buyer download until the cap is reached. Read-only.",
+		example = "5"
+	)
 	public Integer getUsages() {
 		if (_usagesSupplier != null) {
 			usages = _usagesSupplier.get();
@@ -121,14 +130,19 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Number of download usages permitted for the virtual asset. Decremented on each successful buyer download until the cap is reached. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer usages;
 
 	@JsonIgnore
 	private Supplier<Integer> _usagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "v1.0.0")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Version label attached to the virtual asset (for example, v1.0.0). Read-only.",
+		example = "v1.0.0"
+	)
 	public String getVersion() {
 		if (_versionSupplier != null) {
 			version = _versionSupplier.get();
@@ -162,7 +176,9 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Version label attached to the virtual asset (for example, v1.0.0). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String version;
 
@@ -341,4 +357,4 @@ public class VirtualItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1879184750
+// LIFERAY-REST-BUILDER-HASH:-953515144

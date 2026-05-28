@@ -37,7 +37,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Settings")
+@GraphQLName(
+	description = "Inventory order-quantity settings inherited from the SKU's product-definition inventory configuration. Drives the buyer-facing quantity constraints for the line item. Read-only.",
+	value = "Settings"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Settings")
 public class Settings implements Serializable {
@@ -50,7 +53,10 @@ public class Settings implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Settings.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Explicit list of allowed order quantities for the SKU. Populated only when the SKU's inventory configuration declares an explicit allowed-quantities list. Read-only.",
+		example = "[1, 5, 10]"
+	)
 	@Valid
 	public BigDecimal[] getAllowedQuantities() {
 		if (_allowedQuantitiesSupplier != null) {
@@ -86,14 +92,19 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Explicit list of allowed order quantities for the SKU. Populated only when the SKU's inventory configuration declares an explicit allowed-quantities list. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal[] allowedQuantities;
 
 	@JsonIgnore
 	private Supplier<BigDecimal[]> _allowedQuantitiesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Maximum order quantity permitted for the SKU. Defaults to the product-definition inventory default when no override is set. Read-only.",
+		example = "100"
+	)
 	@Valid
 	public BigDecimal getMaxQuantity() {
 		if (_maxQuantitySupplier != null) {
@@ -128,14 +139,19 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Maximum order quantity permitted for the SKU. Defaults to the product-definition inventory default when no override is set. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal maxQuantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _maxQuantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Minimum order quantity permitted for the SKU. Defaults to the product-definition inventory default when no override is set. Read-only.",
+		example = "1"
+	)
 	@Valid
 	public BigDecimal getMinQuantity() {
 		if (_minQuantitySupplier != null) {
@@ -170,14 +186,19 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Minimum order quantity permitted for the SKU. Defaults to the product-definition inventory default when no override is set. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal minQuantity;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _minQuantitySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Quantity step the order quantity must be a multiple of. Defaults to the product-definition inventory default when no override is set. Read-only.",
+		example = "1"
+	)
 	@Valid
 	public BigDecimal getMultipleQuantity() {
 		if (_multipleQuantitySupplier != null) {
@@ -212,7 +233,9 @@ public class Settings implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Quantity step the order quantity must be a multiple of. Defaults to the product-definition inventory default when no override is set. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected BigDecimal multipleQuantity;
 
@@ -405,4 +428,4 @@ public class Settings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1923916765
+// LIFERAY-REST-BUILDER-HASH:1078899732

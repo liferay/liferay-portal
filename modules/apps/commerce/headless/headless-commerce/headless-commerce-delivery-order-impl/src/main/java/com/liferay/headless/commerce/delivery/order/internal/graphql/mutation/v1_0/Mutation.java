@@ -102,7 +102,9 @@ public class Mutation {
 			shipmentResourceComponentServiceObjects;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the attachment addressed by id under the placed order addressed by id. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order."
+	)
 	public boolean deletePlacedOrderAttachment(
 			@GraphQLName("attachmentId") Long attachmentId,
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -118,7 +120,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the attachment addressed by ERC under the placed order addressed by ERC. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order. Returns 404 when either ERC does not resolve."
+	)
 	public boolean
 			deletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode(
 				@GraphQLName("attachmentExternalReferenceCode") String
@@ -139,7 +143,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new attachment on the placed order addressed by id, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order."
+	)
 	public Attachment createPlacedOrderAttachmentByBase64(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("attachmentBase64") AttachmentBase64 attachmentBase64)
@@ -175,7 +181,9 @@ public class Mutation {
 					callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new attachment on the placed order addressed by ERC, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order. Returns 404 when the ERC does not resolve."
+	)
 	public Attachment
 			createPlacedOrderByExternalReferenceCodeAttachmentByBase64(
 				@GraphQLName("externalReferenceCode") String
@@ -193,7 +201,9 @@ public class Mutation {
 						externalReferenceCode, attachmentBase64));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Triggers a transition on the placed order addressed by id. When a workflowTaskId is supplied the transition is routed through the workflow engine; otherwise the name selects between the platform-defined process-quote and reorder transitions. The reorder transition creates a new draft order and returns its identifier in the orderId field. The order must not be OPEN."
+	)
 	public OrderTransition createPlacedOrderOrderTransition(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("orderTransition") OrderTransition orderTransition)
@@ -239,7 +249,9 @@ public class Mutation {
 						placedOrderId, callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the placed order addressed by id. Applies JSON Merge Patch semantics to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber) plus custom expando attributes; the order must not be OPEN. Returns 422 when the order status forbids the patch."
+	)
 	public PlacedOrder patchPlacedOrder(
 			@GraphQLName("placedOrderId") Long placedOrderId,
 			@GraphQLName("placedOrder") PlacedOrder placedOrder)
@@ -252,7 +264,9 @@ public class Mutation {
 				placedOrderId, placedOrder));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the placed order addressed by external reference code. Applies JSON Merge Patch semantics to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber) plus custom expando attributes; the order must not be OPEN. Returns 404 when the ERC does not resolve and 422 when the order status forbids the patch."
+	)
 	public PlacedOrder patchPlacedOrderByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("placedOrder") PlacedOrder placedOrder)
@@ -567,4 +581,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1731451293
+// LIFERAY-REST-BUILDER-HASH:-822764642

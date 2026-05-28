@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Step")
+@GraphQLName(
+	description = "Checkout-progress step on a placed order (for example, cart, address, shipping, payment, confirmation). Returned in the steps array on PlacedOrder. Read-only.",
+	value = "Step"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Step")
 public class Step implements Serializable {
@@ -46,7 +49,10 @@ public class Step implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Step.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Canonical step identifier (for example, address, shipping, payment, order-confirmation). Read-only.",
+		example = "order-confirmation"
+	)
 	public String getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -78,14 +84,19 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Canonical step identifier (for example, address, shipping, payment, order-confirmation). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String id;
 
 	@JsonIgnore
 	private Supplier<String> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized display label of the step in the request locale. Read-only.",
+		example = "Order Confirmation"
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -119,14 +130,19 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized display label of the step in the request locale. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "State of the step in the checkout progression (for example, active, completed, pending). Read-only.",
+		example = "completed"
+	)
 	public String getState() {
 		if (_stateSupplier != null) {
 			state = _stateSupplier.get();
@@ -160,7 +176,9 @@ public class Step implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "State of the step in the checkout progression (for example, active, completed, pending). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String state;
 
@@ -343,4 +361,4 @@ public class Step implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1725144420
+// LIFERAY-REST-BUILDER-HASH:791691437

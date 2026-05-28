@@ -47,7 +47,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/delivery-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve delivery term of the given Placed Order."
+		description = "Returns the delivery term assigned to the placed order addressed by ERC. The order must not be OPEN; if it is, the request is rejected. Returns 404 when the ERC does not resolve."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -82,7 +82,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/payment-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve payment term of the given Placed Order."
+		description = "Returns the payment term assigned to the placed order addressed by ERC. The order must not be OPEN; if it is, the request is rejected. Returns 404 when the ERC does not resolve."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -117,7 +117,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/delivery-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve delivery term of the given Placed Order."
+		description = "Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -150,7 +150,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/payment-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve payment term of the given Placed Order."
+		description = "Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -622,4 +622,4 @@ public abstract class BaseTermResourceImpl implements TermResource {
 		LogFactoryUtil.getLog(BaseTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:187635314
+// LIFERAY-REST-BUILDER-HASH:329000912

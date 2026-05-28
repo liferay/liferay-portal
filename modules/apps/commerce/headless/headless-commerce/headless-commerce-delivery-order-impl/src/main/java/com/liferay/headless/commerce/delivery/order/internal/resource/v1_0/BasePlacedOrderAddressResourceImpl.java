@@ -48,7 +48,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-billing-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order billing address."
+		description = "Returns the billing address snapshot for the placed order addressed by ERC. The order must not be OPEN; when the billing address is unset an empty PlacedOrderAddress is returned. Returns 404 when the ERC does not resolve."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -86,7 +86,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/by-externalReferenceCode/{externalReferenceCode}/placed-order-shipping-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order shipping address."
+		description = "Returns the shipping address snapshot for the placed order addressed by ERC. The order must not be OPEN. Returns 404 when the ERC does not resolve or the shipping address has been removed."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -124,7 +124,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-billing-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order billing address."
+		description = "Returns the billing address snapshot for the placed order addressed by id. The order must not be OPEN. When the billing address is unset an empty PlacedOrderAddress is returned."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -161,7 +161,7 @@ public abstract class BasePlacedOrderAddressResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-shipping-address'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve placed order shipping address."
+		description = "Returns the shipping address snapshot for the placed order addressed by id. The order must not be OPEN. Returns 404 when the shipping address has been removed."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -637,4 +637,4 @@ public abstract class BasePlacedOrderAddressResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:128097531
+// LIFERAY-REST-BUILDER-HASH:-1403466478
