@@ -14,3 +14,5 @@ export {default as GuardrailForm} from './guardrail_form/GuardrailForm';
 export {default as HomeDashboard} from './home_dashboard/HomeDashboard';
 export {default as InstructionDefinitionForm} from './instruction_definition_form/InstructionDefinitionForm';
 export {default as InstructionDefinitionItemTitlePropsTransformer} from './instruction_definition_item_title/InstructionDefinitionItemTitlePropsTransformer';
+export {default as IssueReportsCards} from './issue_reports_cards/IssueReportsCards';
+export {default as IssueReportsPropsTransformer} from './issue_reports_table/IssueReportsPropsTransformer';

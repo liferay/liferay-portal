@@ -31,6 +31,7 @@ page import="com.liferay.ai.hub.web.internal.display.context.ViewChatbotsDisplay
 page import="com.liferay.ai.hub.web.internal.display.context.ViewContentRetrieversDisplayContext" %><%@
 page import="com.liferay.ai.hub.web.internal.display.context.ViewGuardrailsDisplayContext" %><%@
 page import="com.liferay.ai.hub.web.internal.display.context.ViewInstructionDefinitionsDisplayContext" %><%@
+page import="com.liferay.ai.hub.web.internal.display.context.ViewIssueReportsDisplayContext" %><%@
 page import="com.liferay.portal.kernel.servlet.SessionMessages" %><%@
 page import="com.liferay.portal.workflow.constants.WorkflowPortletKeys" %>
 
