@@ -31,6 +31,12 @@
 				"friendlyURL": "/configurations",
 				"privateLayout": false,
 				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "AIHUBPRIMARYNAVIGATION6",
+				"friendlyURL": "/issue-reports",
+				"privateLayout": false,
+				"type": "layout"
 			}
 		],
 		"name": "AI Hub Navigation Menu"
