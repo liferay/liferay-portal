@@ -60,7 +60,7 @@ public class AccountGroupRelLocalServiceImpl
 				accountGroupId, classNameId, classPK);
 
 		if (accountGroupRel != null) {
-			throw new DuplicateAccountGroupRelException();
+			return accountGroupRel;
 		}
 
 		if (Objects.equals(AccountEntry.class.getName(), className) &&
