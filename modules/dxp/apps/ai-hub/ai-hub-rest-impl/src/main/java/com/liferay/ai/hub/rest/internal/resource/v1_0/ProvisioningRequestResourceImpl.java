@@ -79,6 +79,8 @@ public class ProvisioningRequestResourceImpl
 			new long[0], serviceAccountUser.getUserId());
 
 		_addQuotas(customerAccountEntry, serviceContext);
+
+		_addRequests(customerAccountEntry, serviceContext);
 	}
 
 	private void _addQuotaObjectEntry(
@@ -127,6 +129,50 @@ public class ProvisioningRequestResourceImpl
 			objectDefinition, serviceContext);
 	}
 
+	private void _addRequestObjectEntry(
+			AccountEntry accountEntry, String externalReferenceCode,
+			ObjectDefinition objectDefinition, ServiceContext serviceContext)
+		throws Exception {
+
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
+
+		if (objectEntry != null) {
+			return;
+		}
+
+		_objectEntryLocalService.addObjectEntry(
+			0, contextUser.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0,
+			LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"maxRequests", _MAX_REQUESTS
+			).put(
+				"r_accountToAIHubRequests_accountEntryId",
+				accountEntry.getAccountEntryId()
+			).build(),
+			serviceContext);
+	}
+
+	private void _addRequests(
+			AccountEntry accountEntry, ServiceContext serviceContext)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_AI_HUB_REQUEST", contextCompany.getCompanyId());
+
+		_addRequestObjectEntry(
+			accountEntry, "guest-request-" + accountEntry.getAccountEntryId(),
+			objectDefinition, serviceContext);
+		_addRequestObjectEntry(
+			accountEntry, "request-" + accountEntry.getAccountEntryId(),
+			objectDefinition, serviceContext);
+	}
+
 	private AccountEntry _getOrAddAccountEntry(
 			String name, ServiceContext serviceContext)
 		throws Exception {
@@ -170,6 +216,8 @@ public class ProvisioningRequestResourceImpl
 
 		return _userLocalService.updateUser(user);
 	}
+
+	private static final int _MAX_REQUESTS = 10;
 
 	private static final int _QUOTA_TOKEN_LIMIT = 33333333;
 

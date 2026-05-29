@@ -12,6 +12,7 @@ import com.liferay.ai.hub.internal.model.VertexAiGeminiUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.KaleoLogUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.PromptUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.QuotaUtil;
+import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.RequestUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.RetrievalAugmentorUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.ToolsUtil;
 import com.liferay.ai.hub.internal.workflow.kaleo.runtime.node.util.VariablesUtil;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
@@ -118,6 +120,15 @@ public class LLMNodeExecutor extends BaseNodeExecutor {
 			return;
 		}
 
+		Lock lock = RequestUtil.tryAcquire(
+			serviceContext.getCompanyId(), currentKaleoNode.getName(),
+			workflowContext, kaleoInstanceToken.getKaleoInstanceId(),
+			serviceContext.getUserId());
+
+		if (lock == null) {
+			return;
+		}
+
 		VertexAiGeminiStreamingChatModel vertexAiGeminiStreamingChatModel =
 			VertexAiGeminiUtil.createVertexAiGeminiStreamingChatModel(
 				serviceContext.getCompanyId());
@@ -160,6 +171,8 @@ public class LLMNodeExecutor extends BaseNodeExecutor {
 						MCPToolProviderUtil.close(sseEventSinkKey);
 
 						vertexAiGeminiStreamingChatModel.close();
+
+						RequestUtil.release(lock);
 					}
 				}
 			).onErrorConsumer(
@@ -167,6 +180,8 @@ public class LLMNodeExecutor extends BaseNodeExecutor {
 					MCPToolProviderUtil.close(sseEventSinkKey);
 
 					vertexAiGeminiStreamingChatModel.close();
+
+					RequestUtil.release(lock);
 
 					_log.error(throwable);
 				}

@@ -161,6 +161,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"AIHubQuota", "/ai-hub/quotas"
 		).put(
+			"AIHubRequest", "/ai-hub/requests"
+		).put(
 			"APIApplication", "/headless-builder/applications"
 		).put(
 			"APIEndpoint", "/headless-builder/endpoints"

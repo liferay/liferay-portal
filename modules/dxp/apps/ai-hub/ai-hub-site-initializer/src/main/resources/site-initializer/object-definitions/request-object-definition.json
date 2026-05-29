@@ -1,0 +1,64 @@
+{
+	"accountEntryRestricted": true,
+	"accountEntryRestrictedObjectFieldName": "r_accountToAIHubRequests_accountEntryId",
+	"className": "com.liferay.object.model.ObjectDefinition#R3Q7",
+	"enableFormContainer": false,
+	"enableIndexSearch": true,
+	"externalReferenceCode": "L_AI_HUB_REQUEST",
+	"friendlyURLSeparator": "l",
+	"label": {
+		"en_US": "Request"
+	},
+	"modifiable": true,
+	"name": "AIHubRequest",
+	"objectFields": [
+		{
+			"DBType": "Long",
+			"businessType": "LongInteger",
+			"externalReferenceCode": "MAX_REQUESTS",
+			"indexed": true,
+			"label": {
+				"en_US": "Max Requests"
+			},
+			"name": "maxRequests",
+			"required": true,
+			"system": true,
+			"type": "Long"
+		},
+		{
+			"DBType": "Long",
+			"businessType": "Relationship",
+			"externalReferenceCode": "ACCOUNT_TO_AI_HUB_REQUESTS",
+			"indexed": true,
+			"label": {
+				"en_US": "Account to Requests"
+			},
+			"name": "r_accountToAIHubRequests_accountEntryId",
+			"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
+			"objectFieldSettings": [
+				{
+					"name": "objectDefinition1ShortName",
+					"value": "AccountEntry"
+				},
+				{
+					"name": "objectRelationshipERCObjectFieldName",
+					"value": "r_accountToAIHubRequests_accountEntryERC"
+				}
+			],
+			"objectRelationshipExternalReferenceCode": "L_ACCOUNT_TO_L_AI_HUB_REQUESTS",
+			"readOnly": false,
+			"relationshipType": "oneToMany",
+			"required": true,
+			"system": true,
+			"type": "Long"
+		}
+	],
+	"objectFolderExternalReferenceCode": "default",
+	"panelCategoryKey": "control_panel.object",
+	"pluralLabel": {
+		"en_US": "Requests"
+	},
+	"portlet": true,
+	"scope": "company",
+	"system": true
+}

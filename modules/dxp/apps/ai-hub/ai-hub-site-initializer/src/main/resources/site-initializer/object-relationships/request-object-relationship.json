@@ -1,0 +1,13 @@
+{
+	"deletionType": "cascade",
+	"externalReferenceCode": "L_ACCOUNT_TO_L_AI_HUB_REQUESTS",
+	"label": {
+		"en_US": "Account to AI Hub Requests"
+	},
+	"name": "accountToAIHubRequests",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:AccountEntry$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:AIHubRequest$]",
+	"objectDefinitionName2": "AIHubRequest",
+	"system": true,
+	"type": "oneToMany"
+}
