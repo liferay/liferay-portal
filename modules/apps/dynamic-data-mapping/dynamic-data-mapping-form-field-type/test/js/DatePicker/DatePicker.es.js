@@ -152,6 +152,19 @@ describe('DatePicker', () => {
 		);
 	});
 
+	it('displays the time with the locale separator for a date_time field in Finnish', () => {
+		render(
+			<DatePicker
+				locale="fi_FI"
+				onChange={() => {}}
+				type="date_time"
+				value="2026-05-27 14:30"
+			/>
+		);
+
+		expect(screen.getByRole('textbox')).toHaveValue('27.05.2026 14.30');
+	});
+
 	it('fills the input with the date selected on Date Picker', () => {
 		const {getByLabelText} = render(<DatePicker onChange={() => {}} />);
 
