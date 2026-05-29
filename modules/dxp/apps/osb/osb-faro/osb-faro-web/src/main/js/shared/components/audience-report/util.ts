@@ -212,6 +212,7 @@ export const formatData = ({
 		{
 			segments: [
 				...metrics
+					.slice()
 					.sort((a: any, b: any) => b.value - a.value)
 					.filter(({valueKey}: any) => valueKey !== 'others'),
 				...metrics.filter(({valueKey}: any) => valueKey === 'others')
