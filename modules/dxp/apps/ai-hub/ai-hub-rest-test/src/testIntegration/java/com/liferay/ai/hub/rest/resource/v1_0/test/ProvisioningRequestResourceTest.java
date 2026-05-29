@@ -113,6 +113,16 @@ public class ProvisioningRequestResourceTest
 			objectDefinition, "guest-quota-" + accountEntryId);
 		_assertQuotaObjectEntry(objectDefinition, "quota-" + accountEntryId);
 
+		ObjectDefinition requestObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_AI_HUB_REQUEST", TestPropsValues.getCompanyId());
+
+		_assertRequestObjectEntry(
+			"guest-request-" + accountEntryId, requestObjectDefinition);
+		_assertRequestObjectEntry(
+			"request-" + accountEntryId, requestObjectDefinition);
+
 		accountEntry =
 			_accountEntryLocalService.getAccountEntryByExternalReferenceCode(
 				"L_AI_HUB", TestPropsValues.getCompanyId());
@@ -135,6 +145,20 @@ public class ProvisioningRequestResourceTest
 		Assert.assertEquals(
 			33333333, GetterUtil.getInteger(values.get("limit")));
 		Assert.assertEquals(0, GetterUtil.getInteger(values.get("usage")));
+	}
+
+	private void _assertRequestObjectEntry(
+		String externalReferenceCode, ObjectDefinition objectDefinition) {
+
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
+
+		Assert.assertNotNull(externalReferenceCode, objectEntry);
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(
+			10, GetterUtil.getInteger(values.get("maxRequests")));
 	}
 
 	private static String _originalName;
