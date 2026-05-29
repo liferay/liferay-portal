@@ -25,7 +25,7 @@
 		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"uuid": "9.0.0"
+		"uuid": "14.0.0"
 	},
 	"main": "index.ts",
 	"name": "@liferay/frontend-js-item-selector-web",
