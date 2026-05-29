@@ -126,7 +126,7 @@ public class CrawlerRestController extends BaseRestController {
 					HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 
-			String indexName = SEOStudioService.toIndexName(canonicalHostname);
+			String indexName = SEOStudioService.toIndexName(domainId);
 
 			crawlerConfig = _replace(
 				Map.ofEntries(
@@ -204,6 +204,8 @@ public class CrawlerRestController extends BaseRestController {
 				try {
 					_detectOrphanPagesCrawler.detect(
 						objectEntryJSONObject.getLong("objectEntryId"),
+						valuesJSONObject.getLong(
+							"r_accountToSEOStudioScans_accountEntryId"),
 						domainId, canonicalHostname, "orphan_page");
 				}
 				catch (Exception exception) {

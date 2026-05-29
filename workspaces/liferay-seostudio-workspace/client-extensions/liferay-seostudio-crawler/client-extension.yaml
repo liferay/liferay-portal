@@ -6,8 +6,9 @@ liferay-seostudio-crawler-oahs:
     name: Liferay SEO Studio Crawler OAuth Application Headless Server
     scopes:
         -   seostudiodomain.everything
+        -   seostudioinsighttype.everything
         -   seostudioinstance.everything
-        -   seostudioorphanpagedata.everything
+        -   seostudiopage.everything
         -   seostudioscan.everything
         -   seostudioscaninsight.everything
         -   Liferay.Headless.SEO.Studio.REST.everything

@@ -39,15 +39,14 @@ import org.springframework.stereotype.Component;
 public class DetectOrphanPagesCrawler {
 
 	public void detect(
-			long scanId, long seoStudioDomainId, URI hostname,
-			String insightType)
+			long scanId, long accountEntryId, long seoStudioDomainId,
+			URI hostname, String insightType)
 		throws Exception {
 
 		String seedURL = SEOStudioService.toDomainURL(hostname);
 
-		long scanInsightId = _findOrCreateScanInsightId(scanId, insightType);
-
-		_deletePriorOrphans(scanInsightId);
+		long insightTypeId = _findOrCreateInsightTypeId(
+			scanId, accountEntryId, insightType);
 
 		String hitsJSON = _seoStudioService.fetchCrawlHits(
 			seoStudioDomainId, _detectorMaxDocs);
@@ -56,7 +55,7 @@ public class DetectOrphanPagesCrawler {
 
 		JSONArray hitsJSONArray = hitsJSONObject.optJSONArray("items");
 
-		Map<String, String[]> indexedByNormalizedURL = new HashMap<>();
+		Map<String, String> urlsByNormalizedURL = new HashMap<>();
 		Set<String> linkedNormalizedURLs = new HashSet<>();
 
 		for (int i = 0; (hitsJSONArray != null) && (i < hitsJSONArray.length());
@@ -72,9 +71,7 @@ public class DetectOrphanPagesCrawler {
 
 			String normalizedURL = _normalize(url);
 
-			indexedByNormalizedURL.putIfAbsent(
-				normalizedURL,
-				new String[] {url, hitJSONObject.optString("title", null)});
+			urlsByNormalizedURL.putIfAbsent(normalizedURL, url);
 
 			JSONArray linksJSONArray = hitJSONObject.optJSONArray("links");
 
@@ -117,7 +114,7 @@ public class DetectOrphanPagesCrawler {
 		Map<String, String> orphanURLsByRemovedLocaleURL =
 			new LinkedHashMap<>();
 
-		for (String normalizedURL : indexedByNormalizedURL.keySet()) {
+		for (String normalizedURL : urlsByNormalizedURL.keySet()) {
 			if (normalizedURL.equals(normalizedSeedURL)) {
 				continue;
 			}
@@ -144,59 +141,50 @@ public class DetectOrphanPagesCrawler {
 		Collection<String> orphans = orphanURLsByRemovedLocaleURL.values();
 
 		for (String orphan : orphans) {
-			String[] indexedPage = indexedByNormalizedURL.get(orphan);
+			JSONObject pageJSONObject = new JSONObject();
 
-			String title = indexedPage[1];
-
-			if ((title == null) || title.isBlank()) {
-				title = "No title found";
-			}
-
-			JSONObject bodyJSONObject = new JSONObject();
-
-			bodyJSONObject.put(
-				_SCAN_INSIGHT_JOIN_COLUMN, scanInsightId
+			pageJSONObject.put(
+				_PAGE_ACCOUNT_JOIN_COLUMN, accountEntryId
 			).put(
-				"title", title
+				_PAGE_SCAN_JOIN_COLUMN, scanId
 			).put(
-				"url", indexedPage[0]
+				"pageURL", urlsByNormalizedURL.get(orphan)
 			);
 
-			_seoStudioService.createOrphanPageData(bodyJSONObject);
+			JSONObject pageResponseJSONObject = new JSONObject(
+				_seoStudioService.createPage(pageJSONObject));
+
+			long pageId = pageResponseJSONObject.getLong("id");
+
+			JSONObject scanInsightJSONObject = new JSONObject();
+
+			scanInsightJSONObject.put(
+				_SCAN_INSIGHT_ACCOUNT_JOIN_COLUMN, accountEntryId
+			).put(
+				_SCAN_INSIGHT_INSIGHT_TYPE_JOIN_COLUMN, insightTypeId
+			).put(
+				_SCAN_INSIGHT_PAGE_JOIN_COLUMN, pageId
+			).put(
+				_SCAN_INSIGHT_SCAN_JOIN_COLUMN, scanId
+			).put(
+				"classification", "informational"
+			).put(
+				"detectedDate",
+				Instant.now(
+				).truncatedTo(
+					ChronoUnit.SECONDS
+				).toString()
+			);
+
+			_seoStudioService.createScanInsight(scanInsightJSONObject);
 		}
-
-		JSONObject countJSONObject = new JSONObject();
-
-		countJSONObject.put("affectedPageCount", orphans.size());
-
-		_seoStudioService.updateScanInsight(scanInsightId, countJSONObject);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
 				StringBundler.concat(
 					"Wrote ", orphans.size(),
-					" orphan page entries for scan insight ", scanInsightId));
-		}
-	}
-
-	private void _deletePriorOrphans(long scanInsightId) {
-		String body = _seoStudioService.listOrphanPagesByInsight(
-			scanInsightId, _detectorMaxDocs);
-
-		JSONObject bodyJSONObject = new JSONObject(body);
-
-		JSONArray itemsJSONArray = bodyJSONObject.optJSONArray("items");
-
-		for (int i = 0;
-			 (itemsJSONArray != null) && (i < itemsJSONArray.length()); i++) {
-
-			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
-
-			long id = itemJSONObject.optLong("id", -1);
-
-			if (id > 0) {
-				_seoStudioService.deleteOrphanPageData(id);
-			}
+					" orphan page scan insights for insight type ",
+					insightTypeId));
 		}
 	}
 
@@ -242,11 +230,13 @@ public class DetectOrphanPagesCrawler {
 		return localePrefixes;
 	}
 
-	private long _findOrCreateScanInsightId(long scanId, String insightType) {
+	private long _findOrCreateInsightTypeId(
+		long scanId, long accountEntryId, String insightType) {
+
 		String externalReferenceCode = insightType + ":" + scanId;
 
 		try {
-			String body = _seoStudioService.findScanInsightByERC(
+			String body = _seoStudioService.findInsightTypeByERC(
 				externalReferenceCode);
 
 			JSONObject bodyJSONObject = new JSONObject(body);
@@ -260,7 +250,7 @@ public class DetectOrphanPagesCrawler {
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"No existing scan insight for \"" + externalReferenceCode +
+					"No existing insight type for \"" + externalReferenceCode +
 						"\"; creating",
 					exception);
 			}
@@ -269,27 +259,21 @@ public class DetectOrphanPagesCrawler {
 		JSONObject bodyJSONObject = new JSONObject();
 
 		bodyJSONObject.put(
-			_SCAN_JOIN_COLUMN, scanId
+			_INSIGHT_TYPE_ACCOUNT_JOIN_COLUMN, accountEntryId
 		).put(
-			"classification", "problem"
+			_INSIGHT_TYPE_SCAN_JOIN_COLUMN, scanId
 		).put(
-			"detectedDate",
-			Instant.now(
-			).truncatedTo(
-				ChronoUnit.SECONDS
-			).toString()
+			"category", "urls"
 		).put(
 			"externalReferenceCode", externalReferenceCode
 		).put(
-			"insightCategory", "crawlability"
+			"name", "Orphan Page"
 		).put(
-			"insightType", insightType
-		).put(
-			"severity", "medium"
+			"severity", "high"
 		);
 
 		JSONObject responseJSONObject = new JSONObject(
-			_seoStudioService.createScanInsight(bodyJSONObject));
+			_seoStudioService.createInsightType(bodyJSONObject));
 
 		return responseJSONObject.getLong("id");
 	}
@@ -403,10 +387,28 @@ public class DetectOrphanPagesCrawler {
 				uri.getScheme(), "://", uri.getHost(), remainingPath));
 	}
 
-	private static final String _SCAN_INSIGHT_JOIN_COLUMN =
-		"r_scanInsightToOrphanPageDatas_seoStudioScanInsightId";
+	private static final String _INSIGHT_TYPE_ACCOUNT_JOIN_COLUMN =
+		"r_accountToSEOStudioInsightTypes_accountEntryId";
 
-	private static final String _SCAN_JOIN_COLUMN =
+	private static final String _INSIGHT_TYPE_SCAN_JOIN_COLUMN =
+		"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId";
+
+	private static final String _PAGE_ACCOUNT_JOIN_COLUMN =
+		"r_accountToSEOStudioPages_accountEntryId";
+
+	private static final String _PAGE_SCAN_JOIN_COLUMN =
+		"r_seoStudioScanToSEOStudioPages_seoStudioScanId";
+
+	private static final String _SCAN_INSIGHT_ACCOUNT_JOIN_COLUMN =
+		"r_accountToSEOStudioScanInsights_accountEntryId";
+
+	private static final String _SCAN_INSIGHT_INSIGHT_TYPE_JOIN_COLUMN =
+		"r_seoStudioInsightTypeToScanInsights_seoStudioInsightTypeId";
+
+	private static final String _SCAN_INSIGHT_PAGE_JOIN_COLUMN =
+		"r_seoStudioPageToSEOStudioScanInsights_seoStudioPageId";
+
+	private static final String _SCAN_INSIGHT_SCAN_JOIN_COLUMN =
 		"r_seoStudioScanToSEOStudioScanInsights_seoStudioScanId";
 
 	private static final Log _log = LogFactory.getLog(

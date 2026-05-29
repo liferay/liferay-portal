@@ -56,30 +56,25 @@ public class SEOStudioService extends BaseService {
 			uri.getScheme(), "://", uri.getHost(), ":", uri.getPort());
 	}
 
-	public static String toIndexName(URI uri) {
-		String sanitizedHost = uri.getHost(
-		).replaceAll(
-			"[^a-z0-9._-]", "_"
-		);
-
-		return _INDEX_NAME_PREFIX + sanitizedHost;
+	public static String toIndexName(long seoStudioDomainId) {
+		return _INDEX_NAME_PREFIX + seoStudioDomainId;
 	}
 
-	public String createOrphanPageData(JSONObject jsonObject) {
+	public String createInsightType(JSONObject jsonObject) {
 		return post(
-			_authorization(), jsonObject.toString(), URI.create(_ORPHAN_PAGES));
+			_authorization(), jsonObject.toString(),
+			URI.create(_INSIGHT_TYPES));
+	}
+
+	public String createPage(JSONObject jsonObject) {
+		return post(
+			_authorization(), jsonObject.toString(), URI.create(_PAGES));
 	}
 
 	public String createScanInsight(JSONObject jsonObject) {
 		return post(
 			_authorization(), jsonObject.toString(),
 			URI.create(_SCAN_INSIGHTS));
-	}
-
-	public void deleteOrphanPageData(long orphanPageDataId) {
-		delete(
-			_authorization(), "",
-			URI.create(_ORPHAN_PAGES + "/" + orphanPageDataId));
 	}
 
 	public String fetchCrawlHits(long seoStudioDomainId, int maxDocs) {
@@ -99,40 +94,20 @@ public class SEOStudioService extends BaseService {
 		return get(_authorization(), URI.create(_SITES));
 	}
 
-	public String findScanInsightByERC(String externalReferenceCode) {
+	public String findInsightTypeByERC(String externalReferenceCode) {
 		String encodedERC = URLEncoder.encode(
 			externalReferenceCode, StandardCharsets.UTF_8);
 
 		return get(
 			_authorization(),
 			URI.create(
-				_SCAN_INSIGHTS + "/by-external-reference-code/" + encodedERC));
-	}
-
-	public String listOrphanPagesByInsight(long scanInsightId, int pageSize) {
-		String filter = URLEncoder.encode(
-			"r_scanInsightToOrphanPageDatas_seoStudioScanInsightId eq '" +
-				scanInsightId + "'",
-			StandardCharsets.UTF_8);
-
-		return get(
-			_authorization(),
-			URI.create(
-				StringBundler.concat(
-					_ORPHAN_PAGES, "?filter=", filter, "&pageSize=",
-					pageSize)));
+				_INSIGHT_TYPES + "/by-external-reference-code/" + encodedERC));
 	}
 
 	public String updateDomain(long domainId, JSONObject jsonObject) {
 		return patch(
 			_authorization(), jsonObject.toString(),
 			URI.create(_DOMAINS + "/" + domainId));
-	}
-
-	public String updateScanInsight(long scanInsightId, JSONObject jsonObject) {
-		return patch(
-			_authorization(), jsonObject.toString(),
-			URI.create(_SCAN_INSIGHTS + "/" + scanInsightId));
 	}
 
 	private String _authorization() {
@@ -144,7 +119,9 @@ public class SEOStudioService extends BaseService {
 
 	private static final String _INDEX_NAME_PREFIX = "seo_studio_";
 
-	private static final String _ORPHAN_PAGES = "/o/seo-studio/orphan-pages";
+	private static final String _INSIGHT_TYPES = "/o/seo-studio/insight-types";
+
+	private static final String _PAGES = "/o/seo-studio/pages";
 
 	private static final String _SCAN_INSIGHTS = "/o/seo-studio/scan-insights";
 

@@ -11,6 +11,30 @@
 	},
 	"modifiable": true,
 	"name": "SEOStudioScan",
+	"objectActions": [
+		{
+			"active": true,
+			"description": "",
+			"errorMessage": {
+				"en_US": "Crawl failed. Please try again later or contact support."
+			},
+			"label": {
+				"en_US": "Trigger SEO Crawl"
+			},
+			"name": "triggerCrawlSource",
+			"objectActionExecutorKey": "function#liferay-seostudio-crawler-trigger",
+			"objectActionTriggerKey": "standalone",
+			"parameters": {
+				"objectDefinitionExternalReferenceCode": "SEO_CRAWL_SOURCE_TRIGGER"
+			},
+			"status": {
+				"code": 1,
+				"label": "success",
+				"label_i18n": "Success"
+			},
+			"system": false
+		}
+	],
 	"objectFields": [
 		{
 			"DBType": "Clob",
@@ -35,6 +59,32 @@
 			"name": "errorMessage",
 			"system": true,
 			"type": "Clob"
+		},
+		{
+			"DBType": "Integer",
+			"businessType": "Integer",
+			"defaultValue": 1,
+			"externalReferenceCode": "MAX_CRAWL_DEPTH",
+			"indexed": true,
+			"label": {
+				"en_US": "Max Crawl Depth"
+			},
+			"name": "maxCrawlDepth",
+			"system": true,
+			"type": "Integer"
+		},
+		{
+			"DBType": "Integer",
+			"businessType": "Integer",
+			"defaultValue": 30,
+			"externalReferenceCode": "MAX_DURATION",
+			"indexed": true,
+			"label": {
+				"en_US": "Max Duration"
+			},
+			"name": "maxDuration",
+			"system": true,
+			"type": "Integer"
 		},
 		{
 			"DBType": "DateTime",
