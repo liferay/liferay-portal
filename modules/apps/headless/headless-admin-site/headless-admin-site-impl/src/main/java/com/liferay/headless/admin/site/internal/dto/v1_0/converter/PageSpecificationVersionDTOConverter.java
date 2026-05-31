@@ -5,11 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
-import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -42,16 +40,6 @@ public class PageSpecificationVersionDTOConverter
 				setName(
 					() -> layoutContentVersion.getName(
 						LocaleUtil.getSiteDefault()));
-				setPageSpecification(
-					() -> {
-						String data = layoutContentVersion.getData();
-
-						if (Validator.isNull(data)) {
-							return null;
-						}
-
-						return PageSpecification.unsafeToDTO(data);
-					});
 				setStatus(
 					() -> {
 						if (layoutContentVersion.getStatus() ==
