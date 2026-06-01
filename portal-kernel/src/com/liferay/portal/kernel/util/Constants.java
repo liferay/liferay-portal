@@ -66,6 +66,8 @@ public interface Constants {
 
 	public static final String GET_TEMP = "get_temp";
 
+	public static final String HISTORY = "history";
+
 	public static final String IMPORT = "import";
 
 	public static final String LOCK = "lock";
