@@ -185,7 +185,8 @@ public class ManageLayoutProductNavigationControlMenuEntry
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
 		if ((layout.isTypeAssetDisplay() || layout.isTypeContent()) &&
-			Objects.equals(mode, Constants.EDIT)) {
+			(Objects.equals(mode, Constants.EDIT) ||
+			 Objects.equals(mode, Constants.HISTORY))) {
 
 			return false;
 		}
