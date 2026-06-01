@@ -153,6 +153,19 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 					httpServletRequest, layout, themeDisplay);
 			}
 		}
+		else if (layoutMode.equals(Constants.HISTORY)) {
+			try {
+				_layoutLockManager.getLock(layout, themeDisplay.getUserId());
+			}
+			catch (PortalException portalException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(portalException);
+				}
+
+				redirect = _layoutLockManager.getLockedLayoutURL(
+					httpServletRequest);
+			}
+		}
 
 		if (!layout.isPublished()) {
 			if (hasUpdatePermissions == null) {
