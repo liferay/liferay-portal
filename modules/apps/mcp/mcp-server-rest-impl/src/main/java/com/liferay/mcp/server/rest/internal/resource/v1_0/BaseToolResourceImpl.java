@@ -92,7 +92,8 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Invokes a tool. ALWAYS call `getTool` first to fetch the tool's `inputSchema`, then build the request `body` to match it exactly. Skipping `getTool` leads to malformed input and avoidable failures. Returns the tool's response body unchanged.",
-		operationId = "invokeTool"
+		operationId = "invokeTool",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Object.class)), description = "The complete input map for the target tool, matching the `inputSchema` that `getTool` returns for this `toolName`. Use that schema's properties exactly as named: when the `inputSchema` declares a `body` property, it holds the request payload and must stay nested under `body` here rather than be flattened into this map; pass any path or query parameters as siblings of `body`. For example, a tool whose `inputSchema` has `body` and `itemId` properties is invoked with `{\"body\": {...}, \"itemId\": \"123\"}`.")
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -578,4 +579,4 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 		LogFactoryUtil.getLog(BaseToolResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:235970562
+// LIFERAY-REST-BUILDER-HASH:-1859517648
