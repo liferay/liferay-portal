@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.layout.util.template.LayoutConverter;
 import com.liferay.layout.util.template.LayoutConverterRegistry;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -254,6 +255,20 @@ public class LayoutActionsHelper {
 		}
 
 		return false;
+	}
+
+	public boolean isShowViewHistoryAction(Layout layout)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-10622") ||
+			!layout.isTypeContent()) {
+
+			return false;
+		}
+
+		return LayoutPermissionUtil.contains(
+			_themeDisplay.getPermissionChecker(), layout, ActionKeys.UPDATE);
 	}
 
 	public boolean isShowViewLayoutAction(Layout layout) {

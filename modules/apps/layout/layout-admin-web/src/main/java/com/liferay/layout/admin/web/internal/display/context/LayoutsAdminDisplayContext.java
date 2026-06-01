@@ -484,7 +484,7 @@ public class LayoutsAdminDisplayContext {
 
 	public String getEditLayoutURL(Layout layout) throws Exception {
 		if (layout.isTypeContent()) {
-			return _getDraftLayoutURL(layout);
+			return _getDraftLayoutURL(layout, Constants.EDIT);
 		}
 
 		if (!Objects.equals(layout.getType(), LayoutConstants.TYPE_PORTLET) ||
@@ -493,7 +493,7 @@ public class LayoutsAdminDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		return _getDraftLayoutURL(layout);
+		return _getDraftLayoutURL(layout, Constants.EDIT);
 	}
 
 	public String getEditOrViewLayoutURL(Layout layout) throws Exception {
@@ -1676,6 +1676,10 @@ public class LayoutsAdminDisplayContext {
 		return verticalNavItemList;
 	}
 
+	public String getViewHistoryLayoutURL(Layout layout) throws Exception {
+		return _getDraftLayoutURL(layout, Constants.HISTORY);
+	}
+
 	public String getViewLayoutURL(Layout layout) throws PortalException {
 		String layoutFullURL = null;
 
@@ -2252,12 +2256,13 @@ public class LayoutsAdminDisplayContext {
 			PropsUtil.get(PropsKeys.THEME_SHORTCUT_ICON);
 	}
 
-	private String _getDraftLayoutURL(Layout layout) throws Exception {
+	private String _getDraftLayoutURL(Layout layout, String mode)
+		throws Exception {
+
 		return HttpComponentsUtil.addParameters(
 			PortalUtil.getLayoutFullURL(getDraftLayout(layout), themeDisplay),
 			"p_l_back_url", _getBackURL(layout), "p_l_back_url_title",
-			LanguageUtil.get(httpServletRequest, "pages"), "p_l_mode",
-			Constants.EDIT);
+			LanguageUtil.get(httpServletRequest, "pages"), "p_l_mode", mode);
 	}
 
 	private String _getFriendlyURLWarningURL() {

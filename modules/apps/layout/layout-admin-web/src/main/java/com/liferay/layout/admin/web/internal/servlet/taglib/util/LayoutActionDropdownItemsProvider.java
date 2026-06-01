@@ -93,6 +93,10 @@ public class LayoutActionDropdownItemsProvider {
 					).add(
 						_getPreviewLayoutActionUnsafeConsumer(
 							draftLayout, layout)
+					).add(
+						() -> _layoutActionsHelper.isShowViewHistoryAction(
+							layout),
+						_getViewHistoryLayoutActionUnsafeConsumer(layout)
 					).build());
 				dropdownGroupItem.setSeparator(true);
 			}
@@ -691,6 +695,18 @@ public class LayoutActionDropdownItemsProvider {
 			dropdownItem.setLabel(label);
 			dropdownItem.setTarget(
 				HtmlUtil.escape(layout.getTypeSettingsProperty("target")));
+		};
+	}
+
+	private UnsafeConsumer<DropdownItem, Exception>
+		_getViewHistoryLayoutActionUnsafeConsumer(Layout layout) {
+
+		return dropdownItem -> {
+			dropdownItem.setHref(
+				_layoutsAdminDisplayContext.getViewHistoryLayoutURL(layout));
+			dropdownItem.setIcon("date-time");
+			dropdownItem.setLabel(
+				LanguageUtil.get(_httpServletRequest, "view-history"));
 		};
 	}
 
