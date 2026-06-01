@@ -15,7 +15,7 @@
 		"eslint-plugin-react-refresh": "^0.4.3",
 		"jsdom": "^22.1.0",
 		"vite": "^5.0.2",
-		"vitest": "^0.34.6"
+		"vitest": "^4.1.0"
 	},
 	"name": "@liferay/liferay-commerceminium4-js-import-maps-entry",
 	"private": true,
