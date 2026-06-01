@@ -16,10 +16,19 @@ public class RequestBody {
 		return _content;
 	}
 
+	public String getDescription() {
+		return _description;
+	}
+
 	public void setContent(Map<String, Content> content) {
 		_content = content;
 	}
 
+	public void setDescription(String description) {
+		_description = description;
+	}
+
 	private Map<String, Content> _content;
+	private String _description;
 
 }

@@ -163,12 +163,12 @@ public class ResourceOpenAPIParser {
 					sb.append("\"");
 				}
 
-				if (getMultipartBodySchemas(javaMethodSignature) != null) {
-					sb.append(", requestBody = ");
-					sb.append("@io.swagger.v3.oas.annotations.parameters.");
-					sb.append("RequestBody(content = ");
-					sb.append(_getRequestBodyContent(javaMethodSignature));
-					sb.append(")");
+				String requestBodyAnnotation = _getRequestBodyAnnotation(
+					javaMethodSignature, operation);
+
+				if (!requestBodyAnnotation.isEmpty()) {
+					sb.append(", ");
+					sb.append(requestBodyAnnotation);
 				}
 			}
 
@@ -176,17 +176,16 @@ public class ResourceOpenAPIParser {
 
 			methodAnnotations.add(sb.toString());
 		}
-		else if (getMultipartBodySchemas(javaMethodSignature) != null) {
-			StringBundler sb = new StringBundler(
-				"@io.swagger.v3.oas.annotations.Operation(");
+		else {
+			String requestBodyAnnotation = _getRequestBodyAnnotation(
+				javaMethodSignature, operation);
 
-			sb.append("requestBody = ");
-			sb.append("@io.swagger.v3.oas.annotations.parameters.");
-			sb.append("RequestBody(content = ");
-			sb.append(_getRequestBodyContent(javaMethodSignature));
-			sb.append("))");
-
-			methodAnnotations.add(sb.toString());
+			if (!requestBodyAnnotation.isEmpty()) {
+				methodAnnotations.add(
+					StringBundler.concat(
+						"@io.swagger.v3.oas.annotations.Operation(",
+						requestBodyAnnotation, ")"));
+			}
 		}
 
 		if (operation.getTags() != null) {
@@ -981,6 +980,50 @@ public class ResourceOpenAPIParser {
 		return javaMethodParameters;
 	}
 
+	private static String _getJSONRequestBodyContent(
+		JavaMethodSignature javaMethodSignature) {
+
+		Set<String> requestBodyMediaTypes =
+			javaMethodSignature.getRequestBodyMediaTypes();
+
+		if (requestBodyMediaTypes.isEmpty() ||
+			requestBodyMediaTypes.contains("multipart/form-data")) {
+
+			return null;
+		}
+
+		Schema schema = _getOperationSchema(
+			javaMethodSignature.getOperation(), requestBodyMediaTypes);
+
+		if (schema == null) {
+			return null;
+		}
+
+		List<JavaMethodParameter> javaMethodParameters =
+			javaMethodSignature.getJavaMethodParameters();
+
+		if (javaMethodParameters.isEmpty()) {
+			return null;
+		}
+
+		JavaMethodParameter bodyJavaMethodParameter = javaMethodParameters.get(
+			javaMethodParameters.size() - 1);
+
+		String parameterType = bodyJavaMethodParameter.getParameterType();
+
+		if (parameterType.startsWith("[")) {
+			return null;
+		}
+
+		Iterator<String> iterator = requestBodyMediaTypes.iterator();
+
+		return StringBundler.concat(
+			"@io.swagger.v3.oas.annotations.media.Content(mediaType = \"",
+			iterator.next(),
+			"\", schema = @io.swagger.v3.oas.annotations.media.Schema(",
+			"implementation = ", parameterType, ".class))");
+	}
+
 	private static String _getMethodAnnotationConsumes(
 		ConfigYAML configYAML, Set<String> requestBodyMediaTypes) {
 
@@ -1439,6 +1482,48 @@ public class ResourceOpenAPIParser {
 		return parameter;
 	}
 
+	private static String _getRequestBodyAnnotation(
+		JavaMethodSignature javaMethodSignature, Operation operation) {
+
+		Map<String, Schema> multipartBodySchemas = getMultipartBodySchemas(
+			javaMethodSignature);
+		String requestBodyDescription = _getRequestBodyDescription(operation);
+
+		if ((multipartBodySchemas == null) &&
+			(requestBodyDescription == null)) {
+
+			return "";
+		}
+
+		StringBundler sb = new StringBundler(9);
+
+		sb.append("requestBody = @io.swagger.v3.oas.annotations.parameters.");
+		sb.append("RequestBody(");
+
+		if (multipartBodySchemas != null) {
+			sb.append("content = ");
+			sb.append(_getRequestBodyContent(javaMethodSignature));
+		}
+		else {
+			String requestBodyContent = _getJSONRequestBodyContent(
+				javaMethodSignature);
+
+			if (requestBodyContent != null) {
+				sb.append("content = ");
+				sb.append(requestBodyContent);
+				sb.append(", ");
+			}
+
+			sb.append("description = \"");
+			sb.append(_escapeAnnotationValue(requestBodyDescription));
+			sb.append("\"");
+		}
+
+		sb.append(")");
+
+		return sb.toString();
+	}
+
 	private static String _getRequestBodyContent(
 		JavaMethodSignature javaMethodSignature) {
 
@@ -1488,6 +1573,16 @@ public class ResourceOpenAPIParser {
 		}
 
 		return sb.toString();
+	}
+
+	private static String _getRequestBodyDescription(Operation operation) {
+		RequestBody requestBody = operation.getRequestBody();
+
+		if (requestBody == null) {
+			return null;
+		}
+
+		return requestBody.getDescription();
 	}
 
 	private static String _getReturnType(
