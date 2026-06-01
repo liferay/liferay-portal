@@ -170,9 +170,10 @@ public class ObjectDefinitionUtil {
 		"com.liferay.content.site.generator.impl", "com.liferay.cookies.impl",
 		"com.liferay.frontend.data.set.admin.web",
 		"com.liferay.frontend.data.set.impl",
-		"com.liferay.headless.builder.impl", "com.liferay.list.type.service",
-		"com.liferay.mcp.server.rest.impl", "com.liferay.notification.service",
-		"com.liferay.object.service", "com.liferay.seo.studio.site.initializer",
+		"com.liferay.headless.builder.impl", "com.liferay.launch.impl",
+		"com.liferay.list.type.service", "com.liferay.mcp.server.rest.impl",
+		"com.liferay.notification.service", "com.liferay.object.service",
+		"com.liferay.seo.studio.site.initializer",
 		"com.liferay.site.initializer.cmp", "com.liferay.site.initializer.cms",
 		"com.liferay.site.initializer.dsr"
 	};
@@ -263,6 +264,10 @@ public class ObjectDefinitionUtil {
 			"FunctionalCookieEntry", "/functional-cookies-entries"
 		).put(
 			"KnowledgeBase", "/cms/knowledge-bases"
+		).put(
+			"LaunchEntry", "/launch-entries"
+		).put(
+			"LaunchSet", "/launch-sets"
 		).put(
 			"MCPServerDataMask", "/mcp/server-data-masks"
 		).put(
