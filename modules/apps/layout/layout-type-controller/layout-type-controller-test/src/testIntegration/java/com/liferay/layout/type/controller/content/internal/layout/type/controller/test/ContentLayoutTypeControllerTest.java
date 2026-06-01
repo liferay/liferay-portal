@@ -28,7 +28,9 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypeController;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -62,6 +64,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -411,6 +414,28 @@ public class ContentLayoutTypeControllerTest {
 		}
 	}
 
+	@FeatureFlag("LPD-10622")
+	@Test
+	@TestInfo("LPD-90027")
+	public void testContentLayoutTypeControllerWithHistoryMode()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(
+				Constants.HISTORY, TestPropsValues.getUser());
+
+		mockHttpServletRequest.setMethod(HttpMethods.GET);
+
+		_layoutTypeController.includeLayoutContent(
+			mockHttpServletRequest, new MockHttpServletResponse(),
+			_layout.fetchDraftLayout());
+
+		String content = String.valueOf(
+			mockHttpServletRequest.getAttribute(WebKeys.LAYOUT_CONTENT));
+
+		Assert.assertTrue(content.contains("layout-content-version"));
+	}
+
 	@Test
 	public void testContentLayoutTypeControllerWithLockedLayout()
 		throws Exception {
@@ -530,12 +555,21 @@ public class ContentLayoutTypeControllerTest {
 
 		themeDisplay.setLanguageId(_group.getDefaultLanguageId());
 		themeDisplay.setLayout(_layout);
-		themeDisplay.setLayoutSet(
-			_layoutSetLocalService.getLayoutSet(_group.getGroupId(), false));
+
+		LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+			_group.getGroupId(), false);
+
+		themeDisplay.setLayoutSet(layoutSet);
+
+		themeDisplay.setLayoutTypePortlet(
+			(LayoutTypePortlet)_layout.getLayoutType());
 		themeDisplay.setLocale(
 			LocaleUtil.fromLanguageId(_group.getDefaultLanguageId()));
+		themeDisplay.setLookAndFeel(
+			layoutSet.getTheme(), layoutSet.getColorScheme());
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
+		themeDisplay.setPlid(_layout.getPlid());
 		themeDisplay.setPortalDomain(company.getVirtualHostname());
 		themeDisplay.setPortalURL(company.getPortalURL(_group.getGroupId()));
 		themeDisplay.setRequest(mockHttpServletRequest);
