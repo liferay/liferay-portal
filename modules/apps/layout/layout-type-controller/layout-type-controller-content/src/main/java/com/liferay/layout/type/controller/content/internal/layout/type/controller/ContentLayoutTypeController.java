@@ -15,6 +15,7 @@ import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -154,6 +155,9 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 			}
 		}
 		else if (layoutMode.equals(Constants.HISTORY)) {
+			FeatureFlagManagerUtil.checkEnabled(
+				themeDisplay.getCompanyId(), "LPD-10622");
+
 			try {
 				_layoutLockManager.getLock(layout, themeDisplay.getUserId());
 			}
