@@ -6,6 +6,7 @@
 package com.liferay.layout.admin.web.internal.helper;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -46,6 +47,7 @@ public class LayoutActionsHelperTest {
 
 	@After
 	public void tearDown() {
+		_featureFlagManagerUtilMockedStatic.close();
 		_layoutLocalServiceUtilMockedStatic.close();
 		_layoutPermissionUtilMockedStatic.close();
 	}
@@ -163,6 +165,15 @@ public class LayoutActionsHelperTest {
 			layoutActionsHelper.isShowPreviewDraftActions(layout));
 	}
 
+	@Test
+	@TestInfo("LPD-90027")
+	public void testIsShowViewHistoryAction() throws PortalException {
+		_testIsShowViewHistoryActionWithFeatureFlagDisabled();
+		_testIsShowViewHistoryActionWithLayoutTypeNotContent();
+		_testIsShowViewHistoryActionWithoutUpdatePermission();
+		_testIsShowViewHistoryActionWithUpdatePermission();
+	}
+
 	private Group _getGroup() {
 		Group group = Mockito.mock(Group.class);
 
@@ -199,6 +210,18 @@ public class LayoutActionsHelperTest {
 		return layout;
 	}
 
+	private void _setUpFeatureFlag(boolean enabled) {
+		_featureFlagManagerUtilMockedStatic.reset();
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.eq(_themeDisplay.getCompanyId()),
+				Mockito.eq("LPD-10622"))
+		).thenReturn(
+			enabled
+		);
+	}
+
 	private void _setUpLayoutLocalServiceUtil() {
 		_layoutLocalServiceUtilMockedStatic.when(
 			() -> LayoutLocalServiceUtil.getLayoutsCount(
@@ -230,6 +253,81 @@ public class LayoutActionsHelperTest {
 		);
 	}
 
+	private void _testIsShowViewHistoryActionWithFeatureFlagDisabled()
+		throws PortalException {
+
+		_setUpFeatureFlag(false);
+
+		Layout layout = _getLayout(_getGroup());
+
+		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
+			null, _themeDisplay, null);
+
+		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
+	}
+
+	private void _testIsShowViewHistoryActionWithLayoutTypeNotContent()
+		throws PortalException {
+
+		_setUpFeatureFlag(true);
+
+		Layout layout = _getLayout(_getGroup());
+
+		Mockito.when(
+			layout.isTypeContent()
+		).thenReturn(
+			false
+		);
+
+		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
+			null, _themeDisplay, null);
+
+		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
+	}
+
+	private void _testIsShowViewHistoryActionWithoutUpdatePermission()
+		throws PortalException {
+
+		_setUpFeatureFlag(true);
+
+		Layout layout = _getLayout(_getGroup());
+
+		Mockito.when(
+			layout.isTypeContent()
+		).thenReturn(
+			true
+		);
+
+		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
+			null, _themeDisplay, null);
+
+		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
+	}
+
+	private void _testIsShowViewHistoryActionWithUpdatePermission()
+		throws PortalException {
+
+		_setUpFeatureFlag(true);
+
+		Layout layout = _getLayout(_getGroup());
+
+		Mockito.when(
+			layout.isTypeContent()
+		).thenReturn(
+			true
+		);
+
+		_setUpLayoutPermissionUtil(layout, ActionKeys.UPDATE);
+
+		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
+			null, _themeDisplay, null);
+
+		Assert.assertTrue(layoutActionsHelper.isShowViewHistoryAction(layout));
+	}
+
+	private final MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
 	private final MockedStatic<LayoutLocalServiceUtil>
 		_layoutLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			LayoutLocalServiceUtil.class);
