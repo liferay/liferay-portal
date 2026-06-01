@@ -1,6 +1,0 @@
-Bundle-Name: Liferay Launch Service
-Bundle-SymbolicName: com.liferay.launch.service
-Bundle-Version: 1.0.5
-Liferay-Require-SchemaVersion: 1.0.0
-Liferay-Service: true
--dsannotations-options: inherit

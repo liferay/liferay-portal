@@ -1,8 +1,0 @@
-Bundle-Name: Liferay Launch API
-Bundle-SymbolicName: com.liferay.launch.api
-Bundle-Version: 3.0.1
-Export-Package:\
-	com.liferay.launch.exception,\
-	com.liferay.launch.model,\
-	com.liferay.launch.service,\
-	com.liferay.launch.service.persistence

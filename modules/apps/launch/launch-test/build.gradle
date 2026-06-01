@@ -1,9 +1,0 @@
-dependencies {
-	testCompileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	testIntegrationImplementation group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	testIntegrationImplementation project(":apps:launch:launch-api")
-	testIntegrationImplementation project(":core:osgi-service-tracker-collections")
-	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
-}
