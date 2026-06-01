@@ -118,7 +118,9 @@ public class SegmentsExperienceSelectorProductNavigationControlMenuEntry
 		String mode = ParamUtil.getString(
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
-		if (Objects.equals(mode, Constants.EDIT)) {
+		if (Objects.equals(mode, Constants.EDIT) ||
+			Objects.equals(mode, Constants.HISTORY)) {
+
 			return false;
 		}
 
