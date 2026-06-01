@@ -105,6 +105,19 @@ public class LayoutActionsDisplayContext {
 							dropdownItem.setTarget("_blank");
 						}
 					).add(
+						() ->
+							_isContentLayout(layout) &&
+							_layoutActionsHelper.isShowViewHistoryAction(
+								layout),
+						dropdownItem -> {
+							dropdownItem.setHref(
+								_getViewHistoryLayoutURL(layout));
+							dropdownItem.setIcon("date-time");
+							dropdownItem.setLabel(
+								LanguageUtil.get(
+									_httpServletRequest, "view-history"));
+						}
+					).add(
 						() -> _isShowConvertToPageTemplateAction(layout),
 						dropdownItem -> {
 							dropdownItem.putData(
@@ -306,6 +319,22 @@ public class LayoutActionsDisplayContext {
 		}
 
 		return segmentsExperienceId;
+	}
+
+	private String _getViewHistoryLayoutURL(Layout layout)
+		throws PortalException {
+
+		Layout draftLayout = layout;
+
+		if (!layout.isDraftLayout()) {
+			draftLayout = layout.fetchDraftLayout();
+		}
+
+		return HttpComponentsUtil.addParameters(
+			PortalUtil.getLayoutFullURL(draftLayout, _themeDisplay),
+			"p_l_back_url", PortalUtil.getCurrentURL(_httpServletRequest),
+			"p_l_back_url_title", layout.getName(_themeDisplay.getLocale()),
+			"p_l_mode", Constants.HISTORY);
 	}
 
 	private boolean _isContentLayout(Layout layout) {
