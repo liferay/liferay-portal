@@ -182,6 +182,9 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 		if (layoutMode.equals(Constants.EDIT)) {
 			page = _EDIT_LAYOUT_PAGE;
 		}
+		else if (layoutMode.equals(Constants.HISTORY)) {
+			page = "/layout/history_layout/content.jsp";
+		}
 
 		RequestDispatcher requestDispatcher =
 			TransferHeadersHelperUtil.getTransferHeadersRequestDispatcher(
