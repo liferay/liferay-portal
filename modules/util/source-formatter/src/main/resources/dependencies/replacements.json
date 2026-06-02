@@ -6000,6 +6000,15 @@
 		]
 	},
 	{
+		"from": "SitesUtil.updateLayoutSetPrototypesLinks",
+		"issueKey": "LPD-85995",
+		"newImports": [
+			"com.liferay.sites.kernel.util.Sites"
+		],
+		"newReference": "Sites _sites",
+		"to": "_sites.updateLayoutSetPrototypesLinks"
+	},
+	{
 		"from": "regex:MultiVMPoolUtil\\s*.\\s*getPortalCache\\(\\s*(?<prefixMethodName>[\\s\\S]*?)\\)",
 		"issueKey": "LPS-153962",
 		"newImports": [
