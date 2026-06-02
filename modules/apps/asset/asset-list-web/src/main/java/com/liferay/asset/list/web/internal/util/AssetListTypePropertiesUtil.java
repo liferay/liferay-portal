@@ -128,7 +128,7 @@ public class AssetListTypePropertiesUtil {
 			JSONUtil.put(
 				"label", LanguageUtil.get(locale, "modified-date")
 			).put(
-				"name", Field.MODIFIED_DATE
+				"name", "modifiedDate"
 			).put(
 				"type", "date"
 			),
