@@ -1,0 +1,229 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#L1S1",
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": true,
+			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "L_LAUNCH_SET",
+			"label": {
+				"en_US": "Launch Set"
+			},
+			"modifiable": true,
+			"name": "LaunchSet",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "DESCRIPTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Description"
+					},
+					"name": "description",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "cascade",
+					"externalReferenceCode": "L_LAUNCH_SET_TO_L_LAUNCH_ENTRY",
+					"label": {
+						"en_US": "Launch Set to Launch Entries"
+					},
+					"name": "launchSetToLaunchEntries",
+					"objectDefinitionExternalReferenceCode1": "L_LAUNCH_SET",
+					"objectDefinitionExternalReferenceCode2": "L_LAUNCH_ENTRY",
+					"objectDefinitionModifiable2": true,
+					"objectDefinitionName2": "LaunchEntry",
+					"objectDefinitionScope2": "company",
+					"objectDefinitionSystem2": true,
+					"objectField": {
+						"DBType": "Long",
+						"businessType": "Relationship",
+						"externalReferenceCode": "LAUNCH_SET_TO_LAUNCH_ENTRY",
+						"indexed": true,
+						"indexedAsKeyword": false,
+						"label": {
+							"en_US": "Launch Set to Launch Entries"
+						},
+						"name": "r_launchSetToLaunchEntries_c_launchSetId",
+						"objectFieldSettings": [
+							{
+								"name": "objectDefinition1ShortName",
+								"value": "LaunchSet"
+							},
+							{
+								"name": "objectRelationshipERCObjectFieldName",
+								"value": "r_launchSetToLaunchEntries_c_launchSetERC"
+							}
+						],
+						"relationshipType": "oneToMany",
+						"required": true,
+						"system": true,
+						"type": "Long"
+					},
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Launch Sets"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "name"
+		},
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#L1E1",
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": true,
+			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "L_LAUNCH_ENTRY",
+			"label": {
+				"en_US": "Launch Entry"
+			},
+			"modifiable": true,
+			"name": "LaunchEntry",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLASS_NAME",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Class Name"
+					},
+					"name": "className",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"defaultValue": "0",
+					"externalReferenceCode": "CLASS_PK",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Class PK"
+					},
+					"name": "classPK",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLASS_VERSION",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Class Version"
+					},
+					"name": "classVersion",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Launch Entries"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "className"
+		}
+	]
+}

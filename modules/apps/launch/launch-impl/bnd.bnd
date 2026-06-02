@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Launch Implementation
+Bundle-SymbolicName: com.liferay.launch.impl
+Bundle-Version: 1.0.0
+Liferay-Client-Extension-Batch: com/liferay/launch/internal/batch
