@@ -324,6 +324,29 @@ public class TestrayCloudBucket {
 		parallelExecutor.execute();
 	}
 
+	public long getLatestObjectTimestamp(String prefix) {
+		Storage storage = _getStorage();
+
+		Page<Blob> blobPage = storage.list(
+			getName(), Storage.BlobListOption.prefix(prefix));
+
+		long latest = Long.MIN_VALUE;
+
+		for (Blob blob : blobPage.iterateAll()) {
+			if (blob.getCreateTime() == null) {
+				continue;
+			}
+
+			long millis = blob.getCreateTime();
+
+			if (millis > latest) {
+				latest = millis;
+			}
+		}
+
+		return latest;
+	}
+
 	public String getName() {
 		return _name;
 	}
