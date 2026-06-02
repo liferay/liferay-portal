@@ -8,13 +8,21 @@ package com.liferay.layout.content.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
+import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -67,6 +75,25 @@ public class LayoutLocalServiceWrapperTest {
 
 		Assert.assertEquals(
 			draftLayout.getPlid(), layoutContentVersion.getPlid());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId());
+
+		_testCopyLayoutContent(
+			0,
+			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()));
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
+				false, RandomTestUtil.randomString(),
+				LayoutUtilityPageEntryConstants.TYPE_SC_NOT_FOUND, null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		_testCopyLayoutContent(
+			0, _layoutLocalService.getLayout(layoutUtilityPageEntry.getPlid()));
 	}
 
 	private List<LayoutContentVersion> _testCopyLayoutContent(
@@ -101,5 +128,9 @@ public class LayoutLocalServiceWrapperTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutUtilityPageEntryLocalService
+		_layoutUtilityPageEntryLocalService;
 
 }
