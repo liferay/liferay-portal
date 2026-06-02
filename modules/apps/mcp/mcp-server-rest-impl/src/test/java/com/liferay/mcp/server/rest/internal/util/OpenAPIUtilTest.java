@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.mcp.server.rest.dto.v1_0.Tool;
 import com.liferay.mcp.server.rest.dto.v1_0.ToolSummary;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -165,6 +166,36 @@ public class OpenAPIUtilTest {
 		Assert.assertEquals("true", parts.get("boolean"));
 		Assert.assertEquals("1", parts.get("integer"));
 		Assert.assertEquals(fileContent, parts.get("string"));
+	}
+
+	@Test
+	public void testGetOptionsRequiresBodyForRequestBody() {
+		AssertUtils.assertFailure(
+			IllegalArgumentException.class,
+			StringBundler.concat(
+				"The \"postItem\" tool requires the request payload nested ",
+				"under a \"body\" property; pass any path or query parameters ",
+				"as siblings of \"body\" rather than flattening the payload ",
+				"into the input map"),
+			() -> OpenAPIUtil.getOptions(
+				"http://localhost/test", JSONUtil.put("string", "Test"),
+				_openAPIJSONObject, "postItem"));
+	}
+
+	@Test
+	public void testGetOptionsSetsJSONContentTypeForRequestBody() {
+		Http.Options options = OpenAPIUtil.getOptions(
+			"http://localhost/test",
+			JSONUtil.put("body", JSONFactoryUtil.createJSONObject()),
+			_openAPIJSONObject, "postItem");
+
+		Http.Body body = options.getBody();
+
+		Assert.assertEquals("{}", body.getContent());
+		Assert.assertEquals("application/json", body.getContentType());
+
+		Assert.assertEquals(
+			"application/json", options.getHeader("Content-Type"));
 	}
 
 	@Test
