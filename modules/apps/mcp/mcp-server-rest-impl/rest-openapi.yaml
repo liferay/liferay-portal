@@ -191,6 +191,13 @@ paths:
                             description:
                                 Input map matching the tool's `inputSchema`.
                             type: object
+                description:
+                    "The complete input map for the target tool, matching the `inputSchema` that `getTool` returns for
+                    this `toolName`. Use that schema's properties exactly as named: when the `inputSchema` declares a
+                    `body` property, it holds the request payload and must stay nested under `body` here rather than be
+                    flattened into this map; pass any path or query parameters as siblings of `body`. For example, a
+                    tool whose `inputSchema` has `body` and `itemId` properties is invoked with `{\"body\": {...},
+                    \"itemId\": \"123\"}`."
                 required: false
             responses:
                 200:

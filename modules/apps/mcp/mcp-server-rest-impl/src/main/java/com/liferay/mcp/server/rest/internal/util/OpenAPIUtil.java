@@ -544,12 +544,49 @@ public class OpenAPIUtil {
 					openAPIJSONObject);
 			}
 			else {
-				properties.put(
-					"body",
-					_resolveRefs(
+				JSONObject requestBodyJSONObject =
+					operationJSONObject.getJSONObject("requestBody");
+
+				Object bodySchema = null;
+
+				if (requestBodyJSONObject.getJSONObject("content") != null) {
+					bodySchema = _resolveRefs(
 						openAPIJSONObject,
 						_getBodySchemaJSONObject(operationJSONObject),
-						new HashSet<>()));
+						new HashSet<>());
+				}
+
+				if (!(bodySchema instanceof Map)) {
+					bodySchema = LinkedHashMapBuilder.<String, Object>put(
+						"type", "object"
+					).build();
+				}
+
+				String requestBodyDescription = requestBodyJSONObject.getString(
+					"description");
+
+				if (Validator.isNotNull(requestBodyDescription)) {
+					Map<String, Object> bodySchemaMap =
+						(Map<String, Object>)bodySchema;
+
+					Object schemaDescription = bodySchemaMap.get("description");
+
+					if (Validator.isNull(schemaDescription)) {
+						bodySchemaMap.put(
+							"description", requestBodyDescription);
+					}
+					else if (!Objects.equals(
+								schemaDescription, requestBodyDescription)) {
+
+						bodySchemaMap.put(
+							"description",
+							StringBundler.concat(
+								requestBodyDescription, StringPool.SPACE,
+								schemaDescription));
+					}
+				}
+
+				properties.put("body", bodySchema);
 
 				required.add("body");
 			}

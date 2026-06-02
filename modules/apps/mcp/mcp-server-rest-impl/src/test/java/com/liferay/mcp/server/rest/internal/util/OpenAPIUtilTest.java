@@ -180,9 +180,6 @@ public class OpenAPIUtilTest {
 				JSONFactoryUtil.createJSONObject(),
 				RandomTestUtil.randomString()));
 		AssertUtils.assertFailure(
-			IllegalArgumentException.class, "Request body has no \"content\"",
-			() -> _getInputSchema(_openAPIJSONObject, "postNoContent"));
-		AssertUtils.assertFailure(
 			IllegalArgumentException.class, "Request body has no content",
 			() -> _getInputSchema(_openAPIJSONObject, "postEmptyContent"));
 		AssertUtils.assertFailure(
@@ -212,6 +209,110 @@ public class OpenAPIUtilTest {
 		_testGetTool(
 			"PUT /v1.0/items/{itemId}", "put_test_v1.0_items_itemId.json",
 			"putItem");
+	}
+
+	@Test
+	public void testGetToolMergesRequestBodyAndSchemaDescriptions() {
+		JSONObject openAPIJSONObject = JSONUtil.put(
+			"paths",
+			JSONUtil.put(
+				"/things",
+				JSONUtil.put(
+					"post",
+					JSONUtil.put(
+						"operationId", "postThing"
+					).put(
+						"requestBody",
+						JSONUtil.put(
+							"content",
+							JSONUtil.put(
+								"application/json",
+								JSONUtil.put(
+									"schema",
+									JSONUtil.put(
+										"description", "A Thing resource."
+									).put(
+										"type", "object"
+									)))
+						).put(
+							"description", "The thing to create."
+						)
+					))));
+
+		Tool tool = OpenAPIUtil.getTool(openAPIJSONObject, "postThing");
+
+		Map<String, ?> inputSchema = tool.getInputSchema();
+
+		Map<?, ?> properties = (Map<?, ?>)inputSchema.get("properties");
+
+		Map<?, ?> bodySchema = (Map<?, ?>)properties.get("body");
+
+		Assert.assertEquals(
+			"The thing to create. A Thing resource.",
+			bodySchema.get("description"));
+	}
+
+	@Test
+	public void testGetToolRequestBodyDescriptionIsSurfaced() {
+		JSONObject openAPIJSONObject = JSONUtil.put(
+			"paths",
+			JSONUtil.put(
+				"/things",
+				JSONUtil.put(
+					"post",
+					JSONUtil.put(
+						"operationId", "postThing"
+					).put(
+						"requestBody",
+						JSONUtil.put(
+							"content",
+							JSONUtil.put(
+								"application/json",
+								JSONUtil.put(
+									"schema", JSONUtil.put("type", "object")))
+						).put(
+							"description", "The thing to create."
+						)
+					))));
+
+		Tool tool = OpenAPIUtil.getTool(openAPIJSONObject, "postThing");
+
+		Map<String, ?> inputSchema = tool.getInputSchema();
+
+		Map<?, ?> properties = (Map<?, ?>)inputSchema.get("properties");
+
+		Map<?, ?> bodySchema = (Map<?, ?>)properties.get("body");
+
+		Assert.assertEquals(
+			"The thing to create.", bodySchema.get("description"));
+	}
+
+	@Test
+	public void testGetToolRequestBodyWithoutContentDoesNotFail() {
+		JSONObject openAPIJSONObject = JSONUtil.put(
+			"paths",
+			JSONUtil.put(
+				"/things",
+				JSONUtil.put(
+					"post",
+					JSONUtil.put(
+						"operationId", "postThing"
+					).put(
+						"requestBody",
+						JSONUtil.put("description", "The thing to create.")
+					))));
+
+		Tool tool = OpenAPIUtil.getTool(openAPIJSONObject, "postThing");
+
+		Map<String, ?> inputSchema = tool.getInputSchema();
+
+		Map<?, ?> properties = (Map<?, ?>)inputSchema.get("properties");
+
+		Map<?, ?> bodySchema = (Map<?, ?>)properties.get("body");
+
+		Assert.assertEquals("object", bodySchema.get("type"));
+		Assert.assertEquals(
+			"The thing to create.", bodySchema.get("description"));
 	}
 
 	@Test
