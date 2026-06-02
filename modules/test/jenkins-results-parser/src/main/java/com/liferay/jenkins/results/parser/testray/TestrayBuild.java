@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.BuildReportFactory;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.MultiPattern;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 
 import java.io.IOException;
@@ -401,18 +402,48 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 	}
 
 	public URL getTopLevelBuildURL() {
-		Matcher matcher = _getTestrayAttachmentURLMatcher();
+		String topLevelMasterHostname = null;
+		String topLevelJobName = null;
+		String topLevelBuildNumber = null;
 
-		if (matcher == null) {
+		String description = getDescription();
+
+		Matcher descriptionMatcher = null;
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(description)) {
+			descriptionMatcher = _descriptionPattern.matches(description);
+		}
+
+		if (descriptionMatcher != null) {
+			topLevelMasterHostname = descriptionMatcher.group(
+				"topLevelMasterHostname");
+			topLevelJobName = descriptionMatcher.group("topLevelJobName");
+			topLevelBuildNumber = descriptionMatcher.group(
+				"topLevelBuildNumber");
+		}
+		else {
+			Matcher testrayAttachmentURLMatcher =
+				_getTestrayAttachmentURLMatcher();
+
+			if (testrayAttachmentURLMatcher != null) {
+				topLevelMasterHostname = testrayAttachmentURLMatcher.group(
+					"topLevelMasterHostname");
+				topLevelJobName = testrayAttachmentURLMatcher.group(
+					"topLevelJobName");
+				topLevelBuildNumber = testrayAttachmentURLMatcher.group(
+					"topLevelBuildNumber");
+			}
+		}
+
+		if (topLevelMasterHostname == null) {
 			return null;
 		}
 
 		try {
 			return new URL(
 				JenkinsResultsParserUtil.combine(
-					"https://", matcher.group("topLevelMasterHostname"),
-					".liferay.com/job/", matcher.group("topLevelJobName"), "/",
-					matcher.group("topLevelBuildNumber"), "/"));
+					"https://", topLevelMasterHostname, ".liferay.com/job/",
+					topLevelJobName, "/", topLevelBuildNumber, "/"));
 		}
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
@@ -548,6 +579,16 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		return null;
 	}
 
+	private static final MultiPattern _descriptionPattern = new MultiPattern(
+		JenkinsResultsParserUtil.combine(
+			".*<a href=\"https://(?<topLevelMasterHostname>test-\\d+-\\d+)",
+			"\\.liferay\\.com/userContent/jobs/(?<topLevelJobName>[^/]+)/",
+			"builds/(?<topLevelBuildNumber>\\d+)/jenkins-report\\.html\">",
+			"Jenkins Report</a>.*"),
+		JenkinsResultsParserUtil.combine(
+			".*<a href=\".+/testray-results/\\d{4}-\\d{2}/",
+			"(?<topLevelMasterHostname>test-\\d+-\\d+)/",
+			"(?<topLevelJobName>[^/]+)/(?<topLevelBuildNumber>[^/]+)/.+"));
 	private static final Pattern _portalBranchPattern = Pattern.compile(
 		"Portal Branch: (?<portalBranch>[^;]+);");
 	private static final Pattern _testrayAttachmentURLPattern = Pattern.compile(

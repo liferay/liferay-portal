@@ -42,6 +42,8 @@ import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestCla
 import java.io.File;
 import java.io.IOException;
 
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -385,7 +387,19 @@ public class TestrayImporter {
 		}
 
 		sb.append("<a href=\"");
-		sb.append(_topLevelBuildReport.getJenkinsReportURL());
+
+		URL jenkinsReportTestrayAttachmentURL =
+			_topLevelBuildReport.getTestrayAttachmentURLBySuffix(
+				"jenkins-report.html.gz");
+
+		if (jenkinsReportTestrayAttachmentURL != null) {
+			sb.append(jenkinsReportTestrayAttachmentURL);
+			sb.append("?authuser=0");
+		}
+		else {
+			sb.append(_topLevelBuildReport.getJenkinsReportURL());
+		}
+
 		sb.append("\">Jenkins Report</a>");
 		sb.append("; ");
 
