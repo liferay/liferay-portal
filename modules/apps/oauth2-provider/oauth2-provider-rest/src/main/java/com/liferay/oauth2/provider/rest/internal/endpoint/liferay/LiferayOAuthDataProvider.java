@@ -1810,23 +1810,20 @@ public class LiferayOAuthDataProvider
 					audience, "invalid_target", Response.Status.BAD_REQUEST);
 			}
 
-			URI uri;
-
 			try {
-				uri = new URI(audience);
+				URI uri = new URI(audience);
+
+				if (!uri.isAbsolute() || audience.contains(StringPool.POUND)) {
+					OAuth2ErrorUtil.reportInvalidRequestError(
+						audience, "invalid_target",
+						Response.Status.BAD_REQUEST);
+				}
 			}
 			catch (URISyntaxException uriSyntaxException) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(uriSyntaxException);
 				}
 
-				OAuth2ErrorUtil.reportInvalidRequestError(
-					audience, "invalid_target", Response.Status.BAD_REQUEST);
-
-				return;
-			}
-
-			if (!uri.isAbsolute() || audience.contains(StringPool.POUND)) {
 				OAuth2ErrorUtil.reportInvalidRequestError(
 					audience, "invalid_target", Response.Status.BAD_REQUEST);
 			}
