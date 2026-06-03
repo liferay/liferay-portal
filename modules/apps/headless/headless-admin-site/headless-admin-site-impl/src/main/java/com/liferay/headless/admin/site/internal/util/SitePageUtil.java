@@ -35,6 +35,10 @@ public class SitePageUtil {
 				"This page type cannot be modified through this endpoint");
 		}
 
+		if (!layout.isTypeContent() && !layout.isTypePortlet()) {
+			return;
+		}
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			LayoutPageTemplateEntryLocalServiceUtil.
 				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
