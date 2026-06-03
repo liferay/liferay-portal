@@ -4564,6 +4564,22 @@
 	},
 	{
 		"classNames": [
+			"PortletSharedSearchResponse"
+		],
+		"from": "getKeywordsOptional",
+		"issueKey": "LPD-47005",
+		"to": "getKeywords"
+	},
+	{
+		"classNames": [
+			"PortletSharedSearchResponse"
+		],
+		"from": "getSpellCheckSuggestionOptional",
+		"issueKey": "LPD-47005",
+		"to": "getSpellCheckSuggestion"
+	},
+	{
+		"classNames": [
 			"SiteNavigationMenuLocalService",
 			"SiteNavigationMenuLocalServiceUtil"
 		],
