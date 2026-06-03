@@ -22,6 +22,7 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.SettingsUtil;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
+import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.headless.common.spi.util.GroupUtil;
@@ -285,13 +286,21 @@ public class PageSpecificationResourceImpl
 		FeatureFlagManagerUtil.checkEnabled(
 			contextCompany.getCompanyId(), "LPD-10622");
 
+		long groupId = GroupUtil.getStagingAwareGroupId(
+			contextCompany.getCompanyId(), siteExternalReferenceCode);
+
+		Layout layout = SitePageUtil.getSitePageLayout(
+			groupId, sitePageExternalReferenceCode);
+
+		if (!layout.isTypeContent()) {
+			throw new IllegalArgumentException(
+				"The page must be a content page");
+		}
+
 		LayoutContentVersion layoutContentVersion =
 			_layoutContentVersionService.
 				getLayoutContentVersionByExternalReferenceCode(
-					pageSpecificationVersionExternalReferenceCode,
-					GroupUtil.getStagingAwareGroupId(
-						contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
+					pageSpecificationVersionExternalReferenceCode, groupId);
 
 		return PageSpecification.unsafeToDTO(layoutContentVersion.getData());
 	}
