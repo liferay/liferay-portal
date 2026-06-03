@@ -302,6 +302,13 @@ public class PageSpecificationResourceImpl
 				getLayoutContentVersionByExternalReferenceCode(
 					pageSpecificationVersionExternalReferenceCode, groupId);
 
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		if (layoutContentVersion.getPlid() != draftLayout.getPlid()) {
+			throw new IllegalArgumentException(
+				"The page specification version must belong to the site page");
+		}
+
 		return PageSpecification.unsafeToDTO(layoutContentVersion.getData());
 	}
 
