@@ -3011,6 +3011,50 @@ components:
                         -   WidgetPageSpecification
                     type: string
             type: object
+        PageSpecificationVersion:
+            description:
+                A page specification version of a content page.
+            properties:
+                creator:
+                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    description:
+                        The page specification version's creator. It is not returned by default. It can be embedded via nestedFields.
+                dateCreated:
+                    description:
+                        The page specification version's creation date.
+                    format: date-time
+                    type: string
+                dateModified:
+                    description:
+                        The last time the page specification version changed.
+                    format: date-time
+                    type: string
+                externalReferenceCode:
+                    description:
+                        The page specification version's external reference code.
+                    type: string
+                name:
+                    description:
+                        The page specification version's name.
+                    type: string
+                status:
+                    description:
+                        The page specification version's status.
+                    enum:
+                        -   Approved
+                        -   Draft
+                    type: string
+                statusDate:
+                    description:
+                        The page specification version's status date.
+                    format: date-time
+                    type: string
+                version:
+                    description:
+                        The page specification version's version.
+                    format: int32
+                    type: integer
+            type: object
         PageTemplate:
             discriminator:
                 mapping:
