@@ -6,13 +6,19 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
+import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionService;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
+import com.liferay.portal.vulcan.pagination.Page;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -40,6 +46,40 @@ public class PageSpecificationVersionResourceImpl
 			_getLayoutContentVersion(
 				siteExternalReferenceCode,
 				pageSpecificationVersionExternalReferenceCode));
+	}
+
+	@NestedField(
+		parentClass = SitePage.class, value = "pageSpecificationVersions"
+	)
+	@Override
+	public Page<PageSpecificationVersion>
+			getSiteSitePagePageSpecificationVersionsPage(
+				String siteExternalReferenceCode,
+				@NestedFieldId(value = "externalReferenceCode") String
+					sitePageExternalReferenceCode)
+		throws Exception {
+
+		Layout layout = _getLayout(
+			siteExternalReferenceCode, sitePageExternalReferenceCode);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		return Page.of(
+			transform(
+				_layoutContentVersionService.getLayoutContentVersions(
+					draftLayout.getPlid()),
+				this::_toPageSpecificationVersion));
+	}
+
+	private Layout _getLayout(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode)
+		throws Exception {
+
+		return _layoutService.getLayoutByExternalReferenceCode(
+			sitePageExternalReferenceCode,
+			GroupUtil.getStagingAwareGroupId(
+				contextCompany.getCompanyId(), siteExternalReferenceCode));
 	}
 
 	private LayoutContentVersion _getLayoutContentVersion(
@@ -71,6 +111,9 @@ public class PageSpecificationVersionResourceImpl
 
 	@Reference
 	private LayoutContentVersionService _layoutContentVersionService;
+
+	@Reference
+	private LayoutService _layoutService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageSpecificationVersionDTOConverter)"
