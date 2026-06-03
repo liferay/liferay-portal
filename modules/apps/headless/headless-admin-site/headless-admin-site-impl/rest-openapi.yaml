@@ -3037,6 +3037,10 @@ components:
                     description:
                         The page specification version's name.
                     type: string
+                pageSpecification:
+                    $ref: "#/components/schemas/PageSpecification"
+                    description:
+                        The page specification version's page specification. It is not returned by default. It can be embedded via nestedFields.
                 status:
                     description:
                         The page specification version's status.
@@ -8730,6 +8734,49 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PageSpecificationVersion"
             tags: ["PageSpecificationVersion"]
+    "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions/{pageSpecificationVersionExternalReferenceCode}/page-specification":
+        get:
+            description:
+                Retrieves the page specification of a page specification version.
+            operationId: getSiteSitePagePageSpecificationVersionPageSpecification
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: sitePageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: pageSpecificationVersionExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageSpecification"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageSpecification"
+            tags: ["PageSpecification"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specifications":
         get:
             # @review
