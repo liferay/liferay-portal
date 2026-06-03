@@ -11,16 +11,21 @@ import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -49,6 +54,8 @@ public class PageSpecificationVersionResourceTest
 		super.setUp();
 
 		_testGroupLayout = LayoutTestUtil.addTypeContentLayout(testGroup);
+		_irrelevantGroupLayout = LayoutTestUtil.addTypeContentLayout(
+			irrelevantGroup);
 	}
 
 	@Ignore
@@ -94,11 +101,97 @@ public class PageSpecificationVersionResourceTest
 		return _testGroupLayout.getExternalReferenceCode();
 	}
 
+	@Override
+	protected PageSpecificationVersion
+			testGetSiteSitePagePageSpecificationVersionsPage_addPageSpecificationVersion(
+				String siteExternalReferenceCode,
+				String sitePageExternalReferenceCode,
+				PageSpecificationVersion pageSpecificationVersion)
+		throws Exception {
+
+		return _addPageSpecificationVersion(
+			siteExternalReferenceCode, sitePageExternalReferenceCode,
+			pageSpecificationVersion);
+	}
+
+	@Override
+	protected String
+			testGetSiteSitePagePageSpecificationVersionsPage_getIrrelevantSitePageExternalReferenceCode()
+		throws Exception {
+
+		return _irrelevantGroupLayout.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGetSiteSitePagePageSpecificationVersionsPage_getSitePageExternalReferenceCode()
+		throws Exception {
+
+		return _testGroupLayout.getExternalReferenceCode();
+	}
+
+	private PageSpecificationVersion _addPageSpecificationVersion(
+			Group group, Layout layout,
+			PageSpecificationVersion pageSpecificationVersion)
+		throws Exception {
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionLocalService.addLayoutContentVersion(
+				pageSpecificationVersion.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), draftLayout.getPlid(),
+				pageSpecificationVersion.getName(),
+				_layoutContentVersionDataProvider.getLayoutContentVersionData(
+					draftLayout,
+					ServiceContextTestUtil.getServiceContext(
+						group.getGroupId())),
+				WorkflowConstants.STATUS_APPROVED, false);
+
+		if (Validator.isNotNull(
+				pageSpecificationVersion.getExternalReferenceCode())) {
+
+			Assert.assertEquals(
+				pageSpecificationVersion.getExternalReferenceCode(),
+				layoutContentVersion.getExternalReferenceCode());
+		}
+
+		return pageSpecificationVersionResource.
+			getSiteSitePagePageSpecificationVersion(
+				group.getExternalReferenceCode(),
+				layout.getExternalReferenceCode(),
+				layoutContentVersion.getExternalReferenceCode());
+	}
+
+	private PageSpecificationVersion _addPageSpecificationVersion(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			PageSpecificationVersion pageSpecificationVersion)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			siteExternalReferenceCode, testCompany.getCompanyId());
+
+		return _addPageSpecificationVersion(
+			group,
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				sitePageExternalReferenceCode, group.getGroupId()),
+			pageSpecificationVersion);
+	}
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	private Layout _irrelevantGroupLayout;
+
 	@Inject
 	private LayoutContentVersionDataProvider _layoutContentVersionDataProvider;
 
 	@Inject
 	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	private Layout _testGroupLayout;
 
