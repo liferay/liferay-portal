@@ -69,7 +69,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -330,7 +329,7 @@ public class ${entity.name}PersistenceTest {
 			<#if stringUtil.equals(entityColumn.type, "Blob")>
 				Blob existing${entityColumn.methodName} = existing${entity.name}.get${entityColumn.methodName}();
 
-				Assert.assertTrue(Arrays.equals(existing${entityColumn.methodName}.getBytes(1, (int)existing${entityColumn.methodName}.length()), new${entityColumn.methodName}Bytes));
+				Assert.assertArrayEquals(existing${entityColumn.methodName}.getBytes(1, (int)existing${entityColumn.methodName}.length()), new${entityColumn.methodName}Bytes);
 			<#elseif stringUtil.equals(entityColumn.type, "boolean")>
 				Assert.assertEquals(existing${entity.name}.is${entityColumn.methodName}(), new${entity.name}.is${entityColumn.methodName}());
 			<#elseif stringUtil.equals(entityColumn.type, "Date")>
@@ -395,7 +394,7 @@ public class ${entity.name}PersistenceTest {
 							Blob ${entityColumn.methodName} = ${entity.variableName}.get${entityColumn.methodName}();
 							Blob draft${entityColumn.methodName} = draft${entity.name}.get${entityColumn.methodName}();
 
-							Assert.assertTrue(Arrays.equals(${entityColumn.methodName}.getBytes(1, (int)${entityColumn.methodName}.length()), draft${entityColumn.methodName}.getBytes(1, (int)draft${entityColumn.methodName}.length())));
+							Assert.assertArrayEquals(${entityColumn.methodName}.getBytes(1, (int)${entityColumn.methodName}.length()), draft${entityColumn.methodName}.getBytes(1, (int)draft${entityColumn.methodName}.length()));
 						<#elseif stringUtil.equals(entityColumn.type, "boolean")>
 							Assert.assertEquals(${entity.variableName}.is${entityColumn.methodName}(), draft${entity.name}.is${entityColumn.methodName}());
 						<#elseif stringUtil.equals(entityColumn.type, "Date")>
