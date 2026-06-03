@@ -10,16 +10,26 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorResult;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.rest.filter.factory.FilterFactory;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory.ServiceWrapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.io.Serializable;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -42,6 +52,15 @@ public class AccountEntryValidatorRegistryImplTest {
 
 	@Before
 	public void setUp() {
+		ReflectionTestUtil.setFieldValue(
+			_accountEntryValidatorRegistryImpl, "_filterFactory",
+			_filterFactory);
+		ReflectionTestUtil.setFieldValue(
+			_accountEntryValidatorRegistryImpl, "_objectDefinitionLocalService",
+			_objectDefinitionLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_accountEntryValidatorRegistryImpl, "_objectEntryLocalService",
+			_objectEntryLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_accountEntryValidatorRegistryImpl, "_serviceTrackerMap",
 			_serviceTrackerMap);
@@ -109,6 +128,169 @@ public class AccountEntryValidatorRegistryImplTest {
 			accountEntryValidator1, accountEntryValidators.get(0));
 		Assert.assertSame(
 			accountEntryValidator2, accountEntryValidators.get(1));
+	}
+
+	@Test
+	public void testIsLastResultSuccess() throws Exception {
+		Assert.assertFalse(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(null, null));
+
+		Mockito.verifyNoInteractions(_objectDefinitionLocalService);
+		Mockito.verifyNoInteractions(_objectEntryLocalService);
+
+		AccountEntry accountEntry = Mockito.mock(AccountEntry.class);
+
+		Mockito.when(
+			accountEntry.getCompanyId()
+		).thenReturn(
+			1L
+		);
+
+		Mockito.when(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_ACCOUNT_VALIDATOR_RESULT", 1L)
+		).thenReturn(
+			null
+		);
+
+		Assert.assertFalse(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
+				accountEntry, null));
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_ACCOUNT_VALIDATOR_RESULT", 1L)
+		).thenReturn(
+			objectDefinition
+		);
+
+		Mockito.when(
+			_serviceTrackerMap.values()
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		Assert.assertTrue(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
+				accountEntry, null));
+
+		AccountEntryValidator accountEntryValidator = Mockito.mock(
+			AccountEntryValidator.class);
+		AccountEntryValidatorConfiguration accountEntryValidatorConfiguration =
+			Mockito.mock(AccountEntryValidatorConfiguration.class);
+
+		Mockito.when(
+			accountEntry.getAccountEntryId()
+		).thenReturn(
+			2L
+		);
+
+		Mockito.when(
+			accountEntry.getUserId()
+		).thenReturn(
+			3L
+		);
+
+		Mockito.when(
+			accountEntryValidator.getConfiguration(1L)
+		).thenReturn(
+			accountEntryValidatorConfiguration
+		);
+
+		Mockito.when(
+			accountEntryValidator.getKey(accountEntry, null)
+		).thenReturn(
+			"classPK"
+		);
+
+		Mockito.when(
+			accountEntryValidatorConfiguration.enabled()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_filterFactory.create(Mockito.anyString(), Mockito.any())
+		).thenReturn(
+			null
+		);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			4L
+		);
+
+		List<ServiceWrapper<AccountEntryValidator>> serviceWrappers =
+			Arrays.asList(_getServiceWrapper(accountEntryValidator));
+
+		Mockito.when(
+			_serviceTrackerMap.values()
+		).thenReturn(
+			serviceWrappers
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.getValuesList(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.any(), Mockito.any(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
+		).thenReturn(
+			Collections.singletonList(
+				HashMapBuilder.<String, Serializable>put(
+					"resultStatus",
+					AccountEntryValidatorConstants.RESULT_SUCCESS
+				).build())
+		);
+
+		Assert.assertTrue(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
+				accountEntry, null));
+
+		Mockito.when(
+			_objectEntryLocalService.getValuesList(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.any(), Mockito.any(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
+		).thenReturn(
+			Collections.singletonList(
+				HashMapBuilder.<String, Serializable>put(
+					"resultStatus",
+					AccountEntryValidatorConstants.RESULT_FAILURE
+				).build())
+		);
+
+		Assert.assertFalse(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
+				accountEntry, null));
+
+		Mockito.when(
+			_objectEntryLocalService.getValuesList(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.any(), Mockito.any(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		Assert.assertFalse(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
+				accountEntry, null));
+
+		Mockito.when(
+			accountEntryValidatorConfiguration.enabled()
+		).thenReturn(
+			false
+		);
+
+		Assert.assertTrue(
+			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
+				accountEntry, null));
 	}
 
 	@Test
@@ -261,6 +443,12 @@ public class AccountEntryValidatorRegistryImplTest {
 	private final AccountEntryValidatorRegistryImpl
 		_accountEntryValidatorRegistryImpl =
 			new AccountEntryValidatorRegistryImpl();
+	private final FilterFactory<Predicate> _filterFactory = Mockito.mock(
+		FilterFactory.class);
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService =
+		Mockito.mock(ObjectDefinitionLocalService.class);
+	private final ObjectEntryLocalService _objectEntryLocalService =
+		Mockito.mock(ObjectEntryLocalService.class);
 	private final ServiceTrackerMap
 		<String, ServiceWrapper<AccountEntryValidator>> _serviceTrackerMap =
 			Mockito.mock(ServiceTrackerMap.class);
