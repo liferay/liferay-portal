@@ -23,9 +23,13 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPage
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageSpecificationsTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.SettingsTestUtil;
+import com.liferay.layout.content.model.LayoutContentVersion;
+import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
+import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
@@ -58,6 +62,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -69,8 +74,8 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlags(
 	featureFlags = {
-		@FeatureFlag("LPD-35443"), @FeatureFlag("LPD-57283"),
-		@FeatureFlag("LPD-74328")
+		@FeatureFlag("LPD-10622"), @FeatureFlag("LPD-35443"),
+		@FeatureFlag("LPD-57283"), @FeatureFlag("LPD-74328")
 	}
 )
 @RunWith(Arquillian.class)
@@ -83,6 +88,14 @@ public class PageSpecificationResourceTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_testGroupLayout = LayoutTestUtil.addTypeContentLayout(testGroup);
+	}
 
 	@Ignore
 	@Override
@@ -273,6 +286,14 @@ public class PageSpecificationResourceTest
 				pageSpecificationResource.getSiteSitePagePageSpecificationsPage(
 					testGroup.getExternalReferenceCode(),
 					layout.getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
+	public void testGetSiteSitePagePageSpecificationVersionPageSpecification()
+		throws Exception {
+
+		super.testGetSiteSitePagePageSpecificationVersionPageSpecification();
 	}
 
 	@Override
@@ -470,6 +491,41 @@ public class PageSpecificationResourceTest
 			"externalReferenceCode", "pageExperiences", "settings", "status",
 			"type"
 		};
+	}
+
+	@Override
+	protected PageSpecification
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_addPageSpecification()
+		throws Exception {
+
+		Layout draftLayout = _testGroupLayout.fetchDraftLayout();
+
+		_layoutContentVersion =
+			_layoutContentVersionLocalService.addLayoutContentVersion(
+				null, TestPropsValues.getUserId(), draftLayout.getPlid(), null,
+				_layoutContentVersionDataProvider.getLayoutContentVersionData(
+					draftLayout,
+					ServiceContextTestUtil.getServiceContext(
+						testGroup.getGroupId())),
+				WorkflowConstants.STATUS_APPROVED, false);
+
+		return PageSpecification.toDTO(_layoutContentVersion.getData());
+	}
+
+	@Override
+	protected String
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_getPageSpecificationVersionExternalReferenceCode()
+		throws Exception {
+
+		return _layoutContentVersion.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGetSiteSitePagePageSpecificationVersionPageSpecification_getSitePageExternalReferenceCode()
+		throws Exception {
+
+		return _testGroupLayout.getExternalReferenceCode();
 	}
 
 	private Layout _addLayout(String type, ServiceContext serviceContext)
@@ -1294,6 +1350,14 @@ public class PageSpecificationResourceTest
 			serviceContext);
 	}
 
+	private LayoutContentVersion _layoutContentVersion;
+
+	@Inject
+	private LayoutContentVersionDataProvider _layoutContentVersionDataProvider;
+
+	@Inject
+	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
+
 	@Inject
 	private LayoutLocalService _layoutLocalService;
 
@@ -1306,5 +1370,7 @@ public class PageSpecificationResourceTest
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
+
+	private Layout _testGroupLayout;
 
 }
