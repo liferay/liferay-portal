@@ -2508,6 +2508,15 @@
 		"to": "_trashHelper.${prefixMethodName}(${variableName})"
 	},
 	{
+		"from": "regex:liferay-ui:membership-policy-error",
+		"issueKey": "LPD-27743",
+		"to": "liferay-site:membership-policy-error",
+		"validExtensions": [
+			"jsp",
+			"jspf"
+		]
+	},
+	{
 		"from": "XMLUtil.formatXML(String param)",
 		"issueKey": "LPD-27744",
 		"newImports": [
