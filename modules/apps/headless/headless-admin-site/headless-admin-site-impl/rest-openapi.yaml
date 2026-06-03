@@ -3636,6 +3636,12 @@ components:
                     # @review
                     description:
                         Settings of the page, such as SEO or OpenGraph.
+                pageSpecificationVersions:
+                    description:
+                        The page's page specification versions. This field is not returned by default. It can be requested via nestedFields.
+                    items:
+                        $ref: "#/components/schemas/PageSpecificationVersion"
+                    type: array
                 pageSpecifications:
                     # @review
                     description:
