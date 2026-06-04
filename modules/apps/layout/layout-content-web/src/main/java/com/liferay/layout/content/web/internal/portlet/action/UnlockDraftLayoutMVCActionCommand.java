@@ -5,7 +5,7 @@
 
 package com.liferay.layout.content.web.internal.portlet.action;
 
-import com.liferay.layout.content.web.internal.constants.LayoutContentVersionPortletKeys;
+import com.liferay.layout.content.constants.LayoutContentVersionPortletKeys;
 import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;

@@ -5,7 +5,7 @@
 
 package com.liferay.layout.content.web.internal.portlet;
 
-import com.liferay.layout.content.web.internal.constants.LayoutContentVersionPortletKeys;
+import com.liferay.layout.content.constants.LayoutContentVersionPortletKeys;
 import com.liferay.layout.content.web.internal.constants.LayoutContentVersionWebKeys;
 import com.liferay.layout.content.web.internal.display.context.LayoutContentVersionDisplayContext;
 import com.liferay.portal.kernel.language.Language;

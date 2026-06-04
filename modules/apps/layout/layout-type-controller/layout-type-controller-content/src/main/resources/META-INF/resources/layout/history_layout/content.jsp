@@ -26,7 +26,7 @@
 
 <div class="layout-content-version">
 	<liferay-portlet:runtime
-		portletName="com_liferay_layout_content_web_internal_portlet_LayoutContentVersionPortlet"
+		portletName="<%= LayoutContentVersionPortletKeys.LAYOUT_CONTENT_VERSION %>"
 	/>
 </div>
 
