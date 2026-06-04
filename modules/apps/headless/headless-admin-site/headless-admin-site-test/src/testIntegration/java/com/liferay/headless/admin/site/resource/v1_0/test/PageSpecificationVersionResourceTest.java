@@ -6,20 +6,26 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecificationVersion;
+import com.liferay.headless.admin.site.client.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -65,6 +71,14 @@ public class PageSpecificationVersionResourceTest
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteSitePagePageSpecificationVersion() throws Exception {
+		super.testGetSiteSitePagePageSpecificationVersion();
+
+		_testGetSiteSitePagePageSpecificationVersionPageSpecificationNestedField();
 	}
 
 	@Override
@@ -182,6 +196,61 @@ public class PageSpecificationVersionResourceTest
 			_layoutLocalService.getLayoutByExternalReferenceCode(
 				sitePageExternalReferenceCode, group.getGroupId()),
 			pageSpecificationVersion);
+	}
+
+	private PageSpecificationVersionResource
+			_getPageSpecificationVersionResource()
+		throws Exception {
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		return PageSpecificationVersionResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "pageSpecification"
+		).build();
+	}
+
+	private void _testGetSiteSitePagePageSpecificationVersionPageSpecificationNestedField()
+		throws Exception {
+
+		PageSpecificationVersion pageSpecificationVersion =
+			testGetSiteSitePagePageSpecificationVersion_addPageSpecificationVersion();
+
+		PageSpecificationVersion getPageSpecificationVersion =
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					_testGroupLayout.getExternalReferenceCode(),
+					pageSpecificationVersion.getExternalReferenceCode());
+
+		Assert.assertNull(getPageSpecificationVersion.getPageSpecification());
+
+		PageSpecificationVersionResource pageSpecificationVersionResource =
+			_getPageSpecificationVersionResource();
+
+		getPageSpecificationVersion =
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					_testGroupLayout.getExternalReferenceCode(),
+					pageSpecificationVersion.getExternalReferenceCode());
+
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionLocalService.
+				getLayoutContentVersionByExternalReferenceCode(
+					pageSpecificationVersion.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		Assert.assertEquals(
+			PageSpecification.toDTO(layoutContentVersion.getData()),
+			getPageSpecificationVersion.getPageSpecification());
 	}
 
 	@Inject
