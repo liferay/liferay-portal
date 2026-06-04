@@ -13,4 +13,5 @@ Export-Package:\
 	com.liferay.account.service,\
 	com.liferay.account.service.persistence,\
 	com.liferay.account.settings,\
-	com.liferay.account.validator
+	com.liferay.account.validator,\
+	com.liferay.account.validator.exception

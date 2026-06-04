@@ -5,6 +5,10 @@
 
 package com.liferay.commerce.checkout.web.internal.util;
 
+import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.validator.AccountEntryValidatorRegistry;
+import com.liferay.account.validator.AccountEntryValidatorResult;
+import com.liferay.account.validator.exception.AccountEntryValidatorException;
 import com.liferay.commerce.checkout.helper.CommerceCheckoutStepHttpHelper;
 import com.liferay.commerce.checkout.web.internal.display.context.OrderSummaryCheckoutStepDisplayContext;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
@@ -44,7 +48,9 @@ import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -67,6 +73,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.math.BigDecimal;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -103,6 +112,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		throws Exception {
 
 		try {
+			_validateAccountEntry(_portal.getHttpServletRequest(actionRequest));
+
 			_validateCommerceOrder(actionRequest);
 
 			_checkoutCommerceOrder(actionRequest);
@@ -110,7 +121,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		catch (Exception exception) {
 			Throwable throwable = exception.getCause();
 
-			if (throwable instanceof CommerceDiscountLimitationTimesException ||
+			if (throwable instanceof AccountEntryValidatorException ||
+				throwable instanceof CommerceDiscountLimitationTimesException ||
 				throwable instanceof CommerceOrderBillingAddressException ||
 				throwable instanceof CommerceOrderGuestCheckoutException ||
 				throwable instanceof CommerceOrderPaymentMethodException ||
@@ -118,7 +130,11 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				throwable instanceof CommerceOrderShippingMethodException ||
 				throwable instanceof NoSuchDiscountException) {
 
-				SessionErrors.add(actionRequest, throwable.getClass());
+				SessionErrors.add(
+					actionRequest,
+					throwable.getClass(
+					).getName(),
+					throwable);
 
 				return;
 			}
@@ -183,6 +199,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_DISPLAY_CONTEXT,
 				orderSummaryCheckoutStepDisplayContext);
 
+			_getAccountEntryValidatorResults(httpServletRequest, commerceOrder);
+
 			_jspRenderer.renderJSP(
 				httpServletRequest, httpServletResponse,
 				"/checkout_step/order_summary.jsp");
@@ -203,6 +221,18 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 
 		try {
+			List<AccountEntryValidatorResult> accountEntryValidatorResults =
+				_getAccountEntryValidatorResults(
+					httpServletRequest, commerceOrder);
+
+			for (AccountEntryValidatorResult accountEntryValidatorResult :
+					accountEntryValidatorResults) {
+
+				if (!accountEntryValidatorResult.isValid()) {
+					return false;
+				}
+			}
+
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
@@ -210,8 +240,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 			return _commerceOrderValidatorRegistry.isValid(
 				themeDisplay.getLocale(), commerceOrder);
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		catch (Exception exception) {
+			_log.error(exception);
 
 			return false;
 		}
@@ -260,6 +290,41 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 	}
 
+	private List<AccountEntryValidatorResult> _getAccountEntryValidatorResults(
+			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				commerceOrder.getCompanyId(), "LPD-89850")) {
+
+			return Collections.emptyList();
+		}
+
+		List<AccountEntryValidatorResult> accountEntryValidatorResults =
+			(List<AccountEntryValidatorResult>)httpServletRequest.getAttribute(
+				_ACCOUNT_ENTRY_VALIDATOR_RESULTS);
+
+		if (accountEntryValidatorResults != null) {
+			return accountEntryValidatorResults;
+		}
+
+		accountEntryValidatorResults = _accountEntryValidatorRegistry.validate(
+			_accountEntryLocalService.fetchAccountEntry(
+				commerceOrder.getCommerceAccountId()),
+			JSONUtil.put(
+				"billingAddressId", commerceOrder.getBillingAddressId()
+			).put(
+				"commerceOrderId", commerceOrder.getCommerceOrderId()
+			).put(
+				"shippingAddressId", commerceOrder.getShippingAddressId()
+			));
+
+		httpServletRequest.setAttribute(
+			_ACCOUNT_ENTRY_VALIDATOR_RESULTS, accountEntryValidatorResults);
+
+		return accountEntryValidatorResults;
+	}
+
 	private boolean _isCheckoutRequestedDeliveryDateEnabled(
 			CommerceOrder commerceOrder)
 		throws Exception {
@@ -277,6 +342,25 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 
 		return commerceOrderCheckoutConfiguration.
 			checkoutRequestedDeliveryDateEnabled();
+	}
+
+	private void _validateAccountEntry(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		CommerceOrder commerceOrder =
+			(CommerceOrder)httpServletRequest.getAttribute(
+				CommerceCheckoutWebKeys.COMMERCE_ORDER);
+
+		List<AccountEntryValidatorResult> accountEntryValidatorResults =
+			_getAccountEntryValidatorResults(httpServletRequest, commerceOrder);
+
+		for (AccountEntryValidatorResult accountEntryValidatorResult :
+				accountEntryValidatorResults) {
+
+			if (!accountEntryValidatorResult.isValid()) {
+				throw new AccountEntryValidatorException();
+			}
+		}
 	}
 
 	private void _validateCommerceOrder(ActionRequest actionRequest)
@@ -354,8 +438,17 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 	}
 
+	private static final String _ACCOUNT_ENTRY_VALIDATOR_RESULTS =
+		"accountEntryValidatorResults";
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		OrderSummaryCommerceCheckoutStep.class);
+
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
