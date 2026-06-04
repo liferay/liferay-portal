@@ -55,7 +55,8 @@ public class TokenAudienceTest extends BaseClientTestCase {
 		_testTokenIntrospectionAudience(
 			Collections.singletonList(_RESOURCE_URI));
 		_testTokenIntrospectionAudience(
-			Arrays.asList(_RESOURCE_URI, _RESOURCE_URI_2));
+			Arrays.asList(
+				_RESOURCE_URI, "https://" + RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -202,9 +203,9 @@ public class TokenAudienceTest extends BaseClientTestCase {
 		Assert.assertNotNull(audJSONArray);
 		Assert.assertEquals(resources.size(), audJSONArray.length());
 
-		List<String> audiences = JSONUtil.toStringList(audJSONArray);
+		List<String> audiencesList = JSONUtil.toStringList(audJSONArray);
 
-		Assert.assertTrue(audiences.containsAll(resources));
+		Assert.assertTrue(audiencesList.containsAll(resources));
 	}
 
 	private void _testTokenRequestWithInvalidResource(String resource)
@@ -235,10 +236,8 @@ public class TokenAudienceTest extends BaseClientTestCase {
 
 	private static final String _CLIENT_SECRET = RandomTestUtil.randomString();
 
-	private static final String _RESOURCE_URI = "https://mcp.example.com/o/mcp";
-
-	private static final String _RESOURCE_URI_2 =
-		"https://api.example.com/o/api";
+	private static final String _RESOURCE_URI =
+		"https://" + RandomTestUtil.randomString();
 
 	private class TokenAudienceTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {

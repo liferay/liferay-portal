@@ -8,6 +8,7 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.access.token.grant.ha
 import com.liferay.oauth2.provider.constants.OAuth2ProviderActionKeys;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -19,8 +20,13 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,25 +88,29 @@ public abstract class BaseAccessTokenGrantHandler
 			return supplier.get();
 		}
 
-		List<String> originalRegisteredAudiences =
-			client.getRegisteredAudiences();
+		for (String resource : resources) {
+			_validateResource(resource);
+		}
 
-		try {
-			List<String> mutableAudiences = new ArrayList<>(
-				originalRegisteredAudiences);
+		List<String> registeredAudiences = client.getRegisteredAudiences();
 
+		if (ListUtil.isNotEmpty(registeredAudiences)) {
 			for (String resource : resources) {
-				if (!mutableAudiences.contains(resource)) {
-					mutableAudiences.add(resource);
+				if (!registeredAudiences.contains(resource)) {
+					OAuth2ErrorUtil.reportInvalidRequestError(
+						"The resource parameter is not a registered audience",
+						"invalid_target", Response.Status.BAD_REQUEST);
 				}
 			}
+		}
 
-			client.setRegisteredAudiences(mutableAudiences);
+		try {
+			client.setRegisteredAudiences(new ArrayList<>(resources));
 
 			return supplier.get();
 		}
 		finally {
-			client.setRegisteredAudiences(originalRegisteredAudiences);
+			client.setRegisteredAudiences(registeredAudiences);
 		}
 	}
 
@@ -168,6 +178,27 @@ public abstract class BaseAccessTokenGrantHandler
 
 	@Reference
 	protected UserLocalService userLocalService;
+
+	private void _validateResource(String resource) {
+		if (!Validator.isBlank(resource)) {
+			try {
+				URI uri = new URI(resource);
+
+				if (uri.isAbsolute() && (uri.getFragment() == null)) {
+					return;
+				}
+			}
+			catch (URISyntaxException uriSyntaxException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(uriSyntaxException);
+				}
+			}
+		}
+
+		OAuth2ErrorUtil.reportInvalidRequestError(
+			"The resource parameter must be an absolute URI without a fragment",
+			"invalid_target", Response.Status.BAD_REQUEST);
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseAccessTokenGrantHandler.class);
