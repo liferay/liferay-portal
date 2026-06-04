@@ -184,16 +184,22 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 					layout.getLayoutId(), ActionKeys.UPDATE);
 			}
 
-			try {
-				_layoutLockManager.getLock(layout, themeDisplay.getUserId());
+			if (!layout.isDraftLayout() || !layout.isLayoutUpdateable()) {
+				layoutMode = Constants.VIEW;
 			}
-			catch (PortalException portalException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException);
+			else {
+				try {
+					_layoutLockManager.getLock(
+						layout, themeDisplay.getUserId());
 				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
 
-				redirect = _layoutLockManager.getLockedLayoutURL(
-					httpServletRequest);
+					redirect = _layoutLockManager.getLockedLayoutURL(
+						httpServletRequest);
+				}
 			}
 		}
 
