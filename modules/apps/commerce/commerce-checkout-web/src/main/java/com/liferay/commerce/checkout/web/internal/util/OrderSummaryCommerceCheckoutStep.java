@@ -121,6 +121,10 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		catch (Exception exception) {
 			Throwable throwable = exception.getCause();
 
+			if (throwable == null) {
+				throwable = exception;
+			}
+
 			if (throwable instanceof AccountEntryValidatorException ||
 				throwable instanceof CommerceDiscountLimitationTimesException ||
 				throwable instanceof CommerceOrderBillingAddressException ||

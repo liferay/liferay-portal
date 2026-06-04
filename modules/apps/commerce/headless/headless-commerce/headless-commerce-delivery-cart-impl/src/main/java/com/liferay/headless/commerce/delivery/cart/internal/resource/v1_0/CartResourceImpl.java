@@ -830,7 +830,7 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 			for (AccountEntryValidatorResult accountEntryValidatorResult :
 					_accountEntryValidatorRegistry.validate(
-						_accountEntryLocalService.getAccountEntry(
+						_accountEntryLocalService.fetchAccountEntry(
 							commerceOrder.getCommerceAccountId()),
 						JSONUtil.put(
 							"billingAddressId",
