@@ -447,6 +447,17 @@ public class ContentLayoutTypeControllerTest {
 			mockHttpServletRequest.getAttribute(WebKeys.LAYOUT_CONTENT));
 
 		Assert.assertFalse(content.contains("layout-content-version"));
+
+		try {
+			_includeLayoutContent(ActionKeys.VIEW, _layout, Constants.HISTORY);
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
+		}
 	}
 
 	@Test
