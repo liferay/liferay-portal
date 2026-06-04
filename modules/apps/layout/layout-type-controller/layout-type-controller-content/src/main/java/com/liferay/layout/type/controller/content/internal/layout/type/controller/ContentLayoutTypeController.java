@@ -158,6 +158,32 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 			FeatureFlagManagerUtil.checkEnabled(
 				themeDisplay.getCompanyId(), "LPD-10622");
 
+			if (hasUpdatePermissions == null) {
+				hasUpdatePermissions = _hasUpdatePermissions(
+					themeDisplay.getPermissionChecker(), layout);
+			}
+
+			boolean hasStrictUpdatePermission = false;
+
+			if (hasUpdatePermissions) {
+				try {
+					hasStrictUpdatePermission = _layoutPermission.contains(
+						themeDisplay.getPermissionChecker(), layout,
+						ActionKeys.UPDATE);
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+				}
+			}
+
+			if (!hasStrictUpdatePermission) {
+				throw new PrincipalException.MustHavePermission(
+					themeDisplay.getPermissionChecker(), Layout.class.getName(),
+					layout.getLayoutId(), ActionKeys.UPDATE);
+			}
+
 			try {
 				_layoutLockManager.getLock(layout, themeDisplay.getUserId());
 			}
