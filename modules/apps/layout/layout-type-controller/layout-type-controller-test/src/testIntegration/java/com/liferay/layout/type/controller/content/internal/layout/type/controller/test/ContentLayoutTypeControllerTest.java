@@ -434,6 +434,19 @@ public class ContentLayoutTypeControllerTest {
 			mockHttpServletRequest.getAttribute(WebKeys.LAYOUT_CONTENT));
 
 		Assert.assertTrue(content.contains("layout-content-version"));
+
+		mockHttpServletRequest = _getMockHttpServletRequest(
+			Constants.HISTORY, TestPropsValues.getUser());
+
+		mockHttpServletRequest.setMethod(HttpMethods.GET);
+
+		_layoutTypeController.includeLayoutContent(
+			mockHttpServletRequest, new MockHttpServletResponse(), _layout);
+
+		content = String.valueOf(
+			mockHttpServletRequest.getAttribute(WebKeys.LAYOUT_CONTENT));
+
+		Assert.assertFalse(content.contains("layout-content-version"));
 	}
 
 	@Test
