@@ -772,6 +772,13 @@ public class ContentPageEditorDisplayContext {
 				() -> {
 					Layout layout = themeDisplay.getLayout();
 
+					StyleBookEntry styleBookEntry =
+						StyleBookEntryProviderUtil.getStyleBookEntry(layout);
+
+					if (styleBookEntry == null) {
+						return StringPool.BLANK;
+					}
+
 					return GetterUtil.getString(
 						layout.getStyleBookEntryScopeERC());
 				}
