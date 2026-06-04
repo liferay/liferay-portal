@@ -5,6 +5,7 @@
 
 package com.liferay.product.navigation.control.menu.web.internal;
 
+import com.liferay.layout.content.constants.LayoutContentVersionPortletKeys;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -30,7 +31,6 @@ import jakarta.portlet.PortletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -93,23 +93,33 @@ public class LayoutBackLinkProductNavigationControlMenuEntry
 
 		Layout layout = _layoutLocalService.fetchLayout(themeDisplay.getPlid());
 
-		if (!Objects.equals(
-				ParamUtil.getString(
-					httpServletRequest, "p_l_mode", Constants.VIEW),
-				Constants.EDIT) ||
-			(layout == null) || !layout.isDraftLayout()) {
+		String layoutMode = ParamUtil.getString(
+			httpServletRequest, "p_l_mode", Constants.VIEW);
+
+		if ((layout == null) || !layout.isDraftLayout() ||
+			(!layoutMode.equals(Constants.EDIT) &&
+			 !layoutMode.equals(Constants.HISTORY))) {
 
 			return _portal.escapeRedirect(
 				ParamUtil.getString(httpServletRequest, "p_l_back_url"));
 		}
 
+		String actionName = "/layout_content_page_editor/unlock_draft_layout";
+		String portletName =
+			ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET;
+
+		if (layoutMode.equals(Constants.HISTORY)) {
+			actionName = "/layout_content_version/unlock_draft_layout";
+			portletName =
+				LayoutContentVersionPortletKeys.LAYOUT_CONTENT_VERSION;
+		}
+
 		return PortletURLBuilder.create(
 			PortletURLFactoryUtil.create(
-				httpServletRequest,
-				ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET,
-				themeDisplay.getPlid(), PortletRequest.ACTION_PHASE)
+				httpServletRequest, portletName, themeDisplay.getPlid(),
+				PortletRequest.ACTION_PHASE)
 		).setActionName(
-			"/layout_content_page_editor/unlock_draft_layout"
+			actionName
 		).setRedirect(
 			() -> _portal.escapeRedirect(
 				ParamUtil.getString(httpServletRequest, "p_l_back_url"))
