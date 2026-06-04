@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Arthur Chan
  */
 @Component(
+	enabled = false,
 	property = "configuration.pid=com.liferay.portal.crypto.hash.provider.bcrypt.internal.configuration.BCryptCryptoHashProviderConfiguration",
 	service = CryptoHashProviderFactory.class
 )

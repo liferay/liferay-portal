@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Tomas Polesovsky
  */
 @Component(
-	property = "type=" + PasswordEncryptor.TYPE_BCRYPT,
+	enabled = false, property = "type=" + PasswordEncryptor.TYPE_BCRYPT,
 	service = PasswordEncryptor.class
 )
 public class BCryptPasswordEncryptor implements PasswordEncryptor {

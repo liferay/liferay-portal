@@ -25,7 +25,7 @@ import org.vps.crypt.Crypt;
  * @author Tomas Polesovsky
  */
 @Component(
-	property = "type=" + PasswordEncryptor.TYPE_UFC_CRYPT,
+	enabled = false, property = "type=" + PasswordEncryptor.TYPE_UFC_CRYPT,
 	service = PasswordEncryptor.class
 )
 public class CryptPasswordEncryptor implements PasswordEncryptor {
