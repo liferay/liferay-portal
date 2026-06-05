@@ -1,0 +1,5 @@
+Bundle-Name: Liferay MCP Server Web
+Bundle-SymbolicName: com.liferay.mcp.server.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /mcp-server-web
+-dsannotations-options: inherit

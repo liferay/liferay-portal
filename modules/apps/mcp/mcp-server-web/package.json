@@ -1,0 +1,23 @@
+{
+	"dependencies": {
+		"@clayui/alert": "^3.163.0",
+		"@clayui/button": "^3.163.0",
+		"@clayui/form": "^3.163.0",
+		"@clayui/icon": "^3.163.0",
+		"@clayui/layout": "^3.163.0",
+		"@clayui/modal": "^3.163.0",
+		"@clayui/tabs": "^3.163.0",
+		"@liferay/frontend-data-set-web": "*",
+		"frontend-js-components-web": "*",
+		"frontend-js-web": "*",
+		"react": "18.2.0"
+	},
+	"main": "js/index.ts",
+	"name": "@liferay/mcp-server-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format"
+	},
+	"version": "1.0.0"
+}
