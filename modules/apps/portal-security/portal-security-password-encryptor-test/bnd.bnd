@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Portal Security Password Encryptor Test
+Bundle-SymbolicName: com.liferay.portal.security.password.encryptor.test
+Bundle-Version: 1.0.0

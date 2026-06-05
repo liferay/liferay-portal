@@ -7,6 +7,7 @@ package com.liferay.portal.crypto.hash.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.crypto.hash.CryptoHashGenerator;
@@ -17,6 +18,7 @@ import com.liferay.portal.crypto.hash.exception.CryptoHashException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import jodd.util.BCrypt;
 
@@ -50,6 +53,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.runtime.ServiceComponentRuntime;
+import org.osgi.util.promise.Promise;
 
 /**
  * @author Carlos Sierra Andrés
@@ -299,6 +304,37 @@ public class CryptoHashTest {
 				_password, _expectedBCryptHash,
 				new CryptoHashVerificationContext(
 					"BCrypt", Collections.emptyMap(), _bCryptSalt)));
+
+		Bundle bundle = _getBundle();
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			bundle.stop();
+
+			bundle.start();
+
+			Assert.assertFalse(
+				_serviceComponentRuntime.isComponentEnabled(
+					_serviceComponentRuntime.getComponentDescriptionDTO(
+						bundle,
+						_CLASS_NAME_BCRYPT_CRYPTO_HASH_PROVIDER_FACTORY)));
+
+			Assert.assertThrows(
+				CryptoHashException.class,
+				() -> _cryptoHashVerifier.verify(
+					_password, _expectedBCryptHash,
+					new CryptoHashVerificationContext(
+						"BCrypt", Collections.emptyMap(), _bCryptSalt)));
+		}
+		finally {
+			Promise<Void> promise = _serviceComponentRuntime.enableComponent(
+				_serviceComponentRuntime.getComponentDescriptionDTO(
+					bundle, _CLASS_NAME_BCRYPT_CRYPTO_HASH_PROVIDER_FACTORY));
+
+			promise.getValue();
+		}
 	}
 
 	private void _addFactoryConfiguration(
@@ -355,6 +391,24 @@ public class CryptoHashTest {
 		return null;
 	}
 
+	private Bundle _getBundle() {
+		for (Bundle bundle : _bundleContext.getBundles()) {
+			if (Objects.equals(
+					bundle.getSymbolicName(),
+					"com.liferay.portal.crypto.hash.provider.bcrypt")) {
+
+				return bundle;
+			}
+		}
+
+		return null;
+	}
+
+	private static final String
+		_CLASS_NAME_BCRYPT_CRYPTO_HASH_PROVIDER_FACTORY =
+			"com.liferay.portal.crypto.hash.provider.bcrypt.internal." +
+				"BCryptCryptoHashProviderFactory";
+
 	private static final Log _log = LogFactoryUtil.getLog(CryptoHashTest.class);
 
 	private static byte[] _bCryptSalt;
@@ -368,5 +422,8 @@ public class CryptoHashTest {
 
 	@Inject
 	private CryptoHashVerifier _cryptoHashVerifier;
+
+	@Inject
+	private ServiceComponentRuntime _serviceComponentRuntime;
 
 }
