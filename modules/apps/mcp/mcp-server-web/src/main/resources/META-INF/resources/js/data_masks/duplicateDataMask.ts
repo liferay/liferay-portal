@@ -1,0 +1,45 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import {openToast} from 'frontend-js-components-web';
+
+import {saveDataMask} from './api';
+import {ActionContext} from './types';
+
+export async function duplicateDataMask({itemData, loadData}: ActionContext) {
+	const {detail, ok, saved} = await saveDataMask(null, {
+		description: itemData.description ?? '',
+		detectionRegex: itemData.detectionRegex,
+		maskType: {key: 'custom'},
+		name: Liferay.Util.sub(
+			Liferay.Language.get('copy-of-x'),
+			itemData.name
+		),
+		replacementRegex: itemData.replacementRegex ?? '',
+		replacementValue: itemData.replacementValue,
+	});
+
+	if (!ok) {
+		openToast({
+			message:
+				detail || Liferay.Language.get('an-unexpected-error-occurred'),
+			type: 'danger',
+		});
+
+		return;
+	}
+
+	loadData();
+
+	if (saved) {
+		openToast({
+			message: Liferay.Util.sub(
+				Liferay.Language.get('x-was-saved-successfully'),
+				saved.name
+			),
+			type: 'success',
+		});
+	}
+}
