@@ -9,11 +9,19 @@ import com.liferay.ai.hub.web.internal.constants.AIHubFDSNames;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Davyson Melo
@@ -27,7 +35,7 @@ public class IssueReportFeedbackTypeSelectionFDSFilter
 
 	@Override
 	public String getId() {
-		return "feedbackType";
+		return "feedback";
 	}
 
 	@Override
@@ -39,9 +47,28 @@ public class IssueReportFeedbackTypeSelectionFDSFilter
 	public List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
 		Locale locale) {
 
-		return List.of(
-			new SelectionFDSFilterItem("POSITIVE", "positive"),
-			new SelectionFDSFilterItem("NEGATIVE", "negative"));
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.
+				fetchListTypeDefinitionByExternalReferenceCode(
+					"L_AI_HUB_REPORT_FEEDBACKS",
+					CompanyThreadLocal.getCompanyId());
+
+		if (listTypeDefinition == null) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transform(
+			_listTypeEntryLocalService.getListTypeEntries(
+				listTypeDefinition.getListTypeDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			listTypeEntry -> new SelectionFDSFilterItem(
+				listTypeEntry.getName(locale), listTypeEntry.getKey()));
 	}
+
+	@Reference
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Reference
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 }

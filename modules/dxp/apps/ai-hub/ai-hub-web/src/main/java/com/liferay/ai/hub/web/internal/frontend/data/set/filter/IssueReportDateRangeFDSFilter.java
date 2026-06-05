@@ -25,7 +25,7 @@ public class IssueReportDateRangeFDSFilter extends BaseDateRangeFDSFilter {
 
 	@Override
 	public String getId() {
-		return "date";
+		return "dateCreated";
 	}
 
 	@Override

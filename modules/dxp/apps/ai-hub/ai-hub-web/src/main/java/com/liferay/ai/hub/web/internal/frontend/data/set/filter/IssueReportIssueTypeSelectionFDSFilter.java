@@ -27,7 +27,7 @@ public class IssueReportIssueTypeSelectionFDSFilter
 
 	@Override
 	public String getId() {
-		return "issueType";
+		return "reason";
 	}
 
 	@Override
@@ -41,15 +41,13 @@ public class IssueReportIssueTypeSelectionFDSFilter
 
 		return List.of(
 			new SelectionFDSFilterItem(
-				"AGENT_ERROR_OR_MALFUNCTION", "agent-error-or-malfunction"),
+				"AGENT_ERROR_OR_MALFUNCTION", "agentError"),
 			new SelectionFDSFilterItem(
-				"INAPPROPRIATE_OR_HARMFUL_CONTENT",
-				"inappropriate-or-harmful-content"),
+				"INAPPROPRIATE_OR_HARMFUL_CONTENT", "harmfulContent"),
 			new SelectionFDSFilterItem(
-				"INCORRECT_OR_INACCURATE_RESPONSE",
-				"incorrect-or-inaccurate-response"),
+				"INCORRECT_OR_INACCURATE_RESPONSE", "incorrect"),
 			new SelectionFDSFilterItem("OTHER", "other"),
-			new SelectionFDSFilterItem("PII_EXPOSURE", "pii-exposure"));
+			new SelectionFDSFilterItem("PII_EXPOSURE", "piiExposure"));
 	}
 
 }
