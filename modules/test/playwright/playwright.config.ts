@@ -121,6 +121,7 @@ import {config as loginWebConfig} from './tests/login-web/main/config';
 import {config as loginWebSetupAdminConfig} from './tests/login-web/setup-admin/config';
 import {config as mapsConfig} from './tests/maps/main/config';
 import {config as marketplaceAppManagerWebConfig} from './tests/marketplace-app-manager-web/main/config';
+import {config as mcpServerWebConfig} from './tests/mcp-server-web/main/config';
 import {config as messageBoardsWebConfig} from './tests/message-boards-web/main/config';
 import {config as messageBoardsWebPaginationConfig} from './tests/message-boards-web/pagination/config';
 import {config as multifactorAuthenticationEmailOTPConfig} from './tests/multi-factor-authentication-email-otp-web/main/config';
@@ -367,6 +368,7 @@ export default defineConfig({
 		mapsConfig,
 		marketplaceAppManagerWebConfig,
 		marketplaceConfig,
+		mcpServerWebConfig,
 		messageBoardsWebConfig,
 		messageBoardsWebPaginationConfig,
 		multifactorAuthenticationConfig,
