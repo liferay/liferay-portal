@@ -7,6 +7,8 @@ package com.liferay.ai.hub.web.internal.fragment.renderer;
 
 import com.liferay.ai.hub.web.internal.display.context.ViewIssueReportsDisplayContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -57,7 +59,9 @@ public class ViewIssueReportsFragmentRenderer
 	protected ViewIssueReportsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewIssueReportsDisplayContext(httpServletRequest);
+		return new ViewIssueReportsDisplayContext(
+			httpServletRequest, _objectDefinitionLocalService,
+			_objectEntryManager);
 	}
 
 	@Override
@@ -70,5 +74,11 @@ public class ViewIssueReportsFragmentRenderer
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference(target = "(object.entry.manager.storage.type=default)")
+	private ObjectEntryManager _objectEntryManager;
 
 }

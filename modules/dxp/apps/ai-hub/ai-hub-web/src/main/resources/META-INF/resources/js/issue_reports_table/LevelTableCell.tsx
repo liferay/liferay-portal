@@ -10,35 +10,25 @@ const LEVEL_DISPLAY_TYPES: Record<
 	string,
 	'danger' | 'warning' | 'info' | 'secondary'
 > = {
-	CRITICAL: 'danger',
-	HIGH: 'warning',
-	LOW: 'secondary',
-	MEDIUM: 'info',
+	critical: 'danger',
+	high: 'warning',
+	low: 'secondary',
+	medium: 'info',
 };
 
-function getLabel(value: string): string {
-	switch (value) {
-		case 'CRITICAL':
-			return Liferay.Language.get('critical');
-		case 'HIGH':
-			return Liferay.Language.get('high');
-		case 'LOW':
-			return Liferay.Language.get('low');
-		case 'MEDIUM':
-			return Liferay.Language.get('medium');
-		default:
-			return value;
-	}
+interface LevelValue {
+	key: string;
+	name: string;
 }
 
-export default function LevelTableCell({value}: {value: string | null}) {
+export default function LevelTableCell({value}: {value: LevelValue | null}) {
 	if (!value) {
 		return null;
 	}
 
 	return (
-		<ClayLabel displayType={LEVEL_DISPLAY_TYPES[value] ?? 'secondary'}>
-			{getLabel(value)}
+		<ClayLabel displayType={LEVEL_DISPLAY_TYPES[value.key] ?? 'secondary'}>
+			{value.name}
 		</ClayLabel>
 	);
 }

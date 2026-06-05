@@ -32,17 +32,19 @@ public class IssueReportTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"date", "date",
+			"dateCreated", "date",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"date")
 		).add(
-			"agentName", "agent-name"
+			"aiHubAgentDefinitionsToAIHubReports", "agent-name",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"agentNamesTableCellRenderer")
 		).add(
-			"surface", "surface"
+			"surface.name", "surface"
 		).add(
-			"feedbackType", "feedback-type"
+			"feedback.name", "feedback-type"
 		).add(
-			"issueType", "issue-type"
+			"reason.name", "issue-type"
 		).add(
 			"level", "level",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
@@ -50,7 +52,9 @@ public class IssueReportTableFDSView extends BaseTableFDSView {
 		).add(
 			"userMessage", "user-message"
 		).add(
-			"userEmail", "user-email"
+			"creator", "user",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"userTableCellRenderer")
 		).build();
 	}
 

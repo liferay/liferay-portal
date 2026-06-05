@@ -3,14 +3,28 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import AgentNamesTableCell from './AgentNamesTableCell';
 import LevelTableCell from './LevelTableCell';
+import UserTableCell from './UserTableCell';
 
 import type {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 export default function propsTransformer(props: any) {
+	const agentNamesTableCellRenderer: IInternalRenderer = {
+		component: AgentNamesTableCell,
+		name: 'agentNamesTableCellRenderer',
+		type: 'internal',
+	};
+
 	const levelTableCellRenderer: IInternalRenderer = {
 		component: LevelTableCell,
 		name: 'levelTableCellRenderer',
+		type: 'internal',
+	};
+
+	const userTableCellRenderer: IInternalRenderer = {
+		component: UserTableCell,
+		name: 'userTableCellRenderer',
 		type: 'internal',
 	};
 
@@ -20,7 +34,9 @@ export default function propsTransformer(props: any) {
 			...props.customRenderers,
 			tableCell: [
 				...(props.customRenderers?.tableCell ?? []),
+				agentNamesTableCellRenderer,
 				levelTableCellRenderer,
+				userTableCellRenderer,
 			],
 		},
 	};

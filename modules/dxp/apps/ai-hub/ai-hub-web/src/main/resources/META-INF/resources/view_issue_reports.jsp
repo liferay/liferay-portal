@@ -20,9 +20,8 @@ ViewIssueReportsDisplayContext viewIssueReportsDisplayContext = (ViewIssueReport
 	</div>
 
 	<div class="ai-hub-issue-reports-table">
-		<frontend-data-set:classic-display
-			dataProviderKey="<%= AIHubFDSNames.ISSUE_REPORTS %>"
-			fdsSortItemList="<%= viewIssueReportsDisplayContext.getFDSSortItems() %>"
+		<frontend-data-set:headless-display
+			apiURL="<%= viewIssueReportsDisplayContext.getAPIURL() %>"
 			id="<%= AIHubFDSNames.ISSUE_REPORTS %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{IssueReportsPropsTransformer} from ai-hub-web"
