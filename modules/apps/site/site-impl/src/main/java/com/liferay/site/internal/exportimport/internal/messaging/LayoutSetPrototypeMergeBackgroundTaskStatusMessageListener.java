@@ -24,10 +24,12 @@ import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.site.internal.exportimport.internal.notifications.LayoutSetPrototypeNotificationUtil;
 
+import java.io.File;
 import java.io.Serializable;
 
 import java.util.Date;
@@ -164,6 +166,8 @@ public class LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener
 					_markNotificationProcessed(completedBackgroundTask);
 				}
 			}
+
+			_deleteCacheFile(sessionId);
 		}
 		finally {
 			_lockManager.unlock(
@@ -208,6 +212,14 @@ public class LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener
 				"Unable to delete background task " +
 					backgroundTask.getBackgroundTaskId(),
 				exception);
+		}
+	}
+
+	private void _deleteCacheFile(String sessionId) {
+		File file = new File(_TEMP_DIR + sessionId + ".lar");
+
+		if ((file != null) && file.exists()) {
+			file.delete();
 		}
 	}
 
@@ -274,6 +286,10 @@ public class LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener
 	}
 
 	private static final long _LOCK_EXPIRATION_TIME = 5 * 60 * 1000;
+
+	private static final String _TEMP_DIR =
+		SystemProperties.get(SystemProperties.TMP_DIR) +
+			"/liferay/layout_set_prototype/";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener.class);
