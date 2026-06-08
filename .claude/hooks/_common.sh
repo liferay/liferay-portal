@@ -38,37 +38,6 @@ function _die {
 	exit 1
 }
 
-function _drop_database {
-	local worktree_path="${1}"
-	local bundles_dir="${2:-}"
-
-	command -v mysql >/dev/null 2>&1 || return 0
-
-	local db_name
-
-	db_name="$(_derive_db_name "$(basename "${worktree_path}")")"
-
-	[[ ${db_name} != lportal ]] || return 0
-
-	local user=root
-	local password=""
-
-	if [[ -n ${bundles_dir} ]]
-	then
-		user="$(_get_property_from_files "jdbc\.default\.username" root "${bundles_dir}/portal-ext.properties" "${bundles_dir}/portal-setup-wizard.properties")"
-		password="$(_get_property_from_files "jdbc\.default\.password" "" "${bundles_dir}/portal-ext.properties" "${bundles_dir}/portal-setup-wizard.properties")"
-	fi
-
-	local mysql_args=(--user "${user}")
-
-	if [[ -n ${password} ]]
-	then
-		mysql_args+=(--password="${password}")
-	fi
-
-	mysql "${mysql_args[@]}" --execute "DROP DATABASE IF EXISTS ${db_name};" >&2 || true
-}
-
 function _find_app_server_parent_dir {
 	local project_dir="${1}"
 
@@ -148,6 +117,24 @@ function _get_property_from_files {
 	done
 
 	echo "${default}"
+}
+
+function _resolve_db_brand {
+	local brand
+
+	brand="$(echo "${WORKTREE_DB_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
+
+	case "${brand}" in
+		*psql*)
+			echo psql
+			;;
+		*mysql*)
+			echo mysql
+			;;
+		*)
+			_die "WORKTREE_DB_BRAND must contain \"mysql\" or \"psql\" (got \"${brand}\")."
+			;;
+	esac
 }
 
 function _sed {
