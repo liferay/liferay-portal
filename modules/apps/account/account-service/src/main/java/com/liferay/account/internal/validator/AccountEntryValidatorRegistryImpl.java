@@ -6,7 +6,6 @@
 package com.liferay.account.internal.validator;
 
 import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
-import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
@@ -34,9 +33,9 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -81,22 +80,22 @@ public class AccountEntryValidatorRegistryImpl
 	}
 
 	@Override
-	public boolean isLastResultSuccess(
-			AccountEntry accountEntry, JSONObject jsonObject)
+	public Map<String, AccountEntryValidatorResult>
+			getLastAccountEntryValidatorResultsMap(
+				AccountEntry accountEntry, JSONObject jsonObject)
 		throws PortalException {
 
 		if (accountEntry == null) {
-			return false;
+			return Collections.emptyMap();
 		}
+
+		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults =
+			new LinkedHashMap<>();
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_ACCOUNT_VALIDATOR_RESULT", accountEntry.getCompanyId());
-
-		if (objectDefinition == null) {
-			return false;
-		}
 
 		for (AccountEntryValidator accountEntryValidator :
 				getAccountEntryValidators()) {
@@ -110,14 +109,24 @@ public class AccountEntryValidatorRegistryImpl
 				continue;
 			}
 
+			Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+				accountEntryValidator.getClass();
+
+			String className = accountEntryValidatorClass.getName();
+
+			if (objectDefinition == null) {
+				accountEntryValidatorResults.put(className, null);
+
+				continue;
+			}
+
+			String classPK = accountEntryValidator.getKey(
+				accountEntry, jsonObject);
+
 			String filterString = StringBundler.concat(
-				"(className eq '",
-				accountEntryValidator.getClass(
-				).getName(),
-				"') and (classPK eq '",
-				accountEntryValidator.getKey(accountEntry, jsonObject),
-				"') and (", _ACCOUNT_ENTRY_RESTRICTED_FIELD_NAME, " eq '",
-				accountEntry.getAccountEntryId(), "')");
+				"(className eq '", className, "') and (classPK eq '", classPK,
+				"') and (r_accountToAccountValidatorResults_accountEntryId eq ",
+				"'", accountEntry.getAccountEntryId(), "')");
 
 			List<Map<String, Serializable>> valuesList =
 				_objectEntryLocalService.getValuesList(
@@ -130,27 +139,25 @@ public class AccountEntryValidatorRegistryImpl
 					});
 
 			if (valuesList.isEmpty()) {
-				return false;
+				accountEntryValidatorResults.put(className, null);
+
+				continue;
 			}
 
-			String resultStatus = (String)valuesList.get(
-				0
-			).get(
-				"resultStatus"
-			);
+			Map<String, Serializable> valuesMap = valuesList.get(0);
 
-			if (!Objects.equals(
-					AccountEntryValidatorConstants.RESULT_SUCCESS,
-					resultStatus) &&
-				!Objects.equals(
-					AccountEntryValidatorConstants.RESULT_MANUAL,
-					resultStatus)) {
-
-				return false;
-			}
+			accountEntryValidatorResults.put(
+				className,
+				AccountEntryValidatorResult.builder(
+					classPK
+				).resultMessage(
+					(String)valuesMap.get("resultMessage")
+				).resultStatus(
+					(String)valuesMap.get("resultStatus")
+				).build());
 		}
 
-		return true;
+		return accountEntryValidatorResults;
 	}
 
 	@Override
@@ -192,9 +199,6 @@ public class AccountEntryValidatorRegistryImpl
 	protected void deactivate() {
 		_serviceTrackerMap.close();
 	}
-
-	private static final String _ACCOUNT_ENTRY_RESTRICTED_FIELD_NAME =
-		"r_accountToAccountValidatorResults_accountEntryId";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AccountEntryValidatorRegistryImpl.class);
