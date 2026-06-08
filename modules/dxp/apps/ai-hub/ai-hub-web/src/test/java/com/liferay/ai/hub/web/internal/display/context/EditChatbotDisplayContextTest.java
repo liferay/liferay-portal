@@ -7,12 +7,14 @@ package com.liferay.ai.hub.web.internal.display.context;
 
 import com.liferay.ai.hub.util.AccountEntryUtil;
 import com.liferay.ai.hub.web.internal.test.util.DisplayContextTestUtil;
-import com.liferay.object.field.attachment.AttachmentManager;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryServiceUtil;
+import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +42,8 @@ public class EditChatbotDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_setUpPortalUtil();
+
 		HttpServletRequest httpServletRequest =
 			DisplayContextTestUtil.setUpHttpServletRequest();
 
@@ -48,14 +52,20 @@ public class EditChatbotDisplayContextTest {
 			httpServletRequest);
 
 		_editChatbotDisplayContext = new EditChatbotDisplayContext(
-			Mockito.mock(AttachmentManager.class), httpServletRequest,
-			Mockito.mock(Language.class));
+			httpServletRequest, Mockito.mock(Language.class),
+			Mockito.mock(ObjectFieldSettingLocalService.class));
 	}
 
 	@Test
 	public void testGetReactData() throws Exception {
 		_testGetReactData(true, false);
 		_testGetReactData(false, true);
+	}
+
+	private void _setUpPortalUtil() {
+		PortalUtil portalUtil = new PortalUtil();
+
+		portalUtil.setPortal(_portal);
 	}
 
 	private void _testGetReactData(
@@ -89,5 +99,6 @@ public class EditChatbotDisplayContextTest {
 	}
 
 	private EditChatbotDisplayContext _editChatbotDisplayContext;
+	private final Portal _portal = Mockito.mock(Portal.class);
 
 }

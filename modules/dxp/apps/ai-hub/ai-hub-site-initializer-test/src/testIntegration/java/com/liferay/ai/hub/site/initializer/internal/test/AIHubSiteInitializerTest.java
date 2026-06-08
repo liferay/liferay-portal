@@ -203,6 +203,9 @@ public class AIHubSiteInitializerTest {
 			"L_AI_HUB_INSTRUCTION_DEFINITION", "L_AI_HUB_PROHIBITED_PRACTICES");
 		_assertObjectFieldDefaultValue(
 			"L_AI_HUB_GUARDRAIL", "location", "europe-west1");
+		_assertObjectFieldSettingValue(
+			"L_AI_HUB_CHATBOT", "avatar",
+			ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE, "512000");
 		_assertObjectFieldsExist(
 			"L_AI_HUB_AGENT_DEFINITION", "active", "description",
 			"inputVariables", "outputVariable",
@@ -503,6 +506,27 @@ public class AIHubSiteInitializerTest {
 			_objectFieldSettingLocalService.fetchObjectFieldSetting(
 				objectField.getObjectFieldId(),
 				ObjectFieldSettingConstants.NAME_DEFAULT_VALUE);
+
+		Assert.assertEquals(value, objectFieldSetting.getValue());
+	}
+
+	private void _assertObjectFieldSettingValue(
+			String objectDefinitionExternalReferenceCode,
+			String objectFieldName, String objectFieldSettingName, String value)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					objectDefinitionExternalReferenceCode,
+					TestPropsValues.getCompanyId());
+
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			objectDefinition.getObjectDefinitionId(), objectFieldName);
+
+		ObjectFieldSetting objectFieldSetting =
+			_objectFieldSettingLocalService.fetchObjectFieldSetting(
+				objectField.getObjectFieldId(), objectFieldSettingName);
 
 		Assert.assertEquals(value, objectFieldSetting.getValue());
 	}
