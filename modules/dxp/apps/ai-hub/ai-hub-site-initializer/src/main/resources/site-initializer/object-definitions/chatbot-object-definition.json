@@ -45,7 +45,7 @@
 				},
 				{
 					"name": "maximumFileSize",
-					"value": 0
+					"value": 512000
 				},
 				{
 					"name": "fileSource",
