@@ -825,9 +825,6 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		if (FeatureFlagManagerUtil.isEnabled(
 				commerceOrder.getCompanyId(), "LPD-89850")) {
 
-			List<String> errorMessages = new ArrayList<>();
-			boolean hasAccountEntryValidationError = false;
-
 			for (AccountEntryValidatorResult accountEntryValidatorResult :
 					_accountEntryValidatorRegistry.validate(
 						_accountEntryLocalService.fetchAccountEntry(
@@ -847,22 +844,18 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					continue;
 				}
 
-				hasAccountEntryValidationError = true;
-
-				if (Validator.isNotNull(
-						accountEntryValidatorResult.getResultMessage())) {
-
-					errorMessages.add(
-						_language.get(
-							contextAcceptLanguage.getPreferredLocale(),
-							accountEntryValidatorResult.getResultMessage()));
-				}
-			}
-
-			if (hasAccountEntryValidationError) {
 				cart.setValid(() -> false);
-				cart.setErrorMessages(
-					() -> errorMessages.toArray(new String[0]));
+
+				String resultMessage =
+					accountEntryValidatorResult.getResultMessage();
+
+				if (Validator.isNotNull(resultMessage)) {
+					String errorMessage = _language.get(
+						contextAcceptLanguage.getPreferredLocale(),
+						resultMessage);
+
+					cart.setErrorMessages(() -> new String[] {errorMessage});
+				}
 
 				return cart;
 			}
