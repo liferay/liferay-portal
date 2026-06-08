@@ -5,8 +5,10 @@
 
 package com.liferay.commerce.order.web.internal.display.context;
 
+import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
+import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.commerce.configuration.CommerceOrderItemDecimalQuantityConfiguration;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -48,6 +50,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -77,6 +80,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Andrea Di Giorgi
@@ -735,32 +740,88 @@ public class CommerceOrderEditDisplayContext {
 			themeDisplay.getPermissionChecker(), commerceOrder, actionId);
 	}
 
-	public boolean isLastResultSuccess() throws PortalException {
+	public boolean isWarningValidationButton() throws PortalException {
 		if (_commerceOrder == null) {
 			return false;
 		}
 
-		if (_lastResultSuccess != null) {
-			return _lastResultSuccess;
+		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
+
+		if (accountEntry == null) {
+			return false;
 		}
 
-		_lastResultSuccess = _accountEntryValidatorRegistry.isLastResultSuccess(
-			_commerceOrder.getAccountEntry(),
-			JSONUtil.put(
-				"billingAddressId", _commerceOrder.getBillingAddressId()
-			).put(
-				"commerceOrderId", _commerceOrder.getCommerceOrderId()
-			).put(
-				"shippingAddressId", _commerceOrder.getShippingAddressId()
-			));
+		_getAccountEntryValidatorResultsMap(accountEntry);
 
-		return _lastResultSuccess;
+		for (AccountEntryValidatorResult accountEntryValidatorResult :
+				_accountEntryValidatorResultsMap.values()) {
+
+			if ((accountEntryValidatorResult == null) ||
+				(!Objects.equals(
+					AccountEntryValidatorConstants.RESULT_SUCCESS,
+					accountEntryValidatorResult.getResultStatus()) &&
+				 !Objects.equals(
+					 AccountEntryValidatorConstants.RESULT_MANUAL,
+					 accountEntryValidatorResult.getResultStatus()))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public boolean showValidationButton() throws PortalException {
+		if (_commerceOrder == null) {
+			return false;
+		}
+
+		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
+
+		if ((accountEntry == null) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				accountEntry.getCompanyId(), "LPD-89850")) {
+
+			return false;
+		}
+
+		Map<String, AccountEntryValidatorResult>
+			accountEntryValidatorResultsMap =
+				_getAccountEntryValidatorResultsMap(accountEntry);
+
+		return !accountEntryValidatorResultsMap.isEmpty();
+	}
+
+	private Map<String, AccountEntryValidatorResult>
+			_getAccountEntryValidatorResultsMap(AccountEntry accountEntry)
+		throws PortalException {
+
+		if (_accountEntryValidatorResultsMap == null) {
+			_accountEntryValidatorResultsMap =
+				_accountEntryValidatorRegistry.
+					getLastAccountEntryValidatorResultsMap(
+						accountEntry,
+						JSONUtil.put(
+							"billingAddressId",
+							_commerceOrder.getBillingAddressId()
+						).put(
+							"commerceOrderId",
+							_commerceOrder.getCommerceOrderId()
+						).put(
+							"shippingAddressId",
+							_commerceOrder.getShippingAddressId()
+						));
+		}
+
+		return _accountEntryValidatorResultsMap;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceOrderEditDisplayContext.class);
 
 	private final AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
+	private Map<String, AccountEntryValidatorResult>
+		_accountEntryValidatorResultsMap;
 	private final CommerceChannelLocalService _commerceChannelLocalService;
 	private final CommerceNotificationQueueEntryLocalService
 		_commerceNotificationQueueEntryLocalService;
@@ -788,7 +849,6 @@ public class CommerceOrderEditDisplayContext {
 	private final CommerceShipmentService _commerceShipmentService;
 	private final CommerceTermEntryLocalService _commerceTermEntryLocalService;
 	private final CPMeasurementUnitService _cpMeasurementUnitService;
-	private Boolean _lastResultSuccess;
 	private final ModelResourcePermission<CommerceOrder>
 		_modelResourcePermission;
 

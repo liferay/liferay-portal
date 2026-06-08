@@ -6,9 +6,11 @@
 package com.liferay.commerce.order.web.internal.portlet.action;
 
 import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
+import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
+import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
@@ -33,6 +35,8 @@ import jakarta.portlet.RenderResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -86,11 +90,14 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 						continue;
 					}
 
+					Class<? extends AccountEntryValidator>
+						accountEntryValidatorClass =
+							accountEntryValidator.getClass();
+
 					validatorClauses.add(
 						StringBundler.concat(
 							"((className eq '",
-							accountEntryValidator.getClass(
-							).getName(),
+							accountEntryValidatorClass.getName(),
 							"') and (classPK eq '",
 							accountEntryValidator.getKey(
 								accountEntry, jsonObject),
@@ -108,7 +115,7 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 			}
 
 			renderRequest.setAttribute(
-				"accountValidationsAPIURL",
+				"accountValidationsURL",
 				"/o/account/validator-results?filter=" +
 					URLCodec.encodeURL(filterString) +
 						"&sort=dateCreated:desc");
@@ -121,10 +128,35 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 							getAccountEntryValidators()),
 					new AccountEntryValidatorResultSelectionFDSFilter()));
 
+			boolean showValidationForm = false;
+
+			if (accountEntry != null) {
+				Map<String, AccountEntryValidatorResult>
+					accountEntryValidatorResultMap =
+						_accountEntryValidatorRegistry.
+							getLastAccountEntryValidatorResultsMap(
+								accountEntry, jsonObject);
+
+				for (AccountEntryValidatorResult accountEntryValidatorResult :
+						accountEntryValidatorResultMap.values()) {
+
+					if ((accountEntryValidatorResult == null) ||
+						(!Objects.equals(
+							AccountEntryValidatorConstants.RESULT_SUCCESS,
+							accountEntryValidatorResult.getResultStatus()) &&
+						 !Objects.equals(
+							 AccountEntryValidatorConstants.RESULT_MANUAL,
+							 accountEntryValidatorResult.getResultStatus()))) {
+
+						showValidationForm = true;
+
+						break;
+					}
+				}
+			}
+
 			renderRequest.setAttribute(
-				"showManualValidationForm",
-				!_accountEntryValidatorRegistry.isLastResultSuccess(
-					accountEntry, jsonObject));
+				"showValidationForm", showValidationForm);
 		}
 		catch (Exception exception) {
 			if (exception instanceof NoSuchOrderException ||

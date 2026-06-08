@@ -10,6 +10,7 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
+import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -36,6 +37,9 @@ import jakarta.portlet.ActionResponse;
 
 import java.io.Serializable;
 
+import java.util.Map;
+import java.util.Objects;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -60,6 +64,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			ParamUtil.getLong(actionRequest, "commerceOrderId"));
 
+		AccountEntry accountEntry = commerceOrder.getAccountEntry();
 		JSONObject jsonObject = JSONUtil.put(
 			"billingAddressId", commerceOrder.getBillingAddressId()
 		).put(
@@ -68,11 +73,11 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 			"shippingAddressId", commerceOrder.getShippingAddressId()
 		);
 
-		AccountEntry accountEntry = commerceOrder.getAccountEntry();
-
 		if ((accountEntry == null) ||
-			_accountEntryValidatorRegistry.isLastResultSuccess(
-				accountEntry, jsonObject)) {
+			_isLastResultSuccess(
+				_accountEntryValidatorRegistry.
+					getLastAccountEntryValidatorResultsMap(
+						accountEntry, jsonObject))) {
 
 			SessionErrors.add(
 				actionRequest, "accountValidationsAlreadySucceeded");
@@ -92,11 +97,10 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 		String validationMessage = HtmlUtil.escape(
 			ParamUtil.getString(actionRequest, "validationMessage"));
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
 		for (AccountEntryValidator accountEntryValidator :
 				_accountEntryValidatorRegistry.getAccountEntryValidators()) {
@@ -110,6 +114,9 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 				continue;
 			}
 
+			Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+				accountEntryValidator.getClass();
+
 			_objectEntryLocalService.addObjectEntry(
 				0, themeDisplay.getUserId(),
 				objectDefinition.getObjectDefinitionId(),
@@ -117,9 +124,7 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
 				HashMapBuilder.<String, Serializable>put(
-					"className",
-					accountEntryValidator.getClass(
-					).getName()
+					"className", accountEntryValidatorClass.getName()
 				).put(
 					"classPK",
 					accountEntryValidator.getKey(accountEntry, jsonObject)
@@ -139,6 +144,27 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 		if (Validator.isNotNull(redirect)) {
 			sendRedirect(actionRequest, actionResponse, redirect);
 		}
+	}
+
+	private boolean _isLastResultSuccess(
+		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults) {
+
+		for (AccountEntryValidatorResult accountEntryValidatorResult :
+				accountEntryValidatorResults.values()) {
+
+			if ((accountEntryValidatorResult == null) ||
+				(!Objects.equals(
+					AccountEntryValidatorConstants.RESULT_SUCCESS,
+					accountEntryValidatorResult.getResultStatus()) &&
+				 !Objects.equals(
+					 AccountEntryValidatorConstants.RESULT_MANUAL,
+					 accountEntryValidatorResult.getResultStatus()))) {
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Reference

@@ -12,7 +12,7 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 %>
 
 <div class="container-fluid container-fluid-max-xl p-4">
-	<c:if test='<%= GetterUtil.getBoolean(request.getAttribute("showManualValidationForm")) %>'>
+	<c:if test='<%= GetterUtil.getBoolean(request.getAttribute("showValidationForm")) %>'>
 		<portlet:actionURL name="/commerce_order/add_commerce_order_account_validation" var="addAccountValidationActionURL" />
 
 		<portlet:renderURL var="redirectURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
@@ -21,13 +21,13 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 		</portlet:renderURL>
 
 		<commerce-ui:panel
-			title='<%= LanguageUtil.get(request, "manual-validation") %>'
+			title='<%= LanguageUtil.get(request, "validate-account") %>'
 		>
 			<aui:form action="<%= addAccountValidationActionURL %>" method="post" name="fm">
 				<aui:input name="commerceOrderId" type="hidden" value="<%= commerceOrderId %>" />
 				<aui:input name="redirect" type="hidden" value="<%= redirectURL %>" />
 
-				<aui:input label="manual-validation-reason" name="validationMessage" required="<%= true %>" type="textarea" />
+				<aui:input label="additional-notes" name="validationMessage" required="<%= true %>" type="textarea" />
 
 				<div class="d-flex justify-content-end">
 					<aui:button type="submit" />
@@ -40,7 +40,7 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 		title='<%= LanguageUtil.get(request, "history") %>'
 	>
 		<frontend-data-set:headless-display
-			apiURL='<%= (String)request.getAttribute("accountValidationsAPIURL") %>'
+			apiURL='<%= (String)request.getAttribute("accountValidationsURL") %>'
 			fdsFilters='<%= (List<FDSFilter>)request.getAttribute("accountValidationsFDSFilters") %>'
 			id="<%= CommerceOrderFDSNames.ACCOUNT_VALIDATIONS %>"
 			itemsPerPage="<%= 10 %>"
