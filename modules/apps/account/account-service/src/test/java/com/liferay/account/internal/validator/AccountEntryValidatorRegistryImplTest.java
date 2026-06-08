@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -131,9 +132,12 @@ public class AccountEntryValidatorRegistryImplTest {
 	}
 
 	@Test
-	public void testIsLastResultSuccess() throws Exception {
-		Assert.assertFalse(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(null, null));
+	public void testGetLastAccountEntryValidatorResultsMap() throws Exception {
+		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(null, null);
+
+		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
 
 		Mockito.verifyNoInteractions(_objectDefinitionLocalService);
 		Mockito.verifyNoInteractions(_objectEntryLocalService);
@@ -154,30 +158,17 @@ public class AccountEntryValidatorRegistryImplTest {
 			null
 		);
 
-		Assert.assertFalse(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
-				accountEntry, null));
-
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
-
-		Mockito.when(
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_ACCOUNT_VALIDATOR_RESULT", 1L)
-		).thenReturn(
-			objectDefinition
-		);
-
 		Mockito.when(
 			_serviceTrackerMap.values()
 		).thenReturn(
 			Collections.emptyList()
 		);
 
-		Assert.assertTrue(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
-				accountEntry, null));
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
 
 		AccountEntryValidator accountEntryValidator = Mockito.mock(
 			AccountEntryValidator.class);
@@ -187,13 +178,13 @@ public class AccountEntryValidatorRegistryImplTest {
 		Mockito.when(
 			accountEntry.getAccountEntryId()
 		).thenReturn(
-			2L
+			RandomTestUtil.randomLong()
 		);
 
 		Mockito.when(
 			accountEntry.getUserId()
 		).thenReturn(
-			3L
+			RandomTestUtil.randomLong()
 		);
 
 		Mockito.when(
@@ -202,10 +193,12 @@ public class AccountEntryValidatorRegistryImplTest {
 			accountEntryValidatorConfiguration
 		);
 
+		String classPK = RandomTestUtil.randomString();
+
 		Mockito.when(
 			accountEntryValidator.getKey(accountEntry, null)
 		).thenReturn(
-			"classPK"
+			classPK
 		);
 
 		Mockito.when(
@@ -220,12 +213,6 @@ public class AccountEntryValidatorRegistryImplTest {
 			null
 		);
 
-		Mockito.when(
-			objectDefinition.getObjectDefinitionId()
-		).thenReturn(
-			4L
-		);
-
 		List<ServiceWrapper<AccountEntryValidator>> serviceWrappers =
 			Arrays.asList(_getServiceWrapper(accountEntryValidator));
 
@@ -235,6 +222,59 @@ public class AccountEntryValidatorRegistryImplTest {
 			serviceWrappers
 		);
 
+		Class<? extends AccountEntryValidator> accountEntryValidatorClass =
+			accountEntryValidator.getClass();
+
+		String className = accountEntryValidatorClass.getName();
+
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		Assert.assertEquals(
+			accountEntryValidatorResults.toString(), 1,
+			accountEntryValidatorResults.size());
+		Assert.assertTrue(accountEntryValidatorResults.containsKey(className));
+		Assert.assertNull(accountEntryValidatorResults.get(className));
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_ACCOUNT_VALIDATOR_RESULT", 1L)
+		).thenReturn(
+			objectDefinition
+		);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.getValuesList(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.any(), Mockito.any(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		Assert.assertEquals(
+			accountEntryValidatorResults.toString(), 1,
+			accountEntryValidatorResults.size());
+		Assert.assertTrue(accountEntryValidatorResults.containsKey(className));
+		Assert.assertNull(accountEntryValidatorResults.get(className));
+
+		String resultMessage = RandomTestUtil.randomString();
+
 		Mockito.when(
 			_objectEntryLocalService.getValuesList(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
@@ -243,14 +283,26 @@ public class AccountEntryValidatorRegistryImplTest {
 		).thenReturn(
 			Collections.singletonList(
 				HashMapBuilder.<String, Serializable>put(
+					"resultMessage", resultMessage
+				).put(
 					"resultStatus",
 					AccountEntryValidatorConstants.RESULT_SUCCESS
 				).build())
 		);
 
-		Assert.assertTrue(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
-				accountEntry, null));
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		AccountEntryValidatorResult accountEntryValidatorResult =
+			accountEntryValidatorResults.get(className);
+
+		Assert.assertEquals(classPK, accountEntryValidatorResult.getKey());
+		Assert.assertEquals(
+			resultMessage, accountEntryValidatorResult.getResultMessage());
+		Assert.assertEquals(
+			AccountEntryValidatorConstants.RESULT_SUCCESS,
+			accountEntryValidatorResult.getResultStatus());
 
 		Mockito.when(
 			_objectEntryLocalService.getValuesList(
@@ -265,22 +317,16 @@ public class AccountEntryValidatorRegistryImplTest {
 				).build())
 		);
 
-		Assert.assertFalse(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
-				accountEntry, null));
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		Mockito.when(
-			_objectEntryLocalService.getValuesList(
-				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
-				Mockito.anyLong(), Mockito.any(), Mockito.any(),
-				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
-		).thenReturn(
-			Collections.emptyList()
-		);
+		accountEntryValidatorResult = accountEntryValidatorResults.get(
+			className);
 
-		Assert.assertFalse(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
-				accountEntry, null));
+		Assert.assertEquals(
+			AccountEntryValidatorConstants.RESULT_FAILURE,
+			accountEntryValidatorResult.getResultStatus());
 
 		Mockito.when(
 			accountEntryValidatorConfiguration.enabled()
@@ -288,9 +334,11 @@ public class AccountEntryValidatorRegistryImplTest {
 			false
 		);
 
-		Assert.assertTrue(
-			_accountEntryValidatorRegistryImpl.isLastResultSuccess(
-				accountEntry, null));
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
 	}
 
 	@Test
