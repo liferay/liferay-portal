@@ -15,6 +15,7 @@ import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.discount.exception.CommerceDiscountLimitationTimesException;
 import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.exception.CommerceOrderBillingAddressException;
@@ -134,11 +135,10 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				throwable instanceof CommerceOrderShippingMethodException ||
 				throwable instanceof NoSuchDiscountException) {
 
+				Class<?> throwableClass = throwable.getClass();
+
 				SessionErrors.add(
-					actionRequest,
-					throwable.getClass(
-					).getName(),
-					throwable);
+					actionRequest, throwableClass.getName(), throwable);
 
 				return;
 			}
@@ -306,7 +306,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 
 		List<AccountEntryValidatorResult> accountEntryValidatorResults =
 			(List<AccountEntryValidatorResult>)httpServletRequest.getAttribute(
-				_ACCOUNT_ENTRY_VALIDATOR_RESULTS);
+				CommerceWebKeys.COMMERCE_ACCOUNT_VALIDATION_RESULTS);
 
 		if (accountEntryValidatorResults != null) {
 			return accountEntryValidatorResults;
@@ -324,7 +324,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 			));
 
 		httpServletRequest.setAttribute(
-			_ACCOUNT_ENTRY_VALIDATOR_RESULTS, accountEntryValidatorResults);
+			CommerceWebKeys.COMMERCE_ACCOUNT_VALIDATION_RESULTS,
+			accountEntryValidatorResults);
 
 		return accountEntryValidatorResults;
 	}
@@ -441,9 +442,6 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 			}
 		}
 	}
-
-	private static final String _ACCOUNT_ENTRY_VALIDATOR_RESULTS =
-		"accountEntryValidatorResults";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OrderSummaryCommerceCheckoutStep.class);

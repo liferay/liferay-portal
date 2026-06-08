@@ -51,19 +51,7 @@ if (priceDisplayType.equals(CommercePricingConstants.TAX_INCLUDED_IN_PRICE)) {
 	<liferay-ui:error exception="<%= NoSuchDiscountException.class %>" message="the-inserted-coupon-is-no-longer-valid" />
 
 	<%
-	List<AccountEntryValidatorResult> accountEntryValidatorResults = (List<AccountEntryValidatorResult>)request.getAttribute("accountEntryValidatorResults");
-
-	AccountEntryValidatorResult accountEntryValidatorResult = null;
-
-	if (accountEntryValidatorResults != null) {
-		for (AccountEntryValidatorResult curAccountEntryValidatorResult : accountEntryValidatorResults) {
-			if (!curAccountEntryValidatorResult.isValid()) {
-				accountEntryValidatorResult = curAccountEntryValidatorResult;
-
-				break;
-			}
-		}
-	}
+	AccountEntryValidatorResult accountEntryValidatorResult = orderSummaryCheckoutStepDisplayContext.getAccountEntryValidatorResult();
 	%>
 
 	<c:if test="<%= accountEntryValidatorResult != null %>">

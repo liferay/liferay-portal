@@ -11,6 +11,9 @@ package com.liferay.commerce.constants;
  */
 public class CommerceWebKeys {
 
+	public static final String COMMERCE_ACCOUNT_VALIDATION_RESULTS =
+		"COMMERCE_ACCOUNT_VALIDATION_RESULTS";
+
 	public static final String COMMERCE_ADDRESS = "COMMERCE_ADDRESS";
 
 	public static final String COMMERCE_CONTEXT = "COMMERCE_CONTEXT";
