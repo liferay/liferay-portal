@@ -5,6 +5,8 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
+import org.osgi.service.component.annotations.Reference;
+
 /**
  * @author Mateus Xavier
  */
@@ -16,6 +18,8 @@ public class LPD_61133 {
 		CPCompareHelperUtil.getCPDefinitionIds(
 			groupId, commerceAccountId, httpSession);
 		CPCompareHelperUtil.getCPDefinitionIds(null, null, null);
+		_cpCompareHelper.getCPDefinitionIds(
+			groupId, commerceAccountId, httpSession);
 	}
 
 	public void method(
@@ -30,5 +34,8 @@ public class LPD_61133 {
 			groupId, commerceAccountId, cpDefinitionId, httpSession);
 		CPCompareHelperUtil.removeCompareProduct(null, null, null, null);
 	}
+
+	@Reference
+	private CPCompareHelper _cpCompareHelper;
 
 }
