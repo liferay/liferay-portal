@@ -5537,6 +5537,7 @@
 	},
 	{
 		"classNames": [
+			"CPCompareHelper",
 			"CPCompareHelperUtil"
 		],
 		"from": "getCPDefinitionIds(long paramName, long paramName, HttpSession paramName)",
