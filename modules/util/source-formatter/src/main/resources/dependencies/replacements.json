@@ -5912,6 +5912,17 @@
 		"issueKey": "LPD-82354"
 	},
 	{
+		"classNames": [
+			"PhoneLocalService",
+			"PhoneLocalServiceUtil",
+			"PhoneService",
+			"PhoneServiceUtil"
+		],
+		"from": "updatePhone(long paramName, String paramName, String paramName, long paramName, boolean paramName)",
+		"issueKey": "LPD-85864",
+		"to": "updatePhone(null, param#0#, param#1#, param#2#, param#3#, param#4#)"
+	},
+	{
 		"from": "CustomFieldsUtil.hasVisibleCustomFields",
 		"issueKey": "LPD-85980",
 		"newImports": [
