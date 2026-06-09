@@ -30,8 +30,14 @@ async function disassociateChatbotFromAgentDefinition(
 	);
 }
 
-async function getChatbots() {
-	const response = await fetch(CHATBOT_BASE_URI, {
+async function getChatbots(params?: Record<string, string>) {
+	const queryString = params ? new URLSearchParams(params).toString() : '';
+
+	const url = queryString
+		? `${CHATBOT_BASE_URI}?${queryString}`
+		: CHATBOT_BASE_URI;
+
+	const response = await fetch(url, {
 		headers: HEADERS,
 		method: 'GET',
 	});
