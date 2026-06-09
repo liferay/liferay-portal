@@ -100,6 +100,25 @@ public class EditConfigurationDisplayContextTest {
 				"1-ai-hub-configuration",
 				reactData.get("externalReferenceCode"));
 		}
+
+		try (MockedStatic<AccountEntryUtil> accountEntryUtilMockedStatic =
+				Mockito.mockStatic(AccountEntryUtil.class)) {
+
+			accountEntryUtilMockedStatic.when(
+				() -> AccountEntryUtil.getUserAccountEntry(Mockito.anyLong())
+			).thenReturn(
+				null
+			);
+
+			Map<String, Object> reactData =
+				_editConfigurationDisplayContext.getReactData();
+
+			Assert.assertNull(reactData.get("accountEntryId"));
+			Assert.assertEquals(
+				"http://localhost:8080/web/test", reactData.get("backURL"));
+			Assert.assertNull(reactData.get("clientId"));
+			Assert.assertNull(reactData.get("externalReferenceCode"));
+		}
 	}
 
 	private EditConfigurationDisplayContext _editConfigurationDisplayContext;

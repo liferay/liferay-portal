@@ -51,6 +51,10 @@ public class EditConfigurationDisplayContext {
 		).put(
 			"clientId",
 			() -> {
+				if (accountEntry == null) {
+					return null;
+				}
+
 				OAuth2Application oAuth2Application =
 					_oAuth2ApplicationLocalService.
 						fetchOAuth2ApplicationByExternalReferenceCode(
