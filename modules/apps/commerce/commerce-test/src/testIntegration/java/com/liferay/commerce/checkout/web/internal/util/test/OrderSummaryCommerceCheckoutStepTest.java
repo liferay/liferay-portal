@@ -13,7 +13,9 @@ import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceAccountEntryValidationConstants;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
@@ -28,6 +30,10 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.ModifiableSettings;
+import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -132,7 +138,17 @@ public class OrderSummaryCommerceCheckoutStepTest {
 					"account.entry.validator.key", key
 				).build());
 
-		Assert.assertFalse(
+		_setAccountEntryValidationMode(
+			CommerceAccountEntryValidationConstants.VALIDATION_MODE_DISABLED);
+
+		Assert.assertTrue(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
+		Assert.assertNull(testAccountEntryValidator.getJSONObject());
+		_setAccountEntryValidationMode(
+			CommerceAccountEntryValidationConstants.
+				VALIDATION_MODE_ALLOW_ALL_RESULTS);
+		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
 
@@ -153,25 +169,12 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			_commerceOrder);
 
-		testAccountEntryValidator.setResultStatus(
-			AccountEntryValidatorConstants.RESULT_MANUAL);
-
-		Assert.assertTrue(
+		_setAccountEntryValidationMode(
+			CommerceAccountEntryValidationConstants.
+				VALIDATION_MODE_ALLOW_TECHNICAL_FAILURES);
+		Assert.assertFalse(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
-
-		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
-
-		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			_commerceOrder);
-
-		testAccountEntryValidator.setResultStatus(
-			AccountEntryValidatorConstants.RESULT_SUCCESS);
-
-		Assert.assertTrue(
-			_commerceCheckoutStep.showControls(
-				_getMockHttpServletRequest(), null));
-
 		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
@@ -179,7 +182,37 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 		testAccountEntryValidator.setResultStatus(
 			AccountEntryValidatorConstants.RESULT_WARNING);
+		Assert.assertTrue(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
+		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
 
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		_setAccountEntryValidationMode(
+			CommerceAccountEntryValidationConstants.
+				VALIDATION_MODE_ALLOW_SUCCESSES_ONLY);
+		Assert.assertFalse(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
+		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_MANUAL);
+		Assert.assertTrue(
+			_commerceCheckoutStep.showControls(
+				_getMockHttpServletRequest(), null));
+		_commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		testAccountEntryValidator.setResultStatus(
+			AccountEntryValidatorConstants.RESULT_SUCCESS);
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
@@ -251,7 +284,8 @@ public class OrderSummaryCommerceCheckoutStepTest {
 
 	}
 
-	private HttpServletRequest _getMockHttpServletRequest() throws Exception {
+	private HttpServletRequest _getMockHttpServletRequest() {
+
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
 		httpServletRequest.setAttribute(
@@ -268,6 +302,23 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		return httpServletRequest;
+	}
+
+	private void _setAccountEntryValidationMode(String validationMode)
+		throws Exception {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new GroupServiceSettingsLocator(
+				_commerceOrder.getGroupId(),
+				CommerceConstants.
+					SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		modifiableSettings.setValue("validationMode", validationMode);
+
+		modifiableSettings.store();
 	}
 
 	private ServiceRegistration<AccountEntryValidator>
