@@ -720,3 +720,47 @@ export function ProductCard() {
 		</div>
 	);
 }
+export function CardSizes() {
+	const sizes = ['m', 's', 'xs'] as const;
+
+	const states: Array<{
+		active?: boolean;
+		className?: string;
+		disabled?: boolean;
+		label: string;
+	}> = [
+		{label: 'Default'},
+		{className: 'hover', label: 'Hover'},
+		{active: true, label: 'Selected'},
+		{disabled: true, label: 'Disabled'},
+	];
+
+	return (
+		<>
+			{sizes.map((size) => (
+				<div className="row" key={size}>
+					{states.map((state) => (
+						<div className="col-md-3" key={state.label}>
+							<ClayCard
+								active={state.active}
+								className={state.className}
+								disabled={state.disabled}
+								size={size}
+							>
+								<ClayCard.Body>
+									<ClayCard.Description displayType="title">
+										{`Card ${size.toUpperCase()}`}
+									</ClayCard.Description>
+
+									<ClayCard.Description displayType="subtitle">
+										{state.label}
+									</ClayCard.Description>
+								</ClayCard.Body>
+							</ClayCard>
+						</div>
+					))}
+				</div>
+			))}
+		</>
+	);
+}

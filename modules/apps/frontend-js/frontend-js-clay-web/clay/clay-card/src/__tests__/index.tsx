@@ -1214,3 +1214,41 @@ describe('ClayCardWithInfo', () => {
 		expect(container).toMatchSnapshot();
 	});
 });
+
+describe('ClayCard sizes', () => {
+	afterEach(cleanup);
+
+	it('renders the small size variant', () => {
+		const {container} = render(<ClayCard size="s" />);
+
+		const card = container.querySelector('.card') as HTMLElement;
+
+		expect(card.classList.contains('card-sm')).toBe(true);
+	});
+
+	it('renders the extra small size variant', () => {
+		const {container} = render(<ClayCard size="xs" />);
+
+		const card = container.querySelector('.card') as HTMLElement;
+
+		expect(card.classList.contains('card-xs')).toBe(true);
+	});
+
+	it('renders the medium size variant', () => {
+		const {container} = render(<ClayCard size="m" />);
+
+		const card = container.querySelector('.card') as HTMLElement;
+
+		expect(card.classList.contains('card-md')).toBe(true);
+	});
+
+	it('does not add a size modifier when no size is set', () => {
+		const {container} = render(<ClayCard />);
+
+		const card = container.querySelector('.card') as HTMLElement;
+
+		expect(card.classList.contains('card-md')).toBe(false);
+		expect(card.classList.contains('card-sm')).toBe(false);
+		expect(card.classList.contains('card-xs')).toBe(false);
+	});
+});

@@ -37,6 +37,11 @@ interface ICardProps extends IContext {
 	 * Flag that indicates if the card can be selectable.
 	 */
 	selectable?: boolean;
+
+	/**
+	 * Sets the size variant of the card (`m`, `s` or `xs`).
+	 */
+	size?: 'xs' | 's' | 'm';
 }
 
 interface IProps
@@ -52,6 +57,7 @@ function CardBase({
 	disabled = false,
 	displayType,
 	selectable = false,
+	size,
 	...otherProps
 }: IProps) {
 	const isCardType = {
@@ -68,6 +74,9 @@ function CardBase({
 					{
 						active,
 						'card': !selectable,
+						'card-md': size === 'm',
+						'card-sm': size === 's',
+						'card-xs': size === 'xs',
 						disabled,
 						'file-card': isCardType.file,
 						'form-check-card form-check form-check-top-left':
