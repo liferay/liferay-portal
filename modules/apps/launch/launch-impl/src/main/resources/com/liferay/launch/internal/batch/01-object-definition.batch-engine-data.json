@@ -12,6 +12,99 @@
 	},
 	"items": [
 		{
+			"className": "com.liferay.object.model.ObjectDefinition#L1E1",
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": true,
+			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "L_LAUNCH_ENTRY",
+			"label": {
+				"en_US": "Launch Entry"
+			},
+			"modifiable": true,
+			"name": "LaunchEntry",
+			"objectDefinitionSettings": [
+				{
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLASS_NAME",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Class Name"
+					},
+					"name": "className",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"defaultValue": "0",
+					"externalReferenceCode": "CLASS_PK",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Class PK"
+					},
+					"name": "classPK",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLASS_VERSION",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Class Version"
+					},
+					"name": "classVersion",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Launch Entries"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "className"
+		},
+		{
 			"className": "com.liferay.object.model.ObjectDefinition#L1S1",
 			"enableCategorization": false,
 			"enableComments": false,
@@ -131,99 +224,6 @@
 			},
 			"system": true,
 			"titleObjectFieldName": "name"
-		},
-		{
-			"className": "com.liferay.object.model.ObjectDefinition#L1E1",
-			"enableCategorization": false,
-			"enableComments": false,
-			"enableFriendlyURLCustomization": false,
-			"enableIndexSearch": true,
-			"enableLocalization": false,
-			"enableObjectEntryDraft": true,
-			"enableObjectEntryHistory": true,
-			"enableObjectEntrySchedule": false,
-			"enableObjectEntryVersioning": false,
-			"externalReferenceCode": "L_LAUNCH_ENTRY",
-			"label": {
-				"en_US": "Launch Entry"
-			},
-			"modifiable": true,
-			"name": "LaunchEntry",
-			"objectDefinitionSettings": [
-				{
-					"name": "visible",
-					"value": "true"
-				}
-			],
-			"objectFields": [
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "CLASS_NAME",
-					"indexed": true,
-					"indexedAsKeyword": true,
-					"label": {
-						"en_US": "Class Name"
-					},
-					"name": "className",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": true,
-					"state": false,
-					"system": true,
-					"type": "String",
-					"unique": false
-				},
-				{
-					"DBType": "Long",
-					"businessType": "LongInteger",
-					"defaultValue": "0",
-					"externalReferenceCode": "CLASS_PK",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Class PK"
-					},
-					"name": "classPK",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": true,
-					"state": false,
-					"system": true,
-					"type": "Long",
-					"unique": false
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "CLASS_VERSION",
-					"indexed": true,
-					"indexedAsKeyword": true,
-					"label": {
-						"en_US": "Class Version"
-					},
-					"name": "classVersion",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": true,
-					"state": false,
-					"system": true,
-					"type": "String",
-					"unique": false
-				}
-			],
-			"panelCategoryKey": "",
-			"parameterRequired": false,
-			"pluralLabel": {
-				"en_US": "Launch Entries"
-			},
-			"portlet": false,
-			"scope": "company",
-			"status": {
-				"code": 0
-			},
-			"system": true,
-			"titleObjectFieldName": "className"
 		}
 	]
 }
