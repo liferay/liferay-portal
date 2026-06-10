@@ -204,7 +204,7 @@ public class AccountEntryValidatorRegistryImplTest {
 		Mockito.when(
 			accountEntryValidatorConfiguration.enabled()
 		).thenReturn(
-			true
+			false
 		);
 
 		Mockito.when(
@@ -231,11 +231,7 @@ public class AccountEntryValidatorRegistryImplTest {
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		Assert.assertEquals(
-			accountEntryValidatorResults.toString(), 1,
-			accountEntryValidatorResults.size());
-		Assert.assertTrue(accountEntryValidatorResults.containsKey(className));
-		Assert.assertNull(accountEntryValidatorResults.get(className));
+		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
 
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
@@ -267,6 +263,24 @@ public class AccountEntryValidatorRegistryImplTest {
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
+		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
+
+		Mockito.verify(
+			accountEntryValidator, Mockito.times(0)
+		).getKey(
+			Mockito.any(), Mockito.any()
+		);
+
+		Mockito.when(
+			accountEntryValidatorConfiguration.enabled()
+		).thenReturn(
+			true
+		);
+
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
 		Assert.assertEquals(
 			accountEntryValidatorResults.toString(), 1,
 			accountEntryValidatorResults.size());
@@ -274,6 +288,30 @@ public class AccountEntryValidatorRegistryImplTest {
 		Assert.assertNull(accountEntryValidatorResults.get(className));
 
 		String resultMessage = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_objectEntryLocalService.getValuesList(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.any(), Mockito.any(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
+		).thenReturn(
+			Collections.singletonList(
+				HashMapBuilder.<String, Serializable>put(
+					"resultStatus",
+					AccountEntryValidatorConstants.RESULT_FAILURE
+				).build())
+		);
+
+		accountEntryValidatorResults =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		AccountEntryValidatorResult accountEntryValidatorResult =
+			accountEntryValidatorResults.get(className);
+
+		Assert.assertEquals(
+			AccountEntryValidatorConstants.RESULT_FAILURE,
+			accountEntryValidatorResult.getResultStatus());
 
 		Mockito.when(
 			_objectEntryLocalService.getValuesList(
@@ -294,8 +332,8 @@ public class AccountEntryValidatorRegistryImplTest {
 			_accountEntryValidatorRegistryImpl.
 				getLastAccountEntryValidatorResultsMap(accountEntry, null);
 
-		AccountEntryValidatorResult accountEntryValidatorResult =
-			accountEntryValidatorResults.get(className);
+		accountEntryValidatorResult = accountEntryValidatorResults.get(
+			className);
 
 		Assert.assertEquals(classPK, accountEntryValidatorResult.getKey());
 		Assert.assertEquals(
@@ -303,42 +341,6 @@ public class AccountEntryValidatorRegistryImplTest {
 		Assert.assertEquals(
 			AccountEntryValidatorConstants.RESULT_SUCCESS,
 			accountEntryValidatorResult.getResultStatus());
-
-		Mockito.when(
-			_objectEntryLocalService.getValuesList(
-				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
-				Mockito.anyLong(), Mockito.any(), Mockito.any(),
-				Mockito.anyInt(), Mockito.anyInt(), Mockito.any(Sort[].class))
-		).thenReturn(
-			Collections.singletonList(
-				HashMapBuilder.<String, Serializable>put(
-					"resultStatus",
-					AccountEntryValidatorConstants.RESULT_FAILURE
-				).build())
-		);
-
-		accountEntryValidatorResults =
-			_accountEntryValidatorRegistryImpl.
-				getLastAccountEntryValidatorResultsMap(accountEntry, null);
-
-		accountEntryValidatorResult = accountEntryValidatorResults.get(
-			className);
-
-		Assert.assertEquals(
-			AccountEntryValidatorConstants.RESULT_FAILURE,
-			accountEntryValidatorResult.getResultStatus());
-
-		Mockito.when(
-			accountEntryValidatorConfiguration.enabled()
-		).thenReturn(
-			false
-		);
-
-		accountEntryValidatorResults =
-			_accountEntryValidatorRegistryImpl.
-				getLastAccountEntryValidatorResultsMap(accountEntry, null);
-
-		Assert.assertTrue(accountEntryValidatorResults.isEmpty());
 	}
 
 	@Test
