@@ -39,6 +39,16 @@
 	}
 }
 
+// Card Sizes
+
+@each $size, $value in $card-sizes {
+	@if not clay-is-map-unset($value) {
+		.#{$size} {
+			@include clay-card-variant($value);
+		}
+	}
+}
+
 .card-body {
 	@include clay-css($card-body);
 }

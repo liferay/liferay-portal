@@ -22,6 +22,7 @@ $card-inner-border-radius: calc(
 $card: () !default;
 $card: map-deep-merge(
 	(
+		background-color: $light-l1,
 		border-radius: clay-enable-rounded($card-border-radius),
 		border-width: $card-border-width,
 		outline-color: transparent,
@@ -30,7 +31,20 @@ $card: map-deep-merge(
 		transition: $card-transition,
 
 		hover: (
+			border-color: $primary-l1,
 			box-shadow: clay-enable-shadows($card-hover-box-shadow),
+			outline-color: $primary-l1,
+		),
+
+		active: (
+			border-color: $primary,
+			outline-color: $primary,
+		),
+
+		disabled: (
+			cursor: $disabled-cursor,
+			opacity: $component-disabled-opacity,
+			pointer-events: none,
 		),
 	),
 	$card

@@ -212,6 +212,32 @@ $card: map-deep-merge(
 	$card
 );
 
+// Card Sizes
+//
+// Minimum dimensions for the Cards Component Revamp (LPD-79834). The
+// interaction-state treatment lives on the base `$card` variant.
+
+$card-sizes: () !default;
+$card-sizes: map-deep-merge(
+	(
+		card-md: (
+			min-height: 227px,
+			min-width: 296px,
+		),
+
+		card-sm: (
+			min-height: 150px,
+			min-width: 190px,
+		),
+
+		card-xs: (
+			min-height: 56px,
+			min-width: 288px,
+		),
+	),
+	$card-sizes
+);
+
 // .card-title
 
 $card-title: () !default;
