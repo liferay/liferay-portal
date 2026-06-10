@@ -75,7 +75,6 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.math.BigDecimal;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -113,7 +112,12 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		throws Exception {
 
 		try {
-			_validateAccountEntry(_portal.getHttpServletRequest(actionRequest));
+			if (FeatureFlagManagerUtil.isEnabled(
+					_portal.getCompanyId(actionRequest), "LPD-89850")) {
+
+				_validateAccountEntry(
+					_portal.getHttpServletRequest(actionRequest));
+			}
 
 			_validateCommerceOrder(actionRequest);
 
@@ -135,10 +139,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				throwable instanceof CommerceOrderShippingMethodException ||
 				throwable instanceof NoSuchDiscountException) {
 
-				Class<?> throwableClass = throwable.getClass();
-
-				SessionErrors.add(
-					actionRequest, throwableClass.getName(), throwable);
+				SessionErrors.add(actionRequest, throwable.getClass());
 
 				return;
 			}
@@ -203,7 +204,12 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_DISPLAY_CONTEXT,
 				orderSummaryCheckoutStepDisplayContext);
 
-			_getAccountEntryValidatorResults(httpServletRequest, commerceOrder);
+			if (FeatureFlagManagerUtil.isEnabled(
+					_portal.getCompanyId(httpServletRequest), "LPD-89850")) {
+
+				_getAccountEntryValidatorResults(
+					commerceOrder, httpServletRequest);
+			}
 
 			_jspRenderer.renderJSP(
 				httpServletRequest, httpServletResponse,
@@ -225,15 +231,19 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 
 		try {
-			List<AccountEntryValidatorResult> accountEntryValidatorResults =
-				_getAccountEntryValidatorResults(
-					httpServletRequest, commerceOrder);
+			if (FeatureFlagManagerUtil.isEnabled(
+					_portal.getCompanyId(httpServletRequest), "LPD-89850")) {
 
-			for (AccountEntryValidatorResult accountEntryValidatorResult :
-					accountEntryValidatorResults) {
+				List<AccountEntryValidatorResult> accountEntryValidatorResults =
+					_getAccountEntryValidatorResults(
+						commerceOrder, httpServletRequest);
 
-				if (!accountEntryValidatorResult.isValid()) {
-					return false;
+				for (AccountEntryValidatorResult accountEntryValidatorResult :
+						accountEntryValidatorResults) {
+
+					if (!accountEntryValidatorResult.isValid()) {
+						return false;
+					}
 				}
 			}
 
@@ -295,14 +305,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 	}
 
 	private List<AccountEntryValidatorResult> _getAccountEntryValidatorResults(
-			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder)
+			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				commerceOrder.getCompanyId(), "LPD-89850")) {
-
-			return Collections.emptyList();
-		}
 
 		List<AccountEntryValidatorResult> accountEntryValidatorResults =
 			(List<AccountEntryValidatorResult>)httpServletRequest.getAttribute(
@@ -357,7 +361,7 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				CommerceCheckoutWebKeys.COMMERCE_ORDER);
 
 		List<AccountEntryValidatorResult> accountEntryValidatorResults =
-			_getAccountEntryValidatorResults(httpServletRequest, commerceOrder);
+			_getAccountEntryValidatorResults(commerceOrder, httpServletRequest);
 
 		for (AccountEntryValidatorResult accountEntryValidatorResult :
 				accountEntryValidatorResults) {
