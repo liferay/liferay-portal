@@ -89,13 +89,17 @@ public class AccountEntryValidatorRegistryImpl
 			return Collections.emptyMap();
 		}
 
-		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults =
-			new LinkedHashMap<>();
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_ACCOUNT_VALIDATOR_RESULT", accountEntry.getCompanyId());
+
+		if (objectDefinition == null) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, AccountEntryValidatorResult> accountEntryValidatorResults =
+			new LinkedHashMap<>();
 
 		for (AccountEntryValidator accountEntryValidator :
 				getAccountEntryValidators()) {
@@ -114,12 +118,6 @@ public class AccountEntryValidatorRegistryImpl
 
 			String className = accountEntryValidatorClass.getName();
 
-			if (objectDefinition == null) {
-				accountEntryValidatorResults.put(className, null);
-
-				continue;
-			}
-
 			String classPK = accountEntryValidator.getKey(
 				accountEntry, jsonObject);
 
@@ -128,7 +126,7 @@ public class AccountEntryValidatorRegistryImpl
 				"') and (r_accountToAccountValidatorResults_accountEntryId eq ",
 				"'", accountEntry.getAccountEntryId(), "')");
 
-			List<Map<String, Serializable>> valuesList =
+			List<Map<String, Serializable>> values =
 				_objectEntryLocalService.getValuesList(
 					0, accountEntry.getCompanyId(), accountEntry.getUserId(),
 					objectDefinition.getObjectDefinitionId(),
@@ -138,13 +136,13 @@ public class AccountEntryValidatorRegistryImpl
 						new Sort(Field.CREATE_DATE, Sort.LONG_TYPE, true)
 					});
 
-			if (valuesList.isEmpty()) {
+			if (values.isEmpty()) {
 				accountEntryValidatorResults.put(className, null);
 
 				continue;
 			}
 
-			Map<String, Serializable> valuesMap = valuesList.get(0);
+			Map<String, Serializable> valuesMap = values.get(0);
 
 			accountEntryValidatorResults.put(
 				className,
