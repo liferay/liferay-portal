@@ -28,25 +28,25 @@ public class FIPSProviderValidatorTest {
 			"FIPS provider integrity failed:",
 			() -> ReflectionTestUtil.invoke(
 				FIPSProviderValidator.class, "_validateFIPSProvider",
-				new Class<?>[] {Provider.class}, _createProvider("BCFIPS")));
-	}
-
-	@Test
-	public void testValidateProviders() {
-		_assertSecurityException(
-			"There are no providers registered",
-			() -> ReflectionTestUtil.invoke(
-				FIPSProviderValidator.class, "_validateProviders",
-				new Class<?>[] {Provider[].class}, (Object)new Provider[0]));
+				new Class<?>[] {Provider[].class},
+				(Object)new Provider[] {_createProvider("BCFIPS")}));
 		_assertSecurityException(
 			"The first provider must be an allowed FIPS provider",
 			() -> ReflectionTestUtil.invoke(
-				FIPSProviderValidator.class, "_validateProviders",
+				FIPSProviderValidator.class, "_validateFIPSProvider",
 				new Class<?>[] {Provider[].class},
 				(Object)new Provider[] {
 					_createProvider(RandomTestUtil.randomString())
 				}));
+		_assertSecurityException(
+			"There are no providers registered",
+			() -> ReflectionTestUtil.invoke(
+				FIPSProviderValidator.class, "_validateFIPSProvider",
+				new Class<?>[] {Provider[].class}, (Object)new Provider[0]));
+	}
 
+	@Test
+	public void testValidateProviders() {
 		Map<String, List<String>> allowedProviders =
 			ReflectionTestUtil.getFieldValue(
 				FIPSProviderValidator.class, "_allowedProviders");

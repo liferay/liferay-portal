@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import java.security.Provider;
@@ -31,23 +30,72 @@ public class FIPSProviderValidator {
 	public static void validate() {
 		Provider[] providers = Security.getProviders();
 
+		_validateFIPSProvider(providers);
 		_validateProviders(providers);
-
-		_validateFIPSProvider(providers[0]);
 
 		if (_log.isInfoEnabled()) {
 			_log.info("FIPS provider validation finished successfully");
 		}
 	}
 
-	private static void _validateFIPSProvider(Provider provider) {
+	private static void _validateFIPSProvider(Provider[] providers) {
+		if (ArrayUtil.isEmpty(providers)) {
+			throw new SecurityException("There are no providers registered");
+		}
+
+		Provider provider = providers[0];
+
 		String name = provider.getName();
 
+		if (!_allowedProviders.containsKey(name)) {
+			throw new SecurityException(
+				"The first provider must be an allowed FIPS provider");
+		}
+
 		try {
-			if (Objects.equals(name, "BCFIPS")) {
+			if (Objects.equals(name, "AmazonCorrettoCryptoProvider")) {
+				Class<?> providerClass = provider.getClass();
+
+				Method assertHealthyMethod = ReflectionUtil.getDeclaredMethod(
+					providerClass, "assertHealthy");
+
+				assertHealthyMethod.invoke(provider);
+
+				Method isExperimentalFipsMethod =
+					ReflectionUtil.getDeclaredMethod(
+						providerClass, "isExperimentalFIPS");
+				Method isFipsMethod = ReflectionUtil.getDeclaredMethod(
+					providerClass, "isFIPS");
+
+				if (!GetterUtil.getBoolean(
+						isExperimentalFipsMethod.invoke(provider)) &&
+					GetterUtil.getBoolean(isFipsMethod.invoke(provider))) {
+
+					return;
+				}
+
+				throw new SecurityException(
+					"AmazonCorrettoCryptoProvider must be a nonexperimental " +
+						"FIPS build");
+			}
+			else if (Objects.equals(name, "BCFIPS")) {
 				Class<?> providerClass = provider.getClass();
 
 				ClassLoader classLoader = providerClass.getClassLoader();
+
+				Method isInApprovedOnlyModeMethod =
+					ReflectionUtil.getDeclaredMethod(
+						Class.forName(
+							"org.bouncycastle.crypto.CryptoServicesRegistrar",
+							true, classLoader),
+						"isInApprovedOnlyMode");
+
+				if (!GetterUtil.getBoolean(
+						isInApprovedOnlyModeMethod.invoke(null))) {
+
+					throw new SecurityException(
+						"BCFIPS is not in approved only mode");
+				}
 
 				Class<?> fipsStatusClass = Class.forName(
 					"org.bouncycastle.crypto.fips.FipsStatus", true,
@@ -64,82 +112,6 @@ public class FIPSProviderValidator {
 					throw new SecurityException(
 						"BCFIPS integrity self test failed: " +
 							getStatusMessageMethod.invoke(null));
-				}
-
-				Class<?> cryptoServicesRegistrarClass = Class.forName(
-					"org.bouncycastle.crypto.CryptoServicesRegistrar", true,
-					classLoader);
-
-				Method isInApprovedOnlyModeMethod =
-					ReflectionUtil.getDeclaredMethod(
-						cryptoServicesRegistrarClass, "isInApprovedOnlyMode");
-
-				if (!GetterUtil.getBoolean(
-						isInApprovedOnlyModeMethod.invoke(null))) {
-
-					throw new SecurityException(
-						"BCFIPS is not in approved only mode");
-				}
-			}
-			else if (Objects.equals(name, "AmazonCorrettoCryptoProvider")) {
-				Class<?> providerClass = provider.getClass();
-
-				Field instanceField = ReflectionUtil.getDeclaredField(
-					providerClass, "INSTANCE");
-
-				Object instance = instanceField.get(null);
-
-				if (instance == null) {
-					throw new SecurityException(
-						"AmazonCorrettoCryptoProvider INSTANCE is null");
-				}
-
-				Method getLoadingErrorMethod = ReflectionUtil.getDeclaredMethod(
-					providerClass, "getLoadingError");
-
-				Throwable loadingErrorThrowable =
-					(Throwable)getLoadingErrorMethod.invoke(instance);
-
-				if (loadingErrorThrowable != null) {
-					throw new SecurityException(
-						StringBundler.concat(
-							"AmazonCorrettoCryptoProvider integrity self test ",
-							"failed: ", loadingErrorThrowable.getMessage()),
-						loadingErrorThrowable);
-				}
-
-				Method isFipsMethod = ReflectionUtil.getDeclaredMethod(
-					providerClass, "isFips");
-
-				if (!GetterUtil.getBoolean(isFipsMethod.invoke(instance))) {
-					throw new SecurityException(
-						"AmazonCorrettoCryptoProvider is not a FIPS build");
-				}
-
-				Method isExperimentalFipsMethod =
-					ReflectionUtil.getDeclaredMethod(
-						providerClass, "isExperimentalFips");
-
-				if (GetterUtil.getBoolean(
-						isExperimentalFipsMethod.invoke(instance))) {
-
-					throw new SecurityException(
-						"AmazonCorrettoCryptoProvider is an experimental " +
-							"FIPS build");
-				}
-
-				Method runSelfTestsMethod = ReflectionUtil.getDeclaredMethod(
-					providerClass, "runSelfTests");
-
-				Object runSelfTestsObject = runSelfTestsMethod.invoke(instance);
-
-				if (!Objects.equals(
-						String.valueOf(runSelfTestsObject), "PASSED")) {
-
-					throw new SecurityException(
-						StringBundler.concat(
-							"AmazonCorrettoCryptoProvider integrity self test ",
-							"failed: ", runSelfTestsObject));
 				}
 			}
 		}
@@ -165,24 +137,15 @@ public class FIPSProviderValidator {
 	}
 
 	private static void _validateProviders(Provider[] providers) {
-		if (ArrayUtil.isEmpty(providers)) {
-			throw new SecurityException("There are no providers registered");
-		}
-
-		Provider firstProvider = providers[0];
-
-		if (!_allowedProviders.containsKey(firstProvider.getName())) {
-			throw new SecurityException(
-				"The first provider must be an allowed FIPS provider");
-		}
+		Provider fipsProvider = providers[0];
 
 		List<String> allowedProviders = _allowedProviders.get(
-			firstProvider.getName());
+			fipsProvider.getName());
 
 		Provider[] notAllowedProviders = ArrayUtil.filter(
 			providers,
 			provider ->
-				!provider.equals(firstProvider) &&
+				!provider.equals(fipsProvider) &&
 				!allowedProviders.contains(provider.getName()));
 
 		if (ArrayUtil.isEmpty(notAllowedProviders)) {
@@ -196,7 +159,7 @@ public class FIPSProviderValidator {
 		throw new SecurityException(
 			StringBundler.concat(
 				"The providers ", Arrays.toString(notAllowedProviders),
-				" are not allowed in FIPS mode for ", firstProvider.getName()));
+				" are not allowed in FIPS mode for ", fipsProvider.getName()));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
