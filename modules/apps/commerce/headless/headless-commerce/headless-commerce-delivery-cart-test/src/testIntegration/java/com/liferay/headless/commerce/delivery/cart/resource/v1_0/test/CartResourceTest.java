@@ -256,7 +256,98 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testPostCartCheckout() throws Exception {
 		super.testPostCartCheckout();
 
-		_testPostCartCheckoutWithAccountEntryValidator();
+		String key = RandomTestUtil.randomString();
+		String resultMessage = RandomTestUtil.randomString();
+
+		TestAccountEntryValidator testAccountEntryValidator =
+			new TestAccountEntryValidator(
+				key, resultMessage,
+				AccountEntryValidatorConstants.RESULT_FAILURE);
+
+		ServiceRegistration<AccountEntryValidator>
+			accountEntryValidatorServiceRegistration =
+				_bundleContext.registerService(
+					AccountEntryValidator.class, testAccountEntryValidator,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"account.entry.validator.key", key
+					).build());
+
+		try {
+			Cart cart = _createCart();
+
+			CommerceOrder commerceOrder =
+				_commerceOrderLocalService.getCommerceOrder(cart.getId());
+
+			Cart postCart = cartResource.postCartCheckout(cart.getId());
+
+			Assert.assertFalse(postCart.getValid());
+			Assert.assertTrue(
+				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+
+			Assert.assertTrue(commerceOrder.isOpen());
+			_checkTestAccountEntryValidator(
+				commerceOrder, testAccountEntryValidator);
+
+			commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+				cart.getId());
+
+			commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+				commerceOrder);
+
+			testAccountEntryValidator.setResultStatus(
+				AccountEntryValidatorConstants.RESULT_MANUAL);
+
+			postCart = cartResource.postCartCheckout(cart.getId());
+
+			Assert.assertFalse(
+				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+
+			_checkTestAccountEntryValidator(
+				commerceOrder, testAccountEntryValidator);
+
+			commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+				cart.getId());
+
+			commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+				commerceOrder);
+
+			testAccountEntryValidator.setResultStatus(
+				AccountEntryValidatorConstants.RESULT_SUCCESS);
+
+			postCart = cartResource.postCartCheckout(cart.getId());
+
+			Assert.assertFalse(
+				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+
+			_checkTestAccountEntryValidator(
+				commerceOrder, testAccountEntryValidator);
+
+			commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+				cart.getId());
+
+			commerceOrder.setBillingAddressId(RandomTestUtil.randomLong());
+
+			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+				commerceOrder);
+
+			testAccountEntryValidator.setResultStatus(
+				AccountEntryValidatorConstants.RESULT_WARNING);
+
+			postCart = cartResource.postCartCheckout(cart.getId());
+
+			Assert.assertFalse(
+				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
+
+			_checkTestAccountEntryValidator(
+				commerceOrder, testAccountEntryValidator);
+		}
+		finally {
+			accountEntryValidatorServiceRegistration.unregister();
+		}
 	}
 
 	@Override
@@ -528,6 +619,23 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		return _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
+	}
+
+	private void _checkTestAccountEntryValidator(
+		CommerceOrder commerceOrder,
+		TestAccountEntryValidator testAccountEntryValidator) {
+
+		JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
+
+		Assert.assertEquals(
+			commerceOrder.getBillingAddressId(),
+			jsonObject.getLong("billingAddressId"));
+		Assert.assertEquals(
+			commerceOrder.getCommerceOrderId(),
+			jsonObject.getLong("commerceOrderId"));
+		Assert.assertEquals(
+			commerceOrder.getShippingAddressId(),
+			jsonObject.getLong("shippingAddressId"));
 	}
 
 	private Cart _createCart() throws Exception {
@@ -948,79 +1056,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			getCart.getShippingAddressExternalReferenceCode());
 	}
 
-	private void _testPostCartCheckoutWithAccountEntryValidator()
-		throws Exception {
-
-		String key = RandomTestUtil.randomString();
-		String resultMessage = RandomTestUtil.randomString();
-
-		TestAccountEntryValidator testAccountEntryValidator =
-			new TestAccountEntryValidator(key, resultMessage);
-
-		ServiceRegistration<AccountEntryValidator>
-			accountEntryValidatorServiceRegistration =
-				_bundleContext.registerService(
-					AccountEntryValidator.class, testAccountEntryValidator,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"account.entry.validator.key", key
-					).build());
-
-		try {
-			Cart cart = _createCart();
-
-			Cart postCart = cartResource.postCartCheckout(cart.getId());
-
-			Assert.assertFalse(postCart.getValid());
-			Assert.assertTrue(
-				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
-
-			CommerceOrder commerceOrder =
-				_commerceOrderLocalService.getCommerceOrder(cart.getId());
-
-			Assert.assertTrue(commerceOrder.isOpen());
-
-			com.liferay.portal.kernel.model.Address serviceBuilderAddress =
-				_addressLocalService.addAddress(
-					RandomTestUtil.randomString(), _user.getUserId(),
-					AccountEntry.class.getName(),
-					_accountEntry.getAccountEntryId(), _country.getCountryId(),
-					0, _region.getRegionId(), RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(), false,
-					RandomTestUtil.randomString(), true,
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(), null,
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(), _serviceContext);
-
-			commerceOrder.setBillingAddressId(
-				serviceBuilderAddress.getAddressId());
-
-			commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-				commerceOrder);
-
-			postCart = cartResource.postCartCheckout(cart.getId());
-
-			Assert.assertFalse(
-				ArrayUtil.contains(postCart.getErrorMessages(), resultMessage));
-
-			JSONObject jsonObject = testAccountEntryValidator.getJSONObject();
-
-			Assert.assertEquals(
-				serviceBuilderAddress.getAddressId(),
-				jsonObject.getLong("billingAddressId"));
-			Assert.assertEquals(
-				commerceOrder.getCommerceOrderId(),
-				jsonObject.getLong("commerceOrderId"));
-			Assert.assertEquals(
-				commerceOrder.getShippingAddressId(),
-				jsonObject.getLong("shippingAddressId"));
-		}
-		finally {
-			accountEntryValidatorServiceRegistration.unregister();
-		}
-	}
-
 	private void _testPostChannelCartByExternalReferenceCodeWithMoreExternalReferenceCodes()
 		throws Exception {
 
@@ -1331,14 +1366,31 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@DeleteAfterTestRun
 	private User _user;
 
-	private static class TestAccountEntryValidator
-		implements AccountEntryValidator {
+	public class TestAccountEntryValidator implements AccountEntryValidator {
+
+		public TestAccountEntryValidator(
+			String key, String resultMessage, String resultStatus) {
+
+			_key = key;
+			_resultMessage = resultMessage;
+			_resultStatus = resultStatus;
+		}
 
 		@Override
-		public AccountEntryValidatorConfiguration getConfiguration(
-			long companyId) {
+		public AccountEntryValidatorConfiguration getConfiguration(long companyId) {
+			return new AccountEntryValidatorConfiguration() {
 
-			return null;
+				@Override
+				public int checkInterval() {
+					return 0;
+				}
+
+				@Override
+				public boolean enabled() {
+					return true;
+				}
+
+			};
 		}
 
 		public JSONObject getJSONObject() {
@@ -1350,36 +1402,29 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			return _key;
 		}
 
+		public void setResultStatus(String resultStatus) {
+			_resultStatus = resultStatus;
+		}
+
 		@Override
 		public AccountEntryValidatorResult validate(
 			AccountEntry accountEntry, JSONObject jsonObject) {
 
 			_jsonObject = jsonObject;
 
-			String resultStatus = AccountEntryValidatorConstants.RESULT_SUCCESS;
-
-			if (jsonObject.getLong("billingAddressId") == 0) {
-				resultStatus = AccountEntryValidatorConstants.RESULT_FAILURE;
-			}
-
 			return AccountEntryValidatorResult.builder(
 				_key
 			).resultMessage(
 				_resultMessage
 			).resultStatus(
-				resultStatus
+				_resultStatus
 			).build();
-		}
-
-		private TestAccountEntryValidator(String key, String resultMessage) {
-			_key = key;
-			_resultMessage = resultMessage;
 		}
 
 		private volatile JSONObject _jsonObject;
 		private final String _key;
 		private final String _resultMessage;
+		private String _resultStatus;
 
 	}
-
 }
