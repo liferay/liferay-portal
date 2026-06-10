@@ -215,6 +215,29 @@ public class EditCommerceChannelMVCActionCommand
 		modifiableSettings.store();
 	}
 
+	private void _updateAccountEntryValidation(
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
+		throws Exception {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new GroupServiceSettingsLocator(
+				commerceChannel.getGroupId(),
+				CommerceConstants.
+					SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		Map<String, String> parameterMap = PropertiesParamUtil.getProperties(
+			actionRequest, "accountEntryValidationSettings--");
+
+		for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+			modifiableSettings.setValue(entry.getKey(), entry.getValue());
+		}
+
+		modifiableSettings.store();
+	}
+
 	private CommerceChannel _updateCommerceChannel(ActionRequest actionRequest)
 		throws Exception {
 
@@ -225,6 +248,7 @@ public class EditCommerceChannelMVCActionCommand
 			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
 		_updateAccountCartMaxAllowed(actionRequest, commerceChannel);
+		_updateAccountEntryValidation(actionRequest, commerceChannel);
 		_updatePurchaseOrderNumber(actionRequest, commerceChannel);
 		_updateRequestedDeliveryDateFormat(actionRequest, commerceChannel);
 		_updateShippingTaxCategory(actionRequest, commerceChannel);

@@ -51,13 +51,13 @@ if (priceDisplayType.equals(CommercePricingConstants.TAX_INCLUDED_IN_PRICE)) {
 	<liferay-ui:error exception="<%= NoSuchDiscountException.class %>" message="the-inserted-coupon-is-no-longer-valid" />
 
 	<%
-	AccountEntryValidatorResult accountEntryValidatorResult = orderSummaryCheckoutStepDisplayContext.getAccountEntryValidatorResult();
+	AccountEntryValidatorResult failingAccountEntryValidatorResult = orderSummaryCheckoutStepDisplayContext.getFailingAccountEntryValidatorResult();
 	%>
 
 	<c:choose>
-		<c:when test="<%= accountEntryValidatorResult != null %>">
+		<c:when test="<%= failingAccountEntryValidatorResult != null %>">
 			<div class="alert alert-danger">
-				<liferay-ui:message key="<%= accountEntryValidatorResult.getResultMessage() %>" />
+				<liferay-ui:message key="<%= failingAccountEntryValidatorResult.getResultMessage() %>" />
 			</div>
 
 			<aui:button-row>
@@ -68,8 +68,8 @@ if (priceDisplayType.equals(CommercePricingConstants.TAX_INCLUDED_IN_PRICE)) {
 
 				<aui:button cssClass="pull-left" href="<%= previousStepURL %>" value="previous" />
 
-				<c:if test="<%= Validator.isNotNull(accountEntryValidatorResult.getActionURL()) %>">
-					<aui:button cssClass="pull-right" href="<%= HtmlUtil.escapeHREF(accountEntryValidatorResult.getActionURL()) %>" primary="<%= true %>" value='<%= Validator.isNotNull(accountEntryValidatorResult.getActionLabel()) ? HtmlUtil.escape(LanguageUtil.get(request, accountEntryValidatorResult.getActionLabel())) : LanguageUtil.get(request, "resolve") %>' />
+				<c:if test="<%= Validator.isNotNull(failingAccountEntryValidatorResult.getActionURL()) %>">
+					<aui:button cssClass="pull-right" href="<%= HtmlUtil.escapeHREF(failingAccountEntryValidatorResult.getActionURL()) %>" primary="<%= true %>" value='<%= Validator.isNotNull(failingAccountEntryValidatorResult.getActionLabel()) ? HtmlUtil.escape(LanguageUtil.get(request, failingAccountEntryValidatorResult.getActionLabel())) : LanguageUtil.get(request, "resolve") %>' />
 				</c:if>
 			</aui:button-row>
 		</c:when>

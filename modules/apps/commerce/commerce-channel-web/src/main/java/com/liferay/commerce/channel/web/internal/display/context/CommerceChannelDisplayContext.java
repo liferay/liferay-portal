@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.channel.web.internal.display.context.helper.CommerceChannelRequestHelper;
+import com.liferay.commerce.configuration.CommerceAccountEntryValidationConfiguration;
 import com.liferay.commerce.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.configuration.CommerceOrderConfiguration;
@@ -145,6 +146,21 @@ public class CommerceChannelDisplayContext
 		}
 
 		return maxAllowed;
+	}
+
+	public String getAccountEntryValidationMode() throws PortalException {
+		CommerceChannel commerceChannel = getCommerceChannel();
+
+		CommerceAccountEntryValidationConfiguration
+			commerceAccountEntryValidationConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceAccountEntryValidationConfiguration.class,
+					new GroupServiceSettingsLocator(
+						commerceChannel.getGroupId(),
+						CommerceConstants.
+							SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION));
+
+		return commerceAccountEntryValidationConfiguration.validationMode();
 	}
 
 	public CPTaxCategory getActiveShippingTaxCategory() throws PortalException {

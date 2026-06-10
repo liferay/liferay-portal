@@ -246,6 +246,28 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 					</div>
 				</div>
 
+				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-89850") %>'>
+					<div class="row">
+						<div class="col-lg-6">
+							<aui:select helpMessage="account-entry-validation-help" label="account-entry-validation" name="accountEntryValidationSettings--validationMode--">
+
+								<%
+								String accountEntryValidationMode = commerceChannelDisplayContext.getAccountEntryValidationMode();
+
+								for (String validationMode : CommerceAccountEntryValidationConstants.VALIDATION_MODES) {
+								%>
+
+									<aui:option label="<%= validationMode %>" selected="<%= accountEntryValidationMode.equals(validationMode) %>" value="<%= validationMode %>" />
+
+								<%
+								}
+								%>
+
+							</aui:select>
+						</div>
+					</div>
+				</c:if>
+
 				<div class="row">
 					<div class="col-lg-6">
 
