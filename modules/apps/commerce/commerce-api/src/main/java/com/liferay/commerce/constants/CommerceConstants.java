@@ -39,6 +39,9 @@ public class CommerceConstants {
 	public static final String SERVICE_NAME_COMMERCE_ACCOUNT =
 		"com.liferay.commerce.account";
 
+	public static final String SERVICE_NAME_COMMERCE_ACCOUNT_ENTRY_VALIDATION =
+		"com.liferay.commerce.account.entry.validation";
+
 	public static final String SERVICE_NAME_COMMERCE_ORDER =
 		"com.liferay.commerce.order";
 
