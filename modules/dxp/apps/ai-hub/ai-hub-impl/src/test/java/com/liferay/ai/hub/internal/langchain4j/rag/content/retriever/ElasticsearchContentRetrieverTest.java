@@ -16,6 +16,7 @@ import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.rag.content.Content;
 import dev.langchain4j.rag.query.Query;
@@ -28,6 +29,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -44,11 +46,6 @@ public class ElasticsearchContentRetrieverTest {
 	public void testSearch() {
 		SearchEngineAdapter searchEngineAdapter = Mockito.mock(
 			SearchEngineAdapter.class);
-
-		SearchSearchResponse searchSearchResponse = Mockito.mock(
-			SearchSearchResponse.class);
-
-		SearchHits searchHits = Mockito.mock(SearchHits.class);
 
 		SearchHit lowScoreSearchHit = Mockito.mock(SearchHit.class);
 
@@ -82,11 +79,24 @@ public class ElasticsearchContentRetrieverTest {
 			0.9F
 		);
 
+		String url = RandomTestUtil.randomString();
+
+		Mockito.when(
+			highScoreSearchHit.getSourcesMap()
+		).thenReturn(
+			Map.of(_URL, url)
+		);
+
+		SearchHits searchHits = Mockito.mock(SearchHits.class);
+
 		Mockito.when(
 			searchHits.getSearchHits()
 		).thenReturn(
 			List.of(lowScoreSearchHit, highScoreSearchHit)
 		);
+
+		SearchSearchResponse searchSearchResponse = Mockito.mock(
+			SearchSearchResponse.class);
 
 		Mockito.when(
 			searchSearchResponse.getSearchHits()
@@ -128,6 +138,27 @@ public class ElasticsearchContentRetrieverTest {
 		TextSegment textSegment = content.textSegment();
 
 		Assert.assertEquals(fragment, textSegment.text());
+
+		Metadata metadata = textSegment.metadata();
+
+		Assert.assertEquals(url, metadata.getString(_URL));
+
+		ArgumentCaptor<SearchSearchRequest> argumentCaptor =
+			ArgumentCaptor.forClass(SearchSearchRequest.class);
+
+		Mockito.verify(
+			searchEngineAdapter
+		).execute(
+			argumentCaptor.capture()
+		);
+
+		SearchSearchRequest searchSearchRequest = argumentCaptor.getValue();
+
+		Assert.assertTrue(searchSearchRequest.getFetchSource());
+		Assert.assertArrayEquals(
+			new String[] {_URL}, searchSearchRequest.getFetchSourceIncludes());
 	}
+
+	private static final String _URL = "url";
 
 }

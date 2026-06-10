@@ -57,7 +57,8 @@ public class ElasticsearchContentRetriever extends BaseContentRetriever {
 
 		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
 
-		searchSearchRequest.setFetchSource(false);
+		searchSearchRequest.setFetchSource(true);
+		searchSearchRequest.setFetchSourceIncludes(new String[] {"url"});
 		searchSearchRequest.setHighlight(
 			_highlightBuilderFactory.builder(
 			).addFieldConfig(
