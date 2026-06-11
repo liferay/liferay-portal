@@ -20,7 +20,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface SamlConfiguration {
 
 	public static String KEYSTORE_PATH_DEFAULT =
-		"${liferay.home}/data/keystore.jks";
+		"${liferay.home}/data/keystore.p12";
 
 	/**
 	 * Set the interval in minutes on how often to check for and delete SAML
@@ -109,7 +109,8 @@ public interface SamlConfiguration {
 
 	@Meta.AD(
 		deflt = "liferay", id = "saml.keystore.password",
-		name = "saml-key-store-password", required = false
+		name = "saml-key-store-password", required = false,
+		type = Meta.Type.Password
 	)
 	public String keyStorePassword();
 
@@ -122,8 +123,8 @@ public interface SamlConfiguration {
 	public String keyStorePath();
 
 	@Meta.AD(
-		deflt = "jks", id = "saml.keystore.type", name = "saml-key-store-type",
-		required = false
+		deflt = "PKCS12", id = "saml.keystore.type",
+		name = "saml-key-store-type", required = false
 	)
 	public String keyStoreType();
 

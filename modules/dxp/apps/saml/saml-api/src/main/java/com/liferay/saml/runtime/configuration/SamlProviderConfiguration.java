@@ -89,7 +89,8 @@ public interface SamlProviderConfiguration {
 		deflt = "liferay",
 		description = "saml-keystore-credential-password-description",
 		id = "saml.keystore.credential.password",
-		name = "saml-keystore-credential-password", required = false
+		name = "saml-keystore-credential-password", required = false,
+		type = Meta.Type.Password
 	)
 	public String keyStoreCredentialPassword();
 
@@ -97,7 +98,8 @@ public interface SamlProviderConfiguration {
 		deflt = "liferay",
 		description = "saml-keystore-encryption-credential-password-description",
 		id = "saml.keystore.encryption.credential.password",
-		name = "saml-keystore-encryption-credential-password", required = false
+		name = "saml-keystore-encryption-credential-password", required = false,
+		type = Meta.Type.Password
 	)
 	public String keyStoreEncryptionCredentialPassword();
 
