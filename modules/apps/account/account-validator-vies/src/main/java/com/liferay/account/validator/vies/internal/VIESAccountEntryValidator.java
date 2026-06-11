@@ -11,6 +11,7 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorResult;
+import com.liferay.account.validator.BaseAccountEntryValidator;
 import com.liferay.account.validator.vies.configuration.VIESAccountEntryValidatorConfiguration;
 import com.liferay.account.validator.vies.internal.client.VIESClient;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -41,50 +42,19 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = AccountEntryValidator.class
 )
-public class VIESAccountEntryValidator implements AccountEntryValidator {
+public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 
 	public static final String KEY = "vies";
 
 	@Override
-	public AccountEntryValidatorConfiguration
-			getAccountEntryValidatorConfiguration(long companyId)
-		throws PortalException {
-
-		return _configurationProvider.getCompanyConfiguration(
-			VIESAccountEntryValidatorConfiguration.class, companyId);
-	}
-
-	@Override
-	public String getClassPK(AccountEntry accountEntry, JSONObject jsonObject)
+	public AccountEntryValidatorResult doValidate(
+		AccountEntry accountEntry, JSONObject jsonObject)
 		throws PortalException {
 
 		VIESAccountEntryValidatorConfiguration
 			viesAccountEntryValidatorConfiguration =
-				_getVIESAccountEntryValidatorConfiguration(
-					accountEntry, jsonObject);
-
-		if (viesAccountEntryValidatorConfiguration == null) {
-			return null;
-		}
-
-		long billingAddressId = jsonObject.getLong("billingAddressId", 0);
-
-		if (billingAddressId == 0) {
-			return null;
-		}
-
-		return accountEntry.getAccountEntryId() + "_" + billingAddressId;
-	}
-
-	@Override
-	public AccountEntryValidatorResult validate(
-			AccountEntry accountEntry, JSONObject jsonObject)
-		throws PortalException {
-
-		VIESAccountEntryValidatorConfiguration
-			viesAccountEntryValidatorConfiguration =
-				_getVIESAccountEntryValidatorConfiguration(
-					accountEntry, jsonObject);
+			_getVIESAccountEntryValidatorConfiguration(
+				accountEntry, jsonObject);
 
 		if (viesAccountEntryValidatorConfiguration == null) {
 			return null;
@@ -163,6 +133,37 @@ public class VIESAccountEntryValidator implements AccountEntryValidator {
 		).resultStatus(
 			AccountEntryValidatorConstants.RESULT_FAILURE
 		).build();
+	}
+
+	@Override
+	public AccountEntryValidatorConfiguration
+			getAccountEntryValidatorConfiguration(long companyId)
+		throws PortalException {
+
+		return _configurationProvider.getCompanyConfiguration(
+			VIESAccountEntryValidatorConfiguration.class, companyId);
+	}
+
+	@Override
+	public String getClassPK(AccountEntry accountEntry, JSONObject jsonObject)
+		throws PortalException {
+
+		VIESAccountEntryValidatorConfiguration
+			viesAccountEntryValidatorConfiguration =
+				_getVIESAccountEntryValidatorConfiguration(
+					accountEntry, jsonObject);
+
+		if (viesAccountEntryValidatorConfiguration == null) {
+			return null;
+		}
+
+		long billingAddressId = jsonObject.getLong("billingAddressId", 0);
+
+		if (billingAddressId == 0) {
+			return null;
+		}
+
+		return accountEntry.getAccountEntryId() + "_" + billingAddressId;
 	}
 
 	private AccountEntryValidatorResult _getAccountEntryValidatorResult(
