@@ -7,6 +7,7 @@ package com.liferay.account.validator.vies.internal;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.constants.AccountEntryValidatorConstants;
+import com.liferay.account.manager.AccountEntryValidatorResultManager;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.account.validator.vies.configuration.VIESAccountEntryValidatorConfiguration;
@@ -68,6 +69,9 @@ public class VIESAccountEntryValidatorTest {
 
 	@Before
 	public void setUp() {
+		ReflectionTestUtil.setFieldValue(
+			_viesAccountEntryValidator, "accountEntryValidatorResultManager",
+			_accountEntryValidatorResultManager);
 		ReflectionTestUtil.setFieldValue(
 			_viesAccountEntryValidator, "_addressLocalService",
 			_addressLocalService);
@@ -479,6 +483,9 @@ public class VIESAccountEntryValidatorTest {
 
 	private static final int _PORT = 4252;
 
+	private final AccountEntryValidatorResultManager
+		_accountEntryValidatorResultManager = Mockito.mock(
+			AccountEntryValidatorResultManager.class);
 	private final AddressLocalService _addressLocalService = Mockito.mock(
 		AddressLocalService.class);
 	private final ConfigurationProvider _configurationProvider = Mockito.mock(
