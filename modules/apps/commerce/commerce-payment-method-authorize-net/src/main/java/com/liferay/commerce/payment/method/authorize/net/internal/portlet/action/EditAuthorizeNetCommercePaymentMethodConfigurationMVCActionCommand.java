@@ -102,6 +102,11 @@ public class EditAuthorizeNetCommercePaymentMethodConfigurationMVCActionCommand
 
 		modifiableSettings.setValue("showStoreName", showStoreName);
 
+		String signatureKey = ParamUtil.getString(
+			actionRequest, "settings--signatureKey--");
+
+		modifiableSettings.setValue("signatureKey", signatureKey);
+
 		String transactionKey = ParamUtil.getString(
 			actionRequest, "settings--transactionKey--");
 

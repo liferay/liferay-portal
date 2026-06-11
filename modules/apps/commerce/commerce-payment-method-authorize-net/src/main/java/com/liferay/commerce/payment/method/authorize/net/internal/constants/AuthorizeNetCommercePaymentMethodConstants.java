@@ -14,6 +14,9 @@ import net.authorize.Environment;
  */
 public class AuthorizeNetCommercePaymentMethodConstants {
 
+	public static final String AUTH_CAPTURE_CREATED_EVENT_TYPE =
+		"net.authorize.payment.authcapture.created";
+
 	public static final String COMPLETE_PAYMENT_SERVLET_PATH =
 		"complete-authorizenet-payment";
 
