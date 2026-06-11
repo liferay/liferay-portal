@@ -59,6 +59,7 @@ import net.authorize.api.contract.v1.GetHostedPaymentPageResponse;
 import net.authorize.api.contract.v1.MerchantAuthenticationType;
 import net.authorize.api.contract.v1.MessagesType;
 import net.authorize.api.contract.v1.NameAndAddressType;
+import net.authorize.api.contract.v1.OrderType;
 import net.authorize.api.contract.v1.SettingType;
 import net.authorize.api.contract.v1.TransactionRequestType;
 import net.authorize.api.contract.v1.TransactionTypeEnum;
@@ -463,6 +464,13 @@ public class AuthorizeNetCommercePaymentMethod
 		customerDataType.setEmail(emailAddress);
 
 		transactionRequestType.setCustomer(customerDataType);
+
+		OrderType orderType = new OrderType();
+
+		orderType.setInvoiceNumber(
+			String.valueOf(commerceOrder.getCommerceOrderId()));
+
+		transactionRequestType.setOrder(orderType);
 
 		CommerceAddress billingCommerceAddress =
 			commerceOrder.getBillingAddress();
