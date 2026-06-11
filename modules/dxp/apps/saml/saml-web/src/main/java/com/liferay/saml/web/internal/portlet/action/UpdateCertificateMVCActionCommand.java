@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -40,14 +41,18 @@ import jakarta.portlet.ActionResponse;
 
 import java.io.IOException;
 
+import java.math.BigInteger;
+
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAKey;
 
 import java.util.Calendar;
 
@@ -89,7 +94,9 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 			_authenticateCertificate(actionRequest, actionResponse);
 		}
 		else if (cmd.equals("delete")) {
-			_deleteCertificate(actionRequest);
+			_localEntityManager.deleteLocalEntityCertificate(
+				LocalEntityManager.CertificateUsage.valueOf(
+					ParamUtil.getString(actionRequest, "certificateUsage")));
 		}
 		else if (cmd.equals("import")) {
 			_importCertificate(actionRequest, themeDisplay.getUser());
@@ -119,11 +126,10 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		try {
-			X509Certificate x509Certificate =
-				_localEntityManager.getLocalEntityCertificate(certificateUsage);
-
 			actionRequest.setAttribute(
-				SamlWebKeys.SAML_X509_CERTIFICATE, x509Certificate);
+				SamlWebKeys.SAML_X509_CERTIFICATE,
+				_localEntityManager.getLocalEntityCertificate(
+					certificateUsage));
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -136,14 +142,6 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 
 		actionResponse.setRenderParameter(
 			"mvcRenderCommandName", "/admin/update_certificate");
-	}
-
-	private void _deleteCertificate(ActionRequest actionRequest)
-		throws Exception {
-
-		_localEntityManager.deleteLocalEntityCertificate(
-			LocalEntityManager.CertificateUsage.valueOf(
-				ParamUtil.getString(actionRequest, "certificateUsage")));
 	}
 
 	private String _getCertificateUsagePropertyKey(
@@ -206,15 +204,6 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 			privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(
 				selectKeyStoreAlias, new KeyStore.PasswordProtection(password));
 		}
-		catch (CertificateException certificateException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(certificateException);
-			}
-
-			SessionErrors.add(actionRequest, "certificateException");
-
-			return;
-		}
 		catch (IOException ioException) {
 			if (ioException.getCause() instanceof UnrecoverableKeyException) {
 				SessionErrors.add(actionRequest, "incorrectKeyStorePassword");
@@ -250,9 +239,25 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 
 			return;
 		}
+		catch (CertificateException | Error | RuntimeException exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			SessionErrors.add(actionRequest, "certificateException");
+
+			return;
+		}
 
 		X509Certificate x509Certificate =
 			(X509Certificate)privateKeyEntry.getCertificate();
+
+		if (!_isValidX509Certificate(x509Certificate)) {
+			SessionErrors.add(actionRequest, "certificateAlgorithmNotAllowed");
+
+			return;
+		}
+
 		LocalEntityManager.CertificateUsage certificateUsage =
 			LocalEntityManager.CertificateUsage.valueOf(
 				ParamUtil.getString(actionRequest, "certificateUsage"));
@@ -271,6 +276,26 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 
 		actionRequest.setAttribute(
 			SamlWebKeys.SAML_X509_CERTIFICATE, x509Certificate);
+	}
+
+	private boolean _isValidX509Certificate(X509Certificate x509Certificate) {
+		if (!PropsValues.FIPS_ENABLED) {
+			return true;
+		}
+
+		PublicKey publicKey = x509Certificate.getPublicKey();
+
+		if (!(publicKey instanceof RSAKey rsaKey)) {
+			return false;
+		}
+
+		BigInteger modulus = rsaKey.getModulus();
+
+		if (modulus.bitLength() >= 2048) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _replaceCertificate(
@@ -319,7 +344,7 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 
 		KeyPair keyPair = _certificateTool.generateKeyPair(
 			keyAlgorithm,
-			ParamUtil.getInteger(actionRequest, "certificateKeyLength"));
+			ParamUtil.getInteger(actionRequest, "certificateKeySize"));
 
 		CertificateEntityId subjectCertificateEntityId =
 			new CertificateEntityId(
@@ -334,7 +359,7 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 		X509Certificate x509Certificate = _certificateTool.generateCertificate(
 			keyPair, subjectCertificateEntityId, subjectCertificateEntityId,
 			startDate.getTime(), endDate.getTime(),
-			_SHA256_PREFIX + keyAlgorithm);
+			"SHA256with" + keyAlgorithm);
 
 		_localEntityManager.storeLocalEntityCertificate(
 			keyPair.getPrivate(), keystoreCredentialPassword, x509Certificate,
@@ -346,8 +371,6 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 			SamlWebKeys.SAML_X509_CERTIFICATE, x509Certificate);
 		actionResponse.setWindowState(LiferayWindowState.EXCLUSIVE);
 	}
-
-	private static final String _SHA256_PREFIX = "SHA256with";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		UpdateCertificateMVCActionCommand.class);

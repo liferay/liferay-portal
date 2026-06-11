@@ -7,6 +7,8 @@ package com.liferay.saml.opensaml.integration.internal.certificate;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.security.SecureRandom;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.runtime.certificate.CertificateEntityId;
 import com.liferay.saml.runtime.certificate.CertificateTool;
@@ -15,6 +17,7 @@ import java.io.ByteArrayInputStream;
 
 import java.math.BigInteger;
 
+import java.security.InvalidParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
@@ -25,13 +28,17 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.cert.X509v1CertificateBuilder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
@@ -50,35 +57,34 @@ public class CertificateToolImpl implements CertificateTool {
 			Date endDate, String signatureAlgorithm)
 		throws CertificateException {
 
-		JcaX509CertificateConverter jcaX509CertificateConverter =
-			new JcaX509CertificateConverter();
-
 		PublicKey publicKey = keyPair.getPublic();
 
-		try (ByteArrayInputStream byteArrayInputStream =
-				new ByteArrayInputStream(publicKey.getEncoded());
+		try (ASN1InputStream asn1InputStream = new ASN1InputStream(
+				new ByteArrayInputStream(publicKey.getEncoded()))) {
 
-			ASN1InputStream asn1InputStream = new ASN1InputStream(
-				byteArrayInputStream)) {
+			JcaX509CertificateConverter jcaX509CertificateConverter =
+				new JcaX509CertificateConverter();
 
-			X500Name issuerX500Name = _createX500Name(
-				issuerCertificateEntityId);
-			X500Name subjectX500Name = _createX500Name(
-				subjectCertificateEntityId);
-
-			X509v1CertificateBuilder x509v1CertificateBuilder =
-				new X509v1CertificateBuilder(
-					issuerX500Name,
-					BigInteger.valueOf(System.currentTimeMillis()), startDate,
-					endDate, subjectX500Name,
+			X509v3CertificateBuilder x509v3CertificateBuilder =
+				new X509v3CertificateBuilder(
+					_createX500Name(issuerCertificateEntityId),
+					new BigInteger(160, new SecureRandom()), startDate, endDate,
+					_createX500Name(subjectCertificateEntityId),
 					SubjectPublicKeyInfo.getInstance(
 						asn1InputStream.readObject()));
+
+			x509v3CertificateBuilder.addExtension(
+				Extension.basicConstraints, true, new BasicConstraints(false));
+			x509v3CertificateBuilder.addExtension(
+				Extension.keyUsage, true,
+				new KeyUsage(
+					KeyUsage.digitalSignature | KeyUsage.keyEncipherment));
 
 			JcaContentSignerBuilder jcaContentSignerBuilder =
 				new JcaContentSignerBuilder(signatureAlgorithm);
 
 			return jcaX509CertificateConverter.getCertificate(
-				x509v1CertificateBuilder.build(
+				x509v3CertificateBuilder.build(
 					jcaContentSignerBuilder.build(keyPair.getPrivate())));
 		}
 		catch (Exception exception) {
@@ -89,6 +95,23 @@ public class CertificateToolImpl implements CertificateTool {
 	@Override
 	public KeyPair generateKeyPair(String algorithm, int keySize)
 		throws NoSuchAlgorithmException {
+
+		if (PropsValues.FIPS_ENABLED) {
+			if (!algorithm.equals("RSA")) {
+				throw new InvalidParameterException(
+					StringBundler.concat(
+						"The algorithm \"", algorithm,
+						"\" is not allowed in FIPS mode"));
+			}
+
+			if (!_allowedRsaKeySizes.contains(keySize)) {
+				throw new InvalidParameterException(
+					StringBundler.concat(
+						"The key size ", keySize,
+						" is not allowed in FIPS mode for \"", algorithm,
+						"\""));
+			}
+		}
 
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(
 			algorithm);
@@ -112,9 +135,7 @@ public class CertificateToolImpl implements CertificateTool {
 		StringBundler sb = new StringBundler((digest.length * 2) - 1);
 
 		for (int i = 0; i < digest.length; i++) {
-			String hex = String.format("%02X", digest[i]);
-
-			sb.append(hex);
+			sb.append(String.format("%02X", digest[i]));
 
 			if ((i + 1) < digest.length) {
 				sb.append(CharPool.COLON);
@@ -187,5 +208,8 @@ public class CertificateToolImpl implements CertificateTool {
 
 		return x500NameBuilder.build();
 	}
+
+	private static final Set<Integer> _allowedRsaKeySizes = Set.of(
+		2048, 3072, 4096);
 
 }
