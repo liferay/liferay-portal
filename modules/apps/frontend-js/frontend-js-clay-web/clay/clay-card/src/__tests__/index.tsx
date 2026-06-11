@@ -1251,4 +1251,23 @@ describe('ClayCard sizes', () => {
 		expect(card.classList.contains('card-sm')).toBe(false);
 		expect(card.classList.contains('card-xs')).toBe(false);
 	});
+
+	it('wraps M content in a nested inner card for the hover pattern', () => {
+		const {container} = render(
+			<ClayCard size="m">
+				<span>Body</span>
+			</ClayCard>
+		);
+
+		const inner = container.querySelector('.card-md > .card-inner');
+
+		expect(inner).not.toBeNull();
+		expect(inner!.querySelector('span')).not.toBeNull();
+	});
+
+	it('does not render a nested inner card for non-M sizes', () => {
+		const {container} = render(<ClayCard size="s" />);
+
+		expect(container.querySelector('.card-inner')).toBeNull();
+	});
 });

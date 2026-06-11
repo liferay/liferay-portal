@@ -49,6 +49,48 @@
 	}
 }
 
+// Card M Nested Hover
+//
+// The inner card is always rendered so the border can appear on hover without
+// a structural change. In Hover the outer shell keeps the shadow (inherited
+// from `.card`) while the inner card carries the 2px border and backdrop blur.
+
+.card-md {
+	display: flex;
+
+	.card-inner {
+		-webkit-backdrop-filter: blur(0);
+		backdrop-filter: blur(0);
+		border: $card-md-hover-inner-border-width solid transparent;
+		border-radius: clay-enable-rounded($card-inner-border-radius);
+		flex-grow: 1;
+		transition: $card-md-inner-transition;
+	}
+
+	&.hover,
+	&:hover {
+		border-color: transparent;
+		outline-color: transparent;
+
+		.card-inner {
+			-webkit-backdrop-filter: $card-md-hover-inner-backdrop-filter;
+			backdrop-filter: $card-md-hover-inner-backdrop-filter;
+			background-color: $card-md-hover-inner-background-color;
+			border-color: $card-md-hover-inner-border-color;
+			overflow: hidden;
+		}
+	}
+}
+
+@supports not (
+	(-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))
+) {
+	.card-md.hover .card-inner,
+	.card-md:hover .card-inner {
+		background-color: $card-md-hover-inner-background-color-fallback;
+	}
+}
+
 .card-body {
 	@include clay-css($card-body);
 }

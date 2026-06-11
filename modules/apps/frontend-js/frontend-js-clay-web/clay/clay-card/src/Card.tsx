@@ -66,6 +66,14 @@ function CardBase({
 		user: displayType === 'user',
 	};
 
+	// On the M size, Hover uses the nested inner-card pattern: the outer shell
+	// carries the shadow and the inner card carries the border. The inner
+	// element is always rendered so the border can appear on hover without a
+	// structural change.
+
+	const content =
+		size === 'm' ? <div className="card-inner">{children}</div> : children;
+
 	return (
 		<Context.Provider value={{horizontal: false, interactive: false}}>
 			<div
@@ -88,7 +96,7 @@ function CardBase({
 				)}
 				{...otherProps}
 			>
-				{selectable ? <div className="card">{children}</div> : children}
+				{selectable ? <div className="card">{content}</div> : content}
 			</div>
 		</Context.Provider>
 	);

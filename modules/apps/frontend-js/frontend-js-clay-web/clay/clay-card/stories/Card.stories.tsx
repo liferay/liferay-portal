@@ -735,6 +735,11 @@ export function CardSizes() {
 		{disabled: true, label: 'Disabled'},
 	];
 
+	// A blue background behind the M card so the backdrop-blur Hover (the inner
+	// card's translucent overlay) is visible alongside the normal M variants.
+
+	const background = {backgroundColor: '#0b5fff'};
+
 	return (
 		<>
 			{sizes.map((size) => (
@@ -761,6 +766,20 @@ export function CardSizes() {
 					))}
 				</div>
 			))}
+
+			<div className="row">
+				<div className="col-auto">
+					<p>M — Default</p>
+
+					<ClayCard size="m" style={background} />
+				</div>
+
+				<div className="col-auto">
+					<p>M — Hover (backdrop blur)</p>
+
+					<ClayCard className="hover" size="m" style={background} />
+				</div>
+			</div>
 		</>
 	);
 }

@@ -238,6 +238,25 @@ $card-sizes: map-deep-merge(
 	$card-sizes
 );
 
+// Card M Nested Hover
+//
+// On the M size, Hover uses the nested inner-card pattern: the outer shell
+// keeps the shadow while the inner card carries the border and the
+// backdrop-blur treatment (confirmed for the supported browser matrix in
+// LPD-88753).
+
+$card-md-hover-inner-backdrop-filter: blur(20px) !default;
+$card-md-hover-inner-background-color: rgba($white, 0.7) !default;
+$card-md-hover-inner-background-color-fallback: $white !default;
+$card-md-hover-inner-border-color: $primary-l1 !default;
+$card-md-hover-inner-border-width: 2px !default;
+
+$card-md-inner-transition:
+	backdrop-filter 0.15s ease-in-out,
+	-webkit-backdrop-filter 0.15s ease-in-out,
+	background-color 0.15s ease-in-out,
+	border-color 0.15s ease-in-out !default;
+
 // .card-title
 
 $card-title: () !default;
