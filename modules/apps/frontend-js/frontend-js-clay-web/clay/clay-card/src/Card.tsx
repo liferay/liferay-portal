@@ -39,9 +39,9 @@ interface ICardProps extends IContext {
 	selectable?: boolean;
 
 	/**
-	 * Sets the size variant of the card (`m`, `s` or `xs`).
+	 * Sets the size variant of the card (`xs`, `sm` or `md`).
 	 */
-	size?: 'xs' | 's' | 'm';
+	size?: 'xs' | 'sm' | 'md';
 }
 
 interface IProps
@@ -72,7 +72,7 @@ function CardBase({
 	// structural change.
 
 	const content =
-		size === 'm' ? <div className="card-inner">{children}</div> : children;
+		size === 'md' ? <div className="card-inner">{children}</div> : children;
 
 	return (
 		<Context.Provider value={{horizontal: false, interactive: false}}>
@@ -82,8 +82,8 @@ function CardBase({
 					{
 						active,
 						'card': !selectable,
-						'card-md': size === 'm',
-						'card-sm': size === 's',
+						'card-md': size === 'md',
+						'card-sm': size === 'sm',
 						'card-xs': size === 'xs',
 						disabled,
 						'file-card': isCardType.file,

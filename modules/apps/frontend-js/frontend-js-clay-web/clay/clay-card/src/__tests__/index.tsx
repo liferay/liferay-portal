@@ -1219,7 +1219,7 @@ describe('ClayCard sizes', () => {
 	afterEach(cleanup);
 
 	it('renders the small size variant', () => {
-		const {container} = render(<ClayCard size="s" />);
+		const {container} = render(<ClayCard size="sm" />);
 
 		const card = container.querySelector('.card') as HTMLElement;
 
@@ -1235,7 +1235,7 @@ describe('ClayCard sizes', () => {
 	});
 
 	it('renders the medium size variant', () => {
-		const {container} = render(<ClayCard size="m" />);
+		const {container} = render(<ClayCard size="md" />);
 
 		const card = container.querySelector('.card') as HTMLElement;
 
@@ -1254,7 +1254,7 @@ describe('ClayCard sizes', () => {
 
 	it('wraps M content in a nested inner card for the hover pattern', () => {
 		const {container} = render(
-			<ClayCard size="m">
+			<ClayCard size="md">
 				<span>Body</span>
 			</ClayCard>
 		);
@@ -1266,7 +1266,7 @@ describe('ClayCard sizes', () => {
 	});
 
 	it('does not render a nested inner card for non-M sizes', () => {
-		const {container} = render(<ClayCard size="s" />);
+		const {container} = render(<ClayCard size="sm" />);
 
 		expect(container.querySelector('.card-inner')).toBeNull();
 	});

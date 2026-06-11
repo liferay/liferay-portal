@@ -721,7 +721,7 @@ export function ProductCard() {
 	);
 }
 export function CardSizes() {
-	const sizes = ['m', 's', 'xs'] as const;
+	const sizes = ['md', 'sm', 'xs'] as const;
 
 	const states: Array<{
 		active?: boolean;
@@ -771,13 +771,13 @@ export function CardSizes() {
 				<div className="col-auto">
 					<p>M — Default</p>
 
-					<ClayCard size="m" style={background} />
+					<ClayCard size="md" style={background} />
 				</div>
 
 				<div className="col-auto">
 					<p>M — Hover (backdrop blur)</p>
 
-					<ClayCard className="hover" size="m" style={background} />
+					<ClayCard className="hover" size="md" style={background} />
 				</div>
 			</div>
 		</>
