@@ -11,7 +11,7 @@ import '@testing-library/jest-dom';
 import HomeDashboard from '../../../src/main/resources/META-INF/resources/js/home_dashboard/HomeDashboard';
 
 const mockGetAgentDefinitions = jest.fn();
-const mockGetChatbots = jest.fn();
+const mockGetChatbotDefinitions = jest.fn();
 
 jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/agent_definition_form/services/AgentDefinitionService',
@@ -24,7 +24,8 @@ jest.mock(
 jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/chatbot_form/services/ChatbotService',
 	() => ({
-		getChatbots: (...args: any[]) => mockGetChatbots(...args),
+		getChatbotDefinitions: (...args: any[]) =>
+			mockGetChatbotDefinitions(...args),
 	})
 );
 
@@ -75,7 +76,7 @@ describe('HomeDashboard', () => {
 				},
 			],
 		});
-		mockGetChatbots.mockResolvedValue({items: []});
+		mockGetChatbotDefinitions.mockResolvedValue({items: []});
 
 		render(<HomeDashboard {...defaultProps} />);
 
@@ -97,7 +98,7 @@ describe('HomeDashboard', () => {
 				},
 			],
 		});
-		mockGetChatbots.mockResolvedValue({items: []});
+		mockGetChatbotDefinitions.mockResolvedValue({items: []});
 
 		render(<HomeDashboard {...defaultProps} />);
 
@@ -111,7 +112,7 @@ describe('HomeDashboard', () => {
 
 	it('never adds the workflow definition name to chatbot links', async () => {
 		mockGetAgentDefinitions.mockResolvedValue({items: []});
-		mockGetChatbots.mockResolvedValue({
+		mockGetChatbotDefinitions.mockResolvedValue({
 			items: [
 				{
 					active: true,
@@ -133,7 +134,7 @@ describe('HomeDashboard', () => {
 
 	it('requests the latest agents and chatbots sorted by modification date', async () => {
 		mockGetAgentDefinitions.mockResolvedValue({items: []});
-		mockGetChatbots.mockResolvedValue({items: []});
+		mockGetChatbotDefinitions.mockResolvedValue({items: []});
 
 		render(<HomeDashboard {...defaultProps} />);
 
@@ -144,7 +145,7 @@ describe('HomeDashboard', () => {
 			});
 		});
 
-		expect(mockGetChatbots).toHaveBeenCalledWith({
+		expect(mockGetChatbotDefinitions).toHaveBeenCalledWith({
 			pageSize: '4',
 			sort: 'dateModified:desc',
 		});
@@ -152,7 +153,9 @@ describe('HomeDashboard', () => {
 
 	it('renders up to four chatbots in the order returned by the server', async () => {
 		mockGetAgentDefinitions.mockResolvedValue({items: []});
-		mockGetChatbots.mockResolvedValue({items: buildItems('Chatbot', 5)});
+		mockGetChatbotDefinitions.mockResolvedValue({
+			items: buildItems('Chatbot', 5),
+		});
 
 		render(<HomeDashboard {...defaultProps} />);
 
@@ -170,7 +173,7 @@ describe('HomeDashboard', () => {
 		mockGetAgentDefinitions.mockResolvedValue({
 			items: buildItems('Agent', 5),
 		});
-		mockGetChatbots.mockResolvedValue({items: []});
+		mockGetChatbotDefinitions.mockResolvedValue({items: []});
 
 		render(<HomeDashboard {...defaultProps} />);
 

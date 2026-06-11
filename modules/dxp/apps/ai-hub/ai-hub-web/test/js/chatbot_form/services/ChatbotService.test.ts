@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getChatbots} from '../../../../src/main/resources/META-INF/resources/js/chatbot_form/services/ChatbotService';
+import {getChatbotDefinitions} from '../../../../src/main/resources/META-INF/resources/js/chatbot_form/services/ChatbotService';
 
 const mockFetch = jest.fn();
 
@@ -24,17 +24,20 @@ describe('ChatbotService', () => {
 		mockFetch.mockReset();
 	});
 
-	describe('getChatbots', () => {
-		it('targets the base endpoint when no params are given', async () => {
+	describe('getChatbotDefinitions', () => {
+		it('appends sort and page size params as a query string', async () => {
 			mockFetch.mockResolvedValueOnce({
 				json: () => Promise.resolve({items: []}),
 				ok: true,
 			});
 
-			await getChatbots();
+			await getChatbotDefinitions({
+				pageSize: '4',
+				sort: 'dateModified:desc',
+			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				BASE_URI,
+				`${BASE_URI}?pageSize=4&sort=dateModified%3Adesc`,
 				expect.objectContaining({method: 'GET'})
 			);
 		});
@@ -45,7 +48,7 @@ describe('ChatbotService', () => {
 				ok: true,
 			});
 
-			await getChatbots({});
+			await getChatbotDefinitions({});
 
 			expect(mockFetch).toHaveBeenCalledWith(
 				BASE_URI,
@@ -53,16 +56,16 @@ describe('ChatbotService', () => {
 			);
 		});
 
-		it('appends sort and page size params as a query string', async () => {
+		it('targets the base endpoint when no params are given', async () => {
 			mockFetch.mockResolvedValueOnce({
 				json: () => Promise.resolve({items: []}),
 				ok: true,
 			});
 
-			await getChatbots({pageSize: '4', sort: 'dateModified:desc'});
+			await getChatbotDefinitions();
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`${BASE_URI}?pageSize=4&sort=dateModified%3Adesc`,
+				BASE_URI,
 				expect.objectContaining({method: 'GET'})
 			);
 		});
@@ -70,7 +73,7 @@ describe('ChatbotService', () => {
 		it('throws when the response is not ok', async () => {
 			mockFetch.mockResolvedValueOnce({ok: false});
 
-			await expect(getChatbots()).rejects.toThrow();
+			await expect(getChatbotDefinitions()).rejects.toThrow();
 		});
 	});
 });

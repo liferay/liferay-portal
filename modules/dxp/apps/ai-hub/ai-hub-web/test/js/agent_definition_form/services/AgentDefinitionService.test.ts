@@ -19,15 +19,18 @@ describe('AgentDefinitionService', () => {
 	});
 
 	describe('getAgentDefinitions', () => {
-		it('targets the base endpoint when no params are given', async () => {
+		it('appends sort and page size params as a query string', async () => {
 			mockFetch.mockResolvedValueOnce({
 				json: () => Promise.resolve({items: []}),
 			});
 
-			await getAgentDefinitions();
+			await getAgentDefinitions({
+				pageSize: '4',
+				sort: 'dateModified:desc',
+			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				BASE_URI,
+				`${BASE_URI}?pageSize=4&sort=dateModified%3Adesc`,
 				expect.objectContaining({method: 'GET'})
 			);
 		});
@@ -45,18 +48,15 @@ describe('AgentDefinitionService', () => {
 			);
 		});
 
-		it('appends sort and page size params as a query string', async () => {
+		it('targets the base endpoint when no params are given', async () => {
 			mockFetch.mockResolvedValueOnce({
 				json: () => Promise.resolve({items: []}),
 			});
 
-			await getAgentDefinitions({
-				pageSize: '4',
-				sort: 'dateModified:desc',
-			});
+			await getAgentDefinitions();
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				`${BASE_URI}?pageSize=4&sort=dateModified%3Adesc`,
+				BASE_URI,
 				expect.objectContaining({method: 'GET'})
 			);
 		});

@@ -16,9 +16,9 @@ import '@testing-library/jest-dom';
 
 import ChatbotForm from '../../../src/main/resources/META-INF/resources/js/chatbot_form/ChatbotForm';
 
-const mockGetChatbot = jest.fn();
-const mockPostChatbot = jest.fn();
-const mockPutChatbot = jest.fn();
+const mockGetChatbotDefinition = jest.fn();
+const mockPostChatbotDefinition = jest.fn();
+const mockPutChatbotDefinition = jest.fn();
 const mockOpenToast = jest.fn();
 
 jest.mock(
@@ -32,10 +32,13 @@ jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/chatbot_form/services/ChatbotService',
 	() => ({
 		disassociateChatbotFromAgentDefinition: jest.fn().mockResolvedValue({}),
-		getChatbot: (...args: any[]) => mockGetChatbot(...args),
-		postChatbot: (...args: any[]) => mockPostChatbot(...args),
-		putChatbot: (...args: any[]) => mockPutChatbot(...args),
+		getChatbotDefinition: (...args: any[]) =>
+			mockGetChatbotDefinition(...args),
+		postChatbotDefinition: (...args: any[]) =>
+			mockPostChatbotDefinition(...args),
 		putChatbotAgentDefinitionRelationship: jest.fn().mockResolvedValue({}),
+		putChatbotDefinition: (...args: any[]) =>
+			mockPutChatbotDefinition(...args),
 	})
 );
 
@@ -117,9 +120,9 @@ function makeFile(name: string, sizeInBytes: number, type = 'image/png'): File {
 describe('ChatbotForm company logo upload', () => {
 	beforeEach(() => {
 		mockOpenToast.mockClear();
-		mockGetChatbot.mockReset();
-		mockPostChatbot.mockReset();
-		mockPutChatbot.mockReset();
+		mockGetChatbotDefinition.mockReset();
+		mockPostChatbotDefinition.mockReset();
+		mockPutChatbotDefinition.mockReset();
 	});
 
 	afterEach(() => {
@@ -194,9 +197,9 @@ describe('ChatbotForm company logo upload', () => {
 describe('ChatbotForm disclaimer message', () => {
 	beforeEach(() => {
 		mockOpenToast.mockClear();
-		mockGetChatbot.mockReset();
-		mockPostChatbot.mockReset();
-		mockPutChatbot.mockReset();
+		mockGetChatbotDefinition.mockReset();
+		mockPostChatbotDefinition.mockReset();
+		mockPutChatbotDefinition.mockReset();
 	});
 
 	afterEach(() => {
@@ -204,7 +207,7 @@ describe('ChatbotForm disclaimer message', () => {
 	});
 
 	it('submits with an empty disclaimer when the admin never fills it', async () => {
-		mockPostChatbot.mockResolvedValue({
+		mockPostChatbotDefinition.mockResolvedValue({
 			externalReferenceCode: 'CHATBOT-ERC',
 		});
 
@@ -214,15 +217,17 @@ describe('ChatbotForm disclaimer message', () => {
 
 		fireEvent.click(screen.getByRole('button', {name: 'save'}));
 
-		await waitFor(() => expect(mockPostChatbot).toHaveBeenCalled());
-
-		expect(mockPostChatbot.mock.calls[0][0].disclaimerMessage_i18n).toEqual(
-			{}
+		await waitFor(() =>
+			expect(mockPostChatbotDefinition).toHaveBeenCalled()
 		);
+
+		expect(
+			mockPostChatbotDefinition.mock.calls[0][0].disclaimerMessage_i18n
+		).toEqual({});
 	});
 
 	it('sends the typed disclaimer through to the API payload', async () => {
-		mockPostChatbot.mockResolvedValue({
+		mockPostChatbotDefinition.mockResolvedValue({
 			externalReferenceCode: 'CHATBOT-ERC',
 		});
 
@@ -234,10 +239,12 @@ describe('ChatbotForm disclaimer message', () => {
 
 		fireEvent.click(screen.getByRole('button', {name: 'save'}));
 
-		await waitFor(() => expect(mockPostChatbot).toHaveBeenCalled());
-
-		expect(mockPostChatbot.mock.calls[0][0].disclaimerMessage_i18n).toEqual(
-			{en_US: 'Custom disclaimer'}
+		await waitFor(() =>
+			expect(mockPostChatbotDefinition).toHaveBeenCalled()
 		);
+
+		expect(
+			mockPostChatbotDefinition.mock.calls[0][0].disclaimerMessage_i18n
+		).toEqual({en_US: 'Custom disclaimer'});
 	});
 });
