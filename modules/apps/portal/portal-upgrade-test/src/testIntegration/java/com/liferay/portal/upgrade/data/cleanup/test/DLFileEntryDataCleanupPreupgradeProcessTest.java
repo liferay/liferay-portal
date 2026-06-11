@@ -266,139 +266,15 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 	public void testUpgradeDLFileEntryResourcePermissionScopeCheck()
 		throws Exception {
 
-		long companyId = TestPropsValues.getCompanyId();
-		long companyPermissionId = CounterLocalServiceUtil.increment();
-		long individualPermissionId = CounterLocalServiceUtil.increment();
-		long primKeyId = RandomTestUtil.nextLong();
-		long roleId = RandomTestUtil.nextLong();
-
-		try {
-			ResourcePermission companyResourcePermission =
-				_resourcePermissionLocalService.createResourcePermission(
-					companyPermissionId);
-
-			companyResourcePermission.setCompanyId(companyId);
-			companyResourcePermission.setName(DLFileEntry.class.getName());
-			companyResourcePermission.setScope(ResourceConstants.SCOPE_COMPANY);
-			companyResourcePermission.setPrimKey(String.valueOf(primKeyId));
-			companyResourcePermission.setPrimKeyId(primKeyId);
-			companyResourcePermission.setRoleId(roleId);
-			companyResourcePermission.setActionIds(1);
-
-			_resourcePermissionLocalService.addResourcePermission(
-				companyResourcePermission);
-
-			ResourcePermission individualResourcePermission =
-				_resourcePermissionLocalService.createResourcePermission(
-					individualPermissionId);
-
-			individualResourcePermission.setCompanyId(companyId);
-			individualResourcePermission.setName(DLFileEntry.class.getName());
-			individualResourcePermission.setScope(
-				ResourceConstants.SCOPE_INDIVIDUAL);
-			individualResourcePermission.setPrimKey(String.valueOf(primKeyId));
-			individualResourcePermission.setPrimKeyId(primKeyId);
-			individualResourcePermission.setRoleId(roleId);
-			individualResourcePermission.setActionIds(1);
-
-			_resourcePermissionLocalService.addResourcePermission(
-				individualResourcePermission);
-
-			Assert.assertNotNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					companyPermissionId));
-			Assert.assertNotNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					individualPermissionId));
-
-			upgrade();
-
-			_resourcePermissionPersistence.clearCache();
-
-			Assert.assertNotNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					companyPermissionId));
-			Assert.assertNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					individualPermissionId));
-		}
-		finally {
-			runSQL(
-				StringBundler.concat(
-					"delete from ResourcePermission where ",
-					"resourcePermissionId in (", individualPermissionId, ", ",
-					companyPermissionId, ")"));
-		}
+		_testUpgradeResourcePermissionScopeCheck(DLFileEntry.class.getName());
 	}
 
 	@Test
 	public void testUpgradeDLFileShortcutResourcePermissionScopeCheck()
 		throws Exception {
 
-		long companyId = TestPropsValues.getCompanyId();
-		long companyPermissionId = CounterLocalServiceUtil.increment();
-		long individualPermissionId = CounterLocalServiceUtil.increment();
-		long primKeyId = RandomTestUtil.nextLong();
-		long roleId = RandomTestUtil.nextLong();
-
-		try {
-			ResourcePermission companyResourcePermission =
-				_resourcePermissionLocalService.createResourcePermission(
-					companyPermissionId);
-
-			companyResourcePermission.setCompanyId(companyId);
-			companyResourcePermission.setName(DLFileShortcut.class.getName());
-			companyResourcePermission.setScope(ResourceConstants.SCOPE_COMPANY);
-			companyResourcePermission.setPrimKey(String.valueOf(primKeyId));
-			companyResourcePermission.setPrimKeyId(primKeyId);
-			companyResourcePermission.setRoleId(roleId);
-			companyResourcePermission.setActionIds(1);
-
-			_resourcePermissionLocalService.addResourcePermission(
-				companyResourcePermission);
-
-			ResourcePermission individualResourcePermission =
-				_resourcePermissionLocalService.createResourcePermission(
-					individualPermissionId);
-
-			individualResourcePermission.setCompanyId(companyId);
-			individualResourcePermission.setName(
-				DLFileShortcut.class.getName());
-			individualResourcePermission.setScope(
-				ResourceConstants.SCOPE_INDIVIDUAL);
-			individualResourcePermission.setPrimKey(String.valueOf(primKeyId));
-			individualResourcePermission.setPrimKeyId(primKeyId);
-			individualResourcePermission.setRoleId(roleId);
-			individualResourcePermission.setActionIds(1);
-
-			_resourcePermissionLocalService.addResourcePermission(
-				individualResourcePermission);
-
-			Assert.assertNotNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					companyPermissionId));
-			Assert.assertNotNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					individualPermissionId));
-
-			upgrade();
-
-			_resourcePermissionPersistence.clearCache();
-
-			Assert.assertNotNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					companyPermissionId));
-			Assert.assertNull(
-				_resourcePermissionLocalService.fetchResourcePermission(
-					individualPermissionId));
-		}
-		finally {
-			runSQL(
-				StringBundler.concat(
-					"delete from ResourcePermission where ",
-					"resourcePermissionId in (", individualPermissionId, ", ",
-					companyPermissionId, ")"));
-		}
+		_testUpgradeResourcePermissionScopeCheck(
+			DLFileShortcut.class.getName());
 	}
 
 	@Test
@@ -458,7 +334,8 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 				DLFileEntry.class.getName(),
 				latestFileVersion.getFileVersionId());
 
-			Assert.assertNotNull(latestFileVersionAssetEntry);
+
+				Assert.assertNotNull(latestFileVersionAssetEntry);
 		}
 		finally {
 			_dlAppService.deleteFileEntry(fileEntry.getFileEntryId());
@@ -468,6 +345,68 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 					latestFileVersionAssetEntry);
 			}
 		}
+	}
+
+	private void _testUpgradeResourcePermissionScopeCheck(String name)
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+		long companyPermissionId = CounterLocalServiceUtil.increment();
+		long individualPermissionId = CounterLocalServiceUtil.increment();
+		long primKeyId = RandomTestUtil.nextLong();
+		long roleId = RandomTestUtil.nextLong();
+
+		ResourcePermission companyResourcePermission =
+			_resourcePermissionLocalService.createResourcePermission(
+				companyPermissionId);
+
+		companyResourcePermission.setCompanyId(companyId);
+		companyResourcePermission.setName(name);
+		companyResourcePermission.setScope(ResourceConstants.SCOPE_COMPANY);
+		companyResourcePermission.setPrimKey(String.valueOf(primKeyId));
+		companyResourcePermission.setPrimKeyId(primKeyId);
+		companyResourcePermission.setRoleId(roleId);
+		companyResourcePermission.setActionIds(RandomTestUtil.nextLong());
+
+		_resourcePermissionLocalService.addResourcePermission(
+			companyResourcePermission);
+
+		ResourcePermission individualResourcePermission =
+			_resourcePermissionLocalService.createResourcePermission(
+				individualPermissionId);
+
+		individualResourcePermission.setCompanyId(companyId);
+		individualResourcePermission.setName(name);
+		individualResourcePermission.setScope(
+			ResourceConstants.SCOPE_INDIVIDUAL);
+		individualResourcePermission.setPrimKey(String.valueOf(primKeyId));
+		individualResourcePermission.setPrimKeyId(primKeyId);
+		individualResourcePermission.setRoleId(roleId);
+		individualResourcePermission.setActionIds(RandomTestUtil.nextLong());
+
+		_resourcePermissionLocalService.addResourcePermission(
+			individualResourcePermission);
+
+		Assert.assertNotNull(
+			_resourcePermissionLocalService.fetchResourcePermission(
+				companyPermissionId));
+		Assert.assertNotNull(
+			_resourcePermissionLocalService.fetchResourcePermission(
+				individualPermissionId));
+
+		upgrade();
+
+		_resourcePermissionPersistence.clearCache();
+
+		Assert.assertNotNull(
+			_resourcePermissionLocalService.fetchResourcePermission(
+				companyPermissionId));
+		Assert.assertNull(
+			_resourcePermissionLocalService.fetchResourcePermission(
+				individualPermissionId));
+
+		_resourcePermissionLocalService.deleteResourcePermission(
+			companyPermissionId);
 	}
 
 	@Inject
