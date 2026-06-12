@@ -5,8 +5,13 @@
 
 package com.liferay.portal.security.password.encryptor.internal;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PwdEncryptorException;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.DigesterUtil;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -22,8 +27,21 @@ public class DefaultPasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-		String algorithm, String plainTextPassword, String encryptedPassword,
-		boolean upgradeHashSecurity) {
+			String algorithm, String plainTextPassword,
+			String encryptedPassword, boolean upgradeHashSecurity)
+		throws PwdEncryptorException {
+
+		try {
+			MessageDigest.getInstance(algorithm);
+		}
+		catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+			throw new PwdEncryptorException.UnavailableAlgorithm(
+				StringBundler.concat(
+					"The algorithm \"", algorithm,
+					"\" is not available from the configured security ",
+					"provider"),
+				noSuchAlgorithmException);
+		}
 
 		return DigesterUtil.digest(algorithm, plainTextPassword);
 	}

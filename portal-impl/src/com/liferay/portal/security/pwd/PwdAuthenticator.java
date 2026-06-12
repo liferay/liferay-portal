@@ -32,8 +32,35 @@ public class PwdAuthenticator {
 			String currentEncryptedPassword)
 		throws PwdEncryptorException {
 
-		String encryptedPassword = PasswordEncryptorUtil.encrypt(
-			clearTextPassword, currentEncryptedPassword);
+		String encryptedPassword = null;
+
+		try {
+			encryptedPassword = PasswordEncryptorUtil.encrypt(
+				clearTextPassword, currentEncryptedPassword);
+		}
+		catch (PwdEncryptorException.UnavailableAlgorithm
+					pwdEncryptorException1) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to verify a password hashed with an unavailable " +
+						"algorithm",
+					pwdEncryptorException1);
+			}
+
+			try {
+				PasswordEncryptorUtil.encrypt(
+					clearTextPassword, _PRETENDED_CURRENT_ENCRYPTED_PASSWORD);
+			}
+			catch (PwdEncryptorException pwdEncryptorException2) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Unable to perform decoy hash", pwdEncryptorException2);
+				}
+			}
+
+			return false;
+		}
 
 		if (currentEncryptedPassword.equals(encryptedPassword)) {
 			return true;

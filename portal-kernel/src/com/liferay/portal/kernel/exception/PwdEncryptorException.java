@@ -48,6 +48,14 @@ public class PwdEncryptorException extends PortalException {
 
 	}
 
+	public static class UnavailableAlgorithm extends PwdEncryptorException {
+
+		public UnavailableAlgorithm(String msg, Throwable throwable) {
+			super(msg, throwable);
+		}
+
+	}
+
 	public static class UnsupportedEncoding extends PwdEncryptorException {
 
 		public UnsupportedEncoding(String msg, Throwable throwable) {
