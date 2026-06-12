@@ -259,10 +259,49 @@ public class PasswordEncryptorUtilTest {
 			PasswordEncryptor.TYPE_UFC_CRYPT);
 	}
 
+	@Test
+	public void testEncryptUnavailableAlgorithm() throws Exception {
+		DefaultPasswordEncryptor defaultPasswordEncryptor =
+			new DefaultPasswordEncryptor();
+
+		try {
+			defaultPasswordEncryptor.encrypt(
+				"Some Nonexistent Algorithm", "password", null, false);
+
+			Assert.fail();
+		}
+		catch (PwdEncryptorException.UnavailableAlgorithm
+					pwdEncryptorException) {
+		}
+	}
+
 	@Test(expected = PwdEncryptorException.MustSetLegacyAlgorithmProperty.class)
 	public void testEncryptWithLegacyAlgorithm() throws Exception {
 		_testEncryptWithLegacyAlgorithm(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testFIPSModeEnforcesPBKDF2WithHmacSHA256() throws Exception {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_testEncryptGenerationFailure(
+				PasswordEncryptor.TYPE_BCRYPT + "/10");
+
+			_testEncryptGenerationFailure(
+				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA1/160/1300000");
+
+			_testEncryptGenerationFailure(
+				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/600000");
+
+			_testEncryptGenerationFailure(
+				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/64/1300000");
+
+			_testEncrypt(
+				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/1300000");
+		}
 	}
 
 	private void _runTests(
@@ -309,6 +348,16 @@ public class PasswordEncryptorUtilTest {
 			Assert.fail();
 		}
 		catch (Exception exception) {
+		}
+	}
+
+	private void _testEncryptGenerationFailure(String algorithm) {
+		try {
+			PasswordEncryptorUtil.encrypt(algorithm, "password", null);
+
+			Assert.fail();
+		}
+		catch (PwdEncryptorException pwdEncryptorException) {
 		}
 	}
 
