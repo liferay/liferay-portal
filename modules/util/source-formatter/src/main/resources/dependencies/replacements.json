@@ -3719,6 +3719,20 @@
 	},
 	{
 		"classNames": [
+			"BaseJSPDynamicInclude"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-35156",
+		"newImports": [
+			"jakarta.servlet.ServletContext"
+		],
+		"newMethods": [
+			"@Override\n\tprotected ServletContext getServletContext() {\n\t\treturn _servletContext;\n\t}"
+		],
+		"newReference": "ServletContext _servletContext"
+	},
+	{
+		"classNames": [
 			"ListTypeLocalService"
 		],
 		"from": "addListType(String paramName, String paramName)",
