@@ -3522,6 +3522,14 @@
 	},
 	{
 		"classNames": [
+			"RecurrenceSerializer"
+		],
+		"from": "toCronText(Recurrence paramName)",
+		"hasMessage": true,
+		"issueKey": "LPD-31312"
+	},
+	{
+		"classNames": [
 			"CustomFacetPortletPreferences"
 		],
 		"from": "getFederatedSearchKeyOptional",
