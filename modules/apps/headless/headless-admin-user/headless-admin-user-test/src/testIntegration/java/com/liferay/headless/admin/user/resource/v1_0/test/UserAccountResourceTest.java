@@ -802,6 +802,77 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		super.testGraphQLGetUserAccountsByStatusPage();
 	}
 
+	@Override
+	@Test
+	public void testGraphQLGetUserAccountsPage() throws Exception {
+		GraphQLField graphQLField = new GraphQLField(
+			"userAccounts",
+			new HashMap<String, Object>() {
+				{
+					put("page", 1);
+					put("pageSize", 10);
+					put("search", null);
+					put("sort", "\"dateCreated:desc\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject userAccountsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/userAccounts");
+
+		long totalCount = userAccountsJSONObject.getLong("totalCount");
+
+		UserAccount userAccount1 = testGraphQLUserAccount_addUserAccount(
+			randomUserAccount());
+
+		UserAccount userAccount2 = testGraphQLUserAccount_addUserAccount(
+			randomUserAccount());
+
+		userAccountsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/userAccounts");
+
+		Assert.assertEquals(
+			totalCount + 2, userAccountsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			userAccount1,
+			Arrays.asList(
+				UserAccountSerDes.toDTOs(
+					userAccountsJSONObject.getString("items"))));
+		assertContains(
+			userAccount2,
+			Arrays.asList(
+				UserAccountSerDes.toDTOs(
+					userAccountsJSONObject.getString("items"))));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		userAccountsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("headlessAdminUser_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+			"JSONObject/userAccounts");
+
+		Assert.assertEquals(
+			totalCount + 2, userAccountsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			userAccount1,
+			Arrays.asList(
+				UserAccountSerDes.toDTOs(
+					userAccountsJSONObject.getString("items"))));
+		assertContains(
+			userAccount2,
+			Arrays.asList(
+				UserAccountSerDes.toDTOs(
+					userAccountsJSONObject.getString("items"))));
+	}
+
 	@Ignore
 	@Override
 	@Test
