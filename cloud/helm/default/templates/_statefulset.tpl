@@ -44,9 +44,9 @@ spec:
             {{- end }}
             containers:
                 -   #
-                    {{- if or .statefulset.customEnv .statefulset.env .statefulset.subscription.enabled }}
+                    {{- if or .statefulset.customEnv .statefulset.env (and (eq .name "") .root.Values.subscription.enabled) }}
                     env:
-                        {{- if .statefulset.subscription.enabled }}
+                        {{- if and (eq .name "") .root.Values.subscription.enabled }}
                         -   name: "LIFERAY_DISABLE_TRIAL_LICENSE"
                             value: "true"
                         {{- end -}}
@@ -102,9 +102,9 @@ spec:
                     startupProbe:
                         {{- toYaml . | nindent 24 }}
                     {{- end }}
-                    {{- if or .statefulset.customVolumeMounts .statefulset.volumeMounts .statefulset.subscription.enabled }}
+                    {{- if or .statefulset.customVolumeMounts .statefulset.volumeMounts (and (eq .name "") .root.Values.subscription.enabled) }}
                     volumeMounts:
-                        {{- if .statefulset.subscription.enabled }}
+                        {{- if and (eq .name "") .root.Values.subscription.enabled }}
                         -   mountPath: /etc/liferay/mount/files/deploy/license.xml
                             name: liferay-license
                             subPath: license.xml
@@ -171,9 +171,9 @@ spec:
             tolerations:
             {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- if or .statefulset.customVolumes .statefulset.volumes .statefulset.subscription.enabled }}
+            {{- if or .statefulset.customVolumes .statefulset.volumes (and (eq .name "") .root.Values.subscription.enabled) }}
             volumes:
-                {{- if .statefulset.subscription.enabled }}
+                {{- if and (eq .name "") .root.Values.subscription.enabled }}
                 -   name: liferay-license
                     secret:
                         secretName: {{ include "liferay.licenseSecretName" .root }}

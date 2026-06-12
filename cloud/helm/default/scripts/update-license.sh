@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
 fi
 
 FETCHED_LICENSE_BASE64=$( \
-	echo "${LICENSE_RESPONSE}" | jq --raw-output '.license' \
+	echo "${LICENSE_RESPONSE}" | jq --raw-output '.license // empty' \
 )
 
 if [ -z "${FETCHED_LICENSE_BASE64}" ]; then

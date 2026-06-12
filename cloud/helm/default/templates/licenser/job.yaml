@@ -5,6 +5,7 @@ metadata:
     labels:
         {{- include "liferay.labels" . | nindent 8 }}
     name: "{{ include "liferay.name" . }}-licenser-init"
+    namespace: {{ include "liferay.namespace" . }}
 spec:
     template:
         spec:
