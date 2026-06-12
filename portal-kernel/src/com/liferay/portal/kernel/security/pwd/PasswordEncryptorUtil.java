@@ -145,6 +145,19 @@ public class PasswordEncryptorUtil {
 			}
 		}
 
+		if (PropsValues.FIPS_ENABLED && Validator.isNull(encryptedPassword) &&
+			!_isFIPSApprovedAlgorithm(algorithm)) {
+
+			throw new PwdEncryptorException.InvalidAlgorithm(
+				StringBundler.concat(
+					"FIPS mode requires the property \"",
+					PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM,
+					"\" to use PBKDF2 with HMAC-SHA-256 (for example, ",
+					"PBKDF2WithHmacSHA256/256/600000), but was \"", algorithm,
+					"\""),
+				null);
+		}
+
 		PasswordEncryptor passwordEncryptor = _getPasswordEncryptor(algorithm);
 
 		String newEncryptedPassword = passwordEncryptor.encrypt(
@@ -291,6 +304,22 @@ public class PasswordEncryptorUtil {
 		}
 
 		return passwordEncryptor;
+	}
+
+	private static boolean _isFIPSApprovedAlgorithm(String algorithm) {
+		if (Validator.isNull(algorithm)) {
+			return false;
+		}
+
+		String upperCaseAlgorithm = StringUtil.toUpperCase(algorithm);
+
+		if (upperCaseAlgorithm.startsWith(PasswordEncryptor.TYPE_PBKDF2) &&
+			upperCaseAlgorithm.contains("SHA256")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final String _PASSWORDS_ENCRYPTION_ALGORITHM =
