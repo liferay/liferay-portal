@@ -2,6 +2,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+    annotations:
+        helm.sh/hook: post-install,post-upgrade
+        helm.sh/hook-delete-policy: before-hook-creation
     labels:
         {{- include "liferay.labels" . | nindent 8 }}
     name: "{{ include "liferay.name" . }}-licenser-init"
