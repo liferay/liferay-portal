@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.nio.BufferUnderflowException;
@@ -114,14 +115,18 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 		}
 	}
 
-	private static final int _KEY_SIZE = 160;
+	private static final int _KEY_SIZE = 256;
+
+	private static final int _KEY_SIZE_FLOOR = 112;
 
 	private static final int _ROUNDS = 1300000;
+
+	private static final int _ROUNDS_FLOOR = 1300000;
 
 	private static final int _SALT_BYTES_LENGTH = 16;
 
 	private static final Pattern _pattern = Pattern.compile(
-		"^.*/?([0-9]+)?/([0-9]+)$");
+		"^[^/]*(?:/([0-9]+))?/([0-9]+)$");
 
 	private static class PBKDF2EncryptionConfiguration {
 
@@ -140,8 +145,30 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 					_rounds = GetterUtil.getInteger(matcher.group(2), _ROUNDS);
 				}
 
-				BigEndianCodec.putLong(
-					_saltBytes, 0, SecureRandomUtil.nextLong());
+				if (PropsValues.FIPS_ENABLED) {
+					if (_rounds < _ROUNDS_FLOOR) {
+						throw new PwdEncryptorException.InvalidAlgorithm(
+							StringBundler.concat(
+								"PBKDF2 iteration count ", _rounds,
+								" is below the minimum allowed value of ",
+								_ROUNDS_FLOOR),
+							null);
+					}
+
+					if (_keySize < _KEY_SIZE_FLOOR) {
+						throw new PwdEncryptorException.InvalidAlgorithm(
+							StringBundler.concat(
+								"PBKDF2 output length ", _keySize,
+								" bits is below the minimum allowed value of ",
+								_KEY_SIZE_FLOOR, " bits"),
+							null);
+					}
+				}
+
+				for (int i = 0; i < _SALT_BYTES_LENGTH; i += 8) {
+					BigEndianCodec.putLong(
+						_saltBytes, i, SecureRandomUtil.nextLong());
+				}
 			}
 			else {
 				ByteBuffer byteBuffer = ByteBuffer.wrap(
