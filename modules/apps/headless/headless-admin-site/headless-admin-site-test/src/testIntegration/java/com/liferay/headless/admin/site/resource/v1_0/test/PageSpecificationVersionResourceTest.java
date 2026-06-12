@@ -95,12 +95,12 @@ public class PageSpecificationVersionResourceTest
 
 		LayoutContentVersion layoutContentVersion =
 			_layoutContentVersionLocalService.addLayoutContentVersion(
-				null, TestPropsValues.getUserId(), draftLayout.getPlid(), null,
+				null, TestPropsValues.getUserId(),
 				_layoutContentVersionDataProvider.getLayoutContentVersionData(
 					draftLayout,
 					ServiceContextTestUtil.getServiceContext(
 						testGroup.getGroupId())),
-				WorkflowConstants.STATUS_APPROVED, false);
+				null, draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
 
 		return pageSpecificationVersionResource.
 			getSiteSitePagePageSpecificationVersion(
@@ -156,16 +156,16 @@ public class PageSpecificationVersionResourceTest
 		LayoutContentVersion layoutContentVersion =
 			_layoutContentVersionLocalService.addLayoutContentVersion(
 				pageSpecificationVersion.getExternalReferenceCode(),
-				TestPropsValues.getUserId(), draftLayout.getPlid(),
-				HashMapBuilder.put(
-					LocaleUtil.getSiteDefault(),
-					pageSpecificationVersion.getName()
-				).build(),
+				TestPropsValues.getUserId(),
 				_layoutContentVersionDataProvider.getLayoutContentVersionData(
 					draftLayout,
 					ServiceContextTestUtil.getServiceContext(
 						group.getGroupId())),
-				WorkflowConstants.STATUS_APPROVED, false);
+				HashMapBuilder.put(
+					LocaleUtil.getSiteDefault(),
+					pageSpecificationVersion.getName()
+				).build(),
+				draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
 
 		if (Validator.isNotNull(
 				pageSpecificationVersion.getExternalReferenceCode())) {

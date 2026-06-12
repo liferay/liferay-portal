@@ -502,12 +502,12 @@ public class PageSpecificationResourceTest
 
 		_layoutContentVersion =
 			_layoutContentVersionLocalService.addLayoutContentVersion(
-				null, TestPropsValues.getUserId(), draftLayout.getPlid(), null,
+				null, TestPropsValues.getUserId(),
 				_layoutContentVersionDataProvider.getLayoutContentVersionData(
 					draftLayout,
 					ServiceContextTestUtil.getServiceContext(
 						testGroup.getGroupId())),
-				WorkflowConstants.STATUS_APPROVED, false);
+				null, draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
 
 		return PageSpecification.toDTO(_layoutContentVersion.getData());
 	}
