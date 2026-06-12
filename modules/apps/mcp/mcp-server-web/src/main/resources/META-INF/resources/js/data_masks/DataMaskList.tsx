@@ -7,7 +7,8 @@ import ClayButton from '@clayui/button';
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
-import {API_BASE, DATA_SET_ID, FILTERS, SORTS, VIEWS} from './constants';
+import {DATA_MASKS_URL} from '../services/dataMasksURL';
+import {DATA_SET_ID, FILTERS, SORTS, VIEWS} from './constants';
 import {ActionContext, DataMask} from './types';
 
 function isSystemMask(dataMask: DataMask) {
@@ -51,7 +52,7 @@ export function DataMaskList({
 }: DataMaskListProps) {
 	return (
 		<FrontendDataSet
-			apiURL={API_BASE}
+			apiURL={DATA_MASKS_URL}
 			creationMenu={{
 				primaryItems: [
 					{

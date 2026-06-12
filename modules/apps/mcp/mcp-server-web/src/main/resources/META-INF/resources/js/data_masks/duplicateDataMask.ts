@@ -5,11 +5,11 @@
 
 import {openToast} from 'frontend-js-components-web';
 
-import {saveDataMask} from './api';
+import {postDataMask} from '../services/postDataMask';
 import {ActionContext} from './types';
 
 export async function duplicateDataMask({itemData, loadData}: ActionContext) {
-	const {detail, ok, saved} = await saveDataMask(null, {
+	const {data: saved, error} = await postDataMask({
 		description: itemData.description ?? '',
 		detectionRegex: itemData.detectionRegex,
 		maskType: {key: 'custom'},
@@ -21,10 +21,9 @@ export async function duplicateDataMask({itemData, loadData}: ActionContext) {
 		replacementValue: itemData.replacementValue,
 	});
 
-	if (!ok) {
+	if (error) {
 		openToast({
-			message:
-				detail || Liferay.Language.get('an-unexpected-error-occurred'),
+			message: error,
 			type: 'danger',
 		});
 

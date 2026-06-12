@@ -6,7 +6,8 @@
 import {openToast} from 'frontend-js-components-web';
 import {FormEvent, useState} from 'react';
 
-import {saveDataMask} from './api';
+import {patchDataMask} from '../services/patchDataMask';
+import {postDataMask} from '../services/postDataMask';
 import {DataMask} from './types';
 
 interface Options {
@@ -59,22 +60,24 @@ export function useDataMaskForm({dataMask, onSaved}: Options) {
 
 		setSubmitting(true);
 
-		const {detail, ok, saved} = await saveDataMask(dataMask, {
+		const payload = {
 			description,
 			detectionRegex,
 			maskType: {key: dataMask?.maskType?.key ?? 'custom'},
 			name,
 			replacementRegex,
 			replacementValue,
-		});
+		};
+
+		const {data: saved, error} = dataMask?.id
+			? await patchDataMask(dataMask.id, payload)
+			: await postDataMask(payload);
 
 		setSubmitting(false);
 
-		if (!ok) {
+		if (error) {
 			openToast({
-				message:
-					detail ||
-					Liferay.Language.get('an-unexpected-error-occurred'),
+				message: error,
 				type: 'danger',
 			});
 

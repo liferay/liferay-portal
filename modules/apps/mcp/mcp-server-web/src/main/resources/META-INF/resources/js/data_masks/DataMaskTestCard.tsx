@@ -8,7 +8,10 @@ import {ClayInput} from '@clayui/form';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
-import {ValidationResult, validateDataMask} from './api';
+import {
+	ValidationResult,
+	postValidateDataMask,
+} from '../services/postValidateDataMask';
 
 interface DataMaskTestCardProps {
 	detectionRegex: string;
@@ -30,14 +33,14 @@ export function DataMaskTestCard({
 	const handleTest = async () => {
 		setTesting(true);
 
-		setResult(
-			await validateDataMask({
-				detectionRegex,
-				replacementRegex,
-				replacementValue,
-				sampleText,
-			})
-		);
+		const {data, error} = await postValidateDataMask({
+			detectionRegex,
+			replacementRegex,
+			replacementValue,
+			sampleText,
+		});
+
+		setResult(data ?? {error: error ?? '', output: ''});
 
 		setTesting(false);
 	};

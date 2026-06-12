@@ -6,13 +6,40 @@
 import {openToast} from 'frontend-js-components-web';
 import {useState} from 'react';
 
-import {deleteDataMask, fetchProfileNames} from './api';
+import {deleteDataMask} from '../services/deleteDataMask';
+import {getProfile} from '../services/getProfile';
+import {getProfileDataMasks} from '../services/getProfileDataMasks';
 import {ActionContext, DataMask} from './types';
+
+const DATA_MASK_FK_FIELD = 'r_dataMaskToProfileDataMasks_mcpServerDataMaskId';
 
 interface PendingDelete {
 	dataMask: DataMask;
 	loadData: () => void;
 	profileNames: string[];
+}
+
+async function getProfileNames(dataMaskId: number): Promise<string[]> {
+	const {data} = await getProfileDataMasks();
+
+	const profileIds = (data?.items ?? [])
+		.filter((item) => item[DATA_MASK_FK_FIELD] === dataMaskId)
+		.map((item) => item.mcpServerProfileId)
+		.filter((profileId): profileId is number => Boolean(profileId));
+
+	if (!profileIds.length) {
+		return [];
+	}
+
+	const names = await Promise.all(
+		profileIds.map(async (profileId) => {
+			const {data: profile} = await getProfile(profileId);
+
+			return profile?.name ?? null;
+		})
+	);
+
+	return names.filter((name): name is string => Boolean(name));
 }
 
 function deleteBody(profileNames: string[]) {
@@ -43,7 +70,9 @@ export function useDataMaskDeletion() {
 			return;
 		}
 
-		if (!(await deleteDataMask(id))) {
+		const {error} = await deleteDataMask(id);
+
+		if (error) {
 			openToast({
 				message: Liferay.Language.get('an-unexpected-error-occurred'),
 				type: 'danger',
@@ -65,7 +94,7 @@ export function useDataMaskDeletion() {
 
 	const requestDelete = async ({itemData, loadData}: ActionContext) => {
 		const profileNames = itemData.id
-			? await fetchProfileNames(itemData.id)
+			? await getProfileNames(itemData.id)
 			: [];
 
 		setPendingDelete({dataMask: itemData, loadData, profileNames});
