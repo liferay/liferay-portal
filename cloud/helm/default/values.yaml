@@ -379,7 +379,6 @@ startupProbe:
     periodSeconds: 10
     timeoutSeconds: 5
 subscription:
-    authToken: testtoken
     enabled: false
     host: "http://localhost:8787"
     id: testsubscriptionid

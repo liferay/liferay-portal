@@ -9,7 +9,10 @@ containers:
             -   name: LICENSE_SECRET_NAME
                 value: {{ include "liferay.licenseSecretName" . }}
             -   name: LIFERAY_SUBSCRIPTION_AUTH_TOKEN
-                value: {{ .Values.subscription.authToken }}
+                valueFrom:
+                    secretKeyRef:
+                        key: authToken
+                        name: {{ include "liferay.subscriptionSecretName" . }}
             -   name: LIFERAY_SUBSCRIPTION_HOST
                 value: {{ .Values.subscription.host }}
             -   name: LIFERAY_SUBSCRIPTION_ID

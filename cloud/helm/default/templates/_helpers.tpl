@@ -70,3 +70,7 @@ app.kubernetes.io/name: {{ include "liferay.name" . }}
 {{- default "default" .Values.global.liferayServiceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "liferay.subscriptionSecretName" -}}
+{{- include "liferay.name" . }}-subscription
+{{- end }}
