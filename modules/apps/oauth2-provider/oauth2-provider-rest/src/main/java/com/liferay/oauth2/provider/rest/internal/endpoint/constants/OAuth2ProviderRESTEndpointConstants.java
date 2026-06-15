@@ -32,6 +32,8 @@ public class OAuth2ProviderRESTEndpointConstants {
 
 	public static final String ERROR_INVALID_TOKEN = "invalid_token";
 
+	public static final String ERROR_RATE_LIMITED = "rate_limited";
+
 	public static final String ERROR_SERVER_ERROR = "server_error";
 
 	public static final String EVENT_TYPE_DYNAMIC_REGISTRATION_ADD =

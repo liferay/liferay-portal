@@ -20,6 +20,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -49,10 +52,13 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.PreMatching;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
+
+import java.io.Serializable;
 
 import java.security.Principal;
 
@@ -69,6 +75,7 @@ import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -169,6 +176,13 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		}
 
 		_setSecurityContext(containerRequestContext, httpServletRequest, user);
+	}
+
+	@Activate
+	protected void activate() {
+		_portalCache = PortalCacheHelperUtil.getPortalCache(
+			PortalCacheManagerNames.SINGLE_VM,
+			DynamicRegistrationServiceContainerRequestFilter.class.getName());
 	}
 
 	private User _authorize(
@@ -288,6 +302,10 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		_validateOpenRegistrationHosts(
 			oAuth2DynamicRegistrationConfiguration.allowedHosts(), clientHost,
 			companyId, httpServletRequest);
+		_validateOpenRegistrationRateLimit(
+			clientHost, companyId, httpServletRequest,
+			oAuth2DynamicRegistrationConfiguration.
+				maximumNumberOfRegistrationsPerHour());
 
 		User user = _userLocalService.fetchUserByScreenName(
 			companyId, UserConstants.SCREEN_NAME_DEFAULT_SERVICE_ACCOUNT);
@@ -538,6 +556,88 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			message, OAuthConstants.ACCESS_DENIED, Response.Status.FORBIDDEN);
 	}
 
+	private void _validateOpenRegistrationRateLimit(
+		String clientHost, long companyId,
+		HttpServletRequest httpServletRequest,
+		int maximumNumberOfRegistrationsPerHour) {
+
+		if (maximumNumberOfRegistrationsPerHour <= 0) {
+			return;
+		}
+
+		long time = System.currentTimeMillis();
+
+		long windowStart = (time / Time.HOUR) * Time.HOUR;
+
+		long retryAfterSeconds = Math.max(
+			((windowStart + Time.HOUR) - time) / Time.SECOND, 1);
+
+		String key = companyId + StringPool.COLON + clientHost;
+
+		int count;
+
+		synchronized (_rateLimitLock) {
+			RateLimitBucket rateLimitBucket = _portalCache.get(key);
+
+			if ((rateLimitBucket == null) ||
+				(rateLimitBucket._windowStart != windowStart)) {
+
+				count = 1;
+			}
+			else {
+				count = rateLimitBucket._count + 1;
+			}
+
+			if (count <= maximumNumberOfRegistrationsPerHour) {
+				_portalCache.put(
+					key, new RateLimitBucket(count, windowStart),
+					(int)retryAfterSeconds);
+			}
+		}
+
+		if (count <= maximumNumberOfRegistrationsPerHour) {
+			return;
+		}
+
+		if (_log.isWarnEnabled()) {
+			_log.warn(
+				StringBundler.concat(
+					"Open registration from \"", clientHost, "\" for company ",
+					companyId,
+					" exceeded the rate limit and will be allowed again in ",
+					retryAfterSeconds, " seconds"));
+		}
+
+		DynamicRegistrationUtil.routeAuditMessage(
+			_getRejectAuditMessage(
+				clientHost, companyId,
+				OAuth2ProviderRESTEndpointConstants.ERROR_RATE_LIMITED,
+				"Open registration rate limit exceeded for host " + clientHost,
+				httpServletRequest,
+				OAuth2ProviderRESTEndpointConstants.
+					DYNAMIC_REGISTRATION_MODE_OPEN));
+
+		throw new WebApplicationException(
+			Response.status(
+				Response.Status.TOO_MANY_REQUESTS
+			).entity(
+				JSONUtil.put(
+					"error",
+					OAuth2ProviderRESTEndpointConstants.ERROR_RATE_LIMITED
+				).put(
+					"error_description",
+					StringBundler.concat(
+						"Open registration rate limit exceeded for host ",
+						clientHost, ". Retry after ", retryAfterSeconds,
+						" seconds.")
+				).toString()
+			).header(
+				"Retry-After", retryAfterSeconds
+			).type(
+				MediaType.APPLICATION_JSON
+			).build());
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DynamicRegistrationServiceContainerRequestFilter.class);
 
@@ -562,6 +662,9 @@ public class DynamicRegistrationServiceContainerRequestFilter
 	@Reference
 	private Portal _portal;
 
+	private volatile PortalCache<String, RateLimitBucket> _portalCache;
+	private final Object _rateLimitLock = new Object();
+
 	@Reference
 	private UserLocalService _userLocalService;
 
@@ -577,6 +680,20 @@ public class DynamicRegistrationServiceContainerRequestFilter
 		public boolean isUserInRole(String role) {
 			return false;
 		}
+
+	}
+
+	private static final class RateLimitBucket implements Serializable {
+
+		private RateLimitBucket(int count, long windowStart) {
+			_count = count;
+			_windowStart = windowStart;
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		private final int _count;
+		private final long _windowStart;
 
 	}
 

@@ -58,6 +58,15 @@ public interface OAuth2DynamicRegistrationConfiguration {
 	public String[] allowedScopes();
 
 	@Meta.AD(
+		deflt = "10",
+		description = "oauth2-dynamic-registration-maximum-number-of-registrations-per-hour-description",
+		id = "oauth2.dynamic.registration.maximum.number.of.registrations.per.hour",
+		name = "oauth2-dynamic-registration-maximum-number-of-registrations-per-hour",
+		required = false
+	)
+	public int maximumNumberOfRegistrationsPerHour();
+
+	@Meta.AD(
 		deflt = "true",
 		description = "oauth2-dynamic-registration-require-initial-access-token-description",
 		id = "oauth2.dynamic.registration.require.initial.access.token",
