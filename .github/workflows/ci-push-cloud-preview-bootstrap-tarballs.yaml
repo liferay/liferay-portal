@@ -6,12 +6,12 @@ defaults:
         shell: bash
 jobs:
     push-aws-bootstrap:
-        if: github.repository == 'cloudnative-team/liferay-portal'
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
             provider: aws
     push-gcp-bootstrap:
-        if: github.repository == 'cloudnative-team/liferay-portal'
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
             provider: gcp

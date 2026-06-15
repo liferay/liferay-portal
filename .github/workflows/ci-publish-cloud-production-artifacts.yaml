@@ -7,8 +7,19 @@ defaults:
 jobs:
     approve-release:
         environment: production-release
-        if: ${{!cancelled() && needs.test-rcs.result == 'success'}}
-        needs: test-rcs
+        if: ${{!cancelled() && !failure() && needs.set-up-variables.result == 'success'}}
+        needs:
+            -   push-rc-aws
+            -   push-rc-aws-infrastructure
+            -   push-rc-aws-infrastructure-provider
+            -   push-rc-bootstrap-aws
+            -   push-rc-bootstrap-gcp
+            -   push-rc-default
+            -   push-rc-gcp
+            -   push-rc-gcp-infrastructure
+            -   push-rc-gcp-infrastructure-provider
+            -   set-up-variables
+            -   update-staging-charts
         runs-on: ubuntu-latest
         steps:
             -   name: Wait for manual approval
@@ -616,7 +627,7 @@ jobs:
 
                     main "${@}"
     set-up-variables:
-        if: github.repository == 'cloudnative-team/liferay-portal'
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         outputs:
             image_tag_suffix: ${{steps.vars.outputs.image_tag_suffix}}
         runs-on: ubuntu-latest
@@ -650,8 +661,18 @@ jobs:
             checks: write
             contents: read
         uses: ./.github/workflows/ci-reusable-test-cloud-terraform.yaml
-    test-rcs:
-        if: ${{!cancelled() && !failure() && needs.set-up-variables.result == 'success'}}
+    update-staging-charts:
+        if: |-
+            ${{
+                !cancelled() &&
+                !failure() &&
+                needs.set-up-variables.result == 'success' &&
+                (
+                    needs.push-rc-gcp-infrastructure-provider.result == 'success' ||
+                    needs.push-rc-gcp-infrastructure.result == 'success' ||
+                    needs.push-rc-gcp.result == 'success'
+                )
+            }}
         needs:
             -   push-rc-aws
             -   push-rc-aws-infrastructure
@@ -666,11 +687,12 @@ jobs:
             -   test-cloud-helm-chart
             -   test-cloud-helm-chart-smoke
             -   test-cloud-terraform
-        runs-on: ubuntu-latest
-        steps:
-            -   name: RC validation tests
-                run: |
-                    echo "RC validation tests run here."
+        secrets: inherit
+        uses: ./.github/workflows/ci-reusable-update-paas-staging-environment-charts.yaml
+        with:
+            liferay_gcp_image_ref: ${{needs.push-rc-gcp.outputs.image_ref}}
+            liferay_gcp_infrastructure_image_ref: ${{needs.push-rc-gcp-infrastructure.outputs.image_ref}}
+            liferay_gcp_infrastructure_provider_image_ref: ${{needs.push-rc-gcp-infrastructure-provider.outputs.image_ref}}
 on:
     push:
         branches:

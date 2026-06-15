@@ -55,7 +55,7 @@ jobs:
             image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
             working_directory: ./cloud/helm/gcp-infrastructure-provider
     set-up-variables:
-        if: github.repository == 'cloudnative-team/liferay-portal'
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         outputs:
             image_tag_suffix: ${{steps.vars.outputs.image_tag_suffix}}
         runs-on: ubuntu-latest

@@ -1,0 +1,141 @@
+defaults:
+    run:
+        shell: bash
+jobs:
+    update-staging-charts:
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
+        runs-on: ubuntu-latest
+        steps:
+            -   id: vars
+                name: Set up variables
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        echo "jira_issue=${GITHUB_REF_NAME##*/}" >> "${GITHUB_OUTPUT}"
+                    }
+
+                    main "${@}"
+            -   id: charts_token
+                name: Mint a token for the charts repository
+                uses: actions/create-github-app-token@v2
+                with:
+                    app-id: ${{secrets.LIFERAYCLOUD_CHARTS_APP_ID}}
+                    owner: LiferayCloud
+                    private-key: ${{secrets.LIFERAYCLOUD_CHARTS_APP_PRIVATE_KEY}}
+                    repositories: charts
+            -   name: Check out the charts repository
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+                    path: charts
+                    ref: develop
+                    repository: LiferayCloud/charts
+                    show-progress: false
+                    token: ${{steps.charts_token.outputs.token}}
+            -   env:
+                    LIFERAY_GCP_IMAGE_REF: ${{inputs.liferay_gcp_image_ref}}
+                    PAAS_STAGING_APPLICATIONS_FILE: charts/${{vars.PAAS_STAGING_APPLICATIONS_FILE}}
+                if: ${{inputs.liferay_gcp_image_ref != ''}}
+                name: Point the liferay-applicationset to the RC chart
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        REPO_URL="oci://${LIFERAY_GCP_IMAGE_REF%:*}" \
+                        TARGET_REVISION="${LIFERAY_GCP_IMAGE_REF##*:}" \
+                            yq \
+                                --inplace \
+                                '
+                                    .argocdApps.applicationsets["liferay-applicationset"].template.spec.sources[0].repoURL = strenv(REPO_URL) |
+                                    .argocdApps.applicationsets["liferay-applicationset"].template.spec.sources[0].targetRevision = strenv(TARGET_REVISION)
+                                ' \
+                                "${PAAS_STAGING_APPLICATIONS_FILE}"
+                    }
+
+                    main "${@}"
+            -   env:
+                    LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_image_ref}}
+                    PAAS_STAGING_APPLICATIONS_FILE: charts/${{vars.PAAS_STAGING_APPLICATIONS_FILE}}
+                if: ${{inputs.liferay_gcp_infrastructure_image_ref != ''}}
+                name: Point the liferay-infrastructure-applicationset to the RC chart
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        REPO_URL="oci://${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF%:*}" \
+                        TARGET_REVISION="${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF##*:}" \
+                            yq \
+                                --inplace \
+                                '
+                                    .argocdApps.applicationsets["liferay-infrastructure-applicationset"].template.spec.sources[0].repoURL = strenv(REPO_URL) |
+                                    .argocdApps.applicationsets["liferay-infrastructure-applicationset"].template.spec.sources[0].targetRevision = strenv(TARGET_REVISION)
+                                ' \
+                                "${PAAS_STAGING_APPLICATIONS_FILE}"
+                    }
+
+                    main "${@}"
+            -   env:
+                    LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_provider_image_ref}}
+                    PAAS_STAGING_INFRASTRUCTURE_PROVIDER_CHART_FILE: charts/${{vars.PAAS_STAGING_INFRASTRUCTURE_PROVIDER_CHART_FILE}}
+                if: ${{inputs.liferay_gcp_infrastructure_provider_image_ref != ''}}
+                name: Point the infrastructure provider dependency at the RC chart
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        CHART_REPOSITORY="oci://${LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF%/*}" \
+                        CHART_VERSION="${LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF##*:}" \
+                            yq \
+                                --inplace \
+                                '
+                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure-provider").repository) = strenv(CHART_REPOSITORY) |
+                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure-provider").version) = strenv(CHART_VERSION)
+                                ' \
+                                "${PAAS_STAGING_INFRASTRUCTURE_PROVIDER_CHART_FILE}"
+                    }
+
+                    main "${@}"
+            -   name: Open a pull request against the charts repository
+                uses: peter-evans/create-pull-request@v7
+                with:
+                    base: develop
+                    body: |
+                        Automated by the ${{github.repository}} release pipeline for `${{github.ref_name}}`.
+
+                        Points the staging cluster at the release candidate charts.
+
+                        Merge to deploy the RC to the staging cluster so product can validate it before promotion.
+                    branch: ${{steps.vars.outputs.jira_issue}}
+                    commit-message: ${{steps.vars.outputs.jira_issue}} Update staging PaaS images
+                    path: charts
+                    sign-commits: true
+                    title: ${{steps.vars.outputs.jira_issue}} Update staging PaaS images
+                    token: ${{steps.charts_token.outputs.token}}
+on:
+    workflow_call:
+        inputs:
+            liferay_gcp_image_ref:
+                required: true
+                type: string
+            liferay_gcp_infrastructure_image_ref:
+                required: true
+                type: string
+            liferay_gcp_infrastructure_provider_image_ref:
+                required: true
+                type: string
+        secrets:
+            LIFERAYCLOUD_CHARTS_APP_ID:
+                required: true
+            LIFERAYCLOUD_CHARTS_APP_PRIVATE_KEY:
+                required: true
+permissions:
+    contents: read

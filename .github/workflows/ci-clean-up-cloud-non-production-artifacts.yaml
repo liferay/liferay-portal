@@ -7,13 +7,15 @@ jobs:
             BOOTSTRAP_STORAGE_PATH_NONPRODUCTION: ${{vars.BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}}
             EVENT_REF: ${{github.event.ref}}
             HELM_CHART_REGISTRY_NONPRODUCTION: ${{vars.HELM_CHART_REGISTRY_NONPRODUCTION}}
-        if: |
-            github.event.ref_type == 'branch' &&
-            github.repository == 'cloudnative-team/liferay-portal' &&
-            (
-                startsWith(github.event.ref, 'LCD-') ||
-                startsWith(github.event.ref, 'release/')
-            )
+        if: |-
+            ${{
+                github.event.ref_type == 'branch' &&
+                github.repository == 'cloudnative-team/liferay-portal' &&
+                (
+                    startsWith(github.event.ref, 'LCD-') ||
+                    startsWith(github.event.ref, 'release/')
+                )
+            }}
         runs-on: ubuntu-latest
         steps:
             -   name: Authenticate to Google Cloud
