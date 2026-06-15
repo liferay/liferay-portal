@@ -3096,6 +3096,16 @@
 		]
 	},
 	{
+		"from": "regex:!company\\.isSendPassword\\(\\) && (?<condition>!company\\.isSendPasswordResetLink\\(\\))",
+		"issueKey": "LPD-28363",
+		"to": "${condition}"
+	},
+	{
+		"from": "regex:PropsKeys\\.COMPANY_SECURITY_SEND_PASSWORD,\\s+(?<suffix>PropsKeys\\.COMPANY_SECURITY_SEND_PASSWORD_RESET_LINK)",
+		"issueKey": "LPD-28363",
+		"to": "${suffix}"
+	},
+	{
 		"classNames": [
 			"StrutsAction"
 		],
