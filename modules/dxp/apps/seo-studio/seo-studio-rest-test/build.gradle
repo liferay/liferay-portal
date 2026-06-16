@@ -11,6 +11,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-engine-adapter-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
+	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":dxp:apps:seo-studio:seo-studio-rest-api")
 	testIntegrationImplementation project(":dxp:apps:seo-studio:seo-studio-rest-client")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
