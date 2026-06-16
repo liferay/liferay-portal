@@ -1,0 +1,6 @@
+Bundle-Name: Liferay SEO Studio REST API
+Bundle-SymbolicName: com.liferay.seo.studio.rest.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.seo.studio.rest.dto.v1_0,\
+	com.liferay.seo.studio.rest.resource.v1_0
