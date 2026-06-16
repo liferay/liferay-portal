@@ -10,6 +10,8 @@ package com.liferay.seo.studio.constants;
  */
 public class SEOStudioScanConstants {
 
+	public static final String STATE_COMPLETED = "completed";
+
 	public static final String STATE_FAILED = "failed";
 
 	public static final String STATE_RUNNING = "running";
