@@ -64,7 +64,8 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 
 	@Override
 	public String getURL() {
-		return _URL;
+		return "${liferay:mainPath}/portal/layout?p_l_id=${liferay:plid}" +
+			"&p_v_l_s_g_id=${liferay:pvlsgid}";
 	}
 
 	@Override
@@ -229,7 +230,7 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 		String page = getViewPage();
 
 		if (layoutMode.equals(Constants.EDIT)) {
-			page = _EDIT_LAYOUT_PAGE;
+			page = "/layout/edit_layout/content.jsp";
 		}
 		else if (layoutMode.equals(Constants.HISTORY)) {
 			page = "/layout/history_layout/content.jsp";
@@ -335,7 +336,7 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 
 	@Override
 	protected String getViewPage() {
-		return _VIEW_PAGE;
+		return "/layout/view/content.jsp";
 	}
 
 	private void _addContentPageEditorAttributes(
@@ -478,15 +479,6 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 
 		return false;
 	}
-
-	private static final String _EDIT_LAYOUT_PAGE =
-		"/layout/edit_layout/content.jsp";
-
-	private static final String _URL =
-		"${liferay:mainPath}/portal/layout?p_l_id=${liferay:plid}" +
-			"&p_v_l_s_g_id=${liferay:pvlsgid}";
-
-	private static final String _VIEW_PAGE = "/layout/view/content.jsp";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ContentLayoutTypeController.class);
