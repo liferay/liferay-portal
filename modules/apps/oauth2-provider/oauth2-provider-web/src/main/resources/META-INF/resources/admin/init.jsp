@@ -19,6 +19,7 @@ page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationClientCreden
 page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationClientGrantTypeException" %><%@
 page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationHomePageURLException" %><%@
 page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationHomePageURLSchemeException" %><%@
+page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationJWKSException" %><%@
 page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationNameException" %><%@
 page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationPrivacyPolicyURLException" %><%@
 page import="com.liferay.oauth2.provider.exception.OAuth2ApplicationPrivacyPolicyURLSchemeException" %><%@

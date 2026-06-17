@@ -13,6 +13,7 @@ import com.liferay.oauth2.provider.exception.NoSuchOAuth2ApplicationException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationClientGrantTypeException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationHomePageURLException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationHomePageURLSchemeException;
+import com.liferay.oauth2.provider.exception.OAuth2ApplicationJWKSException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationNameException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationPrivacyPolicyURLException;
 import com.liferay.oauth2.provider.exception.OAuth2ApplicationPrivacyPolicyURLSchemeException;
@@ -27,6 +28,7 @@ import com.liferay.oauth2.provider.redirect.OAuth2RedirectURIInterpolator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.oauth2.provider.service.base.OAuth2ApplicationLocalServiceBaseImpl;
+import com.liferay.oauth2.provider.util.OAuth2JWKValidatorUtil;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.oauth2.provider.util.builder.OAuth2ScopeBuilder;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
@@ -794,6 +796,14 @@ public class OAuth2ApplicationLocalServiceImpl
 
 			if (Validator.isNull(jwks)) {
 				throw new PortalException("Client needs to specify JWKS");
+			}
+
+			try {
+				OAuth2JWKValidatorUtil.validateJWKS(jwks);
+			}
+			catch (SecurityException securityException) {
+				throw new OAuth2ApplicationJWKSException(
+					securityException.getMessage(), securityException);
 			}
 		}
 		else {

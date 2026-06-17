@@ -176,6 +176,7 @@
 		<exception>OAuth2ApplicationClientGrantType</exception>
 		<exception>OAuth2ApplicationHomePageURL</exception>
 		<exception>OAuth2ApplicationHomePageURLScheme</exception>
+		<exception>OAuth2ApplicationJWKS</exception>
 		<exception>OAuth2ApplicationName</exception>
 		<exception>OAuth2ApplicationPrivacyPolicyURL</exception>
 		<exception>OAuth2ApplicationPrivacyPolicyURLScheme</exception>
