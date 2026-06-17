@@ -199,6 +199,22 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
+		'filters the data masks list by type',
+		{tag: '@LPD-90205'},
+		async ({apiHelpers, dataMasksPage}) => {
+			const name = maskName();
+			await createCustomMask(apiHelpers, name);
+
+			await dataMasksPage.goto();
+
+			await dataMasksPage.filterByType('System');
+
+			await expect(dataMasksPage.row(SYSTEM_MASK)).toBeVisible();
+			await expect(dataMasksPage.row(name)).toBeHidden();
+		}
+	);
+
+	test(
 		'edits a custom mask from the three-dot menu',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {

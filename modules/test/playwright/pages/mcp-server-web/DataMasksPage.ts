@@ -9,7 +9,9 @@ const DATA_MASKS_URL =
 	'/group/guest/~/control_panel/manage?p_p_id=com_liferay_mcp_server_web_internal_portlet_MCPServerWebPortlet';
 
 export class DataMasksPage {
+	readonly addFilterButton: Locator;
 	readonly dataSet: Locator;
+	readonly filterButton: Locator;
 	readonly newDataMaskButton: Locator;
 	readonly page: Page;
 	readonly searchInput: Locator;
@@ -25,12 +27,32 @@ export class DataMasksPage {
 		this.newDataMaskButton = page.getByRole('button', {
 			name: 'New Data Mask',
 		});
+		this.filterButton = page.getByRole('button', {
+			exact: true,
+			name: 'Filter',
+		});
+		this.addFilterButton = page.getByRole('button', {
+			exact: true,
+			name: 'Add Filter',
+		});
 	}
 
 	async goto() {
 		await this.page.goto(DATA_MASKS_URL, {waitUntil: 'load'});
 
 		await this.table.waitFor({state: 'visible'});
+	}
+
+	async filterByType(value: string) {
+		await this.filterButton.click();
+
+		await this.page
+			.getByRole('menuitem', {exact: true, name: 'Type'})
+			.click();
+
+		await this.page.getByLabel(value, {exact: true}).check();
+
+		await this.addFilterButton.click();
 	}
 
 	async search(name: string) {

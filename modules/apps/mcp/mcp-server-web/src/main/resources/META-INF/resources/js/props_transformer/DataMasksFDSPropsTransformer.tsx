@@ -17,7 +17,7 @@ function isSystemMask(dataMask: DataMask) {
 const FILTERS = [
 	{
 		entityFieldType: 'string',
-		id: 'maskType/key',
+		id: 'maskType',
 		itemKey: 'value',
 		itemLabel: 'label',
 		items: [
