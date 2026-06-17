@@ -9,11 +9,19 @@ import com.liferay.ai.hub.web.internal.constants.AIHubFDSNames;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Davyson Melo
@@ -39,15 +47,28 @@ public class IssueReportIssueTypeSelectionFDSFilter
 	public List<SelectionFDSFilterItem> getSelectionFDSFilterItems(
 		Locale locale) {
 
-		return List.of(
-			new SelectionFDSFilterItem(
-				"AGENT_ERROR_OR_MALFUNCTION", "agentError"),
-			new SelectionFDSFilterItem(
-				"INAPPROPRIATE_OR_HARMFUL_CONTENT", "harmfulContent"),
-			new SelectionFDSFilterItem(
-				"INCORRECT_OR_INACCURATE_RESPONSE", "incorrect"),
-			new SelectionFDSFilterItem("OTHER", "other"),
-			new SelectionFDSFilterItem("PII_EXPOSURE", "piiExposure"));
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.
+				fetchListTypeDefinitionByExternalReferenceCode(
+					"L_AI_HUB_REPORT_REASONS",
+					CompanyThreadLocal.getCompanyId());
+
+		if (listTypeDefinition == null) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transform(
+			_listTypeEntryLocalService.getListTypeEntries(
+				listTypeDefinition.getListTypeDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			listTypeEntry -> new SelectionFDSFilterItem(
+				listTypeEntry.getName(locale), listTypeEntry.getKey()));
 	}
+
+	@Reference
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Reference
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 }
