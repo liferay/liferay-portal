@@ -1,0 +1,99 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+.integrations-add-menu {
+	.dropdown-item {
+		color: #6b6c7e;
+	}
+
+	.dropdown-item:active,
+	.dropdown-item:focus,
+	.dropdown-item:hover {
+		color: #272833;
+	}
+}
+
+.seo-studio-integrations {
+	.add-integration-button {
+		align-items: center;
+		display: flex;
+		font-size: 14px;
+		height: 32px;
+		justify-content: center;
+		padding: 0;
+		width: 155px;
+	}
+
+	.integrations-empty {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		height: 197px;
+		margin-left: auto;
+		margin-right: auto;
+		width: 250px;
+	}
+
+	.integrations-empty-description {
+		color: #6b6c7e;
+		margin-top: 4px;
+	}
+
+	.integrations-empty-image {
+		height: 120px;
+		width: 120px;
+	}
+
+	.integrations-empty-title {
+		color: #272833;
+		font-size: 16px;
+		font-weight: 600;
+		margin-top: 16px;
+	}
+
+	.sheet-header {
+		margin-bottom: 0;
+		padding: 16px 24px;
+	}
+
+	.sheet-title {
+		font-size: 20px;
+		font-weight: 700;
+	}
+
+	.fds {
+		.table {
+			border: 1px solid #e7e7ed;
+			border-radius: 8px;
+			overflow: hidden;
+
+			td,
+			th {
+				border-color: #e7e7ed;
+			}
+
+			thead th:last-child {
+				border-left: 1px solid #e7e7ed;
+				width: 56px;
+			}
+
+			thead th:last-child > * {
+				visibility: hidden;
+			}
+
+			tbody td:last-child {
+				width: 56px;
+			}
+
+			tbody tr:nth-of-type(odd) td {
+				background-color: #fff !important;
+			}
+
+			tbody tr:nth-of-type(even) td {
+				background-color: #f7f8f9 !important;
+			}
+		}
+	}
+}

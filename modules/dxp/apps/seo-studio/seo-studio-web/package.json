@@ -3,6 +3,7 @@
 		"@clayui/alert": "^3.165.0",
 		"@clayui/breadcrumb": "^3.165.0",
 		"@clayui/button": "^3.165.0",
+		"@clayui/drop-down": "^3.165.0",
 		"@clayui/form": "^3.165.0",
 		"@clayui/icon": "^3.165.0",
 		"@clayui/label": "^3.165.0",
@@ -34,5 +35,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.3"
+	"version": "1.1.0"
 }

@@ -3,16 +3,27 @@
 		"pageElements": [
 			{
 				"definition": {
-					"fragment": {
-						"key": "com.liferay.seo.studio.web.internal.fragment.renderer.IntegrationsFragmentRenderer"
-					},
-					"fragmentConfig": {
-					},
-					"fragmentFields": [
-					],
-					"indexed": true
+					"indexed": true,
+					"layout": {
+					}
 				},
-				"type": "Fragment"
+				"id": "f8c4d2a1-1111-4c5a-9d8e-1f2a3b4c5d61",
+				"pageElements": [
+					{
+						"definition": {
+							"fragment": {
+								"key": "com.liferay.seo.studio.web.internal.fragment.renderer.IntegrationsFragmentRenderer"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+							],
+							"indexed": true
+						},
+						"type": "Fragment"
+					}
+				],
+				"type": "Section"
 			}
 		],
 		"type": "Root"

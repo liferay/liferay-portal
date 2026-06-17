@@ -16,4 +16,7 @@ public class SEOStudioFDSNames {
 	public static final String INSIGHT_TYPE_SECTION =
 		SEOStudioWebConstants.BUNDLE_SYMBOLIC_NAME + "-insightTypeSection";
 
+	public static final String INTEGRATIONS =
+		SEOStudioWebConstants.BUNDLE_SYMBOLIC_NAME + "-integrations";
+
 }
