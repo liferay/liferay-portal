@@ -101,16 +101,8 @@ function EditDataMaskView({
 		},
 	});
 
-	const headerTitle = readOnly
-		? Liferay.Language.get('view-data-mask')
-		: dataMask
-			? Liferay.Language.get('edit-data-mask')
-			: Liferay.Language.get('new-data-mask');
-
 	return (
 		<ClayForm className="data-mask-form" onSubmit={handleSubmit}>
-			<h2 className="mb-4">{headerTitle}</h2>
-
 			{isSystemMask && (
 				<ClayAlert
 					displayType="info"

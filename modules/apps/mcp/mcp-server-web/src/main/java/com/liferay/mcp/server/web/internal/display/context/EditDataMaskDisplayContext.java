@@ -5,12 +5,15 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.RenderRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -39,6 +42,18 @@ public class EditDataMaskDisplayContext {
 		).put(
 			"dataMaskId", ParamUtil.getLong(_renderRequest, "dataMaskId")
 		).build();
+	}
+
+	public String getTitle(HttpServletRequest httpServletRequest) {
+		if (ParamUtil.getBoolean(_renderRequest, "readOnly")) {
+			return LanguageUtil.get(httpServletRequest, "view-data-mask");
+		}
+
+		if (ParamUtil.getLong(_renderRequest, "dataMaskId") > 0) {
+			return LanguageUtil.get(httpServletRequest, "edit-data-mask");
+		}
+
+		return LanguageUtil.get(httpServletRequest, "new-data-mask");
 	}
 
 	private final LiferayPortletResponse _liferayPortletResponse;

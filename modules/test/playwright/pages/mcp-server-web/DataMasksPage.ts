@@ -57,7 +57,7 @@ export class DataMasksPage {
 	}
 
 	get formHeading(): Locator {
-		return this.page.getByRole('heading', {level: 2});
+		return this.page.locator('.control-menu-level-1-heading');
 	}
 
 	get nameInput(): Locator {

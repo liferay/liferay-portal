@@ -82,12 +82,13 @@ interface DataMasksFDSPropsTransformerProps {
 	additionalProps: {
 		createURL: string;
 		editURL: string;
+		viewURL: string;
 	};
 	[key: string]: unknown;
 }
 
 export default function DataMasksFDSPropsTransformer({
-	additionalProps: {createURL, editURL},
+	additionalProps: {createURL, editURL, viewURL},
 	...props
 }: DataMasksFDSPropsTransformerProps) {
 	return {
@@ -107,7 +108,7 @@ export default function DataMasksFDSPropsTransformer({
 				isVisible: (item: DataMask) => isSystemMask(item),
 				label: Liferay.Language.get('view'),
 				onClick: ({itemData}: ActionContext) =>
-					navigate(maskEditURL(editURL, Number(itemData.id))),
+					navigate(maskEditURL(viewURL, Number(itemData.id))),
 			},
 			{
 				icon: 'pencil',

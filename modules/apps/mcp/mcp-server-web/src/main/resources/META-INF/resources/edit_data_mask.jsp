@@ -12,6 +12,8 @@ EditDataMaskDisplayContext editDataMaskDisplayContext = new EditDataMaskDisplayC
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(editDataMaskDisplayContext.getBackURL());
+
+renderResponse.setTitle(editDataMaskDisplayContext.getTitle(request));
 %>
 
 <div class="container-fluid container-fluid-max-xl">

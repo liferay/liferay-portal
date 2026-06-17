@@ -44,6 +44,17 @@ public class ViewDataMasksDisplayContext {
 			).setParameter(
 				"dataMaskId", _DATA_MASK_ID_TOKEN
 			).buildString()
+		).put(
+			"viewURL",
+			PortletURLBuilder.createRenderURL(
+				_liferayPortletResponse
+			).setMVCRenderCommandName(
+				"/mcp_server/edit_data_mask"
+			).setParameter(
+				"dataMaskId", _DATA_MASK_ID_TOKEN
+			).setParameter(
+				"readOnly", true
+			).buildString()
 		).build();
 	}
 
