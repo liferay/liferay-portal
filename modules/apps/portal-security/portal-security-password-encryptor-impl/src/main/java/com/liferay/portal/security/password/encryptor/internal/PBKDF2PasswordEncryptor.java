@@ -117,11 +117,11 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 
 	private static final int _KEY_SIZE = 256;
 
-	private static final int _KEY_SIZE_FLOOR = 112;
+	private static final int _KEY_SIZE_MIN = 112;
 
 	private static final int _ROUNDS = 1300000;
 
-	private static final int _ROUNDS_FLOOR = 1300000;
+	private static final int _ROUNDS_MIN = 1300000;
 
 	private static final int _SALT_BYTES_LENGTH = 16;
 
@@ -146,21 +146,21 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 				}
 
 				if (PropsValues.FIPS_ENABLED) {
-					if (_rounds < _ROUNDS_FLOOR) {
+					if (_rounds < _ROUNDS_MIN) {
 						throw new PwdEncryptorException.InvalidAlgorithm(
 							StringBundler.concat(
 								"PBKDF2 iteration count ", _rounds,
 								" is below the minimum allowed value of ",
-								_ROUNDS_FLOOR),
+								_ROUNDS_MIN),
 							null);
 					}
 
-					if (_keySize < _KEY_SIZE_FLOOR) {
+					if (_keySize < _KEY_SIZE_MIN) {
 						throw new PwdEncryptorException.InvalidAlgorithm(
 							StringBundler.concat(
 								"PBKDF2 output length ", _keySize,
 								" bits is below the minimum allowed value of ",
-								_KEY_SIZE_FLOOR, " bits"),
+								_KEY_SIZE_MIN, " bits"),
 							null);
 					}
 				}
