@@ -2,6 +2,19 @@
 	"object-actions": [
 		{
 			"active": true,
+			"conditionExpression": "(oldValue('autoScanEnabled') != autoScanEnabled) || (oldValue('scanDayOfMonth') != scanDayOfMonth) || (oldValue('scanDayOfWeek') != scanDayOfWeek) || (oldValue('scanFrequency') != scanFrequency) || (oldValue('scanTime') != scanTime) || (oldValue('scanTimeZone') != scanTimeZone)",
+			"externalReferenceCode": "L_SEO_STUDIO_DOMAIN_COMPUTE_NEXT_SCAN_DATE",
+			"label": {
+				"en_US": "Compute Next Scan Date"
+			},
+			"name": "computeNextScanDate",
+			"objectActionExecutorKey": "compute-seo-studio-domain-next-scan-date",
+			"objectActionTriggerKey": "onAfterUpdate",
+			"parameters": {
+			}
+		},
+		{
+			"active": true,
 			"errorMessage": {
 				"en_US": "Unable to create the scans. Please try again later or contact support."
 			},
