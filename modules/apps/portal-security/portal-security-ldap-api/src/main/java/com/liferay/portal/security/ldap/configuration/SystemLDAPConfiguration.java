@@ -8,6 +8,7 @@ package com.liferay.portal.security.ldap.configuration;
 import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.security.ldap.constants.LDAPConstants;
 
 /**
  * @author Michael C. Han
@@ -68,9 +69,16 @@ public interface SystemLDAPConfiguration extends CompanyScopedConfiguration {
 	public int rangeSize();
 
 	@Meta.AD(
-		deflt = "follow", name = "referral",
-		optionLabels = {"follow", "ignore", "throws"},
-		optionValues = {"follow", "ignore", "throws"}, required = false
+		deflt = LDAPConstants.REFERRAL_IGNORE, name = "referral",
+		optionLabels = {
+			LDAPConstants.REFERRAL_FOLLOW, LDAPConstants.REFERRAL_IGNORE,
+			LDAPConstants.REFERRAL_THROWS
+		},
+		optionValues = {
+			LDAPConstants.REFERRAL_FOLLOW, LDAPConstants.REFERRAL_IGNORE,
+			LDAPConstants.REFERRAL_THROWS
+		},
+		required = false
 	)
 	public String referral();
 

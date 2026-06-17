@@ -127,6 +127,12 @@ public class LDAPConstants {
 
 	public static final String REFERRAL = "referral";
 
+	public static final String REFERRAL_FOLLOW = "follow";
+
+	public static final String REFERRAL_IGNORE = "ignore";
+
+	public static final String REFERRAL_THROWS = "throws";
+
 	public static final String SECURITY_CREDENTIAL = "securityCredential";
 
 	public static final String SECURITY_PRINCIPAL = "securityPrincipal";
