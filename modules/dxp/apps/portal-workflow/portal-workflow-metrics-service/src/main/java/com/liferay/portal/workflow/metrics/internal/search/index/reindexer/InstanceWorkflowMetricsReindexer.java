@@ -95,7 +95,7 @@ public class InstanceWorkflowMetricsReindexer
 				_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
 				companyId);
 
-			workflowMetricsIndex.createIndex(
+			WorkflowMetricsIndex.createAllIndexes(
 				_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
 				companyId);
 		}

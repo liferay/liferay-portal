@@ -99,7 +99,7 @@ public class SLATaskResultWorkflowMetricsReindexer
 				_searchCapabilities, searchEngineAdapter, _indexNameBuilder,
 				companyId);
 
-			workflowMetricsIndex.createIndex(
+			WorkflowMetricsIndex.createAllIndexes(
 				_searchCapabilities, searchEngineAdapter, _indexNameBuilder,
 				companyId);
 		}

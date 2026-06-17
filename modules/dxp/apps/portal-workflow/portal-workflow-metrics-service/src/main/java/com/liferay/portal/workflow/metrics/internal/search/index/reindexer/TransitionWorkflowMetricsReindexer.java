@@ -94,7 +94,7 @@ public class TransitionWorkflowMetricsReindexer
 				_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
 				companyId);
 
-			workflowMetricsIndex.createIndex(
+			WorkflowMetricsIndex.createAllIndexes(
 				_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
 				companyId);
 		}
