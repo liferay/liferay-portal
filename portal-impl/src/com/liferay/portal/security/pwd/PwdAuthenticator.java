@@ -43,9 +43,7 @@ public class PwdAuthenticator {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"Unable to verify a password hashed with an unavailable " +
-						"algorithm",
-					pwdEncryptorException1);
+					"Unable to verify a password", pwdEncryptorException1);
 			}
 
 			try {
@@ -54,8 +52,7 @@ public class PwdAuthenticator {
 			}
 			catch (PwdEncryptorException pwdEncryptorException2) {
 				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to perform decoy hash", pwdEncryptorException2);
+					_log.debug(pwdEncryptorException2);
 				}
 			}
 
