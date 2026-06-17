@@ -376,6 +376,7 @@ definition {
 			var larFileName = LAR.getLarFileName();
 
 			LAR.importSiteCP(
+				importProcessStatus = "Completed With Errors",
 				larFileName = ${larFileName},
 				siteName = "Site Name");
 		}
