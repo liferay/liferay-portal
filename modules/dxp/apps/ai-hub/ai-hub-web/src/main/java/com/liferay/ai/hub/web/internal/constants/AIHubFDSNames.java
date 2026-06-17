@@ -27,4 +27,5 @@ public class AIHubFDSNames {
 
 	public static final String ISSUE_REPORTS =
 		AIHubWebConstants.BUNDLE_SYMBOLIC_NAME + "-issueReports";
+
 }
