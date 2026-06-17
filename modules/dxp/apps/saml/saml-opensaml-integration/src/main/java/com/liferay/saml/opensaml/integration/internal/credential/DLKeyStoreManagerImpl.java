@@ -11,12 +11,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.saml.runtime.credential.KeyStoreManager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import java.security.KeyStore;
@@ -85,31 +83,26 @@ public class DLKeyStoreManagerImpl extends BaseKeyStoreManagerImpl {
 
 	@Override
 	public void saveKeyStore(KeyStore keyStore) throws Exception {
-		File tempFile = FileUtil.createTempFile("jks");
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
 
-		try {
-			String samlKeyStorePassword = getSamlKeyStorePassword();
+		String samlKeyStorePassword = getSamlKeyStorePassword();
 
-			keyStore.store(
-				new FileOutputStream(tempFile),
-				samlKeyStorePassword.toCharArray());
+		keyStore.store(
+			byteArrayOutputStream, samlKeyStorePassword.toCharArray());
 
-			if (_store.hasFile(
-					getCompanyId(), CompanyConstants.SYSTEM,
-					_SAML_KEYSTORE_PATH, Store.VERSION_DEFAULT)) {
-
-				_store.deleteDirectory(
-					getCompanyId(), CompanyConstants.SYSTEM,
-					_SAML_KEYSTORE_PATH);
-			}
-
-			_store.addFile(
+		if (_store.hasFile(
 				getCompanyId(), CompanyConstants.SYSTEM, _SAML_KEYSTORE_PATH,
-				Store.VERSION_DEFAULT, new FileInputStream(tempFile));
+				Store.VERSION_DEFAULT)) {
+
+			_store.deleteDirectory(
+				getCompanyId(), CompanyConstants.SYSTEM, _SAML_KEYSTORE_PATH);
 		}
-		finally {
-			tempFile.delete();
-		}
+
+		_store.addFile(
+			getCompanyId(), CompanyConstants.SYSTEM, _SAML_KEYSTORE_PATH,
+			Store.VERSION_DEFAULT,
+			new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 	}
 
 	@Activate
@@ -118,7 +111,7 @@ public class DLKeyStoreManagerImpl extends BaseKeyStoreManagerImpl {
 		updateConfigurations(properties);
 	}
 
-	private static final String _SAML_KEYSTORE_PATH = "saml/keystore.jks";
+	private static final String _SAML_KEYSTORE_PATH = "saml/keystore.p12";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DLKeyStoreManagerImpl.class);

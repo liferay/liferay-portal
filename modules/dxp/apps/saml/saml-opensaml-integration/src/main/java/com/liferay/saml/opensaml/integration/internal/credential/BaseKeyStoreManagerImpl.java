@@ -35,7 +35,7 @@ public abstract class BaseKeyStoreManagerImpl implements KeyStoreManager {
 		String liferayHome = PropsUtil.get(PropsKeys.LIFERAY_HOME);
 
 		if (Validator.isNull(keyStorePath)) {
-			return liferayHome.concat("/data/keystore.jks");
+			return liferayHome.concat("/data/keystore.p12");
 		}
 
 		return StringUtil.replace(keyStorePath, "${liferay.home}", liferayHome);
