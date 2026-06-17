@@ -41,11 +41,11 @@ export class DataMasksPage {
 	row(name: string): Locator {
 		return this.table
 			.locator('tbody tr')
-			.filter({has: this.page.getByRole('button', {exact: true, name})});
+			.filter({has: this.page.getByRole('link', {exact: true, name})});
 	}
 
 	titleLink(name: string): Locator {
-		return this.row(name).getByRole('button', {exact: true, name});
+		return this.row(name).getByRole('link', {exact: true, name});
 	}
 
 	async clickAction(name: string, action: string) {

@@ -6,16 +6,9 @@
 package com.liferay.mcp.server.web.internal.portlet;
 
 import com.liferay.mcp.server.web.internal.constants.MCPServerWebPortletKeys;
-import com.liferay.mcp.server.web.internal.display.context.MCPServerWebDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.Portlet;
-import jakarta.portlet.PortletException;
-import jakarta.portlet.RenderRequest;
-import jakarta.portlet.RenderResponse;
-
-import java.io.IOException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -38,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.display-name=MCP Server",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
-		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.init-param.view-template=/view_data_masks.jsp",
 		"jakarta.portlet.name=" + MCPServerWebPortletKeys.MCP_SERVER_WEB,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",
@@ -47,16 +40,4 @@ import org.osgi.service.component.annotations.Component;
 	service = Portlet.class
 )
 public class MCPServerWebPortlet extends MVCPortlet {
-
-	@Override
-	public void render(
-			RenderRequest renderRequest, RenderResponse renderResponse)
-		throws IOException, PortletException {
-
-		renderRequest.setAttribute(
-			WebKeys.PORTLET_DISPLAY_CONTEXT, new MCPServerWebDisplayContext());
-
-		super.render(renderRequest, renderResponse);
-	}
-
 }

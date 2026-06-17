@@ -3,10 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+const DATA_MASK_ID_TOKEN = '__DATA_MASK_ID__';
 
-import {EmptyTab} from '../shared/EmptyTab';
-
-export function Profiles() {
-	return <EmptyTab label={Liferay.Language.get('profiles')} />;
+export function maskEditURL(editURL: string, id: number): string {
+	return editURL.replace(DATA_MASK_ID_TOKEN, String(id));
 }

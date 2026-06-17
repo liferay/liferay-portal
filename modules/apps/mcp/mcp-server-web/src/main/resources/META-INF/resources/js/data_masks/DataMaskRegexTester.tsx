@@ -13,17 +13,17 @@ import {
 	postValidateDataMask,
 } from '../services/postValidateDataMask';
 
-interface DataMaskTestCardProps {
+interface DataMaskRegexTesterProps {
 	detectionRegex: string;
 	replacementRegex: string;
 	replacementValue: string;
 }
 
-export function DataMaskTestCard({
+export function DataMaskRegexTester({
 	detectionRegex,
 	replacementRegex,
 	replacementValue,
-}: DataMaskTestCardProps) {
+}: DataMaskRegexTesterProps) {
 	const [result, setResult] = useState<ValidationResult | null>(null);
 	const [sampleText, setSampleText] = useState('');
 	const [testing, setTesting] = useState(false);

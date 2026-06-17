@@ -22,10 +22,6 @@ export interface DataMask {
 	replacementValue: string;
 }
 
-export type Mode =
-	| {kind: 'list'}
-	| {dataMask: DataMask | null; kind: 'form'; readOnly?: boolean};
-
 export interface ActionContext {
 	itemData: DataMask;
 	loadData: () => void;

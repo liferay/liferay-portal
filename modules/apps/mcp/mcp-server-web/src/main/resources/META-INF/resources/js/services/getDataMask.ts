@@ -7,9 +7,6 @@ import {DataMask} from '../types';
 import ApiHelper, {RequestResult} from './ApiHelper';
 import {DATA_MASKS_URL} from './dataMasksURL';
 
-export function patchDataMask(
-	id: number,
-	payload: Record<string, unknown>
-): Promise<RequestResult<DataMask>> {
-	return ApiHelper.patch<DataMask>(`${DATA_MASKS_URL}/${id}`, payload);
+export function getDataMask(id: number): Promise<RequestResult<DataMask>> {
+	return ApiHelper.get<DataMask>(`${DATA_MASKS_URL}/${id}`);
 }

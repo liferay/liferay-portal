@@ -5,10 +5,13 @@
 
 import {openToast} from 'frontend-js-components-web';
 
-import {postDataMask} from '../services/postDataMask';
-import {ActionContext} from './types';
+import {postDataMask} from '../../services/postDataMask';
+import {ActionContext} from '../../types';
 
-export async function duplicateDataMask({itemData, loadData}: ActionContext) {
+export default async function duplicateDataMaskAction({
+	itemData,
+	loadData,
+}: ActionContext) {
 	const {data: saved, error} = await postDataMask({
 		description: itemData.description ?? '',
 		detectionRegex: itemData.detectionRegex,

@@ -7,15 +7,21 @@
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
-<%@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
+<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
+taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
-taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
+taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<%@ page import="com.liferay.mcp.server.web.internal.display.context.MCPServerWebDisplayContext" %><%@
-page import="com.liferay.portal.kernel.util.WebKeys" %>
-
-<liferay-frontend:defineObjects />
+<%@ page import="com.liferay.mcp.server.web.internal.display.context.EditDataMaskDisplayContext" %><%@
+page import="com.liferay.mcp.server.web.internal.display.context.MCPServerWebNavigationDisplayContext" %><%@
+page import="com.liferay.mcp.server.web.internal.display.context.ViewDataMasksDisplayContext" %><%@
+page import="com.liferay.portal.kernel.language.LanguageUtil" %>
 
 <liferay-theme:defineObjects />
 
 <portlet:defineObjects />
+
+<%
+MCPServerWebNavigationDisplayContext mcpServerWebNavigationDisplayContext = new MCPServerWebNavigationDisplayContext(request, liferayPortletResponse);
+%>

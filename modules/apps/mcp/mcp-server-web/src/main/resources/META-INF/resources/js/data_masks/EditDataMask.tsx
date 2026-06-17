@@ -6,28 +6,70 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import {FieldBase} from 'frontend-js-components-web';
-import React from 'react';
+import {FieldBase, openToast} from 'frontend-js-components-web';
+import {navigate} from 'frontend-js-web';
+import React, {useEffect, useState} from 'react';
 
-import {DataMaskTestCard} from './DataMaskTestCard';
-import {DataMask} from './types';
-import {useDataMaskForm} from './useDataMaskForm';
+import {getDataMask} from '../services/getDataMask';
+import {DataMask} from '../types';
+import {DataMaskRegexTester} from './DataMaskRegexTester';
+import {useEditDataMask} from './useEditDataMask';
 
-interface DataMaskFormProps {
-	dataMask: DataMask | null;
-	onCancel: () => void;
-	onSaved: (saved: DataMask) => void;
-	readOnly?: boolean;
+interface EditDataMaskProps {
+	backURL: string;
+	dataMaskId: number;
 }
 
-export function DataMaskForm({
+export default function EditDataMask({backURL, dataMaskId}: EditDataMaskProps) {
+	const [dataMask, setDataMask] = useState<DataMask | null>(null);
+	const [loading, setLoading] = useState(dataMaskId > 0);
+
+	useEffect(() => {
+		if (!dataMaskId) {
+			return;
+		}
+
+		let active = true;
+
+		getDataMask(dataMaskId).then(({data}) => {
+			if (!active) {
+				return;
+			}
+
+			setDataMask(data);
+			setLoading(false);
+		});
+
+		return () => {
+			active = false;
+		};
+	}, [dataMaskId]);
+
+	if (loading) {
+		return null;
+	}
+
+	return (
+		<EditDataMaskView
+			backURL={backURL}
+			dataMask={dataMask}
+			readOnly={dataMask?.maskType?.key === 'system'}
+		/>
+	);
+}
+
+interface EditDataMaskViewProps {
+	backURL: string;
+	dataMask: DataMask | null;
+	readOnly: boolean;
+}
+
+function EditDataMaskView({
+	backURL,
 	dataMask,
-	onCancel,
-	onSaved,
-	readOnly = false,
-}: DataMaskFormProps) {
+	readOnly,
+}: EditDataMaskViewProps) {
 	const {
 		description,
 		detectionRegex,
@@ -44,7 +86,20 @@ export function DataMaskForm({
 		setReplacementRegex,
 		setReplacementValue,
 		submitting,
-	} = useDataMaskForm({dataMask, onSaved});
+	} = useEditDataMask({
+		dataMask,
+		onSaved: (saved) => {
+			openToast({
+				message: Liferay.Util.sub(
+					Liferay.Language.get('x-was-saved-successfully'),
+					saved.name
+				),
+				type: 'success',
+			});
+
+			navigate(backURL);
+		},
+	});
 
 	const headerTitle = readOnly
 		? Liferay.Language.get('view-data-mask')
@@ -54,19 +109,7 @@ export function DataMaskForm({
 
 	return (
 		<ClayForm className="data-mask-form" onSubmit={handleSubmit}>
-			<div className="align-items-center d-flex mb-4">
-				<ClayButton
-					aria-label={Liferay.Language.get('back')}
-					className="mr-3"
-					displayType="unstyled"
-					onClick={onCancel}
-					type="button"
-				>
-					<ClayIcon symbol="angle-left" />
-				</ClayButton>
-
-				<h2 className="mb-0">{headerTitle}</h2>
-			</div>
+			<h2 className="mb-4">{headerTitle}</h2>
 
 			{isSystemMask && (
 				<ClayAlert
@@ -108,7 +151,7 @@ export function DataMaskForm({
 				<ClayButton
 					className="mr-3"
 					displayType="secondary"
-					onClick={onCancel}
+					onClick={() => navigate(backURL)}
 					type="button"
 				>
 					{readOnly
@@ -289,7 +332,7 @@ function ReplacementConfigurationSection({
 				/>
 			</FieldBase>
 
-			<DataMaskTestCard
+			<DataMaskRegexTester
 				detectionRegex={detectionRegex}
 				replacementRegex={replacementRegex}
 				replacementValue={replacementValue}

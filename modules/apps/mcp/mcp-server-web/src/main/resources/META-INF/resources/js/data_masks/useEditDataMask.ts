@@ -8,7 +8,7 @@ import {FormEvent, useState} from 'react';
 
 import {patchDataMask} from '../services/patchDataMask';
 import {postDataMask} from '../services/postDataMask';
-import {DataMask} from './types';
+import {DataMask} from '../types';
 
 interface Options {
 	dataMask: DataMask | null;
@@ -32,7 +32,7 @@ function regexError(value: string): string {
 	}
 }
 
-export function useDataMaskForm({dataMask, onSaved}: Options) {
+export function useEditDataMask({dataMask, onSaved}: Options) {
 	const isSystemMask = dataMask?.maskType?.key === 'system';
 
 	const [name, setName] = useState(dataMask?.name ?? '');
