@@ -8,7 +8,7 @@ import {navigate} from 'frontend-js-web';
 import {ActionContext, DataMask} from '../types';
 import confirmAndDeleteDataMaskAction from './actions/confirmAndDeleteDataMaskAction';
 import duplicateDataMaskAction from './actions/duplicateDataMaskAction';
-import {maskEditURL} from './utils/editURL';
+import {maskEditURL} from './utils/maskEditURL';
 
 function isSystemMask(dataMask: DataMask) {
 	return dataMask?.maskType?.key === 'system';
@@ -40,41 +40,6 @@ const SORTS = [
 		direction: 'desc' as const,
 		key: 'dateModified',
 		label: Liferay.Language.get('last-modified'),
-	},
-];
-
-const VIEWS = [
-	{
-		contentRenderer: 'table',
-		default: true,
-		label: Liferay.Language.get('table'),
-		name: 'table',
-		schema: {
-			fields: [
-				{
-					contentRenderer: 'actionLink',
-					expand: true,
-					fieldName: 'name',
-					label: Liferay.Language.get('title'),
-					sortable: true,
-				},
-				{
-					fieldName: 'maskType.name',
-					label: Liferay.Language.get('type'),
-				},
-				{
-					fieldName: 'description',
-					label: Liferay.Language.get('description'),
-				},
-				{
-					contentRenderer: 'dateTime',
-					fieldName: 'dateModified',
-					label: Liferay.Language.get('last-modified'),
-					sortable: true,
-				},
-			],
-		},
-		thumbnail: 'table',
 	},
 ];
 
@@ -130,6 +95,5 @@ export default function DataMasksFDSPropsTransformer({
 			},
 		],
 		sorts: SORTS,
-		views: VIEWS,
 	};
 }
