@@ -27,6 +27,7 @@ import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
+import com.liferay.portal.security.ldap.internal.util.SafeLDAPReferralUtil;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 
@@ -133,8 +134,6 @@ public class DefaultPortalLDAP implements PortalLDAP {
 			Context.INITIAL_CONTEXT_FACTORY,
 			systemLDAPConfiguration.factoryInitial());
 		environmentProperties.put(Context.PROVIDER_URL, providerURL);
-		environmentProperties.put(
-			Context.REFERRAL, systemLDAPConfiguration.referral());
 		environmentProperties.put(Context.SECURITY_CREDENTIALS, credentials);
 		environmentProperties.put(Context.SECURITY_PRINCIPAL, principal);
 
@@ -158,6 +157,9 @@ public class DefaultPortalLDAP implements PortalLDAP {
 			environmentProperties.put(
 				connectionPropertySplit[0], connectionPropertySplit[1]);
 		}
+
+		SafeLDAPReferralUtil.setProperties(
+			environmentProperties, systemLDAPConfiguration.referral());
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(

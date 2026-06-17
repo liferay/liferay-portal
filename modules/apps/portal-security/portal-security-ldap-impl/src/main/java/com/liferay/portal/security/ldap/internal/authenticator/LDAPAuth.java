@@ -37,6 +37,7 @@ import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.security.ldap.exportimport.LDAPUserImporter;
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
+import com.liferay.portal.security.ldap.internal.util.SafeLDAPReferralUtil;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 import com.liferay.portlet.admin.util.OmniadminUtil;
@@ -159,7 +160,8 @@ public class LDAPAuth implements Authenticator {
 			SystemLDAPConfiguration systemLDAPConfiguration =
 				_systemLDAPConfigurationProvider.getConfiguration(companyId);
 
-			env.put(Context.REFERRAL, systemLDAPConfiguration.referral());
+			SafeLDAPReferralUtil.setProperties(
+				env, systemLDAPConfiguration.referral());
 
 			env.put(Context.SECURITY_CREDENTIALS, password);
 			env.put(Context.SECURITY_PRINCIPAL, userDN);

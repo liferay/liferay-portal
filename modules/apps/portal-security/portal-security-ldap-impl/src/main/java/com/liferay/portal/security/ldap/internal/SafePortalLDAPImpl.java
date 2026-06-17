@@ -33,6 +33,8 @@ import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
+import com.liferay.portal.security.ldap.constants.LDAPConstants;
+import com.liferay.portal.security.ldap.internal.util.SafeLDAPReferralUtil;
 import com.liferay.portal.security.ldap.internal.validator.SafeLdapContextImpl;
 import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
@@ -40,6 +42,7 @@ import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.naming.Binding;
@@ -427,8 +430,6 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 			Context.INITIAL_CONTEXT_FACTORY,
 			systemLDAPConfiguration.factoryInitial());
 		environmentProperties.put(Context.PROVIDER_URL, providerURL);
-		environmentProperties.put(
-			Context.REFERRAL, systemLDAPConfiguration.referral());
 		environmentProperties.put(Context.SECURITY_CREDENTIALS, credentials);
 		environmentProperties.put(Context.SECURITY_PRINCIPAL, principal);
 
@@ -453,6 +454,9 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 				connectionProperty[0], connectionProperty[1]);
 		}
 
+		SafeLDAPReferralUtil.setProperties(
+			environmentProperties, systemLDAPConfiguration.referral());
+
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				MapUtil.toString(
@@ -463,7 +467,10 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 				SafeLdapContextImpl.class.getClassLoader())) {
 
 			return new SafeLdapContextImpl(
-				new InitialLdapContext(environmentProperties, null));
+				new InitialLdapContext(environmentProperties, null),
+				Objects.equals(
+					systemLDAPConfiguration.referral(),
+					LDAPConstants.REFERRAL_FOLLOW));
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
