@@ -49,7 +49,7 @@
 				"menuItems": [
 					{
 						"displayIcon": "custom-field",
-						"externalReferenceCode": "SEOSTUDIOPRIMARYNAVIGATION7A",
+						"externalReferenceCode": "SEOSTUDIOPRIMARYNAVIGATION8",
 						"friendlyURL": "/configurations",
 						"privateLayout": false,
 						"type": "layout"
