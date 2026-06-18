@@ -6,18 +6,16 @@ definition {
 			groupName = "Bridge Issues",
 			layoutName = ${portletName});
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		PagesAdmin.configurePage(
-			columnName = "1 Column",
-			pageName = ${portletName},
-			sitePageType = "Widget Page");
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Bridge Issues",
+			layoutName = ${portletName},
+			layoutTemplate = "1 Column");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/${pageURL}");
 
 		Portlet.addPG(portletName = ${portletName});
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/${pageURL}");
 	}
 
 	@summary = "Default summary"

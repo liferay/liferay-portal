@@ -222,7 +222,7 @@
 </tr>
 <tr>
 	<td>SELECT_MENU_VALUE</td>
-	<td>//label[contains(text(),'${key_attribute}')]</td>
+	<td>//span[contains(text(),'${key_attribute}')]</td>
 	<td></td>
 </tr>
 <tr>

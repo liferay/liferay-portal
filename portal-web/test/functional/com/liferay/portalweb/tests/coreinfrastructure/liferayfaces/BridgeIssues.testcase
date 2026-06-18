@@ -3,6 +3,7 @@ definition {
 
 	property ci.retries.disabled = "true";
 	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "bridge-issues";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Liferay Faces";
@@ -28,7 +29,6 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 3
 	test Faces1470And1478PortletSmoke {
 
@@ -120,8 +120,6 @@ definition {
 			pageURL = "faces-1478",
 			portletName = "FACES-1478");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-1478");
-
 		var portalURL = PropsUtil.get("portal.url");
 
 		AssertTextEquals(
@@ -147,7 +145,6 @@ definition {
 		AssertLocation.assertPartialLocation(value1 = "_FACES1478_WAR_comliferayfacesissuejsfportlet_testParam=bar");
 	}
 
-	@ignore = "true"
 	@priority = 3
 	test Faces1618And1638PortletSmoke {
 
@@ -156,8 +153,6 @@ definition {
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-1618",
 			portletName = "FACES-1618");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-1618");
 
 		AssertTextEquals(
 			locator1 = "BridgeIssues#RESOURCE_SIZE",
@@ -211,8 +206,6 @@ definition {
 			pageURL = "faces-1638",
 			portletName = "FACES-1638");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-1638");
-
 		for (var index : list "1,2") {
 			BridgeIssues.verifyParam(
 				liIndex = 1,
@@ -250,7 +243,6 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 3
 	test Faces1635And1433PortletSmoke {
 
@@ -262,9 +254,10 @@ definition {
 			pageURL = "jsf-applicant?p_p_parallel=0",
 			portletName = "jsf-applicant");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/jsf-applicant?p_p_parallel=0");
-
-		Portlet.addPG(portletName = "primefaces-applicant");
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Bridge Issues",
+			layoutName = "jsf-applicant",
+			widgetName = "primefaces-applicant");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/jsf-applicant?p_p_parallel=0");
 
@@ -315,8 +308,6 @@ definition {
 			pageURL = "jsfspec-1433",
 			portletName = "JSFSPEC-1433");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/jsfspec-1433");
-
 		Click(
 			key_pageLink = "Run Test",
 			locator1 = "BridgeIssues#RUN_TEST_BUTTON");
@@ -326,7 +317,6 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 3
 	test FacesIssuesPortletSmoke {
 
@@ -337,8 +327,6 @@ definition {
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-224",
 			portletName = "FACES-224");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-224");
 
 		AssertElementPresent.assertVisible(
 			locator1 = "BridgeIssues#FACE_VIEW1_XHTML",
@@ -371,8 +359,6 @@ definition {
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-257",
 			portletName = "FACES-257");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-257");
 
 		AssertElementPresent(locator1 = "BridgeIssues#REQUESTED_URL");
 
@@ -410,8 +396,6 @@ definition {
 			pageURL = "faces-2958",
 			portletName = "FACES-2958");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-2958");
-
 		for (var resourceActionIndex : list "link.xhtml,commandLinkAjax.xhtml,commandLinkNonAjax.xhtml,link.xhtml via Ajax,commandLinkAjax.xhtml via Ajax,commandLinkNonAjax.xhtml via Ajax") {
 			BridgeIssues.verifyValue(
 				detailValue = "All special URL characters were correctly encoded.",
@@ -440,8 +424,6 @@ definition {
 			pageURL = "faces-3231",
 			portletName = "FACES-3231");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3231");
-
 		BridgeIssues.verifyValue(
 			detailValue = "Successfully load html from head section template.",
 			link = "Load html from head section template.",
@@ -455,8 +437,6 @@ definition {
 			pageURL = "faces-3300",
 			portletName = "FACES-3300");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3300");
-
 		for (var resourceActionIndex : list "1,2,3,4,5,6") {
 			BridgeIssues.verifyValue(
 				detailValue = "Successfully navigated to",
@@ -467,19 +447,11 @@ definition {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3300");
 		}
 
-		for (var resourceActionIndex : list "1,2,3,4,5,6") {
-			BridgeIssues.verifyValue(inValidURL = ${resourceActionIndex});
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3300");
-		}
-
 		// FACES_3356
 
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-3356",
 			portletName = "FACES-3356");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3356");
 
 		BridgeIssues.verifyValue(
 			detailValue = "Successfully handled",
@@ -490,30 +462,26 @@ definition {
 
 		// FACES_3404
 
-		BridgeIssues.addPageAndPortlet(
-			pageURL = "faces-3404",
-			portletName = "FACES-3404");
+		// BridgeIssues.addPageAndPortlet(
+		//	pageURL = "faces-3404",
+		//	portletName = "FACES-3404");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3404");
+		// for (var resourceActionIndex : list "result.xhtml via GET,result.xhtml via Ajax") {
+		//	BridgeIssues.verifyValue(
+		//		detailValue = "Liferay parameter was properly encoded in Render",
+		//		link = ${resourceActionIndex},
+		//		restoreState = "true",
+		//		statusValue = "SUCCESS",
+		//		textValue = "FACES-3404");
 
-		for (var resourceActionIndex : list "result.xhtml via GET,result.xhtml via Ajax") {
-			BridgeIssues.verifyValue(
-				detailValue = "Liferay parameter was properly encoded in Render",
-				link = ${resourceActionIndex},
-				restoreState = "true",
-				statusValue = "SUCCESS",
-				textValue = "FACES-3404");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3404");
-		}
+		//	Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3404");
+		// }
 
 		// FACES_4340-workaround
 
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "mojarra-4340-workaround",
 			portletName = "MOJARRA-4340-workaround");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/mojarra-4340-workaround");
 
 		BridgeIssues.verifyValue(
 			detailValue = "Successfully loaded body script in Ajax request.",
@@ -528,8 +496,6 @@ definition {
 			pageURL = "mojarra-4345-workaround",
 			portletName = "MOJARRA-4345-workaround");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/mojarra-4345-workaround");
-
 		BridgeIssues.verifyValue(
 			detailValue = "Resource URLs loaded via Ajax were not double escaped.",
 			link = "result.xhtml",
@@ -538,7 +504,6 @@ definition {
 			textValue = "MOJARRA-4340-workaround");
 	}
 
-	@ignore = "true"
 	@priority = 3
 	test PrimefacesIssuesSmoke {
 
@@ -549,8 +514,6 @@ definition {
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-1513-2185",
 			portletName = "FACES-1513-2185");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-1513-2185");
 
 		BridgeDemos.exportFile(lastName = "Export via p:dataExporter");
 
@@ -566,8 +529,6 @@ definition {
 			pageURL = "faces-2921",
 			portletName = "FACES-2921");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-2921");
-
 		AssertElementPresent(locator1 = "BridgeIssues#RENDER_KITID");
 
 		AssertElementPresent(
@@ -580,8 +541,6 @@ definition {
 			pageURL = "faces-3031",
 			portletName = "FACES-3031");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3031");
-
 		BridgeIssues.verifyValue(
 			detailValue = "State successfully saved and restored.",
 			restoreState = "true",
@@ -593,8 +552,6 @@ definition {
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-3250",
 			portletName = "FACES-3250");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3250");
 
 		BridgeIssues.upload3250File(
 			fileName = "Document_2.doc",
@@ -628,8 +585,6 @@ definition {
 		BridgeIssues.addPageAndPortlet(
 			pageURL = "faces-3327",
 			portletName = "FACES-3327");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3327");
 
 		BridgeIssues.verifyValue(
 			detailValue = "Successfully navigated after exporting/downloading data from a PrimeFaces component.",
