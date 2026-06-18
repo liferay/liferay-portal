@@ -91,13 +91,6 @@ public class NodeWorkflowMetricsReindexer
 			Thread.sleep(1000);
 		}
 		else {
-			WorkflowMetricsIndex workflowMetricsIndex =
-				WorkflowMetricsIndex.toWorkflowMetricsIndex(getKey());
-
-			workflowMetricsIndex.removeIndex(
-				_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
-				companyId);
-
 			WorkflowMetricsIndex.createAllIndexes(
 				_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
 				companyId);
