@@ -5,10 +5,16 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
+import com.liferay.frontend.data.set.model.FDSSortItemList;
+import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
 import com.liferay.mcp.server.web.internal.constants.MCPServerWebFDSNames;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
@@ -60,6 +66,28 @@ public class ViewDataMasksDisplayContext {
 
 	public String getFDSName() {
 		return MCPServerWebFDSNames.DATA_MASKS;
+	}
+
+	public FDSSortItemList getFDSSortItemList(
+		HttpServletRequest httpServletRequest) {
+
+		return FDSSortItemListBuilder.add(
+			FDSSortItemBuilder.setDirection(
+				"asc"
+			).setKey(
+				"name"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "title")
+			).build()
+		).add(
+			FDSSortItemBuilder.setDirection(
+				"desc"
+			).setKey(
+				"dateModified"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "last-modified")
+			).build()
+		).build();
 	}
 
 	private static final String _DATA_MASK_ID_TOKEN = "__DATA_MASK_ID__";

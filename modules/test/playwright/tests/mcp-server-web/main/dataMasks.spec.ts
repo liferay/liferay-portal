@@ -215,6 +215,23 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
+		'offers Title and Last Modified sort options',
+		{tag: '@LPD-90205'},
+		async ({dataMasksPage, page}) => {
+			await dataMasksPage.goto();
+
+			await dataMasksPage.orderButton.click();
+
+			await expect(
+				page.getByRole('menuitem', {exact: true, name: 'Title'})
+			).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {exact: true, name: 'Last Modified'})
+			).toBeVisible();
+		}
+	);
+
+	test(
 		'edits a custom mask from the three-dot menu',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {

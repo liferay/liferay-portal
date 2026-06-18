@@ -16,6 +16,7 @@ ViewDataMasksDisplayContext viewDataMasksDisplayContext = new ViewDataMasksDispl
 <frontend-data-set:headless-display
 	additionalProps="<%= viewDataMasksDisplayContext.getFDSAdditionalProps() %>"
 	apiURL="<%= viewDataMasksDisplayContext.getAPIURL() %>"
+	fdsSortItemList="<%= viewDataMasksDisplayContext.getFDSSortItemList(request) %>"
 	formName="fm"
 	id="<%= viewDataMasksDisplayContext.getFDSName() %>"
 	itemsPerPage="<%= 20 %>"

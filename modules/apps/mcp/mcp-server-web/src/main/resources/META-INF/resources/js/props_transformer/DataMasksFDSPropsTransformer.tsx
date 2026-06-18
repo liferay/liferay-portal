@@ -14,35 +14,6 @@ function isSystemMask(dataMask: DataMask) {
 	return dataMask?.maskType?.key === 'system';
 }
 
-const FILTERS = [
-	{
-		entityFieldType: 'string',
-		id: 'maskType',
-		itemKey: 'value',
-		itemLabel: 'label',
-		items: [
-			{label: Liferay.Language.get('system'), value: 'system'},
-			{label: Liferay.Language.get('custom'), value: 'custom'},
-		],
-		label: Liferay.Language.get('type'),
-		multiple: true,
-		type: 'selection',
-	},
-];
-
-const SORTS = [
-	{
-		direction: 'asc' as const,
-		key: 'name',
-		label: Liferay.Language.get('title'),
-	},
-	{
-		direction: 'desc' as const,
-		key: 'dateModified',
-		label: Liferay.Language.get('last-modified'),
-	},
-];
-
 interface DataMasksFDSPropsTransformerProps {
 	additionalProps: {
 		createURL: string;
@@ -66,7 +37,6 @@ export default function DataMasksFDSPropsTransformer({
 				},
 			],
 		},
-		filters: FILTERS,
 		itemsActions: [
 			{
 				icon: 'view',
@@ -94,6 +64,5 @@ export default function DataMasksFDSPropsTransformer({
 				onClick: confirmAndDeleteDataMaskAction,
 			},
 		],
-		sorts: SORTS,
 	};
 }

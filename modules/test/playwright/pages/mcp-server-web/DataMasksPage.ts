@@ -13,6 +13,7 @@ export class DataMasksPage {
 	readonly dataSet: Locator;
 	readonly filterButton: Locator;
 	readonly newDataMaskButton: Locator;
+	readonly orderButton: Locator;
 	readonly page: Page;
 	readonly searchInput: Locator;
 	readonly table: Locator;
@@ -34,6 +35,10 @@ export class DataMasksPage {
 		this.addFilterButton = page.getByRole('button', {
 			exact: true,
 			name: 'Add Filter',
+		});
+		this.orderButton = page.getByRole('button', {
+			exact: true,
+			name: 'Order',
 		});
 	}
 
