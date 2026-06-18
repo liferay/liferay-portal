@@ -3,6 +3,7 @@ definition {
 
 	property ci.retries.disabled = "true";
 	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "portal-showcase";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Liferay Faces";
@@ -16,24 +17,24 @@ definition {
 			PagesAdmin.enableWidgetPages();
 		}
 
+		HeadlessSite.addSite(siteName = "Portal Showcase");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "Portal Showcase");
+
 		JSONLayout.addPublicLayout(
-			groupName = "Guest",
+			groupName = "Portal Showcase",
 			layoutName = "Portal Showcase");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Portal Showcase",
+			layoutName = "Portal Showcase",
+			layoutTemplate = "1 Column");
 
-		PagesAdmin.configurePage(
-			columnName = "1 Column",
-			pageName = "Portal Showcase",
-			sitePageType = "Widget Page");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/portal-showcase");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase");
 
 		Portlet.addPG(portletName = "Portal Showcase");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/portal-showcase");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase");
 	}
 
 	tearDown {
@@ -47,10 +48,9 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputRichTextSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/portal-showcase/-/portal-tag/portal/inputrichtext/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase/-/portal-tag/portal/inputrichtext/general");
 
 		AssertElementPresent(locator1 = "PortalShowcase#CHECKED_RENDERED_CHECKBOX");
 
@@ -101,7 +101,7 @@ definition {
 
 		// InputRichTextDOMEvents
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/portal-showcase/-/portal-tag/portal/inputrichtext/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase/-/portal-tag/portal/inputrichtext/general");
 
 		Click(
 			key_field = "DOM Events",
@@ -139,7 +139,7 @@ definition {
 
 		// InputRichTextGeneralTest
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/portal-showcase/-/portal-tag/portal/inputrichtext/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase/-/portal-tag/portal/inputrichtext/general");
 
 		Click(locator1 = "//a[contains(text(),'Default Value')]");
 
@@ -181,7 +181,7 @@ definition {
 
 		// InputRichTextImmediateTest
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/portal-showcase/-/portal-tag/portal/inputrichtext/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/portal-showcase/portal-showcase/-/portal-tag/portal/inputrichtext/general");
 
 		Click(locator1 = "//a[contains(text(),'Immediate')]");
 
