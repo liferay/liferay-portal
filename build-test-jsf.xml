@@ -3,7 +3,76 @@
 <project basedir="./" name="portal-test-batch" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<import file="./build-test-batch.xml" />
 
-	<target name="run-jsf-tests">
+	<target name="build-jsf-artifacts" unless="liferay.faces.skip.build">
+		<echo message="Building JSF artifacts..." />
+		<!--
+		<exec dir="${liferay.faces.bridge.impl.dir}" executable="git">
+			<arg line="cherry-pick" />
+			<arg line="27b3fc29f9c2143451751083110a4f6722f212c8" />
+			<arg line="-strategy-option " />
+			<arg line="theirs " />
+		</exec>
+
+		<execute dir="${liferay.faces.bridge.impl.dir}/demo">
+			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		</execute>
+
+		<execute dir="${liferay.faces.bridge.impl.dir}/issue">
+			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		</execute>
+
+		<execute dir="${liferay.faces.bridge.impl.dir}/tck">
+			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		</execute>
+
+		<execute dir="${liferay.faces.portal.dir}/demo">
+			mvn clean package -P liferay,liferay73,mojarra,tomcat,validateCaptchaForTest
+		</execute>
+
+		<execute dir="${liferay.faces.portal.dir}/test/test-setup-hook">
+			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		</execute>
+		-->
+	</target>
+
+	<target name="copy-jsf-artifacts">
+		<copy
+			flatten="true"
+			todir="${liferay.home}/osgi/modules"
+		>
+			<fileset
+				dir="tools/faces"
+				includes="**/*.jar"
+			/>
+		</copy>
+
+		<copy
+			flatten="true"
+			todir="${liferay.home}/osgi/configs"
+		>
+			<fileset
+				dir="tools/faces"
+				includes="**/*.config"
+			/>
+		</copy>
+	</target>
+
+	<target name="deploy-jsf-war">
+		<get-testcase-property property.name="liferay.faces.war.dir.name" />
+		<get-testcase-property property.name="liferay.faces.war.file.name" />
+
+		<copy
+			flatten="true"
+			todir="${liferayHome}/osgi/war"
+		>
+			<fileset
+				dir="tools/faces/war/${liferay.faces.war.dir.name}"
+				includes="**/${liferay.faces.war.file.name}"
+			/>
+		</copy>
+	</target>
+
+	<target name="prepare-jsf-app-server">
 		<property name="max.metaspace.size" value="-XX:MaxMetaspaceSize=1024m" />
 
 		<propertycopy from="app.server.${app.server.type}.bin.dir" name="test.app.server.bin.dir" />
@@ -64,62 +133,39 @@
 
 		<echo file="${app.server.classes.portal.dir}/portal-ext.properties">${portal.ext.properties}</echo>
 
+		<antcall target="build-jsf-artifacts" />
+		<antcall target="copy-jsf-artifacts" />
+	</target>
+
+	<target name="run-jsf-tests">
+		<antcall target="prepare-jsf-app-server" />
+
 		<propertycopy from="browser.firefox.bin.file[${liferay.faces.test.browser.version}]" name="browser.firefox.bin.file" silent="true" />
 
-		<!--
-		LRQA-73302 Temporary workaround until Bridge-Impl 4.3.1 is available
-		-->
+		<get-testcase-property property.name="liferay.faces.war.auto.deploy" />
+		<get-testcase-property property.name="liferay.faces.war.dir.name" />
 
-		<exec dir="${liferay.faces.bridge.impl.dir}" executable="git">
-			<arg line="cherry-pick" />
-			<arg line="27b3fc29f9c2143451751083110a4f6722f212c8" />
-			<arg line="--strategy-option " />
-			<arg line="theirs " />
-		</exec>
-
-		<execute dir="${liferay.faces.bridge.impl.dir}/demo">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
-		</execute>
-
-		<execute dir="${liferay.faces.bridge.impl.dir}/issue">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
-		</execute>
-
-		<!--<execute dir="${liferay.faces.bridge.impl.dir}/tck">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
-		</execute>-->
-
-		<execute dir="${liferay.faces.portal.dir}/demo">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat,validateCaptchaForTest
-		</execute>
-
-		<!--<execute dir="${liferay.faces.portal.dir}/test/test-setup-hook">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
-		</execute>-->
-
-		<copy
-			flatten="true"
-			todir="${liferay.home}/deploy/"
-		>
-			<fileset
-				dir="${liferay.faces.bridge.impl.dir}"
-				includes="**/target/*.war"
-			/>
-			<fileset
-				dir="${liferay.faces.portal.dir}"
-				excludes="**/target/com.liferay.faces.test.setup.hook*.war"
-				includes="**/target/*.war"
-			/>
-		</copy>
-
-		<copy
-			flatten="true"
-			todir="${liferay.home}/osgi/configs"
-		>
-			<fileset
-				dir="${liferay.faces.portal.dir}"
-				includes="**/configs/*.config"
-			/>
-		</copy>
+		<if>
+			<and>
+				<isset property="liferay.faces.war.auto.deploy" />
+				<isfalse value="${liferay.faces.war.auto.deploy}" />
+			</and>
+			<then>
+				<echo>
+Skip deploying war file from ${liferay.faces.war.dir.name}
+				</echo>
+			</then>
+			<else>
+				<copy
+					flatten="true"
+					todir="${liferay.home}/osgi/war"
+				>
+					<fileset
+						dir="tools/faces/war/${liferay.faces.war.dir.name}"
+						includes="**/*.war"
+					/>
+				</copy>
+			</else>
+		</if>
 	</target>
 </project>
