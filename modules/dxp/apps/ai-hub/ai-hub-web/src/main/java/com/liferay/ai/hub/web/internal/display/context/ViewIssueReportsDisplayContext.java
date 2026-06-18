@@ -5,8 +5,6 @@
 
 package com.liferay.ai.hub.web.internal.display.context;
 
-import com.liferay.ai.hub.web.internal.frontend.data.set.sort.IssueReportFDSSorts;
-import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -82,7 +80,7 @@ public class ViewIssueReportsDisplayContext {
 
 			negativeCount = _getFacetCount(page, "feedback", "negative");
 
-			positiveCount = total - negativeCount;
+			positiveCount = _getFacetCount(page, "feedback", "positive");
 		}
 
 		int dislikeRatingPercent = 0;
@@ -104,16 +102,16 @@ public class ViewIssueReportsDisplayContext {
 		).build();
 	}
 
-	public FDSSortItemList getFDSSortItems() {
-		return IssueReportFDSSorts.getItems(_httpServletRequest);
-	}
-
 	public ThemeDisplay getThemeDisplay() {
 		return _themeDisplay;
 	}
 
 	private long _getFacetCount(
 		Page<?> page, String facetCriteria, String term) {
+
+		if (page.getFacets() == null) {
+			return 0;
+		}
 
 		for (Facet facet : page.getFacets()) {
 			if (!facetCriteria.equals(facet.getFacetCriteria())) {
