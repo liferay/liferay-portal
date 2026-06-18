@@ -101,7 +101,7 @@ public class MCPServerServletTest {
 					"definition",
 				".com.liferay.mcp.server.rest.internal.batch.02.object." +
 					"definition",
-				".com.liferay.mcp.server.rest.internal.batch.03.object.entry"
+				".com.liferay.mcp.server.rest.internal.batch.04.object.entry"
 			});
 	}
 
