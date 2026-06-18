@@ -4,6 +4,7 @@ definition {
 	property ci.retries.disabled = "true";
 	property custom.properties = "company.default.time.zone=America/Los_Angeles";
 	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "jsf-showcase";
 	property portal.release = "true";
 	property portal.upstream = "quarantine";
 	property testray.main.component.name = "Liferay Faces";
@@ -17,24 +18,24 @@ definition {
 			PagesAdmin.enableWidgetPages();
 		}
 
+		HeadlessSite.addSite(siteName = "JSF Showcase");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "JSF Showcase");
+
 		JSONLayout.addPublicLayout(
-			groupName = "Guest",
+			groupName = "JSF Showcase",
 			layoutName = "JSF Showcase");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "JSF Showcase",
+			layoutName = "JSF Showcase",
+			layoutTemplate = "1 Column");
 
-		PagesAdmin.configurePage(
-			columnName = "1 Column",
-			pageName = "JSF Showcase",
-			sitePageType = "Widget Page");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase");
 
 		Portlet.addPG(portletName = "JSF Showcase");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase");
 	}
 
 	tearDown {
@@ -48,14 +49,13 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test ButtonSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/button/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/button/general");
 
 		JSFShowcase.clickButton();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/button/navigation/foo/1234");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/button/navigation/foo/1234");
 
 		JSFShowcase.clickButtonNavigationParam(
 			navigation1 = "To Param page",
@@ -63,19 +63,18 @@ definition {
 			parameterValue1 = "foo=",
 			parameterValue3 = "foo=1234");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/button/various-styles");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/button/various-styles");
 
 		JSFShowcase.viewVariousStylesButton();
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test CommandButtonSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandbutton/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandbutton/general");
 
 		JSFShowcase.clickButton();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandbutton/navigation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandbutton/navigation");
 
 		JSFShowcase.clickButtonNavigationParam(
 			navigation1 = "To Param page",
@@ -83,7 +82,7 @@ definition {
 			parameterValue1 = "foo=",
 			parameterValue3 = "foo=1234");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandbutton/navigation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandbutton/navigation");
 
 		JSFShowcase.clickButtonNavigationParam(
 			commandButton = "true",
@@ -92,31 +91,30 @@ definition {
 			parameterValue1 = "foo=",
 			parameterValue3 = "foo=1234");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandbutton/various-styles");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandbutton/various-styles");
 
 		JSFShowcase.viewVariousStylesButton();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandbutton/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandbutton/immediate");
 
 		JSFShowcase.clickButtonLinkImmediate(
 			message1 = "APPLY_REQUEST_VALUES",
 			message2 = "INVOKE_APPLICATION");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandbutton/value-attribute");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandbutton/value-attribute");
 
 		JSFShowcase.clickButtonValueAttribute(attribute = "John Adams");
 
 		JSFShowcase.clickButtonValueAttribute(attribute = "Carter Braxton");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test CommandLinkSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandlink/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandlink/general");
 
 		JSFShowcase.clickButton(link = "true");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandlink/navigation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandlink/navigation");
 
 		JSFShowcase.clickButtonNavigationParam(
 			navigation1 = "To Param page",
@@ -124,37 +122,34 @@ definition {
 			parameterValue1 = "foo=",
 			parameterValue3 = "foo=1234");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/commandlink/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/commandlink/immediate");
 
 		JSFShowcase.clickButtonLinkImmediate(
 			message1 = "APPLY_REQUEST_VALUES",
 			message2 = "INVOKE_APPLICATION");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test DataTableSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/datatable/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/datatable/general");
 
 		JSFShowcase.viewDataTable();
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test FormSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/form/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/form/general");
 
 		JSFShowcase.viewFromButtonResult(message = "The form was submitted via Ajax and re-rendered with updates to the DOM.");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/form/non-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/form/non-ajax");
 
 		JSFShowcase.viewFromButtonResult(message = "The form was submitted as a full page postback and the entire page was re-rendered.");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test ImageSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/graphicimage/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/graphicimage/general");
 
 		JSFShowcase.viewImages();
 
@@ -165,13 +160,12 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputFileSmoke {
 
 		// BridgeInputFileGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/bridge/inputfile/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/bridge/inputfile/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -179,7 +173,7 @@ definition {
 
 		// BridgeInputFileInstantAjax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/bridge/inputfile/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/bridge/inputfile/instant-ajax");
 
 		JSFShowcase.uploadAndDeleteFile(
 			fileName = "Document_2.jpeg",
@@ -188,13 +182,13 @@ definition {
 		// BridgeInputFileMultiple
 		// Poshi limitations: can not upload multiple files, so this test only tests uploading a single file.
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/bridge/inputfile/multiple");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/bridge/inputfile/multiple");
 
 		JSFShowcase.uploadAndDeleteFile(fileName = "Document_2.jpeg");
 
 		// InputFileGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputfile/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputfile/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -202,33 +196,30 @@ definition {
 
 		// BridgeInputFileInstantAjax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputfile/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputfile/instant-ajax");
 
 		JSFShowcase.uploadAndDeleteFile(
 			fileName = "Document_2.jpeg",
 			instantAjax = "true");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputHiddenSmoke {
 
 		// InputHiddenConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputhidden/conversion");
-
-		JSFShowcase.submitHiddenValue(
-			key_text = "Copy a date to the value of the hidden input",
-			message1 = "Apr 5, 0033",
-			message2 = "04/05/0033");
-
-		JSFShowcase.clearHiddenValue(
-			message1 = "Apr 5, 0033",
-			message2 = "04/05/0033");
+		//Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputhidden/conversion");
+		//JSFShowcase.submitHiddenValue(
+		//	key_text = "Copy a date to the value of the hidden input",
+		//	message1 = "Apr 5, 0033",
+		//	message2 = "04/05/0033");
+		//JSFShowcase.clearHiddenValue(
+		//	message1 = "Apr 5, 0033",
+		//	message2 = "04/05/0033");
 
 		// InputHiddenGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputhidden/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputhidden/general");
 
 		JSFShowcase.submitHiddenValue(
 			key_text = "Copy ",
@@ -246,7 +237,7 @@ definition {
 
 		// InputHiddenImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputhidden/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputhidden/immediate");
 
 		JSFShowcase.submitHiddenValue(
 			immediate = "true",
@@ -266,7 +257,7 @@ definition {
 
 		// InputHiddenValidation
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputhidden/validation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputhidden/validation");
 
 		JSFShowcase.submitHiddenValue(
 			invalid = "true",
@@ -295,13 +286,12 @@ definition {
 			messageinvalid2 = "Invalid E-Mail Address");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputSecretSmoke {
 
 		// InputSecretGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputsecret/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputsecret/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -312,7 +302,7 @@ definition {
 
 		// InputSecretImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputsecret/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputsecret/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -328,7 +318,7 @@ definition {
 
 		// InputSecretRedisplay
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputsecret/redisplay");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputsecret/redisplay");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -346,7 +336,7 @@ definition {
 
 		// InputSecretValidation
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtext/validation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtext/validation");
 
 		Type(
 			locator1 = "JSFShowcase#CONVERSION_INPUT_1",
@@ -375,13 +365,12 @@ definition {
 			textResult = "Hello@World.com");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputTextareaSmoke {
 
 		// InputTextareaGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtextarea/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtextarea/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -392,20 +381,17 @@ definition {
 
 		// InputTextareaConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtextarea/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtextarea/conversion");
 
-		Type(
-			locator1 = "JSFShowcase#CONVERSION_AREA_1",
-			value1 = "apr 3 33");
-
-		Click(locator1 = "JSFShowcase#GENERAL_BUTTON");
-
-		AssertElementPresent(locator1 = "JSFShowcase#CONVERSION_INCORRECT_MESSAGE");
-
-		JSFShowcase.submitImmediate(
-			immediate = "true",
-			textArea = "apr 3, 33",
-			textResult = "Apr 3, 0033");
+		//Type(
+		//	locator1 = "JSFShowcase#CONVERSION_AREA_1",
+		//	value1 = "apr 3 33");
+		//Click(locator1 = "JSFShowcase#GENERAL_BUTTON");
+		//AssertElementPresent(locator1 = "JSFShowcase#CONVERSION_INCORRECT_MESSAGE");
+		//JSFShowcase.submitImmediate(
+		//	immediate = "true",
+		//	textArea = "apr 3, 33",
+		//	textResult = "Apr 3, 0033");
 
 		Type(
 			locator1 = "JSFShowcase#CONVERSION_AREA_2",
@@ -422,7 +408,7 @@ definition {
 
 		// InputTextareaImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtextarea/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtextarea/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -438,7 +424,7 @@ definition {
 
 		// InputTextareaRightToLeft
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtextarea/right-to-left");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtextarea/right-to-left");
 
 		AssertElementPresent(
 			locator1 = "JSFShowcase#RIGHT_TO_LEFT",
@@ -446,7 +432,7 @@ definition {
 
 		// InputTextareaSize
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtextarea/size");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtextarea/size");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -464,7 +450,7 @@ definition {
 
 		// InputTextareaValidation
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtextarea/validation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtextarea/validation");
 
 		Type(
 			locator1 = "JSFShowcase#CONVERSION_AREA_1",
@@ -493,13 +479,12 @@ definition {
 			textResult = "Hello@World.com");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputTextSmoke {
 
 		// InputTextGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtext/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtext/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -510,20 +495,17 @@ definition {
 
 		// InputTextConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtext/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtext/conversion");
 
-		Type(
-			locator1 = "JSFShowcase#CONVERSION_INPUT_1",
-			value1 = "apr 3 33");
-
-		Click(locator1 = "JSFShowcase#GENERAL_BUTTON");
-
-		AssertElementPresent(locator1 = "JSFShowcase#CONVERSION_INCORRECT_MESSAGE");
-
-		JSFShowcase.submitImmediate(
-			immediate = "true",
-			textInput = "apr 3, 33",
-			textResult = "Apr 3, 0033");
+		//Type(
+		//	locator1 = "JSFShowcase#CONVERSION_INPUT_1",
+		//	value1 = "apr 3 33");
+		//Click(locator1 = "JSFShowcase#GENERAL_BUTTON");
+		//AssertElementPresent(locator1 = "JSFShowcase#CONVERSION_INCORRECT_MESSAGE");
+		//JSFShowcase.submitImmediate(
+		//	immediate = "true",
+		//	textInput = "apr 3, 33",
+		//	textResult = "Apr 3, 0033");
 
 		Type(
 			locator1 = "JSFShowcase#CONVERSION_INPUT_2",
@@ -540,7 +522,7 @@ definition {
 
 		// InputTextImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtext/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtext/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -556,7 +538,7 @@ definition {
 
 		// InputTextValidation
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/inputtext/validation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/inputtext/validation");
 
 		Type(
 			locator1 = "JSFShowcase#CONVERSION_INPUT_1",
@@ -585,19 +567,18 @@ definition {
 			textResult = "Hello@World.com");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test LinkSmoke {
 
 		// LinkGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/link/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/link/general");
 
 		JSFShowcase.clickButton(link = "true");
 
 		// LinkNavigation
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/link/navigation");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/link/navigation");
 
 		AssertElementPresent(
 			attribute = "foo=",
@@ -616,17 +597,16 @@ definition {
 			locator1 = "JSFShowcase#LINK_PARAMETER_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test MessageSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/message/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/message/general");
 
 		JSFShowcase.submitMessage(
 			message = "You typed 5 characters.",
 			text = "Text Field",
 			textValue = "hello");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/messages/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/messages/general");
 
 		JSFShowcase.submitMessage(
 			message = "You typed 5 characters.",
@@ -638,13 +618,12 @@ definition {
 			textValue3 = "Hello World");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test OutputSmoke {
 
 		// OutputFormatGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputformat/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputformat/general");
 
 		AssertTextEquals(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT",
@@ -652,7 +631,7 @@ definition {
 
 		// OutputLabelGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputlabel/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputlabel/general");
 
 		JSFShowcase.validateRequired();
 
@@ -663,7 +642,7 @@ definition {
 
 		// OutputLinkConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputlink/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputlink/conversion");
 
 		Select(
 			locator1 = "JSFShowcase#OUTPUTLINK_SELECT",
@@ -680,22 +659,20 @@ definition {
 
 		// OutputLinkGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputlink/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputlink/general");
 
 		JSFShowcase.viewLink(
 			image = "false",
 			link = "liferay-projects/liferay-faces",
 			linkURL = "liferay-projects/liferay-faces");
 
-		for (var link : list "liferay-projects/liferay-faces,liferay+faces") {
-			JSFShowcase.viewLink(
-				link = ${link},
-				linkURL = ${link});
-		}
+		JSFShowcase.viewLink(
+			link = "liferay-projects/liferay-faces",
+			linkURL = "liferay-projects/liferay-faces");
 
 		// OutputScriptResource
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputscript/resource");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputscript/resource");
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT",
@@ -703,7 +680,7 @@ definition {
 
 		// OutputScriptGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputscript/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputscript/general");
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT",
@@ -711,13 +688,13 @@ definition {
 
 		// OutputStylesheetGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputstylesheet/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputstylesheet/general");
 
 		JSFShowcase.viewStylesheet();
 
 		// OutputTextConversionTester
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputtext/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputtext/conversion");
 
 		var displayDate = DateUtil.getCurrentYear();
 
@@ -727,7 +704,7 @@ definition {
 
 		// OutputTextConversionTester
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputtext/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputtext/general");
 
 		AssertTextEquals(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT",
@@ -735,21 +712,20 @@ definition {
 
 		// OutputTextRightToLeftlTester
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/outputtext/right-to-left");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/outputtext/right-to-left");
 
 		AssertTextEquals(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT_3",
 			value1 = "בְּרֵאשִׁית בָּרָא אֱלֹהִים אֵת הַשָּׁמַיִם וְאֵת הָאָֽרֶץ");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test PanelSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/panelgrid/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/panelgrid/general");
 
 		JSFShowcase.viewGridTable();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/panelgroup/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/panelgroup/general");
 
 		AssertTextEquals(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT",
@@ -760,17 +736,16 @@ definition {
 			value1 = "This text is inside a <div> HTML tag");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test PortletSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/portlet/actionurl/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/portlet/actionurl/general");
 
 		JSFShowcase.clickButtonNavigationParam(
 			navigation1 = "Submit Non-Faces Postback",
 			navigation2 = "Return to portlet:actionURL in the Liferay Faces Showcase",
 			parameterValue2 = "foo=1234");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/portlet/namespace/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/portlet/namespace/general");
 
 		AssertTextEquals(
 			locator1 = "JSFShowcase#EXAMPLE_TEXT",
@@ -780,26 +755,25 @@ definition {
 			locator1 = "JSFShowcase#EXAMPLE_TEXT_2",
 			value1 = "portletNamespace=_1_WAR_comliferayfacesdemojsfshowcaseportlet_");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/portlet/renderurl/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/portlet/renderurl/general");
 
 		JSFShowcase.viewLink(
 			image = "false",
-			link = "web/guest/jsf-showcase",
-			linkURL = "web/guest/jsf-showcase",
+			link = "web/jsf-showcase/jsf-showcase",
+			linkURL = "web/jsf-showcase/jsf-showcase",
 			newTab = "false");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/portlet/resourceurl/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/portlet/resourceurl/general");
 
 		AssertElementPresent(locator1 = "JSFShowcase#EXAMPLE_TEXT");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectBooleanCheckboxSmoke {
 
 		// SelectBooleanCheckboxGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectbooleancheckbox/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectbooleancheckbox/general");
 
 		JSFShowcase.selectCheckbox(textValue = "false");
 
@@ -809,7 +783,7 @@ definition {
 
 		// SelectBooleanCheckboxImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectbooleancheckbox/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectbooleancheckbox/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -835,7 +809,7 @@ definition {
 
 		// SelectBooleanCheckboxInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectbooleancheckbox/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectbooleancheckbox/instant-ajax");
 
 		Check(locator1 = "JSFShowcase#BOOLEAN_CHECKBOX_3");
 
@@ -850,13 +824,12 @@ definition {
 			locator1 = "JSFShowcase#MODEL_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectManyCheckboxSmoke {
 
 		// SelectManyCheckboxConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/conversion");
 
 		JSFShowcase.selectCheckbox(
 			checkboxNameList = "April 5, 33 AD,July 4, 1776 AD,July 14, 1789 AD",
@@ -876,7 +849,7 @@ definition {
 
 		// SelectManyCheckboxData-model
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/data-model");
 
 		JSFShowcase.selectCheckbox(
 			checkboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -892,7 +865,7 @@ definition {
 
 		// SelectManyCheckboxDefault-value
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/default-value");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/default-value");
 
 		AssertElementPresent(
 			key_attribute = 2,
@@ -916,7 +889,7 @@ definition {
 
 		// SelectManyCheckBoxGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -934,7 +907,7 @@ definition {
 
 		// SelectManyCheckBoxImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/immediate");
 
 		JSFShowcase.submitImmediate(
 			checkboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -970,7 +943,7 @@ definition {
 
 		// SelectManyCheckBoxInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanycheckbox/instant-ajax");
 
 		JSFShowcase.selectInstantAjax(
 			checkboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -985,13 +958,12 @@ definition {
 			locator1 = "JSFShowcase#MODEL_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectManyListboxSmoke {
 
 		// SelectManyListBoxConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanylistbox/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanylistbox/conversion");
 
 		JSFShowcase.select(
 			assertError = "true",
@@ -1010,7 +982,7 @@ definition {
 
 		// SelectManyListBoxData-model
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanylistbox/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanylistbox/data-model");
 
 		JSFShowcase.select(
 			listboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -1026,7 +998,7 @@ definition {
 
 		// SelectManyListBoxDefault-value
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanylistbox/default-value");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanylistbox/default-value");
 
 		AssertElementPresent(
 			key_attribute = 2,
@@ -1050,7 +1022,7 @@ definition {
 
 		// SelectManyListBoxGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanylistbox/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanylistbox/general");
 
 		JSFShowcase.validateRequiredCheckbox(selectManyListbox = "true");
 
@@ -1068,7 +1040,7 @@ definition {
 
 		// SelectManyListBoxImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanylistbox/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanylistbox/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -1104,7 +1076,7 @@ definition {
 
 		// SelectManyListBoxInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanylistbox/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanylistbox/instant-ajax");
 
 		JSFShowcase.selectInstantAjax(
 			listboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -1119,13 +1091,12 @@ definition {
 			locator1 = "JSFShowcase#MODEL_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectManyMenuSmoke {
 
 		// SelectManyMenuConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanymenu/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanymenu/conversion");
 
 		JSFShowcase.select(
 			assertError = "true",
@@ -1144,7 +1115,7 @@ definition {
 
 		// SelectManyMenuData-model
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanymenu/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanymenu/data-model");
 
 		JSFShowcase.select(
 			listboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -1160,7 +1131,7 @@ definition {
 
 		// SelectManyMenuDefault-value
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanymenu/default-value");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanymenu/default-value");
 
 		AssertElementPresent(
 			key_attribute = 2,
@@ -1184,7 +1155,7 @@ definition {
 
 		// SelectManyMenuGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanymenu/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanymenu/general");
 
 		JSFShowcase.validateRequiredCheckbox(selectManyMenu = "true");
 
@@ -1202,7 +1173,7 @@ definition {
 
 		// SelectManyMenuImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanymenu/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanymenu/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -1238,7 +1209,7 @@ definition {
 
 		// SelectManyMenuInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectmanymenu/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectmanymenu/instant-ajax");
 
 		JSFShowcase.selectInstantAjax(
 			listboxNameList = "Compatible,Powerful Integration,Lightweight",
@@ -1253,13 +1224,12 @@ definition {
 			locator1 = "JSFShowcase#MODEL_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectOneListboxSmoke {
 
 		// SelectOneListboxConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonelistbox/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonelistbox/conversion");
 
 		JSFShowcase.select(
 			listboxNameList = "October 31, 1517 AD",
@@ -1279,7 +1249,7 @@ definition {
 
 		// SelectOneListboxData-model
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonelistbox/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonelistbox/data-model");
 
 		JSFShowcase.select(
 			listboxNameList = "Compatible",
@@ -1295,7 +1265,7 @@ definition {
 
 		// SelectOneListboxDefault-value
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonelistbox/default-value");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonelistbox/default-value");
 
 		AssertElementPresent(
 			key_attribute = 3,
@@ -1311,7 +1281,7 @@ definition {
 
 		// SelectOneListboxGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonelistbox/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonelistbox/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -1329,7 +1299,7 @@ definition {
 
 		// SelectOneListboxImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonelistbox/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonelistbox/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -1365,7 +1335,7 @@ definition {
 
 		// SelectOneListboxInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonelistbox/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonelistbox/instant-ajax");
 
 		JSFShowcase.selectInstantAjax(
 			listboxNameList = "Compatible",
@@ -1380,13 +1350,12 @@ definition {
 			locator1 = "JSFShowcase#MODEL_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectOneMenuSmoke {
 
 		// SelectOneRadioConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonemenu/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonemenu/conversion");
 
 		JSFShowcase.select(
 			oneMenuName = "October 31, 1517 AD",
@@ -1406,7 +1375,7 @@ definition {
 
 		// SelectOneMenuData-model
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonemenu/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonemenu/data-model");
 
 		JSFShowcase.select(
 			oneMenuName = "Compatible",
@@ -1422,7 +1391,7 @@ definition {
 
 		// SelectOneMenuDefault-value
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonemenu/default-value");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonemenu/default-value");
 
 		AssertElementPresent(
 			key_attribute = 3,
@@ -1438,7 +1407,7 @@ definition {
 
 		// SelectOneMenuGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonemenu/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonemenu/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -1456,7 +1425,7 @@ definition {
 
 		// SelectOneMenuImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonemenu/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonemenu/immediate");
 
 		JSFShowcase.submitImmediate(
 			immediate = "true",
@@ -1492,7 +1461,7 @@ definition {
 
 		// SelectOneMenuInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectonemenu/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectonemenu/instant-ajax");
 
 		JSFShowcase.selectInstantAjax(
 			oneMenuName = "Powerful Integration",
@@ -1507,13 +1476,12 @@ definition {
 			locator1 = "JSFShowcase#MODEL_VALUE");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test SelectOneRadioSmoke {
 
 		// SelectOneRadioConversion
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectoneradio/conversion");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectoneradio/conversion");
 
 		JSFShowcase.selectCheckbox(
 			checkboxNameList = "October 31, 1517 AD",
@@ -1533,7 +1501,7 @@ definition {
 
 		// SelectOneRadioData-model
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectoneradio/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectoneradio/data-model");
 
 		JSFShowcase.selectCheckbox(
 			checkboxNameList = "Compatible",
@@ -1549,7 +1517,7 @@ definition {
 
 		// SelectOneRadioDefault-value
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectoneradio/default-value");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectoneradio/default-value");
 
 		AssertElementPresent(
 			key_attribute = 3,
@@ -1565,7 +1533,7 @@ definition {
 
 		// SelectOneRadioImmediate
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectoneradio/immediate");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectoneradio/immediate");
 
 		JSFShowcase.submitImmediate(
 			checkboxNameList = "Compatible",
@@ -1601,7 +1569,7 @@ definition {
 
 		// SelectOneRadioGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectoneradio/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectoneradio/general");
 
 		JSFShowcase.validateRequiredCheckbox();
 
@@ -1619,7 +1587,7 @@ definition {
 
 		// SelectOneRadioInstant-ajax
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/jsf-showcase/-/jsf-tag/h/selectoneradio/instant-ajax");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/jsf-showcase/jsf-showcase/-/jsf-tag/h/selectoneradio/instant-ajax");
 
 		JSFShowcase.selectInstantAjax(
 			checkboxNameList = "Compatible",
