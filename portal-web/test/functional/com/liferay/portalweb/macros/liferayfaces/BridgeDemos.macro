@@ -244,34 +244,17 @@ definition {
 			locator1 = "TextInput#ANY",
 			value1 = ${phoneNumber});
 
-		if (${applicantName} != "JSF JSP") {
-			BridgeDemos.autoPopulateCityState(
-				applicantName = ${applicantName},
-				city = ${city},
-				postalCode = ${postalCode},
-				state = ${state});
+		BridgeDemos.autoPopulateCityState(
+			applicantName = ${applicantName},
+			city = ${city},
+			postalCode = ${postalCode},
+			state = ${state});
 
-			BridgeDemos.addComment(comments = ${comments});
+		BridgeDemos.addComment(comments = ${comments});
 
-			AssertTextEquals.assertPartialText(
-				locator1 = "BridgeDemos#CONFIRMATION_FORM",
-				value1 = ${confirmation});
-		}
-		else {
-			Type(
-				key_text = "City",
-				locator1 = "TextInput#ANY",
-				value1 = ${city});
-
-			Select(
-				locator1 = "BridgeDemos#STATE_PROVINCE",
-				value1 = ${state});
-
-			Type(
-				key_text = "Zip/Postal",
-				locator1 = "TextInput#ANY",
-				value1 = ${postalCode});
-		}
+		AssertTextEquals.assertPartialText(
+			locator1 = "BridgeDemos#CONFIRMATION_FORM",
+			value1 = ${confirmation});
 	}
 
 	@summary = "Default summary"
@@ -305,15 +288,11 @@ definition {
 
 	@summary = "Default summary"
 	macro uploadFile(fileName = null, applicantName = null) {
-		if (${applicantName} == "JSF JSP") {
-			Click(locator1 = "BridgeDemos#ADD_ATTACHMENT");
-		}
-
 		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
 			locator1 = "TextInput#FILE",
 			value1 = ${fileName});
 
-		if ((${applicantName} == "Prime Faces") || (${applicantName} == "Rich JSP")) {
+		if (${applicantName} == "Prime Faces") {
 			Click(locator1 = "BridgeDemos#UPLOAD_BUTTON");
 		}
 		else {
@@ -329,19 +308,6 @@ definition {
 	macro validateField(fieldNameText = null, fieldName = null, errorMessage = null, applicantName = null, fieldValue = null, urlAppend = null) {
 		Navigator.openWithAppendToBaseURL(urlAppend = ${urlAppend});
 
-		if (${applicantName} == "JSF JSP") {
-			BridgeDemos.submit(
-				applicantName = "JSF JSP",
-				city = "Orlando",
-				confirmation = "Thank you David",
-				emailAddress = "no_need@just.pray",
-				firstName = "David",
-				lastName = "Samuel",
-				phoneNumber = 1112223333,
-				postalCode = 32801,
-				state = "FL");
-		}
-
 		Type(
 			key_text = ${fieldName},
 			locator1 = "TextInput#ANY",
@@ -351,20 +317,7 @@ definition {
 			key_text = "City",
 			locator1 = "TextInput#ANY");
 
-		if (${applicantName} == "Butter Faces") {
-			AssertElementPresent(
-				key_fieldName = ${fieldName},
-				locator1 = "BridgeDemos#FIELD_ERROR_BUTTER_FACES_TOAST");
-		}
-		else if (${applicantName} == "JSF JSP") {
-			Click(locator1 = "BridgeDemos#SUBMIT_BUTTON");
-
-			AssertTextEquals.assertPartialText(
-				key_fieldName = ${fieldName},
-				locator1 = "BridgeDemos#FIELD_ERROR_JSF_JSP",
-				value1 = ${errorMessage});
-		}
-		else if (${applicantName} == "Prime Faces") {
+		if (${applicantName} == "Prime Faces") {
 			Click(locator1 = "BridgeDemos#SUBMIT_BUTTON");
 
 			BridgeDemos.viewFieldErrorMessage(
@@ -392,9 +345,7 @@ definition {
 			key_text = "State/Province",
 			locator1 = "BridgeDemos#STATE_PROVINCE");
 
-		if (${applicantName} != "JSF JSP") {
-			AssertElementPresent(locator1 = "BridgeDemos#SHOW_HIDE_COMMENTS_LINK");
-		}
+		AssertElementPresent(locator1 = "BridgeDemos#SHOW_HIDE_COMMENTS_LINK");
 
 		for (var key_libraryName : list "Mojarra,Liferay Faces Alloy,Liferay Faces Bridge Impl,Liferay Faces Bridge Ext") {
 			AssertElementPresent(
@@ -430,24 +381,10 @@ definition {
 
 	@summary = "Default summary"
 	macro viewFieldErrorMessage(fieldName = null, errorMessage = null, applicantName = null) {
-		if (${applicantName} == "Butter Faces") {
-			AssertTextEquals.assertPartialText(
-				key_fieldName = ${fieldName},
-				locator1 = "BridgeDemos#FIELD_ERROR_BUTTER_FACES",
-				value1 = ${errorMessage});
-		}
-		else if (${applicantName} == "JSF JSP") {
-			AssertTextEquals.assertPartialText(
-				key_fieldName = ${fieldName},
-				locator1 = "BridgeDemos#FIELD_ERROR_JSF_JSP",
-				value1 = ${errorMessage});
-		}
-		else {
-			AssertTextEquals.assertPartialText(
-				key_fieldName = ${fieldName},
-				locator1 = "BridgeDemos#FIELD_ERROR",
-				value1 = ${errorMessage});
-		}
+		AssertTextEquals.assertPartialText(
+			key_fieldName = ${fieldName},
+			locator1 = "BridgeDemos#FIELD_ERROR",
+			value1 = ${errorMessage});
 	}
 
 	@summary = "Default summary"

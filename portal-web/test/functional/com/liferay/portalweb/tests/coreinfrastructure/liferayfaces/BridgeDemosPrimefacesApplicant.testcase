@@ -1,0 +1,189 @@
+@component-name = "portal-core-infra"
+definition {
+
+	property ci.retries.disabled = "true";
+	property custom.properties = "company.default.time.zone=America/Los_Angeles";
+	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "bridge-demos-primefaces-applicant";
+	property portal.release = "true";
+	property portal.upstream = "quarantine";
+	property testray.main.component.name = "Liferay Faces";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Bridge Demos Primefaces Applicant");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "Bridge Demos Primefaces Applicant");
+	}
+
+	tearDown {
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutPG();
+		}
+	}
+
+	@description = "This is a usecase for LPS-159239. Verify a 3.0 portlet with cdi can be deployed to a content page."
+	@ignore = "true"
+	@priority = 3
+	test PrimeFacesCDIApplicantPortletContentPageSmoke {
+		property liferay.faces = "false";
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+
+		task ("Given a 3.0 portlet with cdi") {
+			task ("Upgrade existing 2.0 portlet to 3.0") {
+				var facesBridgeImplDir = PropsUtil.get("liferay.faces.bridge.impl.dir");
+
+				var portletDir = "${facesBridgeImplDir}/demo/primefaces-applicant-portlet";
+
+				FileUtil.replaceStringInFile("${portletDir}/pom.xml", "4.3.0", "6.0.0");
+
+				FileUtil.replaceStringInFile("${portletDir}/src/main/webapp/WEB-INF/portlet.xml", "http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd", "http://xmlns.jcp.org/xml/ns/portlet");
+
+				FileUtil.replaceStringInFile("${portletDir}/src/main/webapp/WEB-INF/portlet.xml", "2.0", "3.0");
+			}
+
+			task ("Enable cdi on the portlet") {
+				FileUtil.replaceStringInFile("${portletDir}/src/main/webapp/WEB-INF/portlet.xml", "portlet\">", "portlet/portlet-app_3_0.xsd\">");
+
+				var content = '''
+-cdiannotations:''';
+
+				File.regexReplace(
+					content = ${content},
+					fileName = "${portletDir}/src/main/webapp/WEB-INF/liferay-plugin-package.properties",
+					regex = "\z");
+			}
+
+			task ("Deploy the portlet") {
+				AntCommands.runCommand("build-test.xml", "deploy-maven-module -Dbuild.profiles=liferay -Dmodule.base.dir=${portletDir}");
+
+				WaitForConsoleTextPresent(value1 = "STARTED com.liferay.faces.demo.primefaces.applicant.portlet");
+			}
+		}
+
+		task ("When the portlet is added to a page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Bridge Demos Primefaces Applicant",
+				layoutName = "primefaces-applicant",
+				type = "content");
+
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "primefaces-applicant",
+				siteName = "Bridge Demos Primefaces Applicant");
+
+			PageEditor.addWidget(portletName = "primefaces-applicant");
+
+			PageEditor.publish();
+		}
+
+		task ("Then the portlet should be added successfully") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+			BridgeDemos.viewApplication();
+		}
+	}
+
+	@priority = 5
+	test PrimeFacesCDIApplicantPortletSmoke {
+		JSONLayout.addPublicLayout(
+			groupName = "Bridge Demos Primefaces Applicant",
+			layoutName = "primefaces-applicant");
+
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Bridge Demos Primefaces Applicant",
+			layoutName = "primefaces-applicant",
+			layoutTemplate = "1 Column");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		Portlet.addPG(portletName = "primefaces-applicant");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		BridgeDemos.viewApplication();
+
+		BridgeDemos.editDateFormat(dateFormat = "MM/dd/yy");
+
+		BridgeDemos.gotoEdit();
+
+		Click(locator1 = "BridgeDemos#RESET_BUTTON");
+
+		BridgeDemos.viewDateFormat(
+			dateFormat = "MM/dd/yyyy",
+			displayDate = ${displayDate});
+
+		Click(locator1 = "BridgeDemos#SUBMIT_BUTTON");
+
+		for (var fieldName : list "firstName,lastName,emailAddress,phoneNumber,city,postalCode,provinceId") {
+			BridgeDemos.viewFieldErrorMessage(
+				errorMessage = "Value is required",
+				fieldName = ${fieldName});
+		}
+
+		BridgeDemos.validateField(
+			applicantName = "Prime Faces",
+			errorMessage = "Invalid date format",
+			fieldName = "Birthday",
+			fieldNameText = "dateOfBirth",
+			fieldValue = "12/34/5678",
+			urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		BridgeDemos.validateField(
+			applicantName = "Prime Faces",
+			errorMessage = "Invalid e-mail address",
+			fieldName = "Email Address",
+			fieldNameText = "emailAddress",
+			fieldValue = "test",
+			urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		BridgeDemos.validateField(
+			applicantName = "Prime Faces",
+			errorMessage = "Invalid e-mail address",
+			fieldName = "Email Address",
+			fieldNameText = "emailAddress",
+			fieldValue = "@liferay.com",
+			urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		BridgeDemos.autoPopulateCityState(
+			applicantName = "Prime Faces",
+			city = "Orlando",
+			postalCode = 32801,
+			state = "FL");
+
+		BridgeDemos.addComment(comments = "testing 1, 2, 3");
+
+		Click(locator1 = "BridgeDemos#SHOW_HIDE_COMMENTS_LINK");
+
+		BridgeDemos.viewComment(comments = "testing 1, 2, 3");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-primefaces-applicant/primefaces-applicant");
+
+		BridgeDemos.uploadFile(
+			applicantName = "Prime Faces",
+			fileName = "Document_2.jpeg");
+
+		BridgeDemos.submit(
+			applicantName = "Prime Faces",
+			city = "Orlando",
+			comments = "Indeed the people are one and they all have one language, and this is what they begin to do ...",
+			confirmation = "Thank you David",
+			emailAddress = "no_need@just.pray",
+			firstName = "David",
+			lastName = "Samuel",
+			phoneNumber = 1112223333,
+			postalCode = 32801,
+			state = "FL");
+	}
+
+}

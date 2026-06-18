@@ -1,0 +1,149 @@
+@component-name = "portal-core-infra"
+definition {
+
+	property ci.retries.disabled = "true";
+	property custom.properties = "company.default.time.zone=America/Los_Angeles";
+	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "bridge-demos-ipc";
+	property portal.release = "true";
+	property portal.upstream = "quarantine";
+	property testray.main.component.name = "Liferay Faces";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Bridge Demos IPC");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "Bridge Demos IPC");
+	}
+
+	tearDown {
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutPG();
+		}
+	}
+
+	@priority = 5
+	test JSF_IPCEventsPortletsSmoke {
+		JSONLayout.addPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-events");
+
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-events",
+			layoutTemplate = "1 Column");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-ipc/jsf-events");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-events",
+			widgetName = "jsf-ipc-events-customers");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-ipc/jsf-events");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-events",
+			widgetName = "jsf-ipc-events-bookings");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-ipc/jsf-events");
+
+		var currentDate = DateUtil.getFormattedCurrentDate("MM/dd/yyyy");
+
+		BridgeDemos.viewNames(
+			customerId = 1,
+			firstName = "Brian",
+			lastName = "Green",
+			lastNameEdit = "Greeny");
+
+		BridgeDemos.viewStartDate(
+			customerId = 1,
+			startDate = ${currentDate},
+			startDateEdit = "12/25/1999");
+
+		BridgeDemos.viewNames(
+			customerId = 2,
+			firstName = "Liz",
+			firstNameEdit = "Lizy",
+			lastName = "Kessler");
+
+		BridgeDemos.viewNames(
+			customerId = 3,
+			firstName = "Rich",
+			firstNameEdit = "Richy",
+			lastName = "Shearer");
+
+		BridgeDemos.viewStartDate(
+			customerId = 1,
+			startDate = "12/25/1999",
+			startDateEdit = ${currentDate});
+	}
+
+	@priority = 5
+	test JSF_IPCPublicRenderParamsPortletsSmoke {
+		JSONLayout.addPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-prp");
+
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-prp",
+			layoutTemplate = "1 Column");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-ipc/jsf-prp");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-prp",
+			widgetName = "jsf-ipc-pub-render-params-customers");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-ipc/jsf-prp");
+
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Bridge Demos IPC",
+			layoutName = "jsf-prp",
+			widgetName = "jsf-ipc-pub-render-params-bookings");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-ipc/jsf-prp");
+
+		var currentDate = DateUtil.getFormattedCurrentDate("MM/dd/yyyy");
+
+		BridgeDemos.viewNames(
+			customerId = 1,
+			firstName = "Brian",
+			lastName = "Green",
+			lastNameEdit = "Greeny");
+
+		BridgeDemos.viewStartDate(
+			customerId = 1,
+			startDate = ${currentDate},
+			startDateEdit = "12/25/1999");
+
+		BridgeDemos.viewNames(
+			customerId = 2,
+			firstName = "Liz",
+			firstNameEdit = "Lizy",
+			lastName = "Kessler");
+
+		BridgeDemos.viewNames(
+			customerId = 3,
+			firstName = "Rich",
+			firstNameEdit = "Richy",
+			lastName = "Shearer");
+
+		BridgeDemos.viewStartDate(
+			customerId = 1,
+			startDate = "12/25/1999",
+			startDateEdit = ${currentDate});
+	}
+
+}

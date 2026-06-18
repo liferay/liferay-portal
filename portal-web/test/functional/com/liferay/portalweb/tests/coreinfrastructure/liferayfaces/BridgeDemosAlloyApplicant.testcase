@@ -1,0 +1,120 @@
+@component-name = "portal-core-infra"
+definition {
+
+	property ci.retries.disabled = "true";
+	property custom.properties = "company.default.time.zone=America/Los_Angeles";
+	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "bridge-demos-alloy-applicant";
+	property portal.release = "true";
+	property portal.upstream = "quarantine";
+	property testray.main.component.name = "Liferay Faces";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Bridge Demos Alloy Applicant");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "Bridge Demos Alloy Applicant");
+	}
+
+	tearDown {
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutPG();
+		}
+	}
+
+	@priority = 5
+	test AlloyApplicantPortletSmoke {
+		JSONLayout.addPublicLayout(
+			groupName = "Bridge Demos Alloy Applicant",
+			layoutName = "alloy-applicant");
+
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Bridge Demos Alloy Applicant",
+			layoutName = "alloy-applicant",
+			layoutTemplate = "1 Column");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		Portlet.addPG(portletName = "alloy-applicant");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		BridgeDemos.viewApplication();
+
+		BridgeDemos.editDateFormat(dateFormat = "MM/dd/yy");
+
+		BridgeDemos.gotoEdit();
+
+		Button.click(button = "Reset");
+
+		BridgeDemos.viewDateFormat(
+			dateFormat = "MM/dd/yyyy",
+			displayDate = ${displayDate});
+
+		Button.click(button = "Submit");
+
+		for (var fieldName : list "firstName,lastName,emailAddress,phoneNumber,city,postalCode,provinceId") {
+			BridgeDemos.viewFieldErrorMessage(
+				errorMessage = "Value is required",
+				fieldName = ${fieldName});
+		}
+
+		BridgeDemos.validateField(
+			errorMessage = "Invalid date format",
+			fieldName = "Birthday",
+			fieldNameText = "dateOfBirth",
+			fieldValue = "12/34/5678",
+			urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		BridgeDemos.validateField(
+			errorMessage = "Invalid e-mail address",
+			fieldName = "Email Address",
+			fieldNameText = "emailAddress",
+			fieldValue = "test",
+			urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		BridgeDemos.validateField(
+			errorMessage = "Invalid e-mail address",
+			fieldName = "Email Address",
+			fieldNameText = "emailAddress",
+			fieldValue = "@liferay.com",
+			urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		BridgeDemos.autoPopulateCityState(
+			city = "Orlando",
+			postalCode = 32801,
+			state = "FL");
+
+		BridgeDemos.addComment(comments = "testing 1, 2, 3");
+
+		Click(locator1 = "BridgeDemos#SHOW_HIDE_COMMENTS_LINK");
+
+		BridgeDemos.viewComment(comments = "testing 1, 2, 3");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-demos-alloy-applicant/alloy-applicant");
+
+		BridgeDemos.uploadFile(fileName = "Document_2.jpeg");
+
+		BridgeDemos.submit(
+			city = "Orlando",
+			comments = "Indeed the people are one and they all have one language, and this is what they begin to do ...",
+			confirmation = "Thank you David",
+			emailAddress = "no_need@just.pray",
+			firstName = "David",
+			lastName = "Samuel",
+			phoneNumber = 1112223333,
+			postalCode = 32801,
+			state = "FL");
+	}
+
+}

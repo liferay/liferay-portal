@@ -71,16 +71,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>FIELD_ERROR_BUTTER_FACES</td>>
-	<td>//li[@class='portlet-msg-error' and contains(text(),'${key_fieldName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>FIELD_ERROR_BUTTER_FACES_TOAST</td>>
-	<td>//div[label[contains(.,'${key_fieldName}')]]//input[contains(@class,'butter-component-invalid')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FIELD_ERROR_JSF_JSP</td>>
 	<td>//span[@class='portlet-msg-error']</td>
 	<td></td>

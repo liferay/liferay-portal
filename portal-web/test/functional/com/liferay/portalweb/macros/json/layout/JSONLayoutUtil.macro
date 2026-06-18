@@ -278,6 +278,21 @@ definition {
 		else if (${widgetName} == "Frontend Data Set Sample") {
 			var portletId = "com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet";
 		}
+		else if (${widgetName} == "jsf-ipc-events-bookings") {
+			var portletId = "bookings_WAR_comliferayfacesdemojsfipceventsbookingsportlet";
+		}
+		else if (${widgetName} == "jsf-ipc-events-customers") {
+			var portletId = "customers_WAR_comliferayfacesdemojsfipceventscustomersportlet";
+		}
+		else if (${widgetName} == "jsf-ipc-pub-render-params-bookings") {
+			var portletId = "bookingsPortlet_WAR_comliferayfacesdemojsfipcpubrenderparamsportlet";
+		}
+		else if (${widgetName} == "jsf-ipc-pub-render-params-customers") {
+			var portletId = "customersPortlet_WAR_comliferayfacesdemojsfipcpubrenderparamsportlet";
+		}
+		else if (${widgetName} == "primefaces-applicant") {
+			var portletId = "1_WAR_comliferayfacesdemoprimefacesapplicantportlet";
+		}
 		else {
 			fail("'widgetName' is either invalid or its 'portletId' is not yet set.");
 		}
