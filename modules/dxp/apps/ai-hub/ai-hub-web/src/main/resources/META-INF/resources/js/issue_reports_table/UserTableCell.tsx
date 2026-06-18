@@ -3,8 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
+
+import {
+	getCachedScreenName,
+	getScreenName,
+} from './services/UserAccountService';
 
 interface Creator {
 	givenName?: string;
@@ -14,8 +18,6 @@ interface Creator {
 
 const GUEST_ACCOUNT_SUFFIX = 'guest-service-account';
 
-const screenNameCache = new Map<number, string>();
-
 function isGuest(creator: Creator): boolean {
 	const givenName = creator.givenName ?? '';
 
@@ -23,30 +25,28 @@ function isGuest(creator: Creator): boolean {
 }
 
 export default function UserTableCell({value}: {value: Creator | null}) {
-	const [screenName, setScreenName] = useState(() =>
-		value?.id ? screenNameCache.get(value.id) ?? '' : ''
-	);
-
 	const userId = value?.id;
 
+	const [screenName, setScreenName] = useState(() =>
+		getCachedScreenName(userId)
+	);
+
 	useEffect(() => {
-		if (!userId || screenNameCache.has(userId)) {
+		if (!userId) {
 			return;
 		}
 
-		fetch(
-			`/o/headless-admin-user/v1.0/user-accounts/${userId}?fields=alternateName`,
-			{headers: new Headers({Accept: 'application/json'})}
-		)
-			.then((response) => response.json())
-			.then((data) => {
-				if (data?.alternateName) {
-					screenNameCache.set(userId, data.alternateName);
+		let active = true;
 
-					setScreenName(data.alternateName);
-				}
-			})
-			.catch(() => {});
+		getScreenName(userId).then((name) => {
+			if (active && name) {
+				setScreenName(name);
+			}
+		});
+
+		return () => {
+			active = false;
+		};
 	}, [userId]);
 
 	if (!value) {
