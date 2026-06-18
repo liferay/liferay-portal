@@ -32,12 +32,12 @@
 </tr>
 <tr>
 	<td>PAGE_BUTTON_ACTIVE</td>
-	<td>//a[contains(@class,'active') and contains(.,'${key_pageNum}')]</td>
+	<td>//button[contains(@class,'active') and contains(@aria-label,'${key_buttonLabel}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>PAGE_BUTTON_DISABLE</td>
-	<td>//a[not (contains(@class,'active')) and contains(@aria-label,'${key_buttonLabel}')]</td>
+	<td>//button[not (contains(@class,'active')) and contains(@aria-label,'${key_buttonLabel}')]</td>
 	<td></td>
 </tr>
 <tr>

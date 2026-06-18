@@ -2,6 +2,7 @@
 definition {
 
 	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "primefaces-users";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Liferay Faces";
@@ -71,7 +72,6 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test PrimeFacesUsersSmoke {
 
