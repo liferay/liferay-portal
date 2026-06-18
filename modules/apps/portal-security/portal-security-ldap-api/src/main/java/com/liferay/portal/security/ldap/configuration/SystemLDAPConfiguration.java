@@ -73,11 +73,11 @@ public interface SystemLDAPConfiguration extends CompanyScopedConfiguration {
 		description = "ldap-referral-help", name = "referral",
 		optionLabels = {
 			LDAPConstants.REFERRAL_FOLLOW, LDAPConstants.REFERRAL_IGNORE,
-			LDAPConstants.REFERRAL_THROWS
+			LDAPConstants.REFERRAL_THROW
 		},
 		optionValues = {
 			LDAPConstants.REFERRAL_FOLLOW, LDAPConstants.REFERRAL_IGNORE,
-			LDAPConstants.REFERRAL_THROWS
+			LDAPConstants.REFERRAL_THROW
 		},
 		required = false
 	)

@@ -116,7 +116,7 @@ public class SafeLDAPReferralUtil {
 		environment.put("com.sun.jndi.rmi.object.trustURLCodebase", "false");
 
 		if (Objects.equals(referral, LDAPConstants.REFERRAL_FOLLOW)) {
-			environment.put(Context.REFERRAL, LDAPConstants.REFERRAL_THROWS);
+			environment.put(Context.REFERRAL, LDAPConstants.REFERRAL_THROW);
 		}
 		else {
 			environment.put(Context.REFERRAL, referral);
