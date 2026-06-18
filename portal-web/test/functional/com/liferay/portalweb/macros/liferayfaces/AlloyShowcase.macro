@@ -122,7 +122,7 @@ definition {
 
 	@summary = "Default summary"
 	macro selectDataTable() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/selection");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/selection");
 
 		AssertElementPresent(
 			key_opt = "checkbox",
@@ -665,7 +665,7 @@ definition {
 			screenName3 = ${screenName3},
 			screenName4 = ${screenName4});
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/sort-multiple-columns");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/sort-multiple-columns");
 
 		AlloyShowcase.selectRowsPerPage();
 
@@ -793,7 +793,7 @@ definition {
 			screenName4 = ${screenName4},
 			useCase = ${useCase});
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/server-events");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/server-events");
 
 		Check(
 			key_num = 0,
@@ -869,7 +869,7 @@ definition {
 			screenName3 = ${screenName3},
 			screenName4 = ${screenName4});
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/sort-single-column");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/sort-single-column");
 
 		AlloyShowcase.selectRowsPerPage();
 

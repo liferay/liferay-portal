@@ -42,7 +42,7 @@
 </tr>
 <tr>
 	<td>DROPDOWN_CARET_BUTTON</td>
-	<td>//span[@role='menuitem']//span[contains(@class,'caret')]</td>
+	<td>//span[@role='menuitem']//a[contains(@href,'options')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -167,7 +167,7 @@
 </tr>
 <tr>
 	<td>SELECTION_MODAL_SELECT</td>
-	<td>//div[contains(.,'Selection Mode')]//select</td>
+	<td>//label[contains(.,'Selection Mode')]/following-sibling::select</td>
 	<td></td>
 </tr>
 <tr>

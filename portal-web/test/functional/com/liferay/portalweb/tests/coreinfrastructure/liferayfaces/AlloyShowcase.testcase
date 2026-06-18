@@ -2,6 +2,7 @@
 definition {
 
 	property liferay.faces = "true";
+	property liferay.faces.war.dir.name = "alloy-showcase";
 	property portal.release = "true";
 	property portal.upstream = "quarantine";
 	property testray.main.component.name = "Liferay Faces";
@@ -15,24 +16,24 @@ definition {
 			PagesAdmin.enableWidgetPages();
 		}
 
+		HeadlessSite.addSite(siteName = "Alloy Showcase");
+
+		PagesAdmin.openPagesAdmin(siteURLKey = "Alloy Showcase");
+
 		JSONLayout.addPublicLayout(
-			groupName = "Guest",
+			groupName = "Alloy Showcase",
 			layoutName = "Alloy Showcase");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		JSONLayout.updateLayoutTemplateOfPublicLayout(
+			groupName = "Alloy Showcase",
+			layoutName = "Alloy Showcase",
+			layoutTemplate = "1 Column");
 
-		PagesAdmin.configurePage(
-			columnName = "1 Column",
-			pageName = "Alloy Showcase",
-			sitePageType = "Widget Page");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase");
 
 		Portlet.addPG(portletName = "Alloy Showcase");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase");
 	}
 
 	tearDown {
@@ -46,61 +47,58 @@ definition {
 		}
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test ButtonSmoke {
 
 		// ButtonGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/button/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/button/general");
 
 		AlloyShowcase.clickButton(buttonNum = "1,2,3");
 
 		// ButtonMenu
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/button/menu");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/button/menu");
 
 		AlloyShowcase.testMenu();
 
 		// CommandButtonMenu
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/commandbutton/menu");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/commandbutton/menu");
 
 		AlloyShowcase.testMenu(command = "true");
 
 		// CommandButtonGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/commandbutton/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/commandbutton/general");
 
 		AlloyShowcase.clickButton(buttonNum = "1,2,3");
 
 		// ButtonRowGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/buttonrow/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/buttonrow/general");
 
 		AlloyShowcase.clickButton(buttonRow = "true");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test DataListSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datalist/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datalist/general");
 
 		AlloyShowcase.viewDataList();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datalist/data-model");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datalist/data-model");
 
 		AlloyShowcase.viewDataTable();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datalist/selection");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datalist/selection");
 
 		AlloyShowcase.viewDataSelection();
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test DataTableSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/lazy");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/lazy");
 
 		AlloyShowcase.viewPaginator(
 			screenName1 = "John",
@@ -110,7 +108,7 @@ definition {
 
 		AlloyShowcase.selectRowsPerPage();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/selection");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/selection");
 
 		AlloyShowcase.viewPaginator(
 			screenName1 = "John",
@@ -121,7 +119,7 @@ definition {
 
 		AlloyShowcase.selectDataTable();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/server-events");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/server-events");
 
 		AlloyShowcase.viewServerEvents(
 			screenName1 = "John",
@@ -130,7 +128,7 @@ definition {
 			screenName4 = "William",
 			useCase = "serverEvents");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/sort-multiple-columns");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/sort-multiple-columns");
 
 		AlloyShowcase.viewMultipleColumnSort(
 			screenName1 = "John",
@@ -138,7 +136,7 @@ definition {
 			screenName3 = "George",
 			screenName4 = "William");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/datatable/sort-single-column");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/datatable/sort-single-column");
 
 		AlloyShowcase.viewSingleColumnSort(
 			screenName1 = "John",
@@ -147,27 +145,25 @@ definition {
 			screenName4 = "William");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test InputFileSmoke {
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/inputfile/multiple");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/inputfile/multiple");
 
 		JSFShowcase.uploadAndDeleteFile(fileName = "Document_2.jpeg");
 	}
 
-	@ignore = "true"
 	@priority = 5
 	test LinkSmoke {
 
 		// LinkGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/link/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/link/general");
 
 		JSFShowcase.clickButton(link = "true");
 
 		// CommandLinkGeneral
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/guest/alloy-showcase/-/alloy-tag/alloy/commandlink/general");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/alloy-showcase/alloy-showcase/-/alloy-tag/alloy/commandlink/general");
 
 		JSFShowcase.clickButton(link = "true");
 	}
