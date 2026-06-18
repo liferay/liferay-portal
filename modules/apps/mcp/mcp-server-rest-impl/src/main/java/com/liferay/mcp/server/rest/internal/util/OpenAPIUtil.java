@@ -54,8 +54,9 @@ import org.apache.http.util.EntityUtils;
 public class OpenAPIUtil {
 
 	public static VulcanRequestForwarder.Request getRequest(
-			String basePath, JSONObject inputJSONObject,
-			JSONObject openAPIJSONObject, String toolName, User user)
+			String basePath, Map<String, String> headers,
+			JSONObject inputJSONObject, JSONObject openAPIJSONObject,
+			String toolName, User user)
 		throws Exception {
 
 		byte[] body;
@@ -114,6 +115,11 @@ public class OpenAPIUtil {
 			@Override
 			public String getContentType() {
 				return contentType;
+			}
+
+			@Override
+			public Map<String, String> getHeaders() {
+				return headers;
 			}
 
 			@Override

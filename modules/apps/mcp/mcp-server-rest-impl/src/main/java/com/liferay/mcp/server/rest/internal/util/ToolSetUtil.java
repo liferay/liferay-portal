@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -37,7 +38,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.core.Response;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -100,6 +103,7 @@ public class ToolSetUtil {
 	}
 
 	public static Response invokeTool(
+			List<String> dataMaskExternalReferenceCodes,
 			HttpServletRequest httpServletRequest, Object inputObject,
 			String toolName, String toolSetName)
 		throws Exception {
@@ -141,7 +145,8 @@ public class ToolSetUtil {
 
 			if (Objects.equals(toolName, "postToolSetToolSetNameToolInvoke")) {
 				return invokeTool(
-					httpServletRequest, inputJSONObject.opt("body"),
+					dataMaskExternalReferenceCodes, httpServletRequest,
+					inputJSONObject.opt("body"),
 					inputJSONObject.getString("toolName"),
 					inputJSONObject.getString("toolSetName"));
 			}
@@ -156,7 +161,9 @@ public class ToolSetUtil {
 			vulcanRequestForwarder.forward(
 				httpServletRequest,
 				OpenAPIUtil.getRequest(
-					openAPIBrief._basePath, inputJSONObject,
+					openAPIBrief._basePath,
+					_getDataMaskHeaders(dataMaskExternalReferenceCodes),
+					inputJSONObject,
 					_getOpenAPIJSONObject(openAPIBrief, httpServletRequest),
 					toolName, _getUser(httpServletRequest)));
 
@@ -196,6 +203,19 @@ public class ToolSetUtil {
 
 			return content;
 		}
+	}
+
+	private static Map<String, String> _getDataMaskHeaders(
+		List<String> dataMaskExternalReferenceCodes) {
+
+		if (dataMaskExternalReferenceCodes.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.put(
+			"X-Liferay-Data-Masks",
+			StringUtil.merge(dataMaskExternalReferenceCodes, StringPool.COMMA)
+		).build();
 	}
 
 	private static String _getDescription(Object service) {

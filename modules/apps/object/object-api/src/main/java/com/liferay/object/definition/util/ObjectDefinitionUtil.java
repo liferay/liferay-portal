@@ -272,8 +272,6 @@ public class ObjectDefinitionUtil {
 		).put(
 			"LaunchSet", "/launch-sets"
 		).put(
-			"MCPServerDataMask", "/mcp/server-data-masks"
-		).put(
 			"MCPServerProfile", "/mcp/server-profiles"
 		).put(
 			"MCPServerProfileDataMask", "/mcp/server-profile-data-masks"

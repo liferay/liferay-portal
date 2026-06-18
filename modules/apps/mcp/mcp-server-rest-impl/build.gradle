@@ -27,6 +27,7 @@ dependencies {
 	compileOnly project(":apps:mcp:mcp-server-rest-api")
 	compileOnly project(":apps:oauth2-provider:oauth2-provider-api")
 	compileOnly project(":apps:object:object-api")
+	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
@@ -35,6 +36,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
+	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.liferay", name: "org.apache.commons.fileupload", version: "1.5.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
