@@ -14,8 +14,10 @@ import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -24,8 +26,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -35,6 +38,8 @@ import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.service.SharingEntryLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +74,7 @@ public abstract class BaseFDSSerializer {
 			List<ObjectEntry> ownedObjectEntries = new ArrayList<>();
 			List<ObjectEntry> sharedObjectEntries = new ArrayList<>();
 
-			long companyId = PortalUtil.getCompanyId(httpServletRequest);
+			long companyId = portal.getCompanyId(httpServletRequest);
 
 			ObjectDefinition objectDefinition =
 				objectDefinitionLocalService.
@@ -82,7 +87,7 @@ public abstract class BaseFDSSerializer {
 						objectDefinition.getCompanyId(),
 						objectDefinition.getStorageType()));
 
-			long userId = PortalUtil.getUserId(httpServletRequest);
+			long userId = portal.getUserId(httpServletRequest);
 
 			Set<Long> sharingEntriesClassPKs = _getSharingEntriesClassPKs(
 				classNameLocalService.getClassNameId(
@@ -113,8 +118,7 @@ public abstract class BaseFDSSerializer {
 					"items", _toJSONArray(ownedObjectEntries)
 				).put(
 					"label",
-					language.get(
-						PortalUtil.getLocale(httpServletRequest), "owned")
+					language.get(portal.getLocale(httpServletRequest), "owned")
 				));
 
 			if (!sharedObjectEntries.isEmpty()) {
@@ -126,7 +130,7 @@ public abstract class BaseFDSSerializer {
 					).put(
 						"label",
 						language.get(
-							PortalUtil.getLocale(httpServletRequest),
+							portal.getLocale(httpServletRequest),
 							"shared-with-me")
 					));
 			}
@@ -145,6 +149,50 @@ public abstract class BaseFDSSerializer {
 		}
 	}
 
+	protected String serializeStartupViewDataSetSnapshotERC(
+			String fdsName, HttpServletRequest httpServletRequest,
+			ObjectDefinitionLocalService objectDefinitionLocalService)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_SET_SNAPSHOT_STARTUP_VIEW",
+					portal.getCompanyId(httpServletRequest));
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		// The startup view is an edge relationship child, so it is only
+		// reachable through its parent snapshot. Read it directly by its
+		// deterministic external reference code to bypass the standalone
+		// object entry query, which filters out root descendant entries.
+
+		com.liferay.object.model.ObjectEntry startupViewObjectEntry =
+			objectEntryLocalService.fetchObjectEntry(
+				portal.getUserId(httpServletRequest) + StringPool.UNDERLINE +
+					fdsName,
+				0, objectDefinition.getObjectDefinitionId());
+
+		if (startupViewObjectEntry == null) {
+			return null;
+		}
+
+		Map<String, Serializable> values = startupViewObjectEntry.getValues();
+
+		com.liferay.object.model.ObjectEntry dataSetSnapshotObjectEntry =
+			objectEntryLocalService.fetchObjectEntry(
+				GetterUtil.getLong(
+					values.get(_OBJECT_FIELD_NAME_DATA_SET_SNAPSHOT_ID)));
+
+		if (dataSetSnapshotObjectEntry == null) {
+			return null;
+		}
+
+		return dataSetSnapshotObjectEntry.getExternalReferenceCode();
+	}
+
 	@Reference
 	protected ClassNameLocalService classNameLocalService;
 
@@ -153,6 +201,12 @@ public abstract class BaseFDSSerializer {
 
 	@Reference
 	protected Language language;
+
+	@Reference
+	protected ObjectEntryLocalService objectEntryLocalService;
+
+	@Reference
+	protected Portal portal;
 
 	@Reference
 	protected SharingEntryLocalService sharingEntryLocalService;
@@ -234,6 +288,9 @@ public abstract class BaseFDSSerializer {
 				);
 			});
 	}
+
+	private static final String _OBJECT_FIELD_NAME_DATA_SET_SNAPSHOT_ID =
+		"r_dataSetSnapshotToStartupViews_l_dataSetSnapshotId";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseFDSSerializer.class);

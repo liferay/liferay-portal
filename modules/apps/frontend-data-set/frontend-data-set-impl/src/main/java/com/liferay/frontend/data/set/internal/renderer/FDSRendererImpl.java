@@ -301,6 +301,17 @@ public class FDSRendererImpl implements FDSRenderer {
 						return fdsSortItems;
 					}
 				).put(
+					"startupViewDataSetSnapshotERC",
+					() -> {
+						if (!snapshotsEnabled) {
+							return null;
+						}
+
+						return fdsSerializer.
+							serializeStartupViewDataSetSnapshotERC(
+								fdsName, httpServletRequest);
+					}
+				).put(
 					"views",
 					() -> {
 						JSONArray viewsJSONArray = fdsSerializer.serializeViews(

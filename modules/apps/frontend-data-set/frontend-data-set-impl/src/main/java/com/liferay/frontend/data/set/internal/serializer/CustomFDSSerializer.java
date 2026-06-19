@@ -613,6 +613,23 @@ public class CustomFDSSerializer
 	}
 
 	@Override
+	public String serializeStartupViewDataSetSnapshotERC(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		try {
+			return serializeStartupViewDataSetSnapshotERC(
+				fdsName, httpServletRequest, _objectDefinitionLocalService);
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to serialize the startup view data set snapshot ERC",
+				exception);
+
+			return null;
+		}
+	}
+
+	@Override
 	public JSONArray serializeViews(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
