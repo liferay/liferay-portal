@@ -103,6 +103,9 @@ public class SafeLDAPReferralUtilTest {
 	public void testSearch() throws Exception {
 		DirContext dirContext = Mockito.mock(DirContext.class);
 
+		NamingEnumeration<SearchResult> enumeration = Mockito.mock(
+			NamingEnumeration.class);
+
 		ReferralException referralException = Mockito.mock(
 			ReferralException.class);
 
@@ -117,9 +120,6 @@ public class SafeLDAPReferralUtilTest {
 		).thenReturn(
 			false
 		);
-
-		NamingEnumeration<SearchResult> enumeration = Mockito.mock(
-			NamingEnumeration.class);
 
 		Mockito.when(
 			enumeration.hasMore()
@@ -148,7 +148,17 @@ public class SafeLDAPReferralUtilTest {
 
 		dirContext = Mockito.mock(DirContext.class);
 
+		enumeration = Mockito.mock(NamingEnumeration.class);
+
 		referralException = Mockito.mock(ReferralException.class);
+
+		DirContext referralContext = Mockito.mock(DirContext.class);
+
+		NamingEnumeration<SearchResult> referralEnumeration = Mockito.mock(
+			NamingEnumeration.class);
+
+		SearchResult searchResult = new SearchResult(
+			"cn=test", null, new BasicAttributes());
 
 		Mockito.when(
 			referralException.getReferralInfo()
@@ -162,7 +172,23 @@ public class SafeLDAPReferralUtilTest {
 			false
 		);
 
-		enumeration = Mockito.mock(NamingEnumeration.class);
+		Mockito.when(
+			referralException.getReferralContext()
+		).thenReturn(
+			referralContext
+		);
+
+		Mockito.when(
+			referralEnumeration.hasMore()
+		).thenReturn(
+			true, false
+		);
+
+		Mockito.when(
+			referralEnumeration.next()
+		).thenReturn(
+			searchResult
+		);
 
 		Mockito.when(
 			enumeration.hasMore()
@@ -176,32 +202,6 @@ public class SafeLDAPReferralUtilTest {
 				Mockito.any(Object[].class), Mockito.any(SearchControls.class))
 		).thenReturn(
 			enumeration
-		);
-
-		DirContext referralContext = Mockito.mock(DirContext.class);
-
-		Mockito.when(
-			referralException.getReferralContext()
-		).thenReturn(
-			referralContext
-		);
-
-		SearchResult searchResult = new SearchResult(
-			"cn=test", null, new BasicAttributes());
-
-		NamingEnumeration<SearchResult> referralEnumeration = Mockito.mock(
-			NamingEnumeration.class);
-
-		Mockito.when(
-			referralEnumeration.hasMore()
-		).thenReturn(
-			true, false
-		);
-
-		Mockito.when(
-			referralEnumeration.next()
-		).thenReturn(
-			searchResult
 		);
 
 		Mockito.when(
