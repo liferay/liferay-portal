@@ -40,7 +40,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Bryan Engler
  */
-@Component(service = IndexReindexer.class)
+@Component(
+	property = "search.index.category=search-tuning",
+	service = IndexReindexer.class
+)
 public class RankingIndexReindexer implements IndexReindexer {
 
 	@Override

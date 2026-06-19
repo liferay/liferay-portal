@@ -38,7 +38,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rafael Praxedes
  */
-@Component(service = {IndexReindexer.class, WorkflowMetricsReindexer.class})
+@Component(
+	property = "search.index.category=workflow",
+	service = {IndexReindexer.class, WorkflowMetricsReindexer.class}
+)
 public class SLATaskResultWorkflowMetricsReindexer
 	implements IndexReindexer, WorkflowMetricsReindexer {
 

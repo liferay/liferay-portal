@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.admin.web.internal.display.context.IndexActionsDisplayContext;
+import com.liferay.portal.search.admin.web.internal.reindexer.IndexReindexerCategoryRegistry;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.search.cluster.StatsInformation;
 import com.liferay.portal.search.cluster.StatsInformationFactory;
@@ -83,6 +84,12 @@ public class IndexActionsDisplayContextBuilder {
 		indexActionsDisplayContext.setData(getData());
 
 		return indexActionsDisplayContext;
+	}
+
+	public void setIndexReindexerCategoryRegistry(
+		IndexReindexerCategoryRegistry indexReindexerCategoryRegistry) {
+
+		_indexReindexerCategoryRegistry = indexReindexerCategoryRegistry;
 	}
 
 	public void setIndexReindexerClassNames(
@@ -204,11 +211,20 @@ public class IndexActionsDisplayContextBuilder {
 		return indexersMap;
 	}
 
-	private List<Object> _getIndexReindexerNames() {
-		List<Object> indexReindexerNames = new ArrayList<>();
+	private Map<String, List<Object>> _getIndexReindexerNames() {
+		Map<String, List<Object>> indexReindexerNamesMap = new TreeMap<>();
 
 		if (ListUtil.isNotNull(_indexReindexerClassNames)) {
 			for (String indexReindexerClassName : _indexReindexerClassNames) {
+				String categoryDisplayKey = _language.get(
+					_httpServletRequest,
+					_indexReindexerCategoryRegistry.getCategory(
+						indexReindexerClassName));
+
+				List<Object> indexReindexerNames =
+					indexReindexerNamesMap.computeIfAbsent(
+						categoryDisplayKey, key -> new ArrayList<>());
+
 				indexReindexerNames.add(
 					HashMapBuilder.put(
 						"className", indexReindexerClassName
@@ -221,7 +237,7 @@ public class IndexActionsDisplayContextBuilder {
 			}
 		}
 
-		return indexReindexerNames;
+		return indexReindexerNamesMap;
 	}
 
 	private long[] _getInitialCompanyIds() {
@@ -319,6 +335,7 @@ public class IndexActionsDisplayContextBuilder {
 		IndexActionsDisplayContextBuilder.class);
 
 	private final HttpServletRequest _httpServletRequest;
+	private IndexReindexerCategoryRegistry _indexReindexerCategoryRegistry;
 	private List<String> _indexReindexerClassNames;
 	private final Language _language;
 	private final PermissionChecker _permissionChecker;

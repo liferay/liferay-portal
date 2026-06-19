@@ -20,6 +20,7 @@ import com.liferay.portal.search.admin.web.internal.display.context.builder.Fiel
 import com.liferay.portal.search.admin.web.internal.display.context.builder.IndexActionsDisplayContextBuilder;
 import com.liferay.portal.search.admin.web.internal.display.context.builder.SearchAdminDisplayContextBuilder;
 import com.liferay.portal.search.admin.web.internal.display.context.builder.SearchEngineDisplayContextBuilder;
+import com.liferay.portal.search.admin.web.internal.reindexer.IndexReindexerCategoryRegistry;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.search.cluster.StatsInformationFactory;
 import com.liferay.portal.search.configuration.ReindexConfiguration;
@@ -137,6 +138,8 @@ public class SearchAdminPortlet extends MVCPortlet {
 						_language, _portal, _reindexConfiguration,
 						renderRequest, _searchCapabilities);
 
+			indexActionsDisplayContextBuilder.setIndexReindexerCategoryRegistry(
+				_indexReindexerCategoryRegistry);
 			indexActionsDisplayContextBuilder.setIndexReindexerClassNames(
 				indexReindexerClassNames);
 			indexActionsDisplayContextBuilder.setStatsInformationFactory(
@@ -167,6 +170,9 @@ public class SearchAdminPortlet extends MVCPortlet {
 		_statsInformationFactorySnapshot = new Snapshot<>(
 			SearchAdminPortlet.class, StatsInformationFactory.class, null,
 			true);
+
+	@Reference
+	private IndexReindexerCategoryRegistry _indexReindexerCategoryRegistry;
 
 	@Reference
 	private IndexReindexerRegistry _indexReindexerRegistry;

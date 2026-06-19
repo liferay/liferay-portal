@@ -649,36 +649,49 @@ function IndexActions({
 										</React.Fragment>
 									))}
 
-								{!!indexReindexerNames.length && (
-									<ClayList.Header>
-										{Liferay.Language.get('search-tuning')}
-									</ClayList.Header>
-								)}
+								{Object.keys(indexReindexerNames)
+									.sort()
+									.map((category) => (
+										<React.Fragment key={category}>
+											<ClayList.Header>
+												{category}
+											</ClayList.Header>
 
-								{indexReindexerNames.map(
-									({className, displayName}) => (
-										<IndexerListItem
-											className={className}
-											cmd="reindexIndexReindexer"
-											disabled={
-												executionMode ===
-													EXECUTION_MODES.CONCURRENT
-														.value ||
-												_isBackgroundTaskRunning([
-													'portal',
-													'spellCheckDictionaries',
-												])
-											}
-											displayName={displayName}
-											id={className}
-											key={className}
-											onClick={_handleIndexerItemClick}
-											progressPercentage={
-												backgroundTaskMap[className]
-											}
-										/>
-									)
-								)}
+											{indexReindexerNames[category].map(
+												({className, displayName}) => (
+													<IndexerListItem
+														className={className}
+														cmd="reindexIndexReindexer"
+														disabled={
+															executionMode ===
+																EXECUTION_MODES
+																	.CONCURRENT
+																	.value ||
+															_isBackgroundTaskRunning(
+																[
+																	'portal',
+																	'spellCheckDictionaries',
+																]
+															)
+														}
+														displayName={
+															displayName
+														}
+														id={className}
+														key={className}
+														onClick={
+															_handleIndexerItemClick
+														}
+														progressPercentage={
+															backgroundTaskMap[
+																className
+															]
+														}
+													/>
+												)
+											)}
+										</React.Fragment>
+									))}
 							</ClayList>
 						</div>
 					</ClayLayout.Col>
