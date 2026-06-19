@@ -41,6 +41,9 @@ import com.liferay.osb.faro.web.internal.controller.contacts.DataSourceFaroContr
 import com.liferay.osb.faro.web.internal.controller.contacts.FieldMappingFaroController;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
+import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsage;
+import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetric;
+import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.JoinableProjectDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectUsageMetricDisplay;
@@ -73,6 +76,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -472,6 +476,35 @@ public class ProjectFaroController extends BaseFaroController {
 		faroProject.setRecommendationsEnabled(true);
 
 		_faroProjectLocalService.updateFaroProject(faroProject);
+	}
+
+	@GET
+	@Path("/usage/data-sources")
+	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	public Page<DataSourceUsageMetricDisplay> getDataSourceUsageMetricDisplays(
+			@QueryParam("endDateString") String endDateString,
+			@DefaultValue("1") @QueryParam("page") int page,
+			@DefaultValue("15") @QueryParam("pageSize") int pageSize,
+			@QueryParam("startDateString") String startDateString)
+		throws Exception {
+
+		List<String> dateStrings = _getMockUsageDateStrings(
+			endDateString, startDateString);
+
+		List<DataSourceUsageMetricDisplay> dataSourceUsageMetricDisplays =
+			new ArrayList<>();
+
+		for (FaroProject faroProject :
+				_faroProjectLocalService.getFaroProjects(
+					(page - 1) * pageSize, page * pageSize)) {
+
+			dataSourceUsageMetricDisplays.add(
+				_getMockDataSourceUsageMetricDisplay(faroProject, dateStrings));
+		}
+
+		return Page.of(
+			dataSourceUsageMetricDisplays, Pagination.of(page, pageSize),
+			_faroProjectLocalService.getFaroProjectsCount());
 	}
 
 	@GET
@@ -1313,6 +1346,108 @@ public class ProjectFaroController extends BaseFaroController {
 			resourceBundle, "invalid-incident-report-email-addresses");
 	}
 
+	private DataSourceUsageMetricDisplay _getMockDataSourceUsageMetricDisplay(
+			FaroProject faroProject, List<String> dateStrings)
+		throws Exception {
+
+		List<DataSourceUsage> dataSourceUsages = _getMockDataSourceUsages(
+			dateStrings);
+
+		return new DataSourceUsageMetricDisplay(
+			5, dataSourceUsages.size(), faroProject.getCorpProjectName(),
+			faroProject.getCorpProjectUuid(), dataSourceUsages,
+			DateUtil.formatDate(
+				new Date(faroProject.getLastAccessTime()),
+				DateUtil.PATTERN_DATE),
+			DateUtil.formatDate(
+				faroProject.getLastAnniversaryDate(), DateUtil.PATTERN_DATE),
+			!StringUtil.equals(
+				faroProject.getState(), FaroProjectConstants.STATE_READY),
+			3, faroProject.getWeDeployKey());
+	}
+
+	private List<DataSourceUsageMetric> _getMockDataSourceUsageMetrics(
+		int dataSourceIndex, List<String> dateStrings) {
+
+		List<DataSourceUsageMetric> dataSourceUsageMetrics = new ArrayList<>();
+
+		for (int i = 0; i < dateStrings.size(); i++) {
+			dataSourceUsageMetrics.add(
+				new DataSourceUsageMetric(
+					Math.max(0, 1000 - (i * 13) - (dataSourceIndex * 100)),
+					dateStrings.get(i),
+					Math.max(
+						0, 100000 - (i * 1370) - (dataSourceIndex * 12000)),
+					60 + (i * 3) + (dataSourceIndex * 25)));
+		}
+
+		return dataSourceUsageMetrics;
+	}
+
+	private List<DataSourceUsage> _getMockDataSourceUsages(
+		List<String> dateStrings) {
+
+		return ListUtil.fromArray(
+			new DataSourceUsage(
+				"10001", "Liferay",
+				_getMockDataSourceUsageMetrics(0, dateStrings)),
+			new DataSourceUsage(
+				"10002", "Salesforce",
+				_getMockDataSourceUsageMetrics(1, dateStrings)));
+	}
+
+	private List<String> _getMockUsageDateStrings(
+			String endDateString, String startDateString)
+		throws Exception {
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.add(Calendar.DATE, -1);
+
+		Date yesterday = DateUtil.parseDate(
+			DateUtil.formatDate(calendar.getTime(), DateUtil.PATTERN_DATE),
+			DateUtil.PATTERN_DATE);
+
+		Date endDate = yesterday;
+
+		if (endDateString != null) {
+			endDate = DateUtil.parseDate(endDateString, DateUtil.PATTERN_DATE);
+		}
+
+		Date startDate = endDate;
+
+		if (startDateString != null) {
+			startDate = DateUtil.parseDate(
+				startDateString, DateUtil.PATTERN_DATE);
+		}
+
+		List<String> dateStrings = new ArrayList<>();
+
+		Calendar dateCalendar = Calendar.getInstance();
+
+		dateCalendar.setTime(endDate);
+
+		Date dateCalendarTime = dateCalendar.getTime();
+
+		while (!dateCalendarTime.before(startDate) &&
+			   (dateStrings.size() < _MOCK_USAGE_MAX_DAYS)) {
+
+			dateStrings.add(
+				DateUtil.formatDate(dateCalendarTime, DateUtil.PATTERN_DATE));
+
+			dateCalendar.add(Calendar.DATE, -1);
+
+			dateCalendarTime = dateCalendar.getTime();
+		}
+
+		if (dateStrings.isEmpty()) {
+			dateStrings.add(
+				DateUtil.formatDate(yesterday, DateUtil.PATTERN_DATE));
+		}
+
+		return dateStrings;
+	}
+
 	private String _getMonthDateKey(Date date) {
 		Calendar calendar = Calendar.getInstance();
 
@@ -1712,6 +1847,8 @@ public class ProjectFaroController extends BaseFaroController {
 				"timeZoneId", _getTimeZoneIdErrorMessage(getUser()));
 		}
 	}
+
+	private static final int _MOCK_USAGE_MAX_DAYS = 366;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProjectFaroController.class);
