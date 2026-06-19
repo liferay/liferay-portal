@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -108,10 +109,24 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 			CommerceOrder commerceOrder = _getCommerceOrder(renderRequest);
 
 			if (commerceOrder != null) {
-				HttpServletRequest httpServletRequest =
-					_portal.getHttpServletRequest(renderRequest);
 				HttpServletResponse httpServletResponse =
 					_portal.getHttpServletResponse(renderResponse);
+
+				String commerceOrderUuid = ParamUtil.getString(
+					renderRequest, "commerceOrderUuid");
+
+				if (Validator.isNotNull(commerceOrderUuid) &&
+					!commerceOrderUuid.equals(commerceOrder.getUuid())) {
+
+					httpServletResponse.sendRedirect(
+						_getCommerceOrderURL(
+							renderRequest, renderResponse, commerceOrder));
+
+					return;
+				}
+
+				HttpServletRequest httpServletRequest =
+					_portal.getHttpServletRequest(renderRequest);
 
 				boolean continueAsGuest = ParamUtil.getBoolean(
 					renderRequest, "continueAsGuest",
@@ -209,11 +224,11 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 					getCommerceChannelGroupIdBySiteGroupId(
 						_portal.getScopeGroupId(portletRequest));
 
-			commerceOrder =
-				_commerceOrderService.getCommerceOrderByUuidAndGroupId(
-					commerceOrderUuid, groupId);
+			commerceOrder = _commerceOrderService.fetchCommerceOrder(
+				commerceOrderUuid, groupId);
 		}
-		else {
+
+		if (commerceOrder == null) {
 			commerceOrder = _commerceOrderHttpHelper.getCurrentCommerceOrder(
 				_portal.getHttpServletRequest(portletRequest));
 		}
@@ -222,6 +237,20 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 			CommerceCheckoutWebKeys.COMMERCE_ORDER, commerceOrder);
 
 		return commerceOrder;
+	}
+
+	private String _getCommerceOrderURL(
+		RenderRequest renderRequest, RenderResponse renderResponse,
+		CommerceOrder commerceOrder) {
+
+		return PortletURLBuilder.createRenderURL(
+			_portal.getLiferayPortletResponse(renderResponse)
+		).setParameter(
+			"checkoutStepName",
+			ParamUtil.getString(renderRequest, "checkoutStepName")
+		).setParameter(
+			"commerceOrderUuid", commerceOrder.getUuid()
+		).buildString();
 	}
 
 	private String _getOrderDetailsURL(
