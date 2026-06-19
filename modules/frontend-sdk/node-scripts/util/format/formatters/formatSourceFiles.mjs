@@ -27,8 +27,9 @@ const EXTENSIONS = ['graphql', 'js', 'jsp', 'jspf', 'mjs', 'scss', 'ts', 'tsx'];
 export default async function formatSourceFiles(check, files) {
 	const start = Date.now();
 
-	const {emitSuppressed} = getNamedArguments({
+	const {emitSuppressed, emitSuppressedCss} = getNamedArguments({
 		emitSuppressed: '--emit-suppressed',
+		emitSuppressedCss: '--emit-suppressed-css',
 	});
 
 	const filePaths = await getFilePaths(files);
@@ -39,6 +40,7 @@ export default async function formatSourceFiles(check, files) {
 	const options = {
 		check,
 		emitSuppressed,
+		emitSuppressedCss,
 	};
 
 	// Do not spawn workers if there's only one file

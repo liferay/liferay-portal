@@ -6,6 +6,7 @@
 const stylelint = require('stylelint');
 
 const noBlockComments = require('./rules/no-block-comments.js');
+const noHardcodedColors = require('./rules/no-hardcoded-colors.js');
 const noImportExtension = require('./rules/no-import-extension.js');
 const singleImports = require('./rules/single-imports.js');
 const sortImports = require('./rules/sort-imports.js');
@@ -13,6 +14,7 @@ const trimComments = require('./rules/trim-comments.js');
 
 const rulesPlugins = [
 	noBlockComments,
+	noHardcodedColors,
 	noImportExtension,
 	singleImports,
 	sortImports,

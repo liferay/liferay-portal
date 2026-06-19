@@ -14,6 +14,7 @@
 Current custom rules in this package:
 
 - `liferay/no-block-comments`
+- `liferay/no-hardcoded-colors`
 - `liferay/no-import-extension`
 - `liferay/single-imports`
 - `liferay/sort-imports`

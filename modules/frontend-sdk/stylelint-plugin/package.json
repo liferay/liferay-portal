@@ -1,4 +1,7 @@
 {
+	"devDependencies": {
+		"jest": "27.5.1"
+	},
 	"main": "./index.js",
 	"name": "@liferay/stylelint-plugin",
 	"peerDependencies": {
@@ -9,7 +12,8 @@
 		"format": "node-scripts format",
 		"format:check": "node-scripts format --check",
 		"postversion": "npx liferay-js-publish",
-		"preversion": "yarn run format:check"
+		"preversion": "yarn run format:check && yarn run test",
+		"test": "jest"
 	},
 	"version": "1.1.0"
 }

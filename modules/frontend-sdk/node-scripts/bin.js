@@ -38,14 +38,15 @@ const COMMANDS = {
 		If --check is passed no file is modified and the command just outputs
 		what files need to be formatted.
 
-		If --emit-suppressed is passed, the list of errors will be logged to
-		stdout in 'supressed_errors.txt' format.
+		If --emit-suppressed is passed, the list of eslint errors will be logged
+		to stdout in 'supressed_errors.txt' format. If --emit-suppressed-css is
+		passed, the list of stylelint errors will be logged instead.
 
 		See this help's introduction to find the meaning of --current-branch and
 		--local-changes parameters.
 `,
 		parameters:
-			'[--check] [--emit-suppressed] [--ignore-typescript] [{--current-branch|--local-changes}]',
+			'[--check] [--emit-suppressed] [--emit-suppressed-css] [--ignore-typescript] [{--current-branch|--local-changes}]',
 		script: './format/index.mjs',
 	},
 	'format:file': {

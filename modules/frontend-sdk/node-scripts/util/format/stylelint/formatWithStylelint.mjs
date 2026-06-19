@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import fs from 'fs/promises';
 import path from 'path';
 import stylelint from 'stylelint';
 
@@ -13,7 +14,16 @@ const {default: STYLELINT_CONFIG} = await import(
 	'file://' + path.join(MODULES_DIR, '.stylelintrc.js')
 );
 
-export default async function formatWithStylelint(input, filePath) {
+const SUPPRESSED_ERRORS = await fs.readFile(
+	path.join(import.meta.dirname, 'suppressed_errors.txt'),
+	'utf-8'
+);
+
+export default async function formatWithStylelint(
+	input,
+	filePath,
+	emitSuppressed
+) {
 	const extName = path.extname(filePath);
 
 	// NOTE: Overriding the base configuration is not supported because we've
@@ -46,10 +56,42 @@ export default async function formatWithStylelint(input, filePath) {
 			}
 		});
 
-		printEslintErrors(path.relative(PORTAL_DIR, filePath), errors);
+		const portalRelativePath = path.relative(PORTAL_DIR, filePath);
+
+		// When emitting, write every error to stdout in 'suppressed_errors.txt'
+		// format so the grandfathered list can be regenerated.
+
+		if (emitSuppressed) {
+			const set = new Set();
+
+			errors.forEach((error) => {
+				set.add(`${portalRelativePath}:${error.message}`);
+			});
+
+			set.forEach((item) => {
+				process.stdout.write(`${item}\n`);
+			});
+
+			return {
+				errorsPresent: false,
+				output: output.endsWith('\n') ? output : `${output}\n`,
+			};
+		}
+
+		// Drop errors grandfathered in 'suppressed_errors.txt' so only new
+		// violations fail the build.
+
+		const filteredErrors = errors.filter(
+			(error) =>
+				!SUPPRESSED_ERRORS.includes(
+					`${portalRelativePath}:${error.message}\n`
+				)
+		);
+
+		printEslintErrors(portalRelativePath, filteredErrors);
 
 		return {
-			errorsPresent: !!errors.length,
+			errorsPresent: !!filteredErrors.length,
 			output: output.endsWith('\n') ? output : `${output}\n`,
 		};
 	}
