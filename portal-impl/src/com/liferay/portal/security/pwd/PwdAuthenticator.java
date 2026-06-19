@@ -42,8 +42,7 @@ public class PwdAuthenticator {
 					pwdEncryptorException1) {
 
 			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to verify a password", pwdEncryptorException1);
+				_log.debug("Unable to verify password", pwdEncryptorException1);
 			}
 
 			try {

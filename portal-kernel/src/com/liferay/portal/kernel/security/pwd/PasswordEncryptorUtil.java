@@ -150,11 +150,7 @@ public class PasswordEncryptorUtil {
 
 			throw new PwdEncryptorException.InvalidAlgorithm(
 				StringBundler.concat(
-					"FIPS mode requires the property \"",
-					PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM,
-					"\" to use PBKDF2 with HMAC-SHA-256 (for example, ",
-					"PBKDF2WithHmacSHA256/256/600000), but was \"", algorithm,
-					"\""),
+					"Algorithm \"", algorithm, "\" is not allowed"),
 				null);
 		}
 
