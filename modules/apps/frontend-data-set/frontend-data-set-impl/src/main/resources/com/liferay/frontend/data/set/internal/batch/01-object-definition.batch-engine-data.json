@@ -1781,11 +1781,61 @@
 					"type": "Clob"
 				}
 			],
+			"objectRelationships": [
+				{
+					"deletionType": "cascade",
+					"edge": true,
+					"externalReferenceCode": "L_DATA_SET_SNAPSHOT_TO_STARTUP_VIEWS",
+					"label": {
+						"en_US": "Data Set Snapshot to Startup Views"
+					},
+					"name": "dataSetSnapshotToStartupViews",
+					"objectDefinitionExternalReferenceCode1": "L_DATA_SET_SNAPSHOT",
+					"objectDefinitionExternalReferenceCode2": "L_DATA_SET_SNAPSHOT_STARTUP_VIEW",
+					"objectDefinitionName2": "DataSetSnapshotStartupView",
+					"objectDefinitionSystem2": true,
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				}
+			],
 			"panelCategoryKey": "",
 			"pluralLabel": {
 				"en_US": "Data Set Snapshots"
 			},
 			"portlet": false,
+			"rootObjectDefinitionExternalReferenceCode": "L_DATA_SET_SNAPSHOT",
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "label"
+		},
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#U1P7",
+			"externalReferenceCode": "L_DATA_SET_SNAPSHOT_STARTUP_VIEW",
+			"label": {
+				"en_US": "Data Set Snapshot Startup View"
+			},
+			"modifiable": true,
+			"name": "DataSetSnapshotStartupView",
+			"objectDefinitionSettings": [
+				{
+					"name": "allowStandaloneObjectEntry",
+					"value": "false"
+				}
+			],
+			"objectFields": [
+			],
+			"panelCategoryKey": "",
+			"pluralLabel": {
+				"en_US": "Data Set Snapshot Startup Views"
+			},
+			"portlet": false,
+			"rootObjectDefinitionExternalReferenceCode": "L_DATA_SET_SNAPSHOT",
 			"scope": "company",
 			"status": {
 				"code": 0
