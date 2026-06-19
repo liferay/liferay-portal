@@ -4,12 +4,9 @@
  */
 
 import {DataMask} from '../types';
+import {isSystemMask} from '../utils';
 import confirmAndDeleteDataMaskAction from './actions/confirmAndDeleteDataMaskAction';
 import duplicateDataMaskAction from './actions/duplicateDataMaskAction';
-
-function isSystemMask(dataMask: DataMask) {
-	return dataMask?.maskType?.key === 'system';
-}
 
 interface ItemsAction {
 	data?: {id?: string};

@@ -13,6 +13,7 @@ import React, {useEffect, useState} from 'react';
 
 import {getDataMask} from '../services/getDataMask';
 import {DataMask} from '../types';
+import {isSystemMask} from '../utils';
 import {DataMaskRegexTester} from './DataMaskRegexTester';
 import {useEditDataMask} from './useEditDataMask';
 
@@ -54,7 +55,7 @@ export default function EditDataMask({backURL, dataMaskId}: EditDataMaskProps) {
 		<EditDataMaskView
 			backURL={backURL}
 			dataMask={dataMask}
-			readOnly={dataMask?.maskType?.key === 'system'}
+			readOnly={isSystemMask(dataMask)}
 		/>
 	);
 }

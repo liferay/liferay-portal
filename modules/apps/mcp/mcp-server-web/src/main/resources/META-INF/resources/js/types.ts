@@ -22,6 +22,15 @@ export interface DataMask {
 	replacementValue: string;
 }
 
+export interface DataMaskPayload {
+	description: string;
+	detectionRegex: string;
+	maskType: {key: DataMaskTypeKey};
+	name: string;
+	replacementRegex: string;
+	replacementValue: string;
+}
+
 export interface ActionContext {
 	itemData: DataMask;
 	loadData: () => void;

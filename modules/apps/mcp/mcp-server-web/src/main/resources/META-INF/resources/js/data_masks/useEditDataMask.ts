@@ -9,32 +9,14 @@ import {FormEvent, useState} from 'react';
 import {patchDataMask} from '../services/patchDataMask';
 import {postDataMask} from '../services/postDataMask';
 import {DataMask} from '../types';
+import {isSystemMask, validateRegex} from '../utils';
 
 interface Options {
 	dataMask: DataMask | null;
 	onSaved: (saved: DataMask) => void;
 }
 
-function regexError(value: string): string {
-	if (!value) {
-		return '';
-	}
-
-	try {
-		new RegExp(value);
-
-		return '';
-	}
-	catch (error) {
-		return Liferay.Language.get(
-			'patterns-must-be-valid-regular-expressions'
-		);
-	}
-}
-
 export function useEditDataMask({dataMask, onSaved}: Options) {
-	const isSystemMask = dataMask?.maskType?.key === 'system';
-
 	const [name, setName] = useState(dataMask?.name ?? '');
 	const [description, setDescription] = useState(dataMask?.description ?? '');
 	const [detectionRegex, setDetectionRegex] = useState(
@@ -48,8 +30,8 @@ export function useEditDataMask({dataMask, onSaved}: Options) {
 	);
 	const [submitting, setSubmitting] = useState(false);
 
-	const detectionRegexError = regexError(detectionRegex);
-	const replacementRegexError = regexError(replacementRegex);
+	const detectionRegexError = validateRegex(detectionRegex);
+	const replacementRegexError = validateRegex(replacementRegex);
 
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault();
@@ -94,7 +76,7 @@ export function useEditDataMask({dataMask, onSaved}: Options) {
 		detectionRegex,
 		detectionRegexError,
 		handleSubmit,
-		isSystemMask,
+		isSystemMask: isSystemMask(dataMask),
 		name,
 		replacementRegex,
 		replacementRegexError,
