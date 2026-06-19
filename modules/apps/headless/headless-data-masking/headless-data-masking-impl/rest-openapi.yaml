@@ -1,0 +1,77 @@
+components:
+    schemas:
+        DataMaskPreviewRequest:
+            description:
+                A candidate data mask plus a sample text to apply it to.
+            properties:
+                detectionRegex:
+                    description:
+                        The regex that identifies the substring(s) to be masked. Compiled by java.util.regex.Pattern on the server, so semantics match what the production redaction pipeline will see at runtime &mdash; not what a client side JavaScript regex engine would produce.
+                    type: string
+                replacementRegex:
+                    description:
+                        Optional. When set, each detection match is further processed by this regex against the matched substring; useful for partial redaction styles like "keep the last 4 digits" or "/24 CIDR truncation". When unset, the entire detection match is replaced by replacementValue.
+                    type: string
+                replacementValue:
+                    description:
+                        The literal string (or replacement template with $1, $2&hellip; back references when replacementRegex is set) that substitutes a match.
+                    type: string
+                sampleText:
+                    description:
+                        The input string the candidate mask is applied to. It is returned in DataMaskPreviewResult.output after redaction.
+                    type: string
+            required:
+                -   detectionRegex
+                -   replacementValue
+                -   sampleText
+            type: object
+        DataMaskPreviewResult:
+            description:
+                Outcome of applying the candidate data mask to the sample text.
+            properties:
+                error:
+                    description:
+                        Set when the candidate regex failed to compile (or threw at apply time). A diagnostic message is shown inline in the admin UI. When present, output is the unredacted sampleText.
+                    type: string
+                output:
+                    description:
+                        The sample text after redaction. Equal to sampleText when no matches were found OR when an error occurred.
+                    type: string
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.data.masking.client', and version '1.0.0'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Headless Data Masking
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/data-masks/preview":
+        post:
+            description:
+                Compile a candidate data mask and apply it to sample text, returning a preview of the redacted output and any compile/apply error. Used by the admin UI preview card so the regex is evaluated by the same java.util.regex.Pattern engine that runs in production &mdash; eliminating JavaScript vs Java regex divergence as a source of false positive validation.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DataMaskPreviewRequest"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DataMaskPreviewRequest"
+                description:
+                    The candidate detection + replacement plus the sample input.
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DataMaskPreviewResult"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DataMaskPreviewResult"
+                    description:
+                        Redaction outcome.
+            tags: ["DataMask"]

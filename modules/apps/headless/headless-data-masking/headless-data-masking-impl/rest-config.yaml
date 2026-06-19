@@ -1,0 +1,14 @@
+apiDir: ../headless-data-masking-api/src/main/java
+apiPackagePath: com.liferay.headless.data.masking
+application:
+    baseURI: /headless-data-masking
+    className: HeadlessDataMaskingApplication
+    name: Liferay.Headless.Data.Masking
+author: Jose Luis Navarro
+clientDir: ../headless-data-masking-client/src/main/java
+compatibilityVersion: 15
+forcePredictableOperationId: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../headless-data-masking-test/src/testIntegration/java

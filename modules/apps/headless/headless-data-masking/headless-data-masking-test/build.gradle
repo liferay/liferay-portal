@@ -1,0 +1,16 @@
+dependencies {
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
+	testIntegrationImplementation project(":apps:batch-engine:batch-engine-test-util")
+	testIntegrationImplementation project(":apps:headless:headless-data-masking:headless-data-masking-api")
+	testIntegrationImplementation project(":apps:headless:headless-data-masking:headless-data-masking-client")
+	testIntegrationImplementation project(":apps:object:object-api")
+	testIntegrationImplementation project(":apps:object:object-test-util")
+	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
+	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
