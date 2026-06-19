@@ -1,0 +1,35 @@
+{
+	"configuration": {
+		"className": "com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-90204",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"externalReferenceCode": "L_DATA_MASK_TYPE",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "CUSTOM",
+					"key": "custom",
+					"name": "Custom",
+					"system": true
+				},
+				{
+					"externalReferenceCode": "SYSTEM",
+					"key": "system",
+					"name": "System",
+					"system": true
+				}
+			],
+			"name": "Data Mask Type",
+			"system": true
+		}
+	]
+}

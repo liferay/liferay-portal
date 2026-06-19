@@ -1,0 +1,90 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.rest.dto.v1_0.ObjectEntry",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-90204",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DataMask"
+	},
+	"items": [
+		{
+			"description": "Detect IBAN formatted bank account numbers from any country and replace them with a redacted placeholder.",
+			"detectionRegex": "\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]){11,30}\\b",
+			"externalReferenceCode": "L_DATA_MASK_IBAN",
+			"maskType": "system",
+			"name": "Bank Account Number (IBAN)",
+			"replacementValue": "[BANK_ACCOUNT_NUMBER]"
+		},
+		{
+			"description": "Detect credit card numbers and replace them with a redacted placeholder.",
+			"detectionRegex": "\\b(?:\\d[ \\-]?){13,19}\\b",
+			"externalReferenceCode": "L_DATA_MASK_CREDIT_CARD_NUMBER",
+			"maskType": "system",
+			"name": "Credit Card Number",
+			"replacementValue": "[CREDIT_CARD_NUMBER]"
+		},
+		{
+			"description": "Detect email addresses and replace them with a redacted placeholder.",
+			"detectionRegex": "\\b[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}\\b",
+			"externalReferenceCode": "L_DATA_MASK_EMAIL_ADDRESS",
+			"maskType": "system",
+			"name": "Email Address",
+			"replacementValue": "[EMAIL_ADDRESS]"
+		},
+		{
+			"description": "Detect IPv4 addresses and replace each one with its /24 subnet.",
+			"detectionRegex": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+			"externalReferenceCode": "L_DATA_MASK_IPV4",
+			"maskType": "system",
+			"name": "IPv4 Address",
+			"replacementRegex": "\\.\\d{1,3}$",
+			"replacementValue": ".0/24"
+		},
+		{
+			"description": "Detect IPv6 addresses, expanded or compressed, and replace each one with its /48 prefix.",
+			"detectionRegex": "(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:)*[0-9a-fA-F]{0,4}::(?:[0-9a-fA-F]{1,4}:)*[0-9a-fA-F]{0,4}",
+			"externalReferenceCode": "L_DATA_MASK_IPV6",
+			"maskType": "system",
+			"name": "IPv6 Address",
+			"replacementRegex": "(::.*$)|(:[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){4}$)",
+			"replacementValue": "::/48"
+		},
+		{
+			"description": "Detect Dutch BSN identification numbers and replace them with a redacted placeholder.",
+			"detectionRegex": "\\b[1-9]\\d{8}\\b",
+			"externalReferenceCode": "L_DATA_MASK_NATIONAL_ID_BSN",
+			"maskType": "system",
+			"name": "National ID (BSN)",
+			"replacementValue": "[NATIONAL_ID]"
+		},
+		{
+			"description": "Detect Spanish DNI and NIF identification numbers and replace them with a redacted placeholder.",
+			"detectionRegex": "\\b\\d{8}[A-Z]\\b",
+			"externalReferenceCode": "L_DATA_MASK_NATIONAL_ID_DNI_NIF",
+			"maskType": "system",
+			"name": "National ID (DNI and NIF)",
+			"replacementValue": "[NATIONAL_ID]"
+		},
+		{
+			"description": "Detect US Social Security numbers and replace them with a redacted placeholder.",
+			"detectionRegex": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+			"externalReferenceCode": "L_DATA_MASK_NATIONAL_ID_SSN",
+			"maskType": "system",
+			"name": "National ID (SSN)",
+			"replacementValue": "[NATIONAL_ID]"
+		},
+		{
+			"description": "Detect phone numbers in international format and replace them with a redacted placeholder.",
+			"detectionRegex": "(?<!\\d)\\+\\d[\\d\\s\\-().]{6,19}(?!\\d)",
+			"externalReferenceCode": "L_DATA_MASK_PHONE_NUMBER",
+			"maskType": "system",
+			"name": "Phone Number",
+			"replacementValue": "[PHONE_NUMBER]"
+		}
+	]
+}

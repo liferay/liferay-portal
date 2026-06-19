@@ -170,7 +170,8 @@ public class ObjectDefinitionUtil {
 		"com.liferay.content.site.generator.impl", "com.liferay.cookies.impl",
 		"com.liferay.frontend.data.set.admin.web",
 		"com.liferay.frontend.data.set.impl",
-		"com.liferay.headless.builder.impl", "com.liferay.launch.impl",
+		"com.liferay.headless.builder.impl",
+		"com.liferay.headless.data.masking.impl", "com.liferay.launch.impl",
 		"com.liferay.list.type.service", "com.liferay.mcp.server.rest.impl",
 		"com.liferay.notification.service", "com.liferay.object.service",
 		"com.liferay.seo.studio.site.initializer",
@@ -237,6 +238,8 @@ public class ObjectDefinitionUtil {
 			"CSGGeneration", "/content-site-generator/generations"
 		).put(
 			"CSGGenerationItem", "/content-site-generator/generation-items"
+		).put(
+			"DataMask", "/data-masks"
 		).put(
 			"DataSet", "/data-set-admin/data-sets"
 		).put(
