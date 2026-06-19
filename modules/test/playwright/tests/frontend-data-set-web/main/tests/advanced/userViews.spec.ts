@@ -11,6 +11,7 @@ import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
 import getRandomString from '../../../../../utils/getRandomString';
 import {EFDSVisualizationMode, waitForFDS} from '../../../../../utils/waitFor';
+import {waitForAlert} from '../../../../../utils/waitForAlert';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
 const test = mergeTests(
@@ -29,6 +30,22 @@ test.beforeEach(async ({fdsSamplePage, page, site}) => {
 	await fdsSamplePage.selectTab('Advanced');
 
 	await waitForFDS({page, visualizationMode: EFDSVisualizationMode.TABLE});
+});
+
+test.afterEach(async ({apiHelpers}) => {
+	const response = (await apiHelpers.get(
+		'/o/data-set-admin/snapshots?page=1&pageSize=100'
+	)) as {items?: Array<{id?: number}>};
+
+	// Deleting a snapshot cascades to its startup view child
+
+	for (const snapshot of response?.items || []) {
+		if (snapshot.id) {
+			await apiHelpers.delete(
+				`/o/data-set-admin/snapshots/${snapshot.id}`
+			);
+		}
+	}
 });
 
 test(
@@ -255,6 +272,87 @@ test(
 					name: newUserViewName,
 				})
 			).not.toBeVisible();
+		});
+	}
+);
+
+test(
+	'Set a user view as the startup view and apply it on reload',
+	{
+		tag: ['@LPD-75910'],
+	},
+	async ({fdsSamplePage, page}) => {
+		const userViewName = getRandomString();
+
+		// Create a user view
+
+		await test.step('Create a user view', async () => {
+			await fdsSamplePage.userViewsActionsButton.click();
+
+			await fdsSamplePage.dropdownMenu
+				.getByRole('menuitem', {name: 'Save View As...'})
+				.click();
+
+			await expect(fdsSamplePage.userViewsSaveModal).toBeInViewport();
+
+			await fdsSamplePage.userViewsSaveModal
+				.getByLabel('NameRequired')
+				.fill(userViewName);
+
+			await fdsSamplePage.userViewsSaveModal
+				.getByRole('button', {name: 'Save'})
+				.click();
+
+			await expect(fdsSamplePage.userViewsSelectorButton).toHaveText(
+				userViewName
+			);
+		});
+
+		// Set the active user view as the startup view
+
+		await test.step('Set as Startup View shows a success message and a badge', async () => {
+			await fdsSamplePage.userViewsActionsButton.click();
+
+			await fdsSamplePage.dropdownMenu
+				.getByRole('menuitem', {name: 'Set as Startup View'})
+				.click();
+
+			await waitForAlert(page, 'The user view was set as startup');
+
+			await fdsSamplePage.userViewsSelectorButton.click();
+
+			await expect(
+				fdsSamplePage.dropdownMenu.getByText('Startup View')
+			).toBeVisible();
+
+			await page.keyboard.press('Escape');
+		});
+
+		await test.step('Set as Startup View is hidden once the active view is the startup view', async () => {
+			await fdsSamplePage.userViewsActionsButton.click();
+
+			await expect(
+				fdsSamplePage.dropdownMenu.getByRole('menuitem', {
+					name: 'Set as Startup View',
+				})
+			).not.toBeVisible();
+
+			await page.keyboard.press('Escape');
+		});
+
+		// Reloading the page applies the startup view automatically
+
+		await test.step('The startup view is applied on reload', async () => {
+			await page.reload();
+
+			await waitForFDS({
+				page,
+				visualizationMode: EFDSVisualizationMode.TABLE,
+			});
+
+			await expect(fdsSamplePage.userViewsSelectorButton).toHaveText(
+				userViewName
+			);
 		});
 	}
 );

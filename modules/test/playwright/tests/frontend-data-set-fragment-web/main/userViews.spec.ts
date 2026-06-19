@@ -103,6 +103,20 @@ test.beforeEach(async ({dataSetManagerApiHelpers}) => {
 });
 
 test.afterEach(async ({dataSetManagerApiHelpers}) => {
+	const response = (await dataSetManagerApiHelpers.get(
+		'/o/data-set-admin/snapshots?page=1&pageSize=100'
+	)) as {items?: Array<{id?: number}>};
+
+	// Deleting a snapshot cascades to its startup view child
+
+	for (const snapshot of response?.items || []) {
+		if (snapshot.id) {
+			await dataSetManagerApiHelpers.delete(
+				`/o/data-set-admin/snapshots/${snapshot.id}`
+			);
+		}
+	}
+
 	for (const erc of dataSetERCs) {
 		await dataSetManagerApiHelpers.deleteDataSet({
 			erc,
@@ -1083,6 +1097,126 @@ test(
 
 		await test.step('Switch back to the admin user so afterEach cleanup runs with delete permissions', async () => {
 			await performUserSwitch(page, 'test');
+		});
+	}
+);
+
+test(
+	'Can set a user view as the startup view and apply it on reload',
+	{tag: '@LPD-75910'},
+	async ({dataSetFragmentPage, dataSetManagerApiHelpers, layout, page}) => {
+		const snapshotName = `Startup ${getRandomString().slice(0, 8)}`;
+
+		await test.step('Enable User Views (snapshots)', async () => {
+			await dataSetManagerApiHelpers.updateDataSet({
+				erc: dataSetERC,
+				snapshotsEnabled: true,
+			});
+		});
+
+		await test.step('Configure Data Set fragment on the page', async () => {
+			await dataSetFragmentPage.configureDataSetFragment({
+				dataSetLabel,
+				layout,
+			});
+		});
+
+		await test.step('Create a user view', async () => {
+			await dataSetManagerApiHelpers.createDataSetSnapshot({
+				dataSetERC,
+				snapshotName,
+			});
+		});
+
+		await test.step('Reload and select the new user view', async () => {
+			await dataSetFragmentPage.goToPage({layout});
+
+			await page
+				.locator('.data-set-content-wrapper')
+				.waitFor({state: 'visible'});
+
+			await dataSetFragmentPage.userViewsSelectorButton.click();
+
+			const userViewsDropdownId =
+				await dataSetFragmentPage.userViewsSelectorButton.getAttribute(
+					'aria-controls'
+				);
+
+			await page
+				.locator(`#${userViewsDropdownId}`)
+				.getByRole('menuitem', {name: snapshotName})
+				.click();
+
+			await expect(
+				dataSetFragmentPage.userViewsSelectorButton
+			).toHaveText(snapshotName);
+		});
+
+		await test.step('Set as Startup View shows a success message', async () => {
+			await dataSetFragmentPage.userViewsActionsButton.click();
+
+			const userViewsActionsDropdownId =
+				await dataSetFragmentPage.userViewsActionsButton.getAttribute(
+					'aria-controls'
+				);
+
+			await page
+				.locator(`#${userViewsActionsDropdownId}`)
+				.getByRole('menuitem', {name: 'Set as Startup View'})
+				.click();
+
+			await waitForAlert(page, 'The user view was set as startup');
+		});
+
+		await test.step('The startup view is marked with a badge in the dropdown', async () => {
+			await dataSetFragmentPage.userViewsSelectorButton.click();
+
+			const userViewsDropdownId =
+				await dataSetFragmentPage.userViewsSelectorButton.getAttribute(
+					'aria-controls'
+				);
+
+			await expect(
+				page
+					.locator(`#${userViewsDropdownId}`)
+					.getByText('Startup View')
+			).toBeVisible();
+
+			await page.keyboard.press('Escape');
+		});
+
+		await test.step('Set as Startup View is hidden when the active view is already the startup view', async () => {
+			await dataSetFragmentPage.userViewsActionsButton.click();
+
+			const userViewsActionsDropdownId =
+				await dataSetFragmentPage.userViewsActionsButton.getAttribute(
+					'aria-controls'
+				);
+
+			await page
+				.locator(`#${userViewsActionsDropdownId}`)
+				.filter({has: page.getByRole('menu')})
+				.waitFor();
+
+			await expect(
+				page
+					.locator(`#${userViewsActionsDropdownId}`)
+					.getByRole('menuitem', {name: 'Set as Startup View'})
+			).toHaveCount(0);
+
+			await page.keyboard.press('Escape');
+		});
+
+		await test.step('The startup view is applied on reload', async () => {
+			await dataSetFragmentPage.goToPage({layout});
+
+			await page
+				.locator('.data-set-content-wrapper')
+				.waitFor({state: 'visible'});
+
+			await expect(
+				dataSetFragmentPage.userViewsSelectorButton
+			).toHaveText(snapshotName);
 		});
 	}
 );
