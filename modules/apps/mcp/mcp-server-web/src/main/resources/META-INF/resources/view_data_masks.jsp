@@ -10,13 +10,14 @@
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
 
 <%
-ViewDataMasksDisplayContext viewDataMasksDisplayContext = new ViewDataMasksDisplayContext(liferayPortletResponse);
+ViewDataMasksDisplayContext viewDataMasksDisplayContext = new ViewDataMasksDisplayContext(request, liferayPortletResponse);
 %>
 
 <frontend-data-set:headless-display
-	additionalProps="<%= viewDataMasksDisplayContext.getFDSAdditionalProps() %>"
 	apiURL="<%= viewDataMasksDisplayContext.getAPIURL() %>"
-	fdsSortItemList="<%= viewDataMasksDisplayContext.getFDSSortItemList(request) %>"
+	creationMenu="<%= viewDataMasksDisplayContext.getCreationMenu() %>"
+	fdsActionDropdownItems="<%= viewDataMasksDisplayContext.getFDSActionDropdownItems() %>"
+	fdsSortItemList="<%= viewDataMasksDisplayContext.getFDSSortItemList() %>"
 	formName="fm"
 	id="<%= viewDataMasksDisplayContext.getFDSName() %>"
 	itemsPerPage="<%= 20 %>"
