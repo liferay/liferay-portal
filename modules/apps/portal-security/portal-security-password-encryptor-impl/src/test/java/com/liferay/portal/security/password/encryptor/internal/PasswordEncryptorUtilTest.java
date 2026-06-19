@@ -217,15 +217,12 @@ public class PasswordEncryptorUtilTest {
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_BCRYPT + "/10",
 				RandomTestUtil.randomString(), null);
-
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA1/160/1300000",
 				RandomTestUtil.randomString(), null);
-
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/256/600000",
 				RandomTestUtil.randomString(), null);
-
 			_testEncryptFailure(
 				PasswordEncryptor.TYPE_PBKDF2 + "WithHmacSHA256/64/1300000",
 				RandomTestUtil.randomString(), null);
@@ -291,16 +288,11 @@ public class PasswordEncryptorUtilTest {
 		DefaultPasswordEncryptor defaultPasswordEncryptor =
 			new DefaultPasswordEncryptor();
 
-		try {
-			defaultPasswordEncryptor.encrypt(
+		Assert.assertThrows(
+			PwdEncryptorException.UnavailableAlgorithm.class,
+			() -> defaultPasswordEncryptor.encrypt(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				null, false);
-
-			Assert.fail();
-		}
-		catch (PwdEncryptorException.UnavailableAlgorithm
-					pwdEncryptorException) {
-		}
+				null, false));
 	}
 
 	@Test(expected = PwdEncryptorException.MustSetLegacyAlgorithmProperty.class)
