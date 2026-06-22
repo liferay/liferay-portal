@@ -357,17 +357,8 @@ public class ObjectDefinitionUtil {
 				setPortlet(serviceBuilderObjectDefinition::isPortlet);
 				setRestContextPath(() -> finalRESTContextPath);
 				setRootObjectDefinitionExternalReferenceCode(
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-34594")) {
-
-							return null;
-						}
-
-						return serviceBuilderObjectDefinition.
-							getRootObjectDefinitionExternalReferenceCode();
-					});
+					serviceBuilderObjectDefinition::
+						getRootObjectDefinitionExternalReferenceCode);
 				setScope(serviceBuilderObjectDefinition::getScope);
 				setStatus(
 					() -> new Status() {

@@ -20,7 +20,6 @@ import com.liferay.object.web.internal.display.context.helper.ObjectRequestHelpe
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -141,9 +140,7 @@ public class ObjectDefinitionsRelationshipsDisplayContext
 		return JSONUtil.put(
 			"deletionType", objectRelationship.getDeletionType()
 		).put(
-			"edge",
-			FeatureFlagManagerUtil.isEnabled("LPD-34594") ?
-				objectRelationship.isEdge() : null
+			"edge", objectRelationship.isEdge()
 		).put(
 			"id", Long.valueOf(objectRelationship.getObjectRelationshipId())
 		).put(

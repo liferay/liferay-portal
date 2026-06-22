@@ -7,9 +7,6 @@ package com.liferay.object.internal.action.trigger.util;
 
 import com.liferay.object.action.trigger.ObjectActionTrigger;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,14 +18,6 @@ import java.util.List;
 public class ObjectActionTriggerUtil {
 
 	public static List<ObjectActionTrigger> getDefaultObjectActionTriggers() {
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-34594")) {
-			return ListUtil.filter(
-				_defaultObjectActionTriggers,
-				objectActionTrigger -> !StringUtil.equals(
-					objectActionTrigger.getKey(),
-					ObjectActionTriggerConstants.KEY_ON_AFTER_ROOT_UPDATE));
-		}
-
 		return _defaultObjectActionTriggers;
 	}
 

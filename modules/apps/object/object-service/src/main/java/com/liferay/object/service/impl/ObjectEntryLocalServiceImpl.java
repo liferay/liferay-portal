@@ -3835,13 +3835,11 @@ public class ObjectEntryLocalServiceImpl
 			},
 			user.getUserId());
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-34594") ||
-			(!objectEntry.isRootDescendantNode() &&
-			 (!objectDefinition.isRootNode() ||
-			  StringUtil.equals(
-				  objectActionTriggerKey,
-				  ObjectActionTriggerConstants.KEY_ON_AFTER_ADD)))) {
+		if (!objectEntry.isRootDescendantNode() &&
+			(!objectDefinition.isRootNode() ||
+			 StringUtil.equals(
+				 objectActionTriggerKey,
+				 ObjectActionTriggerConstants.KEY_ON_AFTER_ADD))) {
 
 			return;
 		}

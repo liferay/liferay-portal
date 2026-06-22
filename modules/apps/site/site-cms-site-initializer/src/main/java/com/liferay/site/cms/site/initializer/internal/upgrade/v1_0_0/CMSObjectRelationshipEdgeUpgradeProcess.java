@@ -7,22 +7,17 @@ package com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0;
 
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
-import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectDefinitionSettingLocalService;
-import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
 import com.liferay.object.tree.constants.TreeConstants;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -42,18 +37,11 @@ public class CMSObjectRelationshipEdgeUpgradeProcess extends UpgradeProcess {
 	public CMSObjectRelationshipEdgeUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
-		ObjectDefinitionPersistence objectDefinitionPersistence,
-		ObjectDefinitionSettingLocalService objectDefinitionSettingLocalService,
-		ObjectEntryLocalService objectEntryLocalService,
 		ObjectFolderLocalService objectFolderLocalService,
 		ObjectRelationshipLocalService objectRelationshipLocalService) {
 
 		_companyLocalService = companyLocalService;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
-		_objectDefinitionPersistence = objectDefinitionPersistence;
-		_objectDefinitionSettingLocalService =
-			objectDefinitionSettingLocalService;
-		_objectEntryLocalService = objectEntryLocalService;
 		_objectFolderLocalService = objectFolderLocalService;
 		_objectRelationshipLocalService = objectRelationshipLocalService;
 	}
@@ -260,24 +248,12 @@ public class CMSObjectRelationshipEdgeUpgradeProcess extends UpgradeProcess {
 				continue;
 			}
 
-			objectRelationship =
-				_objectRelationshipLocalService.updateObjectRelationship(
-					currentObjectRelationship.getExternalReferenceCode(),
-					currentObjectRelationship.getObjectRelationshipId(),
-					currentObjectRelationship.getParameterObjectFieldId(),
-					currentObjectRelationship.getDeletionType(), true,
-					currentObjectRelationship.getLabelMap(), null);
-
-			if (FeatureFlagManagerUtil.isEnabled(
-					objectRelationship.getCompanyId(), "LPD-34594")) {
-
-				continue;
-			}
-
-			ObjectDefinitionTreeUtil.bindObjectDefinitions(
-				_objectDefinitionLocalService, _objectDefinitionPersistence,
-				_objectDefinitionSettingLocalService, _objectEntryLocalService,
-				objectRelationship, _objectRelationshipLocalService);
+			_objectRelationshipLocalService.updateObjectRelationship(
+				currentObjectRelationship.getExternalReferenceCode(),
+				currentObjectRelationship.getObjectRelationshipId(),
+				currentObjectRelationship.getParameterObjectFieldId(),
+				currentObjectRelationship.getDeletionType(), true,
+				currentObjectRelationship.getLabelMap(), null);
 		}
 	}
 
@@ -288,10 +264,6 @@ public class CMSObjectRelationshipEdgeUpgradeProcess extends UpgradeProcess {
 
 	private final CompanyLocalService _companyLocalService;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
-	private final ObjectDefinitionPersistence _objectDefinitionPersistence;
-	private final ObjectDefinitionSettingLocalService
-		_objectDefinitionSettingLocalService;
-	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectFolderLocalService _objectFolderLocalService;
 	private final ObjectRelationshipLocalService
 		_objectRelationshipLocalService;
