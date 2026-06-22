@@ -291,7 +291,14 @@ function _check_pr {
 
 	if [[ $(echo "${automatic_code_review_json}" | jq "all(.failure_type)") == true ]]
 	then
-		local body="${at_usernames}"$'\n\n'"The automated review could not be completed. Resend this PR to try again."
+		if [[ $(echo "${automatic_code_review_json}" | jq "all(.transient // false)") == true ]]
+		then
+			echo "${pr_number}: every model hit a transient API error." >&2
+
+			return 0
+		fi
+
+		local body="${at_usernames}"$'\n\n'"The automated review could not be completed."
 
 		echo ""
 		echo "${body}"
@@ -671,6 +678,36 @@ function _get_indefinite_article_for_number {
 	fi
 }
 
+function _invoke_model {
+	local model=${1}
+	local prompt=${2}
+
+	if [ ${model} = sonnet-4.6 ]
+	then
+		_review_in_sandbox \
+			env \
+				HTTPS_PROXY=localhost:8118 \
+				HTTP_PROXY=localhost:8118 \
+				\
+				claude \
+					--add-dir /review \
+					--dangerously-skip-permissions \
+					--model sonnet \
+					--output-format json \
+					--print "Read the PR diff at /review/pr.diff, every rule file under /review/rules, and the style guide /review/STYLE.md, then review the diff against every rule. ${prompt}" || true
+	else
+		_review_in_sandbox \
+			opencode run \
+				--dangerously-skip-permissions \
+				--file /review/STYLE.md \
+				--file /review/pr.diff \
+				--file /review/rules \
+				--format json \
+				--model "opencode-go/${model}" \
+				"Review this PR diff against every attached rule. ${prompt}" || true
+	fi
+}
+
 function _is_older_than {
 	local file=${1}
 	local seconds=${2}
@@ -678,6 +715,15 @@ function _is_older_than {
 	local modified_time=$(stat --format=%Y ${file} 2> /dev/null)
 
 	[ $(($(date +%s) - ${modified_time:-0})) -gt ${seconds} ]
+}
+
+function _is_transient_error {
+	local raw=${1}
+
+	local api_error_status=$(echo "${raw}" | jq --raw-output ".api_error_status // empty" 2> /dev/null || true)
+	local error=$(echo "${raw}" | jq --raw-output ".is_error // false" 2> /dev/null || echo false)
+
+	[[ ${error} == true ]] && [[ ${api_error_status} =~ ^(429|5[0-9][0-9])$ ]]
 }
 
 function _print_help {
@@ -829,7 +875,11 @@ function _update_points {
 }
 
 function _write_model_json_file {
+	local attempt
+	local backoffs=(30 150 300)
 	local model=${1}
+	local raw
+	local seconds=$(date +%s)
 
 	local prompt='Review the PR diff thoroughly. For any naming, ordering, or convention question, run `git grep --cached <pattern>` against /review/liferay-portal before deciding — never short circuit by returning empty after only reading the diff. Always pass --cached: plain `git grep` hangs the VM (a wrapper auto rewrites it, but pass --cached yourself).
 
@@ -842,50 +892,41 @@ Generated files are the one exception where you do drop the catch. A file whose 
 When a violation is a mechanical formatting or layout suggestion that SourceFormatter also governs (collapsing or expanding a boolean return or a ternary, method chaining, line wrapping, whitespace, blank lines, import order, or the ordering of members, parameters, or declarations), append the sentence "SourceFormatter is authoritative: if applying this suggestion fails SourceFormatter, ignore it." to that violation description. Do not add this sentence to correctness, naming, test, or prose violations.
 
 Output ONLY valid JSON, with no Markdown code fence and no surrounding prose: {"chance": <0-100>, "violations": ["one description per violation"]} where chance is your confidence that Brian Chan would close this PR for these violations. Do not use double quote characters inside a violation string; quote code, rule names, and phrases with backticks or single quotes instead. Make sure the result parses as JSON: escape every special character so the object is valid. Your entire reply must be the raw JSON object and nothing else: no introductory sentence, and no Markdown such as **bold**, headings, horizontal rules, or numbered lists.'
-	local input_tokens=0
-	local output_tokens=0
-	local raw
+
+	for ((attempt = 0; attempt <= 3; attempt++))
+	do
+		raw=$(_invoke_model ${model} "${prompt}")
+
+		if ! _is_transient_error "${raw}" || [[ ${attempt} -eq 3 ]]
+		then
+			break
+		fi
+
+		echo "${model} hit a transient API error; retry $((attempt + 1)) of 3 in ${backoffs[attempt]}s." >&2
+
+		sleep ${backoffs[attempt]}
+	done
+
+	echo "${raw}" > "${pr_dir}/${model}.raw"
+
+	local input_tokens
+	local output_tokens
 	local response
-	local seconds=$(date +%s)
 
 	if [ ${model} = sonnet-4.6 ]
 	then
-		raw=$(_review_in_sandbox \
-			env \
-				HTTPS_PROXY=localhost:8118 \
-				HTTP_PROXY=localhost:8118 \
-				\
-				claude \
-					--add-dir /review \
-					--dangerously-skip-permissions \
-					--model sonnet \
-					--output-format json \
-					--print "Read the PR diff at /review/pr.diff, every rule file under /review/rules, and the style guide /review/STYLE.md, then review the diff against every rule. ${prompt}" || true)
-
-		response=$(echo "${raw}" | jq --raw-output ".result // empty" 2> /dev/null || true)
 		input_tokens=$(echo "${raw}" | jq --raw-output "(.usage.input_tokens // 0) + (.usage.cache_creation_input_tokens // 0)" 2> /dev/null || echo 0)
 		input_tokens=${input_tokens:-0}
 		output_tokens=$(echo "${raw}" | jq --raw-output ".usage.output_tokens // 0" 2> /dev/null || echo 0)
 		output_tokens=${output_tokens:-0}
+		response=$(echo "${raw}" | jq --raw-output ".result // empty" 2> /dev/null || true)
 	else
-		raw=$(_review_in_sandbox \
-			opencode run \
-				--dangerously-skip-permissions \
-				--file /review/STYLE.md \
-				--file /review/pr.diff \
-				--file /review/rules \
-				--format json \
-				--model "opencode-go/${model}" \
-				"Review this PR diff against every attached rule. ${prompt}" || true)
-
-		response=$(echo "${raw}" | jq --raw-output --slurp "map(select(.type == \"text\")) | last | .part.text // empty" 2> /dev/null || true)
 		input_tokens=$(echo "${raw}" | jq --raw-output --slurp "[.[] | select(.type == \"step_finish\") | (.part.tokens.input // 0) + (.part.tokens.cache.write // 0)] | add // 0" 2> /dev/null || echo 0)
 		input_tokens=${input_tokens:-0}
 		output_tokens=$(echo "${raw}" | jq --raw-output --slurp "[.[] | select(.type == \"step_finish\") | (.part.tokens.output // 0) + (.part.tokens.reasoning // 0)] | add // 0" 2> /dev/null || echo 0)
 		output_tokens=${output_tokens:-0}
+		response=$(echo "${raw}" | jq --raw-output --slurp "map(select(.type == \"text\")) | last | .part.text // empty" 2> /dev/null || true)
 	fi
-
-	echo "${raw}" > "${pr_dir}/${model}.raw"
 
 	local model_json=$(echo "${response}" | _extract_last_json_block)
 
@@ -920,6 +961,7 @@ Output ONLY valid JSON, with no Markdown code fence and no surrounding prose: {"
 				'{chance: $chance, input_tokens: $input_tokens, output_tokens: $output_tokens, salvaged: true, seconds: $seconds, violations: [$violations]}' > "${pr_dir}/${model}.json"
 		else
 			local failure_type=$(_classify_failure "${raw}" "${response}")
+			local transient=$(_is_transient_error "${raw}" && echo true || echo false)
 
 			echo "${model} failed (${failure_type}) after $(($(date +%s) - seconds))s: $(echo "${response}" | tr "\n" " " | head --bytes=300)" >&2
 
@@ -929,8 +971,9 @@ Output ONLY valid JSON, with no Markdown code fence and no surrounding prose: {"
 				--argjson input_tokens "${input_tokens}" \
 				--argjson output_tokens "${output_tokens}" \
 				--argjson seconds "$(($(date +%s) - seconds))" \
+				--argjson transient "${transient}" \
 				--null-input \
-				"{chance: 0, error: \$error, failure_type: \$failure_type, input_tokens: \$input_tokens, output_tokens: \$output_tokens, seconds: \$seconds, violations: []}" > "${pr_dir}/${model}.json"
+				"{chance: 0, error: \$error, failure_type: \$failure_type, input_tokens: \$input_tokens, output_tokens: \$output_tokens, seconds: \$seconds, transient: \$transient, violations: []}" > "${pr_dir}/${model}.json"
 		fi
 	fi
 }

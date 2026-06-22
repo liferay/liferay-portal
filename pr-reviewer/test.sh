@@ -13,6 +13,7 @@ function main {
 	_test_extract_last_json_block
 	_test_format_tokens
 	_test_get_indefinite_article_for_number
+	_test_is_transient_error
 	_test_salvage_chance
 	_test_salvage_violations
 
@@ -123,6 +124,13 @@ function _test_format_tokens {
 function _test_get_indefinite_article_for_number {
 	_assert_equals "$(_get_indefinite_article_for_number 40)" a "Choose \"a\" for forty."
 	_assert_equals "$(_get_indefinite_article_for_number 8)" an "Choose \"an\" for eight."
+}
+
+function _test_is_transient_error {
+	_assert_equals "$(_is_transient_error '{"api_error_status": 400, "is_error": true}' && echo yes || echo no)" no "Treat a 400 as not transient."
+	_assert_equals "$(_is_transient_error '{"api_error_status": 429, "is_error": true}' && echo yes || echo no)" yes "Treat a 429 rate limit as transient."
+	_assert_equals "$(_is_transient_error '{"api_error_status": 529, "is_error": true}' && echo yes || echo no)" yes "Treat a 529 overload as transient."
+	_assert_equals "$(_is_transient_error '{"is_error": false}' && echo yes || echo no)" no "Treat a successful reply as not transient."
 }
 
 function _test_salvage_chance {
