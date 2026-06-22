@@ -7,17 +7,17 @@ import ApiHelper, {RequestResult} from './ApiHelper';
 
 const VALIDATE_URL = '/o/headless-data-masking/v1.0/data-masks/validate';
 
-export interface ValidationRequest {
+export type ValidationRequest = {
 	detectionRegex: string;
 	replacementRegex: string;
 	replacementValue: string;
 	sampleText: string;
-}
+};
 
-export interface ValidationResult {
+export type ValidationResult = {
 	error?: string;
 	output: string;
-}
+};
 
 export function postValidateDataMask(
 	request: ValidationRequest

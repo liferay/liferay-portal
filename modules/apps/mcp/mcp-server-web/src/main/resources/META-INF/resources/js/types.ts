@@ -5,12 +5,12 @@
 
 export type DataMaskTypeKey = 'system' | 'custom';
 
-export interface DataMaskPicklistValue {
+export type DataMaskPicklistValue = {
 	key: DataMaskTypeKey;
 	name: string;
-}
+};
 
-export interface DataMask {
+export type DataMask = {
 	dateModified?: string;
 	description?: string;
 	detectionRegex: string;
@@ -20,18 +20,18 @@ export interface DataMask {
 	name: string;
 	replacementRegex?: string;
 	replacementValue: string;
-}
+};
 
-export interface DataMaskPayload {
+export type DataMaskPayload = {
 	description: string;
 	detectionRegex: string;
 	maskType: {key: DataMaskTypeKey};
 	name: string;
 	replacementRegex: string;
 	replacementValue: string;
-}
+};
 
-export interface ActionContext {
+export type ActionContext = {
 	itemData: DataMask;
 	loadData: () => void;
-}
+};
