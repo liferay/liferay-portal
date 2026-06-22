@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 /**
  * @author Lucas Miranda
  */
-public class SafeLDAPReferralUtilTest {
+public class SafeLdapReferralUtilTest {
 
 	@ClassRule
 	@Rule
@@ -41,61 +41,61 @@ public class SafeLDAPReferralUtilTest {
 	public void testIsAllowedReferralURL() {
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, ""));
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "  ldap://host:389  "));
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "LDAP://host:389"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "corba://host/exploit"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "dns://host"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "host:389"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "http://host/exploit"));
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class},
 				"ldap://host1:389 ldap://host2:389"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class},
 				"ldap://host1:389 rmi://host2:1099/exploit"));
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "ldap://host:389"));
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "ldaps://host:636"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "ldapx://host"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "rmi://host:1099/exploit"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, (String)null));
 	}
 
@@ -136,7 +136,7 @@ public class SafeLDAPReferralUtilTest {
 		);
 
 		NamingEnumeration<SearchResult> resultEnumeration =
-			SafeLDAPReferralUtil.search(
+			SafeLdapReferralUtil.search(
 				dirContext, "(cn=*)", new Object[0], Mockito.mock(Name.class),
 				new SearchControls());
 
@@ -212,7 +212,7 @@ public class SafeLDAPReferralUtilTest {
 			referralEnumeration
 		);
 
-		resultEnumeration = SafeLDAPReferralUtil.search(
+		resultEnumeration = SafeLdapReferralUtil.search(
 			dirContext, "(cn=*)", new Object[0], Mockito.mock(Name.class),
 			new SearchControls());
 
@@ -229,19 +229,19 @@ public class SafeLDAPReferralUtilTest {
 	public void testSetProperties() {
 		Map<String, String> environment = new HashMap<>();
 
-		SafeLDAPReferralUtil.setProperties(environment, "follow");
+		SafeLdapReferralUtil.setProperties(environment, "follow");
 
 		Assert.assertEquals("throw", environment.get(Context.REFERRAL));
 
 		_assertTrustURLCodebaseDisabled(environment);
 
-		SafeLDAPReferralUtil.setProperties(environment, "ignore");
+		SafeLdapReferralUtil.setProperties(environment, "ignore");
 
 		Assert.assertEquals("ignore", environment.get(Context.REFERRAL));
 
 		_assertTrustURLCodebaseDisabled(environment);
 
-		SafeLDAPReferralUtil.setProperties(environment, "throw");
+		SafeLdapReferralUtil.setProperties(environment, "throw");
 
 		Assert.assertEquals("throw", environment.get(Context.REFERRAL));
 

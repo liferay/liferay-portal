@@ -30,7 +30,7 @@ import javax.naming.directory.SearchResult;
 /**
  * @author Lucas Miranda
  */
-public class SafeLDAPReferralUtil {
+public class SafeLdapReferralUtil {
 
 	public static NamingEnumeration<SearchResult> search(
 			DirContext dirContext, String filter, Object[] filterArguments,

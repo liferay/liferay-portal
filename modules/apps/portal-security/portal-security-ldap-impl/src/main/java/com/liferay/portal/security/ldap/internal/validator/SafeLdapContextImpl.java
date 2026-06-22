@@ -11,7 +11,7 @@ import com.liferay.portal.security.ldap.SafeLdapContext;
 import com.liferay.portal.security.ldap.SafeLdapFilter;
 import com.liferay.portal.security.ldap.SafeLdapName;
 import com.liferay.portal.security.ldap.SafeLdapNameFactory;
-import com.liferay.portal.security.ldap.internal.util.SafeLDAPReferralUtil;
+import com.liferay.portal.security.ldap.internal.util.SafeLdapReferralUtil;
 
 import java.util.Hashtable;
 
@@ -537,7 +537,7 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 		throws NamingException {
 
 		if (_manageReferrals) {
-			return SafeLDAPReferralUtil.search(
+			return SafeLdapReferralUtil.search(
 				_ldapContext, safeLdapFilter.getFilterString(),
 				safeLdapFilter.getArguments(), safeLdapName, searchControls);
 		}
