@@ -39,6 +39,18 @@ public class SynonymSetIndexCreator {
 		_searchEngineAdapter.execute(createIndexRequest);
 	}
 
+	public void createIfNotExists(SynonymSetIndexName synonymSetIndexName) {
+		IndicesExistsIndexRequest indicesExistsIndexRequest =
+			new IndicesExistsIndexRequest(synonymSetIndexName.getIndexName());
+
+		IndicesExistsIndexResponse indicesExistsIndexResponse =
+			_searchEngineAdapter.execute(indicesExistsIndexRequest);
+
+		if (!indicesExistsIndexResponse.isExists()) {
+			create(synonymSetIndexName);
+		}
+	}
+
 	public void deleteIfExists(SynonymSetIndexName synonymSetIndexName) {
 		IndicesExistsIndexRequest indicesExistsIndexRequest =
 			new IndicesExistsIndexRequest(synonymSetIndexName.getIndexName());

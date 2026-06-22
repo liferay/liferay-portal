@@ -54,6 +54,21 @@ public class SynonymSetIndexReindexer implements IndexReindexer {
 			date = new Date();
 
 			Thread.sleep(1000);
+
+			try {
+				synchronized (synonymSetIndexNameBuilder) {
+					_synonymSetIndexCreator.createIfNotExists(
+						synonymSetIndexName);
+				}
+			}
+			catch (RuntimeException runtimeException) {
+				_log.error(
+					"Unable to create index " +
+						synonymSetIndexName.getIndexName(),
+					runtimeException);
+
+				return;
+			}
 		}
 		else {
 			if (_log.isInfoEnabled()) {
