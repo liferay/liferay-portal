@@ -39,6 +39,21 @@ public class RankingIndexCreatorUtil {
 		searchEngineAdapter.execute(createIndexRequest);
 	}
 
+	public static void createIfNotExists(
+		SearchEngineAdapter searchEngineAdapter,
+		RankingIndexName rankingIndexName) {
+
+		IndicesExistsIndexRequest indicesExistsIndexRequest =
+			new IndicesExistsIndexRequest(rankingIndexName.getIndexName());
+
+		IndicesExistsIndexResponse indicesExistsIndexResponse =
+			searchEngineAdapter.execute(indicesExistsIndexRequest);
+
+		if (!indicesExistsIndexResponse.isExists()) {
+			create(searchEngineAdapter, rankingIndexName);
+		}
+	}
+
 	public static void deleteIfExists(
 		SearchEngineAdapter searchEngineAdapter,
 		RankingIndexName rankingIndexName) {

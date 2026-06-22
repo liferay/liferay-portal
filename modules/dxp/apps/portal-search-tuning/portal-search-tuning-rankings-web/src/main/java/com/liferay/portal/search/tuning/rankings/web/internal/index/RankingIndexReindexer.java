@@ -62,6 +62,18 @@ public class RankingIndexReindexer implements IndexReindexer {
 			date = new Date();
 
 			Thread.sleep(1000);
+
+			try {
+				RankingIndexCreatorUtil.createIfNotExists(
+					_searchEngineAdapter, rankingIndexName);
+			}
+			catch (RuntimeException runtimeException) {
+				_log.error(
+					"Unable to create index " + rankingIndexName.getIndexName(),
+					runtimeException);
+
+				return;
+			}
 		}
 		else {
 			if (_log.isInfoEnabled()) {
