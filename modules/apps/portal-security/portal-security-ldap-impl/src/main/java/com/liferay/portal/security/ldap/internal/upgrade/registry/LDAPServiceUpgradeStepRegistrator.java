@@ -16,6 +16,7 @@ import com.liferay.portal.security.ldap.exportimport.configuration.LDAPExportCon
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
 import com.liferay.portal.security.ldap.internal.upgrade.v0_0_2.LDAPPropertiesUpgradeProcess;
 import com.liferay.portal.security.ldap.internal.upgrade.v1_0_0.LDAPSystemConfigurationsUpgradeProcess;
+import com.liferay.portal.security.ldap.internal.upgrade.v1_0_1.LDAPReferralUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -46,6 +47,10 @@ public class LDAPServiceUpgradeStepRegistrator
 			"0.0.2", "1.0.0",
 			new LDAPSystemConfigurationsUpgradeProcess(
 				_configurationAdmin, _configurationProvider));
+
+		registry.register(
+			"1.0.0", "1.0.1",
+			new LDAPReferralUpgradeProcess(_configurationAdmin));
 	}
 
 	@Reference
