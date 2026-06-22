@@ -161,18 +161,16 @@ export default function Relationships({
 	const fields = useMemo(() => {
 		const updatedTableFields = [...tableFields];
 
-		if (Liferay.FeatureFlags['LPD-34594']) {
-			const inheritanceField = {
-				contentRenderer: 'ObjectRelationshipInheritanceDataRenderer',
-				expand: false,
-				fieldName: 'relationshipInheritance',
-				label: Liferay.Language.get('permission-inheritance'),
-				localizeLabel: true,
-				sortable: false,
-			};
+		const inheritanceField = {
+			contentRenderer: 'ObjectRelationshipInheritanceDataRenderer',
+			expand: false,
+			fieldName: 'relationshipInheritance',
+			label: Liferay.Language.get('permission-inheritance'),
+			localizeLabel: true,
+			sortable: false,
+		};
 
-			updatedTableFields.splice(4, 0, inheritanceField);
-		}
+		updatedTableFields.splice(4, 0, inheritanceField);
 
 		return updatedTableFields;
 	}, []);
@@ -217,7 +215,7 @@ export default function Relationships({
 			itemData: ObjectRelationship;
 		}) {
 			if (action.data.id === 'deleteObjectRelationship') {
-				if (itemData.edge && Liferay.FeatureFlags['LPD-34594']) {
+				if (itemData.edge) {
 					setShowDeletionNotAllowedModal(true);
 
 					return;
@@ -340,23 +338,20 @@ export default function Relationships({
 				/>
 			)}
 
-			{showDeletionNotAllowedModal &&
-				Liferay.FeatureFlags['LPD-34594'] && (
-					<ModalDeletionNotAllowed
-						content={
-							<span
-								dangerouslySetInnerHTML={{
-									__html: Liferay.Language.get(
-										'you-cannot-delete-a-relationship-with-inheritance-enabled.-disable-inheritance-before-deleting-the-relationship'
-									),
-								}}
-							/>
-						}
-						onModalClose={() =>
-							setShowDeletionNotAllowedModal(false)
-						}
-					/>
-				)}
+			{showDeletionNotAllowedModal && (
+				<ModalDeletionNotAllowed
+					content={
+						<span
+							dangerouslySetInnerHTML={{
+								__html: Liferay.Language.get(
+									'you-cannot-delete-a-relationship-with-inheritance-enabled.-disable-inheritance-before-deleting-the-relationship'
+								),
+							}}
+						/>
+					}
+					onModalClose={() => setShowDeletionNotAllowedModal(false)}
+				/>
+			)}
 		</>
 	);
 }

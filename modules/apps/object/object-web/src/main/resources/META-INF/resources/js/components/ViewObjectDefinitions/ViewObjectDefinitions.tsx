@@ -224,10 +224,7 @@ export default function ViewObjectDefinitions({
 			action: {data: {id: string}};
 			itemData: ObjectDefinition;
 		}) => {
-			if (
-				action.data.id === 'bind' &&
-				Liferay.FeatureFlags['LPD-34594']
-			) {
+			if (action.data.id === 'bind') {
 				setSelectedObjectDefinition(itemData);
 
 				setShowModal((previousState) => ({
@@ -242,8 +239,7 @@ export default function ViewObjectDefinitions({
 						(setting) =>
 							setting.name ===
 							'rootObjectDefinitionExternalReferenceCodes'
-					) &&
-					Liferay.FeatureFlags['LPD-34594']
+					)
 				) {
 					setSelectedObjectDefinition(itemData);
 
@@ -274,10 +270,7 @@ export default function ViewObjectDefinitions({
 				}));
 			}
 
-			if (
-				action.data.id === 'unbind' &&
-				Liferay.FeatureFlags['LPD-34594']
-			) {
+			if (action.data.id === 'unbind') {
 				setSelectedObjectDefinition(itemData);
 
 				setShowModal((previousState) => ({
@@ -388,18 +381,16 @@ export default function ViewObjectDefinitions({
 	const fields = useMemo(() => {
 		const updatedTableFields = [...tableFields];
 
-		if (Liferay.FeatureFlags['LPD-34594']) {
-			const inheritanceField = {
-				contentRenderer: 'objectDefinitionInheritanceDataRenderer',
-				expand: false,
-				fieldName: 'permissionInheritance',
-				label: Liferay.Language.get('permission-inheritance'),
-				localizeLabel: true,
-				sortable: false,
-			};
+		const inheritanceField = {
+			contentRenderer: 'objectDefinitionInheritanceDataRenderer',
+			expand: false,
+			fieldName: 'permissionInheritance',
+			label: Liferay.Language.get('permission-inheritance'),
+			localizeLabel: true,
+			sortable: false,
+		};
 
-			updatedTableFields.splice(1, 0, inheritanceField);
-		}
+		updatedTableFields.splice(1, 0, inheritanceField);
 
 		return updatedTableFields;
 	}, []);

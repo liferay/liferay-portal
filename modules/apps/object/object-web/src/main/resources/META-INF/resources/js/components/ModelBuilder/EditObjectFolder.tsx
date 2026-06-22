@@ -582,31 +582,30 @@ export default function EditObjectFolder({
 					/>
 				)}
 
-			{modelBuilderModals.objectDefinitionOnRootModelDeletionNotAllowed &&
-				Liferay.FeatureFlags['LPD-34594'] && (
-					<ModalDeletionNotAllowed
-						content={
-							<span
-								dangerouslySetInnerHTML={{
-									__html: Liferay.Language.get(
-										'to-delete-this-object-you-must-first-disable-inheritance-and-delete-its-relationships'
-									),
-								}}
-							/>
-						}
-						onModalClose={() =>
-							dispatch({
-								payload: {
-									updatedModelBuilderModals: {
-										objectDefinitionOnRootModelDeletionNotAllowed:
-											false,
-									},
+			{modelBuilderModals.objectDefinitionOnRootModelDeletionNotAllowed && (
+				<ModalDeletionNotAllowed
+					content={
+						<span
+							dangerouslySetInnerHTML={{
+								__html: Liferay.Language.get(
+									'to-delete-this-object-you-must-first-disable-inheritance-and-delete-its-relationships'
+								),
+							}}
+						/>
+					}
+					onModalClose={() =>
+						dispatch({
+							payload: {
+								updatedModelBuilderModals: {
+									objectDefinitionOnRootModelDeletionNotAllowed:
+										false,
 								},
-								type: TYPES.UPDATE_VISIBILITY_MODEL_BUILDER_MODALS,
-							})
-						}
-					/>
-				)}
+							},
+							type: TYPES.UPDATE_VISIBILITY_MODEL_BUILDER_MODALS,
+						})
+					}
+				/>
+			)}
 
 			{modelBuilderModals.publishObjectDefinitions && (
 				<ModalPublishObjectDefinitions

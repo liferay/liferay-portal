@@ -67,61 +67,58 @@ export function ModalImportWarning({
 						}
 					)}
 
-					{Liferay.FeatureFlags['LPD-34594'] &&
-						!!existingObjectDefinitions?.length && (
-							<>
-								<Table
-									columnsVisibility={false}
-									headingNoWrap
-									noWrap
-									striped={false}
-								>
-									<Head items={tableHeaderItems}>
-										{
+					{!!existingObjectDefinitions?.length && (
+						<>
+							<Table
+								columnsVisibility={false}
+								headingNoWrap
+								noWrap
+								striped={false}
+							>
+								<Head items={tableHeaderItems}>
+									{
 
-											// @ts-ignore
+										// @ts-ignore
 
-											(column) => (
-												<Cell expanded key={column.id}>
-													{column.name}
+										(column) => (
+											<Cell expanded key={column.id}>
+												{column.name}
+											</Cell>
+										)
+									}
+								</Head>
+
+								<Body defaultItems={existingObjectDefinitions}>
+									{
+
+										// @ts-ignore
+
+										(objectDefinition) => (
+											<Row>
+												<Cell>
+													{stringUtils.getLocalizableLabel(
+														{
+															fallbackLabel:
+																objectDefinition.name,
+															fallbackLanguageId:
+																objectDefinition.defaultLanguageId,
+															labels: objectDefinition.label,
+														}
+													)}
 												</Cell>
-											)
-										}
-									</Head>
+											</Row>
+										)
+									}
+								</Body>
+							</Table>
 
-									<Body
-										defaultItems={existingObjectDefinitions}
-									>
-										{
-
-											// @ts-ignore
-
-											(objectDefinition) => (
-												<Row>
-													<Cell>
-														{stringUtils.getLocalizableLabel(
-															{
-																fallbackLabel:
-																	objectDefinition.name,
-																fallbackLanguageId:
-																	objectDefinition.defaultLanguageId,
-																labels: objectDefinition.label,
-															}
-														)}
-													</Cell>
-												</Row>
-											)
-										}
-									</Body>
-								</Table>
-
-								<Text as="p" color="secondary">
-									{Liferay.Language.get(
-										'before-importing-the-new-object-definition-you-may-want-to-back-up-its-entries-to-prevent-data-loss'
-									)}
-								</Text>
-							</>
-						)}
+							<Text as="p" color="secondary">
+								{Liferay.Language.get(
+									'before-importing-the-new-object-definition-you-may-want-to-back-up-its-entries-to-prevent-data-loss'
+								)}
+							</Text>
+						</>
+					)}
 
 					<Text color="secondary">
 						{Liferay.Language.get(
