@@ -4,7 +4,6 @@
  */
 
 import ClayButton from '@clayui/button';
-import {Option, Picker} from '@clayui/core';
 import ClayDropDown from '@clayui/drop-down';
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
@@ -14,8 +13,8 @@ import {
 	openModal,
 	openToast,
 } from 'frontend-js-components-web';
-import {fetch, sub} from 'frontend-js-web';
-import React, {Ref, useContext, useState} from 'react';
+import {debounce, fetch, sub} from 'frontend-js-web';
+import React, {Ref, useContext, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
 import {DEFAULT_FETCH_HEADERS} from '../../../constants';
@@ -25,6 +24,8 @@ import {EViewsActionTypes} from '../../../views/viewsReducer';
 import shareSnapshotAction from './shareSnapshotAction';
 
 const DEFAULT_VIEW_ID = 'DEFAULT_VIEW';
+
+const SEARCH_DEBOUNCE_DELAY = 300;
 
 const RequiredMark = () => (
 	<>
@@ -210,6 +211,26 @@ const SnapshotsControls = () => {
 	] = useContext(ViewsContext);
 
 	const [actionsDropdownActive, setActionsDropdownActive] = useState(false);
+	const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+	const [searchTerm, setSearchTerm] = useState('');
+	const [viewsDropdownActive, setViewsDropdownActive] = useState(false);
+
+	const searchInputRef = useRef<HTMLInputElement>(null);
+
+	const debouncedSetSearchTerm = useMemo(
+		() => debounce(setDebouncedSearchTerm, SEARCH_DEBOUNCE_DELAY),
+		[]
+	);
+
+	const clearSearch = () => {
+		setSearchTerm('');
+		setDebouncedSearchTerm('');
+	};
+
+	const updateSearch = (value: string) => {
+		setSearchTerm(value);
+		debouncedSetSearchTerm(value);
+	};
 
 	const defaultSnapshotItem = {
 		erc: DEFAULT_VIEW_ID,
@@ -244,6 +265,19 @@ const SnapshotsControls = () => {
 		},
 		...visibleHeaderSnapshots,
 	];
+
+	const normalizedSearchTerm = debouncedSearchTerm.trim().toLowerCase();
+
+	const filteredPickerItems = pickerItems
+		.map((group: ISnapshots) => ({
+			...group,
+			items: group.items.filter((item: ISnapshot) =>
+				item.label.toLowerCase().includes(normalizedSearchTerm)
+			),
+		}))
+		.filter((group: ISnapshots) => !!group.items.length);
+
+	const hasSearchResults = !!filteredPickerItems.length;
 
 	const activeSnapshotLabel = activeSnapshot.label ?? '';
 	const initialLabel =
@@ -504,45 +538,119 @@ const SnapshotsControls = () => {
 	return (
 		<>
 			<ManagementToolbar.Item>
-				<Picker
-					as={SnapshotsControlsTrigger}
-					items={pickerItems}
-					messages={{
-						itemDescribedby: Liferay.Language.get(
-							'you-are-currently-on-a-text-element,-inside-of-a-list-box'
-						),
-						itemSelected: Liferay.Language.get('x-selected'),
-						scrollToBottomAriaLabel:
-							Liferay.Language.get('scroll-to-bottom'),
-						scrollToTopAriaLabel:
-							Liferay.Language.get('scroll-to-top'),
+				<ClayDropDown
+					active={viewsDropdownActive}
+					closeOnClick
+					hasRightSymbols
+					menuWidth="shrink"
+					onActiveChange={(active: boolean) => {
+						setViewsDropdownActive(active);
+
+						if (!active) {
+							clearSearch();
+						}
 					}}
-					onSelectionChange={(value) => {
-						onSnapshotChange({defaultSnapshot, snapshots, value});
-					}}
-					selectedKey={activeSnapshot.erc}
-					snapshotUpdated={snapshotUpdated}
-					triggerLabel={
-						activeSnapshotERC
-							? activeSnapshot.label
-							: Liferay.Language.get('default-view')
+					trigger={
+						<SnapshotsControlsTrigger
+							snapshotUpdated={snapshotUpdated}
+							triggerLabel={
+								activeSnapshotERC
+									? activeSnapshot.label
+									: Liferay.Language.get('default-view')
+							}
+						/>
 					}
 				>
-					{(group: ISnapshots) => (
-						<ClayDropDown.Group
-							header={
-								group.headerVisible ? group.label : undefined
-							}
-							items={group.items}
-						>
-							{(snapshot: ISnapshot) => (
-								<Option key={snapshot.erc}>
-									{snapshot.label}
-								</Option>
+					<div className="dropdown-section">
+						<ClayInput.Group small>
+							<ClayInput.GroupItem className="input-group-item-focusable">
+								<ClayInput
+									aria-label={Liferay.Language.get('search')}
+									insetAfter
+									onChange={(event) =>
+										updateSearch(event.target.value)
+									}
+									placeholder={Liferay.Language.get('search')}
+									ref={searchInputRef}
+									type="text"
+									value={searchTerm}
+								/>
+
+								<ClayInput.GroupInsetItem after tag="span">
+									{searchTerm ? (
+										<ClayButton
+											aria-label={Liferay.Language.get(
+												'clear'
+											)}
+											displayType="unstyled"
+											onClick={() => {
+												clearSearch();
+
+												searchInputRef.current?.focus();
+											}}
+											title={Liferay.Language.get(
+												'clear'
+											)}
+											type="button"
+										>
+											<ClayIcon symbol="times" />
+										</ClayButton>
+									) : (
+										<ClayIcon symbol="search" />
+									)}
+								</ClayInput.GroupInsetItem>
+							</ClayInput.GroupItem>
+						</ClayInput.Group>
+					</div>
+
+					{hasSearchResults ? (
+						<ClayDropDown.ItemList>
+							{filteredPickerItems.map(
+								(group: ISnapshots, index: number) => (
+									<ClayDropDown.Group
+										header={
+											group.headerVisible
+												? group.label
+												: undefined
+										}
+										key={index}
+									>
+										{group.items.map(
+											(snapshot: ISnapshot) => (
+												<ClayDropDown.Item
+													active={
+														snapshot.erc ===
+														activeSnapshot.erc
+													}
+													key={snapshot.erc}
+													onClick={() =>
+														onSnapshotChange({
+															defaultSnapshot,
+															snapshots,
+															value: snapshot.erc,
+														})
+													}
+													symbolRight={
+														snapshot.erc ===
+														activeSnapshot.erc
+															? 'check'
+															: undefined
+													}
+												>
+													{snapshot.label}
+												</ClayDropDown.Item>
+											)
+										)}
+									</ClayDropDown.Group>
+								)
 							)}
-						</ClayDropDown.Group>
+						</ClayDropDown.ItemList>
+					) : (
+						<ClayDropDown.Caption>
+							{Liferay.Language.get('no-results-found')}
+						</ClayDropDown.Caption>
 					)}
-				</Picker>
+				</ClayDropDown>
 			</ManagementToolbar.Item>
 
 			<ManagementToolbar.Item>
