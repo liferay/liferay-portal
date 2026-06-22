@@ -12,7 +12,7 @@ import com.liferay.osb.faro.contacts.model.ContactsLayoutTemplate;
 import com.liferay.osb.faro.contacts.service.ContactsCardTemplateLocalServiceUtil;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.osb.faro.web.internal.card.template.ContactsCardTemplateManagerHelper;
+import com.liferay.osb.faro.web.internal.helper.ContactsCardTemplateManagerHelper;
 import com.liferay.osb.faro.web.internal.model.display.FaroModelDisplay;
 import com.liferay.osb.faro.web.internal.model.display.main.FaroEntityDisplay;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;

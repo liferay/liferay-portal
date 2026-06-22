@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.osb.faro.web.internal.util;
+package com.liferay.osb.faro.web.internal.helper;
 
 import com.liferay.osb.faro.contacts.model.ContactsCardTemplate;
 import com.liferay.osb.faro.contacts.service.ContactsCardTemplateLocalService;
-import com.liferay.osb.faro.web.internal.card.template.ContactsCardTemplateManagerHelper;
 import com.liferay.osb.faro.web.internal.model.display.contacts.card.template.ContactsLayoutTemplateSettingDisplay;
+import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.UserConstants;

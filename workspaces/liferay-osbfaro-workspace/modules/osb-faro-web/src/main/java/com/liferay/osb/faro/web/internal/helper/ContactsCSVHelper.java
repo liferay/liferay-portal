@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.osb.faro.web.internal.util;
+package com.liferay.osb.faro.web.internal.helper;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -15,6 +15,7 @@ import com.liferay.osb.faro.contacts.model.constants.ContactsConstants;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
+import com.liferay.osb.faro.web.internal.util.CharsetDetector;
 import com.liferay.petra.io.unsync.UnsyncBufferedReader;
 import com.liferay.petra.io.unsync.UnsyncBufferedWriter;
 import com.liferay.petra.string.StringBundler;

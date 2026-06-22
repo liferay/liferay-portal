@@ -10,6 +10,7 @@ import com.liferay.osb.faro.service.FaroPreferencesLocalService;
 import com.liferay.osb.faro.web.internal.constants.FaroPreferencesConstants;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
+import com.liferay.osb.faro.web.internal.helper.EmailReportHelper;
 import com.liferay.osb.faro.web.internal.model.display.contacts.FaroPreferencesDisplay;
 import com.liferay.osb.faro.web.internal.model.preferences.DistributionCardTabPreferences;
 import com.liferay.osb.faro.web.internal.model.preferences.DistributionCardTabsPreferences;
@@ -18,7 +19,6 @@ import com.liferay.osb.faro.web.internal.model.preferences.IndividualDashboardPr
 import com.liferay.osb.faro.web.internal.model.preferences.IndividualSegmentPreferences;
 import com.liferay.osb.faro.web.internal.model.preferences.WorkspacePreferences;
 import com.liferay.osb.faro.web.internal.param.FaroParam;
-import com.liferay.osb.faro.web.internal.util.EmailReportHelper;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.util.StringUtil;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.osb.faro.web.internal.util;
+package com.liferay.osb.faro.web.internal.helper;
 
 import com.liferay.osb.faro.engine.client.model.LCPProject;
 import com.liferay.osb.faro.model.FaroProject;

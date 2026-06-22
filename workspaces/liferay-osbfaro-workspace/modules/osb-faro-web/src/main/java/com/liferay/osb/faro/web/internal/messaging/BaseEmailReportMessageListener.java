@@ -7,9 +7,9 @@ package com.liferay.osb.faro.web.internal.messaging;
 
 import com.liferay.osb.faro.model.FaroPreferences;
 import com.liferay.osb.faro.service.FaroPreferencesLocalService;
+import com.liferay.osb.faro.web.internal.helper.EmailReportHelper;
 import com.liferay.osb.faro.web.internal.model.preferences.EmailReportPreferences;
 import com.liferay.osb.faro.web.internal.model.preferences.WorkspacePreferences;
-import com.liferay.osb.faro.web.internal.util.EmailReportHelper;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
