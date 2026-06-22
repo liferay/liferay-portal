@@ -807,14 +807,15 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testGraphQLGetUserAccountsPage() throws Exception {
 		GraphQLField graphQLField = new GraphQLField(
 			"userAccounts",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-					put("search", null);
-					put("sort", "\"dateCreated:desc\"");
-				}
-			},
+			HashMapBuilder.<String, Object>put(
+				"page", 1
+			).put(
+				"pageSize", 10
+			).put(
+				"search", () -> null
+			).put(
+				"sort", "\"dateCreated:desc\""
+			).build(),
 			new GraphQLField("items", getGraphQLFields()),
 			new GraphQLField("page"), new GraphQLField("totalCount"));
 
@@ -828,7 +829,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		UserAccount userAccount1 = testGraphQLUserAccount_addUserAccount(
 			randomUserAccount());
-
 		UserAccount userAccount2 = testGraphQLUserAccount_addUserAccount(
 			randomUserAccount());
 
