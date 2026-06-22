@@ -10,6 +10,7 @@ import ClayIcon from '@clayui/icon';
 import React, {useMemo, useState} from 'react';
 
 import useTypeProperties from '../../hooks/useTypeProperties';
+import {getPropertyKey} from '../CollectionFilterBuilder/types';
 
 import type {
 	FilterProperty,
@@ -18,17 +19,10 @@ import type {
 
 type OrderByType = 'ASC' | 'DESC';
 
-type OrderBySelection = Pick<
-	FilterProperty,
-	'classNameId' | 'classTypeId' | 'name'
->;
-
-function getPropertyKey(
-	classNameId: number | undefined,
-	classTypeId: number | undefined,
-	name: string | undefined
-): string {
-	return `${classNameId ?? ''}|${classTypeId ?? ''}|${name ?? ''}`;
+interface OrderBySelection {
+	classNameId?: number;
+	classTypeId?: number;
+	propertyName: string;
 }
 
 function isGroup(
@@ -48,7 +42,7 @@ function parseInitialOrderByColumn(
 				return {
 					classNameId: parsed.classNameId,
 					classTypeId: parsed.classTypeId,
-					name: parsed.name,
+					propertyName: parsed.propertyName,
 				};
 			}
 		}
@@ -62,7 +56,7 @@ function parseInitialOrderByColumn(
 	return {
 		classNameId: undefined,
 		classTypeId: undefined,
-		name: value || '',
+		propertyName: value || '',
 	};
 }
 
@@ -93,7 +87,7 @@ function OrderByField({
 	const selectedKey = getPropertyKey(
 		columnValue.classNameId,
 		columnValue.classTypeId,
-		columnValue.name
+		columnValue.propertyName
 	);
 
 	return (
@@ -152,7 +146,7 @@ function OrderByField({
 				value={
 					columnValue.classNameId !== undefined
 						? JSON.stringify(columnValue)
-						: columnValue.name
+						: columnValue.propertyName
 				}
 			/>
 
@@ -197,7 +191,7 @@ function OrderByField({
 						>
 							{columnValue.classNameId && columnValue.classTypeId
 								? JSON.stringify(columnValue)
-								: columnValue.name}
+								: columnValue.propertyName}
 						</pre>
 					</div>
 
@@ -272,7 +266,7 @@ export default function CollectionOrdering({
 				map.set(getPropertyKey(classNameId, classTypeId, name), {
 					classNameId,
 					classTypeId,
-					name,
+					propertyName: name,
 				});
 			});
 
