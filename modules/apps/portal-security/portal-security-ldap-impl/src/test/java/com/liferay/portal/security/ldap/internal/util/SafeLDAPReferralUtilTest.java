@@ -47,6 +47,10 @@ public class SafeLDAPReferralUtilTest {
 			ReflectionTestUtil.invoke(
 				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class}, "  ldap://host:389  "));
+		Assert.assertTrue(
+			ReflectionTestUtil.invoke(
+				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
+				new Class<?>[] {String.class}, "LDAP://host:389"));
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
 				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
@@ -73,10 +77,6 @@ public class SafeLDAPReferralUtilTest {
 				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
 				new Class<?>[] {String.class},
 				"ldap://host1:389 rmi://host2:1099/exploit"));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "LDAP://host:389"));
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
 				SafeLDAPReferralUtil.class, "_isAllowedReferralURL",
