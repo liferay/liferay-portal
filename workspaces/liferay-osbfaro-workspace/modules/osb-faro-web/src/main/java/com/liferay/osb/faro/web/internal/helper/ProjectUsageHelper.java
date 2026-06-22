@@ -55,11 +55,9 @@ public class ProjectUsageHelper {
 			FaroProject faroProject)
 		throws Exception {
 
-		List<DataSourceUsage> dataSourceUsages = _getDataSourceUsages();
-
 		return new DataSourceUsageMetricDisplay(
-			5, dataSourceUsages.size(), faroProject.getCorpProjectName(),
-			faroProject.getCorpProjectUuid(), dataSourceUsages,
+			5, _getDataSourceUsages().size(), faroProject.getCorpProjectName(),
+			faroProject.getCorpProjectUuid(), _getDataSourceUsages(),
 			DateUtil.formatDate(
 				new Date(faroProject.getLastAccessTime()),
 				DateUtil.PATTERN_DATE),
