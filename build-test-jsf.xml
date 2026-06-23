@@ -158,15 +158,7 @@ Skip deploying war file from ${liferay.faces.war.dir.name}
 				</echo>
 			</then>
 			<else>
-				<copy
-					flatten="true"
-					todir="${liferay.home}/osgi/war"
-				>
-					<fileset
-						dir="tools/faces/war/${liferay.faces.war.dir.name}"
-						includes="**/*.war"
-					/>
-				</copy>
+				<antcall target="deploy-jsf-war" />
 			</else>
 		</if>
 	</target>
