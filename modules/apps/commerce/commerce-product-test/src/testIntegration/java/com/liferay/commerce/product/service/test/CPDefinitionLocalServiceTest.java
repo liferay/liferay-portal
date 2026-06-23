@@ -570,186 +570,10 @@ public class CPDefinitionLocalServiceTest {
 
 	@Test
 	public void testCopyCPDefinition() throws Exception {
-		frutillaRule.scenario(
-			"Copy a product"
-		).given(
-			"A product definition"
-		).when(
-			"the copy method is run"
-		).then(
-			"the copy is created without exception"
-		).and(
-			"ERCs of specification values are different"
-		);
-
-		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
-			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
-			true);
-
-		try {
-			_cpDefinitionLocalService.copyCPDefinition(
-				cpDefinition1.getCPDefinitionId());
-
-			Assert.fail();
-		}
-		catch (UnsupportedOperationException unsupportedOperationException) {
-			Assert.assertNotNull(unsupportedOperationException);
-		}
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						CProductVersionConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"enabled", true
-						).put(
-							"versionThreshold", 2
-						).build())) {
-
-			User user = UserTestUtil.addUser();
-
-			CPConfigurationList cpConfigurationList =
-				_cpConfigurationListLocalService.addCPConfigurationList(
-					RandomTestUtil.randomString(), user.getUserId(),
-					_commerceCatalog.getGroupId(), 0, false,
-					RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0,
-					0, 0, true, new ServiceContext());
-
-			_cpConfigurationEntryLocalService.addCPConfigurationEntry(
-				RandomTestUtil.randomString(), user.getUserId(),
-				cpConfigurationList.getGroupId(),
-				_portal.getClassNameId(CPDefinition.class),
-				cpDefinition1.getCPDefinitionId(),
-				cpConfigurationList.getCPConfigurationListId(), 0, "123.00",
-				true, 0, "cpde", 1.0, true, true, true, 1.0, "lowstoc",
-				BigDecimal.TEN, BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE,
-				true, true, 1.0, true, true, 1.0, 1.0);
-
-			CPSpecificationOption cpSpecificationOption =
-				CPTestUtil.addCPSpecificationOption(
-					_commerceCatalog.getGroupId(), false);
-
-			CPDefinitionSpecificationOptionValue
-				cpDefinitionSpecificationOptionValue1 =
-					_cpDefinitionSpecificationOptionValueLocalService.
-						addCPDefinitionSpecificationOptionValue(
-							RandomTestUtil.randomString(),
-							cpDefinition1.getCPDefinitionId(),
-							cpSpecificationOption.getCPSpecificationOptionId(),
-							cpSpecificationOption.getCPOptionCategoryId(),
-							RandomTestUtil.randomDouble(),
-							RandomTestUtil.randomLocaleStringMap(), true,
-							ServiceContextTestUtil.getServiceContext(
-								_commerceCatalog.getGroupId()));
-
-			CPDefinition cpDefinition2 =
-				_cpDefinitionLocalService.copyCPDefinition(
-					cpDefinitionSpecificationOptionValue1.getCPDefinitionId());
-
-			List<CPDefinitionSpecificationOptionValue>
-				cpDefinitionSpecificationOptionValues =
-					_cpDefinitionSpecificationOptionValueLocalService.
-						getCPDefinitionSpecificationOptionValues(
-							cpDefinition2.getCPDefinitionId(), null,
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			CPDefinitionSpecificationOptionValue
-				cpDefinitionSpecificationOptionValue2 =
-					cpDefinitionSpecificationOptionValues.get(0);
-
-			Assert.assertNotEquals(
-				cpDefinitionSpecificationOptionValue1.
-					getExternalReferenceCode(),
-				cpDefinitionSpecificationOptionValue2.
-					getExternalReferenceCode());
-
-			Assert.assertNotNull(
-				_cpDefinitionInventoryLocalService.
-					fetchCPDefinitionInventoryByCPDefinitionId(
-						cpDefinition2.getCPDefinitionId()));
-		}
-	}
-
-	@Test
-	public void testCopyCPDefinitionWithSKUCombinations() throws Exception {
-		frutillaRule.scenario(
-			"Copy a product definition with SKU combinations"
-		).given(
-			"A product definition with SKU combinations"
-		).when(
-			"the copy method is run"
-		).then(
-			"the copied SKUs link to the copied option value rels"
-		);
-
-		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
-			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
-			false);
-
-		CPOption cpOption = CPTestUtil.addCPOption(
-			_commerceCatalog.getGroupId(), true);
-
-		_cpOptions.add(cpOption);
-
-		for (int i = 0; i < 3; i++) {
-			CPTestUtil.addCPOptionValue(cpOption);
-		}
-
-		CPTestUtil.addCPDefinitionOptionRel(
-			_commerceCatalog.getGroupId(), cpDefinition1.getCPDefinitionId(),
-			cpOption.getCPOptionId());
-
-		CPTestUtil.buildCPInstances(cpDefinition1);
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						CProductVersionConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"enabled", true
-						).put(
-							"versionThreshold", 5
-						).build())) {
-
-			CPDefinition cpDefinition2 =
-				_cpDefinitionLocalService.copyCPDefinition(
-					cpDefinition1.getCPDefinitionId(),
-					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
-
-			List<CPInstance> cpInstances =
-				_cpInstanceLocalService.getCPDefinitionInstances(
-					cpDefinition2.getCPDefinitionId(),
-					WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
-
-			Assert.assertFalse(cpInstances.isEmpty());
-
-			for (CPInstance cpInstance : cpInstances) {
-				List<CPInstanceOptionValueRel> cpInstanceOptionValueRels =
-					_cpInstanceOptionValueRelLocalService.
-						getCPInstanceCPInstanceOptionValueRels(
-							cpInstance.getCPInstanceId());
-
-				for (CPInstanceOptionValueRel cpInstanceOptionValueRel :
-						cpInstanceOptionValueRels) {
-
-					CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-						_cpDefinitionOptionValueRelLocalService.
-							getCPDefinitionOptionValueRel(
-								cpInstanceOptionValueRel.
-									getCPDefinitionOptionValueRelId());
-
-					CPDefinitionOptionRel cpDefinitionOptionRel =
-						cpDefinitionOptionValueRel.getCPDefinitionOptionRel();
-
-					Assert.assertEquals(
-						cpDefinition2.getCPDefinitionId(),
-						cpDefinitionOptionRel.getCPDefinitionId());
-				}
-			}
-		}
+		_testCopyCPDefinition();
+		_testCopyCPDefinitionDoesNotCopyDraftCPDefinition();
+		_testCopyCPDefinitionSetsExistingDraftToIncomplete();
+		_testCopyCPDefinitionWithSKUCombinations();
 	}
 
 	@Test
@@ -1437,6 +1261,293 @@ public class CPDefinitionLocalServiceTest {
 
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
+
+	private void _testCopyCPDefinition() throws Exception {
+		frutillaRule.scenario(
+			"Copy a product"
+		).given(
+			"A product definition"
+		).when(
+			"the copy method is run"
+		).then(
+			"the copy is created without exception"
+		).and(
+			"ERCs of specification values are different"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		CPDefinition cpDefinition2 = _cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition1.getCPDefinitionId());
+
+		Assert.assertEquals(
+			cpDefinition1.getCPDefinitionId(),
+			cpDefinition2.getCPDefinitionId());
+
+		User user = UserTestUtil.addUser();
+
+		CPConfigurationList cpConfigurationList =
+			_cpConfigurationListLocalService.addCPConfigurationList(
+				RandomTestUtil.randomString(), user.getUserId(),
+				_commerceCatalog.getGroupId(), 0, false,
+				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
+				0, true, new ServiceContext());
+
+		_cpConfigurationEntryLocalService.addCPConfigurationEntry(
+			RandomTestUtil.randomString(), user.getUserId(),
+			cpConfigurationList.getGroupId(),
+			_portal.getClassNameId(CPDefinition.class),
+			cpDefinition1.getCPDefinitionId(),
+			cpConfigurationList.getCPConfigurationListId(), 0, "123.00", true,
+			0, "cpde", 1.0, true, true, true, 1.0, "lowstoc", BigDecimal.TEN,
+			BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, true, true, 1.0,
+			true, true, 1.0, 1.0);
+
+		CPSpecificationOption cpSpecificationOption =
+			CPTestUtil.addCPSpecificationOption(
+				_commerceCatalog.getGroupId(), false);
+
+		CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue1 =
+				_cpDefinitionSpecificationOptionValueLocalService.
+					addCPDefinitionSpecificationOptionValue(
+						RandomTestUtil.randomString(),
+						cpDefinition1.getCPDefinitionId(),
+						cpSpecificationOption.getCPSpecificationOptionId(),
+						cpSpecificationOption.getCPOptionCategoryId(),
+						RandomTestUtil.randomDouble(),
+						RandomTestUtil.randomLocaleStringMap(), true,
+						ServiceContextTestUtil.getServiceContext(
+							_commerceCatalog.getGroupId()));
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinitionSpecificationOptionValue1.getCPDefinitionId());
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
+
+			List<CPDefinitionSpecificationOptionValue>
+				cpDefinitionSpecificationOptionValues =
+					_cpDefinitionSpecificationOptionValueLocalService.
+						getCPDefinitionSpecificationOptionValues(
+							cpDefinition3.getCPDefinitionId(), null,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+			CPDefinitionSpecificationOptionValue
+				cpDefinitionSpecificationOptionValue2 =
+					cpDefinitionSpecificationOptionValues.get(0);
+
+			Assert.assertNotEquals(
+				cpDefinitionSpecificationOptionValue1.
+					getExternalReferenceCode(),
+				cpDefinitionSpecificationOptionValue2.
+					getExternalReferenceCode());
+
+			Assert.assertNotNull(
+				_cpDefinitionInventoryLocalService.
+					fetchCPDefinitionInventoryByCPDefinitionId(
+						cpDefinition3.getCPDefinitionId()));
+		}
+	}
+
+	private void _testCopyCPDefinitionDoesNotCopyDraftCPDefinition()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Do not copy a draft product definition"
+		).given(
+			"A draft product definition"
+		).when(
+			"the copy method is run"
+		).then(
+			"the draft product definition is returned"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition2.getStatus());
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition2.getCPDefinitionId(),
+					cpDefinition2.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				cpDefinition2.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
+		}
+	}
+
+	private void _testCopyCPDefinitionSetsExistingDraftToIncomplete()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Set existing draft to incomplete when a new draft is created"
+		).given(
+			"A published product definition with an existing draft"
+		).when(
+			"a new draft is created from the published product definition"
+		).then(
+			"the existing draft is set to incomplete"
+		).and(
+			"the new draft is created"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition1.getStatus());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition2.getStatus());
+
+			CPDefinition cpDefinition3 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition3.getStatus());
+
+			cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
+				cpDefinition2.getCPDefinitionId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_INCOMPLETE, cpDefinition2.getStatus());
+		}
+	}
+
+	private void _testCopyCPDefinitionWithSKUCombinations() throws Exception {
+		frutillaRule.scenario(
+			"Copy a product definition with SKU combinations"
+		).given(
+			"A product definition with SKU combinations"
+		).when(
+			"the copy method is run"
+		).then(
+			"the copied SKUs link to the copied option value rels"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			_commerceCatalog.getGroupId(), true);
+
+		_cpOptions.add(cpOption);
+
+		for (int i = 0; i < 3; i++) {
+			CPTestUtil.addCPOptionValue(cpOption);
+		}
+
+		CPTestUtil.addCPDefinitionOptionRel(
+			_commerceCatalog.getGroupId(), cpDefinition1.getCPDefinitionId(),
+			cpOption.getCPOptionId());
+
+		CPTestUtil.buildCPInstances(cpDefinition1);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 5
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			List<CPInstance> cpInstances =
+				_cpInstanceLocalService.getCPDefinitionInstances(
+					cpDefinition2.getCPDefinitionId(),
+					WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
+
+			Assert.assertFalse(cpInstances.isEmpty());
+
+			for (CPInstance cpInstance : cpInstances) {
+				List<CPInstanceOptionValueRel> cpInstanceOptionValueRels =
+					_cpInstanceOptionValueRelLocalService.
+						getCPInstanceCPInstanceOptionValueRels(
+							cpInstance.getCPInstanceId());
+
+				for (CPInstanceOptionValueRel cpInstanceOptionValueRel :
+						cpInstanceOptionValueRels) {
+
+					CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+						_cpDefinitionOptionValueRelLocalService.
+							getCPDefinitionOptionValueRel(
+								cpInstanceOptionValueRel.
+									getCPDefinitionOptionValueRelId());
+
+					CPDefinitionOptionRel cpDefinitionOptionRel =
+						cpDefinitionOptionValueRel.getCPDefinitionOptionRel();
+
+					Assert.assertEquals(
+						cpDefinition2.getCPDefinitionId(),
+						cpDefinitionOptionRel.getCPDefinitionId());
+				}
+			}
+		}
+	}
 
 	private void _testGetCPDefinitions() throws Exception {
 		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
