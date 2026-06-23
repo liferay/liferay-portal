@@ -2254,45 +2254,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 							${javaMethodParameter.parameterType} ${javaMethodParameter.parameterName} = test${javaMethodSignature.methodName?cap_first}_get${javaMethodParameter.parameterName?cap_first}();
 						</#list>
 
-						GraphQLField graphQLField = new GraphQLField(
-							"${propertyName}",
-							new HashMap<String, Object>() {
-								{
-									<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
-										<#if stringUtil.equals(javaMethodParameter.parameterName, "keywords")>
-											put("${javaMethodParameter.parameterName}", null);
-										<#elseif stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
-											put("page", 1);
-											put("pageSize", 10);
-										<#elseif stringUtil.equals(javaMethodParameter.parameterName, "search")>
-											put("${javaMethodParameter.parameterName}", null);
-										<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
-											<#if stringUtil.equals(javaMethodParameter.parameterName, "siteId")>
-												put("siteKey", <@getQuotedString unquotedString="${javaMethodParameter.parameterName}" />);
-											<#else>
-												put("${javaMethodParameter.parameterName}",
-													<#if stringUtil.equals(javaMethodParameter.parameterType, "java.lang.String") || stringUtil.equals(javaMethodParameter.parameterName, "assetLibraryId")>
-														<@getQuotedString unquotedString = "${javaMethodParameter.parameterName}" />
-													<#else>
-														${javaMethodParameter.parameterName}
-													</#if>
-												);
-											</#if>
-										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "java.util.Date")>
-											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.nextDate()));
-										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "java.lang.String")>
-											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomString()));
-										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "boolean")>
-											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomBoolean()));
-										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "double")>
-											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomDouble()));
-										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "long")>
-											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomLong()));
-										</#if>
-									</#list>
-								}
-							},
-							new GraphQLField("items", getGraphQLFields()), new GraphQLField("page"), new GraphQLField("totalCount"));
+						GraphQLField graphQLField = testGraphQL${javaMethodSignature.methodName?cap_first}${parentSchemaName}${schemaName}_getGraphQLField(<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>${javaMethodParameter.parameterName}<#sep>, </#list>);
 
 						<#if !configYAML.getGraphQLNamespace()?has_content>
 							// No namespace
@@ -2385,6 +2347,48 @@ public abstract class Base${schemaName}ResourceTestCase {
 							assertContains(${schemaVarName}1, Arrays.asList(${schemaName}SerDes.toDTOs(${propertyName}JSONObject.getString("items"))));
 							assertContains(${schemaVarName}2, Arrays.asList(${schemaName}SerDes.toDTOs(${propertyName}JSONObject.getString("items"))));
 						</#if>
+					}
+
+					protected GraphQLField testGraphQL${javaMethodSignature.methodName?cap_first}${parentSchemaName}${schemaName}_getGraphQLField(<#list javaMethodSignature.pathJavaMethodParameters as javaMethodParameter>${javaMethodParameter.parameterType} ${javaMethodParameter.parameterName}<#sep>, </#list>) throws Exception {
+						return new GraphQLField(
+							"${propertyName}",
+							new HashMap<String, Object>() {
+								{
+									<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
+										<#if stringUtil.equals(javaMethodParameter.parameterName, "keywords")>
+											put("${javaMethodParameter.parameterName}", null);
+										<#elseif stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
+											put("page", 1);
+											put("pageSize", 10);
+										<#elseif stringUtil.equals(javaMethodParameter.parameterName, "search")>
+											put("${javaMethodParameter.parameterName}", null);
+										<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
+											<#if stringUtil.equals(javaMethodParameter.parameterName, "siteId")>
+												put("siteKey", <@getQuotedString unquotedString="${javaMethodParameter.parameterName}" />);
+											<#else>
+												put("${javaMethodParameter.parameterName}",
+													<#if stringUtil.equals(javaMethodParameter.parameterType, "java.lang.String") || stringUtil.equals(javaMethodParameter.parameterName, "assetLibraryId")>
+														<@getQuotedString unquotedString = "${javaMethodParameter.parameterName}" />
+													<#else>
+														${javaMethodParameter.parameterName}
+													</#if>
+												);
+											</#if>
+										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "java.util.Date")>
+											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.nextDate()));
+										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "java.lang.String")>
+											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomString()));
+										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "boolean")>
+											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomBoolean()));
+										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "double")>
+											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomDouble()));
+										<#elseif stringUtil.equals(javaMethodParameter.parameterType, "long")>
+											put("${javaMethodParameter.parameterName}", getGraphQLValue(RandomTestUtil.randomLong()));
+										</#if>
+									</#list>
+								}
+							},
+							new GraphQLField("items", getGraphQLFields()), new GraphQLField("page"), new GraphQLField("totalCount"));
 					}
 				</#if>
 
