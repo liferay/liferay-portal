@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationList;
@@ -18,6 +17,7 @@ import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfiguration;
+import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -63,9 +63,8 @@ public class ProductConfigurationResourceTest
 		_user = UserTestUtil.addUser();
 
 		_commerceCatalog = _commerceCatalogLocalService.addCommerceCatalog(
-			RandomTestUtil.randomString(),
-			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-			RandomTestUtil.randomString(), "USD", "en_US", false,
+			RandomTestUtil.randomString(), 0, RandomTestUtil.randomString(),
+			"USD", "en_US", false,
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), _user.getUserId()));
 
@@ -80,6 +79,7 @@ public class ProductConfigurationResourceTest
 				_masterCPConfigurationList.getCPConfigurationListId(), false,
 				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
 				0, true, new ServiceContext());
+
 	}
 
 	@Override
@@ -566,6 +566,7 @@ public class ProductConfigurationResourceTest
 	private CProductLocalService _cProductLocalService;
 
 	private CPConfigurationList _masterCPConfigurationList;
+
 	private User _user;
 
 }
