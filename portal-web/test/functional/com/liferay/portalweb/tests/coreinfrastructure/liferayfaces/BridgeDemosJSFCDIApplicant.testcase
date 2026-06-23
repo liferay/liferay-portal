@@ -33,7 +33,6 @@ definition {
 
 	@priority = 5
 	test JSFCDIApplicantPortletSmoke {
-
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
 		AntCommands.runCommand("build-test-jsf.xml", "deploy-jsf-war -DliferayHome=${liferayHome}");

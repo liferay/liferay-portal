@@ -215,7 +215,7 @@ definition {
 			value1 = ${screenName2});
 
 		Click(
-			key_buttonLabel = "3",
+			key_buttonLabel = 3,
 			locator1 = "JSFSignInAndPrimeFacesUsers#PAGINATOR_BUTTON");
 
 		AssertElementPresent(locator1 = "//tbody//span[contains(@id,'users:6:screenNameCell')]");

@@ -462,21 +462,18 @@ definition {
 
 		// FACES_3404
 
-		// BridgeIssues.addPageAndPortlet(
+		//BridgeIssues.addPageAndPortlet(
 		//	pageURL = "faces-3404",
 		//	portletName = "FACES-3404");
-
-		// for (var resourceActionIndex : list "result.xhtml via GET,result.xhtml via Ajax") {
+		//for (var resourceActionIndex : list "result.xhtml via GET,result.xhtml via Ajax") {
 		//	BridgeIssues.verifyValue(
 		//		detailValue = "Liferay parameter was properly encoded in Render",
 		//		link = ${resourceActionIndex},
 		//		restoreState = "true",
 		//		statusValue = "SUCCESS",
 		//		textValue = "FACES-3404");
-
 		//	Navigator.openWithAppendToBaseURL(urlAppend = "web/bridge-issues/faces-3404");
-		// }
-
+		//}
 		// FACES_4340-workaround
 
 		BridgeIssues.addPageAndPortlet(

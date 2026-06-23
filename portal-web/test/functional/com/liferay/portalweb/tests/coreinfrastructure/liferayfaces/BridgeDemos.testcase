@@ -37,7 +37,6 @@ definition {
 
 	@priority = 5
 	test JSFExportPDFPortletSmoke {
-
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
 		AntCommands.runCommand("build-test-jsf.xml", "deploy-jsf-war -DliferayHome=${liferayHome}");
@@ -66,7 +65,6 @@ definition {
 
 	@priority = 5
 	test JSFFlowsPortletSmoke {
-
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
 		AntCommands.runCommand("build-test-jsf.xml", "deploy-jsf-war -DliferayHome=${liferayHome}");

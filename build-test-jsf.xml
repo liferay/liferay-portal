@@ -4,8 +4,6 @@
 	<import file="./build-test-batch.xml" />
 
 	<target name="build-jsf-artifacts" unless="liferay.faces.skip.build">
-		<echo message="Building JSF artifacts..." />
-
 		<execute dir="${liferay.faces.util.dir}">
 			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
 		</execute>
@@ -130,7 +128,11 @@
 								erroronmissingdir="false"
 								includes="**/target/@{war.file.name}-*.war"
 							/>
-							<mapper from="@{war.file.name}-*.war" to="@{war.file.name}.war" type="glob" />
+							<mapper
+								from="@{war.file.name}-*.war"
+								to="@{war.file.name}.war"
+								type="glob"
+							/>
 						</copy>
 					</sequential>
 				</for>
