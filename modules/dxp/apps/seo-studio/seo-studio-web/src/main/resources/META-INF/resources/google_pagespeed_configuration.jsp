@@ -15,7 +15,7 @@ GooglePageSpeedConfigurationDisplayContext googlePageSpeedConfigurationDisplayCo
 
 <div class="seo-studio-google-pagespeed-configuration">
 	<react:component
-		module="{GooglePageSpeedConfig} from seo-studio-web"
+		module="{GooglePageSpeedConfiguration} from seo-studio-web"
 		props="<%= googlePageSpeedConfigurationDisplayContext.getViewProps() %>"
 	/>
 </div>

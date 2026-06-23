@@ -8,6 +8,7 @@ import ClayList from '@clayui/list';
 import classNames from 'classnames';
 import React from 'react';
 
+import RequiredMark from '../../components/RequiredMark';
 import {
 	MAX_PAGES_OPTIONS,
 	RANKING_METHOD_OPTIONS,
@@ -15,7 +16,6 @@ import {
 } from '../constants';
 import {EngineConfig, RankingMethod, ScanScope} from '../types';
 import {getPathError} from '../validation';
-import RequiredMark from './RequiredMark';
 
 interface Props {
 	config: EngineConfig;
