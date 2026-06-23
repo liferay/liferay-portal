@@ -41,35 +41,101 @@
 			todir="${liferay.home}/osgi/modules"
 		>
 			<fileset
-				dir="tools/faces"
-				includes="**/*.jar"
+				dir="${liferay.faces.util.dir}"
+				excludes="**/*-javadoc.jar,**/*-sources.jar,**/*-tests.jar"
+				includes="**/target/com.liferay.faces.util-*.jar"
+			/>
+			<fileset
+				dir="${liferay.faces.bridge.api.dir}"
+				excludes="**/*-javadoc.jar,**/*-sources.jar,**/*-tests.jar"
+				includes="**/target/com.liferay.faces.bridge.api-*.jar"
+			/>
+			<fileset
+				dir="${liferay.faces.bridge.ext.dir}"
+				excludes="**/*-javadoc.jar,**/*-sources.jar,**/*-tests.jar"
+				includes="**/target/com.liferay.faces.bridge.ext-*.jar"
+			/>
+			<fileset
+				dir="${liferay.faces.bridge.impl.dir}"
+				excludes="**/*-javadoc.jar,**/*-sources.jar,**/*-tests.jar"
+				includes="**/target/com.liferay.faces.bridge.impl-*.jar"
+			/>
+			<fileset
+				dir="${liferay.faces.portal.dir}"
+				excludes="**/*-javadoc.jar,**/*-sources.jar,**/*-tests.jar"
+				includes="**/target/com.liferay.faces.portal-*.jar"
+			/>
+			<fileset
+				dir="${liferay.faces.alloy.dir}"
+				excludes="**/*-javadoc.jar,**/*-sources.jar,**/*-tests.jar"
+				includes="**/target/com.liferay.faces.alloy-*.jar"
 			/>
 		</copy>
 
-		<copy
-			flatten="true"
-			todir="${liferay.home}/osgi/configs"
-		>
-			<fileset
-				dir="tools/faces"
-				includes="**/*.config"
-			/>
-		</copy>
+		<mirrors-get
+			dest="${liferay.home}/osgi/modules/jakarta.faces.jar"
+			src="https://repository-cdn.liferay.com/nexus/content/groups/public/com/liferay/jakarta.faces/2.3.21.LIFERAY-PATCHED-4.JAKARTA-LIFERAY-PATCHED-1/jakarta.faces-2.3.21.LIFERAY-PATCHED-4.JAKARTA-LIFERAY-PATCHED-1.jar"
+		/>
+
+		<mirrors-get
+			dest="${liferay.home}/osgi/modules/org.primefaces.jar"
+			src="https://repository-cdn.liferay.com/nexus/content/groups/public/com/liferay/org.primefaces/15.0.6.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1/org.primefaces-15.0.6.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1.jar"
+		/>
 	</target>
 
 	<target name="deploy-jsf-war">
-		<get-testcase-property property.name="liferay.faces.war.dir.name" />
-		<get-testcase-property property.name="liferay.faces.war.file.name" />
+		<get-testcase-property property.name="liferay.faces.war.file.names" />
 
-		<copy
-			flatten="true"
-			todir="${liferayHome}/osgi/war"
-		>
-			<fileset
-				dir="tools/faces/war/${liferay.faces.war.dir.name}"
-				includes="**/${liferay.faces.war.file.name}"
-			/>
-		</copy>
+		<if>
+			<isset property="liferay.faces.war.file.names" />
+			<then>
+				<for list="${liferay.faces.war.file.names}" param="war.file.name">
+					<sequential>
+						<copy
+							flatten="true"
+							todir="${liferayHome}/osgi/war"
+						>
+							<fileset
+								dir="${liferay.faces.alloy.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<fileset
+								dir="${liferay.faces.bridge.api.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<fileset
+								dir="${liferay.faces.bridge.ext.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<fileset
+								dir="${liferay.faces.bridge.impl.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<fileset
+								dir="${liferay.faces.portal.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<fileset
+								dir="${liferay.faces.showcase.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<fileset
+								dir="${liferay.faces.util.dir}"
+								erroronmissingdir="false"
+								includes="**/target/@{war.file.name}-*.war"
+							/>
+							<mapper from="@{war.file.name}-*.war" to="@{war.file.name}.war" type="glob" />
+						</copy>
+					</sequential>
+				</for>
+			</then>
+		</if>
 	</target>
 
 	<target name="prepare-jsf-app-server">
@@ -145,7 +211,7 @@
 		<propertycopy from="browser.firefox.bin.file[${liferay.faces.test.browser.version}]" name="browser.firefox.bin.file" silent="true" />
 
 		<get-testcase-property property.name="liferay.faces.war.auto.deploy" />
-		<get-testcase-property property.name="liferay.faces.war.dir.name" />
+		<get-testcase-property property.name="liferay.faces.war.file.names" />
 
 		<if>
 			<and>
@@ -154,7 +220,7 @@
 			</and>
 			<then>
 				<echo>
-Skip deploying war file from ${liferay.faces.war.dir.name}
+Skip deploying war file from ${liferay.faces.war.file.names}
 				</echo>
 			</then>
 			<else>

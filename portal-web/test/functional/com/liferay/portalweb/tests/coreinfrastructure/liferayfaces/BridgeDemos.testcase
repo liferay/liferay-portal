@@ -5,7 +5,7 @@ definition {
 	property custom.properties = "company.default.time.zone=America/Los_Angeles";
 	property liferay.faces = "true";
 	property liferay.faces.war.auto.deploy = "false";
-	property liferay.faces.war.dir.name = "bridge-demos";
+	property liferay.faces.war.file.names = "com.liferay.faces.demo.jsf.export.pdf.portlet,com.liferay.faces.demo.jsf.flows.portlet";
 	property portal.release = "true";
 	property portal.upstream = "quarantine";
 	property testray.main.component.name = "Liferay Faces";
@@ -37,7 +37,6 @@ definition {
 
 	@priority = 5
 	test JSFExportPDFPortletSmoke {
-		property liferay.faces.war.file.name = "com.liferay.faces.demo.jsf.export.pdf.portlet.war";
 
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
@@ -67,7 +66,6 @@ definition {
 
 	@priority = 5
 	test JSFFlowsPortletSmoke {
-		property liferay.faces.war.file.name = "com.liferay.faces.demo.jsf.flows.portlet.war";
 
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 

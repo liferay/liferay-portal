@@ -3,7 +3,7 @@ definition {
 
 	property ci.retries.disabled = "true";
 	property liferay.faces = "true";
-	property liferay.faces.war.dir.name = "portal-showcase";
+	property liferay.faces.war.file.names = "com.liferay.faces.demo.portal.showcase.portlet";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Liferay Faces";

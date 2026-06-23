@@ -4,7 +4,7 @@ definition {
 	property ci.retries.disabled = "true";
 	property custom.properties = "company.default.time.zone=America/Los_Angeles";
 	property liferay.faces = "true";
-	property liferay.faces.war.dir.name = "bridge-demos-ipc";
+	property liferay.faces.war.file.names = "com.liferay.faces.demo.jsf.ipc.pub.render.params.portlet,com.liferay.faces.demo.jsf.ipc.events.bookings.portlet,com.liferay.faces.demo.jsf.ipc.events.customers.portlet";
 	property portal.release = "true";
 	property portal.upstream = "quarantine";
 	property testray.main.component.name = "Liferay Faces";
