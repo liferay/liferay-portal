@@ -192,12 +192,31 @@ public class CPDefinitionServiceWrapper
 	}
 
 	@Override
+	public CPDefinition fetchCPDefinitionByCProductExternalReferenceCode(
+			String externalReferenceCode, long companyId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.
+			fetchCPDefinitionByCProductExternalReferenceCode(
+				externalReferenceCode, companyId, status);
+	}
+
+	@Override
 	public CPDefinition fetchCPDefinitionByCProductId(
 			long cProductId, boolean excludeDraft)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionService.fetchCPDefinitionByCProductId(
 			cProductId, excludeDraft);
+	}
+
+	@Override
+	public CPDefinition fetchCPDefinitionByCProductId(
+			long cProductId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.fetchCPDefinitionByCProductId(
+			cProductId, status);
 	}
 
 	@Override
@@ -274,6 +293,13 @@ public class CPDefinitionServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionService.getUrlTitleMapAsXML(cpDefinitionId);
+	}
+
+	@Override
+	public boolean isVersionable(CPDefinition cpDefinition)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.isVersionable(cpDefinition);
 	}
 
 	@Override
@@ -457,4 +483,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2102707205
+// LIFERAY-SERVICE-BUILDER-HASH:-1427499691
