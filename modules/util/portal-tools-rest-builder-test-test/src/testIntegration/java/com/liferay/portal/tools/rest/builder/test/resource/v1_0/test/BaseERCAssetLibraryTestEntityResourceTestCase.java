@@ -565,17 +565,9 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 		String assetLibraryExternalReferenceCode =
 			testGetAssetLibraryERCAssetLibraryTestEntitiesPage_getAssetLibraryExternalReferenceCode();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryERCAssetLibraryTestEntities",
-			new HashMap<String, Object>() {
-				{
-					put(
-						"assetLibraryExternalReferenceCode",
-						"\"" + assetLibraryExternalReferenceCode + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryERCAssetLibraryTestEntitiesPageAssetLibraryERCAssetLibraryTestEntity_getGraphQLField(
+				assetLibraryExternalReferenceCode);
 
 		// No namespace
 
@@ -647,6 +639,24 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 				ERCAssetLibraryTestEntitySerDes.toDTOs(
 					assetLibraryERCAssetLibraryTestEntitiesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryERCAssetLibraryTestEntitiesPageAssetLibraryERCAssetLibraryTestEntity_getGraphQLField(
+				String assetLibraryExternalReferenceCode)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryERCAssetLibraryTestEntities",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"assetLibraryExternalReferenceCode",
+						"\"" + assetLibraryExternalReferenceCode + "\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2295,4 +2305,4 @@ public abstract class BaseERCAssetLibraryTestEntityResourceTestCase {
 		ERCAssetLibraryTestEntityResource _ercAssetLibraryTestEntityResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2019162337
+// LIFERAY-REST-BUILDER-HASH:85682754

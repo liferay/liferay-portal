@@ -490,15 +490,9 @@ public abstract class BaseSiteTestEntityResourceTestCase {
 	public void testGraphQLGetSiteSiteTestEntitiesPage() throws Exception {
 		Long siteId = testGetSiteSiteTestEntitiesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"siteTestEntities",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteSiteTestEntitiesPageSiteSiteTestEntity_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -555,6 +549,22 @@ public abstract class BaseSiteTestEntityResourceTestCase {
 			Arrays.asList(
 				SiteTestEntitySerDes.toDTOs(
 					siteTestEntitiesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteSiteTestEntitiesPageSiteSiteTestEntity_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"siteTestEntities",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2531,4 +2541,4 @@ public abstract class BaseSiteTestEntityResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-431871166
+// LIFERAY-REST-BUILDER-HASH:-109985034

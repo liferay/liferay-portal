@@ -659,15 +659,9 @@ public abstract class BaseScopedTestEntityResourceTestCase {
 		Long assetLibraryId =
 			testGetAssetLibraryScopedTestEntitiesPage_getAssetLibraryId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"assetLibraryScopedTestEntities",
-			new HashMap<String, Object>() {
-				{
-					put("assetLibraryId", "\"" + assetLibraryId + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetAssetLibraryScopedTestEntitiesPageAssetLibraryScopedTestEntity_getGraphQLField(
+				assetLibraryId);
 
 		// No namespace
 
@@ -734,6 +728,22 @@ public abstract class BaseScopedTestEntityResourceTestCase {
 				ScopedTestEntitySerDes.toDTOs(
 					assetLibraryScopedTestEntitiesJSONObject.getString(
 						"items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetAssetLibraryScopedTestEntitiesPageAssetLibraryScopedTestEntity_getGraphQLField(
+				Long assetLibraryId)
+		throws Exception {
+
+		return new GraphQLField(
+			"assetLibraryScopedTestEntities",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -1002,15 +1012,9 @@ public abstract class BaseScopedTestEntityResourceTestCase {
 	public void testGraphQLGetSiteScopedTestEntitiesPage() throws Exception {
 		Long siteId = testGetSiteScopedTestEntitiesPage_getSiteId();
 
-		GraphQLField graphQLField = new GraphQLField(
-			"scopedTestEntities",
-			new HashMap<String, Object>() {
-				{
-					put("siteKey", "\"" + siteId + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetSiteScopedTestEntitiesPageSiteScopedTestEntity_getGraphQLField(
+				siteId);
 
 		// No namespace
 
@@ -1067,6 +1071,22 @@ public abstract class BaseScopedTestEntityResourceTestCase {
 			Arrays.asList(
 				ScopedTestEntitySerDes.toDTOs(
 					scopedTestEntitiesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetSiteScopedTestEntitiesPageSiteScopedTestEntity_getGraphQLField(
+				Long siteId)
+		throws Exception {
+
+		return new GraphQLField(
+			"scopedTestEntities",
+			new HashMap<String, Object>() {
+				{
+					put("siteKey", "\"" + siteId + "\"");
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2731,4 +2751,4 @@ public abstract class BaseScopedTestEntityResourceTestCase {
 		ScopedTestEntityResource _scopedTestEntityResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1522530996
+// LIFERAY-REST-BUILDER-HASH:79652918

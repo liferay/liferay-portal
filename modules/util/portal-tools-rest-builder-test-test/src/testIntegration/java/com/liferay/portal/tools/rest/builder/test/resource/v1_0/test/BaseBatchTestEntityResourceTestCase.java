@@ -402,14 +402,8 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 
 	@Test
 	public void testGraphQLGetBatchTestEntitiesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"batchTestEntities",
-			new HashMap<String, Object>() {
-				{
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
+		GraphQLField graphQLField =
+			testGraphQLGetBatchTestEntitiesPageBatchTestEntity_getGraphQLField();
 
 		// No namespace
 
@@ -466,6 +460,20 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 			Arrays.asList(
 				BatchTestEntitySerDes.toDTOs(
 					batchTestEntitiesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetBatchTestEntitiesPageBatchTestEntity_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"batchTestEntities",
+			new HashMap<String, Object>() {
+				{
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -2131,4 +2139,4 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1993247939
+// LIFERAY-REST-BUILDER-HASH:-787316301
