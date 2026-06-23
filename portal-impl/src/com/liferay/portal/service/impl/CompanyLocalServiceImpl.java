@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
@@ -1178,7 +1179,9 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		validateMaxUsers(maxUsers);
 
-		if (PropsValues.COMPANY_MX_UPDATE) {
+		if (PropsValues.COMPANY_MX_UPDATE &&
+			!DBPartition.isCurrentCompanyRestricted()) {
+
 			validateMx(companyId, mx);
 
 			company.setMx(mx);
@@ -1235,13 +1238,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		validateVirtualHost(company.getWebId(), virtualHostname);
 
-		if (PropsValues.COMPANY_MX_UPDATE) {
-			validateMx(companyId, mx);
-		}
-
 		validateName(companyId, name);
 
-		if (PropsValues.COMPANY_MX_UPDATE) {
+		if (PropsValues.COMPANY_MX_UPDATE &&
+			!DBPartition.isCurrentCompanyRestricted()) {
+
+			validateMx(companyId, mx);
+
 			company.setMx(mx);
 		}
 
