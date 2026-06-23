@@ -143,6 +143,38 @@ public class CompanyImpl extends CompanyBaseImpl {
 		return UserLocalServiceUtil.getGuestUser(getCompanyId());
 	}
 
+	@AutoEscape
+	@Override
+	public String getHomeURL() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getHomeURL();
+	}
+
+	@AutoEscape
+	@Override
+	public String getIndexNameCurrent() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getIndexNameCurrent();
+	}
+
+	@AutoEscape
+	@Override
+	public String getIndexNameNext() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getIndexNameNext();
+	}
+
+	@AutoEscape
+	@Override
+	public String getIndustry() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getIndustry();
+	}
+
 	@Override
 	public String getKey() {
 		CompanyInfo companyInfo = getCompanyInfo();
@@ -163,15 +195,48 @@ public class CompanyImpl extends CompanyBaseImpl {
 		return _keyObj;
 	}
 
+	@AutoEscape
+	@Override
+	public String getLegalId() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getLegalId();
+	}
+
+	@AutoEscape
+	@Override
+	public String getLegalName() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getLegalName();
+	}
+
+	@AutoEscape
+	@Override
+	public String getLegalType() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getLegalType();
+	}
+
 	@Override
 	public Locale getLocale() throws PortalException {
 		return getGuestUser().getLocale();
 	}
 
+	@Override
+	public long getLogoId() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getLogoId();
+	}
+
 	@AutoEscape
 	@Override
 	public String getName() {
-		return super.getName();
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getName();
 	}
 
 	@Override
@@ -243,9 +308,41 @@ public class CompanyImpl extends CompanyBaseImpl {
 		return getName();
 	}
 
+	@AutoEscape
+	@Override
+	public String getSicCode() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getSicCode();
+	}
+
+	@AutoEscape
+	@Override
+	public String getSize() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getSize();
+	}
+
+	@AutoEscape
+	@Override
+	public String getTickerSymbol() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getTickerSymbol();
+	}
+
 	@Override
 	public TimeZone getTimeZone() throws PortalException {
 		return getGuestUser().getTimeZone();
+	}
+
+	@AutoEscape
+	@Override
+	public String getType() {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		return companyInfo.getType();
 	}
 
 	@Override
@@ -358,6 +455,34 @@ public class CompanyImpl extends CompanyBaseImpl {
 	}
 
 	@Override
+	public void setHomeURL(String homeURL) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setHomeURL(homeURL);
+	}
+
+	@Override
+	public void setIndexNameCurrent(String indexNameCurrent) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setIndexNameCurrent(indexNameCurrent);
+	}
+
+	@Override
+	public void setIndexNameNext(String indexNameNext) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setIndexNameNext(indexNameNext);
+	}
+
+	@Override
+	public void setIndustry(String industry) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setIndustry(industry);
+	}
+
+	@Override
 	public void setKey(String key) {
 		CompanyInfo companyInfo = getCompanyInfo();
 
@@ -369,6 +494,69 @@ public class CompanyImpl extends CompanyBaseImpl {
 	@Override
 	public void setKeyObj(Key keyObj) {
 		_keyObj = keyObj;
+	}
+
+	@Override
+	public void setLegalId(String legalId) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setLegalId(legalId);
+	}
+
+	@Override
+	public void setLegalName(String legalName) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setLegalName(legalName);
+	}
+
+	@Override
+	public void setLegalType(String legalType) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setLegalType(legalType);
+	}
+
+	@Override
+	public void setLogoId(long logoId) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setLogoId(logoId);
+	}
+
+	@Override
+	public void setName(String name) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setName(name);
+	}
+
+	@Override
+	public void setSicCode(String sicCode) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setSicCode(sicCode);
+	}
+
+	@Override
+	public void setSize(String size) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setSize(size);
+	}
+
+	@Override
+	public void setTickerSymbol(String tickerSymbol) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setTickerSymbol(tickerSymbol);
+	}
+
+	@Override
+	public void setType(String type) {
+		CompanyInfo companyInfo = getCompanyInfo();
+
+		companyInfo.setType(type);
 	}
 
 	@Override

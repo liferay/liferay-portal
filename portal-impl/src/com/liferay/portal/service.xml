@@ -146,29 +146,13 @@
 
 		<column name="webId" type="String" />
 		<column name="mx" type="String" />
-		<column name="homeURL" type="String" />
-		<column name="logoId" type="long" />
 		<column name="maxUsers" type="int" />
 		<column name="active" type="boolean" />
-		<column name="name" type="String" />
-		<column name="legalName" type="String" />
-		<column name="legalId" type="String" />
-		<column name="legalType" type="String" />
-		<column name="sicCode" type="String" />
-		<column name="tickerSymbol" type="String" />
-		<column name="industry" type="String" />
-		<column name="type" type="String" />
-		<column name="size" type="String" />
-		<column name="indexNameCurrent" type="String" />
-		<column name="indexNameNext" type="String" />
 
 		<!-- Finder methods -->
 
 		<finder name="WebId" return-type="Company" unique="true">
 			<finder-column name="webId" />
-		</finder>
-		<finder name="LogoId" return-type="Collection">
-			<finder-column name="logoId" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="CompanyInfo" remote-service="false">
@@ -183,7 +167,20 @@
 
 		<!-- Other fields -->
 
+		<column name="homeURL" type="String" />
+		<column name="indexNameCurrent" type="String" />
+		<column name="indexNameNext" type="String" />
+		<column name="industry" type="String" />
 		<column name="key" type="String" />
+		<column name="legalId" type="String" />
+		<column name="legalName" type="String" />
+		<column name="legalType" type="String" />
+		<column name="logoId" type="long" />
+		<column name="name" type="String" />
+		<column name="sicCode" type="String" />
+		<column name="size" type="String" />
+		<column name="tickerSymbol" type="String" />
+		<column name="type" type="String" />
 
 		<!-- Finder methods -->
 
