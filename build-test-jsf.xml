@@ -133,6 +133,8 @@
 
 		<echo file="${app.server.classes.portal.dir}/portal-ext.properties">${portal.ext.properties}</echo>
 
+		<gradle-execute dir="modules/test/portlet-tck-bridge" task="deploy" />
+
 		<antcall target="build-jsf-artifacts" />
 		<antcall target="copy-jsf-artifacts" />
 	</target>
