@@ -19,6 +19,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Pin;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.MappedProductUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.PinUtil;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.PinResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -150,10 +151,9 @@ public class PinResourceImpl extends BasePinResourceImpl {
 		throws Exception {
 
 		CPDefinition cpDefinition =
-			_cpDefinitionService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId(),
-					false);
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				_cpDefinitionService, externalReferenceCode,
+				contextCompany.getCompanyId());
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -167,9 +167,8 @@ public class PinResourceImpl extends BasePinResourceImpl {
 
 	@Override
 	public Pin postProductIdPin(Long productId, Pin pin) throws Exception {
-		CPDefinition cpDefinition =
-			_cpDefinitionService.fetchCPDefinitionByCProductId(
-				productId, false);
+		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			_cpDefinitionService, productId);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -201,10 +200,10 @@ public class PinResourceImpl extends BasePinResourceImpl {
 			long productId = GetterUtil.getLong(mappedProduct.getProductId());
 
 			CPDefinition cpDefinition =
-				_cpDefinitionService.
-					fetchCPDefinitionByCProductExternalReferenceCode(
-						mappedProduct.getProductExternalReferenceCode(),
-						contextCompany.getCompanyId(), false);
+				ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+					_cpDefinitionService,
+					mappedProduct.getProductExternalReferenceCode(),
+					contextCompany.getCompanyId());
 
 			if (cpDefinition != null) {
 				productId = cpDefinition.getCProductId();
