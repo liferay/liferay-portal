@@ -43,6 +43,22 @@
 				"friendlyURL": "/settings",
 				"privateLayout": false,
 				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "SEOSTUDIOPRIMARYNAVIGATION7",
+				"menuItems": [
+					{
+						"displayIcon": "custom-field",
+						"externalReferenceCode": "SEOSTUDIOPRIMARYNAVIGATION7A",
+						"friendlyURL": "/configurations",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "Admin"
+				},
+				"type": "node"
 			}
 		],
 		"name": "SEO Studio Primary Navigation"
