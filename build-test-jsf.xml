@@ -5,34 +5,34 @@
 
 	<target name="build-jsf-artifacts" unless="liferay.faces.skip.build">
 		<echo message="Building JSF artifacts..." />
-		<!--
-		<exec dir="${liferay.faces.bridge.impl.dir}" executable="git">
-			<arg line="cherry-pick" />
-			<arg line="27b3fc29f9c2143451751083110a4f6722f212c8" />
-			<arg line="-strategy-option " />
-			<arg line="theirs " />
-		</exec>
 
-		<execute dir="${liferay.faces.bridge.impl.dir}/demo">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		<execute dir="${liferay.faces.util.dir}">
+			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
 		</execute>
 
-		<execute dir="${liferay.faces.bridge.impl.dir}/issue">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		<execute dir="${liferay.faces.bridge.api.dir}/bridge-api">
+			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
 		</execute>
 
-		<execute dir="${liferay.faces.bridge.impl.dir}/tck">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		<execute dir="${liferay.faces.bridge.ext.dir}/bridge-ext">
+			mvn clean install -U -Dbnd.baseline.skip=true
 		</execute>
 
-		<execute dir="${liferay.faces.portal.dir}/demo">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat,validateCaptchaForTest
+		<execute dir="${liferay.faces.showcase.dir}">
+			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
 		</execute>
 
-		<execute dir="${liferay.faces.portal.dir}/test/test-setup-hook">
-			mvn clean package -P liferay,liferay73,mojarra,tomcat
+		<execute dir="${liferay.faces.alloy.dir}">
+			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
 		</execute>
-		-->
+
+		<execute dir="${liferay.faces.bridge.impl.dir}">
+			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
+		</execute>
+
+		<execute dir="${liferay.faces.portal.dir}">
+			mvn clean install -P liferay,thin -U -Dbnd.baseline.skip=true
+		</execute>
 	</target>
 
 	<target name="copy-jsf-artifacts">
