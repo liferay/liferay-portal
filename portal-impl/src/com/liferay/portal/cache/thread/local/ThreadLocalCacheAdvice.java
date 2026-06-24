@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCache;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.preview.PreviewableResolverUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -70,11 +71,20 @@ public class ThreadLocalCacheAdvice extends ChainableMethodAdvice {
 	}
 
 	private String _getCacheKey(Object[] arguments) {
-		if (arguments.length == 1) {
+		Long previewId = PreviewableResolverUtil.getPreviewId();
+
+		if ((previewId == null) && (arguments.length == 1)) {
 			return StringUtil.toHexString(arguments[0]);
 		}
 
-		StringBundler sb = new StringBundler((arguments.length * 2) - 1);
+		StringBundler sb = new StringBundler(
+			(previewId == null) ? (arguments.length * 2) - 1 :
+				(arguments.length * 2) + 1);
+
+		if (previewId != null) {
+			sb.append(StringUtil.toHexString(previewId));
+			sb.append(StringPool.POUND);
+		}
 
 		for (int i = 0; i < arguments.length; i++) {
 			sb.append(StringUtil.toHexString(arguments[i]));

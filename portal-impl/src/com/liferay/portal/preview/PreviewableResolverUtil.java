@@ -40,6 +40,10 @@ public class PreviewableResolverUtil {
 		return previewId;
 	}
 
+	public static Long getPreviewId() {
+		return _previewId.get();
+	}
+
 	public static Set<Long> getPreviewIds() {
 		return _previewableMaps.keySet();
 	}
