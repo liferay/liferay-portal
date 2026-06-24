@@ -234,20 +234,26 @@ export class JournalEditArticlePage {
 			title || getRandomString()
 		);
 
-		const field = this.page.locator(
+		const fields = this.page.locator(
 			'input[id^="_com_liferay_journal_web_portlet_JournalPortlet_ddm$$Text"]'
 		);
 
-		await fillAndClickOutside(this.page, field, 'Text Field');
+		// The Fields panel can load collapsed and may re-collapse while it
+		// finishes initializing, so re-expand it before each interaction.
+
+		await expect(async () => {
+			await openFieldset(this.page, 'Fields');
+
+			await fields.first().fill('Text Field', {timeout: 2000});
+		}).toPass();
 
 		await this.duplicateButton.click();
 
-		await this.page
-			.locator(
-				'input[id^="_com_liferay_journal_web_portlet_JournalPortlet_ddm$$Text"]'
-			)
-			.nth(1)
-			.fill('Duplicated Text Field');
+		await expect(async () => {
+			await openFieldset(this.page, 'Fields');
+
+			await fields.nth(1).fill('Duplicated Text Field', {timeout: 2000});
+		}).toPass();
 
 		await this.publishArticle();
 	}
