@@ -381,10 +381,22 @@ definition {
 				siteName = "Site Name");
 		}
 
-		task ("Assert the mapped image is shown in view mode") {
+		task ("Assert the mapped image is shown in view mode on the original site") {
 			ContentPagesNavigator.openViewContentPage(
 				pageName = "Test Page Name",
 				siteName = "Test Site Name");
+
+			AssertVisible(
+				id = "image-square",
+				key_image = "Document_1",
+				key_imageDescription = "",
+				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_IMAGE_PROPERTIES");
+		}
+
+		task ("Assert the mapped image is shown in view mode on the imported site") {
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Page Name",
+				siteName = "Site Name");
 
 			AssertVisible(
 				id = "image-square",

@@ -149,10 +149,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _importSite(checkContentNameList = null, uncheckContentNameList = null, contentDeletion = null, mirrorWithOverwriting = null, importPermissions = null, importProcessStatus = null, privateLayout = null, deleteApplicationData = null, copyAsNew = null) {
-		if (!(isSet(importProcessStatus))) {
-			var importProcessStatus = "Successful";
-		}
+	macro _importSite(checkContentNameList = null, uncheckContentNameList = null, contentDeletion = null, mirrorWithOverwriting = null, importPermissions = null, privateLayout = null, deleteApplicationData = null, copyAsNew = null) {
 
 		while (IsElementNotPresent(locator1 = "Button#CONTINUE")) {
 			WaitForElementPresent(locator1 = "Button#CONTINUE");
@@ -216,9 +213,6 @@ definition {
 			locator1 = "Button#ANY",
 			value1 = "Import");
 
-		AssertTextEquals(
-			locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1",
-			value1 = ${importProcessStatus});
 	}
 
 	@summary = "Default summary"
@@ -785,7 +779,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro importSiteCP(depotName = null, importValidationMissingItem = null, checkContentNameList = null, uncheckContentNameList = null, siteName = null, larFileName = null, privateLayout = null, deleteApplicationData = null, copyAsNew = null, contentName = null, baseURL = null, contentDeletion = null, uploadFrom = null, importCampaignValidationError = null, importPermissions = null, importProcessStatus = null) {
+	macro importSiteCP(depotName = null, importValidationMissingItem = null, checkContentNameList = null, uncheckContentNameList = null, siteName = null, larFileName = null, privateLayout = null, deleteApplicationData = null, copyAsNew = null, contentName = null, baseURL = null, contentDeletion = null, uploadFrom = null, importCampaignValidationError = null, importPermissions = null) {
 		if (${copyAsNew} == "true") {
 			Staging.enableCopyAsNewImport(baseURL = ${baseURL});
 		}
@@ -815,7 +809,6 @@ definition {
 				copyAsNew = ${copyAsNew},
 				deleteApplicationData = ${deleteApplicationData},
 				importPermissions = ${importPermissions},
-				importProcessStatus = ${importProcessStatus},
 				larFileName = ${larFileName},
 				privateLayout = ${privateLayout},
 				uncheckContentNameList = ${uncheckContentNameList});
