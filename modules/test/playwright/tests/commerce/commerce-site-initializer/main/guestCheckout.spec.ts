@@ -21,6 +21,7 @@ import {
 	classicCommerceSetUp,
 	enableGuestPageView,
 	guestCheckoutSetUp,
+	speedwellSetUp,
 } from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -783,5 +784,141 @@ test(
 		finally {
 			await performLoginViaApi({page, screenName: 'test'});
 		}
+	}
+);
+
+test(
+	'Guest checkout survives sign-in after the order in the URL is merged away',
+	{tag: '@LPD-95478'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		commerceCartSummaryPage,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+	}) => {
+		test.setTimeout(120000);
+
+		const {channel, site} = await speedwellSetUp(
+			apiHelpers,
+			`Speedwell_${getRandomString()}`
+		);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'person',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['test@liferay.com']
+		);
+
+		await guestCheckoutSetUp(
+			channel,
+			commerceAdminChannelDetailsPage,
+			commerceAdminChannelsPage,
+			page,
+			site
+		);
+
+		let order;
+
+		await test.step('Provision the full-page authentication layout via the channel health check', async () => {
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await commerceAdminChannelsPage.goto();
+
+			await (
+				await commerceAdminChannelsPage.channelsTableRowLink(
+					channel.name
+				)
+			).click();
+
+			await (
+				await commerceAdminChannelDetailsPage.commerceChannelHealthChecksTableRowAction(
+					'Fix Issue',
+					'Guest Checkout Authentication'
+				)
+			).click();
+
+			await page.waitForLoadState('networkidle');
+		});
+
+		await test.step('Give the user an open order so the guest order is merged into it on sign-in', async () => {
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+					'Calipers'
+				);
+
+			const sku = product.skus[0];
+
+			order = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [{quantity: 1, skuId: sku.id}],
+				},
+				channel.id
+			);
+
+			await performLogout(page);
+		});
+
+		await test.step('As a guest, open the order summary via View Details and continue to the authentication page', async () => {
+			await page.goto(`/web${site.friendlyUrlPath}/catalog`, {
+				waitUntil: 'networkidle',
+			});
+
+			const productName = 'Wear Sensors';
+
+			await commerceThemeMiniumCatalogPage.catalogSearch.fill(
+				productName
+			);
+
+			await commerceThemeMiniumCatalogPage.catalogSearch.press('Enter');
+
+			await page.waitForLoadState('networkidle');
+
+			await commerceThemeMiniumCatalogPage
+				.productCardAddToCartButton(productName)
+				.click();
+
+			await page.waitForLoadState('networkidle');
+
+			await commerceMiniCartPage.miniCartButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItem(productName)
+			).toBeVisible();
+
+			await commerceMiniCartPage.viewDetailsButton.click();
+
+			await page.waitForLoadState('networkidle');
+
+			await commerceCartSummaryPage.checkoutButton.click();
+
+			await page.waitForLoadState('networkidle');
+		});
+
+		await test.step('Sign in on the authentication page and verify the checkout renders against the merged order', async () => {
+			await page
+				.locator('input[id*="LoginPortlet_login"]')
+				.fill('test@liferay.com');
+			await page.locator('input[id*="LoginPortlet_pass"]').fill('test');
+			await page.getByRole('button', {name: 'Sign In'}).last().click();
+
+			await page.waitForLoadState('networkidle');
+
+			await expect(page.locator('.alert-danger')).toHaveCount(0);
+
+			const cartItems =
+				await apiHelpers.headlessCommerceDeliveryCart.getCartItems(
+					order.id
+				);
+
+			expect(cartItems.items).toHaveLength(2);
+		});
 	}
 );

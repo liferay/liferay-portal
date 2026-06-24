@@ -713,6 +713,19 @@ export async function miniumSetUp(
 	);
 }
 
+export async function speedwellSetUp(
+	apiHelpers: DataApiHelpers,
+	siteName?: string
+) {
+	return initializerSetUp(
+		apiHelpers,
+		'speedwell-initializer',
+		null,
+		null,
+		siteName
+	);
+}
+
 export async function createAccountWithBuyerUser(
 	apiHelpers: DataApiHelpers,
 	siteId: number | string,

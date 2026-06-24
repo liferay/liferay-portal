@@ -23,7 +23,10 @@ export class CommerceCartSummaryPage {
 	readonly viewButton: Locator;
 
 	constructor(page: Page) {
-		this.checkoutButton = page.getByRole('button', {name: 'Checkout'});
+		this.checkoutButton = page.getByRole('button', {
+			exact: true,
+			name: 'Checkout',
+		});
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.orderItemActionsButton = page.getByRole('button', {
 			name: 'Actions',
