@@ -979,12 +979,14 @@ baseTest(
 			await journalEditArticlePage.fillContent(getRandomString());
 
 			await clickAndExpectToBeVisible({
-				autoClick: true,
+				autoClick: false,
 				target: page.getByRole('option', {
 					name: language + ' Language: Translating 1/',
 				}),
 				trigger: translationButton,
 			});
+
+			await page.keyboard.press('Escape');
 		}
 
 		await journalEditArticlePage.publishArticle();
@@ -1103,7 +1105,7 @@ baseTest(
 		await translationButton.click();
 
 		await clickAndExpectToBeVisible({
-			autoClick: true,
+			autoClick: false,
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Not Translated',
 			}),
@@ -1155,12 +1157,14 @@ baseTest(
 		await translationButton.click();
 
 		await clickAndExpectToBeVisible({
-			autoClick: true,
+			autoClick: false,
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Translated',
 			}),
 			trigger: translationButton,
 		});
+
+		await page.keyboard.press('Escape');
 
 		await translationOptionsButton.click();
 
@@ -1404,7 +1408,7 @@ baseTest(
 		await translateNameAndMetadataFields(page);
 
 		await clickAndExpectToBeVisible({
-			autoClick: true,
+			autoClick: false,
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Translating 1/2',
 			}),
