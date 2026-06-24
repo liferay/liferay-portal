@@ -1532,6 +1532,16 @@ definition {
 			LAR.importSiteCP(
 				larFileName = ${larFileName},
 				siteName = "Site Name");
+
+			PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
+
+			while ((IsElementNotPresent(key_pageName = "Home", locator1 = "PagesAdmin#LIST_GROUP_ITEM_ENTRY_TITLE_LINK")) && (maxIterations = "5")) {
+				Refresh();
+			}
+
+			AssertElementPresent(
+				key_pageName = "Home",
+				locator1 = "PagesAdmin#LIST_GROUP_ITEM_ENTRY_TITLE_LINK");
 		}
 	}
 
