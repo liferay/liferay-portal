@@ -299,8 +299,25 @@ export class JournalEditArticlePage {
 	}
 
 	async fillContent(content: string) {
-		await this.journalPage.articleContentTextBox.fill(content);
-		await this.journalPage.articleContentTextBox.press('Enter');
+		const ckEditor5Content = this.journalPage.articleContentTextBox;
+
+		if (await ckEditor5Content.count()) {
+			await ckEditor5Content.fill(content);
+			await ckEditor5Content.press('Enter');
+
+			return;
+		}
+
+		// Under the autosave feature flags the content field renders as a
+		// CKEditor 4 instance whose editable lives inside an iframe.
+
+		const ckEditor4Content = this.page
+			.getByRole('textbox', {exact: true, name: 'Content'})
+			.frameLocator('iframe.cke_wysiwyg_frame')
+			.locator('body');
+
+		await ckEditor4Content.fill(content);
+		await ckEditor4Content.press('Enter');
 	}
 
 	async fillFriendlyURL(friendlyURL: string) {
