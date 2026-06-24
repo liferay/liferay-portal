@@ -1608,11 +1608,13 @@ public class CompanyLocalServiceTest {
 	private void _testUpdateCompanyNames(boolean expectFailure)
 		throws Exception {
 
-		String name = _company.getName();
-
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					_company.getCompanyId())) {
+
+			_company = _companyLocalService.getCompany(_company.getCompanyId());
+
+			String name = _company.getName();
 
 			Group group = null;
 
