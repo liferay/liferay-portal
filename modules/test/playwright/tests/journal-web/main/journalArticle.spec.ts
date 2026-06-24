@@ -1265,6 +1265,18 @@ baseTest(
 		}
 		await journalEditArticlePage.fillContent(getRandomString());
 
+		// Re-apply the Untranslated filter to refresh the view. The active
+		// filter option is inert (pointer-events: none), so toggle through
+		// another option to reselect it.
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'All Fields',
+			}),
+			trigger: translationFilterButton,
+		});
+
 		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: page.getByRole('option', {
