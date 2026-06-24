@@ -1891,6 +1891,11 @@ baseTest(
 			structureName,
 		});
 
+		// The Fields panel can load collapsed, so re-expand it before
+		// interacting with the structure field and its duplicate button.
+
+		await openFieldset(page, 'Fields');
+
 		const textField = page.getByRole('textbox', {
 			name: fieldName,
 		});
