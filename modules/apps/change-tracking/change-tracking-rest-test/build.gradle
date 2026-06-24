@@ -13,6 +13,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
+	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-api")
+	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")

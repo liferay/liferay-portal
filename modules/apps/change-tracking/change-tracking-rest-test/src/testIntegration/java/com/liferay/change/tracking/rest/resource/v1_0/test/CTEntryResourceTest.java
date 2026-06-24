@@ -21,6 +21,9 @@ import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalFolderFixture;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.knowledge.base.model.KBArticle;
+import com.liferay.knowledge.base.service.KBArticleLocalService;
+import com.liferay.knowledge.base.test.util.KBTestUtil;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -68,6 +71,8 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 		_journalArticleClassNameId = _classNameLocalService.getClassNameId(
 			JournalArticle.class);
+		_kbArticleClassNameId = _classNameLocalService.getClassNameId(
+			KBArticle.class);
 	}
 
 	@After
@@ -112,11 +117,13 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 		CTEntry ctEntry1 = _addJournalArticleCTEntry(
 			ctCollectionId1, journalArticle1);
+		CTEntry ctEntry2 = _addJournalArticleCTEntry(
+			ctCollectionId1, journalArticle2);
 
-		List<CTEntry> ctEntries = Arrays.asList(
-			ctEntry1,
-			_addJournalArticleCTEntry(ctCollectionId1, journalArticle2),
-			_addJournalArticleCTEntry(_getCTCollectionId(), journalArticle2));
+		CTEntry ctEntry3 = _addJournalArticleCTEntry(
+			_getCTCollectionId(), journalArticle2);
+
+		List<CTEntry> ctEntries = Arrays.asList(ctEntry1, ctEntry2, ctEntry3);
 
 		_waitForReindex();
 
@@ -136,20 +143,21 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 		assertEqualsIgnoringOrder(ctEntries, (List<CTEntry>)page.getItems());
 
-		CTEntry ctEntry2 = ctEntries.get(1);
-		CTEntry ctEntry3 = ctEntries.get(2);
+		_assertGetCTEntriesHistoryPageInPublicationContext(
+			_journalArticleClassNameId, ctEntry2.getModelClassPK(),
+			ctCollectionId1, ctEntry2, ctEntry3);
 
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollectionId1)) {
+		long ctCollectionId2 = _getCTCollectionId();
 
-			page = ctEntryResource.getCTEntriesHistoryPage(
-				_journalArticleClassNameId, ctEntry2.getModelClassPK(), null,
-				testGroup.getGroupId(), null, Pagination.of(1, 10), null);
-		}
+		KBArticle kbArticle = KBTestUtil.addKBArticle(testGroup.getGroupId());
 
-		assertContains(ctEntry2, (List<CTEntry>)page.getItems());
-		assertContains(ctEntry3, (List<CTEntry>)page.getItems());
+		CTEntry ctEntry4 = _addKBArticleCTEntry(ctCollectionId2, kbArticle);
+		CTEntry ctEntry5 = _addKBArticleCTEntry(
+			_getCTCollectionId(), kbArticle);
+
+		_assertGetCTEntriesHistoryPageInPublicationContext(
+			_kbArticleClassNameId, ctEntry4.getModelClassPK(), ctCollectionId2,
+			ctEntry4, ctEntry5);
 	}
 
 	@Override
@@ -623,6 +631,60 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 		return ctEntryResource.getCTEntry(serviceBuilderCTEntry.getCtEntryId());
 	}
 
+	private CTEntry _addKBArticleCTEntry(
+			long ctCollectionId, KBArticle kbArticle)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollectionId)) {
+
+			_kbArticleLocalService.updateKBArticle(
+				kbArticle.getUserId(), kbArticle.getResourcePrimKey(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				kbArticle.getDescription(), new String[0],
+				kbArticle.getSourceURL(), kbArticle.getDisplayDate(),
+				kbArticle.getExpirationDate(), kbArticle.getReviewDate(), null,
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+		}
+
+		CTCollectionHistoryProvider<?> ctCollectionHistoryProvider =
+			_ctCollectionHistoryProviderRegistry.getCTCollectionHistoryProvider(
+				_kbArticleClassNameId);
+
+		com.liferay.change.tracking.model.CTEntry serviceBuilderCTEntry =
+			ctCollectionHistoryProvider.getCTEntry(
+				ctCollectionId, _kbArticleClassNameId,
+				kbArticle.getKbArticleId());
+
+		_waitForReindex();
+
+		return ctEntryResource.getCTEntry(serviceBuilderCTEntry.getCtEntryId());
+	}
+
+	private void _assertGetCTEntriesHistoryPageInPublicationContext(
+			long classNameId, long classPK, long ctCollectionId,
+			CTEntry... expectedCTEntries)
+		throws Exception {
+
+		Page<CTEntry> page = null;
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollectionId)) {
+
+			page = ctEntryResource.getCTEntriesHistoryPage(
+				classNameId, classPK, null, testGroup.getGroupId(), null,
+				Pagination.of(1, 10), null);
+		}
+
+		for (CTEntry expectedCTEntry : expectedCTEntries) {
+			assertContains(expectedCTEntry, (List<CTEntry>)page.getItems());
+		}
+	}
+
 	private long _getCTCollectionId() throws Exception {
 		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
 			null, testCompany.getCompanyId(), testCompany.getUserId(), 0,
@@ -677,6 +739,11 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 	@Inject
 	private JournalFolderLocalService _journalFolderLocalService;
+
+	private long _kbArticleClassNameId;
+
+	@Inject
+	private KBArticleLocalService _kbArticleLocalService;
 
 	@Inject
 	private ListTypeLocalService _listTypeLocalService;
