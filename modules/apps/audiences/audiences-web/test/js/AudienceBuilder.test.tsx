@@ -29,9 +29,9 @@ describe('AudienceBuilder', () => {
 		expect(input.getAttribute('maxLength')).toBe('75');
 		expect(input.hasAttribute('required')).toBe(true);
 
-		expect((input as HTMLInputElement).value).toBe('new-audience');
+		expect((input as HTMLInputElement).value).toBe('');
+		expect(input.getAttribute('placeholder')).toBe('new-audience');
 
-		await userEvent.clear(input);
 		await userEvent.type(input, 'My Audience');
 
 		expect(getByText('My Audience')).toBeTruthy();
