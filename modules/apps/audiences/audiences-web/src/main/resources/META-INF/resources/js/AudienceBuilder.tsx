@@ -9,9 +9,11 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import ClayToolbar from '@clayui/toolbar';
+import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
 import React, {useState} from 'react';
 
 import AttributesSidebar from './components/AttributesSidebar';
+import ConditionsPanel from './components/ConditionsPanel';
 import {AudiencesCriteriaType} from './types';
 
 import './AudienceBuilder.scss';
@@ -36,85 +38,91 @@ export default function AudienceBuilder({
 	);
 
 	return (
-		<div className="d-flex flex-column overflow-hidden">
-			<ClayToolbar>
-				<ClayLayout.ContainerFluid size={false}>
-					<ClayToolbar.Nav>
-						<ClayToolbar.Item>
-							<ClayLink
-								aria-label={Liferay.Language.get('back')}
-								button
-								displayType="unstyled"
-								href={backURL}
-								monospaced
-							>
-								<ClayIcon symbol="angle-left" />
-							</ClayLink>
-						</ClayToolbar.Item>
+		<ScreenReaderAnnouncerContextProvider>
+			<div className="d-flex flex-column overflow-hidden">
+				<ClayToolbar>
+					<ClayLayout.ContainerFluid size={false}>
+						<ClayToolbar.Nav>
+							<ClayToolbar.Item>
+								<ClayLink
+									aria-label={Liferay.Language.get('back')}
+									button
+									displayType="unstyled"
+									href={backURL}
+									monospaced
+								>
+									<ClayIcon symbol="angle-left" />
+								</ClayLink>
+							</ClayToolbar.Item>
 
-						<ClayToolbar.Item expand>
-							<ClayToolbar.Section className="text-left">
-								<span className="text-truncate">
-									{currentName}
-								</span>
-							</ClayToolbar.Section>
-						</ClayToolbar.Item>
+							<ClayToolbar.Item expand>
+								<ClayToolbar.Section className="text-left">
+									<span className="text-truncate">
+										{currentName}
+									</span>
+								</ClayToolbar.Section>
+							</ClayToolbar.Item>
 
-						<ClayToolbar.Item>
-							<ClayLink
-								button
-								displayType="secondary"
-								href={backURL}
-								small
-							>
-								{Liferay.Language.get('cancel')}
-							</ClayLink>
-						</ClayToolbar.Item>
+							<ClayToolbar.Item>
+								<ClayLink
+									button
+									displayType="secondary"
+									href={backURL}
+									small
+								>
+									{Liferay.Language.get('cancel')}
+								</ClayLink>
+							</ClayToolbar.Item>
 
-						<ClayToolbar.Item>
-							<ClayButton
-								displayType="primary"
-								size="sm"
-								type="submit"
-							>
-								{Liferay.Language.get('save')}
-							</ClayButton>
-						</ClayToolbar.Item>
-					</ClayToolbar.Nav>
-				</ClayLayout.ContainerFluid>
-			</ClayToolbar>
+							<ClayToolbar.Item>
+								<ClayButton
+									displayType="primary"
+									size="sm"
+									type="submit"
+								>
+									{Liferay.Language.get('save')}
+								</ClayButton>
+							</ClayToolbar.Item>
+						</ClayToolbar.Nav>
+					</ClayLayout.ContainerFluid>
+				</ClayToolbar>
 
-			<div className="audience-builder-content d-flex">
-				<div className="audience-builder-sidebar border-right d-flex flex-column flex-shrink-0 px-4">
-					<AttributesSidebar
-						audiencesCriteriaTypes={audiencesCriteriaTypes}
-					/>
-				</div>
-
-				<div className="flex-grow-1 overflow-auto p-4">
-					<ClayForm.Group>
-						<label htmlFor={`${namespace}name`}>
-							{Liferay.Language.get('name')}
-
-							<span className="reference-mark">
-								<ClayIcon symbol="asterisk" />
-							</span>
-						</label>
-
-						<ClayInput
-							id={`${namespace}name`}
-							maxLength={NAME_MAX_LENGTH}
-							name={`${namespace}name`}
-							onChange={(event) =>
-								setCurrentName(event.target.value)
-							}
-							required
-							type="text"
-							value={currentName}
+				<div className="audience-builder-content d-flex">
+					<div className="audience-builder-sidebar border-right d-flex flex-column flex-shrink-0 px-4">
+						<AttributesSidebar
+							audiencesCriteriaTypes={audiencesCriteriaTypes}
 						/>
-					</ClayForm.Group>
+					</div>
+
+					<div className="flex-grow-1 overflow-auto p-4">
+						<ClayForm.Group>
+							<label htmlFor={`${namespace}name`}>
+								{Liferay.Language.get('name')}
+
+								<span className="reference-mark">
+									<ClayIcon symbol="asterisk" />
+								</span>
+							</label>
+
+							<ClayInput
+								id={`${namespace}name`}
+								maxLength={NAME_MAX_LENGTH}
+								name={`${namespace}name`}
+								onChange={(event) =>
+									setCurrentName(event.target.value)
+								}
+								required
+								type="text"
+								value={currentName}
+							/>
+						</ClayForm.Group>
+
+						<ConditionsPanel
+							audiencesCriteriaTypes={audiencesCriteriaTypes}
+						/>
+					</div>
 				</div>
 			</div>
-		</div>
+		</ScreenReaderAnnouncerContextProvider>
 	);
 }

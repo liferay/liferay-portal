@@ -38,6 +38,7 @@ export {
 	ScreenReaderAnnouncerContext,
 	ScreenReaderAnnouncerContextProvider,
 	ScreenReaderAnnouncerContextType,
+	useScreenReaderAnnounce,
 } from './contexts/ScreenReaderContext';
 export {
 	StyleErrorsContextProvider,

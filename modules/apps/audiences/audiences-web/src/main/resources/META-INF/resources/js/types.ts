@@ -16,3 +16,10 @@ export interface AudiencesCriteriaType {
 	audiencesCriterias: AudiencesCriteria[];
 	label: string;
 }
+
+export interface Rule {
+	attribute: string;
+	id: string;
+	operator: string;
+	value: string;
+}

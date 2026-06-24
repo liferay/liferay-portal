@@ -9,7 +9,8 @@
 		"@clayui/list": "^3.165.0",
 		"@clayui/toolbar": "^3.165.0",
 		"@liferay/layout-js-components-web": "*",
-		"react": "18.2.0"
+		"react": "18.2.0",
+		"uuid": "9.0.0"
 	},
 	"description": "",
 	"main": "js/index.ts",

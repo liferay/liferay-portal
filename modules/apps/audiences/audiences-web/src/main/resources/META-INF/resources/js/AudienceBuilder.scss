@@ -1,8 +1,23 @@
+@import 'atlas-variables';
+
 $sidebar-width: 320px;
 $toolbar-height: 55px;
 
 .audience-builder-content {
 	height: calc(100vh - #{$toolbar-height});
+}
+
+.audience-builder-conjunction-line {
+	width: 20px;
+}
+
+.audience-builder-rule.layout__row-builder-item {
+	border: 0;
+	border-left: 4px solid $teal-l2;
+
+	.layout__row-builder-delete-button {
+		opacity: 1;
+	}
 }
 
 .audience-builder-sidebar {
