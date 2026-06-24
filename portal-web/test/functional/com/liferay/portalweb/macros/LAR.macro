@@ -150,7 +150,6 @@ definition {
 
 	@summary = "Default summary"
 	macro _importSite(checkContentNameList = null, uncheckContentNameList = null, contentDeletion = null, mirrorWithOverwriting = null, importPermissions = null, privateLayout = null, deleteApplicationData = null, copyAsNew = null) {
-
 		while (IsElementNotPresent(locator1 = "Button#CONTINUE")) {
 			WaitForElementPresent(locator1 = "Button#CONTINUE");
 		}
@@ -212,7 +211,6 @@ definition {
 			key_text = "Import",
 			locator1 = "Button#ANY",
 			value1 = "Import");
-
 	}
 
 	@summary = "Default summary"
