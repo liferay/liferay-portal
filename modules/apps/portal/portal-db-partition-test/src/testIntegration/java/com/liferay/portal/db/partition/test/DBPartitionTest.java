@@ -845,7 +845,7 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 					db.updateIndexes(
 						connection, "Company",
 						"create index " + TEST_INDEX_NAME +
-							" on Company (logoId, companyId);",
+							" on Company (userId, companyId);",
 						false);
 
 					List<LogEntry> logEntries = logCapture.getLogEntries();
