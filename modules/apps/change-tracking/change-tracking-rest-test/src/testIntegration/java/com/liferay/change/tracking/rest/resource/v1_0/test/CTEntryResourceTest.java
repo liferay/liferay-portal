@@ -110,11 +110,11 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 		long ctCollectionId1 = _getCTCollectionId();
 
-		CTEntry ctEntry = _addJournalArticleCTEntry(
+		CTEntry ctEntry1 = _addJournalArticleCTEntry(
 			ctCollectionId1, journalArticle1);
 
 		List<CTEntry> ctEntries = Arrays.asList(
-			ctEntry,
+			ctEntry1,
 			_addJournalArticleCTEntry(ctCollectionId1, journalArticle2),
 			_addJournalArticleCTEntry(_getCTCollectionId(), journalArticle2));
 
@@ -126,7 +126,7 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 		Assert.assertEquals(1, page.getTotalCount());
 
-		assertContains(ctEntry, (List<CTEntry>)page.getItems());
+		assertContains(ctEntry1, (List<CTEntry>)page.getItems());
 
 		page = ctEntryResource.getCTEntriesHistoryPage(
 			_journalArticleClassNameId, null, null, testGroup.getGroupId(),
@@ -135,6 +135,21 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 		Assert.assertEquals(3, page.getTotalCount());
 
 		assertEqualsIgnoringOrder(ctEntries, (List<CTEntry>)page.getItems());
+
+		CTEntry ctEntry2 = ctEntries.get(1);
+		CTEntry ctEntry3 = ctEntries.get(2);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollectionId1)) {
+
+			page = ctEntryResource.getCTEntriesHistoryPage(
+				_journalArticleClassNameId, ctEntry2.getModelClassPK(), null,
+				testGroup.getGroupId(), null, Pagination.of(1, 10), null);
+		}
+
+		assertContains(ctEntry2, (List<CTEntry>)page.getItems());
+		assertContains(ctEntry3, (List<CTEntry>)page.getItems());
 	}
 
 	@Override
