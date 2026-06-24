@@ -556,7 +556,7 @@ baseTest(
 			.click();
 
 		let categoryCheckbox = page
-			.frameLocator(`iframe[title="Select ${vocabularyName1}"]`)
+			.getByRole('dialog', {name: `Select ${vocabularyName1}`})
 			.locator('li')
 			.filter({hasText: `${category1}`})
 			.getByRole('checkbox');
@@ -570,7 +570,7 @@ baseTest(
 			.click();
 
 		categoryCheckbox = page
-			.frameLocator(`iframe[title="Select ${vocabularyName2}"]`)
+			.getByRole('dialog', {name: `Select ${vocabularyName2}`})
 			.locator('li')
 			.filter({hasText: `${category1}`})
 			.getByRole('checkbox');
