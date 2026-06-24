@@ -5,6 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {changeManagementToolbarView} from '../../../../utils/changeManagementToolbarView';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../../../utils/fillAndClickOutside';
@@ -458,11 +459,7 @@ export class JournalEditArticlePage {
 				: `Success:${title} will be published on`
 		);
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('menuitem', {name: 'list'}),
-			trigger: this.page.getByLabel('Select View, Currently Selected: '),
-		});
+		await changeManagementToolbarView(this.page, 'list');
 
 		const row = this.page
 			.locator('.list-group-item')

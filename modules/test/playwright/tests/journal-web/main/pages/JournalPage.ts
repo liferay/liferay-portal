@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {changeManagementToolbarView} from '../../../../utils/changeManagementToolbarView';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {expandSection} from '../../../../utils/expandSection';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
@@ -119,11 +120,7 @@ export class JournalPage {
 	}
 
 	async goToJournalFolderAction(action: string, title: string) {
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('menuitem', {name: 'cards'}),
-			trigger: this.page.getByLabel('Select View, Currently Selected: '),
-		});
+		await changeManagementToolbarView(this.page, 'cards');
 
 		const folder = this.page.locator(
 			`[data-qa-id="row"][data-title="${title}"]`
@@ -199,24 +196,7 @@ export class JournalPage {
 	}
 
 	async changeView(viewName: string) {
-		const selectViewButton = this.page.getByLabel(
-			'Select View, Currently Selected: '
-		);
-
-		await expect(selectViewButton).toBeVisible();
-
-		const currentViewLabel =
-			await selectViewButton.getAttribute('aria-label');
-
-		if (currentViewLabel?.endsWith(`: ${viewName}`)) {
-			return;
-		}
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('menuitem', {name: viewName}),
-			trigger: selectViewButton,
-		});
+		await changeManagementToolbarView(this.page, viewName);
 	}
 
 	async clearFilters() {
