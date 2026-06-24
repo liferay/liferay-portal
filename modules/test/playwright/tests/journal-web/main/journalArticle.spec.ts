@@ -1509,7 +1509,7 @@ baseTest(
 			name: 'Select a language',
 		});
 
-		clickAndExpectToBeVisible({
+		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Not Translated',
@@ -1523,9 +1523,17 @@ baseTest(
 			name: localizableFieldName,
 		});
 
-		await fillAndClickOutside(page, localizableField);
+		// The Fields panel can load collapsed, so re-expand it before
+		// interacting with its fields. Close the language dropdown after each
+		// check so it does not cover the fields.
 
-		clickAndExpectToBeVisible({
+		await expect(async () => {
+			await openFieldset(page, 'Fields');
+
+			await localizableField.fill(getRandomString(), {timeout: 2000});
+		}).toPass();
+
+		await clickAndExpectToBeVisible({
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Translated',
 			}),
@@ -1533,9 +1541,13 @@ baseTest(
 			trigger: translationButton,
 		});
 
+		await page.keyboard.press('Escape');
+
+		await openFieldset(page, 'Fields');
+
 		await page.getByLabel('Add Duplicate Field Text').click();
 
-		clickAndExpectToBeVisible({
+		await clickAndExpectToBeVisible({
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Translating 2/3',
 			}),
@@ -1543,12 +1555,18 @@ baseTest(
 			trigger: translationButton,
 		});
 
-		await fillAndClickOutside(
-			page,
-			page.locator('input.ddm-field-text').nth(1)
-		);
+		await page.keyboard.press('Escape');
 
-		clickAndExpectToBeVisible({
+		await expect(async () => {
+			await openFieldset(page, 'Fields');
+
+			await page
+				.locator('input.ddm-field-text')
+				.nth(1)
+				.fill(getRandomString(), {timeout: 2000});
+		}).toPass();
+
+		await clickAndExpectToBeVisible({
 			target: page.getByRole('option', {
 				name: 'Catalan Language: Translated',
 			}),
