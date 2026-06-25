@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Queue;
 
@@ -171,10 +170,6 @@ public class SafeLdapReferralUtil {
 
 		@Override
 		public SearchResult nextElement() {
-			if (!_iterator.hasNext()) {
-				throw new NoSuchElementException();
-			}
-
 			return _iterator.next();
 		}
 
