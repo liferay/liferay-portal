@@ -720,66 +720,46 @@ export function ProductCard() {
 		</div>
 	);
 }
-export function CardSizes() {
-	const sizes = ['md', 'sm', 'xs'] as const;
-
-	const states: Array<{
-		active?: boolean;
-		className?: string;
-		disabled?: boolean;
-		label: string;
-	}> = [
-		{label: 'Default'},
-		{className: 'hover', label: 'Hover'},
-		{active: true, label: 'Selected'},
-		{disabled: true, label: 'Disabled'},
+export function CardPageViews() {
+	const labels = [
+		'One',
+		'Two',
+		'Three',
+		'Four',
+		'Five',
+		'Six',
+		'Seven',
+		'Eight',
 	];
 
-	// A blue background behind the M card so the backdrop-blur Hover (the inner
-	// card's translucent overlay) is visible alongside the normal M variants.
+	// The card has no size of its own; the container view (dense or horizontal)
+	// decides how many columns fit. Resize the preview to see the column count
+	// change.
 
-	const background = {backgroundColor: '#0b5fff'};
+	const renderCards = () =>
+		labels.map((label) => (
+			<ClayCard key={label}>
+				<ClayCard.Body>
+					<ClayCard.Description displayType="title">
+						{label}
+					</ClayCard.Description>
+
+					<ClayCard.Description displayType="subtitle">
+						Columns adapt to the container width
+					</ClayCard.Description>
+				</ClayCard.Body>
+			</ClayCard>
+		));
 
 	return (
 		<>
-			{sizes.map((size) => (
-				<div className="row" key={size}>
-					{states.map((state) => (
-						<div className="col-md-3" key={state.label}>
-							<ClayCard
-								active={state.active}
-								className={state.className}
-								disabled={state.disabled}
-								size={size}
-							>
-								<ClayCard.Body>
-									<ClayCard.Description displayType="title">
-										{`Card ${size.toUpperCase()}`}
-									</ClayCard.Description>
+			<p>card-page-dense (min 190px columns)</p>
 
-									<ClayCard.Description displayType="subtitle">
-										{state.label}
-									</ClayCard.Description>
-								</ClayCard.Body>
-							</ClayCard>
-						</div>
-					))}
-				</div>
-			))}
+			<div className="card-page-dense">{renderCards()}</div>
 
-			<div className="row">
-				<div className="col-auto">
-					<p>M — Default</p>
+			<p className="c-mt-4">card-page-horizontal (min 288px columns)</p>
 
-					<ClayCard size="md" style={background} />
-				</div>
-
-				<div className="col-auto">
-					<p>M — Hover (backdrop blur)</p>
-
-					<ClayCard className="hover" size="md" style={background} />
-				</div>
-			</div>
+			<div className="card-page-horizontal">{renderCards()}</div>
 		</>
 	);
 }

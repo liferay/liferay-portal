@@ -37,11 +37,6 @@ interface ICardProps extends IContext {
 	 * Flag that indicates if the card can be selectable.
 	 */
 	selectable?: boolean;
-
-	/**
-	 * Sets the size variant of the card (`xs`, `sm` or `md`).
-	 */
-	size?: 'xs' | 'sm' | 'md';
 }
 
 interface IProps
@@ -57,7 +52,6 @@ function CardBase({
 	disabled = false,
 	displayType,
 	selectable = false,
-	size,
 	...otherProps
 }: IProps) {
 	const isCardType = {
@@ -65,14 +59,6 @@ function CardBase({
 		image: displayType === 'image',
 		user: displayType === 'user',
 	};
-
-	// On the M size, Hover uses the nested inner-card pattern: the outer shell
-	// carries the shadow and the inner card carries the border. The inner
-	// element is always rendered so the border can appear on hover without a
-	// structural change.
-
-	const content =
-		size === 'md' ? <div className="card-inner">{children}</div> : children;
 
 	return (
 		<Context.Provider value={{horizontal: false, interactive: false}}>
@@ -82,9 +68,6 @@ function CardBase({
 					{
 						active,
 						'card': !selectable,
-						'card-md': size === 'md',
-						'card-sm': size === 'sm',
-						'card-xs': size === 'xs',
 						disabled,
 						'file-card': isCardType.file,
 						'form-check-card form-check form-check-top-left':
@@ -96,7 +79,7 @@ function CardBase({
 				)}
 				{...otherProps}
 			>
-				{selectable ? <div className="card">{content}</div> : content}
+				{selectable ? <div className="card">{children}</div> : children}
 			</div>
 		</Context.Provider>
 	);

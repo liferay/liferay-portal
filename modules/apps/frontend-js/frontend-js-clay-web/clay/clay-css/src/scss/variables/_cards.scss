@@ -212,51 +212,6 @@ $card: map-deep-merge(
 	$card
 );
 
-// Card Sizes
-//
-// Minimum dimensions for the Cards Component Revamp (LPD-79834). The
-// interaction-state treatment lives on the base `$card` variant.
-
-$card-sizes: () !default;
-$card-sizes: map-deep-merge(
-	(
-		card-md: (
-			min-height: 227px,
-			min-width: 296px,
-		),
-
-		card-sm: (
-			min-height: 150px,
-			min-width: 190px,
-		),
-
-		card-xs: (
-			min-height: 56px,
-			min-width: 288px,
-		),
-	),
-	$card-sizes
-);
-
-// Card M Nested Hover
-//
-// On the M size, Hover uses the nested inner-card pattern: the outer shell
-// keeps the shadow while the inner card carries the border and the
-// backdrop-blur treatment (confirmed for the supported browser matrix in
-// LPD-88753).
-
-$card-md-hover-inner-backdrop-filter: blur(20px) !default;
-$card-md-hover-inner-background-color: rgba($white, 0.7) !default;
-$card-md-hover-inner-background-color-fallback: $white !default;
-$card-md-hover-inner-border-color: $primary-l1 !default;
-$card-md-hover-inner-border-width: 2px !default;
-
-$card-md-inner-transition:
-	backdrop-filter 0.15s ease-in-out,
-	-webkit-backdrop-filter 0.15s ease-in-out,
-	background-color 0.15s ease-in-out,
-	border-color 0.15s ease-in-out !default;
-
 // .card-title
 
 $card-title: () !default;
@@ -984,6 +939,15 @@ $user-card: map-deep-merge(
 	),
 	$user-card
 );
+
+// Card Page Layout Views (LPD-79834)
+//
+// Minimum column width per container view; the number of columns is derived
+// from the container width (CSS Grid auto-fill). Dense suits compact layouts
+// (190px cards) and horizontal suits wide/short cards (288px).
+
+$card-page-dense-min-column-width: 190px !default;
+$card-page-horizontal-min-column-width: 288px !default;
 
 $card-page: () !default;
 $card-page: map-deep-merge(

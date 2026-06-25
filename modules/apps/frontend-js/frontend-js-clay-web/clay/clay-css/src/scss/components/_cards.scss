@@ -39,56 +39,31 @@
 	}
 }
 
-// Card Sizes
-
-@each $size, $value in $card-sizes {
-	@if not clay-is-map-unset($value) {
-		.#{$size} {
-			@include clay-card-variant($value);
-		}
-	}
-}
-
-// Card M Nested Hover
+// Card Page Layout Views
 //
-// The inner card is always rendered so the border can appear on hover without
-// a structural change. In Hover the outer shell keeps the shadow (inherited
-// from `.card`) while the inner card carries the 2px border and backdrop blur.
+// The card carries no size of its own; the layout "view" is a property of the
+// container (see LPD-80004). Each container fits as many cards per row as its
+// width allows, derived from a minimum column width, so cards no longer break
+// in narrow containers. Column counts follow from CSS Grid auto-fill.
 
-.card-md {
-	display: flex;
-
-	.card-inner {
-		-webkit-backdrop-filter: blur(0);
-		backdrop-filter: blur(0);
-		border: $card-md-hover-inner-border-width solid transparent;
-		border-radius: clay-enable-rounded($card-inner-border-radius);
-		flex-grow: 1;
-		transition: $card-md-inner-transition;
-	}
-
-	&.hover,
-	&:hover {
-		border-color: transparent;
-		outline-color: transparent;
-
-		.card-inner {
-			-webkit-backdrop-filter: $card-md-hover-inner-backdrop-filter;
-			backdrop-filter: $card-md-hover-inner-backdrop-filter;
-			background-color: $card-md-hover-inner-background-color;
-			border-color: $card-md-hover-inner-border-color;
-			overflow: hidden;
-		}
-	}
+.card-page-dense,
+.card-page-horizontal {
+	display: grid;
+	gap: $grid-gutter-width;
 }
 
-@supports not (
-	(-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))
-) {
-	.card-md.hover .card-inner,
-	.card-md:hover .card-inner {
-		background-color: $card-md-hover-inner-background-color-fallback;
-	}
+.card-page-dense {
+	grid-template-columns: repeat(
+		auto-fill,
+		minmax($card-page-dense-min-column-width, 1fr)
+	);
+}
+
+.card-page-horizontal {
+	grid-template-columns: repeat(
+		auto-fill,
+		minmax($card-page-horizontal-min-column-width, 1fr)
+	);
 }
 
 .card-body {
