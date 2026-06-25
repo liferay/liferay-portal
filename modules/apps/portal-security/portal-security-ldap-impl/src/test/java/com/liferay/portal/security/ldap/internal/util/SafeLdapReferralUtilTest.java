@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.ldap.internal.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -40,123 +41,60 @@ public class SafeLdapReferralUtilTest {
 
 	@Test
 	public void testIsAllowedReferralURL() {
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, ""));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "  ldap://host:389  "));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "LDAP://host:389"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "corba://host/exploit"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "dns://host"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "host:389"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "http://host/exploit"));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class},
-				"ldap://host1:389 ldap://host2:389"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class},
-				"ldap://host1:389 rmi://host2:1099/exploit"));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "ldap://host:389"));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "ldaps://host:636"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "ldapx://host"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, "rmi://host:1099/exploit"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
-				new Class<?>[] {String.class}, (String)null));
+		_testIsAllowedReferralURL(false, "corba://host/exploit");
+		_testIsAllowedReferralURL(false, "dns://host");
+		_testIsAllowedReferralURL(false, "host:389");
+		_testIsAllowedReferralURL(false, "http://host/exploit");
+		_testIsAllowedReferralURL(
+			false, "ldap://host1:389 rmi://host2:1099/exploit");
+		_testIsAllowedReferralURL(false, "ldapx://host");
+		_testIsAllowedReferralURL(false, "rmi://host:1099/exploit");
+		_testIsAllowedReferralURL(false, StringPool.BLANK);
+		_testIsAllowedReferralURL(false, null);
+		_testIsAllowedReferralURL(true, "  ldap://host:389  ");
+		_testIsAllowedReferralURL(true, "LDAP://host:389");
+		_testIsAllowedReferralURL(true, "ldap://host1:389 ldap://host2:389");
+		_testIsAllowedReferralURL(true, "ldap://host:389");
+		_testIsAllowedReferralURL(true, "ldaps://host:636");
 	}
 
 	@Test
-	public void testSearchWithAllowedReferral() throws Exception {
-		ReferralException referralException = Mockito.mock(
-			ReferralException.class);
-
-		SearchResult searchResult = new SearchResult(
-			"cn=test", null, new BasicAttributes());
-
-		NamingEnumeration<SearchResult> referralEnumeration = Mockito.mock(
+	public void testSearch() throws Exception {
+		NamingEnumeration<SearchResult> enumeration = Mockito.mock(
 			NamingEnumeration.class);
 
 		Mockito.when(
-			referralEnumeration.hasMore()
+			enumeration.hasMore()
 		).thenReturn(
 			true, false
 		);
 
+		SearchResult searchResult = new SearchResult(
+			"cn=test", null, new BasicAttributes());
+
 		Mockito.when(
-			referralEnumeration.next()
+			enumeration.next()
 		).thenReturn(
 			searchResult
 		);
 
-		DirContext referralContext = Mockito.mock(DirContext.class);
+		DirContext dirContext = Mockito.mock(DirContext.class);
 
 		Mockito.when(
-			referralContext.search(
+			dirContext.search(
 				Mockito.any(Name.class), Mockito.anyString(),
 				Mockito.any(Object[].class), Mockito.any(SearchControls.class))
 		).thenReturn(
-			referralEnumeration
+			enumeration
 		);
 
-		Mockito.when(
-			referralException.getReferralContext()
-		).thenReturn(
-			referralContext
-		);
-
-		Mockito.when(
-			referralException.getReferralInfo()
-		).thenReturn(
-			"ldap://other:389"
-		);
-
-		Mockito.when(
-			referralException.skipReferral()
-		).thenReturn(
-			false
-		);
-
-		DirContext dirContext = _mockDirContext(referralException);
+		ReferralException referralException = _mockReferralException(
+			dirContext, "ldap://other:389");
 
 		NamingEnumeration<SearchResult> resultEnumeration =
 			SafeLdapReferralUtil.search(
-				dirContext, "(cn=*)", new Object[0], Mockito.mock(Name.class),
-				new SearchControls());
+				"(cn=*)", new Object[0], Mockito.mock(Name.class),
+				_mockRootDirContext(referralException), new SearchControls());
 
 		Assert.assertTrue(resultEnumeration.hasMore());
 		Assert.assertSame(searchResult, resultEnumeration.next());
@@ -165,31 +103,13 @@ public class SafeLdapReferralUtilTest {
 		Mockito.verify(
 			referralException, Mockito.times(1)
 		).getReferralContext();
-	}
 
-	@Test
-	public void testSearchWithDisallowedReferral() throws Exception {
-		ReferralException referralException = Mockito.mock(
-			ReferralException.class);
+		referralException = _mockReferralException(
+			null, "rmi://attacker:1099/exploit");
 
-		Mockito.when(
-			referralException.getReferralInfo()
-		).thenReturn(
-			"rmi://attacker:1099/exploit"
-		);
-
-		Mockito.when(
-			referralException.skipReferral()
-		).thenReturn(
-			false
-		);
-
-		DirContext dirContext = _mockDirContext(referralException);
-
-		NamingEnumeration<SearchResult> resultEnumeration =
-			SafeLdapReferralUtil.search(
-				dirContext, "(cn=*)", new Object[0], Mockito.mock(Name.class),
-				new SearchControls());
+		resultEnumeration = SafeLdapReferralUtil.search(
+			"(cn=*)", new Object[0], Mockito.mock(Name.class),
+			_mockRootDirContext(referralException), new SearchControls());
 
 		Assert.assertFalse(resultEnumeration.hasMore());
 
@@ -228,20 +148,50 @@ public class SafeLdapReferralUtilTest {
 		Map<String, String> environment) {
 
 		Assert.assertEquals(
-			"false",
+			StringPool.FALSE,
 			environment.get("com.sun.jndi.cosnaming.object.trustURLCodebase"));
 		Assert.assertEquals(
-			"false",
+			StringPool.FALSE,
 			environment.get("com.sun.jndi.ldap.object.trustURLCodebase"));
 		Assert.assertEquals(
-			"false",
+			StringPool.FALSE,
 			environment.get("com.sun.jndi.rmi.object.trustURLCodebase"));
 	}
 
-	private DirContext _mockDirContext(ReferralException referralException)
+	private ReferralException _mockReferralException(
+			DirContext dirContext, String referralInfo)
 		throws Exception {
 
-		DirContext dirContext = Mockito.mock(DirContext.class);
+		ReferralException referralException = Mockito.mock(
+			ReferralException.class);
+
+		if (dirContext != null) {
+			Mockito.when(
+				referralException.getReferralContext()
+			).thenReturn(
+				dirContext
+			);
+		}
+
+		Mockito.when(
+			referralException.getReferralInfo()
+		).thenReturn(
+			referralInfo
+		);
+
+		Mockito.when(
+			referralException.skipReferral()
+		).thenReturn(
+			false
+		);
+
+		return referralException;
+	}
+
+	private DirContext _mockRootDirContext(ReferralException referralException)
+		throws Exception {
+
+		DirContext rootDirContext = Mockito.mock(DirContext.class);
 
 		NamingEnumeration<SearchResult> enumeration = Mockito.mock(
 			NamingEnumeration.class);
@@ -253,14 +203,22 @@ public class SafeLdapReferralUtilTest {
 		);
 
 		Mockito.when(
-			dirContext.search(
+			rootDirContext.search(
 				Mockito.any(Name.class), Mockito.anyString(),
 				Mockito.any(Object[].class), Mockito.any(SearchControls.class))
 		).thenReturn(
 			enumeration
 		);
 
-		return dirContext;
+		return rootDirContext;
+	}
+
+	private void _testIsAllowedReferralURL(boolean expected, String urlString) {
+		Assert.assertEquals(
+			expected,
+			ReflectionTestUtil.invoke(
+				SafeLdapReferralUtil.class, "_isAllowedReferralURL",
+				new Class<?>[] {String.class}, urlString));
 	}
 
 }

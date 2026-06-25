@@ -32,51 +32,50 @@ import javax.naming.directory.SearchResult;
 public class SafeLdapReferralUtil {
 
 	public static NamingEnumeration<SearchResult> search(
-			DirContext dirContext, String filter, Object[] filterArguments,
-			Name name, SearchControls searchControls)
+			String filter, Object[] filterArguments, Name name,
+			DirContext rootDirContext, SearchControls searchControls)
 		throws NamingException {
 
-		List<SearchResult> searchResults = new ArrayList<>();
+		ListNamingEnumeration listNamingEnumeration =
+			new ListNamingEnumeration();
 
 		Queue<DirContext> dirContexts = new ArrayDeque<>();
 
-		dirContexts.add(dirContext);
+		dirContexts.add(rootDirContext);
 
 		int referralCount = 0;
 
 		try {
 			while (!dirContexts.isEmpty()) {
-				DirContext currentDirContext = dirContexts.poll();
+				DirContext dirContext = dirContexts.poll();
+
 				NamingEnumeration<SearchResult> enumeration = null;
 
 				try {
-					enumeration = currentDirContext.search(
+					enumeration = dirContext.search(
 						name, filter, filterArguments, searchControls);
 
-					while (enumeration.hasMore()) {
-						searchResults.add(enumeration.next());
-					}
+					listNamingEnumeration.addAll(enumeration);
 				}
 				catch (ReferralException referralException) {
-					boolean hasReferral = true;
+					boolean skipReferral = true;
 
-					while (hasReferral) {
+					while (skipReferral) {
 						Object referralInfo =
 							referralException.getReferralInfo();
 
-						if (!(referralInfo instanceof String) ||
-							!_isAllowedReferralURL((String)referralInfo) ||
-							(referralCount >= _MAX_REFERRAL_COUNT)) {
+						if ((referralInfo instanceof String) &&
+							_isAllowedReferralURL((String)referralInfo) &&
+							(referralCount < _MAX_REFERRAL_COUNT)) {
 
-							hasReferral = referralException.skipReferral();
+							dirContexts.add(
+								(DirContext)
+									referralException.getReferralContext());
 
-							continue;
+							referralCount++;
 						}
 
-						dirContexts.add(
-							(DirContext)referralException.getReferralContext());
-						hasReferral = referralException.skipReferral();
-						referralCount++;
+						skipReferral = referralException.skipReferral();
 					}
 				}
 				finally {
@@ -84,23 +83,23 @@ public class SafeLdapReferralUtil {
 						enumeration.close();
 					}
 
-					if (currentDirContext != dirContext) {
-						currentDirContext.close();
+					if (dirContext != rootDirContext) {
+						dirContext.close();
 					}
 				}
 			}
 		}
 		finally {
-			for (DirContext remainingDirContext : dirContexts) {
-				if (remainingDirContext == dirContext) {
+			for (DirContext dirContext : dirContexts) {
+				if (dirContext == rootDirContext) {
 					continue;
 				}
 
-				remainingDirContext.close();
+				dirContext.close();
 			}
 		}
 
-		return new ListNamingEnumeration(searchResults);
+		return listNamingEnumeration;
 	}
 
 	public static void setProperties(
@@ -142,8 +141,12 @@ public class SafeLdapReferralUtil {
 	private static class ListNamingEnumeration
 		implements NamingEnumeration<SearchResult> {
 
-		public ListNamingEnumeration(List<SearchResult> searchResults) {
-			_iterator = searchResults.iterator();
+		public void addAll(NamingEnumeration<SearchResult> namingEnumeration)
+			throws NamingException {
+
+			while (namingEnumeration.hasMore()) {
+				_searchResults.add(namingEnumeration.next());
+			}
 		}
 
 		@Override
@@ -152,25 +155,42 @@ public class SafeLdapReferralUtil {
 
 		@Override
 		public boolean hasMore() {
-			return _iterator.hasNext();
+			Iterator<SearchResult> iterator = _getIterator();
+
+			return iterator.hasNext();
 		}
 
 		@Override
 		public boolean hasMoreElements() {
-			return _iterator.hasNext();
+			Iterator<SearchResult> iterator = _getIterator();
+
+			return iterator.hasNext();
 		}
 
 		@Override
 		public SearchResult next() {
-			return _iterator.next();
+			Iterator<SearchResult> iterator = _getIterator();
+
+			return iterator.next();
 		}
 
 		@Override
 		public SearchResult nextElement() {
-			return _iterator.next();
+			Iterator<SearchResult> iterator = _getIterator();
+
+			return iterator.next();
 		}
 
-		private final Iterator<SearchResult> _iterator;
+		private Iterator<SearchResult> _getIterator() {
+			if (_iterator == null) {
+				_iterator = _searchResults.iterator();
+			}
+
+			return _iterator;
+		}
+
+		private Iterator<SearchResult> _iterator;
+		private final List<SearchResult> _searchResults = new ArrayList<>();
 
 	}
 

@@ -538,8 +538,8 @@ public class SafeLdapContextImpl implements SafeLdapContext {
 
 		if (_manageReferrals) {
 			return SafeLdapReferralUtil.search(
-				_ldapContext, safeLdapFilter.getFilterString(),
-				safeLdapFilter.getArguments(), safeLdapName, searchControls);
+				safeLdapFilter.getFilterString(), safeLdapFilter.getArguments(),
+				safeLdapName, _ldapContext, searchControls);
 		}
 
 		return _ldapContext.search(
