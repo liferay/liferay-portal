@@ -5,9 +5,12 @@ dependencies {
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-engine-adapter-api")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-spi")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":dxp:apps:portal-search-tuning:portal-search-tuning-synonyms-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
