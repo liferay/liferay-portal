@@ -1,0 +1,19 @@
+// INSERT @use rules
+
+@import '_license-text';
+
+@import 'functions/_global-functions';
+
+// INSERT CUSTOM VARS
+
+@import 'atlas-custom-properties/_variables';
+
+@import 'atlas/_variables';
+
+@import '_variables';
+
+@import '_mixins';
+
+@import '_components';
+
+// INSERT CUSTOM EXTENSIONS
