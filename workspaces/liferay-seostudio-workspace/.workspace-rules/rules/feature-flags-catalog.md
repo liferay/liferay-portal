@@ -13,9 +13,8 @@ Defaults change between quarterly releases. Reverify against the running portal 
 | `LPD-38869` | on | deprecation | Private layout REST access | `manage-pages` (private pages) | none |
 | `LPD-39244` | off | beta | Headless Admin Fragment / page composition REST API | `manage-pages`, `scaffold-fragment` | none |
 | `LPD-74328` | off | beta | Page element / page-specification creation and update (headless-admin-site) | `manage-pages`, `build-site` | `LPD-35443` |
-| `LPD-34594` | off | release | Object entry REST enhancements (related objects, entry manager, definition upgrades) | `manage-objects` | none |
-| `LPD-17564` | off | release | Object collaborators API (per entry permissions) | `manage-objects`, `manage-roles-permissions` | `LPD-34594` |
-| `LPD-52006` | off | beta | Object entry folders (nested folder structure) | `manage-objects` | `LPD-17564`, `LPD-34594` |
+| `LPD-17564` | off | release | Object collaborators API (per entry permissions) | `manage-objects`, `manage-roles-permissions` | none |
+| `LPD-52006` | off | beta | Object entry folders (nested folder structure) | `manage-objects` | `LPD-17564` |
 | `LPD-32867` | off | beta | Content provider integration for dynamic content sets (headless-delivery) | (informational) | none |
 | `LPD-36010` | on | deprecation | Legacy object behavior toggle | (informational) | none |
 

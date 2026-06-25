@@ -60,7 +60,7 @@ private ObjectDefinition _toObjectDefinition(
         {
             setRootObjectDefinitionExternalReferenceCode(
                 () -> {
-                    if (!FeatureFlagManagerUtil.isEnabled("LPD-34594") ||
+                    if (!FeatureFlagManagerUtil.isEnabled("LPS-172017") ||
                         !objectDefinition.isSystem()) {
 
                         return null;
@@ -81,7 +81,7 @@ private ObjectDefinition _toObjectDefinition(
 
     return new ObjectDefinition() {
         {
-            if (FeatureFlagManagerUtil.isEnabled("LPD-34594")) {
+            if (FeatureFlagManagerUtil.isEnabled("LPS-172017")) {
                 setRootObjectDefinitionExternalReferenceCode(
                     () -> {
                         if (!objectDefinition.isSystem()) {

@@ -31,7 +31,7 @@ This [Next.js](https://nextjs.org) template consumes [Liferay's](https://www.lif
 Liferay provides some predefined content structures, but you can create your own.
 
 !!! important
-    Currently, this feature is behind a beta feature flag ([LPD-17564](https://liferay.atlassian.net/browse/LPD-17564)) and also depends on release feature flags ([LPD-32050](https://liferay.atlassian.net/browse/LPD-32050) and [LPD-34594](https://liferay.atlassian.net/browse/LPD-34594)). Read [Feature Flags](https://learn.liferay.com/w/dxp/security-and-administration/administration/configuring-liferay/feature-flags) for more information.
+    Currently, this feature is behind a beta feature flag ([LPD-17564](https://liferay.atlassian.net/browse/LPD-17564)) and also depends on a release feature flag ([LPD-32050](https://liferay.atlassian.net/browse/LPD-32050)). Read [Feature Flags](https://learn.liferay.com/w/dxp/security-and-administration/administration/configuring-liferay/feature-flags) for more information.
 
 1. Go to the Structures page in Liferay CMS Dashboard and click *Add* (![Add icon](../content-page/images/icon-add.png)) &rarr; *Content*.
 

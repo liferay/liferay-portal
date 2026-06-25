@@ -25,7 +25,7 @@ Probe the following flags via `feature-flags` before any API call. Record the re
 | Flag | Default | Required For |
 | --- | --- | --- |
 | `LPD-17564` | off | Object collaborators API (per entry permissions) |
-| `LPD-52006` | off | Object entry folders (requires `LPD-17564` + `LPD-34594`) |
+| `LPD-52006` | off | Object entry folders (requires `LPD-17564`) |
 
 Skip flags the user's workflow does not need. Do not enable flags without explicit user confirmation.
 

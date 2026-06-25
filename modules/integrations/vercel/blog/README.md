@@ -25,7 +25,7 @@ This [Next.js](https://nextjs.org) template consumes [Liferay's](https://www.lif
 ## Set Up Your Local Liferay Instance
 
 !!! important
-    Currently, this feature is behind a beta feature flag ([LPD-17564](https://liferay.atlassian.net/browse/LPD-17564)) and also depends on release feature flags ([LPD-32050](https://liferay.atlassian.net/browse/LPD-32050) and [LPD-34594](https://liferay.atlassian.net/browse/LPD-34594)). Read [Feature Flags](https://learn.liferay.com/w/dxp/security-and-administration/administration/configuring-liferay/feature-flags) for more information.
+    Currently, this feature is behind a beta feature flag ([LPD-17564](https://liferay.atlassian.net/browse/LPD-17564)) and also depends on a release feature flag ([LPD-32050](https://liferay.atlassian.net/browse/LPD-32050)). Read [Feature Flags](https://learn.liferay.com/w/dxp/security-and-administration/administration/configuring-liferay/feature-flags) for more information.
 
 1. Log into the Liferay instance at [http://localhost:8080](http://localhost:8080)
 
