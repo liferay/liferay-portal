@@ -207,7 +207,6 @@ public class SafeLdapReferralUtilTest {
 
 		Assert.assertEquals(
 			LDAPConstants.REFERRAL_THROW, environment.get(Context.REFERRAL));
-
 		_assertTrustURLCodebaseDisabled(environment);
 
 		SafeLdapReferralUtil.setProperties(
@@ -215,7 +214,6 @@ public class SafeLdapReferralUtilTest {
 
 		Assert.assertEquals(
 			LDAPConstants.REFERRAL_IGNORE, environment.get(Context.REFERRAL));
-
 		_assertTrustURLCodebaseDisabled(environment);
 
 		SafeLdapReferralUtil.setProperties(
@@ -223,7 +221,6 @@ public class SafeLdapReferralUtilTest {
 
 		Assert.assertEquals(
 			LDAPConstants.REFERRAL_THROW, environment.get(Context.REFERRAL));
-
 		_assertTrustURLCodebaseDisabled(environment);
 	}
 

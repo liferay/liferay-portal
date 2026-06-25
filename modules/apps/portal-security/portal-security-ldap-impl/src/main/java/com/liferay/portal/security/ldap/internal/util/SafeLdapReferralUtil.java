@@ -47,7 +47,6 @@ public class SafeLdapReferralUtil {
 		try {
 			while (!dirContexts.isEmpty()) {
 				DirContext currentDirContext = dirContexts.poll();
-
 				NamingEnumeration<SearchResult> enumeration = null;
 
 				try {
@@ -74,12 +73,10 @@ public class SafeLdapReferralUtil {
 							continue;
 						}
 
-						referralCount++;
-
 						dirContexts.add(
 							(DirContext)referralException.getReferralContext());
-
 						hasReferral = referralException.skipReferral();
+						referralCount++;
 					}
 				}
 				finally {

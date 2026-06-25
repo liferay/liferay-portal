@@ -72,13 +72,10 @@ public class SafeLdapContextImplTest {
 				new SearchControls());
 
 		Assert.assertTrue(resultEnumeration.hasMore());
-
 		Assert.assertSame(searchResult, resultEnumeration.next());
-
 		Assert.assertFalse(resultEnumeration.hasMore());
 
 		ldapContext = Mockito.mock(LdapContext.class);
-
 		enumeration = Mockito.mock(NamingEnumeration.class);
 
 		Mockito.when(
