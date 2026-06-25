@@ -43,9 +43,9 @@
 		<sequential>
 			<property file="${project.dir}/portal-impl/src/portal.properties" prefix="portal" />
 
-			<mirrors-get
-				dest="@{app.server.lib.portal.dir}/${portal.setup.liferay.pool.provider.jar.name[hikaricp]}"
-				src="${portal.setup.liferay.pool.provider.jar.url[hikaricp]}"
+			<copy
+				file="${project.dir}/lib/portal/hikaricp.jar"
+				tofile="@{app.server.lib.portal.dir}/${portal.setup.liferay.pool.provider.jar.name[hikaricp]}"
 			/>
 		</sequential>
 	</macrodef>

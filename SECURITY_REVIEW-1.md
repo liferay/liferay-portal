@@ -67,11 +67,11 @@ Bootstrap XSS risk is limited to Bootstrap JS components (data-attribute driven 
 
 ## Priority Order for Remediation
 
-1. **XStream (Critical, RCE)** — Highest risk due to active use in export/import and known exploitation in the wild.
+1. **XStream (Critical, RCE)** ✓ — upgraded 1.4.7→1.4.21. Security framework (deny-all + allowlist via `NoTypePermission.NONE` + `allowTypes`) was already wired in `PortletDataContextImpl`. JAR swap only, no code changes required.
 2. **commons-collections (Critical, RCE)** — unsafe deserialization; frequently chained with XStream exploits.
-3. **Log4j (Critical)** — confirm which CVE Aikido is flagging; Log4Shell (CVE-2021-44228) requires log4j-core ≥ 2.x; the `log4j.jar` here is 1.x (a different set of CVEs).
+3. **Log4j (Critical)** — ~~confirm which CVE Aikido is flagging~~ CVE-2019-17571 (`SocketServer` RCE via deserialization). **Not exploitable:** Liferay never starts a SocketServer; only file appenders are used (`portal-log4j.xml`). `log4j-over-slf4j` cannot replace `log4j.jar` here because `log4j-extras` (`EnhancedPatternLayout`, `RollingFileAppender`) depends on log4j 1.x internals. Full remediation requires a Log4j 2.x migration (out of scope for security-patch branch). **Status: accepted risk — SocketServer not reachable.**
 4. **commons-fileupload (Critical)** — improper access control on file upload handling.
 5. **shiro-core / shiro-web (Critical)** — conditional on opensocial being deployed.
-6. **High severity deps** — beanutils, struts-core, json, xerces, httpclient: assess exploitability in context of how each is used (Struts in particular may be mitigated by Liferay's own input handling layer).
-7. **Medium severity** — commons-lang3, protobuf, struts-tiles, commons-io, commons-lang, bootstrap: schedule for next maintenance window.
+6. **High severity deps** — beanutils ✓ upgraded 1.9.2→1.9.4; struts-core: **mitigated** — `PortalRequestProcessor.processPopulate()` blocks `class.*`/`[class]` parameters via `struts.portlet.ignored.parameters.regexp` (CVE-2014-0114); 1.3.10 is final 1.x release, no upstream patch. json, xerces, httpclient: assess exploitability in context of how each is used.
+7. **Medium severity** — commons-io ✓ upgraded 2.5→2.15.1; commons-lang3 ✓ upgraded 3.4→3.14.0 (petra-doulos, portal-template-soy build.gradle); commons-lang 2.6: final 2.x release (EOL), no same-package upgrade path; struts-tiles 1.3.10: same EOL situation as struts-core; protobuf: inside elasticsearch bundle, not independently on classpath (no action needed); bootstrap 4.3.1: transitive via liferay-theme-deps-7.0, XSS only via unsanitised user-controlled data-* attributes on Bootstrap JS components — accepted risk.
 8. **Low — `core` ReDoS** — likely inside the elasticsearch bundle; low exploitability.

@@ -1,11 +1,11 @@
 dependencies {
 	compileInclude group: "com.googlecode.concurrentlinkedhashmap", name: "concurrentlinkedhashmap-lru", version: "1.4.2"
-	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.4"
+	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.14.0"
 
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.49.0"
 	compileOnly group: "commons-logging", name: "commons-logging", version: "1.2"
 	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
-	compileOnly group: "org.json", name: "json", version: "20140107"
+	compileOnly group: "org.json", name: "json", version: "20240303"
 }
 
 liferayOSGi {
