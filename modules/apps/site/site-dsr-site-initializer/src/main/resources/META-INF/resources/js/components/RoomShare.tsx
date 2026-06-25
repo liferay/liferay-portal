@@ -134,6 +134,7 @@ function isEmailAddressValid(email: string) {
 function RoomShare({
 	canAssignAllRoles = false,
 	closeModal,
+	readOnly = false,
 	roomId,
 }: IRoomShareProps) {
 	const [bannerDismissed, setBannerDismissed] = useState(false);
@@ -371,7 +372,7 @@ function RoomShare({
 	}, [loadUsers]);
 
 	const canEditMember = (user: IUserAccount): boolean => {
-		if (user.roleKey === OWNER_ROLE_KEY) {
+		if (readOnly || user.roleKey === OWNER_ROLE_KEY) {
 			return false;
 		}
 
@@ -424,7 +425,7 @@ function RoomShare({
 								allowDuplicateValues={false}
 								autoFocus={true}
 								data-testid="emailAddressesInput"
-								disabled={loading}
+								disabled={loading || readOnly}
 								inputName="userEmailAddresses"
 								items={emailAddresses}
 								onItemsChange={(emails: Array<any>) =>
@@ -441,7 +442,7 @@ function RoomShare({
 									<ClayButton
 										className="dsr-site-role-trigger-button"
 										data-testid="roleKeyButton"
-										disabled={loading}
+										disabled={loading || readOnly}
 										displayType="secondary"
 										size="xs"
 									>
@@ -472,7 +473,7 @@ function RoomShare({
 
 						<ClayButton
 							data-testid="inviteButton"
-							disabled={loading}
+							disabled={loading || readOnly}
 							onClick={handleInvite}
 						>
 							{Liferay.Language.get('invite')}
@@ -495,7 +496,7 @@ function RoomShare({
 
 						<div className="dsr-expiration-date-picker">
 							<ClayDatePicker
-								disabled={loading}
+								disabled={loading || readOnly}
 								expanded={expirationDatePickerExpanded}
 								min={minExpirationDate}
 								onChange={(value: string) => {

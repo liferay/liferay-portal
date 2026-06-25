@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.dsr.site.initializer.internal.servlet.ServletContextUtil;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 import com.liferay.taglib.util.IncludeTag;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,6 +78,7 @@ public class ShareTag extends IncludeTag {
 			_canAssignAllRoles =
 				permissionChecker.isGroupAdmin(_groupId) ||
 				permissionChecker.isGroupOwner(_groupId);
+			_readOnly = DSRRoomUtil.isReadOnly(objectEntry, permissionChecker);
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -136,6 +138,7 @@ public class ShareTag extends IncludeTag {
 		_canAssignAllRoles = false;
 		_groupId = 0;
 		_hasAssignMembersPermission = false;
+		_readOnly = false;
 		_roomId = 0;
 	}
 
@@ -149,6 +152,8 @@ public class ShareTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-site-dsr-site-initializer:share:canAssignAllRoles",
 			_canAssignAllRoles);
+		httpServletRequest.setAttribute(
+			"liferay-site-dsr-site-initializer:share:readOnly", _readOnly);
 		httpServletRequest.setAttribute(
 			"liferay-site-dsr-site-initializer:share:roomId", _roomId);
 	}
@@ -180,6 +185,7 @@ public class ShareTag extends IncludeTag {
 	private boolean _canAssignAllRoles;
 	private long _groupId;
 	private boolean _hasAssignMembersPermission;
+	private boolean _readOnly;
 	private long _roomId;
 
 }

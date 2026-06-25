@@ -17,5 +17,6 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <%
 boolean canAssignAllRoles = (boolean)request.getAttribute("liferay-site-dsr-site-initializer:share:canAssignAllRoles");
+boolean readOnly = (boolean)request.getAttribute("liferay-site-dsr-site-initializer:share:readOnly");
 long roomId = (long)request.getAttribute("liferay-site-dsr-site-initializer:share:roomId");
 %>

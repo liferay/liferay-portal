@@ -11,9 +11,11 @@ import RoomShare from './RoomShare';
 
 function RoomShareButton({
 	canAssignAllRoles,
+	readOnly = false,
 	roomId,
 }: {
 	canAssignAllRoles: boolean;
+	readOnly?: boolean;
 	roomId: number;
 }) {
 	return (
@@ -29,7 +31,13 @@ function RoomShareButton({
 						closeModal,
 					}: {
 						closeModal: () => void;
-					}) => RoomShare({canAssignAllRoles, closeModal, roomId}),
+					}) =>
+						RoomShare({
+							canAssignAllRoles,
+							closeModal,
+							readOnly,
+							roomId,
+						}),
 					size: 'lg',
 				})
 			}
