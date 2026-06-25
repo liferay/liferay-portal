@@ -37,7 +37,6 @@
 /benchmarks/*.sql
 /benchmarks/lib
 /benchmarks/log
-/bin
 /build
 /build.*.properties
 /classes/Test.class
