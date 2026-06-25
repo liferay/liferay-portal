@@ -156,7 +156,6 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.mail.MailMessage;
 import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -204,11 +203,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Brian Wing Shun Chan
  */
-@FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-34594"), @FeatureFlag(value = "LPS-173537")
-	}
-)
+@FeatureFlag("LPS-173537")
 @RunWith(Arquillian.class)
 public class ObjectActionLocalServiceTest {
 

@@ -29,7 +29,6 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
-import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -41,9 +40,7 @@ import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -70,9 +67,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Víctor Galán
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594")}
-)
+@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 
@@ -255,8 +250,7 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 	public void testUpgradeObjectRelationshipsCascadeDeletionType()
 		throws Exception {
 
-		_testUpgradeObjectRelationshipsCascadeDeletionType(false);
-		_testUpgradeObjectRelationshipsCascadeDeletionType(true);
+		_testUpgradeObjectRelationshipsCascadeDeletionType();
 	}
 
 	@Test
@@ -520,8 +514,7 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 		upgradeProcess.upgrade();
 	}
 
-	private void _testUpgradeObjectRelationshipsCascadeDeletionType(
-			boolean featureFlagEnabled)
+	private void _testUpgradeObjectRelationshipsCascadeDeletionType()
 		throws Exception {
 
 		ObjectDefinition objectDefinition1 = _addCMSObjectDefinition();
@@ -538,16 +531,7 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 		ObjectRelationship objectRelationship4 = _addObjectRelationship(
 			objectDefinition4, objectDefinition3);
 
-		PropsUtil.set(
-			FeatureFlagConstants.getKey("LPD-34594"),
-			String.valueOf(featureFlagEnabled));
-
-		try {
-			_runUpgrade();
-		}
-		finally {
-			PropsUtil.set(FeatureFlagConstants.getKey("LPD-34594"), "true");
-		}
+		_runUpgrade();
 
 		_assertObjectRelationshipEdge(
 			true, objectRelationship1.getObjectRelationshipId());

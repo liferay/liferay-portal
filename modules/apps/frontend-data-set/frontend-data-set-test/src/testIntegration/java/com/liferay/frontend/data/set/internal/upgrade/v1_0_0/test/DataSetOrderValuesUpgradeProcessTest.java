@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -41,9 +40,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Daniel Sanz
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-34594"), @FeatureFlag("LPS-164563")}
-)
+@FeatureFlag("LPS-164563")
 @RunWith(Arquillian.class)
 public class DataSetOrderValuesUpgradeProcessTest {
 

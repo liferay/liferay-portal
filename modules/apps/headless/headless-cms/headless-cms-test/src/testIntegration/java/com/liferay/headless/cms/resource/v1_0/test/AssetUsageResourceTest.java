@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -81,9 +80,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Thiago Buarque
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-34594")}
-)
+@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class AssetUsageResourceTest extends BaseAssetUsageResourceTestCase {
 

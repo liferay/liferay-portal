@@ -113,7 +113,6 @@ public class ObjectEntryWorkflowHandlerTest {
 		Assert.assertNull(workflowDefinitionLink);
 	}
 
-	@FeatureFlag("LPD-34594")
 	@Test
 	public void testGetEntryClassPK() throws Exception {
 		TreeTestUtil.createObjectDefinitionTree(

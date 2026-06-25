@@ -60,7 +60,6 @@ public class UpdateStructureStrutsActionTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@FeatureFlag("LPD-34594")
 	@Test
 	@TestInfo("LPD-77022")
 	public void testExecute() throws Exception {

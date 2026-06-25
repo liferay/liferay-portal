@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -43,11 +42,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /**
  * @author Guilherme Sá
  */
-@FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-17564"), @FeatureFlag(value = "LPD-34594")
-	}
-)
+@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class BoundObjectDefinitionsExportImportTest
 	extends BaseExportImportTestCase {

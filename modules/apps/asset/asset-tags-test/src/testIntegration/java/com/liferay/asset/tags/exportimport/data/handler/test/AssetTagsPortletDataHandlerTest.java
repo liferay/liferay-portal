@@ -214,7 +214,7 @@ public class AssetTagsPortletDataHandlerTest
 	@FeatureFlags(
 		featureFlags = {
 			@FeatureFlag(enable = false, value = "LPD-11235"),
-			@FeatureFlag(value = "LPD-17564"), @FeatureFlag(value = "LPD-34594")
+			@FeatureFlag("LPD-17564")
 		}
 	)
 	@Test

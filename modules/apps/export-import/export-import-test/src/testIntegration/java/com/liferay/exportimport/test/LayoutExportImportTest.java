@@ -83,7 +83,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
@@ -984,7 +983,6 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		_assertFriendlyURL(layoutB, friendlyURLB);
 	}
 
-	@FeatureFlag("LPD-34594")
 	@Test
 	public void testPromotedPageWithSamePriorityTakesPrecedence()
 		throws Exception {
