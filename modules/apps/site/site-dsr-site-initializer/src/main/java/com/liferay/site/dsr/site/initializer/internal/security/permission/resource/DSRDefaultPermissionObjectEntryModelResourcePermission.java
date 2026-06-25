@@ -17,6 +17,11 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * @author Tancredi Covioli
  */
@@ -79,8 +84,9 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermission
 			String actionId)
 		throws PortalException {
 
-		if (MapUtil.getInteger(objectEntry.getValues(), "roomStatus") !=
-				WorkflowConstants.STATUS_INACTIVE) {
+		if (Objects.equals(actionId, ActionKeys.VIEW) ||
+			(MapUtil.getInteger(objectEntry.getValues(), "roomStatus") !=
+				WorkflowConstants.STATUS_INACTIVE)) {
 
 			return _contains(permissionChecker, objectEntry, actionId);
 		}
@@ -91,7 +97,9 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermission
 
 		long siteId = MapUtil.getLong(objectEntry.getValues(), "siteId");
 
-		if ((siteId > 0) && permissionChecker.isGroupOwner(siteId)) {
+		if ((siteId > 0) && permissionChecker.isGroupOwner(siteId) &&
+			_archivedRoomOwnerAllowedActionIds.contains(actionId)) {
+
 			return true;
 		}
 
@@ -139,6 +147,13 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermission
 		return _modelResourcePermission.contains(
 			permissionChecker, objectEntry, actionId);
 	}
+
+	private static final Set<String> _archivedRoomOwnerAllowedActionIds =
+		new HashSet<>(
+			Arrays.asList(
+				ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
+				ActionKeys.DELETE_DISCUSSION, ActionKeys.UPDATE,
+				ActionKeys.UPDATE_DISCUSSION));
 
 	private final ModelResourcePermission<ObjectEntry> _modelResourcePermission;
 	private final ObjectEntryLocalService _objectEntryLocalService;

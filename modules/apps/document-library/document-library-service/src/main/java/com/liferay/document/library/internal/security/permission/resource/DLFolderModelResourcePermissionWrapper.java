@@ -10,6 +10,8 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermission;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -22,7 +24,10 @@ import com.liferay.portal.kernel.security.permission.resource.StagedModelPermiss
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -38,12 +43,33 @@ import org.osgi.service.component.annotations.Reference;
 public class DLFolderModelResourcePermissionWrapper
 	extends BaseModelResourcePermissionWrapper<DLFolder> {
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerList = ServiceTrackerListFactory.open(
+			bundleContext,
+			ModelResourcePermissionFactory.ModelResourcePermissionConfigurator.
+				class,
+			"(model.class.name=" +
+				"com.liferay.document.library.kernel.model.DLFolder)");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerList.close();
+	}
+
 	@Override
 	protected ModelResourcePermission<DLFolder> doGetModelResourcePermission() {
 		return ModelResourcePermissionFactory.create(
 			DLFolder.class, DLFolder::getFolderId,
 			_dlFolderLocalService::getDLFolder, _portletResourcePermission,
 			(modelResourcePermission, consumer) -> {
+				_serviceTrackerList.forEach(
+					modelResourcePermissionConfigurator ->
+						modelResourcePermissionConfigurator.
+							configureModelResourcePermissionLogics(
+								modelResourcePermission, consumer));
+
 				consumer.accept(
 					new StagedModelPermissionLogic<>(
 						_stagingPermission, DLPortletKeys.DOCUMENT_LIBRARY,
@@ -88,6 +114,10 @@ public class DLFolderModelResourcePermissionWrapper
 
 	@Reference(target = "(resource.name=" + DLConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;
+
+	private ServiceTrackerList
+		<ModelResourcePermissionFactory.ModelResourcePermissionConfigurator>
+			_serviceTrackerList;
 
 	@Reference
 	private StagingPermission _stagingPermission;

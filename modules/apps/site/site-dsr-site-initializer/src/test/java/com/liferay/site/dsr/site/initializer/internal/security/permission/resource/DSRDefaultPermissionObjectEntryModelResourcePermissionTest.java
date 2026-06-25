@@ -61,7 +61,31 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermissionTest {
 
 	@Test
 	public void testCheck() throws Exception {
+		String modelName = RandomTestUtil.randomString();
+
 		_mockRoom(WorkflowConstants.STATUS_INACTIVE, 0L);
+
+		Mockito.when(
+			_modelResourcePermission.getModelName()
+		).thenReturn(
+			modelName
+		);
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_objectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		long userId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_permissionChecker.getUserId()
+		).thenReturn(
+			userId
+		);
 
 		try {
 			_dsrDefaultPermissionObjectEntryModelResourcePermission.check(
@@ -70,39 +94,49 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermissionTest {
 			Assert.fail();
 		}
 		catch (PrincipalException.MustHavePermission principalException) {
+			Assert.assertEquals(
+				String.format(
+					"User %s must have %s permission for %s %s", userId,
+					ActionKeys.VIEW, modelName, objectEntryId),
+				principalException.getMessage());
 		}
 	}
 
 	@Test
 	public void testContains() throws Exception {
-		_mockRoom(
-			WorkflowConstants.STATUS_INACTIVE, RandomTestUtil.randomLong());
+		long siteId = RandomTestUtil.randomLong();
 
-		Assert.assertFalse(
-			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
-				_permissionChecker, _objectEntry, ActionKeys.VIEW));
-
-		_mockRoom(WorkflowConstants.STATUS_INACTIVE, 0L);
+		_mockRoom(WorkflowConstants.STATUS_INACTIVE, siteId);
 
 		Mockito.when(
-			_permissionChecker.isGroupOwner(Mockito.anyLong())
+			_permissionChecker.isGroupMember(siteId)
 		).thenReturn(
 			true
 		);
-
-		Assert.assertFalse(
-			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
-				_permissionChecker, _objectEntry, ActionKeys.VIEW));
-
-		_mockRoom(
-			WorkflowConstants.STATUS_INACTIVE, RandomTestUtil.randomLong());
 
 		Assert.assertTrue(
 			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
 				_permissionChecker, _objectEntry, ActionKeys.VIEW));
 
-		_mockRoom(
-			WorkflowConstants.STATUS_INACTIVE, RandomTestUtil.randomLong());
+		Assert.assertFalse(
+			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
+				_permissionChecker, _objectEntry, ActionKeys.UPDATE));
+
+		Mockito.when(
+			_permissionChecker.isGroupOwner(siteId)
+		).thenReturn(
+			true
+		);
+
+		Assert.assertTrue(
+			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
+				_permissionChecker, _objectEntry, ActionKeys.UPDATE));
+
+		_mockRoom(WorkflowConstants.STATUS_INACTIVE, 0L);
+
+		Assert.assertFalse(
+			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
+				_permissionChecker, _objectEntry, ActionKeys.UPDATE));
 
 		Mockito.when(
 			_permissionChecker.isCompanyAdmin()
@@ -110,15 +144,9 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermissionTest {
 			true
 		);
 
-		Mockito.when(
-			_permissionChecker.isGroupOwner(Mockito.anyLong())
-		).thenReturn(
-			false
-		);
-
 		Assert.assertTrue(
 			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
-				_permissionChecker, _objectEntry, ActionKeys.VIEW));
+				_permissionChecker, _objectEntry, ActionKeys.UPDATE));
 
 		_mockRoom(
 			WorkflowConstants.STATUS_APPROVED, RandomTestUtil.randomLong());
@@ -134,7 +162,7 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermissionTest {
 			_dsrDefaultPermissionObjectEntryModelResourcePermission.contains(
 				_permissionChecker, _objectEntry, ActionKeys.UPDATE));
 
-		long siteId = RandomTestUtil.randomLong();
+		siteId = RandomTestUtil.randomLong();
 
 		_mockRoom(WorkflowConstants.STATUS_APPROVED, siteId);
 
