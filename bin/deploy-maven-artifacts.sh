@@ -3,11 +3,27 @@
 #set -v -x
 set -u -e
 
-version=7.0.6e
+version=7.0.6f
 lexicon_version=1.0.25a
-repo_url=http://artifactory.axiell.local:8081
+repo_url=https://artifactory.axiell.com
 repo_dir=~/.m2/repository
-bundles_dir=/opt/java/liferay/arena-7.0.6-ga7/bundles.org
+bundles_dir=/opt/projects/liferay/portal/arena-7.0.6-ga7/bundles.org
+
+function downloadIfMissing {
+  local file=${1}
+  local packaging=${2}
+  local version=${3}
+  local groupId=${4:-com.liferay.portal}
+  local dir=${groupId//./\/}
+  local local_path=${repo_dir}/${dir}/${file}/${version}/${file}-${version}.${packaging}
+  if [ ! -f "${local_path}" ]; then
+    echo "Downloading missing artifact: ${groupId}:${file}:${version}:${packaging}"
+    mkdir -p "$(dirname "${local_path}")"
+    mvn dependency:get \
+      -DremoteRepositories=${repo_url}/artifactory/ext-release-local/ \
+      -Dartifact=${groupId}:${file}:${version}:${packaging}
+  fi
+}
 
 function deployFile {
   local file=${1}
@@ -15,6 +31,7 @@ function deployFile {
   local version=${3}
   local groupId=${4:-com.liferay.portal}
   local dir=${groupId//./\/}
+  downloadIfMissing ${file} ${packaging} ${version} ${groupId}
   echo "Deploying file: ${file} packaging: ${packaging}"
   tmp_file=$(mktemp)
   cp ${repo_dir}/${dir}/${file}/${version}/${file}-${version}.${packaging} ${tmp_file}

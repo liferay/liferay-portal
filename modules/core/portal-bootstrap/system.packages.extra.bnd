@@ -1,4 +1,7 @@
 Bundle-SymbolicName: system.packages.extra
+
+-fixupmessages: "Classes found in the wrong directory*";is:=ignore
+
 Export-Package:\
 	!*.dependencies.*,\
 	\
@@ -110,7 +113,7 @@ Export-Package:\
 	com.sun.syndication.io;version='1.0',\
 	com.sun.syndication.io.impl;version='1.0',\
 	\
-	com.thoughtworks.xstream.*;version='1.4.7',\
+	com.thoughtworks.xstream.*;version='1.4.21',\
 	\
 	java_cup.runtime.*;version='2.7.1',\
 	\
@@ -244,7 +247,7 @@ Export-Package:\
 	\
 	org.jdom.*;version='1.0',\
 	\
-	org.json.*;version='2012.6.16.c7d2d9161321e9',\
+	org.json.*;version='20240303.0.0',\
 	\
 	org.objectweb.asm;version='5.0.1',\
 	org.objectweb.asm.attrs;version='5.0.1',\
