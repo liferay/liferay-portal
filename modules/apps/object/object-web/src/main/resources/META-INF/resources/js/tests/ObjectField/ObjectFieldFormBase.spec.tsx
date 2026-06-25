@@ -101,84 +101,8 @@ describe('Formula field business type', () => {
 	});
 });
 
-describe('when the root model feature flag [LPD-34594] is disabled', () => {
+describe('when the root model feature is enabled', () => {
 	describe('the mandatory toggle', () => {
-		beforeEach(() => {
-			global.Liferay = {
-				...global.Liferay,
-				FeatureFlags: {
-					...global.Liferay?.FeatureFlags,
-					'LPD-34594': false,
-				},
-			};
-		});
-
-		it('does not render help text', async () => {
-			fetchMock.get(OBJECT_RELATIONSHIPS_URL_REGEX, {
-				...objectRelationship,
-				deletionType: 'cascade',
-				edge: true,
-			});
-
-			render(
-				<ObjectFieldFormBase {...objectFieldFormBaseDefaultProps} />
-			);
-
-			expect(
-				screen.queryByLabelText('help-text')
-			).not.toBeInTheDocument();
-		});
-
-		it('is disabled when deletionType is "disassociate"', async () => {
-			fetchMock.get(OBJECT_RELATIONSHIPS_URL_REGEX, {
-				...objectRelationship,
-				deletionType: 'disassociate',
-				edge: true,
-			});
-
-			render(
-				<ObjectFieldFormBase {...objectFieldFormBaseDefaultProps} />
-			);
-
-			const mandatoryToggle = await screen.findByRole('switch', {
-				name: 'mandatory',
-			});
-
-			expect(mandatoryToggle).toBeDisabled();
-		});
-
-		it('is enabled when deletionType is not "disassociate"', async () => {
-			fetchMock.get(OBJECT_RELATIONSHIPS_URL_REGEX, {
-				...objectRelationship,
-				deletionType: 'cascade',
-				edge: true,
-			});
-
-			render(
-				<ObjectFieldFormBase {...objectFieldFormBaseDefaultProps} />
-			);
-
-			const mandatoryToggle = await screen.findByRole('switch', {
-				name: 'mandatory',
-			});
-
-			expect(mandatoryToggle).toBeEnabled();
-		});
-	});
-});
-
-describe('when the root model feature flag [LPD-34594] is enabled', () => {
-	describe('the mandatory toggle', () => {
-		beforeEach(() => {
-			global.Liferay = {
-				...global.Liferay,
-				FeatureFlags: {
-					...global.Liferay?.FeatureFlags,
-					'LPD-34594': true,
-				},
-			};
-		});
-
 		it('does not render help text when relationship does not belong to a root model structure', async () => {
 			fetchMock.get(OBJECT_RELATIONSHIPS_URL_REGEX, {
 				...objectRelationship,

@@ -7,18 +7,10 @@ import {expect, mergeTests} from '@playwright/test';
 import fs from 'fs';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {rolesPagesTest} from '../../../fixtures/rolesPagesTest';
 
-export const test = mergeTests(
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-34594': {enabled: true},
-	}),
-	loginTest(),
-	rolesPagesTest
-);
+export const test = mergeTests(dataApiHelpersTest, loginTest(), rolesPagesTest);
 
 test('LPD-29557 Can export roles via API', async ({apiHelpers, page}) => {
 	const exportTaskId = (

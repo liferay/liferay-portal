@@ -24,14 +24,6 @@ const baseProps = {
 };
 
 describe('ManagementToolbar', () => {
-	afterAll(() => {
-		window.Liferay.FeatureFlags['LPD-34594'] = false;
-	});
-
-	beforeAll(() => {
-		window.Liferay.FeatureFlags['LPD-34594'] = true;
-	});
-
 	it('renders inheritance label with title attribute when inheritanceTitle is set', () => {
 		render(
 			<ManagementToolbar

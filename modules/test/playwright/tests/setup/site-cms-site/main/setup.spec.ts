@@ -20,11 +20,6 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-11235': {enabled: false},
-		'LPD-34594': {enabled: true},
-
-		// LPD-17564 depends on LPD-34594, which must be enabled first.
-
-		// eslint-disable-next-line sort-keys
 		'LPD-17564': {enabled: true},
 	}),
 	loginTest()

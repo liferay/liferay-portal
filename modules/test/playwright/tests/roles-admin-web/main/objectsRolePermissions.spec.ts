@@ -11,7 +11,6 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {rolesPagesTest} from '../../../fixtures/rolesPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
@@ -20,14 +19,7 @@ import {
 	setAllowStandaloneObjectEntry,
 } from './utils/objectInheritance';
 
-export const test = mergeTests(
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-34594': {enabled: true},
-	}),
-	loginTest(),
-	rolesPagesTest
-);
+export const test = mergeTests(dataApiHelpersTest, loginTest(), rolesPagesTest);
 
 const generateRandomObjectDefinition = ({
 	objectDefinitionName,

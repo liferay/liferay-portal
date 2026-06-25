@@ -22,7 +22,6 @@ const test = mergeTests(
 	featureFlagsTest({
 		'LPD-11235': {enabled: true},
 		'LPD-17564': {enabled: true},
-		'LPD-34594': {enabled: true},
 		'LPD-35443': {enabled: true},
 		'LPD-57283': {enabled: true},
 		'LPD-76864': {enabled: true},
