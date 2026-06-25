@@ -92,7 +92,7 @@ const initialComments: Comment[] = [
 	},
 ];
 
-const renderComponent = (addCommentURL = 'addCommentURL') => {
+const renderComponent = (addCommentURL = 'addCommentURL', readOnly = false) => {
 	return render(
 		<CommentsPanel
 			addCommentURL={addCommentURL}
@@ -101,6 +101,7 @@ const renderComponent = (addCommentURL = 'addCommentURL') => {
 			editCommentURL="editCommentURL"
 			editorConfig={{}}
 			getCommentsURL="getCommentsURL"
+			readOnly={readOnly}
 		/>
 	);
 };
@@ -118,6 +119,22 @@ describe('CommentsPanel', () => {
 		const {container} = renderComponent();
 
 		await checkAccessibility({context: container});
+	});
+
+	it('hides the comment actions, reply, and ratings when read only', () => {
+		renderComponent('addCommentURL', true);
+
+		expect(screen.getByText('Parent comment')).toBeInTheDocument();
+		expect(screen.getByText('Child comment')).toBeInTheDocument();
+
+		expect(screen.queryByTitle('actions')).not.toBeInTheDocument();
+		expect(screen.queryByText('delete')).not.toBeInTheDocument();
+		expect(screen.queryByText('edit')).not.toBeInTheDocument();
+		expect(screen.queryByText('reply')).not.toBeInTheDocument();
+		expect(
+			screen.queryByTitle('rate-this-as-good')
+		).not.toBeInTheDocument();
+		expect(screen.queryByTitle('rate-this-as-bad')).not.toBeInTheDocument();
 	});
 
 	it('deletes the child comment', async () => {

@@ -8,6 +8,7 @@ package com.liferay.site.dsr.site.initializer.internal.servlet.taglib;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -20,11 +21,13 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.dsr.site.initializer.internal.servlet.ServletContextUtil;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 import com.liferay.taglib.util.IncludeTag;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,6 +76,9 @@ public class CommentsTag extends IncludeTag {
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		httpServletRequest.setAttribute(
+			"liferay-site-dsr-site-initializer:comments:readOnly",
+			Boolean.FALSE);
+		httpServletRequest.setAttribute(
 			"liferay-site-dsr-site-initializer:comments:roomId", 0L);
 
 		if (_groupId == 0) {
@@ -105,13 +111,28 @@ public class CommentsTag extends IncludeTag {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		ObjectEntry objectEntry = ObjectEntryLocalServiceUtil.fetchObjectEntry(
+			group.getClassPK());
+
+		boolean readOnly = false;
+
+		if ((objectEntry != null) &&
+			DSRRoomUtil.isReadOnly(objectEntry, permissionChecker)) {
+
+			readOnly = true;
+		}
+
 		try {
 			ModelResourcePermission<ObjectEntry> modelResourcePermission =
 				ObjectEntryServiceUtil.getModelResourcePermission(
 					objectDefinition.getObjectDefinitionId());
 
-			if (modelResourcePermission.contains(
-					themeDisplay.getPermissionChecker(), group.getClassPK(),
+			if (!readOnly &&
+				modelResourcePermission.contains(
+					permissionChecker, group.getClassPK(),
 					ActionKeys.ADD_DISCUSSION)) {
 
 				addCommentURL = StringBundler.concat(
@@ -124,8 +145,9 @@ public class CommentsTag extends IncludeTag {
 					"&classPK=", group.getClassPK());
 			}
 
-			if (modelResourcePermission.contains(
-					themeDisplay.getPermissionChecker(), group.getClassPK(),
+			if (!readOnly &&
+				modelResourcePermission.contains(
+					permissionChecker, group.getClassPK(),
 					ActionKeys.DELETE_DISCUSSION)) {
 
 				deleteCommentURL = StringBundler.concat(
@@ -134,8 +156,9 @@ public class CommentsTag extends IncludeTag {
 					"/delete_content_item_comment");
 			}
 
-			if (modelResourcePermission.contains(
-					themeDisplay.getPermissionChecker(), group.getClassPK(),
+			if (!readOnly &&
+				modelResourcePermission.contains(
+					permissionChecker, group.getClassPK(),
 					ActionKeys.UPDATE_DISCUSSION)) {
 
 				editCommentURL = StringBundler.concat(
@@ -186,6 +209,8 @@ public class CommentsTag extends IncludeTag {
 				URLEncoder.encode(
 					objectDefinition.getClassName(), StandardCharsets.UTF_8),
 				"&classPK=", group.getClassPK()));
+		httpServletRequest.setAttribute(
+			"liferay-site-dsr-site-initializer:comments:readOnly", readOnly);
 		httpServletRequest.setAttribute(
 			"liferay-site-dsr-site-initializer:comments:roomId",
 			group.getClassPK());

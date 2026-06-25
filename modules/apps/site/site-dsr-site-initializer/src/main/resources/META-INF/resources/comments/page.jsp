@@ -21,6 +21,8 @@
 				"editorConfig", editorConfig
 			).put(
 				"getCommentsURL", getCommentsURL
+			).put(
+				"readOnly", readOnly
 			).build()
 		%>'
 	/>

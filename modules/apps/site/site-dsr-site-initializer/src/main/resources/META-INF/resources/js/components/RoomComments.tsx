@@ -15,6 +15,7 @@ function RoomComments(props: {
 	editCommentURL: string;
 	editorConfig: LiferayEditorConfig;
 	getCommentsURL: string;
+	readOnly?: boolean;
 }) {
 	const [open, setOpen] = useState(false);
 

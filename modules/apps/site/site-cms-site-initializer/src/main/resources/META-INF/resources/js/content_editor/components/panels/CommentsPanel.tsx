@@ -28,6 +28,7 @@ export default function CommentsPanel({
 	editCommentURL,
 	editorConfig,
 	getCommentsURL,
+	readOnly = false,
 }: {
 	addCommentURL: string;
 	comments?: Comment[];
@@ -35,6 +36,7 @@ export default function CommentsPanel({
 	editCommentURL: string;
 	editorConfig: LiferayEditorConfig;
 	getCommentsURL: string;
+	readOnly?: boolean;
 }) {
 	const [comments, setComments] = useState<Comment[]>([]);
 
@@ -252,6 +254,7 @@ export default function CommentsPanel({
 							key={comment.commentId}
 							onDeleteComment={deleteComment}
 							onSaveComment={saveComment}
+							readOnly={readOnly}
 						/>
 					))}
 				</ul>
@@ -267,6 +270,7 @@ function CommentNode({
 	onDeleteComment,
 	onSaveComment,
 	parentCommentId,
+	readOnly = false,
 }: {
 	comment: Comment;
 	editorConfig: LiferayEditorConfig;
@@ -289,6 +293,7 @@ function CommentNode({
 		status: Status;
 	}) => Promise<void>;
 	parentCommentId?: string;
+	readOnly?: boolean;
 }) {
 	const [status, setStatus] = useState<Status>('default');
 
@@ -325,51 +330,54 @@ function CommentNode({
 							</time>
 						</header>
 
-						{(comment.hasDeletePermission ||
-							comment.hasUpdatePermission) && (
-							<ClayDropDownWithItems
-								items={[
-									...(comment.hasUpdatePermission
-										? [
-												{
-													label: Liferay.Language.get(
-														'edit'
-													),
-													onClick: () =>
-														setStatus('edit'),
-													symbolLeft: 'pencil',
-												},
-											]
-										: []),
-									...(comment.hasDeletePermission
-										? [
-												{
-													label: Liferay.Language.get(
-														'delete'
-													),
-													onClick: () =>
-														onDeleteComment(
-															comment.commentId,
-															parentCommentId
+						{!readOnly &&
+							(comment.hasDeletePermission ||
+								comment.hasUpdatePermission) && (
+								<ClayDropDownWithItems
+									items={[
+										...(comment.hasUpdatePermission
+											? [
+													{
+														label: Liferay.Language.get(
+															'edit'
 														),
-													symbolLeft: 'trash',
-												},
-											]
-										: []),
-								]}
-								menuWidth="shrink"
-								trigger={
-									<ClayButtonWithIcon
-										borderless
-										displayType="secondary"
-										monospaced
-										size="xs"
-										symbol="ellipsis-v"
-										title={Liferay.Language.get('actions')}
-									/>
-								}
-							/>
-						)}
+														onClick: () =>
+															setStatus('edit'),
+														symbolLeft: 'pencil',
+													},
+												]
+											: []),
+										...(comment.hasDeletePermission
+											? [
+													{
+														label: Liferay.Language.get(
+															'delete'
+														),
+														onClick: () =>
+															onDeleteComment(
+																comment.commentId,
+																parentCommentId
+															),
+														symbolLeft: 'trash',
+													},
+												]
+											: []),
+									]}
+									menuWidth="shrink"
+									trigger={
+										<ClayButtonWithIcon
+											borderless
+											displayType="secondary"
+											monospaced
+											size="xs"
+											symbol="ellipsis-v"
+											title={Liferay.Language.get(
+												'actions'
+											)}
+										/>
+									}
+								/>
+							)}
 					</div>
 
 					{status === 'edit' ? (
@@ -410,61 +418,63 @@ function CommentNode({
 									onDeleteComment={onDeleteComment}
 									onSaveComment={onSaveComment}
 									parentCommentId={comment.commentId}
+									readOnly={readOnly}
 								/>
 							))}
 						</ul>
 					) : null}
 
-					{status === 'reply' ? (
-						<CommentEditor
-							editorConfig={editorConfig}
-							onCancel={() => setStatus('default')}
-							onSave={async (content, editor) => {
-								await onSaveComment({
-									commentId: comment.commentId,
-									content,
-									editor,
-									parentCommentId: comment.commentId,
-									status,
-								});
+					{!readOnly &&
+						(status === 'reply' ? (
+							<CommentEditor
+								editorConfig={editorConfig}
+								onCancel={() => setStatus('default')}
+								onSave={async (content, editor) => {
+									await onSaveComment({
+										commentId: comment.commentId,
+										content,
+										editor,
+										parentCommentId: comment.commentId,
+										status,
+									});
 
-								setStatus('default');
-							}}
-							parentCommentId={comment.commentId}
-							status={status}
-						/>
-					) : (
-						<div
-							className={classNames('d-flex ratings', {
-								'mt-3': comment.children,
-								'pb-2': !comment.rootComment,
-							})}
-						>
-							{comment.rootComment ? (
-								<ClayButton
-									borderless
-									displayType="secondary"
-									onClick={() => setStatus('reply')}
-									size="xs"
-								>
-									{Liferay.Language.get('reply')}
-								</ClayButton>
-							) : null}
-
-							<Ratings
-								className={comment.className}
-								classPK={comment.commentId}
-								enabled
-								initialNegativeVotes={comment.negativeVotes}
-								initialPositiveVotes={comment.positiveVotes}
-								signedIn
-								size="xs"
-								thumbDown={comment.negativeVotes > 0}
-								thumbUp={comment.positiveVotes > 0}
-								type="thumbs"
+									setStatus('default');
+								}}
+								parentCommentId={comment.commentId}
+								status={status}
 							/>
-						</div>
-					)}
+						) : (
+							<div
+								className={classNames('d-flex ratings', {
+									'mt-3': comment.children,
+									'pb-2': !comment.rootComment,
+								})}
+							>
+								{comment.rootComment ? (
+									<ClayButton
+										borderless
+										displayType="secondary"
+										onClick={() => setStatus('reply')}
+										size="xs"
+									>
+										{Liferay.Language.get('reply')}
+									</ClayButton>
+								) : null}
+
+								<Ratings
+									className={comment.className}
+									classPK={comment.commentId}
+									enabled
+									initialNegativeVotes={comment.negativeVotes}
+									initialPositiveVotes={comment.positiveVotes}
+									signedIn
+									size="xs"
+									thumbDown={comment.negativeVotes > 0}
+									thumbUp={comment.positiveVotes > 0}
+									type="thumbs"
+								/>
+							</div>
+						))}
 				</article>
 			</li>
 		</>

@@ -23,5 +23,6 @@ String deleteCommentURL = (String)request.getAttribute("liferay-site-dsr-site-in
 String editCommentURL = (String)request.getAttribute("liferay-site-dsr-site-initializer:comments:editCommentURL");
 Object editorConfig = (Object)request.getAttribute("liferay-site-dsr-site-initializer:comments:editorConfig");
 String getCommentsURL = (String)request.getAttribute("liferay-site-dsr-site-initializer:comments:getCommentsURL");
+boolean readOnly = (boolean)request.getAttribute("liferay-site-dsr-site-initializer:comments:readOnly");
 long roomId = (long)request.getAttribute("liferay-site-dsr-site-initializer:comments:roomId");
 %>
