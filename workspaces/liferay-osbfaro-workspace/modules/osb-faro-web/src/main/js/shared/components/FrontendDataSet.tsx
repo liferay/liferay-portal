@@ -125,10 +125,7 @@ export const columns = {
 };
 
 export function useSnapshots(fdsName: string, enabled = true) {
-	const fetchSnapshots =
-		enabled &&
-		Liferay.FeatureFlags['LPD-34594'] &&
-		Liferay.FeatureFlags['LPS-164563'];
+	const fetchSnapshots = enabled && Liferay.FeatureFlags['LPS-164563'];
 
 	const [snapshots, setSnapshots] = useState<Array<{
 		configuration: string;

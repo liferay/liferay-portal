@@ -38,14 +38,12 @@ const mockFetch = (items: unknown[]) => {
 };
 
 const enableSnapshotsFeatureFlags = () => {
-	Liferay.FeatureFlags['LPD-34594'] = true;
 	Liferay.FeatureFlags['LPS-164563'] = true;
 };
 
 afterEach(() => {
 	cleanup();
 
-	delete Liferay.FeatureFlags['LPD-34594'];
 	delete Liferay.FeatureFlags['LPS-164563'];
 
 	lastProps = undefined;
@@ -146,7 +144,7 @@ describe('useSnapshots', () => {
 	});
 
 	it('should not fetch when the feature flags are disabled', () => {
-		Liferay.FeatureFlags['LPD-34594'] = false;
+		Liferay.FeatureFlags['LPS-164563'] = false;
 
 		const fetch = mockFetch([]);
 
