@@ -315,6 +315,12 @@
 
 		<delete file="tmp/WEB-INF/lib/xstream-1.3.1.jar" />
 
+		<!-- Delete Shiro (filter and module already stripped above; CVE-2010-3863, CVE-2014-0074) -->
+
+		<delete file="tmp/WEB-INF/lib/shiro-core-1.0.0-incubating.jar" />
+		<delete file="tmp/WEB-INF/lib/shiro-web-1.0.0-incubating.jar" />
+		<delete dir="tmp/WEB-INF/classes/org/apache/shindig/sample/shiro" />
+
 		<!-- Fix canonicaldb.json -->
 
 		<tstamp>
@@ -336,35 +342,6 @@
 		<jar
 			basedir="${tstamp.value}"
 			destfile="tmp/WEB-INF/lib/shindig-social-api-2.0.2.jar"
-		/>
-
-		<delete dir="${tstamp.value}" />
-
-		<!-- Fix shiro.tld -->
-
-		<tstamp>
-			<format pattern="yyyyMMddkkmmssSSS" property="tstamp.value" />
-		</tstamp>
-
-		<unjar
-			dest="${tstamp.value}"
-			src="tmp/WEB-INF/lib/shiro-web-1.0.0-incubating.jar"
-		/>
-
-		<replace
-			file="${tstamp.value}/META-INF/shiro.tld"
-		>
-			<replacefilter
-				token="&lt;short-name&gt;Apache Shiro&lt;/short-name&gt;"
-				value="&lt;short-name&gt;shiro&lt;/short-name&gt;"
-			/>
-		</replace>
-
-		<delete file="tmp/WEB-INF/lib/shiro-web-1.0.0-incubating.jar" />
-
-		<jar
-			basedir="${tstamp.value}"
-			destfile="tmp/WEB-INF/lib/shiro-web-1.0.0-incubating.jar"
 		/>
 
 		<delete dir="${tstamp.value}" />
