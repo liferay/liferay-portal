@@ -629,14 +629,18 @@ describe('NewExport', () => {
 		}
 
 		expect(
-			screen.getByText('Referenced Content Behavior')
+			screen.getByText('Referenced Content Behavior', {
+				selector: 'label[for="_journal_referenced-content-behavior"]',
+			})
 		).toBeInTheDocument();
 
 		await userEvent.click(referencedContentCheckbox);
 
 		expect(referencedContentCheckbox).not.toBeChecked();
 		expect(
-			screen.queryByText('Referenced Content Behavior')
+			screen.queryByText('Referenced Content Behavior', {
+				selector: 'label[for="_journal_referenced-content-behavior"]',
+			})
 		).not.toBeInTheDocument();
 	});
 });
