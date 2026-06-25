@@ -1538,12 +1538,29 @@ public class BasePersistenceImpl
 			return map;
 		}
 
-		StringBundler sb = new StringBundler(
-			(2 * uncachedPrimaryKeys.size()) + 4);
+		String selectSQL = getSelectSQL();
 
-		sb.append(getSelectSQL());
+		String alias = selectSQL.substring(
+			selectSQL.indexOf(' ') + 1, selectSQL.indexOf(" FROM "));
+
+		String pkFieldName = getPKDBName();
+
+		for (Map.Entry<String, String> entry : _dbColumnNames.entrySet()) {
+			if (Objects.equals(entry.getValue(), pkFieldName)) {
+				pkFieldName = entry.getKey();
+
+				break;
+			}
+		}
+
+		StringBundler sb = new StringBundler(
+			(2 * uncachedPrimaryKeys.size()) + 6);
+
+		sb.append(selectSQL);
 		sb.append(" WHERE ");
-		sb.append(getPKDBName());
+		sb.append(alias);
+		sb.append(StringPool.PERIOD);
+		sb.append(pkFieldName);
 		sb.append(" IN (");
 
 		if (_modelPKType == ModelPKType.STRING) {
