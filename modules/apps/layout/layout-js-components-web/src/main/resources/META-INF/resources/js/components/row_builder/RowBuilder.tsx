@@ -6,6 +6,7 @@
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import classNames from 'classnames';
 import React, {
+	Fragment,
 	KeyboardEventHandler,
 	ReactNode,
 	useContext,
@@ -76,6 +77,12 @@ interface RowBuilderProps<T extends ItemWithId> {
 	createItem: () => T;
 
 	/**
+	 * Optional flag that hides the built-in add button (for example when
+	 * rows are added from an external source such as a sidebar).
+	 */
+	hideAddButton?: boolean;
+
+	/**
 	 * Optional class name applied to each row wrapper.
 	 */
 	itemClassName?: string;
@@ -100,6 +107,18 @@ interface RowBuilderProps<T extends ItemWithId> {
 	}) => ReactNode;
 
 	/**
+	 * Renders extra action buttons placed before the built-in delete button
+	 * (for example a duplicate button).
+	 */
+	renderItemActions?: (props: {index: number; item: T}) => ReactNode;
+
+	/**
+	 * Renders content between consecutive rows (for example a conjunction
+	 * label). Called for every item after the first.
+	 */
+	renderItemSeparator?: (props: {index: number; item: T}) => ReactNode;
+
+	/**
 	 * Updates the full items array after add, delete, or item changes.
 	 */
 	setItems: (items: T[]) => void;
@@ -112,10 +131,13 @@ interface RowBuilderProps<T extends ItemWithId> {
 export function RowBuilder<T extends ItemWithId>({
 	canDelete = () => true,
 	createItem,
+	hideAddButton = false,
 	itemClassName,
 	items,
 	labels,
 	renderItem,
+	renderItemActions,
+	renderItemSeparator,
 	setItems,
 }: RowBuilderProps<T>) {
 	const {sendMessage} = useContext(ScreenReaderAnnouncerContext);
@@ -228,62 +250,71 @@ export function RowBuilder<T extends ItemWithId>({
 					const ariaLabel = deleteAriaLabel(item, index);
 
 					return (
-						<div
-							aria-label={itemAriaLabel?.(item, index)}
-							className={classNames(
-								'align-items-center d-flex justify-content-between mb-3 p-2 layout__row-builder-item',
-								itemClassName
-							)}
-							key={item.id}
-							onKeyDown={makeKeyDownHandler(item, index)}
-							ref={(element) => {
-								if (element) {
-									itemElementsRef.current.set(
-										item.id,
-										element
-									);
-								}
-								else {
-									itemElementsRef.current.delete(item.id);
-								}
-							}}
-							role="menuitem"
-							tabIndex={0}
-						>
-							<div className="c-gap-2 d-flex flex-grow-1 flex-wrap">
-								{renderItem({
-									index,
-									item,
-									onChange: (newItem) =>
-										handleItemChange(index, newItem),
-								})}
-							</div>
+						<Fragment key={item.id}>
+							{index > 0
+								? renderItemSeparator?.({index, item})
+								: null}
 
-							{canDelete(item, index, items) ? (
-								<ClayButtonWithIcon
-									aria-label={ariaLabel}
-									borderless
-									className="align-self-baseline layout__row-builder-delete-button lfr-portal-tooltip"
-									displayType="secondary"
-									onClick={() => handleDelete(index)}
-									size="sm"
-									symbol="times-circle"
-									title={deleteLabel}
-								/>
-							) : null}
-						</div>
+							<div
+								aria-label={itemAriaLabel?.(item, index)}
+								className={classNames(
+									'align-items-center d-flex justify-content-between mb-3 p-2 layout__row-builder-item',
+									itemClassName
+								)}
+								onKeyDown={makeKeyDownHandler(item, index)}
+								ref={(element) => {
+									if (element) {
+										itemElementsRef.current.set(
+											item.id,
+											element
+										);
+									}
+									else {
+										itemElementsRef.current.delete(item.id);
+									}
+								}}
+								role="menuitem"
+								tabIndex={0}
+							>
+								<div className="c-gap-2 d-flex flex-grow-1 flex-wrap">
+									{renderItem({
+										index,
+										item,
+										onChange: (newItem) =>
+											handleItemChange(index, newItem),
+									})}
+								</div>
+
+								{renderItemActions?.({index, item})}
+
+								{canDelete(item, index, items) ? (
+									<ClayButtonWithIcon
+										aria-label={ariaLabel}
+										borderless
+										className="align-self-baseline layout__row-builder-delete-button lfr-portal-tooltip"
+										displayType="secondary"
+										onClick={() => handleDelete(index)}
+										size="sm"
+										symbol="times-circle"
+										title={deleteLabel}
+									/>
+								) : null}
+							</div>
+						</Fragment>
 					);
 				})}
 			</div>
 
-			<ClayButton
-				className="mt-2"
-				displayType="secondary"
-				onClick={handleAdd}
-				size="sm"
-			>
-				{addLabel}
-			</ClayButton>
+			{hideAddButton ? null : (
+				<ClayButton
+					className="mt-2"
+					displayType="secondary"
+					onClick={handleAdd}
+					size="sm"
+				>
+					{addLabel}
+				</ClayButton>
+			)}
 		</>
 	);
 }
