@@ -736,30 +736,58 @@ export function CardPageViews() {
 	// decides how many columns fit. Resize the preview to see the column count
 	// change.
 
-	const renderCards = () =>
-		labels.map((label) => (
-			<ClayCard key={label}>
-				<ClayCard.Body>
-					<ClayCard.Description displayType="title">
-						{label}
-					</ClayCard.Description>
+	const renderCard = (label: string) => (
+		<ClayCard displayType="image" key={label}>
+			<ClayCard.AspectRatio className="card-item-first">
+				<div
+					className="aspect-ratio-item aspect-ratio-item-fluid"
+					style={{backgroundColor: '#e7e7ed'}}
+				/>
+			</ClayCard.AspectRatio>
 
-					<ClayCard.Description displayType="subtitle">
-						Columns adapt to the container width
-					</ClayCard.Description>
-				</ClayCard.Body>
-			</ClayCard>
-		));
+			<ClayCard.Body>
+				<ClayCard.Description displayType="title">
+					{label}
+				</ClayCard.Description>
+
+				<ClayCard.Description displayType="subtitle">
+					Columns adapt to the container width
+				</ClayCard.Description>
+			</ClayCard.Body>
+		</ClayCard>
+	);
 
 	return (
 		<>
-			<p>card-page-dense (min 190px columns)</p>
+			<p>card-page (default — existing container)</p>
 
-			<div className="card-page-dense">{renderCards()}</div>
+			<div className="card-page">
+				{labels.map((label) => (
+					<div className="card-page-item-asset" key={label}>
+						{renderCard(label)}
+					</div>
+				))}
+			</div>
 
-			<p className="c-mt-4">card-page-horizontal (min 288px columns)</p>
+			<p className="c-mt-4">card-page-dense (min 190px columns)</p>
 
-			<div className="card-page-horizontal">{renderCards()}</div>
+			<div className="card-page-dense">
+				{labels.map((label) => renderCard(label))}
+			</div>
+
+			<p className="c-mt-4">
+				card-page-horizontal (min 288px columns, horizontal cards)
+			</p>
+
+			<div className="card-page-horizontal">
+				{labels.map((label) => (
+					<ClayCardWithHorizontal
+						href="#"
+						key={label}
+						title={label}
+					/>
+				))}
+			</div>
 		</>
 	);
 }
