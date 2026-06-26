@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Role} from '../../common/types/Role';
 import {Space} from '../../common/types/Space';
-import {UserAccount, UserGroup} from '../../common/types/UserAccount';
 import ApiHelper, {RequestResult} from './ApiHelper';
 
 async function addSpace({
@@ -88,213 +86,11 @@ async function getSpaceContents({
 	}>(`${path}/scopes/${siteId}?${urlParams.toString()}`);
 }
 
-async function getSpaceRoles({
-	externalReferenceCode,
-	fields,
-	nestedFields,
-	page,
-	pageSize,
-	restrictFields,
-}: {
-	externalReferenceCode: string;
-	fields?: string;
-	nestedFields?: string;
-	page?: number;
-	pageSize?: number;
-	restrictFields?: string;
-}): Promise<{
-	items: Role[];
-	lastPage: number;
-	page: number;
-	totalCount: number;
-}> {
-	const urlParams = new URLSearchParams();
-
-	if (fields) {
-		urlParams.set('fields', fields);
-	}
-
-	if (nestedFields) {
-		urlParams.set('nestedFields', nestedFields);
-	}
-
-	if (page) {
-		urlParams.set('page', String(page));
-	}
-
-	if (pageSize) {
-		urlParams.set('pageSize', String(pageSize));
-	}
-
-	if (restrictFields) {
-		urlParams.set('restrictFields', restrictFields);
-	}
-
-	const {data, error} = await ApiHelper.get<{
-		items: Role[];
-		lastPage: number;
-		page: number;
-		totalCount: number;
-	}>(
-		`/o/headless-asset-library/v1.0/asset-libraries/${externalReferenceCode}/roles?${urlParams.toString()}`
-	);
-
-	if (data) {
-		return data;
-	}
-
-	throw new Error(error);
-}
-
-async function getSpaceUserGroups({
-	externalReferenceCode,
-	keywords,
-	nestedFields,
-	page,
-	pageSize,
-}: {
-	externalReferenceCode: string;
-	keywords?: string;
-	nestedFields?: string;
-	page?: number;
-	pageSize?: number;
-}): Promise<{
-	items: UserGroup[];
-	lastPage: number;
-	page: number;
-	totalCount: number;
-}> {
-	const urlParams = new URLSearchParams();
-
-	if (page) {
-		urlParams.set('page', String(page));
-	}
-
-	if (pageSize) {
-		urlParams.set('pageSize', String(pageSize));
-	}
-
-	if (keywords) {
-		urlParams.set('keywords', keywords);
-	}
-
-	const {data, error} = await ApiHelper.get<{
-		items: UserGroup[];
-		lastPage: number;
-		page: number;
-		totalCount: number;
-	}>(
-		`/o/headless-asset-library/v1.0/asset-libraries/${externalReferenceCode}/user-groups?${urlParams.toString()}${nestedFields ? '&nestedFields=' + nestedFields : ''}`
-	);
-
-	if (data) {
-		return data;
-	}
-
-	throw new Error(error);
-}
-
-async function getSpaceUsers({
-	externalReferenceCode,
-	keywords,
-	nestedFields,
-	page,
-	pageSize,
-}: {
-	externalReferenceCode: string;
-	keywords?: string;
-	nestedFields?: string;
-	page?: number;
-	pageSize?: number;
-}): Promise<{
-	items: UserAccount[];
-	lastPage: number;
-	page: number;
-	totalCount: number;
-}> {
-	const urlParams = new URLSearchParams();
-
-	if (page) {
-		urlParams.set('page', String(page));
-	}
-
-	if (pageSize) {
-		urlParams.set('pageSize', String(pageSize));
-	}
-
-	if (keywords) {
-		urlParams.set('keywords', keywords);
-	}
-
-	const {data, error} = await ApiHelper.get<{
-		items: UserAccount[];
-		lastPage: number;
-		page: number;
-		totalCount: number;
-	}>(
-		`/o/headless-asset-library/v1.0/asset-libraries/${externalReferenceCode}/user-accounts?${urlParams.toString()}${nestedFields ? '&nestedFields=' + nestedFields : ''}`
-	);
-
-	if (data) {
-		return data;
-	}
-
-	throw new Error(error);
-}
-
 async function getSpaces(): Promise<Space[]> {
 	return await ApiHelper.getAll<Space>({
 		filter: "type eq 'Space'",
 		url: '/o/headless-asset-library/v1.0/asset-libraries',
 	});
-}
-
-async function linkUserToSpace({
-	spaceExternalReferenceCode,
-	userExternalReferenceCode,
-}: {
-	spaceExternalReferenceCode: string;
-	userExternalReferenceCode: string;
-}) {
-	return await ApiHelper.put(
-		`/o/headless-asset-library/v1.0/asset-libraries/${spaceExternalReferenceCode}/user-accounts/${userExternalReferenceCode}`
-	);
-}
-
-async function linkUserGroupToSpace({
-	spaceExternalReferenceCode,
-	userGroupExternalReferenceCode,
-}: {
-	spaceExternalReferenceCode: string;
-	userGroupExternalReferenceCode: string;
-}) {
-	return await ApiHelper.put(
-		`/o/headless-asset-library/v1.0/asset-libraries/${spaceExternalReferenceCode}/user-groups/${userGroupExternalReferenceCode}`
-	);
-}
-
-async function unlinkUserFromSpace({
-	spaceExternalReferenceCode,
-	userExternalReferenceCode,
-}: {
-	spaceExternalReferenceCode: string;
-	userExternalReferenceCode: string;
-}) {
-	return await ApiHelper.delete(
-		`/o/headless-asset-library/v1.0/asset-libraries/${spaceExternalReferenceCode}/user-accounts/${userExternalReferenceCode}`
-	);
-}
-
-async function unlinkUserGroupFromSpace({
-	spaceExternalReferenceCode,
-	userGroupExternalReferenceCode,
-}: {
-	spaceExternalReferenceCode: string;
-	userGroupExternalReferenceCode: string;
-}) {
-	return await ApiHelper.delete(
-		`/o/headless-asset-library/v1.0/asset-libraries/${spaceExternalReferenceCode}/user-groups/${userGroupExternalReferenceCode}`
-	);
 }
 
 async function updateSpace(externalReferenceCode: string, body: any) {
@@ -304,59 +100,11 @@ async function updateSpace(externalReferenceCode: string, body: any) {
 	);
 }
 
-async function updateUserRoles(payload: {
-	roleNames: string[];
-	spaceExternalReferenceCode: string;
-	userExternalReferenceCode: string;
-}) {
-	const {roleNames, spaceExternalReferenceCode, userExternalReferenceCode} =
-		payload;
-
-	const body = roleNames.map((roleName) => ({
-		name: roleName,
-	}));
-
-	return await ApiHelper.put(
-		`/o/headless-asset-library/v1.0/asset-libraries/${spaceExternalReferenceCode}/user-accounts/${userExternalReferenceCode}/roles`,
-		body
-	);
-}
-
-async function updateUserGroupRoles(payload: {
-	roleNames: string[];
-	spaceExternalReferenceCode: string;
-	userGroupExternalReferenceCode: string;
-}) {
-	const {
-		roleNames,
-		spaceExternalReferenceCode,
-		userGroupExternalReferenceCode,
-	} = payload;
-
-	const body = roleNames.map((roleName) => ({
-		name: roleName,
-	}));
-
-	return await ApiHelper.put(
-		`/o/headless-asset-library/v1.0/asset-libraries/${spaceExternalReferenceCode}/user-groups/${userGroupExternalReferenceCode}/roles`,
-		body
-	);
-}
-
 export default {
 	addSpace,
 	getSpace,
 	getSpaceContents,
-	getSpaceRoles,
-	getSpaceUserGroups,
-	getSpaceUsers,
 	getSpaceWithCache,
 	getSpaces,
-	linkUserGroupToSpace,
-	linkUserToSpace,
-	unlinkUserFromSpace,
-	unlinkUserGroupFromSpace,
 	updateSpace,
-	updateUserGroupRoles,
-	updateUserRoles,
 };
