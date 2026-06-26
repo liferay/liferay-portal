@@ -34,7 +34,10 @@ import {
 	TASK_REPORT_FDS_ID,
 	URL_TASKS_REPORT,
 } from './util/constants';
-import {getBulkActionTaskMessage} from './util/notifications';
+import {
+	getBulkActionTaskFailureMessage,
+	getBulkActionTaskMessage,
+} from './util/notifications';
 
 type DataSetLoading = Record<string, {resetSearch?: boolean}>;
 
@@ -122,7 +125,12 @@ function BulkActionsMonitor() {
 					}
 
 					if (numberOfFailedItems > 0) {
-						displayCreateTaskErrorToast(null);
+						displayCreateTaskErrorToast(
+							getBulkActionTaskFailureMessage(
+								newTask.type,
+								newTask.taskResult
+							)
+						);
 					}
 
 					setTaskContext((prevContext) => {
