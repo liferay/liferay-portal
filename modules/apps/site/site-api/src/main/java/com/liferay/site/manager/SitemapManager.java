@@ -76,4 +76,11 @@ public interface SitemapManager {
 			boolean privateLayout, ThemeDisplay themeDisplay)
 		throws PortalException;
 
+	public void regenerateSitemap(
+			String assetTypeKey, long companyId, long groupId)
+		throws PortalException;
+
+	public void scheduleRegenerateSitemap(
+		String assetTypeKey, long companyId, long groupId, Date startDate);
+
 }
