@@ -10,6 +10,14 @@ package com.liferay.site.constants;
  */
 public class SitemapConstants {
 
+	public static final String ASSET_TYPE_KEY_CATEGORIES = "categories";
+
+	public static final String ASSET_TYPE_KEY_OBJECT_ENTRIES = "object-entries";
+
+	public static final String ASSET_TYPE_KEY_PAGES = "pages";
+
+	public static final String ASSET_TYPE_KEY_WEB_CONTENT = "web-content";
+
 	public static final String INDEX_MODE_ASSET_TYPE = "asset-type";
 
 	public static final String INDEX_MODE_PAGE_LAYOUT = "page-layout";

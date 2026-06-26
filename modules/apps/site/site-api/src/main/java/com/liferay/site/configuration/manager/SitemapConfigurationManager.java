@@ -38,6 +38,9 @@ public interface SitemapConfigurationManager {
 	public boolean includeWebContentGroupEnabled(long companyId, long groupId)
 		throws ConfigurationException;
 
+	public boolean indexModeAssetTypeCompanyEnabled(long companyId)
+		throws ConfigurationException;
+
 	public boolean isObjectDefinitionCompanyIncluded(
 			long companyId, String objectDefinitionId)
 		throws ConfigurationException;

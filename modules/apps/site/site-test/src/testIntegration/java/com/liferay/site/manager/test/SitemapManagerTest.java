@@ -51,11 +51,17 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -365,6 +371,16 @@ public class SitemapManagerTest {
 
 			_addObjectDefinitionDisplayPage(_includedObjectDefinition);
 
+			Role role = _roleLocalService.getRole(
+				TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				TestPropsValues.getCompanyId(),
+				_includedObjectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(includedObjectEntry.getObjectEntryId()),
+				role.getRoleId(), new String[] {ActionKeys.VIEW});
+
 			String xml = _sitemapManager.getSitemap(
 				_objectEntryClassNameId, null, _group.getGroupId(), false,
 				_themeDisplay);
@@ -421,7 +437,7 @@ public class SitemapManagerTest {
 			String xml = StringUtil.read(
 				_sitemapStorageHelper.getSitemapInputStream(
 					TestPropsValues.getCompanyId(), _group.getGroupId(),
-					_ASSET_TYPE_KEY_WEB_CONTENT, 1));
+					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 1));
 
 			Assert.assertFalse(xml.contains("_assetTypeKey"));
 			Assert.assertFalse(xml.contains("_companyId"));
@@ -465,16 +481,20 @@ public class SitemapManagerTest {
 
 				Assert.assertTrue(
 					_sitemapStorageHelper.hasSitemapFile(
-						companyId, groupId, _ASSET_TYPE_KEY_WEB_CONTENT, 1));
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 1));
 				Assert.assertTrue(
 					_sitemapStorageHelper.hasSitemapFile(
-						companyId, groupId, _ASSET_TYPE_KEY_WEB_CONTENT, 2));
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 2));
 				Assert.assertTrue(
 					_sitemapStorageHelper.hasSitemapFile(
-						companyId, groupId, _ASSET_TYPE_KEY_WEB_CONTENT, 3));
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 3));
 				Assert.assertFalse(
 					_sitemapStorageHelper.hasSitemapFile(
-						companyId, groupId, _ASSET_TYPE_KEY_WEB_CONTENT, 4));
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 4));
 			}
 			finally {
 				ReflectionTestUtil.setFieldValue(
@@ -1379,8 +1399,13 @@ public class SitemapManagerTest {
 					sitemapElement -> {
 						String loc = sitemapElement.elementText("loc");
 
-						return loc.contains(_ASSET_TYPE_KEY_WEB_CONTENT) ? loc :
-							null;
+						if (loc.contains(
+								SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT)) {
+
+							return loc;
+						}
+
+						return null;
 					});
 
 				Assert.assertEquals(locs.toString(), 3, locs.size());
@@ -2065,8 +2090,6 @@ public class SitemapManagerTest {
 			_group.getGroupId(), uuid, urls);
 	}
 
-	private static final String _ASSET_TYPE_KEY_WEB_CONTENT = "web-content";
-
 	private static final String _PID_SITEMAP_COMPANY_CONFIGURATION =
 		"com.liferay.site.internal.configuration.SitemapCompanyConfiguration";
 
@@ -2138,6 +2161,12 @@ public class SitemapManagerTest {
 
 	@Inject
 	private RedirectEntryLocalService _redirectEntryLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SAXReader _saxReader;

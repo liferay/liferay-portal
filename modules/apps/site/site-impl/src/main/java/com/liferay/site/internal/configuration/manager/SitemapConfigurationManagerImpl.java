@@ -13,7 +13,9 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
+import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.internal.configuration.SitemapCompanyConfiguration;
 import com.liferay.site.internal.configuration.SitemapGroupConfiguration;
 
@@ -127,6 +129,25 @@ public class SitemapConfigurationManagerImpl
 				SitemapGroupConfiguration.class, companyId, groupId);
 
 		return sitemapGroupConfiguration.includeWebContent();
+	}
+
+	@Override
+	public boolean indexModeAssetTypeCompanyEnabled(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		if (sitemapCompanyConfiguration.xmlSitemapIndexEnabled() &&
+			StringUtil.equals(
+				sitemapCompanyConfiguration.xmlSitemapIndexMode(),
+				SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
