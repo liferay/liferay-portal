@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -49,6 +50,7 @@ public abstract class BaseObjectBulkSelectionAction
 		String executionStatus = BulkSelectionActionStatusConstants.COMPLETED;
 		AtomicInteger numberOfFailedItems = new AtomicInteger(0);
 		AtomicInteger numberOfSuccessfulItems = new AtomicInteger(0);
+		AtomicReference<String> taskResult = new AtomicReference<>();
 
 		try {
 			values.put(
@@ -72,6 +74,9 @@ public abstract class BaseObjectBulkSelectionAction
 						}
 
 						numberOfFailedItems.getAndIncrement();
+
+						taskResult.compareAndSet(
+							null, getTaskResult(exception));
 					}
 				});
 		}
@@ -88,6 +93,7 @@ public abstract class BaseObjectBulkSelectionAction
 			values.put("numberOfFailedItems", numberOfFailedItems.get());
 			values.put(
 				"numberOfSuccessfulItems", numberOfSuccessfulItems.get());
+			values.put("taskResult", taskResult.get());
 
 			partialUpdateObjectEntry(user.getUserId(), objectEntry, values);
 		}
@@ -96,6 +102,12 @@ public abstract class BaseObjectBulkSelectionAction
 	protected abstract void doExecute(
 			User user, Map<String, Serializable> inputMap, Object object)
 		throws Exception;
+
+	protected String getTaskResult(Exception exception) {
+		Class<?> exceptionClass = exception.getClass();
+
+		return exceptionClass.getSimpleName();
+	}
 
 	protected ObjectEntry partialUpdateObjectEntry(
 			long userId, ObjectEntry objectEntry,

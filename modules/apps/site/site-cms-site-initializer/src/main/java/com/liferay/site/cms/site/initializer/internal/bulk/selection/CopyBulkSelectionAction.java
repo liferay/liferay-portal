@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.bulk.selection;
 
 import com.liferay.bulk.selection.BulkSelectionAction;
+import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -89,6 +90,15 @@ public class CopyBulkSelectionAction extends BaseObjectBulkSelectionAction {
 		else {
 			throw new IllegalArgumentException("Unsupported object " + object);
 		}
+	}
+
+	@Override
+	protected String getTaskResult(Exception exception) {
+		if (exception instanceof ObjectDefinitionScopeException) {
+			return "structureNotInDestinationSpace";
+		}
+
+		return super.getTaskResult(exception);
 	}
 
 	private DefaultDTOConverterContext _getDTOConverterContext(
