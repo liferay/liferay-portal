@@ -171,6 +171,11 @@ public class MoveBulkSelectionActionTest {
 	}
 
 	private ObjectEntry _addBulkActionTaskObjectEntry() throws Exception {
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(TestPropsValues.getCompanyId());
+		serviceContext.setUserId(TestPropsValues.getUserId());
+
 		return _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(),
@@ -185,25 +190,19 @@ public class MoveBulkSelectionActionTest {
 			).put(
 				"type", "MoveObjectBulkSelectionAction"
 			).build(),
-			new ServiceContext() {
-				{
-					setCompanyId(TestPropsValues.getCompanyId());
-					setUserId(TestPropsValues.getUserId());
-				}
-			});
+			serviceContext);
 	}
 
 	private DepotEntry _addDepotEntry() throws Exception {
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(TestPropsValues.getCompanyId());
+		serviceContext.setUserId(TestPropsValues.getUserId());
+
 		return _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null, DepotConstants.TYPE_SPACE,
-			new ServiceContext() {
-				{
-					setCompanyId(TestPropsValues.getCompanyId());
-					setUserId(TestPropsValues.getUserId());
-				}
-			});
+			null, DepotConstants.TYPE_SPACE, serviceContext);
 	}
 
 	private ObjectEntryFolder _addObjectEntryFolder(long groupId)
