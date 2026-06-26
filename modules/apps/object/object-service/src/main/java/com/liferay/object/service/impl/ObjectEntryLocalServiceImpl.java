@@ -176,10 +176,12 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -3208,33 +3210,49 @@ public class ObjectEntryLocalServiceImpl
 
 		Date nextExpirationDate = new Date(date.getTime() + checkInterval);
 
-		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
-			DSLQueryFactoryUtil.select(
-				ObjectEntryTable.INSTANCE
-			).from(
-				ObjectEntryTable.INSTANCE
-			).where(
-				ObjectEntryTable.INSTANCE.companyId.eq(
-					companyId
-				).and(
-					ObjectEntryTable.INSTANCE.displayDate.lt(date)
-				).and(
-					ObjectEntryTable.INSTANCE.expirationDate.isNull(
-					).or(
-						ObjectEntryTable.INSTANCE.expirationDate.gte(
-							nextExpirationDate)
-					)
-				).and(
-					ObjectEntryTable.INSTANCE.status.eq(
-						WorkflowConstants.STATUS_SCHEDULED)
-				)
-			));
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
 
-		for (ObjectEntry objectEntry : objectEntries) {
-			updateStatus(
-				objectEntry.getUserId(), objectEntry,
-				WorkflowConstants.STATUS_APPROVED, new ServiceContext());
-		}
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property displayDateProperty = PropertyFactoryUtil.forName(
+					"displayDate");
+
+				dynamicQuery.add(displayDateProperty.lt(date));
+
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.or(
+						RestrictionsFactoryUtil.isNull("expirationDate"),
+						RestrictionsFactoryUtil.ge(
+							"expirationDate", nextExpirationDate)));
+
+				Property statusProperty = PropertyFactoryUtil.forName("status");
+
+				dynamicQuery.add(
+					statusProperty.eq(WorkflowConstants.STATUS_SCHEDULED));
+			});
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			(ObjectEntry objectEntry) -> {
+				try {
+					updateStatus(
+						objectEntry.getUserId(), objectEntry,
+						WorkflowConstants.STATUS_APPROVED,
+						new ServiceContext());
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to publish object entry " +
+								objectEntry.getObjectEntryId(),
+							portalException);
+					}
+				}
+			});
+		actionableDynamicQuery.setTransactionConfig(
+			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
+
+		actionableDynamicQuery.performActions();
 	}
 
 	private void _checkObjectEntriesByExpirationDate(
@@ -3243,80 +3261,97 @@ public class ObjectEntryLocalServiceImpl
 
 		Date nextExpirationDate = new Date(date.getTime() + checkInterval);
 
-		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
-			DSLQueryFactoryUtil.select(
-				ObjectEntryTable.INSTANCE
-			).from(
-				ObjectEntryTable.INSTANCE
-			).where(
-				ObjectEntryTable.INSTANCE.companyId.eq(
-					companyId
-				).and(
-					ObjectEntryTable.INSTANCE.expirationDate.lte(
-						nextExpirationDate)
-				).and(
-					ObjectEntryTable.INSTANCE.status.notIn(
-						new Integer[] {
-							WorkflowConstants.STATUS_DRAFT,
-							WorkflowConstants.STATUS_EXPIRED,
-							WorkflowConstants.STATUS_IN_TRASH,
-							WorkflowConstants.STATUS_PENDING
-						})
-				)
-			));
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
 
-		for (ObjectEntry objectEntry : objectEntries) {
-			expireObjectEntry(
-				objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-				new ServiceContext());
-		}
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property expirationDateProperty = PropertyFactoryUtil.forName(
+					"expirationDate");
+
+				dynamicQuery.add(expirationDateProperty.le(nextExpirationDate));
+
+				Property statusProperty = PropertyFactoryUtil.forName("status");
+
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.not(
+						statusProperty.in(
+							new int[] {
+								WorkflowConstants.STATUS_DRAFT,
+								WorkflowConstants.STATUS_EXPIRED,
+								WorkflowConstants.STATUS_IN_TRASH,
+								WorkflowConstants.STATUS_PENDING
+							})));
+			});
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			(ObjectEntry objectEntry) -> {
+				try {
+					expireObjectEntry(
+						objectEntry.getUserId(), objectEntry.getObjectEntryId(),
+						new ServiceContext());
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to expire object entry " +
+								objectEntry.getObjectEntryId(),
+							portalException);
+					}
+				}
+			});
+		actionableDynamicQuery.setTransactionConfig(
+			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
+
+		actionableDynamicQuery.performActions();
 	}
 
 	private void _checkObjectEntriesByReviewDate(long companyId, Date date)
 		throws PortalException {
 
-		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
-			DSLQueryFactoryUtil.select(
-				ObjectEntryTable.INSTANCE
-			).from(
-				ObjectEntryTable.INSTANCE
-			).where(
-				ObjectEntryTable.INSTANCE.companyId.eq(
-					companyId
-				).and(
-					ObjectEntryTable.INSTANCE.reviewDate.gte(
-						_companyIdPreviousCheckDate.get(companyId))
-				).and(
-					ObjectEntryTable.INSTANCE.reviewDate.lte(date)
-				)
-			));
+		Date previousCheckDate = _companyIdPreviousCheckDate.get(companyId);
 
-		for (ObjectEntry objectEntry : objectEntries) {
-			JSONObject payloadJSONObject = JSONUtil.put(
-				"classPK", objectEntry.getObjectEntryId()
-			).put(
-				"notificationMessageArg", objectEntry.getTitleValue()
-			).put(
-				"notificationMessageKey", "x-has-reached-its-review-date"
-			);
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
 
-			for (ObjectEntryReviewNotificationContributor contributor :
-					_objectEntryReviewNotificationContributors) {
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property reviewDateProperty = PropertyFactoryUtil.forName(
+					"reviewDate");
 
-				if (contributor.isApplicable(objectEntry)) {
-					contributor.contribute(objectEntry, payloadJSONObject);
+				dynamicQuery.add(reviewDateProperty.ge(previousCheckDate));
+				dynamicQuery.add(reviewDateProperty.le(date));
+			});
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			(ObjectEntry objectEntry) -> {
+				JSONObject payloadJSONObject = JSONUtil.put(
+					"classPK", objectEntry.getObjectEntryId()
+				).put(
+					"notificationMessageArg", objectEntry.getTitleValue()
+				).put(
+					"notificationMessageKey", "x-has-reached-its-review-date"
+				);
+
+				for (ObjectEntryReviewNotificationContributor contributor :
+						_objectEntryReviewNotificationContributors) {
+
+					if (contributor.isApplicable(objectEntry)) {
+						contributor.contribute(objectEntry, payloadJSONObject);
+					}
 				}
-			}
 
-			ObjectDefinition objectDefinition =
-				_objectDefinitionPersistence.fetchByPrimaryKey(
-					objectEntry.getObjectDefinitionId());
+				ObjectDefinition objectDefinition =
+					_objectDefinitionPersistence.fetchByPrimaryKey(
+						objectEntry.getObjectDefinitionId());
 
-			_userNotificationEventLocalService.sendUserNotificationEvents(
-				objectEntry.getUserId(), objectDefinition.getPortletId(),
-				UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
-				payloadJSONObject);
-		}
+				_userNotificationEventLocalService.sendUserNotificationEvents(
+					objectEntry.getUserId(), objectDefinition.getPortletId(),
+					UserNotificationDeliveryConstants.TYPE_WEBSITE, false,
+					payloadJSONObject);
+			});
+
+		actionableDynamicQuery.performActions();
 	}
 
 	private void _contributeValues(
