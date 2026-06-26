@@ -1151,6 +1151,10 @@ public class BasePersistenceImpl
 		throw new UnsupportedOperationException();
 	}
 
+	protected String getPKFieldName() {
+		return getPKDBName();
+	}
+
 	protected String getSelectSQL() {
 		throw new UnsupportedOperationException();
 	}
@@ -1538,29 +1542,13 @@ public class BasePersistenceImpl
 			return map;
 		}
 
-		String selectSQL = getSelectSQL();
-
-		String alias = selectSQL.substring(
-			selectSQL.indexOf(' ') + 1, selectSQL.indexOf(" FROM "));
-
-		String pkFieldName = getPKDBName();
-
-		for (Map.Entry<String, String> entry : _dbColumnNames.entrySet()) {
-			if (Objects.equals(entry.getValue(), pkFieldName)) {
-				pkFieldName = entry.getKey();
-
-				break;
-			}
-		}
-
 		StringBundler sb = new StringBundler(
-			(2 * uncachedPrimaryKeys.size()) + 6);
+			(2 * uncachedPrimaryKeys.size()) + 5);
 
-		sb.append(selectSQL);
+		sb.append(getSelectSQL());
 		sb.append(" WHERE ");
-		sb.append(alias);
-		sb.append(StringPool.PERIOD);
-		sb.append(pkFieldName);
+		sb.append(_entityAliasPrefix);
+		sb.append(getPKFieldName());
 		sb.append(" IN (");
 
 		if (_modelPKType == ModelPKType.STRING) {

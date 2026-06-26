@@ -2284,6 +2284,13 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 		protected String getPKDBName() {
 			return "${entity.PKDBName}";
 		}
+		<#if serviceBuilder.isVersionGTE_7_4_0() && !stringUtil.equals(entity.PKDBName, entity.PKVariableName)>
+
+			@Override
+			protected String getPKFieldName() {
+				return "${entity.PKVariableName}";
+			}
+		</#if>
 
 		@Override
 		protected String getSelectSQL() {
