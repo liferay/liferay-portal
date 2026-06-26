@@ -72,6 +72,7 @@ import {config as dispatchWebConfig} from './tests/dispatch-web/main/config';
 import {config as documentLibraryWebConfig} from './tests/document-library-web/main/config';
 import {config as dynamicDataMappingFormWebConfig} from './tests/dynamic-data-mapping-form-web/main/config';
 import {config as e2eCmsDxpDisplayPageTemplateConfig} from './tests/e2e-cms-dxp/display-page-template/main/config';
+import {config as e2eCmsDxpContentPageConfig} from './tests/e2e-cms-dxp/content-page/main/config';
 import {config as expandoWebConfig} from './tests/expando-web/main/config';
 import {config as exportImportServiceConfig} from './tests/export-import-service/main/config';
 import {config as exportImportWebConfig} from './tests/export-import-web/main/config';
@@ -310,6 +311,7 @@ export default defineConfig({
 		documentLibraryWebConfig,
 		dynamicDataMappingFormWebConfig,
 		e2eCmsDxpDisplayPageTemplateConfig,
+		e2eCmsDxpContentPageConfig,
 		expandoWebConfig,
 		exportImportServiceConfig,
 		exportImportWebConfig,

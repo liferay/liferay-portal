@@ -58,8 +58,8 @@ export class StructureBuilderPage {
 		this.customizeEditorButton = this.page.getByRole('button', {
 			name: 'Customize Editor',
 		});
-		this.labelInput = this.page.getByLabel('Content Structure Label');
-		this.nameInput = this.page.getByLabel('Content Structure Name');
+		this.labelInput = this.page.getByLabel('Structure Label');
+		this.nameInput = this.page.getByLabel('Structure Name');
 		this.publishButton = this.page.getByRole('button', {name: 'Publish'});
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
 		this.spaceCheckbox = this.page.getByLabel(
@@ -444,6 +444,7 @@ export class StructureBuilderPage {
 		page,
 		publish = true,
 		spaces,
+		type = 'content',
 	}: {
 		autoDelete?: boolean;
 		erc?: string;
@@ -452,8 +453,9 @@ export class StructureBuilderPage {
 		page: StructureBuilderPage;
 		publish?: boolean;
 		spaces?: string[];
+		type?: StructureType;
 	}) {
-		await page.goToCreateStructure();
+		await page.goToCreateStructure(type);
 
 		if (spaces) {
 			await this.selectSpaces(spaces);
