@@ -1275,6 +1275,22 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
+					"externalReferenceCode": "TASK_RESULT",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Task Result"
+					},
+					"name": "taskResult",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
 					"externalReferenceCode": "TYPE",
 					"indexed": true,
 					"indexedAsKeyword": false,
