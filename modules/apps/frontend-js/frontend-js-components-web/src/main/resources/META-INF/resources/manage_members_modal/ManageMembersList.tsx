@@ -12,7 +12,7 @@ import {SearcheableMembersList} from './SearcheableMembersList';
 import {useMembers} from './hooks/useMembers';
 import {AddMembersInputApi, MemberType, MembersConfig} from './types';
 
-interface MembersListProps {
+interface ManageMembersListProps {
 	className?: string;
 	config: MembersConfig;
 	emptyStateDescription: string;
@@ -27,7 +27,7 @@ interface MembersListProps {
 
 const DEFAULT_PAGE_SIZE = 20;
 
-export function MembersList({
+export function ManageMembersList({
 	className,
 	config,
 	emptyStateDescription,
@@ -38,7 +38,7 @@ export function MembersList({
 	ownerId,
 	pageSize = DEFAULT_PAGE_SIZE,
 	renderAddMembersInput,
-}: MembersListProps) {
+}: ManageMembersListProps) {
 	const listLabelId = useId();
 	const currentUserId = Liferay.ThemeDisplay.getUserId();
 	const {

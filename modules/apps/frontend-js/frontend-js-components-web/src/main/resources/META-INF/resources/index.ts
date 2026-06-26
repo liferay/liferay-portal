@@ -27,6 +27,7 @@ export {
 	LearnResourcesContext,
 } from './learn_message/LearnMessage';
 
+export {ManageMembersList} from './manage_members_modal/ManageMembersList';
 export {default as ManageMembersModal} from './manage_members_modal/ManageMembersModal';
 export {MembersSelectOptions} from './manage_members_modal/MembersSelectOptions';
 export {MemberType} from './manage_members_modal/types';

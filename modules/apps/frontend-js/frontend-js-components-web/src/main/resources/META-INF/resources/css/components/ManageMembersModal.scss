@@ -1,6 +1,6 @@
 @import 'cadmin-variables';
 
-.manage-member-modal {
+.manage-members-list {
 	&,
 	html#{$cadmin-selector} .cadmin & {
 		.input-group-with-select {
@@ -14,19 +14,17 @@
 			}
 		}
 
-		.manage-members-list {
-			.permission-select-trigger-text {
-				max-width: 300px !important;
-			}
+		.permission-select-trigger-text {
+			max-width: 300px !important;
+		}
 
-			.members-list {
-				max-height: 200px;
-				overflow-y: auto;
+		.members-list {
+			max-height: 200px;
+			overflow-y: auto;
 
-				li {
-					&:not(:last-child) {
-						margin-bottom: 8px;
-					}
+			li {
+				&:not(:last-child) {
+					margin-bottom: 8px;
 				}
 			}
 		}
