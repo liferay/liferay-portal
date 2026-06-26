@@ -14,17 +14,11 @@ package com.liferay.osb.faro.web.internal.model.display.contacts;
 public class DataSourceUsageMetric {
 
 	public DataSourceUsageMetric(
-		long apiRequestsCount, String dateString, long eventsCount,
-		long knownIndividualsCount) {
+		String dateString, long eventsCount, long knownIndividualsCount) {
 
-		_apiRequestsCount = apiRequestsCount;
 		_dateString = dateString;
 		_eventsCount = eventsCount;
 		_knownIndividualsCount = knownIndividualsCount;
-	}
-
-	public long getApiRequestsCount() {
-		return _apiRequestsCount;
 	}
 
 	public String getDateString() {
@@ -39,7 +33,6 @@ public class DataSourceUsageMetric {
 		return _knownIndividualsCount;
 	}
 
-	private final long _apiRequestsCount;
 	private final String _dateString;
 	private final long _eventsCount;
 	private final long _knownIndividualsCount;

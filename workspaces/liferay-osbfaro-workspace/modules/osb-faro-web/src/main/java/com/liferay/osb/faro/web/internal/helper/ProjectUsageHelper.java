@@ -73,12 +73,10 @@ public class ProjectUsageHelper {
 
 		return ListUtil.fromArray(
 			new DataSourceUsageMetric(
-				1000 - (dataSourceIndex * 100), "2026-06-17",
-				100000 - (dataSourceIndex * 12000),
+				"2026-06-17", 100000 - (dataSourceIndex * 12000),
 				60 + (dataSourceIndex * 25)),
 			new DataSourceUsageMetric(
-				940 - (dataSourceIndex * 100), "2026-06-16",
-				98230 - (dataSourceIndex * 12000),
+				"2026-06-16", 98230 - (dataSourceIndex * 12000),
 				63 + (dataSourceIndex * 25)));
 	}
 
