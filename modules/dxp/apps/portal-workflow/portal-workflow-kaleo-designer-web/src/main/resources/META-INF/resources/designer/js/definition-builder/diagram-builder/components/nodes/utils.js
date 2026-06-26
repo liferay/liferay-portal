@@ -14,6 +14,7 @@ import HTTPRequestNode from './HTTPRequestNode';
 import JoinNode from './JoinNode';
 import JoinXorNode from './JoinXorNode';
 import LLMNode from './LLMNode';
+import ServiceNode from './ServiceNode';
 import TaskNode from './TaskNode';
 import EndNode from './state/EndNode';
 import StartNode from './state/StartNode';
@@ -53,6 +54,9 @@ const nodeDescription = {
 	'llm': Liferay.Language.get(
 		'generate-content-summarize-and-classify-data-using-llm-models'
 	),
+	'service': Liferay.Language.get(
+		'execute-custom-business-logic-using-a-java-delegate'
+	),
 	'start': Liferay.Language.get('begin-a-workflow'),
 	'state': Liferay.Language.get('execute-actions-in-the-workflow'),
 	'task': Liferay.Language.get('ask-a-user-to-work-on-the-item'),
@@ -73,6 +77,7 @@ if (Liferay.FeatureFlags['LPD-62272']) {
 	nodeTypes = insertNodeAt(nodeTypes, 'ai-decision', AIDecisionNode, 1);
 	nodeTypes = insertNodeAt(nodeTypes, 'llm', LLMNode, 6);
 	nodeTypes = insertNodeAt(nodeTypes, 'http-request', HTTPRequestNode, 7);
+	nodeTypes = insertNodeAt(nodeTypes, 'service', ServiceNode, 8);
 }
 
 export {defaultNodes, nodeDescription, nodeTypes};

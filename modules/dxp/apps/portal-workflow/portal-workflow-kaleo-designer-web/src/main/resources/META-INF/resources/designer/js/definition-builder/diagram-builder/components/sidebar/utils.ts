@@ -125,6 +125,14 @@ export function getModalInfo(itemType: string) {
 			title: Liferay.Language.get('delete-notifications'),
 		};
 	}
+	if (itemType === 'service') {
+		return {
+			message: Liferay.Language.get(
+				'are-you-sure-you-want-to-delete-the-selected-service-node'
+			),
+			title: Liferay.Language.get('delete-service-node'),
+		};
+	}
 	if (itemType === 'start') {
 		return {
 			message: Liferay.Language.get(

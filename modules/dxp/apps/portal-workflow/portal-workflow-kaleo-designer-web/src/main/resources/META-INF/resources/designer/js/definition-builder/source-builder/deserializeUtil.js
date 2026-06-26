@@ -159,6 +159,10 @@ DeserializeUtil.prototype = {
 					data.url = node.url || '';
 				}
 
+				if (type === 'service') {
+					data.javaDelegate = node['java-delegate'] || '';
+				}
+
 				data.actions = node.actions?.length && parseActions(node);
 
 				data.notifications =

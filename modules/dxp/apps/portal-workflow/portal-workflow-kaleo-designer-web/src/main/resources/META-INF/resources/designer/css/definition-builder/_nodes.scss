@@ -73,6 +73,12 @@
 		}
 	}
 
+	&.service-node {
+		.node-icon svg {
+			fill: #af78ff;
+		}
+	}
+
 	&.task-node {
 		.node-icon svg {
 			fill: #50d2a0;

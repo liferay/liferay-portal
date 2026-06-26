@@ -363,6 +363,7 @@ XMLDefinition.prototype = {
 				'id',
 				'input-variables',
 				'initial',
+				'java-delegate',
 				{
 					key: 'labels',
 					locator: 'labels',

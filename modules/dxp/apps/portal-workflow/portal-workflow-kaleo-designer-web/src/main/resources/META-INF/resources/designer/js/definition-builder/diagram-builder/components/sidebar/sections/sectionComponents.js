@@ -19,6 +19,7 @@ import Notifications from './notifications/Notifications';
 import NotificationsSummary from './notifications/NotificationsSummary';
 import PromptSummary from './prompt/PromptSummary';
 import RAGSummary from './rag/RAGSummary';
+import ServiceConfiguration from './service/ServiceConfiguration';
 import TimerSourceCode from './timers/TimerSourceCode';
 import Timers from './timers/Timers';
 import TimersSummary from './timers/TimersSummary';
@@ -39,6 +40,7 @@ const sectionComponents = {
 	payload: Payload,
 	promptSummary: PromptSummary,
 	ragSummary: RAGSummary,
+	serviceConfiguration: ServiceConfiguration,
 	sourceCode: SourceCode,
 	timerSourceCode: TimerSourceCode,
 	timers: Timers,
