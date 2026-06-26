@@ -79,12 +79,12 @@ public class SafeLdapReferralUtil {
 					}
 				}
 				finally {
-					if (enumeration != null) {
-						enumeration.close();
-					}
-
 					if (dirContext != rootDirContext) {
 						dirContext.close();
+					}
+
+					if (enumeration != null) {
+						enumeration.close();
 					}
 				}
 			}
@@ -118,16 +118,16 @@ public class SafeLdapReferralUtil {
 		}
 	}
 
-	private static boolean _isAllowedReferralURL(String url) {
-		if (Validator.isNull(url)) {
+	private static boolean _isAllowedReferralURL(String urlString) {
+		if (Validator.isNull(urlString)) {
 			return false;
 		}
 
-		String normalizedURL = StringUtil.toLowerCase(StringUtil.trim(url));
+		urlString = StringUtil.toLowerCase(StringUtil.trim(urlString));
 
-		for (String referralURL : normalizedURL.split("\\s+")) {
-			if (!referralURL.startsWith("ldap://") &&
-				!referralURL.startsWith("ldaps://")) {
+		for (String urlStringPart : urlString.split("\\s+")) {
+			if (!urlStringPart.startsWith("ldap://") &&
+				!urlStringPart.startsWith("ldaps://")) {
 
 				return false;
 			}
@@ -141,11 +141,11 @@ public class SafeLdapReferralUtil {
 	private static class ListNamingEnumeration
 		implements NamingEnumeration<SearchResult> {
 
-		public void addAll(NamingEnumeration<SearchResult> namingEnumeration)
+		public void addAll(NamingEnumeration<SearchResult> enumeration)
 			throws NamingException {
 
-			while (namingEnumeration.hasMore()) {
-				_searchResults.add(namingEnumeration.next());
+			while (enumeration.hasMore()) {
+				_searchResults.add(enumeration.next());
 			}
 		}
 
