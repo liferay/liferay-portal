@@ -119,16 +119,9 @@ export class SpaceSummaryPage {
 
 		const dialog = this.page.getByRole('dialog');
 
-		await this.page
+		await dialog
 			.getByLabel('Add People to Collaborate', {exact: true})
-			.click();
-
-		await this.page
-			.getByRole('option', {
-				exact: true,
-				name: type === 'groups' ? 'Groups' : 'Users',
-			})
-			.click();
+			.selectOption(type);
 
 		const input = dialog.getByPlaceholder('Enter name or email.', {
 			exact: true,
@@ -160,14 +153,7 @@ export class SpaceSummaryPage {
 
 		await this.page
 			.getByLabel('Add People to Collaborate', {exact: true})
-			.click();
-
-		await this.page
-			.getByRole('option', {
-				exact: true,
-				name: type === 'groups' ? 'Groups' : 'Users',
-			})
-			.click();
+			.selectOption(type);
 
 		await this.page
 			.locator('li')
