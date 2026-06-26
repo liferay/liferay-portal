@@ -109,6 +109,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -1502,7 +1503,7 @@ public class BasePersistenceImpl
 			if (serializable != nullModel) {
 				if (serializable == null) {
 					if (uncachedPrimaryKeys == null) {
-						uncachedPrimaryKeys = new HashSet<>();
+						uncachedPrimaryKeys = new TreeSet<>();
 					}
 
 					uncachedPrimaryKeys.add(primaryKey);
