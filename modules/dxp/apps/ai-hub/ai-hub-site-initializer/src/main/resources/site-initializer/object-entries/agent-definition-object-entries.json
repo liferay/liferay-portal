@@ -129,6 +129,18 @@
 				"en_US": "SEO Studio Title Generator"
 			},
 			"workflowDefinitionName": "SEO Studio Title Generator"
+		},
+		{
+			"active": false,
+			"description": "This agent bootstraps a brand new website end to end from a natural language description. It produces all the publish ready batch artifacts (Site, Asset Library / Space, Connected Site, Fragment Set, Fragments with full HTML/CSS/JS, Site Pages with their content page specifications, and CMS Blogs when explicitly requested) and writes them as CSG generation items. It does NOT touch the live site. Nothing is persisted until the user publishes the generation. Use this agent for any 'create a website / site / portfolio / landing page / blog articles / content' request. Always pass the generationExternalReferenceCode from the conversation context when it is present. Do NOT chain other agents afterwards: this agent already covers the whole site generation.",
+			"externalReferenceCode": "L_SITE_BUILDER",
+			"inputVariables": "generationExternalReferenceCode,request",
+			"outputVariable": "output",
+			"r_accountToAIHubAgentDefinitions_accountEntryERC": "L_AI_HUB",
+			"title_i18n": {
+				"en_US": "Site Builder"
+			},
+			"workflowDefinitionName": "Site Builder"
 		}
 	],
 	"objectDefinitionName": "AIHubAgentDefinition"

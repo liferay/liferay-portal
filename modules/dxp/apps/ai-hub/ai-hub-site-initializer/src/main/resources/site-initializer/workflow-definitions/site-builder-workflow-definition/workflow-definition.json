@@ -1,0 +1,11 @@
+{
+	"active": true,
+	"externalReferenceCode": "L_SITE_BUILDER",
+	"groupExternalReferenceCode": "[$ACCOUNT_ENTRY_GROUP_ERC:L_AI_HUB$]",
+	"name": "Site Builder",
+	"scope": "ai",
+	"title": "Site Builder",
+	"title_i18n": {
+		"en_US": "Site Builder"
+	}
+}

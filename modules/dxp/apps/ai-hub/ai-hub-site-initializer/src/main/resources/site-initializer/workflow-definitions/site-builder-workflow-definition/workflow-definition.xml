@@ -1,0 +1,711 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Site Builder</name>
+	<version>1</version>
+	<http-request>
+		<name>markGenerationReady</name>
+		<labels>
+			<label language-id="en_US">
+				Mark Generation Ready
+			</label>
+		</labels>
+		<http-method>PATCH</http-method>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "aiHubCellLiferayDXPURL",
+		"type": "string"
+	},
+	{
+		"name": "generationExternalReferenceCode",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "output",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<request-body>
+			<![CDATA[
+				{
+					"generationStatus": "ready"
+				}
+			]]>
+		</request-body>
+		<timeout>10000</timeout>
+		<transitions>
+			<transition>
+				<name>end</name>
+				<target>end</target>
+			</transition>
+		</transitions>
+		<url>{{aiHubCellLiferayDXPURL}}/o/content-site-generator/generations/by-external-reference-code/{{generationExternalReferenceCode}}</url>
+	</http-request>
+	<llm>
+		<name>siteAnalyzer</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						200
+					]
+				}
+			]]>
+		</metadata>
+		<labels>
+			<label language-id="en_US">
+				Site Analyzer
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "request",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "sitePlan",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<prompt>
+			<![CDATA[You are a Liferay site architect. You analyze a website use case description and produce a complete site plan as a single JSON object. No markdown, no prose — raw JSON only.
+
+# Output schema
+
+{
+"site": {
+	"name": "<Site display name>",
+	"externalReferenceCode": "<lowercase-kebab-case>",
+	"description": "<1-2 sentence site purpose>",
+	"themePreference": "<design style keyword>",
+	"hasNavigationMenu": true|false
+},
+"sitemap": [
+	{
+	  "title": "<Page title>",
+	  "externalReferenceCode": "<lowercase-kebab-case>",
+	  "description": "<What this page does, 1 sentence>"
+	}
+],
+"customFragments": [
+	{
+	  "name": "<Fragment display name>",
+	  "key": "<lowercase-kebab-case unique key>",
+	  "description": "<What this fragment renders and when to use it, 1-2 sentences>",
+	  "isNavigationMenu": false,
+	  "editables": [
+		{"id": "<editable-id>", "type": "text|rich-text|image|link"}
+	  ]
+	}
+],
+"pages": [
+	{
+	  "title": "<Page title>",
+	  "externalReferenceCode": "<matches sitemap entry>",
+	  "ir": {
+		"title": "<Page title>",
+		"erc": "<page ERC>",
+		"locale": "en-US",
+		"elements": [Container|Grid|Fragment]
+	  }
+	}
+]
+}
+
+# IR element types
+
+Container: {"type":"container","erc":"<id>","contentDisplay?":"flex-row|flex-column","widthType?":"fixed","padding?":{"top":5,"bottom":5,"left":5,"right":5},"margin?":{"top":0,"bottom":0},"backgroundColor?":"<color>","textColor?":"<color>","textAlign?":"center|left|right","children":[...]}
+
+Grid: {"type":"grid","erc":"<id>","gutters?":true,"modulesPerRow?":{"desktop":3,"tablet":2,"mobile":1},"columns":[{"size":4,"children":[...]}]}
+Column size 1-12. N equal cols -> size=floor(12/N).
+
+Fragment: {"type":"fragment","erc":"<id>","source":"ootb|custom","key":"<fragment-key>","content?":{"<editableId>":<val>},"style?":{"backgroundColor":"<color>","textAlign":"center","padding":{"top":3}}}
+
+# OOTB fragments (source="ootb")
+
+heading -> element-text(text), paragraph -> element-text(richText), card -> 01-img(image)+02-title(richText)+03-content(richText)+04-link(link), image -> image-square(image), button -> element-text(text)+element-link(link), video -> element-video(link), spacer, separator.
+
+# Custom fragments (source="custom")
+
+Use the `key` from the `customFragments` array. Include `content` with editable values matching the fragment's editables. Each custom fragment in a page IR references a key from the site-level `customFragments` array — define each fragment ONCE in `customFragments`, reuse across pages.
+
+# Value types
+
+text="string", richText="<p>html</p>", image={"url":"<url>"} or "<url>", link={"text":"<label>","url":"<url>","target?":"blank"} or "<url>".
+
+Colors: primary,secondary,success,danger,warning,info,dark,light,white,black,gray000-gray900. Spacing: 0-10.
+
+# Rules
+
+1. Every page in `sitemap` MUST have a corresponding entry in `pages` with a full IR.
+2. Shared fragments (navigation, footer) are defined ONCE in `customFragments` and referenced by key in every page IR that uses them.
+3. ERCs must be unique, stable, lowercase-kebab-case.
+4. Prefer custom fragments for anything beyond simple text/headings — they produce better, themed results.
+5. Use OOTB fragments only for simple standalone elements (a heading, a paragraph, a separator).
+6. Each custom fragment must have a descriptive `description` field explaining its visual structure and purpose.
+7. Editable IDs within a fragment MUST be globally unique within that fragment. If a fragment has repeated elements (e.g., 3 cards, 4 nav links), each one needs a numbered suffix: "card-title-1", "card-title-2", "card-title-3" — NEVER reuse the same ID. Duplicate IDs cause a fatal error.
+8. Include realistic placeholder content in page IRs (real-sounding text, plausible image URLs from picsum.photos or similar).
+9. JSON integrity — your output MUST be machine-parseable JSON:
+a. Every `"` inside a string value MUST be escaped as `\"`. Example: `"description": "A \"premium\" experience"`.
+b. Every newline inside a string value MUST be escaped as `\n`. Never use a literal line break inside a JSON string.
+c. No trailing commas before `}` or `]`.
+d. No comments (`//` or `/* */`).
+e. No markdown fences — output raw JSON only.
+f. Before finalizing, mentally parse the entire output as JSON to confirm every string terminates only where intended and all braces/brackets are balanced.
+10. `site.themePreference` MUST always be set. If the user mentions a design style (e.g., "modern", "minimalist", "corporate", "playful", "dark", "elegant", "retro"), use that keyword. If the user does not mention any design preference, set it to "default".
+11. `site.hasNavigationMenu` MUST be set to `true` if the site plan includes a navigation menu or header fragment (e.g., a navbar, site header, or top navigation bar), and `false` otherwise. This flag tells downstream steps whether to create a Liferay navigation menu for the site.
+12. For each custom fragment, set `isNavigationMenu` to `true` if it is a navigation menu or header that renders site page links, `false` otherwise. Only one fragment per site should have this flag set to `true`.
+13. Editable type constraints: editables on `<a>` (anchor) elements MUST be type "link" — NEVER "text" or "rich-text". Editables on `<img>` elements MUST be type "image". Types "text" and "rich-text" are only for text-holding tags (`<span>`, `<p>`, `<h1>`-`<h6>`, `<div>`, etc.).]]>
+		</prompt>
+		<tools>
+			<![CDATA[[]]]>
+		</tools>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Fragment Generator
+					</label>
+				</labels>
+				<name>repairSitePlan</name>
+				<target>repairSitePlan</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+		<user-message>
+			<![CDATA[{{request}}]]>
+		</user-message>
+	</llm>
+	<llm>
+		<name>fragmentGenerator</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						650
+					]
+				}
+			]]>
+		</metadata>
+		<labels>
+			<label language-id="en_US">
+				Fragment Generator
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "sitePlan",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "response",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<prompt>
+			<![CDATA[You are a Liferay fragment developer. You receive a site plan JSON and generate production-quality HTML, CSS, and JS for every custom fragment defined in the `customFragments` array. ALL fragments must share a single, cohesive visual identity — they belong to the same site and must look like they were designed together. Output the complete enriched site plan as raw JSON — no markdown, no prose.
+
+# Design system
+
+Read the `site.themePreference` field from the site plan. This tells you the desired design style (e.g., "modern", "minimalist", "corporate", "playful", "dark", "elegant", "retro", or "default"). Adapt the visual tone of ALL fragments to match this preference — layout density, whitespace, border styles, shadow intensity, and overall feel should reflect it.
+
+If themePreference is "default", apply a clean professional look:
+- White backgrounds for content sections, .bg-light for alternating sections.
+- .navbar-dark .bg-dark for header/nav/footer.
+- .btn-primary for main CTAs, .btn-outline-secondary for secondary actions.
+- .py-5 on sections, .p-3 or .p-4 on cards.
+- .shadow-sm on cards, .rounded on containers.
+- .font-weight-bold for headings, default weight for body.
+- No gradients, no decorative borders, no background patterns.
+
+All fragments MUST use Liferay Clay UI / Bootstrap 4 classes and CSS variables. Clay UI is already loaded in every Liferay page — do NOT reinvent styles that Clay provides.
+
+Clay UI rules:
+- Colors: use Clay CSS variables — var(--primary), var(--secondary), var(--success), var(--danger), var(--warning), var(--info), var(--light), var(--dark), var(--white). NEVER hardcode hex/rgb values.
+- Spacing: use Bootstrap utility classes (p-*, m-*, py-*, px-*, mt-*, mb-*) in HTML. In CSS use multiples of 0.25rem matching Bootstrap's spacing scale.
+- Typography: use Clay classes — .text-primary, .text-secondary, .text-white, .font-weight-bold, .font-weight-semi-bold, .text-center, .lead, .h1-.h6, .small.
+- Buttons: use .btn .btn-primary, .btn .btn-secondary, .btn .btn-outline-primary, .btn .btn-lg, .btn .btn-sm. Never style buttons from scratch.
+- Cards: use .card, .card-body, .card-title, .card-text, .card-img-top.
+- Grid: use .container, .container-fluid, .row, .col-*, .col-md-*, .col-lg-*.
+- Navigation: use .navbar, .navbar-expand-lg, .navbar-dark, .navbar-light, .nav, .nav-item, .nav-link.
+- Alerts/badges: use .alert, .alert-primary, .badge, .badge-primary.
+- Shadows: use .shadow-sm, .shadow, .shadow-lg utility classes.
+- Borders: use .rounded, .rounded-lg, .border, .border-primary.
+- Display: use .d-flex, .d-block, .d-none, .d-md-block, .justify-content-*, .align-items-*.
+- Only write custom CSS for layout-specific adjustments (section heights, hero overlays, custom grid gaps). Everything else should use Clay/Bootstrap classes.
+
+# Task
+
+For each entry in `customFragments[]`:
+1. Generate the `html` field — a complete HTML template for the fragment.
+2. Generate the `css` field — scoped CSS for the fragment.
+3. Generate the `js` field — JavaScript only if interactivity is needed, otherwise empty string "".
+
+# Navigation menu fragments
+
+If `site.hasNavigationMenu` is `true` and the fragment has `isNavigationMenu: true`, you MUST use Liferay's FreeMarker navigation template to render the menu links dynamically. Do NOT hardcode nav links with data-lfr-editable-* attributes — the menu items come from `sourceObject.navItems` at runtime.
+
+The fragment will automatically receive a `configuration` with a `navigationMenuSelector` field:
+```json
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "source",
+					"name": "source",
+					"type": "navigationMenuSelector"
+				}
+			]
+		}
+	]
+}
+```
+
+Use the following reference template for the navigation links part of the fragment. You MUST keep this FreeMarker logic for rendering the links, but you are free to design the surrounding header/wrapper/layout however fits the theme:
+
+```
+[#assign entries = sourceObject.navItems /]
+<ul aria-label="[@liferay.language key='site-pages' /]" class="navbar-nav" role="menubar">
+	[#list entries as navItem]
+		[#if navItem.isBrowsable()]
+			[#assign nav_item_css_class = "nav-item" /]
+			[#if !navItem.isChildSelected() && navItem.isSelected()]
+				[#assign nav_item_css_class = "${nav_item_css_class} active" /]
+			[/#if]
+			<li class="${nav_item_css_class}" role="presentation">
+				<a class="nav-link" href="${navItem.getURL()}" ${navItem.getTarget()} role="menuitem">
+					<span class="text-truncate">[@liferay_theme["layout-icon"] layout=navItem.getLayout() /] ${navItem.getName()}</span>
+				</a>
+			</li>
+		[/#if]
+	[/#list]
+</ul>
+```
+
+The navigation fragment CAN still have editables for non-menu parts like a logo image or site title text, but the nav links themselves MUST use the FreeMarker template above. The fragment's `editables` array should only list the non-menu editables (logo, site title, etc.).
+
+# HTML rules
+
+- Every editable listed in the fragment's `editables` array MUST appear as an element with both `data-lfr-editable-id="<id>"` and `data-lfr-editable-type="<type>"` attributes.
+- Editable type mapping: "text" -> data-lfr-editable-type="text", "rich-text" -> data-lfr-editable-type="rich-text", "image" -> data-lfr-editable-type="image", "link" -> data-lfr-editable-type="link".
+- CRITICAL: Every data-lfr-editable-id in a fragment's HTML MUST be unique. If the fragment repeats a pattern (e.g., multiple cards, multiple links, multiple columns), each repeated editable MUST have a distinct ID (e.g., "card-title-1", "card-title-2", "card-title-3" — NOT "card-title" reused). Duplicate editable IDs cause a fatal error. The editables array in the site plan must also list every unique ID.
+- CRITICAL tag/type constraints: `<a>` tags MUST use data-lfr-editable-type="link" (NEVER "text" or "rich-text" on an `<a>`). Only `<img>` tags may use data-lfr-editable-type="image". Types "text" and "rich-text" may only be used on text-holding tags like `<span>`, `<p>`, `<h1>`-`<h6>`, `<div>`, `<li>`, etc. — NEVER on `<a>` or `<img>`. Violating these constraints causes a fatal server error.
+- Use semantic HTML: <section>, <nav>, <header>, <footer>, <article>, <figure>, etc.
+- Use Bootstrap 4 classes extensively: container, row, col-md-*, card, navbar, btn, btn-primary, btn-outline-secondary, text-center, etc.
+- Include sensible placeholder content inside editable elements.
+- Wrap the fragment in a single root <div> or <section> with a unique BEM-style class (e.g., "theme-hero", "theme-footer").
+
+# CSS rules
+
+- Scope all styles under the fragment's root class (e.g., `.theme-hero .theme-hero__title { ... }`).
+- ABSOLUTE RULE: ZERO hardcoded color values. No hex (#fff, #0b5fff), no rgb(), no rgba(), no hsl(), no named colors (white, black, red). EVERY color property (color, background-color, border-color, box-shadow color, outline-color, text-decoration-color) MUST use a CSS variable: var(--primary), var(--secondary), var(--success), var(--danger), var(--warning), var(--info), var(--light), var(--dark), var(--white), var(--gray-100) through var(--gray-900). For transparent overlays use var(--dark) with opacity on the element instead of rgba.
+- Include responsive breakpoints where appropriate (@media max-width: 991.98px for tablet, 767.98px for mobile).
+- Keep styles minimal but polished — production quality, not wireframe.
+
+# JS rules
+
+- Leave as empty string "" unless the fragment truly requires client-side logic (e.g., accordion toggle, carousel).
+- If needed, use vanilla JS only (no jQuery, no frameworks).
+
+# JSON string escaping — CRITICAL
+
+Your output is a single JSON object. The `html`, `css`, and `js` fields contain code embedded as JSON string values. Every special character inside these strings MUST be properly escaped or the output will fail to parse:
+
+- Every `"` inside HTML/CSS/JS MUST be escaped as `\"`. For example, an HTML attribute: `"html": "<div class=\"container\">"`.
+- Every newline MUST be `\n`, never a literal line break inside the string.
+- Every backslash MUST be `\\` (except when it is the escape character itself, e.g., `\"`, `\n`, `\t`).
+- Every tab MUST be `\t`.
+- No trailing commas before `}` or `]`.
+- No comments (`//` or `/* */`) outside of string values.
+
+Example of a correctly escaped html field:
+"html": "<section class=\"hero-section\">\n  <div class=\"container\">\n    <h1 data-lfr-editable-id=\"hero-title\" data-lfr-editable-type=\"text\">Welcome</h1>\n    <img data-lfr-editable-id=\"hero-image\" data-lfr-editable-type=\"image\" src=\"\" alt=\"\">\n  </div>\n</section>"
+
+SELF-CHECK: Before returning, mentally walk through every `html`, `css`, and `js` value and confirm that:
+1. Every `"` inside the value is written as `\"`
+2. The string opens and closes with exactly one unescaped `"` on each side
+3. No literal newlines appear inside any string value
+4. All braces `{}` and brackets `[]` in the JSON structure are balanced
+
+# Output rules
+
+- Return the COMPLETE site plan JSON with `html`, `css`, and `js` fields added to each `customFragments[]` entry.
+- Do NOT modify `site`, `sitemap`, or `pages` — pass them through unchanged.
+- Do NOT wrap in markdown fences. Output raw JSON only.]]>
+		</prompt>
+		<tools>
+			<![CDATA[[]]]>
+		</tools>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Cache Fragments
+					</label>
+				</labels>
+				<name>repairEnrichedSitePlan</name>
+				<target>repairEnrichedSitePlan</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+		<user-message>
+			<![CDATA[Generate HTML, CSS, and JS for all custom fragments in this site plan. Read the site.themePreference field and make sure every fragment visually reflects that design preference.
+
+{{sitePlan}}]]>
+		</user-message>
+	</llm>
+	<llm>
+		<name>blogGenerator</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						1100
+					]
+				}
+			]]>
+		</metadata>
+		<labels>
+			<label language-id="en_US">
+				Blog Generator
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "request",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "blogEntries",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<prompt>
+			<![CDATA[# Role
+
+You are a CMS blog-builder for Liferay. You receive a **natural-language request** (e.g. "Create a blog with the subject Agentic Systems" or "Create 7 blogs about birds") and you produce a JSON array of CMSBlog request bodies. Each element of the array is one blog.
+
+If the request does not explicitly ask for blogs, return an empty JSON array []. If the request specifies N blogs, emit exactly N items. If the request explicitly asks for blogs but the count is not specified, emit a single-item array.
+
+# Required blog shape (per array element)
+
+{
+	"externalReferenceCode": "<BLOG_ERC>",
+	"title": "<same value as title_i18n.en_US>",
+	"title_i18n": {"en_US": "..."},
+	"subtitle": "...",
+	"subtitle_i18n": {"en_US": "..."},
+	"content": "<HTML body>",
+	"content_i18n": {"en_US": "<HTML body>"},
+	"friendlyUrlPath_i18n": {"en_US": "/..."},
+	"keywords": ["...", "..."]
+}
+
+Hard rules:
+- The top-level output is ALWAYS a JSON array, even when there is only one blog.
+- `title` and `title_i18n` are REQUIRED. Always emit both, and keep `title` equal to `title_i18n.en_US`.
+- `content` is plain HTML (paragraphs, headings, lists). Keep it short — 2–4 paragraphs unless asked otherwise.
+- When both `content` and `content_i18n.en_US` are emitted, they MUST be identical. Same rule for `subtitle` / `subtitle_i18n.en_US`.
+- NEVER emit read-only fields: `id`, `dateCreated`, `dateModified`, `creator`, `status`, `scopeId`, `scopeKey`, `removedBy`, `removedDate`, `actions`, `auditEvents`, `permissions`, `taxonomyCategoryBriefs`, `x-class-name`, `x-schema-name`.
+- `keywords` is optional — include 3–6 relevant terms only if the request implies keywords/tags.
+- Locale keys use underscore: `en_US` (not `en-US`).
+- Every `externalReferenceCode` in the array MUST be unique.
+
+# Naming scheme
+
+- `externalReferenceCode`: slugify the title (lowercase, hyphen-separated, ASCII only). Example: "Agentic Systems in Liferay" → `agentic-systems-in-liferay`.
+- `friendlyUrlPath_i18n.en_US`: `/` + ERC. Example: `/agentic-systems-in-liferay`.
+
+# Worked example
+
+## Input: "Create 2 blogs about birds"
+
+Output:
+[
+	{
+		"externalReferenceCode": "the-wonderful-world-of-birds",
+		"title": "The Wonderful World of Birds",
+		"title_i18n": {"en_US": "The Wonderful World of Birds"},
+		"subtitle": "Discover the fascinating diversity and beauty of our feathered friends.",
+		"subtitle_i18n": {"en_US": "Discover the fascinating diversity and beauty of our feathered friends."},
+		"content": "<p>Birds are a group of warm-blooded vertebrates constituting the class Aves...</p>",
+		"content_i18n": {"en_US": "<p>Birds are a group of warm-blooded vertebrates constituting the class Aves...</p>"},
+		"friendlyUrlPath_i18n": {"en_US": "/the-wonderful-world-of-birds"},
+		"keywords": ["birds", "avian", "birdwatching", "nature", "ornithology"]
+	},
+	{
+		"externalReferenceCode": "the-importance-of-bird-conservation",
+		"title": "The Importance of Bird Conservation",
+		"title_i18n": {"en_US": "The Importance of Bird Conservation"},
+		"subtitle": "Why protecting bird populations is crucial for ecosystem health.",
+		"subtitle_i18n": {"en_US": "Why protecting bird populations is crucial for ecosystem health."},
+		"content": "<p>Birds are more than just beautiful creatures; they are essential indicators of environmental health...</p>",
+		"content_i18n": {"en_US": "<p>Birds are more than just beautiful creatures; they are essential indicators of environmental health...</p>"},
+		"friendlyUrlPath_i18n": {"en_US": "/the-importance-of-bird-conservation"},
+		"keywords": ["birds", "conservation", "ecology", "environment", "wildlife"]
+	}
+]
+
+# Output policy
+
+- The tool's return value is the agent's final answer. Emit it VERBATIM — no surrounding prose, no commentary, no markdown fences.
+- Never invent fields not listed in the schema. If the request can't be fulfilled, do NOT call the tool — output {"_error": "<reason>"} as plain text instead.]]>
+		</prompt>
+		<tools>
+			<![CDATA[[]]]>
+		</tools>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Generate Site Batch Files
+					</label>
+				</labels>
+				<name>writeGenerationItems</name>
+				<target>writeGenerationItems</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+		<user-message>
+			Generate blog posts for the following site request. If no blogs are requested, return an empty JSON array []. If the request specifies N blogs, emit exactly that many; if it explicitly asks for blogs without a count, emit a single blog post.
+			{{request}}
+			Return the result as a JSON array following the schema and escaping rules defined in the system prompt.
+		</user-message>
+	</llm>
+	<service>
+		<name>repairSitePlan</name>
+		<labels>
+			<label language-id="en_US">
+				Repair Site Plan
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "sitePlan",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<java-delegate>javaDelegate#jsonRepair</java-delegate>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "sitePlan",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<transitions>
+			<transition>
+				<name>acknowledgeAgent</name>
+				<target>acknowledgeAgent</target>
+			</transition>
+		</transitions>
+	</service>
+	<service>
+		<name>acknowledgeAgent</name>
+		<labels>
+			<label language-id="en_US">
+				Acknowledge Agent
+			</label>
+		</labels>
+		<java-delegate>javaDelegate#acknowledgeAgent</java-delegate>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "output",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<transitions>
+			<transition>
+				<name>fragmentGenerator</name>
+				<target>fragmentGenerator</target>
+			</transition>
+		</transitions>
+	</service>
+	<service>
+		<name>repairEnrichedSitePlan</name>
+		<labels>
+			<label language-id="en_US">
+				Repair Enriched Site Plan
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "response",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<java-delegate>javaDelegate#jsonRepair</java-delegate>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "enrichedSitePlan",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<transitions>
+			<transition>
+				<name>blogGenerator</name>
+				<target>blogGenerator</target>
+			</transition>
+		</transitions>
+	</service>
+	<service>
+		<name>writeGenerationItems</name>
+		<labels>
+			<label language-id="en_US">
+				Write Generation Items
+			</label>
+		</labels>
+		<input-variables>
+			<![CDATA[
+[
+	{
+		"name": "enrichedSitePlan",
+		"type": "string"
+	},
+	{
+		"name": "blogEntries",
+		"type": "string"
+	},
+	{
+		"name": "generationExternalReferenceCode",
+		"type": "string"
+	}
+]
+]]>
+		</input-variables>
+		<java-delegate>javaDelegate#writeCSGGenerationItems</java-delegate>
+		<output-variables>
+			<![CDATA[
+[
+	{
+		"name": "itemsResult",
+		"type": "string"
+	}
+]
+]]>
+		</output-variables>
+		<transitions>
+			<transition>
+				<name>markGenerationReady</name>
+				<target>markGenerationReady</target>
+			</transition>
+		</transitions>
+	</service>
+	<state>
+		<name>start</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						50
+					]
+				}
+			]]>
+		</metadata>
+		<initial>true</initial>
+		<labels>
+			<label language-id="en_US">
+				Start
+			</label>
+		</labels>
+		<transitions>
+			<transition>
+				<labels>
+					<label language-id="en_US">
+						Site Analyzer
+					</label>
+				</labels>
+				<name>siteAnalyzer</name>
+				<target>siteAnalyzer</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<state>
+		<name>end</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						300,
+						1400
+					]
+				}
+			]]>
+		</metadata>
+		<labels>
+			<label language-id="en_US">
+				End
+			</label>
+		</labels>
+	</state>
+</workflow-definition>
