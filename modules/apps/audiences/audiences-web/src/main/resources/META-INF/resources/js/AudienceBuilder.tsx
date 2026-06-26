@@ -33,9 +33,7 @@ export default function AudienceBuilder({
 	name,
 	namespace = '',
 }: IProps) {
-	const [currentName, setCurrentName] = useState(
-		name || Liferay.Language.get('new-audience')
-	);
+	const [currentName, setCurrentName] = useState(name || '');
 
 	return (
 		<ScreenReaderAnnouncerContextProvider>
@@ -57,8 +55,11 @@ export default function AudienceBuilder({
 
 							<ClayToolbar.Item expand>
 								<ClayToolbar.Section className="text-left">
-									<span className="text-truncate">
-										{currentName}
+									<span className="font-weight-bold text-dark text-truncate">
+										{currentName ||
+											Liferay.Language.get(
+												'new-audience'
+											)}
 									</span>
 								</ClayToolbar.Section>
 							</ClayToolbar.Item>
@@ -94,9 +95,12 @@ export default function AudienceBuilder({
 						/>
 					</div>
 
-					<div className="flex-grow-1 overflow-auto p-4">
+					<div className="d-flex flex-column flex-grow-1 overflow-hidden p-4">
 						<ClayForm.Group>
-							<label htmlFor={`${namespace}name`}>
+							<label
+								className="font-weight-semi-bold text-3"
+								htmlFor={`${namespace}name`}
+							>
 								{Liferay.Language.get('name')}
 
 								<span className="reference-mark">
@@ -105,12 +109,16 @@ export default function AudienceBuilder({
 							</label>
 
 							<ClayInput
+								className="bg-white border-0 font-weight-semi-bold h-auto mb-0 p-0 text-8"
 								id={`${namespace}name`}
 								maxLength={NAME_MAX_LENGTH}
 								name={`${namespace}name`}
 								onChange={(event) =>
 									setCurrentName(event.target.value)
 								}
+								placeholder={Liferay.Language.get(
+									'new-audience'
+								)}
 								required
 								type="text"
 								value={currentName}

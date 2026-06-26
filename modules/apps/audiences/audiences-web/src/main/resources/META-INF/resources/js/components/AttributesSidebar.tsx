@@ -37,6 +37,7 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 			<ClayForm.Group>
 				<ClaySelectWithOption
 					aria-label={Liferay.Language.get('attributes-types')}
+					className="bg-white font-weight-semi-bold text-4"
 					onChange={(event) => {
 						setSelectedIndex(Number(event.target.value));
 						setQuery('');
@@ -70,7 +71,7 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 									<ClayIcon symbol={audiencesCriteria.icon} />
 								</ClayList.ItemField>
 
-								<ClayList.ItemField expand>
+								<ClayList.ItemField className="text-3" expand>
 									{audiencesCriteria.label}
 								</ClayList.ItemField>
 							</ClayList.Item>
