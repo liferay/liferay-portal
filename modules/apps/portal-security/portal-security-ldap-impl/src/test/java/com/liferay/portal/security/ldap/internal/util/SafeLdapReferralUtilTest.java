@@ -5,8 +5,10 @@
 
 package com.liferay.portal.security.ldap.internal.util;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -41,21 +43,39 @@ public class SafeLdapReferralUtilTest {
 
 	@Test
 	public void testIsAllowedReferralURL() {
-		_testIsAllowedReferralURL(false, "corba://host/exploit");
-		_testIsAllowedReferralURL(false, "dns://host");
-		_testIsAllowedReferralURL(false, "host:389");
-		_testIsAllowedReferralURL(false, "http://host/exploit");
 		_testIsAllowedReferralURL(
-			false, "ldap://host1:389 rmi://host2:1099/exploit");
-		_testIsAllowedReferralURL(false, "ldapx://host");
-		_testIsAllowedReferralURL(false, "rmi://host:1099/exploit");
+			false, "corba://" + RandomTestUtil.randomString());
+		_testIsAllowedReferralURL(
+			false, "dns://" + RandomTestUtil.randomString());
+		_testIsAllowedReferralURL(
+			false,
+			RandomTestUtil.randomString() + ":" + RandomTestUtil.randomInt());
+		_testIsAllowedReferralURL(
+			false, "http://" + RandomTestUtil.randomString());
+		_testIsAllowedReferralURL(
+			false,
+			StringBundler.concat(
+				"ldap://", RandomTestUtil.randomString(), " rmi://",
+				RandomTestUtil.randomString()));
+		_testIsAllowedReferralURL(
+			false, "ldapx://" + RandomTestUtil.randomString());
+		_testIsAllowedReferralURL(
+			false, "rmi://" + RandomTestUtil.randomString());
 		_testIsAllowedReferralURL(false, StringPool.BLANK);
 		_testIsAllowedReferralURL(false, null);
-		_testIsAllowedReferralURL(true, "  ldap://host:389  ");
-		_testIsAllowedReferralURL(true, "LDAP://host:389");
-		_testIsAllowedReferralURL(true, "ldap://host1:389 ldap://host2:389");
-		_testIsAllowedReferralURL(true, "ldap://host:389");
-		_testIsAllowedReferralURL(true, "ldaps://host:636");
+		_testIsAllowedReferralURL(
+			true, "  ldap://" + RandomTestUtil.randomString() + "  ");
+		_testIsAllowedReferralURL(
+			true, "LDAP://" + RandomTestUtil.randomString());
+		_testIsAllowedReferralURL(
+			true,
+			StringBundler.concat(
+				"ldap://", RandomTestUtil.randomString(), " ldap://",
+				RandomTestUtil.randomString()));
+		_testIsAllowedReferralURL(
+			true, "ldap://" + RandomTestUtil.randomString());
+		_testIsAllowedReferralURL(
+			true, "ldaps://" + RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -89,7 +109,7 @@ public class SafeLdapReferralUtilTest {
 		);
 
 		ReferralException referralException = _mockReferralException(
-			dirContext, "ldap://other:389");
+			dirContext, "ldap://" + RandomTestUtil.randomString());
 
 		NamingEnumeration<SearchResult> resultEnumeration =
 			SafeLdapReferralUtil.search(
@@ -105,7 +125,7 @@ public class SafeLdapReferralUtilTest {
 		).getReferralContext();
 
 		referralException = _mockReferralException(
-			null, "rmi://attacker:1099/exploit");
+			null, "rmi://" + RandomTestUtil.randomString());
 
 		resultEnumeration = SafeLdapReferralUtil.search(
 			"(cn=*)", new Object[0], Mockito.mock(Name.class),
