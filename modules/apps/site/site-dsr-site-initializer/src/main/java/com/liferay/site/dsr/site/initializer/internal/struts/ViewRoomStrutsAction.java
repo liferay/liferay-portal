@@ -97,28 +97,24 @@ public class ViewRoomStrutsAction implements StrutsAction {
 				PermissionChecker permissionChecker =
 					themeDisplay.getPermissionChecker();
 
-				if (permissionChecker.isCompanyAdmin() ||
-					permissionChecker.isGroupOwner(group.getGroupId())) {
+				if (!permissionChecker.isCompanyAdmin() &&
+					!permissionChecker.isGroupOwner(group.getGroupId())) {
 
-					httpServletResponse.sendRedirect(groupFriendlyURL);
+					SessionErrors.add(
+						httpServletRequest,
+						PrincipalException.MustHavePermission.class);
+
+					String redirect = _portal.escapeRedirect(
+						httpServletRequest.getHeader(HttpHeaders.REFERER));
+
+					if (Validator.isNull(redirect)) {
+						redirect = themeDisplay.getURLHome();
+					}
+
+					httpServletResponse.sendRedirect(redirect);
 
 					return null;
 				}
-
-				SessionErrors.add(
-					httpServletRequest,
-					PrincipalException.MustHavePermission.class);
-
-				String redirect = _portal.escapeRedirect(
-					httpServletRequest.getHeader(HttpHeaders.REFERER));
-
-				if (Validator.isNull(redirect)) {
-					redirect = themeDisplay.getURLHome();
-				}
-
-				httpServletResponse.sendRedirect(redirect);
-
-				return null;
 			}
 		}
 

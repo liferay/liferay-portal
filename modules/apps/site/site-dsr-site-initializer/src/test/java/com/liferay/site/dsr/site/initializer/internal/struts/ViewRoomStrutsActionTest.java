@@ -296,6 +296,8 @@ public class ViewRoomStrutsActionTest {
 			true
 		);
 
+		mockHttpServletRequest.removeParameter("mode");
+
 		mockHttpServletResponse = new MockHttpServletResponse();
 
 		Assert.assertNull(
