@@ -11,6 +11,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -54,6 +55,10 @@ public interface SystemObjectDefinitionManager {
 
 	public BaseModel<?> fetchBaseModelByExternalReferenceCode(
 		String externalReferenceCode, long companyId);
+
+	public default String getAdditionalAPIURLParameters() {
+		return StringPool.BLANK;
+	}
 
 	public default Set<String> getAllowedObjectRelationshipTypes() {
 		return ObjectRelationshipUtil.getDefaultObjectRelationshipTypes();

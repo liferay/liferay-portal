@@ -189,9 +189,11 @@ export default function ObjectRelationship({
 			let newURL: string | null = null;
 
 			if (!parameterObjectFieldName || parameterObjectFieldId) {
+				const searchSeparator = apiURL.includes('?') ? '&' : '?';
+
 				newURL = parameterObjectFieldId
 					? apiURL.replace(/{\w+}/, String(parameterObjectFieldId))
-					: `${apiURL}${searchTerm ? `?search=${searchTerm}` : ''}`;
+					: `${apiURL}${searchTerm ? `${searchSeparator}search=${encodeURIComponent(searchTerm)}` : ''}`;
 			}
 
 			if (!newURL || newURL === url) {
@@ -221,7 +223,7 @@ export default function ObjectRelationship({
 
 					if (!selected && !parameterObjectFieldName) {
 						selected = await fetchOptions<Item>(
-							`${apiURL}/${value}`
+							`${apiURL.split('?')[0]}/${value}`
 						);
 					}
 

@@ -81,6 +81,11 @@ public class OrganizationSystemObjectDefinitionManager
 	}
 
 	@Override
+	public String getAdditionalAPIURLParameters() {
+		return "flatten=true";
+	}
+
+	@Override
 	public BaseModel<?> getBaseModelByExternalReferenceCode(
 			String externalReferenceCode, long companyId)
 		throws PortalException {
