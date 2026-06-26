@@ -3,8 +3,5 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-// This file is the public API barrel for the charts module. Exports are added
-// as the shared state wrapper (LPD-95990) and the individual chart components
-// land.
-
-export {};
+export {default as ChartState} from './chart_state_wrapper/ChartState';
+export {ChartStateProps} from './chart_state_wrapper/ChartState';

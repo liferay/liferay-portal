@@ -1,5 +1,9 @@
 {
 	"dependencies": {
+		"@clayui/alert": "^3.165.0",
+		"@clayui/empty-state": "^3.165.0",
+		"@clayui/loading-indicator": "^3.165.0",
+		"@liferay/layout-js-components-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},

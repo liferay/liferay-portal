@@ -1,0 +1,40 @@
+{
+	"@generated": "02d9a2595f4354657c520cc0d2b450e3a1d17474",
+	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"checkJs": false,
+		"composite": true,
+		"declarationDir": "../../../../.tsc/types",
+		"emitDeclarationOnly": true,
+		"jsx": "react",
+		"module": "es2022",
+		"moduleResolution": "node",
+		"paths": {
+			"@liferay/layout-js-components-web": [
+				"../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			]
+		},
+		"rootDir": "../../../..",
+		"skipLibCheck": true,
+		"sourceMap": false,
+		"strict": true,
+		"target": "esnext",
+		"tsBuildInfoFile": "../../../../.tsc/buildinfo/@liferay/frontend-js-charts-web-test.tsbuildinfo",
+		"typeRoots": [
+			"../../../../node_modules/@types"
+		]
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"../../../../global.d.ts",
+		"../src/**/*.ts",
+		"../src/**/*.tsx"
+	],
+	"references": [
+		{
+			"path": "../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		}
+	]
+}
