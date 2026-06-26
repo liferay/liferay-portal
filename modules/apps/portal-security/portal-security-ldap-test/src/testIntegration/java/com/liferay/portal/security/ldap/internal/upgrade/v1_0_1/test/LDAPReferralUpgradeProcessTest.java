@@ -6,7 +6,9 @@
 package com.liferay.portal.security.ldap.internal.upgrade.v1_0_1.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -119,13 +121,19 @@ public class LDAPReferralUpgradeProcessTest {
 	@Test
 	public void testUpgradeThrowsReferral() throws Exception {
 		long followCompanyId = RandomTestUtil.randomLong();
-		long ignoreCompanyId = RandomTestUtil.randomLong();
-		long legacyThrowsCompanyId = RandomTestUtil.randomLong();
-		long throwCompanyId = RandomTestUtil.randomLong();
 
 		_createConfiguration(followCompanyId, LDAPConstants.REFERRAL_FOLLOW);
+
+		long ignoreCompanyId = RandomTestUtil.randomLong();
+
 		_createConfiguration(ignoreCompanyId, LDAPConstants.REFERRAL_IGNORE);
+
+		long legacyThrowsCompanyId = RandomTestUtil.randomLong();
+
 		_createConfiguration(legacyThrowsCompanyId, "throws");
+
+		long throwCompanyId = RandomTestUtil.randomLong();
+
 		_createConfiguration(throwCompanyId, LDAPConstants.REFERRAL_THROW);
 
 		_upgradeProcess.upgrade();
@@ -157,32 +165,19 @@ public class LDAPReferralUpgradeProcessTest {
 
 	private String _getReferral(long companyId) throws Exception {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			"(service.factoryPid=" + SystemLDAPConfiguration.class.getName() +
-				")");
+			ConfigurationFilterStringUtil.getScopedFilterString(
+				companyId, SystemLDAPConfiguration.class.getName(),
+				ExtendedObjectClassDefinition.Scope.COMPANY, companyId));
 
 		if (ArrayUtil.isEmpty(configurations)) {
 			return null;
 		}
 
-		for (Configuration configuration : configurations) {
-			Dictionary<String, Object> properties =
-				configuration.getProperties();
+		Configuration configuration = configurations[0];
 
-			if (properties == null) {
-				continue;
-			}
+		Dictionary<String, Object> properties = configuration.getProperties();
 
-			Long configuredCompanyId = (Long)properties.get(
-				LDAPConstants.COMPANY_ID);
-
-			if ((configuredCompanyId != null) &&
-				(configuredCompanyId == companyId)) {
-
-				return (String)properties.get(LDAPConstants.REFERRAL);
-			}
-		}
-
-		return null;
+		return (String)properties.get(LDAPConstants.REFERRAL);
 	}
 
 	private static BundleContext _bundleContext;
