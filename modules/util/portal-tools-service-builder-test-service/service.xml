@@ -119,6 +119,16 @@
 			<finder-column name="name" />
 		</finder>
 	</entity>
+	<entity local-service="false" name="ColumnNameEntry" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column db-name="cNameEntryId" name="columnNameEntryId" primary="true" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+	</entity>
 	<entity cache-enabled="true" local-service="true" name="DataLimitEntry" remote-service="false">
 
 		<!-- PK fields -->
