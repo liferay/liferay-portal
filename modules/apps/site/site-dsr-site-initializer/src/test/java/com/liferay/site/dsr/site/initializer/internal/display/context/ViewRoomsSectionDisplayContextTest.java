@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -197,6 +200,12 @@ public class ViewRoomsSectionDisplayContextTest {
 		);
 
 		Mockito.when(
+			_themeDisplay.getPermissionChecker()
+		).thenReturn(
+			_permissionChecker
+		);
+
+		Mockito.when(
 			_themeDisplay.getPathFriendlyURLPublic()
 		).thenReturn(
 			StringPool.BLANK
@@ -226,6 +235,8 @@ public class ViewRoomsSectionDisplayContextTest {
 		_languageUtilMockedStatic.close();
 		_layoutSetPrototypeLocalServiceUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
+		_roleLocalServiceUtilMockedStatic.close();
+		_userGroupRoleLocalServiceUtilMockedStatic.close();
 	}
 
 	@Test
@@ -238,9 +249,13 @@ public class ViewRoomsSectionDisplayContextTest {
 		_assertEquals(
 			viewRoomsSectionDisplayContext.getAdditionalProps(),
 			HashMapBuilder.<String, Object>put(
+				"companyAdmin", false
+			).put(
 				"createRedirectURL",
 				DSRConstants.DSR_FRIENDLY_URL +
 					"/view_room?mode=edit&siteId={siteId}"
+			).put(
+				"ownedSiteIds", Collections.emptyList()
 			).put(
 				"siteTemplates",
 				ListUtil.fromCollection(
@@ -520,8 +535,16 @@ public class ViewRoomsSectionDisplayContextTest {
 			LayoutSetPrototypeLocalServiceUtil.class);
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
+	private final PermissionChecker _permissionChecker = Mockito.mock(
+		PermissionChecker.class);
 	private final MockedStatic<PortalUtil> _portalUtilMockedStatic =
 		Mockito.mockStatic(PortalUtil.class);
+	private final MockedStatic<RoleLocalServiceUtil>
+		_roleLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			RoleLocalServiceUtil.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
+	private final MockedStatic<UserGroupRoleLocalServiceUtil>
+		_userGroupRoleLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			UserGroupRoleLocalServiceUtil.class);
 
 }

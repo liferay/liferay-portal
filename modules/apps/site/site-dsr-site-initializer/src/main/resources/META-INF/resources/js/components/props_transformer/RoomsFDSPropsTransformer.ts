@@ -145,8 +145,7 @@ export default function RoomsFDSPropsTransformer({
 				id === 'archive' ||
 				id === 'duplicate' ||
 				id === 'edit' ||
-				id === 'settings' ||
-				id === 'share'
+				id === 'settings'
 			) {
 				return {
 					...action,
@@ -169,6 +168,18 @@ export default function RoomsFDSPropsTransformer({
 					...action,
 					isVisible: (item: IRoomObjectEntry) =>
 						item?.roomStatus === ROOM_STATUS.INACTIVE,
+				};
+			}
+
+			if (id === 'view') {
+				return {
+					...action,
+					isVisible: (item: IRoomObjectEntry) =>
+						item?.roomStatus === ROOM_STATUS.ACTIVE ||
+						additionalProps.companyAdmin ||
+						additionalProps.ownedSiteIds?.includes(
+							String(item?.siteId)
+						),
 				};
 			}
 
@@ -295,6 +306,9 @@ export default function RoomsFDSPropsTransformer({
 					}) =>
 						RoomShare({
 							closeModal,
+							readOnly:
+								itemData.roomStatus === ROOM_STATUS.INACTIVE &&
+								!additionalProps.companyAdmin,
 							roomId: itemData.id,
 						}),
 					size: 'lg',

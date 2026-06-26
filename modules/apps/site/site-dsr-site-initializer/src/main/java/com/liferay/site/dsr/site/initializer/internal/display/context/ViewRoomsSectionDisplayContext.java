@@ -19,7 +19,12 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -49,11 +54,40 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"companyAdmin",
+			() -> {
+				PermissionChecker permissionChecker =
+					themeDisplay.getPermissionChecker();
+
+				return permissionChecker.isCompanyAdmin();
+			}
+		).put(
 			"createRedirectURL",
 			() -> StringBundler.concat(
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 				DSRConstants.DSR_FRIENDLY_URL,
 				"/view_room?mode=edit&siteId={siteId}")
+		).put(
+			"ownedSiteIds",
+			() -> {
+				Role role = RoleLocalServiceUtil.fetchRole(
+					themeDisplay.getCompanyId(), RoleConstants.SITE_OWNER);
+
+				if (role == null) {
+					return Collections.emptyList();
+				}
+
+				return TransformUtil.transform(
+					UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+						themeDisplay.getUserId()),
+					userGroupRole -> {
+						if (userGroupRole.getRoleId() == role.getRoleId()) {
+							return userGroupRole.getGroupId();
+						}
+
+						return null;
+					});
+			}
 		).put(
 			"siteTemplates",
 			() -> TransformUtil.transform(
