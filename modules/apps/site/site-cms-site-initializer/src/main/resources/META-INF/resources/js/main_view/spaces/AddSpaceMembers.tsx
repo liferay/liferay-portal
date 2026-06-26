@@ -5,13 +5,17 @@
 
 import ClayButton from '@clayui/button';
 import ClayLayout from '@clayui/layout';
-import {ILearnResourceContext} from 'frontend-js-components-web';
+import {
+	ILearnResourceContext,
+	ManageMembersList,
+} from 'frontend-js-components-web';
 import {navigate, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import {getImage} from '../../common/utils/getImage';
+import AddSpaceMembersInput from './AddSpaceMembersInput';
 import {NewSpaceFormSection} from './NewSpaceFormSection';
-import {SpaceMembersWithList} from './SpaceMembersWithList';
+import {SPACE_MEMBERS_CONFIG} from './spaceMembersConfig';
 
 export interface AddSpaceMembersProps {
 	assetLibraryCreatorUserId: string;
@@ -54,12 +58,19 @@ export function AddSpaceMembers({
 					)}
 					withForm={false}
 				>
-					<SpaceMembersWithList
-						assetLibraryCreatorUserId={assetLibraryCreatorUserId}
+					<ManageMembersList
 						className="c-p-4"
+						config={SPACE_MEMBERS_CONFIG}
+						emptyStateDescription={Liferay.Language.get(
+							'add-members-to-this-space'
+						)}
 						externalReferenceCode={externalReferenceCode}
 						hasAssignMembersPermission={hasAssignMembersPermission}
 						onHasSelectedMembersChange={setHasSelectedMembers}
+						ownerId={assetLibraryCreatorUserId}
+						renderAddMembersInput={(api) => (
+							<AddSpaceMembersInput {...api} />
+						)}
 					/>
 
 					<ClayButton.Group className="mb-0 w-100" spaced vertical>

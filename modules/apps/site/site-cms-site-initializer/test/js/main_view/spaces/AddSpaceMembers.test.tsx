@@ -4,57 +4,23 @@
  */
 
 import '@testing-library/jest-dom';
-import {act, render, screen, waitFor, within} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import {fetch} from 'frontend-js-web';
+import {act, render, screen} from '@testing-library/react';
+import {ManageMembersList} from 'frontend-js-components-web';
 import React from 'react';
 
-import SpaceService from '../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService';
-import {Space} from '../../../../src/main/resources/META-INF/resources/js/common/types/Space';
 import {
 	AddSpaceMembers,
 	AddSpaceMembersProps,
 } from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/AddSpaceMembers';
+import AddSpaceMembersInput from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/AddSpaceMembersInput';
+import {SPACE_MEMBERS_CONFIG} from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/spaceMembersConfig';
 
-jest.mock('frontend-js-web', () => ({
-	...(jest.requireActual('frontend-js-web') as any),
-	fetch: jest.fn((resource) => {
-		const resolvers = {
-			'/o/headless-admin-user/v1.0/user-accounts': () => {
-				return [
-					{
-						emailAddress: 'user.one@liferay.com',
-						externalReferenceCode: 'erc-user-one',
-						id: 'user-one-1',
-						name: 'User One',
-					},
-					{
-						emailAddress: 'user.two@liferay.com',
-						externalReferenceCode: 'erc-user-two',
-						id: 'user-two-2',
-						name: 'User Two',
-					},
-				];
-			},
-		};
-
-		const url = new URL(resource);
-		const headers = new Headers();
-		headers.set('Content-Type', 'application/json');
-
-		return Promise.resolve({
-			headers,
-			json: () =>
-				Promise.resolve({
-					items: resolvers[url.pathname as keyof typeof resolvers](),
-					lastPage: 1,
-					page: 1,
-				}),
-			ok: true,
-			status: 200,
-		});
-	}),
+jest.mock('frontend-js-components-web', () => ({
+	...(jest.requireActual('frontend-js-components-web') as object),
+	ManageMembersList: jest.fn(() => null),
 }));
+
+const mockManageMembersList = ManageMembersList as unknown as jest.Mock;
 
 const mockLearnResources = {
 	'site-cms-site-initializer': {
@@ -67,167 +33,77 @@ const mockLearnResources = {
 	},
 };
 
-const mockedFetch = fetch as jest.Mock<unknown>;
-
 describe('AddSpaceMembers', () => {
-	const testSpace = {
-		externalReferenceCode: 'ERC',
-		id: '123',
-		name: 'Test Space',
-	};
-
-	const testUsersResponse = {
-		items: [],
-		lastPage: 1,
-		page: 1,
-		totalCount: 0,
-	};
-
-	const testUserGroupsResponse = {
-		items: [],
-		lastPage: 1,
-		page: 1,
-		totalCount: 0,
-	};
-
 	const props: AddSpaceMembersProps = {
 		assetLibraryCreatorUserId: '0',
-		assetLibraryId: testSpace.id,
-		assetLibraryName: testSpace.name,
+		assetLibraryId: '123',
+		assetLibraryName: 'Test Space',
 		baseAssetLibraryURL: '/web/cms/e/space/28632',
-		externalReferenceCode: testSpace.externalReferenceCode,
+		externalReferenceCode: 'ERC',
 		hasAssignMembersPermission: true,
 		learnResources: mockLearnResources,
 	};
 
-	const {ResizeObserver} = window;
-
-	let getSpaceSpy: jest.SpyInstance;
-	let getSpaceUsersSpy: jest.SpyInstance;
-	let getSpaceUserGroupsSpy: jest.SpyInstance;
-	let linkUserToSpaceSpy: jest.SpyInstance;
-
-	beforeAll(() => {
-		window.ResizeObserver = jest.fn().mockImplementation(() => ({
-			disconnect: jest.fn(),
-			observe: jest.fn(),
-			unobserve: jest.fn(),
-		}));
-	});
-
-	beforeEach(() => {
-		getSpaceSpy = jest
-			.spyOn(SpaceService, 'getSpace')
-			.mockResolvedValue(testSpace as unknown as Space);
-		getSpaceUsersSpy = jest
-			.spyOn(SpaceService, 'getSpaceUsers')
-			.mockResolvedValue(testUsersResponse);
-		getSpaceUserGroupsSpy = jest
-			.spyOn(SpaceService, 'getSpaceUserGroups')
-			.mockResolvedValue(testUserGroupsResponse);
-		linkUserToSpaceSpy = jest
-			.spyOn(SpaceService, 'linkUserToSpace')
-			.mockResolvedValue({data: {}, error: null});
-
-		jest.spyOn(SpaceService, 'getSpaceRoles').mockResolvedValue({
-			items: [],
-			lastPage: 1,
-			page: 1,
-			totalCount: 0,
-		});
-
-		global.IntersectionObserver = jest.fn().mockImplementation(() => ({
-			disconnect: jest.fn(),
-			observe: jest.fn(),
-			unobserve: jest.fn(),
-		}));
-	});
-
 	afterEach(() => {
-		getSpaceSpy.mockClear();
-		getSpaceUsersSpy.mockClear();
-		getSpaceUserGroupsSpy.mockClear();
-		linkUserToSpaceSpy.mockClear();
-
 		jest.clearAllMocks();
 	});
 
-	afterAll(() => {
-		jest.restoreAllMocks();
-		mockedFetch.mockReset();
-
-		delete (global as any).IntersectionObserver;
-		window.ResizeObserver = ResizeObserver;
-	});
-
-	it('renders with correct title, description, buttons', async () => {
-		await act(async () => render(<AddSpaceMembers {...props} />));
+	it('renders the section title, description and continue button', () => {
+		render(<AddSpaceMembers {...props} />);
 
 		expect(
-			screen.getByRole('heading', {
-				name: `add-members-to-x`,
-			})
+			screen.getByRole('heading', {name: 'add-members-to-x'})
 		).toBeInTheDocument();
 		expect(
 			screen.getByText(
 				'add-team-members-to-this-space-to-start-collaborating'
 			)
 		).toBeInTheDocument();
-
 		expect(
-			screen.getByRole('button', {
-				name: 'continue-without-members',
-			})
-		).toBeInTheDocument();
-
-		expect(screen.getByText('no-members-yet')).toBeInTheDocument();
-
-		expect(
-			screen.getByPlaceholderText('enter-name-or-email')
+			screen.getByRole('button', {name: 'continue-without-members'})
 		).toBeInTheDocument();
 	});
 
-	it("must shows selected users after selecting an item from the 'enter-name-or-email' input", async () => {
-		const user = userEvent.setup();
-
+	it('renders the shared ManageMembersList with the space configuration', () => {
 		render(<AddSpaceMembers {...props} />);
 
-		await waitFor(() => screen.getByPlaceholderText('enter-name-or-email'));
+		expect(mockManageMembersList).toHaveBeenCalledTimes(1);
 
-		const input = screen.getByPlaceholderText('enter-name-or-email');
+		const listProps = mockManageMembersList.mock.calls[0][0];
+
+		expect(listProps.config).toBe(SPACE_MEMBERS_CONFIG);
+		expect(listProps.className).toBe('c-p-4');
+		expect(listProps.externalReferenceCode).toBe('ERC');
+		expect(listProps.hasAssignMembersPermission).toBe(true);
+		expect(listProps.ownerId).toBe('0');
+		expect(listProps.emptyStateDescription).toBe(
+			'add-members-to-this-space'
+		);
+
+		const api = {
+			excludeMembers: [],
+			onAutocompleteItemSelected: jest.fn(),
+			onSelectChange: jest.fn(),
+			selectValue: 'users',
+		};
+
+		expect(listProps.renderAddMembersInput(api).type).toBe(
+			AddSpaceMembersInput
+		);
+	});
+
+	it('flips the continue button label once members are selected', () => {
+		render(<AddSpaceMembers {...props} />);
+
+		const {onHasSelectedMembersChange} =
+			mockManageMembersList.mock.calls[0][0];
+
+		act(() => {
+			onHasSelectedMembersChange(true);
+		});
 
 		expect(
-			screen.queryByRole('list', {name: 'who-has-access'})
-		).not.toBeInTheDocument();
-
-		await user.click(input);
-
-		expect(input).toHaveFocus();
-
-		await waitFor(() => {
-			screen.getByRole('option', {name: /user one (user.one)/i});
-		});
-
-		const options = screen.getAllByRole('option');
-
-		expect(options).toHaveLength(2);
-
-		expect(options[0]).toHaveTextContent('User One (user.one)');
-
-		expect(options[1]).toHaveTextContent('User Two (user.two)');
-
-		await user.click(options[0]);
-
-		const whoHasAccess = await screen.findByRole('list', {
-			name: 'who-has-access',
-		});
-
-		expect(whoHasAccess).toBeInTheDocument();
-
-		const whoHasAccessItems = within(whoHasAccess).getAllByRole('listitem');
-
-		expect(whoHasAccessItems).toHaveLength(1);
-
-		expect(whoHasAccessItems[0]).toHaveTextContent('User One');
+			screen.getByRole('button', {name: 'continue'})
+		).toBeInTheDocument();
 	});
 });
