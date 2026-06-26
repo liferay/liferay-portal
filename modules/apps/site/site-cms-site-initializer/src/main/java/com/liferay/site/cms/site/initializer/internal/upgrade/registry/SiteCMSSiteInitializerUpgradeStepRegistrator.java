@@ -11,6 +11,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSDefaultPermissionsUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSObjectRelationshipEdgeUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0.CMSBulkActionTaskTaskResultUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,6 +49,12 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 				_objectDefinitionPersistence,
 				_objectDefinitionSettingLocalService, _objectEntryLocalService,
 				_objectFolderLocalService, _objectRelationshipLocalService));
+
+		registry.register(
+			"2.0.0", "3.0.0",
+			new CMSBulkActionTaskTaskResultUpgradeProcess(
+				_companyLocalService, _objectDefinitionLocalService,
+				_objectFieldLocalService));
 	}
 
 	@Reference
@@ -75,6 +83,9 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private ObjectFolderLocalService _objectFolderLocalService;
