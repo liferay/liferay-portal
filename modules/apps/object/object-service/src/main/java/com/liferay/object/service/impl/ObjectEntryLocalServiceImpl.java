@@ -721,14 +721,14 @@ public class ObjectEntryLocalServiceImpl
 
 		Date date = new Date();
 
+		long checkInterval = _getObjectEntryCheckInterval(companyId);
+
 		_companyIdPreviousCheckDate.computeIfAbsent(
-			companyId,
-			key -> new Date(
-				date.getTime() - _getObjectEntryCheckInterval(companyId)));
+			companyId, key -> new Date(date.getTime() - checkInterval));
 
-		_checkObjectEntriesByDisplayDate(companyId, date);
+		_checkObjectEntriesByDisplayDate(companyId, date, checkInterval);
 
-		_checkObjectEntriesByExpirationDate(companyId, date);
+		_checkObjectEntriesByExpirationDate(companyId, date, checkInterval);
 
 		_checkObjectEntriesByReviewDate(companyId, date);
 
@@ -3202,8 +3202,11 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
-	private void _checkObjectEntriesByDisplayDate(long companyId, Date date)
+	private void _checkObjectEntriesByDisplayDate(
+			long companyId, Date date, long checkInterval)
 		throws PortalException {
+
+		Date nextExpirationDate = new Date(date.getTime() + checkInterval);
 
 		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
 			DSLQueryFactoryUtil.select(
@@ -3214,10 +3217,13 @@ public class ObjectEntryLocalServiceImpl
 				ObjectEntryTable.INSTANCE.companyId.eq(
 					companyId
 				).and(
-					ObjectEntryTable.INSTANCE.displayDate.gte(
-						_companyIdPreviousCheckDate.get(companyId))
+					ObjectEntryTable.INSTANCE.displayDate.lt(date)
 				).and(
-					ObjectEntryTable.INSTANCE.displayDate.lte(date)
+					ObjectEntryTable.INSTANCE.expirationDate.isNull(
+					).or(
+						ObjectEntryTable.INSTANCE.expirationDate.gte(
+							nextExpirationDate)
+					)
 				).and(
 					ObjectEntryTable.INSTANCE.status.eq(
 						WorkflowConstants.STATUS_SCHEDULED)
@@ -3231,8 +3237,11 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
-	private void _checkObjectEntriesByExpirationDate(long companyId, Date date)
+	private void _checkObjectEntriesByExpirationDate(
+			long companyId, Date date, long checkInterval)
 		throws PortalException {
+
+		Date nextExpirationDate = new Date(date.getTime() + checkInterval);
 
 		List<ObjectEntry> objectEntries = objectEntryPersistence.dslQuery(
 			DSLQueryFactoryUtil.select(
@@ -3243,10 +3252,8 @@ public class ObjectEntryLocalServiceImpl
 				ObjectEntryTable.INSTANCE.companyId.eq(
 					companyId
 				).and(
-					ObjectEntryTable.INSTANCE.expirationDate.gte(
-						_companyIdPreviousCheckDate.get(companyId))
-				).and(
-					ObjectEntryTable.INSTANCE.expirationDate.lte(date)
+					ObjectEntryTable.INSTANCE.expirationDate.lte(
+						nextExpirationDate)
 				).and(
 					ObjectEntryTable.INSTANCE.status.notIn(
 						new Integer[] {

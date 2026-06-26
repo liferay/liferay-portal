@@ -150,6 +150,34 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 	}
 
 	@Test
+	public void testCheckObjectEntryDisplayDateAfterMissedInterval()
+		throws Exception {
+
+		Date date = new Date();
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+			).put(
+				"displayDate",
+				new Date(date.getTime() + TimeUnit.DAY.toMillis(1))
+			).build());
+
+		Assert.assertTrue(objectEntry.isScheduled());
+
+		_updateDisplayDate(
+			new Date(date.getTime() - TimeUnit.DAY.toMillis(1)), objectEntry);
+
+		_jobExecutorUnsafeRunnable.run();
+
+		objectEntry = _objectEntryLocalService.getObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertTrue(objectEntry.isApproved());
+	}
+
+	@Test
 	public void testCheckObjectEntryExpirationDate() throws Exception {
 		Date date = new Date();
 
@@ -180,8 +208,7 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 			).build());
 
 		_updateExpirationDate(
-			new Date(date.getTime() + TimeUnit.MINUTE.toMillis(5)),
-			objectEntry2);
+			new Date(date.getTime() + TimeUnit.DAY.toMillis(1)), objectEntry2);
 
 		_jobExecutorUnsafeRunnable.run();
 
@@ -372,6 +399,12 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 			).minusMonths(
 				months
 			));
+	}
+
+	private void _updateDisplayDate(Date displayDate, ObjectEntry objectEntry) {
+		objectEntry.setDisplayDate(displayDate);
+
+		_objectEntryLocalService.updateObjectEntry(objectEntry);
 	}
 
 	private void _updateExpirationDate(
