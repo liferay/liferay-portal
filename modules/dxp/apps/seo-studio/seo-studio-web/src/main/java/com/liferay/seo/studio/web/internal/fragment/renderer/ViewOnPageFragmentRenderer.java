@@ -19,6 +19,9 @@ import com.liferay.seo.studio.web.internal.display.context.ViewOnPageDisplayCont
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -48,12 +51,16 @@ public class ViewOnPageFragmentRenderer
 
 		JSONArray filtersJSONArray = fdsSerializer.serializeFilters(
 			SEOStudioFDSNames.INSIGHT_TYPE_SECTION, httpServletRequest);
+
+		List<Long> seoStudioScanIds = _getSEOStudioScanIds(
+			httpServletRequest, objectEntry);
+
 		JSONArray viewsJSONArray = fdsSerializer.serializeViews(
 			SEOStudioFDSNames.INSIGHT_TYPE_SECTION, httpServletRequest);
 
 		return new ViewOnPageDisplayContext(
 			filtersJSONArray, httpServletRequest, language, objectEntry,
-			viewsJSONArray);
+			seoStudioScanIds, viewsJSONArray);
 	}
 
 	@Override
@@ -70,7 +77,7 @@ public class ViewOnPageFragmentRenderer
 			ObjectDefinition objectDefinition =
 				objectDefinitionLocalService.
 					fetchObjectDefinitionByExternalReferenceCode(
-						"L_SEO_STUDIO_SCAN", companyId);
+						"L_SEO_STUDIO_SCAN_RUN", companyId);
 
 			if (objectDefinition == null) {
 				return null;
@@ -96,6 +103,53 @@ public class ViewOnPageFragmentRenderer
 			}
 
 			return null;
+		}
+	}
+
+	private List<Long> _getSEOStudioScanIds(
+		HttpServletRequest httpServletRequest, ObjectEntry objectEntry) {
+
+		if (objectEntry == null) {
+			return Collections.emptyList();
+		}
+
+		try {
+			long companyId = portal.getCompanyId(httpServletRequest);
+
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_SEO_STUDIO_SCAN", companyId);
+
+			if (objectDefinition == null) {
+				return Collections.emptyList();
+			}
+
+			Page<ObjectEntry> page = objectEntryManager.getObjectEntries(
+				companyId, objectDefinition, null, null,
+				getDTOConverterContext(objectDefinition),
+				"r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunId eq '" +
+					objectEntry.getId() + "'",
+				Pagination.of(1, 100), null, null);
+
+			if (page == null) {
+				return Collections.emptyList();
+			}
+
+			List<Long> seoStudioScanIds = new ArrayList<>();
+
+			for (ObjectEntry seoStudioScanObjectEntry : page.getItems()) {
+				seoStudioScanIds.add(seoStudioScanObjectEntry.getId());
+			}
+
+			return seoStudioScanIds;
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
+
+			return Collections.emptyList();
 		}
 	}
 

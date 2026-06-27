@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.text.Format;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +41,14 @@ public class ViewOnPageDisplayContext {
 
 	public ViewOnPageDisplayContext(
 		JSONArray filtersJSONArray, HttpServletRequest httpServletRequest,
-		Language language, ObjectEntry objectEntry, JSONArray viewsJSONArray) {
+		Language language, ObjectEntry objectEntry, List<Long> seoStudioScanIds,
+		JSONArray viewsJSONArray) {
 
 		_filtersJSONArray = filtersJSONArray;
 		_httpServletRequest = httpServletRequest;
 		_language = language;
 		_objectEntry = objectEntry;
+		_seoStudioScanIds = seoStudioScanIds;
 		_viewsJSONArray = viewsJSONArray;
 	}
 
@@ -119,17 +122,27 @@ public class ViewOnPageDisplayContext {
 	}
 
 	private String _getAPIURL() {
-		long seoStudioScanId =
-			(_objectEntry != null) ? _objectEntry.getId() : -1L;
+		List<Long> seoStudioScanIds = _seoStudioScanIds;
 
-		String filterString = URLCodec.encodeURL(
-			StringBundler.concat(
-				"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId eq '",
-				seoStudioScanId, "'"),
-			true);
+		if (seoStudioScanIds.isEmpty()) {
+			seoStudioScanIds = Collections.singletonList(-1L);
+		}
 
-		return "/o/seo-studio/insight-types?filter=" + filterString +
-			"&sort=severity:desc";
+		StringBundler sb = new StringBundler();
+
+		for (Long seoStudioScanId : seoStudioScanIds) {
+			if (sb.length() > 0) {
+				sb.append(" or ");
+			}
+
+			sb.append(
+				"r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId eq '");
+			sb.append(seoStudioScanId);
+			sb.append("'");
+		}
+
+		return "/o/seo-studio/insight-types?filter=" +
+			URLCodec.encodeURL(sb.toString(), true) + "&sort=severity:desc";
 	}
 
 	private Map<String, Object> _getEmptyState() {
@@ -165,6 +178,7 @@ public class ViewOnPageDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final Language _language;
 	private final ObjectEntry _objectEntry;
+	private final List<Long> _seoStudioScanIds;
 	private final JSONArray _viewsJSONArray;
 
 }
