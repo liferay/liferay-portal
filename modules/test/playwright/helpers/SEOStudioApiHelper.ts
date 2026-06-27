@@ -28,6 +28,7 @@ export type InsightType = {
 export type Scan = {
 	accountId: number;
 	scanId: number;
+	scanRunId: number;
 	teardown: () => Promise<void>;
 };
 
@@ -97,11 +98,14 @@ export class SEOStudioApiHelper {
 
 		const domain = await this._postDomain(account.id, instance.id);
 
-		const scan = await this._postScan(account.id, domain.id, scanType);
+		const scanRun = await this._postScanRun(account.id, domain.id);
+
+		const scan = await this._postScan(account.id, scanRun.id, scanType);
 
 		return {
 			accountId: account.id,
 			scanId: scan.id,
+			scanRunId: scanRun.id,
 			teardown: async () => {
 				await this.apiHelpers.headlessAdminUser.deleteAccount(
 					account.id
@@ -179,20 +183,18 @@ export class SEOStudioApiHelper {
 
 	private async _postScan(
 		accountId: number,
-		domainId: number,
+		scanRunId: number,
 		scanType: string
 	): Promise<{id: number}> {
 		return this.apiHelpers.post(this._url('scans'), {
 			data: {
-				name: `${scanType} scan`,
 				r_accountToSEOStudioScans_accountEntryId: accountId,
-				r_seoStudioDomainToSEOStudioScans_seoStudioDomainId: domainId,
-				requestDate: new Date().toISOString(),
+				r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunId:
+					scanRunId,
 				scanRange: 'full',
 				scanScope: 'entireDomain',
 				scanType,
 				state: 'completed',
-				triggeredBy: 'manual',
 			},
 			failOnStatusCode: true,
 		});
@@ -215,6 +217,24 @@ export class SEOStudioApiHelper {
 				r_seoStudioScanToSEOStudioScanInsights_seoStudioScanId:
 					scan.scanId,
 				...(state === undefined ? {} : {state}),
+			},
+			failOnStatusCode: true,
+		});
+	}
+
+	private async _postScanRun(
+		accountId: number,
+		domainId: number
+	): Promise<{id: number}> {
+		return this.apiHelpers.post(this._url('scan-runs'), {
+			data: {
+				name: `scan-run-${getRandomString()}`,
+				r_accountToSEOStudioScanRuns_accountEntryId: accountId,
+				r_seoStudioDomainToSEOStudioScanRuns_seoStudioDomainId:
+					domainId,
+				requestDate: new Date().toISOString(),
+				state: 'completed',
+				triggeredBy: 'manual',
 			},
 			failOnStatusCode: true,
 		});
