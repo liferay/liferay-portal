@@ -25,9 +25,8 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import java.util.Dictionary;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,8 +53,8 @@ public class LDAPReferralUpgradeProcessTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		_upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.portal.security.ldap.internal.upgrade.v1_0_1." +
@@ -93,16 +92,6 @@ public class LDAPReferralUpgradeProcessTest {
 		}
 	}
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		if (_enabled) {
-			Promise<?> promise = _serviceComponentRuntime.enableComponent(
-				_componentDescriptionDTO);
-
-			promise.getValue();
-		}
-	}
-
 	@After
 	public void tearDown() throws Exception {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
@@ -115,6 +104,13 @@ public class LDAPReferralUpgradeProcessTest {
 
 		for (Configuration configuration : configurations) {
 			configuration.delete();
+		}
+
+		if (_enabled) {
+			Promise<?> promise = _serviceComponentRuntime.enableComponent(
+				_componentDescriptionDTO);
+
+			promise.getValue();
 		}
 	}
 
@@ -180,19 +176,19 @@ public class LDAPReferralUpgradeProcessTest {
 		return (String)properties.get(LDAPConstants.REFERRAL);
 	}
 
-	private static BundleContext _bundleContext;
-	private static ComponentDescriptionDTO _componentDescriptionDTO;
-	private static ConfigurationAdmin _configurationAdmin;
-	private static boolean _enabled;
+	private BundleContext _bundleContext;
+	private ComponentDescriptionDTO _componentDescriptionDTO;
+	private ConfigurationAdmin _configurationAdmin;
+	private boolean _enabled;
 
 	@Inject
-	private static ServiceComponentRuntime _serviceComponentRuntime;
+	private ServiceComponentRuntime _serviceComponentRuntime;
 
-	private static UpgradeProcess _upgradeProcess;
+	private UpgradeProcess _upgradeProcess;
 
 	@Inject(
 		filter = "component.name=com.liferay.portal.security.ldap.internal.upgrade.registry.LDAPServiceUpgradeStepRegistrator"
 	)
-	private static UpgradeStepRegistrator _upgradeStepRegistrator;
+	private UpgradeStepRegistrator _upgradeStepRegistrator;
 
 }
