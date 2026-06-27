@@ -35,11 +35,6 @@ public class SafeLdapContextImplTest {
 
 	@Test
 	public void testSearch() throws Exception {
-		LdapContext ldapContext = Mockito.mock(LdapContext.class);
-
-		SearchResult searchResult = new SearchResult(
-			"cn=test", null, new BasicAttributes());
-
 		NamingEnumeration<SearchResult> enumeration = Mockito.mock(
 			NamingEnumeration.class);
 
@@ -49,34 +44,45 @@ public class SafeLdapContextImplTest {
 			true, false
 		);
 
+		SearchResult searchResult = new SearchResult(
+			"cn=test", null, new BasicAttributes());
+
 		Mockito.when(
 			enumeration.next()
 		).thenReturn(
 			searchResult
 		);
 
-		Mockito.when(
-			ldapContext.search(
-				Mockito.any(Name.class), Mockito.anyString(),
-				Mockito.any(Object[].class), Mockito.any(SearchControls.class))
-		).thenReturn(
-			enumeration
-		);
-
 		SafeLdapContextImpl safeLdapContextImpl = new SafeLdapContextImpl(
-			ldapContext, true);
+			_mockLdapContext(enumeration), true);
 
 		NamingEnumeration<SearchResult> resultEnumeration =
 			safeLdapContextImpl.search(
 				Mockito.mock(SafeLdapName.class), _mockSafeLdapFilter(),
 				new SearchControls());
 
+		Assert.assertNotSame(enumeration, resultEnumeration);
 		Assert.assertTrue(resultEnumeration.hasMore());
 		Assert.assertSame(searchResult, resultEnumeration.next());
 		Assert.assertFalse(resultEnumeration.hasMore());
 
-		ldapContext = Mockito.mock(LdapContext.class);
 		enumeration = Mockito.mock(NamingEnumeration.class);
+
+		safeLdapContextImpl = new SafeLdapContextImpl(
+			_mockLdapContext(enumeration), false);
+
+		resultEnumeration = safeLdapContextImpl.search(
+			Mockito.mock(SafeLdapName.class), _mockSafeLdapFilter(),
+			new SearchControls());
+
+		Assert.assertSame(enumeration, resultEnumeration);
+	}
+
+	private LdapContext _mockLdapContext(
+			NamingEnumeration<SearchResult> enumeration)
+		throws Exception {
+
+		LdapContext ldapContext = Mockito.mock(LdapContext.class);
 
 		Mockito.when(
 			ldapContext.search(
@@ -86,13 +92,7 @@ public class SafeLdapContextImplTest {
 			enumeration
 		);
 
-		safeLdapContextImpl = new SafeLdapContextImpl(ldapContext, false);
-
-		resultEnumeration = safeLdapContextImpl.search(
-			Mockito.mock(SafeLdapName.class), _mockSafeLdapFilter(),
-			new SearchControls());
-
-		Assert.assertSame(enumeration, resultEnumeration);
+		return ldapContext;
 	}
 
 	private SafeLdapFilter _mockSafeLdapFilter() {
