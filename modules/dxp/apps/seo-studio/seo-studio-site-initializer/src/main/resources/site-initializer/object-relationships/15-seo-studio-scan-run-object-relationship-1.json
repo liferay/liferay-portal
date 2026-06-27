@@ -1,0 +1,13 @@
+{
+	"deletionType": "cascade",
+	"externalReferenceCode": "L_SEO_STUDIO_DOMAIN_TO_L_SEO_STUDIO_SCAN_RUNS",
+	"label": {
+		"en_US": "SEO Studio Domain to SEO Studio Scan Runs"
+	},
+	"name": "seoStudioDomainToSEOStudioScanRuns",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:SEOStudioDomain$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:SEOStudioScanRun$]",
+	"objectDefinitionName2": "SEOStudioScanRun",
+	"system": true,
+	"type": "oneToMany"
+}

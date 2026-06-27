@@ -300,6 +300,10 @@ public class ObjectDefinitionUtil {
 			"SEOStudioScan", "/seo-studio/scans"
 		).put(
 			"SEOStudioScanInsight", "/seo-studio/scan-insights"
+		).put(
+			"SEOStudioScanMetric", "/seo-studio/scan-metrics"
+		).put(
+			"SEOStudioScanRun", "/seo-studio/scan-runs"
 		).build();
 
 }

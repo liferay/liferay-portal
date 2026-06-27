@@ -51,39 +51,6 @@
 		},
 		{
 			"DBType": "String",
-			"businessType": "Text",
-			"externalReferenceCode": "NAME",
-			"indexed": true,
-			"indexedAsKeyword": true,
-			"label": {
-				"en_US": "Name"
-			},
-			"name": "name",
-			"required": true,
-			"system": false,
-			"type": "String"
-		},
-		{
-			"DBType": "DateTime",
-			"businessType": "DateTime",
-			"externalReferenceCode": "REQUEST_DATE",
-			"indexed": true,
-			"label": {
-				"en_US": "Request Date"
-			},
-			"name": "requestDate",
-			"objectFieldSettings": [
-				{
-					"name": "timeStorage",
-					"value": "convertToUTC"
-				}
-			],
-			"required": true,
-			"system": true,
-			"type": "DateTime"
-		},
-		{
-			"DBType": "String",
 			"businessType": "Picklist",
 			"externalReferenceCode": "SCAN_RANGE",
 			"indexed": true,
@@ -224,33 +191,6 @@
 			"type": "String"
 		},
 		{
-			"DBType": "String",
-			"businessType": "Picklist",
-			"externalReferenceCode": "TRIGGERED_BY",
-			"indexed": true,
-			"indexedAsKeyword": true,
-			"label": {
-				"en_US": "Triggered By"
-			},
-			"listTypeDefinitionExternalReferenceCode": "L_SEO_STUDIO_SCAN_TRIGGERS",
-			"name": "triggeredBy",
-			"required": true,
-			"system": true,
-			"type": "String"
-		},
-		{
-			"DBType": "Long",
-			"businessType": "LongInteger",
-			"externalReferenceCode": "TRIGGERING_USER_ID",
-			"indexed": true,
-			"label": {
-				"en_US": "Triggering User ID"
-			},
-			"name": "triggeringUserId",
-			"system": true,
-			"type": "Long"
-		},
-		{
 			"DBType": "Long",
 			"businessType": "Relationship",
 			"externalReferenceCode": "ACCOUNT_TO_SEO_STUDIO_SCANS",
@@ -280,24 +220,24 @@
 		{
 			"DBType": "Long",
 			"businessType": "Relationship",
-			"externalReferenceCode": "SEO_STUDIO_DOMAIN_TO_SEO_STUDIO_SCANS",
+			"externalReferenceCode": "SEO_STUDIO_SCAN_RUN_TO_SEO_STUDIO_SCANS",
 			"indexed": true,
 			"label": {
-				"en_US": "SEO Studio Domain to SEO Studio Scans"
+				"en_US": "SEO Studio Scan Run to SEO Studio Scans"
 			},
-			"name": "r_seoStudioDomainToSEOStudioScans_seoStudioDomainId",
-			"objectDefinitionExternalReferenceCode1": "L_SEO_STUDIO_DOMAIN",
+			"name": "r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunId",
+			"objectDefinitionExternalReferenceCode1": "L_SEO_STUDIO_SCAN_RUN",
 			"objectFieldSettings": [
 				{
 					"name": "objectDefinition1ShortName",
-					"value": "SEOStudioDomain"
+					"value": "SEOStudioScanRun"
 				},
 				{
 					"name": "objectRelationshipERCObjectFieldName",
-					"value": "r_seoStudioDomainToSEOStudioScans_seoStudioDomainERC"
+					"value": "r_seoStudioScanRunToSEOStudioScans_seoStudioScanRunERC"
 				}
 			],
-			"objectRelationshipExternalReferenceCode": "L_SEO_STUDIO_DOMAIN_TO_L_SEO_STUDIO_SCANS",
+			"objectRelationshipExternalReferenceCode": "L_SEO_STUDIO_SCAN_RUN_TO_L_SEO_STUDIO_SCANS",
 			"readOnly": "false",
 			"relationshipType": "oneToMany",
 			"required": true,

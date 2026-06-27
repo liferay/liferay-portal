@@ -1,0 +1,25 @@
+{
+	"externalReferenceCode": "L_SEO_STUDIO_METRIC_SCOPES",
+	"listTypeEntries": [
+		{
+			"externalReferenceCode": "AEO",
+			"key": "aeo",
+			"name": "AEO",
+			"system": true
+		},
+		{
+			"externalReferenceCode": "ON_PAGE",
+			"key": "onPage",
+			"name": "On Page",
+			"system": true
+		},
+		{
+			"externalReferenceCode": "TECHNICAL",
+			"key": "technical",
+			"name": "Technical",
+			"system": true
+		}
+	],
+	"name": "SEO Studio Metric Scopes",
+	"system": true
+}
