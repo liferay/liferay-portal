@@ -5,6 +5,7 @@
 
 package com.liferay.oauth2.provider.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -74,39 +75,26 @@ public class OAuth2JWKValidatorUtilTest {
 			JSONUtil.put(
 				"keys", JSONUtil.putAll(jwkJSONObject)
 			).toString());
-
-		JSONObject weakJWKJSONObject = JSONFactoryUtil.createJSONObject(
-			_generateRsaJWK(1024, "RS256"));
-
 		Assert.assertThrows(
 			SecurityException.class,
 			() -> OAuth2JWKValidatorUtil.validateJWKS(
 				JSONUtil.put(
-					"keys", JSONUtil.putAll(jwkJSONObject, weakJWKJSONObject)
+					"keys",
+					JSONUtil.putAll(
+						jwkJSONObject,
+						JSONFactoryUtil.createJSONObject(
+							_generateRsaJWK(1024, "RS256")))
 				).toString()));
 	}
 
 	@Test
 	public void testValidateJWSAlgorithm() {
-		for (String algorithm :
-				new String[] {
-					"ES256", "ES384", "ES512", "HS256", "HS384", "HS512",
-					"PS256", "PS384", "PS512", "RS256", "RS384", "RS512"
-				}) {
-
-			OAuth2JWKValidatorUtil.validateJWSAlgorithm(algorithm);
-		}
-
-		for (String algorithm :
-				new String[] {
-					null, "", "none", "HS1", "RS1", "ES256K", "EdDSA", "RSA1_5",
-					"garbage", "rs256"
-				}) {
-
-			Assert.assertThrows(
-				SecurityException.class,
-				() -> OAuth2JWKValidatorUtil.validateJWSAlgorithm(algorithm));
-		}
+		_testValidateJWSAlgorithm(
+			false, null, StringPool.BLANK, "ES256K", "EdDSA", "HS1", "RS1",
+			"RSA1_5", "garbage", "none", "rs256");
+		_testValidateJWSAlgorithm(
+			true, "ES256", "ES384", "ES512", "HS256", "HS384", "HS512", "PS256",
+			"PS384", "PS512", "RS256", "RS384", "RS512");
 	}
 
 	private String _generateRsaJWK(int bits, String algorithm)
@@ -153,6 +141,22 @@ public class OAuth2JWKValidatorUtilTest {
 				return encoder.encodeToString(modulus.toByteArray());
 			}
 		).toString();
+	}
+
+	private void _testValidateJWSAlgorithm(
+		boolean allowed, String... algorithms) {
+
+		for (String algorithm : algorithms) {
+			if (allowed) {
+				OAuth2JWKValidatorUtil.validateJWSAlgorithm(algorithm);
+			}
+			else {
+				Assert.assertThrows(
+					SecurityException.class,
+					() -> OAuth2JWKValidatorUtil.validateJWSAlgorithm(
+						algorithm));
+			}
+		}
 	}
 
 	private boolean _fipsEnabled;

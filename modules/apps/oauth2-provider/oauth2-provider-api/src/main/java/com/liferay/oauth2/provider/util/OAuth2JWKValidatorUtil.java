@@ -12,11 +12,11 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.PropsValues;
 
 import java.math.BigInteger;
 
-import java.util.Base64;
 import java.util.Set;
 
 /**
@@ -73,15 +73,14 @@ public class OAuth2JWKValidatorUtil {
 
 		if ((algorithm == null) || !_allowedJWSAlgorithms.contains(algorithm)) {
 			throw new SecurityException(
-				"JWS algorithm \"" + algorithm + "\" is not FIPS approved");
+				"JWS algorithm \"" + algorithm +
+					"\" is not allowed in FIPS mode");
 		}
 	}
 
 	private static int _decodeBase64URLBitLength(String value) {
-		Base64.Decoder decoder = Base64.getUrlDecoder();
-
 		try {
-			byte[] bytes = decoder.decode(value);
+			byte[] bytes = Base64.decodeFromURL(value);
 
 			BigInteger bigInteger = new BigInteger(1, bytes);
 
@@ -112,7 +111,8 @@ public class OAuth2JWKValidatorUtil {
 			if (bits < _MIN_RSA_KEY_BITS) {
 				throw new SecurityException(
 					StringBundler.concat(
-						"RSA key of ", bits, " bits is not FIPS approved"));
+						"RSA key of ", bits,
+						" bits is not allowed in FIPS mode"));
 			}
 		}
 		else if (keyType.equals("oct")) {
@@ -121,7 +121,8 @@ public class OAuth2JWKValidatorUtil {
 			if (bits < _MIN_HMAC_KEY_BITS) {
 				throw new SecurityException(
 					StringBundler.concat(
-						"HMAC key of ", bits, " bits is not FIPS approved"));
+						"HMAC key of ", bits,
+						" bits is not allowed in FIPS mode"));
 			}
 		}
 	}

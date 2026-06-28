@@ -42,8 +42,7 @@ public class OAuth2InAssertionConfigurationModelListener
 		}
 		catch (SecurityException securityException) {
 			throw new ConfigurationModelListenerException(
-				securityException.getMessage(),
-				OAuth2InAssertionConfiguration.class,
+				securityException, OAuth2InAssertionConfiguration.class,
 				OAuth2InAssertionConfigurationModelListener.class, properties);
 		}
 	}
