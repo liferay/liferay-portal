@@ -62,121 +62,101 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 	};
 
 	return (
-		<div className="card d-flex flex-column flex-grow-1 mt-4 overflow-hidden">
+		<div className="border mt-4 rounded">
 			<div className="px-4 py-3">
 				<p className="font-weight-bold mb-0 text-6">
 					{Liferay.Language.get('conditions')}
 				</p>
 			</div>
 
-			<div className="card-body d-flex flex-column overflow-hidden p-4">
-				<div className="flex-grow-1 overflow-auto">
-					<div className="border overflow-hidden rounded">
-						<div className="align-items-center bg-lighter d-flex p-3">
-							<ClaySelectWithOption
-								aria-label={Liferay.Language.get('conjunction')}
-								className="bg-white font-weight-semi-bold form-control-sm mr-3 text-2 text-center text-uppercase w-auto"
-								onChange={(event) =>
-									setConjunction(event.target.value)
-								}
-								options={[
-									{
-										label: Liferay.Language.get('and'),
-										value: 'and',
-									},
-									{
-										label: Liferay.Language.get('or'),
-										value: 'or',
-									},
-								]}
-								value={conjunction}
-							/>
+			<div className="align-items-center bg-lighter border-top d-flex p-3">
+				<ClaySelectWithOption
+					aria-label={Liferay.Language.get('conjunction')}
+					className="bg-white font-weight-semi-bold form-control-sm mr-3 text-2 text-center text-uppercase w-auto"
+					onChange={(event) => setConjunction(event.target.value)}
+					options={[
+						{
+							label: Liferay.Language.get('and'),
+							value: 'and',
+						},
+						{
+							label: Liferay.Language.get('or'),
+							value: 'or',
+						},
+					]}
+					value={conjunction}
+				/>
 
-							<span className="text-2 text-secondary">
+				<span className="text-2 text-secondary">
+					{conjunction === 'or'
+						? Liferay.Language.get('any-rule-must-match')
+						: Liferay.Language.get('all-rule-must-match')}
+
+					{' · '}
+
+					{Liferay.Util.sub(
+						Liferay.Language.get('x-criteria'),
+						rules.length
+					)}
+				</span>
+			</div>
+
+			<div className="py-2">
+				<RowBuilder<Rule>
+					createItem={() => createRule(audiencesCriterias[0])}
+					hideAddButton
+					itemClassName="audience-builder-rule pr-4 py-3"
+					items={rules}
+					labels={{
+						add: Liferay.Language.get('add-condition'),
+						addedAnnouncement: Liferay.Language.get(
+							'a-condition-was-added'
+						),
+						delete: Liferay.Language.get('delete'),
+						deletedAnnouncement: Liferay.Language.get(
+							'a-condition-was-removed'
+						),
+						list: Liferay.Language.get('conditions'),
+					}}
+					renderItem={({item, onChange}) => (
+						<RuleRow
+							audiencesCriteria={
+								audiencesCriteriasByKey[item.attribute]
+							}
+							onChange={onChange}
+							rule={item}
+						/>
+					)}
+					renderItemActions={({index}) => (
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get('duplicate')}
+							borderless
+							className="align-self-baseline"
+							displayType="secondary"
+							onClick={() => handleDuplicate(index)}
+							size="sm"
+							symbol="copy"
+							title={Liferay.Language.get('duplicate')}
+						/>
+					)}
+					renderItemSeparator={() => (
+						<div
+							aria-hidden="true"
+							className="align-items-center d-flex mb-3"
+						>
+							<span className="audience-builder-conjunction-line border-top" />
+
+							<span className="font-weight-semi-bold mx-3 text-3 text-secondary text-uppercase">
 								{conjunction === 'or'
-									? Liferay.Language.get(
-											'any-rule-must-match'
-										)
-									: Liferay.Language.get(
-											'all-rule-must-match'
-										)}
-
-								{' · '}
-
-								{Liferay.Util.sub(
-									Liferay.Language.get('x-criteria'),
-									rules.length
-								)}
+									? Liferay.Language.get('or')
+									: Liferay.Language.get('and')}
 							</span>
+
+							<span className="border-top flex-grow-1" />
 						</div>
-
-						<div className="py-2">
-							<RowBuilder<Rule>
-								createItem={() =>
-									createRule(audiencesCriterias[0])
-								}
-								hideAddButton
-								itemClassName="audience-builder-rule pr-4 py-3"
-								items={rules}
-								labels={{
-									add: Liferay.Language.get('add-condition'),
-									addedAnnouncement: Liferay.Language.get(
-										'a-condition-was-added'
-									),
-									delete: Liferay.Language.get('delete'),
-									deletedAnnouncement: Liferay.Language.get(
-										'a-condition-was-removed'
-									),
-									list: Liferay.Language.get('conditions'),
-								}}
-								renderItem={({item, onChange}) => (
-									<RuleRow
-										audiencesCriteria={
-											audiencesCriteriasByKey[
-												item.attribute
-											]
-										}
-										onChange={onChange}
-										rule={item}
-									/>
-								)}
-								renderItemActions={({index}) => (
-									<ClayButtonWithIcon
-										aria-label={Liferay.Language.get(
-											'duplicate'
-										)}
-										borderless
-										className="align-self-baseline"
-										displayType="secondary"
-										onClick={() => handleDuplicate(index)}
-										size="sm"
-										symbol="copy"
-										title={Liferay.Language.get(
-											'duplicate'
-										)}
-									/>
-								)}
-								renderItemSeparator={() => (
-									<div
-										aria-hidden="true"
-										className="align-items-center d-flex mb-3"
-									>
-										<span className="audience-builder-conjunction-line border-top" />
-
-										<span className="font-weight-semi-bold mx-3 text-3 text-secondary text-uppercase">
-											{conjunction === 'or'
-												? Liferay.Language.get('or')
-												: Liferay.Language.get('and')}
-										</span>
-
-										<span className="border-top flex-grow-1" />
-									</div>
-								)}
-								setItems={setRules}
-							/>
-						</div>
-					</div>
-				</div>
+					)}
+					setItems={setRules}
+				/>
 			</div>
 		</div>
 	);

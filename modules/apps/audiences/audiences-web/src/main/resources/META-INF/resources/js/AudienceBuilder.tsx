@@ -95,7 +95,7 @@ export default function AudienceBuilder({
 						/>
 					</div>
 
-					<div className="d-flex flex-column flex-grow-1 overflow-hidden p-4">
+					<div className="d-flex flex-column flex-grow-1 overflow-auto p-4">
 						<ClayForm.Group>
 							<label
 								className="font-weight-semi-bold text-3"
