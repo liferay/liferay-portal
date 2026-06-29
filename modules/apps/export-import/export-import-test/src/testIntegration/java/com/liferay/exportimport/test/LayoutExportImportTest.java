@@ -6,22 +6,37 @@
 package com.liferay.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationFactory;
 import com.liferay.exportimport.kernel.exception.LARTypeException;
 import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.test.util.lar.BaseExportImportTestCase;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.provider.LayoutStructureProvider;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
@@ -29,6 +44,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
 import com.liferay.portal.kernel.exception.LocaleException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -55,6 +71,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
@@ -563,6 +580,141 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-96103")
+	public void testExportImportLayoutsWithStagingDepotMappedContent()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		GroupTestUtil.enableLocalStaging(group);
+
+		Group stagingGroup = group.getStagingGroup();
+
+		DepotEntry liveDepotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		Group liveDepotGroup = liveDepotEntry.getGroup();
+
+		GroupTestUtil.enableLocalStaging(liveDepotGroup);
+
+		Group stagingDepotGroup = liveDepotGroup.getStagingGroup();
+
+		DepotEntry stagingDepotEntry =
+			_depotEntryLocalService.getGroupDepotEntry(
+				stagingDepotGroup.getGroupId());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			stagingDepotEntry.getDepotEntryId(), stagingGroup.getGroupId());
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			stagingDepotGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		String defaultLanguageId = journalArticle.getDefaultLanguageId();
+
+		String title = journalArticle.getTitle(defaultLanguageId);
+
+		StagingUtil.publishLayouts(
+			TestPropsValues.getUserId(),
+			ExportImportConfigurationFactory.
+				buildDefaultLocalPublishingExportImportConfiguration(
+					TestPropsValues.getUser(), stagingDepotGroup.getGroupId(),
+					liveDepotGroup.getGroupId(), false));
+
+		JournalArticle liveJournalArticle =
+			_journalArticleLocalService.getJournalArticleByUuidAndGroupId(
+				journalArticle.getUuid(), liveDepotGroup.getGroupId());
+
+		Assert.assertEquals(
+			title, liveJournalArticle.getTitle(defaultLanguageId));
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(stagingGroup);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"itemSelector",
+					JSONUtil.put(
+						"className", JournalArticle.class.getName()
+					).put(
+						"classNameId",
+						_portal.getClassNameId(JournalArticle.class)
+					).put(
+						"classPK", journalArticle.getResourcePrimKey()
+					).put(
+						"classTypeId", journalArticle.getDDMStructureId()
+					).put(
+						"externalReferenceCode",
+						journalArticle.getExternalReferenceCode()
+					).put(
+						"scopeExternalReferenceCode",
+						stagingDepotGroup.getExternalReferenceCode()
+					).put(
+						"template",
+						HashMapBuilder.put(
+							"infoItemRendererKey",
+							"com.liferay.journal.web.internal.info.item." +
+								"renderer.JournalArticleTitleInfoItemRenderer"
+						).build()
+					))
+			).toString(),
+			_fragmentRendererRegistry.getFragmentRenderer(
+				"com.liferay.fragment.internal.renderer." +
+					"ContentObjectFragmentRenderer"),
+			draftLayout, null, 0,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		StagingUtil.publishLayouts(
+			TestPropsValues.getUserId(),
+			ExportImportConfigurationFactory.
+				buildDefaultLocalPublishingExportImportConfiguration(
+					TestPropsValues.getUser(), stagingGroup.getGroupId(),
+					group.getGroupId(), false));
+
+		Layout liveLayout =
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				layout.getExternalReferenceCode(), group.getGroupId());
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				liveLayout.getPlid());
+
+		String html = ContentLayoutTestUtil.getRenderLayoutHTML(
+			liveLayout, _layoutServiceContextHelper, _layoutStructureProvider,
+			segmentsExperienceId);
+
+		Assert.assertTrue(
+			html + " does not contain " + title, html.contains(title));
+
+		String updatedTitle = RandomTestUtil.randomString();
+
+		journalArticle = JournalTestUtil.updateArticle(
+			journalArticle, updatedTitle);
+
+		Assert.assertEquals(
+			updatedTitle, journalArticle.getTitle(defaultLanguageId));
+
+		html = ContentLayoutTestUtil.getRenderLayoutHTML(
+			liveLayout, _layoutServiceContextHelper, _layoutStructureProvider,
+			segmentsExperienceId);
+
+		Assert.assertFalse(
+			html + " contains " + updatedTitle, html.contains(updatedTitle));
+		Assert.assertTrue(
+			html + " does not contain " + title, html.contains(title));
+	}
+
+	@Test
 	@TestInfo("LPD-77689")
 	public void testExportImportLayoutUtilityPageEntryWithPreviewFileEntryWithBatch()
 		throws Exception {
@@ -893,6 +1045,12 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	private CompanyLocalService _companyLocalService;
 
 	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
 	private FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
 
@@ -903,7 +1061,13 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Inject
+	private FragmentRendererRegistry _fragmentRendererRegistry;
+
+	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject
 	private LayoutFriendlyURLEntryHelper _layoutFriendlyURLEntryHelper;
@@ -916,11 +1080,20 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		_layoutPageTemplateEntryLocalService;
 
 	@Inject
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
+
+	@Inject
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@Inject
+	private LayoutStructureProvider _layoutStructureProvider;
 
 	@Inject
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Inject
+	private Portal _portal;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
