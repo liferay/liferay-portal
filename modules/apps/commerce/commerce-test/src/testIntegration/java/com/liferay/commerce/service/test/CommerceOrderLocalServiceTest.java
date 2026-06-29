@@ -579,6 +579,18 @@ public class CommerceOrderLocalServiceTest {
 			commerceOrders.toString(), commerceOrder1, commerceOrders.get(1));
 		Assert.assertEquals(
 			commerceOrders.toString(), commerceOrder2, commerceOrders.get(0));
+
+		commerceOrders = _commerceOrderLocalService.getCommerceOrders(
+			_user.getCompanyId(), _commerceChannel.getGroupId(),
+			new long[] {_accountEntry.getAccountEntryId()}, null,
+			new int[] {CommerceOrderConstants.ORDER_STATUS_OPEN}, true,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new Sort("orderDate", Sort.LONG_TYPE, true));
+
+		Assert.assertEquals(
+			commerceOrders.toString(), commerceOrder1, commerceOrders.get(0));
+		Assert.assertEquals(
+			commerceOrders.toString(), commerceOrder2, commerceOrders.get(1));
 	}
 
 	@Rule
