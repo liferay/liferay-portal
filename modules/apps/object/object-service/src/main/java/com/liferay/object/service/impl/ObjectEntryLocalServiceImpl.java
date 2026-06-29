@@ -723,16 +723,16 @@ public class ObjectEntryLocalServiceImpl
 
 		Date date = new Date();
 
-		long checkInterval = _getObjectEntryCheckInterval(companyId);
+		Date previousCheckDate = _companyIdPreviousCheckDate.computeIfAbsent(
+			companyId,
+			key -> new Date(
+				date.getTime() - _getObjectEntryCheckInterval(companyId)));
 
-		_companyIdPreviousCheckDate.computeIfAbsent(
-			companyId, key -> new Date(date.getTime() - checkInterval));
+		_checkObjectEntriesByDisplayDate(companyId, date);
 
-		_checkObjectEntriesByDisplayDate(companyId, date, checkInterval);
+		_checkObjectEntriesByExpirationDate(companyId, date);
 
-		_checkObjectEntriesByExpirationDate(companyId, date, checkInterval);
-
-		_checkObjectEntriesByReviewDate(companyId, date);
+		_checkObjectEntriesByReviewDate(companyId, date, previousCheckDate);
 
 		_companyIdPreviousCheckDate.put(companyId, date);
 	}
@@ -3204,32 +3204,23 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
-	private void _checkObjectEntriesByDisplayDate(
-			long companyId, Date date, long checkInterval)
+	private void _checkObjectEntriesByDisplayDate(long companyId, Date date)
 		throws PortalException {
-
-		Date nextExpirationDate = new Date(date.getTime() + checkInterval);
 
 		ActionableDynamicQuery actionableDynamicQuery =
 			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			dynamicQuery -> {
-				Property displayDateProperty = PropertyFactoryUtil.forName(
-					"displayDate");
-
-				dynamicQuery.add(displayDateProperty.lt(date));
-
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.le("displayDate", date));
 				dynamicQuery.add(
 					RestrictionsFactoryUtil.or(
 						RestrictionsFactoryUtil.isNull("expirationDate"),
-						RestrictionsFactoryUtil.ge(
-							"expirationDate", nextExpirationDate)));
-
-				Property statusProperty = PropertyFactoryUtil.forName("status");
-
+						RestrictionsFactoryUtil.gt("expirationDate", date)));
 				dynamicQuery.add(
-					statusProperty.eq(WorkflowConstants.STATUS_SCHEDULED));
+					RestrictionsFactoryUtil.eq(
+						"status", WorkflowConstants.STATUS_SCHEDULED));
 			});
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
@@ -3255,28 +3246,21 @@ public class ObjectEntryLocalServiceImpl
 		actionableDynamicQuery.performActions();
 	}
 
-	private void _checkObjectEntriesByExpirationDate(
-			long companyId, Date date, long checkInterval)
+	private void _checkObjectEntriesByExpirationDate(long companyId, Date date)
 		throws PortalException {
-
-		Date nextExpirationDate = new Date(date.getTime() + checkInterval);
 
 		ActionableDynamicQuery actionableDynamicQuery =
 			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			dynamicQuery -> {
-				Property expirationDateProperty = PropertyFactoryUtil.forName(
-					"expirationDate");
-
-				dynamicQuery.add(expirationDateProperty.le(nextExpirationDate));
-
-				Property statusProperty = PropertyFactoryUtil.forName("status");
-
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.le("expirationDate", date));
 				dynamicQuery.add(
 					RestrictionsFactoryUtil.not(
-						statusProperty.in(
-							new int[] {
+						RestrictionsFactoryUtil.in(
+							"status",
+							new Integer[] {
 								WorkflowConstants.STATUS_DRAFT,
 								WorkflowConstants.STATUS_EXPIRED,
 								WorkflowConstants.STATUS_IN_TRASH,
@@ -3306,21 +3290,20 @@ public class ObjectEntryLocalServiceImpl
 		actionableDynamicQuery.performActions();
 	}
 
-	private void _checkObjectEntriesByReviewDate(long companyId, Date date)
+	private void _checkObjectEntriesByReviewDate(
+			long companyId, Date date, Date previousCheckDate)
 		throws PortalException {
-
-		Date previousCheckDate = _companyIdPreviousCheckDate.get(companyId);
 
 		ActionableDynamicQuery actionableDynamicQuery =
 			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			dynamicQuery -> {
-				Property reviewDateProperty = PropertyFactoryUtil.forName(
-					"reviewDate");
-
-				dynamicQuery.add(reviewDateProperty.ge(previousCheckDate));
-				dynamicQuery.add(reviewDateProperty.le(date));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.ge(
+						"reviewDate", previousCheckDate));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.le("reviewDate", date));
 			});
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
@@ -3333,11 +3316,15 @@ public class ObjectEntryLocalServiceImpl
 					"notificationMessageKey", "x-has-reached-its-review-date"
 				);
 
-				for (ObjectEntryReviewNotificationContributor contributor :
-						_objectEntryReviewNotificationContributors) {
+				for (ObjectEntryReviewNotificationContributor
+						objectEntryReviewNotificationContributor :
+							_objectEntryReviewNotificationContributors) {
 
-					if (contributor.isApplicable(objectEntry)) {
-						contributor.contribute(objectEntry, payloadJSONObject);
+					if (objectEntryReviewNotificationContributor.isApplicable(
+							objectEntry)) {
+
+						objectEntryReviewNotificationContributor.contribute(
+							objectEntry, payloadJSONObject);
 					}
 				}
 
