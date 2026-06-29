@@ -5,6 +5,8 @@
 
 package com.liferay.fragment.service.impl;
 
+import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
@@ -35,6 +37,8 @@ import com.liferay.petra.sql.dsl.query.LimitStep;
 import com.liferay.petra.sql.dsl.query.OrderByStep;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.change.tracking.CTRequiredModelException;
 import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -56,10 +60,13 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -607,6 +614,31 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		_checkUnlockedLayout(fragmentEntryLink.getPlid(), userId);
 
+		long ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
+
+		if (deleted &&
+			(ctCollectionId == CTConstants.CT_COLLECTION_ID_PRODUCTION)) {
+
+			long modelClassNameId = _portal.getClassNameId(
+				fragmentEntryLink.getModelClass());
+
+			if (GetterUtil.getBoolean(
+					PropsUtil.get(
+						PropsKeys.
+							CHANGE_TRACKING_DELETION_PROTECTION_ENABLED)) &&
+				_ctEntryLocalService.hasUnpublishedCTEntries(
+					modelClassNameId, fragmentEntryLinkId,
+					CTConstants.CT_CHANGE_TYPE_MODIFICATION)) {
+
+				throw new CTRequiredModelException(
+					String.format(
+						"Model %s %s cannot be deleted because it is being " +
+							"modified in one or more publications",
+						fragmentEntryLink.getModelClassName(),
+						fragmentEntryLinkId));
+			}
+		}
+
 		fragmentEntryLink.setDeleted(deleted);
 
 		return fragmentEntryLinkPersistence.update(fragmentEntryLink);
@@ -1087,6 +1119,9 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	private static final Pattern _pattern = Pattern.compile(
 		"\\[resources:(.+?)\\]");
+
+	@Reference
+	private CTEntryLocalService _ctEntryLocalService;
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
