@@ -46,6 +46,21 @@ import java.util.function.Supplier;
 @XmlRootElement(name = "Scope")
 public class Scope implements Serializable {
 
+	public static Scope of(Group group) {
+		if (group == null) {
+			return null;
+		}
+
+		return new Scope() {
+			{
+				setExternalReferenceCode(group::getExternalReferenceCode);
+				setLiveExternalReferenceCode(
+					() -> _getLiveExternalReferenceCode(group));
+				setType(() -> _getGroupType(group));
+			}
+		};
+	}
+
 	public static Scope of(Group group, Locale locale) {
 		if ((group == null) || !GroupCapabilityUtil.isSupportsScope(group)) {
 			return null;
@@ -61,6 +76,8 @@ public class Scope implements Serializable {
 					() -> NestedFieldsSupplier.supply(
 						"scope.label",
 						nestedField -> _getGroupName(group, locale)));
+				setLiveExternalReferenceCode(
+					() -> _getLiveExternalReferenceCode(group));
 				setType(() -> _getGroupType(group));
 			}
 		};
@@ -484,6 +501,16 @@ public class Scope implements Serializable {
 		}
 
 		return null;
+	}
+
+	private static String _getLiveExternalReferenceCode(Group group) {
+		Group liveGroup = group.getLiveGroup();
+
+		if (liveGroup == null) {
+			return null;
+		}
+
+		return liveGroup.getExternalReferenceCode();
 	}
 
 	private Scope() {
