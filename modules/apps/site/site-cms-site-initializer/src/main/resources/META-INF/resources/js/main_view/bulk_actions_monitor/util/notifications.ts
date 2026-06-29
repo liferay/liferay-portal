@@ -449,7 +449,27 @@ export function getBulkActionTaskFailureMessage(
 		return null;
 	}
 
-	return BULK_ACTION_FAILURE_MESSAGES?.[actionType]?.[taskResult] || null;
+	const failureMessages = BULK_ACTION_FAILURE_MESSAGES?.[actionType] ?? {};
+
+	for (const reason of _getTaskResultReasons(taskResult)) {
+		if (failureMessages[reason]) {
+			return failureMessages[reason];
+		}
+	}
+
+	return null;
+}
+
+function _getTaskResultReasons(taskResult: string): string[] {
+	const parsedTaskResult = JSON.parse(taskResult);
+
+	if (Array.isArray(parsedTaskResult)) {
+		return parsedTaskResult
+			.map((taskResultError) => taskResultError?.id)
+			.filter(Boolean);
+	}
+
+	return [];
 }
 
 export function getBulkActionTaskMessage(

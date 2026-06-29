@@ -6,9 +6,11 @@
 package com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0;
 
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -47,16 +49,21 @@ public class CMSBulkActionTaskTaskResultUpgradeProcess extends UpgradeProcess {
 			return;
 		}
 
-		_objectFieldLocalService.addOrUpdateSystemObjectField(
-			"TASK_RESULT", objectDefinition.getUserId(), 0,
-			objectDefinition.getObjectDefinitionId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT, null, null,
-			ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-			HashMapBuilder.put(
-				LocaleUtil.US, "Task Result"
-			).build(),
-			false, "taskResult", ObjectFieldConstants.READ_ONLY_FALSE, null,
-			false, false, Collections.emptyList());
+		try (SafeCloseable safeCloseable =
+				ObjectDefinitionThreadLocal.
+					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
+
+			_objectFieldLocalService.addOrUpdateSystemObjectField(
+				"TASK_RESULT", objectDefinition.getUserId(), 0,
+				objectDefinition.getObjectDefinitionId(),
+				ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT, null, null,
+				ObjectFieldConstants.DB_TYPE_CLOB, false, false, null,
+				HashMapBuilder.put(
+					LocaleUtil.US, "Task Result"
+				).build(),
+				false, "taskResult", ObjectFieldConstants.READ_ONLY_FALSE, null,
+				false, false, Collections.emptyList());
+		}
 	}
 
 	private final CompanyLocalService _companyLocalService;

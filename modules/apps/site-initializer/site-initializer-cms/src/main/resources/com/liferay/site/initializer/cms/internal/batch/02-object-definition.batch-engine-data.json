@@ -1273,10 +1273,10 @@
 					"type": "Integer"
 				},
 				{
-					"DBType": "String",
-					"businessType": "Text",
+					"DBType": "Clob",
+					"businessType": "LongText",
 					"externalReferenceCode": "TASK_RESULT",
-					"indexed": true,
+					"indexed": false,
 					"indexedAsKeyword": false,
 					"label": {
 						"en_US": "Task Result"
@@ -1286,7 +1286,7 @@
 					"required": false,
 					"state": false,
 					"system": true,
-					"type": "String"
+					"type": "Clob"
 				},
 				{
 					"DBType": "String",
