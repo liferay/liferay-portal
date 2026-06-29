@@ -58,7 +58,15 @@ Import-Package:\
 	!org.apache.xml.utils.*,\
 	!org.apache.xpath.*,\
 	\
+	!org.bouncycastle.crypto.engines.*,\
+	!org.bouncycastle.crypto.modes.*,\
+	!org.bouncycastle.crypto.params.*,\
+	!org.bouncycastle.openssl.*,\
+	!org.bouncycastle.pqc.*,\
+	\
 	!org.checkerframework.*,\
+	\
+	!org.cryptacular.*,\
 	\
 	!org.jdom.*,\
 	\

@@ -27,7 +27,6 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -72,8 +71,8 @@ public class CertificateToolImpl implements CertificateTool {
 					issuerX500Name,
 					BigInteger.valueOf(System.currentTimeMillis()), startDate,
 					endDate, subjectX500Name,
-					new SubjectPublicKeyInfo(
-						(ASN1Sequence)asn1InputStream.readObject()));
+					SubjectPublicKeyInfo.getInstance(
+						asn1InputStream.readObject()));
 
 			JcaContentSignerBuilder jcaContentSignerBuilder =
 				new JcaContentSignerBuilder(signatureAlgorithm);
