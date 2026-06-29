@@ -17,6 +17,8 @@ CommercePaymentEntry commercePaymentEntry = commercePaymentEntryDisplayContext.g
 
 <aui:form action="<%= editCommercePaymentEntryNoteActionURL %>" cssClass="container-fluid container-fluid-max-xl p-4" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateNote" />
+	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+	<aui:input name="requestProcessed" type="hidden" value='<%= SessionMessages.contains(renderRequest, "requestProcessed") %>' />
 	<aui:input name="commercePaymentEntryId" type="hidden" value="<%= commercePaymentEntry.getCommercePaymentEntryId() %>" />
 
 	<aui:model-context bean="<%= commercePaymentEntry %>" model="<%= CommercePaymentEntry.class %>" />
