@@ -48,6 +48,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -72,6 +74,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
 import com.liferay.site.dsr.site.initializer.thread.local.DSRRoomThreadLocal;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 import com.liferay.sites.kernel.util.Sites;
 
 import java.io.File;
@@ -125,6 +128,19 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		try {
 			_onAfterUpdate(originalObjectEntry, objectEntry);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
+
+	@Override
+	public void onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		try {
+			_onBeforeUpdate(originalObjectEntry, objectEntry);
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
@@ -567,6 +583,42 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			group.isManualMembership(), group.getMembershipRestriction(),
 			friendlyURL, group.isInheritContent(), group.isActive(),
 			serviceContext);
+	}
+
+	private void _onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if (!Objects.equals(
+				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
+
+			return;
+		}
+
+		Map<String, Serializable> originalValues =
+			originalObjectEntry.getValues();
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		for (Map.Entry<String, Serializable> entry : values.entrySet()) {
+			String name = entry.getKey();
+
+			if (Objects.equals(name, "archiveDate") ||
+				Objects.equals(name, "roomStatus")) {
+
+				continue;
+			}
+
+			if (!Objects.equals(entry.getValue(), originalValues.get(name))) {
+				DSRRoomUtil.checkPermission(
+					originalObjectEntry,
+					PermissionThreadLocal.getPermissionChecker(),
+					ActionKeys.UPDATE);
+
+				return;
+			}
+		}
 	}
 
 	private void _patchAnalyticsChannel(

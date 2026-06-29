@@ -16,6 +16,7 @@ import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.site.dsr.site.initializer.thread.local.DSRRoomThreadLocal;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import java.io.Serializable;
 
@@ -98,6 +100,9 @@ public class RoomResourceImpl extends BaseRoomResourceImpl {
 		if (permissionChecker.isCompanyAdmin()) {
 			return;
 		}
+
+		DSRRoomUtil.checkPermission(
+			objectEntry, permissionChecker, ActionKeys.UPDATE);
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 

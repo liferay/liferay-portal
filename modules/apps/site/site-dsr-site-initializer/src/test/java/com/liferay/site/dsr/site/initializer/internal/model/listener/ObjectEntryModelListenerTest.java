@@ -17,6 +17,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -25,9 +26,11 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import java.io.Serializable;
 
@@ -44,6 +47,7 @@ import org.junit.Test;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -306,6 +310,74 @@ public class ObjectEntryModelListenerTest {
 			Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
 			Mockito.anyBoolean(), Mockito.any(ServiceContext.class)
 		);
+	}
+
+	@Test
+	public void testOnBeforeUpdate() throws Exception {
+		ObjectEntry objectEntry1 = _mockRoomObjectEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
+		ObjectEntry objectEntry2 = _mockRoomObjectEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
+
+		try (MockedStatic<DSRRoomUtil> dsrRoomUtilMockedStatic =
+				Mockito.mockStatic(DSRRoomUtil.class)) {
+
+			ReflectionTestUtil.invoke(
+				_objectEntryModelListener, "_onBeforeUpdate",
+				new Class<?>[] {ObjectEntry.class, ObjectEntry.class},
+				objectEntry1, objectEntry2);
+
+			dsrRoomUtilMockedStatic.verify(
+				() -> DSRRoomUtil.checkPermission(
+					objectEntry1, null, ActionKeys.UPDATE));
+		}
+
+		String name = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry3 = _mockRoomObjectEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), name,
+			RandomTestUtil.randomLong());
+
+		Mockito.when(
+			objectEntry3.getValues()
+		).thenReturn(
+			HashMapBuilder.<String, Serializable>put(
+				"archiveDate", RandomTestUtil.randomString()
+			).put(
+				"name", name
+			).put(
+				"roomStatus", WorkflowConstants.STATUS_APPROVED
+			).build()
+		);
+
+		ObjectEntry objectEntry4 = _mockRoomObjectEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), name,
+			RandomTestUtil.randomLong());
+
+		Mockito.when(
+			objectEntry4.getValues()
+		).thenReturn(
+			HashMapBuilder.<String, Serializable>put(
+				"archiveDate", RandomTestUtil.randomString()
+			).put(
+				"name", name
+			).put(
+				"roomStatus", WorkflowConstants.STATUS_INACTIVE
+			).build()
+		);
+
+		try (MockedStatic<DSRRoomUtil> dsrRoomUtilMockedStatic =
+				Mockito.mockStatic(DSRRoomUtil.class)) {
+
+			ReflectionTestUtil.invoke(
+				_objectEntryModelListener, "_onBeforeUpdate",
+				new Class<?>[] {ObjectEntry.class, ObjectEntry.class},
+				objectEntry3, objectEntry4);
+
+			dsrRoomUtilMockedStatic.verifyNoInteractions();
+		}
 	}
 
 	@Test

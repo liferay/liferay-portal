@@ -33,6 +33,7 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
 import com.liferay.site.dsr.site.initializer.constants.DSRTicketConstants;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import java.util.Date;
 import java.util.Objects;
@@ -61,6 +62,10 @@ public class InvitedMemberResourceImpl extends BaseInvitedMemberResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _getObjectEntry(roomId);
+
+		DSRRoomUtil.checkPermission(
+			objectEntry, PermissionThreadLocal.getPermissionChecker(),
+			ActionKeys.UPDATE);
 
 		Ticket ticket = _getTicket(
 			_groupService.getGroup(
@@ -105,6 +110,10 @@ public class InvitedMemberResourceImpl extends BaseInvitedMemberResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _getObjectEntry(roomId);
+
+		DSRRoomUtil.checkPermission(
+			objectEntry, PermissionThreadLocal.getPermissionChecker(),
+			ActionKeys.UPDATE);
 
 		Group group = _groupService.getGroup(
 			MapUtil.getLong(objectEntry.getValues(), "siteId"));

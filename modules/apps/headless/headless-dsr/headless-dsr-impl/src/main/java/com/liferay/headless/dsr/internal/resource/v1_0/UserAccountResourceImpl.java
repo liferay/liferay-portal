@@ -61,6 +61,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.dsr.site.initializer.constants.DSRPortletKeys;
 import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
 import com.liferay.site.dsr.site.initializer.constants.DSRTicketConstants;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import jakarta.portlet.PortletMode;
 import jakarta.portlet.PortletRequest;
@@ -198,6 +199,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _getObjectEntry(true, roomId);
+
+		DSRRoomUtil.checkPermission(
+			objectEntry, PermissionThreadLocal.getPermissionChecker(),
+			ActionKeys.UPDATE);
 
 		Map<String, Serializable> values = objectEntry.getValues();
 
@@ -406,6 +411,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 	private Group _getGroup(long roomId) throws Exception {
 		ObjectEntry objectEntry = _getObjectEntry(true, roomId);
+
+		DSRRoomUtil.checkPermission(
+			objectEntry, PermissionThreadLocal.getPermissionChecker(),
+			ActionKeys.UPDATE);
 
 		return _groupService.getGroup(
 			MapUtil.getLong(objectEntry.getValues(), "siteId"));
