@@ -6,20 +6,14 @@
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {createRenderURL} from 'frontend-js-web';
 import React from 'react';
 
 import useFetch from '../../hooks/useFetch';
 import {buildQueryString} from '../../utils/buildQueryString';
 import EmptyState from '../EmptyState';
-
-function buildAnalyticsCloudConfigURL() {
-	return createRenderURL('group/control_panel/manage', {
-		configurationScreenKey: 'analytics-cloud-connection',
-		mvcRenderCommandName: '/configuration_admin/view_configuration_screen',
-		p_p_id: Liferay.PortletKeys.INSTANCE_SETTINGS,
-	});
-}
+import ConnectToAnalyticsCloud, {
+	buildAnalyticsCloudConfigURL,
+} from './ConnectToAnalyticsCloud';
 
 interface IEmptyStateProps extends React.HTMLAttributes<HTMLElement> {
 	admin: boolean;
@@ -64,52 +58,7 @@ const EmptyStates: React.FC<IEmptyStateProps> = ({
 	}
 
 	if (!connectedToAnalyticsCloud) {
-		if (admin) {
-			return (
-				<EmptyState
-					description={Liferay.Language.get(
-						'in-order-to-view-asset-performance,-your-liferay-dxp-instance-has-to-be-connected-with-liferay-analytics-cloud'
-					)}
-					externalImage={{
-						src: '/o/analytics-reports-js-components-web/assets/performance_tab_empty_state.svg',
-						style: {
-							marginBottom: '1rem',
-							width: 245,
-						},
-					}}
-					title={Liferay.Language.get(
-						'connect-to-liferay-analytics-cloud'
-					)}
-				>
-					<ClayLink
-						button
-						displayType="primary"
-						href={buildAnalyticsCloudConfigURL().href}
-						small
-					>
-						{Liferay.Language.get('connect')}
-					</ClayLink>
-				</EmptyState>
-			);
-		}
-
-		return (
-			<EmptyState
-				description={Liferay.Language.get(
-					'please-contact-a-dxp-instance-administrator-to-connect-your-dxp-instance-to-analytics-cloud'
-				)}
-				externalImage={{
-					src: '/o/analytics-reports-js-components-web/assets/performance_tab_empty_state.svg',
-					style: {
-						marginBottom: '1rem',
-						width: 245,
-					},
-				}}
-				title={Liferay.Language.get(
-					'connect-to-liferay-analytics-cloud'
-				)}
-			/>
-		);
+		return <ConnectToAnalyticsCloud admin={admin} />;
 	}
 
 	if (!siteSyncedToAnalyticsCloud) {
