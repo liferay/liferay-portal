@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Portal DB Migration Schema Exporter Implementation
+Bundle-SymbolicName: com.liferay.portal.db.migration.schema.exporter.impl
+Bundle-Version: 1.0.0
+-dsannotations-options: inherit
