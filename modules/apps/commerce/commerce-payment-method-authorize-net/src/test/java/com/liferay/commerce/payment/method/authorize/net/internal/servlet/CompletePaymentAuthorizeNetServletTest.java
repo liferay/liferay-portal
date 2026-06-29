@@ -95,7 +95,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 				_completePaymentAuthorizeNetServlet, "_isValidSignature",
 				new Class<?>[] {byte[].class, String.class, String.class},
 				_bytes, "sha512=" + RandomTestUtil.randomString(), null));
-
 		Assert.assertFalse(
 			ReflectionTestUtil.invoke(
 				_completePaymentAuthorizeNetServlet, "_isValidSignature",
@@ -113,23 +112,6 @@ public class CompletePaymentAuthorizeNetServletTest {
 				new Class<?>[] {byte[].class, String.class, String.class},
 				_bytes, "sha512=" + StringUtil.toUpperCase(signature),
 				_signatureKey));
-	}
-
-	private JSONObject _createAuthCaptureJSONObject(
-		long commerceOrderId, String transactionId) {
-
-		return JSONUtil.put(
-			"eventType",
-			AuthorizeNetCommercePaymentMethodConstants.
-				AUTH_CAPTURE_CREATED_EVENT_TYPE
-		).put(
-			"payload",
-			JSONUtil.put(
-				"id", transactionId
-			).put(
-				"invoiceNumber", String.valueOf(commerceOrderId)
-			)
-		);
 	}
 
 	private MockHttpServletResponse _get(boolean cancel, String redirect)
@@ -157,6 +139,23 @@ public class CompletePaymentAuthorizeNetServletTest {
 			mockHttpServletRequest, mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private JSONObject _getAuthCaptureJSONObject(
+		long commerceOrderId, String transactionId) {
+
+		return JSONUtil.put(
+			"eventType",
+			AuthorizeNetCommercePaymentMethodConstants.
+				AUTH_CAPTURE_CREATED_EVENT_TYPE
+		).put(
+			"payload",
+			JSONUtil.put(
+				"id", transactionId
+			).put(
+				"invoiceNumber", String.valueOf(commerceOrderId)
+			)
+		);
 	}
 
 	private CommerceOrder _mockCommerceOrder(
@@ -191,36 +190,7 @@ public class CompletePaymentAuthorizeNetServletTest {
 		return commerceOrder;
 	}
 
-	private MockHttpServletResponse _post(
-			JSONObject jsonObject, String signatureKey)
-		throws Exception {
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		String json = jsonObject.toString();
-
-		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-
-		mockHttpServletRequest.setContent(bytes);
-
-		String signature = ReflectionTestUtil.invoke(
-			_completePaymentAuthorizeNetServlet, "_generateHMAC",
-			new Class<?>[] {byte[].class, String.class}, bytes, signatureKey);
-
-		mockHttpServletRequest.addHeader(
-			"X-ANET-Signature", "sha512=" + signature);
-
-		_completePaymentAuthorizeNetServlet.doPost(
-			mockHttpServletRequest, mockHttpServletResponse);
-
-		return mockHttpServletResponse;
-	}
-
-	private void _setUpConfigurationProvider(String signatureKey)
+	private void _mockConfigurationProvider(String signatureKey)
 		throws Exception {
 
 		AuthorizeNetGroupServiceConfiguration
@@ -240,6 +210,35 @@ public class CompletePaymentAuthorizeNetServletTest {
 		).thenReturn(
 			authorizeNetGroupServiceConfiguration
 		);
+	}
+
+	private MockHttpServletResponse _post(
+			JSONObject jsonObject, String signatureKey)
+		throws Exception {
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		String jsonString = jsonObject.toString();
+
+		byte[] bytes = jsonString.getBytes(StandardCharsets.UTF_8);
+
+		mockHttpServletRequest.setContent(bytes);
+
+		String signature = ReflectionTestUtil.invoke(
+			_completePaymentAuthorizeNetServlet, "_generateHMAC",
+			new Class<?>[] {byte[].class, String.class}, bytes, signatureKey);
+
+		mockHttpServletRequest.addHeader(
+			"X-ANET-Signature", "sha512=" + signature);
+
+		_completePaymentAuthorizeNetServlet.doPost(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		return mockHttpServletResponse;
 	}
 
 	private void _testDoGet() throws Exception {
@@ -305,12 +304,12 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_setUpConfigurationProvider(_signatureKey);
+		_mockConfigurationProvider(_signatureKey);
 
 		String transactionId = RandomTestUtil.randomString();
 
 		MockHttpServletResponse mockHttpServletResponse = _post(
-			_createAuthCaptureJSONObject(commerceOrderId, transactionId),
+			_getAuthCaptureJSONObject(commerceOrderId, transactionId),
 			_signatureKey);
 
 		Assert.assertEquals(
@@ -336,12 +335,12 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_setUpConfigurationProvider(_signatureKey);
+		_mockConfigurationProvider(_signatureKey);
 
 		String transactionId = RandomTestUtil.randomString();
 
 		MockHttpServletResponse mockHttpServletResponse = _post(
-			_createAuthCaptureJSONObject(commerceOrderId, transactionId),
+			_getAuthCaptureJSONObject(commerceOrderId, transactionId),
 			_signatureKey);
 
 		Assert.assertEquals(
@@ -389,10 +388,10 @@ public class CompletePaymentAuthorizeNetServletTest {
 			commerceOrder
 		);
 
-		_setUpConfigurationProvider(_signatureKey);
+		_mockConfigurationProvider(_signatureKey);
 
 		MockHttpServletResponse mockHttpServletResponse = _post(
-			_createAuthCaptureJSONObject(
+			_getAuthCaptureJSONObject(
 				commerceOrderId, RandomTestUtil.randomString()),
 			RandomTestUtil.randomString());
 
