@@ -5,9 +5,27 @@
 
 package com.liferay.headless.admin.server.internal.resource.v1_0;
 
+import com.liferay.headless.admin.server.dto.v1_0.DatabaseSchemaExport;
 import com.liferay.headless.admin.server.resource.v1_0.DatabaseSchemaExportResource;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExportResult;
+import com.liferay.portal.db.migration.schema.exporter.DBMigrationSchemaExporter;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.core.Response;
+
+import java.io.IOException;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -19,4 +37,74 @@ import org.osgi.service.component.annotations.ServiceScope;
 )
 public class DatabaseSchemaExportResourceImpl
 	extends BaseDatabaseSchemaExportResourceImpl {
+
+	@Override
+	public DatabaseSchemaExport postDatabaseSchemaExport(
+			DatabaseSchemaExport databaseSchemaExport)
+		throws Exception {
+
+		_checkFeatureFlag();
+		_checkPermission();
+
+		String exportFilesPath = databaseSchemaExport.getExportFilesPath();
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				StringBundler.concat(
+					"User ", contextUser.getUserId(),
+					" is exporting the database schema definition to ",
+					exportFilesPath));
+		}
+
+		DBMigrationSchemaExportResult dbMigrationSchemaExportResult = null;
+
+		try {
+			dbMigrationSchemaExportResult = _dbMigrationSchemaExporter.export(
+				exportFilesPath);
+		}
+		catch (IOException ioException) {
+			_log.error(
+				"Unable to write to \"" + exportFilesPath + "\"", ioException);
+
+			throw new BadRequestException(
+				"Unable to write to \"" + exportFilesPath + "\"");
+		}
+
+		List<String> fileNames = dbMigrationSchemaExportResult.getFileNames();
+
+		DatabaseSchemaExport resultDatabaseSchemaExport =
+			new DatabaseSchemaExport();
+
+		resultDatabaseSchemaExport.setExportFilesPath(() -> exportFilesPath);
+		resultDatabaseSchemaExport.setFileNames(
+			() -> fileNames.toArray(new String[0]));
+		resultDatabaseSchemaExport.setReportFileName(
+			dbMigrationSchemaExportResult::getReportFileName);
+
+		return resultDatabaseSchemaExport;
+	}
+
+	private void _checkFeatureFlag() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-23840")) {
+
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	private void _checkPermission() {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new NotAuthorizedException(Response.Status.UNAUTHORIZED);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DatabaseSchemaExportResourceImpl.class);
+
+	@Reference
+	private DBMigrationSchemaExporter _dbMigrationSchemaExporter;
+
 }

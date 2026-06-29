@@ -12,4 +12,5 @@ dependencies {
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-db-migration-schema-exporter-api")
 	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-string")
 }
