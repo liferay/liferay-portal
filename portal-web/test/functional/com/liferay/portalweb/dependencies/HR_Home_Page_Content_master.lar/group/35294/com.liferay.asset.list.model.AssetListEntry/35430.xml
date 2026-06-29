@@ -1,0 +1,22 @@
+<AssetListEntry>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>2</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>b3e03fe1-a76d-dd60-09b8-14e062fafbca</__uuid>
+  <__externalReferenceCode>b3e03fe1-a76d-dd60-09b8-14e062fafbca</__externalReferenceCode>
+  <__assetListEntryId>35430</__assetListEntryId>
+  <__groupId>35294</__groupId>
+  <__companyId>10709045811807</__companyId>
+  <__userId>20131</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2026-06-29 15:41:00.465</__createDate>
+  <__modifiedDate class="sql-timestamp">2026-06-29 15:41:37.653</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__assetListEntryKey>web-content-collection</__assetListEntryKey>
+  <__title>Web Content Collection</__title>
+  <__type>0</__type>
+  <__assetEntrySubtype>32053</__assetEntrySubtype>
+  <__assetEntryType>com.liferay.journal.model.JournalArticle</__assetEntryType>
+  <__columnBitmask>0</__columnBitmask>
+</AssetListEntry>

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<portlet portlet-id="com_liferay_layout_admin_web_portlet_LayoutUtilityPagesPortlet" root-portlet-id="com_liferay_layout_admin_web_portlet_LayoutUtilityPagesPortlet" scope-group-id="35294" scope-layout-type="" scope-layout-uuid="" private-layout="false" self-path="/group/35294/portlet/com_liferay_layout_admin_web_portlet_LayoutUtilityPagesPortlet/0/portlet.xml">
+	<portlet-data path="/group/35294/portlet/com_liferay_layout_admin_web_portlet_LayoutUtilityPagesPortlet/35294/portlet-data.xml"/>
+</portlet>

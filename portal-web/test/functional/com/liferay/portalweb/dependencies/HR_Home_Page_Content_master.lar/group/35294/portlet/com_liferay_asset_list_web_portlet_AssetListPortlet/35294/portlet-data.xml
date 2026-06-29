@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<AssetListPortletDataHandler self-path="/group/35294/portlet/com_liferay_asset_list_web_portlet_AssetListPortlet/35294/portlet-data.xml" group-id="35294">
+	<AssetListEntry>
+		<staged-model group-id="35294" uuid="b3e03fe1-a76d-dd60-09b8-14e062fafbca" path="/group/35294/com.liferay.asset.list.model.AssetListEntry/35430.xml" user-uuid="eb819453-77ad-ddeb-99ad-364255decd6c" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel" class-pk="35431" group-id="35294" group-key="HR Home Page Content" live-group-id="35294" type="child" uuid="1179684f-6d0a-81d3-b5af-369fddc2508d" company-id="10709045811807" missing="false"/>
+				<reference class-name="com.liferay.dynamic.data.mapping.model.DDMStructure" class-pk="32053" attached-class-name="com.liferay.journal.model.JournalArticle" external-reference-code="34aca968-a963-d450-4d2d-f41fa7e2e918" group-id="20128" group-key="10709045811807" live-group-id="20128" type="dependency" uuid="34aca968-a963-d450-4d2d-f41fa7e2e918" company-id="10709045811807" preloaded="true" referenced-class-name="com.liferay.journal.model.JournalArticle" structure-key="BASIC-WEB-CONTENT" missing="true"/>
+			</references>
+		</staged-model>
+	</AssetListEntry>
+	<AssetListEntrySegmentsEntryRel>
+		<staged-model group-id="35294" uuid="1179684f-6d0a-81d3-b5af-369fddc2508d" path="/group/35294/com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel/35431.xml" user-uuid="eb819453-77ad-ddeb-99ad-364255decd6c" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.dynamic.data.mapping.model.DDMStructure" class-pk="32053" attached-class-name="com.liferay.journal.model.JournalArticle" external-reference-code="34aca968-a963-d450-4d2d-f41fa7e2e918" group-id="20128" group-key="10709045811807" live-group-id="20128" type="dependency" uuid="34aca968-a963-d450-4d2d-f41fa7e2e918" company-id="10709045811807" preloaded="true" referenced-class-name="com.liferay.journal.model.JournalArticle" structure-key="BASIC-WEB-CONTENT" missing="true"/>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFileEntryType" class-pk="0" external-reference-code="28916a06-edbb-64a4-e486-ef57fb59f176" type="dependency" uuid="28916a06-edbb-64a4-e486-ef57fb59f176" company-id="0" file-entry-type-key="BASIC-DOCUMENT" preloaded="true" missing="true"/>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFileEntryType" class-pk="32210" external-reference-code="2d082e81-314c-7419-c9cf-9d61699d2c0c" group-id="20128" group-key="10709045811807" live-group-id="20128" type="dependency" uuid="2d082e81-314c-7419-c9cf-9d61699d2c0c" company-id="10709045811807" file-entry-type-key="DL_VIDEO_EXTERNAL_SHORTCUT" preloaded="true" missing="true"/>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFileEntryType" class-pk="32406" external-reference-code="241cef00-2519-619d-15fa-0c3448bdb6c9" group-id="20128" group-key="10709045811807" live-group-id="20128" type="dependency" uuid="241cef00-2519-619d-15fa-0c3448bdb6c9" company-id="10709045811807" file-entry-type-key="GOOGLE_DOCS" preloaded="true" missing="true"/>
+			</references>
+		</staged-model>
+	</AssetListEntrySegmentsEntryRel>
+	<group-id-mappings>
+		<group-id-mapping group-id="35294" live-group-id="0" group-key="HR Home Page Content"/>
+	</group-id-mappings>
+</AssetListPortletDataHandler>
