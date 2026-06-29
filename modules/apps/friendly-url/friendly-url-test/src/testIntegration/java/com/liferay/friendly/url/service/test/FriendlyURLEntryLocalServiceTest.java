@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collections;
@@ -57,6 +58,10 @@ import org.junit.runner.RunWith;
 /**
  * @author Adolfo Pérez
  */
+@LanguageIds(
+	availableLanguageIds = {"en_US", "es_ES", "pt_BR", "zh_CN"},
+	defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class FriendlyURLEntryLocalServiceTest {
 
