@@ -119,8 +119,15 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 					!commerceOrderUuid.equals(commerceOrder.getUuid())) {
 
 					httpServletResponse.sendRedirect(
-						_getCommerceOrderURL(
-							renderRequest, renderResponse, commerceOrder));
+						PortletURLBuilder.createRenderURL(
+							_portal.getLiferayPortletResponse(renderResponse)
+						).setParameter(
+							"checkoutStepName",
+							ParamUtil.getString(
+								renderRequest, "checkoutStepName")
+						).setParameter(
+							"commerceOrderUuid", commerceOrder.getUuid()
+						).buildString());
 
 					return;
 				}
@@ -237,20 +244,6 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 			CommerceCheckoutWebKeys.COMMERCE_ORDER, commerceOrder);
 
 		return commerceOrder;
-	}
-
-	private String _getCommerceOrderURL(
-		RenderRequest renderRequest, RenderResponse renderResponse,
-		CommerceOrder commerceOrder) {
-
-		return PortletURLBuilder.createRenderURL(
-			_portal.getLiferayPortletResponse(renderResponse)
-		).setParameter(
-			"checkoutStepName",
-			ParamUtil.getString(renderRequest, "checkoutStepName")
-		).setParameter(
-			"commerceOrderUuid", commerceOrder.getUuid()
-		).buildString();
 	}
 
 	private String _getOrderDetailsURL(
