@@ -11,53 +11,70 @@ import com.liferay.portal.db.migration.schema.exporter.internal.sql.provider.SQL
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.File;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mariano Álvaro Sáiz
  */
 public class SQLWriter {
 
-	public void writeFiles(File directory) throws Exception {
+	public List<String> writeFiles(File directory) throws Exception {
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
-			_writeDBPartitionFiles(directory);
+			return _writeDBPartitionFiles(directory);
 		}
-		else {
-			_writeFiles(directory);
-		}
+
+		return _writeFiles(directory);
 	}
 
-	private void _writeDBPartitionFiles(File directory) throws Exception {
+	private List<String> _writeDBPartitionFiles(File directory)
+		throws Exception {
+
 		DBPartitionSQLProvider.clearCache();
+
+		List<String> fileNames = new ArrayList<>();
 
 		CompanyLocalServiceUtil.forEachCompanyId(
 			companyId -> {
 				if (companyId == PortalInstancePool.getDefaultCompanyId()) {
-					_writeFiles(directory);
+					fileNames.addAll(_writeFiles(directory));
 
 					return;
 				}
 
 				SQLProvider sqlProvider = new DBPartitionSQLProvider(companyId);
 
+				String indexesFileName = companyId + "_indexes.sql";
+				String tablesFileName = companyId + "_tables.sql";
+
 				FileUtil.write(
-					new File(directory, companyId + "_indexes.sql"),
+					new File(directory, indexesFileName),
 					sqlProvider.getIndexesSQL());
 				FileUtil.write(
-					new File(directory, companyId + "_tables.sql"),
+					new File(directory, tablesFileName),
 					sqlProvider.getTablesSQL());
+
+				fileNames.add(indexesFileName);
+				fileNames.add(tablesFileName);
 			});
+
+		return fileNames;
 	}
 
-	private void _writeFiles(File directory) throws Exception {
+	private List<String> _writeFiles(File directory) throws Exception {
 		SQLProvider sqlProvider = new PortalSQLProvider();
 
 		FileUtil.write(
 			new File(directory, "indexes.sql"), sqlProvider.getIndexesSQL());
 		FileUtil.write(
 			new File(directory, "tables.sql"), sqlProvider.getTablesSQL());
+
+		return ListUtil.fromArray("indexes.sql", "tables.sql");
 	}
 
 }

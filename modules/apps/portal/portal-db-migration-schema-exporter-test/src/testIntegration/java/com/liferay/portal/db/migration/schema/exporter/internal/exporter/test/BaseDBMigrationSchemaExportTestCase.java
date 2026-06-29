@@ -115,7 +115,7 @@ public abstract class BaseDBMigrationSchemaExportTestCase {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.db.migration.schema.exporter.internal." +
-					"exporter.DBMigrationSchemaExport",
+					"exporter.DBMigrationSchemaExporterImpl",
 				LoggerTestUtil.INFO)) {
 
 			ConfigurationTestUtil.deployConfiguration(
