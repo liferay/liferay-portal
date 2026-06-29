@@ -32,6 +32,10 @@
 		<field name="companyId" type="long" />
 		<field name="name" type="String" />
 	</model>
+	<model name="com.liferay.portal.tools.service.builder.test.model.ColumnNameEntry">
+		<field name="columnNameEntryId" type="long" />
+		<field name="name" type="String" />
+	</model>
 	<model name="com.liferay.portal.tools.service.builder.test.model.DataLimitEntry">
 		<field name="dataLimitEntryId" type="long" />
 		<field name="companyId" type="long" />

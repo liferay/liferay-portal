@@ -41,6 +41,11 @@ create table CacheReplicatorEntry (
 	name VARCHAR(75) null
 );
 
+create table ColumnNameEntry (
+	cNameEntryId LONG not null primary key,
+	name VARCHAR(75) null
+);
+
 create table DSLQueryEntry (
 	dslQueryEntryId LONG not null primary key,
 	name VARCHAR(75) null
