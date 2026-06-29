@@ -60,4 +60,10 @@ public interface SitemapCompanyConfiguration {
 	)
 	public String xmlSitemapIndexMode();
 
+	@Meta.AD(
+		deflt = "86400", name = "xml-sitemap-regeneration-delay",
+		required = false
+	)
+	public long xmlSitemapRegenerationDelay();
+
 }

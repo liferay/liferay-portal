@@ -20,6 +20,9 @@ public interface SitemapConfigurationManager {
 	public Long[] getCompanySitemapObjectDefinitionIds(long companyId)
 		throws ConfigurationException;
 
+	public long getXMLSitemapRegenerationDelay(long companyId)
+		throws ConfigurationException;
+
 	public boolean includeCategoriesCompanyEnabled(long companyId)
 		throws ConfigurationException;
 

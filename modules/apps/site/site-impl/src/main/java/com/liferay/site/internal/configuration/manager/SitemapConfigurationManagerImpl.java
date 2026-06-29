@@ -54,6 +54,17 @@ public class SitemapConfigurationManagerImpl
 	}
 
 	@Override
+	public long getXMLSitemapRegenerationDelay(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapRegenerationDelay();
+	}
+
+	@Override
 	public boolean includeCategoriesCompanyEnabled(long companyId)
 		throws ConfigurationException {
 

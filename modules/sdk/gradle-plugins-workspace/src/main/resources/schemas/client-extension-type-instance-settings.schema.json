@@ -4837,6 +4837,11 @@
 					"default": "page-layout",
 					"title": "XML Sitemap Index Mode",
 					"type": "string"
+				},
+				"xmlSitemapRegenerationDelay": {
+					"default": 86400,
+					"title": "XML Sitemap Regeneration Delay",
+					"type": "number"
 				}
 			},
 			"required": [

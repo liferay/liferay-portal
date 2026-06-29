@@ -423,7 +423,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 			if (startDate == null) {
 				long xmlSitemapRegenerationDelay =
-					_sitemapConfigurationManager.getXmlSitemapRegenerationDelay(
+					_sitemapConfigurationManager.getXMLSitemapRegenerationDelay(
 						companyId);
 
 				startDate = new Date(
@@ -1218,7 +1218,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	private void _scheduleGroupRegenerateSitemap(
 			String assetTypeKey, long companyId, long groupId, Date startDate)
-		throws SchedulerException {
+		throws PortalException {
 
 		SitemapURLProvider sitemapURLProvider = _serviceTrackerMap.getService(
 			getAssetTypeClassNameId(assetTypeKey));
