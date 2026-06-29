@@ -1027,6 +1027,11 @@ public class CPInstanceUnitOfMeasurePersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "CPInstanceUnitOfMeasureId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_CPINSTANCEUNITOFMEASURE;
 	}
@@ -1422,4 +1427,4 @@ public class CPInstanceUnitOfMeasurePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1631273747
+// LIFERAY-SERVICE-BUILDER-HASH:-1826119027

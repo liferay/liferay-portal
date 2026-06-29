@@ -720,6 +720,11 @@ public class JournalFeedPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "id";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_JOURNALFEED;
 	}
@@ -993,4 +998,4 @@ public class JournalFeedPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-100213788
+// LIFERAY-SERVICE-BUILDER-HASH:1526971217

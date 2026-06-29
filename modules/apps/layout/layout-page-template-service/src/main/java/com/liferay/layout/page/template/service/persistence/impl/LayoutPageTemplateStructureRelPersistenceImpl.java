@@ -847,6 +847,11 @@ public class LayoutPageTemplateStructureRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "layoutPageTemplateStructureRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_LAYOUTPAGETEMPLATESTRUCTUREREL;
 	}
@@ -1174,4 +1179,4 @@ public class LayoutPageTemplateStructureRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1971127077
+// LIFERAY-SERVICE-BUILDER-HASH:298885241

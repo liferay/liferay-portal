@@ -664,6 +664,11 @@ public class CommerceShippingOptionAccountEntryRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "CommerceShippingOptionAccountEntryRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCESHIPPINGOPTIONACCOUNTENTRYREL;
 	}
@@ -867,4 +872,4 @@ public class CommerceShippingOptionAccountEntryRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-628274813
+// LIFERAY-SERVICE-BUILDER-HASH:-590653848

@@ -462,6 +462,11 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "oAuth2ApplicationScopeAliasesId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_OAUTH2APPLICATIONSCOPEALIASES;
 	}
@@ -603,4 +608,4 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:591464052
+// LIFERAY-SERVICE-BUILDER-HASH:85985528

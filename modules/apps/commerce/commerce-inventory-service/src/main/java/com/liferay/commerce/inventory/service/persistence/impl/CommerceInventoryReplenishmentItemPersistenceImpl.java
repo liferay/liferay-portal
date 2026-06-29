@@ -1154,6 +1154,11 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceInventoryReplenishmentItemId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM;
 	}
@@ -1504,4 +1509,4 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1889119359
+// LIFERAY-SERVICE-BUILDER-HASH:-704049108

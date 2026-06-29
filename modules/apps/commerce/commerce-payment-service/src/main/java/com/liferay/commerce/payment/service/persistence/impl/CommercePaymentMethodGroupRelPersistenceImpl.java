@@ -619,6 +619,11 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commercePaymentMethodGroupRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEPAYMENTMETHODGROUPREL;
 	}
@@ -787,4 +792,4 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1309866954
+// LIFERAY-SERVICE-BUILDER-HASH:1730241035

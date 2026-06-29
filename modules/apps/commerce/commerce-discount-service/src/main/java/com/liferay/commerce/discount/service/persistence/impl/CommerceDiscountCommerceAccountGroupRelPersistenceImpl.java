@@ -578,6 +578,11 @@ public class CommerceDiscountCommerceAccountGroupRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceDiscountCommerceAccountGroupRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEDISCOUNTCOMMERCEACCOUNTGROUPREL;
 	}
@@ -754,4 +759,4 @@ public class CommerceDiscountCommerceAccountGroupRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1791875611
+// LIFERAY-SERVICE-BUILDER-HASH:-802974682

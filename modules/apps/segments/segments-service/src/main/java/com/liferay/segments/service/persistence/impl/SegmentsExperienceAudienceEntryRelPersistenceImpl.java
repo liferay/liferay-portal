@@ -760,6 +760,11 @@ public class SegmentsExperienceAudienceEntryRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "segmentsExperienceAudienceEntryRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_SEGMENTSEXPERIENCEAUDIENCEENTRYREL;
 	}
@@ -1048,4 +1053,4 @@ public class SegmentsExperienceAudienceEntryRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1600811886
+// LIFERAY-SERVICE-BUILDER-HASH:415800864

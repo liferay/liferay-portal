@@ -982,6 +982,11 @@ public class AssetListEntrySegmentsEntryRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "assetListEntrySegmentsEntryRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_ASSETLISTENTRYSEGMENTSENTRYREL;
 	}
@@ -1327,4 +1332,4 @@ public class AssetListEntrySegmentsEntryRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1739688469
+// LIFERAY-SERVICE-BUILDER-HASH:2115560819

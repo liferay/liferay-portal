@@ -590,6 +590,11 @@ public class CommercePricingClassCPDefinitionRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "CommercePricingClassCPDefinitionRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEPRICINGCLASSCPDEFINITIONREL;
 	}
@@ -825,4 +830,4 @@ public class CommercePricingClassCPDefinitionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1356909686
+// LIFERAY-SERVICE-BUILDER-HASH:305957177

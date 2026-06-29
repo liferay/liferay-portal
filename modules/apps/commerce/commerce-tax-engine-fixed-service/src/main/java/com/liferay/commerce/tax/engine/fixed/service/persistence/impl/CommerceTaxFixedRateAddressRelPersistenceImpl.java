@@ -556,6 +556,11 @@ public class CommerceTaxFixedRateAddressRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceTaxFixedRateAddressRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCETAXFIXEDRATEADDRESSREL;
 	}
@@ -729,4 +734,4 @@ public class CommerceTaxFixedRateAddressRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2061990884
+// LIFERAY-SERVICE-BUILDER-HASH:-991742516

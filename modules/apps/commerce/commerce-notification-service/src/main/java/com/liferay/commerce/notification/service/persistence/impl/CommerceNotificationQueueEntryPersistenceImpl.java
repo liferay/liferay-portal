@@ -823,6 +823,11 @@ public class CommerceNotificationQueueEntryPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceNotificationQueueEntryId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCENOTIFICATIONQUEUEENTRY;
 	}
@@ -1068,4 +1073,4 @@ public class CommerceNotificationQueueEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-288159748
+// LIFERAY-SERVICE-BUILDER-HASH:-703691684

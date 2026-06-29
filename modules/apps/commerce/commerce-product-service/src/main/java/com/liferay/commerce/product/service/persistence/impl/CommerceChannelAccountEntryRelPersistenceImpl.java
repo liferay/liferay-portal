@@ -1087,6 +1087,11 @@ public class CommerceChannelAccountEntryRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceChannelAccountEntryRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCECHANNELACCOUNTENTRYREL;
 	}
@@ -1540,4 +1545,4 @@ public class CommerceChannelAccountEntryRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-443336365
+// LIFERAY-SERVICE-BUILDER-HASH:-212250106

@@ -663,6 +663,11 @@ public class CommerceNotificationAttachmentPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceNotificationAttachmentId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCENOTIFICATIONATTACHMENT;
 	}
@@ -862,4 +867,4 @@ public class CommerceNotificationAttachmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1860884289
+// LIFERAY-SERVICE-BUILDER-HASH:1450506681

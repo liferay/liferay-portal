@@ -434,6 +434,11 @@ public class NotificationTemplateAttachmentPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "notificationTemplateAttachmentId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_NOTIFICATIONTEMPLATEATTACHMENT;
 	}
@@ -570,4 +575,4 @@ public class NotificationTemplateAttachmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-901281522
+// LIFERAY-SERVICE-BUILDER-HASH:1415252225

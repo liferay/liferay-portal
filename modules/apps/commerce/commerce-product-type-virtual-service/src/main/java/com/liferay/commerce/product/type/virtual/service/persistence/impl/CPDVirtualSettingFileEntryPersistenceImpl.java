@@ -736,6 +736,11 @@ public class CPDVirtualSettingFileEntryPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "CPDefinitionVirtualSettingFileEntryId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_CPDVIRTUALSETTINGFILEENTRY;
 	}
@@ -956,4 +961,4 @@ public class CPDVirtualSettingFileEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:533280772
+// LIFERAY-SERVICE-BUILDER-HASH:133490062

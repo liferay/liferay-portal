@@ -601,6 +601,11 @@ public class CommerceShippingFixedOptionRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceShippingFixedOptionRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCESHIPPINGFIXEDOPTIONREL;
 	}
@@ -792,4 +797,4 @@ public class CommerceShippingFixedOptionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:274131364
+// LIFERAY-SERVICE-BUILDER-HASH:-1551821400

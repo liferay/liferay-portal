@@ -1016,6 +1016,11 @@ public class CommerceInventoryWarehouseItemPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceInventoryWarehouseItemId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEINVENTORYWAREHOUSEITEM;
 	}
@@ -1316,4 +1321,4 @@ public class CommerceInventoryWarehouseItemPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:125283659
+// LIFERAY-SERVICE-BUILDER-HASH:505072741

@@ -670,6 +670,11 @@ public class CommercePriceListOrderTypeRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commercePriceListOrderTypeRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEPRICELISTORDERTYPEREL;
 	}
@@ -930,4 +935,4 @@ public class CommercePriceListOrderTypeRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:758154253
+// LIFERAY-SERVICE-BUILDER-HASH:309910795

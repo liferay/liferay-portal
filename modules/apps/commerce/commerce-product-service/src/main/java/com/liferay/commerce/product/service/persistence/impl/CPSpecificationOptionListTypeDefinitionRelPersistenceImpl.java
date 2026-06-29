@@ -574,6 +574,11 @@ public class CPSpecificationOptionListTypeDefinitionRelPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "CPSpecificationOptionListTypeDefinitionRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_CPSPECIFICATIONOPTIONLISTTYPEDEFINITIONREL;
 	}
@@ -814,4 +819,4 @@ public class CPSpecificationOptionListTypeDefinitionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-483852254
+// LIFERAY-SERVICE-BUILDER-HASH:404403908

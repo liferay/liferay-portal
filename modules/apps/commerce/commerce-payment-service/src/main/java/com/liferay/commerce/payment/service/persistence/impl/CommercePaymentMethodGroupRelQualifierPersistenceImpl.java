@@ -612,6 +612,11 @@ public class CommercePaymentMethodGroupRelQualifierPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commercePaymentMethodGroupRelQualifierId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEPAYMENTMETHODGROUPRELQUALIFIER;
 	}
@@ -803,4 +808,4 @@ public class CommercePaymentMethodGroupRelQualifierPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-674649315
+// LIFERAY-SERVICE-BUILDER-HASH:-1983748850

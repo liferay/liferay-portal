@@ -971,6 +971,11 @@ public class
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "layoutPageTemplateStructureRelElementVariationAudienceEntryRelId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_LAYOUTPAGETEMPLATESTRUCTURERELELEMENTVARIATIONAUDIENCEENTRYREL;
 	}
@@ -1282,4 +1287,4 @@ public class
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-62239459
+// LIFERAY-SERVICE-BUILDER-HASH:1356081103

@@ -81,4 +81,4 @@ public interface ColumnNameEntryModel extends BaseModel<ColumnNameEntry> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-538141447
+// LIFERAY-SERVICE-BUILDER-HASH:13325827

@@ -505,6 +505,11 @@ public class ExpandoRowPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "rowId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_EXPANDOROW;
 	}
@@ -674,4 +679,4 @@ public class ExpandoRowPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:710120997
+// LIFERAY-SERVICE-BUILDER-HASH:-1493847836

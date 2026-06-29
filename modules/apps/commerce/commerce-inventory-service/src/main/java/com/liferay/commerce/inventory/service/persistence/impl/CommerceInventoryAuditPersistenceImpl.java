@@ -527,6 +527,11 @@ public class CommerceInventoryAuditPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceInventoryAuditId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEINVENTORYAUDIT;
 	}
@@ -674,4 +679,4 @@ public class CommerceInventoryAuditPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-799466344
+// LIFERAY-SERVICE-BUILDER-HASH:93549677

@@ -205,6 +205,11 @@ public class ColumnNameEntryPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "columnNameEntryId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COLUMNNAMEENTRY;
 	}
@@ -245,4 +250,4 @@ public class ColumnNameEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:37391615
+// LIFERAY-SERVICE-BUILDER-HASH:1611292713

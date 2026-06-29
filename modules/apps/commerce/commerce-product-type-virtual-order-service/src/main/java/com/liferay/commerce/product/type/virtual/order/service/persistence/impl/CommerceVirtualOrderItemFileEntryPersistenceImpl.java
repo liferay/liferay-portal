@@ -770,6 +770,11 @@ public class CommerceVirtualOrderItemFileEntryPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceVirtualOrderItemFileEntryId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEVIRTUALORDERITEMFILEENTRY;
 	}
@@ -1001,4 +1006,4 @@ public class CommerceVirtualOrderItemFileEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1200172273
+// LIFERAY-SERVICE-BUILDER-HASH:340440601

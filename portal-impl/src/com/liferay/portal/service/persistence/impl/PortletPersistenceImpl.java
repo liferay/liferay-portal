@@ -384,6 +384,11 @@ public class PortletPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "id";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_PORTLET;
 	}
@@ -474,4 +479,4 @@ public class PortletPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1950786388
+// LIFERAY-SERVICE-BUILDER-HASH:929096769

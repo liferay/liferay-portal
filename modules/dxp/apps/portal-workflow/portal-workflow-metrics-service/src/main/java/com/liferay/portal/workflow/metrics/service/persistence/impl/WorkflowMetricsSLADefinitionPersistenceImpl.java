@@ -1236,6 +1236,11 @@ public class WorkflowMetricsSLADefinitionPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "workflowMetricsSLADefinitionId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_WORKFLOWMETRICSSLADEFINITION;
 	}
@@ -1651,4 +1656,4 @@ public class WorkflowMetricsSLADefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:249516791
+// LIFERAY-SERVICE-BUILDER-HASH:1245456515

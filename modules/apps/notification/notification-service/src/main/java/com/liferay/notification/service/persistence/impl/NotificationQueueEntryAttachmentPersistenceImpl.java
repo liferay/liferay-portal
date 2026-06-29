@@ -370,6 +370,11 @@ public class NotificationQueueEntryAttachmentPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "notificationQueueEntryAttachmentId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_NOTIFICATIONQUEUEENTRYATTACHMENT;
 	}
@@ -486,4 +491,4 @@ public class NotificationQueueEntryAttachmentPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1677669799
+// LIFERAY-SERVICE-BUILDER-HASH:-682626341

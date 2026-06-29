@@ -202,6 +202,11 @@ public class TestEntityPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "id";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_TESTENTITY;
 	}
@@ -242,4 +247,4 @@ public class TestEntityPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1119102106
+// LIFERAY-SERVICE-BUILDER-HASH:-399365217

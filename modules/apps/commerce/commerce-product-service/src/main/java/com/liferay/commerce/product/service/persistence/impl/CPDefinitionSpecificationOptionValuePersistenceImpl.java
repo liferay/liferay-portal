@@ -1483,6 +1483,11 @@ public class CPDefinitionSpecificationOptionValuePersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "CPDefinitionSpecificationOptionValueId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_CPDEFINITIONSPECIFICATIONOPTIONVALUE;
 	}
@@ -1985,4 +1990,4 @@ public class CPDefinitionSpecificationOptionValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-75144451
+// LIFERAY-SERVICE-BUILDER-HASH:722764587

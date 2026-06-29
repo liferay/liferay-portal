@@ -638,6 +638,11 @@ public class CommerceInventoryBookedQuantityPersistenceImpl
 	}
 
 	@Override
+	protected String getPKFieldName() {
+		return "commerceInventoryBookedQuantityId";
+	}
+
+	@Override
 	protected String getSelectSQL() {
 		return _SQL_SELECT_COMMERCEINVENTORYBOOKEDQUANTITY;
 	}
@@ -817,4 +822,4 @@ public class CommerceInventoryBookedQuantityPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-895132977
+// LIFERAY-SERVICE-BUILDER-HASH:-1171608330
