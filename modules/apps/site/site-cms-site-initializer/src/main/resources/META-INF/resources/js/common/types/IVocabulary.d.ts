@@ -19,6 +19,7 @@ export interface IVocabulary {
 		[key: string]: string;
 	};
 	numberOfCategories?: number;
+	projects: AssetLibraryType[];
 	siteId?: number;
 	system?: boolean;
 	visibilityType: 'PUBLIC' | 'INTERNAL';
