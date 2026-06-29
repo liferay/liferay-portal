@@ -6,42 +6,32 @@
 import {getBulkActionTaskFailureMessage} from '../../../../../src/main/resources/META-INF/resources/js/main_view/bulk_actions_monitor/util/notifications';
 
 describe('getBulkActionTaskFailureMessage', () => {
-	it('returns the structure message for a move blocked by structure scope', () => {
-		expect(
-			getBulkActionTaskFailureMessage(
-				'MoveObjectBulkSelectionAction',
-				'structureNotInDestinationSpace'
-			)
-		).toBe(
-			'some-items-could-not-be-moved.-please-ensure-their-structures-exist-in-the-destination-space'
-		);
-	});
-
 	it('returns the structure message for a copy blocked by structure scope', () => {
 		expect(
 			getBulkActionTaskFailureMessage(
 				'CopyObjectBulkSelectionAction',
-				'structureNotInDestinationSpace'
+				JSON.stringify([
+					{
+						id: 'structureNotInDestinationSpace',
+						type: 'simpleError',
+					},
+				])
 			)
 		).toBe(
 			'some-items-could-not-be-copied.-please-ensure-their-structures-exist-in-the-destination-space'
 		);
 	});
 
-	it('returns null for an unmapped failure on a mapped action', () => {
-		expect(
-			getBulkActionTaskFailureMessage(
-				'MoveObjectBulkSelectionAction',
-				'someOtherFailure'
-			)
-		).toBeNull();
-	});
-
 	it('returns null for an unmapped action', () => {
 		expect(
 			getBulkActionTaskFailureMessage(
 				'DeleteObjectBulkSelectionAction',
-				'structureNotInDestinationSpace'
+				JSON.stringify([
+					{
+						id: 'structureNotInDestinationSpace',
+						type: 'simpleError',
+					},
+				])
 			)
 		).toBeNull();
 	});
@@ -49,6 +39,48 @@ describe('getBulkActionTaskFailureMessage', () => {
 	it('returns null when there is no task result', () => {
 		expect(
 			getBulkActionTaskFailureMessage('MoveObjectBulkSelectionAction', '')
+		).toBeNull();
+	});
+
+	it('reads the error id from the task result JSON', () => {
+		expect(
+			getBulkActionTaskFailureMessage(
+				'MoveObjectBulkSelectionAction',
+				JSON.stringify([
+					{
+						id: 'structureNotInDestinationSpace',
+						type: 'simpleError',
+					},
+				])
+			)
+		).toBe(
+			'some-items-could-not-be-moved.-please-ensure-their-structures-exist-in-the-destination-space'
+		);
+	});
+
+	it('returns the first mapped error when several failures are listed', () => {
+		expect(
+			getBulkActionTaskFailureMessage(
+				'MoveObjectBulkSelectionAction',
+				JSON.stringify([
+					{id: 'someOtherFailure', type: 'simpleError'},
+					{
+						id: 'structureNotInDestinationSpace',
+						type: 'simpleError',
+					},
+				])
+			)
+		).toBe(
+			'some-items-could-not-be-moved.-please-ensure-their-structures-exist-in-the-destination-space'
+		);
+	});
+
+	it('returns null when no listed error is mapped', () => {
+		expect(
+			getBulkActionTaskFailureMessage(
+				'MoveObjectBulkSelectionAction',
+				JSON.stringify([{id: 'someOtherFailure', type: 'simpleError'}])
+			)
 		).toBeNull();
 	});
 });

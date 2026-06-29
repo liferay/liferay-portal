@@ -29,6 +29,9 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -104,8 +107,14 @@ public class MoveBulkSelectionActionTest {
 			1, GetterUtil.getInteger(values.get("numberOfFailedItems")));
 		Assert.assertEquals(
 			0, GetterUtil.getInteger(values.get("numberOfSuccessfulItems")));
+
+		JSONObject taskResultJSONObject = _getSingleTaskResultJSONObject(
+			values);
+
 		Assert.assertEquals(
-			"IllegalArgumentException", values.get("taskResult"));
+			"IllegalArgumentException", taskResultJSONObject.getString("id"));
+		Assert.assertEquals(
+			"simpleError", taskResultJSONObject.getString("type"));
 	}
 
 	@Test
@@ -158,8 +167,15 @@ public class MoveBulkSelectionActionTest {
 
 		Assert.assertEquals(
 			1, GetterUtil.getInteger(values.get("numberOfFailedItems")));
+
+		JSONObject taskResultJSONObject = _getSingleTaskResultJSONObject(
+			values);
+
 		Assert.assertEquals(
-			"structureNotInDestinationSpace", values.get("taskResult"));
+			"structureNotInDestinationSpace",
+			taskResultJSONObject.getString("id"));
+		Assert.assertEquals(
+			"simpleError", taskResultJSONObject.getString("type"));
 
 		sourceObjectEntryFolder =
 			_objectEntryFolderLocalService.getObjectEntryFolder(
@@ -211,6 +227,19 @@ public class MoveBulkSelectionActionTest {
 		return ObjectEntryFolderTestUtil.addObjectEntryFolder(
 			groupId, TestPropsValues.getUserId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
+	}
+
+	private JSONObject _getSingleTaskResultJSONObject(
+			Map<String, Serializable> values)
+		throws Exception {
+
+		JSONArray taskResultJSONArray = JSONFactoryUtil.createJSONArray(
+			(String)values.get("taskResult"));
+
+		Assert.assertEquals(
+			taskResultJSONArray.toString(), 1, taskResultJSONArray.length());
+
+		return taskResultJSONArray.getJSONObject(0);
 	}
 
 	private ObjectDefinition _publishDepotObjectDefinition() throws Exception {

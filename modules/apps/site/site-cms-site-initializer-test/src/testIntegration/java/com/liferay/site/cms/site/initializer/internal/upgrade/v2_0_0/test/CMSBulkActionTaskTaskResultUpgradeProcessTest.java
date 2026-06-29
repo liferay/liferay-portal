@@ -73,10 +73,10 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 
 		Assert.assertNotNull(objectField);
 		Assert.assertEquals(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT,
 			objectField.getBusinessType());
 		Assert.assertEquals(
-			ObjectFieldConstants.DB_TYPE_STRING, objectField.getDBType());
+			ObjectFieldConstants.DB_TYPE_CLOB, objectField.getDBType());
 		Assert.assertTrue(objectField.isSystem());
 	}
 
