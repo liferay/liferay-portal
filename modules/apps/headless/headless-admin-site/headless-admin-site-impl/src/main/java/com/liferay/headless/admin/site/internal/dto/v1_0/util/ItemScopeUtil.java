@@ -21,7 +21,8 @@ public class ItemScopeUtil {
 		long companyId, Scope scope, long scopeGroupId) {
 
 		return ScopeUtil.getItemGroupId(
-			companyId, _getScopeExternalReferenceCode(scope), scopeGroupId);
+			companyId, _getScopeExternalReferenceCode(scope, scopeGroupId),
+			scopeGroupId);
 	}
 
 	public static Scope getItemScope(long itemScopeGroupId, long scopeGroupId)
@@ -62,12 +63,25 @@ public class ItemScopeUtil {
 		throws PortalException {
 
 		return ScopeUtil.getItemScopeExternalReferenceCode(
-			_getScopeExternalReferenceCode(itemScope), scopeGroupId);
+			_getScopeExternalReferenceCode(itemScope, scopeGroupId),
+			scopeGroupId);
 	}
 
-	private static String _getScopeExternalReferenceCode(Scope scope) {
+	private static String _getScopeExternalReferenceCode(
+		Scope scope, long scopeGroupId) {
+
 		if (scope == null) {
 			return null;
+		}
+
+		if (Validator.isNull(scope.getLiveExternalReferenceCode())) {
+			return scope.getExternalReferenceCode();
+		}
+
+		Group group = GroupLocalServiceUtil.fetchGroup(scopeGroupId);
+
+		if ((group != null) && !group.isStagingGroup()) {
+			return scope.getLiveExternalReferenceCode();
 		}
 
 		return scope.getExternalReferenceCode();
