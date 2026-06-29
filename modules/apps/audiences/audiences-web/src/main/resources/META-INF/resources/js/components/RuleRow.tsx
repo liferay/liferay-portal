@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayInput, ClaySelectWithOption} from '@clayui/form';
+import {Option, Picker} from '@clayui/core';
+import {ClayInput} from '@clayui/form';
 import React from 'react';
 
 import {getOperatorLabel} from '../constants/operators';
@@ -28,33 +29,39 @@ export default function RuleRow({audiencesCriteria, onChange, rule}: IProps) {
 				{label}
 			</span>
 
-			<ClaySelectWithOption
-				aria-label={Liferay.Language.get('operator')}
-				className="bg-white font-weight-semi-bold form-control-sm mr-3 text-3 text-center w-auto"
-				onChange={(event) =>
-					onChange({...rule, operator: event.target.value})
-				}
-				options={operators.map((operator) => ({
-					label: getOperatorLabel(operator, type),
-					value: operator,
-				}))}
-				value={rule.operator}
-			/>
+			<div className="mr-3">
+				<Picker
+					aria-label={Liferay.Language.get('operator')}
+					className="form-control-sm w-auto"
+					items={operators.map((operator) => ({
+						label: getOperatorLabel(operator, type),
+						value: operator,
+					}))}
+					onSelectionChange={(key) =>
+						onChange({...rule, operator: key as string})
+					}
+					selectedKey={rule.operator}
+				>
+					{(item) => <Option key={item.value}>{item.label}</Option>}
+				</Picker>
+			</div>
 
 			{options.length ? (
-				<ClaySelectWithOption
+				<Picker
 					aria-label={Liferay.Language.get('value')}
-					className="text-3 w-auto"
-					onChange={(event) =>
-						onChange({...rule, value: event.target.value})
+					className="form-control-sm w-auto"
+					items={options}
+					onSelectionChange={(key) =>
+						onChange({...rule, value: key as string})
 					}
-					options={options}
-					value={rule.value}
-				/>
+					selectedKey={rule.value}
+				>
+					{(item) => <Option key={item.value}>{item.label}</Option>}
+				</Picker>
 			) : (
 				<ClayInput
 					aria-label={Liferay.Language.get('value')}
-					className="text-3"
+					className="form-control-sm text-3"
 					onChange={(event) =>
 						onChange({...rule, value: event.target.value})
 					}

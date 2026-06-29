@@ -4,7 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
-import {ClaySelectWithOption} from '@clayui/form';
+import {Option, Picker} from '@clayui/core';
 import {
 	RowBuilder,
 	useScreenReaderAnnounce,
@@ -70,22 +70,30 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 			</div>
 
 			<div className="align-items-center bg-lighter border-top d-flex p-3">
-				<ClaySelectWithOption
-					aria-label={Liferay.Language.get('conjunction')}
-					className="bg-white font-weight-semi-bold form-control-sm mr-3 text-2 text-center text-uppercase w-auto"
-					onChange={(event) => setConjunction(event.target.value)}
-					options={[
-						{
-							label: Liferay.Language.get('and'),
-							value: 'and',
-						},
-						{
-							label: Liferay.Language.get('or'),
-							value: 'or',
-						},
-					]}
-					value={conjunction}
-				/>
+				<div className="mr-3">
+					<Picker
+						aria-label={Liferay.Language.get('conjunction')}
+						className="form-control-sm w-auto"
+						items={[
+							{
+								label: Liferay.Language.get('and'),
+								value: 'and',
+							},
+							{
+								label: Liferay.Language.get('or'),
+								value: 'or',
+							},
+						]}
+						onSelectionChange={(key) =>
+							setConjunction(key as string)
+						}
+						selectedKey={conjunction}
+					>
+						{(item) => (
+							<Option key={item.value}>{item.label}</Option>
+						)}
+					</Picker>
+				</div>
 
 				<span className="text-2 text-secondary">
 					{conjunction === 'or'
