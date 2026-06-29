@@ -162,7 +162,7 @@ $cadmin-card-aspect-ratio-item-bottom-left: map-deep-merge(
 $card: () !default;
 $card: map-deep-merge(
 	(
-		background-color: $cadmin-card-bg,
+		background-color: $cadmin-light-l1,
 		border-color: $cadmin-card-border-color,
 		border-radius: clay-enable-rounded($cadmin-card-border-radius),
 		border-style: $cadmin-card-border-style,
@@ -206,7 +206,20 @@ $card: map-deep-merge(
 		),
 
 		hover: (
+			border-color: $cadmin-primary-l1,
 			box-shadow: clay-enable-shadows($cadmin-card-hover-box-shadow),
+			outline-color: $cadmin-primary-l1,
+		),
+
+		active: (
+			border-color: $cadmin-primary,
+			outline-color: $cadmin-primary,
+		),
+
+		disabled: (
+			cursor: $cadmin-disabled-cursor,
+			opacity: $cadmin-component-disabled-opacity,
+			pointer-events: none,
 		),
 	),
 	$card
@@ -774,6 +787,11 @@ $cadmin-user-card: map-deep-merge(
 	),
 	$cadmin-user-card
 );
+
+// Card Page Layout Views
+
+$cadmin-card-page-dense-min-column-width: 190px !default;
+$cadmin-card-page-horizontal-min-column-width: 288px !default;
 
 $cadmin-card-page: () !default;
 $cadmin-card-page: map-deep-merge(
