@@ -1,0 +1,13 @@
+{
+	"deletionType": "cascade",
+	"externalReferenceCode": "L_SEO_STUDIO_SCAN_TO_L_SEO_STUDIO_PAGESPEED_RESULTS",
+	"label": {
+		"en_US": "SEO Studio Scan to SEO Studio PageSpeed Results"
+	},
+	"name": "seoStudioScanToSEOStudioPageSpeedResults",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:SEOStudioScan$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:SEOStudioPageSpeedResult$]",
+	"objectDefinitionName2": "SEOStudioPageSpeedResult",
+	"system": true,
+	"type": "oneToMany"
+}

@@ -8,6 +8,7 @@ liferay-seostudio-etc-pagespeed-oahs:
         -   Liferay.Headless.Portal.Instances.read
         -   c_seostudiodomain.read
         -   c_seostudioinstance.read
+        -   c_seostudiopagespeedresult.write
         -   c_seostudioscan.write
     type: oAuthApplicationHeadlessServer
 liferay-seostudio-etc-pagespeed-oaua:
