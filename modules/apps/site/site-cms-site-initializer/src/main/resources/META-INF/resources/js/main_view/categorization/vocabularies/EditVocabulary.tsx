@@ -259,11 +259,11 @@ export default function EditVocabulary({
 	};
 
 	const shouldDisableSaveBtn =
-		!vocabulary.name.trim().length ||
+		!!assetTypeInputError ||
 		!!externalReferenceCodeInputError ||
 		!!projectInputError ||
 		!!spaceInputError ||
-		!!assetTypeInputError;
+		!vocabulary.name.trim().length;
 
 	return (
 		<>
