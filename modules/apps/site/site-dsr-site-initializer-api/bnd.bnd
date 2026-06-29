@@ -3,4 +3,5 @@ Bundle-SymbolicName: com.liferay.site.dsr.site.initializer.api
 Bundle-Version: 3.0.0
 Export-Package:\
 	com.liferay.site.dsr.site.initializer.constants,\
-	com.liferay.site.dsr.site.initializer.thread.local
+	com.liferay.site.dsr.site.initializer.thread.local,\
+	com.liferay.site.dsr.site.initializer.util
