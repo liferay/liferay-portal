@@ -10,6 +10,7 @@ import com.liferay.fragment.exception.FragmentCompositionNameException;
 import com.liferay.layout.content.page.editor.web.internal.exception.FormContainerParentItemRequiredException;
 import com.liferay.layout.content.page.editor.web.internal.exception.NoninstanceablePortletException;
 import com.liferay.layout.manager.LayoutLockManager;
+import com.liferay.portal.kernel.change.tracking.CTRequiredModelException;
 import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.PortletIdException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -97,7 +98,16 @@ public abstract class BaseContentPageEditorTransactionalMVCActionCommand
 
 		String errorMessage = "an-unexpected-error-occurred";
 
-		if (exception instanceof FormContainerParentItemRequiredException) {
+		if ((exception instanceof CTRequiredModelException) ||
+			(exception.getCause() instanceof CTRequiredModelException)) {
+
+			errorMessage =
+				"item-cannot-be-deleted-because-it-is-being-modified-in-one-" +
+					"or-more-publications";
+		}
+		else if (exception instanceof
+					FormContainerParentItemRequiredException) {
+
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
