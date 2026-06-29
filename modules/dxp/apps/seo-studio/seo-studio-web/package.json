@@ -13,7 +13,8 @@
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
-		"react-dom": "18.2.0"
+		"react-dom": "18.2.0",
+		"recharts": "^2.8.0"
 	},
 	"jest": {
 		"setupFiles": [
