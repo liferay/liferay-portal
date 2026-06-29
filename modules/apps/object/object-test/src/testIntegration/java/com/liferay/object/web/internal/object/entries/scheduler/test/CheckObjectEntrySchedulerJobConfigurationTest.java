@@ -147,15 +147,8 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 
 		Assert.assertTrue(objectEntry1.isApproved());
 		Assert.assertTrue(objectEntry2.isScheduled());
-	}
 
-	@Test
-	public void testCheckObjectEntryDisplayDateAfterMissedInterval()
-		throws Exception {
-
-		Date date = new Date();
-
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			0, _objectDefinition.getObjectDefinitionId(),
 			HashMapBuilder.<String, Serializable>put(
 				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
@@ -164,17 +157,17 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 				new Date(date.getTime() + TimeUnit.DAY.toMillis(1))
 			).build());
 
-		Assert.assertTrue(objectEntry.isScheduled());
+		Assert.assertTrue(objectEntry3.isScheduled());
 
 		_updateDisplayDate(
-			new Date(date.getTime() - TimeUnit.DAY.toMillis(1)), objectEntry);
+			new Date(date.getTime() - TimeUnit.DAY.toMillis(1)), objectEntry3);
 
 		_jobExecutorUnsafeRunnable.run();
 
-		objectEntry = _objectEntryLocalService.getObjectEntry(
-			objectEntry.getObjectEntryId());
+		objectEntry3 = _objectEntryLocalService.getObjectEntry(
+			objectEntry3.getObjectEntryId());
 
-		Assert.assertTrue(objectEntry.isApproved());
+		Assert.assertTrue(objectEntry3.isApproved());
 	}
 
 	@Test
@@ -208,7 +201,8 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 			).build());
 
 		_updateExpirationDate(
-			new Date(date.getTime() + TimeUnit.DAY.toMillis(1)), objectEntry2);
+			new Date(date.getTime() + TimeUnit.MINUTE.toMillis(5)),
+			objectEntry2);
 
 		_jobExecutorUnsafeRunnable.run();
 
@@ -250,6 +244,27 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 
 		Assert.assertFalse(objectEntry3.isExpired());
 		Assert.assertTrue(objectEntry3.isInTrash());
+
+		ObjectEntry objectEntry4 = ObjectEntryTestUtil.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+			).put(
+				"expirationDate",
+				new Date(date.getTime() + TimeUnit.DAY.toMillis(1))
+			).build());
+
+		Assert.assertTrue(objectEntry4.isApproved());
+
+		_updateExpirationDate(
+			new Date(date.getTime() - TimeUnit.DAY.toMillis(1)), objectEntry4);
+
+		_jobExecutorUnsafeRunnable.run();
+
+		objectEntry4 = _objectEntryLocalService.getObjectEntry(
+			objectEntry4.getObjectEntryId());
+
+		Assert.assertTrue(objectEntry4.isExpired());
 	}
 
 	@Test
