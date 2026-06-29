@@ -9,7 +9,7 @@ import React, {useContext, useEffect, useState} from 'react';
 
 import ApiHelper from '../../../common/services/ApiHelper';
 import getLocalizedValue from '../../../common/utils/getLocalizedValue';
-import {ViewDashboardContext} from '../ViewDashboardContext';
+import {DashboardsContext} from '../DashboardsContext';
 import {Item} from './FilterDropdown';
 import {IAllFiltersDropdown, initialFilters} from './InventoryAnalysisCard';
 import PickerTrigger from './PickerTrigger';
@@ -19,7 +19,7 @@ const AllStructureTypesDropdown: React.FC<IAllFiltersDropdown> = ({
 	item,
 	onSelectItem,
 }) => {
-	const {constants} = useContext(ViewDashboardContext);
+	const {constants} = useContext(DashboardsContext);
 
 	const [structures, setStructures] = useState<Item[]>([
 		initialFilters.structure,

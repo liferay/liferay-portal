@@ -13,7 +13,7 @@ ViewDashboardDisplayContext viewDashboardDisplayContext = (ViewDashboardDisplayC
 
 <div class="cms-section">
 	<react:component
-		module="{ViewDashboard} from site-cms-site-initializer"
+		module="{Dashboards} from site-cms-site-initializer"
 		props="<%= viewDashboardDisplayContext.getReactData() %>"
 	/>
 </div>

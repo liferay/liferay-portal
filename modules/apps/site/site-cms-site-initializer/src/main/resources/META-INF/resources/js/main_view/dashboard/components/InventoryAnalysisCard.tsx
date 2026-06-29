@@ -10,7 +10,7 @@ import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
 import React, {useContext, useEffect, useState} from 'react';
 
 import ApiHelper from '../../../common/services/ApiHelper';
-import {ViewDashboardContext} from '../ViewDashboardContext';
+import {DashboardsContext} from '../DashboardsContext';
 import usePagination from '../utils/usePagination';
 import {AllCategoriesDropdown} from './AllCategoriesDropdown';
 import {AllStructureTypesDropdown} from './AllStructureTypesDropdown';
@@ -151,7 +151,7 @@ const dropdownItems: DropdownItem[] = [
 export function InventoryAnalysisCard() {
 	const {
 		filters: {language, space},
-	} = useContext(ViewDashboardContext);
+	} = useContext(DashboardsContext);
 
 	const [filters, setFilters] = useState<{
 		category: Item;

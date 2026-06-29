@@ -8,7 +8,7 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
 import Breadcrumb from '../../common/components/Breadcrumb';
-import {ViewDashboardContextProvider} from './ViewDashboardContext';
+import {DashboardsContextProvider} from './DashboardsContext';
 import {ContentCard} from './components/ContentCard';
 import {ExpiredAssetsCard} from './components/ExpiredAssetsCard';
 import {FilesCard} from './components/FilesCard';
@@ -23,7 +23,7 @@ import {ILearnResourceContext} from 'frontend-js-components-web';
 
 import EnterpriseOnlyPlaceholder from '../../common/components/EnterpriseOnlyPlaceholder';
 
-interface IViewDashboard {
+interface IDashboards {
 	constants: {
 		[key: string]: string;
 	};
@@ -31,7 +31,7 @@ interface IViewDashboard {
 	learnResources: ILearnResourceContext;
 }
 
-const ViewDashboard: React.FC<IViewDashboard> = ({
+const Dashboards: React.FC<IDashboards> = ({
 	constants,
 	freeTier,
 	learnResources,
@@ -45,7 +45,7 @@ const ViewDashboard: React.FC<IViewDashboard> = ({
 			/>
 
 			<ClayTooltipProvider>
-				<ViewDashboardContextProvider value={{constants}}>
+				<DashboardsContextProvider value={{constants}}>
 					<ClayLayout.Container className="px-4" fluid>
 						{freeTier ? (
 							<EnterpriseOnlyPlaceholder
@@ -134,10 +134,10 @@ const ViewDashboard: React.FC<IViewDashboard> = ({
 							</>
 						)}
 					</ClayLayout.Container>
-				</ViewDashboardContextProvider>
+				</DashboardsContextProvider>
 			</ClayTooltipProvider>
 		</>
 	);
 };
 
-export default ViewDashboard;
+export default Dashboards;

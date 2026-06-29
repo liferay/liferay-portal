@@ -15,7 +15,7 @@ import React, {useContext, useEffect, useState} from 'react';
 
 import ApiHelper from '../../../common/services/ApiHelper';
 import {openCMSModal} from '../../../common/utils/openCMSModal';
-import {ViewDashboardContext} from '../ViewDashboardContext';
+import {DashboardsContext} from '../DashboardsContext';
 import {
 	AssetType,
 
@@ -156,7 +156,7 @@ const EmptyState = () => {
 		changeLanguage,
 		changeSpace,
 		filters: {language, space},
-	} = useContext(ViewDashboardContext);
+	} = useContext(DashboardsContext);
 
 	const hasFilters: boolean =
 		(language && language.value !== 'all') ||
@@ -209,7 +209,7 @@ const EmptyState = () => {
 function ExpiredAssetsCard() {
 	const {
 		filters: {language, space},
-	} = useContext(ViewDashboardContext);
+	} = useContext(DashboardsContext);
 
 	const [expiredAssetsList, setExpiredAssetsList] =
 		useState<ExpiredAssetsApiResponse>();

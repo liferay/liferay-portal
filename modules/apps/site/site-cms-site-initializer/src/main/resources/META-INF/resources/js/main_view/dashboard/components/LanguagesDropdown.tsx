@@ -7,7 +7,7 @@ import {Option, Picker} from '@clayui/core';
 import React, {useContext, useEffect, useState} from 'react';
 
 import SpaceService from '../../../common/services/SpaceService';
-import {ViewDashboardContext, initialLanguage} from '../ViewDashboardContext';
+import {DashboardsContext, initialLanguage} from '../DashboardsContext';
 import PickerTrigger from './PickerTrigger';
 
 type AvailableLocales = Exclude<
@@ -51,7 +51,7 @@ const LanguagesDropdown: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 	const {
 		changeLanguage,
 		filters: {language, space},
-	} = useContext(ViewDashboardContext);
+	} = useContext(DashboardsContext);
 
 	const [languages, setLanguages] = useState(initialLanguages);
 

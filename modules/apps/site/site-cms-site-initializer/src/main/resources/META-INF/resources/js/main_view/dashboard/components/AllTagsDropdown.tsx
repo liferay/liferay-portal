@@ -7,7 +7,7 @@ import {Option, Picker} from '@clayui/core';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import TagService from '../../../common/services/TagService';
-import {ViewDashboardContext} from '../ViewDashboardContext';
+import {DashboardsContext} from '../DashboardsContext';
 import {Item} from './FilterDropdown';
 import {
 	IAllFiltersDropdown,
@@ -26,7 +26,7 @@ const AllTagsDropdown: React.FC<IAllFiltersDropdown> = ({
 	const {
 		constants: {cmsGroupId},
 		filters: {space},
-	} = useContext(ViewDashboardContext);
+	} = useContext(DashboardsContext);
 
 	const [keywords, setKeywords] = useState<Keyword[]>([]);
 

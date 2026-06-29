@@ -52,9 +52,9 @@ const initialState: State = {
 	},
 };
 
-export const ViewDashboardContext = createContext(initialState);
+export const DashboardsContext = createContext(initialState);
 
-ViewDashboardContext.displayName = 'ViewDashboardContext';
+DashboardsContext.displayName = 'DashboardsContext';
 
 const reducer = (state: State, action: Action): State => {
 	switch (action.type) {
@@ -84,12 +84,11 @@ const reducer = (state: State, action: Action): State => {
 	}
 };
 
-interface IViewDashboardContextProvider
-	extends React.HTMLAttributes<HTMLElement> {
+interface IDashboardsContextProvider extends React.HTMLAttributes<HTMLElement> {
 	value: Partial<State>;
 }
 
-const ViewDashboardContextProvider: React.FC<IViewDashboardContextProvider> = ({
+const DashboardsContextProvider: React.FC<IDashboardsContextProvider> = ({
 	children,
 	value,
 }) => {
@@ -110,7 +109,7 @@ const ViewDashboardContextProvider: React.FC<IViewDashboardContextProvider> = ({
 	}, []);
 
 	return (
-		<ViewDashboardContext.Provider
+		<DashboardsContext.Provider
 			value={{
 				...state,
 				...value,
@@ -119,8 +118,8 @@ const ViewDashboardContextProvider: React.FC<IViewDashboardContextProvider> = ({
 			}}
 		>
 			{children}
-		</ViewDashboardContext.Provider>
+		</DashboardsContext.Provider>
 	);
 };
 
-export {ViewDashboardContextProvider};
+export {DashboardsContextProvider};
