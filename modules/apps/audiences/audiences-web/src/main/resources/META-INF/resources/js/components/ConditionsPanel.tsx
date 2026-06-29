@@ -103,6 +103,7 @@ export default function ConditionsPanel({audiencesCriteriaTypes}: IProps) {
 
 			<div className="py-2">
 				<RowBuilder<Rule>
+					allowEmpty
 					createItem={() => createRule(audiencesCriterias[0])}
 					hideAddButton
 					itemClassName="audience-builder-rule pr-4 py-3"

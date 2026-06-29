@@ -64,6 +64,12 @@ export interface RowBuilderLabels<T> {
 interface RowBuilderProps<T extends ItemWithId> {
 
 	/**
+	 * Optional flag that lets the list become empty. By default, deleting
+	 * the last item replaces it with a new empty one.
+	 */
+	allowEmpty?: boolean;
+
+	/**
 	 * Optional predicate that controls whether an item can be deleted.
 	 * It is used both to render the delete button and to guard deletion.
 	 * Defaults to `() => true`.
@@ -129,6 +135,7 @@ interface RowBuilderProps<T extends ItemWithId> {
  * roving keyboard focus, and screen reader announcements.
  */
 export function RowBuilder<T extends ItemWithId>({
+	allowEmpty = false,
 	canDelete = () => true,
 	createItem,
 	hideAddButton = false,
@@ -184,7 +191,7 @@ export function RowBuilder<T extends ItemWithId>({
 		}
 
 		if (items.length === 1) {
-			setItems([createItem()]);
+			setItems(allowEmpty ? [] : [createItem()]);
 		}
 		else {
 			const neighbor = items[index - 1] ?? items[index + 1];
