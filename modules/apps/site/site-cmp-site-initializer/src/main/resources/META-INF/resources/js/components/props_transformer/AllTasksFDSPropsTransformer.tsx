@@ -5,6 +5,7 @@
 
 import {
 	DateRenderer,
+	FDS_EVENT,
 	IInternalRenderer,
 	IView,
 } from '@liferay/frontend-data-set-web';
@@ -34,6 +35,8 @@ import StateLabel from '../StateLabel';
 import BulkEditAssigneeModalContent from '../modal/BulkEditAssigneeModalContent';
 import BulkEditDueDateModalContent from '../modal/BulkEditDueDateModalContent';
 import BulkEditStateModalContent from '../modal/BulkEditStateModalContent';
+import BulkEditWorkflowAssigneeModalContent from '../modal/BulkEditWorkflowAssigneeModalContent';
+import BulkEditWorkflowDueDateModalContent from '../modal/BulkEditWorkflowDueDateModalContent';
 import EditAssigneeModalContent from '../modal/EditAssigneeModalContent';
 import ACTIONS from './actions/creationMenuActions';
 import AssigneeRenderer from './cell_renderers/AssigneeRenderer';
@@ -47,6 +50,20 @@ const isWorkflowTask = (
 	itemData: ProjectTaskItemData | WorkflowTaskItemData
 ): itemData is WorkflowTaskItemData =>
 	itemData.entryClassName === _CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN;
+
+type BulkModalProps = {
+	closeModal: () => void;
+	loadData: () => void;
+	selectedData: any;
+};
+
+const WORKFLOW_BULK_ACTION_MODALS: Record<
+	string,
+	React.ComponentType<BulkModalProps>
+> = {
+	'assign-to': BulkEditWorkflowAssigneeModalContent,
+	'update-due-date': BulkEditWorkflowDueDateModalContent,
+};
 
 export default function AllTasksFDSPropsTransformer({
 	additionalProps,
@@ -86,6 +103,18 @@ export default function AllTasksFDSPropsTransformer({
 				allItemsSelectedActive: boolean;
 				selectedItems: any[];
 			}) => {
+				const actionId = action?.data?.id;
+
+				if (actionId === 'update-state' || actionId === 'delete') {
+					if (allItemsSelectedActive) {
+						return true;
+					}
+
+					if (selectedItems?.some(isWorkflowTask)) {
+						return true;
+					}
+				}
+
 				if (allItemsSelectedActive || !selectedItems?.length) {
 					return false;
 				}
@@ -267,6 +296,42 @@ export default function AllTasksFDSPropsTransformer({
 			action: any;
 			selectedData: any;
 		}) => {
+			const selectedItems = selectedData?.items ?? [];
+
+			if (
+				!selectedData?.selectAll &&
+				selectedItems.length &&
+				selectedItems.every(isWorkflowTask)
+			) {
+				const ContentComponent =
+					WORKFLOW_BULK_ACTION_MODALS[action?.data?.id];
+
+				if (!ContentComponent) {
+					return;
+				}
+
+				const loadData = () =>
+					Liferay.fire(FDS_EVENT.UPDATE_DISPLAY, {id});
+
+				await openCMPModal({
+					center: true,
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) => (
+						<ContentComponent
+							closeModal={closeModal}
+							loadData={loadData}
+							selectedData={selectedData}
+						/>
+					),
+					size: 'md',
+				});
+
+				return;
+			}
+
 			if (action?.data?.id === 'assign-to') {
 				await openCMPModal({
 					center: true,
