@@ -1,0 +1,14 @@
+apiDir: ../headless-admin-server-api/src/main/java
+apiPackagePath: com.liferay.headless.admin.server
+application:
+    baseURI: /admin-server
+    className: HeadlessAdminServerApplication
+    name: Liferay.Headless.Admin.Server
+author: Luis Ortiz
+clientDir: ../headless-admin-server-client/src/main/java
+compatibilityVersion: 15
+forcePredictableOperationId: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../headless-admin-server-test/src/testIntegration/java

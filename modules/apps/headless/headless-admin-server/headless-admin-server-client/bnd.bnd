@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Headless Admin Server Client
+Bundle-SymbolicName: com.liferay.headless.admin.server.client
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.headless.admin.server.client.dto.v1_0,\
+	com.liferay.headless.admin.server.client.function

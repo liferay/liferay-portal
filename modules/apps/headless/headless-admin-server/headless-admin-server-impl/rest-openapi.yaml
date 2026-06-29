@@ -1,0 +1,56 @@
+components:
+    schemas:
+        DatabaseSchemaExport:
+            description:
+                Database schema export.
+            properties:
+                exportFilesPath:
+                    description:
+                        Target directory for the generated files.
+                    type: string
+                fileNames:
+                    description:
+                        Generated schema file names.
+                    items:
+                        type: string
+                    type: array
+                reportFileName:
+                    description:
+                        Generated report file name.
+                    type: string
+            required:
+                -   exportFilesPath
+            type: object
+info:
+    description:
+        Server administration headless APIs.
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Liferay Admin Server Headless API
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/database-schema-export":
+        post:
+            description:
+                Exports the database schema definition.
+            operationId: postDatabaseSchemaExport
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DatabaseSchemaExport"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DatabaseSchemaExport"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DatabaseSchemaExport"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DatabaseSchemaExport"
+            tags: ["DatabaseSchemaExport"]
