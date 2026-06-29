@@ -66,6 +66,9 @@ export default function EditVocabulary({
 	] = useState<string>('');
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const {observer, onOpenChange, open} = useModal();
+	const [projectChange, setProjectChange] = useState(false);
+	const [projectInputError, setProjectInputError] = useState('');
+	const [projects, setProjects] = useState<AssetLibraryType[]>([]);
 	const [spaceChange, setSpaceChange] = useState(false);
 	const [spaceInputError, setSpaceInputError] = useState('');
 	const [title, setTitle] = useState<string>('');
@@ -88,6 +91,7 @@ export default function EditVocabulary({
 		name_i18n: {
 			[defaultLanguageId.replace('_', '-')]: '',
 		},
+		projects: [],
 		system: false,
 		visibilityType: 'PUBLIC',
 	});
@@ -108,6 +112,7 @@ export default function EditVocabulary({
 				if (data) {
 					setAssetLibraries(data.assetLibraries);
 					setAssetTypes(data.assetTypes);
+					setProjects(data.projects);
 					setTitle(data.name);
 					setVocabulary(data);
 				}
@@ -135,7 +140,7 @@ export default function EditVocabulary({
 			return false;
 		}
 
-		if (spaceInputError) {
+		if (projectInputError || spaceInputError) {
 			setActiveVerticalNavKey('general');
 
 			return false;
@@ -256,6 +261,7 @@ export default function EditVocabulary({
 	const shouldDisableSaveBtn =
 		!vocabulary.name.trim().length ||
 		!!externalReferenceCodeInputError ||
+		!!projectInputError ||
 		!!spaceInputError ||
 		!!assetTypeInputError;
 
@@ -288,7 +294,11 @@ export default function EditVocabulary({
 						disabled={shouldDisableSaveBtn}
 						displayType="primary"
 						onClick={() => {
-							if (assetTypeChange || spaceChange) {
+							if (
+								assetTypeChange ||
+								projectChange ||
+								spaceChange
+							) {
 								onOpenChange(true);
 							}
 							else {
@@ -358,10 +368,13 @@ export default function EditVocabulary({
 								locales={locales}
 								nameInputError={nameInputError}
 								onChangeVocabulary={setVocabulary}
+								projects={projects}
 								setExternalReferenceCodeInputError={
 									setExternalReferenceCodeInputError
 								}
 								setNameInputError={setNameInputError}
+								setProjectChange={setProjectChange}
+								setProjectInputError={setProjectInputError}
 								setSpaceChange={setSpaceChange}
 								setSpaceInputError={setSpaceInputError}
 								setVocabularyPermissions={
@@ -394,6 +407,7 @@ export default function EditVocabulary({
 				onOpenChange={onOpenChange}
 				onSave={_handleSave}
 				open={open}
+				projectChange={projectChange}
 				spaceChange={spaceChange}
 			/>
 		</>

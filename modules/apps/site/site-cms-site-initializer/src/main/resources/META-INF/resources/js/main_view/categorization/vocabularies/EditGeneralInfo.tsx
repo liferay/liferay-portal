@@ -19,6 +19,7 @@ import React, {useState} from 'react';
 
 import {IPermissionItem} from '../../../common/components/forms/PermissionsTable';
 import {IVocabulary} from '../../../common/types/IVocabulary';
+import CategorizationProjects from '../components/CategorizationProjects';
 import CategorizationSpaces from '../components/CategorizationSpaces';
 import PermissionsFormGroup from '../components/PermissionsFormGroup';
 
@@ -42,8 +43,11 @@ export default function EditGeneralInfo({
 	locales,
 	nameInputError,
 	onChangeVocabulary,
+	projects,
 	setExternalReferenceCodeInputError,
 	setNameInputError,
+	setProjectChange,
+	setProjectInputError,
 	setSpaceChange,
 	setSpaceInputError,
 	setVocabularyPermissions,
@@ -59,8 +63,11 @@ export default function EditGeneralInfo({
 	locales: any[];
 	nameInputError: string;
 	onChangeVocabulary: Function;
+	projects: AssetLibraryType[];
 	setExternalReferenceCodeInputError: (value: string) => void;
 	setNameInputError: Function;
+	setProjectChange: (value: boolean) => void;
+	setProjectInputError: (value: string) => void;
 	setSpaceChange: (value: boolean) => void;
 	setSpaceInputError: (value: string) => void;
 	setVocabularyPermissions: Function;
@@ -122,6 +129,17 @@ export default function EditGeneralInfo({
 				...vocabulary.name_i18n,
 				[getLanguageLabel(languageId)]: newName,
 			},
+		}));
+	};
+
+	const onChangeSelectedProjects = (newSelectedProjects: string[]) => {
+		onChangeVocabulary(() => ({
+			...vocabulary,
+			projects: newSelectedProjects.length
+				? newSelectedProjects.map((projectScopeKey) => ({
+						scopeKey: projectScopeKey,
+					}))
+				: [],
 		}));
 	};
 
@@ -339,7 +357,7 @@ export default function EditGeneralInfo({
 			</ClayPanel>
 
 			<ClayPanel
-				aria-label="space"
+				aria-label="scope"
 				className="mb-4"
 				collapsable={false}
 				displayType="secondary"
@@ -347,7 +365,7 @@ export default function EditGeneralInfo({
 			>
 				<ClayForm.Group className="c-gap-4 d-flex flex-column p-4">
 					<h2 className="mb-0 py-2 text-6 text-dark">
-						{Liferay.Language.get('space')}
+						{Liferay.Language.get('scope')}
 					</h2>
 
 					<CategorizationSpaces
@@ -357,6 +375,15 @@ export default function EditGeneralInfo({
 						setSelectedSpaces={onChangeSelectedSpaces}
 						setSpaceChange={setSpaceChange}
 						setSpaceInputError={setSpaceInputError}
+					/>
+
+					<CategorizationProjects
+						checkboxText="vocabulary"
+						disabled={vocabulary.system}
+						projects={projects}
+						setProjectChange={setProjectChange}
+						setProjectInputError={setProjectInputError}
+						setSelectedProjects={onChangeSelectedProjects}
 					/>
 				</ClayForm.Group>
 			</ClayPanel>

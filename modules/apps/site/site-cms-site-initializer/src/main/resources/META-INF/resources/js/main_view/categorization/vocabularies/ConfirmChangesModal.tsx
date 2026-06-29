@@ -20,6 +20,12 @@ const CONFIRMATION_MESSAGES = {
 		),
 		title: Liferay.Language.get('confirm-changes'),
 	},
+	PROJECTS: {
+		description: Liferay.Language.get(
+			'removing-a-project-will-make-the-vocabulary-unavailable'
+		),
+		title: Liferay.Language.get('confirm-project-change'),
+	},
 	SPACES: {
 		description: Liferay.Language.get(
 			'removing-a-space-will-make-the-vocabulary-unavailable'
@@ -34,6 +40,7 @@ export default function ConfirmChangesModal({
 	onOpenChange,
 	onSave,
 	open,
+	projectChange,
 	spaceChange,
 }: {
 	assetTypeChange: boolean;
@@ -41,17 +48,24 @@ export default function ConfirmChangesModal({
 	onOpenChange: (value: boolean) => void;
 	onSave: Function;
 	open: any;
+	projectChange: boolean;
 	spaceChange: boolean;
 }) {
 	const confirmationMessages = (() => {
-		if (assetTypeChange && spaceChange) {
+		if (
+			(assetTypeChange && (projectChange || spaceChange)) ||
+			(projectChange && spaceChange)
+		) {
 			return CONFIRMATION_MESSAGES.BOTH;
 		}
 		else if (assetTypeChange) {
 			return CONFIRMATION_MESSAGES.ASSET_TYPES;
 		}
-		else {
+		else if (spaceChange) {
 			return CONFIRMATION_MESSAGES.SPACES;
+		}
+		else {
+			return CONFIRMATION_MESSAGES.PROJECTS;
 		}
 	})();
 
