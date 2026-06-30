@@ -91,7 +91,7 @@ public class StyleBookEntryUtil {
 
 	public static List<Map<String, Object>> getStyleBookEntries(
 			FrontendTokenDefinition frontendTokenDefinition,
-			boolean includeTokenValues, Layout layout,
+			boolean includeFrontendTokensValues, Layout layout,
 			ThemeDisplay themeDisplay)
 		throws Exception {
 
@@ -104,7 +104,7 @@ public class StyleBookEntryUtil {
 				layout.getCompanyId(), groupId,
 				frontendTokenDefinition.getThemeId()),
 			styleBookEntry -> _getStyleBookEntryMap(
-				frontendTokenDefinition, includeTokenValues, groupId,
+				frontendTokenDefinition, includeFrontendTokensValues, groupId,
 				scopeGroups, styleBookEntry, themeDisplay));
 	}
 
@@ -195,10 +195,10 @@ public class StyleBookEntryUtil {
 	}
 
 	private static Map<String, Object> _getStyleBookEntryMap(
-			FrontendTokenDefinition frontendTokenDefinition,
-			boolean includeTokenValues, long groupId,
-			Map<Long, Group> scopeGroups, StyleBookEntry styleBookEntry,
-			ThemeDisplay themeDisplay) {
+		FrontendTokenDefinition frontendTokenDefinition,
+		boolean includeFrontendTokensValues, long groupId,
+		Map<Long, Group> scopeGroups, StyleBookEntry styleBookEntry,
+		ThemeDisplay themeDisplay) {
 
 		Group scopeGroup = _getScopeGroup(groupId, scopeGroups, styleBookEntry);
 
@@ -229,7 +229,7 @@ public class StyleBookEntryUtil {
 		).put(
 			"tokenValues",
 			() -> {
-				if (!includeTokenValues) {
+				if (!includeFrontendTokensValues) {
 					return null;
 				}
 
