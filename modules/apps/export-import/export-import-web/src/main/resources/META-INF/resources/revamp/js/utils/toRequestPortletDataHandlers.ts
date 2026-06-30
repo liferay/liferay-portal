@@ -13,6 +13,8 @@ import {
 import {
 	HandlerSelection,
 	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
+	PRIVATE_PAGES_CONTROL_NAME,
+	PUBLIC_PAGES_CONTROL_NAME,
 } from './contentSelection';
 
 export function toRequestPortletDataHandlers(
@@ -121,32 +123,20 @@ function toLayoutSetRequestHandler(
 		return {name};
 	}
 
-	const {layoutIds, privateLayout} = selection as {
+	const {layoutIds, privateLayout = false} = selection as {
 		layoutIds?: number[];
 		privateLayout?: boolean;
 	};
 
-	const requestPortletDataHandlerControls: RequestPortletDataHandlerControl[] =
-		[];
-
-	if (privateLayout !== undefined) {
-		requestPortletDataHandlerControls.push({
-			name: 'privateLayout',
-			values: [String(privateLayout)],
-		});
-	}
-
-	if (layoutIds?.length) {
-		requestPortletDataHandlerControls.push({
-			name: 'layoutIds',
-			values: layoutIds.map(String),
-		});
-	}
+	const requestPortletDataHandlerControl: RequestPortletDataHandlerControl = {
+		name: privateLayout
+			? PRIVATE_PAGES_CONTROL_NAME
+			: PUBLIC_PAGES_CONTROL_NAME,
+		...(layoutIds?.length && {values: layoutIds.map(String)}),
+	};
 
 	return {
 		name,
-		...(requestPortletDataHandlerControls.length && {
-			requestPortletDataHandlerControls,
-		}),
+		requestPortletDataHandlerControls: [requestPortletDataHandlerControl],
 	};
 }

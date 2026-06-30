@@ -50,6 +50,16 @@ export default function PortletDataControl({
 	) {
 		return (
 			<LayoutSetControl
+				additionCount={
+					control.type === 'Boolean'
+						? control.additionCount
+						: undefined
+				}
+				deletionCount={
+					control.type === 'Boolean' && showDeletions
+						? control.deletionCount
+						: undefined
+				}
 				label={control.label}
 				onChange={onChange}
 				pageTreeModalConfiguration={pageTreeModalConfiguration}

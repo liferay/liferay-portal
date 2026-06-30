@@ -23,7 +23,12 @@ import {
 } from '../../services/getExportPreview';
 import {postExportProcess} from '../../services/postExportProcess';
 import {ExportPreview} from '../../types/exportImportPreview';
-import {toProcessRequestFlags} from '../../utils/contentSelection';
+import {
+	getSelectedDeletionCount,
+	getSelectedItemsCount,
+	toProcessRequestFlags,
+	withSelectedLayoutSetCount,
+} from '../../utils/contentSelection';
 import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHandlers';
 import DataSelection from './components/DataSelection';
 import {PageTreeModalConfiguration} from './components/PageTreeModal';
@@ -166,43 +171,64 @@ export function NewExport({
 			}}
 			validateOnMount
 		>
-			{(formik) => (
-				<Form noValidate>
-					<Setup />
+			{(formik) => {
+				const contentSelection = formik.values.contentSelection as
+					| ContentSelection
+					| undefined;
 
-					<DataSelection
-						commentsAndRatingsEnabled={commentsAndRatingsEnabled}
-						deletionCount={preview?.deletionCount}
-						itemsCount={preview?.additionCount}
-						loading={loading}
-						lookAndFeelEnabled={lookAndFeelEnabled}
-						onApplyFilter={handleApplyFilter}
-						pageTreeModalConfiguration={pageTreeModalConfiguration}
-						sections={sections}
-					/>
+				return (
+					<Form noValidate>
+						<Setup />
 
-					<Footer
-						actionButton={
-							<ClayButton
-								disabled={
-									formik.isSubmitting || !formik.isValid
-								}
-								type="submit"
-							>
-								<span className="inline-item inline-item-before">
-									<ClayIcon
-										className="mr-1"
-										symbol="export"
-									/>
-								</span>
+						<DataSelection
+							commentsAndRatingsEnabled={
+								commentsAndRatingsEnabled
+							}
+							deletionCount={getSelectedDeletionCount(
+								preview?.deletionCount,
+								sections,
+								contentSelection
+							)}
+							itemsCount={getSelectedItemsCount(
+								preview?.additionCount,
+								sections,
+								contentSelection
+							)}
+							loading={loading}
+							lookAndFeelEnabled={lookAndFeelEnabled}
+							onApplyFilter={handleApplyFilter}
+							pageTreeModalConfiguration={
+								pageTreeModalConfiguration
+							}
+							sections={withSelectedLayoutSetCount(
+								sections,
+								contentSelection
+							)}
+						/>
 
-								{Liferay.Language.get('export')}
-							</ClayButton>
-						}
-						backURL={backURL}
-					/>
-				</Form>
-			)}
+						<Footer
+							actionButton={
+								<ClayButton
+									disabled={
+										formik.isSubmitting || !formik.isValid
+									}
+									type="submit"
+								>
+									<span className="inline-item inline-item-before">
+										<ClayIcon
+											className="mr-1"
+											symbol="export"
+										/>
+									</span>
+
+									{Liferay.Language.get('export')}
+								</ClayButton>
+							}
+							backURL={backURL}
+						/>
+					</Form>
+				);
+			}}
 		</Formik>
 	);
 }

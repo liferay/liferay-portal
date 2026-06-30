@@ -16,8 +16,11 @@ import {
 	HandlerSelection,
 	isAllLayoutsSelected,
 } from '../../../utils/contentSelection';
+import SectionTags from './SectionTags';
 
 interface Props {
+	additionCount?: number;
+	deletionCount?: number;
 	label: string;
 	onChange: (value: HandlerSelection | undefined) => void;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
@@ -103,6 +106,8 @@ function LayoutVisibilitySelector({
 }
 
 export default function LayoutSetControl({
+	additionCount,
+	deletionCount,
 	label,
 	onChange,
 	pageTreeModalConfiguration,
@@ -120,6 +125,8 @@ export default function LayoutSetControl({
 	) as {layoutIds?: number[]; privateLayout?: boolean};
 
 	const isAll = isAllLayoutsSelected(value);
+
+	const selected = typeof value === 'object';
 
 	const openModal = () => setShowModal(true);
 
@@ -139,12 +146,19 @@ export default function LayoutSetControl({
 
 				<ClayLayout.ContentCol expand>
 					<div className="align-items-center d-flex justify-content-between">
-						<label
-							className="cursor-pointer font-weight-semi-bold mb-0 small"
-							htmlFor={checkboxId}
-						>
-							{label}
-						</label>
+						<div className="align-items-center d-flex">
+							<label
+								className="cursor-pointer font-weight-semi-bold mb-0 small"
+								htmlFor={checkboxId}
+							>
+								{label}
+							</label>
+
+							<SectionTags
+								additionCount={additionCount}
+								deletionCount={deletionCount}
+							/>
+						</div>
 
 						{!privateLayoutsEnabled && (
 							<SelectPagesButton onClick={openModal} />
@@ -153,7 +167,7 @@ export default function LayoutSetControl({
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 
-			{privateLayoutsEnabled && (
+			{privateLayoutsEnabled && selected && (
 				<LayoutVisibilitySelector
 					label={label}
 					onSelectPages={openModal}

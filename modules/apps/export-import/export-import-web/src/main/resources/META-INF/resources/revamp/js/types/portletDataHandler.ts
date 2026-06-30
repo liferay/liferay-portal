@@ -15,7 +15,12 @@ export interface PreviewPortletDataHandlerBoolean {
 }
 
 export interface PreviewPortletDataHandlerChoice {
-	choices: {label: string; name: string}[];
+	choices: {
+		additionCount?: number;
+		deletionCount?: number;
+		label: string;
+		name: string;
+	}[];
 	label: string;
 	name: string;
 	type: 'Choice';
