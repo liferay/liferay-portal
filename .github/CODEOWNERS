@@ -109,6 +109,7 @@ modules/apps/google-places/
 modules/apps/headless/headless-admin-address/    @liferay-commerce
 modules/apps/headless/headless-admin-content/    @liferay-content-management
 modules/apps/headless/headless-admin-list-type/    @liferay-bpm
+modules/apps/headless/headless-admin-server/    @liferay-database-infra
 modules/apps/headless/headless-admin-site/    @liferay-page-management
 modules/apps/headless/headless-admin-taxonomy/    @liferay-content-management
 modules/apps/headless/headless-admin-user/    @liferay-commerce
@@ -234,7 +235,8 @@ modules/apps/portal/portal-dao-orm-custom-sql-impl/    @liferay-core-infra
 modules/apps/portal/portal-dao-orm-custom-sql-test/    @liferay-core-infra
 modules/apps/portal/portal-dao-test    @liferay-database-infra
 modules/apps/portal/portal-db-index-test    @liferay-database-infra
-modules/apps/portal/portal-db-migration-schema-exporter    @liferay-database-infra
+modules/apps/portal/portal-db-migration-schema-exporter-api    @liferay-database-infra
+modules/apps/portal/portal-db-migration-schema-exporter-impl    @liferay-database-infra
 modules/apps/portal/portal-db-migration-schema-exporter-test    @liferay-database-infra
 modules/apps/portal/portal-db-partition    @liferay-database-infra
 modules/apps/portal/portal-db-partition-test    @liferay-database-infra
