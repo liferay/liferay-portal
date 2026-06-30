@@ -7,23 +7,19 @@ import {Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import {useScreenReaderAnnounce} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
-import React, {Fragment, useState} from 'react';
+import React, {Dispatch, Fragment} from 'react';
 import {useDrop} from 'react-dnd';
-import {v4 as uuidv4} from 'uuid';
 
 import {DRAG_TYPES} from '../constants/dragTypes';
-import {
-	AudiencesCriteria,
-	AudiencesCriteriaJSON,
-	AudiencesCriteriaType,
-	Rule,
-} from '../types';
+import {Action} from '../reducer';
+import {AudiencesCriteria, AudiencesCriteriaType, Rule} from '../types';
 import RuleRow from './RuleRow';
 
 interface IProps {
 	audiencesCriteriaTypes: AudiencesCriteriaType[];
-	json?: AudiencesCriteriaJSON;
-	namespace: string;
+	conjunction: string;
+	dispatch: Dispatch<Action>;
+	rules: Rule[];
 }
 
 interface AttributeDragItem {
@@ -31,36 +27,11 @@ interface AttributeDragItem {
 	type: string;
 }
 
-function createRule(audiencesCriteria: AudiencesCriteria): Rule {
-	return {
-		attribute: audiencesCriteria.key,
-		id: `rule-${uuidv4()}`,
-		operator: audiencesCriteria.operators[0] || '',
-		value: audiencesCriteria.options[0]?.value || '',
-	};
-}
-
-function parseCriteria(json?: AudiencesCriteriaJSON): {
-	conjunction: string;
-	rules: Rule[];
-} {
-	return {
-		conjunction: json?.conjunction ?? 'AND',
-		rules: (json?.rules ?? [])
-			.filter((rule) => Boolean(rule.attribute))
-			.map((rule) => ({
-				attribute: rule.attribute,
-				id: `rule-${uuidv4()}`,
-				operator: rule.operator,
-				value: rule.value,
-			})),
-	};
-}
-
 export default function ConditionsPanel({
 	audiencesCriteriaTypes,
-	json,
-	namespace,
+	conjunction,
+	dispatch,
+	rules,
 }: IProps) {
 	const audiencesCriterias = audiencesCriteriaTypes.flatMap(
 		(audiencesCriteriaType) => audiencesCriteriaType.audiencesCriterias
@@ -75,19 +46,6 @@ export default function ConditionsPanel({
 		);
 
 	const announce = useScreenReaderAnnounce();
-
-	const [initialCriteria] = useState(() => parseCriteria(json));
-	const [conjunction, setConjunction] = useState(initialCriteria.conjunction);
-	const [rules, setRules] = useState<Rule[]>(initialCriteria.rules);
-
-	const serializedJSON = JSON.stringify({
-		conjunction,
-		rules: rules.map((rule) => ({
-			attribute: rule.attribute,
-			operator: rule.operator,
-			value: rule.value,
-		})),
-	});
 
 	const dndItems = rules.map((rule) => {
 		const audiencesCriteria = audiencesCriteriasByKey[rule.attribute];
@@ -113,72 +71,24 @@ export default function ConditionsPanel({
 		audiencesCriteria: AudiencesCriteria,
 		index?: number
 	) {
-		setRules((currentRules) => {
-			const newRule = createRule(audiencesCriteria);
-
-			if (index === undefined) {
-				return [...currentRules, newRule];
-			}
-
-			const newRules = [...currentRules];
-
-			newRules.splice(index, 0, newRule);
-
-			return newRules;
-		});
+		dispatch({audiencesCriteria, index, type: 'ADD_RULE'});
 
 		announce(Liferay.Language.get('a-condition-was-added'));
 	}
 
-	const handleChange = (index: number, newRule: Rule) => {
-		setRules((currentRules) =>
-			currentRules.map((rule, currentIndex) =>
-				currentIndex === index ? newRule : rule
-			)
-		);
-	};
-
-	const handleDelete = (index: number) => {
-		setRules((currentRules) =>
-			currentRules.filter((rule, currentIndex) => currentIndex !== index)
-		);
-
-		announce(Liferay.Language.get('a-condition-was-removed'));
-	};
-
-	const handleDuplicate = (index: number) => {
-		setRules((currentRules) => {
-			const newRules = [...currentRules];
-
-			newRules.splice(index + 1, 0, {
-				...currentRules[index],
-				id: `rule-${uuidv4()}`,
-			});
-
-			return newRules;
-		});
-
-		announce(Liferay.Language.get('a-condition-was-duplicated'));
-	};
-
 	const handleReorder = (newItems: Array<{id: string}>) => {
 		const rulesById = new Map(rules.map((rule) => [rule.id, rule]));
 
-		setRules(
-			newItems
+		dispatch({
+			rules: newItems
 				.map((item) => rulesById.get(item.id))
-				.filter((rule): rule is Rule => Boolean(rule))
-		);
+				.filter((rule): rule is Rule => Boolean(rule)),
+			type: 'REORDER_RULES',
+		});
 	};
 
 	return (
 		<div className="border mt-4 rounded">
-			<input
-				name={`${namespace}json`}
-				type="hidden"
-				value={serializedJSON}
-			/>
-
 			<div className="px-4 py-3">
 				<p className="font-weight-bold mb-0 text-6">
 					{Liferay.Language.get('conditions')}
@@ -203,7 +113,10 @@ export default function ConditionsPanel({
 									},
 								]}
 								onSelectionChange={(key) =>
-									setConjunction(key as string)
+									dispatch({
+										conjunction: key as string,
+										type: 'SET_CONJUNCTION',
+									})
 								}
 								selectedKey={conjunction}
 							>
@@ -257,10 +170,33 @@ export default function ConditionsPanel({
 									items={dndItems}
 									onAddRule={handleAddRule}
 									onChange={(newRule) =>
-										handleChange(index, newRule)
+										dispatch({
+											index,
+											rule: newRule,
+											type: 'CHANGE_RULE',
+										})
 									}
-									onDelete={() => handleDelete(index)}
-									onDuplicate={() => handleDuplicate(index)}
+									onDelete={() => {
+										dispatch({index, type: 'DELETE_RULE'});
+
+										announce(
+											Liferay.Language.get(
+												'a-condition-was-removed'
+											)
+										);
+									}}
+									onDuplicate={() => {
+										dispatch({
+											index,
+											type: 'DUPLICATE_RULE',
+										});
+
+										announce(
+											Liferay.Language.get(
+												'a-condition-was-duplicated'
+											)
+										);
+									}}
 									onReorder={handleReorder}
 									rule={rule}
 								/>

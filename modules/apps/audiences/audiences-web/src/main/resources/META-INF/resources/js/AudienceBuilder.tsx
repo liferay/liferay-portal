@@ -13,12 +13,13 @@ import {
 	DragPreview,
 	ScreenReaderAnnouncerContextProvider,
 } from '@liferay/layout-js-components-web';
-import React, {useState} from 'react';
+import React, {useReducer} from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import AttributesSidebar from './components/AttributesSidebar';
 import ConditionsPanel from './components/ConditionsPanel';
+import {initState, reducer, serializeCriteria} from './reducer';
 import {AudiencesCriteriaJSON, AudiencesCriteriaType} from './types';
 
 import './AudienceBuilder.scss';
@@ -44,7 +45,7 @@ export default function AudienceBuilder({
 	name,
 	namespace = '',
 }: IProps) {
-	const [currentName, setCurrentName] = useState(name || '');
+	const [state, dispatch] = useReducer(reducer, {json, name}, initState);
 
 	return (
 		<ScreenReaderAnnouncerContextProvider>
@@ -72,7 +73,7 @@ export default function AudienceBuilder({
 								<ClayToolbar.Item expand>
 									<ClayToolbar.Section className="text-left">
 										<span className="font-weight-bold text-dark text-truncate">
-											{currentName ||
+											{state.name ||
 												Liferay.Language.get(
 													'new-audience'
 												)}
@@ -130,21 +131,31 @@ export default function AudienceBuilder({
 									maxLength={NAME_MAX_LENGTH}
 									name={`${namespace}name`}
 									onChange={(event) =>
-										setCurrentName(event.target.value)
+										dispatch({
+											name: event.target.value,
+											type: 'SET_NAME',
+										})
 									}
 									placeholder={Liferay.Language.get(
 										'new-audience'
 									)}
 									required
 									type="text"
-									value={currentName}
+									value={state.name}
 								/>
 							</ClayForm.Group>
 
+							<input
+								name={`${namespace}json`}
+								type="hidden"
+								value={serializeCriteria(state)}
+							/>
+
 							<ConditionsPanel
 								audiencesCriteriaTypes={audiencesCriteriaTypes}
-								json={json}
-								namespace={namespace}
+								conjunction={state.conjunction}
+								dispatch={dispatch}
+								rules={state.rules}
 							/>
 						</div>
 					</div>

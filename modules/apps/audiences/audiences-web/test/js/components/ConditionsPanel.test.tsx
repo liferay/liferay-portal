@@ -11,6 +11,7 @@ import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import ConditionsPanel from '../../../src/main/resources/META-INF/resources/js/components/ConditionsPanel';
+import {Rule} from '../../../src/main/resources/META-INF/resources/js/types';
 
 const DragAndDropProvider = DndProvider as unknown as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
@@ -27,36 +28,33 @@ const AUDIENCES_CRITERIA_TYPES = [
 				options: [],
 				type: 'number',
 			},
-			{
-				icon: 'calendar',
-				key: 'signupDate',
-				label: 'Signup Date',
-				operators: ['eq', 'gt', 'lt'],
-				options: [],
-				type: 'date',
-			},
 		],
 		label: 'User',
 	},
 ];
 
-const JSON_WITH_RULES = {
-	conjunction: 'AND',
-	rules: [{attribute: 'age', operator: 'gt', value: '18'}],
-};
+const RULES: Rule[] = [
+	{attribute: 'age', id: 'rule-age', operator: 'gt', value: '18'},
+];
 
-function renderConditionsPanel(json?: typeof JSON_WITH_RULES) {
-	return render(
+function renderConditionsPanel({
+	dispatch = jest.fn(),
+	rules = [] as Rule[],
+} = {}) {
+	render(
 		<DragAndDropProvider backend={HTML5Backend}>
 			<ScreenReaderAnnouncerContextProvider>
 				<ConditionsPanel
 					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					json={json}
-					namespace="_test_"
+					conjunction="AND"
+					dispatch={dispatch}
+					rules={rules}
 				/>
 			</ScreenReaderAnnouncerContextProvider>
 		</DragAndDropProvider>
 	);
+
+	return {dispatch};
 }
 
 describe('ConditionsPanel', () => {
@@ -66,23 +64,21 @@ describe('ConditionsPanel', () => {
 		expect(screen.getByText('no-criteria-yet')).toBeTruthy();
 	});
 
-	it('loads the rules from the json prop', () => {
-		renderConditionsPanel(JSON_WITH_RULES);
+	it('renders the given rules', () => {
+		renderConditionsPanel({rules: RULES});
 
 		expect(screen.getByText('Age')).toBeTruthy();
 		expect(screen.getByText('is-greater-than')).toBeTruthy();
 	});
 
-	it('duplicates a condition and announces it', async () => {
-		renderConditionsPanel(JSON_WITH_RULES);
+	it('dispatches a duplicate action', async () => {
+		const {dispatch} = renderConditionsPanel({rules: RULES});
 
-		expect(screen.getAllByText('Age')).toHaveLength(1);
+		await userEvent.click(screen.getByLabelText('duplicate'));
 
-		const [ageDuplicate] = screen.getAllByLabelText('duplicate');
-
-		await userEvent.click(ageDuplicate);
-
-		expect(screen.getAllByText('Age')).toHaveLength(2);
-		expect(screen.getByText('a-condition-was-duplicated')).toBeTruthy();
+		expect(dispatch).toHaveBeenCalledWith({
+			index: 0,
+			type: 'DUPLICATE_RULE',
+		});
 	});
 });
