@@ -10,6 +10,7 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
@@ -23,6 +24,9 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	exportImportPagesTest,
 	companyExportImportPageTest,
+	featureFlagsTest({
+		'LPD-57655': {enabled: false},
+	}),
 	globalMenuPagesTest,
 	loginTest()
 );

@@ -7,6 +7,7 @@ import {ObjectDefinition} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
@@ -20,6 +21,9 @@ import {portletExportImportPageTest} from './fixtures/portletExportImportPageTes
 
 export const test = mergeTests(
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-57655': {enabled: false},
+	}),
 	globalMenuPagesTest,
 	loginTest(),
 	objectPagesTest,

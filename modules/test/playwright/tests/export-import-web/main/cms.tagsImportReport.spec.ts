@@ -15,7 +15,10 @@ import {portletExportImportPageTest} from './fixtures/portletExportImportPageTes
 
 const test = mergeTests(
 	apiHelpersTest,
-	featureFlagsTest({'LPD-17564': {enabled: true}}),
+	featureFlagsTest({
+		'LPD-17564': {enabled: true},
+		'LPD-57655': {enabled: false},
+	}),
 	isolatedSiteTest,
 	loginTest(),
 	portletExportImportPageTest,

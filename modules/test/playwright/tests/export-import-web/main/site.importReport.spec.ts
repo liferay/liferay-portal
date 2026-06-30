@@ -10,6 +10,7 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import getRandomString from '../../../utils/getRandomString';
@@ -21,6 +22,9 @@ import {objectDefitionRequestData} from './utils/objectDefitionRequestData';
 export const test = mergeTests(
 	dataApiHelpersTest,
 	exportImportPagesTest,
+	featureFlagsTest({
+		'LPD-57655': {enabled: false},
+	}),
 	loginTest()
 );
 

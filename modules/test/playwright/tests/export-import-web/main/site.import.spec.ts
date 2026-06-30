@@ -56,6 +56,7 @@ export const test = mergeTests(
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 		'LPD-45276': {enabled: true},
+		'LPD-57655': {enabled: false},
 		'LPD-76864': {enabled: true},
 	}),
 	globalMenuPagesTest,
@@ -79,6 +80,7 @@ const testWithDeprecationFFDisabled = mergeTests(
 		'LPD-35443': {enabled: false},
 		'LPD-44307': {enabled: false},
 		'LPD-44771': {enabled: false},
+		'LPD-57655': {enabled: false},
 	}),
 	loginTest(),
 	uiElementsPageTest
@@ -91,6 +93,7 @@ const testWithDeprecationFF = mergeTests(
 		'LPD-35443': {enabled: false},
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
+		'LPD-57655': {enabled: false},
 	}),
 	loginTest(),
 	uiElementsPageTest
@@ -100,7 +103,10 @@ const testWithObjectExportImportFF = mergeTests(
 	assetCategoriesPagesTest,
 	dataApiHelpersTest,
 	exportImportPagesTest,
-	featureFlagsTest({'LPD-35443': {enabled: true}}),
+	featureFlagsTest({
+		'LPD-35443': {enabled: true},
+		'LPD-57655': {enabled: false},
+	}),
 	isolatedSiteTest,
 	loginTest()
 );
