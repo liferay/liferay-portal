@@ -1,0 +1,22 @@
+import com.liferay.gradle.plugins.patcher.PatchTask
+
+apply plugin: "com.liferay.patcher"
+
+task patch(type: PatchTask)
+
+dependencies {
+	compileOnly group: "org.opensaml", name: "opensaml-security-api", transitive: true, version: "3.3.0"
+}
+
+jarSources {
+	mustRunAfter patch
+}
+
+patch {
+	ext {
+		autoClean = false
+	}
+
+	fileNames "org/opensaml/security/crypto/KeySupport.java", "org/opensaml/security/x509/X509Support.java"
+	originalLibModuleName = "opensaml-security-api"
+}
