@@ -131,6 +131,10 @@ public class OrderSummaryCheckoutStepDisplayContext {
 			(List<AccountEntryValidatorResult>)_httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_ACCOUNT_VALIDATION_RESULTS);
 
+		if (accountEntryValidatorResults == null) {
+			return null;
+		}
+
 		for (AccountEntryValidatorResult accountEntryValidatorResult :
 				accountEntryValidatorResults) {
 
