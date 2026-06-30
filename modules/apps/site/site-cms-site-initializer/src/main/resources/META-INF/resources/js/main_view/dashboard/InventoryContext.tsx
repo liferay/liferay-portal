@@ -5,6 +5,8 @@
 
 import React, {createContext, useCallback, useReducer} from 'react';
 
+import {initialSpace} from './components/SpacesDropdown';
+
 type Item = {
 	externalReferenceCode?: string;
 	label: string;
@@ -34,11 +36,6 @@ type Action = {
 
 export const initialLanguage = {
 	label: Liferay.Language.get('all-languages'),
-	value: 'all',
-};
-
-export const initialSpace = {
-	label: Liferay.Language.get('all-spaces'),
 	value: 'all',
 };
 

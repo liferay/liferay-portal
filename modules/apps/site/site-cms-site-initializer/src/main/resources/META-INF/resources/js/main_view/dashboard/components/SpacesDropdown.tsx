@@ -4,26 +4,33 @@
  */
 
 import {Option, Picker} from '@clayui/core';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import SpaceService from '../../../common/services/SpaceService';
-import {InventoryContext, initialSpace} from '../InventoryContext';
 import PickerTrigger from './PickerTrigger';
 
-type SpaceOption = {
+export type SpaceOption = {
 	externalReferenceCode?: string;
 	label: string;
 	value: string;
 };
 
-const SpacesDropdown: React.FC<React.HTMLAttributes<HTMLElement>> = ({
-	className,
-}) => {
-	const {
-		changeSpace,
-		filters: {space},
-	} = useContext(InventoryContext);
+export const initialSpace: SpaceOption = {
+	label: Liferay.Language.get('all-spaces'),
+	value: 'all',
+};
 
+interface ISpacesDropdown extends React.HTMLAttributes<HTMLElement> {
+	className?: string;
+	onSelectSpace: (space: SpaceOption) => void;
+	selectedSpace: SpaceOption;
+}
+
+const SpacesDropdown: React.FC<ISpacesDropdown> = ({
+	className,
+	onSelectSpace,
+	selectedSpace,
+}) => {
 	const [spaces, setSpaces] = useState<SpaceOption[]>([initialSpace]);
 
 	useEffect(() => {
@@ -54,16 +61,14 @@ const SpacesDropdown: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 				searchPlaceholder: Liferay.Language.get('search'),
 			}}
 			onSelectionChange={(key) => {
-				const selectedSpace = spaces.find(
-					({value}) => value === String(key)
-				);
+				const space = spaces.find(({value}) => value === String(key));
 
-				if (selectedSpace) {
-					changeSpace(selectedSpace);
+				if (space) {
+					onSelectSpace(space);
 				}
 			}}
 			searchable
-			selectedKey={space.value}
+			selectedKey={selectedSpace.value}
 			triggerClassName={className}
 			triggerIcon="box-container"
 		>

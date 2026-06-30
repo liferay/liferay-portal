@@ -4,8 +4,9 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React from 'react';
+import React, {useContext} from 'react';
 
+import {InventoryContext} from '../InventoryContext';
 import {ContentCard} from './ContentCard';
 import {ExpiredAssetsCard} from './ExpiredAssetsCard';
 import {FilesCard} from './FilesCard';
@@ -15,12 +16,21 @@ import {SectionHeader} from './SectionHeader';
 import {SpacesDropdown} from './SpacesDropdown';
 
 export default function InventoryDashboard() {
+	const {
+		changeSpace,
+		filters: {space},
+	} = useContext(InventoryContext);
+
 	return (
 		<>
 			<ClayLayout.Row className="mb-4">
 				<ClayLayout.Col size={12}>
 					<div className="d-flex">
-						<SpacesDropdown className="mr-3" />
+						<SpacesDropdown
+							className="mr-3"
+							onSelectSpace={changeSpace}
+							selectedSpace={space}
+						/>
 
 						<LanguagesDropdown />
 					</div>
