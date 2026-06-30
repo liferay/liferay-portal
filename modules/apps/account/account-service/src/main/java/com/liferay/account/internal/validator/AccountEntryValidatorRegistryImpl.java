@@ -5,6 +5,7 @@
 
 package com.liferay.account.internal.validator;
 
+import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
@@ -75,8 +76,19 @@ public class AccountEntryValidatorRegistryImpl
 
 		return TransformUtil.transform(
 			getAccountEntryValidators(),
-			accountEntryValidator -> accountEntryValidator.validate(
-				accountEntry, jsonObject));
+			accountEntryValidator -> {
+				AccountEntryValidatorConfiguration
+					accountEntryValidatorConfiguration =
+						accountEntryValidator.
+							getAccountEntryValidatorConfiguration(
+								accountEntry.getCompanyId());
+
+				if (!accountEntryValidatorConfiguration.enabled()) {
+					return null;
+				}
+
+				return accountEntryValidator.validate(accountEntry, jsonObject);
+			});
 	}
 
 	@Activate

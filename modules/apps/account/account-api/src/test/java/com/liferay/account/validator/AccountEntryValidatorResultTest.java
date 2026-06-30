@@ -39,7 +39,7 @@ public class AccountEntryValidatorResultTest {
 		Assert.assertEquals(
 			StringPool.BLANK, accountEntryValidatorResult.getActionURL());
 		Assert.assertNull(accountEntryValidatorResult.getAdditionalProps());
-		Assert.assertEquals("key", accountEntryValidatorResult.getKey());
+		Assert.assertEquals("key", accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			StringPool.BLANK, accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(
@@ -70,7 +70,7 @@ public class AccountEntryValidatorResultTest {
 			"actionURL", accountEntryValidatorResult.getActionURL());
 		Assert.assertEquals(
 			jsonObject, accountEntryValidatorResult.getAdditionalProps());
-		Assert.assertEquals("key", accountEntryValidatorResult.getKey());
+		Assert.assertEquals("key", accountEntryValidatorResult.getClassPK());
 		Assert.assertEquals(
 			"resultMessage", accountEntryValidatorResult.getResultMessage());
 		Assert.assertEquals(
