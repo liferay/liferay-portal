@@ -710,6 +710,10 @@ baseTest(
 
 		await setItemsPerPage(page, 20);
 
+		await expect(
+			page.getByText('Showing 1 to 20 of 42 entries.')
+		).toBeVisible();
+
 		await page.getByTestId('row').nth(0).getByRole('checkbox').check();
 		await page.getByTestId('row').nth(1).getByRole('checkbox').check();
 
