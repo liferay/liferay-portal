@@ -69,6 +69,7 @@ $cadmin-card-section-header: map-deep-merge(
 		color: $cadmin-card-section-header-color,
 		font-size: $cadmin-card-section-header-font-size,
 		font-weight: $cadmin-card-section-header-font-weight,
+		grid-column: unquote('1 / -1'),
 		line-height: $cadmin-card-section-header-line-height,
 		margin-bottom: $cadmin-card-section-header-margin-bottom,
 		padding: $cadmin-card-section-header-padding,
@@ -159,10 +160,10 @@ $cadmin-card-aspect-ratio-item-bottom-left: map-deep-merge(
 
 // `min-width`, see https://github.com/twbs/bootstrap/pull/22740#issuecomment-305868106
 
-$card: () !default;
-$card: map-deep-merge(
+$cadmin-card: () !default;
+$cadmin-card: map-deep-merge(
 	(
-		background-color: $cadmin-light-l1,
+		background-color: $cadmin-card-bg,
 		border-color: $cadmin-card-border-color,
 		border-radius: clay-enable-rounded($cadmin-card-border-radius),
 		border-style: $cadmin-card-border-style,
@@ -222,7 +223,7 @@ $card: map-deep-merge(
 			pointer-events: none,
 		),
 	),
-	$card
+	$cadmin-card
 );
 
 // Card Title
@@ -652,6 +653,7 @@ $cadmin-card-type-asset: map-deep-merge(
 		),
 
 		aspect-ratio: (
+			background-color: $cadmin-gray-100,
 			border-color: $cadmin-gray-300,
 			border-style: solid,
 			border-width: 0px 0px 1px 0px,
@@ -792,15 +794,50 @@ $cadmin-user-card: map-deep-merge(
 
 $cadmin-card-page-dense-min-column-width: 190px !default;
 $cadmin-card-page-horizontal-min-column-width: 288px !default;
+$cadmin-card-page-min-column-width: 296px !default;
 
 $cadmin-card-page: () !default;
 $cadmin-card-page: map-deep-merge(
 	(
-		container-name: c-card-page,
-		container-type: inline-size,
-		extend: '%clay-custom-grid-wrapper',
+		display: grid,
+		gap: 0 $cadmin-grid-gutter-width,
+		grid-template-columns:
+			repeat(auto-fill, minmax($cadmin-card-page-min-column-width, 1fr)),
+		grid-template-rows: auto,
+		list-style: none,
+		margin-bottom: 0,
+		padding-left: 0,
+
+		'.card-page-item': (
+			max-width: none,
+			padding: 0,
+		),
 	),
 	$cadmin-card-page
+);
+
+$cadmin-card-page-dense: () !default;
+$cadmin-card-page-dense: map-deep-merge(
+	(
+		grid-template-columns:
+			repeat(
+				auto-fill,
+				minmax($cadmin-card-page-dense-min-column-width, 1fr)
+			),
+	),
+	$cadmin-card-page-dense
+);
+
+$cadmin-card-page-horizontal: () !default;
+$cadmin-card-page-horizontal: map-deep-merge(
+	(
+		grid-template-columns:
+			repeat(
+				auto-fill,
+				minmax($cadmin-card-page-horizontal-min-column-width, 1fr)
+			),
+	),
+	$cadmin-card-page-horizontal
 );
 
 // Card Page Item Asset
@@ -808,33 +845,7 @@ $cadmin-card-page: map-deep-merge(
 $cadmin-card-page-item-asset: () !default;
 $cadmin-card-page-item-asset: map-deep-merge(
 	(
-		flex-basis: 100%,
-		max-width: 100%,
-		padding-left: calc(#{$cadmin-grid-gutter-width} * 0.5),
-		padding-right: calc(#{$cadmin-grid-gutter-width} * 0.5),
-		'@container #{map-get($cadmin-card-page, container-name)} (min-width: #{map-get($cadmin-container-max-widths, sm)})':
-		(
-			flex-basis: 50%,
-			max-width: 50%,
-		),
-
-		'@container #{map-get($cadmin-card-page, container-name)} (min-width: #{map-get($cadmin-container-max-widths, md)})':
-		(
-			flex-basis: 33.33333%,
-			max-width: 33.33333%,
-		),
-
-		'@container #{map-get($cadmin-card-page, container-name)} (min-width: #{map-get($cadmin-container-max-widths, lg)})':
-		(
-			flex-basis: 25%,
-			max-width: 25%,
-		),
-
-		'@container #{map-get($cadmin-card-page, container-name)} (min-width: #{map-get($cadmin-container-max-widths, xl)})':
-		(
-			flex-basis: 20%,
-			max-width: 20%,
-		),
+		min-width: 0,
 	),
 	$cadmin-card-page-item-asset
 );

@@ -1,6 +1,6 @@
 .card,
 .card-horizontal {
-	@include clay-card-variant($card);
+	@include clay-card-variant($cadmin-card);
 
 	.autofit-col {
 		&:first-child {
@@ -416,6 +416,8 @@
 	@include clay-map-to-css($cadmin-card-page);
 
 	&.card-page-equal-height {
+		grid-auto-rows: 1fr;
+
 		.card-page-item,
 		.card-page-item-asset,
 		.card-page-item-directory {
@@ -437,35 +439,22 @@
 
 // Card Page Layout Views
 //
-// The card carries no size of its own; the layout "view" is a property of the
-// container. Each container fits as many cards per row as its width allows,
-// derived from a minimum column width, so cards no longer break in narrow
-// containers. Column counts follow from CSS Grid auto-fill.
-
-.card-page-dense,
-.card-page-horizontal {
-	display: grid;
-	gap: $cadmin-grid-gutter-width;
-}
+// .card-page (and its dense/horizontal variants) is a CSS Grid container: the
+// column count follows from the container width and a minimum column width
+// (auto-fill), so the cards carry no size of their own and reflow instead of
+// breaking in narrow containers. The container works the same as a div, ul, or
+// dl.
 
 .card-page-dense {
-	grid-template-columns: repeat(
-		auto-fill,
-		minmax($cadmin-card-page-dense-min-column-width, 1fr)
-	);
+	@include clay-map-to-css($cadmin-card-page-dense);
 }
 
 .card-page-horizontal {
-	grid-template-columns: repeat(
-		auto-fill,
-		minmax($cadmin-card-page-horizontal-min-column-width, 1fr)
-	);
+	@include clay-map-to-css($cadmin-card-page-horizontal);
 }
 
 .card-page-item-header {
-	padding-left: calc(#{$cadmin-grid-gutter-width} * 0.5);
-	padding-right: calc(#{$cadmin-grid-gutter-width} * 0.5);
-	width: 100%;
+	grid-column: 1 / -1;
 }
 
 .card-page-item-directory {

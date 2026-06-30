@@ -732,9 +732,10 @@ export function CardPageViews() {
 		'Eight',
 	];
 
-	// The card has no size of its own; the container view (dense or horizontal)
-	// decides how many columns fit. Resize the preview to see the column count
-	// change.
+	// The card has no size of its own. .card-page and its dense/horizontal
+	// variants are CSS Grid containers whose column count is derived from the
+	// container width (auto-fill), so resize the preview to see the columns
+	// reflow. The container works the same whether it is a div, ul, or dl.
 
 	const renderCard = (label: string) => (
 		<ClayCard displayType="image" key={label}>
@@ -759,7 +760,7 @@ export function CardPageViews() {
 
 	return (
 		<>
-			<p>card-page (default — existing container)</p>
+			<p>card-page (default — min 296px columns)</p>
 
 			<div className="card-page">
 				{labels.map((label) => (
@@ -768,6 +769,16 @@ export function CardPageViews() {
 					</div>
 				))}
 			</div>
+
+			<p className="c-mt-4">card-page as a list (ul / li markup)</p>
+
+			<ul className="card-page">
+				{labels.map((label) => (
+					<li className="card-page-item-asset" key={label}>
+						{renderCard(label)}
+					</li>
+				))}
+			</ul>
 
 			<p className="c-mt-4">card-page-dense (min 190px columns)</p>
 

@@ -1,3 +1,4 @@
+$card-bg: $white !default;
 $card-border-color: $secondary-l2 !default;
 $card-border-radius: $border-radius-xl !default;
 $card-border-width: $border-width !default;
@@ -22,7 +23,7 @@ $card-inner-border-radius: calc(
 $card: () !default;
 $card: map-deep-merge(
 	(
-		background-color: $light-l1,
+		background-color: $card-bg,
 		border-radius: clay-enable-rounded($card-border-radius),
 		border-width: $card-border-width,
 		outline-color: transparent,
@@ -252,6 +253,7 @@ $card-type-asset: map-deep-merge(
 		),
 
 		aspect-ratio: (
+			background-color: $gray-100,
 			border-color: $gray-300,
 		),
 
