@@ -188,7 +188,7 @@ public class AccountEntryValidatorRegistryImplTest {
 		);
 
 		Mockito.when(
-			accountEntryValidator.getConfiguration(1L)
+			accountEntryValidator.getAccountEntryValidatorConfiguration(1L)
 		).thenReturn(
 			accountEntryValidatorConfiguration
 		);
@@ -196,7 +196,7 @@ public class AccountEntryValidatorRegistryImplTest {
 		String classPK = RandomTestUtil.randomString();
 
 		Mockito.when(
-			accountEntryValidator.getKey(accountEntry, null)
+			accountEntryValidator.getClassPK(accountEntry, null)
 		).thenReturn(
 			classPK
 		);
@@ -267,7 +267,7 @@ public class AccountEntryValidatorRegistryImplTest {
 
 		Mockito.verify(
 			accountEntryValidator, Mockito.times(0)
-		).getKey(
+		).getClassPK(
 			Mockito.any(), Mockito.any()
 		);
 
