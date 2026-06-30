@@ -7,13 +7,16 @@ import {Locator, Page} from '@playwright/test';
 
 import {InstanceSettingsPage} from '../../../../pages/configuration-admin-web/InstanceSettingsPage';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import {FileSizeMimetypesForm} from './FileSizeMimetypesForm';
 
 export class FileSizeLimitsInstanceSettingsPage {
+	readonly mimeTypes: FileSizeMimetypesForm;
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly instanceSettingsPage: InstanceSettingsPage;
 
 	constructor(page: Page) {
+		this.mimeTypes = new FileSizeMimetypesForm(page);
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.instanceSettingsPage = new InstanceSettingsPage(page);
