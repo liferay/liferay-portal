@@ -182,46 +182,62 @@ public class StyleBookEntryUtil {
 		).build();
 	}
 
+	private static Group _getScopeGroup(
+		long groupId, Map<Long, Group> scopeGroups,
+		StyleBookEntry styleBookEntry) {
+
+		if (styleBookEntry.getGroupId() == groupId) {
+			return null;
+		}
+
+		return scopeGroups.computeIfAbsent(
+			styleBookEntry.getGroupId(), GroupLocalServiceUtil::fetchGroup);
+	}
+
 	private static Map<String, Object> _getStyleBookEntryMap(
 			FrontendTokenDefinition frontendTokenDefinition,
 			boolean includeTokenValues, long groupId,
 			Map<Long, Group> scopeGroups, StyleBookEntry styleBookEntry,
-			ThemeDisplay themeDisplay)
-		throws Exception {
+			ThemeDisplay themeDisplay) {
 
-		Map<String, Object> map = HashMapBuilder.<String, Object>put(
+		Group scopeGroup = _getScopeGroup(groupId, scopeGroups, styleBookEntry);
+
+		return HashMapBuilder.<String, Object>put(
 			"imagePreviewURL", styleBookEntry.getImagePreviewURL(themeDisplay)
 		).put(
 			"name", styleBookEntry.getName()
 		).put(
 			"styleBookEntryERC", styleBookEntry.getExternalReferenceCode()
-		).build();
+		).put(
+			"styleBookEntryScopeERC",
+			() -> {
+				if (scopeGroup == null) {
+					return null;
+				}
 
-		long entryGroupId = styleBookEntry.getGroupId();
-
-		if (entryGroupId != groupId) {
-			Group scopeGroup = scopeGroups.computeIfAbsent(
-				entryGroupId, GroupLocalServiceUtil::fetchGroup);
-
-			if (scopeGroup != null) {
-				map.put(
-					"styleBookEntryScopeERC",
-					scopeGroup.getExternalReferenceCode());
-				map.put(
-					"subtitle",
-					scopeGroup.getDescriptiveName(themeDisplay.getLocale()));
+				return scopeGroup.getExternalReferenceCode();
 			}
-		}
+		).put(
+			"subtitle",
+			() -> {
+				if (scopeGroup == null) {
+					return null;
+				}
 
-		if (includeTokenValues) {
-			map.put(
-				"tokenValues",
-				getFrontendTokensValues(
+				return scopeGroup.getDescriptiveName(themeDisplay.getLocale());
+			}
+		).put(
+			"tokenValues",
+			() -> {
+				if (!includeTokenValues) {
+					return null;
+				}
+
+				return getFrontendTokensValues(
 					frontendTokenDefinition, themeDisplay.getLocale(),
-					styleBookEntry));
-		}
-
-		return map;
+					styleBookEntry);
+			}
+		).build();
 	}
 
 }
