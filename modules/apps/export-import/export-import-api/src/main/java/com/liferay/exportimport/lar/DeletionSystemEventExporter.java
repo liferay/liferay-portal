@@ -16,4 +16,8 @@ public interface DeletionSystemEventExporter {
 			PortletDataContext portletDataContext)
 		throws Exception;
 
+	public long getDeletionSystemEventsCount(
+			PortletDataContext portletDataContext)
+		throws Exception;
+
 }

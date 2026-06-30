@@ -156,6 +156,25 @@ public class DeletionSystemEventExporterImpl
 		}
 	}
 
+	@Override
+	public long getDeletionSystemEventsCount(
+			PortletDataContext portletDataContext)
+		throws Exception {
+
+		Set<StagedModelType> deletionSystemEventStagedModelTypes =
+			portletDataContext.getDeletionSystemEventStagedModelTypes();
+
+		if (deletionSystemEventStagedModelTypes.isEmpty()) {
+			return 0;
+		}
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_getActionableDynamicQuery(
+				portletDataContext, deletionSystemEventStagedModelTypes);
+
+		return actionableDynamicQuery.performCount();
+	}
+
 	protected void addCreateDateProperty(
 		PortletDataContext portletDataContext, DynamicQuery dynamicQuery) {
 
@@ -317,12 +336,9 @@ public class DeletionSystemEventExporterImpl
 				systemEvent.getReferrerClassNameId()));
 	}
 
-	private List<SystemEvent> _getDeletionSystemEvents(
-			PortletDataContext portletDataContext,
-			Set<StagedModelType> deletionSystemEventStagedModelTypes)
-		throws Exception {
-
-		List<SystemEvent> systemEvents = new ArrayList<>();
+	private ActionableDynamicQuery _getActionableDynamicQuery(
+		PortletDataContext portletDataContext,
+		Set<StagedModelType> deletionSystemEventStagedModelTypes) {
 
 		ActionableDynamicQuery actionableDynamicQuery =
 			_systemEventLocalService.getActionableDynamicQuery();
@@ -332,6 +348,21 @@ public class DeletionSystemEventExporterImpl
 				portletDataContext, deletionSystemEventStagedModelTypes,
 				dynamicQuery));
 		actionableDynamicQuery.setCompanyId(portletDataContext.getCompanyId());
+
+		return actionableDynamicQuery;
+	}
+
+	private List<SystemEvent> _getDeletionSystemEvents(
+			PortletDataContext portletDataContext,
+			Set<StagedModelType> deletionSystemEventStagedModelTypes)
+		throws Exception {
+
+		List<SystemEvent> systemEvents = new ArrayList<>();
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_getActionableDynamicQuery(
+				portletDataContext, deletionSystemEventStagedModelTypes);
+
 		actionableDynamicQuery.setPerformActionMethod(
 			(SystemEvent systemEvent) -> systemEvents.add(systemEvent));
 
