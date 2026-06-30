@@ -38,8 +38,9 @@ public class VulcanRequestForwarderHttpServletRequestWrapper
 	extends PersistentHttpServletRequestWrapper {
 
 	public VulcanRequestForwarderHttpServletRequestWrapper(
-		byte[] body, String contentType, HttpServletRequest httpServletRequest,
-		String method, String pathInfo, User user) {
+		byte[] body, String contentType, Map<String, String> headers,
+		HttpServletRequest httpServletRequest, String method, String pathInfo,
+		User user) {
 
 		super(httpServletRequest);
 
@@ -91,6 +92,11 @@ public class VulcanRequestForwarderHttpServletRequestWrapper
 				return csrfToken;
 			}
 		).build();
+
+		if (headers != null) {
+			_headers.putAll(headers);
+		}
+
 		_body = body;
 		_contentType = contentType;
 		_httpServletRequest = httpServletRequest;

@@ -56,8 +56,8 @@ public class VulcanRequestForwarderImpl implements VulcanRequestForwarder {
 			requestDispatcher.forward(
 				new VulcanRequestForwarderHttpServletRequestWrapper(
 					request.getBody(), request.getContentType(),
-					httpServletRequest, request.getMethod(), request.getPath(),
-					request.getUser()),
+					request.getHeaders(), httpServletRequest,
+					request.getMethod(), request.getPath(), request.getUser()),
 				new PipingServletResponse(
 					vulcanRequestForwarderHttpServletResponse,
 					unsyncStringWriter));
