@@ -12,7 +12,6 @@ import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntryLinkManager;
-import com.liferay.layout.content.page.editor.web.internal.util.PageEditorStyleBookEntriesUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -224,7 +223,7 @@ public class ChangeMasterLayoutMVCActionCommand
 			));
 
 		JSONArray styleBookEntriesJSONArray =
-			PageEditorStyleBookEntriesUtil.getStyleBookEntriesJSONArray(
+			StyleBookEntryUtil.getStyleBookEntriesJSONArray(
 				frontendTokenDefinition, true, layout, themeDisplay);
 
 		for (int i = 0; i < styleBookEntriesJSONArray.length(); i++) {

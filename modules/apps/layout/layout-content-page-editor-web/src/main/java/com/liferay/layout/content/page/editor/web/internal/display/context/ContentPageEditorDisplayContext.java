@@ -47,7 +47,6 @@ import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntry
 import com.liferay.layout.content.page.editor.web.internal.util.CodeEditorUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingTypesUtil;
-import com.liferay.layout.content.page.editor.web.internal.util.PageEditorStyleBookEntriesUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.converter.PaddingConverter;
@@ -2118,7 +2117,7 @@ public class ContentPageEditorDisplayContext {
 			).build());
 
 		styleBooks.addAll(
-			PageEditorStyleBookEntriesUtil.getStyleBookEntries(
+			StyleBookEntryUtil.getStyleBookEntries(
 				frontendTokenDefinition, false, themeDisplay.getLayout(),
 				themeDisplay));
 
