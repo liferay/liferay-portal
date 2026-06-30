@@ -2652,26 +2652,32 @@ baseTest(
 
 		await journalPage.goto(site.friendlyUrlPath);
 
-		await expect(page.getByText(title1)).toBeVisible();
-		await expect(page.getByText(title2)).toBeVisible();
+		const title1Link = page.getByRole('link', {exact: true, name: title1});
+		const title2Link = page.getByRole('link', {exact: true, name: title2});
 
-		await page.getByPlaceholder('Search for').fill(title1);
-		await page.getByLabel('Search for', {exact: true}).click();
+		await expect(title1Link).toBeVisible();
+		await expect(title2Link).toBeVisible();
 
-		await expect(page.getByText(title1, {exact: true})).toBeVisible();
-		await expect(page.getByText(title2)).not.toBeVisible();
+		const searchInput = page.getByPlaceholder('Search for');
+		const searchButton = page.getByLabel('Search for', {exact: true});
 
-		await page.getByPlaceholder('Search for').fill(title2);
-		await page.getByLabel('Search for', {exact: true}).click();
+		await searchInput.fill(title1);
+		await searchButton.click();
 
-		await expect(page.getByText(title1)).not.toBeVisible();
-		await expect(page.getByText(title2, {exact: true})).toBeVisible();
+		await expect(title1Link).toBeVisible();
+		await expect(title2Link).not.toBeVisible();
 
-		await page.getByPlaceholder('Search for').fill('Random Text');
-		await page.getByLabel('Search for', {exact: true}).click();
+		await searchInput.fill(title2);
+		await searchButton.click();
 
-		await expect(page.getByText(title1)).not.toBeVisible();
-		await expect(page.getByText(title2)).not.toBeVisible();
+		await expect(title1Link).not.toBeVisible();
+		await expect(title2Link).toBeVisible();
+
+		await searchInput.fill('Random Text');
+		await searchButton.click();
+
+		await expect(title1Link).not.toBeVisible();
+		await expect(title2Link).not.toBeVisible();
 	}
 );
 
