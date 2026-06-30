@@ -7,8 +7,11 @@ package com.liferay.exportimport.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.rest.client.dto.v1_0.Choice;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandler;
+import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerChoice;
+import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportPreviewResource;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -28,6 +31,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -36,6 +40,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -184,6 +189,7 @@ public class ExportPreviewResourceTest
 			_depotObjectDefinition, _siteObjectDefinition);
 	}
 
+	@FeatureFlag("LPD-38869")
 	@Override
 	@Test
 	public void testGetSiteExportPreview() throws Exception {
@@ -200,6 +206,9 @@ public class ExportPreviewResourceTest
 			exportPreviewResource.getSiteExportPreview(
 				testGroup.getExternalReferenceCode(), null, null),
 			_companyObjectDefinition, _depotObjectDefinition);
+		_testGetExportPreviewWithLayoutSet(
+			(startDate, endDate) -> exportPreviewResource.getSiteExportPreview(
+				testGroup.getExternalReferenceCode(), endDate, startDate));
 	}
 
 	@Override
@@ -283,6 +292,52 @@ public class ExportPreviewResourceTest
 		}
 
 		return 0L;
+	}
+
+	private Choice _getChoice(
+		PreviewPortletDataHandler previewPortletDataHandler, String name) {
+
+		for (PreviewPortletDataHandlerControl previewPortletDataHandlerControl :
+				previewPortletDataHandler.
+					getPreviewPortletDataHandlerControls()) {
+
+			if (!(previewPortletDataHandlerControl instanceof
+					PreviewPortletDataHandlerChoice)) {
+
+				continue;
+			}
+
+			PreviewPortletDataHandlerChoice previewPortletDataHandlerChoice =
+				(PreviewPortletDataHandlerChoice)
+					previewPortletDataHandlerControl;
+
+			for (Choice choice : previewPortletDataHandlerChoice.getChoices()) {
+				if (name.equals(choice.getName())) {
+					return choice;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private PreviewPortletDataHandler _getPreviewPortletDataHandler(
+		ExportPreview exportPreview, String name) {
+
+		for (PreviewPortletDataHandlerSection previewPortletDataHandlerSection :
+				exportPreview.getPreviewPortletDataHandlerSections()) {
+
+			for (PreviewPortletDataHandler previewPortletDataHandler :
+					previewPortletDataHandlerSection.
+						getPreviewPortletDataHandlers()) {
+
+				if (name.equals(previewPortletDataHandler.getName())) {
+					return previewPortletDataHandler;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private PreviewPortletDataHandlerSection
@@ -392,6 +447,39 @@ public class ExportPreviewResourceTest
 		}
 	}
 
+	private void _testGetExportPreviewWithLayoutSet(
+			UnsafeBiFunction<Date, Date, ExportPreview, Exception>
+				unsafeBiFunction)
+		throws Exception {
+
+		LayoutTestUtil.addTypeContentLayout(testGroup, false, false);
+		LayoutTestUtil.addTypeContentLayout(testGroup, true, false);
+		LayoutTestUtil.addTypeContentLayout(testGroup, true, false);
+
+		_layoutLocalService.deleteLayout(
+			LayoutTestUtil.addTypeContentLayout(testGroup, false, false),
+			ServiceContextTestUtil.getServiceContext());
+
+		PreviewPortletDataHandler previewPortletDataHandler =
+			_getPreviewPortletDataHandler(
+				unsafeBiFunction.apply(null, null),
+				"PORTLET_DATA_com_liferay_layout_admin_web_portlet_" +
+					"LayoutSetLayoutsPortlet");
+
+		Assert.assertNotNull(previewPortletDataHandler);
+
+		Choice choice = _getChoice(
+			previewPortletDataHandler, "publicLayoutPages");
+
+		Assert.assertEquals(1L, GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(1L, GetterUtil.getLong(choice.getDeletionCount()));
+
+		choice = _getChoice(previewPortletDataHandler, "privateLayoutPages");
+
+		Assert.assertEquals(2L, GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
+	}
+
 	private void _testGetPortletExportPreview(
 		ExportPreview exportPreview, String portletId) {
 
@@ -430,6 +518,9 @@ public class ExportPreviewResourceTest
 	private ObjectDefinition _companyObjectDefinition;
 	private ObjectDefinition _depotObjectDefinition;
 	private ExportPreviewResource _exportPreviewResource;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

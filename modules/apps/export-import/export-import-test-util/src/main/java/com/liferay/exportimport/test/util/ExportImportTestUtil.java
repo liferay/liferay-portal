@@ -40,8 +40,8 @@ public class ExportImportTestUtil {
 			"group/", groupId, StringPool.FORWARD_SLASH, fileName);
 	}
 
-	public static JSONArray getExportedObjectEntriesJSONArray(
-			String fileNamePrefix, InputStream inputStream, long groupId)
+	public static JSONArray getExportedJSONArray(
+			String fileNamePrefix, long groupId, InputStream inputStream)
 		throws Exception {
 
 		String batchFileNameWithPath = getBatchFileNameWithPath(

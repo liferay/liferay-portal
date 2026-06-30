@@ -48,9 +48,11 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
@@ -330,6 +332,14 @@ public class ImportProcessResourceTest
 				importProcessResource.postSiteImportProcessHttpResponse(
 					testGroup.getExternalReferenceCode(),
 					importProcessRequest));
+		_testPostImportProcessWithLayoutSet(
+			file -> _importPreviewResource.postSiteImportPreview(
+				testGroup.getExternalReferenceCode(), null,
+				HashMapBuilder.put(
+					"file", file
+				).build()),
+			importProcessRequest -> importProcessResource.postSiteImportProcess(
+				testGroup.getExternalReferenceCode(), importProcessRequest));
 	}
 
 	@FeatureFlag("LPD-17564")
@@ -584,10 +594,18 @@ public class ImportProcessResourceTest
 	}
 
 	private File _exportLayoutAsFile(long groupId) throws Exception {
+		return _exportLayoutAsFile(groupId, false, null);
+	}
+
+	private File _exportLayoutAsFile(
+			long groupId, boolean privateLayout, long[] layoutIds)
+		throws Exception {
+
 		Map<String, Serializable> parameterMap =
 			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildExportLayoutSettingsMap(
-					TestPropsValues.getUser(), groupId, false, null,
+					TestPropsValues.getUser(), groupId, privateLayout,
+					layoutIds,
 					HashMapBuilder.put(
 						PortletDataHandlerKeys.PORTLET_DATA,
 						new String[] {Boolean.TRUE.toString()}
@@ -652,6 +670,48 @@ public class ImportProcessResourceTest
 		return group.getGroupId();
 	}
 
+	private void _importLayoutSet(
+			UnsafeFunction<File, ImportPreview, Exception>
+				postImportPreviewUnsafeFunction,
+			UnsafeFunction<ImportProcessRequest, ImportProcess, Exception>
+				postImportProcessUnsafeFunction,
+			boolean privateLayout)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			testGroup, privateLayout, false);
+
+		File file = _exportLayoutAsFile(
+			testGroup.getGroupId(), privateLayout,
+			new long[] {layout.getLayoutId()});
+
+		_layoutLocalService.deleteLayout(
+			layout, ServiceContextTestUtil.getServiceContext());
+
+		postImportPreviewUnsafeFunction.apply(file);
+
+		ImportProcess importProcess = postImportProcessUnsafeFunction.apply(
+			new ImportProcessRequest());
+
+		assertValid(importProcess);
+
+		ExportImportTestUtil.retryAssert(
+			1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
+			() -> {
+				BackgroundTask backgroundTask =
+					_backgroundTaskLocalService.getBackgroundTask(
+						importProcess.getId());
+
+				Assert.assertEquals(
+					BackgroundTaskConstants.STATUS_SUCCESSFUL,
+					backgroundTask.getStatus());
+			});
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByUuidAndGroupId(
+				layout.getUuid(), testGroup.getGroupId(), privateLayout));
+	}
+
 	private ObjectDefinition _publishObjectDefinition(String scope)
 		throws Exception {
 
@@ -674,6 +734,21 @@ public class ImportProcessResourceTest
 		}
 
 		return objectDefinition;
+	}
+
+	private void _testPostImportProcessWithLayoutSet(
+			UnsafeFunction<File, ImportPreview, Exception>
+				postImportPreviewUnsafeFunction,
+			UnsafeFunction<ImportProcessRequest, ImportProcess, Exception>
+				postImportProcessUnsafeFunction)
+		throws Exception {
+
+		_importLayoutSet(
+			postImportPreviewUnsafeFunction, postImportProcessUnsafeFunction,
+			false);
+		_importLayoutSet(
+			postImportPreviewUnsafeFunction, postImportProcessUnsafeFunction,
+			true);
 	}
 
 	private void _testPostImportProcessWithObjectDefinition(
@@ -844,6 +919,9 @@ public class ImportProcessResourceTest
 
 	private ImportPreviewResource _importPreviewResource;
 	private ImportProcessResource _importProcessResource;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

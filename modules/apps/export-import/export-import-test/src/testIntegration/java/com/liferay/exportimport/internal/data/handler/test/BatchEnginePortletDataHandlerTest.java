@@ -2727,8 +2727,8 @@ public class BatchEnginePortletDataHandlerTest {
 		throws Exception {
 
 		try (InputStream inputStream = new FileInputStream(file)) {
-			return ExportImportTestUtil.getExportedObjectEntriesJSONArray(
-				fileNamePrefix, inputStream, groupId);
+			return ExportImportTestUtil.getExportedJSONArray(
+				fileNamePrefix, groupId, inputStream);
 		}
 	}
 
@@ -2827,9 +2827,8 @@ public class BatchEnginePortletDataHandlerTest {
 		JSONArray exportedJSONArray;
 
 		try (InputStream inputStream = new FileInputStream(file)) {
-			exportedJSONArray =
-				ExportImportTestUtil.getExportedObjectEntriesJSONArray(
-					fileNamePrefix + "_deletions", inputStream, groupId);
+			exportedJSONArray = ExportImportTestUtil.getExportedJSONArray(
+				fileNamePrefix + "_deletions", groupId, inputStream);
 		}
 
 		if (exportedJSONArray == null) {
