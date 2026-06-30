@@ -219,7 +219,16 @@ public class LayoutSetPrototypeMergeBackgroundTaskStatusMessageListener
 		File file = new File(_TEMP_DIR + sessionId + ".lar");
 
 		if ((file != null) && file.exists()) {
-			file.delete();
+			try {
+				file.delete();
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to delete cache file " + file.getAbsolutePath(),
+						exception);
+				}
+			}
 		}
 	}
 
