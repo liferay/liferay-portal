@@ -11,11 +11,14 @@ import {
 	waitFor,
 	within,
 } from '@testing-library/react';
-import React from 'react';
+import React, {useState} from 'react';
 
 import SpaceService from '../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService';
-import {ViewDashboardContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
-import {SpacesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/SpacesDropdown';
+import {
+	SpaceOption,
+	SpacesDropdown,
+	initialSpace,
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacesDropdown';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService'
@@ -23,11 +26,11 @@ jest.mock(
 
 const mockedSpaceService = SpaceService as jest.Mocked<typeof SpaceService>;
 
-const WrappedComponent = () => (
-	<ViewDashboardContextProvider value={{}}>
-		<SpacesDropdown />
-	</ViewDashboardContextProvider>
-);
+const WrappedComponent = () => {
+	const [space, setSpace] = useState<SpaceOption>(initialSpace);
+
+	return <SpacesDropdown onSelectSpace={setSpace} selectedSpace={space} />;
+};
 
 describe('[CMS Dashboard] Components: SpacesDropdown', () => {
 	const mockSpaces = [

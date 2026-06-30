@@ -9,11 +9,11 @@ import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
 import {
+	InventoryContext,
 	State,
-	ViewDashboardContext,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/FilterDropdown';
-import {InventoryAnalysisCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/InventoryAnalysisCard';
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
+import {InventoryAnalysisCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
 
 const mockContextValue: State = {
 	changeLanguage: jest.fn(),
@@ -54,9 +54,9 @@ describe('[CMS Dashboard] InventoryAnalysisCard', () => {
 		mockApiHelperGet(mockData);
 
 		render(
-			<ViewDashboardContext.Provider value={mockContextValue}>
+			<InventoryContext.Provider value={mockContextValue}>
 				<InventoryAnalysisCard />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>
@@ -73,9 +73,9 @@ describe('[CMS Dashboard] InventoryAnalysisCard', () => {
 		mockApiHelperGet(mockData);
 
 		render(
-			<ViewDashboardContext.Provider value={mockContextValue}>
+			<InventoryContext.Provider value={mockContextValue}>
 				<InventoryAnalysisCard />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>
@@ -100,9 +100,9 @@ describe('[CMS Dashboard] InventoryAnalysisCard', () => {
 		mockApiHelperGet(mockData);
 
 		render(
-			<ViewDashboardContext.Provider value={mockContextValue}>
+			<InventoryContext.Provider value={mockContextValue}>
 				<InventoryAnalysisCard />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>
@@ -123,9 +123,9 @@ describe('[CMS Dashboard] InventoryAnalysisCard', () => {
 		});
 
 		render(
-			<ViewDashboardContext.Provider value={mockContextValue}>
+			<InventoryContext.Provider value={mockContextValue}>
 				<InventoryAnalysisCard />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>

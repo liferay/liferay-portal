@@ -14,11 +14,9 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {
-	ViewDashboardContextProvider,
-	initialSpace,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
-import {ExpiredAssetsCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/ExpiredAssetsCard';
+import {initialSpace} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacesDropdown';
+import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
+import {ExpiredAssetsCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/ExpiredAssetsCard';
 
 const assetsList = [
 	{
@@ -302,9 +300,9 @@ describe('[CMS Dashboard] ExpiredAssetsCard', () => {
 		};
 
 		render(
-			<ViewDashboardContextProvider value={customValue}>
+			<InventoryContextProvider value={customValue}>
 				<ExpiredAssetsCard />
-			</ViewDashboardContextProvider>
+			</InventoryContextProvider>
 		);
 
 		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));

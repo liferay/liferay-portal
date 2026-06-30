@@ -14,10 +14,10 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {ViewDashboardContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
-import {AllVocabulariesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/AllVocabulariesDropdown';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/FilterDropdown';
-import {initialFilters} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/InventoryAnalysisCard';
+import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
+import {AllVocabulariesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/AllVocabulariesDropdown';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
+import {initialFilters} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
 
 const WrappedComponent = ({
 	onSelectItem,
@@ -29,7 +29,7 @@ const WrappedComponent = ({
 	);
 
 	return (
-		<ViewDashboardContextProvider value={{}}>
+		<InventoryContextProvider value={{}}>
 			<AllVocabulariesDropdown
 				item={selectedItem}
 				onSelectItem={(item) => {
@@ -37,7 +37,7 @@ const WrappedComponent = ({
 					onSelectItem(item);
 				}}
 			/>
-		</ViewDashboardContextProvider>
+		</InventoryContextProvider>
 	);
 };
 

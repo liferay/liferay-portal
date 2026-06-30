@@ -12,8 +12,8 @@ import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import {InventoryAnalysisDataType} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/InventoryAnalysisCard';
-import PaginatedTable from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/PaginatedTable';
+import {InventoryAnalysisDataType} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
+import PaginatedTable from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/PaginatedTable';
 
 const mockData: InventoryAnalysisDataType = {
 	inventoryAnalysisItems: [

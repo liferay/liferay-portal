@@ -14,15 +14,15 @@ import {
 import React from 'react';
 
 import SpaceService from '../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService';
+import {initialSpace} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/common/SpacesDropdown';
 import {
-	ViewDashboardContext,
+	InventoryContext,
 	initialLanguage,
-	initialSpace,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
 import {
 	LanguagesDropdown,
 	localizations,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/LanguagesDropdown';
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/LanguagesDropdown';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService'
@@ -47,9 +47,9 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 
 	it('renders correctly with all languages when all spaces is selected', async () => {
 		render(
-			<ViewDashboardContext.Provider value={mockedContext}>
+			<InventoryContext.Provider value={mockedContext}>
 				<LanguagesDropdown />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		const trigger = screen.getByRole('combobox', {
@@ -75,9 +75,9 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 
 	it('filters languages when searching and restores them when reopening', async () => {
 		render(
-			<ViewDashboardContext.Provider value={mockedContext}>
+			<InventoryContext.Provider value={mockedContext}>
 				<LanguagesDropdown />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		const trigger = screen.getByRole('combobox', {
@@ -153,7 +153,7 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 		} as any);
 
 		render(
-			<ViewDashboardContext.Provider
+			<InventoryContext.Provider
 				value={{
 					...mockedContext,
 					filters: {
@@ -163,7 +163,7 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 				}}
 			>
 				<LanguagesDropdown />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>
@@ -223,9 +223,9 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 		} as any);
 
 		render(
-			<ViewDashboardContext.Provider value={mockedContextWithSelection}>
+			<InventoryContext.Provider value={mockedContextWithSelection}>
 				<LanguagesDropdown />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>
@@ -247,7 +247,7 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 		} as any);
 
 		render(
-			<ViewDashboardContext.Provider
+			<InventoryContext.Provider
 				value={{
 					...mockedContext,
 					filters: {
@@ -257,7 +257,7 @@ describe('[CMS Dashboard] Components: LanguagesDropdown', () => {
 				}}
 			>
 				<LanguagesDropdown />
-			</ViewDashboardContext.Provider>
+			</InventoryContext.Provider>
 		);
 
 		await waitFor(() =>

@@ -10,7 +10,7 @@ import React from 'react';
 import {
 	BaseCard,
 	IBaseCard,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/BaseCard';
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/BaseCard';
 
 describe('[CMS Dashboard] Components: BaseCard', () => {
 	const mockedProps: IBaseCard = {

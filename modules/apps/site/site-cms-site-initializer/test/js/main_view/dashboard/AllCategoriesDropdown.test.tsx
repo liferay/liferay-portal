@@ -14,16 +14,16 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {ViewDashboardContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
-import {AllCategoriesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/AllCategoriesDropdown';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/FilterDropdown';
+import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
+import {AllCategoriesDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/AllCategoriesDropdown';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
 
 const WrappedComponent = ({
 	onSelectItem,
 }: {
 	onSelectItem: (item: Item) => void;
 }) => (
-	<ViewDashboardContextProvider value={{}}>
+	<InventoryContextProvider value={{}}>
 		<AllCategoriesDropdown
 			item={{
 				label: Liferay.Language.get('all-categories'),
@@ -31,7 +31,7 @@ const WrappedComponent = ({
 			}}
 			onSelectItem={onSelectItem}
 		/>
-	</ViewDashboardContextProvider>
+	</InventoryContextProvider>
 );
 
 describe('[CMS Dashboard] Components: AllCategoriesDropdown', () => {

@@ -20,7 +20,7 @@ import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/comm
 import {
 	ContentAndFilesCard,
 	IMetricsProps,
-} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/ContentAndFilesCard';
+} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/ContentAndFilesCard';
 
 const mockedResponse: IMetricsProps = {
 	categoriesCount: 10,

@@ -13,8 +13,8 @@ import {
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {IMetricsProps} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/ContentAndFilesCard';
-import {ContentCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/ContentCard';
+import {IMetricsProps} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/ContentAndFilesCard';
+import {ContentCard} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/ContentCard';
 
 describe('[CMS Dashboard] Components: ContentCard', () => {
 	beforeEach(() => {

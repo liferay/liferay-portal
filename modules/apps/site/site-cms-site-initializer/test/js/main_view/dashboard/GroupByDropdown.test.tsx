@@ -7,10 +7,10 @@ import '@testing-library/jest-dom';
 import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
-import {ViewDashboardContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/ViewDashboardContext';
-import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/FilterDropdown';
-import {GroupByDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/GroupByDropdown';
-import {InventoryAnalysisDataType} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/components/InventoryAnalysisCard';
+import {InventoryContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/InventoryContext';
+import {Item} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/FilterDropdown';
+import {GroupByDropdown} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/GroupByDropdown';
+import {InventoryAnalysisDataType} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/inventory/components/InventoryAnalysisCard';
 
 const mockFetch = (data: InventoryAnalysisDataType) => {
 	global.fetch = jest.fn().mockResolvedValue({
@@ -49,9 +49,9 @@ const WrappedComponent = ({
 	initialItem: Item;
 	onSelectItem: (item: Item) => void;
 }) => (
-	<ViewDashboardContextProvider value={mockContextValue}>
+	<InventoryContextProvider value={mockContextValue}>
 		<GroupByDropdown item={initialItem} onSelectItem={onSelectItem} />
-	</ViewDashboardContextProvider>
+	</InventoryContextProvider>
 );
 
 describe('[CMS Dashboard] Components: GroupByDropdown - All Options', () => {
