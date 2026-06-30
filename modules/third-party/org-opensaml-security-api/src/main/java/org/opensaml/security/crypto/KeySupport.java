@@ -45,21 +45,25 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.crypto.Cipher;
+import javax.crypto.EncryptedPrivateKeyInfo;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.collection.LazyMap;
 import net.shibboleth.utilities.java.support.logic.Constraint;
 
-import org.cryptacular.util.KeyPairUtil;
 import org.opensaml.security.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,11 +247,79 @@ public final class KeySupport {
             throws KeyException {
         Constraint.isNotNull(key, "Encoded key bytes cannot be null");
 
-        if (password != null && password.length > 0) {
-            return KeyPairUtil.decodePrivateKey(key, password);
-        } else {
-            return KeyPairUtil.decodePrivateKey(key);
-        } 
+        // LIFERAY FIPS PATCH: decode via the JCA (PKCS#8, DER or PEM, encrypted
+        // or unencrypted) instead of org.cryptacular.util.KeyPairUtil, which
+        // relies on the non-FIPS BouncyCastle lightweight engine. Liferay SAML
+        // is RSA/DSA-only and sources keys from a KeyStore, so PKCS#8 coverage
+        // is sufficient; legacy PKCS#1/SEC1 raw keys are not supported.
+        final byte[] derBytes = pemToDER(key);
+
+        try {
+            final PKCS8EncodedKeySpec keySpec;
+
+            if (password != null && password.length > 0) {
+                final EncryptedPrivateKeyInfo encryptedPrivateKeyInfo = new EncryptedPrivateKeyInfo(derBytes);
+
+                final SecretKeyFactory secretKeyFactory =
+                        SecretKeyFactory.getInstance(encryptedPrivateKeyInfo.getAlgName());
+
+                final Cipher cipher = Cipher.getInstance(encryptedPrivateKeyInfo.getAlgName());
+
+                final PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
+
+                try {
+                    cipher.init(Cipher.DECRYPT_MODE, secretKeyFactory.generateSecret(pbeKeySpec),
+                            encryptedPrivateKeyInfo.getAlgParameters());
+                } finally {
+                    pbeKeySpec.clearPassword();
+                }
+
+                keySpec = encryptedPrivateKeyInfo.getKeySpec(cipher);
+            } else {
+                keySpec = new PKCS8EncodedKeySpec(derBytes);
+            }
+
+            for (final String algorithm : new String[] {JCAConstants.KEY_ALGO_RSA, JCAConstants.KEY_ALGO_DSA, "EC"}) {
+                try {
+                    return KeyFactory.getInstance(algorithm).generatePrivate(keySpec);
+                } catch (final InvalidKeySpecException e) {
+                    // try the next algorithm
+                }
+            }
+
+            throw new KeyException("Unable to decode private key with any supported algorithm (RSA, DSA, EC)");
+        } catch (final KeyException e) {
+            throw e;
+        } catch (final GeneralSecurityException | IOException e) {
+            throw new KeyException("Unable to decode private key", e);
+        }
+    }
+
+    /**
+     * LIFERAY FIPS PATCH: convert a PEM-encoded key to DER, or return the input
+     * unchanged if it is already DER.
+     *
+     * @param key encoded key (PEM or DER)
+     *
+     * @return DER-encoded bytes
+     *
+     * @throws KeyException if PEM base64 content cannot be decoded
+     */
+    @Nonnull private static byte[] pemToDER(@Nonnull final byte[] key) throws KeyException {
+        if (key.length > 1 && key[0] == '-' && key[1] == '-') {
+            final String pem = new String(key, java.nio.charset.StandardCharsets.US_ASCII);
+
+            final String base64 = pem.replaceAll("-----BEGIN [^-]+-----", "")
+                    .replaceAll("-----END [^-]+-----", "").replaceAll("\\s", "");
+
+            try {
+                return Base64Support.decode(base64);
+            } catch (final Exception e) {
+                throw new KeyException("Unable to base64-decode PEM key", e);
+            }
+        }
+
+        return key;
     }
     
     /**
@@ -510,3 +582,4 @@ public final class KeySupport {
     }
 
 }
+/* @generated */

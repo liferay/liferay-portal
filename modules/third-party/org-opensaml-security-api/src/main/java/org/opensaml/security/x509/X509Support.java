@@ -31,34 +31,29 @@ import java.security.cert.CRLException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
 import net.shibboleth.utilities.java.support.codec.Base64Support;
 import net.shibboleth.utilities.java.support.logic.Constraint;
 import net.shibboleth.utilities.java.support.primitive.StringSupport;
 
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
-import org.cryptacular.util.CertUtil;
-import org.cryptacular.util.CodecUtil;
-import org.cryptacular.x509.GeneralNameType;
-import org.cryptacular.x509.dn.NameReader;
-import org.cryptacular.x509.dn.RDNSequence;
-import org.cryptacular.x509.dn.StandardAttributeType;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.crypto.KeySupport;
 import org.slf4j.Logger;
@@ -166,14 +161,32 @@ public class X509Support {
 
         final Logger log = getLogger();
         log.debug("Extracting CNs from the following DN: {}", dn.toString());
-        final RDNSequence attrs = NameReader.readX500Principal(dn);
-        // Have to copy because list returned from Attributes is unmodifiable, so can't reverse it.
-        final List<String> values = new ArrayList<>(attrs.getValues(StandardAttributeType.CommonName));
-        
-        // Reverse the order so that the most-specific CN is first in the list, 
+
+        // LIFERAY FIPS PATCH: parse the DN with the JDK's LdapName instead of
+        // org.cryptacular.x509.dn.NameReader (which pulls in non-FIPS
+        // BouncyCastle). LdapName parses RFC 2253 DNs; CN RDNs are returned
+        // least-specific first, so the reversal below preserves the original
+        // most-specific-first ordering.
+        final List<String> values = new ArrayList<>();
+
+        try {
+            final LdapName ldapName = new LdapName(dn.getName(X500Principal.RFC2253));
+
+            for (final Rdn rdn : ldapName.getRdns()) {
+                if ("CN".equalsIgnoreCase(rdn.getType())) {
+                    values.add(String.valueOf(rdn.getValue()));
+                }
+            }
+        } catch (final InvalidNameException e) {
+            log.error("Unable to parse DN '{}' for common names", dn.getName(), e);
+
+            return null;
+        }
+
+        // Reverse the order so that the most-specific CN is first in the list,
         // consistent with RFC 1779/2253 RDN ordering.
         Collections.reverse(values);
-        
+
         return values;
     }
 
@@ -191,16 +204,31 @@ public class X509Support {
             return null;
         }
 
+        // LIFERAY FIPS PATCH: read SANs through the JDK's
+        // X509Certificate#getSubjectAlternativeNames() instead of
+        // org.cryptacular.util.CertUtil + BouncyCastle ASN.1 types. The JDK
+        // already returns values in exactly the form the removed
+        // convertAltNameType() was reproducing (String for dNSName/rfc822/URI/
+        // directoryName/IP/registeredID; byte[] for otherName/x400/ediParty),
+        // keyed by the GeneralName tag number, so no conversion is needed.
         final List<Object> altNames = new LinkedList<>();
-        final GeneralNameType[] types = new GeneralNameType[nameTypes.length];
-        for (int i = 0; i < nameTypes.length; i++) {
-            types[i]= GeneralNameType.fromTagNumber(nameTypes[i]);
-        }
-        final GeneralNames names = CertUtil.subjectAltNames(certificate, types);
-        if (names != null) {
-            for (final GeneralName name : names.getNames()) {
-                altNames.add(convertAltNameType(name.getTagNo(), name.getName().toASN1Primitive()));
+
+        final Set<Integer> wantedTypes = new HashSet<>(Arrays.asList(nameTypes));
+
+        try {
+            final Collection<List<?>> subjectAltNames = certificate.getSubjectAlternativeNames();
+
+            if (subjectAltNames != null) {
+                for (final List<?> subjectAltName : subjectAltNames) {
+                    final Integer nameType = (Integer) subjectAltName.get(0);
+
+                    if (wantedTypes.contains(nameType)) {
+                        altNames.add(subjectAltName.get(1));
+                    }
+                }
             }
+        } catch (final CertificateParsingException e) {
+            getLogger().error("Unable to parse subject alternative names", e);
         }
         return altNames;
     }
@@ -246,12 +274,63 @@ public class X509Support {
         }
 
         try {
-            final ASN1Primitive ski = X509ExtensionUtil.fromExtensionValue(derValue);
-            return ((DEROctetString) ski).getOctets();
+            // LIFERAY FIPS PATCH: getExtensionValue returns the extnValue OCTET
+            // STRING wrapping the SubjectKeyIdentifier, which is itself an OCTET
+            // STRING. Unwrap both layers with a minimal DER reader instead of
+            // BouncyCastle's X509ExtensionUtil / DEROctetString.
+            return unwrapDEROctetString(unwrapDEROctetString(derValue));
         } catch (final IOException e) {
             getLogger().error("Unable to extract subject key identifier from certificate: ASN.1 parsing failed: " + e);
             return null;
         }
+    }
+
+    /**
+     * LIFERAY FIPS PATCH: read the content of a single DER OCTET STRING (tag
+     * 0x04) without BouncyCastle.
+     *
+     * @param der DER-encoded OCTET STRING
+     *
+     * @return the OCTET STRING content bytes
+     *
+     * @throws IOException if the input is not a definite-length DER OCTET STRING
+     */
+    @Nonnull private static byte[] unwrapDEROctetString(@Nonnull final byte[] der) throws IOException {
+        if (der.length < 2 || (der[0] & 0xff) != 0x04) {
+            throw new IOException("Expected a DER OCTET STRING");
+        }
+
+        int index = 1;
+
+        int length = der[index++] & 0xff;
+
+        if ((length & 0x80) != 0) {
+            final int lengthBytes = length & 0x7f;
+
+            if (lengthBytes == 0 || lengthBytes > 4) {
+                throw new IOException("Unsupported DER length encoding");
+            }
+
+            length = 0;
+
+            for (int i = 0; i < lengthBytes; i++) {
+                if (index >= der.length) {
+                    throw new IOException("Invalid DER OCTET STRING length");
+                }
+
+                length = (length << 8) | (der[index++] & 0xff);
+            }
+        }
+
+        if ((length < 0) || (length > der.length - index)) {
+            throw new IOException("Invalid DER OCTET STRING length");
+        }
+
+        final byte[] content = new byte[length];
+
+        System.arraycopy(der, index, content, 0, length);
+
+        return content;
     }
 
     /**
@@ -338,7 +417,20 @@ public class X509Support {
      */
     @Nullable public static Collection<X509Certificate> decodeCertificates(@Nonnull final byte[] certs)
             throws CertificateException {
-        return Arrays.asList(CertUtil.decodeCertificateChain(certs));
+        // LIFERAY FIPS PATCH: decode via the JCA CertificateFactory (handles
+        // both DER and PEM) instead of org.cryptacular.util.CertUtil.
+        final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+
+        final Collection<? extends java.security.cert.Certificate> certificates =
+                certificateFactory.generateCertificates(new ByteArrayInputStream(certs));
+
+        final List<X509Certificate> x509Certificates = new ArrayList<>(certificates.size());
+
+        for (final java.security.cert.Certificate certificate : certificates) {
+            x509Certificates.add((X509Certificate) certificate);
+        }
+
+        return x509Certificates;
     }
     
     /**
@@ -378,7 +470,11 @@ public class X509Support {
      */
     @Nullable public static X509Certificate decodeCertificate(@Nonnull final byte[] cert) throws CertificateException {
         try {
-            return CertUtil.decodeCertificate(cert);
+            // LIFERAY FIPS PATCH: decode via the JCA CertificateFactory instead
+            // of org.cryptacular.util.CertUtil.
+            final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+
+            return (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(cert));
         } catch (final IllegalArgumentException e) {
             throw new CertificateException(e);
         }
@@ -520,45 +616,10 @@ public class X509Support {
         return builder.toString();
     }
 
-// Checkstyle: CyclomaticComplexity OFF
-    /**
-     * Convert types returned by Bouncy Castle X509ExtensionUtil.getSubjectAlternativeNames(X509Certificate) to be
-     * consistent with what is documented for: java.security.cert.X509Certificate#getSubjectAlternativeNames.
-     * 
-     * @param nameType the alt name type
-     * @param nameValue the alt name value
-     * @return converted representation of name value, based on type
-     */
-    @Nullable private static Object convertAltNameType(@Nonnull final Integer nameType,
-            @Nonnull final ASN1Primitive nameValue) {
-        final Logger log = getLogger();
-        
-        if (DIRECTORY_ALT_NAME.equals(nameType) || DNS_ALT_NAME.equals(nameType) || RFC822_ALT_NAME.equals(nameType)
-                || URI_ALT_NAME.equals(nameType) || REGISTERED_ID_ALT_NAME.equals(nameType)) {
-
-            // these are just strings in the appropriate format already, return as-is
-            return nameValue.toString();
-        } else if (IP_ADDRESS_ALT_NAME.equals(nameType)) {
-            // this is a byte[], IP addr in network byte order
-            final byte [] nameValueBytes = ((DEROctetString) nameValue).getOctets();
-            try {
-                return InetAddresses.toAddrString(InetAddress.getByAddress(nameValueBytes));
-            } catch (final UnknownHostException e) {
-                log.warn("Was unable to convert IP address alt name byte[] to string: " +
-                        CodecUtil.hex(nameValueBytes, true), e);
-                return null;
-            }
-        } else if (EDI_PARTY_ALT_NAME.equals(nameType) || X400ADDRESS_ALT_NAME.equals(nameType)
-                || OTHER_ALT_NAME.equals(nameType)) {
-
-            // these have no defined representation, just return a DER-encoded byte[]
-            return nameValue;
-        } else {
-            log.warn("Encountered unknown alt name type '{}', adding as-is", nameType);
-            return nameValue;
-        }
-    }
-// Checkstyle: CyclomaticComplexity ON
+    // LIFERAY FIPS PATCH: convertAltNameType(Integer, ASN1Primitive) removed.
+    // getAltNames() now uses the JDK X509Certificate#getSubjectAlternativeNames(),
+    // which already returns values in the converted form this method produced,
+    // so no BouncyCastle ASN.1 conversion is needed.
     
     /**
      * Get an SLF4J Logger.
@@ -570,3 +631,4 @@ public class X509Support {
     }
     
 }
+/* @generated */
