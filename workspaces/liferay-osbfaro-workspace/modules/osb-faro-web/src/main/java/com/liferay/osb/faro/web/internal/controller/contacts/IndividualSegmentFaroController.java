@@ -21,6 +21,7 @@ import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.controller.main.PreferencesFaroController;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
+import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.IndividualSegmentActivationDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.IndividualSegmentDisplay;
@@ -336,6 +337,37 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 			groupId, channelId, contactsEntityId, contactsEntityType,
 			dataSourceId, query, segmentTypes, state, cur, delta,
 			orderByFieldsFaroParam.getValue());
+	}
+
+	@GET
+	@Path("/search")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public FaroFDSResultsDisplay<IndividualSegment> search(
+			@PathParam("groupId") long groupId,
+			@QueryParam("channelId") String channelId,
+			@QueryParam("dataSourceId") String dataSourceId,
+			@QueryParam("search") String search,
+			@DefaultValue(StringPool.BLANK) @QueryParam("segmentTypes")
+				FaroParam<List<String>> segmentTypesFaroParam,
+			@QueryParam("state") String state, @QueryParam("page") int page,
+			@QueryParam("pageSize") int pageSize)
+		throws Exception {
+
+		List<String> segmentTypes = segmentTypesFaroParam.getValue();
+
+		if (ListUtil.isEmpty(segmentTypes)) {
+			segmentTypes = Arrays.asList("BATCH", "REAL_TIME");
+		}
+
+		FaroProject faroProject =
+			faroProjectLocalService.getFaroProjectByGroupId(groupId);
+
+		return new FaroFDSResultsDisplay<>(
+			contactsEngineClient.getIndividualSegments(
+				faroProject, channelId, dataSourceId, search,
+				Arrays.asList("authorName", "name"), null, segmentTypes, state,
+				IndividualSegment.Status.ACTIVE.name(), page, pageSize, null),
+			IndividualSegmentDisplay::new, page, pageSize);
 	}
 
 	@Path("/{id}/activation")
