@@ -16,29 +16,14 @@ const FILE_MAX_SIZE_LABEL = 'Maximum File Upload Size';
 const MAX_SIZE_TO_COPY_LABEL = 'Size Limit for Copying Files';
 
 test.describe('system scope', () => {
-	let originalFileMaxSize: string;
-	let originalMaxSizeToCopy: string;
-
-	test.beforeEach(async ({fileSizeLimitsSystemSettingsPage, page}) => {
+	test.beforeEach(async ({fileSizeLimitsSystemSettingsPage}) => {
 		await fileSizeLimitsSystemSettingsPage.goto();
-
-		originalFileMaxSize = await page
-			.getByLabel(FILE_MAX_SIZE_LABEL)
-			.inputValue();
-		originalMaxSizeToCopy = await page
-			.getByLabel(MAX_SIZE_TO_COPY_LABEL)
-			.inputValue();
 	});
 
-	test.afterEach(async ({fileSizeLimitsSystemSettingsPage, page}) => {
+	test.afterEach(async ({fileSizeLimitsSystemSettingsPage}) => {
 		await fileSizeLimitsSystemSettingsPage.goto();
 
-		await page.getByLabel(FILE_MAX_SIZE_LABEL).fill(originalFileMaxSize);
-		await page
-			.getByLabel(MAX_SIZE_TO_COPY_LABEL)
-			.fill(originalMaxSizeToCopy);
-
-		await fileSizeLimitsSystemSettingsPage.save();
+		await fileSizeLimitsSystemSettingsPage.resetToDefaultValues();
 	});
 
 	test(
@@ -72,29 +57,14 @@ test.describe('system scope', () => {
 });
 
 test.describe('instance scope', () => {
-	let originalFileMaxSize: string;
-	let originalMaxSizeToCopy: string;
-
-	test.beforeEach(async ({fileSizeLimitsInstanceSettingsPage, page}) => {
+	test.beforeEach(async ({fileSizeLimitsInstanceSettingsPage}) => {
 		await fileSizeLimitsInstanceSettingsPage.goto();
-
-		originalFileMaxSize = await page
-			.getByLabel(FILE_MAX_SIZE_LABEL)
-			.inputValue();
-		originalMaxSizeToCopy = await page
-			.getByLabel(MAX_SIZE_TO_COPY_LABEL)
-			.inputValue();
 	});
 
-	test.afterEach(async ({fileSizeLimitsInstanceSettingsPage, page}) => {
+	test.afterEach(async ({fileSizeLimitsInstanceSettingsPage}) => {
 		await fileSizeLimitsInstanceSettingsPage.goto();
 
-		await page.getByLabel(FILE_MAX_SIZE_LABEL).fill(originalFileMaxSize);
-		await page
-			.getByLabel(MAX_SIZE_TO_COPY_LABEL)
-			.fill(originalMaxSizeToCopy);
-
-		await fileSizeLimitsInstanceSettingsPage.save();
+		await fileSizeLimitsInstanceSettingsPage.resetToDefaultValues();
 	});
 
 	test(

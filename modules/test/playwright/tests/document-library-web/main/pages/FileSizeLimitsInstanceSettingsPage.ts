@@ -37,6 +37,10 @@ export class FileSizeLimitsInstanceSettingsPage {
 		await this.save();
 	}
 
+	async resetToDefaultValues() {
+		await this.instanceSettingsPage.resetInstanceSetting();
+	}
+
 	async save() {
 		await this.saveButton.click();
 		await waitForAlert(this.page);
