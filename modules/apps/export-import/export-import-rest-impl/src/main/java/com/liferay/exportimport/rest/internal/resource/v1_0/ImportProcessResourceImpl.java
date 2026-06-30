@@ -39,11 +39,15 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.zip.ZipReader;
+import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.staging.StagingGroupHelper;
@@ -365,6 +369,27 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 		return group;
 	}
 
+	private boolean _isPrivateLayout(FileEntry fileEntry) throws Exception {
+		try (InputStream inputStream = fileEntry.getContentStream();
+
+			ZipReader zipReader = _zipReaderFactory.getZipReader(inputStream)) {
+
+			Document document = SAXReaderUtil.read(
+				zipReader.getEntryAsString("/manifest.xml"));
+
+			Element rootElement = document.getRootElement();
+
+			Element headerElement = rootElement.element("header");
+
+			if (headerElement == null) {
+				return false;
+			}
+
+			return GetterUtil.getBoolean(
+				headerElement.attributeValue("private-layout"));
+		}
+	}
+
 	private ImportProcess _postLayoutImportProcess(
 			Group group, ImportProcessRequest importProcessRequest)
 		throws Exception {
@@ -389,8 +414,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			_exportImportConfigurationSettingsMapFactory.
 				buildImportLayoutSettingsMap(
 					contextUser.getUserId(), groupId,
-					MapUtil.getBoolean(parameterMap, "privateLayout"), null,
-					parameterMap, contextAcceptLanguage.getPreferredLocale(),
+					_isPrivateLayout(fileEntry), null, parameterMap,
+					contextAcceptLanguage.getPreferredLocale(),
 					contextUser.getTimeZone());
 
 		ExportImportConfiguration exportImportConfiguration =
@@ -595,5 +620,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private ZipReaderFactory _zipReaderFactory;
 
 }
