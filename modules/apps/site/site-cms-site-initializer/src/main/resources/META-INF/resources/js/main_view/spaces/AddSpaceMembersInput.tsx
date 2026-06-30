@@ -29,11 +29,6 @@ interface AdminUserGroup {
 	usersCount: number;
 }
 
-const ENDPOINTS = {
-	[MemberType.GROUPS]: `${location.origin}/o/headless-admin-user/v1.0/user-groups`,
-	[MemberType.USERS]: `${location.origin}/o/headless-admin-user/v1.0/user-accounts`,
-} as const;
-
 export default function AddSpaceMembersInput({
 	excludeMembers,
 	filter,
@@ -44,7 +39,10 @@ export default function AddSpaceMembersInput({
 	const [value, setValue] = useState('');
 
 	const apiURL = useMemo(() => {
-		const endpoint = ENDPOINTS[selectValue];
+		const endpoint =
+			selectValue === MemberType.USERS
+				? `${location.origin}/o/headless-admin-user/v1.0/user-accounts`
+				: `${location.origin}/o/headless-admin-user/v1.0/user-groups`;
 
 		const filters: string[] = [];
 
