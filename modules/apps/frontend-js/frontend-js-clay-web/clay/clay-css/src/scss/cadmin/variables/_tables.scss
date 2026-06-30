@@ -51,8 +51,8 @@ $cadmin-table-striped-order: odd !default;
 // Table Cell applies to `th` and `td`
 
 $cadmin-table-cell-gutters: 20px !default;
-$cadmin-table-cell-padding-lg: 17px !default;
 $cadmin-table-cell-padding: 8px 16px !default;
+$cadmin-table-cell-padding-lg: 17px !default;
 $cadmin-table-cell-padding-sm: 4px 16px !default;
 
 $cadmin-table-cell-expand-min-width: 200px !default; // 200px
@@ -126,14 +126,14 @@ $cadmin-table-divider-font-weight: $cadmin-font-weight-semi-bold !default;
 $cadmin-table-divider-padding: 8px 16px 8px $cadmin-table-cell-gutters !default;
 $cadmin-table-divider-text-transform: uppercase !default;
 
+$cadmin-table-quick-action-menu-accent-active-bg: $cadmin-table-hover-bg !default;
+$cadmin-table-quick-action-menu-accent-bg: $cadmin-table-accent-bg !default;
 $cadmin-table-quick-action-menu-align-items: flex-start !default;
 $cadmin-table-quick-action-menu-bg: if(
 	$cadmin-table-bg == transparent,
 	$cadmin-body-bg,
 	$cadmin-table-bg
 ) !default;
-$cadmin-table-quick-action-menu-accent-bg: $cadmin-table-accent-bg !default;
-$cadmin-table-quick-action-menu-accent-active-bg: $cadmin-table-hover-bg !default;
 
 $cadmin-table-quick-action-menu-hover-bg: $cadmin-table-hover-bg !default;
 
@@ -801,8 +801,8 @@ $cadmin-table-list-divider-padding-y: 8px !default;
 $cadmin-table-list-quick-action-menu-align-items: center !default;
 $cadmin-table-list-quick-action-menu-bg: $cadmin-table-list-bg !default;
 
-$cadmin-table-list-quick-action-menu-accent-bg: $cadmin-table-list-accent-bg !default;
 $cadmin-table-list-quick-action-menu-accent-active-bg: $cadmin-table-list-active-bg !default;
+$cadmin-table-list-quick-action-menu-accent-bg: $cadmin-table-list-accent-bg !default;
 
 $cadmin-table-list-quick-action-menu-hover-bg: $cadmin-table-list-hover-bg !default;
 

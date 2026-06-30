@@ -384,14 +384,14 @@ $cadmin-card-footer: map-deep-merge(
 
 // .rounded-*
 
-$cadmin-card-rounded-inner-border-radius: calc(
-	#{$cadmin-rounded-border-radius} - #{$cadmin-card-border-width}
-) !default;
 $cadmin-card-rounded-0-inner-border-radius: calc(
 	#{$cadmin-rounded-0-border-radius} - #{$cadmin-card-border-width}
 ) !default;
 $cadmin-card-rounded-circle-inner-border-radius: calc(
 	#{$cadmin-rounded-circle-border-radius} - #{$cadmin-card-border-width}
+) !default;
+$cadmin-card-rounded-inner-border-radius: calc(
+	#{$cadmin-rounded-border-radius} - #{$cadmin-card-border-width}
 ) !default;
 
 $cadmin-checkbox-left-card-padding: 50px !default;

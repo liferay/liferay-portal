@@ -1,13 +1,13 @@
-$modal-sm: 320px !default;
-$modal-md: 600px !default;
 $modal-lg: 896px !default;
+$modal-md: 600px !default;
+$modal-sm: 320px !default;
 $modal-xl: 1140px !default;
 
 $modal-backdrop-bg: $gray-800 !default;
 $modal-backdrop-opacity: 0.8 !default;
 
-$modal-content-box-shadow-xs: 0 0 3px 1px rgba(0, 0, 0, 0.2) !default;
 $modal-content-border-color: transparent !default;
+$modal-content-box-shadow-xs: 0 0 3px 1px rgba(0, 0, 0, 0.2) !default;
 
 $modal-inner-padding: 1.5rem !default; // 24px
 

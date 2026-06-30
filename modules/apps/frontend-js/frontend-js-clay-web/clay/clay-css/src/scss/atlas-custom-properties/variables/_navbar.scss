@@ -15,13 +15,13 @@ $navbar-title-font-weight: var(
 $navbar-title-margin-bottom: var(--navbar-title-margin-bottom, 0) !default;
 $navbar-title-text-transform: var(--navbar-title-text-transform, none) !default;
 
-$navbar-text-truncate-spacer-right: var(
-	--navbar-text-truncate-spacer-right,
-	25px
-) !default;
 $navbar-text-truncate-max-width: var(
 	--navbar-text-truncate-max-width,
 	200px
+) !default;
+$navbar-text-truncate-spacer-right: var(
+	--navbar-text-truncate-spacer-right,
+	25px
 ) !default;
 
 $navbar-text-truncate: () !default;

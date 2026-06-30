@@ -36,7 +36,6 @@ $modal-transition: transform 0.3s ease-out !default;
 // Modal Content
 
 $modal-content-bg: var(--modal-content-bg, $white) !default;
-$modal-content-color: var(--modal-content-color, inherit) !default;
 $modal-content-border-color: var(
 	--modal-content-border-color,
 	transparent
@@ -49,6 +48,7 @@ $modal-content-border-width: var(
 	--modal-content-border-width,
 	$border-width
 ) !default;
+$modal-content-color: var(--modal-content-color, inherit) !default;
 
 $modal-content-inner-border-radius: calc(
 	#{$modal-content-border-radius} - #{$modal-content-border-width}

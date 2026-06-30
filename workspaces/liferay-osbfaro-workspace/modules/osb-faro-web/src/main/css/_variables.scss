@@ -28,23 +28,23 @@ $propertyGroupsColors: (
 /**
  * Field types
  */
-$fieldLightBlue: #54b7ff;
 $fieldDarkBlue: #849ae8;
-$fieldPurple: #ad7aff;
 $fieldGreen: #96dc7a;
+$fieldLightBlue: #54b7ff;
+$fieldPurple: #ad7aff;
 
 /**
  * Layout
  */
+$dataCardMaxHeight: 450px;
 $gridGap: 24px;
 $gridMaxPageWidth: map-get($cadmin-grid-breakpoints, xl);
 $gridMaxPageWidthLg: map-get($cadmin-grid-breakpoints, lg);
+$headerCardMaxHeight: 230px;
+$listPadding: 24px;
 $maxGridItems: 4;
 $maxGridItemsMd: 3;
 $maxGridItemsSm: 2;
-$dataCardMaxHeight: 450px;
-$headerCardMaxHeight: 230px;
-$listPadding: 24px;
 $navbarHeight: 72px;
 $pagePadding: 48px;
 $profileHeaderMargin: 16px;
@@ -81,9 +81,9 @@ $primaryLighten23: #80acff;
 $primaryLighten33: #b3cdff;
 $primaryLighten45: #f0f5ff;
 
-$white: #fff;
 $black: #000;
 $lightBackground: #f1f2f5;
+$white: #fff;
 
 $error: #da1414;
 $errorLighten28: #f48989;
@@ -137,16 +137,16 @@ $colors: (
 /**
  * Type
  */
-$fontSizeExtraSmall: 12px;
-$fontSizeSmall: 14px;
-$fontSizeMedium: 16px;
-$fontSizeLarge: 20px;
-$fontSizeExtraLarge: 24px;
 $fontSizeErrorCode: 72px;
+$fontSizeExtraLarge: 24px;
+$fontSizeExtraSmall: 12px;
+$fontSizeLarge: 20px;
+$fontSizeMedium: 16px;
+$fontSizeSmall: 14px;
 
+$fontWeightBold: 700;
 $fontWeightRegular: 400;
 $fontWeightSemiBold: 600;
-$fontWeightBold: 700;
 
 /**
  * Z-Index

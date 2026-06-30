@@ -500,6 +500,8 @@ $webkit-font-smoothing: antialiased !default;
 
 $font-import-url: null !default;
 
+$font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+	'Liberation Mono', 'Courier New', monospace !default;
 $font-family-sans-serif:
 	system-ui,
 	-apple-system,
@@ -516,8 +518,6 @@ $font-family-sans-serif:
 	'Segoe UI Emoji',
 	'Segoe UI Symbol' !default;
 $font-family-serif: Georgia, 'Times New Roman', Times, serif !default;
-$font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-	'Liberation Mono', 'Courier New', monospace !default;
 
 $font-family-base: $font-family-sans-serif !default;
 
@@ -699,9 +699,9 @@ $small-font-size: 80% !default;
 
 $text-muted: $gray-500 !default;
 
+$blockquote-font-size: calc(#{$font-size-base} * 1.25) !default;
 $blockquote-small-color: $gray-600 !default;
 $blockquote-small-font-size: $small-font-size !default;
-$blockquote-font-size: calc(#{$font-size-base} * 1.25) !default;
 
 $hr-border-color: rgba($black, 0.1) !default;
 $hr-border-width: $border-width !default;

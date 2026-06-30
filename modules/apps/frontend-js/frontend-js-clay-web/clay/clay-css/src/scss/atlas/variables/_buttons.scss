@@ -52,9 +52,9 @@ $btn-link-disabled-color: $link-color !default;
 
 $btn-border-radius-lg: $border-radius !default;
 $btn-font-size-lg: $font-size-lg !default; // 18px
+$btn-inline-item-font-size-lg: $font-size-lg !default; // 18px
 $btn-padding-x-lg: 1.5rem !default; // 24px
 $btn-padding-y-lg: 0.59375rem !default; // 9.5px
-$btn-inline-item-font-size-lg: $font-size-lg !default; // 18px
 
 $btn-lg: () !default;
 $btn-lg: map-deep-merge(

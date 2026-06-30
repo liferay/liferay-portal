@@ -1,13 +1,13 @@
+$color-bg: #fff;
+$color-bg-alt: #f7f7f8;
+$color-bg-dark: #34373e;
+$color-bg-medium: #fcfcfc;
+$color-border: #e6e7e7;
+$color-disabled: #dbe6ff;
 $color-fg: #5c5e5e;
 $color-fg-alt: #7f848d;
 $color-fg-alt-light: #dadada;
-$color-bg: #fff;
-$color-bg-medium: #fcfcfc;
-$color-bg-alt: #f7f7f8;
-$color-bg-dark: #34373e;
-$color-border: #e6e7e7;
 $color-shadow: rgba(92, 94, 94, 0.14);
-$color-disabled: #dbe6ff;
 
 $color-theme: #4c84ff;
 $color-theme-dark: #255cd6;
@@ -16,14 +16,14 @@ $color-theme-transparent: rgba($color-theme, 0.067);
 
 $color-modal-mask: rgba(52, 55, 62, 0.6);
 
+$color-mood-bad: #ec676a;
+$color-mood-bad-bg: #fef7f7;
+$color-mood-bad-text: #e30002;
 $color-mood-default: $color-theme;
 $color-mood-good: #4bc286;
 $color-mood-good-text: #058343;
 $color-mood-neutral: #ffb68d;
 $color-mood-neutral-text: #ee8e58;
-$color-mood-bad: #ec676a;
-$color-mood-bad-text: #e30002;
-$color-mood-bad-bg: #fef7f7;
 $color-mood-warning: #ffb68d;
 
 $font-weight-semi-bold: 500;
@@ -42,25 +42,25 @@ $placeholder-colors: (
 $shadow: 0 10px 20px $color-shadow;
 $shadow-focus: 0 3px 20px 0 rgba($color-theme, 0.5);
 
-$xs-gutter: 5px;
-$sm-gutter: 10px;
 $gutter: 20px;
 $lg-gutter: 40px;
+$sm-gutter: 10px;
+$xs-gutter: 5px;
 
+$content-max-width: 1440px;
 $frame-size: 70px;
 $frame-size-small: 56px;
-$sidebar-width: 300px;
 $liferay-sidebars-width: 320px;
-$content-max-width: 1440px;
+$sidebar-width: 300px;
 
-$transition: ease 200ms;
 $micro-transition: ease 100ms;
+$transition: ease 200ms;
 
 $border-radius: 8px;
 $standard-radius: 8px;
 
 //breakpoints
 
-$bp-xxsmall: 376px;
-$bp-xsmall: 577px;
 $bp-small: 767px;
+$bp-xsmall: 577px;
+$bp-xxsmall: 376px;

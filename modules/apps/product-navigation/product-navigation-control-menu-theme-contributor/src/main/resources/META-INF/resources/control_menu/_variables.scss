@@ -14,19 +14,19 @@ $control-menu-level-1-active-border: $cadmin-primary-l1 !default;
 $control-menu-level-1-active-border-width: 2px !default;
 $control-menu-level-1-bg: $cadmin-dark-l1 !default;
 $control-menu-level-1-color: $cadmin-gray-400 !default;
-$control-menu-level-1-link-color: $cadmin-gray-400 !default;
-$control-menu-level-1-link-hover-color: $cadmin-white !default;
 $control-menu-level-1-link-background-color: unquote(
 	'hsl(from #{$cadmin-white} h s l / 0.03)'
 ) !default;
+$control-menu-level-1-link-color: $cadmin-gray-400 !default;
+$control-menu-level-1-link-hover-color: $cadmin-white !default;
 
 $control-menu-level-1-light-bg: $cadmin-white !default;
 $control-menu-level-1-light-border: 0.05rem solid $cadmin-secondary-l0;
 $control-menu-level-1-light-border-color: $cadmin-secondary-l2;
 $control-menu-level-1-light-color: $cadmin-gray-600 !default;
+$control-menu-level-1-light-link-background-color: $cadmin-gray-200 !default;
 $control-menu-level-1-light-link-color: $cadmin-gray-600 !default;
 $control-menu-level-1-light-link-hover-color: $cadmin-gray-800 !default;
-$control-menu-level-1-light-link-background-color: $cadmin-gray-200 !default;
 
 $control-menu-level-2-bg: $cadmin-white !default;
 $control-menu-level-2-color: $cadmin-dark !default;

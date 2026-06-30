@@ -36,10 +36,10 @@ $modal-transition: transform 0.3s ease-out !default;
 // Modal Content
 
 $modal-content-bg: $white !default;
-$modal-content-color: null !default;
 $modal-content-border-color: rgba($black, 0.2) !default;
 $modal-content-border-radius: $border-radius-lg !default;
 $modal-content-border-width: $border-width !default;
+$modal-content-color: null !default;
 
 $modal-content-inner-border-radius: calc(
 	#{$modal-content-border-radius} - #{$modal-content-border-width}
@@ -77,8 +77,8 @@ $modal-header-border-color: $border-color !default;
 $modal-header-border-width: $modal-content-border-width !default;
 $modal-header-color: null !default;
 $modal-header-height: 4rem !default;
-$modal-header-padding-y: 1rem !default;
 $modal-header-padding-x: 1rem !default;
+$modal-header-padding-y: 1rem !default;
 
 $modal-header-padding: $modal-header-padding-y $modal-header-padding-x !default;
 

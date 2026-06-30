@@ -38,9 +38,9 @@ $cadmin-modal-transition: transform 0.3s ease-out !default;
 // Modal Content
 
 $cadmin-modal-content-bg: $cadmin-white !default;
-$cadmin-modal-content-color: null !default;
 $cadmin-modal-content-border-color: transparent !default;
 $cadmin-modal-content-border-width: $cadmin-border-width !default;
+$cadmin-modal-content-color: null !default;
 
 $cadmin-modal-content-border-radius: $cadmin-border-radius-lg !default;
 $cadmin-modal-content-inner-border-radius: calc(
@@ -84,8 +84,8 @@ $cadmin-modal-header-border-color: $cadmin-gray-300 !default;
 $cadmin-modal-header-border-width: $cadmin-modal-content-border-width !default;
 $cadmin-modal-header-color: null !default;
 $cadmin-modal-header-height: 64px !default;
-$cadmin-modal-header-padding-y: 24px !default;
 $cadmin-modal-header-padding-x: 24px !default;
+$cadmin-modal-header-padding-y: 24px !default;
 
 $cadmin-modal-header-padding: 24px !default; // 24px
 

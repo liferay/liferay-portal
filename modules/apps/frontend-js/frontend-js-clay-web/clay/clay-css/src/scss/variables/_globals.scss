@@ -380,19 +380,19 @@ $line-height-sm: 1.5 !default;
 $border-color: $gray-300 !default;
 $border-width: 0.0625rem !default;
 
+$border-radius: 0.25rem !default;
 $border-radius-lg: 0.3rem !default;
 $border-radius-sm: 0.2rem !default;
 $border-radius-xl: 1rem !default;
-$border-radius: 0.25rem !default;
 
 $rounded-0-border-radius: 0px !default;
 $rounded-border-radius: $border-radius !default;
 $rounded-circle-border-radius: 5000px !default;
 $rounded-pill: 50rem !default;
 
+$box-shadow: 0 0.5rem 1rem rgba($black, 0.15) !default;
 $box-shadow-lg: 0 1rem 3rem rgba($black, 0.175) !default;
 $box-shadow-sm: 0 0.125rem 0.25rem rgba($black, 0.075) !default;
-$box-shadow: 0 0.5rem 1rem rgba($black, 0.15) !default;
 
 /// @deprecated as of v3.x with no replacement, Clay CSS inlines SVG icons for dropdown-toggle carets
 
@@ -871,9 +871,9 @@ $small-font-size: 80% !default;
 
 $text-muted: $gray-600 !default;
 
+$blockquote-font-size: calc(#{$font-size-base} * 1.25) !default;
 $blockquote-small-color: $gray-600 !default;
 $blockquote-small-font-size: $small-font-size !default;
-$blockquote-font-size: calc(#{$font-size-base} * 1.25) !default;
 
 $hr-border-color: rgba($black, 0.1) !default;
 $hr-border-width: $border-width !default;

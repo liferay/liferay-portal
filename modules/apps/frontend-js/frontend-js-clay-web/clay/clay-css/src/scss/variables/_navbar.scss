@@ -12,8 +12,8 @@ $navbar-title-font-weight: $font-weight-semi-bold !default;
 $navbar-title-margin-bottom: 0rem !default;
 $navbar-title-text-transform: null !default;
 
-$navbar-text-truncate-spacer-right: 1.5625rem !default; // 25px
 $navbar-text-truncate-max-width: 12.5rem !default; // 200px
+$navbar-text-truncate-spacer-right: 1.5625rem !default; // 25px
 
 $navbar-text-truncate: () !default;
 $navbar-text-truncate: map-deep-merge(

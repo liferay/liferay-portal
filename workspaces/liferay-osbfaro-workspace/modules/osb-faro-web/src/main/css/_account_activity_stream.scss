@@ -1,20 +1,20 @@
-$activity-stream-rail-left: 0.6875rem;
-$activity-stream-rail-padding-left: 1.9375rem;
-$activity-stream-rail-width: 0.125rem;
 $activity-stream-card-body-padding: 1.5rem;
-$activity-stream-session-dot-size: 1.125rem;
 $activity-stream-event-dot-size: 0.5rem;
 $activity-stream-rail-bottom-tail: 4rem;
+$activity-stream-rail-left: 0.6875rem;
+$activity-stream-rail-padding-left: 1.9375rem;
+$activity-stream-event-attributes-padding-left: $activity-stream-rail-padding-left +
+	$activity-stream-card-body-padding + 6.5rem;
+$activity-stream-rail-width: 0.125rem;
+$activity-stream-rail-center-offset: $activity-stream-rail-left -
+	$activity-stream-rail-padding-left + ($activity-stream-rail-width * 0.5);
 $activity-stream-row-margin-left: -($activity-stream-rail-padding-left +
 			$activity-stream-card-body-padding);
 $activity-stream-row-margin-right: -$activity-stream-card-body-padding;
 $activity-stream-row-padding-left: $activity-stream-rail-padding-left +
 	$activity-stream-card-body-padding + 1rem;
 $activity-stream-row-padding-right: $activity-stream-card-body-padding + 1rem;
-$activity-stream-event-attributes-padding-left: $activity-stream-rail-padding-left +
-	$activity-stream-card-body-padding + 6.5rem;
-$activity-stream-rail-center-offset: $activity-stream-rail-left -
-	$activity-stream-rail-padding-left + ($activity-stream-rail-width * 0.5);
+$activity-stream-session-dot-size: 1.125rem;
 
 .account-activity-stream-timeline {
 	.timeline-rail-container {

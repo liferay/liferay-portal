@@ -385,11 +385,11 @@ $cadmin-rounded-pill: 800px !default;
 $cadmin-box-shadow: unquote(
 	'0 8px 16px hsl(from #{$cadmin-black} h s l / 0.15)'
 ) !default;
-$cadmin-box-shadow-sm: unquote(
-	'0 2px 4px hsl(from #{$cadmin-black} h s l / 0.075)'
-) !default;
 $cadmin-box-shadow-lg: unquote(
 	'0 16px 48px hsl(from #{$cadmin-black} h s l / 0.175)'
+) !default;
+$cadmin-box-shadow-sm: unquote(
+	'0 2px 4px hsl(from #{$cadmin-black} h s l / 0.075)'
 ) !default;
 
 $cadmin-caret-width: 0.3em !default;

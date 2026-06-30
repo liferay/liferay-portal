@@ -1,10 +1,10 @@
+$dashedBorderWidth: 2px;
 $editablesBorderWidth: 1px;
 $editableTypes: 'link', 'rich-text', 'text';
-$emptyItemMinHeight: 180px;
 $emptyCollectionItemMinWidth: 124px;
 $emptyColumnMinWidth: 48px;
 $emptyContainerMinWidth: 180px;
-$dashedBorderWidth: 2px;
+$emptyItemMinHeight: 180px;
 
 html#{$cadmin-selector} {
 	.page-editor {

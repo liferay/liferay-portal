@@ -53,9 +53,9 @@ $custom-control-indicator-disabled-cursor: $disabled-cursor !default;
 // Custom Control Indicator Checked
 
 $custom-control-indicator-checked-bg: $component-active-bg !default;
-$custom-control-indicator-checked-color: $component-active-color !default;
 $custom-control-indicator-checked-border-color: $component-active-bg !default;
 $custom-control-indicator-checked-box-shadow: none !default;
+$custom-control-indicator-checked-color: $component-active-color !default;
 
 // @deprecated as of v2.2.1 use `$custom-control-indicator-checked-active-bg` instead
 

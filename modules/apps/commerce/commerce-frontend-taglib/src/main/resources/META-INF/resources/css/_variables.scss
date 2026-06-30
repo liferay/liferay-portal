@@ -1,15 +1,15 @@
-$warning-secondary: #ff8f39;
 $warning-primary: #863a00;
+$warning-secondary: #ff8f39;
 
-$danger-secondary: #f48989;
-$danger-primary: #da1414;
 $danger: #da1414;
+$danger-primary: #da1414;
+$danger-secondary: #f48989;
 
-$success-secondary: #5aca76;
 $success-primary: #287d3d;
+$success-secondary: #5aca76;
 
-$info-secondary: #89a7e0;
 $info-primary: #2e5aac;
+$info-secondary: #89a7e0;
 
 $error-l1: lighten($danger-primary, 28%);
 $gray-100: #f7f8f9;
@@ -33,10 +33,10 @@ $spacers: (
 	5: $spacer * 3,
 );
 
-$primary-color: #0b5fff;
 $background-color: #f1f2f4;
 $border-color: #e7e7ed;
 $info-bc: #eef2fa;
+$primary-color: #0b5fff;
 
 $step-tracker-active: #6b6c7e;
 $step-tracker-completed: #287d3c;

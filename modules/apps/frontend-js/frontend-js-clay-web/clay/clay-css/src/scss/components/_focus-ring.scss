@@ -1,5 +1,5 @@
-$focus-ring-animation-name: clay-focus-ring !default;
 $focus-ring-animation-duration: 1s !default;
+$focus-ring-animation-name: clay-focus-ring !default;
 $focus-ring-animation-timing-function: cubic-bezier(0.2, 0, 0, 1) !default;
 $focus-ring-animation: $focus-ring-animation-name $focus-ring-animation-duration
 	$focus-ring-animation-timing-function !default;

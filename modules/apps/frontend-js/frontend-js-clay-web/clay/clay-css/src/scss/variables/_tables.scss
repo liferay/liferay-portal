@@ -54,8 +54,8 @@ $table-striped-order: odd !default;
 
 $table-cell-gutters: 1.25rem !default;
 $table-cell-padding: 0.5rem 1rem !default;
-$table-cell-padding-sm: 0.25rem 1rem !default;
 $table-cell-padding-lg: 1.0625rem !default;
+$table-cell-padding-sm: 0.25rem 1rem !default;
 
 $table-cell-expand-min-width: 12.5rem !default; // 200px
 
@@ -106,8 +106,8 @@ $table-data-vertical-align: middle !default;
 
 $table-divider-bg: $white !default;
 $table-divider-color: null !default;
-$table-divider-font-weight: null !default;
 $table-divider-font-size: null !default;
+$table-divider-font-weight: null !default;
 $table-divider-padding: 0.5rem 1rem 0.5rem 1.25rem !default;
 $table-divider-text-transform: null !default;
 
@@ -118,8 +118,8 @@ $table-quick-action-menu-bg: if(
 	$table-bg
 ) !default;
 
-$table-quick-action-menu-accent-bg: $table-accent-bg !default;
 $table-quick-action-menu-accent-active-bg: $table-accent-bg !default;
+$table-quick-action-menu-accent-bg: $table-accent-bg !default;
 
 $table-quick-action-menu-active-bg: $table-active-bg !default;
 

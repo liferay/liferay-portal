@@ -4,11 +4,11 @@ $multi-step-nav-padding-y: 0px !default;
 
 $multi-step-icon-bg: $gray-200 !default;
 $multi-step-icon-border-color: null !default;
+$multi-step-icon-border-radius: $border-radius !default;
 $multi-step-icon-border-style: null !default;
 $multi-step-icon-border-width: 0px !default;
 $multi-step-icon-color: rgba($black, 0.5) !default;
 $multi-step-icon-cursor: $link-cursor !default;
-$multi-step-icon-border-radius: $border-radius !default;
 $multi-step-icon-font-size: $font-size-base !default;
 $multi-step-icon-font-weight: null !default;
 $multi-step-icon-padding-bottom: 0px !default;
@@ -95,9 +95,9 @@ $multi-step-title: map-deep-merge(
 	$multi-step-title
 );
 
+$multi-step-item-fixed-width: 150px !default;
 $multi-step-item-margin-bottom: 10px !default;
 $multi-step-item-width: 75px !default;
-$multi-step-item-fixed-width: 150px !default;
 
 $multi-step-nav-center: () !default;
 $multi-step-nav-center: map-deep-merge(

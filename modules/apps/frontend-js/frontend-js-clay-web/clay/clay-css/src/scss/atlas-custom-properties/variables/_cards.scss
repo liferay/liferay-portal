@@ -402,14 +402,14 @@ $card-footer: map-deep-merge(
 
 // .rounded-*
 
-$card-rounded-inner-border-radius: calc(
-	#{$rounded-border-radius} - #{$card-border-width}
-) !default;
 $card-rounded-0-inner-border-radius: calc(
 	#{$rounded-0-border-radius} - #{$card-border-width}
 ) !default;
 $card-rounded-circle-inner-border-radius: calc(
 	#{$rounded-circle-border-radius} - #{$card-border-width}
+) !default;
+$card-rounded-inner-border-radius: calc(
+	#{$rounded-border-radius} - #{$card-border-width}
 ) !default;
 
 $checkbox-left-card-padding: var(--checkbox-left-card-padding, 50px) !default;

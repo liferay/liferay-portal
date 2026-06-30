@@ -49,13 +49,13 @@ $list-group-item-flex-checkbox-offset-top: var(
 	--list-group-item-flex-checkbox-offset-top,
 	3px
 ) !default;
-$list-group-item-flex-offset-top: var(
-	--list-group-item-flex-offset-top,
-	1px
-) !default;
 $list-group-item-flex-list-group-title-offset-top: var(
 	--list-group-item-flex-list-group-title-offset-top,
 	-4px
+) !default;
+$list-group-item-flex-offset-top: var(
+	--list-group-item-flex-offset-top,
+	1px
 ) !default;
 
 $list-group-item-flex: () !default;

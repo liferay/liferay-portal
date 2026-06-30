@@ -38,8 +38,8 @@ $cadmin-custom-control-indicator-focus-border-color: $cadmin-custom-control-indi
 $cadmin-custom-control-indicator-focus-box-shadow: $cadmin-component-focus-box-shadow !default;
 
 $cadmin-custom-control-indicator-active-bg: $cadmin-custom-control-indicator-bg !default;
-$cadmin-custom-control-indicator-active-box-shadow: c-unset !default;
 $cadmin-custom-control-indicator-active-border-color: $cadmin-custom-control-indicator-border-color !default;
+$cadmin-custom-control-indicator-active-box-shadow: c-unset !default;
 $cadmin-custom-control-indicator-active-color: $cadmin-component-active-color !default;
 
 $cadmin-custom-control-indicator-disabled-bg: $cadmin-input-disabled-bg !default;
@@ -49,9 +49,9 @@ $cadmin-custom-control-indicator-disabled-cursor: $cadmin-disabled-cursor !defau
 // Custom Control Indicator Checked
 
 $cadmin-custom-control-indicator-checked-bg: $cadmin-component-active-bg !default;
-$cadmin-custom-control-indicator-checked-color: $cadmin-component-active-color !default;
 $cadmin-custom-control-indicator-checked-border-color: $cadmin-custom-control-indicator-checked-bg !default;
 $cadmin-custom-control-indicator-checked-box-shadow: null !default;
+$cadmin-custom-control-indicator-checked-color: $cadmin-component-active-color !default;
 
 // @deprecated as of v2.2.1 use `$cadmin-custom-control-indicator-checked-active-bg` instead
 
