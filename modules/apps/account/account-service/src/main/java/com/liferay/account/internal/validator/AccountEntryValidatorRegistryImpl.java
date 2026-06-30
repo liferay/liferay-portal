@@ -106,7 +106,7 @@ public class AccountEntryValidatorRegistryImpl
 
 			AccountEntryValidatorConfiguration
 				accountEntryValidatorConfiguration =
-					accountEntryValidator.getConfiguration(
+					accountEntryValidator.getAccountEntryValidatorConfiguration(
 						accountEntry.getCompanyId());
 
 			if (!accountEntryValidatorConfiguration.enabled()) {
@@ -118,7 +118,7 @@ public class AccountEntryValidatorRegistryImpl
 
 			String className = accountEntryValidatorClass.getName();
 
-			String classPK = accountEntryValidator.getKey(
+			String classPK = accountEntryValidator.getClassPK(
 				accountEntry, jsonObject);
 
 			String filterString = StringBundler.concat(
