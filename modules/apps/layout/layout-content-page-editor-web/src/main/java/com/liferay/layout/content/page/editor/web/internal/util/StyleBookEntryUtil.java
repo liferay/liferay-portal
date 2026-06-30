@@ -98,15 +98,12 @@ public class StyleBookEntryUtil {
 
 		long groupId = StagingUtil.getLiveGroupId(layout.getGroupId());
 
-		List<StyleBookEntry> styleBookEntries =
-			StyleBookEntryProviderUtil.getStyleBookEntries(
-				layout.getCompanyId(), groupId,
-				frontendTokenDefinition.getThemeId());
-
 		Map<Long, Group> scopeGroups = new HashMap<>();
 
 		return TransformUtil.transform(
-			styleBookEntries,
+			StyleBookEntryProviderUtil.getStyleBookEntries(
+				layout.getCompanyId(), groupId,
+				frontendTokenDefinition.getThemeId()),
 			styleBookEntry -> _getStyleBookEntryMap(
 				frontendTokenDefinition, includeTokenValues, groupId,
 				scopeGroups, styleBookEntry, themeDisplay));
