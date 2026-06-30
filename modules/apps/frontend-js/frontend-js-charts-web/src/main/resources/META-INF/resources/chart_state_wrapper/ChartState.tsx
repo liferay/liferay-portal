@@ -58,10 +58,6 @@ export default function ChartState({
 	}
 
 	if (error) {
-
-		// ClayAlert renders role="alert" (implicitly aria-live="assertive"),
-		// so the message is announced without an extra live region.
-
 		return (
 			<div style={style}>
 				<ClayAlert
