@@ -728,7 +728,13 @@ test(
 test(
 	'A duplicated Content Structure can be modified without affecting entries of the original',
 	{tag: ['@LPD-95535', '@LPD-95535/TC-12.h']},
-	async ({apiHelpers, assetsPage, contentsPage, page, structureBuilderPage}) => {
+	async ({
+		apiHelpers,
+		assetsPage,
+		contentsPage,
+		page,
+		structureBuilderPage,
+	}) => {
 		test.setTimeout(180000);
 
 		const space = await createSpace(apiHelpers);
