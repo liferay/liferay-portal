@@ -9,6 +9,7 @@ import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {useDragAndDrop} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 import {DropTargetMonitor, useDrop} from 'react-dnd';
 
@@ -134,10 +135,16 @@ export default function RuleRow({
 			>
 				<div className="align-items-center c-gap-3 d-flex">
 					<span
-						aria-label={Liferay.Language.get('drag')}
+						aria-label={sub(
+							Liferay.Language.get('drag-x'),
+							Liferay.Language.get('condition')
+						)}
 						className="audience-builder-grip text-secondary"
 						ref={dragHandlerRef}
-						title={Liferay.Language.get('drag')}
+						title={sub(
+							Liferay.Language.get('drag-x'),
+							Liferay.Language.get('condition')
+						)}
 					>
 						<ClayIcon symbol="drag" />
 					</span>
