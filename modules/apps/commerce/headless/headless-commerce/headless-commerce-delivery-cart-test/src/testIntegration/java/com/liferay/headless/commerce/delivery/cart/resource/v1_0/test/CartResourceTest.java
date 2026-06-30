@@ -12,6 +12,7 @@ import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.validator.AccountEntryValidator;
+import com.liferay.account.validator.AccountEntryValidatorRegistry;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
@@ -42,6 +43,7 @@ import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -77,7 +79,9 @@ import java.math.BigDecimal;
 
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -90,8 +94,11 @@ import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Andrea Sbarra
@@ -110,6 +117,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		_disableAccountEntryValidators(testCompany.getCompanyId());
 
 		_user = UserTestUtil.addUser(testCompany);
 
@@ -162,6 +171,22 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+
+		for (String accountEntryValidatorConfigurationPid :
+				_accountEntryValidatorConfigurationPids) {
+
+			Configuration[] configurations =
+				_configurationAdmin.listConfigurations(
+					StringBundler.concat(
+						"(", Constants.SERVICE_PID, "=",
+						accountEntryValidatorConfigurationPid, "*)"));
+
+			if (configurations != null) {
+				for (Configuration configuration : configurations) {
+					configuration.delete();
+				}
+			}
+		}
 
 		List<CommerceOrder> commerceOrders =
 			_commerceOrderLocalService.getCommerceOrders(
@@ -663,6 +688,40 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 					commerceOrder.getStatus());
 			}
 		};
+	}
+
+	private void _disableAccountEntryValidators(long companyId)
+		throws Exception {
+
+		List<AccountEntryValidator> accountEntryValidators =
+			_accountEntryValidatorRegistry.getAccountEntryValidators();
+
+		for (AccountEntryValidator accountEntryValidator :
+				accountEntryValidators) {
+
+			AccountEntryValidatorConfiguration
+				accountEntryValidatorConfiguration =
+					accountEntryValidator.getAccountEntryValidatorConfiguration(
+						companyId);
+
+			Class<?> accountEntryValidatorConfigurationClass =
+				accountEntryValidatorConfiguration.getClass();
+
+			Class<?>[] interfaceClasses =
+				accountEntryValidatorConfigurationClass.getInterfaces();
+
+			String accountEntryValidatorConfigurationPid =
+				interfaceClasses[0].getName();
+
+			_accountEntryValidatorConfigurationPids.add(
+				accountEntryValidatorConfigurationPid);
+
+			_configurationProvider.saveCompanyConfiguration(
+				companyId, accountEntryValidatorConfigurationPid,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"enabled", false
+				).build());
+		}
 	}
 
 	private Cart _randomGuestCart() throws Exception {
@@ -1311,6 +1370,12 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
+	private final Set<String> _accountEntryValidatorConfigurationPids =
+		new HashSet<>();
+
+	@Inject
+	private AccountEntryValidatorRegistry _accountEntryValidatorRegistry;
+
 	@Inject
 	private AddressLocalService _addressLocalService;
 
@@ -1333,6 +1398,12 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
+
+	@Inject
+	private ConfigurationProvider _configurationProvider;
 
 	@Inject
 	private COREntryLocalService _corEntryLocalService;

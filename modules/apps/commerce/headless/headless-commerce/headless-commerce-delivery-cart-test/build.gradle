@@ -9,6 +9,7 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
 	testIntegrationImplementation group: "junit", name: "junit", version: "4.13.1"
+	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
@@ -32,6 +33,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
