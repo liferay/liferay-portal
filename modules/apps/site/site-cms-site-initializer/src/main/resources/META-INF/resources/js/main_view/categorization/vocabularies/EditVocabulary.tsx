@@ -263,7 +263,7 @@ export default function EditVocabulary({
 		!!externalReferenceCodeInputError ||
 		!!projectInputError ||
 		!!spaceInputError ||
-		!vocabulary.name.trim().length;
+		!vocabulary.name?.trim();
 
 	return (
 		<>
