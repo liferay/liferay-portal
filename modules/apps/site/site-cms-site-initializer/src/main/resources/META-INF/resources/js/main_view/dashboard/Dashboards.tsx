@@ -8,8 +8,7 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
 import Breadcrumb from '../../common/components/Breadcrumb';
-import {InventoryContextProvider} from './InventoryContext';
-import InventoryDashboard from './components/InventoryDashboard';
+import InventoryDashboard from './inventory/InventoryDashboard';
 
 import '../../../css/dashboard/Dashboard.scss';
 
@@ -39,17 +38,15 @@ const Dashboards: React.FC<IDashboards> = ({
 			/>
 
 			<ClayTooltipProvider>
-				<InventoryContextProvider value={{constants}}>
-					<ClayLayout.Container className="px-4" fluid>
-						{freeTier ? (
-							<EnterpriseOnlyPlaceholder
-								learnResources={learnResources}
-							/>
-						) : (
-							<InventoryDashboard />
-						)}
-					</ClayLayout.Container>
-				</InventoryContextProvider>
+				<ClayLayout.Container className="px-4" fluid>
+					{freeTier ? (
+						<EnterpriseOnlyPlaceholder
+							learnResources={learnResources}
+						/>
+					) : (
+						<InventoryDashboard constants={constants} />
+					)}
+				</ClayLayout.Container>
 			</ClayTooltipProvider>
 		</>
 	);

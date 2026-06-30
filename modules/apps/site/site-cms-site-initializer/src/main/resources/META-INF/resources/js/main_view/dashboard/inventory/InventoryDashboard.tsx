@@ -6,16 +6,28 @@
 import ClayLayout from '@clayui/layout';
 import React, {useContext} from 'react';
 
-import {InventoryContext} from '../InventoryContext';
-import {ContentCard} from './ContentCard';
-import {ExpiredAssetsCard} from './ExpiredAssetsCard';
-import {FilesCard} from './FilesCard';
-import {InventoryAnalysisCard} from './InventoryAnalysisCard';
-import {LanguagesDropdown} from './LanguagesDropdown';
-import {SectionHeader} from './SectionHeader';
-import {SpacesDropdown} from './SpacesDropdown';
+import {SpacesDropdown} from '../common/SpacesDropdown';
+import {InventoryContext, InventoryContextProvider} from './InventoryContext';
+import {ContentCard} from './components/ContentCard';
+import {ExpiredAssetsCard} from './components/ExpiredAssetsCard';
+import {FilesCard} from './components/FilesCard';
+import {InventoryAnalysisCard} from './components/InventoryAnalysisCard';
+import {LanguagesDropdown} from './components/LanguagesDropdown';
+import {SectionHeader} from './components/SectionHeader';
 
-export default function InventoryDashboard() {
+export default function InventoryDashboard({
+	constants,
+}: {
+	constants: {[key: string]: string};
+}) {
+	return (
+		<InventoryContextProvider value={{constants}}>
+			<InventoryDashboardContent />
+		</InventoryContextProvider>
+	);
+}
+
+function InventoryDashboardContent() {
 	const {
 		changeSpace,
 		filters: {space},

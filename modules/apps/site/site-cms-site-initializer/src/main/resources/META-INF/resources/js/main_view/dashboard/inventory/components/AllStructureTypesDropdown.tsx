@@ -7,12 +7,12 @@ import {Option, Picker} from '@clayui/core';
 import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
 import React, {useContext, useEffect, useState} from 'react';
 
-import ApiHelper from '../../../common/services/ApiHelper';
-import getLocalizedValue from '../../../common/utils/getLocalizedValue';
+import ApiHelper from '../../../../common/services/ApiHelper';
+import getLocalizedValue from '../../../../common/utils/getLocalizedValue';
+import PickerTrigger from '../../common/PickerTrigger';
 import {InventoryContext} from '../InventoryContext';
 import {Item} from './FilterDropdown';
 import {IAllFiltersDropdown, initialFilters} from './InventoryAnalysisCard';
-import PickerTrigger from './PickerTrigger';
 
 const AllStructureTypesDropdown: React.FC<IAllFiltersDropdown> = ({
 	className,

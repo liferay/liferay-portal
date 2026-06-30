@@ -6,9 +6,9 @@
 import {Option, Picker} from '@clayui/core';
 import React, {useContext, useEffect, useState} from 'react';
 
-import SpaceService from '../../../common/services/SpaceService';
+import SpaceService from '../../../../common/services/SpaceService';
+import PickerTrigger from '../../common/PickerTrigger';
 import {InventoryContext, initialLanguage} from '../InventoryContext';
-import PickerTrigger from './PickerTrigger';
 
 type AvailableLocales = Exclude<
 	Liferay.Language.Locale,

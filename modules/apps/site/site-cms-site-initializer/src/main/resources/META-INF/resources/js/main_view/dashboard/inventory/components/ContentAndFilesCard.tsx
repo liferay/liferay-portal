@@ -19,7 +19,7 @@ import {
 import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import ApiHelper from '../../../common/services/ApiHelper';
+import ApiHelper from '../../../../common/services/ApiHelper';
 import {InventoryContext} from '../InventoryContext';
 
 export interface IMetricsProps {

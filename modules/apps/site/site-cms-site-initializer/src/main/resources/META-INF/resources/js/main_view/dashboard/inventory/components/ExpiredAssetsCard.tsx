@@ -13,8 +13,8 @@ import {replaceTokens} from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useState} from 'react';
 
-import ApiHelper from '../../../common/services/ApiHelper';
-import {openCMSModal} from '../../../common/utils/openCMSModal';
+import ApiHelper from '../../../../common/services/ApiHelper';
+import {openCMSModal} from '../../../../common/utils/openCMSModal';
 import {InventoryContext} from '../InventoryContext';
 import {
 	AssetType,

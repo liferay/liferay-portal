@@ -6,7 +6,8 @@
 import {Option, Picker} from '@clayui/core';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import VocabularyService from '../../../common/services/VocabularyService';
+import VocabularyService from '../../../../common/services/VocabularyService';
+import PickerTrigger from '../../common/PickerTrigger';
 import {InventoryContext} from '../InventoryContext';
 import {Item} from './FilterDropdown';
 import {
@@ -14,7 +15,6 @@ import {
 	filterBySpaces,
 	initialFilters,
 } from './InventoryAnalysisCard';
-import PickerTrigger from './PickerTrigger';
 
 type Vocabulary = {assetLibraries: {id: number}[]; id: string; name: string};
 

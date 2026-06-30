@@ -6,7 +6,7 @@
 import {buildQueryString} from '@liferay/analytics-reports-js-components-web';
 import React, {useContext, useState} from 'react';
 
-import ApiHelper from '../../../common/services/ApiHelper';
+import ApiHelper from '../../../../common/services/ApiHelper';
 import {InventoryContext} from '../InventoryContext';
 import {FilterDropdown} from './FilterDropdown';
 import {
